@@ -1285,6 +1285,30 @@ class FabrikWorker
 	}
 
 	/**
+	 * Is the current browser a mobile device
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  bool
+	 */
+
+	public static function isMobile()
+	{
+		// If we are mobilejoomla.com system plugin to detect smartphones
+		if (JRequest::getVar('mjmarkup') == 'iphone' || defined('_MJ'))
+		{
+			return true;
+		}
+
+		$browser = new JBrowser;
+		if ($browser->isMobile())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Is the email really an email (more strict than JMailHelper::isEmailAddress())
 	 *
 	 * @param   string  $email  email address

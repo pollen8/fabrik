@@ -1,11 +1,12 @@
+<div id="content">
 <?php
   	$document = JFactory::getDocument();
-  	$document->setMetaData("apple-mobile-web-app-capable", "yes");
-  	$document->setMetaData("viewport", "minimum-scale=1.0, width=device-width, maximum-scale=0.6667, user-scalable=no");
-  	$document->addStyleSheet('components/com_fabrik/views/list/tmpl/iwebkit/css/style.css');
-  	$document->addScript('components/com_fabrik/views/list/tmpl/iwebkit/javascript/functions.js');
-		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/homescreen.png', 'apple-touch-icon');
-		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/startup.png', 'apple-touch-startup-image');
+ // 	$document->setMetaData("apple-mobile-web-app-capable", "yes");
+ // 	$document->setMetaData("viewport", "minimum-scale=1.0, width=device-width, maximum-scale=0.6667, user-scalable=no");
+ // 	$document->addStyleSheet('components/com_fabrik/views/list/tmpl/iwebkit/css/style.css');
+ // 	$document->addScript('components/com_fabrik/views/list/tmpl/iwebkit/javascript/functions.js');
+//		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/homescreen.png', 'apple-touch-icon');
+//		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/startup.png', 'apple-touch-startup-image');
 
 		$script = "head.ready(function() {
 			document.getElement('body').addClass('list');
@@ -71,3 +72,4 @@ if ($this->params->get('mobile_image') == '') {
 	}');
 }
 ?>
+</div>

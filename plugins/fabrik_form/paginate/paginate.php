@@ -67,25 +67,35 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 			$url = 'index.php?option=com_fabrik&view=' . $mode . '&formid=' . $formId . '&rowid=';
 		}
 		$ajax = (bool) $params->get('paginate_ajax', true);
+
 		$firstLink = ($linkStartPrev) ? '<span>&lt;&lt;</span>' . JText::_('COM_FABRIK_START')
 			: '<a href="' . JRoute::_($url . $this->ids->first) . '" class="pagenav paginateFirst ' . $linkStartPrev . '"><span>&lt;&lt;</span>'
 				. JText::_('COM_FABRIK_START') . '</a>';
+		$firstLink = $linkStartPrev ? '<li class="disabled"><a href="#">' . $firstLink . '</a>' : '<li>' . $firstLink . '</li>';
+
 		$prevLink = ($linkStartPrev) ? '<span>&lt;</span>' . JText::_('COM_FABRIK_PREV')
 			: '<a href="' . JRoute::_($url . $this->ids->prev) . '" class="pagenav paginatePrevious ' . $linkStartPrev . '"><span>&lt;</span>'
 				. JText::_('COM_FABRIK_PREV') . '</a>';
+		$prevLink = $linkStartPrev ? '<li class="disabled"><a href="#">' . $prevLink . '</a>' : '<li>' . $prevLink . '</li>';
 
 		$nextLink = ($linkNextEnd) ? JText::_('COM_FABRIK_NEXT') . '<span>&gt;</span>'
 			: '<a href="' . JRoute::_($url . $this->ids->next) . '" class="pagenav paginateNext' . $linkNextEnd . '">' . JText::_('COM_FABRIK_NEXT')
 				. '<span>&gt;</span></a>';
+
+		$nextLink = $linkNextEnd ? '<li class="disabled"><a href="#">' . $nextLink . '</a>' : '<li>' . $nextLink . '</li>';
+
 		$endLink = ($linkNextEnd) ? JText::_('COM_FABRIK_END') . '<span>&gt;&gt;</span>'
 			: '<a href="' . JRoute::_($url . $this->ids->last) . '" class="pagenav paginateLast' . $linkNextEnd . '">' . JText::_('COM_FABRIK_END')
 				. '<span>&gt;&gt;</span></a>';
-		$this->_data = '<ul id="fabrik-from-pagination" class="pagination">
-				<li>' . $firstLink . '</li>
-				<li>' . $prevLink . '</li>
-				<li>' . $nextLink . '</li>
-				<li>' . $endLink . '</li>
-		</ul>';
+
+		$endLink = $linkNextEnd ? '<li class="disabled"><a href="#">' . $endLink . '</a>' : '<li>' . $endLink . '</li>';
+
+		$this->_data = '<div class="pagination fabrikActions"><ul id="fabrik-from-pagination">
+				' . $firstLink . $prevLink . $nextLink . $endLink . '
+		</ul></div>';
+
+		// Bootstrap scaffolding
+		$this->_data = '<div class="row show-grid"><div class="span6 offset3">' . $this->_data . '</div></div>';
 		FabrikHelperHTML::stylesheet('plugins/fabrik_form/paginate/paginate.css');
 		return true;
 	}

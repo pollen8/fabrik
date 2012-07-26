@@ -1,43 +1,38 @@
+    <div class="btn-group">
+
+
 <?php if ($this->showAdd) {?>
-	<span class="addbutton">
-		<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
-			<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl);?>
+
+		<a class="addbutton btn addRecord" href="<?php echo $this->addRecordLink;?>">
+			<i class="icon-plus-sign"></i>
 			<?php echo $this->addLabel?>
 		</a>
-	</span>
 <?php }?>
 
 <?php if ($this->showCSV) {?>
-	<span class="csvExportButton">
-		<a href="#">
-			<?php echo FabrikHelperHTML::image('csv-export.png', 'list', $this->tmpl);?>
+		<a href="#" class="btn csvExportButton">
+			<i class="icon-upload"></i>
 			<?php echo JText::_('COM_FABRIK_EXPORT_TO_CSV');?>
 		</a>
-	</span>
 <?php }?>
 
 <?php if ($this->showCSVImport) {?>
-	<span class="csvImportButton">
-		<a href="<?php echo $this->csvImportLink;?>">
-			<?php echo FabrikHelperHTML::image('csv-import.png', 'list', $this->tmpl);?>
+		<a href="<?php echo $this->csvImportLink;?>" class="btn csvImportButton">
+			<i class="icon-download"></i>
 			<?php echo JText::_('COM_FABRIK_IMPORT_FROM_CSV');?>
 		</a>
-	</span>
 <?php }?>
 
 <?php if ($this->showRSS) {?>
-	<span class="feedButton">
-		<a href="<?php echo $this->rssLink;?>">
+		<a href="<?php echo $this->rssLink;?>" class="btn feedButton">
 			<?php echo FabrikHelperHTML::image('feed.png', 'list', $this->tmpl);?>
 			<?php echo JText::_('COM_FABRIK_SUBSCRIBE_RSS');?>
 		</a>
-	</span>
 <?php }
 	if ($this->showPDF) {?>
-		<span class="pdfButton">
-			<a href="<?php echo $this->pdfLink;?>">
-				<?php echo $this->buttons->pdf;?>
-				<span><?php echo JText::_('COM_FABRIK_PDF');?></span>
+			<a href="<?php echo $this->pdfLink;?>" class="btn pdfButton">
+				<i class="icon-file"></i>
+				<?php echo JText::_('COM_FABRIK_PDF');?>
 			</a>
-		</span>
 	<?php }?>
+</div>

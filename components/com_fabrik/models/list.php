@@ -1060,7 +1060,25 @@ class FabrikFEModelList extends JModelForm
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
 					$this->actionHeading = true;
-					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
+
+					$bootstrap = true;
+					if ($bootstrap)
+					{
+						$row->fabrik_actions = '<div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    Action
+    <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">'
+    . implode("\n", $row->fabrik_actions) .
+    '</ul>
+    </div>';
+					}
+					else
+					{
+						$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
+					}
+
 				}
 				else
 				{
@@ -4759,7 +4777,7 @@ class FabrikFEModelList extends JModelForm
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
-				. '" class="fabrik_filter" name="' . $requestKey . '" />';
+				. '" class="fabrik_filter search-query" name="' . $requestKey . '" />';
 			if ($params->get('search-mode-advanced') == 1)
 			{
 				$opts = array();
@@ -4769,7 +4787,7 @@ class FabrikFEModelList extends JModelForm
 				$opts[] = JHTML::_('select.option', 'none', JText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
 				$mode = $app->getUserStateFromRequest('com_fabrik.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
 				$o->filter .= '&nbsp;'
-					. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
+					. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter search-query'", 'value', 'text', $mode);
 			}
 			$o->name = 'all';
 			$o->label = $params->get('search-all-label', JText::_('COM_FABRIK_ALL'));
@@ -4858,6 +4876,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getAdvancedSearchLink()
 	{
+		$this->advancedSearchURL = '';
 		$params = $this->getParams();
 		if ($params->get('advanced-filter', '0'))
 		{
@@ -4865,6 +4884,7 @@ class FabrikFEModelList extends JModelForm
 			$tmpl = $this->getTmpl();
 			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 				. $table->id . '&amp;nextview=' . JRequest::getVar('view');
+			$this->advancedSearchURL = $url;
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
@@ -5388,7 +5408,7 @@ class FabrikFEModelList extends JModelForm
 				$r = '<li>' . $r . '</li>';
 			}
 			$headingButtons = array_merge($headingButtons, $res);
-			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
+			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action dropdown-menu">' . implode("\n", $headingButtons) . '</ul>';
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 
 			// Needed for ajax filter/nav
@@ -8147,7 +8167,7 @@ class FabrikFEModelList extends JModelForm
 			$title = '<span>' . JText::_('COM_FABRIK_CLEAR') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_CLEAR'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('filter_delete.png', 'list', $tmpl, $opts);
-			return '<a href="#" class="clearFilters">' . $img . '</a>';
+			return '<a href="#" class="btn clearFilters">' . $img . '</a>';
 		}
 		else
 		{
@@ -8695,8 +8715,7 @@ class FabrikFEModelList extends JModelForm
 				 */
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 			}
-			// If we are mobilejoomla.com system plugin to detect smartphones
-			if (JRequest::getVar('mjmarkup') == 'iphone')
+			if (FabrikWorker::isMobile())
 			{
 				$this->tmpl = 'iwebkit';
 			}

@@ -1,13 +1,17 @@
-#fabrik-from-pagination {
+/* .fabrik-from-pagination {
 	background: -moz-linear-gradient(center top , #EEEEEE, #CCCCCC) repeat scroll 0 0 transparent;
 	border: 1px solid #999999;
 	border-radius: 6px 6px 6px 6px;
 	margin: auto !important;
 	min-height: 25px;
 	width: 225px;
+} */
+
+#main .fabrikActions.pagination {
+	margin: auto 10px;
 }
 
-#fabrik-from-pagination li {
+.fabrik-from-pagination li {
 	display: inline;
 	line-height: 1.7em;
 	margin: 0 2px;

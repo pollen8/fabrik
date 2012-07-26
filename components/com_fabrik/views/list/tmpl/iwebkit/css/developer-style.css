@@ -1,21 +1,23 @@
+/*iWebKit css 5.04 by Christopher Plieger*/
 body {
 	position: relative;
 	margin: 0;
 	-webkit-text-size-adjust: none;
 	min-height: 416px;
 	font-family: helvetica,sans-serif;
-	background: url("../images/background.png") repeat;
+	-webkit-background-size:0.438em 100%; 
+	background: -webkit-gradient(linear,left top,right top,from(#c5ccd4), color-stop(71%, #c5ccd4), color-stop(72%, #cbd2d8), to(#cbd2d8));
 	-webkit-touch-callout: none;
 }
 .center {
 	margin: auto;
 	display: block;
-	text-align:center!important
+	text-align: center!important;
 }
 img {
 	border: 0;
 }
-a:hover span.arrow {
+a:hover .arrow {
 	background-position: 0 -13px!important;
 }
 @media screen and (max-width: 320px)
@@ -77,13 +79,11 @@ a:hover span.arrow {
 .searchbox input[type="text"] {
 	width: 275px;
 }
-li.menu span.name {
+.menu .name {
 	max-width: 77%;
-}
-li.checkbox .name {
+}.checkbox .name {
 	max-width: 190px;
-}
-li.radiobutton .name {
+}.radiobutton .name {
 	max-width: 190px;
 }
 #leftnav a, #rightnav a, #leftbutton a, #rightbutton a, #blueleftbutton a, #bluerightbutton a {
@@ -99,7 +99,7 @@ li.radiobutton .name {
 #rightnav, #rightbutton, #bluerightbutton {
 	top: 7px;
 }
-body.musiclist ul li span.name {
+.musiclist .name {
 	max-width:55%
 }
 .textbox textarea {
@@ -119,13 +119,11 @@ body.musiclist ul li span.name {
 	height: 32px;
 	font-size: 13pt;
 }
-li.menu span.name {
+.menu .name {
 	max-width: 85%;
-}
-li.checkbox .name {
+}.checkbox .name {
 	max-width: 75%;
-}
-li.radiobutton .name {
+}.radiobutton .name {
 	max-width: 75%;
 }
 #leftnav a, #rightnav a, #leftbutton a, #rightbutton a, #blueleftbutton a, #bluerightbutton a {
@@ -142,7 +140,7 @@ li.radiobutton .name {
 #rightnav, #rightbutton, #bluerightbutton {
 	top: 4px;
 }
-body.musiclist ul li span.name {
+.musiclist .name {
 	max-width:70%
 }
 .textbox textarea {
@@ -229,7 +227,6 @@ body.musiclist ul li span.name {
 	color: #FFF;
 	text-shadow: rgba(0,0,0,0.6) 0 -1px 0;
 }
-}
 #content {
 	width: 100%;
 	position: relative;
@@ -247,7 +244,7 @@ body.musiclist ul li span.name {
 	width: auto;
 	bottom: 10px;
 }
-body.ipodlist #footer, body.ipodlist #footer a {
+.ipodlist #footer, .ipodlist #footer a {
 	text-shadow: #FFF 0 -1px 0;
 }
 #footer a, #footer {
@@ -443,7 +440,7 @@ fieldset {
 .pageitem li:first-child, .pageitem li.form:first-child {
 	border-top: 0;
 }
-li.menu, li.checkbox, li.radiobutton, li.select, li.button, li.bigfield, li.smallfield {
+.menu, .checkbox, .radiobutton, .select, li.button, li.bigfield, li.smallfield {
 	position: relative;
 	list-style-type: none;
 	display: block;
@@ -452,37 +449,37 @@ li.menu, li.checkbox, li.radiobutton, li.select, li.button, li.bigfield, li.smal
 	border-top: 1px solid #878787;
 	width: auto;
 }
-ul.pageitem li:first-child:hover, .pageitem li:first-child a, li.radiobutton:first-child input, li.select:first-child select, li.button:first-child input, .bigfield:first-child input {
+.pageitem li:first-child:hover, .pageitem li:first-child a, .radiobutton:first-child input, .select:first-child select, li.button:first-child input, .bigfield:first-child input {
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
 }
-ul.pageitem li:last-child:hover, .pageitem li:last-child a, li.radiobutton:last-child input, li.select:last-child select, li.button:last-child input, .bigfield:last-child input {
+.pageitem li:last-child:hover, .pageitem li:last-child a, .radiobutton:last-child input, .select:last-child select, li.button:last-child input, .bigfield:last-child input {
 	-webkit-border-bottom-left-radius: 8px;
 	-webkit-border-bottom-right-radius: 8px;
 }
-li.menu:hover, li.store:hover, body.list div#content li a:hover, body.list li.withimage:hover, body.applist li:hover:nth-child(n),body.ipodlist li:hover:nth-child(n) {
+.menu:hover, .store:hover, .list #content li a:hover, .list .withimage:hover, .applist li:hover:nth-child(n),.ipodlist li:hover:nth-child(n) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#058cf5), to(#015fe6));
 }
-body.ipodlist li:hover:nth-child(n) .name,body.ipodlist li:hover:nth-child(n) .time{border:0}
-li.menu a:hover span.name, li.menu a:hover span.comment, li.store:hover .starcomment, li.store:hover .name, li.store:hover .comment, body.list li.withimage a:hover .comment {
+.ipodlist li:hover:nth-child(n) .name,.ipodlist li:hover:nth-child(n) .time{border:0}
+.menu a:hover .name, .store:hover .starcomment, .store:hover .name, .store:hover .comment, .list .withimage a:hover .comment {
 	color: #fff;
 }
-li.menu a:hover span.comment {
+.menu a:hover .comment {
 	color: #CCF;
 }
-li.menu a {
+.menu a {
 	display: block;
 	height: 43px;
 	width: auto;
 	text-decoration: none;
 }
-li.menu a img {
+.menu a img {
 	width: auto;
 	height: 32px;
 	margin: 5px 0 0 5px;
 	float: left;
 }
-li.menu span.name, li.checkbox .name, li.radiobutton .name {
+.menu .name, .checkbox .name, .radiobutton .name {
 	margin: 11px 0 0 7px;
 	width: auto;
 	color: #000;
@@ -493,7 +490,7 @@ li.menu span.name, li.checkbox .name, li.radiobutton .name {
 	white-space: nowrap;
 	float: left;
 }
-li.menu span.comment {
+.menu .comment {
 	margin: 11px 30px 0 0;
 	width: auto;
 	font-size: 17px;
@@ -504,7 +501,7 @@ li.menu span.comment {
 	float: right;
 	color: #324f85;
 }
-li.menu span.arrow, li.store span.arrow, body.musiclist span.arrow, body.list span.arrow {
+.menu .arrow, .store .arrow, .musiclist .arrow, .list .arrow {
 	position: absolute;
 	width: 8px!important;
 	height: 13px!important;
@@ -513,7 +510,7 @@ li.menu span.arrow, li.store span.arrow, body.musiclist span.arrow, body.list sp
 	margin: 0!important;
 	background: url("../images/arrow.png") 0 0 no-repeat;
 }
-body.applist span.arrow {
+.applist .arrow {
 	position: absolute;
 	width: 8px!important;
 	height: 13px!important;
@@ -522,20 +519,20 @@ body.applist span.arrow {
 	margin: 0!important;
 	background: url("../images/arrow.png") 0 0 no-repeat;
 }
-li.store {
+.store {
 	height: 90px;
 	border-top: #878787 solid 1px;
 	overflow: hidden;
 	position: relative;
 }
-li.store a {
+.store a {
 	width: 100%;
 	height: 90px;
 	display: block;
 	text-decoration: none;
 	position: absolute;
 }
-li.store .image {
+.store .image {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -545,7 +542,7 @@ li.store .image {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eff1f5), to(#d6dce6));
 	-webkit-background-size: 90px;
 }
-body.applist .image {
+.applist .image {
 	width: 57px;
 	height: 57px;
 	display: block;
@@ -557,13 +554,13 @@ body.applist .image {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7c7c7c), color-stop(3%, #858585), color-stop(97%, #a4a4a4),to(#c2c2c2));
 	-webkit-background-size: 57px;
 }
-li:first-child.store .image, li.store:first-child a {
+li:first-child.store .image, .store:first-child a {
 	-webkit-border-top-left-radius: 8px 8px;
 }
-li:last-child.store .image, li.store:last-child a {
+li:last-child.store .image, .store:last-child a {
 	-webkit-border-bottom-left-radius: 8px 8px;
 }
-li.store .name, body.applist .name {
+.store .name, .applist .name {
 	font-size: 15px;
 	white-space: nowrap;
 	display: block;
@@ -573,18 +570,18 @@ li.store .name, body.applist .name {
 	text-overflow: ellipsis;
 	font-weight: bold;
 }
-li.store .name {
+.store .name {
 	position: absolute;
 	left: 95px;
 	top: 35px;
 }
-body.applist .name {
+.applist .name {
 	position: absolute;
 	top: 27px;
 	left: 80px;
 	text-shadow: #eeeeee 0 1px 0;
 }
-li.store .comment, body.list li.withimage .comment, body.applist .comment, body.applist .price {
+.store .comment, .list .withimage .comment, .applist .comment, .applist .price {
 	font-size: 12px;
 	color: #7f7f7f;
 	display: block;
@@ -594,17 +591,17 @@ li.store .comment, body.list li.withimage .comment, body.applist .comment, body.
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-li.store .comment, body.list li.withimage .comment {
+.store .comment, .list .withimage .comment {
 	margin: 16px 0 0 95px;
 }
-body.applist .comment {
+.applist .comment {
 	position: absolute;
 	top: 9px;
 	left: 80px;
 	text-shadow: #eeeeee 0 1px 0;
 	color: #3b3b3b;
 }
-body.applist .price {
+.applist .price {
 	position: absolute;
 	top: 29px;
 	right: 26px;
@@ -612,10 +609,10 @@ body.applist .price {
 	text-align: right;
 	color: #3b3b3b;
 }
-li.store .arrow, body.list li.withimage .arrow {
+.store .arrow, .list .withimage .arrow {
 	top: 39px!important;
 }
-li.store .stars0, li.store .stars1, li.store .stars2, li.store .stars3, li.store .stars4, li.store .stars5 {
+.store .stars0, .store .stars1, .store .stars2, .store .stars3, .store .stars4, .store .stars5 {
 	position: absolute;
 	top: 56px;
 	left: 95px;
@@ -623,25 +620,25 @@ li.store .stars0, li.store .stars1, li.store .stars2, li.store .stars3, li.store
 	height: 18px;
 	display: block!important;
 }
-li.store .stars0 {
+.store .stars0 {
 	background: url('../images/0starsborder.png');
 }
-li.store .stars1 {
+.store .stars1 {
 	background: url('../images/1starsborder.png');
 }
-li.store .stars2 {
+.store .stars2 {
 	background: url('../images/2starsborder.png');
 }
-li.store .stars3 {
+.store .stars3 {
 	background: url('../images/3starsborder.png');
 }
-li.store .stars4 {
+.store .stars4 {
 	background: url('../images/4starsborder.png');
 }
-li.store .stars5, body.applist .stars5 {
+.store .stars5, .applist .stars5 {
 	background: url('../images/5stars.png');
 }
-body.applist .stars0, body.applist .stars1, body.applist .stars2, body.applist .stars3, body.applist .stars4, body.applist .stars5 {
+.applist .stars0, .applist .stars1, .applist .stars2, .applist .stars3, .applist .stars4, .applist .stars5 {
 	position: absolute;
 	top: 46px;
 	left: 79px;
@@ -649,22 +646,22 @@ body.applist .stars0, body.applist .stars1, body.applist .stars2, body.applist .
 	height: 18px;
 	display: block!important;
 }
-body.applist .stars0 {
+.applist .stars0 {
 	background: url('../images/0stars.png');
 }
-body.applist .stars1 {
+.applist .stars1 {
 	background: url('../images/1stars.png');
 }
-body.applist .stars2 {
+.applist .stars2 {
 	background: url('../images/2stars.png');
 }
-body.applist .stars3 {
+.applist .stars3 {
 	background: url('../images/3stars.png');
 }
-body.applist .stars4 {
+.applist .stars4 {
 	background: url('../images/4stars.png');
 }
-body.applist .starcomment {
+.applist .starcomment {
 	left: 147px;
 	top: 46px;
 	color: #3b3b3b;
@@ -677,7 +674,7 @@ body.applist .starcomment {
 	color: #7f7f7f;
 	font-weight: lighter;
 }
-body.applist a:hover .name, body.applist a:hover .starcomment, body.applist a:hover .comment, body.applist a:hover .price {
+.applist a:hover .name, .applist a:hover .starcomment, .applist a:hover .comment, .applist a:hover .price {
 	color: white;
 	text-shadow: none;
 }
@@ -699,60 +696,63 @@ body.applist a:hover .name, body.applist a:hover .starcomment, body.applist a:ho
 	margin-bottom: 6px;
 	line-height: 14pt;
 }
-body.musiclist div#content, body.ipodlist div#content, body.applist div#content {
-	width: auto;
-	margin: -16px auto auto -40px;
+.musiclist ul, .ipodlist ul, .applist ul {
+	padding: 0;
 }
-body.musiclist li:nth-child(odd) {
+.ipodlist ul {
+	margin: 0;
+}
+.musiclist li:nth-child(odd) {
 	background: #dddee0
 }
-body.applist li:nth-child(even) {
+.applist li:nth-child(even) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#adadb0), color-stop(98%, #adadb0), to(#898a8d))
 }
-body.applist li:nth-child(odd) {
+.applist li:nth-child(odd) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#98989c), color-stop(98%, #98989c), to(#898a8d))
 
 }
-body.ipodlist li:nth-child(even) {
+.ipodlist li:nth-child(even) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#414041), color-stop(3%, rgba(45,45,45,0.2)), to(rgba(45,45,45,0.2)))
 }
-body.ipodlist li:nth-child(odd) {
+.ipodlist li:nth-child(odd) {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#414041), color-stop(3%, rgba(50,50,50,0.4)), to(rgba(50,50,50,0.4)))
 }
-body.musiclist div#content ul li, body.ipodlist div#content ul li, body.applist div#content ul li {
+.musiclist #content li, .ipodlist #content li, .applist #content li {
 	list-style: none;
 	width: auto;
 	position: relative;
 }
-body.musiclist div#content ul li {
+.musiclist #content li {
 	height: 44px;
 	border-bottom: 1px solid #e6e6e6;
 }
-body.applist div#content ul li {
+.applist #content li {
 	height: 70px;
 	margin-bottom: 1px;
 }
-body.ipodlist div#content ul li {
+.ipodlist #content li {
 	height: 42px;
 }
-body.ipodlist div#content {
-	background: -webkit-gradient(radial, 50% -70, 0, 50% 0, 200, from(#444444), to(rgb(13, 13, 13))) rgb(13, 13, 13);
+.ipodlist #content {
+	background: -webkit-gradient(radial, 50% -70, 0, 50% 0, 200, from(#444444), to(rgb(13, 13, 13)));
+	top: 16px;
 }
-body.musiclist div#content ul li a, body.ipodlist div#content ul li a {
+.musiclist #content li a, .ipodlist #content li a {
 	text-decoration: none;
 	color: #000;
 	width: 100%!important;
 	height: 100%;
 	display: block;
 }
-body.applist div#content ul li a {
+.applist #content li a {
 	text-decoration: none;
 	color: #000;
 	width: 100%;
 	height: 100%;
 	display: block;
 }
-body.musiclist ul li .number, body.musiclist .name, body.musiclist .time {
+.musiclist .number, .musiclist .name, .musiclist .time {
 	display: inline-block;
 	height: 44px;
 	font-weight: bold;
@@ -761,46 +761,46 @@ body.musiclist ul li .number, body.musiclist .name, body.musiclist .time {
 	text-align: center;
 	line-height: 46px;
 }
-body.musiclist ul li .name {
+.musiclist .name {
 	margin-left: 0;
 	width: auto!important;
 	font-size: medium;
 	padding-left: 5px;
 	border-left: solid 1px #e6e6e6;
 }
-body.musiclist ul li .time {
+.musiclist .time {
 	color: #848484;
 	font-size: medium;
 	margin-left: 4px;
 	width: auto!important;
 	font-weight: normal;
 }
-body.musiclist {
+.musiclist {
 	background-image: none!important;
 	background-color: #cbcccf;
 }
-body.ipodlist {
+.ipodlist {
 	background-image: none!important;
 	background-color: black;
 }
-body.applist {
+.applist {
 	background-image: none!important;
 	background-color: #98989c;
 }
-body.ipodlist span {
+.ipodlist span {
 	color: white;
 	font-weight: bold;
 	font-size: 14px;
 }
-body.musiclist ul li span.name {
+.musiclist .name {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 }
-body.musiclist a:hover span.name {
+.musiclist a:hover .name {
 	color: #0380f2;
 }
-body.ipodlist .number {
+.ipodlist .number {
 	width: 23px;
 	display: block;
 	float: left;
@@ -809,7 +809,7 @@ body.ipodlist .number {
 	text-align: right;
 	line-height: 43px;
 }
-body.ipodlist .stop, body.ipodlist .auto, body.ipodlist .play {
+.ipodlist .stop, .ipodlist .auto, .ipodlist .play {
 	width: 18px;
 	display: block;
 	float: left;
@@ -818,14 +818,14 @@ body.ipodlist .stop, body.ipodlist .auto, body.ipodlist .play {
 	line-height: 43px;
 	margin-top: 16px;
 }
-body.ipodlist .play {
+.ipodlist .play {
 	background: url('../images/play.gif') no-repeat;
 }
-body.ipodlist a:hover .auto, body.ipodlist a:hover .play {
+.ipodlist a:hover .auto, .ipodlist a:hover .play {
 	background: url('../images/play.gif') no-repeat;
 	background-position: 0 -10px;
 }
-body.ipodlist .time {
+.ipodlist .time {
 	width: 48px;
 	float: right;
 	border-left: solid #414041 1px;
@@ -834,7 +834,7 @@ body.ipodlist .time {
 	text-align: center;
 	line-height: 43px;
 }
-body.ipodlist .name {
+.ipodlist .name {
 	display: block;
 	float: left;
 	width: inherit;
@@ -847,7 +847,7 @@ body.ipodlist .name {
 	max-width: 62%;
 	border-left: solid #414041 1px;
 }
-body.list ul li.title {
+.list .title {
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a5b1ba), color-stop(3%, #909faa), color-stop(97%, #b5bfc6), to(#989ea4));
 	height: 22px!important;
 	width: 100%;
@@ -859,26 +859,29 @@ body.list ul li.title {
 	padding-left: 20px;
 	border-bottom: none!important;
 }
-body.list ul {
+.list ul {
 	background-color: #fff;
 	width: 100%;
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
 }
-body.list div#content li {
+.list #content li {
 	height: 40px;
 	border-bottom: 1px solid #e1e1e1;
 	list-style: none;
 }
-body.list {
+.list {
 	background-color: #fff;
 	background-image: none!important;
 }
-body.list div#footer {
+.list #footer {
 	margin-top: 24px!important;
 }
-body.list div#content li a {
+.ipodlist #footer {
+	margin-top: 48px!important;
+}
+.list #content li a {
 	padding: 9px 0 0 20px;
 	font-size: large;
 	font-weight: bold;
@@ -888,41 +891,44 @@ body.list div#content li a {
 	text-decoration: none;
 	height: 32px;
 }
-body.list div#content li a span.name {
+.list #content li a .name {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-width: 93%;
 	white-space: nowrap;
 	display: block;
 }
-body.list div#content li a:hover {
+.list #content li a:hover {
 	color: #fff;
 }
-body.list div#content {
+.list #content {
 	margin-top: -13px!important;
 }
-body.list ul img {
+.ipodlist #content, .musiclist #content, .applist #content {
+	margin-top: -29px!important;
+}
+.list ul img {
 	width: 90px;
 	height: 90px;
 	position: absolute;
 	left: 0;
 	top: 0;
 }
-body.list li.withimage {
+.list .withimage {
 	height: 90px!important;
 }
-body.list li.withimage span.name {
+.list .withimage .name {
 	margin: 13px 0 0 90px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-width: 63%!important;
 	white-space: nowrap;
 }
-body.list li.withimage .comment {
+.list .withimage .comment {
 	margin: 10px auto auto 90px !important;
 	max-width: 63%!important;
 }
-body.list li.withimage a, body.list li.withimage:hover a {
+.list .withimage a, .list .withimage:hover a {
 	height: 81px!important;
 }
 #leftnav, #leftbutton, #blueleftbutton {
@@ -1014,39 +1020,6 @@ body.list li.withimage a, body.list li.withimage:hover a {
 	border-width: 0 5px;
 	-webkit-border-radius: 6px;
 }
-.rssxpresschannel {
-	font-family: helvetica,sans-serif;
-	border: 0;
-}
-}
-.rssxpresschtitle {
-	text-align: center;
-}
-.rssxpresschdesc {
-	color: #000;
-	text-align: center;
-	border-bottom: 1px solid #000;
-	padding-bottom: 5px;
-}
-.rssxpressittitle {
-	display: block;
-	font-size: 12pt;
-	background: #fff;
-	margin: 5px 0 2px;
-}
-.rssxpressittitle a {
-	text-decoration: none!important;
-	font-weight: bold;
-	color: rgb(73,102,145);
-	line-height: 10pt;
-}
-.rssxpressitdesc {
-	background: #fff;
-	font-size: 10pt;
-}
-.rssxpressdivider {
-	display: none;
-}
 input[type="checkbox"] {
 	width: 94px;
 	height: 27px;
@@ -1083,16 +1056,16 @@ select {
 	width: 100%;
 	border: 0;
 }
-li.select select {
+.select select {
 	-webkit-border-radius: 0;
 	color: #000;
 	font-weight: bold;
 	font-size: 17px;
 }
-li.select option {
+.select option {
 	max-width: 90%;
 }
-li.select .arrow {
+.select .arrow {
 	background: url('../images/arrow.png');
 	width: 8px;
 	height: 13px;
@@ -1113,12 +1086,12 @@ li.select .arrow {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
-	background:none
+	background: none;
 }
 .textbox textarea {
 	padding: 0;
-	margin-top: 5px; 
-	font-size:medium
+	margin-top: 5px;
+	font-size: medium;
 }
 .bigfield input {
 	-webkit-appearance: none;

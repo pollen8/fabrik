@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/image.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 
 define("FU_DOWNLOAD_SCRIPT_NONE", '0');
 define("FU_DOWNLOAD_SCRIPT_TABLE", '1');
@@ -21,6 +21,7 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
  */
 
 class plgFabrik_ElementFileupload extends plgFabrik_Element
@@ -53,8 +54,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * decide whether to ingore data when updating a record
 	 *
-	 * @param	string	$val
-	 * @return	bool	true if you shouldnt update the data
+	 * @param   string  $val
+	 *
+	 * @return  bool  true if you shouldnt update the data
 	 */
 
 	function ignoreOnUpdate($val)
@@ -343,9 +345,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * shows the data formatted for the table view
+	 * Shows the data formatted for the table view
+	 *
 	 * @param	string	data
 	 * @param	object	all the data in the tables current row
+	 *
 	 * @return	string	formatted value
 	 */
 
@@ -353,6 +357,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
+
 		// $$$ hugh - have to run thru rendering even if data is empty,
 		// in case default image is being used.
 		if (empty($data))
@@ -368,6 +373,45 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		$data = json_encode($data);
 		return parent::renderListData($data, $thisRow);
+	}
+
+	/**
+	 * Final prepare data function called from renderListData(), converts data to string and if needed
+	 * encases in <ul> (for repeating data)
+	 * Modifed here to add bootstrap makrup for thumbnails and to always encase in thumbnail <ul> regardless of the # of entries
+	 *
+	 * @param   array  $data  list cell data
+	 *
+	 * @return  string	cell data
+	 */
+
+	protected function renderListDataFinal($data)
+	{
+		if (is_array($data) && count($data) > 1)
+		{
+			if (!array_key_exists(0, $data))
+			{
+				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. jos_users.params)
+				$obj = JArrayHelper::toObject($data);
+				$data = array();
+				$data[0] = $obj;
+			}
+			// If we are storing info as json the data will contain an array of objects
+			if (is_object($data[0]))
+			{
+				foreach ($data as &$o)
+				{
+					$this->convertDataToString($o);
+				}
+			}
+			$r = '<ul class="fabrikRepeatData thumbnails"><li class="thumbnail">' . implode('</li><li class="thumbnail">', $data) . '</li></ul>';
+		}
+		else
+		{
+			// $r = empty($data) ? '' : array_shift($data);
+			$r = empty($data) || empty($data[0]) ? '' : '<ul class="fabrikRepeatData thumbnails"><li class="thumbnail">' . implode('</li><li class="thumbnail">', $data) . '</li></ul>';
+		}
+		return $r;
 	}
 
 	/**
@@ -1692,9 +1736,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
+	 * Draws the form element
+	 *
 	 * @param	array	data
 	 * @param	int		repeat group counter
+	 *
 	 * @return	string	returns element html
 	 */
 
@@ -1730,6 +1776,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$formid = $formModel->getId();
 
 		$use_download_script = $params->get('fu_use_download_script', '0');
+
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
@@ -1745,7 +1792,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$render = new stdClass;
 		$render->output = '';
-		$allRenders = '';
+		$allRenders = array();
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable)
 		{
 			//failed validations - format different!
@@ -1769,10 +1816,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				if ($render->output != '')
 				{
-					$allRenders .= $render->output;
+					$allRenders[] = $render->output;
 				}
 			}
 		}
+
+		$allRenders = '<ul class="thumbnails"><li class="thumbnail">' . implode('</li><li class="thumbnail">', $allRenders) . '</li></ul>';
+
 		if (!$this->_editable)
 		{
 			if ($render->output == '' && $params->get('default_image') != '')
@@ -1922,7 +1972,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$params = $this->getParams();
 		$runtimes = $params->get('ajax_runtime', 'html5');
 		$w = (int) $params->get('ajax_dropbox_width', 300);
-		$h = (int) $params->get('ajax_dropbox_hight', 200);
+		$h = (int) $params->get('ajax_dropbox_hight', 100);
 		//add span with id so that element fxs work.
 
 		$pstr = array();
