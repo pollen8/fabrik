@@ -901,10 +901,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$raw = $this->getValue($post);
 
-				if ($raw == '')
+				if ($raw == '' || empty($raw))
 				{
 					return true;
 				}
+				print_r($raw);
 				if (array_key_exists(0, $raw))
 				{
 					$crop = (array) JArrayHelper::getValue($raw[0], 'crop');
@@ -2625,18 +2626,28 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// if ($value === '') { //query string for joined data
 			if ($value === '' && !$groupModel->canRepeat())
 			{
-				//query string for joined data
+
+				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
+
+				// $$$ rob 26/07/2012 inline edit saving record $value was a json encoded string - which gave notices
+				// see http://www.ecicultuurfabriek.nl/administrator/index.php?option=com_fabrik&task=list.view&listid=7
+				if ($this->isJoin() && is_string($value))
+				{
+					$value = json_decode($value);
+					$value = JArrayHelper::getValue($value, $repeatCounter);
+				}
 			}
 			if (is_array($value) && !$this->isJoin())
 			{
 				if (!$this->getParams()->get('fileupload_crop'))
 				{
+
 					$value = implode(',', $value);
 				}
 			}
-			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+			// @TODO perhaps we should change this to $element->value and store $element->default as the actual default value
+			// stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -2646,4 +2657,3 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		return $this->defaults[$repeatCounter];
 	}
 }
-?>
