@@ -1115,6 +1115,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 *
 	 * @param string $fullName full element name
 	 * @param bool $raw get raw data
+	 * @param mixed default value
 	 * @param string $repeatCount repeat count if needed
 	 * @return mixed
 	 */
