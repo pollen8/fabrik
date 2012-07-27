@@ -25,8 +25,9 @@ echo "
 	display:none;
 }
 #listform_$c div.fabrikList li.fabrik_select{
-	display:none;
+	#display:none;
 }
+#listform_$c .divlabel {font-weight:bold}
 
 #listform_$c table.fabrikList {
 	clear:right;
@@ -54,7 +55,7 @@ echo "
 	display:-webkit-box;
 	display:box;
 }
-#listform_$c .divlabel {color:green}
+
 #listform_$c .list-footer div{
 	margin-top:8px;
 	margin-left:10px;
