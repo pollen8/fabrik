@@ -4495,7 +4495,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&task=list.view&listid=' . $this->getTable()->id;
+				$url = 'index.php?option=com_fabrik&task=list.view&listid=' . $this->getListModel()->getId();
 			}
 		}
 		else
