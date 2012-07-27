@@ -4455,6 +4455,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$elementModel->reset();
 				}
 			}
+			unset($this->groups);
+			$pluginManager = FabrikWorker::getPluginManager();
+			unset($pluginManager->formplugins);
 		}
 	}
 

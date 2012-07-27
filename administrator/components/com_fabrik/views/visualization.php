@@ -116,7 +116,7 @@ class FabrikViewVisualization {
 							</td>
 						</tr>
 							<?php
-								foreach ($pluginManager->_plugIns['visualization'] as $oPlugin)
+								foreach ($pluginManager->plugIns['visualization'] as $oPlugin)
 								{
 									$oPlugin->setId($row->id);
 									?>

@@ -154,7 +154,7 @@ class FabrikFEModelList extends JModelForm
 	var $tableAction = null;
 
 	/** @var bool doing CSV import */
-	var $_importingCSV = false;
+	public $importingCSV = false;
 
 	var $encrypt = array();
 
@@ -5874,7 +5874,7 @@ class FabrikFEModelList extends JModelForm
 		$primaryKey = str_replace("`", "", $primaryKey);
 
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
-		if (!$this->_importingCSV)
+		if (!$this->importingCSV)
 		{
 			// If its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey)

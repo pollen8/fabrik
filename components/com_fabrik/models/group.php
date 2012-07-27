@@ -713,8 +713,9 @@ class FabrikFEModelGroup extends FabModel
 
 	public function resetPublishedElements()
 	{
-		$this->publishedElements = null;
-		$this->publishedListElements = null;
+		unset($this->publishedElements);
+		unset($this->publishedListElements);
+		unset($this->elements);
 	}
 
 }

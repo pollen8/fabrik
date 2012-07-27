@@ -340,11 +340,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
-		if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
+		if ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
 		{
 			return $val;
 		}
-		elseif ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
+		elseif ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
 		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}

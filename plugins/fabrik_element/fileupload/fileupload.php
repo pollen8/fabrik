@@ -60,7 +60,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function ignoreOnUpdate($val)
 	{
 		//check if its a CSV import if it is allow the val to be inserted
-		if (JRequest::getCmd('task') === 'makeTableFromCSV' || $this->getListModel()->_importingCSV)
+		if (JRequest::getCmd('task') === 'makeTableFromCSV' || $this->getListModel()->importingCSV)
 		{
 			return false;
 		}
