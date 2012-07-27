@@ -236,4 +236,22 @@ class FabrikControllerForm extends JControllerForm
 		}
 		$this->setRedirect($page, $msg);
 	}
+
+	function cck()
+	{
+		$catid = JRequest::getInt('catid');
+		$db = JFactory::getDBO();
+		$db->setQuery('SELECT id FROM #__fabrik_forms WHERE params LIKE \'%"cck_category":"' . $catid . '"%\'');
+
+		$id = $db->loadResult();
+		if (!$id)
+		{
+			FabrikHelperHTML::stylesheet('system.css', 'administrator/templates/system/css/');
+			echo "<a target=\"_blank\" href=\"index.php?option=com_fabrik&c=form\">" . JText::_('VIEW_FORMS') . "</a>";
+			return JError::raiseNotice(500, JText::_('SET_FORM_CCK_CATEGORY'));
+		}
+		JRequest::setVar('formid', $id);
+		JRequest::setVar('iframe', 1);//tell fabrik to load js scripts normally
+		$this->view();
+	}
 }

@@ -102,7 +102,17 @@ class FabrikViewListBase extends JView
 		$opts->canView = $model->canView() ? "1" : "0";
 		$opts->page = JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
-		$opts->formels = $elementsNotInTable;
+
+		$formEls = array();
+		foreach ($elementsNotInTable as $tmpElement)
+		{
+			$oo = new stdClass;
+			$oo->name = $tmpElement->name;
+			$oo->label = $tmpElement->label;
+			$formEls[] = $oo;
+
+		}
+		$opts->formels = $formEls;//$elementsNotInTable;
 		$opts->actionMethod = $params->get('actionMethod');
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
@@ -143,7 +153,6 @@ class FabrikViewListBase extends JView
 		$csvOpts->incfilters = (int) $params->get('incfilters');
 
 		$opts->data = $data;
-
 		// If table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 		ob_start();
@@ -186,6 +195,7 @@ class FabrikViewListBase extends JView
 		JText::script('COM_FABRIK_CSV_DOWNLOADING');
 		JText::script('COM_FABRIK_FILE_TYPE');
 		JText::script('COM_FABRIK_ADVANCED_SEARCH');
+		JText::script('COM_FABRIK_FORM_FIELDS');
 
 		// Keyboard short cuts
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_ADD');
