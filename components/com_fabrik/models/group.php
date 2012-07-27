@@ -408,6 +408,16 @@ class FabrikFEModelGroup extends FabModel
 				 */
 				if ($element->published == 1)
 				{
+					/**
+					 * As this function seems to be used to build both the list view and the form view, we should NOT
+					 * include elements in the list query if the user can not view them, as their data is sent to the json object
+					 * and thus visible in the page source
+					 */
+					if (JRequest::getVar('view') == 'list' && !$elementModel->canView())
+					{
+						continue;
+					}
+
 					if (empty($showInList))
 					{
 						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)
