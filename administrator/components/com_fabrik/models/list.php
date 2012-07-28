@@ -454,9 +454,10 @@ class FabrikModelList extends FabModelAdmin
 				unset($joins[$i]);
 				continue;
 			}
-			$fields = $fabrikDb->getTableColumns(array($join->join_from_table, $join->table_join));
-			$join->joinFormFields = array_keys($fields[$join->join_from_table]);
-			$join->joinToFields = array_keys($fields[$join->table_join]);
+			$fields = $fabrikDb->getTableColumns($join->join_from_table);
+			$join->joinFormFields = array_keys($fields);
+			$fields = $fabrikDb->getTableColumns($join->table_join);
+			$join->joinToFields = array_keys($fields);
 		}
 		// $$$ re-index the array in case we zapped anything
 		return array_values($joins);
