@@ -44,7 +44,6 @@ class FabrikViewElement extends JViewLegacy
 			$this->confirmupdate();
 			return;
 		}
-		require_once JPATH_COMPONENT . '/helpers/adminhtml.php';
 
 		// Initialiase variables.
 		$this->form = $this->get('Form');

@@ -1101,6 +1101,85 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	}
 
 	/**
+	 *
+	 * Intended for use by things like PHP form plugin code, PHP validations, etc.,
+	 * so folk don't have to access _formData directly.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @param string $fullName full element name
+	 * @param bool $raw get raw data
+	 * @param mixed default value
+	 * @param string $repeatCount repeat count if needed
+	 * @return mixed
+	 */
+	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
+	{
+		$value = null;
+		if ($raw)
+		{
+			$fullName .= '_raw';
+		}
+		// Simplest case, element name exists in main group
+		if (array_key_exists($fullName, $this->_formData))
+		{
+			$value = $this->_formData[$fullName];
+		}
+		// Maybe we are being called from onAfterProcess hook, or somewhere else
+		// running after store, when non-joined data names have been reduced to short
+		// names in _formData, so peek in _fullFormData
+		else if (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
+		{
+			$value = $this->_fullFormData[$fullName];
+		}
+		// Wasn't in the form's main table data, so try joins
+		else if (array_key_exists('join', $this->_formData))
+		{
+			// We can't just loop through the ['join'] structure, as we need to
+			// know if the group is repeatable, and can't rely on key being an array,
+			// to determine that, as it might be a list element type.
+			$groups = $this->getGroupsHiarachy();
+			foreach ($groups as $groupModel)
+			{
+				$group = $groupModel->getGroup();
+				if (array_key_exists($group->join_id, $this->_formData['join']))
+				{
+					if (array_key_exists($fullName, $this->_formData['join'][$group->join_id]))
+					{
+						$value = $this->_formData['join'][$group->join_id][$fullName];
+						// if the group is repeatable, see if they want a specific index
+						if ($groupModel->canRepeat())
+						{
+							if (isset($repeatCount))
+							{
+								// if they specified an index and it exists, condense return value down to just that
+								if (array_key_exists($repeatCount, $value))
+								{
+									$value = $value[$repeatCount];
+								}
+								else
+								{
+									// if the index they wanted doesn't exist, set to default
+									$value = $default;
+								}
+							}
+						}
+						// we found it, so break out of the foreach
+						break;
+					}
+				}
+			}
+		}
+
+		// if we didn't find it, set to default
+		if (!isset($value))
+		{
+			$value = $default;
+		}
+		return $value;
+	}
+
+	/**
 	 * This will strip the html from the form data according to the
 	 * filter settings applied from article manager->parameters
 	 * see here - http://forum.joomla.org/index.php/topic,259690.msg1182219.html#msg1182219
@@ -1777,7 +1856,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				 * $$$hugh @FIXME - at this point we've removed tablename from _formdata keys (in processTodb()),
 				 * but element getValue() methods assume full name in _formData
 				 */
-				$v = $elementModel->getValue($this->formData);
+				//$v = $elementModel->getValue($this->_formData);
+				$v = $elementModel->getValue($this->_formDataWithTableName);
 				if ($elementModel->ignoreOnUpdate($v))
 				{
 					// Currently only field password elements return true
@@ -4362,6 +4442,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					$elementModel->reset();
 				}
 			}
+			unset($this->groups);
+			$pluginManager = FabrikWorker::getPluginManager();
+			unset($pluginManager->formplugins);
 		}
 	}
 
@@ -4376,4 +4459,165 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		$this->unsetData(true);
 	}
+
+	/**
+	 * Get redirect URL
+	 *
+	 * @param   bool    $incSession  set url in session?
+	 * @param   bool    $isMambot    is Mambot
+	 *
+	 * @return   array  url: string  redirect url, baseRedirect (True: default redirect, False: plugin redirect)
+	 *
+	 * @since 3.0.6 (was in form controller)
+	 */
+
+	public function getRedirectURL($incSession = true, $isMambot = false)
+	{
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			if (array_key_exists('apply', $this->_formData))
+			{
+				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid');
+			}
+			else
+			{
+				$url = 'index.php?option=com_fabrik&task=list.view&listid=' . $this->getListModel()->getId();
+			}
+		}
+		else
+		{
+			if (array_key_exists('apply', $this->_formData))
+			{
+				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
+					. '&listid=' . JRequest::getInt('listid');
+			}
+			else
+			{
+				if ($isMambot)
+				{
+					// Return to the same page
+					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
+				}
+				else
+				{
+					// Return to the page that called the form
+					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
+				}
+				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
+				if ($url == '')
+				{
+					if ($Itemid !== 0)
+					{
+						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $Itemid;
+					}
+					else
+					{
+						// No menu link so redirect back to list view
+						$url = 'index.php?option=com_fabrik&view=list&listid=' . JRequest::getInt('listid');
+					}
+				}
+			}
+			$config = JFactory::getConfig();
+			if ($config->get('sef'))
+			{
+				$url = JRoute::_($url);
+			}
+		}
+		// 3.0 need to distinguish between the default redirect and redirect plugin
+		$baseRedirect = true;
+		if (!$incSession)
+		{
+			return $url;
+		}
+		$session = JFactory::getSession();
+		$formdata = $session->get('com_fabrik.form.data');
+		$context = $this->getRedirectContext();
+
+		// If the redirect plug-in has set a url use that in preference to the default url
+		$surl = $session->get($context . 'url', array());
+		if (!empty($surl))
+		{
+			$baseRedirect = false;
+		}
+		if (!is_array($surl))
+		{
+			$surl = array($surl);
+		}
+		if (empty($surl))
+		{
+			$surl[] = $url;
+		}
+		// $$$ hugh - hmmm, array_shift re-orders array keys, which will screw up plugin ordering?
+		$url = array_shift($surl);
+		$session->set($context . 'url', $surl);
+		return array('url' => $url, 'baseRedirect' => $baseRedirect);
+	}
+
+	/**
+	 * Get redirect message
+	 *
+	 * @return  string  redirect message
+	 *
+	 * @since   3.0.6 (was in form controller)
+	 */
+
+	public function getRedirectMessage()
+	{
+		$session = JFactory::getSession();
+		$registry = $session->get('registry');
+		$formdata = $session->get('com_fabrik.form.data');
+
+		// $$$ rob 30/03/2011 if using as a search form don't show record added message
+		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $this->get('id'))
+		{
+			$msg = $this->getParams()->get('suppress_msgs', '0') == '0'
+				? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+		}
+		else
+		{
+			$msg = '';
+		}
+		$context = $this->getRedirectContext();
+		$smsg = $session->get($context . 'msg', array($msg));
+		if (!is_array($smsg))
+		{
+			$smsg = array($smsg);
+		}
+		if (empty($smsg))
+		{
+			$smsg[] = $msg;
+		}
+		/**
+		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
+		 * without the array_shift the custom message is never attached to the redirect page.
+		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
+		 */
+		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
+		if ($custommsg != '')
+		{
+			$msg = $custommsg;
+		}
+		$app = JFactory::getApplication();
+		$q = $app->getMessageQueue();
+		$found = false;
+		foreach ($q as $m)
+		{
+			// Custom message already queued - unset default msg
+			if ($m['type'] == 'message' && trim($m['message']) !== '')
+			{
+				$found = true;
+				break;
+			}
+		}
+		if ($found)
+		{
+			$msg = null;
+		}
+		$session->set($context . 'msg', $smsg);
+		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
+		$msg = $showmsg == 1 ? $msg : null;
+		return $msg;
+	}
+
 }

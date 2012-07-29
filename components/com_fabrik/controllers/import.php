@@ -14,7 +14,7 @@ jimport('joomla.application.component.controller');
 
 /**
  * Fabrik Import Controller
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -23,7 +23,7 @@ class FabrikControllerImport extends JController
 {
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -48,7 +48,7 @@ class FabrikControllerImport extends JController
 	/**
 	 * perform the file upload and set the session state
 	 * Unlike back end import if there are unmatched headings we bail out
-	 * 
+	 *
 	 * @return null
 	 */
 

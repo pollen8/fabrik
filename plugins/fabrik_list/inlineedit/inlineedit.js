@@ -58,6 +58,20 @@ var FbListInlineEdit = new Class({
 				this.save(null, this.editing);
 			}
 		}.bind(this));
+		
+		Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
+			if (typeOf(this.editOpts) === 'null') {
+				return;
+			}
+			$H(this.editOpts.plugins).each(function (fieldid) {
+				var e = Fabrik['inlineedit_' + this.editOpts.elid].elements[fieldid];
+				delete e.element;
+				e.update(this.editData[fieldid]);
+				e.select();
+			}.bind(this));
+			this.watchControls(this.editCell);
+			this.setFocus(this.editCell);	
+		}.bind(this));
 	},
 	
 	setUp: function () {
@@ -423,27 +437,20 @@ var FbListInlineEdit = new Class({
 				
 			}).send();
 		} else {
-			//testing trying to re-use old form
-			//this.javascript;
+
+			// Re-use old form
 			var html = this.editors[opts.elid].stripScripts(function (script) {
 				this.javascript = script;
 			}.bind(this));
 			td.empty().set('html', html);
-			//make a new instance of the element js class which will use the new html
-			eval(this.javascript);
-			//tell the element obj to update its value
-			///triggered from element model
-			Fabrik.addEvent('fabrik.list.inlineedit.setData', function () {
-				$H(opts.plugins).each(function (fieldid) {
-					var e = Fabrik['inlineedit_' + opts.elid].elements[fieldid];
-					delete e.element;
-					e.update(data[fieldid]);
-					e.select();
-				});
-				this.watchControls(td);
-				this.setFocus(td);	
-			}.bind(this));
 			
+			// Make a new instance of the element js class which will use the new html
+			eval(this.javascript);
+			
+			// Set some options for use in 'fabrik.list.inlineedit.setData'
+			this.editOpts = opts;
+			this.editData = data;
+			this.editCell = td;
 		}
 		return true;
 	},
@@ -637,7 +644,7 @@ var FbListInlineEdit = new Class({
 		//data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
-		saveRequest = new Request({url: '',
+		this.saveRequest = new Request({url: '',
 			'data': data,
 			'evalScripts': true,
 			'onSuccess': function (r) {
@@ -658,9 +665,14 @@ var FbListInlineEdit = new Class({
 					err = new Element('div.fabrikMainError.fabrikError');
 					err.inject(td.getElement('.inlineedit'), 'top');
 				}
-				err.set('html', saveRequest.getHeader('Status').substring(4));
 				this.saving = false;
 				Fabrik.loader.stop(td.getParent());
+				var headerStatus = xhr.statusText;
+				if (typeOf(headerStatus) === 'null') {
+					headerStatus = 'uncaught error';
+				}
+				err.set('html', headerStatus);
+				
 			}.bind(this),
 			
 			'onException': function (headerName, value) {

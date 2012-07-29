@@ -137,13 +137,12 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		$labels = $this->getSubOptionLabels();
 		for ($i = 0; $i < count($labels); $i++)
 		{
-			if (JString::strtolower($labels[$i]) == JString::strtolower($val))
+			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
 			{
-				$val = $values[$i];
-				return $val;
+				return $values[$i];
 			}
 		}
-		return $val;
+		return $value;
 	}
 
 	/**

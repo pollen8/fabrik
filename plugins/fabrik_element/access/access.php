@@ -14,10 +14,18 @@ defined('_JEXEC') or die();
  *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.element.access
+ * @since       3.0
  */
 
 class PlgFabrik_ElementAccess extends PlgFabrik_Element
 {
+
+	/**
+	 * If the element 'Include in search all' option is set to 'default' then this states if the
+	 * element should be ignored from search all.
+	 * @var bool  True, ignore in advanced search all.
+	 */
+	protected $ignoreSearchAllDefault = true;
 
 	/**
 	 * Manupulates posted form data for insertion into database

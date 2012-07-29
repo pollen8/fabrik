@@ -183,7 +183,7 @@ var FbGoogleMap = new Class({
 									component.types.each(function (type) {
 										if (type === 'street_number') {
 											if (this.options.reverse_geocode_fields.route) {
-												$(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
 											}
 										}
 										else if (type === 'route') {
@@ -394,10 +394,17 @@ var FbGoogleMap = new Class({
 		if (this.options.geocode === '2') {
 			if (this.options.geocode_event !== 'button') {
 				this.options.geocode_fields.each(function (field) {
-					if (typeOf(document.id(field)) !== 'null') {
-						document.id(field).addEvent('keyup', function (e) {
-							this.geoCode(e);
+					var f = document.id(field);
+					if (typeOf(f) !== 'null') {
+						f.addEvent('keyup', function (e) {
+							this.geoCode();
 						}.bind(this));
+						
+						// Select lists, radios whatnots
+						f.addEvent('change', function (e) {
+							this.geoCode();
+						}.bind(this));
+
 					}
 				}.bind(this));
 			} else {

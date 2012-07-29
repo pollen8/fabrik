@@ -260,7 +260,7 @@ var FbDateTime = new Class({
 			}
 			v = this.cal.date;
 		} else {
-			if (this.options.value === '') {
+			if (this.options.value === '' || this.options.value === null) {
 				return '';
 			}
 			v = new Date.parse(this.options.value);

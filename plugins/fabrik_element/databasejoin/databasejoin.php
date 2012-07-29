@@ -15,6 +15,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.databasejoin
+ * @since       3.0
  */
 
 class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
@@ -76,7 +77,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 		$connection = $listModel->getConnection();
-		//make sure same connection as this table
+
+		// Make sure same connection as this table
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
 		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin')
 		{
@@ -1462,6 +1464,29 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Builds an array containing the filters value and condition
+	 *
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  array	(value condition)
+	 */
+
+	public function getFilterValue($value, $condition, $eval)
+	{
+		$fType = $this->getElement()->filter_type;
+		if ($fType == 'auto-complete')
+		{
+			// Searching on value so set to equals
+			$condition = '=';
+		}
+		return parent::getFilterValue($value, $condition, $eval);
+	}
+
+	/**
 	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
@@ -1503,7 +1528,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
-			//$$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
+			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
 			//$k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
 			$str = "$key $condition $value";
 		}
@@ -2016,14 +2041,23 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->id = JRequest::getInt('element_id');
 		$this->getElement(true);
+		$params = $this->getParams();
 		$db = FabrikWorker::getDbo();
 		$c = $this->getValColumn();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
 		}
-		$this->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
-
+		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
+		// default to "contains" for backward compat.
+		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+		{
+			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+		}
+		else
+		{
+			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote(JRequest::getVar('value') . '%');
+		}
 		$tmp = $this->_getOptions(array(), 0, true);
 		echo json_encode($tmp);
 	}
@@ -2162,10 +2196,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * @since 3.0rc1
-	 * when the element is a repeatble join (e.g. db join checkbox) then figure out how many
+	 * When the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	 * records have been selected
-	 * @param   array
+	 *
+	 * @param   array  $data  data
+	 * @param   object  $oJoin  join model
+	 *
+	 * @since 3.0rc1
+	 *
 	 * @return  int		number of records selected
 	 */
 
@@ -2182,6 +2220,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			return parent::getJoinRepeatCount($data, $oJoin);
 		}
+	}
+
+	/**
+	 *
+	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
+	 * which may use a CONCAT'ed label which musn't be quoted.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @return boolean
+	 */
+
+	protected function quoteLabel()
+	{
+		$params = $this->getParams();
+		return $params->get('join_val_column_concat', '') == '';
 	}
 
 }

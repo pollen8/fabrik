@@ -175,27 +175,28 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$attach_type = $params->get('email_attach_type', '');
 		$config = JFactory::getConfig();
 		$attach_fname = $config->get('tmp_path') . '/' . uniqid() . '.' . $attach_type;
-		/* Send email*/
 
+		$query = $db->getQuery(true);
+		$email_to = array_map('trim', $email_to);
+
+		// Remove blank email addresses
+		$email_to = array_filter($email_to);
+		$dbEmailTo = array_map(array($db, 'quote'), $email_to);
+
+		// Get an array of user ids from the email to array
+		$query->select('id, email')->from('#__users')->where('email IN (' . implode(',', $dbEmailTo) . ')');
+		$db->setQuery($query);
+		$userids = $db->loadObjectList('email');
+
+		// Send email
 		foreach ($email_to as $email)
 		{
-			$email = trim($email);
-			if (empty($email))
-			{
-				continue;
-			}
 			if (FabrikWorker::isEmail($email))
 			{
 				$thisAttachments = $this->attachments;
 				$this->data['emailto'] = $email;
 
-				// See if we can load a user for the email
-				$query = $db->getQuery(true);
-
-				// @TODO move htis out of foreach loop - to reduce queries
-				$query->select('id')->from('#__users')->where('email = ' . $db->quote($email));
-				$db->setQuery($query);
-				$userid = $db->loadResult();
+				$userid = array_key_exists($email, $userids) ? $userids[$email]->id : 0;
 				$thisUser = JFactory::getUser($userid);
 
 				$thisMessage = $w->parseMessageForPlaceholder($message, $this->data, true, false, $thisUser);

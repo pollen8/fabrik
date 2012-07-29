@@ -100,7 +100,12 @@
 		<field default="6" description="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_LABEL" name="dbjoin_multilist_size" size="2" type="field"/>
 
 		<field default="20" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_LABEL" name="dbjoin_autocomplete_size" size="3" type="field"/>
-			
+
+		<field default="contains" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_LABEL" name="dbjoin_autocomplete_how" type="radio">
+				<option value="contains">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_CONTAINS</option>
+				<option value="starts_with">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_STARTS_WITH</option>
+		</field>
+					
 	</fieldset>
 	</fields>
 </form>

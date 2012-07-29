@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @package     Joomla
- * @subpackage	Fabik
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license		GNU/GPL
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -13,10 +12,26 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
+/**
+ * HTML Fabrik List view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
-class FabrikViewList extends FabrikViewListBase {
+class FabrikViewList extends FabrikViewListBase
+{
 
-	function display($tpl = null)
+	/**
+	 * Display the template
+	 *
+	 * @param   sting  $tpl  template
+	 *
+	 * @return void
+	 */
+
+	public function display($tpl = null)
 	{
 		if (parent::display($tpl) !== false)
 		{

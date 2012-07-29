@@ -14,7 +14,7 @@ jimport('joomla.application.component.modeladmin');
 
 /**
  * Abstract Fabrik Admin model
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
@@ -24,7 +24,7 @@ abstract class FabModelAdmin extends JModelAdmin
 
 	/**
 	 * get the list's active/selected plug-ins
-	 * 
+	 *
 	 * @return array
 	 */
 

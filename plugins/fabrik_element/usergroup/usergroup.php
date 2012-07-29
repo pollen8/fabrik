@@ -20,7 +20,7 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementUsergroup extends plgFabrik_Element
 {
 
-	protected $fieldDesc = 'INT(11)';
+	protected $fieldDesc = 'TEXT';
 
 	/**
 	 * Draws the html form element
@@ -40,7 +40,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		$params = $this->getParams();
 
 		$selected = $this->getValue($data, $repeatCounter);
-		echo "select = ";print_r($selected);
+		//echo "select = ";print_r($selected);
 		//$selected = array(2 => 2);
 		return JHtml::_('access.usergroups', $name, $selected);
 	}
@@ -125,7 +125,11 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 				}
 				else
@@ -133,7 +137,11 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values
@@ -178,6 +186,10 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 				}
 			}
 
+			if (!is_array($value))
+			{
+				$value = array($value);
+			}
 			/*@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			 *stops this getting called from form validation code as it messes up repeated/join group validations
 			*/

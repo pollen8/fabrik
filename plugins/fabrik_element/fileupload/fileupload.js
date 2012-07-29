@@ -85,9 +85,13 @@ var FbFileUpload = new Class({
 		if (this.options.editable === false) {
 			return;
 		}
-		var c = this.element.getParent('.fabrikSubElementContainer');
+		var c = this.getElement().getParent('.fabrikSubElementContainer');
 		this.container = c;
-		this.widget = new ImageWidget(c.getElement('canvas'), {
+		var canvas = c.getElement('canvas');
+		if (typeOf(canvas) === 'null') {
+			return;
+		}
+		this.widget = new ImageWidget(canvas, {
 			'cropdim' : {
 				w: this.options.cropwidth,
 				h: this.options.cropheight,
@@ -182,7 +186,11 @@ var FbFileUpload = new Class({
 
 		// (3) ON FILE UPLOAD PROGRESS ACTION
 		this.uploader.bind('UploadProgress', function (up, file) {
-			document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
+			console.log('progress', up, file);
+			var f = document.id(file.id);
+			if (typeOf(f) !== 'null') {
+				document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
+			}
 		});
 
 		this.uploader.bind('Error', function (up, err) {
@@ -203,6 +211,11 @@ var FbFileUpload = new Class({
 			if (response.error) {
 				alert(response.error);
 				document.id(file.id).destroy();
+				return;
+			}
+			var f = document.id(file.id);
+			if (typeOf(f) === 'null') {
+				console.log('Filuploaded didnt find: ' + file.id);
 				return;
 			}
 			document.id(file.id).getElement('.plupload_resize').show();
@@ -289,7 +302,11 @@ var FbFileUpload = new Class({
 				key = key.split('\\').getLast();
 				var f = document.getElements('input[name*=' + key + ']');
 				f = f[1];
-				f.value = JSON.encode(image);
+				// $$$ rob - seems reloading ajax fileupload element in ajax form (e.g. from db join add record)
+				// is producing odd effects where old fileupload object constains info to previously uploaded image?
+				if (typeOf(f) !== 'null') {
+					f.value = JSON.encode(image);
+				}
 			});
 		}
 		return true;

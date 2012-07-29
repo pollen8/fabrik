@@ -19,6 +19,14 @@ defined('_JEXEC') or die();
 
 class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
+
+	/**
+	 * If the element 'Include in search all' option is set to 'default' then this states if the
+	 * element should be ignored from search all.
+	 * @var bool  True, ignore in advanced search all.
+	 */
+	protected $ignoreSearchAllDefault = true;
+
 	/**
 	 * Toggle to determine if storedatabaseformat resets the date to GMT
 	 * @var bool
@@ -1195,8 +1203,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$fabrikDb = $listModel->getDb();
 		$elName = $this->getFullName(false, true, false);
 		$elName2 = $this->getFullName(false, false, false);
-
-		$ids = $listModel->getColumnData($elName2);
 		$v = $this->filterName($counter, $normal);
 
 		// Corect default got
@@ -1204,7 +1210,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 
 		$fromTable = $origTable;
-		$joinStr = '';
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
@@ -1216,19 +1221,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
 					$fromTable = $aJoin->table_join;
-					$joinStr = " LEFT JOIN $fromTable ON " . $aJoin->table_join . "." . $aJoin->table_join_key . " = " . $aJoin->join_from_table
-						. "." . $aJoin->table_key;
 					$elName = str_replace($origTable . '.', $fromTable . '.', $elName);
 				}
 			}
 		}
 		$where = $listModel->buildQueryPrefilterWhere($this);
 		$elName = FabrikString::safeColName($elName);
-
-		// Don't format here as the format string is different between mysql and php's calendar strftime
-		$sql = "SELECT DISTINCT($elName) AS text, $elName AS value FROM `$origTable` $joinStr" . "\n WHERE $elName IN ('" . implode("','", $ids)
-			. "')" . "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
-		$requestName = $elName . "___filter";
+		$requestName = $elName . '___filter';
 		if (array_key_exists($elName, $_REQUEST))
 		{
 			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName]))
@@ -1523,6 +1522,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 
 		}
+		// $$$ rob 20/07/2012 Date is posted as local time, need to set it back to GMT. Seems needed even if dates are saved without timeselector
+		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+
+		$date = JFactory::getDate($value[0], $localTimeZone);
+		$value[0] = $date->toSql();
+
+		$date = JFactory::getDate($value[1], $localTimeZone);
+		$value[1] = $date->toSql(true);
+
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';
 		return array($value, $condition);

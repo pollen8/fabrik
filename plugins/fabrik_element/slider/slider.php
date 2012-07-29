@@ -23,6 +23,13 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class PlgFabrik_ElementSlider extends PlgFabrik_Element
 {
 
+	/**
+	* If the element 'Include in search all' option is set to 'default' then this states if the
+	* element should be ignored from search all.
+	* @var bool  True, ignore in advanced search all.
+	*/
+	protected $ignoreSearchAllDefault = true;
+
 	protected $fieldDesc = 'INT(%s)';
 
 	protected $fieldSize = '6';

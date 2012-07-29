@@ -123,17 +123,34 @@ var PluginManager = new Class({
 			
 		}.bind(this));
 		
-		// Set radio buttons ids, names and labels
+		// $$$ hugh - attempt to fix booboo in this commit:
+		// https://github.com/Fabrik/fabrik/commit/3817541d15f15c7f370c570bf8a4c6a0baf13f74
+		// New code didn't rename non-radio, and also we ended up with multiple names the same, blowing away params for
+		// first instances of repeated plugins.
+		// So instead of just radios, am fixing by applying this code to all inputs, selects and textareas
+		// ROB - PLEASE SANITY CHECK!!!
+		// Also check "update params id's" down a few lines, I think it's surplus to requirements?
+		
+		// Set form input ids, names and labels
 		tmp = new Element('div').set('html', str);
-		radios = tmp.getElements('input[type=radio]');
-		radios.each(function (rad) {
+		inputs = tmp.getElements('input, select, textarea');
+		inputs.each(function (input) {
 			var label, radid;
-			rad.name = rad.name.replace(/\[0\]/gi, '[' + this.counter + ']');
-			label = tmp.getElement('label[for=' + rad.id + ']');
-			radid = rad.id.split('-');
-			radid[1] = this.counter;
-			rad.id = radid.join('-');
-			label.setAttribute('for', rad.id);
+			input.name = input.name.replace(/\[0\]/gi, '[' + this.counter + ']');
+			label = tmp.getElement('label[for=' + input.id + ']');
+			radid = input.id.split('-');
+			
+			// ids should be set as name-{repeatCounter} for things like fields
+			// for radio buttons they are name-{repeatCoutner}-{int:radiobutton order}
+			// hence grab the 
+			
+			// Additonal '-' added to radios in admnistrator/components/com_fabrik/classes/formfield.php getId()
+			radid[1] = this.counter; 
+			input.id = radid.join('-');
+			
+			if (label) {
+				label.setAttribute('for', input.id);
+			}
 		}.bind(this));
 
 		td.set('html', tmp.get('html'));
@@ -157,13 +174,19 @@ var PluginManager = new Class({
 		
 		// Update params ids
 		if (this.counter !== 0) {
-			c.getElements('input[name^=params]', 'select[name^=params]').each(function (i) {
+			// $$$ hugh - don't think this is working, 'cos syntax is wrong.
+			// I added the right syntax, but commented it out 'cos I think we now handle this above,
+			// in the 
+			//c.getElements('input[name^=params], select[name^=params]').each(function (i) {
+			/*c.getElements('input[name^=jform\[params\]], select[name^=jform\[params\]], textarea[name^=jform\[params\]').each(function (i) {
 				if (i.id !== '') {
+					debugger;
 					var a = i.id.split('-');
 					a.pop();
 					i.id = a.join('-') + '-' + this.counter;
+					console.log(i.id);
 				}
-			}.bind(this));
+			}.bind(this));*/
 			
 			c.getElements('img[src=components/com_fabrik/images/ajax-loader.gif]').each(function (i) {
 				i.id = i.id.replace('-0_loader', '-' + this.counter + '_loader');

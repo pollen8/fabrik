@@ -1,7 +1,7 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
+* @package     Joomla
+* @subpackage  Fabrik
 * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
 * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
@@ -14,9 +14,9 @@ jimport('joomla.application.component.view');
 /**
  * View class for importing csv file.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 
 class FabrikViewImport extends JViewLegacy
@@ -24,6 +24,8 @@ class FabrikViewImport extends JViewLegacy
 
 	/**
 	 * Display the view
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -34,7 +36,9 @@ class FabrikViewImport extends JViewLegacy
 	}
 
 	/**
-	 * csv file has been uploaded but we need to ask the user what to do with the new fields
+	 * CSV file has been uploaded but we need to ask the user what to do with the new fields
+	 *
+	 * @return  void
 	 */
 
 	public function chooseElementTypes()
@@ -54,6 +58,12 @@ class FabrikViewImport extends JViewLegacy
 		parent::display('chooseElementTypes');
 	}
 
+	/**
+	 * Add the 'choose element type' page toolbar
+	 *
+	 * @return  void
+	 */
+
 	protected function chooseElementTypesToolBar()
 	{
 		JRequest::setVar('hidemainmenu', true);
@@ -66,6 +76,8 @@ class FabrikViewImport extends JViewLegacy
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolBar()
@@ -73,7 +85,6 @@ class FabrikViewImport extends JViewLegacy
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		JToolBarHelper::customX('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
-		//JToolBarHelper::save('import.doimport', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 

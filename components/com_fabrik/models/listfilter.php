@@ -195,6 +195,9 @@ class FabrikFEModelListfilter extends FabModel
 		$access = JArrayHelper::getValue($filters, 'access', array());
 		foreach ($access as $key => $selAccess)
 		{
+			// $$$ hugh - fix for where certain elements got created with 0 as the
+			// the default for filter_access, which isn't a legal value, should be 1
+			$selAccess = $selAccess == '0' ? '1' : $selAccess;
 			$i = $filters['key'][$key];
 			if (!in_array($selAccess, JFactory::getUser()->authorisedLevels()))
 			{
@@ -1264,7 +1267,7 @@ class FabrikFEModelListfilter extends FabModel
 						 * with the line below uncomment, the unset caused only first filter from query string to work, e..g
 						 * &element_test___user[value][0]=aaassss&element_test___user[value][1]=X Administrator&element_test___user[join][1]=OR
 						 * converted to:
-						 * WHERE `jos_users`.`name` REGEXP 'aaassss' OR `jos_users`.`name` REGEXP ' X Administrator'
+						 * WHERE `#__users`.`name` REGEXP 'aaassss' OR `#___users`.`name` REGEXP ' X Administrator'
 						 *
 						 * unset($filters[$fkey][$index]);
 						 */

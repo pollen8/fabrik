@@ -14,7 +14,7 @@ require_once 'fabcontrollerform.php';
 
 /**
  * Fabrik Import Controller
- * 
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
@@ -24,12 +24,12 @@ class FabrikControllerImport extends FabControllerForm
 {
 
 	/**
-	 * if new elements found in the CSV file and user decided to
+	 * If new elements found in the CSV file and user decided to
 	 * add them to the table then do it here
-	 * 
-* @param   object  $model     import model
-* @param   array   $headings  existing headings
-	 * 
+	 *
+	 * @param   object  $model     import model
+	 * @param   array   $headings  existing headings
+	 *
 	 * @return  unknown_type
 	 */
 
@@ -109,7 +109,7 @@ class FabrikControllerImport extends FabControllerForm
 
 	/**
 	 * cancel import
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -119,8 +119,8 @@ class FabrikControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * make or update the table from the CSV file
-	 * 
+	 * Make or update the table from the CSV file
+	 *
 	 * @return  null
 	 */
 
@@ -161,7 +161,7 @@ class FabrikControllerImport extends FabControllerForm
 			JRequest::setVar('jform', $data['jform']);
 			if (!$listModel->save($data))
 			{
-				return $listModel->getError();
+				JError::raiseError(500, $listModel->getError());
 			}
 			$model->listModel = null;
 			JRequest::setVar('listid', $listModel->getItem()->id);
@@ -177,14 +177,13 @@ class FabrikControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * display the import CSV file form
-	 * 
+	 * Display the import CSV file form
+	 *
 	 * @return  null
 	 */
 
 	public function display()
 	{
-
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
@@ -197,10 +196,10 @@ class FabrikControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * perform the file upload and set the session state
+	 * Perform the file upload and set the session state
 	 * Unlike front end import if there are unmatched heading we take the user to
 	 * a form asking if they want to import those new headings (creating new elements for them)
-	 * 
+	 *
 	 * @return  null
 	 */
 

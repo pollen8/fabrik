@@ -136,6 +136,10 @@ a.fabrikTip {
 	background-color: #fff !important;
 }
 
+.fabrikWindow-modal{
+	z-index: 10001;
+}
+
 .itemContent {
 	margin: auto;
 	overflow: auto;

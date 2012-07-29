@@ -15,6 +15,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.calc
+ * @since       3.0
  */
 
 class PlgFabrik_ElementCalc extends PlgFabrik_Element

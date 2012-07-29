@@ -23,7 +23,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 {
 
 	/** @var array plugins */
-	protected $plugIns = array();
+	public $plugIns = array();
 
 	protected $group = null;
 
@@ -349,7 +349,10 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 			$query->where('e.published != -2');
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
-			$elements = (array) $db->loadObjectList();
+
+			//$elements = (array) $db->loadObjectList();
+			$elements = $db->loadObjectList();
+
 			if ($db->getErrorNum())
 			{
 				JError::raiseError(500, $db->getErrorMsg());

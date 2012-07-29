@@ -12,6 +12,29 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
+<target name="sqltest">
+ <echo message='start test' />
+<sql
+			driver="${sql.driver}"
+			url="${sql.url}"
+			userid="${sql.user}"
+			password="${sql.password}"
+			expandProperties="true"
+			autocommit="true"
+			print="yes"
+			showWarnings="true"
+		>
+		<transaction>
+		select * from ${cfg.sql_downloads_table}
+		</transaction>
+		<!-- <transaction><![CDATA[
+				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
+			]]></transaction> -->
+		</sql>
+	    	 <echo message='done test' />
+	  	</target>
+
 
 	<target name="phpcs" description="Ensure Code Style Rules">
 	    <exec executable="cmd">
@@ -381,8 +404,26 @@
 		</target>
 		
 		<target name="fabrik.plugin.cron.zip.copy">
-	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_cron_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-	  </target>
+			<property name="filename" value="plg_fabrik_cron_${plugin}_${version}.zip" />
+	    	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/${filename}" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+	    	
+	    	<sql
+			driver="${sql.driver}"
+			url="${sql.url}"
+			userid="${sql.user}"
+			password="${sql.password}"
+			expandProperties="true"
+			autocommit="true"
+			print="yes"
+		>
+		<transaction><![CDATA[
+				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
+			]]></transaction>
+		</sql>
+	    	 <echo message='INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
+	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}"' />
+	  	</target>
 	  
 	  <target name="fabrik.plugin.element.zip.copy">
 	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />

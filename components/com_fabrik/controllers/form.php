@@ -277,164 +277,38 @@ class FabrikControllerForm extends JController
 	/**
 	 * Get redirect message
 	 *
-* @param   object  $model  form model
-	 *
-	 * @return  string  redirect message
+	 * @param   object  $model  form model
 	 *
 	 * @since   3.0
+	 *
+	 * @deprecated - use form model getRedirectMessage instead
+	 *
+	 * @return  string  redirect message
 	 */
 
 	protected function getRedirectMessage($model)
 	{
-		$session = JFactory::getSession();
-		$registry = $session->get('registry');
-		$formdata = $session->get('com_fabrik.form.data');
-
-		// $$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $model->get('id'))
-		{
-			$msg = $model->getParams()->get('suppress_msgs', '0') == '0'
-				? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
-		}
-		else
-		{
-			$msg = '';
-		}
-		$context = $model->getRedirectContext();
-		$smsg = $session->get($context . 'msg', array($msg));
-		if (!is_array($smsg))
-		{
-			$smsg = array($smsg);
-		}
-		if (empty($smsg))
-		{
-			$smsg[] = $msg;
-		}
-		/**
-		 * $$$ rob Was using array_shift to set $msg, not to really remove it from $smsg
-		 * without the array_shift the custom message is never attached to the redirect page.
-		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
-		 */
-		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
-		if ($custommsg != '')
-		{
-			$msg = $custommsg;
-		}
-		$app = JFactory::getApplication();
-		$q = $app->getMessageQueue();
-		$found = false;
-		foreach ($q as $m)
-		{
-			// Custom message already queued - unset default msg
-			if ($m['type'] == 'message' && trim($m['message']) !== '')
-			{
-				$found = true;
-				break;
-			}
-		}
-		if ($found)
-		{
-			$msg = null;
-		}
-		$session->set($context . 'msg', $smsg);
-		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
-		$msg = $showmsg == 1 ? $msg : null;
-		return $msg;
+		return $model->getRedirectMessage();
 	}
 
 	/**
 	 * Get redirect URL
 	 *
-* @param   object  $model       form model
-* @param   bool    $incSession  set url in session?
-	 *
-	 * @return   string  redirect url
+	 * @param   object  $model       form model
+	 * @param   bool    $incSession  set url in session?
 	 *
 	 * @since 3.0
+	 *
+	 * @deprecated - use form model getRedirectUrl() instead
+	 *
+	 * @return   string  redirect url
 	 */
 
 	protected function getRedirectURL($model, $incSession = true)
 	{
-		$app = JFactory::getApplication();
-		if ($app->isAdmin())
-		{
-			if (array_key_exists('apply', $model->formData))
-			{
-				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
-					. '&rowid=' . JRequest::getInt('rowid');
-			}
-			else
-			{
-				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $model->getTable()->id;
-			}
-		}
-		else
-		{
-			if (array_key_exists('apply', $model->formData))
-			{
-				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
-					. '&listid=' . JRequest::getInt('listid');
-			}
-			else
-			{
-				if ($this->isMambot)
-				{
-					// Return to the same page
-					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
-				}
-				else
-				{
-					// Return to the page that called the form
-					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
-				}
-				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
-				if ($url == '')
-				{
-					if ($Itemid !== 0)
-					{
-						$url = 'index.php?' . http_build_query($app->getMenu('site')->getActive()->query) . '&Itemid=' . $Itemid;
-					}
-					else
-					{
-						// No menu link so redirect back to list view
-						$url = 'index.php?option=com_fabrik&view=list&listid=' . JRequest::getInt('listid');
-					}
-				}
-			}
-			$config = JFactory::getConfig();
-			if ($config->get('sef'))
-			{
-				$url = JRoute::_($url);
-			}
-		}
-		// 3.0 need to distinguish between the default redirect and redirect plugin
-		$this->baseRedirect = true;
-		if (!$incSession)
-		{
-			return $url;
-		}
-		$session = JFactory::getSession();
-		$formdata = $session->get('com_fabrik.form.data');
-		$context = $model->getRedirectContext();
-
-		// If the redirect plug-in has set a url use that in preference to the default url
-		$surl = $session->get($context . 'url', array());
-		if (!empty($surl))
-		{
-			$this->baseRedirect = false;
-		}
-		if (!is_array($surl))
-		{
-			$surl = array($surl);
-		}
-		if (empty($surl))
-		{
-			$surl[] = $url;
-		}
-		// $$$ hugh - hmmm, array_shift re-orders array keys, which will screw up plugin ordering?
-		$url = array_shift($surl);
-		$session->set($context . 'url', $surl);
-		return $url;
+		$res = $model->getRedirectURL($incSession, $this->isMambot);
+		$this->baseRedirect = $res['baseRedirect'];
+		return $res['url'];
 	}
 
 	/**

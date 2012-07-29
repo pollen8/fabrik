@@ -58,11 +58,12 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<legend><?php echo JText::_('COM_FABRIK_FORM_PROCESSING');?></legend>
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel('record_in_database') . $this->form->getInput('record_in_database'); ?>
+					<?php echo $this->form->getLabel('record_in_database') . $this->form->getInput('record_in_database');
+					echo $this->form->getLabel('db_table_name') ?>
 					<?php if ($this->item->record_in_database != '1') {?>
-						<?php echo $this->form->getLabel('db_table_name') . $this->form->getInput('db_table_name'); ?>
+						<?php  echo $this->form->getInput('db_table_name'); ?>
 					<?php } else { ?>
-						<input type="hidden" id="database_name" name="_database_name" value="<?php echo $this->item->db_table_name;?>"  />
+						<input class="readonly" readonly="readonly" id="database_name" name="_database_name" value="<?php echo $this->item->db_table_name;?>"  />
 						<input type="hidden" id="_connection_id" name="_connection_id" value="<?php echo $this->item->connection_id;?>"  />
 					<?php }?>
 				</li>
@@ -87,7 +88,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 	</div>
 
 	<div class="width-50 fltrt">
-		<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie'=>1));
+		<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie' => 1));
 
 		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'form_publishing');
 		echo $this->loadTemplate('publishing');

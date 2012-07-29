@@ -1,15 +1,23 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
+
+/**
+ * Fabrik Raw Form View
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class fabrikViewForm extends JViewLegacy
 {
@@ -27,7 +35,9 @@ class fabrikViewForm extends JViewLegacy
 			return false;
 		}
 		$this->groups = $this->get('GroupView');
-		$elementid = JRequest::getInt('elid'); //main trigger element's id
+
+		// Main trigger element's id
+		$elementid = JRequest::getInt('elid');
 
 		$html = array();
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';

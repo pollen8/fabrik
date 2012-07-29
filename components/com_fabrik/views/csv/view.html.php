@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -31,7 +31,7 @@ class fabrikViewCsv extends JViewLegacy
 			JError::raiseError(400, 'Naughty naughty!');
 			jexit;
 		}
-		$this->addTemplatePath(JPATH_SITE.'/components/com_fabrik/views/csv/tmpl');
+		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
 		parent::display($tpl);
 	}
 
@@ -53,7 +53,7 @@ class fabrikViewCsv extends JViewLegacy
 		}
 		$listParams = $model->getParams();
 		$opts->labels = $labels;
-		$opts->csvChoose = (bool)$listParams->get('csv_frontend_selection');
+		$opts->csvChoose = (bool) $listParams->get('csv_frontend_selection');
 		$csvOpts = new stdClass;
 		$csvOpts->excel = (int) $listParams->get('csv_format');
 		$csvOpts->inctabledata = (int) $listParams->get('csv_include_data');
@@ -87,10 +87,9 @@ class fabrikViewCsv extends JViewLegacy
 		JText::script('JYES');
 		JText::script('COM_FABRIK_SAVING_TO');
 
-		$script[] = 'var list = new FbList('.$listid.','.$opts.');';
-		$script[] = 'Fabrik.addBlock(\'list_'.$listid.'\', list);';
+		$script[] = 'var list = new FbList(' . $listid . ',' . $opts . ');';
+		$script[] = 'Fabrik.addBlock(\'list_' . $listid . '\', list);';
 
-	 	FabrikHelperHTML::script('media/com_fabrik/js/list.js', implode("\n", $script));
+		FabrikHelperHTML::script('media/com_fabrik/js/list.js', implode("\n", $script));
 	}
 }
-?>

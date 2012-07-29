@@ -267,7 +267,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		// Load up com_users lang - used in email text
 		$lang->load('com_users');
 		/*
-		 * if the fabrik table is set to be jos_users and the this plugin is used
+		 * if the fabrik table is set to be #__users and the this plugin is used
 		 * we need to alter the form model to tell it not to store the main row
 		 * but to still store any joined rows
 		 */
@@ -304,7 +304,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
 			if (!empty($formModel->rowId))
 			{
-				$original_id = (int) $formModel->formData[$this->useridfield];
+				$original_id = $formModel->formData[$this->useridfield];
+
+				// $$$ hugh - if it's a user element, it'll be an array
+				if (is_array($original_id))
+				{
+					$original_id = JArrayHelper::getValue($original_id, 0, 0);
+				}
 			}
 		}
 		else
@@ -496,11 +502,9 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 					// Send a system message to administrators receiving system mails
 					$db = JFactory::getDBO();
-					$q = "SELECT id
-								FROM #__users
-								WHERE block = 0
-								AND sendEmail = 1";
-					$db->setQuery($q);
+					$query = $db->getQuery(true);
+					$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
+					$db->setQuery($query);
 					$sendEmail = $db->loadColumn();
 					if (count($sendEmail) > 0)
 					{
@@ -554,6 +558,15 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 	}
 
+	/**
+	 * Set user group ids
+	 *
+	 * @param   object  $formModel  form model
+	 * @param   object  $me         joomla user
+	 *
+	 * @return  array   group ids
+	 */
+
 	protected function setGroupIds($formModel, $me)
 	{
 		$params = $this->getParams();
@@ -562,7 +575,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 
-		JArrayHelper::toInteger($groupId);
+		JArrayHelper::toInteger($groupIds);
 
 		$data = array();
 		if (!$isNew)
@@ -621,7 +634,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Auto login in the user
 	 *
-	 * @param   object $formModel form model
+	 * @param   object  $formModel  form model
 	 *
 	 * @return  bool
 	 */
@@ -731,7 +744,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Check for existing username
-		$query = 'SELECT id' . ' FROM #__users ' . ' WHERE username = ' . $db->quote($post['username']) . ' AND id != ' . (int) $post['id'];
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__users')
+		->where('username = ' . $db->quote($post['username']))
+		->where('id != ' . (int) $post['id']);
 		$db->setQuery($query);
 		$xid = intval($db->loadResult());
 		if ($xid && $xid != intval($post['id']))
@@ -741,7 +757,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Check for existing email
-		$query = 'SELECT id' . ' FROM #__users ' . ' WHERE email = ' . $db->quote($post['email']) . ' AND id != ' . (int) $post['id'];
+		$query->clear();
+		$query->select('id')->from('#__users')
+		->where('email = ' . $db->quote($post['email']))
+		->where('id != ' . (int) $post['id']);
 		$db->setQuery($query);
 		$xid = intval($db->loadResult());
 		if ($xid && $xid != intval($post['id']))

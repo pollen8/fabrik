@@ -15,9 +15,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Form controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikControllerForm extends JControllerForm
@@ -34,7 +34,7 @@ class FabrikControllerForm extends JControllerForm
 	protected $cacheId = 0;
 
 	/**
-	 * show the form in the admin
+	 * Show the form in the admin
 	 *
 	 * @return null
 	 */
@@ -79,7 +79,7 @@ class FabrikControllerForm extends JControllerForm
 	}
 
 	/**
-	 * handle saving posted form data from the admin pages
+	 * Handle saving posted form data from the admin pages
 	 *
 	 * @return  null
 	 */
@@ -109,11 +109,30 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (!$model->validate())
 		{
-			// If its in a module with ajax or in a package
-			if (JRequest::getInt('_packageId') !== 0)
+			// If its in a module with ajax or in a package or inline edit
+			if (JRequest::getCmd('fabrik_ajax'))
 			{
-				echo $model->getJsonErrors();
-				return;
+				if (JRequest::getInt('elid') !== 0)
+				{
+					// Inline edit
+					$eMsgs = array();
+					$errs = $model->getErrors();
+					foreach ($errs as $e)
+					{
+						if (count($e[0]) > 0)
+						{
+							array_walk_recursive($e, array('FabrikString', 'forHtml'));
+							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+						}
+					}
+					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+				}
+				else
+				{
+					echo $model->getJsonErrors();
+					return;
+				}
 			}
 			$this->savepage();
 
@@ -140,26 +159,24 @@ class FabrikControllerForm extends JControllerForm
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
-		$defaultAction = $model->process();
+		$model->process();
 
 		// Check if any plugin has created a new validation error
-		if (!empty($model->errors))
+		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
 
-		// One of the plugins returned false stopping the default redirect action from taking place
-		if (!$defaultAction)
-		{
-			return;
-		}
 		$listModel = $model->getListModel();
 		$tid = $listModel->getTable()->id;
 
-		$msg = $model->getParams()->get('suppress_msgs', '0') == '0'
-			? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+		$res = $model->getRedirectURL(true, $this->isMambot);
+		$this->baseRedirect = $res['baseRedirect'];
+		$url = $res['url'];
+
+		$msg = $model->getRedirectMessage($model);
 
 		if (JRequest::getInt('_packageId') !== 0)
 		{
@@ -174,12 +191,12 @@ class FabrikControllerForm extends JControllerForm
 		}
 		else
 		{
-			$this->makeRedirect($model, $msg);
+			$this->setRedirect($url, $msg);
 		}
 	}
 
 	/**
-	 * save a form's page to the session table
+	 * Save a form's page to the session table
 	 *
 	 * @return  null
 	 */
@@ -193,11 +210,12 @@ class FabrikControllerForm extends JControllerForm
 	}
 
 	/**
-	 * generic function to redirect
+	 * Generic function to redirect
 	 *
-* @param   object  &$model  form model
-* @param   string  $msg     optional redirect message
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     optional redirect message
 	 *
+	 * @deprecated - since 3.0.6 not used
 	 * @return  null
 	 */
 
@@ -217,5 +235,23 @@ class FabrikControllerForm extends JControllerForm
 			$page = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getlistModel()->getTable()->id;
 		}
 		$this->setRedirect($page, $msg);
+	}
+
+	function cck()
+	{
+		$catid = JRequest::getInt('catid');
+		$db = JFactory::getDBO();
+		$db->setQuery('SELECT id FROM #__fabrik_forms WHERE params LIKE \'%"cck_category":"' . $catid . '"%\'');
+
+		$id = $db->loadResult();
+		if (!$id)
+		{
+			FabrikHelperHTML::stylesheet('system.css', 'administrator/templates/system/css/');
+			echo "<a target=\"_blank\" href=\"index.php?option=com_fabrik&c=form\">" . JText::_('VIEW_FORMS') . "</a>";
+			return JError::raiseNotice(500, JText::_('SET_FORM_CCK_CATEGORY'));
+		}
+		JRequest::setVar('formid', $id);
+		JRequest::setVar('iframe', 1);//tell fabrik to load js scripts normally
+		$this->view();
 	}
 }

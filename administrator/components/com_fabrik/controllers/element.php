@@ -106,7 +106,6 @@ class FabrikControllerElement extends FabControllerForm
 		if (!$db->query())
 		{
 			JError::raiseWarning(E_WARNING, $db->stderr(true));
-			exit;
 			$msg = '';
 		}
 		else

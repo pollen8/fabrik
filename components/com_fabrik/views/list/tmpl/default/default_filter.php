@@ -2,19 +2,19 @@
 <?php if ($this->filterMode === 3 || $this->filterMode === 4) {?>
 <div class="searchall">
 	<ul class="fabrik_action">
-		
+
 	<?php if (array_key_exists('all', $this->filters)) {
 		echo '<li>' . $this->filters['all']->element . '</li>';
 	}?>
 		<?php if ($this->filter_action != 'onchange') {?>
 	<li>
 		<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
-		
+
 	</li>
-	<?php } ?>	
+	<?php } ?>
 	</ul>
 	</div>
-<?php 
+<?php
 } else {?>
 
 <table class="filtertable fabrikList">

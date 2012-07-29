@@ -37,7 +37,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$document = JFactory::getDocument();
 		$w = new FabrikWorker;
-
+		jimport('string.normalise');
 		$document->addScript('http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true');
 		$c = 0;
 		$templates = (array) $params->get('timeline_detailtemplate', array());
@@ -91,9 +91,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 				$endParams = $endElement->getParams();
 				$startParams = $startElement->getParams();
 
-				$action = $app->isAdmin() ? "task" : "view";
-
-				// $nextview = $listModel->canEdit() ? "form" : "details";
 				foreach ($data as $group)
 				{
 					if (is_array($group))
@@ -137,6 +134,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 							$event->textColor = $textColour;
 							$event->classname = isset($row->$className) ? $row->$className : '';
 							$event->classname = strip_tags($event->classname);
+							$event->classname = $this->toVariable($event->classname);
 							if ($event->start !== '' && !is_null($event->start))
 							{
 								if ($event->end == $event->start)
@@ -166,6 +164,37 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		return $str;
 		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
 		FabrikHelperHTML::script($srcs, $str);
+	}
+
+	/**
+	 * Convert string into css class name
+	 *
+	 * @param   string  $input  string
+	 *
+	 * @return  string
+	 */
+
+	protected function toVariable($input)
+	{
+		// Should simply be (except theres a bug in J)
+		// JStringNormalise::toVariable($event->className);
+
+		$input = trim($input);
+
+		// Remove dashes and underscores, then convert to camel case.
+		$input = JStringNormalise::toSpaceSeparated($input);
+		$input = JStringNormalise::toCamelCase($input);
+
+		// Remove leading digits.
+		$input = preg_replace('#^[\d\.]*#', '', $input);
+
+		// Lowercase the first character.
+		$first = JString::substr($input, 0, 1);
+		$first = JString::strtolower($first);
+
+		// Replace the first character with the lowercase character.
+		$input = JString::substr_replace($input, $first, 0, 1);
+		return $input;
 	}
 
 	/**

@@ -838,7 +838,7 @@ class FabrikModelList extends FabModelAdmin
 	protected function updateElements($row)
 	{
 		$params = json_decode($row->params);
-		if ($params->list_search_elements === '')
+		if (!isset($params->list_search_elements) || $params->list_search_elements === '')
 		{
 			return;
 		}
@@ -849,7 +849,8 @@ class FabrikModelList extends FabModelAdmin
 			// True otherwise ordering set to 0!
 			$element = $elementModel->getElement(true);
 			$elParams = $elementModel->getParams();
-			$s = (in_array($element->id, $searchElements)) ? 1 : 0;
+			$unselected = $elParams->get('inc_in_search_all') === 2 ? 2 : 0;
+			$s = (in_array($element->id, $searchElements)) ? 1 : $unselected;
 			$elParams->set('inc_in_search_all', $s);
 			$element->params = (string) $elParams;
 			$element->store();
@@ -2144,6 +2145,7 @@ class FabrikModelList extends FabModelAdmin
 		$fabrikDb = $this->getDb();
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
+		$formModel = $this->getFormModel();
 		if (is_null($dbTableName))
 		{
 			$dbTableName = $this->getTable()->db_table_name;
@@ -2167,16 +2169,22 @@ class FabrikModelList extends FabModelAdmin
 		$i = 0;
 		foreach ($fields as $name => $plugin)
 		{
-			// Installation demo data sets 2 groud ids
-			if (is_string($plugin))
+			// $$$ hugh - testing corner case where we are called from form model's updateDatabase,
+			// and the underlying table has been deleted.  So elements already exist.
+			$element = $formModel->getElement($name);
+			if ($element === false)
 			{
-				$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
-			}
-			$plugin['ordering'] = $i;
-			$element = $this->makeElement($name, $plugin);
-			if (!$element)
-			{
-				return false;
+				// Installation demo data sets 2 groud ids
+				if (is_string($plugin))
+				{
+					$plugin = array('plugin' => $plugin, 'group_id' => $groupIds[0]);
+				}
+				$plugin['ordering'] = $i;
+				$element = $this->makeElement($name, $plugin);
+				if (!$element)
+				{
+					return false;
+				}
 			}
 			$elementModels[] = clone ($element);
 			$i++;

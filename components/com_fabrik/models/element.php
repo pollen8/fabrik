@@ -62,6 +62,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	public $element = null;
 
 	/**
+	* If the element 'Include in search all' option is set to 'default' then this states if the
+	* element should be ignored from search all.
+	* @var bool  True, ignore in advanced search all.
+	*/
+	protected $ignoreSearchAllDefault = false;
+
+	/**
 	 * Does the element have a label
 	 * @var bool
 	 */
@@ -637,9 +644,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		if (!is_object($this->access) || !array_key_exists('use', $this->access))
 		{
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-			$this->access->use = in_array($this->getElement()->access, $groups);
+			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
+			// So if element's group show is type 5, then element is de-facto read only.
+			if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			{
+				$this->_access->use = false;
+			}
+			else {
+				$user = JFactory::getUser();
+				$groups = $user->getAuthorisedViewLevels();
+				$this->_access->use = in_array($this->getElement()->access, $groups);
+			}
 		}
 		return $this->access->use;
 	}
@@ -657,8 +672,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (!is_object($this->access) || !array_key_exists('filter', $this->access))
 		{
 			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-			$this->access->filter = in_array($this->getParams()->get('filter_access'), $groups);
+			$groups = $user->authorisedLevels();
+			// $$$ hugh - fix for where certain elements got created with 0 as the
+			// the default for filter_access, which isn't a legal value, should be 1
+			$filter_access = $this->getParams()->get('filter_access');
+			$filter_access = $filter_access == '0' ? '1' : $filter_access;
+			$this->_access->filter = in_array($filter_access, $groups);
 		}
 		return $this->access->filter;
 	}
@@ -982,7 +1001,11 @@ class PlgFabrik_Element extends FabrikPlugin
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 				}
 				else
@@ -990,7 +1013,11 @@ class PlgFabrik_Element extends FabrikPlugin
 					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
 					if (is_null($v))
 					{
-						$value = FArrayHelper::getNestedValue($data, $rawNameKey, $value);
+						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
+					}
+					if (!is_null($v))
+					{
+						$value = $v;
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values
@@ -2752,7 +2779,9 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// $$$ rob this caused issues if your element was a dbjoin with a concat label, but then you save it as a field
 		// if ($params->get('join_val_column_concat') == '') {
-		if ($element->plugin != 'databasejoin')
+		//if ($element->plugin != 'databasejoin')
+		// $$$ needs to apply to CDD's as well, so just making this an overideable method.
+		if ($this->quoteLabel())
 		{
 			$elName = FabrikString::safeColName($elName);
 		}
@@ -4284,7 +4313,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			if (!array_key_exists(0, $data))
 			{
-				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. jos_users.params)
+				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. #__users.params)
 				$obj = JArrayHelper::toObject($data);
 				$data = array();
 				$data[0] = $obj;
@@ -4601,7 +4630,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$o->use_as_fake_key = 0;
 		$o->icon_folder = -1;
 		$o->use_as_row_class = 0;
-		$o->filter_access = 0;
+		$o->filter_access = 1;
 		$o->full_words_only = 0;
 		$o->inc_in_adv_search = 1;
 		$o->sum_on = 0;
@@ -4711,7 +4740,26 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			return false;
 		}
-		return $this->getParams()->get('inc_in_search_all', true);
+		$params = $this->getParams();
+		$inc = $params->get('inc_in_search_all', 1);
+
+		if ($inc == 2 && $advancedMode)
+		{
+			if ($this->ignoreSearchAllDefault)
+			{
+				$inc = false;
+			}
+			else
+			{
+				$format = $params->get('text_format');
+				if ($format == 'integer' || $format == 'decimal')
+				{
+					$inc = false;
+				}
+			}
+		}
+
+		return ($inc == 1 || $inc == 2) ? true : false;
 	}
 
 	/**
@@ -5593,6 +5641,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function reset()
 	{
 		$this->defaults = null;
+	}
+
+	/**
+	 *
+	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
+	 * which may use a CONCAT'ed label which musn't be quoted.
+	 *
+	 * @since	3.0.6
+	 *
+	 * @return boolean
+	 */
+	protected function quoteLabel()
+	{
+		return true;
 	}
 
 }

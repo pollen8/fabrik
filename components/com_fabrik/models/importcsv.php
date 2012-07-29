@@ -85,11 +85,11 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * loads the Joomla form for importing the csv file
+	 * Loads the Joomla form for importing the csv file
 	 *
 	 * @param   array  $data      form data
 	 * @param   bool   $loadData  load form data
-	 * 
+	 *
 	 * @return  object	form
 	 */
 
@@ -107,9 +107,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * checks uploaded file, and uploads it
+	 * Checks uploaded file, and uploads it
 	 *
-	 * @return true csv file uploaded ok, false error (JErrir warning raised)
+	 * @return  true  csv file uploaded ok, false error (JError warning raised)
 	 */
 
 	public function checkUpload()
@@ -174,7 +174,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * get form data
-	 * 
+	 *
 	 * @return  array
 	 */
 	protected function getFormData()
@@ -186,7 +186,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * read the CSV file, store results in $this->headings and $this->data
 	 *
 	 * @param   string  $file  to read
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -289,9 +289,9 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * possibly setting large data in the session is a bad idea
-	 * 
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -323,9 +323,9 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * Used by import csv cron plugin to override default base dir location
 	 *
 	 * @param   string  $dir  (folder path)
-	 * 
+	 *
 	 * @since	3.0.3.1
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -338,7 +338,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * deletes the csv file and optionally removes its path from the session
 	 *
 	 * @param   bool  $clearSession  should we clear the session
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -358,7 +358,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * Clear session
-	 * 
+	 *
 	 * @return void
 	 */
 
@@ -387,7 +387,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * Determine if the imported data has exisiting correlating elements
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -531,7 +531,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * Insert data into a fabrik table
+	 * Insert data into a Fabrik list
 	 *
 	 * @return unknown
 	 */
@@ -546,6 +546,10 @@ class FabrikFEModelImportcsv extends JModelForm
 		$model->importingCSV = true;
 		$item = $model->getTable();
 		$formModel = $model->getFormModel();
+
+		// $$$ rob 27/17/212 we need to reset the form as it was first generated before its elements were created.
+		$formModel->reset();
+
 		if ($dropData)
 		{
 			$model->truncate();
@@ -635,7 +639,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			{
 				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 				{
-					$noneraw = substr($k, 0, strlen($k) - 4);
+					$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
 					if (array_key_exists($noneraw, $aRow))
 					{
 						$aRow[$noneraw] = $val;
@@ -700,7 +704,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * the join data, we can finally allow the lists form to proces it
 	 *
 	 * @param   array  $joindata  data
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -773,7 +777,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * @param   array   $aRow        row
 	 * @param   mixed   $pkVal       primary key value
 	 * @param   object  &$formModel  form model
-	 * 
+	 *
 	 * @return  array	updated join data
 	 */
 
@@ -845,7 +849,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * get Join Primary Key values
-	 * 
+	 *
 	 * @param   object  $join  join row
 	 *
 	 * @return  array
@@ -872,7 +876,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * Get list model joins
-	 * 
+	 *
 	 * @return  array	joins
 	 */
 
@@ -950,7 +954,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	/**
 	 * get the csv files headings
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -1018,14 +1022,14 @@ class FabrikFEModelImportcsv extends JModelForm
  * - Fixed skipping of last row if the last row did not have a new line. Thanks to Florian Bruch and Henry Flurry. (2006_05_15)
  * - Changed the class name to Csv_Bv for consistency. (2006_05_15)
  * - Fixed small problem where line breaks at the end of file returned a warning (2005_10_28)
- * 
+ *
  * @version    Release: 1.2
  * @category   Joomla
  * @package    Fabrik
  * @author     Ben Vautier <classes@vhd.com.au>
  * @copyright  2006 Ben Vautier
  * @since      3.0
- * 
+ *
  */
 
 class Csv_Bv
@@ -1058,7 +1062,7 @@ class Csv_Bv
 	 * Holds the file pointer
 	 * @var resource
 	 */
-	protected $mHandle;
+	public $mHandle;
 
 	/**
 	 * Counts the number of rows that have been returned
@@ -1125,9 +1129,9 @@ class Csv_Bv
 
 	/**
 	 * uft 8 decode
-	 * 
+	 *
 	 * @param   string  $string  decode strong
-	 * 
+	 *
 	 * @return unknown|mixed
 	 */
 
@@ -1236,7 +1240,7 @@ class Csv_Bv
 
 	/**
 	 * csv::Csv2Array will return the whole csv file as 2D array
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -1254,10 +1258,10 @@ class Csv_Bv
 	 * csv::ArrayTrim will remove \s and \t from an array
 	 *
 	 * It is called from array_walk.
-	 * 
+	 *
 	 * @param   string  &$item  string to trim
 	 * @param   string  $key    not used
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1270,10 +1274,10 @@ class Csv_Bv
 	/**
 	 * csv::ArrayRemoveEscapor will escape the enclose character
 	 * It is called from array_walk.
-	 * 
+	 *
 	 * @param   string  &$item  string to trim
 	 * @param   string  $key    not used
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1284,10 +1288,10 @@ class Csv_Bv
 
 	/**
 	 * Htmlenties a string
-	 * 
+	 *
 	 * @param   string  &$item  string to trim
 	 * @param   string  $key    not used
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -1322,7 +1326,7 @@ class Csv_Bv
 	 * csv::SkipEmptyRows, sets whether empty rows should be skipped or not
 	 *
 	 * @param   bool  $bool  skip empty rows
-	 * 
+	 *
 	 * @return void
 	 */
 

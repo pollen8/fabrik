@@ -1,12 +1,11 @@
 <?php
 /**
- * Base Form view class
- *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
+
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -161,7 +160,9 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->setMessage();
 
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
-		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
+
+		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
 	}

@@ -131,4 +131,3 @@ else
 }
 JRequest::setVar('layout', $origLayout);
 JRequest::setVar('fabrik_show_in_list', null);
-?>

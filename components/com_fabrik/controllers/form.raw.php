@@ -14,10 +14,12 @@ jimport('joomla.application.component.controller');
 /**
  * Fabrik From Controller
  *
- * @static
  * @package     Joomla
  * @subpackage  Fabrik
- * @since       1.5
+ * @since       3.0
+ *
+ * @deprecated? Don't think this is used, code seems out of date, cetainly for process anyway - redirect urls are
+ * for Fabrik 2 !
  */
 
 class FabrikControllerForm extends JController
@@ -27,7 +29,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -84,7 +86,7 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * process the form
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -185,10 +187,10 @@ class FabrikControllerForm extends JController
 
 	/**
 	 * generic function to redirect
-	 * 
-* @param   object  &$model  form model
-* @param   string  $msg     redirection message to show
-	 * 
+	 *
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     redirection message to show
+	 *
 	 * @return  string  redirect url
 	 */
 
