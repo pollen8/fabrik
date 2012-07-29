@@ -28,11 +28,21 @@ echo "
 }
 #listform_$c .fabrikFilterContainer ul{
 	margin:0px;
-	padding-left:0px;
+	float:right;
+	text-align:right;
 }
-#listform_$c .fabrikFilterContainer li.fabrik_row {
+#listform_$c .fabrikFilterContainer ul .inputbox:focus{border:0}
+
+#listform_$c .fabrikFilterContainer li.fabrik_row{
+	padding:0px 10px 0px 10px;
+}
+#listform_$c .fabrikFilterContainer li.fabrik_row .divfilterLabel{
 	float:left;
-	padding-right:10px;
+	padding-right:10px
+}
+#listform_$c .fabrikFilterContainer li.fabrik___heading {
+	text-align:left;
+	padding:0px 10px 0px 10px;
 }
 #listform_$c .divlabel {font-weight:bold}
 #listform_$c .fabrik_actions .divlabel {display:none}
