@@ -614,34 +614,6 @@
 			
 		</fieldset>
 		
-		<fieldset name="mobile-layout">
-			
-			<field name="mobile_image" 
-				type="listfields" 
-				label="COM_FABRIK_FIELD_MOBILE_IMAGE_FIELD_LABEL" 
-				description="COM_FABRIK_FIELD_MOBILE_IMAGE_FIELD_DESC" />
-				
-			<field name="mobile_title" 
-				type="listfields" 
-				label="COM_FABRIK_FIELD_MOBILE_TITLE_FIELD_LABEL" 
-				description="COM_FABRIK_FIELD_MOBILE_TITLE_FIELD_DESC" />
-				
-			<field name="mobile_text" 
-				type="listfields" 
-				label="COM_FABRIK_FIELD_MOBILE_TEXT_FIELD_LABEL" 
-				description="COM_FABRIK_FIELD_MOBILE_TEXT_FIELD_DESC" />
-				
-			<field name="mobile_link" 
-				type="radio" 
-				default="details" 
-				label="COM_FABRIK_FIELD_MOBILE_LINK_LABEL" 
-				description="COM_FABRIK_FIELD_MOBILE_LINK_DESC">
-					<option value="details">COM_FABRIK_DETAILS</option>
-					<option value="form">COM_FABRIK_FORM</option>
-			</field>
-				
-		</fieldset>
-		
 		<fieldset name="links">
 	
 			<field name="detaillink" 
