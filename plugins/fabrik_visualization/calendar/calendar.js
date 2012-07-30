@@ -322,7 +322,7 @@ var fabrikCalendar = new Class({
 				}
 			}).adopt(
 				new Element('img', {
-					'src': Fabrik.liveSite + 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' + this.options.tmpl + '/images/del.png',
+					'src': Fabrik.liveSite + 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' + this.options.tmpl + '/images/minus-sign.png',
 					'alt': 'del',
 					'class': 'fabrikDeleteEvent'
 				})).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_DELETE'))

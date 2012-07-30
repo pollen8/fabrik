@@ -44,10 +44,10 @@ FabrikHelperHTML::framework();
 				<input class="inputbox fabrikinput" name="attachement[]" type="file" id="attachement" />
 			</label>
 			<a href="#" class="addattachement">
-				<img src="media/com_fabrik/images/add.png" alt="<?php echo JText::_('add');?>" />
+			<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD'));?>
 			</a>
 			<a href="#" class="delattachement">
-				<img src="media/com_fabrik/images/del.png" alt="<?php echo JText::_('delete');?>" />
+				<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE'));?>
 			</a>
 		</li>
 		<li>

@@ -550,7 +550,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
 		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
-		$this->buttons->add = FabrikHelperHTML::image('add.png', 'list', $this->tmpl, $buttonProperties);
+		$this->buttons->add = FabrikHelperHTML::image('plus-sign.png', 'list', $this->tmpl, $buttonProperties);
 
 		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_PDF') . '</span>';
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_PDF');

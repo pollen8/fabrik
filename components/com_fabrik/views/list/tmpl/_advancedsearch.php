@@ -4,7 +4,7 @@ defined('_JEXEC') or die();
 ?>
 <form method="post" action="<?php echo $this->action?>" class="advancedSeach_<?php echo $this->listref?>">
 	<a class="addbutton advanced-search-add" href="#">
-		<?php echo FabrikHelperHTML::image('add.png', 'list', $this->tmpl);?>
+		<?php echo FabrikHelperHTML::image('plus-sign.png', 'list', $this->tmpl);?>
 		<?php echo JText::_('COM_FABRIK_ADD')?>
 	</a>
 	<div id="advancedSearchContainer">
@@ -21,7 +21,7 @@ defined('_JEXEC') or die();
 				<ul class="fabrik_action">
 				<li>
 					<a class="advanced-search-remove-row" href="#">
-						<?php echo FabrikHelperHTML::image('del.png', 'list', $this->tmpl);?>
+						<?php echo FabrikHelperHTML::image('minus-sign.png', 'list', $this->tmpl);?>
 					</a>
 					</li>
 					</ul>

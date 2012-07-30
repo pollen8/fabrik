@@ -24,7 +24,7 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 	foreach ($this->groups as $group) {?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 		<legend><span><?php echo $group->title;?></span></legend>
-		
+
 		<?php if ($group->intro !== '') {?>
 		<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php }?>
@@ -42,12 +42,12 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 					<div class="fabrikGroupRepeater">
 						<?php if ($group->canAddRepeat) {?>
 						<a class="addGroup" href="#">
-							<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
+							<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
 						</a>
 						<?php }?>
 						<?php if ($group->canDeleteRepeat) {?>
 						<a class="deleteGroup" href="#">
-							<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
+							<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
 						</a>
 						<?php }?>
 					</div>

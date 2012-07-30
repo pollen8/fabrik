@@ -294,10 +294,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			$timelength = JString::strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+			$str[] = '<input class="inputbox fabrikinput timeField span1" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, $opts);
+			//$str[] = '<i class="icon-time"></i>';
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -624,7 +625,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
+		return '<input type="text" class="span2" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
 	}
 
 	/**
@@ -1513,6 +1514,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			// Range values could already have been set in getFilterValue
 			if (!$this->rangeFilterSet)
 			{
+				// $$$ due to some changes in how we handle ranges, the following was no longer getting
+				// applied in getFilterValue, needed because on first submit of a filter an arbitrary time
+				// is being set (i.e. time "now").
+				$value[0] = $this->setMySQLTimeToZero($value[0]);
+				$value[1] = $this->setMySQLTimeToZero($value[1]);
+
 				/* $$$ hugh - need to back this out by one second, otherwise we're including next day.
 				 * So ... say we are searching from '2009-07-17' to '2009-07-21', the
 				 * addDays(1) changes '2009-07-21 00:00:00' to '2009-07-22 00:00:00',
@@ -1523,13 +1530,19 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 		}
 		// $$$ rob 20/07/2012 Date is posted as local time, need to set it back to GMT. Seems needed even if dates are saved without timeselector
+		// $$$ hugh - think we may need to take 'store as local' in to account here?
 		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
 		$date = JFactory::getDate($value[0], $localTimeZone);
 		$value[0] = $date->toSql();
 
 		$date = JFactory::getDate($value[1], $localTimeZone);
-		$value[1] = $date->toSql(true);
+		// $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
+		// This ends up with queries like "BETWEEN '2012-01-26 06:00:00' AND '2012-01-26 23:59:59'"
+		// with CST (GMT -6), which chops out 6 hours of the day range.
+		// Also, see comment above about maybe needing to take "save as local" in to account on this.
+		//$value[1] = $date->toSql(true);
+		$value[1] = $date->toSql();
 
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';

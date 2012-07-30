@@ -1,39 +1,3 @@
-<?php  /* The default template includes the following folder and files:
-
-images - this is the folder for the form template's images
-- plus-sign.png
-- alert.png
-- delete.png
-default.php - this file controls the layout of the form
-default_group.php - this file controls the layout of the individual form groups
-default_relateddata.php - this file controls the layout of the forms related data
-template_css.php - this file controls the styling of the form
-
-CSS classes and id's included in this file are:
-
-componentheading - used if you choose to display the page title
-<h1> - used if you choose to show the form label
-fabrikMainError -
-fabrikError -
-fabrikGroup -
-groupintro -
-fabrikSubGroup -
-fabrikSubGroupElements -
-fabrikGroupRepeater -
-addGroup -
-deleteGroup -
-fabrikTip -
-fabrikActions -
-
-Other form elements that can be styled here are:
-
-legend
-fieldset
-
-To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.
-
-If you have set to show the page title in the forms layout parameters, then the page title will show */
-?>
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
@@ -42,27 +6,54 @@ If you have set to show the page title in the forms layout parameters, then the 
 if ($this->params->get('show-title', 1)) {?>
 
 <?php  /*This will show the forms label */?>
-<h1><?php echo $form->label;?></h1>
-
+<div class="page-header">
+	<h1><?php echo $form->label;?></h1>
+</div>
 <?php  /*This area will show the form's intro as well as any errors */ ?>
 <?php }
 echo $form->intro;
-echo $form->startTag;
+$model = $this->getModel();
+$groupTmpl = $model->_editable ? 'group' : 'group_details';
+if ($model->_editable) {
+echo '<form action="' . $form->action . '" class="fabrikForm form-horizontal" method="post" name="' . $form->name . '" id="' . $form->formid
+				. '" enctype="' . $model->getFormEncType() . '">';
+}
+else
+{
+	echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
+}
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
-echo "<div class=\"fabrikMainError fabrikError$active\">";
-echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
-echo "$form->error</div>";?>
+?>
+
+    <div class="fabrikMainError alert alert-error fabrikError<?php echo $active?>">
+    <button class="close" data-dismiss="alert">×</button>
+    <?php echo $form->error?>
+    </div>
+
+	<?php if ($this->showEmail): ?>
+		<a class="btn" href="<?php echo $this->emailURL?>">
+		<i class="icon-envelope"></i>
+		<?php echo JText::_('JGLOBAL_EMAIL'); ?>
+		</a>
+	<?php endif?>
+
+	<?php if ($this->showPDF):?>
+		<a class="btn" href="<?php echo $this->pdfURL?>">
+			<i class="icon-file"></i>
+			<?php echo JText::_('COM_FABRIK_PDF')?>
+		</a>
+	<?php endif;?>
+
+	<?php if ($this->showPrint):?>
+		<a class="btn" href="<?php echo $this->printURL?>">
+			<i class="icon-print"></i>
+			<?php echo JText::_('JGLOBAL_PRINT')?>
+		</a>
+	<?php endif;?>
+
+
 	<?php
-	if ($this->showEmail) {
-		echo $this->emailLink;
-	}
-	if ($this->showPDF) {
-		echo $this->pdfLink;
-	}
-	if ($this->showPrint) {
-		echo $this->printLink;
-	}
 	echo $this->loadTemplate('relateddata');
 	foreach ($this->groups as $group) {
 		?>
@@ -87,7 +78,7 @@ echo "$form->error</div>";?>
 					<div class="fabrikSubGroupElements">
 						<?php
 						$this->elements = $subgroup;
-						echo $this->loadTemplate('group');
+						echo $this->loadTemplate($groupTmpl);
 						?>
 					</div>
 					<?php if ($group->editable) { ?>
@@ -109,21 +100,48 @@ echo "$form->error</div>";?>
 			}
 		} else {
 			$this->elements = $group->elements;
-			echo $this->loadTemplate('group');
+			echo $this->loadTemplate($groupTmpl);
 		}?>
 	</<?php echo $form->fieldsetTag ?>>
 <?php
 	}
+	if ($model->_editable) {
 	echo $this->hiddenFields;
+	}
 	?>
 	<?php echo $this->pluginbottom; ?>
 
 <?php  /* This is where the buttons at the bottom of the form are set up */ ?>
 	<?php if ($this->hasActions) {?>
-	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
+	<div class="fabrikActions form-actions">
+
+	<div class="row">
+		<div class="span4">
+			<div class="btn-group">
+			<?php
+			echo $form->submitButton;
+			echo $form->applyButton;
+			echo $form->copyButton;
+			?>
+			</div>
+		</div>
+		<div class="span4">
+		<div class="btn-group">
 	<?php echo $form->nextButton?> <?php echo $form->prevButton?>
-	 <?php echo $form->applyButton;?>
-	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
+	</div>
+		</div>
+
+		<div class="span4">
+		<div class="btn-group">
+	<?php echo $form->gobackButton  . ' ' . $this->message ?>
+	<?php echo $form->resetButton . ' ';
+	echo  $form->deleteButton;?>
+	</div>
+		</div>
+	</div>
+
+
+
 	</div>
 	<?php } ?>
 
