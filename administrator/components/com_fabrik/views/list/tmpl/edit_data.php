@@ -38,7 +38,7 @@
 					echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
 					if ((int) $this->item->id !== 0) {
 						echo JArrayHelper::getValue($this->order_dir, $o)?>
-					<a class="addOrder" href="#"><img src="components/com_fabrik/images/add.png" label="<?php echo JText::_('COM_FABRIK_ADD')?>" alt="<?php echo JText::_('COM_FABRIK_ADD')?>" /></a>
+					<a class="addOrder" href="#"><img src="components/com_fabrik/images/plus-sign.png" label="<?php echo JText::_('COM_FABRIK_ADD')?>" alt="<?php echo JText::_('COM_FABRIK_ADD')?>" /></a>
 					<a class="deleteOrder" href="#"><img src="components/com_fabrik/images/remove.png" label="<?php echo JText::_('REMOVE')?>" alt="<?php echo JText::_('REMOVE')?>" /></a>
 					<?php }?>
 				</div>

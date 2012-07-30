@@ -1195,7 +1195,7 @@ class plgFabrik_Element extends FabrikPlugin
 			$l = $element->label;
 			if ($rollOver)
 			{
-				$l .= FabrikHelperHTML::image('questionmark.png', 'form', $tmpl);
+				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl);
 			}
 			if ($this->_editable)
 			{
@@ -1641,7 +1641,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$tip = $this->getTip();
 		if ($tip !== '')
 		{
-			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('questionmark.png', 'form', $tmpl) . $tip . '</div>';
+			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . $tip . '</div>';
 		}
 		switch ($model->getParams()->get('tiplocation'))
 		{
@@ -4511,7 +4511,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
 		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
 		$str[] = '<a href="#" title="' . JText::_('add option') . '" class="toggle-addoption">';
-		$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/action_add.png" alt="' . JText::_('COM_FABRIK_ADD') . '"/>';
+		$str[] = FabrikHelperHTML::image('plus-sign.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_ADD')));
+		//$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/plus-sign.png" alt="' . JText::_('COM_FABRIK_ADD') . '"/>';
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left" class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
 		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))

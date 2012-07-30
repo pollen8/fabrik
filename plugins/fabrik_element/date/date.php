@@ -294,10 +294,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		{
 			$timelength = JString::strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+			$str[] = '<input class="inputbox fabrikinput timeField span1" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, $opts);
+			//$str[] = '<i class="icon-time"></i>';
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -624,7 +625,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
+		return '<input type="text" class="span2" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
 	}
 
 	/**

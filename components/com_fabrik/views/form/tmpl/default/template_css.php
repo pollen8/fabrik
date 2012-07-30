@@ -320,7 +320,7 @@ section for dropdowns radio buttons etc**/
 }
 
 #{$view}_$c .addbutton {
-	background: transparent url(images/add.png) no-repeat left;
+	background: transparent url(images/plus-sign.png) no-repeat left;
 	padding: 2px 5px 0 20px;
 	margin-left:7px;
 }

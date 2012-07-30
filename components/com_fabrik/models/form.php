@@ -287,10 +287,6 @@ class FabrikFEModelForm extends FabModelForm
 					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
 				}
 			}
-			if (JRequest::getVar('mjmarkup') == 'iphone')
-			{
-				$tmpl = 'iwebkit';
-			}
 		}
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 

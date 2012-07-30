@@ -292,6 +292,9 @@ class FabrikViewFormBase extends JView
 		$this->emailLink = '';
 		$this->printLink = '';
 		$this->pdfLink = '';
+		$this->pdfURL = '';
+		$this->emailURL = '';
+		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 		if ($this->showPrint)
 		{
@@ -303,10 +306,12 @@ class FabrikViewFormBase extends JView
 			if ($this->showEmail)
 			{
 				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
+				$this->emailURL = FabrikHelperHTML::emailURL($model);
 			}
 			if ($this->showPrint)
 			{
 				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->_rowId);
+				$this->printURL = FabrikHelperHTML::printURL($model);
 			}
 		}
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
@@ -322,8 +327,8 @@ class FabrikViewFormBase extends JView
 			}
 			else
 			{
-				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId())
-				. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+				$this->pdfURL = JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $this->rowid);
+				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}
 		}
 	}
@@ -687,22 +692,22 @@ class FabrikViewFormBase extends JView
 		$fields[] = JHTML::_('form.token');
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
-			? '<input type="reset" class="button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
+			? '<input type="reset" class="btn button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != ''
-			? '<input type="submit" class="button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
+			? '<input type="submit" class="btn button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
-			? '<input type="' . $applyButtonType . '" class="button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
+			? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
-			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="button" name="delete" />' : '';
+			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button" name="delete" />' : '';
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
-			? '<input type="button" class="button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
+			? '<input type="button" class="btn button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
 		if ($model->_editable && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="button ' . $submitClass . '" name="submit" value="'
+			$form->submitButton = '<input type="' . $button . '" class="btn-primary button ' . $submitClass . '" name="submit" value="'
 				. $form->submit_button_label . '" />';
 		}
 		else
@@ -711,9 +716,9 @@ class FabrikViewFormBase extends JView
 		}
 		if ($this->isMultiPage)
 		{
-			$form->prevButton = '<input type="button" class="fabrikPagePrevious button" name="fabrikPagePrevious" value="'
+			$form->prevButton = '<input type="button" class="btn fabrikPagePrevious button" name="fabrikPagePrevious" value="'
 				. JText::_('COM_FABRIK_PREVIOUS') . '" />';
-			$form->nextButton = '<input type="button" class="fabrikPageNext button" name="fabrikPageNext" value="' . JText::_('COM_FABRIK_NEXT')
+			$form->nextButton = '<input type="button" class="btn fabrikPageNext button" name="fabrikPageNext" value="' . JText::_('COM_FABRIK_NEXT')
 				. '" />';
 		}
 		else

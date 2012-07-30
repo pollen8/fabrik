@@ -31,11 +31,11 @@ echo "$form->error</div>";?>
 		<?php if (trim($group->title) !== '') {?>
 			<legend><?php echo $group->title;?></legend>
 		<?php }?>
-		
+
 		<?php if ($group->intro !== '') {?>
 		<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php }?>
-		
+
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>
@@ -50,12 +50,12 @@ echo "$form->error</div>";?>
 						<div class="fabrikGroupRepeater">
 							<?php if ($group->canAddRepeat) {?>
 							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
+								<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
 							</a>
 							<?php }?>
 							<?php if ($group->canDeleteRepeat) {?>
 							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
+								<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
 							</a>
 							<?php }?>
 						</div>

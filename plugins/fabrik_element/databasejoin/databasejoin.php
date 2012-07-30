@@ -926,7 +926,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$html[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';
-					$html[] = FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+					$html[] = FabrikHelperHTML::image('plus-sign.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
 				$html[] = ($displayType == 'radio') ? '</div>' : '';
