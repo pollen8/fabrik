@@ -42,7 +42,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$options = array();
 		JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 		$subForm = new JForm($this->name, array('control' => 'jform'));
-		$xml = $this->element->children()->asFormattedXML();
+		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
 
 		/**
@@ -87,16 +87,18 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$str[] = '<table class="adminlist">';
 		$str[] = '<thead><tr class="row0">';
 		$names = array();
-		foreach ($subForm->getFieldset($this->element->getAttribute('name') . '_modal') as $field)
+		$attributes = $this->element->attributes();
+		foreach ($subForm->getFieldset($attributes->name . '_modal') as $field)
 		{
-			$names[] = $field->element->getAttribute('name');
+			$names[] = (string)$field->element->attributes()->name;
 			$str[] = '<th>' . $field->getLabel($field->name) . '</th>';
 		}
 		$str[] = '<th></th>';
 		$str[] = '</tr></thead>';
 
 		$str[] = '<tbody><tr>';
-		foreach ($subForm->getFieldset($this->element->getAttribute('name') . '_modal') as $field)
+
+		foreach ($subForm->getFieldset($attributes->name . '_modal') as $field)
 		{
 			$str[] = '<td>' . $field->getInput() . '</td>';
 		}
