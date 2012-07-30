@@ -71,7 +71,7 @@ var FbDateTime = new Class({
 				this.cal.hide();
 			};
 			h.delay(100, this);
-			this.element.getElement('img.calendarbutton').addEvent('click', function (e) {
+			this.getCalendarImg().addEvent('click', function (e) {
 				if (!this.cal.params.position) {
 					this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
 				} else {
@@ -84,6 +84,20 @@ var FbDateTime = new Class({
 				this.afterAjaxValidation();
 			}.bind(this));
 		}
+	},
+	
+	/**
+	 * Image to open calendar can be <img> (J2.5) or <i> (J3)
+	 * 
+	 * @return  dom node
+	 */
+	
+	getCalendarImg: function () {
+		var i = this.element.getElement('img.calendarbutton');
+		if (typeOf(i) === 'null') {
+			i = this.getContainer().getElement('i.icon-calendar');
+		}
+		return i;
 	},
 	
 	/**
@@ -331,6 +345,9 @@ var FbDateTime = new Class({
 				}
 			}
 		}
+		
+		var i = this.getContainer().getElement('i.icon-calendar');
+		console.log(i);
 	},
 
 	addNewEventAux : function (action, js) {
@@ -442,6 +459,9 @@ var FbDateTime = new Class({
 	 */
 	getTimeButton: function () {
 		this.timeButton = this.getContainer().getElement('.timeButton');
+		if (typeOf(this.timeButton) === 'null') {
+			this.timeButton = this.getContainer().getElement('i.icon-time');
+		}
 		return this.timeButton;
 	},
 

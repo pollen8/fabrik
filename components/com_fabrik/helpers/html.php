@@ -1345,6 +1345,14 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
+		$app = JFactory::getApplication();
+		$version = new JVersion;
+
+		// Only use template test for testing in 2.5 with my temp J bootstrap template.
+		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5)
+		{
+			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
+		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);
@@ -1381,8 +1389,8 @@ EOD;
 			$p .= $key . '="' . $val . '" ';
 		}
 
-		$i = '<i class="icon-' . JFile::stripExt($file) . '"></i>';
-		return $src == '' ? $i : '<img src="' . $src . '" ' . $p . '/>' . $i;
+
+		return $src == '' ? $i : '<img src="' . $src . '" ' . $p . '/>';
 	}
 
 	/**
