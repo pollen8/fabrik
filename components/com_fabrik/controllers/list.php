@@ -20,7 +20,7 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerList extends JController
+class FabrikControllerList extends JControllerLegacy
 {
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
@@ -28,10 +28,10 @@ class FabrikControllerList extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 * @param   object  $model      list model
 * @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
-	 *   
+	 *
 	 * @return  null
 	 */
 
@@ -83,7 +83,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * reorder the data in the list
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -102,7 +102,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * clear filters
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -114,7 +114,7 @@ class FabrikControllerList extends JController
 		 * $$$ rob 28/12/20111 changed from clearfilters as clearfilters removes jpluginfilters (filters
 		 * set by content plugin which we want to remain sticky. Otherwise list clear button removes the
 		 * content plugin filters
-		 * JRequest::setVar('resetfilters', 1);  
+		 * JRequest::setVar('resetfilters', 1);
 		 */
 
 		/**
@@ -127,7 +127,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * filter the list data
-	 * 
+	 *
 	 * @return null
 	 */
 
@@ -146,7 +146,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * delete rows from list
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -199,7 +199,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * empty a table of records and reset its key to 0
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -212,7 +212,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * run a list plugin
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -271,7 +271,7 @@ class FabrikControllerList extends JController
 
 	/**
 	 * called via ajax when element selected in advanced search popup window
-	 * 
+	 *
 	 * @return  null
 	 */
 

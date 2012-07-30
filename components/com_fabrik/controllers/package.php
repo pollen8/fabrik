@@ -15,19 +15,19 @@ jimport('joomla.application.component.controller');
 
 /**
  * Fabrik package controller
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
 
-class FabrikControllerPackage extends JController
+class FabrikControllerPackage extends JControllerLegacy
 {
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
 	public $cacheId = 0;
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 

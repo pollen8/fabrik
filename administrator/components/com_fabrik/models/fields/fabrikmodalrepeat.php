@@ -105,7 +105,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$app = JFactory::getApplication();
 		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
 		$str[] = '<td><div style="width:35px"><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
-		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></div></a>';
+		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a></div>';
 		$str[] = '</td>';
 		$str[] = '</tr></tbody>';
 		$str[] = '</table>';
@@ -146,7 +146,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$str[] = '<div class="button2-left">';
 		$str[] = '	<div class="blank">';
-		$str[] = '<a id="' . $modalid . '_button" />' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+		$str[] = '<a id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 		$html[] = '	</div>';
 		$html[] = '</div>';
 		if (is_array($this->value))

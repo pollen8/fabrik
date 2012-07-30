@@ -19,7 +19,7 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikControllerPlugin extends JController
+class FabrikControllerPlugin extends JControllerLegacy
 {
 	/**
 	 * Means that any method in Fabrik 2, e.e. 'ajax_upload' should

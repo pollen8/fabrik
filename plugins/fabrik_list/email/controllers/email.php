@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
  * @subpackage	Contact
  * @since       1.5
  */
-class FabrikControllerListemail extends JController
+class FabrikControllerListemail extends JControllerLegacy
 {
 	/** @var string path of uploaded file */
 	var $filepath = null;
@@ -58,10 +58,10 @@ class FabrikControllerListemail extends JController
 		$listModel->setId(JRequest::getInt('id'));
 		$formModel = $listModel->getFormModel();
 		// Push a model into the view
-		
+
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
-		
+
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
 		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));

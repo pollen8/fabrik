@@ -20,7 +20,7 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerDetails extends JController
+class FabrikControllerDetails extends JControllerLegacy
 {
 
 	/** @var   bool $isMambot  is the view rendered from the J content plugin */

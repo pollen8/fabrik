@@ -27,70 +27,54 @@ $srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
 
 FabrikHelperHTML::script($srcs, $this->js);
 ?>
-
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+	<div class="row-fluid">
 
-	<div class="width-40 fltlft">
+		<div class="span2" id="sidebar">
 
-	<?php
-
-$panels = array(
-	array('heading'=>JText::_('COM_FABRIK_DETAILS'),
-		'fieldset'=>array('main', 'details2')),
-
-	array('heading'=>JText::_('COM_FABRIK_FILTERS'),
-		'fieldset'=>array('main_filter', 'filters')),
-
-	array('heading'=>JText::_('COM_FABRIK_NAVIGATION'),
-		'fieldset'=>array('main_nav', 'navigation')),
-
-	array('heading'=>JText::_('COM_FABRIK_LAYOUT'),
-		'fieldset'=>array('main_template', 'layout')),
-
-	array('heading'=>JText::_('COM_FABRIK_LINKS'),
-		'fieldset'=>array('links')),
-
-	array('heading'=>JText::_('COM_FABRIK_NOTES'),
-		'fieldset'=>array('notes')),
-
-	array('heading'=>JText::_('COM_FABRIK_ADVANCED'),
-		'fieldset'=>array('advanced'))
-
-);
-
-echo JHtml::_('sliders.start','list-sliders-'.$this->item->id, array('useCookie'=>1));
-
-foreach ($panels as $panel) {
-	echo JHtml::_('sliders.panel',$panel['heading'], $panel['fieldset'][0].-'details');
-			?>
-			<fieldset class="adminform">
-				<ul class="adminformlist">
-				<?php foreach ($panel['fieldset'] as $fieldset) :
-					foreach ($this->form->getFieldset($fieldset) as $field) :?>
+				<ul class="nav nav-list">
 					<li>
-					<?php if (JString::strtolower($field->type) != 'hidden') {
-							echo $field->label;
-						} ?>
-						<?php echo $field->input; ?>
-					</li>
-					<?php endforeach;
-					endforeach;?>
+				    	<a data-toggle="tab active" href="#details">
+				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#data">
+				    		<?php echo JText::_('COM_FABRIK_DATA')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#publishing">
+				    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tabplugins">
+				    		<?php echo JText::_('COM_FABRIK_GROUP_LABAEL_PLUGINS_DETAILS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#access">
+				    		<?php echo JText::_('COM_FABRIK_GROUP_LABAEL_RULES_DETAILS')?>
+				    	</a>
+				    </li>
 				</ul>
-			</fieldset>
-<?php }
-echo JHtml::_('sliders.end');
-?>
 
-	</div>
-	<div class="width-60 fltrt">
-		<?php echo JHtml::_('tabs.start', 'list-tabs-'.(int) $this->item->id, array('useCookie'=>1));
-		echo $this->loadTemplate('data');
-		echo $this->loadTemplate('publishing');
-		echo $this->loadTemplate('plugins');
-		echo $this->loadTemplate('rules');
-		echo JHtml::_('tabs.end'); ?>
-	</div>
+		</div>
 
-	<input type="hidden" name="task" value="" />
-	<?php echo JHtml::_('form.token'); ?>
+
+	    <div class="tab-content offset2">
+	    	<?php
+	    	echo $this->loadTemplate('bootstrap_details');
+	    	echo $this->loadTemplate('bootstrap_data');
+	    	echo $this->loadTemplate('bootstrap_publishing');
+	    	echo $this->loadTemplate('bootstrap_plugins');
+	    	echo $this->loadTemplate('bootstrap_access');
+	    	?>
+	    </div>
+
+
+		<input type="hidden" name="task" value="" />
+		<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

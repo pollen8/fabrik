@@ -19,13 +19,13 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerPlugin extends JController
+class FabrikControllerPlugin extends JControllerLegacy
 {
 	/**
 	 * Means that any method in Fabrik 2, e.e. 'ajax_upload' should
 	 * now be changed to 'onAjax_upload'
 	 * ajax action called from element
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -52,7 +52,7 @@ class FabrikControllerPlugin extends JController
 
 	/**
 	 * user ajax call
-	 * 
+	 *
 	 * @return  null
 	 */
 	public function userAjax()

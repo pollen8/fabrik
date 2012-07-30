@@ -19,7 +19,7 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerElement extends JController
+class FabrikControllerElement extends JControllerLegacy
 {
 
 	public $isMambot = false;
@@ -31,7 +31,7 @@ class FabrikControllerElement extends JController
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -60,7 +60,7 @@ class FabrikControllerElement extends JController
 	/**
 	 * save an individual element value to the fabrik db
 	 * used in inline edit table plguin
-	 * 
+	 *
 	 * @return  null
 	 */
 

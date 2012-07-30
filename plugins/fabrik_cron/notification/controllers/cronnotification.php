@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikControllerCroncronnotification extends JController
+class FabrikControllerCroncronnotification extends JControllerLegacy
 {
 	/**
 	 * Display the view

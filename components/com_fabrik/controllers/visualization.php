@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
  * @since       1.5
  */
 
-class FabrikControllerVisualization extends JController
+class FabrikControllerVisualization extends JControllerLegacy
 {
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/

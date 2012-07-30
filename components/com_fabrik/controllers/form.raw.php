@@ -22,7 +22,7 @@ jimport('joomla.application.component.controller');
  * for Fabrik 2 !
  */
 
-class FabrikControllerForm extends JController
+class FabrikControllerForm extends JControllerLegacy
 {
 
 	public $isMambot = false;

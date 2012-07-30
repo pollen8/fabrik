@@ -19,7 +19,7 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerPlugin extends JController
+class FabrikControllerPlugin extends JControllerLegacy
 {
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
@@ -29,7 +29,7 @@ class FabrikControllerPlugin extends JController
 	 * ajax action called from element
 	 * 11/07/2011 - ive updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
 	 * this means that the controller used is now plugin.php and not plugin.raw.php
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -57,7 +57,7 @@ class FabrikControllerPlugin extends JController
 
 	/**
 	 * custom user ajax class handling as per F1.0.x
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -75,9 +75,9 @@ class FabrikControllerPlugin extends JController
 
 	/**
 	 * doCron plugin
-	 * 
+	 *
 * @param   object  &$pluginManager  plugin manager
-	 * 
+	 *
 	 * @return  null
 	 */
 

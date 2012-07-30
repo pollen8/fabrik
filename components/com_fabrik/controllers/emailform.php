@@ -20,12 +20,12 @@ jimport('joomla.application.component.controller');
  * @since       1.5
  */
 
-class FabrikControllerEmailform extends JController
+class FabrikControllerEmailform extends JControllerLegacy
 {
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @return  null
 	 */
 

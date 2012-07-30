@@ -22,7 +22,7 @@ jimport('joomla.application.component.controller');
 
 //$$$rob DEPRECIATED - should always get directed to specific controller
 
-class FabrikController extends JController
+class FabrikController extends JControllerLegacy
 {
 
 	public $isMambot = false;
