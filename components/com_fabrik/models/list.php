@@ -5879,7 +5879,7 @@ class FabrikFEModelList extends JModelForm
 			// If its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey)
 			{
-				if (is_numeric($oRecord->$primaryKey))
+				if (isset($oRecord->$primaryKey) && is_numeric($oRecord->$primaryKey))
 				{
 					$oRecord->$primaryKey = $rowId;
 				}
