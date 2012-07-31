@@ -203,8 +203,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 				if (!empty($data))
 				{
 					$post = JRequest::get('post');
-					$elementModel = JModel::getInstance('element', 'FabrikModel');
-					$element = $elementModel->getElement(true);
+					//$elementModel = JModel::getInstance('element', 'FabrikModel');
+					//$element = $elementModel->getElement(true);
 					$tableModel = $formModel->getTable();
 
 					$origDataCount = count(array_keys(JArrayHelper::fromObject($formModel->_origData[0])));
