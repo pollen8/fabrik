@@ -262,8 +262,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		if (!isset(self::$usestatic))
 		{
 			$params = $this->getParams();
-			//requires you to have installed the pda plugin
-			//http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
+			// Requires you to have installed the pda plugin
+			// http://joomup.com/blog/2007/10/20/pdaplugin-joomla-15/
 			if (array_key_exists('ispda', $GLOBALS) && $GLOBALS['ispda'] == 1)
 			{
 				self::$usestatic = true;
@@ -277,10 +277,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	}
 
 	/**
-	 * util function to turn the saved string into coordinate array
-	 * @param   stringing coordinates
-	 * @param   int default zoom level
-	 * @return object coords array and zoomlevel int
+	 * Util function to turn the saved string into coordinate array
+	 *
+	 * @param   string  $v          coordinates
+	 * @param   int     $zoomlevel  default zoom level
+	 *
+	 * @return  object  coords array and zoomlevel int
 	 */
 
 	function _strToCoords($v, $zoomlevel = 0)
@@ -304,10 +306,11 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	}
 
 	/**
-	 * $$$tom : util function to turn the saved string into DMS coordinate array
-	 * @param   stringing coordinates
-	 * @param   int default zoom level
-	 * @return object coords array and zoomlevel int
+	 * Util function to turn the saved string into DMS coordinate array
+	 *
+	 * @param   string  $v  coordinates
+	 *
+	 * @return  object  coords array and zoomlevel int
 	 */
 
 	function _strToDMS($v)
@@ -500,7 +503,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 				return $this->getHiddenField($name, $data[$name], $id);
 			}
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-			//if its not editable and theres no val don't show the map
+
+			// If its not editable and theres no val don't show the map
 			if ((!$this->_editable && $val != '') || $this->_editable)
 			{
 				if ($this->_editable && $params->get('fb_gm_geocode') != '0')
@@ -595,6 +599,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		if (!isset($this->_default))
 		{
 			$params = $this->getParams();
+
 			// $$$ hugh - added parens around lat,long for consistancy!
 			$this->_default = '(' . $params->get('fb_gm_lat') . ',' . $params->get('fb_gm_long') . ')' . ':' . $params->get('fb_gm_zoomlevel');
 		}
