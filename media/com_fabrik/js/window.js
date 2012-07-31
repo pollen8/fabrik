@@ -39,6 +39,7 @@ Fabrik.Window = new Class({
 		expandable: true,
 		offset_x: null,
 		offset_y: null,
+		visible: true,
 		onContentLoaded: function () {
 			this.fitToContent();
 		},
@@ -141,7 +142,9 @@ Fabrik.Window = new Class({
 			dragOpts.container = this.options.container ? document.id(this.options.container) : null;
 			this.window.makeDraggable(dragOpts);
 		}
-
+		if (!this.options.visible) {
+			this.window.fade('hide');
+		}
 		document.id(document.body).adopt(this.window);
 		this.loadContent();
 		//bad idea - means opening windows are hidden if other code calls another window to hide
