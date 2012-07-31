@@ -625,6 +625,12 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			{
 				$value = '';
 			}
+			// $$$ corner case where you have a form and a list for the same table on the same page
+			// and the list is being filtered with table___name[value]=foo on the query string.
+			if (is_array($value) && array_key_exists('value', $value))
+			{
+				$value = $value['value'];
+			}
 			$element->default = $value;
 			$formModel = $this->getForm();
 
