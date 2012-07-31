@@ -50,7 +50,9 @@
 		<fieldset name="pagination" legend="test">
 			
 			<field name="split_page" 
-				type="radio" default="0" 
+				type="radio"
+				class="btn-group"
+				default="0" 
 				label="COM_FABRIK_SPLIT_PAGE_LABEL" 
 				description="COM_FABRIK_SPLIT_PAGE_DESC">
 					<option value="1">JYES</option>
@@ -148,6 +150,7 @@
 			
 			<field name="random"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_RANDOMISE_ELEMENTS_LABEL"
 				description="COM_FABRIK_RANDOMISE_ELEMENTS_DESC">

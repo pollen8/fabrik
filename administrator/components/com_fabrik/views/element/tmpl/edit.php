@@ -29,7 +29,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-<?php //?>
+
 <?php if ($this->item->parent_id != 0) {
 	?>
 	<div id="system-message">
@@ -50,41 +50,54 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 	</dl>
 	</div>
 <?php }?>
-<div id="elementFormTable">
-	<div class="width-50 fltlft">
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
-			<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
-			<input type="hidden" id="plugin_orig" name="plugin_orig" value="<?php echo $this->item->plugin; ?>" />
-			<ul class="adminformlist">
-				<li>
-					<?php echo $this->form->getLabel('css'). $this->form->getInput('css'); ?>
-				</li>
-				<?php foreach ($this->form->getFieldset('details') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-			<div class="clr"> </div>
-		</fieldset>
+	<div class="row-fluid" id="elementFormTable">
 
-		<div style="margin:10px">
-			<?php echo JHtml::_('sliders.start','element-sliders-options', array('useCookie'=>1));
-			echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_OPTIONS'), 'options-details');
-			echo "<div id=\"plugin-container\">$this->pluginFields</div>";
-			echo JHtml::_('sliders.end'); ?>
+		<div class="span2">
+
+				<ul class="nav nav-list">
+					<li class="active">
+				    	<a data-toggle="tab" href="#tab-details">
+				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tab-publishing">
+				    		<?php echo JText::_('COM_FABRIK_PUBLISHING')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tab-access">
+				    		<?php echo JText::_('COM_FABRIK_GROUP_LABAEL_RULES_DETAILS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tab-listview">
+				    		<?php echo JText::_('COM_FABRIK_LIST_VIEW_SETTINGS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tab-validations">
+				    		<?php echo JText::_('COM_FABRIK_VALIDATIONS')?>
+				    	</a>
+				    </li>
+				    <li>
+				    	<a data-toggle="tab" href="#tab-javascript">
+				    		<?php echo JText::_('COM_FABRIK_JAVASCRIPT')?>
+				    	</a>
+				    </li>
+				</ul>
 		</div>
-	</div>
 
-	<div class="width-50 fltrt">
-		<?php echo JHtml::_('tabs.start', 'element', array('useCookie'=>1));
-			echo $this->loadTemplate('publishing');
-			echo $this->loadTemplate('access');
-			echo $this->loadTemplate('settings');
-			echo $this->loadTemplate('validations');
-			echo $this->loadTemplate('javascript');
-		echo JHtml::_('tabs.end'); ?>
+		<div class="span10 tab-content">
+			<?php
+	    	echo $this->loadTemplate('bootstrap_details');
+	    	echo $this->loadTemplate('bootstrap_publishing');
+	    	echo $this->loadTemplate('bootstrap_access');
+	    	echo $this->loadTemplate('bootstrap_listview');
+	    	echo $this->loadTemplate('bootstrap_validations');
+	    	echo $this->loadTemplate('bootstrap_javascript');
+	    	?>
+		</div>
 	</div>
 
 	<input type="hidden" name="task" value="" />

@@ -15,7 +15,8 @@
 		</field>
 		
 		<field name="dropTablesFromDB" 
-			type="radio" 
+			type="radio"
+			class="btn-group"
 			default="0" 
 			label="COM_FABRIK_DROP_DATABASE_TABLE_LABEL">
 				<option value="0">JNO</option>

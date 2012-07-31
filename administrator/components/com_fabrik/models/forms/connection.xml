@@ -54,6 +54,7 @@
 			
 		<field name="published"
 			type="radio"
+			class="btn-group"
 			default="0"
 			label="JSTATUS"
 			description="JFIELD_PUBLISHED_DESC">

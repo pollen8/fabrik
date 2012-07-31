@@ -33,8 +33,8 @@ FabrikHelperHTML::script($srcs, $this->js);
 		<div class="span2" id="sidebar">
 
 				<ul class="nav nav-list">
-					<li>
-				    	<a data-toggle="tab active" href="#details">
+					<li class="active">
+				    	<a data-toggle="tab" href="#details">
 				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
 				    	</a>
 				    </li>
@@ -63,7 +63,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 		</div>
 
 
-	    <div class="tab-content offset2">
+	    <div class="tab-content span10">
 	    	<?php
 	    	echo $this->loadTemplate('bootstrap_details');
 	    	echo $this->loadTemplate('bootstrap_data');

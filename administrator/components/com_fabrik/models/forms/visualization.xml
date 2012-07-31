@@ -38,7 +38,8 @@
 	<fieldset name="publishing" >
 		
 		<field name="published" 
-			type="radio" 
+			type="radio"
+			class="btn-group"
 			default="0" 
 			label="JPUBLISHED">
 				<option value="0">JNO</option>
@@ -73,7 +74,8 @@
 		<fieldset name="more">
 			
 			<field name="show-title" 
-				type="radio" 
+				type="radio"
+				class="btn-group"
 				default="1" 
 				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
 				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
@@ -82,7 +84,8 @@
 			</field>
 			
 			<field name="show_filters"
-				type="radio" 
+				type="radio"
+				class="btn-group"
 				default="1" 
 				label="COM_FABRIK_FIELD_SHOW_FILTERS_LABEL" 
 				description="COM_FABRIK_FIELD_SHOW_FILTERS_DESC">

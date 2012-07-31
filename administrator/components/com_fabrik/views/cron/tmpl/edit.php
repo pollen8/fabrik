@@ -31,32 +31,52 @@ FabrikHelperHTML::script($srcs, $js);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="width-100 fltlft">
-	<?php foreach ($this->form->getFieldsets() as $fieldset) {?>
-		<fieldset class="adminform">
-			<legend><?php echo $fieldset->label;?></legend>
-			<ul class="adminformlist">
-			<?php foreach ($this->form->getFieldset($fieldset->name) as $field) : ?>
-				<li>
-					<?php if (!$field->hidden): ?>
-						<?php echo $field->label; ?>
-					<?php endif; ?>
-					<?php echo $field->input; ?>
-				</li>
-			<?php endforeach; ?>
-			</ul>
 
-		</fieldset>
-<?php }?>
-<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_OPTIONS');?></legend>
-			<div id="plugin-container">
-				<?php echo $this->pluginFields;?>
-			</div>
-		</fieldset>
+	<div class="row-fluid">
+		<div class="span6">
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_DETAILS');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('details') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
 
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_OPTIONS');?>
+		    	</legend>
+				<div id="plugin-container">
+					<?php echo $this->pluginFields;?>
+				</div>
+			</fieldset>
+		</div>
+
+		<div clas="span5">
+
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_RUN');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('run') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_LOG');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('log') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+		</div>
 	</div>
-
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

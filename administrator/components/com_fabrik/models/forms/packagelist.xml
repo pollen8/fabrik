@@ -5,7 +5,9 @@
 			
 		
 		<field name="radomizerecords" 
-			type="radio" default="0" 
+			type="radio"
+			class="btn-group"
+			default="0" 
 			label="MOD_FABRIK_LIST_RANDOMIZE_LABEL">
 			description="MOD_FABRIK_LIST_RANDOMIZE_DESC"
 				<option value="0">JNo</option>

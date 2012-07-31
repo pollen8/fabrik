@@ -16,6 +16,7 @@
 		
 		<field name="drop_data"
 			type="radio"
+			class="btn-group"
 			default="0"
 			label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL"
 			description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC">
@@ -24,7 +25,9 @@
 			</field>
 		
 		<field name="overwrite"
-			type="radio" default="0"
+			type="radio"
+			class="btn-group"
+			default="0"
 			label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL"
 			description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC">
 				<option value="0">JNO</option>
@@ -32,7 +35,9 @@
 		</field>
 		
 		<field name="inPutFormat"
-			type="radio" default="csv"
+			type="radio"
+			class="btn-group"
+			default="csv"
 			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL"
 			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC">
 				<option value="csv">CSV</option>
@@ -85,6 +90,7 @@
 				
 			<field name="addkey"
 					type="radio"
+					class="btn-group"
 					required="true"
 					default="0"
 					label="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_LABEL"

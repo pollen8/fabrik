@@ -40,6 +40,7 @@
 	
 		<field name="published" 
 			type="radio"
+			class="btn-group"
 			default="1"
 			label="JSTATUS"
 			description="COM_FABRIK_FIELD_PACKAGE_PUBLISHED_DESC">

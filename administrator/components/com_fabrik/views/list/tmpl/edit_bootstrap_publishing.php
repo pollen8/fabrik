@@ -1,8 +1,8 @@
 <div class="tab-pane" id="publishing">
 
 	<ul class="nav nav-tabs">
-		<li>
-	    	<a data-toggle="tab active" href="#publishing-details">
+		<li class="active">
+	    	<a data-toggle="tab" href="#publishing-details">
 	    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'); ?>
 	    	</a>
 	    </li>
@@ -24,7 +24,7 @@
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane" id="publishing-details">
+		<div class="tab-pane active" id="publishing-details">
 		    <fieldset class="form-horizontal">
 				<?php foreach ($this->form->getFieldset('publishing-details') as $this->field) :
 					echo $this->loadTemplate('control_group');

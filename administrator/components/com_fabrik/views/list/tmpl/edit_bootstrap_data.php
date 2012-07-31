@@ -1,8 +1,8 @@
 <div class="tab-pane" id="data">
 
 	<ul class="nav nav-tabs">
-		<li>
-	    	<a data-toggle="tab active" href="#data-data">
+		<li class="active">
+	    	<a data-toggle="tab" href="#data-data">
 	    		<?php echo JText::_('COM_FABRIK_DATA'); ?>
 	    	</a>
 	    </li>
@@ -29,7 +29,7 @@
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane" id="data-data">
+		<div class="tab-pane active" id="data-data">
 			<fieldset class="form-horizontal">
 			<?php
 			$this->field = $this->form->getField('connection_id');

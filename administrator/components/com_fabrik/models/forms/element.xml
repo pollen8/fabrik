@@ -57,6 +57,7 @@
 		
 		<field name="use_in_page_title"
 			type="radio"
+			class="btn-group"
 			default="0"
 			label="COM_FABRIK_FIELD_ADD_TO_PAGE_TITLE_LABEL"
 			description="COM_FABRIK_FIELD_ADD_TO_PAGE_TITLE_DESC" >
@@ -90,6 +91,7 @@
 		
 		<field name="filter_exact_match"
 			type="radio"
+			class="btn-group"
 			default="1"
 			label="COM_FABRIK_FIELD_EXACT_MATCH_LABEL"
 			description="COM_FABRIK_FIELD_EXACT_MATCH_DESC" >
@@ -101,7 +103,8 @@
 	
 	<fieldset name="listsettings">
 		<field name="show_in_list_summary" 
-			type="radio" 
+			type="radio"
+			class="btn-group"
 			default="0" 
 			label="COM_FABRIK_FIELD_SHOW_IN_LIST_LABEL" 
 			description="COM_FABRIK_FIELD_SHOW_IN_LIST_DESC">
@@ -110,7 +113,9 @@
 			</field>
 			
 		<field name="link_to_detail" 
-			type="radio" default="0" 
+			type="radio"
+			class="btn-group"
+			default="0" 
 			label="COM_FABRIK_FIELD_LINK_TO_DETAILS_LABEL" 
 			description="COM_FABRIK_FIELD_LINK_TO_DETAILS_DESC">
 				<option value="0">JNO</option>
@@ -130,6 +135,7 @@
 		
 			<field name="full_words_only"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_FULLWORDS_LABEL"
 				description="COM_FABRIK_FIELD_FULLWORDS_DESC">
@@ -139,6 +145,7 @@
 			
 			<field name="filter_required"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_REQUIRED_FILTER_LABEL"
 				description="COM_FABRIK_FIELD_REQUIRED_FILTER_DESC" >
@@ -158,6 +165,7 @@
 			
 			<field name="filter_groupby"
 				type="radio"
+				class="btn-group"
 				default="text"
 				label="COM_FABRIK_FIELD_ORDER_BY_LABEL">
 					<option value="text">COM_FABRIK_LABEL</option>
@@ -176,6 +184,7 @@
 			
 			<field name="inc_in_adv_search"
 				type="radio"
+				class="btn-group"
 				default="1"
 				label="COM_FABRIK_FIELD_INCLUDE_IN_ADVANCED_SEARCH_LABEL"
 				description="COM_FABRIK_FIELD_INCLUDE_IN_ADVANCED_SEARCH_DESC">
@@ -188,7 +197,9 @@
 		<fieldset name="listsettings2">
 		
 			<field name="can_order" 
-				type="radio" default="0" 
+				type="radio"
+				class="btn-group"
+				default="0" 
 				label="COM_FABRIK_FIELD_ALLOW_ORDERING_LABEL" 
 				description="COM_FABRIK_FIELD_ALLOW_ORDERING_DESC" >
 					<option value="0">JNO</option>
@@ -209,6 +220,7 @@
 			
 			<field name="custom_link_indetails"
 				type="radio"
+				class="btn-group"
 				default="1"
 				description="COM_FABRIK_FIELD_CUSTOM_LINK_IN_DETAILS_DESC"
 				label="COM_FABRIK_FIELD_CUSTOM_LINK_IN_DETAILS_LABEL">
@@ -217,7 +229,9 @@
 			</field>
 				
 			<field name="use_as_row_class" 
-				type="radio" default="0" 
+				type="radio"
+				class="btn-group"
+				default="0" 
 				label="COM_FABRIK_FIELD_USE_AS_ROW_CLASS_LABEL" 
 				description="COM_FABRIK_FIELD_USE_AS_ROW_CLASS_DESC">
 					<option value="0">JNO</option>
@@ -225,7 +239,8 @@
 			</field>
 			
 			<field name="include_in_list_query" 
-			type="radio" 
+			type="radio"
+			class="btn-group"
 			default="1" 
 			label="COM_FABRIK_FIELD_INCLUDE_IN_LIST_QUERY_LABEL" 
 			description="COM_FABRIK_FIELD_INCLUDE_IN_LIST_QUERY_DESC">
@@ -238,7 +253,8 @@
 		<fieldset name="icons">
 		
 			<field name="icon_folder" 
-				type="radio" 
+				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_ICON_FOLDER_LABEL" 
 				description="COM_FABRIK_FIELD_ICON_FOLDER_DESC">
@@ -247,7 +263,8 @@
 			</field>
 			
 			<field name="icon_hovertext" 
-				type="radio" 
+				type="radio"
+				class="btn-group"
 				default="1"
 				label="COM_FABRIK_FIELD_ICON_HOVER_TEXT_LABEL" 
 				description="COM_FABRIK_FIELD_ICON_HOVER_TEXT_DESC">
@@ -268,6 +285,7 @@
 		
 			<field name="show_in_rss_feed" 
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_SHOW_IN_RSS_LABEL"
 				description="COM_FABRIK_FIELD_SHOW_IN_RSS_DESC">
@@ -277,6 +295,7 @@
 			
 			<field name="show_label_in_rss_feed"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_RSS_INC_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_RSS_INC_LABEL_DESC">
@@ -286,6 +305,7 @@
 			
 			<field name="use_as_fake_key"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_PSEUDO_KEY_LABEL"
 				description="COM_FABRIK_FIELD_PSEUDO_KEY_DESC">
@@ -295,6 +315,7 @@
 			
 			<field name="use_as_rss_enclosure"
 				type="radio"
+				class="btn-group"
 				default="0"
 				label="COM_FABRIK_FIELD_RSS_ENCLOSURE_LABEL"
 				description="COM_FABRIK_FIELD_RSS_ENCLOSURE_DESC">
@@ -334,6 +355,7 @@
 	
 				<field name="sum_on" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_SUM_TOTAL_LABEL"
 					description="COM_FABRIK_FIELD_SUM_TOTAL_DESC">
@@ -361,6 +383,7 @@
 				
 				<field name="avg_on" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_AVERAGE_TOTAL_LABEL"
 					description="COM_FABRIK_FIELD_AVERAGE_TOTAL_DESC">
@@ -394,7 +417,8 @@
 				<field name="" type="spacer" default=" " />
 				
 				<field name="median_on" 
-					type="radio" 
+					type="radio"
+					class="btn-group"
 					default="0" 
 					label="COM_FABRIK_FIELD_MEDIAN_TOTAL_LABEL"
 					description="COM_FABRIK_FIELD_MEDIAN_TOTAL_DESC">
@@ -423,6 +447,7 @@
 				
 				<field name="count_on" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_COUNT_RECORDS_LABEL"
 					description="COM_FABRIK_FIELD_COUNT_RECORDS_DESC">
@@ -456,6 +481,7 @@
 				
 				<field name="custom_calc_on" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL"
 					description="COM_FABRIK_FIELD_CUSTOM_CALC_DESC">
@@ -506,6 +532,7 @@
 				
 				<field name="tipseval" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_TIPS_EVAL_LABEL"
 					description="COM_FABRIK_FIELD_TIPS_EVAL_DESC">
@@ -515,6 +542,7 @@
 												
 				<field name="tipsoverelement" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_TIPS_OVER_ELEMENT_LABEL"
 					description="COM_FABRIK_FIELD_TIPS_OVER_ELEMENT_DESC">
@@ -535,6 +563,7 @@
 				
 				<field name="labelindetails" 
 					type="radio"
+					class="btn-group"
 					default="1"
 					label="COM_FABRIK_FIELD_TIPS_IN_DETAILED_VIEW_LABEL"
 					description="COM_FABRIK_FIELD_TIPS_IN_DETAILED_VIEW_DESC">
@@ -544,6 +573,7 @@
 				
 				<field name="labelinlist" 
 					type="radio"
+					class="btn-group"
 					default="0"
 					label="COM_FABRIK_FIELD_TIPS_IN_LIST_VIEW_LABEL"
 					description="COM_FABRIK_FIELD_TIPS_IN_LIST_VIEW_DESC">
@@ -569,7 +599,9 @@
 							description="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT_DESC" />
 					
 					<field name="encrypt" 
-						type="radio" default="0"
+						type="radio"
+						class="btn-group"
+						default="0"
 						label="COM_FABRIK_ENCRYPT_LABEL" 
 						description="COM_FABRIK_ENCRYPT_DESC" >
 						<option value="0">JNO</option>

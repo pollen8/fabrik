@@ -21,67 +21,53 @@ FabrikHelperHTML::script($srcs);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="width-60 fltlft">
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
-			<ul class="adminformlist">
+	<div class="row-fluid">
+		<div class="span5">
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_DETAILS');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('details') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+		</div>
 
-				<?php foreach ($this->form->getFieldset('details') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
+		<div class="span7">
 
-				<?php foreach ($this->form->getFieldset('details2') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_REPEAT');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('repeat') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
 
-			</ul>
-			<div class="clr"> </div>
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_LAYOUT');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('layout') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
 
-		</fieldset>
+			<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?>
+		    	</legend>
+				<?php foreach ($this->form->getFieldset('pagination') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+
+		</div>
 	</div>
-	
-	<div class="width-40 fltlft">
-	
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_REPEAT');?></legend>
-			<ul class="adminformlist">
-				<?php foreach ($this->form->getFieldset('repeat') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-		</fieldset>
-		
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_LAYOUT');?></legend>
-			<ul class="adminformlist">
-				<?php foreach ($this->form->getFieldset('layout') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-		</fieldset>
-		
-		<fieldset class="adminform">
-			<legend><?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
-			<ul class="adminformlist">
-				<?php foreach ($this->form->getFieldset('pagination') as $field) :?>
-				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-		</fieldset>
-		
-		
-	</div>
-	<div class="clr"></div>
 
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
