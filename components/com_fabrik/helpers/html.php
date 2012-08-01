@@ -861,7 +861,7 @@ EOD;
 		}
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
-		$ext = $debug || JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
+		$ext = $debug || (int)JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
 		$file = (array) $file;
 		$src = array();
 		foreach ($file as $f)
