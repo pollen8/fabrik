@@ -114,6 +114,11 @@ var FbAutocomplete = new Class({
 	},
 	
 	populateMenu: function (data) {
+		// $$$ hugh - added decoding of things like &amp; in the text strings
+		data.map(function (item, index) {
+			item.text = Encoder.htmlDecode(item.text);
+			return item;
+		});
 		this.data = data;
 		var max = this.getListMax();
 		var ul = this.menu.getElement('ul');
