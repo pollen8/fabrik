@@ -1532,8 +1532,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// $$$ hugh - think we may need to take 'store as local' in to account here?
 		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
+		$params = $this->getParams();
+		$store_as_local =  $params->get('date_store_as_local', '0') == '1';
+
 		$date = JFactory::getDate($value[0], $localTimeZone);
-		$value[0] = $date->toSql();
+		$value[0] = $date->toSql($store_as_local);
 
 		$date = JFactory::getDate($value[1], $localTimeZone);
 		// $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
@@ -1541,7 +1544,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// with CST (GMT -6), which chops out 6 hours of the day range.
 		// Also, see comment above about maybe needing to take "save as local" in to account on this.
 		//$value[1] = $date->toSql(true);
-		$value[1] = $date->toSql();
+		$value[1] = $date->toSql($store_as_local);
 
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';
