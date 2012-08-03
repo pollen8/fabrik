@@ -538,7 +538,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
 		{
-			$desc = "REPLACE(".$desc.", '\n', '<br >')";
+			$desc = "REPLACE(".$db->quoteName($desc).", '\n', '<br />')";
 			$sql .= ', ' . $desc . ' AS description';
 		}
 		$sql .= $this->getAdditionalQueryFields();

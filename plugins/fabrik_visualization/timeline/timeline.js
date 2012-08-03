@@ -62,6 +62,7 @@ var FbVisTimeline = new Class({
 			bandTracks[b].highlight = true;
 		}
 	
+		SimileAjax.History.enabled = false;
 		this.tl = Timeline.create(document.id("my-timeline"), bandTracks, this.options.orientation);
 		
 		eventSource.loadJSON(this.json, '');

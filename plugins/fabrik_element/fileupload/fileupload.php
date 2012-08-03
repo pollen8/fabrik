@@ -60,7 +60,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	function ignoreOnUpdate($val)
 	{
 		//check if its a CSV import if it is allow the val to be inserted
-		if (JRequest::getCmd('task') === 'makeTableFromCSV' || $this->getListModel()->_importingCSV)
+		if (JRequest::getCmd('task') === 'makeTableFromCSV' || $this->getListModel()->importingCSV)
 		{
 			return false;
 		}
@@ -901,11 +901,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$raw = $this->getValue($post);
 
-				if ($raw == '' || empty($raw))
+				// $$$ rob 26/07/2012 inline edit producing a string value for $raw on save
+				if ($raw == '' || empty($raw) || is_string($raw))
 				{
 					return true;
 				}
-				print_r($raw);
 				if (array_key_exists(0, $raw))
 				{
 					$crop = (array) JArrayHelper::getValue($raw[0], 'crop');
@@ -913,14 +913,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				else
 				{
-					//single uploaded image.
+					// Single uploaded image.
 					$crop = (array) JArrayHelper::getValue($raw, 'crop');
 					$ids = (array) JArrayHelper::getValue($raw, 'id');
 				}
 			}
 			else
 			{
-				//single image
+				// Single image
 				$crop = (array) JArrayHelper::getValue($raw, 'crop');
 				$ids = (array) JArrayHelper::getValue($raw, 'id');
 			}
@@ -940,7 +940,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$coords = json_decode(urldecode($json));
 				$saveParams[] = $json;
-				//@todo allow uploading into front end designated folders?
+
+				// @todo allow uploading into front end designated folders?
 				$myFileDir = '';
 				$cropPath = $storage->clean(JPATH_SITE . '/' . $params->get('fileupload_crop_dir') . '/' . $myFileDir . '/', false);
 				$w = new FabrikWorker;
@@ -1007,7 +1008,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			else
 			{
-				//only one file
+				// Only one file
 				$store = array();
 				for ($i = 0; $i < count($files); $i++)
 				{
@@ -2626,17 +2627,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// if ($value === '') { //query string for joined data
 			if ($value === '' && !$groupModel->canRepeat())
 			{
-
 				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name);
-
-				// $$$ rob 26/07/2012 inline edit saving record $value was a json encoded string - which gave notices
-				// see http://www.ecicultuurfabriek.nl/administrator/index.php?option=com_fabrik&task=list.view&listid=7
-				if ($this->isJoin() && is_string($value))
-				{
-					$value = json_decode($value);
-					$value = JArrayHelper::getValue($value, $repeatCounter);
-				}
 			}
 			if (is_array($value) && !$this->isJoin())
 			{

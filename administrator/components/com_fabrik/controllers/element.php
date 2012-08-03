@@ -65,7 +65,7 @@ class FabrikControllerElement extends FabControllerForm
 	 *
 	 * @since   11.1
 	 */
-	
+
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
@@ -95,10 +95,10 @@ class FabrikControllerElement extends FabControllerForm
 		$newName = $app->getUserState('com_fabrik.newname');
 		$model->updateJoinedPks($oldName, $newName);
 		$db->setQuery($app->getUserState('com_fabrik.q'));
-		
+
 		if (!$db->query())
 		{
-			JError::raiseWarning(E_WARNING, $db->stderr(true));exit;
+			JError::raiseWarning(E_WARNING, $db->stderr(true));
 			$msg = '';
 		}
 		else

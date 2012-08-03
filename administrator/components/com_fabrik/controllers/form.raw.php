@@ -65,6 +65,7 @@ class FabrikControllerForm extends JControllerForm
 		$this->isMambot = JRequest::getVar('_isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
+
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
@@ -72,18 +73,36 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (!$model->validate())
 		{
-			//if its in a module with ajax or in a package
-			if (JRequest::getInt('_packageId') !== 0)
+		// If its in a module with ajax or in a package or inline edit
+			if (JRequest::getCmd('fabrik_ajax'))
 			{
-				$data = array('modified' => $model->_modifiedValidationData);
-				//validating entire group when navigating form pages
-				$data['errors'] = $model->_arErrors;
-				echo json_encode($data);
-				return;
+				if (JRequest::getInt('elid') !== 0)
+				{
+					// inline edit
+					$eMsgs = array();
+					$errs = $model->getErrors();
+					foreach ($errs as $e)
+					{
+						if (count($e[0]) > 0)
+						{
+							array_walk_recursive($e, array('FabrikString', 'forHtml'));
+							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+						}
+					}
+					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					jexit;
+				}
+				else
+				{
+					echo $model->getJsonErrors();
+					return;
+				}
 			}
 			if ($this->isMambot)
 			{
 				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+
 				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 				// might as well use the 'savepage' mechanism, as it's already there!
 				$this->savepage();
@@ -96,31 +115,31 @@ class FabrikControllerForm extends JControllerForm
 			return;
 		}
 
-		//reset errors as validate() now returns ok validations as empty arrays
+		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->_arErrors = array();
 
-		$defaultAction = $model->process();
+		$model->process();
 
-		//check if any plugin has created a new validation error
-		if (!empty($model->_arErrors))
+		// Check if any plugin has created a new validation error
+		if ($model->hasErrors())
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
 			return;
 		}
 
-		//one of the plugins returned false stopping the default redirect
-		// action from taking place
-		if (!$defaultAction)
-		{
-			return;
-		}
 		$listModel = $model->getListModel();
 		$tid = $listModel->getTable()->id;
-		$msg = $model->getParams()->get('suppress_msgs', '0') == '0' ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+
+		$res = $model->getRedirectURL(true, $this->isMambot);
+		$this->baseRedirect = $res['baseRedirect'];
+		$url = $res['url'];
+
+		$msg = $model->getRedirectMessage($model);
+
 		if (JRequest::getInt('elid') !== 0)
 		{
-			//inline edit show the edited element
+			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
@@ -137,12 +156,18 @@ class FabrikControllerForm extends JControllerForm
 		}
 		else
 		{
-			$this->makeRedirect($msg, $model);
+			$this->setRedirect($url, $msg);
 		}
 	}
 
 	/**
-	 * generic function to redirect
+	 * Generic function to redirect
+	 *
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     optional redirect message
+	 *
+	 * @deprecated - since 3.0.6 not used
+	 * @return  null
 	 */
 
 	protected function makeRedirect($msg = null, $model)

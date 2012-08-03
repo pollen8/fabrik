@@ -1,9 +1,9 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -11,11 +11,13 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewVisualization extends JView{
+class FabrikViewVisualization extends JView
+{
 
-	function display($tmpl = 'default')
+	public function display($tmpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
+		$app = JFactory::getApplication();
 		FabrikHelperHTML::script($srcs);
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
@@ -31,9 +33,9 @@ class FabrikViewVisualization extends JView{
 			return JError::raiseWarning(500, JText::_('COM_FABRIK_SORRY_THIS_VISUALIZATION_IS_UNPUBLISHED'));
 		}
 
-		//plugin is basically a model
-
+		// Plugin is basically a model
 		$pluginTask = JRequest::getVar('plugintask', 'render', 'request');
+
 		// @FIXME cant set params directly like this, but I think plugin model setParams() is not right
 		$plugin->_params = $pluginParams;
 		$tmpl = $plugin->getParams()->get('calendar_layout', $tmpl);
@@ -41,20 +43,22 @@ class FabrikViewVisualization extends JView{
 		$this->plugin = $plugin;
 		$viewName = $this->getName();
 		$this->addTemplatePath($this->_basePath . '/plugins/' . $this->_name . '/' . $plugin->_name . '/tmpl/' . $tmpl);
-		$this->addTemplatePath(JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/visualization/' . $plugin->_name . '/' . $tmpl);
 
-		$ab_css_file = JPATH_SITE."/plugins/fabrik_visualization/".$plugin->_name."/tmpl/$tmpl/template.css";
+		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/visualization/' . $plugin->_name . '/' . $tmpl);
+
+
+		$ab_css_file = JPATH_SITE . '/plugins/fabrik_visualization/' . $plugin->_name . '/tmpl/' . $tmpl . '/template.css';
 		if (JFile::exists($ab_css_file))
 		{
-			JHTML::stylesheet('template.css', 'plugins/fabrik_visualization/'.$plugin->_name.'/tmpl/'.$tmpl.'/', true);
+			JHTML::stylesheet('template.css', 'plugins/fabrik_visualization/' . $plugin->_name . '/tmpl/' . $tmpl . '/', true);
 		}
 		echo parent::display();
 	}
 
-	//just for plugin
+	// Just for plugin
 	function setId()
 	{
 
 	}
 }
-?>

@@ -4395,7 +4395,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			if (!array_key_exists(0, $data))
 			{
-				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. jos_users.params)
+				// Occurs if we have created a list from an exisitng table whose data contains json objects (e.g. #__users.params)
 				$obj = JArrayHelper::toObject($data);
 				$data = array();
 				$data[0] = $obj;

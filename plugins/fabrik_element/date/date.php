@@ -340,11 +340,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 		// $$$ hugh - offset_tz of 1 means 'in MySQL format, GMT'
 		// $$$ hugh - offset_tz of 2 means 'in MySQL format, Local TZ'
-		if ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
+		if ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '1')
 		{
 			return $val;
 		}
-		elseif ($listModel->_importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
+		elseif ($listModel->importingCSV && $params->get('date_csv_offset_tz', '0') == '2')
 		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
@@ -1203,8 +1203,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$fabrikDb = $listModel->getDb();
 		$elName = $this->getFullName(false, true, false);
 		$elName2 = $this->getFullName(false, false, false);
-
-		$ids = $listModel->getColumnData($elName2);
 		$v = $this->filterName($counter, $normal);
 
 		// Corect default got
@@ -1212,7 +1210,6 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$format = $params->get('date_table_format', '%Y-%m-%d');
 
 		$fromTable = $origTable;
-		$joinStr = '';
 
 		// $$$ hugh - in advanced search, _aJoins wasn't getting set
 		$joins = $listModel->getJoins();
@@ -1224,19 +1221,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				if ($aJoin->group_id == $element->group_id && $aJoin->element_id == 0)
 				{
 					$fromTable = $aJoin->table_join;
-					$joinStr = " LEFT JOIN $fromTable ON " . $aJoin->table_join . "." . $aJoin->table_join_key . " = " . $aJoin->join_from_table
-						. "." . $aJoin->table_key;
 					$elName = str_replace($origTable . '.', $fromTable . '.', $elName);
 				}
 			}
 		}
 		$where = $listModel->_buildQueryPrefilterWhere($this);
 		$elName = FabrikString::safeColName($elName);
-
-		// Don't format here as the format string is different between mysql and php's calendar strftime
-		$sql = "SELECT DISTINCT($elName) AS text, $elName AS value FROM `$origTable` $joinStr" . "\n WHERE $elName IN ('" . implode("','", $ids)
-			. "')" . "\n AND TRIM($elName) <> '' $where GROUP BY text ASC";
-		$requestName = $elName . "___filter";
+		$requestName = $elName . '___filter';
 		if (array_key_exists($elName, $_REQUEST))
 		{
 			if (is_array($_REQUEST[$elName]) && array_key_exists('value', $_REQUEST[$elName]))
@@ -1522,6 +1513,12 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			// Range values could already have been set in getFilterValue
 			if (!$this->rangeFilterSet)
 			{
+				// $$$ due to some changes in how we handle ranges, the following was no longer getting
+				// applied in getFilterValue, needed because on first submit of a filter an arbitrary time
+				// is being set (i.e. time "now").
+				$value[0] = $this->setMySQLTimeToZero($value[0]);
+				$value[1] = $this->setMySQLTimeToZero($value[1]);
+
 				/* $$$ hugh - need to back this out by one second, otherwise we're including next day.
 				 * So ... say we are searching from '2009-07-17' to '2009-07-21', the
 				 * addDays(1) changes '2009-07-21 00:00:00' to '2009-07-22 00:00:00',
@@ -1532,13 +1529,22 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 		}
 		// $$$ rob 20/07/2012 Date is posted as local time, need to set it back to GMT. Seems needed even if dates are saved without timeselector
+		// $$$ hugh - think we may need to take 'store as local' in to account here?
 		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
+		$params = $this->getParams();
+		$store_as_local =  $params->get('date_store_as_local', '0') == '1';
+
 		$date = JFactory::getDate($value[0], $localTimeZone);
-		$value[0] = $date->toSql();
+		$value[0] = $date->toSql($store_as_local);
 
 		$date = JFactory::getDate($value[1], $localTimeZone);
-		$value[1] = $date->toSql(true);
+		// $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
+		// This ends up with queries like "BETWEEN '2012-01-26 06:00:00' AND '2012-01-26 23:59:59'"
+		// with CST (GMT -6), which chops out 6 hours of the day range.
+		// Also, see comment above about maybe needing to take "save as local" in to account on this.
+		//$value[1] = $date->toSql(true);
+		$value[1] = $date->toSql($store_as_local);
 
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';

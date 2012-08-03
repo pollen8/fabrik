@@ -37,11 +37,13 @@ var fabrikAdminElement = new Class({
 			this.addJavascript(opt);
 		}.bind(this));
 		
-		document.id('jform_plugin').addEvent('change', this.changePlugin.bindWithEvent(this));
+		document.id('jform_plugin').addEvent('change', function (e) {
+			e.stop();
+			this.changePlugin(e);
+		}.bind(this));
 	},
 	
 	changePlugin: function (e) {
-		e.stop();
 		document.id('plugin-container').empty().adopt(
 		new Element('span').set('text', 'Loading....')
 		);
@@ -58,7 +60,7 @@ var fabrikAdminElement = new Class({
 				'format': 'raw',
 				'plugin': e.target.get('value')
 			},
-			'update': $('plugin-container'),
+			'update': document.id('plugin-container'),
 			'onComplete': function (r) {
 				document.id('plugin-container').set('html', r);
 				$exec(this.script);

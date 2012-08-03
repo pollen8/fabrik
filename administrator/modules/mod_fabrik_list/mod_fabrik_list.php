@@ -1,17 +1,16 @@
 <?php
 /**
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
 
-//load front end language file as well
+// Load front end language file as well
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 
@@ -25,20 +24,20 @@ JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
 
-require_once(COM_FABRIK_FRONTEND . '/controller.php');
-require_once(COM_FABRIK_FRONTEND . '/controllers/list.php');
+require_once COM_FABRIK_FRONTEND . '/controller.php';
+require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 
-//$$$rob looks like including the view does something to the layout variable
+// $$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
-require_once(COM_FABRIK_FRONTEND . '/views/list/view.html.php');
+require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
 JRequest::setVar('layout', $origLayout);
 
-require_once(COM_FABRIK_FRONTEND . '/views/package/view.html.php');
+require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
 JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_fabrik/tables');
 $document = JFactory::getDocument();
-require_once(COM_FABRIK_FRONTEND . '/controllers/package.php');
-require_once(COM_FABRIK_FRONTEND . '/views/form/view.html.php');
+require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
+require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 $listId	= intval($params->get('list_id', 0));
 if ($listId === 0)
 {
@@ -60,12 +59,11 @@ JRequest::setVar('layout', $layout);
  * going to try to load a package so u can access the form and list
  */
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
-//if (!$useajax) {
 $listId = intval($params->get('list_id', 1));
 
 $viewName = 'list';
 $viewType = $document->getType();
-$controller = new FabrikControllerList();
+$controller = new FabrikControllerList;
 
 // Set the default view name from the Request
 $view = clone($controller->getView($viewName, $viewType));
@@ -92,7 +90,7 @@ if ($params->get('ajax_links') !== '')
 	$listParams->set('list_ajax_links', $params->get('ajax_links'));
 }
 
-//set up prefilters - will overwrite ones defined in the list!
+// Set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array) $prefilters['filter-conditions'];
@@ -111,15 +109,18 @@ if (!JError::isError($model))
 	$view->setModel($model, true);
 }
 $view->isMambot = true;
+
 // Display the view
 $view->assign('error', $controller->getError());
 
 $post = JRequest::get('post');
-//build unique cache id on url, post and user id
+
+// Build unique cache id on url, post and user id
 $user = JFactory::getUser();
 $cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $listId));
 $cache = JFactory::getCache('com_fabrik', 'view');
-// f3 cache with raw view gives error
+
+// F3 cache with raw view gives error
 if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
 {
 	$view->display();
@@ -130,4 +131,3 @@ else
 }
 JRequest::setVar('layout', $origLayout);
 JRequest::setVar('fabrik_show_in_list', null);
-?>

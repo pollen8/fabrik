@@ -38,9 +38,14 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 	{
 		if ($params->get('ask-receipt'))
 		{
+			$label = $params->get('receipt_button_label', '');
+			if ($label === '')
+			{
+				$label = JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY');
+			}
 			$this->html = "
 			<label><input type=\"checkbox\" name=\"fabrik_email_copy\" class=\"contact_email_copy\" value=\"1\"  />
-			 " . JText::_('PLG_FORM_RECEIPT_EMAIL_ME_A_COPY') . "</label>";
+			 " . $label . "</label>";
 		}
 		else
 		{

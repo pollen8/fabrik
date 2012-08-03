@@ -454,9 +454,10 @@ class FabrikModelList extends FabModelAdmin
 				unset($joins[$i]);
 				continue;
 			}
-			$fields = $fabrikDb->getTableFields(array($join->join_from_table, $join->table_join));
-			$join->joinFormFields = array_keys($fields[$join->join_from_table]);
-			$join->joinToFields = array_keys($fields[$join->table_join]);
+			$fields = $fabrikDb->getTableColumns($join->join_from_table);
+			$join->joinFormFields = array_keys($fields);
+			$fields = $fabrikDb->getTableColumns($join->table_join);
+			$join->joinToFields = array_keys($fields);
 		}
 		// $$$ re-index the array in case we zapped anything
 		return array_values($joins);
@@ -838,7 +839,7 @@ class FabrikModelList extends FabModelAdmin
 	protected function updateElements($row)
 	{
 		$params = json_decode($row->params);
-		if ($params->list_search_elements === '')
+		if (!isset($params->list_search_elements) || $params->list_search_elements === '')
 		{
 			return;
 		}
@@ -1157,7 +1158,7 @@ class FabrikModelList extends FabModelAdmin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
 		$elementTypes = JRequest::getVar('elementtype', array());
-		/* $fields = $fabrikDb->getTableFields(array($tableName));
+		/* $fields = $fabrikDb->getTableColumns(array($tableName));
 		$fields = $fields[$tableName]; */
 		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toSQL();
@@ -1928,7 +1929,7 @@ class FabrikModelList extends FabModelAdmin
 					// List only
 						break;
 					case 1:
-						// List and form
+					// List and form
 						$form = $this->deleteAssociatedForm($table);
 						break;
 					case 2:
@@ -1998,7 +1999,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$groupids = (array) $db->loadResultArray();
+		$groupids = (array) $db->loadColumn();
 
 		// Delete groups
 		$groupModel = JModel::getInstance('Group', 'FabrikModel');
@@ -2075,7 +2076,7 @@ class FabrikModelList extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->select($key)->from($name);
 		$db->setQuery($query);
-		$existingids = $db->loadResultArray();
+		$existingids = $db->loadColumn();
 
 		// Build the row object to insert/update
 		foreach ($xml as $row)

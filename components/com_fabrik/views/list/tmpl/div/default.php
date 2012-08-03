@@ -26,7 +26,6 @@ if ($this->showFilters) {
 			<?php
 			$gCounter = 0;
 			foreach ($this->rows as $groupedby => $group) {
-			
 			if ($this->isGrouped) {
 			?>
 			
@@ -51,19 +50,28 @@ if ($this->showFilters) {
 				echo $this->loadTemplate('row');
 		 	}
 		 	?>
-		<?php if ($this->hasCalculations) { ?>
-				<ul class="fabrik_calculations">
-				<?php
-				foreach ($this->calculations as $cal) {
-					echo "<li class=\"fabrik_row___".$el."\">";
-					echo array_key_exists($groupedby, $cal->grouped ) ? $cal->grouped[$groupedby] : $cal->calc;
-					echo  "</li>";
-				}
-				?>
-				</ul>
-			<?php }
+ 
+			<?php 
+			if ($this->hasCalculations) 
+			{ ?>
+					<ul class="fabrik_calculations">
+					<?php
+					foreach ($this->calculations as $cal) {
+						echo "<li>";
+						echo array_key_exists($groupedby, $cal->grouped ) ? $cal->grouped[$groupedby] : $cal->calc;
+						echo  "</li>";
+					}
+					?>
+					</ul>
+						
+			<?php 
+			}
+			?>
+
+			<?php
 			$gCounter++;
 			}?>
+
 		</div>
 		<?php	
 		echo $this->nav;
@@ -72,3 +80,4 @@ if ($this->showFilters) {
 </div>
 
 </form>
+<?php echo $this->table->outro;?>

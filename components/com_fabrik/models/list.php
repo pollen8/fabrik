@@ -154,7 +154,7 @@ class FabrikFEModelList extends JModelForm
 	var $tableAction = null;
 
 	/** @var bool doing CSV import */
-	var $_importingCSV = false;
+	public $importingCSV = false;
 
 	var $encrypt = array();
 
@@ -4098,12 +4098,12 @@ class FabrikFEModelList extends JModelForm
 				$conditions = (array) $prefilters['filter-conditions'];
 				if (!empty($conditions))
 				{
-					$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields');
-					$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions');
-					$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value');
-					$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access');
-					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', '');
-					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', '');
+					$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields', array());
+					$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions', array());
+					$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value', array());
+					$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access', array());
+					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', '', array());
+					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', '', array());
 				}
 			}
 			$join = 'WHERE';
@@ -5874,12 +5874,12 @@ class FabrikFEModelList extends JModelForm
 		$primaryKey = str_replace("`", "", $primaryKey);
 
 		// $$$ hugh - if we do this, CSV importing can't maintain existing keys
-		if (!$this->_importingCSV)
+		if (!$this->importingCSV)
 		{
 			// If its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey)
 			{
-				if (is_numeric($oRecord->$primaryKey))
+				if (isset($oRecord->$primaryKey) && is_numeric($oRecord->$primaryKey))
 				{
 					$oRecord->$primaryKey = $rowId;
 				}

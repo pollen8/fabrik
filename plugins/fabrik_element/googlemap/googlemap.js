@@ -38,11 +38,14 @@ var FbGoogleMap = new Class({
 	},
 	
 	loadScript: function () {
-		var script = document.createElement("script");
-		script.type = "text/javascript";
-		var s = this.options.sensor === false ? 'false' : 'true';
-		script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
-		document.body.appendChild(script);
+		if (typeOf(Fabrik.googleMap) === 'null') {
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			var s = this.options.sensor === false ? 'false' : 'true';
+			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
+			document.body.appendChild(script);
+			Fabrik.googelMap = true;
+		}
 	},
 	
 	initialize : function (element, options) {
@@ -175,7 +178,7 @@ var FbGoogleMap = new Class({
 									component.types.each(function (type) {
 										if (type === 'street_number') {
 											if (this.options.reverse_geocode_fields.route) {
-												$(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
+												document.id(this.options.reverse_geocode_fields.route).value = component.long_name + ' ';
 											}
 										}
 										else if (type === 'route') {
@@ -386,8 +389,17 @@ var FbGoogleMap = new Class({
 		if (this.options.geocode === '2') {
 			if (this.options.geocode_event !== 'button') {
 				this.options.geocode_fields.each(function (field) {
-					if (typeOf(document.id(field)) !== 'null') {
-						document.id(field).addEvent('keyup', this.geoCode.bindWithEvent(this));
+					var f = document.id(field);
+					if (typeOf(f) !== 'null') {
+						f.addEvent('keyup', function (e) {
+							this.geoCode();
+						}.bind(this));
+						
+						// Select lists, radios whatnots
+						f.addEvent('change', function (e) {
+							this.geoCode();
+						}.bind(this));
+
 					}
 				}.bind(this));
 			} else {

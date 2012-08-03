@@ -1,12 +1,10 @@
 <?php
-/*
- * Form Model
- *
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+/**
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
@@ -14,24 +12,33 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
+/**
+ * Abstract Fabrik Admin model
+ * 
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 abstract class FabModelAdmin extends JModelAdmin
 {
 
 	/**
 	 * get the list's active/selected plug-ins
+	 * 
 	 * @return array
 	 */
 
 	public function getPlugins()
 	{
 		$item = $this->getItem();
-		// load up the active plug-ins
+
+		// Load up the active plug-ins
 		$dispatcher = JDispatcher::getInstance();
 		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
 		$return = array();
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		//@todo prob wont work for any other model that extends this class except for the form/list model
+
+		// @TODO prob wont work for any other model that extends this class except for the form/list model
 		switch (get_class($this))
 		{
 			case 'FabrikModelList':
@@ -41,7 +48,7 @@ abstract class FabModelAdmin extends JModelAdmin
 				$class = 'form';
 		}
 		$feModel = JModel::getInstance($class, 'FabrikFEModel');
-		$feModel->setId($this->getState($class.'.id'));
+		$feModel->setId($this->getState($class . '.id'));
 
 		$state = isset($item->params['plugin_state']) ? $item->params['plugin_state'] : array();
 		foreach ($plugins as $x => $plugin)
