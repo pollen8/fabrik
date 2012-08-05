@@ -44,6 +44,10 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $this->getlistModel()->getTable()->form_id;
 		$row_id = $thisRow->__pk_val;
+		if (empty($data))
+		{
+			$data = array(0);
+		}
 		$str = '';
 		for ($i = 0; $i < count($data); $i++)
 		{
