@@ -3716,7 +3716,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		$isView = $params->get('isview', null);
 
-		if (!is_null($isView) && (int) $isView > 0)
+		if (!is_null($isView) && (int) $isView >= 0)
 		{
 			return $isView;
 		}
