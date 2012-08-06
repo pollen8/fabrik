@@ -372,9 +372,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$eval = $params->get('dabase_join_label_eval');
 		if (trim($eval) !== '')
 		{
-			foreach ($this->_optionVals[$sql] as &$opt)
+			foreach ($this->_optionVals[$sql] as $key => &$opt)
 			{
-				eval($eval);
+				// $$$ hugh - added allowing removing an option by returning false
+				if (eval($eval) === false)
+				{
+					unset($this->_optionVals[$sql][$key]);
+				}
 			}
 		}
 		return $this->_optionVals[$sql];
