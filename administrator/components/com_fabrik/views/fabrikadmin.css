@@ -56,3 +56,8 @@ ul.subelements table:hover{
 #jform_params_prefilters_modal-table > tbody > tr:first-child td:first-child {
     opacity: 0;
 }
+
+/* hack to prevent MCE editors from stepping across the page if you have more than one */
+table.mceLayout {
+	clear: both;
+}
