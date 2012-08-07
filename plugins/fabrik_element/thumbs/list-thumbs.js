@@ -15,14 +15,13 @@ var FbThumbsList = new Class({
 	
 	initialize: function (id, options) {
 		this.setOptions(options);
-		//this.spinner = Fabrik.loader.getSpinner();
 		this.col = $$('.' + id);
 		this.origThumbUp = {};
 		this.origThumbDown = {};
 		this.col.each(function (tr) {
 			var row = tr.getParent('.fabrik_row');
 			if (row) {
-				var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
+				var rowid = row.id.replace('list_' + this.options.renderContext + '_row_', '');
 				var thumbup = tr.getElements('.thumbup');
 				var thumbdown = tr.getElements('.thumbdown');
 				thumbup.each(function (thumbup) {
@@ -67,7 +66,7 @@ var FbThumbsList = new Class({
 
 	doAjax: function (e, thumb) {
 		var row = e.getParent('.fabrik_row');
-		var rowid = row.id.replace('list_' + this.options.listid + '_row_', '');
+		var rowid = row.id.replace('list_' + this.options.renderContext + '_row_', '');
 		var count_thumb = document.id('count_thumb' + thumb + rowid);
 		Fabrik.loader.start(count_thumb);
 		this.thumb = thumb;
@@ -93,7 +92,6 @@ var FbThumbsList = new Class({
 				var count_thumbdown = document.id('count_thumbdown' + rowid);
 				var thumbup = row.getElements('.thumbup');
 				var thumbdown = row.getElements('.thumbdown');
-				this.spinner.dispose();
 				Fabrik.loader.stop(count_thumb);
 				//r = r.split(this.options.splitter2);
 				r = JSON.decode(r);

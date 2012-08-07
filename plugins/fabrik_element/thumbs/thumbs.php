@@ -311,12 +311,22 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 			$userid = $db->quote($hash);
 		}
 		$elementid = $this->getElement()->id;
-		$db
-			->setQuery(
-				"INSERT INTO #__{package}_thumbs (user_id, listid, formid, row_id, thumb, date_created, element_id)
-		values ($userid, $listid, $formid, $row_id, " . $db->quote($thumb)
-					. ", $strDate, $elementid)
-			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = " . $db->quote($thumb));
+		$db->setQuery(
+			"INSERT INTO #__{package}_thumbs
+				(user_id, listid, formid, row_id, thumb, date_created, element_id)
+				values (
+					" . $db->Quote($userid) . ",
+					" . $db->Quote($listid) . ",
+					" . $db->Quote($formid) . ",
+					" . $db->Quote($row_id) . ",
+					" . $db->quote($thumb) . ",
+					" . $db->Quote($strDate) . ",
+					" . $db->Quote($elementid) . "
+				)
+				ON DUPLICATE KEY UPDATE
+					date_created = " . $db->Quote($strDate) . ",
+					thumb = " . $db->quote($thumb)
+		);
 		$db->query();
 		if ($db->getErrorNum())
 		{
@@ -439,6 +449,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$opts->elid = $this->getElement()->id;
 		$opts->myThumbs = $listMyThumbs;
 		$opts->userid = "$userid";
+		$opts->renderContext = $this->getListModel()->getRenderContext();
 		$opts = json_encode($opts);
 		return "new FbThumbsList('$id', $opts);\n";
 	}
