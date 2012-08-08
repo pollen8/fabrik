@@ -266,11 +266,12 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		 *  as this method can run on render or on submit we have to do a little check to see which one we should use.
 		 *  really we should use the same form property to store the data regardless of form state
 		 */
+		$this->html = array();
 		if (!empty($formModel->_formData))
 		{
 			$this->html = $formModel->_formData;
 		}
-		else
+		else if (!empty($formModel->_data))
 		{
 			$this->html = $formModel->_data;
 		}
