@@ -291,6 +291,10 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 
 	private function doThumb($listid, $formid, $row_id, $thumb)
 	{
+		if (!$this->canUse())
+		{
+			return;
+		}
 		$db = FabrikWorker::getDbo();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
