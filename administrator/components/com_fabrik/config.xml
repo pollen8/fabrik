@@ -126,9 +126,11 @@
 		<field name="include_lightbox_js"
 			default="1"
 			label="COM_FABRIK_LIGHTBOX_JS_LABEL"
-			type="radio">
+			description="COM_FABRIK_LIGHTBOX_JS_DESC"
+			type="list">
 				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+				<option value="1">Auto</option>
+				<option value="2">JYES</option>
 		</field>
 		
 		<field name="tipfx"

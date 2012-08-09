@@ -7797,7 +7797,11 @@ class FabrikFEModelList extends JModelForm
 
 	public function requiresSlimbox()
 	{
-
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		if ($fbConfig->get('include_lightbox_js', 1) == 2)
+		{
+			return true;
+		}
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		foreach ($groups as $group)
