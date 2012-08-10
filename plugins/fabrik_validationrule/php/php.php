@@ -65,6 +65,7 @@ class plgFabrik_ValidationrulePhp extends plgFabrik_Validationrule
 		$domatch = $domatch[$pluginc];
 		if (!$domatch)
 		{
+			$formModel = $elementModel->getFormModel();
 			$php_code = $params->get('php-code');
 			return eval($php_code[$pluginc]);
 		}
