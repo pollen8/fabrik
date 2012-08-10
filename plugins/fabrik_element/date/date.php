@@ -2104,7 +2104,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$id = $this->getFilterHtmlId(0);
 		$id2 = $this->getFilterHtmlId(1);
 
-		$opts = $this->_CalendarJSOpts($id);
+		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
 		$opts->type = $element->filter_type;
