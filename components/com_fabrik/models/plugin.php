@@ -343,7 +343,11 @@ class FabrikPlugin extends JPlugin
 				case 'edit':
 					if ($model->$k == 0)
 					{
-						$ok = isset($model->_copyingRow) ? !$model->copyingRow() : false;
+						// $$$ hugh - don't think this is right, as it'll return true when it shouldn't.
+						// Think if this row is being copied, then by definition it's not being edited, it's new.
+						// For now, just set $ok to false;
+						// $ok = isset($model->_copyingRow) ? !$model->copyingRow() : false;
+						$ok = false;
 					}
 					break;
 			}
