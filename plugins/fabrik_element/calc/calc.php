@@ -252,7 +252,10 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$form = $this->getForm();
-		$d = $form->_formData;
+		// $$$ hugh - need to copy the array, otherwise we blow away join data
+		// from _formData in $joindata foreach below.
+		//$d = $form->_formData;
+		$d = unserialize(serialize($form->_formData));
 		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
