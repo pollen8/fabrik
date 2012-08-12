@@ -6507,7 +6507,12 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			// Parse for default values only
-			$pattern = "/({[^}]+}).*}?/s";
+			// $$$ hugh - this pattern is being greedy, so for example ...
+			// foo {$my->id} bar {$my->id} gaprly
+			// ... matches everyting from first to last brace, like ...
+			// {$my->id} bar {$my->id}
+			//$pattern = "/({[^}]+}).*}?/s";
+			$pattern =   "/({[^}]+})/";
 			for ($i = 0; $i < count($selValue); $i++)
 			{
 				$ok = preg_match($pattern, $selValue[$i], $matches);
