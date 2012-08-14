@@ -1851,9 +1851,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			return '';
 		}
 		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
-		$aclEl = $aclEl->getFullName();
 		if (!empty($aclEl))
 		{
+			$aclEl = $aclEl->getFullName();
 			$canDownload = in_array($data[$aclEl], JFactory::getUser()->authorisedLevels());
 			if (!$canDownload)
 			{
