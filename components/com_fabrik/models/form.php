@@ -1409,10 +1409,46 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				continue;
 			}
 			$oJoin = $aPreProcessedJoin['join'];
+			// 3.0 test on repeatElement param type
+			if (is_string($oJoin->params))
+			{
+				$oJoin->params = json_decode($oJoin->params);
+			}
+
+			if (!isset($oJoin->params->pk) || empty($oJoin->params->pk))
+			{
+				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
+				$oJoinPk = $oJoin->table_join . '___';
+				foreach ($cols as $col)
+				{
+					if ($col->Key == 'PRI')
+					{
+						$oJoinPk .= $col->Field;
+					}
+				}
+			}
+			else {
+				$oJoinPk = FabrikString::safeColNameToArrayKey($oJoin->params->pk);
+			}
+
 			if (array_key_exists('Copy', $this->_formData))
 			{
 				$this->_rowId = '';
-				$this->_formData['join'][$oJoin->id][$oJoin->table_join . '___' . $oJoin->table_key] = '';
+				// $$$ hugh - nope, this is wrong, builds the wrong element name, we need to use the join's PK, not it's FK,
+				// so we need the new 'pk' param if available, or build it from first principles.
+				// So ... moved that code to just above, where we now build the oJoinPk.
+				// $this->_formData['join'][$oJoin->id][$oJoin->table_join . '___' . $oJoin->table_key] = '';
+				if (is_array($this->_formData['join'][$oJoin->id][$oJoinPk]))
+				{
+					foreach ($this->_formData['join'][$oJoin->id][$oJoinPk] as &$ojpk)
+					{
+						$ojpk = '';
+					}
+				}
+				else
+				{
+					$this->_formData['join'][$oJoin->id][$oJoinPk] = '';
+				}
 				$this->_formData['rowid'] = '';
 			}
 			// $$$ rob 22/02/2011 could be a mutlfileupload with no images selected?
@@ -1425,11 +1461,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$groups = $this->getGroupsHiarachy();
 			$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
 
-			// 3.0 test on repeatElement param type
-			if (is_string($oJoin->params))
-			{
-				$oJoin->params = json_decode($oJoin->params);
-			}
+
 			$joinType = isset($oJoin->params->type) ? $oJoin->params->type : '';
 			if ((int) $oJoin->group_id !== 0 && $joinType !== 'repeatElement')
 			{
@@ -1517,6 +1549,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data))
 			{
 				// $$$rob get the join tables full primary key
+				// $$$ hugh now building this further up, as we need it earlier
+				/*
 				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
 				$oJoinPk = $oJoin->table_join . '___';
 				foreach ($cols as $col)
@@ -1526,6 +1560,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$oJoinPk .= $col->Field;
 					}
 				}
+				*/
 				$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 
 				$repeatParams = array();
