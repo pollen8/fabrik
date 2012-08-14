@@ -2390,7 +2390,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
 			// ... serve up the file ...
 			echo $filecontent;
-			$this->downloadEmail($row, $filepath);
+			//$this->downloadEmail($row, $filepath);
 			$this->downloadHit($rowid, $repeatcount);
 			$this->downloadLog($row, $filepath);
 			// ... and we're done.
