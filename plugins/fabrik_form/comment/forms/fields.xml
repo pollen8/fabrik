@@ -5,7 +5,6 @@
 			<field default="0" label="PLG_FORM_COMMENT_TYPE_LABEL" name="comment_method" repeat="true" type="list">
 					<option value="disqus">PLG_FORM_COMMENT_DISQUS</option>
 					<option value="intensedebate">PLG_FORM_COMMENT_INTENSE_DEBATE</option>
-					<option value="jskit">PLG_FORM_COMMENT_JSKIT</option>
 					<option value="jcomment">JCOMMENT</option>
 					<option value="internal">PLG_FORM_COMMENT_LOCAL_COMMENTING</option>
 			</field>
@@ -14,7 +13,7 @@
 				
 			<field description="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_DESC" label="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_LABEL" name="comment-intesedebate-code" repeat="true" size="30" type="text"/>
 				
-			<field default="PLG_FORM_COMMENT_LOCAL_COMMENTING_SETTINGS" repeat="true" type="spacer"/>
+			<field label="PLG_FORM_COMMENT_LOCAL_COMMENTING_SETTINGS" repeat="true" type="spacer"/>
 
 			<field description="PLG_FORM_COMMENT_LOCK_COMMENTS_DESC" label="PLG_FORM_COMMENT_LOCK_COMMENTS_LABEL" name="comment_lock_element" repeat="true" type="listfields" valueformat="tableelement"/>
 			
