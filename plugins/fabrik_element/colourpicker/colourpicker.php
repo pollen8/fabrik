@@ -14,13 +14,16 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.colourpicker
+ * @since       3.0
  */
 
 class plgFabrik_ElementColourpicker extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'CHAR(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '10';
 
 	/**
@@ -82,6 +85,7 @@ class plgFabrik_ElementColourpicker extends plgFabrik_Element
 		$vars = array_pad($vars, 3, 0);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$c = new stdClass;
+
 		// 14/06/2011 changed over to color param object from ind colour settings
 		$c->red = (int) $vars[0];
 		$c->green = (int) $vars[1];

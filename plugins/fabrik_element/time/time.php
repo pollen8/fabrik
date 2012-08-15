@@ -2,7 +2,7 @@
 /**
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
- * @author       Jaanus Nurmoja
+ * @author      Jaanus Nurmoja
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -15,19 +15,23 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
+ * @since       3.0
  */
 class plgFabrik_ElementTime extends plgFabrik_Element
 {
 
 	public $hasSubElements = true;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TIME';
 
 	/**
-	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the form element
+	 *
+	 * @param   array  $data  to      prepopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string  returns element html
 	 */
 
 	function render($data, $repeatCounter = 0)
@@ -53,7 +57,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		{
 			if ($value)
 			{
-				//avoid 0000-00-00
+				// Avoid 0000-00-00
 				list($hour, $min, $sec) = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
@@ -82,7 +86,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		}
 		else
 		{
-			//wierdness for failed validaion
+			// Wierdness for failed validaion
 			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode(':', $value);
 			$hourvalue = JArrayHelper::getValue($value, 0);
 			$minvalue = JArrayHelper::getValue($value, 1);
@@ -95,7 +99,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 				$hours[] = JHTML::_('select.option', $v, $i);
 			}
 			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('MINUTE'))));
-			//siin oli enne $monthlabels, viisin ülespoole
+
+			// Siin oli enne $monthlabels, viisin ülespoole
 			for ($i = 0; $i < 60; $i++)
 			{
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -111,7 +116,8 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-			//$name already suffixed with [] as element hasSubElements = true
+
+			// $name already suffixed with [] as element hasSubElements = true
 			if ($fd != 'i:s')
 			{
 				$str[] = JHTML::_('select.genericlist', $hours, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $hourvalue) . ' '
@@ -131,6 +137,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	/**
 	 * can be overwritten by plugin class
 	 * determines the value for the element in the form view
+	 *
 	 * @param array data
 	 * @param int when repeating joinded groups we need to know what part of the array to access
 	 * @param array options

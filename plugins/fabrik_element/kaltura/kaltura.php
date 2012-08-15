@@ -22,14 +22,15 @@ jimport('kaltura.kaltura_client');
 class plgFabrik_ElementKaltura extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -63,10 +64,10 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -162,9 +163,9 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 

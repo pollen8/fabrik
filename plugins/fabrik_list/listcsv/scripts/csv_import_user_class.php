@@ -149,7 +149,7 @@ class ImportCSVCreateUser {
 
 		if ($isNew) {
 			$now =& JFactory::getDate();
-			$user->set( 'registerDate', $now->toMySQL() );
+			$user->set( 'registerDate', $now->toSql() );
 		}
 
 		if (!$user->bind($userdata))

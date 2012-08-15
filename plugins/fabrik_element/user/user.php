@@ -16,6 +16,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.user
+ * @since       3.0
  */
 
 class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
@@ -24,10 +25,12 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	/** @var bol is a join element */
 	var $_isJoin = true;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'INT(11)';
 
 	/**
 	 * bit of a hack to set join_db_name in params
+	 *
 	 * @return params
 	 */
 

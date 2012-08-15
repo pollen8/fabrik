@@ -1065,7 +1065,7 @@ class FabrikModelList extends FabModelAdmin
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$createdate = JFactory::getDate();
-		$createdate = $createdate->toMySQL();
+		$createdate = $createdate->toSql();
 		$post = JRequest::get('post');
 		$tableName = $post['jform']['db_table_name'];
 		$formModel = $this->getFormModel();
@@ -1334,7 +1334,7 @@ class FabrikModelList extends FabModelAdmin
 			$this->formModel->getForm();
 			jimport('joomla.utilities.date');
 			$createdate = JFactory::getDate();
-			$createdate = $createdate->toMySQL();
+			$createdate = $createdate->toSql();
 			$form = $this->getTable('Form');
 			$item = $this->getTable('List');
 			$form->label = $item->label;
@@ -1389,7 +1389,7 @@ class FabrikModelList extends FabModelAdmin
 		$group = $this->getTable('Group');
 		$group->bind($data);
 		$group->id = null;
-		$group->created = $createdate->toMySQL();
+		$group->created = $createdate->toSql();
 		$group->created_by = $user->get('id');
 		$group->created_by_alias = $user->get('username');
 		$group->published = 1;
@@ -1493,7 +1493,7 @@ class FabrikModelList extends FabModelAdmin
 
 			$item->form_id = $formModel->getTable()->id;
 			$createdate = JFactory::getDate();
-			$createdate = $createdate->toMySQL();
+			$createdate = $createdate->toSql();
 			$item->label = $post['names'][$pk]['listLabel'];
 			$item->created = $createdate;
 			$item->modified = $db->getNullDate();

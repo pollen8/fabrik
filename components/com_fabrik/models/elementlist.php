@@ -27,8 +27,10 @@ class plgFabrik_ElementList extends plgFabrik_Element
 
 	public $defaults = null;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
+	/** @var  string  db table field size */
 	protected $inputType = 'radio';
 
 	/** @var bool - should the table render functions use html to display the data */
@@ -283,7 +285,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 	}
 
 	/**
-	 * used by radio and dropdown elements to get a dropdown list of their unique
+	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter

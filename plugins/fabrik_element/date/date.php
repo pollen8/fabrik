@@ -806,7 +806,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
 			if ($params->get('date_alwaystoday', false))
 			{
-				// $value = JFactory::getDate()->toMySQL(false);
+				// $value = JFactory::getDate()->toSql(false);
 				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
 				if ($store_as_local)
 				{
@@ -817,7 +817,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				{
 					$date = JFactory::getDate();
 				}
-				$value = $date->toMySQL();
+				$value = $date->toSql();
 			}
 			else
 			{
@@ -1574,7 +1574,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		$bstr = $b['year'] . '-' . $b['mon'] . '-' . $b['day'] . ' ' . $b['hour'] . ':' . $b['min'] . ':' . $b['sec'];
 		$date = JFactory::getDate($bstr);
-		if (in_array($v, $this->getNullDates()) || $v === $date->toMySQL())
+		if (in_array($v, $this->getNullDates()) || $v === $date->toSql())
 		{
 			return $v;
 		}
@@ -1731,7 +1731,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	public function simpleAvg($data)
 	{
 		$avg = $this->simpleSum($data) / count($data);
-		return JFactory::getDate($avg)->toMySQL();
+		return JFactory::getDate($avg)->toSql();
 	}
 
 	/**

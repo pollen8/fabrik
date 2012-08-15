@@ -18,27 +18,34 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.rating
+ * @since       3.0
  */
 
 class plgFabrik_ElementRating extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TINYINT(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '1';
 
 	/** @var array average ratings */
-	var $avgs = null;
+	protected $avgs = null;
 
 	/** @bool can the rating element be used by the current user*/
-	var $canRate = null;
+	protected $canRate = null;
 
 	/** @var array creator id */
-	var $creatorIds = null;
+	protected $creatorIds = null;
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_Element::renderListData()
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -103,6 +110,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		return parent::renderListData($data, $thisRow);
 	}
 
+	/**
+	 * Display the file in the table
+	 *
+	 * @param   string  $data     current cell data
+	 * @param   array   $thisRow  current row data
+	 *
+	 * @return	string
+	 */
+
 	private function _renderListData($data, $thisRow)
 	{
 		$params = $this->getParams();
@@ -123,15 +139,18 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * @param $data string/int
-	 * @param $listid int table id
-	 * @param $formid int form id
-	 * @param $row_id int row id
-	 * @param $ids array all row ids
+	 * Get average rating
+	 *
+	 * @param   mixed  $data    string/int
+	 * @param   int    $listid  int list id
+	 * @param   int    $formid  int form id
+	 * @param   int    $row_id  int row id
+	 * @param   array  $ids     all row ids
+	 *
 	 * @return array(int average rating, int total)
 	 */
 
-	function getRatingAverage($data, $listid, $formid, $row_id, $ids = array())
+	protected function getRatingAverage($data, $listid, $formid, $row_id, $ids = array())
 	{
 		if (empty($ids))
 		{
@@ -142,10 +161,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 			JArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
-			// do this  query so that table view only needs one query to load up all ratings
-			$query = "SELECT row_id, AVG(rating) AS r, COUNT(rating) AS total FROM #__{package}_ratings WHERE rating <> -1 AND listid = "
-				. (int) $listid . " AND formid = " . (int) $formid . " AND element_id = " . (int) $elementid;
-			$query .= " AND row_id IN (" . implode(',', $ids) . ") GROUP BY row_id";
+
+			$query = $db->getQuery(true);
+			$query->select('row_id, AVG(rating) AS r, COUNT(rating) AS total')->from(' #__{package}_ratings')
+				->where(array('rating <> -1', 'listid = ' . (int) $listid, 'formid = ' . (int) $formid, 'element_id = ' . (int) $elementid))
+				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+
+			// Do this  query so that list view only needs one query to load up all ratings
 			$db->setQuery($query);
 			$this->avgs = (array) $db->loadObjectList('row_id');
 		}
@@ -158,11 +180,14 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * Enter description here ...
-	 * @param unknown_type $listid
-	 * @param unknown_type $formid
-	 * @param unknown_type $row_id
-	 * @param unknown_type $ids
+	 * Get creator ids
+	 *
+	 * @param   int    $listid  int list id
+	 * @param   int    $formid  int form id
+	 * @param   int    $row_id  int row id
+	 * @param   array  $ids     all row ids
+	 *
+	 * @return  int  user id
 	 */
 
 	protected function getCreatorId($listid, $formid, $row_id, $ids = array())
@@ -176,10 +201,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 			JArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
-			// do this  query so that table view only needs one query to load up all ratings
-			$query = "SELECT row_id, user_id FROM #__{package}_ratings WHERE rating <> -1 AND listid = " . (int) $listid . " AND formid = "
-				. (int) $formid . " AND element_id = " . (int) $elementid;
-			$query .= " AND row_id IN (" . implode(',', $ids) . ") GROUP BY row_id";
+			$query = $db->getQuery(true);
+			$query->select('row_id, user_id')->from('#__{package}_ratings')
+				->where(array('rating <> -1', 'listid = ' . (int) $listid, 'formid = ' . (int) $formid, 'element_id = ' . (int) $elementid))
+				->where('row_id IN (' . implode(',', $ids) . ')')->group('row_id');
+
+			// Do this  query so that table view only needs one query to load up all ratings
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
 			if ($db->getErrorNum() != 0)
@@ -206,9 +233,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * can we rate this row
-	 * @param int $row_id
-	 * @param array $ids
+	 * Can we rate this row
+	 *
+	 * @param   int    $row_id  row id
+	 * @param   array  $ids     list row ids
+	 *
 	 * @return bool
 	 */
 
@@ -234,13 +263,15 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-	 * @param array data to preopulate element with
-	 * @param int repeat group counter
-	 * @return string returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -324,10 +355,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * called via widget ajax, stores the selected rating and returns the average
+	 * Called via widget ajax, stores the selected rating and returns the average
+	 *
+	 * @return  void
 	 */
 
-	function onAjax_rate()
+	public function onAjax_rate()
 	{
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
@@ -342,10 +375,14 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		if (JRequest::getVar('mode') == 'creator-rating')
 		{
 			// @todo FIX for joins as well
-			//store in elements table as well
+
+			// Store in elements table as well
 			$db = $listModel->getDb();
 			$element = $this->getElement();
-			$db->setQuery("UPDATE $list->db_table_name SET $element->name = $rating WHERE $list->db_primary_key = " . $db->quote($row_id));
+			$query = $db->getQuery(true);
+			$query->update($list->db_table_name)
+			->set($element->name . '=' . $rating)->where($list->db_primary_key . ' = ' . $db->quote($row_id));
+			$db->setQuery($query);
 			$db->query();
 		}
 		$this->getRatingAverage('', $listid, $formid, $row_id);
@@ -360,9 +397,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 *
 	 * Create the rating table if it doesn't exist.
+	 *
+	 * @return  void
 	 */
+
 	private function createRatingTable()
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -385,7 +424,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * main method to store a rating
+	 * Main method to store a rating
+	 *
 	 * @param $listid
 	 * @param $formid
 	 * @param $row_id
@@ -399,7 +439,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$config = JFactory::getConfig();
 		$tzoffset = $config->getValue('config.offset');
 		$date = JFactory::getDate('now', $tzoffset);
-		$strDate = $db->quote($date->toMySQL());
+		$strDate = $db->quote($date->toSql());
 		$userid = $db->quote($this->getStoreUserId($listid, $row_id));
 		$elementid = $this->getElement()->id;
 		$db
@@ -473,11 +513,13 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	}
 
 	/**
-	 * get js to ini js object that manages the behaviour of the rating element (non-PHPdoc)
-	 * @see components/com_fabrik/models/plgFabrik_Element#elementListJavascript()
+	 * Get JS code for ini element list js
+	 * Overwritten in plugin classes
+	 *
+	 * @return string
 	 */
 
-	function elementListJavascript()
+	public function elementListJavascript()
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
@@ -500,10 +542,31 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		return "new FbRatingList('$id', $opts);\n";
 	}
 
-	function includeInSearchAll($advancedMode = false)
+	/**
+	 * Should the element's data be returned in the search all?
+	 *
+	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
+	 *
+	 * @return  bool	true
+	 */
+
+	public function includeInSearchAll($advancedMode = false)
 	{
 		return false;
 	}
+
+	/**
+	 * Used by radio and dropdown elements to get a dropdown list of their unique
+	 * unique values OR all options - basedon filter_build_method
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array  text/value objects
+	 */
 
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
@@ -546,4 +609,3 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		return $return;
 	}
 }
-?>

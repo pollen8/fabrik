@@ -14,16 +14,20 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.textarea
+ * @since       3.0
  */
 
 class plgFabrik_ElementTextarea extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**
-	 * tagify a string
-	 * @param   string	to tagify
+	 * Tagify a string
+	 *
+	 * @param   string  $data  tagify
+	 *
 	 * @return  string	tagified string
 	 */
 
@@ -56,7 +60,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				}
 			}
 		}
-		// $$$ rbo 24/02/2011 remove duplicates from tags
+		// $$$ rob 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
 		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, array('alt' => 'tag'));
 		foreach ($data as $d)
@@ -88,10 +92,10 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -135,7 +139,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Does the element use the WYSWYG editor
-	 * 
+	 *
 	 * @return  bool	use wysiwyg editor
 	 */
 
@@ -156,7 +160,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
-	 * 
+	 *
 	 * @return  bool
 	 */
 
@@ -167,10 +171,10 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -257,11 +261,11 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Used to format the data when shown in the form's email
-	 * 
+	 *
 	 * @param   mixed  $value          element's data
 	 * @param   array  $data           form records data
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -277,9 +281,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -309,10 +313,10 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Internal element validation
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  repeeat group counter
-	 * 
+	 *
 	 * @return bool
 	 */
 
@@ -336,7 +340,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Get validation error - run through JText
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -371,7 +375,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	/**
 	 * Can the element plugin encrypt data
-	 * 
+	 *
 	 * @return  bool
 	 */
 

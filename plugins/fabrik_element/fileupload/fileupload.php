@@ -479,9 +479,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Display the file in the table
 	 *
-	 * @param	string	$data
-	 * @param	array	$thisRow
-	 * @param	int		repeat group count
+	 * @param   string  $data    current cell data
+	 * @param   array  $thisRow  current row data
+	 * @param   int    $i        repeat group count
+	 *
 	 * @return	string
 	 */
 
@@ -496,7 +497,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$skip_exists_check = (int) $params->get('fileupload_skip_check', '0');
 		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
 		{
-			// not sure but after update from 2.1 to 3 for podion data was an object
+			// Not sure but after update from 2.1 to 3 for podion data was an object
 			if (is_object($data))
 			{
 				$data = $data->file;

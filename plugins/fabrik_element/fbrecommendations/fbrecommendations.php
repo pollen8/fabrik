@@ -29,8 +29,10 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
 	 */
 	protected $hasLabel = false;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'INT(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '1';
 
 	/**

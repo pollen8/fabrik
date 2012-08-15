@@ -16,13 +16,16 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.sugarid
+ * @since       3.0
  */
 
 class plgFabrik_ElementSugarid extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'CHAR(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '36';
 
 	/**

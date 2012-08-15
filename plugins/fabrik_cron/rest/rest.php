@@ -2,8 +2,8 @@
 
 /**
  * A cron task to grab data from a REST API and insert it into a list
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @author Rob Clayburn
  * @copyright (C) Rob Clayburn
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -13,7 +13,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class plgFabrik_CronRest extends plgFabrik_Cron {
 
@@ -66,11 +66,11 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$db = FabrikWorker::getDbo();
 		//see if we have a list that already points to the table
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->nameQuote($table));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->quoteName($table));
 		$db->setQuery($query);
 		$res = (int) $db->loadResult();
 
-		$now = JFactory::getDate()->toMySQL();
+		$now = JFactory::getDate()->toSql();
 		$user = JFactory::getUser();
 
 		$data = array();

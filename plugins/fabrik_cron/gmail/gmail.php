@@ -96,13 +96,13 @@ print_r($result);exit;
 
 				$thisData[$fromField] = $overview->from;
 				$thisData[$titleField] = $this->getTitle( $overview);
-				$thisData[$dateField] = JFactory::getDate($overview->date)->toMySQL();
+				$thisData[$dateField] = JFactory::getDate($overview->date)->toSql();
 				$thisData['imageFound'] = false;
 
 				$thisData[$fromField] = (empty( $matches )) ? $overview->from : "<a href=\"mailto:$matches[1]\">$overview->from</a>";
 				//use server time for all incomming messages.
 				$date = JFactory::getDate();
-				$thisData['processed_date'] = $date->toMySQL();
+				$thisData['processed_date'] = $date->toSql();
 				$struct = imap_fetchstructure( $mbox, $overview->msgno);
 				$parts = create_part_array($struct);
 				foreach($parts as $part) {

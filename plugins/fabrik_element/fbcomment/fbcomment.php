@@ -30,6 +30,7 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 	 */
 	protected $hasLabel = false;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'INT(%s)';
 
 	protected $fieldLength = '1';

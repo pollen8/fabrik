@@ -22,6 +22,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 
 	public $hasSubElements = true;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'DATE';
 
 	/**

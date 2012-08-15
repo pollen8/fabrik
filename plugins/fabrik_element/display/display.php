@@ -19,6 +19,7 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementDisplay extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/** @var bool override default value as we don't want to record this in database*/

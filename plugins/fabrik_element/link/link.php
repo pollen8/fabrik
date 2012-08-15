@@ -21,6 +21,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 	var $hasSubElements = true;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**

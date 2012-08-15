@@ -18,7 +18,7 @@ $rows = $db->loadObjectList();
 
 //RECORD IN SPAM REPORT TABLE
 $date = JFactory::getDate();
-$now = $date->toMySQL();
+$now = $date->toSql();
 $userid = $user->get('id');
 foreach($rows as $r) {
 	$sql = "INSERT INTO eadtu_spam_report (`time_date`, `reporter_id`, `project_id`) VALUES ( '$now', '$userid', '$r->id')";

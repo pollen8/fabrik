@@ -110,8 +110,10 @@ class plgFabrik_Element extends FabrikPlugin
 	/** @var bool ensures the query values are only escaped once */
 	var $escapedQueryValue = false;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'VARCHAR(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '255';
 
 	/**

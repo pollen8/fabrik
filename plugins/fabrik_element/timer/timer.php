@@ -19,6 +19,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.timer
+ * @since       3.0
  */
 
 class plgFabrik_ElementTimer extends plgFabrik_Element
@@ -26,6 +27,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	var $hasSubElements = false;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'DATETIME';
 
 	/**

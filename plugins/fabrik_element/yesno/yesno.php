@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.yesno
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.yesno
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,20 +15,25 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.yesno
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.yesno
+ * @since       3.0
  */
 
 class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TINYINT(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '1';
 
 	/**
 	 * this really does get just the default value (as defined in the element's settings)
-	 * @param array data to use as parsemessage for placeholder
+	 *
+	 * @param   array  $data  to use as parsemessage for placeholder
+	 *
 	 * @return unknown_type
 	 */
 
@@ -45,7 +50,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	public function renderListData($data, &$thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
-		//check if the data is in csv format, if so then the element is a multi drop down
+
+		// Check if the data is in csv format, if so then the element is a multi drop down
 		if ($data == '1')
 		{
 			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
@@ -57,10 +63,12 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * shows the data formatted for the table view with format = pdf
+	 * Shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
-	 * @param string data
-	 * @param object all the data in the tables current row
+	 *
+	 * @param   string  $data     cell data
+	 * @param   object  $thisRow  row data
+	 *
 	 * @return string formatted value
 	 */
 
@@ -78,7 +86,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * shows the data formatted for CSV export
+	 * Shows the data formatted for CSV export
+	 *
 	 * @param string data
 	 * @param object all the data in the tables current row
 	 * @return string formatted value
