@@ -238,7 +238,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 				$bits['class'] .= " disabled";
 				$bits['disabled'] = 'disabled';
 			}
-			if ($params->get('textarea-showmax'))
+			if ($params->get('textarea-showmax') && $params->get('textarea_limit_type', 'char') === 'char')
 			{
 				$bits['maxlength'] = $params->get('textarea-maxlength');
 			}
@@ -252,9 +252,18 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		if ($params->get('textarea-showmax'))
 		{
-			$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
-			$str .= "<div class=\"fabrik_characters_left\"><span>" . $charsLeft . "</span> " . JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT')
-				. "</div>";
+			if ($params->get('textarea_limit_type', 'char') === 'char')
+			{
+				$label = JText::_('PLG_ELEMENT_TEXTAREA_CHARACTERS_LEFT');
+				$charsLeft = $params->get('textarea-maxlength') - JString::strlen($value);
+			}
+			else
+			{
+				$label = JText::_('PLG_ELEMENT_TEXTAREA_WORDS_LEFT');
+				$charsLeft = $params->get('textarea-maxlength') - count(explode(' ', $value));
+			}
+
+			$str .= '<div class="fabrik_characters_left"><span>' . $charsLeft . '</span> ' . $label . '</div>';
 		}
 		return $str;
 	}
@@ -269,12 +278,12 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	 * @return  string	formatted value
 	 */
 
-	function getEmailValue($value, $data, $c)
+	public function getEmailValue($value, $data, $repeatCounter)
 	{
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin() && $groupModel->canRepeat())
 		{
-			$value = $value[$c];
+			$value = $value[$repeatCounter];
 		}
 		return $this->renderListData($value, new stdClass);
 	}
@@ -305,6 +314,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->max = $params->get('textarea-maxlength');
+		$opts->maxType = $params->get('textarea_limit_type', 'char');
 		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true : false;
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
 		$opts = json_encode($opts);
@@ -350,19 +360,27 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	}
 
 	/**
+	 * Get Joomfish translation type
+	 *
+	 * @deprecated
+	 *
 	 * @return  string	joomfish translation type e.g. text/textarea/referenceid/titletext
 	 */
 
-	function getJoomfishTranslationType()
+	public function getJoomfishTranslationType()
 	{
 		return 'textarea';
 	}
 
 	/**
+	 * Get Joomfish translation options
+	 *
+	 * @deprecated
+	 *
 	 * @return  array	key=>value options
 	 */
 
-	function getJoomfishOptions()
+	public function getJoomfishOptions()
 	{
 		$params = $this->getParams();
 		$return = array();
@@ -384,4 +402,3 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		return true;
 	}
 }
-?>

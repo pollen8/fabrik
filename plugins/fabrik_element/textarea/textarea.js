@@ -20,7 +20,8 @@ var FbTextarea = new Class({
 			this.element = document.id(this.options.element);
 		}
 		if (typeOf(this.element) === 'null') {
-			//can occur when element is part of hidden first group
+
+			// Can occur when element is part of hidden first group
 			return;
 		}
 		if (this.options.editable === true) {
@@ -35,7 +36,7 @@ var FbTextarea = new Class({
 				this.warningFX = new Fx.Morph(element, {duration: 1000, transition: Fx.Transitions.Quart.easeOut});
 				this.origCol = element.getStyle('color');
 				if (this.options.wysiwyg) {
-					tinymce.dom.Event.add(this.container, 'keydown', this.informKeyPress.bindWithEvent(this));
+					tinymce.dom.Event.add(this.container, 'keyup', this.informKeyPress.bindWithEvent(this));
 				} else {
 					this.container.addEvent('keydown', function (e) {
 						this.informKeyPress();
@@ -45,8 +46,13 @@ var FbTextarea = new Class({
 		}
 	},
 	
+	/**
+	 * Run when element cloned in repeating group
+	 * 
+	 * @param   int  c  repeat group counter
+	 */
+	
 	cloned: function (c) {
-		//c is the repeat group count
 		this.getTextContainer();
 		this.watchTextContainer();
 	},
@@ -61,7 +67,7 @@ var FbTextarea = new Class({
 				fconsole('didnt find wysiwyg edtor ...' + this.options.element);
 			}
 		} else {
-			//regrab the element for inline editing (otherwise 2nd col you edit doesnt pickup the textarea.
+			// Regrab the element for inline editing (otherwise 2nd col you edit doesnt pickup the textarea.
 			this.element = document.id(this.options.element);
 			this.container = this.element;
 		}
@@ -79,7 +85,9 @@ var FbTextarea = new Class({
 	setContent: function (c)
 	{
 		if (this.options.wysiwyg) {
-			return tinyMCE.getInstanceById(this.element.id).setContent(c);
+			var r = tinyMCE.getInstanceById(this.element.id).setContent(c);
+			this.moveCursorToEnd();
+			return r;
 		} else {
 			this.getTextContainer();
 			if (typeOf(this.container) !== 'null') {
@@ -89,14 +97,22 @@ var FbTextarea = new Class({
 		return null;
 	},
 	
+	/**
+	 * For tinymce move the cursor to the end
+	 */
+	moveCursorToEnd: function () {
+		var inst = tinyMCE.getInstanceById(this.element.id);
+		inst.selection.select(inst.getBody(), true); 
+		inst.selection.collapse(false);
+	},
+	
 	informKeyPress: function ()
 	{
 		var charsleftEl = this.getContainer().getElement('.fabrik_characters_left');
 		var content = this.getContent();
-		var charsLeft =  this.options.max - (content.length + 1);
-		if (charsLeft < 0) {
-			this.setContent(content.substring(0, this.options.max));
-			charsLeft = 0;
+		charsLeft = this.itemsLeft();
+		if (this.limitReached()) {
+			this.limitContent();
 			this.warningFX.start({'opacity': 0, 'color': '#FF0000'}).chain(function () {
 				this.start({'opacity': 1, 'color': '#FF0000'}).chain(function () {
 					this.start({'opacity': 0, 'color': this.origCol}).chain(function () {
@@ -108,6 +124,60 @@ var FbTextarea = new Class({
 			charsleftEl.setStyle('color', this.origCol);
 		}
 		charsleftEl.getElement('span').set('html', charsLeft);
+	},
+	
+	/**
+	 * How many content items left (e.g 1 word, 100 characters)
+	 * 
+	 * @return int
+	 */
+	
+	itemsLeft: function () {
+		var i = 0;
+		var content = this.getContent();
+		if (this.options.maxType === 'word') {
+			i = this.options.max - (content.split(' ').length) + 1;
+		} else {
+			i = this.options.max - (content.length + 1);
+		}
+		if (i < 0) {
+			i = 0;
+		}
+		return i;
+	},
+	
+	/**
+	 * Limit the content based on maxType and max e.g. 100 words, 2000 characters
+	 */
+	
+	limitContent: function () {
+		var c;
+		var content = this.getContent();
+		if (this.options.maxType === 'word') {
+			c = content.split(' ').splice(0, this.options.max);
+			c = c.join(' ');
+			c += (this.options.wysiwyg) ?  '&nbsp;' : ' ';
+		} else {
+			c = content.substring(0, this.options.max);
+		}
+		this.setContent(c);
+	},
+	
+	/**
+	 * Has the max content limit been reached?
+	 * 
+	 * @return bool
+	 */
+	
+	limitReached: function () {
+		var content = this.getContent();
+		if (this.options.maxType === 'word') {
+			var words = content.split(' ');
+			return words.length > this.options.max;
+		} else {
+			var charsLeft = this.options.max - (content.length + 1);
+			return charsLeft < 0 ? true : false;
+		}
 	},
 	
 	reset: function ()
