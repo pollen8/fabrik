@@ -4102,8 +4102,8 @@ class FabrikFEModelList extends JModelForm
 					$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions', array());
 					$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value', array());
 					$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access', array());
-					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', '', array());
-					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', '', array());
+					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', array());
+					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', array());
 				}
 			}
 			$join = 'WHERE';
