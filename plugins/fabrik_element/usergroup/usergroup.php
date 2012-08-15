@@ -20,6 +20,7 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementUsergroup extends plgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**

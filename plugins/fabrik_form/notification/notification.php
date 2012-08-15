@@ -179,7 +179,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$event = JRequest::getInt('rowid') == 0 ? $db->quote(JText::_('RECORD_ADDED')) : $db->quote(JText::_('RECORD_UPDATED'));
 		$date = JFactory::getDate();
-		$date = $db->quote($date->toMySQL());
+		$date = $db->quote($date->toSql());
 		$ref = $this->getRef();
 		$msg = $notify ? JText::_('PLG_CRON_NOTIFICATION_ADDED') : JText::_('PLG_CRON_NOTIFICATION_REMOVED');
 		$app = JFactory::getApplication();

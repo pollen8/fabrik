@@ -15,9 +15,6 @@ jimport('joomla.application.component.model');
 // Required for fabble
 require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 
-// Required for fabble
-require_once COM_FABRIK_FRONTEND . '/models/parent.php';
-
 class FabrikPlugin extends JPlugin
 {
 
@@ -347,7 +344,12 @@ class FabrikPlugin extends JPlugin
 				case 'edit':
 					if ($model->$k == 0)
 					{
-						$ok = isset($model->copyingRow) ? !$model->copyingRow() : false;
+						/** $$$ hugh - don't think this is right, as it'll return true when it shouldn't.
+						 * Think if this row is being copied, then by definition it's not being edited, it's new.
+						 * For now, just set $ok to false;
+						 * $ok = $ok = isset($model->copyingRow) ? !$model->copyingRow() : false;
+						 */
+						$ok = false;
 					}
 					break;
 			}

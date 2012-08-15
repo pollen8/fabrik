@@ -3706,7 +3706,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		$isView = $params->get('isview', null);
 
-		if (!is_null($isView) && (int) $isView > 0)
+		if (!is_null($isView) && (int) $isView >= 0)
 		{
 			return $isView;
 		}
@@ -5872,7 +5872,7 @@ class FabrikFEModelList extends JModelForm
 			// If its a repeat group which is also the primary group $primaryKey was not set.
 			if ($primaryKey)
 			{
-				if (is_numeric($oRecord->$primaryKey))
+				if (isset($oRecord->$primaryKey) && is_numeric($oRecord->$primaryKey))
 				{
 					$oRecord->$primaryKey = $rowId;
 				}
@@ -6500,7 +6500,12 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			// Parse for default values only
-			$pattern = "/({[^}]+}).*}?/s";
+			// $$$ hugh - this pattern is being greedy, so for example ...
+			// foo {$my->id} bar {$my->id} gaprly
+			// ... matches everyting from first to last brace, like ...
+			// {$my->id} bar {$my->id}
+			//$pattern = "/({[^}]+}).*}?/s";
+			$pattern =   "/({[^}]+})/";
 			for ($i = 0; $i < count($selValue); $i++)
 			{
 				$ok = preg_match($pattern, $selValue[$i], $matches);
@@ -7790,7 +7795,11 @@ class FabrikFEModelList extends JModelForm
 
 	public function requiresSlimbox()
 	{
-
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		if ($fbConfig->get('include_lightbox_js', 1) == 2)
+		{
+			return true;
+		}
 		$form = $this->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		foreach ($groups as $group)

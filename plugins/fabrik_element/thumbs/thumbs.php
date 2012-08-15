@@ -47,6 +47,10 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $this->getlistModel()->getTable()->form_id;
 		$row_id = $thisRow->__pk_val;
+		if (empty($data))
+		{
+			$data = array(0);
+		}
 		$str = '';
 		for ($i = 0; $i < count($data); $i++)
 		{
@@ -82,6 +86,15 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 		return parent::renderListData($data, $thisRow);
 	}
+
+	/**
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  $thisRow   all the data in the lists current row
+	 *
+	 * @return  string	formatted value
+	 */
 
 	private function _renderListData($data, $thisRow)
 	{
@@ -292,6 +305,10 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 	private function doThumb($listid, $formid, $row_id, $thumb)
 	{
+		if (!$this->canUse())
+		{
+			return;
+		}
 		$db = FabrikWorker::getDbo();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
@@ -306,18 +323,28 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 
 			$hash = $this->getCookieName($listid, $row_id);
 
-			//set cookie
+			// Set cookie
 			$lifetime = time() + 365 * 24 * 60 * 60;
 			setcookie($hash, '1', $lifetime, '/');
 			$userid = $db->quote($hash);
 		}
 		$elementid = $this->getElement()->id;
-		$db
-			->setQuery(
-				"INSERT INTO #__{package}_thumbs (user_id, listid, formid, row_id, thumb, date_created, element_id)
-		values ($userid, $listid, $formid, $row_id, " . $db->quote($thumb)
-					. ", $strDate, $elementid)
-			ON DUPLICATE KEY UPDATE date_created = $strDate, thumb = " . $db->quote($thumb));
+		$db->setQuery(
+			"INSERT INTO #__{package}_thumbs
+				(user_id, listid, formid, row_id, thumb, date_created, element_id)
+				values (
+					" . $db->Quote($userid) . ",
+					" . $db->Quote($listid) . ",
+					" . $db->Quote($formid) . ",
+					" . $db->Quote($row_id) . ",
+					" . $db->quote($thumb) . ",
+					" . $db->Quote($strDate) . ",
+					" . $db->Quote($elementid) . "
+				)
+				ON DUPLICATE KEY UPDATE
+					date_created = " . $db->Quote($strDate) . ",
+					thumb = " . $db->quote($thumb)
+		);
 		$db->query();
 		if ($db->getErrorNum())
 		{
@@ -396,11 +423,13 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
-	 * get js to ini js object that manages the behaviour of the thumbs element (non-PHPdoc)
-	 * @see components/com_fabrik/models/PlgFabrik_Element#elementListJavascript()
+	 * Get JS code for ini element list js
+	 * Overwritten in plugin classes
+	 *
+	 * @return string
 	 */
 
-	function elementListJavascript()
+	public function elementListJavascript()
 	{
 		$user = JFactory::getUser();
 
@@ -410,7 +439,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$list = $this->getlistModel()->getTable();
 		$formid = $list->form_id;
 		$listMyThumbs = array();
-		$idFromCookie = NULL;
+		$idFromCookie = null;
 		$data = $this->getListModel()->getData();
 		$groupKeys = array_keys($data);
 		foreach ($groupKeys as $gKey)
@@ -439,6 +468,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$opts->elid = $this->getElement()->id;
 		$opts->myThumbs = $listMyThumbs;
 		$opts->userid = "$userid";
+		$opts->renderContext = $this->getListModel()->getRenderContext();
 		$opts = json_encode($opts);
 		return "new FbThumbsList('$id', $opts);\n";
 	}
@@ -455,6 +485,19 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	{
 		return false;
 	}
+
+	/**
+	 * Used by radio and dropdown elements to get a dropdown list of their unique
+	 * unique values OR all options - basedon filter_build_method
+	 *
+	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  table name to use - defaults to element's current table
+	 * @param   string  $label      field to use, defaults to element name
+	 * @param   string  $id         field to use, defaults to element name
+	 * @param   bool    $incjoin    include join
+	 *
+	 * @return  array  text/value objects
+	 */
 
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{

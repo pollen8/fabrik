@@ -38,12 +38,12 @@ var fabrikAdminElement = new Class({
 		}.bind(this));
 		
 		document.id('jform_plugin').addEvent('change', function (e) {
-			this.changePlugin();
+			e.stop();
+			this.changePlugin(e);
 		}.bind(this));
 	},
 	
 	changePlugin: function (e) {
-		e.stop();
 		document.id('plugin-container').empty().adopt(
 		new Element('span').set('text', 'Loading....')
 		);

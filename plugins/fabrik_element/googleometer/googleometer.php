@@ -16,13 +16,16 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.googleometer
+ * @since       3.0
  */
 
 class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TINYINT(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '1';
 
 	/**

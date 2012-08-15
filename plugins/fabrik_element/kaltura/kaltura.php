@@ -22,6 +22,7 @@ jimport('kaltura.kaltura_client');
 class PlgFabrik_ElementKaltura extends PlgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**

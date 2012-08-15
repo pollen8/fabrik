@@ -85,6 +85,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 			}
 		}
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $post));
+		$formModel = $this->elementModel->getFormModel();
 		$res = @eval($condition);
 		if (is_null($res))
 		{

@@ -14,16 +14,20 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.textarea
+ * @since       3.0
  */
 
 class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
 	/**
-	 * tagify a string
-	 * @param   string	to tagify
+	 * Tagify a string
+	 *
+	 * @param   string  $data  tagify
+	 *
 	 * @return  string	tagified string
 	 */
 
@@ -56,7 +60,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 				}
 			}
 		}
-		// $$$ rbo 24/02/2011 remove duplicates from tags
+		// $$$ rob 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
 		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, array('alt' => 'tag'));
 		foreach ($data as $d)

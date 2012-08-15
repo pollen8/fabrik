@@ -22,6 +22,10 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 {
 
+	/** @var bol is a join element */
+	var $_isJoin = true;
+
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'INT(11)';
 
 	/**

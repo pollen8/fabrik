@@ -479,9 +479,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Display the file in the table
 	 *
-	 * @param	string	$data
-	 * @param	array	$thisRow
-	 * @param	int		repeat group count
+	 * @param   string  $data    current cell data
+	 * @param   array  $thisRow  current row data
+	 * @param   int    $i        repeat group count
+	 *
 	 * @return	string
 	 */
 
@@ -496,7 +497,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$skip_exists_check = (int) $params->get('fileupload_skip_check', '0');
 		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
 		{
-			// not sure but after update from 2.1 to 3 for podion data was an object
+			// Not sure but after update from 2.1 to 3 for podion data was an object
 			if (is_object($data))
 			{
 				$data = $data->file;
@@ -1740,7 +1741,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$links = array();
 			foreach ($value as $v)
 			{
-				$links[] = $this->downloadLink($v, $data);
+				$links[] = $this->downloadLink($v, $data, $repeatCounter);
 			}
 			return implode("\n", $links);
 		}
@@ -1838,10 +1839,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * make download link
 	 * @param	string	$value
 	 * @param	array	row $data
+	 * @param	int		repeat counter $repeatCounter
 	 * @return	string	download link
 	 */
 
-	protected function downloadLink($value, $data)
+	protected function downloadLink($value, $data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$storage = $this->getStorage();
@@ -1851,9 +1853,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			return '';
 		}
 		$aclEl = $this->getFormModel()->getElement($params->get('fu_download_acl', ''), true);
-		$aclEl = $aclEl->getFullName();
 		if (!empty($aclEl))
 		{
+			$aclEl = $aclEl->getFullName();
 			$canDownload = in_array($data[$aclEl], JFactory::getUser()->authorisedLevels());
 			if (!$canDownload)
 			{
@@ -1864,6 +1866,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 		}
 
+		$formid = $formModel->getId();
 		$rowid = JRequest::getVar('rowid', '0');
 		$elementid = $this->_id;
 		$title = basename($value);
@@ -2390,7 +2393,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
 			// ... serve up the file ...
 			echo $filecontent;
-			$this->downloadEmail($row, $filepath);
+			//$this->downloadEmail($row, $filepath);
 			$this->downloadHit($rowid, $repeatcount);
 			$this->downloadLog($row, $filepath);
 			// ... and we're done.

@@ -373,9 +373,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$eval = $params->get('dabase_join_label_eval');
 		if (trim($eval) !== '')
 		{
-			foreach ($this->_optionVals[$sql] as &$opt)
+			foreach ($this->_optionVals[$sql] as $key => &$opt)
 			{
-				eval($eval);
+				// $$$ hugh - added allowing removing an option by returning false
+				if (eval($eval) === false)
+				{
+					unset($this->_optionVals[$sql][$key]);
+				}
 			}
 		}
 		return $this->_optionVals[$sql];
@@ -539,7 +543,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
 		{
-			$sql .= ', ' . $db->quoteName($desc) . ' AS description';
+			$desc = "REPLACE(".$db->quoteName($desc).", '\n', '<br />')";
+			$sql .= ', ' . $desc . ' AS description';
 		}
 		$sql .= $this->getAdditionalQueryFields();
 		$sql .= ' FROM ' . $db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias);

@@ -22,8 +22,10 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'CHAR(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '36';
 
 	/**

@@ -262,15 +262,17 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 		 */
 
 		/*
-		 *  $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
+		 *  $$$ rob this is poor when submitting the form the data is stored in formData, when editing its stored in _data -
 		 *  as this method can run on render or on submit we have to do a little check to see which one we should use.
 		 *  really we should use the same form property to store the data regardless of form state
 		 */
+
+		$this->html = array();
 		if (!empty($formModel->formData))
 		{
 			$this->html = $formModel->formData;
 		}
-		else
+		else if (!empty($formModel->_data))
 		{
 			$this->html = $formModel->data;
 		}

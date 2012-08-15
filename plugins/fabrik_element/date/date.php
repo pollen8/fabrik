@@ -807,7 +807,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
 			if ($params->get('date_alwaystoday', false))
 			{
-				// $value = JFactory::getDate()->toMySQL(false);
+				// $value = JFactory::getDate()->toSql(false);
 				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
 				if ($store_as_local)
 				{
@@ -818,7 +818,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					$date = JFactory::getDate();
 				}
-				$value = $date->toMySQL();
+				$value = $date->toSql();
 			}
 			else
 			{
@@ -1533,8 +1533,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		// $$$ hugh - think we may need to take 'store as local' in to account here?
 		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
+		$params = $this->getParams();
+		$store_as_local =  $params->get('date_store_as_local', '0') == '1';
+
 		$date = JFactory::getDate($value[0], $localTimeZone);
-		$value[0] = $date->toSql();
+		$value[0] = $date->toSql($store_as_local);
 
 		$date = JFactory::getDate($value[1], $localTimeZone);
 		// $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
@@ -1542,7 +1545,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		// with CST (GMT -6), which chops out 6 hours of the day range.
 		// Also, see comment above about maybe needing to take "save as local" in to account on this.
 		//$value[1] = $date->toSql(true);
-		$value[1] = $date->toSql();
+		$value[1] = $date->toSql($store_as_local);
 
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 		$condition = 'BETWEEN';
@@ -1572,7 +1575,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 		$bstr = $b['year'] . '-' . $b['mon'] . '-' . $b['day'] . ' ' . $b['hour'] . ':' . $b['min'] . ':' . $b['sec'];
 		$date = JFactory::getDate($bstr);
-		if (in_array($v, $this->getNullDates()) || $v === $date->toMySQL())
+		if (in_array($v, $this->getNullDates()) || $v === $date->toSql())
 		{
 			return $v;
 		}
@@ -1729,7 +1732,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function simpleAvg($data)
 	{
 		$avg = $this->simpleSum($data) / count($data);
-		return JFactory::getDate($avg)->toMySQL();
+		return JFactory::getDate($avg)->toSql();
 	}
 
 	/**
@@ -2102,7 +2105,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$id = $this->getFilterHtmlId(0);
 		$id2 = $this->getFilterHtmlId(1);
 
-		$opts = $this->_CalendarJSOpts($id);
+		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
 		$opts->type = $element->filter_type;

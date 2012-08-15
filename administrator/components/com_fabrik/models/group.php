@@ -153,7 +153,7 @@ class FabrikModelGroup extends FabModelAdmin
 			$user = JFactory::getUser();
 			$data['created_by'] = $user->get('id');
 			$data['created_by_alias'] = $user->get('username');
-			$data['created'] = JFactory::getDate()->toSQL();
+			$data['created'] = JFactory::getDate()->toSql();
 
 		}
 		if ($this->checkRepeatAndPK($data))

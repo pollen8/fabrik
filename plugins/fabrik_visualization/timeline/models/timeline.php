@@ -110,6 +110,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 								$sDate = JFactory::getDate($event->end);
 								$sDate->setTimezone($timeZone);
 								$event->end = $sDate->toISO8601(true);
+								$bits = explode('+', $event->end);
+								$event->end = $bits[0] . '+00:00';
 							}
 							$sDate = JFactory::getDate($event->start);
 							$sDate->setTimezone($timeZone);

@@ -117,6 +117,11 @@ var FbAutocomplete = new Class({
 	},
 	
 	populateMenu: function (data) {
+		// $$$ hugh - added decoding of things like &amp; in the text strings
+		data.map(function (item, index) {
+			item.text = Encoder.htmlDecode(item.text);
+			return item;
+		});
 		this.data = data;
 		var max = this.getListMax();
 		var ul = this.menu.getElement('ul');
@@ -146,6 +151,8 @@ var FbAutocomplete = new Class({
 		// $$$ hugh - need to fire change event, in case it's something like a join element
 		// with a CDD that watches it.
 		this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
+		// $$$ hugh - fire a Fabrik event, just for good luck.  :)
+		Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
 	},
 	
 	closeMenu: function () {

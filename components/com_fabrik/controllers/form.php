@@ -28,6 +28,23 @@ class FabrikControllerForm extends JControllerLegacy
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
 	public $cacheId = 0;
 
+	/*
+	* Magic method to convert the object to a string gracefully.
+	*
+	* $$$ hugh - added 08/05/2012.  No idea what's going on, but I had to add this to stop
+	* the classname 'FabrikControllerForm' being output at the bottom of the form, when rendered
+	* through a Fabrik form module.  See:
+	*
+	* https://github.com/Fabrik/fabrik/issues/398
+	*
+	* @return  string  empty string.
+	*
+	*/
+	public function __toString()
+	{
+		return '';
+	}
+
 	/**
 	 * inline edit control
 	 *

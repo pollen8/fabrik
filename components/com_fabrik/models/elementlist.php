@@ -27,8 +27,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public $defaults = null;
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TEXT';
 
+	/** @var  string  db table field size */
 	protected $inputType = 'radio';
 
 	/** @var bool - should the table render functions use html to display the data */
@@ -283,7 +285,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * used by radio and dropdown elements to get a dropdown list of their unique
+	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
 	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
@@ -624,6 +626,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			if (!isset($value))
 			{
 				$value = '';
+			}
+			// $$$ corner case where you have a form and a list for the same table on the same page
+			// and the list is being filtered with table___name[value]=foo on the query string.
+			if (is_array($value) && array_key_exists('value', $value))
+			{
+				$value = $value['value'];
 			}
 			$element->default = $value;
 			$formModel = $this->getForm();

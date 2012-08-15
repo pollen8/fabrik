@@ -129,7 +129,7 @@ INNER JOIN fabsubs_plans AS p ON p.id = s.plan
 
 	$ipn = new fabrikPayPalIPN();
 	$rows = $db->loadObjectList();
-	$now = JFactory::getDate()->toMySQL();
+	$now = JFactory::getDate()->toSql();
 	$sub = FabTable::getInstance('Subscriptions', 'FabrikTable');
 	foreach ($rows as $row) {
 		$sub->load($row->subid);

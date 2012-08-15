@@ -70,7 +70,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$db->setQuery($query);
 		$res = (int) $db->loadResult();
 
-		$now = JFactory::getDate()->toMySQL();
+		$now = JFactory::getDate()->toSql();
 		$user = JFactory::getUser();
 
 		$data = array();

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.yesno
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.yesno
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,16 +15,18 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
 /**
  * Plugin element to yes/no radio options - render as tick/cross in list view
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.yesno
- * @since    3.0
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.yesno
+ * @since       3.0
  */
 
 class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 {
 
+	/** @var  string  db table field type */
 	protected $fieldDesc = 'TINYINT(%s)';
 
+	/** @var  string  db table field size */
 	protected $fieldSize = '1';
 
 	/**
@@ -70,11 +72,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * shows the data formatted for the table view with format = pdf
+	 * Shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
 	 *
-	 * @param   string  $data     data
-	 * @param   object  $thisRow  all the data in the tables current row
+	 * @param   string  $data     cell data
+	 * @param   object  $thisRow  row data
 	 *
 	 * @return string formatted value
 	 */
