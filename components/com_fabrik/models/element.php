@@ -4515,7 +4515,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$str[] = '<a href="#" title="' . JText::_('add option') . '" class="toggle-addoption">';
 		$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/action_add.png" alt="' . JText::_('COM_FABRIK_ADD') . '"/>';
 		$str[] = '</a>';
-		$str[] = '<div style="clear:left" class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
+		$str[] = '<div style="clear:left">';
+		$str[] = '<div class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
 		if (!$params->get('allowadd-onlylabel') && $params->get('savenewadditions'))
 		{
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
@@ -4528,8 +4529,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$str[] = $label;
 		}
-		$str[] = '<input class="button" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
+		$str[] = '<input class="button btn" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
 		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
+		$str[] = '</div>';
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}

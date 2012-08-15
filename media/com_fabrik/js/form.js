@@ -151,7 +151,7 @@ var FbForm = new Class({
 	watchAddOptions : function () {
 		this.fx.addOptions = [];
 		this.getForm().getElements('.addoption').each(function (d) {
-			var a = d.getParent().getElement('.toggle-addoption');
+			var a = d.getParent('.fabrikElementContainer').getElement('.toggle-addoption');
 			var mySlider = new Fx.Slide(d, {
 				duration : 500
 			});

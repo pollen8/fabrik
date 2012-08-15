@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.password
+ * @since       3.0
  */
 
 class plgFabrik_ElementPassword extends plgFabrik_Element
@@ -130,7 +131,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	 * @return bool
 	 */
 
-	function validate($data, $repeatCounter = 0)
+	public function validate($data, $repeatCounter = 0)
 	{
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
