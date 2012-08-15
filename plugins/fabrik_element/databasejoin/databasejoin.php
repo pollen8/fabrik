@@ -1624,7 +1624,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  string	element filter name
 	 */
 
-	function getFilterFullName()
+	public function getFilterFullName()
 	{
 		$element = $this->getElement();
 		$params = $this->getParams();
