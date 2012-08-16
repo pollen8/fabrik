@@ -1820,7 +1820,8 @@ class FabrikFEModelList extends JModelForm
 				$slug = $slugElement->getSlugName($raw);
 			}
 
-			if ($slug != '')
+			// Test slug is not ``.``
+			if (preg_match('/[A-Z|a-z][0-9]/', $slug))
 			{
 				$slug = FabrikString::safeColName($slug);
 				$fields[] = "CONCAT_WS(':', $pk, $slug) AS slug";
