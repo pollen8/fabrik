@@ -157,11 +157,13 @@
 			</field>
 			
 			<field name="filter_groupby"
-				type="radio"
+				type="list"
 				default="text"
-				label="COM_FABRIK_FIELD_ORDER_BY_LABEL">
+				label="COM_FABRIK_FIELD_ORDER_BY_LABEL"
+				description="COM_FABRIK_FIELD_ORDER_BY_DESC">
 					<option value="text">COM_FABRIK_LABEL</option>
 					<option value="value">COM_FABRIK_VALUE</option>
+					<option value="-1">COM_FABRIK_NONE</option>
 			</field>
 			
 			<field name="inc_in_search_all"
