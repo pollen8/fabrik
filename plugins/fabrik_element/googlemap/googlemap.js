@@ -353,11 +353,20 @@ var FbGoogleMap = new Class({
 
 	},
 
-	geoCode : function (e) {
+	geoCode: function (e) {
 		var address = '';
 		if (this.options.geocode === '2') {
 			this.options.geocode_fields.each(function (field) {
-				address += document.id(field).value + ',';
+				var f = document.id(field);
+				var v;
+				if (f.get('tag') === 'select') {
+					// Hack - if select list then presuming that they want to geocode on the label and not the value
+					// if empty value though use that as you dont want to geocode on 'please select'
+					v = f.value === '' ? '' : f.options[f.selectedIndex].get('text');
+				} else {
+					v = f.value;
+				}
+				address += v + ',';
 			});
 			address = address.slice(0, -1);
 		} else {
@@ -382,7 +391,7 @@ var FbGoogleMap = new Class({
 		}.bind(this));
 	},
 
-	watchGeoCode : function () {
+	watchGeoCode: function () {
 		if (!this.options.geocode || !this.options.editable) {
 			return false;
 		}
