@@ -3868,9 +3868,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					$o->value = $this->_median($data);
 					break;
 				case 'count':
-					echo "<pre>";print_r($data);
 					$o->value = count($data);
-					echo $o->value;
 					break;
 				case 'custom_calc':
 					$params = $this->getParams();
