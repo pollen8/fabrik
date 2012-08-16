@@ -328,18 +328,25 @@ var FbForm = new Class({
 		}
 	},
 
+	/**
+	 * Move forward/backwards in multipage form
+	 * 
+	 * @param   event  e
+	 * @param   int    dir  1/-1
+	 */
 	_doPageNav : function (e, dir) {
 		if (this.options.editable) {
 			this.form.getElement('.fabrikMainError').addClass('fabrikHide');
-			//if tip shown at bottom of long page and next page shorter we need to move the tip to
-			//the top of the page to avoid large space appearing at the bottom of the page.
+			
+			// If tip shown at bottom of long page and next page shorter we need to move the tip to
+			// the top of the page to avoid large space appearing at the bottom of the page.
 			if (typeOf(document.getElement('.tool-tip')) !== 'null') {
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
 			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
 			Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATING'));
 	
-			// only validate the current groups elements, otherwise validations on
+			// Only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
 	
 			var groupId = this.options.pages.get(this.currentPage.toInt());
@@ -358,7 +365,8 @@ var FbForm = new Class({
 				onComplete: function (r) {
 					Fabrik.loader.stop('form_' + this.id);
 					r = JSON.decode(r);
-					if (this._showGroupError(r, d) === false) {
+					// Don't show validation errors if we are going back a page
+					if (dir === -1 || this._showGroupError(r, d) === false) {
 						this.changePage(dir);
 						this.saveGroupsToDb();
 					}

@@ -28,18 +28,18 @@ class FabrikControllerForm extends JController
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
 	public $cacheId = 0;
 
-	/*
-	* Magic method to convert the object to a string gracefully.
-	*
-	* $$$ hugh - added 08/05/2012.  No idea what's going on, but I had to add this to stop
-	* the classname 'FabrikControllerForm' being output at the bottom of the form, when rendered
-	* through a Fabrik form module.  See:
-	*
-	* https://github.com/Fabrik/fabrik/issues/398
-	*
-	* @return  string  empty string.
-	*
-	*/
+	/**
+	 * Magic method to convert the object to a string gracefully.
+	 *
+	 * $$$ hugh - added 08/05/2012.  No idea what's going on, but I had to add this to stop
+	 * the classname 'FabrikControllerForm' being output at the bottom of the form, when rendered
+	 * through a Fabrik form module.  See:
+	 *
+	 * https://github.com/Fabrik/fabrik/issues/398
+	 *
+	 * @return  string  empty string.
+	 */
+
 	public function __toString()
 	{
 		return '';
@@ -133,7 +133,7 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * process the form
+	 * Process the form
 	 *
 	 * @return  null
 	 */
@@ -329,14 +329,14 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * validate via ajax
+	 * Validate via ajax
 	 *
 	 * @return  null
 	 */
 
-	function ajax_validate()
+	public function ajax_validate()
 	{
-		$model = &$this->getModel('form', 'FabrikFEModel');
+		$model = $this->getModel('form', 'FabrikFEModel');
 		$model->setId(JRequest::getInt('formid', 0));
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
@@ -349,7 +349,7 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * save a form's page to the session table
+	 * Save a form's page to the session table
 	 *
 	 * @return  null
 	 */
@@ -379,7 +379,7 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * called via ajax to page through form records
+	 * Called via ajax to page through form records
 	 *
 	 * @return  null
 	 */
@@ -393,7 +393,7 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * delete a record from a form
+	 * Delete a record from a form
 	 *
 	 * @return  null
 	 */
