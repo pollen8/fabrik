@@ -3723,7 +3723,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $this->getCountQuery($listModel, $splitName) . " GROUP BY label ";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
-			echo $db->getQuery();
 			$results2 = $db->loadObjectList('label');
 			$uberTotal = 0;
 			foreach ($results2 as $k => &$r)
