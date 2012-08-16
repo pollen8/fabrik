@@ -77,8 +77,15 @@ var FbElementList =  new Class({
 		}
 		else {
 			var r = this.subElements.getLast().findUp('li').clone();
-			r.getElement('input').value = val;
-			r.getElement('input').checked = 'checked';
+			var i = r.getElement('input');
+			i.value = val;
+			i.checked = 'checked';
+			if (this.type === 'checkbox') {
+				
+				// Remove the last [*] from the checkbox sub option name (seems only these use incremental []'s)
+				var name = i.name.replace(/^(.*)\[.*\](.*?)$/, '$1$2');
+				i.name = name + '[' + (this.subElements.length) + ']';
+			}
 			r.getElement('span').set('text', label);
 			r.inject(this.subElements.getLast().findUp('li'), 'after');
 			this._getSubElements();

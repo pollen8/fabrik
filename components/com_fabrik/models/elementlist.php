@@ -172,10 +172,10 @@ class plgFabrik_ElementList extends plgFabrik_Element
 				{
 					$default = array('', '');
 				}
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[0], $element->name
-					. "_filter_range_0");
-				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[1], $element->name
-					. "_filter_range_1");
+				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[0],
+					$element->name . "_filter_range_0");
+				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[1],
+					$element->name . "_filter_range_1");
 				break;
 			case "dropdown":
 			default:
@@ -371,6 +371,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
+
 			foreach ($vals as $val)
 			{
 				$l = $useIcon ? $this->_replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
@@ -443,7 +444,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 
 			// $$$ hugh - ooops, '0' will count as empty.
 			// $selected = empty($selected) ?  array() : array($selected);
-			$selected = $selected === '' ?  array() : array($selected);
+			$selected = $selected === '' ? array() : array($selected);
 		}
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
@@ -451,6 +452,18 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		if (!empty($diff))
 		{
 			$values = array_merge($values, $diff);
+
+			// Swap over the default value to the default label
+			if (!$this->_editable)
+			{
+				foreach ($diff as &$di)
+				{
+					if ($di === $params->get('sub_default_value'))
+					{
+						$di = $params->get('sub_default_label');
+					}
+				}
+			}
 			$labels = array_merge($labels, $diff);
 		}
 		if (!$this->_editable)
@@ -467,6 +480,14 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			return ($this->isMultiple() && $this->renderWithHTML)
 				? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
 		}
+
+		// Remove the default value
+		$key = array_search($params->get('sub_default_value'), $values);
+		if ($key)
+		{
+			unset($values[$key]);
+		}
+
 		$optionsPerRow = (int) $this->getParams()->get('options_per_row', 4);
 		$elBeforeLabel = (bool) $this->getParams()->get('element_before_label', true);
 
