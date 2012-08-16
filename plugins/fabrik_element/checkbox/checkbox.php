@@ -115,7 +115,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		echo $element->name;
 		if (!array_key_exists($element->name, $data))
 		{
 			$data[$element->name] = $params->get('sub_default_value');
