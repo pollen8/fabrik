@@ -111,6 +111,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		JArrayHelper::toInteger($ids);
 		$this->_row_count = count($ids);
 		$ids = implode(',', $ids);
+		$model->reset();
 		$model->_pluginQueryWhere[] = $item->db_primary_key . ' IN ( ' . $ids . ')';
 		$data = $model->getData();
 
@@ -141,8 +142,10 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			if ($emailWhich == 'user')
 			{
 				$userids_emails = array();
-				$query = 'SELECT #__users.id AS id, #__users.email AS email FROM #__users LEFT JOIN ' . $tbl . ' ON #__users.id = ' . $emailColumn
-					. ' WHERE ' . $item->db_primary_key . ' IN (' . $ids . ')';
+				$query = $db->getQuery();
+				$query->select('#__users.id AS id, #__users.email AS email')
+				->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
+				->where(_primary_key . ' IN (' . $ids . ')');
 				$db->setQuery($query);
 				$results = $db->loadObjectList();
 				foreach ($results as $result)

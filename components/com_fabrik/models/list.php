@@ -478,7 +478,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  array	of objects (rows)
 	 */
 
-	function getData()
+	public function getData()
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$pluginManager = FabrikWorker::getPluginManager();
