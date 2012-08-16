@@ -9,19 +9,23 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-//required for menus
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/html.php');
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/string.php');
-require_once(JPATH_SITE . '/components/com_fabrik/helpers/parent.php');
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+// Required for menus
+require_once JPATH_SITE . '/components/com_fabrik/helpers/html.php';
+require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
+require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
+
+jimport('joomla.html.html');
+jimport('joomla.form.formfield');
+jimport('joomla.form.helper');
+JFormHelper::loadFieldClass('list');
 
 /**
  * Renders a list of fabrik or db tables
  *
- * @author 		Rob Clayburn
- * @package 	Joomla
+ * @package     Fabrik
  * @subpackage	Form
- * @since		1.6
+ * @since       3.0
  */
 
 jimport('joomla.html.html');
@@ -30,33 +34,36 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 class JFormFieldFabrikTables extends JFormFieldList
-
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Fabriktables';
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	var $_name = 'Fabriktables';
 
 	var $_array_counter = null;
 
-	static $fabriktables;
+	/**
+	 * Method to get the field options.
+	 *
+	 * @return  array  The field option objects.
+	 */
 
-	function getOptions()
+	protected function getOptions()
 	{
 		if (!isset($fabriktables))
 		{
 			$fabriktables = array();
 		}
 		$connectionDd = $this->element['observe'];
-		$db	= FabrikWorker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$id = $this->id;
 		$fullName = $this->name;
 		if ($connectionDd == '')
 		{
-			//we are not monitoring a connection drop down so load in all tables
+			// We are not monitoring a connection drop down so load in all tables
 			$query = $db->getQuery(true);
 			$query->select('id AS value, label AS text')->from('#__{package}_lists')->where('published <> -2')->order('label ASC');
 			$db->setQuery($query);
@@ -69,7 +76,13 @@ class JFormFieldFabrikTables extends JFormFieldList
 		return $rows;
 	}
 
-	function getInput()
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return  string	The field input markup.
+	 */
+
+	protected function getInput()
 	{
 		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 		$connectionDd = $this->element['observe'];
@@ -82,12 +95,12 @@ class JFormFieldFabrikTables extends JFormFieldList
 		{
 			if ($this->form->repeat)
 			{
-				//in repeat fieldset/group
-				$connectionDd =  $connectionDd . '-' . $this->form->repeatCounter;
+				// In repeat fieldset/group
+				$connectionDd = $connectionDd . '-' . $this->form->repeatCounter;
 			}
 			else
 			{
-				$connectionDd = ($c === false || $this->element['connection_in_repeat'] == 'false') ?  $connectionDd :  $connectionDd . '-' . $c;
+				$connectionDd = ($c === false || $this->element['connection_in_repeat'] == 'false') ? $connectionDd : $connectionDd . '-' . $c;
 			}
 			$opts = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
@@ -95,7 +108,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts->value = $this->value;
 			$opts->connInRepeat = (bool) $this->element['connection_in_repeat'][0];
 			$opts->inRepeatGroup = $this->form->repeat;
-			$opts->repeatCounter =  empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
+			$opts->repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 			$opts->container = 'test';
 			$opts = json_encode($opts);
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
@@ -107,7 +120,8 @@ class JFormFieldFabrikTables extends JFormFieldList
 		}
 
 		$html = parent::getInput();
-		$html .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING'). '" />';
+		$html .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="'
+			. JText::_('LOADING') . '" />';
 		$script = '<script type="text/javascript">' . $script . '</script>';
 		return $html;
 	}

@@ -15,9 +15,6 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/importcsv.php');
 
-// Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
-
 class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 
 	protected $db = null;
@@ -71,14 +68,14 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron {
 
 		$dropdata = $params->get('cron_importcsv_dropdata', '0');
 		$orig_dropdata = JRequest::getVar('dropdata', -1);
-		
+
 		$overwrite = $params->get('cron_importcsv_overwrite', '0');
 		$orig_overwrite = JRequest::getVar('overwrite', -1);
-		
+
 		$jform = array();
 		$jform['drop_data'] = $dropdata;
 		$jform['overwrite'] = $overwrite;
-		
+
 		JRequest::setVar('jform', $jform);
 		$orig_listid = JRequest::getInt('listid', -1);
 

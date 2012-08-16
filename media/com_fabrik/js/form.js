@@ -702,8 +702,12 @@ var FbForm = new Class({
 		//data should be key'd on the data stored in the elements name between []'s which is the group id
 		this.form.getElements('input[name^=fabrik_repeat_group]').each(
 				function (e) {
-					var c = e.name.match(/\[(.*)\]/)[1];
-					d['fabrik_repeat_group[' + c + ']'] = e.get('value');
+					// $$$ hugh - had a client with a table called fabrik_repeat_group, which was hosing up here,
+					// so added a test to narrow the element name down a bit!
+					if (e.id.test(/fabrik_repeat_group_\d+_counter/)) {
+						var c = e.name.match(/\[(.*)\]/)[1];
+						d['fabrik_repeat_group[' + c + ']'] = e.get('value');
+					}
 				}
 		);
 		return d;

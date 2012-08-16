@@ -187,6 +187,8 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		{
 			$type .= " elementErrorHighlight";
 		}
+
+		// @TODO use Fabrikimage rather than hardwired image path
 		$imagepath = COM_FABRIK_LIVESITE . '/plugins/fabrik_element/thumbs/images/';
 
 		$str = "<div id=\"$id" . "_div\" class=\"fabrikSubElementContainer\">";
@@ -391,7 +393,6 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 	public function elementJavascript($repeatCounter)
 	{
 		$user = JFactory::getUser();
-		$params = $this->getParams();
 		if (JRequest::getVar('view') == 'form')
 		{
 			return;
@@ -409,15 +410,11 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$opts->myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 		$opts->elid = $this->getElement()->id;
 		$opts->userid = (int) $user->get('id');
-		$opts->mode = $params->get('rating-mode');
 		$opts->view = JRequest::getCmd('view');
 		$opts->listid = $listid;
 		$opts = json_encode($opts);
 
-		$lang = new stdClass;
-		$lang->norating = JText::_('NO RATING');
-		$lang = json_encode($lang);
-		$str = "new FbThumbs('$id', $opts, '$value', $lang)";
+		$str = "new FbThumbs('$id', $opts, '$value')";
 		return $str;
 	}
 
@@ -431,7 +428,6 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 	public function elementListJavascript()
 	{
 		$user = JFactory::getUser();
-
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$id = $this->getHTMLId();
@@ -562,4 +558,3 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 		$db->query();
 	}
 }
-?>

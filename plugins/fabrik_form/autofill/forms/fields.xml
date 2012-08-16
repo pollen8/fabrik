@@ -27,7 +27,7 @@
 			
 			<field name="autofill_table"
 				observe="params_autofill_cnn"
-				 type="fabriktables"
+				type="fabriktables"
 				repeat="true"
 				description="PLG_FORM_AUTOFILL_TABLE_DESC"
 				label="PLG_FORM_AUTOFILL_TABLE_LABEL" />
