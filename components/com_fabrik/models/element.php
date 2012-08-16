@@ -3555,6 +3555,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject->value = $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
+			$uberObject->special = true;
 			$results2[] = $uberObject;
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'sum');
 		}
@@ -3605,6 +3606,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$uberObject = new stdClass;
 			$uberObject->value = $uberTotal / count($results2);
 			$uberObject->label = JText::_('COM_FABRIK_AVERAGE');
+			$uberObject->special = true;
 			$uberObject->class = 'splittotal';
 			$results2[] = $uberObject;
 
@@ -3721,6 +3723,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$sql = $this->getCountQuery($listModel, $splitName) . " GROUP BY label ";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
+			echo $db->getQuery();
 			$results2 = $db->loadObjectList('label');
 			$uberTotal = 0;
 			foreach ($results2 as $k => &$r)
@@ -3735,9 +3738,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				$uberTotal += $pair->value;
 			}
 			$uberObject = new stdClass;
-			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal / count($results2);
+			$uberObject->value = count($results2) == 0 ? 0 : $uberTotal;
 			$uberObject->label = JText::_('COM_FABRIK_TOTAL');
 			$uberObject->class = 'splittotal';
+			$uberObject->special = true;
 			$results = $this->formatCalcSplitLabels($results2, $plugin, 'count');
 			$results[JText::_('COM_FABRIK_TOTAL')] = $uberObject;
 		}
@@ -3817,6 +3821,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		foreach ($results2 as $key => $val)
 		{
+			if (isset($val->special) && $val->special)
+			{
+				// Don't inlcude special values (ubers) in $tomerge, otherwise total sum added to first value
+				$results[$val->label] = $val;
+				continue;
+			}
 			if ($plugin->hasSubElements)
 			{
 				$val->label = ($type == 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key);
@@ -3859,7 +3869,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					$o->value = $this->_median($data);
 					break;
 				case 'count':
+					echo "<pre>";print_r($data);
 					$o->value = count($data);
+					echo $o->value;
 					break;
 				case 'custom_calc':
 					$params = $this->getParams();
