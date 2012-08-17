@@ -139,15 +139,21 @@ var FbAutocomplete = new Class({
 	},
 	
 	makeSelection: function (e, li) {
-		this.getInputElement().value = li.get('text');
-		this.element.value = li.getProperty('data-value');
-		this.closeMenu();
-		this.fireEvent('selection', [this, this.element.value]);
-		// $$$ hugh - need to fire change event, in case it's something like a join element
-		// with a CDD that watches it.
-		this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
-		// $$$ hugh - fire a Fabrik event, just for good luck.  :)
-		Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
+		// $$$ tom - make sure an item was selected before operating on it.
+		if (typeOf(li) !== 'null') {
+			this.getInputElement().value = li.get('text');
+			this.element.value = li.getProperty('data-value');
+			this.closeMenu();
+			this.fireEvent('selection', [this, this.element.value]);
+			// $$$ hugh - need to fire change event, in case it's something like a join element
+			// with a CDD that watches it.
+			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
+			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
+			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
+		} else {
+			//  $$$ tom - fire a notselected event to let developer take appropriate actions.
+            Fabrik.fireEvent('fabrik.autocomplete.notselected', [this, this.element.value]);
+		}
 	},
 	
 	closeMenu: function () {
