@@ -605,7 +605,8 @@ var FbList = new Class({
 				'contentURL': url,
 				'visible': false,
 				'width': this.options.popup_width,
-				'height': this.options.popup_height
+				'height': this.options.popup_height,
+			    'onContentLoaded': function () {}
 			};
 			
 			var w = Fabrik.getWindow(winOpts);
