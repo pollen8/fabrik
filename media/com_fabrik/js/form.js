@@ -10,6 +10,7 @@ var FbForm = new Class({
 	Implements: [Options, Events],
 	
 	options: {
+		'rowid': '',
 		'admin': false,
 		'ajax': false,
 		'primaryKey': null,
