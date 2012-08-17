@@ -3553,7 +3553,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel = $this->getListModel();
 		foreach ($groups as $groupModel)
 		{
-			if ($groupModel->canRepeat() && $groupModel->isJoin())
+			/**
+			 * $$$ hugh - we need to do this for non-repeat joins as well
+			 */
+			//if ($groupModel->canRepeat() && $groupModel->isJoin())
+			if ($groupModel->isJoin())
 			{
 
 				$joinModel = $groupModel->getJoinModel();
@@ -3621,7 +3625,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				// Reduce the keys so that we dont have keys of 0, 2
 				foreach ($jdata as $key => $array)
 				{
-					$jdata[$key] = array_values($array);
+					if ($groupModel->canRepeat())
+					{
+						$jdata[$key] = array_values($array);
+					}
+					else
+					{
+						// $$$ hugh - if it's a one-to-one, it should be a single value
+						$jdata[$key] = JArrayHelper::getValue(array_values($array), 0, '');
+					}
 				}
 			}
 		}
