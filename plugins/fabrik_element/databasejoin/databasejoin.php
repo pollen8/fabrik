@@ -426,7 +426,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		foreach ($aDdObjs as &$o)
 		{
 			// For values like '1"'
-			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES);
+			// $$$ hugh - added second two params so we set double_encode false
+			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
 		}
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs))
