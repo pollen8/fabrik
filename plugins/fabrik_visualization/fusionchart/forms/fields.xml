@@ -4,109 +4,49 @@
 
 		<fieldset name="options" repeat="1" repeatcontrols="1">
 			
-			<field name="fusionchart_connection"
-				description="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL"
-				type="connections"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL" name="fusionchart_connection" type="connections"/>
 		
-			<field name="fusionchart_table"
-				connection_in_repeat="false"
-				description="PLG_VISUALIZATION_FUSIONCHART_TABLE_LABEL_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_TABLE_LABEL"
-				observe="params_fusionchart_connection"
-				repeat="0"
-				type="fabriktables"/>
+			<field connection_in_repeat="false" description="PLG_VISUALIZATION_FUSIONCHART_TABLE_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_TABLE_LABEL" name="fusionchart_table" observe="params_fusionchart_connection" repeat="0" type="fabriktables"/>
 				
-			<field name="fusionchart_elementList"
-				connection="params_fusionchart_connection"
-				connection_in_repeat="false"
-				description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_DESC"
-				include_calculations="1" label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_LABEL"
-				table="params_fusionchart_table"
-				type="element"/>
+			<field connection="params_fusionchart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_DESC" include_calculations="1" label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_LABEL" name="fusionchart_elementList" table="params_fusionchart_table" type="element"/>
 				
-			<field name="fusionchart_axis_labels"
-				description="PLG_VISUALIZATION_FUSIONCHART_CHART_LABEL_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_CHART_LABEL"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_CHART_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_LABEL" name="fusionchart_axis_labels" type="text"/>
 				
-			<field name="fusionchart_element_type"
-				default="dataset"
-				description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_LABEL"
-				type="list">
+			<field default="dataset" description="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELEMENT_TYPE_LABEL" name="fusionchart_element_type" type="list">
 					<option value="dataset">Data Set</option>
 					<option value="trendline">Trend Line</option>
 					<option value="trendonly">Trend Line Only</option>
 			</field>
 
-			<field name="fusionchart_cumulative" 
-				default="0"
-				description="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_LABEL"
-				type="list">
+			<field default="0" description="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CUMULATIVE_LABEL" name="fusionchart_cumulative" type="list">
 					<option value="0">No</option>
 					<option value="1">Yes</option>
 			</field>
 			
-			<field name="fusionchart_trend_type"
-				default="minmax"
-				description="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_LABEL"
-				type="list">
-					<option value="minmax">Min -> Max</option>
-					<option value="maxmin">Max -> Min</option>
-					<option value="zeromax">Zero -> Max</option>
-					<option value="maxzero">Max -> Zero</option>
+			<field default="minmax" description="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_TREND_TYPE_LABEL" name="fusionchart_trend_type" type="list">
+					<option value="minmax">Min -&gt; Max</option>
+					<option value="maxmin">Max -&gt; Min</option>
+					<option value="zeromax">Zero -&gt; Max</option>
+					<option value="maxzero">Max -&gt; Zero</option>
 
 			</field>
 						
-			<field name="fusionchart_elcolour"
-				description="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_LABEL"
-				size="7"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_LABEL" name="fusionchart_elcolour" size="7" type="text"/>
 				
-			<field name="fusionchart_elalpha"
-				description="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_LABEL"
-				size="3"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_LABEL" name="fusionchart_elalpha" size="3" type="text"/>
 				
-			<field name="fusion_label_step_ratio"
-				description="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_LABEL"
-				size="3"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_DESC" label="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_LABEL" name="fusion_label_step_ratio" size="3" type="text"/>
 				
-			<field name="fusion_x_axis_label"
-				connection="params_fusionchart_connection"
-				connection_in_repeat="false"
-				description="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_LABEL"
-				table="params_fusionchart_table"
-				type="element"/>
+			<field connection="params_fusionchart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_LABEL" name="fusion_x_axis_label" table="params_fusionchart_table" type="element"/>
 				
-			<field name="fusionchart_dual_y_parent"
-				default="P"
-				description="PLG_VISUALIZATION_FUSIONCHART_DUAL_Y_PARENT_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_DUAL_Y_PARENT_LABEL"
-				type="list">
+			<field default="P" description="PLG_VISUALIZATION_FUSIONCHART_DUAL_Y_PARENT_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DUAL_Y_PARENT_LABEL" name="fusionchart_dual_y_parent" type="list">
 					<option value="P">Primary</option>
 					<option value="S">Secondary</option>
 			</field>
 			
-			<field name="fusionchart_mx_attributes"
-				description="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_LABEL"
-				size="40"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_DESC" label="PLG_VISUALIZATION_FUSIONCHART_MX_ATTRIBUTES_LABEL" name="fusionchart_mx_attributes" size="40" type="text"/>
 			
-			<field name="fusionchart_where"
-				description="PLG_VISUALIZATION_FUSIONCHART_WHERE_DESC"
-				label="PLG_VISUALIZATION_FUSIONCHART_WHERE_LABEL"
-				size="40"
-				type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_WHERE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_WHERE_LABEL" name="fusionchart_where" size="40" type="text"/>
 			
 		</fieldset>
 

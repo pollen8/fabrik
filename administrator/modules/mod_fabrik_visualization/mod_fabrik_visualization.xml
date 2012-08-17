@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<extension
-	type="module"
-	version="1.7.0"
-	client="administrator"
-	method="upgrade">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<extension client="administrator" method="upgrade" type="module" version="1.7.0">
 	<name>Fabrik visualization</name>
 	<author>Rob Clayburn</author>
 	<creationDate>Aug 2011</creationDate>
@@ -20,8 +16,8 @@
 	</files>
 	<config>
 		<fields name="params">
-			<fieldset name="advanced" addfieldpath="/administrator/components/com_fabrik/models/fields">
-				<field name="id" type="visaulizationlist" default="0" label="Select Instance" description="" />
+			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
+				<field default="0" description="" label="Select Instance" name="id" type="visaulizationlist"/>
 			</fieldset>
 		</fields>
 	</config>

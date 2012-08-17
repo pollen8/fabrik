@@ -4,30 +4,14 @@
 		<fieldset name="plg-list-caneditrow">
 			<field description="PLG_LIST_CANEDITROW_ELEMENT_DESC" label="PLG_LIST_CANEDITROW_ELEMENT_LABEL" name="caneditrow_field" repeat="true" type="listfields" valueformat="tableelement"/>
 			
-			<field name="caneditrow_useraw"
-				type="radio"
-				default="0"
-				description="PLG_LIST_CANEDITROW_USERAW_DESC"
-				label="PLG_LIST_CANEDITROW_USERAW_LABEL"
-				repeat="true" >
+			<field default="0" description="PLG_LIST_CANEDITROW_USERAW_DESC" label="PLG_LIST_CANEDITROW_USERAW_LABEL" name="caneditrow_useraw" repeat="true" type="radio">
 					<option value="0">No</option>
 					<option value="1">Yes</option>
 			</field>
 						
-			<field name="caneditrow_value"
-				type="text"
-				description="PLG_LIST_CANEDITROW_VALUE_DESC"
-				label="PLG_LIST_CANEDITROW_VALUE_LABEL" 
-				repeat="true"
-				size="20" />
+			<field description="PLG_LIST_CANEDITROW_VALUE_DESC" label="PLG_LIST_CANEDITROW_VALUE_LABEL" name="caneditrow_value" repeat="true" size="20" type="text"/>
 				
-			<field name="caneditrow_eval"
-				cols="30"
-				description="PLG_LIST_CANEDITROW_EVAL_DESC"
-				label="PLG_LIST_CANEDITROW_EVAL_LABEL"
-				repeat="true"
-				rows="5"
-				type="textarea"/>
+			<field cols="30" description="PLG_LIST_CANEDITROW_EVAL_DESC" label="PLG_LIST_CANEDITROW_EVAL_LABEL" name="caneditrow_eval" repeat="true" rows="5" type="textarea"/>
 		</fieldset>
 	</fields>
 </form>

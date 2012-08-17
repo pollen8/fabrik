@@ -36,7 +36,8 @@ class FabrikHelperHTML
 
 	protected static $tips = array();
 
-	protected static $jsscript = false;
+	/** @var array of previously loaded js scripts */
+	protected static $scripts = array();
 
 	protected static $ajaxCssFiles = array();
 
@@ -68,14 +69,14 @@ class FabrikHelperHTML
 	}
 
 	/**
-	* load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
-	* might be an issue in that we may be re-observing some links when loading in - need to check
-	*
-	* @param   string  $selector  element select to auto create windows for  - was default = a.modal
-	* @param   array   $params    window parameters
-	*
-	* @return  void
-	*/
+	 * load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
+	 * might be an issue in that we may be re-observing some links when loading in - need to check
+	 *
+	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal
+	 * @param   array   $params    window parameters
+	 *
+	 * @return  void
+	 */
 
 	public static function windows($selector = '', $params = array())
 	{
@@ -236,7 +237,7 @@ EOD;
 <span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to; ?>
 </span>
 <?php
-  }
+		}
 ?>
 <br />
 <br />
@@ -861,7 +862,7 @@ EOD;
 		}
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
-		$ext = $debug || (int)JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
+		$ext = $debug || (int) JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
 		$file = (array) $file;
 		$src = array();
 		foreach ($file as $f)
@@ -886,6 +887,21 @@ EOD;
 				}
 				$f = COM_FABRIK_LIVESITE . $f;
 			}
+
+			/*
+			 * Check if already loaded? Have to do this as multiple head.js calls with identical
+			 * scripts in them stops the $onLoad method from being run see:
+			 * https://github.com/Fabrik/fabrik/issues/412
+			 */
+			if (in_array($f, self::$scripts))
+			{
+				continue;
+			}
+			else
+			{
+				self::$scripts[] = $f;
+			}
+
 			if (JRequest::getCmd('format') == 'raw')
 			{
 				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';

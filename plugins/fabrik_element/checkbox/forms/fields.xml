@@ -5,64 +5,36 @@
 		
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
-			<field name="element_before_label"
-				type="radio"
-				default="1"
-				description="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_DESC"
-				label="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_LABEL">
+			<field default="1" description="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_LABEL" name="element_before_label" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="ck_options_per_row"
-				type="text"
-				default="4"
-				label="PLG_ELEMENT_CHECKBOX_OPTIONS_PER_ROW_LABEL"
-				size="2"/>
+			<field default="4" label="PLG_ELEMENT_CHECKBOX_OPTIONS_PER_ROW_LABEL" name="ck_options_per_row" size="2" type="text"/>
 				
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_CHECKBOX_DEFAULTS" name="plg-element-checkbox-default">
 		
-			<field name="sub_default_value"
-				type="text"
-				description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC"
-				label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" 
-				size="30"/>
+			<field description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC" label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" name="sub_default_value" size="30" type="text"/>
 				
-			<field name="sub_default_label"
-				type="text"
-				description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_DESC"
-				label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_LABEL"
-				size="30"/>
+			<field description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_LABEL" name="sub_default_label" size="30" type="text"/>
 			
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_CHECKBOX_FRONTEND_SELECT" name="plg-checkbox-add">
 		
-			<field name="allow_frontend_addtocheckbox"
-				default="0"
-				description="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_DESC"
-				label="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_LABEL"
-				type="radio">
+			<field default="0" description="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_DESC" label="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_LABEL" name="allow_frontend_addtocheckbox" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="chk-allowadd-onlylabel"
-				default="0"
-				description="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_DESC"
-				label="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_LABEL"
-				type="radio">
+			<field default="0" description="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_LABEL" name="chk-allowadd-onlylabel" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="chk-savenewadditions"
-				default="0"
-				description="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_DESC"
-				label="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_LABEL"
-				type="radio">
+			<field default="0" description="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_LABEL" name="chk-savenewadditions" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -70,12 +42,7 @@
 		</fieldset>
 		
 		<fieldset name="plg-checkbox-advanced">
-			<field name="options_split_str"
-				type="text"
-				default=""
-				description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC"
-				label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL"
-				size="10"/>
+			<field default="" description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC" label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL" name="options_split_str" size="10" type="text"/>
 		</fieldset>
 	</fields>
 </form>

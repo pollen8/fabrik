@@ -1,26 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-listcsv">
-			<field
-				name="listcsv_import_php_file"
-				type="filelist"
-				directory="plugins/fabrik_list/listcsv/scripts/"
-				hide_default="1"
-				repeat="true"
-				label="PLG_FABRIK_LIST_LISTCSV_IMPORT_FILE_LABEL"
-				description="PLG_FABRIK_LIST_LISTCSV_IMPORT_FILE_DESC"
-			/>
-			<field
-				name="listcsv_import_php_code"
-				type="textarea"
-				default=""
-				rows="8"
-				cols="60"
-				repeat="true"
-				label="PLG_FABRIK_LIST_LISTCSV_IMPORT_CODE_LABEL"
-				description="PLG_FABRIK_LIST_LISTCSV_IMPORT_CODE_DESC"
-			/>
+			<field description="PLG_FABRIK_LIST_LISTCSV_IMPORT_FILE_DESC" directory="plugins/fabrik_list/listcsv/scripts/" hide_default="1" label="PLG_FABRIK_LIST_LISTCSV_IMPORT_FILE_LABEL" name="listcsv_import_php_file" repeat="true" type="filelist"/>
+			<field cols="60" default="" description="PLG_FABRIK_LIST_LISTCSV_IMPORT_CODE_DESC" label="PLG_FABRIK_LIST_LISTCSV_IMPORT_CODE_LABEL" name="listcsv_import_php_code" repeat="true" rows="8" type="textarea"/>
 		</fieldset>
 	</fields>
 </form>

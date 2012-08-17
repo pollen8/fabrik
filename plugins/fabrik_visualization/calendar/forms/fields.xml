@@ -70,9 +70,9 @@
 				
 			<field default="10" description="PLG_VISUALIZATION_CALENDAR_WEEK_DAY_HEIGHT_DESC" label="PLG_VISUALIZATION_CALENDAR_WEEK_DAY_HEIGHT_LABEL" name="calendar-weekday-height" size="3" type="text"/>
 				
-			<field default="0" description="PLG_VISUALIZATION_CALENDAR_OPEN_HOUR_DESC" label="PLG_VISUALIZATION_CALENDAR_OPEN_HOUR_LABEL" name="open-hour" size="3" type="text" />
+			<field default="0" description="PLG_VISUALIZATION_CALENDAR_OPEN_HOUR_DESC" label="PLG_VISUALIZATION_CALENDAR_OPEN_HOUR_LABEL" name="open-hour" size="3" type="text"/>
 					
-			<field default="24" description="PLG_VISUALIZATION_CALENDAR_CLOSE_HOUR_DESC" label="PLG_VISUALIZATION_CALENDAR_CLOSE_HOUR_LABEL" name="close-hour" size="3" type="text" />
+			<field default="24" description="PLG_VISUALIZATION_CALENDAR_CLOSE_HOUR_DESC" label="PLG_VISUALIZATION_CALENDAR_CLOSE_HOUR_LABEL" name="close-hour" size="3" type="text"/>
 			
 			<field default="1" description="PLG_VISUALIZATION_CALENDAR_SHOW_WEEKENDS_DESC" label="PLG_VISUALIZATION_CALENDAR_SHOW_WEEKENDS_LABEL" name="calendar-show-weekends" type="radio">
 					<option value="0">JNO</option>
