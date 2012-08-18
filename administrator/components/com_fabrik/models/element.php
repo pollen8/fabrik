@@ -323,22 +323,10 @@ class FabrikModelElement extends JModelAdmin
 		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
 		$js = "\tvar opts = $opts;";
-		/* $js .= "\tvar aPlugins = [];\n";
-		foreach ($abstractPlugins as $abstractPlugin)
-		{
-			$js .= "\taPlugins.push(" . $abstractPlugin['js'] . ");\n";
-		} */
+
 		$plugins = json_encode($this->getPlugins());
-		echo $plugins;
 		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . $this->getItem()->id . ");\n";
-		/* foreach ($plugins as $plugin)
-		{
-			$opts = new stdClass;
-			$opts->location = @$plugin['location'];
-			$opts->event = @$plugin['event'];
-			$opts = json_encode($opts);
-			$js .= "\tcontroller.addAction('" . $plugin['html'] . "', '" . $plugin['plugin'] . "'," . $opts . ", false);\n";
-		} */
+
 		return $js;
 	}
 

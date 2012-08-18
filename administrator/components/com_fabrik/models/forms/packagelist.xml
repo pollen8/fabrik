@@ -30,7 +30,7 @@
 			description="MOD_FABRIK_LIST_ELEMENTS_DESC">
 		
 			<fields name="params">
-				<fieldset name="list_elements_modal" repeat="true">
+				<fieldset name="list_elements_modal" repeat="true" modal="true">
 					<field name="show_in_list" 
 						size="30"
 						type="listfields"
@@ -46,7 +46,7 @@
 			description="MOD_FABRIK_LIST_PREFILTERS_DESC">
 		
 			<fields name="params">
-				<fieldset name="prefilters_modal" repeat="true">
+				<fieldset name="prefilters_modal" repeat="true" modal="true">
 					<field name="filter-fields" 
 						type="listfields"
 						valueformat="tableelement"

@@ -168,7 +168,7 @@ class FabrikPlugin extends JPlugin
 
 			$id = isset($fieldset->name) ? ' id="' . $fieldset->name . '"' : '';
 
-			$style = isset($fieldset->repeat) && $fieldset->repeat ? 'style="display:none"': '';
+			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"': '';
 			$str .= '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
 			$form->repeat = $repeat;
