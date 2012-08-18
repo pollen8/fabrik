@@ -2772,7 +2772,6 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$sql .= 'WHERE ' . $id . ' IN (\'' . implode("','", $ids) . '\')';
 		}
-		$sql .= "\n" . $groupBy;
 
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
 		$elementWhere = $this->_buildQueryWhere();
@@ -2782,12 +2781,13 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		$sql .= $elementWhere;
 
+		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql);
 		$rows = $fabrikDb->loadObjectList();
 		if ($fabrikDb->getErrorNum() != 0)
 		{
-			JError::raiseNotice(500, 'filter query error: ' . $fabrikDb->getErrorMsg());
+			JError::raiseNotice(500, 'filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg());
 		}
 		return $rows;
 

@@ -623,6 +623,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
 			$where = str_replace($this->orderBy, '', $where);
 		}
+
 		if (!empty($this->_autocomplete_where))
 		{
 			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
