@@ -28,11 +28,6 @@ JFormHelper::loadFieldClass('list');
  * @since       3.0
  */
 
-jimport('joomla.html.html');
-jimport('joomla.form.formfield');
-jimport('joomla.form.helper');
-JFormHelper::loadFieldClass('list');
-
 class JFormFieldFabrikTables extends JFormFieldList
 {
 	/**
@@ -43,7 +38,9 @@ class JFormFieldFabrikTables extends JFormFieldList
 	 */
 	var $_name = 'Fabriktables';
 
-	var $_array_counter = null;
+	//var $_array_counter = null;
+
+	protected static $fabriktables;
 
 	/**
 	 * Method to get the field options.
@@ -105,6 +102,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts = new stdClass;
 			$opts->livesite = COM_FABRIK_LIVESITE;
 			$opts->conn = 'jform_' . $connectionDd;
+
 			$opts->value = $this->value;
 			$opts->connInRepeat = (bool) $this->element['connection_in_repeat'][0];
 			$opts->inRepeatGroup = $this->form->repeat;
@@ -113,8 +111,10 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts = json_encode($opts);
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
-			//$script[] = "Fabrik.adminElements['$this->id'] = p;";
+
+			// $script[] = "Fabrik.adminElements['$this->id'] = p;";
 			$script = implode("\n", $script);
+
 			$fabriktables[$this->id] = true;
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabriktables.js', $script);
 		}

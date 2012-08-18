@@ -35,13 +35,13 @@ class JFormFieldPluginList extends JFormFieldList
 	 * Method to get the field options.
 	 *
 	 * @return	array	The field option objects.
-	 * @since	1.6
 	 */
 	public function getOptions()
 	{
 		$group = (string) $this->element['plugin'];
 		$key = $this->element['key'];
 		$key = ($key == 'visualization.plugin') ? "CONCAT('visualization.',element) " : 'element';
+
 		// Initialize variables.
 		$options = array();
 
@@ -58,6 +58,7 @@ class JFormFieldPluginList extends JFormFieldList
 		// Get the options.
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
+
 		// Check for a database error.
 		if ($db->getErrorNum())
 		{
@@ -67,4 +68,3 @@ class JFormFieldPluginList extends JFormFieldList
 		return $options;
 	}
 }
-?>

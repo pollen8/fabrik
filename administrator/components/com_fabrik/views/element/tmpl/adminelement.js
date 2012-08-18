@@ -13,9 +13,9 @@ var fabrikAdminElement = new Class({
 		jsevents: []
 	},
 
-	initialize: function (plugins, options, lang) {
-		this.parent(plugins, lang);
-		this.opts.type = 'validationrule';
+	initialize: function (plugins, options, id) {
+		console.log(id);
+		this.parent(plugins, id, 'validationrule');
 		this.setOptions(options);
 		this.watchPluginDd();
 		this.setParentViz();

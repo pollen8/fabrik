@@ -27,20 +27,19 @@ JFormHelper::loadFieldClass('list');
 class JFormFieldConnections extends JFormFieldList
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Connections';
-
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	var $_name = 'Connections';
 
 	function getOptions()
 	{
 
 		// Initialize variables.
 		$options = array();
-		$db	= FabrikWorker::getDbo(true);
+		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 
 		$query->select('id AS value, description AS text, ' . $db->quoteName('default'));
@@ -67,14 +66,13 @@ class JFormFieldConnections extends JFormFieldList
 	 * Method to get the field input markup.
 	 *
 	 * @return	string	The field input markup.
-	 * @since	1.6
 	 */
 
 	protected function getInput()
 	{
 		if ((int) $this->form->getValue('id') == 0 && $this->value == '')
 		{
-			// default to default connection on new form where no value specified
+			// Default to default connection on new form where no value specified
 			$options = (array) $this->getOptions();
 			foreach ($options as $opt)
 			{
@@ -100,8 +98,8 @@ class JFormFieldConnections extends JFormFieldList
 				}
 			}
 		}
-		return '<input type="hidden" value="' . $this->value . '" name="' . $this->name . '" />'.
-		'<input type="text" value="' . $v . '" name="connection_justalabel" class="readonly" readonly="true" />';
+		return '<input type="hidden" value="' . $this->value . '" name="' . $this->name . '" />' . '<input type="text" value="' . $v
+			. '" name="connection_justalabel" class="readonly" readonly="true" />';
 	}
 
 }

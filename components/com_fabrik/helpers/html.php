@@ -860,6 +860,7 @@ EOD;
 		{
 			return;
 		}
+		$document = JFactory::getDocument();
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
 		$ext = $debug || (int) JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
@@ -893,7 +894,7 @@ EOD;
 			 * scripts in them stops the $onLoad method from being run see:
 			 * https://github.com/Fabrik/fabrik/issues/412
 			 */
-			if (in_array($f, self::$scripts))
+			if (in_array($f, self::$scripts) && JRequest::getCmd('format') !== 'raw')
 			{
 				continue;
 			}
@@ -926,7 +927,15 @@ EOD;
 		}
 		if (!empty($src))
 		{
-			JFactory::getDocument()->addScriptDeclaration('head.js(' . implode(",\n", array_unique($src)) . ');' . "\n");
+			$document->addScriptDeclaration('head.js(' . implode(",\n", array_unique($src)) . ');' . "\n");
+		}
+		else
+		{
+			// Ppreviously loaded $file but with js code in $onLoad which should still be added
+			if (!empty($onLoad))
+			{
+				$document->addScriptDeclaration('head.ready(function () {' . $onLoad . '});' . "\n");
+			}
 		}
 	}
 

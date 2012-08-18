@@ -148,7 +148,7 @@ class FabrikPlugin extends JPlugin
 			$class = 'adminform ' . $type . 'Settings page-' . $this->_name;
 			$repeat = isset($fieldset->repeatcontrols) && $fieldset->repeatcontrols == 1;
 
-			//bind data for repeat groups
+			// Bind data for repeat groups
 			$repeatDataMax = 1;
 			if ($repeat)
 			{
@@ -167,7 +167,9 @@ class FabrikPlugin extends JPlugin
 			}
 
 			$id = isset($fieldset->name) ? ' id="' . $fieldset->name . '"' : '';
-			$str .= '<fieldset class="' . $class . '"' . $id . '>';
+
+			$style = isset($fieldset->repeat) && $fieldset->repeat ? 'style="display:none"': '';
+			$str .= '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
 			$form->repeat = $repeat;
 			if ($repeat)

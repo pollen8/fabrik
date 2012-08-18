@@ -116,7 +116,9 @@ var fabriktablesElement = new Class({
 		// Fabrik.requestQueue.add(myAjax);
 		
 		//myAjax.send();
-		Fabrik.requestQueue.add(myAjax);
+		//Fabrik.requestQueue.add(myAjax);
+		
+		myAjax.send();
 	},
 
 	updateElements : function () {
