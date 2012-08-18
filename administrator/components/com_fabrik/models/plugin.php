@@ -23,9 +23,14 @@ require_once 'fabmodeladmin.php';
 class FabrikModelPlugin extends JModel
 {
 
+	/**
+	 * Render the plugins fields
+	 *
+	 * @return string
+	 */
+
 	public function render()
 	{
-
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn($this->getState('plugin'), $this->getState('type'));
 		$feModel = $this->getPluginModel();
@@ -38,6 +43,12 @@ class FabrikModelPlugin extends JModel
 
 		return $str;
 	}
+
+	/**
+	 * Get the plugins data to bind to the form
+	 *
+	 * @return  array
+	 */
 
 	protected function getData()
 	{
@@ -62,38 +73,30 @@ class FabrikModelPlugin extends JModel
 		return $data;
 	}
 
+	/**
+	 * Get the plugin model
+	 *
+	 * @return  object
+	 */
+
 	protected function getPluginModel()
 	{
 		$feModel = null;
 		$type = $this->getState('type');
-		/* if ($type === 'validationrule')
-		{
-		    $type = 'element';
-		} */
-		if ($type === 'validationrule')
-		{
-			/* $pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-
-			// Require the abstract plugin class
-			require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
-			require_once COM_FABRIK_FRONTEND . '/models/element.php';
-			$feModel = $pluginManager->getPlugIn($this->getState('plugin'), 'element');
-			echo "<pre>plg";
-			print_r($feModel);
-			exit; */
-		}
-		else
+		if ($type !== 'validationrule')
 		{
 			// Set the parent model e.g. form/list
 			$feModel = JModel::getInstance($type, 'FabrikFEModel');
 			$feModel->setId($this->getState('id'));
 		}
-
-		// Set the parent model e.g. form/list
-		/* $feModel = JModel::getInstance($type, 'FabrikFEModel');
-		$feModel->setId($this->getState('id')); */
 		return $feModel;
 	}
+
+	/**
+	 * Render the initial plugin options, such as the plugin selector, and whether its rendered in front/back/both etc
+	 *
+	 * @return  string
+	 */
 
 	public function top()
 	{

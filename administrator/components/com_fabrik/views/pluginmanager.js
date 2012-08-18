@@ -14,13 +14,13 @@ var PluginManager = new Class({
 		this.watchAdd();
 		
 		document.id('plugins').addEvent('click:relay(h3.title)', function (e, target) {
-			document.id('plugins').getElements('h3.title').each (function (h) {
+			document.id('plugins').getElements('h3.title').each(function (h) {
 				if (h !== target) {
 					h.removeClass('pane-toggler-down');
 				}
 			});
 			target.toggleClass('pane-toggler-down');
-		})
+		});
 	},
 	
 	/**
