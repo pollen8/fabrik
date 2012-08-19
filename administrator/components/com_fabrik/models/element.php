@@ -325,7 +325,7 @@ class FabrikModelElement extends JModelAdmin
 		$js = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . $this->getItem()->id . ");\n";
+		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . (int)$this->getItem()->id . ");\n";
 
 		return $js;
 	}
