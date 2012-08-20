@@ -70,7 +70,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			$listModel->setId($listid);
 			$max = $db->quoteName(FabrikString::shortColName($params->get('limit_max')));
 			$userfield = $db->quoteName(FabrikString::shortColName($params->get('limit_user')));
-			$query->select($max)->from($listModel->getTable()->db_table_name)->where($userfield  . ' = ' . (int) $user->get('id'));
+			$query->select($max)->from($listModel->getTable()->db_table_name)->where($userfield . ' = ' . (int) $user->get('id'));
 			$db->setQuery($query);
 			$limit = (int) $db->loadResult();
 
