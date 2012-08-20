@@ -2722,8 +2722,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$joinStr = $incjoin ? $listModel->_buildQueryJoin() : $this->_buildFilterJoin();
 
 		// New option not to order elements - required if you want to use db joins 'Joins where and/or order by statement'
-		$groupByCol = $params->get('filter_groupby', 'text');
-		$groupBy = ($groupByCol === '-1') ? '' : 'GROUP BY ' . $groupByCol . ' ASC';
+		$groupBy = $this->getOrderBy('filter');
 
 		foreach ($listModel->getJoins() as $aJoin)
 		{
@@ -2774,7 +2773,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
-		$elementWhere = $this->_buildQueryWhere();
+		$elementWhere = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			$elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
@@ -2791,6 +2790,26 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		return $rows;
 
+	}
+
+	/**
+	 * Get options order by
+	 *
+	 * @param   string  $view  view mode '' or 'filter'
+	 *
+	 * @return  string  order by statement
+	 */
+
+	protected function getOrderBy($view = '')
+	{
+		if (isset($this->orderBy))
+		{
+			return $this->orderBy;
+		}
+		else
+		{
+			return "ORDER BY text ASC ";
+		}
 	}
 
 	/**
@@ -4535,7 +4554,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$labelid = $id . '_ddLabel';
 		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
 		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
-		$str[] = '<a href="#" title="' . JText::_('add option') . '" class="toggle-addoption">';
+		$str[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';
 		$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/action_add.png" alt="' . JText::_('COM_FABRIK_ADD') . '"/>';
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left">';
@@ -5772,11 +5791,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @param   array   $data            current row data to use in placeholder replacements
 	 * @param   bool    $incWhere        should the additional user defined WHERE statement be included
 	 * @param   string  $thisTableAlias  db table alais
+	 * @param   array   $opts            options
 	 *
 	 * @return string
 	 */
 
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null)
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array())
 	{
 		return '';
 	}

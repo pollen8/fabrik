@@ -324,9 +324,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Get array of option values
 	 *
-	 * @param   array	$data
-	 * @param   int		repeat group counter
-	 * @param   bool	do we add custom where statement into sql
+	 * @param   array  $data           data
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   bool   $incWhere       do we add custom where statement into sql
+	 *
 	 * @return  array	option values
 	 */
 
@@ -337,9 +338,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		// $$$ hugh - attempting to make sure we never do an uncontrained query for auto-complete
 		$displayType = $params->get('database_join_display_type', 'dropdown');
-		if ($displayType === 'auto-complete' && empty($this->_autocomplete_where))
+		$value = (array) $this->getValue($data, $repeatCounter);
+
+		/*
+		 *  $$$ rob 20/08/2012 - removed empty test - seems that this method is called more than one time, when in auto-complete filter
+		 *  First time sends the label in data second time sends the value (which is the correct one)
+		 */
+		//if ($displayType === 'auto-complete' && empty($this->_autocomplete_where))
+		if ($displayType === 'auto-complete')
 		{
-			$value = (array) $this->getValue($data, $repeatCounter);
 			if (!empty($value) && $value[0] !== '')
 			{
 				$quoteV = array();
@@ -594,12 +601,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * Create the where part for the query that selects the list options
 	 *
 	 * @param   array   $data            current row data to use in placeholder replacements
-	 * @param   bool    $incWhere       should the additional user defined WHERE statement be included
+	 * @param   bool    $incWhere        should the additional user defined WHERE statement be included
 	 * @param   string  $thisTableAlias  db table alais
+	 * @param   array   $opts            options
 	 *
 	 * @return string
 	 */
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null)
+
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array())
 	{
 		$where = '';
 		$listModel = $this->getlistModel();
@@ -623,10 +632,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
 			$where = str_replace($this->orderBy, '', $where);
 		}
-
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
+
+			$mode = JArrayHelper::getValue($opts, 'mode', 'form');
+			$filterType = $element->filter_type;
+			if (($mode == 'filter' && $filterType == 'auto-complete')
+				|| $mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
+			{
+				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
+			}
 		}
 		if ($where == '')
 		{
@@ -852,14 +867,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						// $$$ rob 24/05/2011 - add options per row
 						$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs .' id="' . $id . '"', $defaultValue, 'value', 'text', $options_per_row);
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value',
+							'text', $options_per_row);
 						break;
 					case 'checkbox':
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 						$rawname = $this->getFullName(false, true, false) . '_raw';
 
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value', 'text', $options_per_row, $this->_editable);
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value',
+							'text', $options_per_row, $this->_editable);
 						if ($this->isJoin() && $this->_editable)
 						{
 							$join = $this->getJoin();
@@ -892,7 +909,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 							}
 							$html[] = '<div class="fabrikHide">';
 							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $options_per_row, $this->_editable);
+							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text',
+								$options_per_row, $this->_editable);
 							$html[] = '</div>';
 						}
 						$defaultLabel = implode("\n", $html);
@@ -908,7 +926,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						else
 						{
 							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $options_per_row, $this->_editable);
+							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs, $defaults, 'value', 'text',
+								$options_per_row, $this->_editable);
 						}
 						$defaultLabel = implode("\n", $html);
 						break;
@@ -916,7 +935,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					// Get the LABEL from the form's data.
 						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
 
-						// $$$ rob 18/06/2012 if form submitted with errors - reshowing hte auto-complete wont have access to the submitted values label
+						// $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
 						if ($formModel->hasErrors())
 						{
 							$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
@@ -951,12 +970,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			elseif ($this->canView())
 			{
 				$html[] = $this->renderListData($default, JArrayHelper::toObject($data));
-			}
-			else
-			{
-				/* make a hidden field instead*/
-				//$$$ rob no - the readonly data should be made in form view _loadTmplBottom
-				//$str = '<input type='hidden' class='fabrikinput' name='$thisElName' id='$id' value='$default' />";
 			}
 		}
 		if ($params->get('join_desc_column', '') !== '')
@@ -1233,7 +1246,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * Get the table filter for the element
+	 * Get the list filter for the element
 	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
@@ -1260,11 +1273,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$rows = $this->filterValueList($normal, null, $joinVal, '', $incJoin);
 			if (!$rows)
 			{
-				// $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
-				// http://fabrikar.com/forums/showthread.php?p=100466#post100466
-				// JError::raiseWarning(500, 'database join filter query incorrect');
-				// Moved warning to element model filterValueList_Exact(), with a test for $fabrikDb->getErrorNum()
-				// So we'll just return an otherwise empty menu with just the 'select label'
+				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
+				 * http://fabrikar.com/forums/showthread.php?p=100466#post100466
+				 * JError::raiseWarning(500, 'database join filter query incorrect');
+				 * Moved warning to element model filterValueList_Exact(), with a test for $fabrikDb->getErrorNum()
+				 * So we'll just return an otherwise empty menu with just the 'select label'
+				 */
 				$rows = array();
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
@@ -1407,7 +1421,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ hugh - select all values for performance gain over selecting distinct records from recorded data
 		$sql = "SELECT DISTINCT( $joinVal ) AS text, $joinKey AS value \n FROM " . $fabrikDb->quoteName($joinTable) . ' AS '
 			. $fabrikDb->quoteName($joinTableName) . " \n ";
-		$where = $this->_buildQueryWhere();
+		$where = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 
 		// Ensure table prefilter is applied to query
 		$prefilterWhere = $listModel->_buildQueryPrefilterWhere($this);
@@ -1431,14 +1445,33 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $fabrikDb->loadObjectList();
 	}
 
+	/**
+	 * Get options order by
+	 *
+	 * @param   string  $view  view mode '' or 'filter'
+	 *
+	 * @return  string  order by statement
+	 */
+
 	protected function getOrderBy($view = '')
 	{
 		if ($view == 'filter')
 		{
 			$params = $this->getParams();
 			$joinKey = $this->getJoinValueColumn();
-			$joinVal = $this->getJoinLabelColumn();
-			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinKey : $joinVal;
+			$joinLabel = $this->getJoinLabelColumn();
+			$groupByCol = $params->get('filter_groupby', 'text');
+			if ($groupByCol != -1)
+			{
+				$groupByCol = $groupByCol == 'text' ? $joinLabel : $joinKey;
+				$order = 'ORDER BY ' . $groupByCol . ' ASC';
+			}
+			else
+			{
+				$order = $this->orderBy;
+			}
+
+			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinLabel : $joinKey;
 			return " ORDER BY $order ASC ";
 		}
 		else
@@ -1979,11 +2012,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * used by elements with suboptions
+	 * Used by elements with suboptions
 	 *
-	 * @param   string	value
-	 * @param   string	default label
-	 * @param   int		repeat group counter
+	 * @param   string  $v              value
+	 * @param   string  $defaultLabel   default label
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
 	 * @return  string	label
 	 */
 

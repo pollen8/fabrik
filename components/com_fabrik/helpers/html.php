@@ -28,31 +28,85 @@ require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
 class FabrikHelperHTML
 {
 
+	/**
+	 * Is the Fabrik JavaScript framework loaded
+	 *
+	 * @var  bool
+	 */
 	protected static $framework = null;
 
+	/**
+	 * Is the MLC JavaScript library loaded
+	 *
+	 * @var  bool
+	 */
 	protected static $mcl = null;
 
+	/**
+	 * Array of loaded modal window states
+	 *
+	 * @var array
+	 */
 	protected static $modals = array();
 
+	/**
+	 * Array of loaded tip states
+	 *
+	 * @var  array
+	 */
 	protected static $tips = array();
 
-	/** @var array of previously loaded js scripts */
+	/**
+	 * Previously loaded js scripts
+	 *
+	 * @var  array
+	 */
 	protected static $scripts = array();
 
+	/**
+	 * CSS files loaded via AJAX
+	 *
+	 * @var  array
+	 */
 	protected static $ajaxCssFiles = array();
 
+	/**
+	 * Has the debug JavaScript been loaded
+	 *
+	 * @var  bool
+	 */
 	protected static $debug = null;
 
+	/**
+	 * Has the auto-complete JavaScript js file been loaded
+	 *
+	 * @var bool
+	 */
 	protected static $autocomplete = null;
 
+	/**
+	 * Has the Facebook API JavaScript file been loaded
+	 *
+	 * @var  bool
+	 */
 	protected static $facebookgraphapi = null;
 
+	/**
+	 * Folders to search for media
+	 *
+	 * @var  array
+	 */
 	protected static $helperpaths = array();
 
+	/**
+	 * Load the modal JavaScript files once
+	 *
+	 * @var  bool
+	 */
 	protected static $modal = null;
 
 	/**
-	 * load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
+	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
 	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal
@@ -69,7 +123,7 @@ class FabrikHelperHTML
 	}
 
 	/**
-	 * load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
+	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
 	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal

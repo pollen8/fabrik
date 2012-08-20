@@ -551,7 +551,12 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		{
 			$this->defaults = array();
 		}
-		$valueKey = $repeatCounter . serialize($opts);
+
+		/*
+		 *  $$$ rob 20/08/2012 - added $data to serialized key
+		 *  Seems that db join _getOptionVals() _autocomplete_where is getting run a couple of times with key and labels being passed in
+		 */
+		$valueKey = $repeatCounter . serialize($opts) . serialize($data);
 		if (!array_key_exists($valueKey, $this->defaults))
 		{
 			$value = '';

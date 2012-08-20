@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -23,23 +23,60 @@ jimport('joomla.html.pagination');
  * $total, $limitstart, $limit
  */
 
-class FPagination extends JPagination{
+class FPagination extends JPagination
+{
 
-	/** "var string action url */
+	/**
+	 * Action url
+	 *
+	 * @var  string
+	 * */
 	var $url = '';
 
+	/**
+	 * Pagination ID
+	 *
+	 * @var  string
+	 */
 	var $_id = '';
 
-	/** @bool show the total number of records found **/
+	/**
+	 * Show the total number of records found
+	 *
+	 * @var  bool
+	 */
 	var $showTotal = false;
 
+	/**
+	 * Add an 'all' option to the display # dropdown
+	 *
+	 * @var  bool
+	 */
 	var $showAllOption = false;
-	
+
+	/**
+	 * The lists unique reference
+	 *
+	 * @var  string
+	 */
 	protected $listRef = null;
-	
+
+	/**
+	 * Show 'x of y pages'
+	 *
+	 * @var  bool
+	 */
 	public $showDisplayNum = true;
 
-	function setId($id)
+	/**
+	 * Set the pagination ID
+	 *
+	 * @param  int  $id id
+	 *
+	 * @return  void
+	 */
+
+	public function setId($id)
 	{
 		$this->_id = $id;
 	}
@@ -47,38 +84,36 @@ class FPagination extends JPagination{
 	/**
 	 * Return the pagination footer
 	 *
-	 * @access	public
-	 * @param	string	list reference
-	 * @param	string	tmpl
+	 * @param   string  $listRef  list reference
+	 * @param   string  $tmpl     list template
+	 *
 	 * @return	string	Pagination footer
-	 * @since	1.0
 	 */
-	
-	function getListFooter($listRef = 0, $tmpl = 'default')
+
+	public function getListFooter($listRef = 0, $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$this->listRef = $listRef;
 		$list = array();
 		$list['limit'] = $this->limit;
-		$list['limitstart']	= $this->limitstart;
+		$list['limitstart'] = $this->limitstart;
 		$list['total'] = $this->total;
-		$list['limitfield']	= $this->showDisplayNum ? $this->getLimitBox() : '';
+		$list['limitfield'] = $this->showDisplayNum ? $this->getLimitBox() : '';
 		$list['pagescounter'] = $this->getPagesCounter();
 		if ($this->showTotal)
 		{
-			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': '. $list['total'];
+			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': ' . $list['total'];
 		}
-		$list['pageslinks']	= $this->getPagesLinks($listRef, $tmpl);
+		$list['pageslinks'] = $this->getPagesLinks($listRef, $tmpl);
 
-		$chromePath	= JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
+		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
 
 		if (file_exists($chromePath))
 		{
-			require_once($chromePath);
+			require_once $chromePath;
 			if (function_exists('pagination_list_footer'))
 			{
-				//cant allow for it to be overridden
-				//return pagination_list_footer($list);
+				// Cant allow for it to be overridden
 			}
 		}
 		return $this->_list_footer($list);
@@ -87,61 +122,75 @@ class FPagination extends JPagination{
 	/**
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
-	 * @access	public
 	 * @return	string	The html for the limit # input box
-	 * @since	1.0
 	 */
-	
-	function getLimitBox()
+
+	public function getLimitBox()
 	{
 		// Initialize variables
 		$limits = array();
 
 		$vals = array();
-		for ($i = 5; $i <= 30; $i += 5) {
+		for ($i = 5; $i <= 30; $i += 5)
+		{
 			$vals[] = $i;
 		}
 		$vals[] = 50;
 		$vals[] = 100;
-		
-		if (!in_array($this->startLimit, $vals)) {
+
+		if (!in_array($this->startLimit, $vals))
+		{
 			$vals[] = $this->startLimit;
 		}
 		asort($vals);
-		foreach ($vals as $v) {
+		foreach ($vals as $v)
+		{
 			$limits[] = JHTML::_('select.option', $v);
 		}
-		if ($this->showAllOption == true) {
+		if ($this->showAllOption == true)
+		{
 			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
 		}
 		$selected = $this->_viewall ? 0 : $this->limit;
 		$js = '';
-		$html = JHTML::_('select.genericlist', $limits, 'limit'.$this->_id, 'class="inputbox" size="1" onchange="'.$js.'"', 'value', 'text', $selected);
+		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->_id, 'class="inputbox" size="1" onchange="' . $js . '"', 'value', 'text',
+			$selected);
 		return $html;
 	}
 
-	function _item_active(&$item)
+	/**
+	 * Method to create an active pagination link to the item
+	 *
+	 * @param   JPaginationObject  &$item  The object with which to make an active link.
+	 *
+	 * @return   string  HTML link
+	 */
+
+	protected function _item_active(&$item)
 	{
 		$app = JFactory::getApplication();
 		if ($app->isAdmin())
 		{
-			//return '<a title="' . $item->text . '" href="#" onclick="oTable.fabrikNav(' . $item->base . ');return false;">' . $item->text . '</a>';
-			return '<a href="' . $item->base . '" title="' .$item->text . '">' . $item->text . '</a>';
-		} else {
+			return '<a href="' . $item->base . '" title="' . $item->text . '">' . $item->text . '</a>';
+		}
+		else
+		{
 			return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 		}
 	}
 
 	/**
-	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x
+	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
 	 *
-	 * CANT ALLOW OVERRIDE IN TEMPLATES :s - AS THEY PRODUCE WRONG JS CODE/
-	 * @access	public
-	 * @return	string	Pagination page list string
-	 * @since	1.0
+	 * @param   string  $listRef  unique list reference
+	 * @param   string  $tmpl     list template name
+	 *
+	 * @return  string  Pagination page list string.
+	 *
+	 * @since   11.1
 	 */
 
-	function getPagesLinks($listRef = 0, $tmpl = 'default')
+	public function getPagesLinks($listRef = 0, $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 
@@ -158,10 +207,10 @@ class FPagination extends JPagination{
 		$chromePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_pagination.php';
 		if (JFile::exists($chromePath))
 		{
-			require_once($chromePath);
+			require_once $chromePath;
 			if (function_exists('fabrik_pagination_item_active') && function_exists('fabrik_pagination_item_inactive'))
 			{
-				//cant allow this as the js code we use for the items is different
+				// Can't allow this as the js code we use for the items is different
 				$itemOverride = true;
 			}
 			if (function_exists('fabrik_pagination_list_render'))
@@ -195,7 +244,8 @@ class FPagination extends JPagination{
 		if ($data->previous->base !== null)
 		{
 			$list['previous']['active'] = true;
-			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_active($data->previous, $this->listRef) : $this->_item_active($data->previous);
+			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_active($data->previous, $this->listRef)
+				: $this->_item_active($data->previous);
 		}
 		else
 		{
@@ -203,7 +253,8 @@ class FPagination extends JPagination{
 			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
 		}
 
-		$list['pages'] = array(); //make sure it exists
+		// Make sure it exists
+		$list['pages'] = array();
 		foreach ($data->pages as $i => $page)
 		{
 			if ($page->base !== null)
@@ -249,6 +300,14 @@ class FPagination extends JPagination{
 		}
 	}
 
+	/**
+	 * Create the html for a list footer
+	 *
+	 * @param   array  $list  Pagination list data structure.
+	 *
+	 * @return  string  HTML for a list start, previous, next,end
+	 */
+
 	protected function _list_render($list)
 	{
 		// Reverse output rendering for right-to-left display.
@@ -276,22 +335,21 @@ class FPagination extends JPagination{
 	 *
 	 * Create and return the pagination data object
 	 *
-	 * @access	public
 	 * @return	object	Pagination data object
-	 * @since	1.5
 	 */
 
-	function _buildDataObject()
+	protected function _buildDataObject()
 	{
 		$app = JFactory::getApplication();
 		$admin = $app->isAdmin();
- 		// Initialize variables
+
+		// Initialize variables
 		$data = new stdClass;
 		$this->url = preg_replace("/limitstart{$this->_id}=(.*)?(&|)/", "", $this->url);
 		$this->url = FabrikString::rtrimword($this->url, "&");
+
 		// $$$ hugh - need to work out if we need & or ?
-		$sepchar = strstr($this->url,'?') ? '&amp;' : '?';
-		//$sepchar = '&';
+		$sepchar = strstr($this->url, '?') ? '&amp;' : '?';
 		$data->all = new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
 		if (!$this->_viewall)
 		{
@@ -301,18 +359,18 @@ class FPagination extends JPagination{
 
 		// Set the start and previous data objects
 		$data->start = new JPaginationObject(JText::_('COM_FABRIK_START'));
-		$data->previous	= new JPaginationObject(JText::_('COM_FABRIK_PREV'));
+		$data->previous = new JPaginationObject(JText::_('COM_FABRIK_PREV'));
 
 		if ($this->get('pages.current') > 1)
 		{
-			$page = ($this->get('pages.current') -2) * $this->limit;
+			$page = ($this->get('pages.current') - 2) * $this->limit;
 
-			//$page = $page == 0 ? '' : $page; //set the empty for removal from route
-			$data->start->base	= '0';
-			$data->start->link	= $admin ? "{$sepchar}limitstart{$this->_id}=0" : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=0");
+			$data->start->base = '0';
+			$data->start->link = $admin ? "{$sepchar}limitstart{$this->_id}=0" : JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}=0");
 
-			$data->previous->base	= $page;
-			$data->previous->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$page : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$page);
+			$data->previous->base = $page;
+			$data->previous->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $page
+				: JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}=" . $page);
 
 			$data->start->link = str_replace('resetfilters=1', '', $data->start->link);
 			$data->previous->link = str_replace('resetfilters=1', '', $data->previous->link);
@@ -321,18 +379,20 @@ class FPagination extends JPagination{
 		}
 
 		// Set the next and end data objects
-		$data->next	= new JPaginationObject(JText::_('COM_FABRIK_NEXT'));
-		$data->end	= new JPaginationObject(JText::_('COM_FABRIK_END'));
+		$data->next = new JPaginationObject(JText::_('COM_FABRIK_NEXT'));
+		$data->end = new JPaginationObject(JText::_('COM_FABRIK_END'));
 
 		if ($this->get('pages.current') < $this->get('pages.total'))
 		{
 			$next = $this->get('pages.current') * $this->limit;
-			$end  = ($this->get('pages.total') -1) * $this->limit;
+			$end = ($this->get('pages.total') - 1) * $this->limit;
 
-			$data->next->base	= $next;
-			$data->next->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$next : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$next);
-			$data->end->base	= $end;
-			$data->end->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$end : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$end);
+			$data->next->base = $next;
+			$data->next->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $next : JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}="
+				. $next);
+			$data->end->base = $end;
+			$data->end->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $end : JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}="
+				. $end);
 
 			$data->next->link = str_replace('resetfilters=1', '', $data->next->link);
 			$data->end->link = str_replace('resetfilters=1', '', $data->end->link);
@@ -342,17 +402,16 @@ class FPagination extends JPagination{
 
 		$data->pages = array();
 		$stop = $this->get('pages.stop');
-		for ($i = $this->get('pages.start'); $i <= $stop; $i ++)
+		for ($i = $this->get('pages.start'); $i <= $stop; $i++)
 		{
-			$offset = ($i -1) * $this->limit;
-
-			//$offset = $offset == 0 ? '' : $offset;  //set the empty for removal from route
+			$offset = ($i - 1) * $this->limit;
 
 			$data->pages[$i] = new JPaginationObject($i);
 			if ($i != $this->get('pages.current') || $this->_viewall)
 			{
-				$data->pages[$i]->base	= $offset;
-				$data->pages[$i]->link	= $admin ? "{$sepchar}limitstart{$this->_id}=".$offset : JRoute::_($this->url."{$sepchar}limitstart{$this->_id}=".$offset);
+				$data->pages[$i]->base = $offset;
+				$data->pages[$i]->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $offset
+					: JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}=" . $offset);
 				$data->pages[$i]->link = str_replace('resetfilters=1', '', $data->pages[$i]->link);
 				$data->pages[$i]->link = str_replace('clearordering=1', '', $data->pages[$i]->link);
 			}
@@ -360,7 +419,15 @@ class FPagination extends JPagination{
 		return $data;
 	}
 
-	function _list_footer($list)
+	/**
+	 * Create the HTML for a list footer
+	 *
+	 * @param   array  $list  Pagination list data structure.
+	 *
+	 * @return  string  HTML for a list footer
+	 */
+
+	protected function _list_footer($list)
 	{
 		// Initialize variables
 		$html = array();
@@ -375,4 +442,3 @@ class FPagination extends JPagination{
 	}
 
 }
-?>
