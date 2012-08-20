@@ -55,21 +55,39 @@
 	            -i ${basedir}/components/com_fabrik/libs/,*/libs/*
 	            -t ${basedir}/fabrik_build/docs" />
 	    </exec>
-	    <ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.docdir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+	     
+	</target>
+	
+	<target name="uploadPhpDoc" description="Upload PHP docs created in target:phpdoc">
+		<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" 
+			depends="false"
+			ignoreNoncriticalErrors="true"
+			retriesAllowed="3"
+			verbose="yes" remotedir="${ftp.docdir}"
+			 skipFailedTransfers="true">
 			<fileset dir="${phpdoc.localdir}">
 				<include name="**/**" />
 			</fileset>
-		</ftp> 
+		</ftp>
 	</target>
 
  
 	<target name="fabrik.all">
-	<input message="PHP Doc?" addproperty="phpdoc" validargs="y,n" defaultvalue="n" />
+	
+	<antcall target="changelog.update" />
+		<input message="PHP Doc?" addproperty="phpdoc" validargs="y,n" defaultvalue="n" />
 		<if>
  			<equals arg1="${phpdoc}" arg2="y" />
 			<then>
 			<antcall target="phpdoc" />
 			</then>
+		</if>
+		<input message="Upload PHP docs to fabrikar.com" addproperty="phpdocupload" validargs="y,n" defaultvalue="n" />
+		<if>
+			<equals arg1="${phpdocupload}" arg2="y" />
+			<then>
+				<antcall target="uploadPhpDoc"/>
+			</then>	
 		</if>
 		<input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
 		<if>
@@ -745,6 +763,25 @@
 					</xmltask>
 				</then>
 			</if>
+	</target>
+	
+	<target name="changelog.update">
+	 <exec executable="git" failonerror="true" outputproperty="git.tag">
+        <arg line="tag"/>
+    </exec> 
+     <script language="javascript"><![CDATA[
+//get the two most recent tags to get the diff
+var tags = project.getProperty("git.tag").replace("\r", "").split("\n"),
+curTag = tags[tags.length-3],//was -1 but need to ignore  3.0a and 30.b
+priorTag = tags[tags.length-4]; //was -2 but need to ignore 3.0a and 30.b
+project.setProperty("project.current", curTag);
+project.setProperty("git.log.range", priorTag + ".." + curTag);
+]]></script>
+
+		
+		
+		<echo message=" git tags ${git.tag}" />
+		<echo message="${project.current}, ${git.log.range}" />
 	</target>
 	
 </project>

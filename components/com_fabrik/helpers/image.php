@@ -22,7 +22,11 @@ defined('_JEXEC') or die();
 class FabimageHelper
 {
 
-	/** @var object image manipulation lib, sepecific to library */
+	/**
+	 * Image manipulation lib, sepecific to library
+	 *
+	 * @var  object
+	 */
 	var $_lib = null;
 
 	/**
@@ -150,9 +154,18 @@ class FabimageHelper
 
 class Fabimage
 {
+	/**
+	 * Thumbnail image path
+	 *
+	 * @var  string
+	 */
 	var $_thumbPath = null;
 
-	/**@var object storage class file/amazons3 etc*/
+	/**
+	 *  Storage class file/amazons3 etc
+	 *
+	 *  @var object
+	 */
 	var $storage = null;
 
 	/**
@@ -196,15 +209,15 @@ class Fabimage
 	}
 
 	/**
-	* Resize an image to a specific width/height
-	*
-	* @param   int     $maxWidth   maximum image Width (px)
-	* @param   int     $maxHeight  maximum image Height (px)
-	* @param   string  $origFile   current images folder pathe (must have trailing end slash)
-	* @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
-	*
-	* @return  object  image
-	*/
+	 * Resize an image to a specific width/height
+	 *
+	 * @param   int     $maxWidth   maximum image Width (px)
+	 * @param   int     $maxHeight  maximum image Height (px)
+	 * @param   string  $origFile   current images folder pathe (must have trailing end slash)
+	 * @param   string  $destFile   destination folder path for resized image (must have trailing end slash)
+	 *
+	 * @return  object  image
+	 */
 
 	function resize($maxWidth, $maxHeight, $origFile, $destFile)
 	{

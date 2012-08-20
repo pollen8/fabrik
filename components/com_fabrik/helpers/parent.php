@@ -21,24 +21,67 @@ defined('_JEXEC') or die();
 class FabrikWorker
 {
 
+	/**
+	 * Fabrik database objects
+	 *
+	 * @var  array
+	 */
 	public static $database = null;
 
+	/**
+	 * Fabrik db connections
+	 *
+	 * @var  array
+	 */
 	public static $connection = null;
 
+	/**
+	 * Plugin manager
+	 *
+	 * @var  object
+	 */
 	public static $pluginManager = null;
 
+	/**
+	 * Strtotime final date format
+	 *
+	 * @var  string
+	 */
 	static protected $finalformat = null;
 
-	/** @var string image file extensions */
+	/**
+	 * Image file extensions
+	 *
+	 * @var  string
+	 */
 	protected $image_extensions_eregi = 'bmp|gif|jpg|jpeg|png';
 
-	/** @var string audio file extensions */
+	/**
+	 * Audio file extensions
+	 *
+	 * @var  string
+	 */
 	protected $audio_extensions_eregi = 'mp3';
 
+	/**
+	 * Audio mime types
+	 *
+	 * @var array
+	 */
 	static protected $audio_mime_types = array('mp3' => 'audio/x-mpeg', 'm4a' => 'audio/x-m4a');
 
+	/**
+	 * Video mime types
+	 *
+	 * @var  array
+	 */
 	static protected $video_mime_types = array('mp4' => 'video/mp4', 'm4v' => 'video/x-m4v', 'mov' => 'video/quicktime');
 
+	/**
+	 * Document mime types
+	 *
+	 * @var  array
+	 */
 	static protected $doc_mime_types = array('pdf' => 'application/pdf', 'epub' => 'document/x-epub');
 
 	/**
@@ -114,14 +157,14 @@ class FabrikWorker
 	}
 
 	/**
-	* Get Podcast Mime type
-	*
-	* @param   string  $file  filename
-	*
-	* @deprecated - doesnt seem to be used
-	*
-	* @return  bool
-	*/
+	 * Get Podcast Mime type
+	 *
+	 * @param   string  $file  filename
+	 *
+	 * @deprecated - doesnt seem to be used
+	 *
+	 * @return  bool
+	 */
 
 	public static function getPodcastMimeType($file)
 	{
@@ -330,17 +373,10 @@ class FabrikWorker
 		}
 		// @TODO: some of these arent right for strftime
 		self::$finalformat = $format;
-		$search = array('%d', '%e', '%D', '%j',
-		'%m', '%b',
-		'%Y', '%y',
-		'%g', '%H', '%h',
-		'%i', '%s', '%S', '%M');
+		$search = array('%d', '%e', '%D', '%j', '%m', '%b', '%Y', '%y', '%g', '%H', '%h', '%i', '%s', '%S', '%M');
 
-		$replace = array('(\d{2})', '(\d{1,2})', '(\w{3})', '(\d{1,2})',
-			'(\d{2})', '(\w{3})',
-			'(\d{4})', '(\d{2})',
-			'(\d{1,2})', '(\d{2})', '(\d{2})',
-			'(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})');
+		$replace = array('(\d{2})', '(\d{1,2})', '(\w{3})', '(\d{1,2})', '(\d{2})', '(\w{3})', '(\d{4})', '(\d{2})', '(\d{1,2})', '(\d{2})',
+			'(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})');
 
 		$pattern = str_replace($search, $replace, $format);
 		if (!preg_match("#$pattern#", $date, $matches))
@@ -831,7 +867,8 @@ class FabrikWorker
 	 * @return	array	of file/folder names
 	 */
 
-	public static function fabrikReadDirectory($path, $filter = '.', $recurse = false, $fullpath = false, $aFolderFilter = array(), $foldersOnly = false)
+	public static function fabrikReadDirectory($path, $filter = '.', $recurse = false, $fullpath = false, $aFolderFilter = array(),
+		$foldersOnly = false)
 	{
 		$arr = array();
 		if (!@is_dir($path))
