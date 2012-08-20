@@ -1,6 +1,8 @@
 Fabrik.getWindow = function (opts) {
 	if (Fabrik.Windows[opts.id]) {
-		Fabrik.Windows[opts.id].open();
+		if (opts.visible !== false) {
+			Fabrik.Windows[opts.id].open();
+		}
 		Fabrik.Windows[opts.id].setOptions(opts);
 		Fabrik.Windows[opts.id].loadContent();
 	} else {

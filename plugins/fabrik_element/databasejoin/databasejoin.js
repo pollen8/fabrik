@@ -23,12 +23,13 @@ var FbDatabasejoin = new Class({
 		this.parent(element, options);
 		this.changeEvents = []; // workaround for change events getting zapped on clone
 		this.init();
+		this.start();
 	},
 	
 	watchAdd: function () {
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
-			//if duplicated remove old events
+			// If duplicated remove old events
 			b.removeEvent('click', this.startEvent);
 			b.addEvent('click', this.startEvent);
 		}
@@ -39,6 +40,22 @@ var FbDatabasejoin = new Class({
 	 * inside
 	 */
 	start: function (e) {
+		// First time loading
+		var onContentLoaded = function () {},
+		destroy = false,
+		visible = false;
+		if (e) {
+			// Loading from click
+			e.stop();
+			onContentLoaded = function (win) {
+				win.fitToContent();
+			};
+			
+			// @FIXME - if set to true, then click addrow, click select rows, click add row => can't submit the form
+			// if set to false then theres an issue with loading data in repeat groups: see window.close()
+			destroy = true;
+			visible = true;
+		}
 		this.activePopUp = true;
 		var url = "index.php?option=com_fabrik&task=form.view&tmpl=component&ajax=1&formid=" + this.options.popupform;
 		var id = this.element.id + '-popupwin';
@@ -53,13 +70,11 @@ var FbDatabasejoin = new Class({
 			'y': this.options.popwiny,
 			'minimizable': false,
 			'collapsible': true,
-			'onContentLoaded': function (win) {
-				win.fitToContent();
-			},
-			destroy: true
+			'visible': visible,
+			'onContentLoaded': onContentLoaded,
+			destroy: destroy
 		};
 		this.win = Fabrik.getWindow(this.windowopts);
-		e.stop();
 	},
 	
 	getBlurEvent: function () {
