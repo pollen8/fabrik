@@ -4881,8 +4881,14 @@ class FabrikFEModelList extends JModelForm
 
 	public function getAdvancedSearchOpts()
 	{
-		$list = $this->getTable();
+		$params = $this->getParams();
 		$opts = new stdClass;
+
+		// $$$ rob - 20/208/2012 if list advanced search off return nothing
+		if ($params->get('advanced-filter') == 0) {
+			return $opts;
+		}
+		$list = $this->getTable();
 		$listRef = $this->getRenderContext();
 		$opts->conditionList = FabrikHelperHTML::conditonList($listRef, '');
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
@@ -4914,6 +4920,7 @@ class FabrikFEModelList extends JModelForm
 
 	private function getAdvancedSearchElementList()
 	{
+		echo "list:getAdvancedSearchElementList <br>";
 		$first = false;
 		$firstFilter = false;
 		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
@@ -4995,6 +5002,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getAdvancedSearchRows()
 	{
+		echo "list:getAdvancedSearchRows<br>";
 		if (isset($this->advancedSearchRows))
 		{
 			return $this->advancedSearchRows;
