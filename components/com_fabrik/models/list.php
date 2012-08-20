@@ -4920,7 +4920,6 @@ class FabrikFEModelList extends JModelForm
 
 	private function getAdvancedSearchElementList()
 	{
-		echo "list:getAdvancedSearchElementList <br>";
 		$first = false;
 		$firstFilter = false;
 		$fieldNames[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'));
@@ -5002,7 +5001,6 @@ class FabrikFEModelList extends JModelForm
 
 	public function getAdvancedSearchRows()
 	{
-		echo "list:getAdvancedSearchRows<br>";
 		if (isset($this->advancedSearchRows))
 		{
 			return $this->advancedSearchRows;
@@ -5719,10 +5717,6 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		/*
-		echo "joins to process keys = ";
-		print_r(array_keys($this->_joinsToProcess));
-		*/
 		return $this->_joinsToProcess;
 	}
 
