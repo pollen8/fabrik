@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-redirect">
 			<field cols="60" description="PLG_FORM_REDIRECT_JUMPPAGE_DESC" label="PLG_FORM_REDIRECT_JUMPPAGE_LABEL" name="jump_page" repeat="true" rows="2" type="textarea"/>
 				

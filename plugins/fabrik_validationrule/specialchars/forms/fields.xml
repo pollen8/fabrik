@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-specialchars">
 			<field cols="30" description="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_DESC" label="PLG_VALIDATIONRULE_SPECIALCHARS_CONDITION_LABEL" name="example-validation_condition" repeat="true" rows="5" type="textarea"/>
 			

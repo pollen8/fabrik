@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-logs">
 			<field default="0" description="PLG_FORM_LOG_RECORDINDB_DESC" label="PLG_FORM_LOG_RECORDINDB_LABEL" name="logs_record_in_db" repeat="true" type="radio">
 					<option value="0">JNO</option>
