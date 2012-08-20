@@ -231,6 +231,16 @@ class FabrikWorker
 	public static function specialStrToMySQL($date, $gmt = true)
 	{
 		/**
+		 * $$$ hugh - if date is empty, just return todays date
+		 */
+		if (empty($date))
+		{
+			$d = JFactory::getDate();
+			$date = $d->toSql(!$gmt);
+			return $date;
+		}
+
+		/**
 		 * lets check if we have some special text as per :
 		 * http://php.net/strtotime - this means we can use "+2 week" as a url filter
 		 * do this before we urldecode the date otherwise the + is replaced with ' ';
