@@ -1,17 +1,24 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-require_once(JPATH_SITE . '/components/com_fabrik/models/plugin.php');
+require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
+
+/**
+ * Fabrik Validation Rule Model
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
 
 class plgFabrik_Validationrule extends FabrikPlugin
 {
@@ -24,16 +31,22 @@ class plgFabrik_Validationrule extends FabrikPlugin
 
 	var $_rule = null;
 
-	/** @var string if true validation uses its own icon, if not reverts to string value */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = true;
 
 	/**
-	 * validate the elements data against the rule
-	 * @param	string	data to check
-	 * @param	object	element
-	 * @param	int		plugin sequence ref
-	 * @param	int		repeat group counter
-	 * @return	bool	true if validation passes, false if fails
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -42,27 +55,48 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	 * looks at the validation condition & evaulates it
+	 * Checks if the validation should replace the submitted element data
+	 * if so then the replaced data is returned otherwise original data returned
+	 *
+	 * @param   string  $data           original data
+	 * @param   model   &$elementModel  element model
+	 * @param   int     $pluginc        validation plugin counter
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string	original or replaced data
+	 */
+
+	function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	{
+		return $data;
+	}
+
+	/**
+	 * Looks at the validation condition & evaulates it
 	 * if evaulation is true then the validation rule is applied
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	apply validation
+	 *
+	 * @param   string  $data  elements data
+	 * @param   int     $c     repeat group counter
+	 *
+	 * @return  bool	apply validation
 	 */
 
 	function shouldValidate($data, $c)
 	{
 		$params = $this->getParams();
-		$post	= JRequest::get('post');
-		$v = (array) $params->get($this->_pluginName .'-validation_condition');
+		$post = JRequest::get('post');
+		$v = (array) $params->get($this->_pluginName . '-validation_condition');
 		if (!array_key_exists($c, $v))
 		{
 			return true;
 		}
 		$condition = $v[$c];
-		if ($condition == '') {
+		if ($condition == '')
+		{
 			return true;
 		}
 		$w = new FabrikWorker;
+
 		// $$$ rob merge join data into main array so we can access them in parseMessageForPlaceHolder()
 		$joindata = JArrayHelper::getValue($post, 'join', array());
 		foreach ($joindata as $joinid => $joind)
@@ -90,7 +124,7 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		return $this->elementModel->getParams();
 	}
 
- 	function getPluginParams()
+	function getPluginParams()
 	{
 		if (!isset($this->pluginParams))
 		{
@@ -117,9 +151,11 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	 * get the warning message
-	 * @param	int		validation rule number.
-	 * @return	string
+	 * Get the warning message
+	 *
+	 * @param   int  $c  validation rule number.
+	 *
+	 * @return  string
 	 */
 
 	public function getMessage($c = 0)
@@ -135,12 +171,16 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	 * @deprecated @since 3.0.5
-	 * now show only on validation icon next to the element name and put icons and text inside hover text
+	 * Now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
-	 * @param	object	element model
-	 * @param	int		$c repeat group counter
-	 * @param	string	$tmpl =
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $c             repeat group counter
+	 * @param   string  $tmpl          template folder name
+	 *
+	 * @deprecated @since 3.0.5
+	 *
+	 * @return  string
 	 */
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
@@ -151,9 +191,20 @@ class plgFabrik_Validationrule extends FabrikPlugin
 			$name .= '_allowempty';
 		}
 		$label = '<span>' . $this->getLabel($elementModel, $c) . '</span>';
-		$str = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}",  'title' => $label));
+		$opts = array('class' => 'fabrikTip ' . $this->_pluginName, 'opts' => "{notice:true}", 'title' => $label);
+		$str = FabrikHelperHTML::image($name . '.png', 'form', $tmpl, $opts);
 		return $str;
 	}
+
+	/**
+	 * Get hover text with icon
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       validation render order
+	 * @param   string  $tmpl          template folder name
+	 *
+	 * @return  string
+	 */
 
 	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{
@@ -162,15 +213,17 @@ class plgFabrik_Validationrule extends FabrikPlugin
 		{
 			$name .= '_allowempty';
 		}
-		$i = FabrikHelperHTML::image($name.'.png', 'form', $tmpl, array('class' => $this->_pluginName));
-		return $i .  $this->getLabel($elementModel, $pluginc) ;
+		$i = FabrikHelperHTML::image($name . '.png', 'form', $tmpl, array('class' => $this->_pluginName));
+		return $i . $this->getLabel($elementModel, $pluginc);
 	}
 
 	/**
-	 * gets the hover/alt text that appears over the validation rule icon in the form
-	 * @param	object	element model
-	 * @param	int		validation render order
-	 * @return	string	label
+	 * Gets the hover/alt text that appears over the validation rule icon in the form
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       validation render order
+	 *
+	 * @return  string	label
 	 */
 
 	protected function getLabel($elementModel, $pluginc)
@@ -186,16 +239,17 @@ class plgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	* does the validation allow empty value?
-	* Default is false, can be overrideen on per-validation basis (such as isnumeric)
-	* @param	object	element model
-	* @param	int		validation render order
-	* @return	bool
-	*/
+	 * Does the validation allow empty value?
+	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       validation render order
+	 *
+	 * @return  bool
+	 */
 
 	protected function allowEmpty($elementModel, $pluginc)
 	{
 		return false;
 	}
 }
-?>
