@@ -1,10 +1,10 @@
 <?php
 /**
- *
- * @package fabrikar
- * @author Lieven Gryp
- * @copyright (C) Rob Clayburn & Lieven Gryp
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @author      Lieven Gryp <dont@know.com>
+ * @copyright   Copyright (C) 2005 Fabrik & Lieven Gryp. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -18,12 +18,22 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 
 	protected $pluginName = 'areuniquevalues';
 
-	/** @var bool if true validation uses its own icon, if not reverts to notempty.png */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'notempty';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -72,8 +82,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 			$query->where($otherfield . ' = ' . $db->quote($v));
 		}
 
-		/**
-		 * $$$ hugh - need to check to see if we're editing a record, otherwise
+		/* $$$ hugh - need to check to see if we're editing a record, otherwise
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
 		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
 		 */
@@ -86,6 +95,15 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$c = $db->loadResult();
 		return ($c == 0) ? true : false;
 	}
+
+	/**
+	 * Gets the other element model to compare this plugins element data against
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       plugin render order
+	 *
+	 * @return	object element model
+	 */
 
 	private function getOtherElement($elementModel, $pluginc)
 	{
@@ -101,7 +119,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 * @param   object  $elementModel  element model
 	 * @param   int     $pluginc       plugin render order
 	 *
-	 * @return  string	label
+	 * @return	string	label
 	 */
 
 	protected function getLabel($elementModel, $pluginc)

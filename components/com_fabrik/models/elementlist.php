@@ -371,6 +371,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
+
 			foreach ($vals as $val)
 			{
 				$l = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
@@ -443,7 +444,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			// $$$ hugh - ooops, '0' will count as empty.
 			// $selected = empty($selected) ?  array() : array($selected);
-			$selected = $selected === '' ?  array() : array($selected);
+			$selected = $selected === '' ? array() : array($selected);
 		}
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
@@ -451,6 +452,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		if (!empty($diff))
 		{
 			$values = array_merge($values, $diff);
+
+			// Swap over the default value to the default label
+			if (!$this->_editable)
+			{
+				foreach ($diff as &$di)
+				{
+					if ($di === $params->get('sub_default_value'))
+					{
+						$di = $params->get('sub_default_label');
+					}
+				}
+			}
 			$labels = array_merge($labels, $diff);
 		}
 		if (!$this->editable)
@@ -467,6 +480,14 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			return ($this->isMultiple() && $this->renderWithHTML)
 				? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
 		}
+
+		// Remove the default value
+		$key = array_search($params->get('sub_default_value'), $values);
+		if ($key)
+		{
+			unset($values[$key]);
+		}
+
 		$optionsPerRow = (int) $this->getParams()->get('options_per_row', 4);
 		$elBeforeLabel = (bool) $this->getParams()->get('element_before_label', true);
 
@@ -530,7 +551,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$this->defaults = array();
 		}
-		$valueKey = $repeatCounter . serialize($opts);
+
+		/*
+		 *  $$$ rob 20/08/2012 - added $data to serialized key
+		 *  Seems that db join _getOptionVals() _autocomplete_where is getting run a couple of times with key and labels being passed in
+		 */
+		$valueKey = $repeatCounter . serialize($opts) . serialize($data);
 		if (!array_key_exists($valueKey, $this->defaults))
 		{
 			$value = '';

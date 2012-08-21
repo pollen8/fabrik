@@ -3,19 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-cron-php">
 			
-			<field name="cronphp_file"
-				description="PLG_FABRIK_CRON_PHP_FILE_DESC"
-				directory="plugins/fabrik_cron/php/scripts/"
-				hide_default="1"
-				label="PLG_FABRIK_CRON_PHP_FILE_LABEL"
-				type="filelist"/>
+			<field description="PLG_FABRIK_CRON_PHP_FILE_DESC" directory="plugins/fabrik_cron/php/scripts/" hide_default="1" label="PLG_FABRIK_CRON_PHP_FILE_LABEL" name="cronphp_file" type="filelist"/>
 			
-			<field name="cronphp_params"
-				type="textarea"
-				rows="10"
-				cols="100"
-				label="PLG_FABRIK_CRON_PHP_PARAMS_LABEL"
-				description="PLG_FABRIK_CRON_PHP_PARAMS_DESC" />
+			<field cols="100" description="PLG_FABRIK_CRON_PHP_PARAMS_DESC" label="PLG_FABRIK_CRON_PHP_PARAMS_LABEL" name="cronphp_params" rows="10" type="textarea"/>
 			
 		</fieldset>
 	</fields>

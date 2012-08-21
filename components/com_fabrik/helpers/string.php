@@ -246,10 +246,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * truncate text possibly setting a tip to show all of the text
-	 * @param string $text
-	 * @param array $opts
-	 * @return string
+	 * Truncate text possibly setting a tip to show all of the text
+	 *
+	 * @param   string  $text  text to truncate
+	 * @param   array   $opts  optional options array
+	 *
+	 * @return  string
 	 */
 
 	public static function truncate($text, $opts = array())

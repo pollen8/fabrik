@@ -45,7 +45,7 @@ var FbSlider = new Class({
 					output.fireEvent('blur', new Event.Mock(output, 'change'));
 					output2.set('text', '');
 					e.stop();
-				});
+				}.bind(this));
 			}
 		}
 	},

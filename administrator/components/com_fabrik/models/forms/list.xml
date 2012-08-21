@@ -518,7 +518,7 @@
 				description="COM_FABRIK_FIELD_CSV_ELEMENTS_DESC">
 			
 				<fields name="params">
-					<fieldset name="csv_elements_modal" repeat="true">
+					<fieldset name="csv_elements_modal" repeat="true" modal="true">
 						<field name="show_in_csv" 
 							size="30"
 							type="listfields"
@@ -587,7 +587,7 @@
 				description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC">
 				
 					<fields name="params">
-						<fieldset name="list_search_elements_modal" repeat="true">
+						<fieldset name="list_search_elements_modal" repeat="true" modal="true">
 							<field name="search_elements" 
 								size="30"
 								type="listfields"

@@ -72,6 +72,7 @@
 				<exclude name="**/lib/" />
 				<exclude name="**/*-min.js" />
 				<exclude name="**/libs/" />
+				<exclude name="**/swatches/" />
 			</fileset>
 			<arg line="-jar ${js.jar} ${jshint-rhino.js}" />
 			<srcfile />
@@ -120,6 +121,7 @@
 				<include name="**/*.js" />
 				<exclude name="**/lib/" />
 				<exclude name="**/*-min.js" />
+				<exclude name="**/swatches/" />
 			</fileset>
 			<arg line="-jar" />
 			<arg path="${yui.dir}" />

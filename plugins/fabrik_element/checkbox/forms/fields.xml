@@ -16,13 +16,14 @@
 		
 		<fieldset label="PLG_ELEMENT_CHECKBOX_DEFAULTS" name="plg-element-checkbox-default">
 		
-				<field description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC" label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" name="sub_default_value" size="30" type="text"/>
+			<field description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_DESC" label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_VALUE_LABEL" name="sub_default_value" size="30" type="text"/>
 				
 			<field description="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_NONE_SELECTED_LABEL_LABEL" name="sub_default_label" size="30" type="text"/>
 			
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_CHECKBOX_FRONTEND_SELECT" name="plg-checkbox-add">
+		
 			<field default="0" description="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_DESC" label="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_LABEL" name="allow_frontend_addtocheckbox" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>

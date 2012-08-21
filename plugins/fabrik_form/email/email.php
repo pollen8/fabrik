@@ -184,9 +184,16 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$dbEmailTo = array_map(array($db, 'quote'), $email_to);
 
 		// Get an array of user ids from the email to array
-		$query->select('id, email')->from('#__users')->where('email IN (' . implode(',', $dbEmailTo) . ')');
-		$db->setQuery($query);
-		$userids = $db->loadObjectList('email');
+		if (!empty($dbEmailTo))
+		{
+			$query->select('id, email')->from('#__users')->where('email IN (' . implode(',', $dbEmailTo) . ')');
+			$db->setQuery($query);
+			$userids = $db->loadObjectList('email');
+		}
+		else
+		{
+			$userids = array();
+		}
 
 		// Send email
 		foreach ($email_to as $email)

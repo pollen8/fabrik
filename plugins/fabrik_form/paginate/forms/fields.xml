@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-paginate">
 		
 		<field default="both" description="PLG_FORM_PAGINATE_WHERE_DESC" label="PLG_FORM_PAGINATE_WHERE_LABEL" name="paginate_where" repeat="true" type="list">

@@ -241,7 +241,7 @@ class FabrikModelElement extends JModelAdmin
 	 * @return  array	plugins
 	 */
 
-	public function getAbstractPlugins()
+	/* public function getAbstractPlugins()
 	{
 		if (isset($this->abstractPlugins))
 		{
@@ -279,7 +279,7 @@ class FabrikModelElement extends JModelAdmin
 		}
 		ksort($this->abstractPlugins);
 		return $this->abstractPlugins;
-	}
+	} */
 
 	/**
 	 * load the actual validation plugins that the element uses
@@ -290,48 +290,8 @@ class FabrikModelElement extends JModelAdmin
 	public function getPlugins()
 	{
 		$item = $this->getItem();
-
-		// Load up the active validation rules for this element
-		$dispatcher = JDispatcher::getInstance();
-		$validations = JArrayHelper::getValue($item->params, 'validations', array());
-		$plugins = JArrayHelper::getValue($validations, 'plugin', array());
-		$return = array();
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$pluginData = empty($item->params) ? array() : (array) $item->params;
-		$locations = JArrayHelper::getValue($item->params, 'plugin_locations');
-		$events = JArrayHelper::getValue($item->params, 'plugin_locations');
-		foreach ($plugins as $x => $plugin)
-		{
-			$data = array();
-			foreach ($item as $key => $val)
-			{
-				if ($key !== 'params')
-				{
-					$data[$key] = $val;
-				}
-			}
-			// Get the current data for repeated validation
-			foreach ($pluginData as $key => $values)
-			{
-				if ($key == 'plugin')
-				{
-					continue;
-				}
-				$data[$key] = JArrayHelper::getValue($values, $x);
-			}
-
-			$o = $pluginManager->getPlugIn($plugin, 'Validationrule');
-			if ($o !== false)
-			{
-				$str = $o->onRenderAdminSettings($data, $x);
-				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-				$attr = "class=\"inputbox elementtype\"";
-				$location = JArrayHelper::getValue($locations, $x);
-				$event = JArrayHelper::getValue($events, $x);
-				$return[] = array('plugin' => $plugin, 'html' => $str, 'location' => $location, 'event' => $event);
-			}
-		}
-		return $return;
+		$plugins = JArrayHelper::getValue($item->params, 'plugin', array());
+		return $plugins;
 	}
 
 	/**
@@ -342,7 +302,6 @@ class FabrikModelElement extends JModelAdmin
 
 	public function getJs()
 	{
-		$abstractPlugins = $this->getAbstractPlugins();
 		$plugins = $this->getPlugins();
 		$item = $this->getItem();
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -364,20 +323,10 @@ class FabrikModelElement extends JModelAdmin
 		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
 		$js = "\tvar opts = $opts;";
-		$js .= "\tvar aPlugins = [];\n";
-		foreach ($abstractPlugins as $abstractPlugin)
-		{
-			$js .= "\taPlugins.push(" . $abstractPlugin['js'] . ");\n";
-		}
-		$js .= "\tcontroller = new fabrikAdminElement(aPlugins, opts);\n";
-		foreach ($plugins as $plugin)
-		{
-			$opts = new stdClass;
-			$opts->location = @$plugin['location'];
-			$opts->event = @$plugin['event'];
-			$opts = json_encode($opts);
-			$js .= "\tcontroller.addAction('" . $plugin['html'] . "', '" . $plugin['plugin'] . "'," . $opts . ", false);\n";
-		}
+
+		$plugins = json_encode($this->getPlugins());
+		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . (int)$this->getItem()->id . ");\n";
+
 		return $js;
 	}
 

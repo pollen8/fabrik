@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-salesforce">
 			<field default="Lead" description="PLG_FORM_SALESFORCE_UPDATEOBJECT_DESC" label="PLG_FORM_SALESFORCE_UPDATEOBJECT_LABEL" name="salesforce_updateobject" repeat="true" type="list">
 					<option value="Contact">Contact</option>

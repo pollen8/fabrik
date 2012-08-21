@@ -139,6 +139,6 @@ class FabrikModelForms extends FabModelList
 		$this->setState('filter.search', $search);
 
 		// List state information.
-		parent::populateState('name', 'asc');
+		parent::populateState('label', 'asc');
 	}
 }

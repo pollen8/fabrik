@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-regex">
 			<field description="PLG_VALIDATIONRULE_REGEX_ERROR_DESC" label="PLG_VALIDATIONRULE_REGEX_ERROR_LABEL" name="regex-message" repeat="true" size="30" type="text"/>
 				

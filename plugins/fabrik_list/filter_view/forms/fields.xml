@@ -8,7 +8,7 @@
 			<field description="PLG_LIST_FILTER_VIEW_SETTINGS_DESC" label="PLG_LIST_FILTER_VIEW_SETTINGS_LABEL" name="filter_view_settings" repeat="true" type="fabrikmodalrepeat">
 				
 					<fields name="params">
-						<fieldset name="filter_view_settings_modal" repeat="true">
+						<fieldset modal="true" name="filter_view_settings_modal" repeat="true">
 							<field label="PLG_LIST_FILTER_VIEW_LABEL_LABEL" name="label" size="30" type="text"/>
 							
 							<field cols="50" label="PLG_LIST_FILTER_VIEW_FILTER_LABEL" name="url" rows="3" type="textarea"/>

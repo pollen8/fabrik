@@ -1,13 +1,11 @@
 var FbRadio = new Class({
 	Extends: FbElementList,
+	
+	type: 'radio', // sub element type
+	
 	initialize: function (element, options) {
 		this.plugin = 'fabrikradiobutton';
 		this.parent(element, options);
-		this._getSubElements();
-		if (this.options.allowadd === true && this.options.editable !== false) {
-			this.watchAddToggle();
-			this.watchAdd();
-		}
 	},
 
 	watchAddToggle: function () {
@@ -15,7 +13,7 @@ var FbRadio = new Class({
 		var d = c.getElement('div.addoption');
 		var a = c.getElement('.toggle-addoption');
 		if (this.mySlider) {
-			// copied in repeating group so need to remove old slider html first
+			// Copied in repeating group so need to remove old slider html first
 			var clone = d.clone();
 			var fe = c.getElement('.fabrikElement');
 			d.getParent().destroy();

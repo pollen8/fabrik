@@ -19,7 +19,7 @@
 			<field default="{}" description="PLG_FABRIK_LIST_WEBSERVICE_CREDENTIALS_DESC" label="PLG_FABRIK_LIST_WEBSERVICE_CREDENTIALS_LABEL" name="webservice_credentials" repeat="true" type="fabrikmodalrepeat">
 				
 				<fields name="params">
-					<fieldset name="webservice_credentials_modal" repeat="true">
+					<fieldset modal="true" name="webservice_credentials_modal" repeat="true">
 					
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_KEY_LABEL" name="webservice_credentials_key" repeat="true" size="20"/>
 							
@@ -35,7 +35,7 @@
 			<field default="{}" description="PLG_FABRIK_LIST_WEBSERVICE_FILTERS_DESC" label="PLG_FABRIK_LIST_WEBSERVICE_FILTERS_LABEL" name="webservice_filters" repeat="true" type="fabrikmodalrepeat">
 				
 				<fields name="params">
-					<fieldset name="webservice_filters_modal" repeat="true">
+					<fieldset modal="true" name="webservice_filters_modal" repeat="true">
 					
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_KEY_LABEL" name="webservice_filters_key" repeat="true" size="20"/>
 							
@@ -58,7 +58,7 @@
 			<field default="{}" description="PLG_FABRIK_LIST_WEBSERVICE_MAP_DESC" label="PLG_FABRIK_LIST_WEBSERVICE_MAP_LABEL" name="webservice_map" repeat="true" type="fabrikmodalrepeat">
 			
 				<fields name="params">
-					<fieldset name="webservice_map_modal" repeat="true">
+					<fieldset modal="true" name="webservice_map_modal" repeat="true">
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_MAP_FROM_LABEL" name="map_from" repeat="true" size="30"/>
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_MAP_TO_LABEL" name="map_to" repeat="true" type="listfields"/>
 						<field cols="30" label="PLG_FABRIK_LIST_WEBSERVICE_MAP_MATCH_LABEL" name="map_match" repeat="true" rows="3" type="textarea"/>

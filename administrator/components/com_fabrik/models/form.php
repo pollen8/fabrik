@@ -27,8 +27,6 @@ class FabrikModelForm extends FabModelAdmin
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
-	protected $abstractPlugins = null;
-
 	protected $pluginType = 'Form';
 
 	/**
@@ -92,53 +90,6 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 	/**
-	 * get the possible list plug-ins that can be selected for use
-	 *
-	 * @return array
-	 */
-
-	public function getAbstractPlugins()
-	{
-		if (isset($this->abstractPlugins))
-		{
-			return $this->abstractPlugins;
-		}
-		// Create a new dispatcher so that we only collect admin html for validation rules
-		$pluginDispatcher = new JDispatcher;
-
-		// Import the validation plugins and assign them to their custom dispatcher
-		JPluginHelper::importPlugin('fabrik_form', null, true, $pluginDispatcher);
-		$rules = array();
-
-		// Trigger the validation dispatcher to get hte validation rules html
-		$plugins = JPluginHelper::getPlugin('fabrik_form');
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$feFormModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
-		$feFormModel->setId($this->getState('form.id'));
-		foreach ($plugins as $x => $plugin)
-		{
-			$data = array();
-			$o = $pluginManager->getPlugIn($plugin->name, 'Form');
-			if ($o !== false)
-			{
-				$o->getJForm()->model = $feFormModel;
-				/**
-				 * $$$ rob 0 was $x below but that rendered first set of plugins with indexes 1,2,3
-				 * think they should all be indexed 0
-				 */
-				$str = $o->onRenderAdminSettings($data, 0);
-				$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
-				$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-				$attr = "class=\"inputbox elementtype\"";
-				$rules[$plugin->name] = array('plugin' => $plugin->name, 'html' => $str, 'js' => $js);
-			}
-		}
-		asort($rules);
-		$this->abstractPlugins = $rules;
-		return $rules;
-	}
-
-	/**
 	 * get JS
 	 *
 	 * @return string
@@ -146,73 +97,8 @@ class FabrikModelForm extends FabModelAdmin
 
 	public function getJs()
 	{
-		$abstractPlugins = $this->getAbstractPlugins();
-		$plugins = $this->getPlugins();
-		$item = $this->getItem();
-
-		JText::script('COM_FABRIK_ACTION');
-		JText::script('COM_FABRIK_SELECT_DO');
-		JText::script('COM_FABRIK_DELETE');
-		JText::script('COM_FABRIK_IN');
-		JText::script('COM_FABRIK_ON');
-		JText::script('COM_FABRIK_OPTIONS');
-		JText::script('COM_FABRIK_PLEASE_SELECT');
-		JText::script('COM_FABRIK_FRONT_END');
-		JText::script('COM_FABRIK_BACK_END');
-		JText::script('COM_FABRIK_BOTH');
-		JText::script('COM_FABRIK_NEW');
-		JText::script('COM_FABRIK_EDIT');
-		JText::script('COM_FABRIK_PUBLISHED');
-		JText::script('JNO');
-		JText::script('JYES');
-
-		$js = "
-  head.ready(function() {\n";
-		$js .= "\t\tvar aPlugins = [];\n";
-		foreach ($abstractPlugins as $abstractPlugin)
-		{
-			$js .= "\t\taPlugins.push(" . $abstractPlugin['js'] . ");\n";
-		}
-		$js .= "controller = new fabrikAdminForm(aPlugins);\n";
-		foreach ($plugins as $plugin)
-		{
-			$opts = array_key_exists('opts', $plugin) ? $plugin['opts'] : new stdClass;
-			$opts->location = @$plugin['location'];
-			$opts->event = @$plugin['event'];
-			$opts = json_encode($opts);
-			$js .= "controller.addAction('" . $plugin['html'] . "', '" . $plugin['plugin'] . "', " . $opts . ", false);\n";
-		}
-		$js .= "
-});";
-		return $js;
-	}
-
-	/**
-	 * Get plugin location (both/front end/back end)
-	 *
-	 * @param   int  $repeatCounter  plugin repeat counter
-	 *
-	 * @return  string
-	 */
-
-	protected function getPluginLocation($repeatCounter)
-	{
-		$item = $this->getItem();
-		return $item->params['plugin_locations'][$repeatCounter];
-	}
-
-	/**
-	 * Get plugin event
-	 *
-	 * @param   int  $repeatCounter  plugin repeat counter
-	 *
-	 * @return  string
-	 */
-
-	protected function getPluginEvent($repeatCounter)
-	{
-		$item = $this->getItem();
-		return $item->params['plugin_events'][$repeatCounter];
+		$plugins = json_encode($this->getPlugins());
+		return "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'form');\n";
 	}
 
 	/**
@@ -457,23 +343,25 @@ class FabrikModelForm extends FabModelAdmin
 			$dbExisits = $listModel->databaseTableExists();
 			if (!$dbExisits)
 			{
-				// $$$ hugh - if we're recreating a table for an existing form, we need to pass the field
-				// list to createDBTable(), otherwise all we get is id and date_time.  Not sure if this
-				// code really belongs here, or if we should handle it in createDBTable(), but I didn't want
-				// to mess with createDBTable(), although I did have to make one small change in it (see comments
-				// therein).
-				// NOTE 1 - this code ignores joined groups, so only recreates the original table
-				// NOTE 2 - this code ignores any 'alter existing fields' settings.
+				/* $$$ hugh - if we're recreating a table for an existing form, we need to pass the field
+				 * list to createDBTable(), otherwise all we get is id and date_time.  Not sure if this
+				 * code really belongs here, or if we should handle it in createDBTable(), but I didn't want
+				 * to mess with createDBTable(), although I did have to make one small change in it (see comments
+				 * therein).
+				 * NOTE 1 - this code ignores joined groups, so only recreates the original table
+				 * NOTE 2 - this code ignores any 'alter existing fields' settings.
+				 */
 				$db = FabrikWorker::getDbo(true);
 				$query = $db->getQuery(true);
-				$query->select('group_id')->from('#__{package}_formgroup AS fg')->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id')->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');
+				$query->select('group_id')->from('#__{package}_formgroup AS fg')->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id')
+					->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');
 				$db->setQuery($query);
 				$groupIds = $db->loadResultArray();
 				if (!empty($groupIds))
 				{
 					$fields = array();
 					$query = $db->getQuery(true);
-					$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN ('.implode(',', $groupIds).')');
+					$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN (' . implode(',', $groupIds) . ')');
 					$db->setQuery($query);
 					$rows = $db->loadObjectList();
 					foreach ($rows as $row)

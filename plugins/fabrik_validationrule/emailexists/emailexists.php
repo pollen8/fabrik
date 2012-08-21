@@ -1,12 +1,10 @@
 <?php
 /**
-*
-* @package fabrikar
-* @author Hugh Messenger
-* @copyright (C) Hugh Messenger
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
-
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -19,12 +17,22 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 
 	protected $pluginName = 'emailexists';
 
-	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'isemail';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -34,8 +42,9 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 			return false;
 		}
 		$params = $this->getParams();
-		//as ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = (object)$params->get('emailexists_or_not');
+
+		// As ornot is a radio button it gets json encoded/decoded as an object
+		$ornot = (object) $params->get('emailexists_or_not');
 		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
 
 		$user_field = (array) $params->get('emailexists_user_field', array());
@@ -89,14 +98,19 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 			if (!$result)
 			{
 				return ($ornot == 'fail_if_exists') ? true : false;
-			} else {
-				if ($user_id != 0) {
-					if ($result == $user_id) {
+			}
+			else
+			{
+				if ($user_id != 0)
+				{
+					if ($result == $user_id)
+					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
 					return false;
 				}
-				else {
+				else
+				{
 					if ($result == $user->get('id')) // The connected user is editing his own data
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
@@ -109,16 +123,19 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 	}
 
 	/**
-	* gets the hover/alt text that appears over the validation rule icon in the form
-* @param   object	element model
-* @param   int		repeat group counter
-	* @return  string	label
-	*/
+	 * Gets the hover/alt text that appears over the validation rule icon in the form
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       plugin render order
+	 *
+	 * @return	string	label
+	 */
 
 	protected function getLabel($elementModel, $pluginc)
 	{
 		$params = $this->getParams();
-		//as ornot is a radio button it gets json encoded/decoded as an object
+
+		// As ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object) $params->get('emailexists_or_not');
 		$pluginc = (int) $pluginc;
 		$cond = '';
@@ -140,4 +157,3 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 	}
 
 }
-?>

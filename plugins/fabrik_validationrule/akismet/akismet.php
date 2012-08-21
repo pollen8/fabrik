@@ -1,10 +1,9 @@
 <?php
 /**
- *
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -18,12 +17,22 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 {
 	protected $pluginName = 'akismet';
 
-	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'notempty';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -33,18 +42,13 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 		if ($params->get('akismet-key') != '')
 		{
 			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();
-			$email = $user->get('email') != '' ? $user->get('email') : $this->_randomSring()  .'@' . $this->_randomSring() . 'com';
+			$email = $user->get('email') != '' ? $user->get('email') : $this->_randomSring() . '@' . $this->_randomSring() . 'com';
 			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/akismet.class.php';
-			$akismet_comment = array (
-				'author' => $username,
-				'email' => $user->get('email'),
-				'website' => JURI::base(),
-				'body' => $data
-			);
+			$akismet_comment = array('author' => $username, 'email' => $user->get('email'), 'website' => JURI::base(), 'body' => $data);
 			$akismet = new Akismet(JURI::base(), $params->get('akismet-key'), $akismet_comment);
 			if ($akismet->errorsExist())
 			{
-				JError::raiseNotice( JText::_("Couldn't connected to Akismet server!"));
+				JError::raiseNotice(JText::_("Couldn't connected to Akismet server!"));
 			}
 			else
 			{
@@ -57,9 +61,14 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 		return true;
 	}
 
-	function _randomSring()
+	/**
+	 * Create a random string
+	 *
+	 * @return string
+	 */
+
+	protected function _randomSring()
 	{
 		return preg_replace('/([ ])/e', 'chr(rand(97,122))', '     ');
 	}
 }
-?>

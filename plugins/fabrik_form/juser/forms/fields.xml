@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 	<fieldset name="plg-form-juser">
 		<field default="user" description="PLG_FABRIK_FORM_JUSER_NAME_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_NAME_FIELD_LABEL" name="juser_field_name" onlytablefields="0" repeat="true" type="listfields"/>
 			

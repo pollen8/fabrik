@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-sms">
 			<field description="PLG_FORM_SMS_GATEWAY_DESC" directory="plugins/fabrik_form/sms/gateway" hide_default="true" hide_none="true" label="PLG_FORM_SMS_GATEWAY_LABEL" name="sms-gateway" repeat="true" type="filelist"/>
 				

@@ -55,7 +55,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$model->getCustomJsAction($src);
 		$src[] = 'media/com_fabrik/js/encoder.js';
-		FabrikHelperHTML::script($src);
+
 		$tmpl = $this->get('tmpl');
 		$this->assign('tmpl', $tmpl);
 
@@ -65,7 +65,7 @@ class FabrikViewListBase extends JViewLegacy
 		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
 		if (JFile::exists($aJsPath))
 		{
-			FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js');
+			$src[] = 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
 		}
 
 		$origRows = $this->rows;
@@ -153,6 +153,7 @@ class FabrikViewListBase extends JViewLegacy
 		$csvOpts->incfilters = (int) $params->get('incfilters');
 
 		$opts->data = $data;
+
 		// If table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table
 		ob_start();
@@ -229,6 +230,8 @@ class FabrikViewListBase extends JViewLegacy
 		$script[] = $model->filterJs;
 		$script[] = "});";
 		$script = implode("\n", $script);
+
+		FabrikHelperHTML::script($src);
 		FabrikHelperHTML::addScriptDeclaration($script);
 		$this->getElementJs();
 
@@ -359,7 +362,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->assign('list', $this->table);
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
-		$this->form->id = $item->id;
+		$this->form->id = $item->form_id;
 		$this->assign('renderContext', $this->get('RenderContext'));
 		$this->formid = 'listform_' . $this->renderContext;
 		$form = $model->getFormModel();

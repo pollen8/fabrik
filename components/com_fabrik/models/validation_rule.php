@@ -27,7 +27,11 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	protected $rule = null;
 
-	/** @var string if true validation uses its own icon, if not reverts to string value */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = true;
 
 	/**
@@ -44,6 +48,23 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		return true;
+	}
+
+	/**
+	 * Checks if the validation should replace the submitted element data
+	 * if so then the replaced data is returned otherwise original data returned
+	 *
+	 * @param   string  $data           original data
+	 * @param   model   &$elementModel  element model
+	 * @param   int     $pluginc        validation plugin counter
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string	original or replaced data
+	 */
+
+	function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	{
+		return $data;
 	}
 
 	/**
@@ -133,9 +154,9 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * @param   int     $c             repeat group counter
 	 * @param   string  $tmpl          template folder name
 	 *
-	 * @return  string
-	 *
 	 * @deprecated @since 3.0.5
+	 *
+	 * @return  string
 	 */
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
@@ -152,14 +173,14 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	}
 
 	/**
-	* Get hover text with icon
-	*
-	* @param   object  $elementModel  element model
-	* @param   int     $pluginc       validation render order
-	* @param   string  $tmpl          template folder name
-	*
-	* @return  string
-	*/
+	 * Get hover text with icon
+	 *
+	 * @param   object  $elementModel  element model
+	 * @param   int     $pluginc       validation render order
+	 * @param   string  $tmpl          template folder name
+	 *
+	 * @return  string
+	 */
 
 	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{

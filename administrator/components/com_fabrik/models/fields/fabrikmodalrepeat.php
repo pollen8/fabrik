@@ -1,11 +1,11 @@
 <?php
 
 /**
-* @package     Joomla
-* @subpackage  Form
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla
+ * @subpackage  Form
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_BASE') or die;
 
@@ -32,7 +32,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string	The field input markup.
+	 * @since	1.6
+	 *
+	 * @return	string	The field input markup.
 	 */
 
 	protected function getInput()
@@ -105,7 +107,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$app = JFactory::getApplication();
 		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
 		$str[] = '<td><div style="width:35px"><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
-		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a></div>';
+		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
 		$str[] = '</td>';
 		$str[] = '</tr></tbody>';
 		$str[] = '</table>';
@@ -126,21 +128,31 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		if (!array_key_exists($this->form->repeatCounter, $modalrepeat[$modalid]))
 		{
+
 			// If loaded as js template then we don't want to repeat this again. (fabrik)
 			$names = json_encode($names);
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
-			JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
-			$document
-				->addScriptDeclaration(
-					"window.addEvent('domready', function() {
+
+			if (JRequest::getVar('option') === 'com_fabrik')
+			{
+				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
+			}
+			else
+			{
+				// Wont work when rendering in admin module page
+				// @TODO test this now that the list and form pages are loading plugins via ajax (18/08/2012)
+				JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
+				$document
+					->addScriptDeclaration(
+						"window.addEvent('domready', function() {
 			" . $script . "
 			if (typeOf($('$pane')) !== 'null') {
 			  $('$pane').getParent().hide();
 			}
-			});"
-			);
+			});");
+			}
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";
 

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -17,17 +17,27 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 
 	protected $pluginName = 'specialchars';
 
-	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'notempty';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
-		//for multiselect elements
+		// For multiselect elements
 		if (is_array($data))
 		{
 			$data = implode('', $data);
@@ -39,7 +49,7 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		{
 			$v = $params->get('specalchars');
 			$v = explode(',', $v[$pluginc]);
-			foreach($v as $c)
+			foreach ($v as $c)
 			{
 				if (strstr($data, $c))
 				{
@@ -50,7 +60,19 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		return true;
 	}
 
-	function replace($data, &$element, $pluginc)
+	/**
+	 * Checks if the validation should replace the submitted element data
+	 * if so then the replaced data is returned otherwise original data returned
+	 *
+	 * @param   string  $data           original data
+	 * @param   model   &$elementModel  element model
+	 * @param   int     $pluginc        validation plugin counter
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string	original or replaced data
+	 */
+
+	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		$params = $this->getParams();
 		$domatch = (array) $params->get('specialchars-match');
@@ -74,4 +96,3 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		return $data;
 	}
 }
-?>

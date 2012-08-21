@@ -1,18 +1,20 @@
 var FbCheckBox = new Class({
 	Extends: FbElementList,
+	
+	type: 'checkbox', // Sub element type
+	
 	initialize: function (element, options) {
 		this.plugin = 'fabrikcheckbox';
 		this.parent(element, options);
 		this._getSubElements();
-		this.watchAdd();
 	},
 	
-	watchAddToggle : function () {
+	watchAddToggle: function () {
 		var c = this.getContainer();
 		var d = c.getElement('div.addoption');
 		var a = c.getElement('.toggle-addoption');
 		if (this.mySlider) {
-			//copied in repeating group so need to remove old slider html first
+			// Copied in repeating group so need to remove old slider html first
 			var clone = d.clone();
 			var fe = c.getElement('.fabrikElement');
 			d.getParent().destroy();
@@ -55,7 +57,6 @@ var FbCheckBox = new Class({
 	update: function (val) {
 		this.getElement();
 		if (typeOf(val) === 'string') {
-			//val = val.split(this.options.splitter);
 			val = val === '' ? [] : JSON.decode(val);
 		}
 		if (!this.options.editable) {

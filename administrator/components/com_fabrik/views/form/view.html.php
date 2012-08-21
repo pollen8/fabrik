@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -25,7 +25,6 @@ class FabrikViewForm extends JViewLegacy
 	protected $state;
 	protected $plugins;
 	protected $js;
-	protected $abstractPlugins;
 	protected $currentGroupList;
 
 	/**
@@ -34,12 +33,10 @@ class FabrikViewForm extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
-		$this->form	= $this->get('Form');
-		$this->item	= $this->get('Item');
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
-		$this->abstractPlugins = $this->get('AbstractPlugins');
 		$this->js = $this->get('Js');
-		$this->plugins = $this->get('Plugins');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -58,7 +55,8 @@ class FabrikViewForm extends JViewLegacy
 
 	/**
 	 * Add the page title and toolbar.
-	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()
@@ -67,7 +65,7 @@ class FabrikViewForm extends JViewLegacy
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
-		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_FORM_NEW') : JText::_('COM_FABRIK_MANAGER_FORM_EDIT'), 'form.png');
 		if ($isNew)
@@ -91,6 +89,7 @@ class FabrikViewForm extends JViewLegacy
 				{
 					JToolBarHelper::apply('form.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('form.save', 'JTOOLBAR_SAVE');
+
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{

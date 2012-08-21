@@ -1,10 +1,10 @@
 <?php
 /**
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -17,19 +17,30 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 
 	protected $pluginName = 'userexists';
 
-	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'notempty';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		$params = $this->getParams();
 		$pluginc = trim((string) $pluginc);
-		//as ornot is a radio button it gets json encoded/decoded as an object
+
+		// As ornot is a radio button it gets json encoded/decoded as an object
 		$ornot = (object) $params->get('userexists_or_not');
 		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
 		$user = JFactory::getUser();
@@ -83,14 +94,18 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 						$user_id = JArrayHelper::getValue($user_id, 0, '');
 					}
 				}
-				if ($user_id != 0) {
-					if ($result == $user_id) {
+				if ($user_id != 0)
+				{
+					if ($result == $user_id)
+					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
 					return false;
 				}
-				else {
-					if ($result == $user->get('id')) // The connected user is editing his own data
+				else
+				{
+					// The connected user is editing his own data
+					if ($result == $user->get('id'))
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
@@ -102,4 +117,3 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 	}
 
 }
-?>

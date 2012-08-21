@@ -140,7 +140,7 @@ var FbList = new Class({
 			'method': this.options.actionMethod,
 			'floatPos': this.options.floatPos
 		});
-		new FbGroupedToggler(this.form);
+		this.groupToggle = new FbGroupedToggler(this.form);
 		new FbListKeys(this);
 		if (this.list) {
 			this.tbody = this.list.getElement('tbody');
@@ -605,7 +605,8 @@ var FbList = new Class({
 				'contentURL': url,
 				'visible': false,
 				'width': this.options.popup_width,
-				'height': this.options.popup_height
+				'height': this.options.popup_height,
+			    'onContentLoaded': function () {}
 			};
 			
 			var w = Fabrik.getWindow(winOpts);
@@ -730,7 +731,8 @@ var FbList = new Class({
 				return false;
 			}
 		}
-		Fabrik.loader.start('listform_' + this.options.listRef);
+		// We may want to set this as an option - if long page loads feedback that list is doing something might be useful
+		// Fabrik.loader.start('listform_' + this.options.listRef);
 		if (task === 'list.filter') {
 			Fabrik['filter_listform_' + this.options.listRef].onSubmit();
 			this.form.task.value = task;
@@ -743,7 +745,8 @@ var FbList = new Class({
 			}
 		}
 		if (this.options.ajax) {
-			// for module & mambot
+			Fabrik.loader.start('listform_' + this.options.listRef);
+			// For module & mambot
 			// $$$ rob with modules only set view/option if ajax on
 			this.form.getElement('input[name=option]').value = 'com_fabrik';
 			this.form.getElement('input[name=view]').value = 'list';
@@ -776,7 +779,6 @@ var FbList = new Class({
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
-			Fabrik.loader.stop('listform_' + this.options.listRef);
 		}
 		//Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
 		return false;
@@ -1179,6 +1181,8 @@ var FbListKeys = new Class({
 
 var FbGroupedToggler = new Class({
 	initialize: function (container) {
+		this.container = container;
+		this.toggleState = 'shown';
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
@@ -1187,15 +1191,38 @@ var FbGroupedToggler = new Class({
 			var state = img.retrieve('showgroup', true);
 			var rows = h.getParent().getNext();
 			state ? rows.hide() : rows.show();
-			if (state) {
-				img.src = img.src.replace('orderasc', 'orderneutral');
-			} else {
-				img.src = img.src.replace('orderneutral', 'orderasc');
-			}
+			this.setIcon(img, state);
 			state = state ? false : true;
 			img.store('showgroup', state);
 			return false;
 		});
+	},
+	
+	setIcon: function (img, state) {
+		if (state) {
+			img.src = img.src.replace('orderasc', 'orderneutral');
+		} else {
+			img.src = img.src.replace('orderneutral', 'orderasc');
+		}
+	},
+	
+	collapse: function () {
+		this.container.getElements('.fabrik_groupdata').hide();
+		this.container.getElements('.fabrik_groupheading a img').each(function (img) {
+			this.setIcon(img, true);
+		}.bind(this));
+	},
+	
+	expand: function () {
+		this.container.getElements('.fabrik_groupdata').show();
+		this.container.getElements('.fabrik_groupheading a img').each(function (img) {
+			this.setIcon(img, false);
+		}.bind(this));
+	},
+	
+	toggle: function () {
+		this.toggleState === 'shown' ? this.collapse() : this.expand();
+		this.toggleState = this.toggleState === 'shown' ? 'hidden' : 'shown';
 	}
 });
 

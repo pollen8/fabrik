@@ -51,7 +51,6 @@ class JFormFieldListfields extends JFormFieldList
 		$controller = JRequest::getVar('view', JRequest::getVar('task'));
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$bits = array();
 		$c = ElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
 		/*
@@ -63,26 +62,21 @@ class JFormFieldListfields extends JFormFieldList
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
 		switch ($controller)
 		{
+			case 'validationrule':
+				$id = JRequest::getInt('id');
+				$pluginManager = FabrikWorker::getPluginManager();
+				$elementModel = $pluginManager->getElementPlugin($id);
+				$element = $elementModel->getElement();
+				$res = $this->loadFromGroupId($element->group_id);
+				break;
 			case 'element':
 			// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
 				$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				if ($connection == '')
 				{
-					$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
 					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0)
 						: $this->form->getValue('group_id');
-					$groupModel->setId($groupId);
-					$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters);
-					$hash = $controller . '.' . implode('.', $bits);
-					if (array_key_exists($hash, $this->results))
-					{
-						$res = $this->results[$hash];
-					}
-					else
-					{
-						$this->results[$hash] = &$res;
-					}
+					$res = $this->loadFromGroupId($groupId);
 				}
 				else
 				{
@@ -200,5 +194,39 @@ class JFormFieldListfields extends JFormFieldList
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
 		}
 		return $return;
+	}
+
+	/**
+	 * Load the element list from the group id
+	 *
+	 * @param   int  $groupId group id
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return array
+	 */
+
+	protected function loadFromGroupId($groupId)
+	{
+		$controller = JRequest::getVar('view', JRequest::getVar('task'));
+		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
+		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
+		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
+		$bits = array();
+		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikFEModel');
+		$groupModel->setId($groupId);
+		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
+		$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters);
+		$hash = $controller . '.' . implode('.', $bits);
+		if (array_key_exists($hash, $this->results))
+		{
+			$res = $this->results[$hash];
+		}
+		else
+		{
+			$this->results[$hash] = &$res;
+		}
+		return $res;
 	}
 }

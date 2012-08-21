@@ -24,7 +24,6 @@ $document = JFactory::getDocument();
 $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
 $srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-$srcs[] = 'administrator/components/com_fabrik/views/form/tmpl/adminform.js';
 
 FabrikHelperHTML::script($srcs, $this->js);
 ?>

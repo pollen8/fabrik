@@ -10,7 +10,7 @@ var AdminVisualization = new Class({
 	},
 	
 	watchSelector: function () {
-		$('jform_plugin').addEvent('change', function (e) {
+		document.id('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var myAjax = new Request.HTML({
 				url: 'index.php',

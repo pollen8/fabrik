@@ -29,28 +29,54 @@ jimport('joomla.html.pagination');
 class FPagination extends JPagination
 {
 
-	/** @var string action url */
+	/**
+	 * Action url
+	 *
+	 * @var  string
+	 */
 	public $url = '';
 
-	/** @var int list id */
+	/**
+	 * Pagination ID
+	 *
+	 * @var  string
+	 */
 	protected $id = '';
 
-	/** @var   bool  show the total number of records found **/
+	/**
+	 * Show the total number of records found
+	 *
+	 * @var  bool
+	 */
 	public $showTotal = false;
 
-	/** @var   bool  should the # of pages dropdown include a show all option */
+	/**
+	 * Add an 'all' option to the display # dropdown
+	 *
+	 * @var  bool
+	 */
 	public $showAllOption = false;
 
+	/**
+	 * The lists unique reference
+	 *
+	 * @var  string
+	 */
 	protected $listRef = null;
 
+	/**
+	 * Show 'x of y pages'
+	 *
+	 * @var  bool
+	 */
 	public $showDisplayNum = true;
 
-	/**
-	 * set pagination id
+	**
+	 * Set the pagination ID
 	 *
-* @param   int  $id  list id
+	 * @param  int  $id id
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function setId($id)
@@ -61,12 +87,10 @@ class FPagination extends JPagination
 	/**
 	 * Return the pagination footer
 	 *
-* @param   string  $listRef  list reference
-* @param   string  $tmpl     tmpl
+	 * @param   string  $listRef  list reference
+	 * @param   string  $tmpl     list template
 	 *
-	 * @return  string	Pagination footer
-	 *
-	 * @since	1.0
+	 * @return	string	Pagination footer
 	 */
 
 	public function getListFooter($listRef = 0, $tmpl = 'default')
@@ -93,7 +117,6 @@ class FPagination extends JPagination
 			if (function_exists('pagination_list_footer'))
 			{
 				// Cant allow for it to be overridden
-				// Return pagination_list_footer($list);
 			}
 		}
 		return $this->_list_footer($list);
@@ -102,9 +125,7 @@ class FPagination extends JPagination
 	/**
 	 * Creates a dropdown box for selecting how many records to show per page
 	 *
-	 * @return  string	The html for the limit # input box
-	 *
-	 * @since	1.0
+	 * @return	string	The html for the limit # input box
 	 */
 
 	public function getLimitBox()
@@ -144,7 +165,7 @@ class FPagination extends JPagination
 	/**
 	 * Method to create an active pagination link to the item
 	 *
-* @param   JPaginationObject  &$item  The object with which to make an active link.
+	 * @param   JPaginationObject  &$item  The object with which to make an active link.
 	 *
 	 * @return   string  HTML link
 	 */
@@ -165,10 +186,12 @@ class FPagination extends JPagination
 	/**
 	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
 	 *
-* @param   string  $listRef  lists unique identifier
-* @param   string  $tmpl     template name
+	 * @param   string  $listRef  unique list reference
+	 * @param   string  $tmpl     list template name
 	 *
 	 * @return  string  Pagination page list string.
+	 *
+	 * @since   11.1
 	 */
 
 	public function getPagesLinks($listRef = 0, $tmpl = 'default')
@@ -190,7 +213,7 @@ class FPagination extends JPagination
 			require_once $chromePath;
 			if (function_exists('fabrik_pagination_item_active') && function_exists('fabrik_pagination_item_inactive'))
 			{
-				// Cant allow this as the js code we use for the items is different
+				// Can't allow this as the js code we use for the items is different
 				$itemOverride = true;
 			}
 			if (function_exists('fabrik_pagination_list_render'))
@@ -283,11 +306,9 @@ class FPagination extends JPagination
 	/**
 	 * Create the html for a list footer
 	 *
-* @param   array  $list  Pagination list data structure.
+	 * @param   array  $list  Pagination list data structure.
 	 *
 	 * @return  string  HTML for a list start, previous, next,end
-	 *
-	 * @since   11.1
 	 */
 
 	protected function _list_render($list)
@@ -317,7 +338,7 @@ class FPagination extends JPagination
 	 *
 	 * Create and return the pagination data object
 	 *
-	 * @return  object	Pagination data object
+	 * @return	object	Pagination data object
 	 */
 
 	protected function _buildDataObject()
@@ -403,12 +424,12 @@ class FPagination extends JPagination
 	}
 
 	/**
-	* Create the HTML for a list footer
-	*
-* @param   array  $list  Pagination list data structure.
-	*
-	* @return  string  HTML for a list footer
-	*/
+	 * Create the HTML for a list footer
+	 *
+	 * @param   array  $list  Pagination list data structure.
+	 *
+	 * @return  string  HTML for a list footer
+	 */
 
 	protected function _list_footer($list)
 	{

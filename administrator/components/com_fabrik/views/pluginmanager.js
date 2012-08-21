@@ -1,12 +1,32 @@
 var PluginManager = new Class({
 	
-	initialize: function (plugins) {
-		this.plugins = plugins;
-		this.counter = 0;
-		this.opts = this.opts || {};
+	pluginTotal: -1,
+	
+	initialize: function (plugins, id, type) {
+		this.id = id;
+		this.type = type;
+		this.accordion = new Fx.Accordion([], [], {alwaysHide: true});
+		for (var i = 0; i < plugins.length; i ++) {
+			this.addTop(plugins[i]);
+		}
+		this.watchPluginSelect();
+		this.watchDelete();
 		this.watchAdd();
+		
+		document.id('plugins').addEvent('click:relay(h3.title)', function (e, target) {
+			document.id('plugins').getElements('h3.title').each(function (h) {
+				if (h !== target) {
+					h.removeClass('pane-toggler-down');
+				}
+			});
+			target.toggleClass('pane-toggler-down');
+		});
 	},
-
+	
+	/**
+	 * @TODO - now only used by element js code - would be nice to remove and use the same code as form/list/validation rule plugins
+	 */
+	
 	_makeSel: function (c, name, pairs, sel) {
 		var v, l;
 		var opts = [];
@@ -27,6 +47,10 @@ var PluginManager = new Class({
 		return new Element('select', {'class': c, 'name': name}).adopt(opts);
 	},
 	
+	/**
+	 * @TODO - now only used by element js code - would be nice to remove and use the same code as form/list/validation rule plugins
+	 */
+	
 	_addSelOpt: function (opts, pair) {
 		if (typeOf(pair) === 'object') {
 			v = pair.value ? pair.value : pair.name; //plugin list should be keyed on plugin name
@@ -42,10 +66,92 @@ var PluginManager = new Class({
 		return opts;
 	},
 	
-	addPlugin: function (o) {
-		this.plugins.push(o);
+	watchDelete: function () {
+		document.id('adminForm').addEvent('click:relay(a.removeButton)', function (event, target) {
+			event.preventDefault();
+			this.pluginTotal --;
+			this.deletePlugin(event);
+		}.bind(this));
 	},
 	
+	watchAdd: function () {
+		document.id('addPlugin').addEvent('click', function (e) {
+			e.stop();
+			this.accordion.display(-1);
+			this.addTop();
+		}.bind(this));
+	},
+	
+	addTop: function (plugin) {
+		plugin = plugin ? plugin : '';
+		var div = new Element('div.actionContainer.panel');
+		var toggler = new Element('h3.title.pane-toggler').adopt(new Element('a', {'href': '#'}).adopt(new Element('span').set('text', plugin)));
+			
+		div.adopt(toggler);
+		div.inject(document.id('plugins'));
+		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		new Request.HTML({
+			url: 'index.php',
+			data: {
+				'option': 'com_fabrik',
+				'view': 'plugin',
+				'task': 'top',
+				'format': 'raw',
+				'type': this.type,
+				'plugin': plugin,
+				'c': this.pluginTotal,
+				'id': this.id
+			},
+			append: document.id('plugins').getElements('.actionContainer').getLast(),
+			onSuccess: function (res) {
+				this.pluginTotal ++;
+				if (plugin !== '') {
+					this.addPlugin(plugin);
+				}
+				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
+			}.bind(this)
+		}).send();
+	},
+	
+	/**
+	 * Watch the plugin select list
+	 */
+
+	watchPluginSelect: function () {
+		document.id('adminForm').addEvent('change:relay(select.elementtype)', function (event, target) {
+			event.preventDefault();
+			var plugin = target.get('value');
+			var container = target.getParent('.adminform');
+			target.getParent('.actionContainer').getElement('h3 a span').set('text', plugin);
+			var c = container.id.replace('formAction_', '').toInt();
+			this.addPlugin(plugin, c);
+		}.bind(this));
+	},
+	
+	addPlugin: function (plugin, c) {
+		c = typeOf(c) === 'number' ? c : this.pluginTotal;
+		
+		if (plugin === '') {
+			document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts').empty();
+			return;
+		}
+		
+		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		new Request.HTML({
+			url: 'index.php',
+			data: {
+				'option': 'com_fabrik',
+				'view': 'plugin',
+				'format': 'raw',
+				'type': this.type,
+				'plugin': plugin,
+				'c': c,
+				'id': this.id
+			},
+			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts')
+		}).send();
+	},
+
 	deletePlugin: function (e) {
 		// decrease the element name counter. 
 		// Otherwise you can loose data on saving (2 validations, delete first - 2nd lost values)
@@ -74,7 +180,7 @@ var PluginManager = new Class({
 					}
 				}
 			});
-			$$('table.adminform').each(function (i) {
+			document.id('plugins').getElements('.adminform').each(function (i) {
 				if (i.id.match(/formAction_\d+$/)) {
 					var c = i.id.match(/formAction_(\d+)$/)[1].toInt();
 					if (c > x) {
@@ -85,153 +191,8 @@ var PluginManager = new Class({
 			});
 		}
 		e.stop();
-		document.id(e.target).up(3).dispose();
+		document.id(e.target).getParent('.actionContainer').dispose();
 		this.counter --;
-	},
-	
-	watchAdd: function () {
-		document.id('addPlugin').addEvent('click', function (e) {
-			e.stop();
-			this.addAction('', '', {});
-		}.bind(this));
-	},
-	
-	watchDelete: function () {
-		document.id('plugins').getElements('.delete').each(function (c) {
-			c.removeEvents('click');
-			c.addEvent('click', function (e) {
-				this.deletePlugin(e);
-			}.bind(this));
-		}.bind(this));
-	},
-	
-	getPluginTop: function () {
-		return '';
-	},
-	
-	addAction: function (pluginHTML, plugin, opts, cloneJs) {
-		var tmp, radios;
-		cloneJs = cloneJs === false ? false : true;
-		var td = new Element('td');
-		var str  = '';
-		this.plugins.each(function (aPlugin) {
-			if (aPlugin.name === plugin) {
-				str += pluginHTML;
-			} else {
-				str += aPlugin.options.html;
-			}
-			
-		}.bind(this));
-		
-		// $$$ hugh - attempt to fix booboo in this commit:
-		// https://github.com/Fabrik/fabrik/commit/3817541d15f15c7f370c570bf8a4c6a0baf13f74
-		// New code didn't rename non-radio, and also we ended up with multiple names the same, blowing away params for
-		// first instances of repeated plugins.
-		// So instead of just radios, am fixing by applying this code to all inputs, selects and textareas
-		// ROB - PLEASE SANITY CHECK!!!
-		// Also check "update params id's" down a few lines, I think it's surplus to requirements?
-		
-		// Set form input ids, names and labels
-		tmp = new Element('div').set('html', str);
-		inputs = tmp.getElements('input, select, textarea');
-		inputs.each(function (input) {
-			var label, radid;
-			input.name = input.name.replace(/\[0\]/gi, '[' + this.counter + ']');
-			label = tmp.getElement('label[for=' + input.id + ']');
-			radid = input.id.split('-');
-			
-			// ids should be set as name-{repeatCounter} for things like fields
-			// for radio buttons they are name-{repeatCoutner}-{int:radiobutton order}
-			// hence grab the 
-			
-			// Additonal '-' added to radios in admnistrator/components/com_fabrik/classes/formfield.php getId()
-			radid[1] = this.counter; 
-			input.id = radid.join('-');
-			
-			if (label) {
-				label.setAttribute('for', input.id);
-			}
-		}.bind(this));
-
-		td.set('html', tmp.get('html'));
-		var display = 'block';
-		opts.counter = this.counter;
-		var c = new Element('div', {'class': 'actionContainer'}).adopt(
-		new Element('table', {'class': 'adminform', 'id': 'formAction_' + this.counter, 'styles': {'display': display}}).adopt(
-			new Element('tbody', {'styles': {'width': '100%'}}).adopt([
-				this.getPluginTop(plugin, opts),
-				new Element('tr').adopt(td),
-				new Element('tr').adopt(
-					new Element('td', {}).adopt(
-						new Element('a', {'href': '#', 'class': 'delete removeButton'}).appendText(Joomla.JText._('COM_FABRIK_DELETE'))
-					)
-				)
-			])
-		)
-	);
-		
-		c.inject(document.id('plugins'));
-		
-		// Update params ids
-		if (this.counter !== 0) {
-			// $$$ hugh - don't think this is working, 'cos syntax is wrong.
-			// I added the right syntax, but commented it out 'cos I think we now handle this above,
-			// in the 
-			//c.getElements('input[name^=params], select[name^=params]').each(function (i) {
-			/*c.getElements('input[name^=jform\[params\]], select[name^=jform\[params\]], textarea[name^=jform\[params\]').each(function (i) {
-				if (i.id !== '') {
-					debugger;
-					var a = i.id.split('-');
-					a.pop();
-					i.id = a.join('-') + '-' + this.counter;
-					console.log(i.id);
-				}
-			}.bind(this));*/
-			
-			c.getElements('img[src=components/com_fabrik/images/ajax-loader.gif]').each(function (i) {
-				i.id = i.id.replace('-0_loader', '-' + this.counter + '_loader');
-			}.bind(this));
-			if (cloneJs === true) {
-				this.plugins.each(function (plugin) {
-					// clone js controller
-					var newPlugin = new CloneObject(plugin, true, []);
-					newPlugin.cloned(this.counter);
-				}.bind(this));
-			}
-		}
-
-		// Show the active plugin 
-		var formaction = document.id('formAction_' + this.counter);
-		formaction.getElements('.' + this.opts.type + 'Settings').hide();
-		var activePlugin = formaction.getElement(' .page-' + plugin);
-		if (activePlugin) {
-			activePlugin.show();
-		}
-		
-		// Watch the drop down
-		formaction.getElement('.elementtype').addEvent('change', function (e) {
-			e.stop();
-			var id = e.target.getParent('.adminform').id.replace('formAction_', '');
-			document.id('formAction_' + id).getElements('.' + this.opts.type + 'Settings').hide();
-			var s = e.target.get('value');
-			if (s !== Joomla.JText._('COM_FABRIK_PLEASE_SELECT') && s !== '') {
-				document.id('formAction_' + id).getElement('.page-' + s).show();
-			}
-		}.bind(this));
-		this.watchDelete();
-		
-		// Show any tips (only running code over newly added html)
-		var myTips = new Tips($$('#formAction_' + this.counter + ' .hasTip'), {});
-		this.counter ++;
-	},
-	
-	getPublishedYesNo: function (opts) {
-		var yesno = '<label>' + Joomla.JText._('COM_FABRIK_PUBLISHED') + '</label>';
-		var yeschecked = opts.state !== false ? 'checked="checked"' : '';
-		var nochecked = opts.state === false ? 'checked="checked"' : '';
-		yesno += '<fieldset class="radio"><label>' + Joomla.JText._('JYES') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']" ' + yeschecked + ' value="1"></label>';
-		yesno += '<label>' + Joomla.JText._('JNO') + '<input type="radio" name="jform[params][plugin_state][' + opts.counter + ']"' + nochecked + ' value="0"></label></fieldset>';
-		return yesno;
 	}
 	
 });

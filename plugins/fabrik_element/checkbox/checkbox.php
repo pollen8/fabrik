@@ -118,11 +118,20 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		if (!array_key_exists($element->name, $data))
 		{
 			$data[$element->name] = $params->get('sub_default_value');
+			$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
+		}
+		else
+		{
+			if (!is_array($data[$element->name]))
+			{
+				$data[$element->name] = array($params->get('sub_default_value'));
+				$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
+			}
 		}
 	}
 
 	/**
-	 * if the search value isnt what is stored in the database, but rather what the user
+	 * If the search value isnt what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *

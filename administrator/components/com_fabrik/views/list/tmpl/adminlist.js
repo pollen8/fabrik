@@ -3,27 +3,12 @@ var ListPluginManager = new Class({
 	
 	Extends: PluginManager,
 
-	initialize: function (plugins) {
-		this.parent(plugins);
-		this.opts.type = 'list';
-	},
+	type: 'list',
 	
-	getPluginTop: function (plugin, opts) {
-		var yesno = this.getPublishedYesNo(opts);
-		var tr1 = new Element('tr').adopt([
-			new Element('td').adopt(
-				new Element('input', {
-					'value': Joomla.JText._('COM_FABRIK_ACTION'),
-					'size': 6,
-					'readonly': true,
-					'class': 'readonly'
-				}),
-				this._makeSel('inputbox elementtype', 'jform[params][plugins][]', this.plugins, plugin)
-			)
-			]);
-		var tr2 = new Element('tr').adopt(new Element('td').set('html', yesno));
-		return new Element('table').adopt(new Element('tbody').adopt(tr1, tr2));
+	initialize: function (plugins, id) {
+		this.parent(plugins, id);
 	}
+	
 });
 
 var ListForm = new Class({

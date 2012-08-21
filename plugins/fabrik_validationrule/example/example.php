@@ -1,11 +1,10 @@
 <?php
 /**
-*
-* @package fabrikar
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 /**
  * this is an example plugin validation rule.
@@ -62,12 +61,22 @@ class PlgFabrik_ValidationruleExample extends PlgFabrik_Validationrule
 
 	protected $pluginName = 'example';
 
-	/** @var bool if true uses icon of same name as validation, otherwise uses png icon specified by $icon */
+	/**
+	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 *
+	 *  @var bool
+	 */
 	protected $icon = 'notempty';
 
 	/**
-	 * (non-PHPdoc)
-	 * @see PlgFabrik_Validationrule::validate()
+	 * Validate the elements data against the rule
+	 *
+	 * @param   string  $data           to check
+	 * @param   object  &$elementModel  element Model
+	 * @param   int     $pluginc        plugin sequence ref
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool  true if validation passes, false if fails
 	 */
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
@@ -77,16 +86,19 @@ class PlgFabrik_ValidationruleExample extends PlgFabrik_Validationrule
 	}
 
 	/**
-	 * replace the elements data with something else!
-* @param   string	data to check
-* @param   object	element model
-* @param   int		plugin sequence ref
-	 * @return  string	replaced data
+	 * Checks if the validation should replace the submitted element data
+	 * if so then the replaced data is returned otherwise original data returned
+	 *
+	 * @param   string  $data           original data
+	 * @param   model   &$elementModel  element model
+	 * @param   int     $pluginc        validation plugin counter
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string	original or replaced data
 	 */
 
- 	function replace($data, &$element, $c)
- 	{
- 		return $data;
- 	}
+	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	{
+		return $data;
+	}
 }
-?>

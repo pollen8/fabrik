@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.password
+ * @since       3.0
  */
 
 class PlgFabrik_ElementPassword extends PlgFabrik_Element

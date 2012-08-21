@@ -475,11 +475,14 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * called when the element is saved
-	 * // @TODO this *MIGHT* work for j1.6 - still need to test it
+	 * Called when the element is saved
+	 *
+	 * @param   array  $data  posted element save data
+	 *
+	 * @return  bool  save ok or not
 	 */
 
-	function onSave($data)
+	public function onSave($data)
 	{
 		$params = json_decode($data['params']);
 		if (!$this->canEncrypt() && !empty($params->encrypt))
@@ -727,9 +730,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		if ($type == 'querystring' || $type = 'jpluginfilters')
 		{
 			$key = FabrikString::safeColNameToArrayKey($key);
-			// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
-			// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
-			// value if it was then we want to filter on the key and not the label
+			/* $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
+			 * by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
+			 * value if it was then we want to filter on the key and not the label
+			 */
 			if (!array_key_exists($key, JRequest::get('get')))
 			{
 				$key = $db->quoteName($joinTableName . '.id');
@@ -777,9 +781,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * get database object for the user element
-	 * (non-PHPdoc)
-	 * @see /plugins/fabrik_element/databasejoin/FabrikModelFabrikDatabasejoin#getDb()
+	 * Get the database object
+	 *
+	 * @return  object	database
 	 */
 
 	function getDb()
@@ -820,9 +824,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
+	 * Get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
+	 *
+	 * @param   object	$user  joomla user
+	 *
 	 * @since	3.0b
-	 * get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
-	 * @param   object	$user
+	 *
 	 * @return  string
 	 */
 
@@ -834,7 +841,13 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		return $user->get($displayParam);
 	}
 
-	function getJoinValueColumn()
+	/**
+	 * Get the column name used for the value part of the db join element
+	 *
+	 * @return  string
+	 */
+
+	protected function getJoinValueColumn()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
@@ -843,13 +856,13 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * used for the name of the filter fields
+	 * Used for the name of the filter fields
 	 * Over written here as we need to get the label field for field searches
 	 *
 	 * @return string element filter name
 	 */
 
-	function getFilterFullName()
+	public function getFilterFullName()
 	{
 		$elName = $this->getFullName(false, true, false);
 		return FabrikString::safeColName($elName);
@@ -894,8 +907,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * get the element name or concat statement used to build the dropdown labels or
+	 * Get the element name or concat statement used to build the dropdown labels or
 	 * table data field
+	 *
 	 * @return  string
 	 */
 
@@ -909,12 +923,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$displayParam == 'username';
 			if (!isset($displayMessage))
 			{
-				JError::raiseNotice(200,
-					'The user plugin (id = ' . $this->getElement()->id . ') uses the defunct gid property. Please edit it and change it');
+				JError::raiseNotice(200, JText::sprintf('PLG_ELEMENT_USER_NOTICE_GID', $this->getElement()->id));
 				$displayMessage = true;
 			}
 		}
 		return $displayParam;
 	}
 }
-?>

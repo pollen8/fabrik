@@ -2,7 +2,7 @@
 <extension group="fabrik_list" method="upgrade" type="plugin" version="2.5">
 	<name>plg_fabrik_list_email</name>
 	<author>Hugh Messenger</author>
-	<creationDate>May 2012</creationDate>
+	<creationDate>August 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.o.uk</authorEmail>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields name="params">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-rest">
 			
 			<field default="" description="PLG_FORM_REST_USERNAME_DESC" label="PLG_FORM_REST_USERNAME_LABEL" name="username" repeat="true" type="field"/>

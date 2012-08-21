@@ -89,6 +89,43 @@
 			</then>
 		</if>
 		
+		<antcall target="updater.downloaddb.add" />
+		
+	</target>
+	
+	<target name="updater.downloaddb.add">
+		<for list="${plugin.folders}" param="plugin.type">
+		
+			 <sequential>
+				 
+            	<dirname property="plugins.@{plugin.type}" file="@{plugin.type}"/>
+				<echo>@{plugin.type}</echo>
+				<echo>${plugins.@{plugin.type}}</echo>
+				
+				<for list="${plugins.@{plugin.type}}" param="plugin.name">
+					<sequential>
+						<var name="filename" value="plg_fabrik_@{plugin.type}_@{plugin.name}_${version}.zip" />
+						
+						<sql
+							driver="${sql.driver}"
+							url="${sql.url}"
+							userid="${sql.user}"
+							password="${sql.password}"
+							expandProperties="true"
+							autocommit="true"
+							print="yes" >
+			
+		    	 
+							<transaction><![CDATA[
+								INSERT INTO ${sql.downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`, `slug`) 
+					    	 VALUES ("@{plugin.type} - @{plugin.name} plug-in", "cron", "/media/downloads/${filename}", "${version}", "1", NOW(), "0", "19", "${update.target_platform_version}", "0", "", "62", "0", "") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}"
+							]]>
+							</transaction>
+						</sql>
+					</sequential>
+				</for>
+			</sequential>
+		</for>
 	</target>
 	
 	
