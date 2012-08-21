@@ -45,7 +45,7 @@
 	</target>
 	
 	<target name="uploadPhpDoc" description="Upload PHP docs created in target:phpdoc">
-		<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" 
+		<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" 
 			depends="false"
 			ignoreNoncriticalErrors="true"
 			retriesAllowed="3"
@@ -83,13 +83,13 @@
 				<antcall target="uploadPhpDoc"/>
 			</then>	
 		</if>
-		<input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
+		<!-- <input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
 		<if>
  			<equals arg1="${phpcs}" arg2="y" />
 			<then>
 			<antcall target="phpcs" />
 			</then>
-		</if>
+		</if> -->
 		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
 		
 		<if>
