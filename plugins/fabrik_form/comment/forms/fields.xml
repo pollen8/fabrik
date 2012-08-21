@@ -2,107 +2,53 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-comment">
-			<field name="comment_method"
-				type="list"
-				default="0"
-				label="PLG_FORM_COMMENT_TYPE_LABEL"
-				repeat="true">
+			<field default="0" label="PLG_FORM_COMMENT_TYPE_LABEL" name="comment_method" repeat="true" type="list">
 					<option value="disqus">PLG_FORM_COMMENT_DISQUS</option>
 					<option value="intensedebate">PLG_FORM_COMMENT_INTENSE_DEBATE</option>
 					<option value="jcomment">JCOMMENT</option>
 					<option value="internal">PLG_FORM_COMMENT_LOCAL_COMMENTING</option>
 			</field>
 			
-			<field name="comment-disqus-subdomain"
-				type="text"
-				description="PLG_FORM_COMMENT_DISQUS_DOMAIN_DESC"
-				label="PLG_FORM_COMMENT_DISQUS_DOMAIN_LABEL"
-				repeat="true"
-				size="30"/>
+			<field description="PLG_FORM_COMMENT_DISQUS_DOMAIN_DESC" label="PLG_FORM_COMMENT_DISQUS_DOMAIN_LABEL" name="comment-disqus-subdomain" repeat="true" size="30" type="text"/>
 				
-			<field name="comment-intesedebate-code"
-				type="text"
-				description="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_DESC"
-				label="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_LABEL"
-				repeat="true"
-				size="30"/>
+			<field description="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_DESC" label="PLG_FORM_COMMENT_INTENSE_DEBATE_CODE_LABEL" name="comment-intesedebate-code" repeat="true" size="30" type="text"/>
 				
 			<field label="PLG_FORM_COMMENT_LOCAL_COMMENTING_SETTINGS" repeat="true" type="spacer"/>
 
-			<field name="comment_lock_element"
-				type="listfields"
-				description="PLG_FORM_COMMENT_LOCK_COMMENTS_DESC"
-				label="PLG_FORM_COMMENT_LOCK_COMMENTS_LABEL"
-				repeat="true"
-				valueformat="tableelement"/>
+			<field description="PLG_FORM_COMMENT_LOCK_COMMENTS_DESC" label="PLG_FORM_COMMENT_LOCK_COMMENTS_LABEL" name="comment_lock_element" repeat="true" type="listfields" valueformat="tableelement"/>
 			
-			<field name="comment-internal-rating"
-				type="radio"
-				default="0"
-				description="PLG_FORM_COMMENT_ALLOW_RATING_DESC"
-				label="PLG_FORM_COMMENT_ALLOW_RATING_LABEL"
-				repeat="true" >
+			<field default="0" description="PLG_FORM_COMMENT_ALLOW_RATING_DESC" label="PLG_FORM_COMMENT_ALLOW_RATING_LABEL" name="comment-internal-rating" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-notify-admins"
-				type="radio"
-				default="0"
-				description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL"
-				repeat="true">
+			<field default="0" description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC" label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL" name="comment-notify-admins" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-internal-anonymous"
-				type="radio"
-				default="0"
-				description="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_DESC"
-				label="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_LABEL"
-				repeat="true">
+			<field default="0" description="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_DESC" label="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_LABEL" name="comment-internal-anonymous" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-internal-notify"
-				type="radio"
-				default="0"
-				description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL"
-				repeat="true">
+			<field default="0" description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC" label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL" name="comment-internal-notify" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-plugin-notify"
-				type="list"
-				default="0"
-				description="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_DESC"
-				label="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_LABEL"
-				repeat="true">
+			<field default="0" description="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_DESC" label="PLG_FORM_COMMENT_NOTIFY_PLUGIN_ON_NEW_COMMENT_LABEL" name="comment-plugin-notify" repeat="true" type="list">
 					<option value="0">JNO</option>
 					<option value="1">Choice</option>
 					<option value="2">Automatic</option>
 			</field>
 			
-			<field name="comment-show-count-in-title"
-				default="1"
-				description="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_DESC"
-				label="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_LABEL"
-				repeat="true"
-				type="radio">
+			<field default="1" description="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_DESC" label="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_LABEL" name="comment-show-count-in-title" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="comment-digg"
-				type="radio"
-				deafult="0"
-				description="PLG_FORM_COMMENT_DIGG_DESC"
-				label="PLG_FORM_COMMENT_DIGG_LABEL"
-				repeat="true">
+			<field deafult="0" description="PLG_FORM_COMMENT_DIGG_DESC" label="PLG_FORM_COMMENT_DIGG_LABEL" name="comment-digg" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

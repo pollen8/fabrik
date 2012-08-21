@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="fabrik3-package" default="fabrik.all">
+<!--  fabrik.all -->
 	<property file="build_config.ini" />
 	<property file="build_config_private.ini" />
 	<import file="./build_updateserver_xml.xml"/>
@@ -9,32 +10,17 @@
 	<property name="update_dir" value="${cfg.destdir}/admin/update/fabrik/" />
 	<property name="package_list" value="${update_dir}/package_list.xml" />
 	
+	<property name="plugin.folders" value="cron,element,form,list,validationrule,visualization" />
+	<property name="plugins.cron" value="email,php" />
+	<property name="plugins.element" value="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" />
+	<property name="plugins.form" value="email,php,receipt,redirect" />
+	<property name="plugins.list" value="copy,php" />
+	<property name="plugins.validationrule" value="isgreaterorlessthan,notempty,php,regex,isemail" />
+	<property name="plugins.visualization" value="calendar,chart,googlemap,media,slideshow,timeline" />
+	
+	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
-
-<target name="sqltest">
- <echo message='start test' />
-<sql
-			driver="${sql.driver}"
-			url="${sql.url}"
-			userid="${sql.user}"
-			password="${sql.password}"
-			expandProperties="true"
-			autocommit="true"
-			print="yes"
-			showWarnings="true"
-		>
-		<transaction>
-		select * from ${cfg.sql_downloads_table}
-		</transaction>
-		<!-- <transaction><![CDATA[
-				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
-	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
-			]]></transaction> -->
-		</sql>
-	    	 <echo message='done test' />
-	  	</target>
-
 
 	<target name="phpcs" description="Ensure Code Style Rules">
 	    <exec executable="cmd">
@@ -112,7 +98,6 @@
 			</then>
 		</if>
 		
-		<!-- <input message="Previous version number:" addproperty="lastversion" /> -->
 		<input message="Component version:" addproperty="version" />
 		
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
@@ -428,56 +413,21 @@
 			
 		</target>
 		
-		<target name="fabrik.plugin.cron.zip.copy">
-			<property name="filename" value="plg_fabrik_cron_${plugin}_${version}.zip" />
-	    	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/${filename}" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-	    	
-	    	<sql
-			driver="${sql.driver}"
-			url="${sql.url}"
-			userid="${sql.user}"
-			password="${sql.password}"
-			expandProperties="true"
-			autocommit="true"
-			print="yes"
-		>
-		<transaction><![CDATA[
-				INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
-	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}
-			]]></transaction>
-		</sql>
-	    	 <echo message='INSERT INTO ${cfg.sql_downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`) 
-	    	 VALUES ("${plugin} - cron plug-in", "cron", "/media/downloads/${filename}", "${version}", "0", NOW(), "0", "19", "{$update.target_platform_version}", "0", "", "62", "0") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}"' />
-	  	</target>
-	  
-	  <target name="fabrik.plugin.element.zip.copy">
-	    <copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_element_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-	  </target>
-	  
-	  <target name="fabrik.plugin.form.zip.copy">
-	  	<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_form_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-	  </target>
 		
-		<target name="fabrik.plugin.list.zip.copy">
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_list_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-		</target>
-		
-		<target name="fabrik.plugin.validation.zip.copy">
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_validationrule_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-		</target>
-		
-		<target name="fabrik.plugin.visualization.zip.copy">
-			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_visualization_${plugin}_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
-		</target>
 		<target name="fabrik.package.end">
-			<var name="updatelist" value=""/>
-			<foreach list="email,php" param="plugin" target="fabrik.plugin.cron.zip.copy" inheritall="true" inheritrefs="true"/>
-			<echo>${updatelist}</echo>
-			<foreach list="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" param="plugin" target="fabrik.plugin.element.zip.copy" inheritall="true" inheritrefs="true"/>
-			<foreach list="email,php,receipt,redirect" target="fabrik.plugin.form.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
-			<foreach list="copy,php" target="fabrik.plugin.list.zip.copy" inheritall="true" param="plugin" inheritrefs="true"/>
-			<foreach list="isgreaterorlessthan,notempty,php,regex,isemail" target="fabrik.plugin.validation.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
-			<foreach list="calendar,chart,googlemap,media,slideshow,timeline" target="fabrik.plugin.visualization.zip.copy" param="plugin" inheritall="true" inheritrefs="true"/>
+			<for list="${plugin.folders}" param="plugin.type">
+				<sequential>
+	            	<dirname property="plugins.@{plugin.type}" file="@{plugin.type}"/>
+					<echo>@{plugin.type}</echo>
+					<echo>${plugins.@{plugin.type}}</echo>
+					<for list="${plugins.@{plugin.type}}" param="plugin.name">
+						<sequential>
+							<var name="filename" value="plg_fabrik_@{plugin.type}_@{plugin.name}_${version}.zip" />
+							<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/${filename}" todir="${cfg.destdir}/pkg_fabrik/packages/" />
+						</sequential>
+					</for>
+				</sequential>
+			</for>
 			<copy file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${version}.zip" todir="${cfg.destdir}/pkg_fabrik/packages/" />
 			<zip destfile="${cfg.destdir}/pkg_fabrik_${version}.zip" basedir="${cfg.destdir}/pkg_fabrik"/>
 		</target>
@@ -710,7 +660,7 @@
 	</target>
 	
 	<target name="xml.update.repoistory">
-		<input message="Update repoistory xml files with version number?" addproperty="repository.xml.update" validargs="y,n" defaultvalue="y" />
+		<input message="Update local repoistory xml files with version number?" addproperty="repository.xml.update" validargs="y,n" defaultvalue="y" />
 			<if>
 	 			<equals arg1="${repository.xml.update}" arg2="y" />
 				<then>

@@ -20,7 +20,7 @@
 			<field description="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_DESC" label="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_LABEL" name="update_col_updates" repeat="true" type="fabrikmodalrepeat">
 			
 				<fields name="params">
-					<fieldset name="update_col_updates_modal" repeat="true" modal="true">
+					<fieldset modal="true" name="update_col_updates_modal" repeat="true">
 								
 						<field label="PLG_LIST_UPDATE_COL_COLUMN_TO_UPDATE_LABEL" name="coltoupdate" type="listfields" valueformat="tableelement"/>
 							

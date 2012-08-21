@@ -49,7 +49,7 @@
 				<field description="MOD_FABRIK_LIST_ELEMENTS_DESC" label="MOD_FABRIK_LIST_ELEMENTS_LABEL" name="list_elements" type="fabrikmodalrepeat">
 				
 					<fields name="params">
-						<fieldset name="list_elements_modal" repeat="true" modal="true">
+						<fieldset modal="true" name="list_elements_modal" repeat="true">
 							<field label="MOD_FABRIK_LIST_ELEMENTS_HEADING" name="show_in_list" size="30" type="listfields"/>
 						
 						</fieldset>
@@ -59,7 +59,7 @@
 				<field description="MOD_FABRIK_LIST_PREFILTERS_DESC" label="MOD_FABRIK_LIST_PREFILTERS_LABEL" name="prefilters" type="fabrikmodalrepeat">
 				
 					<fields name="params">
-						<fieldset name="prefilters_modal" repeat="true" modal="true">
+						<fieldset modal="true" name="prefilters_modal" repeat="true">
 							<field label="MOD_FABRIK_LIST_ELEMENTS_HEADING" name="filter-fields" type="listfields" valueformat="tableelement"/>
 						
 							<field label="MOD_FABRIK_LIST_CONDITION_LABEL" name="filter-conditions" type="list">
