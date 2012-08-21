@@ -61,6 +61,25 @@
 	<target name="fabrik.all">
 		<antcallback target="git.tags.get" return="project.current, git.tags, project.previous"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${project.current}"/>
+		
+		<input message="Deployment to test or live server?" addproperty="deploy.to" validargs="test,live" defaultvalue="test" />
+		
+		<!-- Set up deployment environment -->
+		<if>
+			<equals arg1="${deploy.to}" arg2="test" />
+			<then>
+				<property name="sql.downloads_table" value="${sql.downloads_table.test}" />
+				<property name="ftp.updatedir" value="${ftp.updatedir.test}" />
+				<property name="ftp.update.folder" value="${ftp.update.folder.test}" />
+			</then>
+			<else>
+				<property name="sql.downloads_table" value="${sql.downloads_table.live}" />
+				<property name="ftp.updatedir" value="${ftp.updatedir.live}" />
+				<property name="ftp.update.folder" value="${ftp.update.folder.live}" />
+			</else>
+		</if>
+		<echo>${sql.downloads_table} ${ftp.updatedir} ${ftp.update.folder}</echo>
+		
 		<input message="Create Change log?" addproperty="changelog" validargs="y,n" defaultvalue="n" />
 		<if>
 			<equals arg1="${changelog}" arg2="y" />
@@ -152,7 +171,7 @@
 	<target name="fabrik.zipfabrikpluginfolder.plugin">
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset"> 
-      <![CDATA[<extension name="${update.product_name} ${folder} - ${plugin}" element="${plugin}" type="plugin" folder="${update.product_code}_${folder}" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_${folder}_${plugin}.xml" />]]>
+      <![CDATA[<extension name="${update.product_name} ${folder} - ${plugin}" element="${plugin}" type="plugin" folder="${update.product_code}_${folder}" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/plg_${folder}_${plugin}.xml" />]]>
    		</insert> 
 		</xmltask>
 		<delete file="${cfg.destdir}/pkg_fabrik_sink/packages/plg_fabrik_${folder}_${plugin}_${version}.zip" />
@@ -195,7 +214,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -218,7 +237,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -241,7 +260,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -264,7 +283,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -273,10 +292,10 @@
 		
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset">
-				<![CDATA[<extension name="Fabrik" element="fabrik" type="plugin" folder="content" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_fabrik.xml" />
-<extension name="Search - Fabrik" element="fabrik" type="plugin" folder="search" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_search_fabrik.xml" /> 
-<extension name="System - FabrikSheduled Tasks" element="fabrikcron" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrikcron.xml" />
-<extension name="System - Fabrik" element="fabrik" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrik.xml" />
+				<![CDATA[<extension name="Fabrik" element="fabrik" type="plugin" folder="content" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/plg_fabrik.xml" />
+<extension name="Search - Fabrik" element="fabrik" type="plugin" folder="search" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/plg_search_fabrik.xml" /> 
+<extension name="System - FabrikSheduled Tasks" element="fabrikcron" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/plg_system_fabrikcron.xml" />
+<extension name="System - Fabrik" element="fabrik" type="plugin" folder="system" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/plg_system_fabrik.xml" />
 ]]>
    		</insert> 
 		</xmltask>
@@ -304,7 +323,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
@@ -326,15 +345,15 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
 		
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset">
-			<![CDATA[<extension name="Fabrik form" element="mod_fabrik_form" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_form.xml" />]]> 
-     		<![CDATA[<extension name="Fabrik list" element="mod_fabrik_list" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_list.xml" />]]>
+			<![CDATA[<extension name="Fabrik form" element="mod_fabrik_form" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/mod_fabrik_form.xml" />]]> 
+     		<![CDATA[<extension name="Fabrik list" element="mod_fabrik_list" type="module" folder="" version="${version}" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/mod_fabrik_list.xml" />]]>
    		</insert> 
 		</xmltask>
 	</target>
@@ -388,14 +407,14 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version}"/>
+			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
 			
 		<xmltask source="${package_list}" dest="${package_list}"> 
 			<insert path="/extensionset"> 
-     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client="administrator" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml" />]]>
+     		<![CDATA[<extension name="fabrik" element="com_fabrik" type="component" folder="" version="${version}" client="administrator" detailsurl="http://fabrikar.com/update/${ftp.update.folder}/com_fabrik.xml" />]]>
    		</insert> 
 		</xmltask>
 	</target>
@@ -673,7 +692,7 @@
 						<replace path="/:extension/:version/text()" withText="${version}"/> 
 						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
 						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/:extension" attr="version" value="${update.target_platform_version}" />
+						<attr path="/:extension" attr="version" value="${update.target_platform_version.dotted}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
@@ -683,7 +702,7 @@
 						<replace path="/install/version/text()" withText="${version}"/> 
 						<replace path="/install/creationDate/text()" withText="${createdate}" />
 						<replace path="/install/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/install" attr="version" value="${update.target_platform_version}" />
+						<attr path="/install" attr="version" value="${update.target_platform_version.dotted}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
@@ -693,7 +712,7 @@
 						<replace path="/:extension/:version/text()" withText="${version}"/> 
 						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
 						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/:extension" attr="version" value="${update.target_platform_version}" />
+						<attr path="/:extension" attr="version" value="${update.target_platform_version.dotted}" />
 					</xmltask>
 					
 					
@@ -706,7 +725,7 @@
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
 						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/extension" attr="version" value="${update.target_platform_version}" />
+						<attr path="/extension" attr="version" value="${update.target_platform_version.dotted}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
@@ -717,7 +736,7 @@
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
 						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/extension" attr="version" value="${update.target_platform_version}" />
+						<attr path="/extension" attr="version" value="${update.target_platform_version.dotted}" />
 					</xmltask>
 				</then>
 			</if>
