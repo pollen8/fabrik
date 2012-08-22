@@ -4417,15 +4417,16 @@ class FabrikFEModelList extends JModelForm
 				// Select the required fields from the table.
 				$query
 					->select(
-						"db_table_name,
-					name, plugin, l.label AS listlabel, l.id as list_id, \n
+						"l.db_table_name,
+					el.name, el.plugin, l.label AS listlabel, l.id as list_id, \n
 					el.id AS element_id, el.label AS element_label, f.id AS form_id,
 					el.params AS element_params");
 				$query->from('#__{package}_elements AS el');
 				$query->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id');
 				$query->join('LEFT', '#__{package}_forms AS f ON f.id = fg.form_id');
 				$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
-				$query->where('el.published = 1');
+				$query->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id');
+				$query->where('el.published = 1 AND g.published = 1');
 				$query
 					->where(
 						"(plugin = 'databasejoin' AND el.params like '%\"join_db_name\":\"" . $table->db_table_name
