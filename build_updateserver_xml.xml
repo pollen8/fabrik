@@ -32,7 +32,7 @@
 		</downloads>
 		<maintainer>${update.maintainer}</maintainer>
 		<maintainerurl>${update.url}</maintainerurl>
-		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}" />
 	</update>
 ]]>
 						</insert> 
@@ -55,7 +55,7 @@
 		</downloads>
 		<maintainer>${update.maintainer}</maintainer>
 		<maintainerurl>${update.url}</maintainerurl>
-		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}" />
 	</update>
 </updates>
 ]]>
@@ -83,7 +83,23 @@
 			</then>
 		</if>
 		
-		<input message="FTP zips and add to downloads db table?" addproperty="updater.ftp" validargs="y,n" defaultvalue="y" />
+		<input message="FTP extension zips to download folder ${ftp.downloaddir}?" addproperty="updater.ftp.zips" validargs="y,n" defaultvalue="y" />
+		<if>
+			<equals arg1="${updater.ftp.zips}" arg2="y" />
+			<then>
+				<antcall target="updater.downloaddb.add" />
+				<!--  upload the plugin zips -->
+				<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">
+						<include name="**/*.zip" />
+					</fileset>
+				</ftp>
+				<echo>uploaded zip files to ${ftp.downloaddir}</echo>
+				
+			</then>
+		</if>
+		
+		<input message="FTP Update server XML files and SQL updates to ${sql.downloads_table}?" addproperty="updater.ftp" validargs="y,n" defaultvalue="y" />
 		<if>
 			<equals arg1="${updater.ftp}" arg2="y" />
 			<then>
@@ -141,7 +157,7 @@
         						SELECT IFNULL(
         							(SELECT CONCAT('current.plugin.description=',`description`) from ${sql.downloads_table} WHERE 
 					    		 	`download` LIKE "%plg_fabrik_@{plugin.type}_@{plugin.name}%" 
-					    		 	AND description != ''
+					    		 	AND description != '' AND description != ''
 					    		 	AND `joomla_version` = "${update.target_platform_version}"
 					    		 	ORDER BY create_date DESC LIMIT 1),
 					    		 	'current.plugin.description=-')
