@@ -1,12 +1,13 @@
 var PluginManager = new Class({
 	
-	pluginTotal: -1,
+	pluginTotal: 0,
+	
+	topTotal: -1,
 	
 	initialize: function (plugins, id, type) {
 		this.id = id;
 		this.type = type;
-		this.queue = new RequestQueue();
-		this.accordion = new Fx.Accordion([], [], {alwaysHide: true});
+		this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
 		for (var i = 0; i < plugins.length; i ++) {
 			this.addTop(plugins[i]);
 		}
@@ -22,6 +23,14 @@ var PluginManager = new Class({
 			});
 			target.toggleClass('pane-toggler-down');
 		});
+	},
+	
+	canSaveForm: function () 
+	{
+		if (document.readyState !== 'complete') {
+			return false;
+		}
+		return Fabrik.requestQueue.empty();
 	},
 	
 	/**
@@ -71,6 +80,7 @@ var PluginManager = new Class({
 		document.id('adminForm').addEvent('click:relay(a.removeButton)', function (event, target) {
 			event.preventDefault();
 			this.pluginTotal --;
+			this.topTotal --;
 			this.deletePlugin(event);
 		}.bind(this));
 	},
@@ -90,7 +100,9 @@ var PluginManager = new Class({
 			
 		div.adopt(toggler);
 		div.inject(document.id('plugins'));
+		var append = document.id('plugins').getElements('.actionContainer').getLast();
 		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		
 		var request = new Request.HTML({
 			url: 'index.php',
 			data: {
@@ -100,19 +112,26 @@ var PluginManager = new Class({
 				'format': 'raw',
 				'type': this.type,
 				'plugin': plugin,
-				'c': this.pluginTotal,
+				'c': this.topTotal,
 				'id': this.id
 			},
-			append: document.id('plugins').getElements('.actionContainer').getLast(),
+			append: append,
 			onSuccess: function (res) {
-				this.pluginTotal ++;
+				
 				if (plugin !== '') {
 					this.addPlugin(plugin);
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
-			}.bind(this)
+			}.bind(this),
+			onFailure: function (xhr) {
+				console.log('fail', xhr);
+			},
+			onException: function (headerName, value) {
+				console.log('excetiprion', headerName, value);
+			}
 		});
-		this.queue.add(request);
+		this.topTotal ++;
+		Fabrik.requestQueue.add(request);
 	},
 	
 	/**
@@ -132,14 +151,13 @@ var PluginManager = new Class({
 	
 	addPlugin: function (plugin, c) {
 		c = typeOf(c) === 'number' ? c : this.pluginTotal;
-		
 		if (plugin === '') {
 			document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts').empty();
 			return;
 		}
 		
-		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
-		new Request.HTML({
+		// Ajax request to load the plugin contennt
+		var request = new Request.HTML({
 			url: 'index.php',
 			data: {
 				'option': 'com_fabrik',
@@ -150,26 +168,15 @@ var PluginManager = new Class({
 				'c': c,
 				'id': this.id
 			},
-			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts')
-		}).send();
+			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts'),
+			onComplete: function () {
+			}.bind(this)
+		});
+		this.pluginTotal ++;
+		Fabrik.requestQueue.add(request);
 	},
 
 	deletePlugin: function (e) {
-		// decrease the element name counter. 
-		// Otherwise you can loose data on saving (2 validations, delete first - 2nd lost values)
-		// $$$ hugh - fixing this code
-		/*
-		$('plugins').getElements('input, select, textarea').each(function (i) {
-			var s = i.name.match(/\[[0-9]\]/);
-			if (s) {
-				var c = s[0].replace('[', '').replace(']', '').toInt();
-				if (c > 0) {
-					c = c - 1;
-				}
-				i.name = i.name.replace(/\[[0-9]\]/, '[' + c + ']');
-			}
-		});
-		*/
 		if (e.target.findClassUp('adminform').id.test(/_\d+$/)) {
 			var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea').each(function (i) {

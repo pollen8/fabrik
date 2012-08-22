@@ -28,6 +28,22 @@ $srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 FabrikHelperHTML::script($srcs, $this->js);
 ?>
 
+<script type="text/javascript">
+
+	Joomla.submitbutton = function(task) {
+		if (task !== 'form.cancel'  && !controller.canSaveForm()) {
+			alert('Please wait - still loading');
+			return false;
+		}
+		if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+
+			Joomla.submitform(task, document.getElementById('adminForm'));
+		} else {
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+		}
+	}
+</script>
+
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="width-50 fltlft">
 		<fieldset class="adminform">

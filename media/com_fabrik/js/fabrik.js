@@ -27,26 +27,31 @@ RequestQueue = new Class({
 	},
 	
 	processQueue: function () {
-		console.log(document.readyState);
-		if (this.queue.length === 0) {
+		if (Object.keys(this.queue).length === 0) {
 			return;
 		}
 		var xhr = {},
 		running = false;
-		//remove successfuly completed xhr
+
+		// Remove successfuly completed xhr
 		$H(this.queue).each(function (xhr, k) {
 			if (xhr.isSuccess()) {
 				delete(this.queue[k]);
 				running = false;
 			}
 		}.bind(this));
-		//find first xhr not run and completed to run
+		
+		// Find first xhr not run and completed to run
 		$H(this.queue).each(function (xhr, k) {
 			if (!xhr.isRunning() && !xhr.isSuccess() && !running) {
 				xhr.send();
 				running = true;
 			}
 		});
+	},
+	
+	empty: function () {
+		return Object.keys(this.queue).length === 0;
 	}
 });
 
