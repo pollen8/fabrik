@@ -290,7 +290,7 @@ class FabrikModelElement extends JModelAdmin
 	public function getPlugins()
 	{
 		$item = $this->getItem();
-		$plugins = JArrayHelper::getValue($item->params, 'plugin', array());
+		$plugins = FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
 		return $plugins;
 	}
 
