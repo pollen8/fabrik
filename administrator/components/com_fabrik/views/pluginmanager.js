@@ -6,11 +6,14 @@ var PluginManager = new Class({
 	
 	initialize: function (plugins, id, type) {
 		this.id = id;
+		this.plugins = plugins;
 		this.type = type;
 		this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
 		for (var i = 0; i < plugins.length; i ++) {
 			this.addTop(plugins[i]);
 		}
+		this.periodical = this.iniAccordian.periodical(500, this);
+		
 		this.watchPluginSelect();
 		this.watchDelete();
 		this.watchAdd();
@@ -23,6 +26,13 @@ var PluginManager = new Class({
 			});
 			target.toggleClass('pane-toggler-down');
 		});
+	},
+	
+	iniAccordian: function () {
+		if (this.pluginTotal === this.plugins.length) {
+			this.accordion.display(1);
+			clearInterval(this.periodical);
+		}
 	},
 	
 	canSaveForm: function () 

@@ -47,7 +47,7 @@
 			
 			<field default="4" description="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_LABEL" name="fb_gm_zoomlevel" size="2" type="text"/>
 				
-			<field default="middle" label="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_LABEL" description="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_DESC" name="fb_gm_center" type="radio">
+			<field default="middle" description="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_LABEL" name="fb_gm_center" type="radio">
 					<option value="middle">PLG_VISUALIZATION_GOOGLEMAP_MIDDLE</option>
 					<option value="lastmarker">PLG_VISUALIZATION_GOOGLEMAP_LAST_MARKER</option>
 					<option value="userslocation">PLG_VISUALIZATION_GOOGLEMAP_USERS_LOCATION</option>
