@@ -27,6 +27,7 @@ RequestQueue = new Class({
 	},
 	
 	processQueue: function () {
+		console.log(document.readyState);
 		if (this.queue.length === 0) {
 			return;
 		}

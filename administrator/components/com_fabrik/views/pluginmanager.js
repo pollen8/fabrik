@@ -5,6 +5,7 @@ var PluginManager = new Class({
 	initialize: function (plugins, id, type) {
 		this.id = id;
 		this.type = type;
+		this.queue = new RequestQueue();
 		this.accordion = new Fx.Accordion([], [], {alwaysHide: true});
 		for (var i = 0; i < plugins.length; i ++) {
 			this.addTop(plugins[i]);
@@ -90,7 +91,7 @@ var PluginManager = new Class({
 		div.adopt(toggler);
 		div.inject(document.id('plugins'));
 		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
-		new Request.HTML({
+		var request = new Request.HTML({
 			url: 'index.php',
 			data: {
 				'option': 'com_fabrik',
@@ -110,7 +111,8 @@ var PluginManager = new Class({
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
 			}.bind(this)
-		}).send();
+		});
+		this.queue.add(request);
 	},
 	
 	/**
