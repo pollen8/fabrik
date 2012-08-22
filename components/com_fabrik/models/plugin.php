@@ -130,6 +130,10 @@ class FabrikPlugin extends JPlugin
 		}
 		foreach ($data as $key => $val)
 		{
+			if (is_object($val))
+			{
+				$val = isset($val->$repeatCounter) ? $val->$repeatCounter : '';
+			}
 			$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter) : $val;
 		}
 		// Bind the plugins data to the form
