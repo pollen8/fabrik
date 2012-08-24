@@ -774,7 +774,7 @@ class FabrikFEModelList extends JModelForm
 					if (!in_array($sdata, $aGroupTitles))
 					{
 						$aGroupTitles[] = $sdata;
-						$grouptemplate = strip_tags($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+						$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
 						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
 						$groupedData[$sdata] = array();
 					}
