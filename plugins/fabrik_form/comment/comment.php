@@ -26,7 +26,7 @@ class FabrikTableComment extends FabTable
 	/**
 	 * Object constructor to set table and key fields.
 	 *
-	 * @param   JDatabase  $db    JDatabase connector object.
+	 * @param   JDatabase  &$db  JDatabase connector object.
 	 *
 	 */
 
