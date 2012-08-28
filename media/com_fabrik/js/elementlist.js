@@ -88,6 +88,7 @@ var FbElementList =  new Class({
 			}
 			r.getElement('span').set('text', label);
 			r.inject(this.subElements.getLast().findUp('li'), 'after');
+			i.fireEvent('change');
 			this._getSubElements();
 			if (v) {
 				v.value = '';
