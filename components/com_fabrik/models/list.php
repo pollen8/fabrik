@@ -4076,7 +4076,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			// List prfilter porperties
+			// List prfilter properties
 			$elements = $this->getElements('filtername');
 			$afilterFields = (array) $params->get('filter-fields');
 			$afilterConditions = (array) $params->get('filter-conditions');
