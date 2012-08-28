@@ -3879,35 +3879,28 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$linkedform_linktype = $factedLinks->linkedform_linktype;
 		$linkedtable_linktype = $factedLinks->linkedlist_linktype;
 		$f = 0;
-		$query = $db->getQuery(true);
-		$query->select('id, label, db_table_name')->from('#__{package}_lists');
-		$db->setQuery($query);
-		$aTableNames = $db->loadObjectList('label');
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		foreach ($joinsToThisKey as $element)
 		{
-			$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
-			$val = JRequest::getVar($qsKey);
-			if ($val == '')
+			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
+			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
 			{
-				// Default to row id if we are coming from a main link (and not a related data link)
-				$val = JRequest::getVar($qsKey . '_raw', '');
-				if (empty($val))
+				$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
+				$val = JRequest::getVar($qsKey);
+				if ($val == '')
 				{
-					$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
-					$val = JArrayHelper::getValue($this->_data, $thisKey, $val);
+					// Default to row id if we are coming from a main link (and not a related data link)
+					$val = JRequest::getVar($qsKey . '_raw', '');
 					if (empty($val))
 					{
-						$val = JRequest::getVar('rowid');
+						$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
+						$val = JArrayHelper::getValue($this->_data, $thisKey, $val);
+						if (empty($val))
+						{
+							$val = JRequest::getVar('rowid');
+						}
 					}
 				}
-			}
-			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
-			if (isset($linkedLists->$key))
-			{
+
 				// $$$ hugh - changed to use _raw as key, see:
 				// http://fabrikar.com/forums/showthread.php?t=20020
 				$linkKey = $element->db_table_name . '___' . $element->name;
@@ -3915,7 +3908,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$recordCounts = $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				$links[$element->list_id][] = $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
+				$links[$element->list_id][] = $element->listlabel . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 			$f++;
 		}
