@@ -868,6 +868,10 @@ var FbForm = new Class({
 				// get all values from the form
 				var data = $H(this.getFormData());
 				data = this._prepareRepeatsForAjax(data);
+				if (btn.name === 'Copy') {
+					data.Copy = 1;
+					e.stop();
+				}
 				data.fabrik_ajax = '1';
 				data.format = 'raw';
 				var myajax = new Request.JSON({
@@ -1305,7 +1309,8 @@ var FbForm = new Class({
 						if (document.id(testid).getElement('input')) {
 							input.cloneEvents(document.id(testid).getElement('input'));
 						}
-						// id set out side this each() function
+						// Note: Radio's etc now have their events delegated from the form - so no need to duplicate them
+						
 					} else {
 						input.cloneEvents(el.element);
 
