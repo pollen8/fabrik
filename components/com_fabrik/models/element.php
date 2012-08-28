@@ -4551,11 +4551,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * e.g. pciklists, dropdowns radiobuttons
 	 *
 	 * @param   bool  $repeatCounter  repeat group counter
+	 * @param   bool  $onlylabel      only show the label - overrides standard element settings
 	 *
 	 * @return  string
 	 */
 
-	protected function getAddOptionFields($repeatCounter)
+	protected function getAddOptionFields($repeatCounter, $onlylabel = false)
 	{
 		$params = $this->getParams();
 		if (!$params->get('allow_frontend_addto'))
@@ -4577,8 +4578,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="' . $valueid . '">' . JText::_('COM_FABRIK_VALUE') . '</label>';
 			$str[] = $value;
-			$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
-			$str[] = $label;
+			if (!$onlylabel)
+			{
+				$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
+				$str[] = $label;
+			}
 		}
 		else
 		{
