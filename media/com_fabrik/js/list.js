@@ -1215,7 +1215,7 @@ var FbGroupedToggler = new Class({
 		this.container.getElements('.fabrik_groupdata').hide();
 		var i = this.container.getElements('.fabrik_groupheading a img');
 		if (i.length === 0) {
-			i = this.container.getElements('.fabrik_groupheading img')
+			i = this.container.getElements('.fabrik_groupheading img');
 		}
 		i.each(function (img) {
 			img.store('showgroup', false);
@@ -1227,7 +1227,7 @@ var FbGroupedToggler = new Class({
 		this.container.getElements('.fabrik_groupdata').show();
 		var i = this.container.getElements('.fabrik_groupheading a img');
 		if (i.length === 0) {
-			i = this.container.getElements('.fabrik_groupheading img')
+			i = this.container.getElements('.fabrik_groupheading img');
 		}
 		i.each(function (img) {
 			img.store('showgroup', true);
