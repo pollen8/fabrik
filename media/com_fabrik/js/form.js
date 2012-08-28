@@ -1267,6 +1267,16 @@ var FbForm = new Class({
 			this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 			return;
 		}
+		
+		var cloneFromRepeatCount = '0';
+		if (e) {
+			var pk_id = this.options.group_pk_ids[group_id];
+			var pk_el = e.target.findClassUp('fabrikSubGroup').getElement("[name*=[" + pk_id + "]]");
+			var re = new RegExp('join\\[\\d+\\]\\[' + pk_id + '\\]\\[(\\d+)\\]');
+			if (pk_el.name.test(re)) {
+				cloneFromRepeatCount = pk_el.name.match(re)[1];
+			}
+		}
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
@@ -1536,5 +1546,10 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}.bind(this));
+	},
+	
+	getSubGroupCounter: function (group_id)
+	{
+		
 	}
 });
