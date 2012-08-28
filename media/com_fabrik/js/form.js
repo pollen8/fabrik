@@ -832,7 +832,7 @@ var FbForm = new Class({
 			}.bind(this));
 		}
 		if (this.options.ajax) {
-			var copy = this._getButton('Copy');;
+			var copy = this._getButton('Copy');
 			$A([apply, submit, copy]).each(function (btn) {
 				if (typeOf(btn) !== 'null') {
 					btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
