@@ -832,14 +832,17 @@ var FbForm = new Class({
 			}.bind(this));
 		}
 		if (this.options.ajax) {
-			$A([apply, submit]).each(function (btn) {
+			var copy = this._getButton('Copy');;
+			$A([apply, submit, copy]).each(function (btn) {
 				if (typeOf(btn) !== 'null') {
 					btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
 				}
 			}.bind(this));
 			
 		}
-		this.form.addEvent('submit', this.doSubmit.bindWithEvent(this));
+		else {
+			this.form.addEvent('submit', this.doSubmit.bindWithEvent(this));
+		}
 	},
 
 	doSubmit : function (e, btn) {
@@ -1246,6 +1249,7 @@ var FbForm = new Class({
 			e.stop();
 		}
 		var i = e.target.getParent('.fabrikGroup').id.replace('group', '');
+		var group_id = i.toInt();
 		var group = document.id('group' + i);
 		var c = this.repeatGroupMarkers.get(i);
 		var repeats = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt();
@@ -1363,8 +1367,20 @@ var FbForm = new Class({
 			// $$$ hugh - moved reset() from end of loop above, otherwise elements with un-cloneable object
 			// like maps end up resetting the wrong map to default values.  Needs to run after element has done
 			// whatever it needs to do with un-cloneable object before resetting.
-			newEl.reset();
-		});
+			// $$$ hugh - adding new option to allow copying of the existing element values when copying
+			// a group, instead of resetting to default value.  This means knowing what the group PK element
+			// is, do we don't copy that value.  hence new group_pk_ids[] array, which gives us the PK element
+			// name in regular full format, which we need to test against the join string name.
+			var pk_re = new RegExp('\\[' + this.options.group_pk_ids[group_id] + '\\]');
+			if (!this.options.group_copy_element_values[group_id] || (this.options.group_copy_element_values[group_id] && newEl.element.name && newEl.element.name.test(pk_re))) {
+				// Call reset method that resets both events and value back to default.
+				newEl.reset();
+			}
+			else {
+				// Call reset method that only resets the events, not the value
+				newEl.resetEvents();
+			}
+		}.bind(this));
 		var o = {};
 		o[i] = newElementControllers;
 		this.addElements(o);

@@ -203,12 +203,17 @@ var FbElement =  new Class({
 	
 	reset: function ()
 	{
-		this.loadEvents.each(function (js) {
-			this.runLoadEvent(js, 100);
-		}.bind(this));
+		this.resetEvents();
 		if (this.options.editable === true) {
 			this.update(this.options.defaultVal);
 		}
+	},
+	
+	resetEvents: function ()
+	{
+		this.loadEvents.each(function (js) {
+			this.runLoadEvent(js, 100);
+		}.bind(this));		
 	},
 	
 	clear: function ()
