@@ -11,7 +11,7 @@ var FabrikComment = new Class({
 	},
 
 	initialize: function (element, options) {
-		this.element = $(element);
+		this.element = document.id(element);
 		if (typeOf(this.element) === 'null') {
 			return;
 		}

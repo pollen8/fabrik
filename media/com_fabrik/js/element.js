@@ -144,7 +144,7 @@ var FbElement =  new Class({
 			this.runLoadEvent(js);
 		} else {
 			if (!this.element) {
-				this.element = $(this.strElement);
+				this.element = document.id(this.strElement);
 			}
 			if (this.element) {
 				if (action === 'change') {

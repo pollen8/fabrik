@@ -911,7 +911,7 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . ' href="' . $edit_link . '" title="' . $editLabel . '">'
+				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $edit_link . '" title="' . $editLabel . '">'
 					. FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)) . '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
