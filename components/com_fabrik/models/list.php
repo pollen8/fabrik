@@ -4861,7 +4861,9 @@ class FabrikFEModelList extends JModelForm
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
 			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-				. $table->id . '&amp;nextview=' . JRequest::getVar('view');
+				. $table->id . '&amp;nextview=' . JRequest::getVar('view', 'list');
+
+			$url .= '&amp;tkn=' . JSession::getFormToken();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
