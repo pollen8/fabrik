@@ -441,7 +441,7 @@ var FbList = new Class({
 			onSuccess: function (res) {
 				if (res.err) {
 					alert(res.err);
-					Fabrik.Windows['exportcsv'].close();
+					Fabrik.Windows.exportcsv.close();
 				} else {
 					if (typeOf(document.id('csvcount')) !== 'null') {
 						document.id('csvcount').set('text', res.count);
@@ -771,6 +771,9 @@ var FbList = new Class({
 						Fabrik.loader.stop('listform_' + this.options.listRef);
 						Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
 						Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
+						if (json.msg) {
+							alert(json.msg);
+						}
 					}.bind(this)
 				});
 			} else {
