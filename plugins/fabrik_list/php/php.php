@@ -25,6 +25,8 @@ class plgFabrik_ListPhp extends plgFabrik_List
 
 	protected $buttonPrefix = 'php';
 
+	protected $msg = null;
+
 	/**
 	 * Needed to render plugin buttons
 	 *
@@ -91,6 +93,10 @@ class plgFabrik_ListPhp extends plgFabrik_List
 		{
 			require_once JPATH_ROOT . '/plugins/fabrik_list/php/scripts/' . $file;
 		}
+		if (isset($statusMsg) && !empty($statusMsg))
+		{
+			$this->msg = $statusMsg;
+		}
 		return true;
 	}
 
@@ -104,9 +110,16 @@ class plgFabrik_ListPhp extends plgFabrik_List
 
 	public function process_result($c)
 	{
-		$params = $this->getParams();
-		$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
-		return $msg;
+		if (isset($this->msg))
+		{
+			return $this->msg;
+		}
+		else
+		{
+			$params = $this->getParams();
+			$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
+			return $msg;
+		}
 	}
 
 	/**
