@@ -441,6 +441,7 @@ var FbList = new Class({
 			onSuccess: function (res) {
 				if (res.err) {
 					alert(res.err);
+					Fabrik.Windows['exportcsv'].close();
 				} else {
 					if (typeOf(document.id('csvcount')) !== 'null') {
 						document.id('csvcount').set('text', res.count);
