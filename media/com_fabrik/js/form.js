@@ -195,7 +195,7 @@ var FbForm = new Class({
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
 			k = id;
-			c = $(id);
+			c = document.id(id);
 		} else {
 			id = id.slice(8, id.length);
 			k = 'element' + id;
@@ -868,6 +868,10 @@ var FbForm = new Class({
 				// get all values from the form
 				var data = $H(this.getFormData());
 				data = this._prepareRepeatsForAjax(data);
+				if (btn.name === 'Copy') {
+					data.Copy = 1;
+					e.stop();
+				}
 				data.fabrik_ajax = '1';
 				data.format = 'raw';
 				var myajax = new Request.JSON({
@@ -1170,7 +1174,7 @@ var FbForm = new Class({
 			}).start(1, 0);
 			if (toel) {
 				// Only scroll the window if the previous element is not visible
-				var win_scroll = $(window).getScroll().y;
+				var win_scroll = document.id(window).getScroll().y;
 				var obj = toel.getCoordinates();
 				// If the top of the previous repeat goes above the top of the visible
 				// window,
@@ -1315,7 +1319,8 @@ var FbForm = new Class({
 						if (document.id(testid).getElement('input')) {
 							input.cloneEvents(document.id(testid).getElement('input'));
 						}
-						// id set out side this each() function
+						// Note: Radio's etc now have their events delegated from the form - so no need to duplicate them
+						
 					} else {
 						input.cloneEvents(el.element);
 
@@ -1397,7 +1402,7 @@ var FbForm = new Class({
 
 		// Only scroll the window if the new element is not visible
 		var win_size = window.getHeight();
-		var win_scroll = $(window).getScroll().y;
+		var win_scroll = document.id(window).getScroll().y;
 		var obj = clone.getCoordinates();
 		// If the bottom of the new repeat goes below the bottom of the visible
 		// window,
@@ -1462,9 +1467,9 @@ var FbForm = new Class({
 
 	reset : function () {
 		this.addedGroups.each(function (subgroup) {
-			var group = $(subgroup).findClassUp('fabrikGroup');
+			var group = document.id(subgroup).findClassUp('fabrikGroup');
 			var i = group.id.replace('group', '');
-			$('fabrik_repeat_group_' + i + '_counter').value = $('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
+			document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 			subgroup.remove();
 		});
 		this.addedGroups = [];

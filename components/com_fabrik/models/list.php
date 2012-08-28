@@ -911,7 +911,7 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . ' href="' . $edit_link . '" title="' . $editLabel . '">'
+				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $edit_link . '" title="' . $editLabel . '">'
 					. FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)) . '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
@@ -4861,7 +4861,9 @@ class FabrikFEModelList extends JModelForm
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
 			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-				. $table->id . '&amp;nextview=' . JRequest::getVar('view');
+				. $table->id . '&amp;nextview=' . JRequest::getVar('view', 'list');
+
+			$url .= '&amp;tkn=' . JSession::getFormToken();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);

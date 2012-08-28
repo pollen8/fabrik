@@ -6,7 +6,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
@@ -38,7 +37,7 @@ class FabrikViewFormBase extends JView
 	public $access = null;
 
 	/**
-	 * main setup routine for displaying the form/detail view
+	 * Main setup routine for displaying the form/detail view
 	 *
 	 * @param   string  $tpl  template
 	 *
