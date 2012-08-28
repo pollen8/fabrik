@@ -115,7 +115,7 @@ var FbList = new Class({
 		'canEdit': true,
 		'canView': true,
 		'page': 'index.php',
-		'actionMethod': '',
+		'actionMethod': 'floating',
 		'formels': [], // elements that only appear in the form
 		'data': [], // [{col:val, col:val},...] (depreciated)
 		'rowtemplate': '',
@@ -1248,7 +1248,7 @@ var FbListActions = new Class({
 
 	Implements: [Options],
 	options: {
-		'method': '',
+		'method': 'floating',
 		'floatPos': 'bottom'
 	},
 
