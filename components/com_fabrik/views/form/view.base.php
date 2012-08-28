@@ -486,9 +486,12 @@ class FabrikViewFormBase extends JView
 		{
 			if ($groupModel->getGroup()->is_join)
 			{
+				$joinParams = new JRegistry($groupModel->getJoinModel()->getJoin()->params);
+				$opts->group_pk_ids[$groupModel->getGroup()->id] = FabrikString::safeColNameToArrayKey($joinParams->get('pk'));
 				$opts->join_group_ids[$groupModel->getGroup()->join_id] = (int) $groupModel->getGroup()->id;
 				$opts->group_join_ids[$groupModel->getGroup()->id] = (int) $groupModel->getGroup()->join_id;
 				$opts->group_repeats[$groupModel->getGroup()->id] = $groupModel->canRepeat();
+				$opts->group_copy_element_values[$groupModel->getGroup()->id] = $groupModel->canCopyElementValues();
 			}
 		}
 

@@ -8820,7 +8820,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			if ((JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
+			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
 				|| JRequest::getVar('task') === 'list.elementFilter')
 			{
 				// Testing for ajax nav in content plugin or in advanced search
