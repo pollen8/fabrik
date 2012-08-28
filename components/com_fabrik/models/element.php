@@ -2952,15 +2952,28 @@ class plgFabrik_Element extends FabrikPlugin
 	protected function getRangedFilterValue($value)
 	{
 		$db = FabrikWorker::getDbo();
-		if (is_numeric($value[0]) && is_numeric($value[1]))
+		$element = $this->getElement();
+		if ($element->filter_type === 'range')
 		{
-			$value = $value[0] . ' AND ' . $value[1];
+			if (is_numeric($value[0]) && is_numeric($value[1]))
+			{
+				$value = $value[0] . ' AND ' . $value[1];
+			}
+			else
+			{
+				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+			}
+			$condition = 'BETWEEN';
 		}
 		else
 		{
-			$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+			if (is_array($value) && !empty($value))
+			{
+				array_walk($value, array($db, 'quote'));
+				$value = ' (' . implode(',', $value) . ')';
+			}
+			$condition = 'IN';
 		}
-		$condition = 'BETWEEN';
 		return array($value, $condition);
 	}
 
