@@ -39,9 +39,9 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 	{
 		if ($params->get('mailchimp_userconfirm', true))
 		{
-			$this->html = "
-			<label class=\"mailchimpsignup\"><input type=\"checkbox\" name=\"fabrik_mailchimp_signup\" class=\"fabrik_mailchimp_signup\" value=\"1\"  />
-			 " . $params->get('mailchimp_signuplabel') . "</label>";
+			$checked = JRequest::getVar('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
+			$this->html = '<label class="mailchimpsignup"><input type="checkbox" name="fabrik_mailchimp_signup" class="fabrik_mailchimp_signup" value="1" '
+				. $checked . '/>' . $params->get('mailchimp_signuplabel') . '</label>';
 		}
 		else
 		{
