@@ -212,6 +212,7 @@ class FabrikControllerList extends JController
 			if (JRequest::getVar('format') == 'raw')
 			{
 				JRequest::setVar('view', 'list');
+				$model->setRenderContext($model->getId());
 				$context = 'com_fabrik.list' . $model->getRenderContext() . '.msg';
 				$session = JFactory::getSession();
 				$session->set($context, implode("\n", $msgs));
