@@ -690,22 +690,22 @@ class FabrikViewFormBase extends JView
 		$fields[] = JHTML::_('form.token');
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
-			? '<input type="reset" class="button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
+			? '<input type="reset" class="button btn" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->_rowId != ''
-			? '<input type="submit" class="button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
+			? '<input type="submit" class="button btn" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
-			? '<input type="' . $applyButtonType . '" class="button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
+			? '<input type="' . $applyButtonType . '" class="button btn" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
-			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="button" name="delete" />' : '';
+			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="button btn" name="delete" />' : '';
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
-			? '<input type="button" class="button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
+			? '<input type="button" class="button btn" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
 		if ($model->_editable && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="button ' . $submitClass . '" name="submit" value="'
+			$form->submitButton = '<input type="' . $button . '" class="button ' . $submitClass . ' btn" name="submit" value="'
 				. $form->submit_button_label . '" />';
 		}
 		else

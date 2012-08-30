@@ -825,7 +825,7 @@ var FbForm = new Class({
 		if (this.form.getElement('input[name=delete]')) {
 			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
-					this.form.getElement('input[name=task]').value = 'delete';
+					this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
 				} else {
 					return false;
 				}

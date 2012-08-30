@@ -27,7 +27,8 @@ var Autofill = new Class({
 				this.setUp(form);	
 			}.bind(this));
 		}*/
-		
+		this.setupDone = false;
+		this.setUp(Fabrik.blocks['form_' + this.options.formid]);
 		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			this.setUp(form);	
 		}.bind(this));
@@ -72,6 +73,9 @@ var Autofill = new Class({
 	},
 	
 	setUp: function (form) {
+		if (this.setupDone) {
+			return;
+		}
 		try {
 			this.form = form;
 		} catch (err) {
@@ -98,6 +102,7 @@ var Autofill = new Class({
 			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
 			this.form.dispatchEvent('', t, 'load', evnt);
 		}
+		this.setupDone = true;
 	},
 	
 	// perform ajax lookup when the observer element is blurred
@@ -118,7 +123,7 @@ var Autofill = new Class({
 			'evalScripts': true,
 			'data': {
 				'option': 'com_fabrik',
-				'format': 'json',
+				'format': 'raw',
 				'task': 'plugin.pluginAjax',
 				'plugin': 'autofill',
 				'method': 'ajax_getAutoFill',

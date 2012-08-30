@@ -354,7 +354,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		$data['id'] = $original_id;
 
-		$data['gid'] = $this->setGroupIds($formModel, $me);
+		$data['gid'] = $this->setGroupIds($formModel, $me, $user);
 		$user->groups = (array) $data['gid'];
 
 		if ($params->get('juser_field_block') != '')
@@ -642,13 +642,15 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	 * Set user group ids
 	 *
 	 * @param   object  $formModel  form model
-	 * @param   object  $me         joomla user
+	 * @param   object  $me         new joomla user
+	 * @param   object  $user       joomla user before juser plugin run
 	 *
 	 * @return  array   group ids
 	 */
 
-	protected function setGroupIds($formModel, $me)
+	protected function setGroupIds($formModel, $me, $user)
 	{
+		$isNew = ($user->get('id') < 1);
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');

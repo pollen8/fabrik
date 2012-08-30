@@ -2842,7 +2842,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel = $this->getListModel();
 		$fabrikDb = $listModel->getDb();
 		$item = $listModel->getTable();
-		$k = $fabrikDb->nameQuote($item->db_primary_key);
+		$k = $fabrikDb->quoteName($item->db_primary_key);
 		$fabrikDb->setQuery("SELECT MAX($k) FROM " . FabrikString::safeColName($item->db_table_name) . $listModel->_buildQueryWhere());
 		return $fabrikDb->loadResult();
 	}
@@ -3759,7 +3759,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	private function _getOutro($match)
 	{
-		$m = explode(":", $match[0]);
+		$m = explode(':', $match[0]);
 		array_shift($m);
 		return FabrikString::rtrimword(implode(":", $m), "}");
 	}
