@@ -54,13 +54,19 @@ var FbListPlugin = new Class({
 	clearFilter: Function.from(),
 
 	watchButton: function () {
-		//do relay for floating menus
+		// Do relay for floating menus
 		if (typeOf(this.options.name) === 'null') {
 			return;
 		}
-		// might need to be this.listform and not document
-		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
+		// Might need to be this.listform and not document
+		document.addEvent('click:relay(.' + this.options.name + ')', function (e, element) {
 			e.stop();
+			
+			// Check that the button clicked belongs to this this.list
+			if (element.get('data-list') !== this.list.options.listRef) {
+				return;
+			}
+			e.preventDefault();
 			var row, chx;
 			// if the row button is clicked check its associated checkbox
 			if (e.target.getParent('.fabrik_row')) {
