@@ -100,8 +100,19 @@ var FabrikComment = new Class({
 				'rowid': this.options.rowid,
 				'label': this.options.label
 			},
-			'onComplete': function (r) {
+			
+			'onSuccess': function (r) {
 				this.ajaxComplete(r);
+			}.bind(this),
+			
+			'onError': function (text, error) {
+				fconsole(text + ": " + error);
+				this.spinner.hide();
+			}.bind(this),
+			
+			'onFailure': function (xhr) {
+				alert(xhr.statusText);
+				this.spinner.hide();
 			}.bind(this)
 		});
 
