@@ -135,6 +135,9 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 					{
 						// DOn't use emailData as that contains html markup which is not shown in the list view
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->_formData);
+
+						// But... labels for db joins etc are not availabel in _formData
+						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);
 					}
 					$opts['GROUPINGS'] = $groups;
 				}
