@@ -733,6 +733,7 @@ EOD;
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
+				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
 				if ($navigator->getBrowser() == 'msie')
 				{
@@ -1322,6 +1323,7 @@ EOD;
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'media/com_fabrik/images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/stories/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'media/system/images/';
 					break;
 			}
 		}
