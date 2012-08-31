@@ -60,6 +60,9 @@ var FbListPlugin = new Class({
 		}
 		// Might need to be this.listform and not document
 		document.addEvent('click:relay(.' + this.options.name + ')', function (e, element) {
+			if (e.rightClick) {
+				return;
+			}
 			e.stop();
 			
 			// Check that the button clicked belongs to this this.list
@@ -619,6 +622,9 @@ var FbList = new Class({
 			var w = Fabrik.getWindow(winOpts);
 			
 			this.getForm().addEvent('click:relay(.fabrik_edit)', function (e) {
+				if (e.rightClick) {
+					return;
+				}
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -666,6 +672,9 @@ var FbList = new Class({
 
 			this.getForm().removeEvents('click:relay(.fabrik_view)');
 			this.getForm().addEvent('click:relay(.fabrik_view)', function (e) {
+				if (e.rightClick) {
+					return;
+				}
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -1195,6 +1204,9 @@ var FbGroupedToggler = new Class({
 		this.collapseOthers = false;
 		this.toggleState = 'shown';
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
+			if (e.rightClick) {
+				return;
+			}
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
 			

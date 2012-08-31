@@ -197,6 +197,9 @@ var Loader = new Class({
 			Fabrik.fireEvent('fabrik.block.added', block);
 		};
 		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
 			Fabrik.watchDelete(e, target);
 		});
 		// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
