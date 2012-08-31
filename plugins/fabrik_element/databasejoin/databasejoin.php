@@ -173,7 +173,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		if ($this->isJoin())
 		{
-			$rows = array_values($this->checkboxRows());
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			$limit = $fbConfig->get('filter_list_max', 100);
+			$rows = array_values($this->checkboxRows(null, null, null, null, 0, $limit));
 		}
 		else
 		{
@@ -1639,11 +1641,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param   string  $condition  if supplied then filters the list (must then supply $where and $value)
 	 * @param   string  $value      if supplied then filters the list (must then supply $where and $condtion)
 	 * @param   string  $where      if supplied then filters the list (must then supply $value and $condtion)
+	 * @param   int     $offset     query offset - default 0
+	 * @param   int     $limit      query limit - default 0
 	 *
 	 * @return  array	rows
 	 */
 
-	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null)
+	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null, $offset = 0, $limit = 0)
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -1669,7 +1673,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
-		$db->setQuery($query);
+		$db->setQuery($query, $offset, $limit);
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
 		return $rows;

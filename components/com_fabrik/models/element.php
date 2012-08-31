@@ -2686,6 +2686,7 @@ class plgFabrik_Element extends FabrikPlugin
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$listModel = $this->getListModel();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$fabrikDb = $listModel->getDb();
 		$table = $listModel->getTable();
 		$element = $this->getElement();
@@ -2782,7 +2783,8 @@ class plgFabrik_Element extends FabrikPlugin
 
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
-		$fabrikDb->setQuery($sql);
+		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
+		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
 		$rows = $fabrikDb->loadObjectList();
 		if ($fabrikDb->getErrorNum() != 0)
 		{
