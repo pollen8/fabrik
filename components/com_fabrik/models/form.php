@@ -4207,7 +4207,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							else
 							{
 								// Show empty groups if we are validating a posted form
-								if (JRequest::getCmd('task') !== 'process')
+								if (JRequest::getCmd('task') !== 'process' && JRequest::getCmd('task') !== 'form.process')
 								{
 									$this->getSessionData();
 									if ($this->sessionModel->row->data === '')
@@ -4258,6 +4258,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 				}
 			}
+			// Test failed validated forms, repeat group counts are in request
+			$repeatGroups = (array) JRequest::getVar('fabrik_repeat_group');
+			if (!empty($repeatGroups))
+			{
+				$repeatGroup = JArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
+				if ($repeatGroup == 0)
+				{
+					$repeatGroup = 1;
+					$startHidden = true;
+				}
+			}
+
 			$groupModel->repeatTotal = $startHidden ? 0 : $repeatGroup;
 			$aSubGroups = array();
 			for ($c = 0; $c < $repeatGroup; $c++)

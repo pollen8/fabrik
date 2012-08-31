@@ -1277,7 +1277,7 @@ var FbForm = new Class({
 			var pk_id = this.options.group_pk_ids[group_id];
 			var pk_el = e.target.findClassUp('fabrikSubGroup').getElement("[name*=[" + pk_id + "]]");
 			var re = new RegExp('join\\[\\d+\\]\\[' + pk_id + '\\]\\[(\\d+)\\]');
-			if (pk_el.name.test(re)) {
+			if (typeOf(pk_el) !== 'null' && pk_el.name.test(re)) {
 				cloneFromRepeatCount = pk_el.name.match(re)[1];
 			}
 		}
