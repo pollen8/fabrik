@@ -20,5 +20,6 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>recaptcha1.10</folder>
+		<folder>recaptcha-php-1.11</folder>
 	</files>
 </extension>
