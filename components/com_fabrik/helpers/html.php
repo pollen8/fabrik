@@ -750,7 +750,7 @@ EOD;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
-				 * in some browsers it's not available when other things (like map biz) are loading
+				 * in some browsers it's not available when other things (like map viz) are loading
 				 */
 				self::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';});");
 
