@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package     Joomla
- * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -20,12 +20,11 @@ defined('_JEXEC') or die();
  *
  */
 
-
 /**
  * build route
- * 
-* @param   object  &$query  uri?
- * 
+ *
+ * @param   object  &$query  uri?
+ *
  * @return  array url
  */
 
@@ -116,7 +115,7 @@ function fabrikBuildRoute(&$query)
 		/**
 		 * Don't unset as with sef urls and extensions on - if we unset it
 		 * the url's prefix is set to .html
-		 * 
+		 *
 		 *  unset($query['format']);
 		 */
 	}
@@ -133,15 +132,14 @@ function fabrikBuildRoute(&$query)
 		$segments[] = $query['fabriklayout'];
 		unset($query['fabriklayout']);
 	}
-
 	return $segments;
 }
 
 /**
  * parse route
- * 
-* @param   array  $segments  url
- * 
+ *
+ * @param   array  $segments  url
+ *
  * @return  array vars
  */
 
@@ -159,27 +157,20 @@ function fabrikParseRoute($segments)
 	{
 		$view = array_shift(explode('.', $view));
 	}
+
+	// View (controller not passed into segments)
 	switch ($view)
 	{
-		// View (controller not passed into segments)
 		case 'form':
 		case 'details':
-			// 3.0 task no longer user
-			// $vars['task'] = 'view';
-			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
-
-			// $$$ rob no longer passing in listid - no need and makes sef urls tidier
-			// $vars['listid'] = JArrayHelper::getValue($segments, 2, 0);
-			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
 			$vars['view'] = $segments[0];
+			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
+			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
 			break;
 		case 'table':
 		case 'list':
 			$vars['view'] = JArrayHelper::getValue($segments, 0, '');
 			$vars['listid'] = JArrayHelper::getValue($segments, 1, 0);
-
-			// $vars['format'] = $segments[2]; - //test may not be when filtering on tbl, sef, modrewrite and file extension on
-			// $vars['type'] = $segments[3];
 			break;
 		case 'import':
 			$vars['view'] = 'import';

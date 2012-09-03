@@ -26,11 +26,11 @@ class FabrikControllerPlugin extends JControllerLegacy
 	public $cacheId = 0;
 
 	/**
-	 * ajax action called from element
-	 * 11/07/2011 - ive updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
+	 * Ajax action called from element
+	 * 11/07/2011 - I've updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
 	 * this means that the controller used is now plugin.php and not plugin.raw.php
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function pluginAjax()
@@ -56,9 +56,9 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * custom user ajax class handling as per F1.0.x
+	 * Custom user ajax class handling as per F1.0.x
 	 *
-	 * @return  null
+	 * @return   void
 	 */
 
 	public function userAjax()
@@ -74,11 +74,11 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * doCron plugin
+	 * Run cron plugin
 	 *
-* @param   object  &$pluginManager  plugin manager
+	 * @param   object  $pluginManager  plugin manager
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function doCron(&$pluginManager)
@@ -110,8 +110,8 @@ class FabrikControllerPlugin extends JControllerLegacy
 			$thisListModel = clone ($listModel);
 			$thisListModel->setId($params->get('table'));
 			$table = $listModel->getTable();
-			/**
-			 * $$$ hugh @TODO - really think we need to add two more options to the cron plugins
+
+			/* $$$ hugh @TODO - really think we need to add two more options to the cron plugins
 			 * 1) "Load rows?" because it really may not be practical to load ALL rows into $data
 			 * on large tables, and the plugin itself may not need all data.
 			 * 2) "Bypass prefilters" - I think we need a way of bypassing pre-filters for cron

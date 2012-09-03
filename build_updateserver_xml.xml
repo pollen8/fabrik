@@ -32,7 +32,7 @@
 		</downloads>
 		<maintainer>${update.maintainer}</maintainer>
 		<maintainerurl>${update.url}</maintainerurl>
-		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}" />
 	</update>
 ]]>
 						</insert> 
@@ -55,7 +55,7 @@
 		</downloads>
 		<maintainer>${update.maintainer}</maintainer>
 		<maintainerurl>${update.url}</maintainerurl>
-		<targetplatform name="${update.target_platform}" version="${update.target_platform_version}" />
+		<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}" />
 	</update>
 </updates>
 ]]>
@@ -67,29 +67,53 @@
 	
 	
 	<target name="updater.ftp">
-		<input message="Export to fabrik.com update server?" addproperty="updater.do" validargs="y,n" defaultvalue="n" />
+	
+		<input message="Export XML to fabrik.com update server. This will allow users to see updates in the Joomla admin?" addproperty="updater.do" validargs="y,n" defaultvalue="n" />
 		
 		<if>
  			<equals arg1="${updater.do}" arg2="y" />
 			<then>
-			<!-- upload the modified extension updater files -->
-				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.updatedir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+				<!-- upload the modified extension updater files -->
+				<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.updatedir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
 					<fileset dir="${update_dir}">
 						<include name="**/*.xml" />
 					</fileset>
 				</ftp> 
 				<echo>uploaded update server xml files to ${ftp.updatedir}</echo>
+			</then>
+		</if>
+		
+		<input message="FTP extension zips to download folder ${ftp.downloaddir}?" addproperty="updater.ftp.zips" validargs="y,n" defaultvalue="y" />
+		<if>
+			<equals arg1="${updater.ftp.zips}" arg2="y" />
+			<then>
+				<antcall target="updater.downloaddb.add" />
 				<!--  upload the plugin zips -->
-				<ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+				<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
 					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">
 						<include name="**/*.zip" />
 					</fileset>
 				</ftp>
 				<echo>uploaded zip files to ${ftp.downloaddir}</echo>
+				
 			</then>
 		</if>
 		
-		<antcall target="updater.downloaddb.add" />
+		<input message="FTP Update server XML files and SQL updates to ${sql.downloads_table}?" addproperty="updater.ftp" validargs="y,n" defaultvalue="y" />
+		<if>
+			<equals arg1="${updater.ftp}" arg2="y" />
+			<then>
+				<antcall target="updater.downloaddb.add" />
+				<!--  upload the plugin zips -->
+				<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}" verbose="yes" remotedir="${ftp.downloaddir}" retriesAllowed="3" depends="false" skipFailedTransfers="true">
+					<fileset dir="${cfg.destdir}/pkg_fabrik_sink/packages/">
+						<include name="**/*.zip" />
+					</fileset>
+				</ftp>
+				<echo>uploaded zip files to ${ftp.downloaddir}</echo>
+				
+			</then>
+		</if>
 		
 	</target>
 	
@@ -106,19 +130,65 @@
 					<sequential>
 						<var name="filename" value="plg_fabrik_@{plugin.type}_@{plugin.name}_${version}.zip" />
 						
+						<!-- GET THE PLUGIN DESCRIPTION -->
+						
+						<echo>
+							SELECT IFNULL(
+        							(SELECT CONCAT('current.plugin.description=',`description`) from ${sql.downloads_table} WHERE 
+					    		 	`download` LIKE "%plg_fabrik_@{plugin.type}_@{plugin.name}%" 
+					    		 	AND description != ''
+					    		 	AND `joomla_version` = "${update.target_platform_version}"
+					    		 	ORDER BY create_date DESC LIMIT 1),
+					    		 	'current.plugin.description=-')
+						</echo>
+							 
 						<sql
 							driver="${sql.driver}"
 							url="${sql.url}"
 							userid="${sql.user}"
 							password="${sql.password}"
 							expandProperties="true"
-							autocommit="true"
+							output="temp.properties"
+							showheaders="false" showtrailers="false"
+							print="yes" >
+							
+								<transaction>
+        						<![CDATA[
+        						SELECT IFNULL(
+        							(SELECT CONCAT('current.plugin.description=',`description`) from ${sql.downloads_table} WHERE 
+					    		 	`download` LIKE "%plg_fabrik_@{plugin.type}_@{plugin.name}%" 
+					    		 	AND description != '' AND description != ''
+					    		 	AND `joomla_version` = "${update.target_platform_version}"
+					    		 	ORDER BY create_date DESC LIMIT 1),
+					    		 	'current.plugin.description=-')
+        						]]>
+        						</transaction>
+        				</sql>
+        				<var file="temp.properties" />
+						<delete file="temp.properties" />
+						
+						<echo message="description: ${current.plugin.description}" />
+
+						<sql
+							driver="${sql.driver}"
+							url="${sql.url}"
+							userid="${sql.user}"
+							password="${sql.password}"
+							expandProperties="true"
 							print="yes" >
 			
 		    	 
 							<transaction><![CDATA[
 								INSERT INTO ${sql.downloads_table} (`title`, `type`, `download`, `version`, `published`, `create_date`, `digg`, `acl`, `joomla_version`, `like`, `description`, `author`, `hits`, `slug`) 
-					    	 VALUES ("@{plugin.type} - @{plugin.name} plug-in", "cron", "/media/downloads/${filename}", "${version}", "1", NOW(), "0", "19", "${update.target_platform_version}", "0", "", "62", "0", "") ON DUPLICATE KEY UPDATE	download = "/media/downloads/${filename}", version = "${version}"
+					    	 VALUES ("@{plugin.type} - @{plugin.name} plug-in", "@{plugin.type}", "/media/downloads/${filename}", "${version}", "1", NOW(), "0", "19", "${update.target_platform_version}", "0", "${current.plugin.description}", "62", "0", "") 
+					    	 ON DUPLICATE KEY UPDATE `description` = "${current.plugin.description}", download = "/media/downloads/${filename}", version = "${version}"
+							]]>
+							</transaction>
+							
+							<transaction>
+							<![CDATA[
+								UPDATE ${sql.downloads_table} SET `published` = "1" WHERE 
+					    	 download = "/media/downloads/${filename}" AND version != "${version}" AND `joomla_version` = "${update.target_platform_version}"
 							]]>
 							</transaction>
 						</sql>

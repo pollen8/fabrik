@@ -27,6 +27,22 @@ $srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
 
 FabrikHelperHTML::script($srcs, $this->js);
 ?>
+<script type="text/javascript">
+
+	Joomla.submitbutton = function(task) {
+		if (task !== 'list.cancel'  && !controller.canSaveForm()) {
+			alert('Please wait - still loading');
+			return false;
+		}
+		if (task == 'list.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+
+			Joomla.submitform(task, document.getElementById('adminForm'));
+		} else {
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+		}
+	}
+</script>
+
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="row-fluid">
 

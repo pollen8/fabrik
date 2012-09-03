@@ -144,7 +144,7 @@ var FbGoogleMapViz = new Class({
 			}
 
 			//clear filter list
-			this.container =  $(this.options.container);
+			this.container =  document.id(this.options.container);
 			if (typeOf(this.container) !== 'null') {
 				var c = this.container.getElement('.clearFilters');
 				if (c) {

@@ -504,7 +504,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		if ($params->get('allow_frontend_addto', false))
 		{
 			$onlylabel = $params->get('allowadd-onlylabel');
-			$grid[] = $this->getAddOptionFields($onlylabel, $repeatCounter);
+			$grid[] = $this->getAddOptionFields($repeatCounter, $onlylabel);
 		}
 		return implode("\n", $grid);
 	}

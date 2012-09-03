@@ -28,6 +28,21 @@ FabrikHelperHTML::script($srcs, $this->js);
 JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>
 
+<script type="text/javascript">
+
+	Joomla.submitbutton = function(task) {
+		if (task !== 'element.cancel'  && !controller.canSaveForm()) {
+			alert('Please wait - still loading');
+			return false;
+		}
+		if (task == 'element.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+
+			Joomla.submitform(task, document.getElementById('adminForm'));
+		} else {
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+		}
+	}
+</script>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
 <?php if ($this->item->parent_id != 0) {

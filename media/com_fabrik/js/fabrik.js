@@ -2,7 +2,7 @@
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
 
 /**
- *  this class is temporarily requied until this patch:
+ *  This class is temporarily requied until this patch:
  *  https://github.com/joomla/joomla-platform/pull/1209/files
  *  makes it into the CMS code. Its purpose is to queue ajax requests so they are not
  *  all fired at the same time - which result in db session errors.
@@ -27,25 +27,31 @@ RequestQueue = new Class({
 	},
 	
 	processQueue: function () {
-		if (this.queue.length === 0) {
+		if (Object.keys(this.queue).length === 0) {
 			return;
 		}
 		var xhr = {},
 		running = false;
-		//remove successfuly completed xhr
+
+		// Remove successfuly completed xhr
 		$H(this.queue).each(function (xhr, k) {
 			if (xhr.isSuccess()) {
 				delete(this.queue[k]);
 				running = false;
 			}
 		}.bind(this));
-		//find first xhr not run and completed to run
+		
+		// Find first xhr not run and completed to run
 		$H(this.queue).each(function (xhr, k) {
 			if (!xhr.isRunning() && !xhr.isSuccess() && !running) {
 				xhr.send();
 				running = true;
 			}
 		});
+	},
+	
+	empty: function () {
+		return Object.keys(this.queue).length === 0;
 	}
 });
 
@@ -102,7 +108,7 @@ Request.HTML = new Class({
 			document.id(options.append).adopt(temp.getChildren());
 		}
 		if (options.evalScripts) {
-			//response.javascript = "(function () {"+response.javascript+"}).delay(6000)";
+			// response.javascript = "(function () {"+response.javascript+"}).delay(6000)";
 			Browser.exec(response.javascript);
 		}
 
@@ -111,7 +117,7 @@ Request.HTML = new Class({
 });
 
 /**
- * keeps the element posisiton in the center even when scroll/resizing
+ * Keeps the element posisiton in the center even when scroll/resizing
  */
 
 Element.implement({
@@ -132,7 +138,7 @@ Element.implement({
 });
 
 /**
- * loading aninimation class, either inline next to an element or 
+ * Loading aninimation class, either inline next to an element or 
  * full screen
  */
 
@@ -143,7 +149,7 @@ var Loader = new Class({
 	},
 	
 	getSpinner: function (inline, msg) {
-		msg = msg ? msg : 'loading';
+		msg = msg ? msg : Joomla.JText._('COM_FABRIK_LOADING');
 		if (typeOf(document.id(inline)) === 'null') {
 			inline = false;
 		}
@@ -161,10 +167,12 @@ var Loader = new Class({
 	
 	stop: function (inline, msg, keepOverlay) {
 		var s = this.getSpinner(inline, msg);
-		//dont keep the spinner once stop is called - causes issue when loading ajax form for 2nd time
+		
+		// Dont keep the spinner once stop is called - causes issue when loading ajax form for 2nd time
 		if (Browser.ie && Browser.version < 9) {
-			//well ok we have to in ie8 ;( otherwise it give a js error somewhere in FX
-			s.clearChain(); // tried this to remove FX but didnt seem to achieve anything
+			
+			// Well ok we have to in ie8 ;( otherwise it give a js error somewhere in FX
+			s.clearChain(); // Tried this to remove FX but didnt seem to achieve anything
 			s.hide();
 		} else {
 			s.destroy();
@@ -174,7 +182,7 @@ var Loader = new Class({
 });
 
 /**
- * create the Fabrik name space
+ * Create the Fabrik name space
  */
 (function () {
 	if (typeof(Fabrik) === "undefined") {
@@ -189,10 +197,13 @@ var Loader = new Class({
 			Fabrik.fireEvent('fabrik.block.added', block);
 		};
 		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
 			Fabrik.watchDelete(e, target);
 		});
-		//was in head.ready but that cause js error for fileupload in admin when it wanted to 
-		//build its window.
+		// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
+		// build its window.
 		Fabrik.iconGen = new IconGenerator({scale: 0.5});
 		
 		Fabrik.removeEvent = function (type, fn) {
@@ -204,7 +215,7 @@ var Loader = new Class({
 			}
 		};
 		
-		//events test: replacing window.addEvents as they are reset when you reload mootools in ajax window.
+		// Events test: replacing window.addEvents as they are reset when you reload mootools in ajax window.
 		// need to load mootools in ajax window otherwise Fabrik classes dont correctly load
 		Fabrik.addEvent = function (type, fn) {
 			if (!Fabrik.events[type]) {
@@ -241,7 +252,7 @@ var Loader = new Class({
 		
 		Fabrik.requestQueue = new RequestQueue();
 		
-		/** globally observe delete links **/
+		/** Globally observe delete links **/
 		
 		Fabrik.watchDelete = function (e, target) {
 			var l, ref, r;
@@ -258,31 +269,29 @@ var Loader = new Class({
 				ref = ref.splice(0, ref.length - 2).join('_');
 				l = Fabrik.blocks[ref];
 			} else {
-				// checkAll
+				// CheckAll
 				ref = e.target.getParent('.fabrikList');
 				if (typeOf(ref) !== 'null') {
-					//embedded in list
+					// Embedded in list
 					ref = ref.id;
 					l = Fabrik.blocks[ref];
 				} else {
-					//floating
+					// Floating
 					ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
 					l = Fabrik.blocks[ref];
-					if (l.options.actionMethod !== '') { // should only check all for floating tips
+					if (l.options.actionMethod === 'floating') { // should only check all for floating tips
 						l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
 							c.checked = true;
 						});
 					}
 				}
 			}
-			//get correct list block
+			// Get correct list block
 			if (!l.submit('list.delete')) {
 				e.stop();
 			}
 		};
 		
-		
 		window.fireEvent('fabrik.loaded');
 	}
 }());
-

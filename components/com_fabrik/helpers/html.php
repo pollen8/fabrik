@@ -565,8 +565,10 @@ EOD;
 
 	public static function cssAsAsset()
 	{
+		//return JRequest::getVar('format') == 'raw'
+		//	|| (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
 		return JRequest::getVar('format') == 'raw'
-			|| (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
+		|| (JRequest::getVar('tmpl') == 'component' && JRequest::getVar('iframe') != 1) && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
 	}
 
 	/**
@@ -785,6 +787,7 @@ EOD;
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
+				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
 				if ($navigator->getBrowser() == 'msie')
 				{
@@ -948,9 +951,13 @@ EOD;
 		{
 			return false;
 		}
+		if ($config->get('use_fabrikdebug') == 2)
+		{
+			return true;
+		}
 		$config = JFactory::getConfig();
 		$debug = (int) $config->get('debug');
-		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) === 1;
+		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) == 1;
 	}
 
 	/**
@@ -969,9 +976,13 @@ EOD;
 			return;
 		}
 		$document = JFactory::getDocument();
+		/*
 		$config = JFactory::getConfig();
 		$debug = $config->get('debug');
 		$ext = $debug || (int) JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
+		*/
+		$ext = self::isDebug() ? '.js' : '-min.js';
+
 		$file = (array) $file;
 		$src = array();
 		foreach ($file as $f)
@@ -1366,6 +1377,7 @@ EOD;
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'media/com_fabrik/images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/';
 					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'images/stories/';
+					self::$helperpaths[$type][] = COM_FABRIK_BASE . 'media/system/images/';
 					break;
 			}
 		}

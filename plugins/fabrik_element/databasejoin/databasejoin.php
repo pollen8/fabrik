@@ -170,7 +170,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		if ($this->isJoin())
 		{
-			$rows = array_values($this->checkboxRows());
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			$limit = $fbConfig->get('filter_list_max', 100);
+			$rows = array_values($this->checkboxRows(null, null, null, null, 0, $limit));
 		}
 		else
 		{
@@ -388,6 +390,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					unset($this->_optionVals[$sql][$key]);
 				}
+			}
+		}
+
+		// Remove tags from labels
+		if ($this->canUse())
+		{
+			foreach ($this->_optionVals[$sql] as $key => &$opt)
+			{
+				$opt->text = strip_tags($opt->text);
 			}
 		}
 		return $this->_optionVals[$sql];
@@ -1553,30 +1564,36 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$str = '';
 		$params = $this->getParams();
 		$db = JFactory::getDBO();
-		if ($type == 'querystring')
+
+		if ($this->isJoin())
 		{
-			//$key2 = FabrikString::safeColNameToArrayKey($key);
-			// $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
-			// by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
-			// value if it was then we want to filter on the key and not the label
-			//if (!array_key_exists($key2, JRequest::get('get'))) {
-			if (!$this->_rawFilter)
+			$key = $this->buildQueryElementConcat($key, false);
+		}
+		else
+		{
+			if ($type == 'querystring')
 			{
-				$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_val_column'));
+				/* $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
+				 * by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
+				 * value if it was then we want to filter on the key and not the label
+				 */
+				if (!$this->_rawFilter)
+				{
+					$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_val_column'));
+				}
+				else
+				{
+					$k = $key;
+				}
+				$this->encryptFieldName($k);
+				return "$k $condition $value";
 			}
-			else
-			{
-				$k = $key;
-			}
-			$this->encryptFieldName($k);
-			return "$k $condition $value";
-			//}
 		}
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
 			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
-			//$k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
+			// $k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
 			$str = "$key $condition $value";
 		}
 		else
@@ -1626,11 +1643,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @param   string  $condition  if supplied then filters the list (must then supply $where and $value)
 	 * @param   string  $value      if supplied then filters the list (must then supply $where and $condtion)
 	 * @param   string  $where      if supplied then filters the list (must then supply $value and $condtion)
+	 * @param   int     $offset     query offset - default 0
+	 * @param   int     $limit      query limit - default 0
 	 *
 	 * @return  array	rows
 	 */
 
-	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null)
+	protected function checkboxRows($groupBy = null, $condition = null, $value = null, $where = null, $offset = 0, $limit = 0)
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -1656,7 +1675,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
-		$db->setQuery($query);
+		$db->setQuery($query, $offset, $limit);
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
 		return $rows;

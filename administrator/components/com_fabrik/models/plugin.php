@@ -66,10 +66,22 @@ class FabrikModelPlugin extends JModel
 		$data = (array) json_decode($item->params);
 		$data['plugin'] = $this->getState('plugin');
 
-		$state = JArrayHelper::getValue($data, 'plugin_state');
-		$data['params']['plugin_state'] = $state[0];
+		$state = (array) JArrayHelper::getValue($data, 'plugin_state');
+
+		$data['params'] = (array) JArrayHelper::getValue($data, 'params', array());
+		$data['params']['plugin_state'] = JArrayHelper::getValue($state, 0, 1);
 		$data['params']['plugins'] = $this->getState('plugin');
+
 		$data['validationrule']['plugin'] = $this->getState('plugin');
+
+		$c = $this->getState('c') + 1;
+
+		// Add plugin locations and events
+		$locations = (array) JArrayHelper::getValue($data, 'plugin_locations');
+		$events = (array) JArrayHelper::getValue($data, 'plugin_events');
+		$data['plugin_locations'] = JArrayHelper::getValue($locations, $c);
+		$data['plugin_events'] = JArrayHelper::getValue($events, $c);
+
 		return $data;
 	}
 

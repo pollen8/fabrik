@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,7 +14,7 @@ jimport('joomla.application.component.view');
 class FabrikViewList extends JViewLegacy
 {
 
-	function display()
+	public function display()
 	{
 		$session = JFactory::getSession();
 		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
@@ -35,6 +35,13 @@ class FabrikViewList extends JViewLegacy
 
 		$total = $model->getTotalRecords();
 
+		if ((int) $total === 0)
+		{
+			$notice = new stdClass;
+			$notice->err = JText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
+			echo json_encode($notice);
+			return;
+		}
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
 		if (is_null($session->get($key)))
 		{
@@ -42,7 +49,6 @@ class FabrikViewList extends JViewLegacy
 		}
 
 		$start = JRequest::getInt('start', 0);
-		//echo "<!-- $start <= $total -->";
 		if ($start <= $total)
 		{
 			$exporter->writeFile($total);
@@ -57,4 +63,3 @@ class FabrikViewList extends JViewLegacy
 	}
 
 }
-?>

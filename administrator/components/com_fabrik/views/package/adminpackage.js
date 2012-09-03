@@ -46,7 +46,7 @@ AdminPackage = new Class({
 			]).store('type', 'visualization')
 		]);
 		
-		c.inject($('packagemenu'), 'before');		
+		c.inject(document.id('packagemenu'), 'before');		
 	},
 	
 	insertPage : function (page, id, label, type, dimensions) {
@@ -86,7 +86,7 @@ AdminPackage = new Class({
 					Fabrik.fireEvent('fabrik.item.resized', c);
 				}
 			});
-			c.makeDraggable({'handle': handle, 'container': $('packagepages')});
+			c.makeDraggable({'handle': handle, 'container': document.id('packagepages')});
 		}
 		
 		c.addEvent('mousedown', function (e) {

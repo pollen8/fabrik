@@ -1,6 +1,6 @@
 var SliderField = new Class({
 	initialize : function (field, slider) {
-		this.field = $(field);
+		this.field = document.id(field);
 		this.slider = slider;
 		this.field.addEvent("change", function (e) {
 			this.update(e);
@@ -34,7 +34,7 @@ var ColourPicker = new Class({
 	initialize : function (element, options) {
 		this.plugin = 'colourpicker';
 		this.parent(element, options);
-		this.element = $(element);
+		this.element = document.id(element);
 		this.widget = this.element.getParent('.fabrikSubElementContainer').getElement('.colourpicker-widget');
 		this.setOutputs();
 		this.redField = null;
@@ -79,7 +79,7 @@ var ColourPicker = new Class({
 				}
 			};
 			this.sliderRefs.push(element + col + 'track');
-			this[col + "Slider"] = new Slider($(element + col + 'track'), $(element + col + 'handle'), opts);
+			this[col + "Slider"] = new Slider(document.id(element + col + 'track'), document.id(element + col + 'handle'), opts);
 		}
 		Fabrik.addEvent('fabrik.colourpicker.slider', function (o, col, pos) {
 			if (this.sliderRefs.contains(o.element.id)) {
@@ -266,7 +266,7 @@ var ColourPicker = new Class({
 			}
 		});
 		div.adopt(new Element('span', {'class': 'colourName', 'styles': {'padding-right': '20px'}}));
-		picker = $(picker);
+		picker = document.id(picker);
 		var input = new Element('input', {
 			'class': 'button',
 			'value': sClose,

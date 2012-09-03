@@ -132,6 +132,15 @@
 			
 			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_LABEL" name="fileupload_aws_bucketname" size="40" type="text"/>
 			
+			<field name="fileupload_s3_serverpath"
+				type="radio"
+				default="1"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+				
 			<field default="2" description="PLG_ELEMENT_FILEUPLOAD_ACL_DESC" label="PLG_ELEMENT_FILEUPLOAD_ACL_LABEL" name="fileupload_amazon_acl" type="list">
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_ACL_PRIVATE</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_ACL_PUBLIC_READ</option>
@@ -178,7 +187,7 @@
 					<option value="3">Both</option>
 				</field>
 		
-				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC" filter="access" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL" name="fu_download_acl" type="listfields"/>
+				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_DESC" filter="viewlevel" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_ACL_LABEL" name="fu_download_acl" type="listfields"/>
 					
 				<field description="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_DESC" directory="media/com_fabrik/images" hide_none="1" label="PLG_ELEMENT_FILEUPLOAD_NO_ACCESS_IMG_LABEL" name="fu_download_noaccess_image" type="imagelist"/>
 					

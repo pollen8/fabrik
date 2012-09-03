@@ -54,13 +54,22 @@ var FbListPlugin = new Class({
 	clearFilter: Function.from(),
 
 	watchButton: function () {
-		//do relay for floating menus
+		// Do relay for floating menus
 		if (typeOf(this.options.name) === 'null') {
 			return;
 		}
-		// might need to be this.listform and not document
-		document.addEvent('click:relay(.' + this.options.name + ')', function (e) {
+		// Might need to be this.listform and not document
+		document.addEvent('click:relay(.' + this.options.name + ')', function (e, element) {
+			if (e.rightClick) {
+				return;
+			}
 			e.stop();
+			
+			// Check that the button clicked belongs to this this.list
+			if (element.get('data-list') !== this.list.options.listRef) {
+				return;
+			}
+			e.preventDefault();
 			var row, chx;
 			// if the row button is clicked check its associated checkbox
 			if (e.target.getParent('.fabrik_row')) {
@@ -115,7 +124,7 @@ var FbList = new Class({
 		'canEdit': true,
 		'canView': true,
 		'page': 'index.php',
-		'actionMethod': '',
+		'actionMethod': 'floating',
 		'formels': [], // elements that only appear in the form
 		'data': [], // [{col:val, col:val},...] (depreciated)
 		'rowtemplate': '',
@@ -441,6 +450,7 @@ var FbList = new Class({
 			onSuccess: function (res) {
 				if (res.err) {
 					alert(res.err);
+					Fabrik.Windows.exportcsv.close();
 				} else {
 					if (typeOf(document.id('csvcount')) !== 'null') {
 						document.id('csvcount').set('text', res.count);
@@ -612,6 +622,9 @@ var FbList = new Class({
 			var w = Fabrik.getWindow(winOpts);
 			
 			this.getForm().addEvent('click:relay(.fabrik_edit)', function (e) {
+				if (e.rightClick) {
+					return;
+				}
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -659,6 +672,9 @@ var FbList = new Class({
 
 			this.getForm().removeEvents('click:relay(.fabrik_view)');
 			this.getForm().addEvent('click:relay(.fabrik_view)', function (e) {
+				if (e.rightClick) {
+					return;
+				}
 				var url, loadMethod, a, listid;
 				e.stop();
 				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
@@ -770,6 +786,9 @@ var FbList = new Class({
 						Fabrik.loader.stop('listform_' + this.options.listRef);
 						Fabrik['filter_listform_' + this.options.listRef].onUpdateData();
 						Fabrik.fireEvent('fabrik.list.submit.ajax.complete', [this, json]);
+						if (json.msg) {
+							alert(json.msg);
+						}
 					}.bind(this)
 				});
 			} else {
@@ -1182,10 +1201,18 @@ var FbListKeys = new Class({
 var FbGroupedToggler = new Class({
 	initialize: function (container) {
 		this.container = container;
+		this.collapseOthers = false;
 		this.toggleState = 'shown';
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
+			if (e.rightClick) {
+				return;
+			}
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
+			
+			if (this.collapseOthers) {
+				this.collapse();
+			}
 			var h = e.target.getParent('.fabrik_groupheading');
 			var img = h.getElement('img');
 			var state = img.retrieve('showgroup', true);
@@ -1195,7 +1222,7 @@ var FbGroupedToggler = new Class({
 			state = state ? false : true;
 			img.store('showgroup', state);
 			return false;
-		});
+		}.bind(this));
 	},
 	
 	setIcon: function (img, state) {
@@ -1208,14 +1235,24 @@ var FbGroupedToggler = new Class({
 	
 	collapse: function () {
 		this.container.getElements('.fabrik_groupdata').hide();
-		this.container.getElements('.fabrik_groupheading a img').each(function (img) {
+		var i = this.container.getElements('.fabrik_groupheading a img');
+		if (i.length === 0) {
+			i = this.container.getElements('.fabrik_groupheading img');
+		}
+		i.each(function (img) {
+			img.store('showgroup', false);
 			this.setIcon(img, true);
 		}.bind(this));
 	},
 	
 	expand: function () {
 		this.container.getElements('.fabrik_groupdata').show();
-		this.container.getElements('.fabrik_groupheading a img').each(function (img) {
+		var i = this.container.getElements('.fabrik_groupheading a img');
+		if (i.length === 0) {
+			i = this.container.getElements('.fabrik_groupheading img');
+		}
+		i.each(function (img) {
+			img.store('showgroup', true);
 			this.setIcon(img, false);
 		}.bind(this));
 	},
@@ -1233,7 +1270,7 @@ var FbListActions = new Class({
 
 	Implements: [Options],
 	options: {
-		'method': '',
+		'method': 'floating',
 		'floatPos': 'bottom'
 	},
 

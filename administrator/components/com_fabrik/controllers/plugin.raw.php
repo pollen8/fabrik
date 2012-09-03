@@ -26,7 +26,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	 * now be changed to 'onAjax_upload'
 	 * ajax action called from element
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function pluginAjax()
@@ -51,10 +51,11 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * user ajax call
+	 * Custom user ajax call
 	 *
-	 * @return  null
+	 * @return  void
 	 */
+
 	public function userAjax()
 	{
 		$db = FabrikWorker::getDbo();

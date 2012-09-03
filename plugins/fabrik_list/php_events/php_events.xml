@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>mxmauro@mauroleggieri.com.ar</authorEmail>
 	<authorUrl>www.yodespotrico.com.ar</authorUrl>
-	<version>3.0.6</version>
+	<version>3.0.6.1</version>
 	<description>Execute PHP-Code on list events</description>
 	<files>
 		<filename plugin="php_events">php_events.php</filename>

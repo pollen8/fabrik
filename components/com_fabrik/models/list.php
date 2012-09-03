@@ -758,7 +758,7 @@ class FabrikFEModelList extends JModelForm
 					if (!in_array($sdata, $aGroupTitles))
 					{
 						$aGroupTitles[] = $sdata;
-						$grouptemplate = strip_tags($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
+						$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
 						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
 						$groupedData[$sdata] = array();
 					}
@@ -895,7 +895,7 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . ' href="' . $edit_link . '" title="' . $editLabel . '">'
+				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $edit_link . '" title="' . $editLabel . '">'
 					. FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)) . '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
@@ -4066,7 +4066,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 
-			// List prfilter porperties
+			// List prfilter properties
 			$elements = $this->getElements('filtername');
 			$afilterFields = (array) $params->get('filter-fields');
 			$afilterConditions = (array) $params->get('filter-conditions');
@@ -4407,15 +4407,16 @@ class FabrikFEModelList extends JModelForm
 				// Select the required fields from the table.
 				$query
 					->select(
-						"db_table_name,
-					name, plugin, l.label AS listlabel, l.id as list_id, \n
+						"l.db_table_name,
+					el.name, el.plugin, l.label AS listlabel, l.id as list_id, \n
 					el.id AS element_id, el.label AS element_label, f.id AS form_id,
 					el.params AS element_params");
 				$query->from('#__{package}_elements AS el');
 				$query->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = el.group_id');
 				$query->join('LEFT', '#__{package}_forms AS f ON f.id = fg.form_id');
 				$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
-				$query->where('el.published = 1');
+				$query->join('LEFT', '#__{package}_groups AS g ON g.id = fg.group_id');
+				$query->where('el.published = 1 AND g.published = 1');
 				$query
 					->where(
 						"(plugin = 'databasejoin' AND el.params like '%\"join_db_name\":\"" . $table->db_table_name
@@ -4850,7 +4851,9 @@ class FabrikFEModelList extends JModelForm
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
 			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-				. $table->id . '&amp;nextview=' . JRequest::getVar('view');
+				. $table->id . '&amp;nextview=' . JRequest::getVar('view', 'list');
+
+			$url .= '&amp;tkn=' . JSession::getFormToken();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
@@ -8823,7 +8826,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			if ((JRequest::getVar('task') == 'list.view' && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
+			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
 				|| JRequest::getVar('task') === 'list.elementFilter')
 			{
 				// Testing for ajax nav in content plugin or in advanced search

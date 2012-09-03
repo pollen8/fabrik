@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.approvals
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.approvals
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -24,6 +24,12 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 class fabrikModelApprovals extends FabrikFEModelVisualization
 {
+
+	/**
+	 * Get the rows of data to show in the viz
+	 *
+	 * @return   array
+	 */
 
 	function getRows()
 	{
@@ -87,17 +93,37 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 		return $this->rows;
 	}
 
+	/**
+	 * Disapprove a record
+	 *
+	 * @return  void
+	 */
+
 	public function disapprove()
 	{
 		$this->decide(0);
 		echo FabrikHelperHTML::image('delete.png', 'list', '');
 	}
 
+	/**
+	 * Approve a record
+	 *
+	 * @return  void
+	 */
+
 	public function approve()
 	{
 		$this->decide(1);
 		echo FabrikHelperHTML::image('ok.png', 'list', '');
 	}
+
+	/**
+	 * Decide if we should approve or not?
+	 *
+	 * @param   string  $v  update value
+	 *
+	 * @return  void
+	 */
 
 	protected function decide($v)
 	{
@@ -131,7 +157,10 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 
 	/**
 	 * Set list ids
+	 *
+	 * @return  void
 	 */
+
 	protected function setListIds()
 	{
 		if (!isset($this->listids))

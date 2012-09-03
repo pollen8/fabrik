@@ -29,7 +29,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	/**
 	 * pop up window
 	 *
-	 * @depreacted - not used
+	 * @deprecated - not used
 	 *
 	 * @return  void
 	 */
@@ -62,13 +62,18 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	}
 
 	/**
-	 * Needed to render plugin buttons
+	 * Prep the button if needed
 	 *
-	 * @return  bool
+	 * @param   object  $params  plugin params
+	 * @param   object  &$model  list model
+	 * @param   array   &$args   arguements
+	 *
+	 * @return  bool;
 	 */
 
-	public function button()
+	public function button($params, &$model, &$args)
 	{
+		parent::button($params, $model, $args);
 		return true;
 	}
 
@@ -114,11 +119,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			$to = $params->get('emailtable_to');
 			$to = is_array($to) ? $to[$renderOrder] : $to;
-			return '<input name="order_by" id="order_by" value="' . $to . '" readonly="true" />';
+			return '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="true" />';
 		}
 		else
 		{
-			return $this->formModel->getElementList('order_by');
+			return $this->formModel->getElementList('list_email_to');
 		}
 	}
 
@@ -149,8 +154,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	/**
 	 * Get the selected records
 	 *
-	 * @param   string  $key     key
-	 * @param   bool   $allData  data
+	 * @param   string  $key      key
+	 * @param   bool    $allData  data
 	 *
 	 * @return	array	rows
 	 */
@@ -195,12 +200,11 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	/**
 	 * Upload the attachments to the server
-	 * @access private
 	 *
 	 * @return  bool success/fail
 	 */
 
-	function _upload()
+	private function _upload()
 	{
 		jimport('joomla.filesystem.file');
 		jimport('joomla.client.helper');
@@ -242,17 +246,25 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		{
 			return false;
 		}
-		$listModel->setId(JRequest::getInt('id', 0));
+		$listId = JRequest::getInt('id', 0);
+		$this->setId($listId);
+		$listModel->setId($listId);
 		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$params = $this->getParams();
-		$to = JRequest::getVar('order_by');
+		$to = JRequest::getVar('list_email_to');
 		$renderOrder = JRequest::getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type', 'list');
 		$fromUser = $params->get('emailtable_from_user');
 		if ($toType == 'list')
 		{
 			$to = str_replace('.', '___', $to);
+		}
+
+		if ($toType == 'list' && $to == '')
+		{
+			JError::raiseError(500, JText::_('PLG_LIST_EMAIL_ERR_NO_TO_ELEMENT_SELECTED'));
+			exit;
 		}
 		$subject = JRequest::getVar('subject');
 		$message = JRequest::getVar('message', '', 'post', 'string', 4);

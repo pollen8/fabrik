@@ -10,7 +10,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class imageRender{
+class imageRender
+{
 
 	var $output = '';
 
@@ -53,9 +54,9 @@ class imageRender{
 		if (JRequest::getVar('view') == 'list')
 		{
 			$listModel = $model->getlistModel();
-			if (array_key_exists($title_name, $oAllRowsData))
+			if (array_key_exists($title_name, $thisRow))
 			{
-				$title = $oAllRowsData->$title_name;
+				$title = $thisRow->$title_name;
 
 			}
 		}
@@ -122,7 +123,8 @@ class imageRender{
 		$fullSize = $model->storage->preRenderPath($fullSize);
 		if ($model->isJoin())
 		{
-			$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height . 'px; vertical-align: middle;text-align: center;">';
+			$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
+				. 'px; vertical-align: middle;text-align: center;">';
 		}
 		$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . strip_tags($element->label) . '" />';
 		if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
@@ -140,8 +142,10 @@ class imageRender{
 	}
 
 	/**
-	 * when in form or detailed view, do we want to show the full image or thumbnail/link?
-* @param object $params
+	 * When in form or detailed view, do we want to show the full image or thumbnail/link?
+	 *
+	 * @param   object  &$params  params
+	 *
 	 * @return  bool
 	 */
 
@@ -160,4 +164,3 @@ class imageRender{
 
 }
 
-?>

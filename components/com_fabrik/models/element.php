@@ -2643,6 +2643,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$listModel = $this->getListModel();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$fabrikDb = $listModel->getDb();
 		$table = $listModel->getTable();
 		$element = $this->getElement();
@@ -2739,7 +2740,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
-		$fabrikDb->setQuery($sql);
+		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
+		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
 		$rows = $fabrikDb->loadObjectList();
 		if ($fabrikDb->getErrorNum() != 0)
 		{
@@ -2909,15 +2911,28 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getRangedFilterValue($value)
 	{
 		$db = FabrikWorker::getDbo();
-		if (is_numeric($value[0]) && is_numeric($value[1]))
+		$element = $this->getElement();
+		if ($element->filter_type === 'range')
 		{
-			$value = $value[0] . ' AND ' . $value[1];
+			if (is_numeric($value[0]) && is_numeric($value[1]))
+			{
+				$value = $value[0] . ' AND ' . $value[1];
+			}
+			else
+			{
+				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+			}
+			$condition = 'BETWEEN';
 		}
 		else
 		{
-			$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+			if (is_array($value) && !empty($value))
+			{
+				array_walk($value, array($db, 'quote'));
+				$value = ' (' . implode(',', $value) . ')';
+			}
+			$condition = 'IN';
 		}
-		$condition = 'BETWEEN';
 		return array($value, $condition);
 	}
 
@@ -4456,11 +4471,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * e.g. pciklists, dropdowns radiobuttons
 	 *
 	 * @param   bool  $repeatCounter  repeat group counter
+	 * @param   bool  $onlylabel      only show the label - overrides standard element settings
 	 *
 	 * @return  string
 	 */
 
-	protected function getAddOptionFields($repeatCounter)
+	protected function getAddOptionFields($repeatCounter, $onlylabel = false)
 	{
 		$params = $this->getParams();
 		if (!$params->get('allow_frontend_addto'))
@@ -4483,8 +4499,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			// $$$ rob dont wrap in <dl> as the html is munged when rendered inside form tab template
 			$str[] = '<label for="' . $valueid . '">' . JText::_('COM_FABRIK_VALUE') . '</label>';
 			$str[] = $value;
-			$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
-			$str[] = $label;
+			if (!$onlylabel)
+			{
+				$str[] = '<label for="' . $labelid . '">' . JText::_('COM_FABRIK_LABEL') . '</label>';
+				$str[] = $label;
+			}
 		}
 		else
 		{

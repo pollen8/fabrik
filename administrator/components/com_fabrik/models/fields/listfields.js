@@ -21,7 +21,7 @@ var ListFieldsElement = new Class({
 	},
 	
 	getCnn: function () {
-		if (typeOf($(this.options.conn)) === 'null') {
+		if (typeOf(document.id(this.options.conn)) === 'null') {
 			return;
 		}
 		this.setUp();
@@ -38,7 +38,7 @@ var ListFieldsElement = new Class({
 		}.bind(this));
 			
 		//see if there is a connection selected
-		var v = $(this.options.conn).get('value');
+		var v = document.id(this.options.conn).get('value');
 		if (v !== '' && v !== -1) {
 			this.periodical = this.updateMe.periodical(500, this);
 		}
