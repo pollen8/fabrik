@@ -14,8 +14,7 @@ jimport('joomla.application.component.controller');
 /**
  * Fabrik Plugin Controller
  *
- * 	used in admin 
- * @static
+ * Used in admin
  * @package		Joomla
  * @subpackage	Fabrik
  * @since 1.5
@@ -24,11 +23,11 @@ jimport('joomla.application.component.controller');
 class FabrikControllerPlugin extends JController
 {
 	/**
-	 *
 	 * Means that any method in Fabrik 2, e.e. 'ajax_upload' should
 	 * now be changed to 'onAjax_upload'
 	 * ajax action called from element
 	 *
+	 * @return  void
 	 */
 
 	function pluginAjax()
@@ -36,7 +35,7 @@ class FabrikControllerPlugin extends JController
 		$plugin = JRequest::getVar('plugin', '');
 		$method = JRequest::getVar('method', '');
 		$group = JRequest::getVar('g', 'element');
-		if (!JPluginHelper::importPlugin('fabrik_'.$group, $plugin))
+		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
 		{
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
@@ -52,10 +51,16 @@ class FabrikControllerPlugin extends JController
 		return;
 	}
 
+	/**
+	 * Custom user ajax call
+	 *
+	 * @return  void
+	 */
+
 	function userAjax()
 	{
 		$db = FabrikWorker::getDbo();
-		require_once(COM_FABRIK_FRONTEND . '/user_ajax.php');
+		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$method = JRequest::getVar('method', '');
 		$userAjax = new userAjax($db);
 		if (method_exists($userAjax, $method))
@@ -64,4 +69,3 @@ class FabrikControllerPlugin extends JController
 		}
 	}
 }
-?>
