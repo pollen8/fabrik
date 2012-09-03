@@ -22,7 +22,18 @@ jimport('joomla.application.component.view');
 class fabrikViewForm extends JView
 {
 
+	/**
+	 * Access value
+	 *
+	 * @var  int
+	 */
 	public $access = null;
+
+	/**
+	 * Inline edit view
+	 *
+	 * @return  void
+	 */
 
 	public function inlineEdit()
 	{
@@ -57,7 +68,6 @@ class fabrikViewForm extends JView
 
 		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
 		{
-			//$html[] = '<ul class="fabrik_buttons">';
 			$html[] = '<ul class="">';
 			if (JRequest::getBool('inlinecancel') == true)
 			{
@@ -108,7 +118,15 @@ class fabrikViewForm extends JView
 		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
 
-	function display($tpl = null)
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$w = new FabrikWorker;
@@ -116,13 +134,12 @@ class fabrikViewForm extends JView
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
 
-		//Get the active menu item
+		// Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$form = $model->getForm();
 		$model->render();
 
-		$listModel = $model->_table;
-		$table = is_object($listModel) ? $listModel->getTable() : null;
+		$listModel = $model->getListModel();
 		if (!$model->canPublish())
 		{
 			if (!$app->isAdmin())
