@@ -28,7 +28,7 @@ class FabrikViewList extends JView
 	/**
 	 * Display the list
 	 */
-	
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -85,7 +85,7 @@ class FabrikViewList extends JView
 	 * show the list's linked forms etc
 	 * @param $tpl
 	 */
-	
+
 	public function showLinkedElements($tpl = null)
 	{
 		$model = $this->getModel('Form');

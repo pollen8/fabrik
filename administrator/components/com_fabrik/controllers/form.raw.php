@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @package Joomla.Administrator
  * @subpackage Fabrik
  * @since		1.6
@@ -29,33 +29,43 @@ class FabrikControllerForm extends JControllerForm
 
 	public $isMambot = false;
 
+	/**
+	 * Set up inline edit view
+	 *
+	 * @return  void
+	 */
+
 	public function inlineedit()
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout = JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 
 		// Set the layout
 		$view->setLayout($viewLayout);
-		// @Todo check for cached version
+
+		// @TODO check for cached version
 		$view->inlineEdit();
 	}
 
 	/**
-	 * handle saving posted form data from the admin pages
+	 * Handle saving posted form data from the admin pages
+	 *
+	 * @return  void
 	 */
 
-	function process()
+	public function process()
 	{
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
-		//for now lets route this to the html view.
+
+		// For now lets route this to the html view.
 		$view = $this->getView($viewName, 'html');
 		if (!JError::isError($model))
 		{
@@ -73,12 +83,12 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (!$model->validate())
 		{
-		// If its in a module with ajax or in a package or inline edit
+			// If its in a module with ajax or in a package or inline edit
 			if (JRequest::getCmd('fabrik_ajax'))
 			{
 				if (JRequest::getInt('elid') !== 0)
 				{
-					// inline edit
+					// Inline edit
 					$eMsgs = array();
 					$errs = $model->getErrors();
 					foreach ($errs as $e)
@@ -91,7 +101,7 @@ class FabrikControllerForm extends JControllerForm
 					}
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
 					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
-					jexit;
+					jexit();
 				}
 				else
 				{
@@ -106,7 +116,7 @@ class FabrikControllerForm extends JControllerForm
 				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 				// might as well use the 'savepage' mechanism, as it's already there!
 				$this->savepage();
-				$this->makeRedirect('', $model);
+				$this->makeRedirect($model, '');
 			}
 			else
 			{
@@ -170,7 +180,7 @@ class FabrikControllerForm extends JControllerForm
 	 * @return  null
 	 */
 
-	protected function makeRedirect($msg = null, $model)
+	protected function makeRedirect($model, $msg = null)
 	{
 		if (is_null($msg))
 		{
@@ -178,7 +188,8 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (array_key_exists('apply', $model->_formData))
 		{
-			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
+			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
+				. '&rowid=' . JRequest::getInt('rowid');
 		}
 		else
 		{
