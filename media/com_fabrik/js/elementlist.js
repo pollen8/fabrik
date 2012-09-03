@@ -46,11 +46,13 @@ var FbElementList =  new Class({
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 		} else {
-			this._getSubElements();
+			var subEls = this._getSubElements();
 			c = this.form.form;
 			var delegate = action + ':relay(input[type=' + this.type + '])';
 			c.addEvent(delegate, function (event, target) {
-			    typeOf(js) === 'function' ? js.delay(0) : eval(js);
+				if (subEls.contains(target)) {
+					typeOf(js) === 'function' ? js.delay(0) : eval(js);
+				}
 			});
 		}
 	},

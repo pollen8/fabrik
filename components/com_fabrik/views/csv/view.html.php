@@ -11,12 +11,28 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewCsv extends JViewLegacy
+/**
+ * CSV View Front End Class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.6
+ */
+
+class fabrikViewCsv extends JView
 {
 
-	function display($tpl = null)
+	/**
+	 * Display the view
+	 *
+	 * @param   string   $tpl  template name
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+
 		$this->listid = JRequest::getVar('listid', 0);
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
@@ -32,8 +48,16 @@ class fabrikViewCsv extends JViewLegacy
 			jexit;
 		}
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
-		parent::display($tpl);
+		return parent::display($tpl);
 	}
+
+	/**
+	 * Get the js needed for the view
+	 *
+	 * @param   array  $data  empty array
+	 *
+	 * @return  void
+	 */
 
 	protected function getManagementJS($data = array())
 	{
@@ -66,7 +90,7 @@ class fabrikViewCsv extends JViewLegacy
 
 		$opts->view = 'csv';
 
-		//$$$rob if you are loading a table in a window from a form db join select record option
+		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 		$opts->winid = JRequest::getVar('winid', '');
 		$opts = json_encode($opts);
@@ -87,9 +111,14 @@ class fabrikViewCsv extends JViewLegacy
 		JText::script('JYES');
 		JText::script('COM_FABRIK_SAVING_TO');
 
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/list.js';
+		FabrikHelperHTML::script($srcs);
+
+		$script[] = 'head.ready(function () {';
 		$script[] = 'var list = new FbList(' . $listid . ',' . $opts . ');';
 		$script[] = 'Fabrik.addBlock(\'list_' . $listid . '\', list);';
-
-		FabrikHelperHTML::script('media/com_fabrik/js/list.js', implode("\n", $script));
+		$script[] = '})';
+		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 	}
 }
