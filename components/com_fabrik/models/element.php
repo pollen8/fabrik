@@ -650,12 +650,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			// So if element's group show is type 5, then element is de-facto read only.
 			if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
 			{
-				$this->_access->use = false;
+				$this->access->use = false;
 			}
 			else {
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
-				$this->_access->use = in_array($this->getElement()->access, $groups);
+				$this->access->use = in_array($this->getElement()->access, $groups);
 			}
 		}
 		return $this->access->use;
@@ -679,7 +679,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// the default for filter_access, which isn't a legal value, should be 1
 			$filter_access = $this->getParams()->get('filter_access');
 			$filter_access = $filter_access == '0' ? '1' : $filter_access;
-			$this->_access->filter = in_array($filter_access, $groups);
+			$this->access->filter = in_array($filter_access, $groups);
 		}
 		return $this->access->filter;
 	}

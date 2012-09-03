@@ -71,7 +71,7 @@ class FPagination extends JPagination
 	 */
 	public $showDisplayNum = true;
 
-	**
+	/**
 	 * Set the pagination ID
 	 *
 	 * @param  int  $id id
