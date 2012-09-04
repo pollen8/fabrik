@@ -1,5 +1,12 @@
 
-<?php foreach ($this->elements as $element) :?>
+<?php foreach ($this->elements as $element) :
+	$class = 'fabrikErrorMessage';
+	if (trim($element->error) !== '') :
+		$element->error = '<i class=" icon-exclamation-sign"></i> ' . $element->error;
+		//$class .= ' alert alert-error';
+		$element->containerClass .= ' error';
+	endif;
+?>
 
 	<div class="control-group <?php echo $element->containerClass; ?>">
 	<label for="<?php echo $element->id ?>" class="control-label">
@@ -15,7 +22,7 @@
 		<div class="fabrikElement">
 
 			<?php echo $element->element;?>
-			<span class="help-inline fabrikErrorMessage">
+			<span class="<?php echo $class?>">
 				<?php echo $element->error ?>
 			</span>
 		</div>
