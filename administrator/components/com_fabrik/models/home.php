@@ -74,7 +74,7 @@ class FabrikModelHome extends JModelAdmin
 		$options['rssUrl'] = 'http://feeds.feedburner.com/fabrik';
 		$options['cache_time'] = 86400;
 
-		$rssDoc = JFactory::getFeedParser('RSS', $options);
+		$rssDoc = JFactory::getXMLparser('RSS', $options);
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');
