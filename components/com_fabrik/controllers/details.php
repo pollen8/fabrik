@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Details Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,10 +25,18 @@ jimport('joomla.application.component.controller');
 class FabrikControllerDetails extends JController
 {
 
-	/** @var   bool $isMambot  is the view rendered from the J content plugin */
+	/**
+	 * Is the view rendered from the J content plugin
+	 *
+	 * @var  bool
+	 */
 	public $isMambot = false;
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered)
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**

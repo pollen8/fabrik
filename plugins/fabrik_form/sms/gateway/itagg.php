@@ -83,7 +83,7 @@ class Itagg extends JObject
 			{
 				echo "sent ok";
 			}
-			$res = fabrikSMS::doRequest('POST', $url, $vars);
+			$res = FabrikSMS::doRequest('POST', $url, $vars);
 		}
 	}
 

@@ -1,26 +1,31 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Makes the list navigation html to traverse the list data
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**
- * makes the table navigation html to traverse the table data
- * @param int the total number of records in the table
- * @param int number of records to show per page
- * @param int which record number to start at
+ * Makes the list navigation html to traverse the list data
+ * @param   int the total number of records in the table
+ * @param   int number of records to show per page
+ * @param   int which record number to start at
  */
 
 jimport('joomla.html.pagination');
 
 /**
- * extension to the normal pagenav functions
+ * Extension to the normal pagenav functions
  * $total, $limitstart, $limit
+ *
+ * @package  Fabrik
+ * @since    3.0
  */
 
 class FPagination extends JPagination
@@ -30,8 +35,8 @@ class FPagination extends JPagination
 	 * Action url
 	 *
 	 * @var  string
-	 * */
-	var $url = '';
+	 */
+	public $url = '';
 
 	/**
 	 * Pagination ID
@@ -45,14 +50,14 @@ class FPagination extends JPagination
 	 *
 	 * @var  bool
 	 */
-	var $showTotal = false;
+	public $showTotal = false;
 
 	/**
 	 * Add an 'all' option to the display # dropdown
 	 *
 	 * @var  bool
 	 */
-	var $showAllOption = false;
+	public $showAllOption = false;
 
 	/**
 	 * The lists unique reference
@@ -193,7 +198,6 @@ class FPagination extends JPagination
 	public function getPagesLinks($listRef = 0, $tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
-
 		$lang = JFactory::getLanguage();
 
 		// Build the page navigation list
@@ -388,11 +392,11 @@ class FPagination extends JPagination
 			$end = ($this->get('pages.total') - 1) * $this->limit;
 
 			$data->next->base = $next;
-			$data->next->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $next : JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}="
-				. $next);
+			$data->next->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $next
+				: JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}=" . $next);
 			$data->end->base = $end;
-			$data->end->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $end : JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}="
-				. $end);
+			$data->end->link = $admin ? "{$sepchar}limitstart{$this->_id}=" . $end
+				: JRoute::_($this->url . "{$sepchar}limitstart{$this->_id}=" . $end);
 
 			$data->next->link = str_replace('resetfilters=1', '', $data->next->link);
 			$data->end->link = str_replace('resetfilters=1', '', $data->end->link);

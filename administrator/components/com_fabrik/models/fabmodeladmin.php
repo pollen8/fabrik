@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Abstract Fabrik Admin model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,15 +17,16 @@ jimport('joomla.application.component.modeladmin');
 /**
  * Abstract Fabrik Admin model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 abstract class FabModelAdmin extends JModelAdmin
 {
 
 	/**
-	 * get the list's active/selected plug-ins
+	 * Get the list's active/selected plug-ins
 	 *
 	 * @return array
 	 */

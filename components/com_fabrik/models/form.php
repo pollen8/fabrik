@@ -2475,7 +2475,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (is_null($this->uploader))
 		{
-			$this->uploader = new uploader($this);
+			$this->uploader = new FabrikUploader($this);
 		}
 		return $this->uploader;
 	}

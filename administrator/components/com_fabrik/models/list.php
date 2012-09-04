@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin List Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,8 +17,9 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin List Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelList extends FabModelAdmin

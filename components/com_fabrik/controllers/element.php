@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Fabrik Element Controller
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,40 +14,56 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik From Controller
+ * Fabrik Element Controller
  *
- * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       1.5
  */
+
 class FabrikControllerElement extends JController
 {
 
+	/**
+	 * Is the view rendered from the J content plugin
+	 *
+	 * @var  bool
+	 */
 	var $isMambot = false;
 
-	var $mode = false;
+	/**
+	 * Should the element be rendered as readonly
+	 *
+	 * @var  string
+	 */
+	var $mode = null;
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	var $cacheId = 0;
 
 	/**
 	 * Display the view
+	 *
+	 * @return  null
 	 */
 
-	function display()
+	public function display()
 	{
 		$document = JFactory::getDocument();
 
-		$viewName	= JRequest::getVar('view', 'element', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'element', 'default', 'cmd');
 		$modelName = $viewName;
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
+
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);
 
 		// $$$ rob 04/06/2011 don't assign a model to the element as its only a plugin
-
 		$view->_editable = ($this->mode == 'readonly') ? false : true;
 
 		// Display the view
@@ -55,8 +73,10 @@ class FabrikControllerElement extends JController
 	}
 
 	/**
-	 * save an individual element value to the fabrik db
+	 * Save an individual element value to the fabrik db
 	 * used in inline edit table plguin
+	 *
+	 * @return  null
 	 */
 
 	function save()
@@ -73,4 +93,3 @@ class FabrikControllerElement extends JController
 	}
 
 }
-?>

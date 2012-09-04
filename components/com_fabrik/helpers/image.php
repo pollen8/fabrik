@@ -1,7 +1,9 @@
 <?php
 /**
+ * Image manipulation helper
+ *
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */

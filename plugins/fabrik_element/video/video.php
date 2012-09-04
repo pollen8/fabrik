@@ -245,7 +245,7 @@ class plgFabrik_ElementVideo extends plgFabrik_Element
 			$myTempFileName = $aFile['tmp_name'];
 		}
 		$_POST[$elName] = '';
-		$oUploader = new uploader($this);
+		$oUploader = new FabrikUploader($this);
 		$files = array();
 		if (is_array($myFileName))
 		{

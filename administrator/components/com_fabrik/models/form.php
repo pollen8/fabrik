@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Form Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,18 +17,27 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin Form Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelForm extends FabModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
+	/**
+	 * The plugin type?
+	 *
+	 * @deprecated - don't think this is used
+	 *
+	 * @var  string
+	 */
 	protected $pluginType = 'Form';
 
 	/**
@@ -90,7 +101,7 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 	/**
-	 * get JS
+	 * Get JS
 	 *
 	 * @return string
 	 */
@@ -117,7 +128,7 @@ class FabrikModelForm extends FabModelAdmin
 		$data['params']['plugin_events'] = (array) JArrayHelper::getValue($post['jform'], 'plugin_events');
 
 		/**
-		 * move back into the main data array some values we are rendering as
+		 * Move back into the main data array some values we are rendering as
 		 * params (did that for ease of rendering admin output)
 		 */
 		$opts = array('reset_button_label', 'submit_button_label');
@@ -256,7 +267,7 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 	/**
-	 * reinsert the groups ids into formgroup rows
+	 * Reinsert the groups ids into formgroup rows
 	 *
 	 * @param   array  $data           jform post data
 	 * @param   array  $currentGroups  group ids
@@ -298,7 +309,7 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 	/**
-	 * take an array of list ids and return the corresponding form_id's
+	 * Take an array of list ids and return the corresponding form_id's
 	 * used in list publish code
 	 *
 	 * @param   array  $ids  list ids
@@ -320,7 +331,7 @@ class FabrikModelForm extends FabModelAdmin
 	}
 
 	/**
-	 * iterate over the form's elements and update its db table to match
+	 * Iterate over the form's elements and update its db table to match
 	 *
 	 * @return  void
 	 */

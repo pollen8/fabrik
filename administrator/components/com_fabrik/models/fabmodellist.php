@@ -1,23 +1,33 @@
 <?php
 /**
-* @package Joomla.Administrator
-* @subpackage Fabrik
-* @since		1.6
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Fabrik Admin List Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modellist');
 
+/**
+ * Fabrik Admin List Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabModelList extends JModelList
 {
 	/**
 	 * Constructor.
 	 * Ensure that we use the fabrik db model for the dbo
-	 * @param	array	An optional associative array of configuration settings.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 */
 
 	public function __construct($config = array())
@@ -27,11 +37,14 @@ class FabModelList extends JModelList
 	}
 
 	/**
-	 * get an array of objects to populate the form filter dropdown
-	 * @return array option objects
+	 * Get an array of objects to populate the form filter dropdown
+	 *
+	 * @deprecated
+	 *
+	 * @return  array  option objects
 	 */
 
-	function getFormOptions()
+	public function getFormOptions()
 	{
 		// Initialise variables.
 		$db = $this->getDbo();
@@ -45,17 +58,22 @@ class FabModelList extends JModelList
 		$rows = $db->loadObjectList();
 		return $rows;
 	}
-	
+
 	/**
-	 * get an array of objects to populate the package/apps dropdown list
+	 * Get an array of objects to populate the package/apps dropdown list
+	 *
 	 * @since 3.0.5
-	 * @return	array	value/text objects
+	 * @deprecated
+	 *
+	 * @return  array	value/text objects
 	 */
+
 	public function getPackageOptions()
 	{
 		// Initialise variables. Always use J db here no matter what package we are using
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
+
 		// Select the required fields from the table.
 		$query->select('DISTINCT component_name AS value, label AS text');
 		$query->from('#__fabrik_packages')->where('external_ref = 1');
@@ -65,20 +83,30 @@ class FabModelList extends JModelList
 		return $rows;
 	}
 
+	/**
+	 * Doesnt seem to be used 3.0.6
+	 *
+	 * @deprecated
+	 *
+	 * @return  array
+	 */
+
 	public function getGroupOptions()
 	{
 		// Initialise variables.
-		$db		= $this->getDbo();
-		$query	= $db->getQuery(true);
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
 		$formid = $this->getState('filter.form');
+
 		// Select the required fields from the table.
 		$query->select('g.id AS value, g.name AS text');
 		$query->from('#__{package}_groups AS g');
 
 		$query->where('published <> -2');
-		if ($formid !== '') {
+		if ($formid !== '')
+		{
 			$query->join('INNER', '#__{package}_formgroup AS fg ON fg.group_id = g.id');
-			$query->where('fg.form_id = '.(int) $formid);
+			$query->where('fg.form_id = ' . (int) $formid);
 		}
 		$query->order('g.name ASC');
 		$db->setQuery($query);
@@ -87,34 +115,43 @@ class FabModelList extends JModelList
 	}
 
 	/**
-	 * build the part of the list query that deals with filtering by form
-	 * @param object $query
-	 * @param string $table
+	 * Build the part of the list query that deals with filtering by form
+	 *
+	 * @param   JDatabaseQuery  &$query  partial query
+	 * @param   string          $table   db table
+	 *
+	 * @return  void
 	 */
 
-	function filterByFormQuery(&$query, $table)
+	protected function filterByFormQuery(&$query, $table)
 	{
 		$form = $this->getState('filter.form');
-		if (!empty($form)) {
-			$query->where($table.'.form_id = '. (int) $form);
+		if (!empty($form))
+		{
+			$query->where($table . '.form_id = ' . (int) $form);
 		}
 	}
-	
+
 	/**
-	* Method to auto-populate the model state.
-	*
-	* Note. Calling getState in this method will result in recursion.
-	* @param   string  $ordering   An optional ordering field.
-	* @param   string  $direction  An optional direction (asc|desc).
-	* @since	1.6
-	*/
-	
+	 * Method to auto-populate the model state.
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @since	1.6
+	 *
+	 * @return  void
+	 */
+
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication('administrator');
-		//Load the package state
+
+		// Load the package state
 		$package = $app->getUserStateFromRequest('com_fabrik.package', 'package', '');
 		$this->setState('com_fabrik.package', $package);
+
 		// List state information.
 		parent::populateState($ordering, $direction);
 	}

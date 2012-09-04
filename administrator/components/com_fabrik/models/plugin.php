@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Plugin Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -16,8 +18,9 @@ require_once 'fabmodeladmin.php';
  * Fabrik Admin Plugin Model
  * Used for loading via ajax form plugins
  *
- * @package  Fabrik
- * @since    3.0.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0.6
  */
 
 class FabrikModelPlugin extends JModel

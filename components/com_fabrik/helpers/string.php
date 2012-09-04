@@ -1,7 +1,9 @@
 <?php
 /**
+ * String helpers
+ *
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -9,17 +11,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ *
+ * String helpers
+ *
+ * @package      Joomla
+ * @subpackage   Fabrik.helpers
+ * @since        3.0
+ */
+
 class FabrikString extends JString
 {
 
 	/**
 	 * UTF-8 aware - replace the first word
 	 *
-	 * @static
-	 * @access public
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
-	 * @return string the trimmed string
+	 * @param   $str   string  the string to be trimmed
+	 * @param   $word  string  the word to trim
+	 *
+	 * @return  string  the trimmed string
 	 */
 
 	public static function ltrimword($str, $word = false)
@@ -35,9 +45,10 @@ class FabrikString extends JString
 	/**
 	 * Right trim a word from a string
 	 *
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
-	 * @return string the trimmed string
+	 * @param   &$str  string  the string to be trimmed
+	 * @param   $word  string  the word to trim
+	 *
+	 * @return  string  the trimmed string
 	 */
 
 	public static function rtrimword(&$str, $word = false)
@@ -58,11 +69,10 @@ class FabrikString extends JString
 	 * UTF-8 aware - remove the first word
 	 * CASE INSENSETIVE
 	 *
-	 * @static
-	 * @access public
-	 * @param string the string to be trimmed
-	 * @param string the word to trim
-	 * @return string the trimmed string
+	 * @param   $str   string  the string to be trimmed
+	 * @param   $word  string  the word to trim
+	 *
+	 * @return  string  the trimmed string
 	 */
 
 	public static function ltrimiword($str, $word = false)
@@ -76,12 +86,13 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * formats a string to return a safe db col name - eg
+	 * Formats a string to return a safe db col name - eg
 	 * table.field is returned as `table`.field`
 	 * table is return as `table`
 	 *
-	 * @param string col name to format
-	 * @param string in table`.field` format
+	 * @param   $col  string  col name to format
+	 *
+	 * @return string in `table`.field` format
 	 */
 
 	public static function safeColName($col)
@@ -114,10 +125,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * inverse of safeColName takes `table`.`field`
+	 * Inverse of safeColName takes `table`.`field`
 	 * and returns table___field
-	 * @param string string in `table`.`field` format
-	 * @return string in table___field format
+	 *
+	 * @param   $col  string  in `table`.`field` format
+	 *
+	 * @return  string  in table___field format
 	 */
 
 	public static function safeColNameToArrayKey($col)
@@ -128,10 +141,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * takes tablename.element or tablename___elementname
+	 * Takes tablename.element or tablename___elementname
 	 * (with or without quotes) and returns elementname
-	 * @param string column name to shorten
-	 * @return string element name
+	 *
+	 * @param   $col  string  column name to shorten
+	 *
+	 * @return  string  element name
 	 */
 
 	public static function shortColName($col)
@@ -151,10 +166,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * get a shortened version of the element label - so that the admin pages
+	 * Get a shortened version of the element label - so that the admin pages
 	 * don't get too stretched when we populate dropdowns with the label
-	 * @param string complete element label
-	 * @return string shortened element label
+	 *
+	 * @param   $label  string  complete element label
+	 *
+	 * @return  string  shortened element label
 	 */
 
 	public static function getShortDdLabel($label)
@@ -170,16 +187,18 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * clean variable names for use as fabrik element names
+	 * Clean variable names for use as fabrik element names
 	 * whitespace compressed and replaced with '_'
 	 * replace all non-alphanumeric chars except _ and - with '_'
 	 * 28/06/2011 replaces umlauts with eu
 	 * 22/11/2011 added IGNORE to default enc otherwise iconv chops everything after first unconvertable char
 	 * 05/02/2012 changed name to iclean, removed strtolower() and added clean() as wrapper that does strtolower
-	 * @param $str to clean
-	 * @param str from encoding
-	 * @paran str to encoding
-	 * @return string cleaned
+	 *
+	 * @param   $str      string  to clean
+	 * @param   $fromEnc  string  from encoding
+	 * @param   $toEnc    string  to encoding
+	 *
+	 * @return  string  cleaned
 	 */
 
 	public static function iclean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
@@ -223,21 +242,28 @@ class FabrikString extends JString
 		$str = $out;
 		if (function_exists('iconv'))
 		{
-			// $$$ rob added @ incase its farsi which creates a notice:
-			// https://github.com/Fabrik/fabrik/issues/72
-			$str = (str_replace("'", '', @iconv($fromEnc, $toEnc, $str))); // replace accented characters with ascii equivalent e.g. é => e
+			/* $$$ rob added @ incase its farsi which creates a notice:
+			 * https://github.com/Fabrik/fabrik/issues/72
+			 */
+
+			// Replace accented characters with ascii equivalent e.g. é => e
+			$str = (str_replace("'", '', @iconv($fromEnc, $toEnc, $str)));
 		}
-		$str = preg_replace('/\s+/', '_', $str); // compress internal whitespace and replace with _
-		return preg_replace('/\W+/', '_', $str);// replace all non-alphanumeric chars except _ and - with '_'
+		// Compress internal whitespace and replace with _
+		$str = preg_replace('/\s+/', '_', $str);
+
+		// Replace all non-alphanumeric chars except _ and - with '_'
+		return preg_replace('/\W+/', '_', $str);
 	}
 
 	/**
 	 * Wrapper for iclean(), that does strtolower on output of clean()
 	 *
-	 * @param $str to clean
-	 * @param str from encoding
-	 * @paran str to encoding
-	 * @return string cleaned
+	 * @param   $str      string  to clean
+	 * @param   $fromEnc  string  from encoding
+	 * @param   $toEnc    string  to encoding
+	 *
+	 * @return  string  cleaned
 	 */
 
 	public static function clean($str, $fromEnc = "UTF-8", $toEnc = "ASCII//IGNORE//TRANSLIT")
@@ -288,10 +314,12 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * removes a querystring key from a url/queyrstring
-	 * @param string $url or querystring
-	 * @param string $key to remove
-	 * @return string url/querystring
+	 * Removes a querystring key from a url/queyrstring
+	 *
+	 * @param   $url  string  or querystring
+	 * @param   $key  string  to remove
+	 *
+	 * @return  string  url/querystring
 	 */
 
 	public static function removeQSVar($url, $key)
@@ -328,10 +356,12 @@ class FabrikString extends JString
 		return $url;
 	}
 
-	/*
+	/**
 	 * Takes a complete URL, and urlencodes any query string args
-	 * @param url to encode
-	 * @return encoded url
+	 *
+	 * @param   $url  string  to encode
+	 *
+	 * @return  encoded url
 	 */
 
 	public static function encodeurl($url)
@@ -352,8 +382,9 @@ class FabrikString extends JString
 		}
 		if (strstr($url, '{'))
 		{
-			// $$$ hugh special case for some Google URL's that use encoded JSON objects in the path part of the URL
-			// so we need to re-encode {, }, " and :.  Except of course for the : in http(s):.
+			/* $$$ hugh special case for some Google URL's that use encoded JSON objects in the path part of the URL
+			 * so we need to re-encode {, }, " and :.  Except of course for the : in http(s):.
+			 */
 			list($http, $rest) = explode(':', $url, 2);
 			if (!empty($rest))
 			{
@@ -367,16 +398,19 @@ class FabrikString extends JString
 	}
 
 	/**
-	 * prepare a string for presentation in html.
-	 * @param	string	&$string
+	 * Prepare a string for presentation in html.
+	 *
+	 * @param   &$string  string  to convert for html
+	 *
+	 * @return  void
 	 */
 
 	public static function forHtml(&$string)
 	{
-		// special chars such as <>
+		// Special chars such as <>
 		$string = htmlspecialchars($string, ENT_QUOTES);
-		//show umlauts correctly in ajax error messages.
+
+		// Show umlauts correctly in ajax error messages.
 		$string = mb_convert_encoding($string, 'HTML-ENTITIES', "UTF-8");
 	}
 }
-?>

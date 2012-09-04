@@ -41,7 +41,7 @@ class Textopoly extends JObject
 		foreach ($smstos as $smsto)
 		{
 			$url = sprintf($this->url, $username, $password, $smsfrom, $smsto, $message);
-			$response = fabrikSMS::doRequest('GET', $url, '');
+			$response = FabrikSMS::doRequest('GET', $url, '');
 		}
 	}
 

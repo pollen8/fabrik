@@ -1,7 +1,9 @@
 <?php
 /**
+ * Fabrik Component HTML Helper
+ *
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -17,6 +19,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 // Leave in as for some reason content plugin isnt loading the fabrikworker class
 require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
+
 /**
  * Fabrik Component HTML Helper
  *
@@ -511,10 +514,11 @@ EOD;
 
 	public static function cssAsAsset()
 	{
-		//return JRequest::getVar('format') == 'raw'
-		//	|| (JRequest::getVar('tmpl') == 'component') && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
-		return JRequest::getVar('format') == 'raw'
-		|| (JRequest::getVar('tmpl') == 'component' && JRequest::getVar('iframe') != 1) && JRequest::getVar('print') != 1 && JRequest::getVar('format') !== 'pdf';
+		$tpl = JRequest::getVar('tmpl');
+		$iframe = JRequest::getVar('iframe');
+		$print = JRequest::getVar('print');
+		$format = JRequest::getVar('format');
+		return JRequest::getVar('format') == 'raw' || ($tpl == 'component' && $iframe != 1) && $print != 1 && $format !== 'pdf';
 	}
 
 	/**

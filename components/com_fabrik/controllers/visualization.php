@@ -1,5 +1,7 @@
 <?php
 /**
+ * Abstract Visualization Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -26,7 +28,11 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 class FabrikControllerVisualization extends JController
 {
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**

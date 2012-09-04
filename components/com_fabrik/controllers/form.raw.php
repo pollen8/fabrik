@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Fabrik Raw From Controller
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,12 +14,11 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik From Controller
+ * Fabrik Raw From Controller
  *
- * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  *
  * @deprecated? Don't think this is used, code seems out of date, cetainly for process anyway - redirect urls are
  * for Fabrik 2 !
@@ -26,12 +27,20 @@ jimport('joomla.application.component.controller');
 class FabrikControllerForm extends JController
 {
 
-	var $isMambot = false;
+	/**
+	 * Is the view rendered from the J content plugin
+	 *
+	 * @var  bool
+	 */
+	public $isMambot = false;
 
 	/**
 	 * Display the view
+	 *
+	 * @return  null
 	 */
-	function display()
+
+	public function display()
 	{
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
@@ -49,8 +58,10 @@ class FabrikControllerForm extends JController
 
 		// Push a model into the view
 		$model = $this->getModel($modelName, 'FabrikFEModel');
-		//if errors made when submitting from a J plugin they are stored in the session
-		//lets get them back and insert them into the form model
+		/**
+		 * If errors made when submitting from a J plugin they are stored in the session
+		 * lets get them back and insert them into the form model
+		 */
 		if (!$model->hasErrors())
 		{
 			$context = 'com_fabrik.form.' . JRequest::getInt('formid');
@@ -62,10 +73,12 @@ class FabrikControllerForm extends JController
 			$view->setModel($model, true);
 		}
 		$view->isMambot = $this->isMambot;
+
 		// Display the view
 		$view->assign('error', $this->getError());
 		$user = JFactory::getUser();
-		//only allow cached pages for users not logged in.
+
+		// Only allow cached pages for users not logged in.
 		return $view->display();
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
 		{
@@ -79,10 +92,12 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * process the form
+	 * Process the form
+	 *
+	 * @return  null
 	 */
 
-	function process()
+	public function process()
 	{
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
@@ -93,41 +108,43 @@ class FabrikControllerForm extends JController
 		{
 			$view->setModel($model, true);
 		}
-
 		$model->setId(JRequest::getInt('formid', 0));
-
 		$this->isMambot = JRequest::getVar('isMambot', 0);
 		$model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
+
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
 			JRequest::checkToken() or die('Invalid Token');
 		}
-
 		if (JRequest::getBool('fabrik_ignorevalidation', false) != true)
-		{ //put in when saving page of form
+		{
+			// Put in when saving page of form
 			if (!$model->validate())
 			{
-				//if its in a module with ajax or in a package
+				// If its in a module with ajax or in a package
 				if (JRequest::getInt('_packageId') !== 0)
 				{
 					$data = array('modified' => $model->_modifiedValidationData);
-					//validating entire group when navigating form pages
+
+					// Validating entire group when navigating form pages
 					$data['errors'] = $model->_arErrors;
 					echo json_encode($data);
 					return;
 				}
 				if ($this->isMambot)
 				{
-					//store errors in session
+					// Store errors in session
 					$context = 'com_fabrik.form.' . $model->get('id') . '.';
 					$session->set($context . 'errors', $model->_arErrors);
-					// $$$ hugh - testing way of preserving form values after validation fails with form plugin
-					// might as well use the 'savepage' mechanism, as it's already there!
+					/**
+					 * $$$ hugh - testing way of preserving form values after validation fails with form plugin
+					 * might as well use the 'savepage' mechanism, as it's already there!
+					 */
 					$session->set($context . 'session.on', true);
 					$this->savepage();
-					$this->makeRedirect('', $model);
+					$this->makeRedirect($model, '');
 				}
 				else
 				{
@@ -137,10 +154,11 @@ class FabrikControllerForm extends JController
 			}
 		}
 
-		//reset errors as validate() now returns ok validations as empty arrays
+		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->_arErrors = array();
 		$defaultAction = $model->process();
-		//check if any plugin has created a new validation error
+
+		// Check if any plugin has created a new validation error
 		if (!empty($model->_arErrors))
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -149,8 +167,7 @@ class FabrikControllerForm extends JController
 			return;
 		}
 
-		//one of the plugins returned false stopping the default redirect
-		// action from taking place
+		// One of the plugins returned false stopping the default redirect action from taking place
 		if (!$defaultAction)
 		{
 			return;
@@ -161,7 +178,7 @@ class FabrikControllerForm extends JController
 
 		if (JRequest::getInt('elid') !== 0)
 		{
-			//inline edit show the edited element
+			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
@@ -176,11 +193,15 @@ class FabrikControllerForm extends JController
 	}
 
 	/**
-	 * generic function to redirect
-	 * @param string redirection message to show
+	 * Generic function to redirect
+	 *
+	 * @param   object  &$model  form model
+	 * @param   string  $msg     redirection message to show
+	 *
+	 * @return  string  redirect url
 	 */
 
-	function makeRedirect($msg = null, &$model)
+	protected function makeRedirect(&$model, $msg = null)
 	{
 		$app = JFactory::getApplication();
 		if (is_null($msg))
@@ -196,7 +217,7 @@ class FabrikControllerForm extends JController
 			}
 			else
 			{
-				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->_table->id;
+				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->getTable()->id;
 			}
 			$this->setRedirect($url, $msg);
 		}
@@ -211,12 +232,12 @@ class FabrikControllerForm extends JController
 			{
 				if ($this->isMambot)
 				{
-					//return to the same page
+					// Return to the same page
 					$url = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
 				}
 				else
 				{
-					//return to the page that called the form
+					// Return to the page that called the form
 					$url = JRequest::getVar('fabrik_referrer', "index.php", 'post');
 				}
 				// @TODO this global doesnt exist in j1.6
@@ -236,4 +257,3 @@ class FabrikControllerForm extends JController
 	}
 
 }
-?>
