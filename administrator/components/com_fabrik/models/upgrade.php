@@ -1,4 +1,13 @@
 <?php
+/**
+ * Fabrik Admin Upgrade Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 /**
 * @package     Joomla
@@ -13,11 +22,12 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
-* Fabrik Admin Upgrade Model
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Fabrik Admin Upgrade Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikModelUpgrade extends JModel
 {
@@ -45,7 +55,7 @@ class FabrikModelUpgrade extends JModel
 	}
 
 	/**
-	 * back up the fabrik db tables and make copies of the data tables they use
+	 * Back up the fabrik db tables and make copies of the data tables they use
 	 *
 	 * @return  bool
 	 */
@@ -104,7 +114,7 @@ class FabrikModelUpgrade extends JModel
 	}
 
 	/**
-	 * upgrade the database to fabrik3's structure.
+	 * Upgrade the database to fabrik3's structure.
 	 *
 	 * @return  void
 	 */
@@ -233,7 +243,7 @@ class FabrikModelUpgrade extends JModel
 	}
 
 	/**
-	 * convert old skool J1.5 attribs into json object
+	 * Convert old skool J1.5 attribs into json object
 	 *
 	 * @param   string  $str  f2 parameters string
 	 *
@@ -263,7 +273,7 @@ class FabrikModelUpgrade extends JModel
 	}
 
 	/**
-	 * maps the fabrik2 user gid to a roughly corresponding J1.7 acl group
+	 * Maps the fabrik2 user gid to a roughly corresponding J1.7 acl group
 	 *
 	 * @param   int  $v  gid
 	 *
@@ -289,7 +299,7 @@ class FabrikModelUpgrade extends JModel
 	}
 
 	/**
-	 * get all the db tables which have _fabrik_ as part of their names
+	 * Get all the db tables which have _fabrik_ as part of their names
 	 *
 	 * @return array of objects each with db_table_name and connection_id property
 	 */
@@ -313,7 +323,7 @@ class FabrikModelUpgrade extends JModel
 		return $r;
 	}
 	/**
-	 * check for an existence of _fabrik_tables table if there is then we should upgrade
+	 * Check for an existence of _fabrik_tables table if there is then we should upgrade
 	 *
 	 * @return  bool
 	 */

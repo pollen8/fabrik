@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,14 +25,18 @@ jimport('joomla.application.component.controller');
 class FabrikControllerList extends JControllerLegacy
 {
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**
 	 * Display the view
 	 *
-* @param   object  $model      list model
-* @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   object  $model      list model
+	 * @param   array   $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  null
 	 */
@@ -82,7 +88,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * reorder the data in the list
+	 * Reorder the data in the list
 	 *
 	 * @return  null
 	 */
@@ -101,7 +107,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * clear filters
+	 * Clear filters
 	 *
 	 * @return  null
 	 */
@@ -126,7 +132,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * filter the list data
+	 * Filter the list data
 	 *
 	 * @return null
 	 */
@@ -145,7 +151,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * delete rows from list
+	 * Delete rows from list
 	 *
 	 * @return  null
 	 */
@@ -198,7 +204,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * empty a table of records and reset its key to 0
+	 * Empty a table of records and reset its key to 0
 	 *
 	 * @return  null
 	 */
@@ -211,7 +217,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * run a list plugin
+	 * Run a list plugin
 	 *
 	 * @return  null
 	 */
@@ -274,7 +280,7 @@ class FabrikControllerList extends JControllerLegacy
 	}
 
 	/**
-	 * called via ajax when element selected in advanced search popup window
+	 * Called via ajax when element selected in advanced search popup window
 	 *
 	 * @return  null
 	 */

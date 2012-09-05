@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin List Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -14,8 +16,9 @@ jimport('joomla.application.component.modellist');
 /**
  * Fabrik Admin List Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabModelList extends JModelList
@@ -23,7 +26,7 @@ class FabModelList extends JModelList
 	/**
 	 * Constructor.
 	 * Ensure that we use the fabrik db model for the dbo
-	 * 
+	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 */
 
@@ -34,10 +37,10 @@ class FabModelList extends JModelList
 	}
 
 	/**
-	 * get an array of objects to populate the form filter dropdown
-	 * 
+	 * Get an array of objects to populate the form filter dropdown
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  array  option objects
 	 */
 
@@ -57,11 +60,11 @@ class FabModelList extends JModelList
 	}
 
 	/**
-	 * get an array of objects to populate the package/apps dropdown list
-	 * 
+	 * Get an array of objects to populate the package/apps dropdown list
+	 *
 	 * @since 3.0.5
 	 * @deprecated
-	 * 
+	 *
 	 * @return  array	value/text objects
 	 */
 
@@ -82,9 +85,9 @@ class FabModelList extends JModelList
 
 	/**
 	 * Doesnt seem to be used 3.0.6
-	 * 
+	 *
 	 * @deprecated
-	 * 
+	 *
 	 * @return  array
 	 */
 
@@ -112,11 +115,11 @@ class FabModelList extends JModelList
 	}
 
 	/**
-	 * build the part of the list query that deals with filtering by form
-	 * 
+	 * Build the part of the list query that deals with filtering by form
+	 *
 	 * @param   JDatabaseQuery  &$query  partial query
 	 * @param   string          $table   db table
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -132,12 +135,12 @@ class FabModelList extends JModelList
 	/**
 	 * Method to auto-populate the model state.
 	 * Note. Calling getState in this method will result in recursion.
-	 * 
+	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 * 
+	 *
 	 * @since	1.6
-	 * 
+	 *
 	 * @return  void
 	 */
 

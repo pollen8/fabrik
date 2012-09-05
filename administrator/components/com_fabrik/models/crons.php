@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Crons Admin Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -12,10 +14,11 @@ defined('_JEXEC') or die;
 require_once 'fabmodellist.php';
 
 /**
- * Crons Model
+ * Crons Admin Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelCrons extends FabModelList

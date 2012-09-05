@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Email Form Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik Email From Controller
+ * Fabrik Email Form Controller
  *
  * @static
  * @package     Joomla

@@ -19,7 +19,7 @@
 				
 			<field default="Sign up to my mailing list" description="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_DESC" label="PLG_FORM_MAILCHIMP_SIGNUP_LABEL_LABEL" name="mailchimp_signuplabel" repeat="true" size="30" type="text"/>
 		
-			<field default="0" description="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_DESC" label="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_LABEL" name="mailchimp_update_existing" repeat="true" type="radio">
+			<field default="1" description="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_DESC" label="PLG_FORM_MAILCHIMP_UPDATE_EXISTING_LABEL" name="mailchimp_update_existing" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

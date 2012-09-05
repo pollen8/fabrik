@@ -115,12 +115,14 @@ var FbForm = new Class({
 		
 		// testing prev/next buttons
 		var v = this.options.editable === true ? 'form' : 'details';
+		var rowInput = this.form.getElement('input[name=rowid]');
+		var rowId = typeOf(rowInput) === 'null' ? '' : rowInput.value;
 		var editopts = {
 			option : 'com_fabrik',
 			'view' : v,
 			'controller' : 'form',
 			'fabrik' : this.id,
-			'rowid' : this.form.getElement('input[name=rowid]').value,
+			'rowid' : rowId,
 			'format' : 'raw',
 			'task' : 'paginate',
 			'dir' : 1

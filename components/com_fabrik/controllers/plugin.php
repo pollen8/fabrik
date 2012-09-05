@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Plugin Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,11 +25,15 @@ jimport('joomla.application.component.controller');
 class FabrikControllerPlugin extends JControllerLegacy
 {
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**
-	 * ajax action called from element
+	 * Ajax action called from element
 	 * 11/07/2011 - ive updated things so that any plugin ajax call uses 'view=plugin' rather than controller=plugin
 	 * this means that the controller used is now plugin.php and not plugin.raw.php
 	 *
@@ -64,7 +70,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * custom user ajax class handling as per F1.0.x
+	 * Custom user ajax class handling as per F1.0.x
 	 *
 	 * @return  null
 	 */
@@ -84,7 +90,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	/**
 	 * Run the cron job
 	 *
-* @param   object  &$pluginManager  Fabrik plugin manager
+	 * @param   object  &$pluginManager  Fabrik plugin manager
 	 *
 	 * @return  null
 	 */

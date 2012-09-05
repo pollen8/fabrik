@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Admin Connections Model
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,10 +14,11 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modellist');
 
 /**
- * Fabrik Connections Model
+ * Fabrik Admin Connections Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelConnections extends JModelList
@@ -40,8 +43,6 @@ class FabrikModelConnections extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 *
-	 * @since	1.6
 	 */
 
 	protected function getListQuery()
@@ -95,8 +96,6 @@ class FabrikModelConnections extends JModelList
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable  A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Connection', $prefix = 'FabrikTable', $config = array())

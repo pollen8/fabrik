@@ -1,5 +1,7 @@
 <?php
 /**
+ * Generic tools that all models use
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

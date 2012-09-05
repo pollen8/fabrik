@@ -1,7 +1,9 @@
 <?php
 /**
+ * Send sms's
+ *
  * @package     Joomla
- * @subpackage  Fabrik
+ * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -12,11 +14,12 @@ defined('_JEXEC') or die();
 /**
  * Send sms's
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @since       3.0
  */
 
-class fabrikSMS
+class FabrikSMS
 {
 	/**
 	 * Send sms

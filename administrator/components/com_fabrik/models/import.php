@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Import Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,15 +17,17 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin Import Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelImport extends FabModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_IMPORT';
 
@@ -35,10 +39,8 @@ class FabrikModelImport extends FabModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable	A database object
-	 * 
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
@@ -57,10 +59,8 @@ class FabrikModelImport extends FabModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 * 
-	 * @since	1.6
 	 */
 
 	public function getForm($data = array(), $loadData = true)
@@ -79,9 +79,8 @@ class FabrikModelImport extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 * 
-	 * @since	1.6
 	 */
+
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.

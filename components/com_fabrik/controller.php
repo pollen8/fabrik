@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Front end controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,6 +15,7 @@ jimport('joomla.application.component.controller');
 
 /**
  * Fabrik Component Controller
+ * DEPRECIATED - should always get directed to specific controller
  *
  * @static
  * @package		Joomla
@@ -20,18 +23,21 @@ jimport('joomla.application.component.controller');
  * @since 1.5
  */
 
-//$$$rob DEPRECIATED - should always get directed to specific controller
-
 class FabrikController extends JControllerLegacy
 {
 
+	/**
+	 * Is the controller inside a content plug-in
+	 *
+	 * @var  bool
+	 */
 	public $isMambot = false;
 
 	/**
 	 * Display the view
 	 *
-* @param   bool   $cachable   If true, the view output will be cached
-* @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   bool   $cachable   If true, the view output will be cached
+	 * @param   array  $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  null
 	 */

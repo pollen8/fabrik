@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Raw From Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik From Controller
+ * Fabrik Raw From Controller
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -25,6 +27,11 @@ jimport('joomla.application.component.controller');
 class FabrikControllerForm extends JControllerLegacy
 {
 
+	/**
+	 * Is the view rendered from the J content plugin
+	 *
+	 * @var  bool
+	 */
 	public $isMambot = false;
 
 	/**
@@ -85,7 +92,7 @@ class FabrikControllerForm extends JControllerLegacy
 	}
 
 	/**
-	 * process the form
+	 * Process the form
 	 *
 	 * @return  null
 	 */
@@ -128,7 +135,7 @@ class FabrikControllerForm extends JControllerLegacy
 				}
 				if ($this->isMambot)
 				{
-					// Sstore errors in session
+					// Store errors in session
 					$context = 'com_fabrik.form.' . $model->get('id') . '.';
 					$session->set($context . 'errors', $model->errors);
 					/**
@@ -186,7 +193,7 @@ class FabrikControllerForm extends JControllerLegacy
 	}
 
 	/**
-	 * generic function to redirect
+	 * Generic function to redirect
 	 *
 	 * @param   object  &$model  form model
 	 * @param   string  $msg     redirection message to show

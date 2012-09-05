@@ -5,8 +5,8 @@
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -22,7 +22,11 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerPackage extends JControllerLegacy
 {
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**
@@ -35,9 +39,9 @@ class FabrikControllerPackage extends JControllerLegacy
 	{
 		$document = JFactory::getDocument();
 
-		$viewName	= JRequest::getVar('view', 'package', 'default', 'cmd');
+		$viewName = JRequest::getVar('view', 'package', 'default', 'cmd');
 
-		$viewType	= $document->getType();
+		$viewType = $document->getType();
 
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);

@@ -1,8 +1,10 @@
 <?php
 /**
+ * Makes the list navigation html to traverse the list data
+ *
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
@@ -10,16 +12,16 @@
 defined('_JEXEC') or die();
 
 /**
- * makes the table navigation html to traverse the table data
-* @param   int the total number of records in the table
-* @param   int number of records to show per page
-* @param   int which record number to start at
+ * Makes the list navigation html to traverse the list data
+ * @param   int the total number of records in the table
+ * @param   int number of records to show per page
+ * @param   int which record number to start at
  */
 
 jimport('joomla.html.pagination');
 
 /**
- * extension to the normal pagenav functions
+ * Extension to the normal pagenav functions
  * $total, $limitstart, $limit
  *
  * @package  Fabrik

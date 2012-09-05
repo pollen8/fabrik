@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Plugin Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -16,8 +18,9 @@ require_once 'fabmodeladmin.php';
  * Fabrik Admin Plugin Model
  * Used for loading via ajax form plugins
  *
- * @package  Fabrik
- * @since    3.0.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0.6
  */
 
 class FabrikModelPlugin extends JModel
@@ -65,20 +68,18 @@ class FabrikModelPlugin extends JModel
 		}
 		$data = (array) json_decode($item->params);
 		$data['plugin'] = $this->getState('plugin');
-
-		$state = (array) JArrayHelper::getValue($data, 'plugin_state');
-
 		$data['params'] = (array) JArrayHelper::getValue($data, 'params', array());
-		$data['params']['plugin_state'] = JArrayHelper::getValue($state, 0, 1);
 		$data['params']['plugins'] = $this->getState('plugin');
 
 		$data['validationrule']['plugin'] = $this->getState('plugin');
 
 		$c = $this->getState('c') + 1;
 
-		// Add plugin locations and events
+		// Add plugin published state, locations and events
+		$state = (array) JArrayHelper::getValue($data, 'plugin_state');
 		$locations = (array) JArrayHelper::getValue($data, 'plugin_locations');
 		$events = (array) JArrayHelper::getValue($data, 'plugin_events');
+		$data['params']['plugin_state'] = JArrayHelper::getValue($state, $c, 1);
 		$data['plugin_locations'] = JArrayHelper::getValue($locations, $c);
 		$data['plugin_events'] = JArrayHelper::getValue($events, $c);
 

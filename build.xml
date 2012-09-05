@@ -12,11 +12,11 @@
 	
 	<property name="plugin.folders" value="cron,element,form,list,validationrule,visualization" />
 	<property name="plugins.cron" value="email,php" />
-	<property name="plugins.element" value="button,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,link,radiobutton,textarea,user" />
-	<property name="plugins.form" value="email,php,receipt,redirect" />
-	<property name="plugins.list" value="copy,php" />
-	<property name="plugins.validationrule" value="isgreaterorlessthan,notempty,php,regex,isemail" />
-	<property name="plugins.visualization" value="calendar,chart,googlemap,media,slideshow,timeline" />
+	<property name="plugins.element" value="button,calc,captcha,cascadingdropdown,checkbox,databasejoin,date,display,dropdown,field,fileupload,googlemap,image,internalid,ip,link,password,radiobutton,textarea,time,user,usergroup,viewlevel,yesno" />
+	<property name="plugins.form" value="email,juser,php,receipt,redirect" />
+	<property name="plugins.list" value="copy,email,php,update_col" />
+	<property name="plugins.validationrule" value="akismet,areuniquevalues,emailexists,isalphanumeric,isemail,isgreaterorlessthan,isnot,notempty,php,regex,specialchars,userexists" />
+	<property name="plugins.visualization" value="calendar,chart,coverflow,fusion_gantt_chart,fusionchart,googlemap,media,slideshow,timeline" />
 	
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>

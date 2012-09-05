@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Package Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,8 +17,9 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin Package Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelPackage extends FabModelAdmin
@@ -28,6 +31,9 @@ class FabrikModelPackage extends FabModelAdmin
 
 	protected $text_prefix = 'COM_FABRIK_PACKAGE';
 
+	/**
+	 * @var   array  list of protected table names
+	 */
 	protected $tables = array('#__fabrik_connections', '#__{package}_cron', '#__{package}_elements', '#__{package}_formgroup', '#__{package}_forms',
 		'#__{package}_form_sessions', '#__{package}_groups', '#__{package}_joins', '#__{package}_jsactions', '#__{package}_lists',
 		'#__{package}_log', '#__{package}_packages', '#__{package}_validations', '#__{package}_visualizations');
@@ -247,7 +253,7 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * remove unwanted tmp files
+	 * Remove unwanted tmp files
 	 *
 	 * @param   string  $pkgName  the package zip name (the file we dont want to delete)
 	 *
@@ -270,7 +276,7 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * create the component.manifest.class.php file which will populate the components
+	 * Create the component.manifest.class.php file which will populate the components
 	 * forms/lists/elements etc
 	 *
 	 * @param   object  $row  package
@@ -441,7 +447,6 @@ class FabrikModelPackage extends FabModelAdmin
 				}
 
 				$v = str_replace($db->getPrefix(), '#__', $v);
-				//$val = $db->isQuoted($k) ? $db->quote($v) : (int) $v;
 				$val = $db->quote($v);
 				$fields[] = $db->quoteName($k);
 				$values[] = $val;

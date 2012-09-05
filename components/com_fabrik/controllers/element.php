@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Element Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik From Controller
+ * Fabrik Element Controller
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -22,11 +24,25 @@ jimport('joomla.application.component.controller');
 class FabrikControllerElement extends JControllerLegacy
 {
 
+	/**
+	 * Is the view rendered from the J content plugin
+	 *
+	 * @var  bool
+	 */
 	public $isMambot = false;
 
+	/**
+	 * Should the element be rendered as readonly
+	 *
+	 * @var  string
+	 */
 	public $mode = false;
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered
+	 *
+	 * @var  int
+	 */
 	public $cacheId = 0;
 
 	/**
@@ -58,7 +74,7 @@ class FabrikControllerElement extends JControllerLegacy
 	}
 
 	/**
-	 * save an individual element value to the fabrik db
+	 * Save an individual element value to the fabrik db
 	 * used in inline edit table plguin
 	 *
 	 * @return  null

@@ -1,6 +1,7 @@
 <?php
 /**
  * Fabrik Import Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
@@ -46,7 +47,7 @@ class FabrikControllerImport extends JControllerLegacy
 	}
 
 	/**
-	 * perform the file upload and set the session state
+	 * Perform the file upload and set the session state
 	 * Unlike back end import if there are unmatched headings we bail out
 	 *
 	 * @return null

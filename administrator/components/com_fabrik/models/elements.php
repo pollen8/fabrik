@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Elements Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -14,8 +16,9 @@ require_once 'fabmodellist.php';
 /**
  * Fabrik Admin Elements Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelElements extends FabModelList
@@ -235,7 +238,7 @@ class FabrikModelElements extends FabModelList
 	}
 
 	/**
-	 * get show in list options
+	 * Get show in list options
 	 *
 	 * @return  array  of Jhtml select.options
 	 */
@@ -246,7 +249,7 @@ class FabrikModelElements extends FabModelList
 	}
 
 	/**
-	 * get a list of plugin types to filter on
+	 * Get a list of plugin types to filter on
 	 *
 	 * @return  array  of select.options
 	 */

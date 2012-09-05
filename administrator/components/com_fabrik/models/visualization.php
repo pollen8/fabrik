@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Visualization Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,15 +17,17 @@ jimport('joomla.application.component.modeladmin');
 /**
  * Fabrik Admin Visualization Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package      Joomla.Administrator
+ * @subpackage   Fabrik
+ * @since        3.0
  */
 
 class FabrikModelVisualization extends JModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
 
@@ -35,8 +39,6 @@ class FabrikModelVisualization extends JModelAdmin
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable	A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())

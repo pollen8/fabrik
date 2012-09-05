@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Admin Element Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,26 +17,35 @@ jimport('joomla.application.component.modeladmin');
 /**
  * Admin Element Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelElement extends JModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_ELEMENT';
 
-	protected $abstractPlugins = null;
 
-	/*
-	 * @var	array	validation plugin models for this element
+	/**
+	 * Validation plugin models for this element
+	 *
 	 * @since	3.0.6
+	 *
+	 * @var  array
 	 */
 	protected $aValidations = null;
 
+	/**
+	 * Core Joomla and Fabrik table names
+	 *
+	 * @var  array
+	 */
 	protected $core = array('#__assets', '#__banner_clients', '#__banner_tracks', '#__banners', '#__categories', '#__contact_details', '#__content',
 		'#__content_frontpage', '#__content_rating', '#__core_log_searches', '#__extensions', '#__fabrik_connections', '#__{package}_cron',
 		'#__{package}_elements', '#__{package}_form_sessions', '#__{package}_formgroup', '#__{package}_forms', '#__{package}_groups',
@@ -98,8 +109,6 @@ class FabrikModelElement extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed   The data for the form.
-	 *
-	 * @since	1.6
 	 */
 
 	protected function loadFormData()
@@ -169,13 +178,14 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * toggle adding / removing the elment from the list view
+	 * Toggle adding / removing the elment from the list view
 	 *
 	 * @param   array  &$pks   primary keys
 	 * @param   var    $value  add (1) or remove (0) from list view
 	 *
 	 * @return  bool
 	 */
+
 	public function addToListView(&$pks, $value = 1)
 	{
 		// Initialise variables.
@@ -221,7 +231,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * get the js events that are used by the element
+	 * Get the js events that are used by the element
 	 *
 	 * @return  array
 	 */
@@ -242,53 +252,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * get plugins that could potentially be used
-	 *
-	 * @return  array	plugins
-	 */
-
-	/* public function getAbstractPlugins()
-	{
-		if (isset($this->abstractPlugins))
-		{
-			return $this->abstractPlugins;
-		}
-		// Create a new dispatcher so that we only collect admin html for validation rules
-		$pluginDispatcher = new JDispatcher;
-
-		// Import the validation plugins and assign them to their custom dispatcher
-		JPluginHelper::importPlugin('fabrik_validationrule', null, true, $pluginDispatcher);
-		$this->abstractPlugins = array();
-
-		// Trigger the validation dispatcher to get the validation rules html
-		$plugins = JPluginHelper::getPlugin('fabrik_validationrule');
-
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-
-		$item = $this->getItem();
-		foreach ($item as $key => $val)
-		{
-			if ($key !== 'params')
-			{
-				$data[$key] = $val;
-			}
-		}
-
-		foreach ($plugins as $x => $plugin)
-		{
-			$o = $pluginManager->getPlugIn($plugin->name, 'Validationrule');
-			$str = $o->onRenderAdminSettings($data, 0);
-			$js = $o->onGetAdminJs($plugin->name, $plugin->name, $str);
-			$str = addslashes(str_replace(array("\n", "\r"), "", $str));
-			$attr = "class=\"inputbox elementtype\"";
-			$this->abstractPlugins[$plugin->name] = array('plugin' => $plugin->name, 'html' => $str, 'js' => $js);
-		}
-		ksort($this->abstractPlugins);
-		return $this->abstractPlugins;
-	} */
-
-	/**
-	 * load the actual validation plugins that the element uses
+	 * Load the actual validation plugins that the element uses
 	 *
 	 * @return  array  plugins
 	 */
@@ -301,7 +265,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * get the js code to build the plugins etc
+	 * Get the js code to build the plugins etc
 	 *
 	 * @return  string  js code
 	 */
@@ -331,13 +295,13 @@ class FabrikModelElement extends JModelAdmin
 		$js = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . (int)$this->getItem()->id . ");\n";
+		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . (int) $this->getItem()->id . ");\n";
 
 		return $js;
 	}
 
 	/**
-	 * get html form fields for a plugin (filled with
+	 * Get html form fields for a plugin (filled with
 	 * current element's plugin data
 	 *
 	 * @param   string  $plugin  plugin name
@@ -376,7 +340,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * called when the table is saved
+	 * Called when the table is saved
 	 * here we are hacking various repeat data into the params
 	 * data stored as a json object
 	 *
@@ -396,10 +360,10 @@ class FabrikModelElement extends JModelAdmin
 	 * @param   array   $data   The data to validate.
 	 * @param   string  $group  The name of the field group to validate.
 	 *
-	 * @return  mixed  Array of filtered data if valid, false otherwise.
-	 *
 	 * @see     JFormRule
 	 * @see     JFilterInput
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
 	 */
 
 	public function validate($form, $data, $group = null)
@@ -485,7 +449,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * load the element plugin / model for the posted data
+	 * Load the element plugin / model for the posted data
 	 *
 	 * @param   array  $data  posted data
 	 *
@@ -820,7 +784,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * update child elements
+	 * Update child elements
 	 *
 	 * @param   object  &$row  element
 	 *
@@ -886,7 +850,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * update table indexes based on element settings
+	 * Update table indexes based on element settings
 	 *
 	 * @param   object  &$elementModel  element model
 	 * @param   object  &$listModel     list model
@@ -1003,7 +967,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 *  potentially drop fields then remove element record
+	 * Potentially drop fields then remove element record
 	 *
 	 * @param   array  &$pks  to delete
 	 *
@@ -1054,7 +1018,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * copy an element
+	 * Copy an element
 	 *
 	 * @return  mixed  true or warning
 	 */
@@ -1090,7 +1054,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * if repeated element we need to make a joined db table to store repeated data in
+	 * If repeated element we need to make a joined db table to store repeated data in
 	 *
 	 * @param   object  $elementModel  element model
 	 * @param   object  $row           element item
@@ -1144,7 +1108,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * get the name of the repeated elements table
+	 * Get the name of the repeated elements table
 	 *
 	 * @param   object  $elementModel  element model
 	 * @param   object  $row           element item
@@ -1164,7 +1128,7 @@ class FabrikModelElement extends JModelAdmin
 	}
 
 	/**
-	 * gets the elemetns parent element
+	 * Gets the elemetns parent element
 	 *
 	 * @return  mixed	0 if no parent, object if exists.
 	 */

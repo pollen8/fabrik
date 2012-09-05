@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Home Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -15,15 +17,17 @@ jimport('joomla.application.component.modeladmin');
 /**
  * Fabrik Admin Home Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelHome extends JModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_HOME';
 
@@ -35,8 +39,6 @@ class FabrikModelHome extends JModelAdmin
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable	A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
@@ -52,8 +54,6 @@ class FabrikModelHome extends JModelAdmin
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
 	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 *
-	 * @since	1.6
 	 */
 
 	public function getForm($data = array(), $loadData = true)
@@ -62,7 +62,7 @@ class FabrikModelHome extends JModelAdmin
 	}
 
 	/**
-	 * get fabrikar.com rss feed
+	 * Get fabrikar.com rss feed
 	 *
 	 * @return string
 	 */
@@ -119,7 +119,7 @@ class FabrikModelHome extends JModelAdmin
 	}
 
 	/**
-	 * install sample data
+	 * Install sample data
 	 *
 	 * @return  void
 	 */
@@ -243,7 +243,7 @@ class FabrikModelHome extends JModelAdmin
 	}
 
 	/**
-	 * empty all fabrik db tables of their data
+	 * Empty all fabrik db tables of their data
 	 *
 	 * @return  void or JError
 	 */
@@ -266,7 +266,7 @@ class FabrikModelHome extends JModelAdmin
 	}
 
 	/**
-	 * drop all the lists db tables
+	 * Drop all the lists db tables
 	 *
 	 * @return  void
 	 */

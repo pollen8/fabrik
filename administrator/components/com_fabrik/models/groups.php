@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Groups Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -14,8 +16,9 @@ require_once 'fabmodellist.php';
 /**
  * Fabrik Admin Groups Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelGroups extends FabModelList
@@ -43,8 +46,6 @@ class FabrikModelGroups extends FabModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 *
-	 * @since	1.6
 	 */
 
 	protected function getListQuery()
@@ -136,8 +137,6 @@ class FabrikModelGroups extends FabModelList
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable	A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
@@ -152,8 +151,6 @@ class FabrikModelGroups extends FabModelList
 	 *
 	 * @param   string  $ordering   An optional ordering field.
 	 * @param   string  $direction  An optional direction (asc|desc).
-	 *
-	 * @since	1.6
 	 *
 	 * @return  void
 	 */

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Plugin Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -73,7 +75,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	/**
 	 * do Cron task
 	 *
-* @param   object  &$pluginManager  pluginmanager
+	 * @param   object  &$pluginManager  pluginmanager
 	 *
 	 * @return  null
 	 */

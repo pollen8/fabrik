@@ -31,9 +31,9 @@ class FabrikControllerForm extends JControllerForm
 	public $isMambot = false;
 
 	/**
-	 * Inline Edit
+	 * Set up inline edit view
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function inlineedit()
@@ -42,7 +42,7 @@ class FabrikControllerForm extends JControllerForm
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout = JRequest::getCmd('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 
@@ -54,9 +54,9 @@ class FabrikControllerForm extends JControllerForm
 	}
 
 	/**
-	 * handle saving posted form data from the admin pages
+	 * Handle saving posted form data from the admin pages
 	 *
-	 * @return null
+	 * @return  void
 	 */
 
 	public function process()
@@ -84,12 +84,12 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (!$model->validate())
 		{
-		// If its in a module with ajax or in a package or inline edit
+			// If its in a module with ajax or in a package or inline edit
 			if (JRequest::getCmd('fabrik_ajax'))
 			{
 				if (JRequest::getInt('elid') !== 0)
 				{
-					// inline edit
+					// Inline edit
 					$eMsgs = array();
 					$errs = $model->getErrors();
 					foreach ($errs as $e)
@@ -102,7 +102,7 @@ class FabrikControllerForm extends JControllerForm
 					}
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
 					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
-					jexit;
+					jexit();
 				}
 				else
 				{
@@ -190,8 +190,8 @@ class FabrikControllerForm extends JControllerForm
 		}
 		if (array_key_exists('apply', $model->formData))
 		{
-			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') .
-			'&listid=' . JRequest::getInt('listid') . '&rowid=' . JRequest::getInt('rowid');
+			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
+				. '&rowid=' . JRequest::getInt('rowid');
 		}
 		else
 		{

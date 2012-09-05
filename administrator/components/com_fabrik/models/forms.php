@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Form Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -14,8 +16,9 @@ require_once 'fabmodellist.php';
 /**
  * Fabrik Admin Form Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelForms extends FabModelList
@@ -43,9 +46,8 @@ class FabrikModelForms extends FabModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
-	 *
-	 * @since	1.6
 	 */
+
 	protected function getListQuery()
 	{
 		// Initialise variables.
@@ -100,8 +102,6 @@ class FabrikModelForms extends FabModelList
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable	A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
@@ -119,8 +119,6 @@ class FabrikModelForms extends FabModelList
 	 * @param   string  $direction  An optional direction (asc|desc).
 	 *
 	 * @return  void
-	 *
-	 * @since	1.6
 	 */
 
 	protected function populateState($ordering = null, $direction = null)

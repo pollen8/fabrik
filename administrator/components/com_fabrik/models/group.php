@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Admin Group Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -17,15 +19,17 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin Group Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelGroup extends FabModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_GROUP';
 
@@ -37,8 +41,6 @@ class FabrikModelGroup extends FabModelAdmin
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  JTable	A database object
-	 *
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
@@ -54,8 +56,6 @@ class FabrikModelGroup extends FabModelAdmin
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
 	 *
 	 * @return  mixed	A JForm object on success, false on failure
-	 *
-	 * @since	1.6
 	 */
 
 	public function getForm($data = array(), $loadData = true)
@@ -73,8 +73,6 @@ class FabrikModelGroup extends FabModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed	The data for the form.
-	 *
-	 * @since	1.6
 	 */
 
 	protected function loadFormData()
@@ -90,12 +88,11 @@ class FabrikModelGroup extends FabModelAdmin
 	}
 
 	/**
-	 * take an array of forms ids and return the corresponding group ids
+	 * Take an array of forms ids and return the corresponding group ids
 	 * used in list publish code
 	 *
 	 * @param   array  $ids  form ids
 	 *
-	 * @return array group ids
 	 */
 
 	public function swapFormToGroupIds($ids = array())
@@ -255,7 +252,7 @@ class FabrikModelGroup extends FabModelAdmin
 	}
 
 	/**
-	 * a group has been set to be repeatable but is not part of a join
+	 * A group has been set to be repeatable but is not part of a join
 	 * so we want to:
 	 * Create a new db table for the groups elements ( + check if its not already there)
 	 *

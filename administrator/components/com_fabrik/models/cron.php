@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Cron Admin Model
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -13,10 +15,11 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Cron Model
- * 
- * @package  Fabrik
- * @since    3.0
+ * Cron Admin Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikModelCron extends JModelAdmin
@@ -33,10 +36,8 @@ class FabrikModelCron extends JModelAdmin
 	 * @param   string  $type    The table type to instantiate
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
-	 * 
+	 *
 	 * @return  JTable  A database object
-	 * 
-	 * @since	1.6
 	 */
 
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
@@ -50,10 +51,8 @@ class FabrikModelCron extends JModelAdmin
 	 *
 	 * @param   array  $data      Data for the form.
 	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 * 
+	 *
 	 * @return  mixed  A JForm object on success, false on failure
-	 * 
-	 * @since	1.6
 	 */
 
 	public function getForm($data = array(), $loadData = true)
@@ -71,8 +70,6 @@ class FabrikModelCron extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed  The data for the form.
-	 * 
-	 * @since	1.6
 	 */
 
 	protected function loadFormData()
@@ -87,11 +84,11 @@ class FabrikModelCron extends JModelAdmin
 	}
 
 	/**
-	 * get html form fields for a plugin (filled with
+	 * Get html form fields for a plugin (filled with
 	 * current element's plugin data
-	 * 
+	 *
 	 * @param   string  $plugin  plugin name
-	 * 
+	 *
 	 * @return  string	html form fields
 	 */
 
@@ -137,10 +134,10 @@ class FabrikModelCron extends JModelAdmin
 	 * @param   array   $data   The data to validate.
 	 * @param   string  $group  The name of the field group to validate.
 	 *
-	 * @return  mixed  Array of filtered data if valid, false otherwise.
-	 *
 	 * @see     JFormRule
 	 * @see     JFilterInput
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
 	 */
 
 	public function validate($form, $data, $group = null)

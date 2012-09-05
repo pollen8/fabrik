@@ -109,7 +109,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$data = $this->tagify($data);
 		}
 		// $$$rob dont strip slashes here - this is done when saving to db now
-		if ($params->get('use_wysiwyg', 0) == 0)
+		if (!$this->useWysiwyg())
 		{
 			if (is_array($data))
 			{
@@ -171,6 +171,27 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
+	 * Should the element use the WYSIWYG editor
+	 *
+	 * @since   3.0.6.2
+	 *
+	 * @return  bool
+	 */
+
+	protected function useWysiwyg()
+	{
+		$params = $this->getParams();
+		if (JRequest::getVar('format') == 'raw')
+		{
+			return false;
+		}
+		if (JRequest::getVar('ajax') == '1') {
+			return false;
+		}
+		return (bool) $params->get('use_wysiwyg', 0);
+	}
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           to preopulate element with
@@ -193,9 +214,10 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$rows = $element->height;
 		$value = $this->getValue($data, $repeatCounter);
 		$bits = array();
+		$wysiwyg = $this->useWysiwyg();
 		if (!$this->editable)
 		{
-			if ($params->get('use_wysiwyg', 0) == 0)
+			if (!$wysiwyg)
 			{
 				$value = nl2br($value);
 			}
@@ -214,7 +236,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			$bits['class'] .= ' elementErrorHighlight';
 		}
-		if ($params->get('use_wysiwyg'))
+		if ($wysiwyg)
 		{
 			if (JRequest::getVar('ajax') == 1)
 			{
@@ -300,7 +322,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	public function elementJavascript($repeatCounter)
 	{
 		$params = $this->getParams();
-		if ($params->get('use_wysiwyg'))
+		if ($this->useWysiwyg())
 		{
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
 			$id = $this->getHTMLName($repeatCounter);
@@ -316,7 +338,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->max = $params->get('textarea-maxlength');
 		$opts->maxType = $params->get('textarea_limit_type', 'char');
-		$opts->wysiwyg = ($params->get('use_wysiwyg') && JRequest::getInt('ajax') != 1) ? true : false;
+		$opts->wysiwyg = $this->useWysiwyg();
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
 		$opts = json_encode($opts);
 		return "new FbTextarea('$id', $opts)";
