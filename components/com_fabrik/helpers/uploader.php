@@ -1,14 +1,23 @@
 <?php
-
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * Fabrik upload helper
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Fabrik upload helper
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikUploader extends JObject
 {
@@ -29,12 +38,13 @@ class FabrikUploader extends JObject
 
 	/**
 	 * Upload
+	 *
 	 * @param   object  $formModel  form model
 	 *
 	 * @return  void
 	 */
 
-	function uploader($formModel)
+	public function __construct($formModel)
 	{
 		$this->_form = $formModel;
 	}
@@ -45,7 +55,7 @@ class FabrikUploader extends JObject
 	 * @return  bool true if error occured
 	 */
 
-	function upload()
+	public function upload()
 	{
 		$groups = $this->_form->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
