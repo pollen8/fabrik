@@ -1,5 +1,7 @@
 <?php
 /**
+ * Add a user to a mailchimp mailing list
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.mailchimp
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -153,7 +155,7 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 		if ($api->errorCode)
 		{
 			$formModel->_arErrors['mailchimp_error'] = true;
-			JError::raiseNotice(500, $api->errorCode . ':' . $api->errorMessage);
+			JError::raiseNotice($api->errorCode, $api->errorMessage);
 			return false;
 		}
 		else
