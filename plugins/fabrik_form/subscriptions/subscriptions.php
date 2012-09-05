@@ -340,7 +340,8 @@ class plgFabrik_FormSubscriptions extends plgFabrik_Form
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('subscriptions_return_msg');
-		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
+		$ret_msg = array_values($ret_msg);
+		$ret_msg = JArrayHelper::getValue($ret_msg, 0);
 		if ($ret_msg)
 		{
 			$w = $this->getWorker();
