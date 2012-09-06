@@ -96,9 +96,9 @@ var FbElementList =  new Class({
 			if (this.type === 'radio') {
 				index = this.subElements.length;
 			}
-            document.id(this.form.form).fireEvent("change", {
-                target: $$('input[name='+i.name+']')[index]
-            });
+			document.id(this.form.form).fireEvent("change", {
+				target: $$('input[name='+i.name+']')[index]
+			});
             
 			this._getSubElements();
 			if (v) {

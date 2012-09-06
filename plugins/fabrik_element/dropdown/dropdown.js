@@ -63,7 +63,7 @@ var FbDropdown = new Class({
 					this.addNewOption(val, label);
 					document.id(this.element.id).fireEvent('change', {stop:$empty});
 					if (this.mySlider) {
-					    this.mySlider.toggle();
+						this.mySlider.toggle();
 					}
 				}
 			}.bind(this));
