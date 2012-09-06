@@ -871,7 +871,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	function beforeSave(&$row)
 	{
-		// do nothing, just here to prevent join element method from running instead (which rmeoved join table
+		// do nothing, just here to prevent join element method from running instead (which removed join table
 		// entry if not pluginname==fabrikdatabasejoin
 		return true;
 	}

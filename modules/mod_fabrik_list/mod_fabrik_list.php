@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Module
+ *
  * @version
  * @package Joomla
  * @subpackage Fabrik
@@ -29,7 +31,7 @@ require_once(COM_FABRIK_FRONTEND . '/views/package/view.html.php');
 require_once(COM_FABRIK_FRONTEND . '/controllers/package.php');
 require_once(COM_FABRIK_FRONTEND . '/views/form/view.html.php');
 
-//load front end language file as well
+// Load front end language file as well
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
@@ -37,7 +39,7 @@ $app = JFactory::getApplication();
 $document = JFactory::getDocument();
 
 FabrikHelperHTML::framework();
-//$$$rob looks like including the view does something to the layout variable
+// $$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
 
 $listId = (int) $params->get('list_id', 1);
@@ -110,7 +112,7 @@ if (!empty($orderBy))
 	$model->getTable()->order_dir = json_encode($orderDir);
 }
 
-//set up prefilters - will overwrite ones defined in the list!
+// Set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array)$prefilters['filter-conditions'];
@@ -129,9 +131,9 @@ if (!JError::isError($model))
 	$view->setModel($model, true);
 }
 $view->isMambot = true;
+
 // Display the view
 $view->assign('error', $controller->getError());
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);
-?>
