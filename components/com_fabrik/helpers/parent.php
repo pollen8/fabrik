@@ -1260,34 +1260,37 @@ class FabrikWorker
 	public static function JSONtoData($data, $toArray = false)
 	{
 
-		if (!strstr($data, '{'))
+		if (is_string($data))
 		{
-			// Was messng up date rendering @ http://www.podion.eu/dev2/index.php/2011-12-19-10-33-59/actueel
-			// return $toArray ? (array) $data : $data;
-		}
-		// Repeat elements are concatned with the GROUPSPLITTER - conver to json string  before continuing.
-		if (strstr($data, GROUPSPLITTER))
-		{
-			$data = json_encode(explode(GROUPSPLITTER, $data));
-		}
-		/* half hearted attempt to see if string is acutally json or not.
-		 * issue was that if you try to decode '000123' its turned into '123'
-		 */
-		if (strstr($data, '{') || strstr($data, '['))
-		{
-			$json = json_decode($data);
-
-			// Only works in PHP5.3
-			// $data = (json_last_error() == JSON_ERROR_NONE) ? $json : $data;
-			if (is_null($json))
+			if (!strstr($data, '{'))
 			{
-				/*
-				 * if coming back froma  failed validation - the json string may habe been htmlspecialchars_encoded in
-				 * the form model getGroupView method
-				 */
-				$json = json_decode(stripslashes(htmlspecialchars_decode($data, ENT_QUOTES)));
+				// Was messng up date rendering @ http://www.podion.eu/dev2/index.php/2011-12-19-10-33-59/actueel
+				// return $toArray ? (array) $data : $data;
 			}
-			$data = is_null($json) ? $data : $json;
+			// Repeat elements are concatned with the GROUPSPLITTER - conver to json string  before continuing.
+			if (strstr($data, GROUPSPLITTER))
+			{
+				$data = json_encode(explode(GROUPSPLITTER, $data));
+			}
+			/* half hearted attempt to see if string is acutally json or not.
+			 * issue was that if you try to decode '000123' its turned into '123'
+			 */
+			if (strstr($data, '{') || strstr($data, '['))
+			{
+				$json = json_decode($data);
+
+				// Only works in PHP5.3
+				// $data = (json_last_error() == JSON_ERROR_NONE) ? $json : $data;
+				if (is_null($json))
+				{
+					/*
+					 * if coming back froma  failed validation - the json string may habe been htmlspecialchars_encoded in
+					 * the form model getGroupView method
+					 */
+					$json = json_decode(stripslashes(htmlspecialchars_decode($data, ENT_QUOTES)));
+				}
+				$data = is_null($json) ? $data : $json;
+			}
 		}
 		$data = $toArray ? (array) $data : $data;
 		return $data;

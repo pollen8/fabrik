@@ -263,6 +263,13 @@ class FabrikFEModelGroup extends FabModel
 		$params = $this->getParams();
 		$element->column = '';
 		$colcount = (int) $params->get('group_columns');
+
+		// Bootstrap grid formatting
+		$element->span = floor(12 / $colcount);
+		$element->offset = $params->get('group_offset', 0);
+
+		$element->startRow = false;
+		$element->endRow = false;
 		if ($colcount > 1)
 		{
 			$widths = $params->get('group_column_widths', '');
