@@ -109,9 +109,9 @@ class FabrikModelHome extends JModelAdmin
 						$output .= '<br />' . $description;
 					}
 					$output .= '</td></tr>';
+					$k = 1 - $k;
 				}
 			}
-			$k = 1 - $k;
 
 			$output .= '</table>';
 		}

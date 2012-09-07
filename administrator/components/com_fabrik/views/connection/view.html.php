@@ -1,9 +1,12 @@
 <?php
 /**
- * @package     Joomla
+ * View to edit a connection.
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access
@@ -16,16 +19,37 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.5
+ * @since		3.0
  */
 class FabrikViewConnection extends JViewLegacy
 {
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Connection item
+	 *
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * A state object
+	 *
+	 * @var    object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -51,7 +75,8 @@ class FabrikViewConnection extends JViewLegacy
 
 	/**
 	 * Add the page title and toolbar.
-	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()

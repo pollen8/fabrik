@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Group Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,40 +23,88 @@ jimport('joomla.application.component.model');
 class FabrikFEModelGroup extends FabModel
 {
 
-	/** @var object parameters */
+	/**
+	 * Parameters
+	 *
+	 * @var JRegistry
+	 */
 	protected $params = null;
 
-	/** @var int id of group to load */
+	/**
+	 * Id of group to load
+	 *
+	 * @var int
+	 */
 	protected $id = null;
 
-	/** @var object group table */
+	/**
+	 * Group table
+	 *
+	 * @var JTable
+	 */
 	protected $group = null;
 
-	/** @var object form model */
+	/**
+	 * Form model
+	 *
+	 * @var FabrikFEModelForm
+	 */
 	protected $form = null;
 
-	/** @var object table model */
+	/**
+	 * List model
+	 *
+	 * @var FabrikFEModelList
+	 */
 	protected $table = null;
 
-	/** @var object join model */
+	/**
+	 * Join model
+	 *
+	 * @var FabrikFEModelJoin
+	 */
 	protected $joinModel = null;
 
-	/** @var array of element plugins */
+	/**
+	 * Element plugins
+	 *
+	 * @var array
+	 */
 	public $elements = null;
 
-	/** @var array of published element plugins */
+	/**
+	 * Published element plugins
+	 *
+	 * @var array
+	 */
 	public $publishedElements = null;
 
-	/** @var array of published element plugins shown in the list */
+	/**
+	 * Published element plugins shown in the list
+	 *
+	 * @var array
+	 */
 	protected $publishedListElements = null;
 
-	/** @var int how many times the group's data is repeated */
+	/**
+	 * How many times the group's data is repeated
+	 *
+	 *  @var int
+	 */
 	public $repeatTotal = null;
 
-	/** @var array of form ids that the group is in (maximum of one value)*/
+	/**
+	 * Form ids that the group is in (maximum of one value)
+	 *
+	 * @var array
+	 */
 	protected $formsIamIn = null;
 
-	/** @var bool can the group be viewed (set to false if no elements are visible in the group**/
+	/**
+	 * Can the group be viewed (set to false if no elements are visible in the group
+	 *
+	 * @var bool
+	 */
 	protected $canView = null;
 
 	/**
@@ -168,7 +218,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * get an array of forms that the group is in
+	 * Get an array of forms that the group is in
 	 * NOTE: now a group can only belong to one form
 	 *
 	 * @return  array  form ids
@@ -226,7 +276,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * randomise the element list (note the array is the pre-rendered elements)
+	 * Randomise the element list (note the array is the pre-rendered elements)
 	 *
 	 * @param   array  &$elements  form views processed/formatted list of elements that the form template uses
 	 *
@@ -248,7 +298,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * set the element column css allows for group colum settings to be applied
+	 * Set the element column css allows for group colum settings to be applied
 	 *
 	 * @param   object  &$element  prerender element properties
 	 * @param   int     $elCount   current key when looping over elements.
@@ -265,9 +315,11 @@ class FabrikFEModelGroup extends FabModel
 		$colcount = (int) $params->get('group_columns');
 
 		// Bootstrap grid formatting
-		$element->span = floor(12 / $colcount);
+		$element->span = $colcount == 0 ? 12 : floor(12 / $colcount);
 		$element->offset = $params->get('group_offset', 0);
 
+		$element->startRow = false;
+		$element->endRow = false;
 		if ($colcount > 1)
 		{
 			$widths = $params->get('group_column_widths', '');
@@ -349,7 +401,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * get the groups list model
+	 * Get the groups list model
 	 *
 	 * @return  object	list model
 	 */
@@ -395,7 +447,8 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * get a list of all elements which are set to show in list or are set to include in list query
+	 * Get a list of all elements which are set to show in list or
+	 * are set to include in list query
 	 *
 	 * @since   3.0.6
 	 *
@@ -575,7 +628,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * is the group a join?
+	 * Is the group a join?
 	 *
 	 * @return  bool
 	 */
@@ -586,7 +639,7 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * get the group's associated join model
+	 * Get the group's associated join model
 	 *
 	 * @return  object  join model
 	 */

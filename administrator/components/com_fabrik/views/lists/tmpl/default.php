@@ -1,9 +1,12 @@
 <?php
 /**
- * @package     Joomla
+ * Admin Lists List Tmpl
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access
@@ -32,7 +35,7 @@ $listDirn	= $this->state->get('list.direction');
 				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
 			</select>
 			<?php }?>
-			
+
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>

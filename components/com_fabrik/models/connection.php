@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Connection Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,23 +16,40 @@ jimport('joomla.application.component.model');
 /**
  * Fabrik Connection Model
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelConnection extends JModelLegacy
 {
 
-	/** @var object table **/
+	/**
+	 * Current connection
+	 *
+	 * @var JTable
+	 */
 	protected $connection = null;
 
-	/** @var object default connection table **/
+	/**
+	 * Default connection table
+	 *
+	 * @var JTable
+	*/
 	protected $defaultConnection = null;
 
-	/** @var array containing db connections */
+	/**
+	 * Containing db connections
+	 *
+	 * @var array
+	 */
 	protected static $dbs = array();
 
-	/** @var int connection id */
+	/**
+	 * Connection id
+	 *
+	 * @var int
+	 */
 	protected $id = null;
 
 	/**
@@ -57,7 +76,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * is the conenction table the default connection
+	 * Is the conenction table the default connection
 	 *
 	 * @deprecated - dont think its used
 	 *
@@ -70,7 +89,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * creates a html dropdown box for the current connection
+	 * Creates a html dropdown box for the current connection
 	 *
 	 * @param   string  $javascript  to add to select box
 	 * @param   string  $name        of dropdown box
@@ -118,7 +137,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * get a connection table object
+	 * Get a connection table object
 	 *
 	 * @param   int  $id  connection id
 	 *
@@ -168,7 +187,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * load the connection associated with the table
+	 * Load the connection associated with the table
 	 *
 	 * @return  object  database object using connection details false if connection error
 	 */
@@ -259,7 +278,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
+	 * Compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
 	 *
 	 * @param   array  $opts1  first compare
 	 * @param   array  $opts2  second compare
@@ -274,7 +293,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * get the options to connect to a db
+	 * Get the options to connect to a db
 	 *
 	 * @param   object  &$cn  connection table
 	 *
@@ -306,7 +325,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * gets object of connections
+	 * Gets object of connections
 	 *
 	 * @return  array  of connection tables id, description
 	 */
@@ -322,7 +341,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * gets dropdown list of published connections
+	 * Gets dropdown list of published connections
 	 *
 	 * @param   object  $connections  connections stored in database
 	 * @param   string  $javascript   to run on change
@@ -349,7 +368,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * queries all published connections and returns an multidimensional array
+	 * Queries all published connections and returns an multidimensional array
 	 * of tables and fields for each connection
 	 * WARNING: this is likely to
 	 * exceed php script execution time if querying a larger remote database
@@ -395,7 +414,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * queries all published connections and returns an multidimensional array
+	 * Queries all published connections and returns an multidimensional array
 	 * of tables for each connection
 	 *
 	 * @param   array  $connections  all available connections
@@ -446,7 +465,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * get the tables names in the loaded connection
+	 * Get the tables names in the loaded connection
 	 *
 	 * @param   bool  $addBlank  add an empty record to the beginning of the list
 	 *
@@ -473,7 +492,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * tests if you can connect to the connection
+	 * Tests if you can connect to the connection
 	 *
 	 * @return  bool  true if connection made otherwise false
 	 */
@@ -485,7 +504,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
-	 * load the default connection
+	 * Load the default connection
 	 *
 	 * @return  object  default connection
 	 */

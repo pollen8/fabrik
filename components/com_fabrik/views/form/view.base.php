@@ -1,5 +1,7 @@
 <?php
 /**
+ * Base Form view class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -24,16 +26,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 	/**
 	 * Is the view rendering inside the Fabrik Joomla content plugin
+	 *
 	 * @var  bool
 	 */
-
 	public $isMambot = null;
 
 	/**
 	 * Viewing access level
+	 *
 	 * @var  int
 	 */
-
 	public $access = null;
 
 	/**

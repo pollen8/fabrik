@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -15,10 +17,11 @@ $version = new JVersion;
 if ($version->RELEASE == '1.6')
 {
 	/**
-	 *  Joomla 1.6
+	 * Fabrik Element List Model
 	 *
-	 * @package  Fabrik
-	 * @since    3.0
+	 * @package     Joomla
+	 * @subpackage  Fabrik
+	 * @since       3.0
 	 */
 
 	class FabModel extends JModelLegacy
@@ -54,7 +57,7 @@ if ($version->RELEASE == '1.6')
 		 * @param   string  $prefix   The class prefix. Optional.
 		 * @param   array   $options  Configuration array for model. Optional.
 		 *
-		 * @return  object	The table
+		 * @return	object	The table
 		 */
 
 		public function getTable($name = '', $prefix = 'Table', $options = array())
@@ -76,10 +79,11 @@ if ($version->RELEASE == '1.6')
 else
 {
 	/**
-	 *  Joomla 1.7 onwards
+	  * Fabrik Element List Model - Joomla 1.7 onwards
 	 *
-	 *  @package  Fabrik
-	 * @since    3.0
+	 * @package     Joomla
+	 * @subpackage  Fabrik
+	 * @since       3.0
 	 */
 
 	class FabModel extends JModelLegacy
@@ -89,9 +93,9 @@ else
 		 *
 		 * @param   string  $name    The name of the view
 		 * @param   string  $prefix  The class prefix. Optional.
-		 * @param   array   $config  Options
+		 * @param   array   $config  configuration
 		 *
-		 * @return  mixed Model object or boolean false if failed
+		 * @return	mixed	Model object or boolean false if failed
 		 */
 
 		protected function _createTable($name, $prefix = 'Table', $config = array())
@@ -115,9 +119,8 @@ else
 		 * @param   string  $prefix   The class prefix. Optional.
 		 * @param   array   $options  Configuration array for model. Optional.
 		 *
-		 * @return  object	The table
+		 * @return	object	The table
 		 */
-
 		public function getTable($name = '', $prefix = 'Table', $options = array())
 		{
 			if (empty($name))

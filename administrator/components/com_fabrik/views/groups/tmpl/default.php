@@ -1,9 +1,12 @@
 <?php
 /**
- * @package     Joomla
+ * Admin Group List Tmpl
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access
@@ -29,14 +32,12 @@ $listDirn = $this->state->get('list.direction');
 		</div>
 		<div class="filter-select fltrt">
 
-			<?php if (!empty($this->packageOptions))
-{
-										 ?>
+			<?php if (!empty($this->packageOptions)) :?>
 			<select name="package" class="inputbox" onchange="this.form.submit()">
 				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE'); ?></option>
 				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true); ?>
 			</select>
-			<?php } ?>
+			<?php endif; ?>
 
 			<select name="filter_form" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM'); ?></option>
@@ -106,17 +107,14 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-	if ($item->checked_out && ($item->checked_out != $user->get('id')))
-	{
+	if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
 		echo $item->name;
-	}
-	else
-	{
-						?>
+	else :
+?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->name; ?>
 						</a>
-					<?php } ?>
+					<?php endif; ?>
 					<td>
 						<?php echo $item->label; ?>
 					</td>

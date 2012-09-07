@@ -1,16 +1,20 @@
 <?php
 /**
- * @package     Joomla
+ * Admin Elements List Tmpl
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access
 defined('_JEXEC') or die;
+
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js', false, true);
+JHTML::_('script', 'system/multiselect.js', false, true);
 $user	= JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder	= $this->state->get('list.ordering');
@@ -23,19 +27,23 @@ $saveOrder	= $listOrder == 'e.ordering';
 	<fieldset id="filter-bar">
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>:</label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />
+			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>"
+			title="<?php echo JText::_('COM_FABRIK_SEARCH_IN_TITLE'); ?>" />
 			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select fltrt">
 
-			<?php if (!empty($this->packageOptions)) {?>
+			<?php if (!empty($this->packageOptions)) :
+			?>
 			<select name="package" class="inputbox" onchange="this.form.submit()">
 				<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
 				<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
 			</select>
-			<?php }?>
-			
+			<?php
+			endif;
+			?>
+
 			<select name="filter_form" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM');?></option>
 				<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true);?>
@@ -58,7 +66,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
+				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text', $this->state->get('filter.published'), true);?>
 			</select>
 
 		</div>
@@ -68,7 +76,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 		<thead>
 			<tr>
 				<th width="2%"></th>
-				<th width="2%"><?php echo JHTML::_( 'grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?></th>
+				<th width="2%"><?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?></th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="checkAll(this);" /> </th>
 				<th width="13%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'e.name', $listDirn, $listOrder); ?>
@@ -95,7 +103,8 @@ $saveOrder	= $listOrder == 'e.ordering';
 					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ORDERING', 'e.ordering', $listDirn, $listOrder); ?>
 					<?php if ($saveOrder) :?>
 					<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'elements.saveorder'); ?>
-					<?php  endif;?>
+					<?php  endif;
+					?>
 				</th>
 			</tr>
 		</thead>
@@ -118,26 +127,28 @@ $saveOrder	= $listOrder == 'e.ordering';
 
 			<tr class="row<?php echo $i % 2; ?>">
 				<td>
-				<?php if ($item->parent_id != 0) {
-					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=".$item->parent_id."'>"
-					. JHTML::image('media/com_fabrik/images/child_element.png', JText::_('COM_FABRIK_LINKED_ELEMENT'), 'title="'.JText::_('COM_FABRIK_LINKED_ELEMENT').'"')
-					.'</a>&nbsp';
-				}else{
-					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="'.JText::_('COM_FABRIK_PARENT_ELEMENT').'"').'&nbsp;';
-				}?>
+				<?php if ($item->parent_id != 0) :
+					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=" . $item->parent_id . "'>"
+					. JHTML::image('media/com_fabrik/images/child_element.png', JText::_('COM_FABRIK_LINKED_ELEMENT'), 'title="' . JText::_('COM_FABRIK_LINKED_ELEMENT') . '"')
+					. '</a>&nbsp';
+				else :
+					echo JHTML::image('media/com_fabrik/images/parent_element.png', JText::_('COM_FABRIK_PARENT_ELEMENT'), 'title="' . JText::_('COM_FABRIK_PARENT_ELEMENT') . '"') . '&nbsp;';
+				endif;
+				?>
 					</td>
 					<td><?php echo $item->id; ?></td>
 					<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
+						if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
 							echo  $item->name;
-						} else {
+						else :
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->name; ?>
 						</a>
-					<?php } ?>
+					<?php endif;
+					?>
 					</td>
 					<td>
 						<?php echo $item->label; ?>
@@ -160,13 +171,23 @@ $saveOrder	= $listOrder == 'e.ordering';
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>
 					</td>
 					<td class="order">
-						<?php if ($saveOrder) :?>
-							<?php if ($listDirn == 'asc') : ?>
-								<span><?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i-1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
-								<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i+1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
+						<?php if ($saveOrder) :
+						?>
+							<?php if ($listDirn == 'asc') :
+							?>
+								<span>
+								<?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i - 1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?>
+								</span>
+								<span>
+								<?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i + 1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?>
+								</span>
 							<?php elseif ($listDirn == 'desc') :?>
-								<span><?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i-1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
-								<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i+1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
+								<span>
+								<?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i - 1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_UP', $ordering); ?>
+								</span>
+								<span>
+								<?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i + 1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_DOWN', $ordering); ?>
+								</span>
 							<?php endif; ?>
 						<?php endif;?>
 						<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>

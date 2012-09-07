@@ -1,10 +1,12 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Old package? export code
+ *
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,19 +14,34 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
+/**
+ * Old package? export code
+ *
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @deprecated
+ */
 
-class FabrikFEModelExport {
+class FabrikFEModelExport
+{
 
-	var $label				= '';
-	var $tableIds 			= array();
-	var $format 			= 'xml';
-	var $includeData 		= false;
-	var $fabrikData 		= false;
-	var $incTableStructure  = false;
+	/**
+	 * Label
+	 *
+	 * @var striing
+	 */
+	var $label = '';
+	var $tableIds = array();
+	var $format = 'xml';
+	var $includeData = false;
+	var $fabrikData = false;
+	var $incTableStructure = false;
 
 	var $packageModel = null;
-	var $_aTables 			= array();
-	var $_aFiles			= array();
+	var $_aTables = array();
+	var $_aFiles = array();
 
 	/**
 	 * load a package for export
@@ -45,7 +62,7 @@ class FabrikFEModelExport {
 		$this->setBufferFile();
 	}
 
-	 /**
+	/**
 	 * export table data
 * @param string export format xml/csv
 * @param bool export the table actual records
@@ -53,7 +70,8 @@ class FabrikFEModelExport {
 * @param bool save the exported file as a zip
 	 */
 
-	function export() {
+	function export()
+	{
 		$db = FabrikWorker::getDbo();
 		switch ($this->format)
 		{
@@ -73,70 +91,72 @@ class FabrikFEModelExport {
 	 * @return string xml string
 	 */
 
-	 function getTemplateFiles() {
+	function getTemplateFiles()
+	{
 
-	 	$templatePath = JPATH_SITE . '/components/com_fabrik/tmpl/form/';
-	 	$aFiles = array();
-	 	foreach ($this->_aTables as $listModel)
-	 	{
-	 		$table = $listModel->getTable();
-	 		$formModel = $listModel->getForm();
-	 		$form = $formModel->getForm();
-	 		if (!in_array('table/' . $table->template, $aFiles))
-	 		{
-	 			$aFiles[] = 'table/' . $table->template;
-	 		}
-	 		if ($form->form_template != '')
-	 		{
-	 			if (is_dir($templatePath . $form->form_template))
-	 			{
-	 				if (!in_array('form/' . $form->form_template . '/elements.html', $aFiles))
-	 				{
-	 					$aFiles[] = 'form/' . $form->form_template . '/elements.html';
-	 				}
-	 				if (!in_array('form/' . $form->form_template . '/form.html', $aFiles))
-	 				{
-	 					$aFiles[] = 'form/' . $form->form_template . '/form.html';
-	 				}
-	 			}
-	 			else
-	 			{
-	 				if (!in_array('form/' . $form->form_template, $aFiles))
-	 				{
-	 					$aFiles[] = 'form/' . $form->form_template;
-	 				}
-	 			}
-	 		}
-	 		if ($form->view_only_template != '')
-	 		{
-	 			if (is_dir($templatePath . $form->view_only_template))
-	 			{
-	 				if (!in_array('viewonly/' . $form->view_only_template . '/elements.html', $aFiles))
-	 				{
-	 					$aFiles[] = 'viewonly/' . $form->view_only_template . '/elements.html';
-	 				}
-	 				if (!in_array('viewonly/' . $form->view_only_template . '/form.html', $aFiles))
-	 				{
-	 					$aFiles[] = 'viewonly/' . $form->view_only_template . '/form.html';
-	 				}
-	 			} else
-	 			
-	 			{
-	 				if (!in_array('viewonly/' . $form->view_only_template, $aFiles)) {
-	 					$aFiles[] = 'viewonly/' . $form->view_only_template;
-	 				}
-	 			}
-	 		}
-	 	}
-	 	$xml = "<files>\n";
-	 	foreach ($aFiles as $file)
-	 	{
+		$templatePath = JPATH_SITE . '/components/com_fabrik/tmpl/form/';
+		$aFiles = array();
+		foreach ($this->_aTables as $listModel)
+		{
+			$table = $listModel->getTable();
+			$formModel = $listModel->getForm();
+			$form = $formModel->getForm();
+			if (!in_array('table/' . $table->template, $aFiles))
+			{
+				$aFiles[] = 'table/' . $table->template;
+			}
+			if ($form->form_template != '')
+			{
+				if (is_dir($templatePath . $form->form_template))
+				{
+					if (!in_array('form/' . $form->form_template . '/elements.html', $aFiles))
+					{
+						$aFiles[] = 'form/' . $form->form_template . '/elements.html';
+					}
+					if (!in_array('form/' . $form->form_template . '/form.html', $aFiles))
+					{
+						$aFiles[] = 'form/' . $form->form_template . '/form.html';
+					}
+				}
+				else
+				{
+					if (!in_array('form/' . $form->form_template, $aFiles))
+					{
+						$aFiles[] = 'form/' . $form->form_template;
+					}
+				}
+			}
+			if ($form->view_only_template != '')
+			{
+				if (is_dir($templatePath . $form->view_only_template))
+				{
+					if (!in_array('viewonly/' . $form->view_only_template . '/elements.html', $aFiles))
+					{
+						$aFiles[] = 'viewonly/' . $form->view_only_template . '/elements.html';
+					}
+					if (!in_array('viewonly/' . $form->view_only_template . '/form.html', $aFiles))
+					{
+						$aFiles[] = 'viewonly/' . $form->view_only_template . '/form.html';
+					}
+				}
+				else
+				{
+					if (!in_array('viewonly/' . $form->view_only_template, $aFiles))
+					{
+						$aFiles[] = 'viewonly/' . $form->view_only_template;
+					}
+				}
+			}
+		}
+		$xml = "<files>\n";
+		foreach ($aFiles as $file)
+		{
 			$xml .= "\t<file>tmpl/$file</file>\n";
-	 	}
-	 	$this->_aFiles = $aFiles;
-	 	$xml .= "</files>\n";
-	 	return $xml;
-	 }
+		}
+		$this->_aFiles = $aFiles;
+		$xml .= "</files>\n";
+		return $xml;
+	}
 
 	/**
 	 * builds the xml installer file for a given table
@@ -151,30 +171,33 @@ class FabrikFEModelExport {
 		$strXML .= "<install type=\"fabrik\" version=\"2.0\">\n";
 
 		$strXML .= "<creationDate>" . JRequest::getVar('creationDate', '', 'post') . "</creationDate>\n";
-	   	$strXML .= "<author>" . JRequest::getVar('creationDate', '', 'author') . "</author>\n";
-	   	$strXML .= "<copyright>" . JRequest::getVar('creationDate', '', 'copyright') . "</copyright>\n";
-	   	$strXML .= "<authorEmail>" . JRequest::getVar('creationDate', '', 'authoremail') . "</authorEmail>\n";
-	   	$strXML .= "<authorUrl>" . JRequest::getVar('creationDate', '', 'authorurl') . "</authorUrl>\n";
-	   	$strXML .= "<version>" . JRequest::getVar('creationDate', '', 'version') . "</version>\n";
-	   	$strXML .= "<liscence>" . JRequest::getVar('creationDate', '', 'license') . "</liscence>\n";
-	   	$strXML .= "<description>" . JRequest::getVar('creationDate', '', 'description') . "</description>\n";
+		$strXML .= "<author>" . JRequest::getVar('creationDate', '', 'author') . "</author>\n";
+		$strXML .= "<copyright>" . JRequest::getVar('creationDate', '', 'copyright') . "</copyright>\n";
+		$strXML .= "<authorEmail>" . JRequest::getVar('creationDate', '', 'authoremail') . "</authorEmail>\n";
+		$strXML .= "<authorUrl>" . JRequest::getVar('creationDate', '', 'authorurl') . "</authorUrl>\n";
+		$strXML .= "<version>" . JRequest::getVar('creationDate', '', 'version') . "</version>\n";
+		$strXML .= "<liscence>" . JRequest::getVar('creationDate', '', 'license') . "</liscence>\n";
+		$strXML .= "<description>" . JRequest::getVar('creationDate', '', 'description') . "</description>\n";
 
 		$aTableObjs = array();
 
-		$tables = $this->packageModel->tables;
-		$forms = $this->packageModel->forms;
+		$tables = $this->packageModel->_tables;
+		$forms = $this->packageModel->_forms;
 		if ($this->fabrikData)
 		{
+
 			$strXML .= "<tables>\n";
 			if (is_array($this->tableIds))
 			{
+
 				foreach ($tables as $table)
 				{
 					$vars = get_object_vars($table);
 					$strXML .= "\t<table>\n";
 					foreach ($vars as $key => $val)
 					{
-						if (substr($key, 0, 1) != '_' ) {
+						if (substr($key, 0, 1) != '_')
+						{
 							$strXML .= "\t\t<$key><![CDATA[$val]]></$key>\n";
 						}
 					}
@@ -187,7 +210,8 @@ class FabrikFEModelExport {
 			{
 				$vars = get_object_vars($form);
 				$strXML .= "\t<form>\n";
-				foreach ($vars as $key => $val) {
+				foreach ($vars as $key => $val)
+				{
 					if (substr($key, 0, 1) != '_')
 					{
 						$strXML .= "\t\t<$key><![CDATA[$val]]></$key>\n";
@@ -196,19 +220,21 @@ class FabrikFEModelExport {
 				$strXML .= "\t</form>\n";
 			}
 			$strXML .= "</forms>\n\n";
-			$strElementXML 		= "<elements>\n";
-			$strXML 			.= "<groups>\n";
-			$strValidationXML 	= "<validations>\n";
+
+			$strElementXML = "<elements>\n";
+			$strXML .= "<groups>\n";
+			$strValidationXML = "<validations>\n";
 			foreach ($this->_aTables as $listModel)
 			{
-				$groups = $listModel->getFormModel()->getGroupsHiarachy();
+				$groups = $listModel->_oForm->getGroupsHiarachy();
+
 				$i = 0;
 				foreach ($groups as $groupModel)
 				{
 					$group = $groupModel->getGroup();
 					$vars = get_object_vars($group);
-					$strXML .= "\t<group form_id=\"".$listModel->getFormModel()->getId()."\" ordering=\"" . $i  ."\">\n";
-					foreach ($vars as $key=>$val)
+					$strXML .= "\t<group form_id=\"" . $listModel->getFormModel()->getId() . "\" ordering=\"" . $i . "\">\n";
+					foreach ($vars as $key => $val)
 					{
 						//dont insert join_id as this isnt in the group table
 						if ($key != "join_id")
@@ -226,7 +252,7 @@ class FabrikFEModelExport {
 						$element = $elementModel->getElement();
 						$vars = get_object_vars($element);
 						$strElementXML .= "\t<element>\n";
-						foreach ($vars as $key=>$val)
+						foreach ($vars as $key => $val)
 						{
 							if (substr($key, 0, 1) != '_')
 							{
@@ -234,10 +260,10 @@ class FabrikFEModelExport {
 							}
 						}
 						$strElementXML .= "\t</element>\n\n";
-						$validations = $elementModel->getValidations();
-						foreach ($validations as $validation)
+
+						foreach ($elementModel->_aValidations as $oValidation)
 						{
-							$vars = get_object_vars($validation);
+							$vars = get_object_vars($oValidation);
 							$strValidationXML .= "\t<validation>\n";
 							foreach ($vars as $key => $val)
 							{
@@ -272,40 +298,50 @@ class FabrikFEModelExport {
 	 *
 	 */
 
- 	function _createTablesXML()
- 	{
-	 	$strXML = "<queries>\n";
+	function _createTablesXML()
+	{
+		$strXML = "<queries>\n";
 		for ($i = 0; $i < count($this->_aTables); $i++)
 		{
-	 		$tmpTable = $this->_aTables[$i];
-	 		$this->writeExportBuffer("\t<query>" . $tmpTable->getDropTableSQL() . "</query>\n");
-	 		$this->writeExportBuffer("\t<query>" . $tmpTable->getCreateTableSQL() . "</query>\n");
-	 		if ($this->includeData)
-	 		{
+			$tmpTable = $this->_aTables[$i];
+			$this->writeExportBuffer("\t<query>" . $tmpTable->getDropTableSQL() . "</query>\n");
+			$this->writeExportBuffer("\t<query>" . $tmpTable->getCreateTableSQL() . "</query>\n");
+			if ($this->includeData)
+			{
 				$tmpTable->getInsertRowsSQL($this);
-	 		}
-	 	}
-	 	$this->writeExportBuffer("</queries>\n");
-	 }
+			}
+		}
+		$this->writeExportBuffer("</queries>\n");
+	}
 
-	 function clearExportBuffer()
-	 {
-	 	if (JFile::exists($this->_bufferFile))
-	 	{
-	 		unlink($this->_bufferFile);
-	 	}
-	 }
+	function clearExportBuffer()
+	{
+		if (JFile::exists($this->_bufferFile))
+		{
+			unlink($this->_bufferFile);
+		}
+	}
 
-	 function setBufferFile()
-	 {
-	 	// doesnt work in windowz
-	 	//$this->_bufferFile = '/tmp/fabrik_package-' . $this->label . '.xml';
-		$this->_bufferFile = JPATH_SITE . "/administrator/components/com_fabrik/fabrik_package-". $this->label . '.xml';
-	 }
+	function setBufferFile()
+	{
 
-	 function writeExportBuffer($str)
-	 {
-	 	$filename =  $this->_bufferFile;
+		// doesnt work in windowz
+		//$this->_bufferFile = '/tmp/fabrik_package-' . $this->label . '.xml';
+		$this->_bufferFile = JPATH_SITE . "/administrator/components/com_fabrik/fabrik_package-" . $this->label . '.xml';
+	}
+
+	/**
+	 * Write string to export buffer
+	 *
+	 * @param unknown_type $str
+	 *
+	 * @deprecated
+	 *
+	 * @return Ambigous <object, mixed, reference>
+	 */
+	function writeExportBuffer($str)
+	{
+		$filename = $this->_bufferFile;
 		// Let's make sure the file exists and is writable first.
 		if (JFile::exists($filename))
 		{
@@ -319,9 +355,9 @@ class FabrikFEModelExport {
 			return JError::raiseError(500, JText::sprintf("CANT OPEN FILES", $filename));
 		}
 
-	    // Write $somecontent to our opened file.
-	    if (fwrite($handle, $str) === FALSE)
-	    {
+		// Write $somecontent to our opened file.
+		if (fwrite($handle, $str) === FALSE)
+		{
 			return JError::raiseError(500, JText::sprintf("CANT WRITE TO FILES", $filename));
 		}
 		fclose($handle);
@@ -334,34 +370,35 @@ class FabrikFEModelExport {
 	function _xmlExport($xml)
 	{
 
-		$archiveName =  'fabrik_package-' . $this->label;
-		require_once JPATH_SITE . '/includes/Archive/Tar.php';
+		$archiveName = 'fabrik_package-' . $this->label;
+		require_once(JPATH_SITE . '/includes/Archive/Tar.php');
 
-		$archivePath = JPATH_SITE. '/components/com_fabrik/' . $archiveName . '.tgz';
+		$archivePath = JPATH_SITE . '/components/com_fabrik/' . $archiveName . '.tgz';
 		if (JFile::exists($archivePath))
 		{
 			@unlink($archivePath);
 		}
 		$zip = new Archive_Tar($archivePath);
-		$fileName =  $archiveName . '.xml';
+		$fileName = $archiveName . '.xml';
 		$fileName = $this->_bufferFile;
 		//$ok = $zip->addModify('/tmp/' . $fileName, '', "/tmp/");
 		//, '', dirname( $fileName)  . "/"
 		$fileName = str_replace(JPATH_SITE, '', $this->_bufferFile);
 		$fileName = FabrikString::ltrimword($fileName, "/administrator/");
-		$ok = $zip->addModify( $fileName, '', "components/com_fabrik");
+		$ok = $zip->addModify($fileName, '', "components/com_fabrik");
 		for ($i = 0; $i < count($this->_aFiles); $i++)
 		{
-			$this->_aFiles[$i] = JPATH_SITE. '/components/com_fabrik/tmpl/' . $this->_aFiles[$i];
+			$this->_aFiles[$i] = JPATH_SITE . '/components/com_fabrik/tmpl/' . $this->_aFiles[$i];
 		}
-		$zip->addModify($this->_aFiles, '', JPATH_SITE. '/components/com_fabrik');
+		$zip->addModify($this->_aFiles, '', JPATH_SITE . '/components/com_fabrik');
 		$this->_output_file($archivePath, $archiveName . '.tgz');
 	}
 
-	function _csvExport() {
+	function _csvExport()
+	{
 		$db = FabrikWorker::getDbo();
 		initGzip();
-		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$id = $this->tableIds[0];
 		$listModel->setId($id);
 		$listModel->setOutPutFormat('csv');
@@ -369,23 +406,23 @@ class FabrikFEModelExport {
 		header('Content-Type: text/plain');
 		header('Content-Disposition: attachment; filename="' . $table->label . '-export.csv"');
 		$aTable = JArrayHelper::fromObject($table);
-		$fabrikDb = $listModel->getDb();
+		$fabrikDb = &$listModel->getDb();
 		$table = $table->db_table_name;
 		$sql = "SELECT * FROM $table";
 		$fabrikDb->setQuery($sql);
-		$elementData 	= $fabrikDb->loadObjectList();
+		$elementData = $fabrikDb->loadObjectList();
 		//TODO: replace switchDb
 		//$aNewDbInfo 	= switchDatabase($oTable, $oConn);
 		//$fabrikDb 		= $aNewDbInfo[0];
 		//$table 			= $aNewDbInfo[1];
-		$aFilter 		= array();
+		$aFilter = array();
 		$listModel->getForm();
 		$listModel->getFormGroupElementData();
 
 		$listModel->getParams();
-		$limitLength 	= $listModel->getTotalRecords();
-		$pageNav 		= $listModel->_getPagination(count($elementData), 0, $limitLength);
-		$formdata 		= $listModel->getData();
+		$limitLength = $listModel->getTotalRecords();
+		$pageNav = $listModel->_getPagination(count($elementData), 0, $limitLength);
+		$formdata = $listModel->getData();
 		if (is_array($formdata))
 		{
 			$firstrow = JArrayHelper::fromObject($formdata[0][0]);
@@ -407,9 +444,8 @@ class FabrikFEModelExport {
 
 	function _quote($n)
 	{
-		return '"'.str_replace('"', '""', $n).'"';
+		return '"' . str_replace('"', '""', $n) . '"';
 	}
-
 
 	function _output_file($file, $name)
 	{
@@ -428,12 +464,11 @@ class FabrikFEModelExport {
 			$UserBrowser = '';
 
 		/* important for download im most browser */
-		$mime_type = ($UserBrowser == 'IE' || $UserBrowser == 'Opera') ?
-		 'application/octetstream' : 'application/octet-stream';
+		$mime_type = ($UserBrowser == 'IE' || $UserBrowser == 'Opera') ? 'application/octetstream' : 'application/octet-stream';
 		@ob_end_clean();
 		/* decrease cpu usage extreme */
 		header('Content-Type: ' . $mime_type);
-		header('Content-Disposition: attachment; filename="'.$name.'"');
+		header('Content-Disposition: attachment; filename="' . $name . '"');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 		header('Accept-Ranges: bytes');
 		header("Cache-control: private");
@@ -442,26 +477,26 @@ class FabrikFEModelExport {
 		/* multipart-download and resume-download */
 		if (isset($_SERVER['HTTP_RANGE']))
 		{
-			list($a, $range) = explode("=",$_SERVER['HTTP_RANGE']);
+			list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
 			str_replace($range, "-", $range);
-			$size2 = $size-1;
-			$new_length = $size-$range;
+			$size2 = $size - 1;
+			$new_length = $size - $range;
 			header("HTTP/1.1 206 Partial Content");
 			header("Content-Length: $new_length");
 			header("Content-Range: bytes $range$size2/$size");
 		}
 		else
 		{
-			$size2=$size-1;
-			header("Content-Length: ".$size);
+			$size2 = $size - 1;
+			header("Content-Length: " . $size);
 		}
-		$chunksize = 1*(1024*1024);
+		$chunksize = 1 * (1024 * 1024);
 		$this->bytes_send = 0;
 		if ($file = fopen($file, 'r'))
 		{
 			if (isset($_SERVER['HTTP_RANGE']))
 				fseek($file, $range);
-			while (!feof($file) and (connection_status()==0))
+			while (!feof($file) and (connection_status() == 0))
 			{
 				$buffer = fread($file, $chunksize);
 				print($buffer);
@@ -469,7 +504,7 @@ class FabrikFEModelExport {
 				$this->bytes_send += JString::strlen($buffer);
 				/*sleep(1); decrease download speed */
 			}
-		fclose($file);
+			fclose($file);
 
 		}
 		else

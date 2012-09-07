@@ -1,10 +1,13 @@
-<?php /*
+<?php
+/**
+ * Admin Elements Confirm Delete Tmpl
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @since		1.6
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -14,7 +17,8 @@ defined('_JEXEC') or die;
 	<fieldset class="adminform">
 		<legend><?php echo JText::_('COM_FABRIK_ELEMENTS');?></legend>
 		<ul class="adminformlist">
-		<?php for ($i=0; $i < count($this->items); $i++) {
+		<?php for ($i = 0; $i < count($this->items); $i++)
+		{
 		$element = $this->items[$i];?>
   		<li>
   			<label for="drop-<?php echo $element->id?>">
@@ -26,7 +30,9 @@ defined('_JEXEC') or die;
 				</fieldset>
 				<input type="hidden" name="cid[]" value="<?php echo $element->id ?>" />
   		</li>
-		<?php }?>
+<?php
+}
+?>
 		</ul>
 
 	</fieldset>
