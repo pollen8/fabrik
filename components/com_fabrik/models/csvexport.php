@@ -1,5 +1,7 @@
 <?php
 /**
+ * CSV Export Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,13 +25,22 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 class FabrikFEModelCSVExport
 {
 
-	/** int number of records to output at a time */
+	/**
+	 * Number of records to output at a time
+	 *
+	 * @var int
+	 */
 	public $step = 100;
 
+	/**
+	 * Out put format
+	 *
+	 * @var string
+	 */
 	public $outPutFormat = 'csv';
 
 	/**
-	 * get csv export step
+	 * Get csv export step
 	 *
 	 * @return  string  export step
 	 */
@@ -40,7 +51,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * write the file
+	 * Write the file
 	 *
 	 * @param   int  $total  total # of records
 	 *
@@ -170,7 +181,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * report a error writing the file
+	 * Report a error writing the file
 	 *
 	 * @param   string  $filepath  file path we were trying to write to
 	 *
@@ -185,7 +196,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * fix carriage returns
+	 * Fix carriage returns
 	 *
 	 * @param   object  &$row  csv line of data to fix
 	 *
@@ -232,7 +243,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * get the file name to save the csv data to
+	 * Get the file name to save the csv data to
 	 *
 	 * @return  string  filename
 	 */
@@ -246,7 +257,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * get the tmp folder to store the csv file in
+	 * Get the tmp folder to store the csv file in
 	 *
 	 * @return  string  path
 	 */
@@ -258,7 +269,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * start the download of the completed csv file
+	 * Start the download of the completed csv file
 	 *
 	 * @return null
 	 */
@@ -301,7 +312,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * add calculations
+	 * Add calculations
 	 *
 	 * @param   array   $a     of field elements $a
 	 * @param   string  &$str  to out put as csv file $str
@@ -362,7 +373,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * quote a string
+	 * Quote a string
 	 *
 	 * @param   string  $n  string to quote
 	 *
@@ -393,7 +404,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * get the headings for the csv file
+	 * Get the headings for the csv file
 	 *
 	 * @return  array	heading labels
 	 */
@@ -512,7 +523,7 @@ class FabrikFEModelCSVExport
 	}
 
 	/**
-	 * get unqiue heading
+	 * Get unqiue heading
 	 *
 	 * @param   string  $n  key
 	 * @param   array   $h  search

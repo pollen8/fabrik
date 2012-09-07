@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Fabrik Element List Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,17 +24,39 @@ jimport('joomla.filesystem.file');
 class plgFabrik_ElementList extends plgFabrik_Element
 {
 
+	/**
+	 * Does the element have sub elements
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = true;
 
+	/**
+	 * Default values
+	 *
+	 * @var array
+	 */
 	public $defaults = null;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'TEXT';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var  string
+	 */
 	protected $inputType = 'radio';
 
-	/** @var bool - should the table render functions use html to display the data */
+	/**
+	 * Should the table render functions use html to display the data
+	 *
+	 * @var bool
+	 */
 	public $renderWithHTML = true;
 
 	/**
@@ -332,7 +355,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 	}
 
 	/**
-	 * will the element allow for multiple selections
+	 * Will the element allow for multiple selections
 	 *
 	 * @since	3.0.6
 	 *

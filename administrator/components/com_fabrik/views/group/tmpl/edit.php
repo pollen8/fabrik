@@ -1,13 +1,15 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * Admin Group Edit Tmpl
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
@@ -43,9 +45,9 @@ FabrikHelperHTML::script($srcs);
 
 		</fieldset>
 	</div>
-	
+
 	<div class="width-40 fltlft">
-	
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_REPEAT');?></legend>
 			<ul class="adminformlist">
@@ -56,7 +58,7 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_LAYOUT');?></legend>
 			<ul class="adminformlist">
@@ -67,7 +69,7 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
 			<ul class="adminformlist">
@@ -78,8 +80,8 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
-		
+
+
 	</div>
 	<div class="clr"></div>
 

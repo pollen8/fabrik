@@ -1,4 +1,17 @@
 <?php
+/**
+ * Admin Home Tmpl
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+
 JHTML::stylesheet('media/com_fabrik/css/admin.css');
 jimport('joomla.html.pane');
 $pane = JPane::getInstance('Sliders');
@@ -47,7 +60,7 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 				</tr>
 			</thead>
 			<tbody>
-					<?php foreach ($this->logs as $log) {?>
+					<?php foreach ($this->logs as $log) :?>
 					<tr>
 						<td>
 						<?php echo $log->timedate_created;?>
@@ -58,7 +71,7 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 						</span>
 						</td>
 					</tr>
-					<?php }?>
+					<?php endforeach;?>
 				</tbody>
 			</table>
 			<?php
