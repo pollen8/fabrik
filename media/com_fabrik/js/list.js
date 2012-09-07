@@ -594,14 +594,13 @@ var FbList = new Class({
 		}
 		return row;
 	},
-
+	
 	watchRows: function () {
 		if (!this.list) {
 			return;
 		}
 		
 		if (this.options.ajax_links) {
-			this.getForm().removeEvents('click:relay(.fabrik_edit)');
 			
 			// $$$rob - HACKKKKK!!!!!! 
 			// not sure why but on ajax first load of xhr content the form object does not ini
@@ -618,106 +617,7 @@ var FbList = new Class({
 				'height': this.options.popup_height,
 			    'onContentLoaded': function () {}
 			};
-			
 			var w = Fabrik.getWindow(winOpts);
-			
-			this.getForm().addEvent('click:relay(.fabrik_edit)', function (e) {
-				if (e.rightClick) {
-					return;
-				}
-				var url, loadMethod, a, listid;
-				e.stop();
-				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
-					listid = e.target.getParent('form').getElement('input[name=listref]').get('value');
-				} else {
-					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listref');
-				}
-				//grab this list object in this method as 'this' refers to the last list rendered on the page which may not be the links list! :S
-				var list = Fabrik.blocks['list_' + listid];
-				var row = list.getActiveRow(e);
-				if (!row) {
-					return;
-				}
-				list.setActive(row);
-				var rowid = row.id.split('_').getLast();
-				if (list.options.links.edit === '') {
-					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-					loadMethod = 'xhr';
-				} else {
-					if (e.target.get('tag') === 'a') {
-						a = e.target;
-					} else {
-						a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-					}
-					url = a.get('href');
-					loadMethod = 'iframe';
-				}
-				// make id the same as the add button so we reuse the same form.
-				var winOpts = {
-					'id': 'add.' + this.id,
-					'title': this.options.popup_edit_label,
-					'loadMethod': loadMethod,
-					'contentURL': url,
-					'width': this.options.popup_width,
-					'height': this.options.popup_height
-				};
-				if (typeOf(this.options.popup_offset_x) !== 'null') {
-					winOpts.offset_x = this.options.popup_offset_x;
-				}
-				if (typeOf(this.options.popup_offset_y) !== 'null') {
-					winOpts.offset_y = this.options.popup_offset_y;
-				}
-				Fabrik.getWindow(winOpts);
-			}.bind(this));
-
-			this.getForm().removeEvents('click:relay(.fabrik_view)');
-			this.getForm().addEvent('click:relay(.fabrik_view)', function (e) {
-				if (e.rightClick) {
-					return;
-				}
-				var url, loadMethod, a, listid;
-				e.stop();
-				if (typeOf(e.target.getParent('.floating-tip-wrapper')) === 'null') {
-					listid = e.target.getParent('form').getElement('input[name=listref]').get('value');
-				} else {
-					listid = e.target.getParent('.floating-tip-wrapper').retrieve('listid');
-				}
-				var list = Fabrik.blocks['list_' + listid];
-				var row = list.getActiveRow(e);
-				
-				if (!row) {
-					return;
-				}
-				list.setActive(row);
-				var rowid = row.id.split('_').getLast();
-				if (list.options.links.detail === '') {
-					url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
-					loadMethod = 'xhr';
-				} else {
-					if (e.target.get('tag') === 'a') {
-						a = e.target;
-					} else {
-						a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
-					}
-					url = a.get('href');
-					loadMethod = 'iframe';
-				}
-				var winOpts = {
-					'id': 'view.' + '.' + list.options.formid + '.' + rowid,
-					'title': this.options.popup_view_label,
-					'loadMethod': loadMethod,
-					'contentURL': url,
-					'width': this.options.popup_width,
-					'height': this.options.popup_height
-				};
-				if (typeOf(this.options.popup_offset_x) !== 'null') {
-					winOpts.offset_x = this.options.popup_offset_x;
-				}
-				if (typeOf(this.options.popup_offset_y) !== 'null') {
-					winOpts.offset_y = this.options.popup_offset_y;
-				}
-				Fabrik.getWindow(winOpts);
-			}.bind(this));
 		}
 	},
 	

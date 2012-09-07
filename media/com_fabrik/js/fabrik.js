@@ -202,6 +202,19 @@ var Loader = new Class({
 			}
 			Fabrik.watchDelete(e, target);
 		});
+		document.addEvent('click:relay(.fabrik_edit a)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
+			Fabrik.watchEdit(e, target);
+		});
+		document.addEvent('click:relay(.fabrik_view a)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
+			Fabrik.watchView(e, target);
+		});
+		
 		// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
 		// build its window.
 		Fabrik.iconGen = new IconGenerator({scale: 0.5});
@@ -290,6 +303,108 @@ var Loader = new Class({
 			if (!l.submit('list.delete')) {
 				e.stop();
 			}
+		};
+		
+		/**
+		 * Globally watch list edit links
+		 * 
+		 * @param   event    e       relayed click event
+		 * @param   domnode  target  <a> link
+		 * 
+		 * @since 3.0.7
+		 */
+		Fabrik.watchEdit = function (e, target) {
+			var listRef = target.get('data-list');
+			var list = Fabrik.blocks[listRef];
+			var row = list.getActiveRow(e);
+			if (!list.options.ajax_links) {
+				return;
+			}
+			e.preventDefault();
+			if (!row) {
+				return;
+			}
+			list.setActive(row);
+			var rowid = row.id.split('_').getLast();
+			if (list.options.links.edit === '') {
+				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				loadMethod = 'xhr';
+			} else {
+				if (e.target.get('tag') === 'a') {
+					a = e.target;
+				} else {
+					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+				}
+				url = a.get('href');
+				loadMethod = 'iframe';
+			}
+			// Make id the same as the add button so we reuse the same form.
+			var winOpts = {
+				'id': 'add.' + listRef,
+				'title': list.options.popup_edit_label,
+				'loadMethod': loadMethod,
+				'contentURL': url,
+				'width': list.options.popup_width,
+				'height': list.options.popup_height
+			};
+			if (typeOf(list.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = list.options.popup_offset_x;
+			}
+			if (typeOf(list.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = list.options.popup_offset_y;
+			}
+			Fabrik.getWindow(winOpts);
+		};
+		
+		/**
+		 * Globally watch list edit links
+		 * 
+		 * @param   event    e       relayed click event
+		 * @param   domnode  target  <a> link
+		 * 
+		 * @since 3.0.7
+		 */
+		
+		Fabrik.watchView = function (e, target) {
+			var listRef = target.get('data-list');
+			var list = Fabrik.blocks[listRef];
+			if (!list.options.ajax_links) {
+				return;
+			}
+			e.preventDefault();
+			var row = list.getActiveRow(e);
+			if (!row) {
+				return;
+			}
+			list.setActive(row);
+			var rowid = row.id.split('_').getLast();
+			if (list.options.links.detail === '') {
+				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				loadMethod = 'xhr';
+			} else {
+				if (e.target.get('tag') === 'a') {
+					a = e.target;
+				} else {
+					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+				}
+				url = a.get('href');
+				loadMethod = 'iframe';
+			}
+			var winOpts = {
+				'id': 'view.' + '.' + listRef + '.' + rowid,
+				'title': list.options.popup_view_label,
+				'loadMethod': loadMethod,
+				'contentURL': url,
+				'width': list.options.popup_width,
+				'height': list.options.popup_height
+			};
+			if (typeOf(list.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = list.options.popup_offset_x;
+			}
+			if (typeOf(list.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = list.options.popup_offset_y;
+			}
+			Fabrik.getWindow(winOpts);
 		};
 		
 		window.fireEvent('fabrik.loaded');
