@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -74,6 +74,7 @@ class FabrikViewElement extends JViewLegacy
 			$this->elements = $this->get('Elements');
 		}
 		$this->assign('parent', $this->get('Parent'));
+		FabrikHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 

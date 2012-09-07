@@ -47,56 +47,85 @@ FabrikHelperHTML::script($srcs, $this->js);
 </script>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="row-fluid">
-		<ul class="nav nav-tabs">
-			<li class="active">
-		    	<a data-toggle="tab" href="#tab-details">
-		    		<?php echo JText::_('COM_FABRIK_DETAILS'); ?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-process">
-		    		<?php echo JText::_('COM_FABRIK_FORM_PROCESSING'); ?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-publishing">
-		    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS')?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-groups">
-		    		<?php echo JText::_('COM_FABRIK_GROUPS')?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-layout">
-		    		<?php echo JText::_('COM_FABRIK_LAYOUT')?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-options">
-		    		<?php echo JText::_('COM_FABRIK_OPTIONS')?>
-		    	</a>
-		    </li>
-		    <li>
-		    	<a data-toggle="tab" href="#tab-plugins">
-		    		<?php echo JText::_('COM_FABRIK_PLUGINS')?>
-		    	</a>
-		    </li>
-		</ul>
+	<div class="width-50 fltlft">
+		<fieldset class="adminform">
+			<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
+			<ul class="adminformlist">
+				<?php foreach ($this->form->getFieldset('details') as $field) :?>
+				<li>
+					<?php echo $field->label; ?><?php echo $field->input; ?>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+			<div class="clr"> </div>
+		</fieldset>
+
+		<fieldset class="adminform">
+			<legend><?php echo JText::_('COM_FABRIK_BUTTONS');?></legend>
+			<ul class="adminformlist">
+				<?php foreach ($this->form->getFieldset('buttons') as $field) :?>
+				<li>
+					<?php echo $field->label; ?><?php echo $field->input; ?>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+		</fieldset>
+
+		<fieldset class="adminform">
+			<legend><?php echo JText::_('COM_FABRIK_FORM_PROCESSING');?></legend>
+			<ul class="adminformlist">
+				<li>
+					<?php echo $this->form->getLabel('record_in_database') . $this->form->getInput('record_in_database');
+					echo $this->form->getLabel('db_table_name') ?>
+					<?php if ($this->item->record_in_database != '1') {?>
+						<?php  echo $this->form->getInput('db_table_name'); ?>
+					<?php } else { ?>
+						<input class="readonly" readonly="readonly" id="database_name" name="_database_name" value="<?php echo $this->item->db_table_name;?>"  />
+						<input type="hidden" id="_connection_id" name="_connection_id" value="<?php echo $this->item->connection_id;?>"  />
+					<?php }?>
+				</li>
+				<?php foreach ($this->form->getFieldset('processing') as $field) :?>
+				<li>
+					<?php echo $field->label; ?><?php echo $field->input; ?>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+		</fieldset>
+
+		<fieldset class="adminform">
+			<legend><?php echo JText::_('COM_FABRIK_NOTES');?></legend>
+			<ul class="adminformlist">
+				<?php foreach ($this->form->getFieldset('notes') as $field) :?>
+				<li>
+					<?php echo $field->label; ?><?php echo $field->input; ?>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+		</fieldset>
 	</div>
-	<div class="tab-content">
-		<?php
-		echo $this->loadTemplate('bootstrap_details');
-		echo $this->loadTemplate('bootstrap_process');
-		echo $this->loadTemplate('bootstrap_publishing');
-		echo $this->loadTemplate('bootstrap_groups');
-		echo $this->loadTemplate('bootstrap_templates');
-		echo $this->loadTemplate('bootstrap_options');
-		echo $this->loadTemplate('bootstrap_plugins');
-		?>
+
+	<div class="width-50 fltrt">
+		<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie' => 1));
+
+		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'form_publishing');
+		echo $this->loadTemplate('publishing');
+
+		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUPS'), 'form_groups');
+		echo $this->loadTemplate('groups');
+
+		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_LAYOUT'), 'form_templates');
+		echo $this->loadTemplate('templates');
+
+		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_OPTIONS'), 'form_options');
+		echo $this->loadTemplate('options');
+
+		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_PLUGINS'), 'form_plugins');
+		echo $this->loadTemplate('plugins');
+		echo JHtml::_('tabs.end'); ?>
 	</div>
+
+	<div class="clr"></div>
+
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 </form>

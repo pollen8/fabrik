@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -32,8 +32,8 @@ class FabrikViewList extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
-		$this->form	= $this->get('Form');
-		$this->item	= $this->get('Item');
+		$this->form = $this->get('Form');
+		$this->item = $this->get('Item');
 		$formModel = $this->get('FormModel');
 		$formModel->setId($this->item->form_id);
 		$this->state = $this->get('State');
@@ -70,20 +70,23 @@ class FabrikViewList extends JViewLegacy
 			$this->order_dir = array();
 			foreach ($orderdirs as $orderdir)
 			{
-				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', $orderdir);
+				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text',
+					$orderdir);
 			}
 			if (empty($this->order_dir))
 			{
-				$this->order_dir[] = JHTML::_( 'select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', '');
+				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', '');
 			}
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
 		}
+		FabrikHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 
 	/**
 	 * show the list's linked forms etc
-* @param $tpl
+	 *
+	 * @param $tpl
 	 */
 
 	public function showLinkedElements($tpl = null)
@@ -97,14 +100,14 @@ class FabrikViewList extends JViewLegacy
 
 	/**
 	 * see if the user wants to rename the list/form/groups
-* @param string $tpl
+	 * @param string $tpl
 	 */
 
 	public function confirmCopy($tpl = null)
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		$lists = array();
-		$model= $this->getModel();
+		$model = $this->getModel();
 		foreach ($cid as $id)
 		{
 			$model->setId($id);
@@ -144,7 +147,7 @@ class FabrikViewList extends JViewLegacy
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
-		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_LIST_NEW') : JText::_('COM_FABRIK_MANAGER_LIST_EDIT'), 'list.png');
 		if ($isNew)

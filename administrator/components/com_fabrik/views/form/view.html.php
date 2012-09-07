@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -16,7 +16,7 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.5
+ * @since		3.0
  */
 class FabrikViewForm extends JViewLegacy
 {
@@ -45,6 +45,7 @@ class FabrikViewForm extends JViewLegacy
 			return false;
 		}
 		$this->addToolbar();
+		FabrikHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 
