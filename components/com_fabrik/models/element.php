@@ -1554,8 +1554,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->HTMLids = null;
 		$elementTable = $this->getElement();
 		$element = new stdClass;
-		$element->startRow = false;
-		$element->endRow = false;
+		$element->startRow = 0;
+		$element->endRow = 0;
 		$elHTMLName = $this->getFullName(true, true);
 
 		// If the element is in a join AND is the join's foreign key then we don't show the element

@@ -265,7 +265,7 @@ class FabrikFEModelGroup extends FabModel
 		$colcount = (int) $params->get('group_columns');
 
 		// Bootstrap grid formatting
-		$element->span = floor($colcount / 12);
+		$element->span = floor(12 / $colcount);
 		$element->offset = $params->get('group_offset', 0);
 
 		if ($colcount > 1)
@@ -280,12 +280,26 @@ class FabrikFEModelGroup extends FabModel
 			$element->column = ' style="float:left;width:' . $w . ';';
 			if ($elCount !== 0 && (($elCount - 1) % $colcount == 0) || $element->hidden)
 			{
-				$element->startRow = true;
+				$element->startRow = 1;
 				$element->column .= "clear:both;";
 			}
-			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
+
+			if ($element->hidden)
 			{
-				$element->endRow = true;
+				$element->endRow = 1;
+			}
+			else
+			{
+				if ((($elCount -1) % $colcount === $colcount - 1))
+				{
+					// echo $element->label_raw . ($elCount - 1) . "  % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . " (yes)<br>";
+					$element->endRow = 1;
+				}
+				else
+				{
+					// echo $element->label_raw . ($elCount - 1) . " $elCount % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . "(no)<br>";
+
+				}
 			}
 			$element->column .= '" ';
 		}
