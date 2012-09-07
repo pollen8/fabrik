@@ -2436,14 +2436,15 @@ class FabrikFEModelList extends JModelForm
 					{
 						if (!$ingroup)
 						{
+							// Commenting out if statement see - https://github.com/Fabrik/fabrik/issues/404
+
 							// Search all filter after a prefilter - alter 'join' value to 'AND'
-							if ($last_i && JArrayHelper::getValue($filters['search_type'], $iast_i) == 'prefilter'
+							/* if ($last_i && JArrayHelper::getValue($filters['search_type'], $last_i) == 'prefilter'
 								&& JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter')
 							{
 								$filters['join'][$i] = 'AND';
-								/* $$$ hugh - if using a search form, with a multiselect object (like checkbox) and
-								 * prefilters, the gstart is never getting set, so have unbalanced )
-								 */
+
+								// $$$ hugh - if using a search form, with a multiselect object (like checkbox) and prefilters, the gstart is never getting set, so have unbalanced )
 								if ($filters['search_type'][$i] == 'search')
 								{
 									$gstart = '(';
@@ -2451,10 +2452,10 @@ class FabrikFEModelList extends JModelForm
 								}
 							}
 							else
-							{
+							{ */
 								$gstart = '(';
 								$groupedCount++;
-							}
+							// }
 						}
 						$ingroup = true;
 					}
