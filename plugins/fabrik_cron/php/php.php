@@ -1,5 +1,4 @@
 <?php
-
 /**
 * A cron task to email records to a give set of users
 * @package Joomla
@@ -13,7 +12,7 @@
 defined('_JEXEC') or die();
 
 // Require the abstract plugin class
-require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
+require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class plgFabrik_Cronphp extends plgFabrik_Cron {
 
@@ -23,7 +22,10 @@ class plgFabrik_Cronphp extends plgFabrik_Cron {
 	}
 
 	/**
-	 * do the plugin action
+	 * Do the plugin action
+	 *
+	 * @return  int  number of records run, you can set this by setting the varaible $processed
+	 * in either your included script in php code.
 	 *
 	 */
 	function process(&$data, &$listModel)
@@ -32,6 +34,11 @@ class plgFabrik_Cronphp extends plgFabrik_Cron {
 	  $file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
 	  eval($params->get('cronphp_params'));
 	  require_once(JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file);
+	  if (isset($processed))
+	  {
+	  	return (int) $processed;
+	  }
+	  return 0;
 	}
 
 	/**
