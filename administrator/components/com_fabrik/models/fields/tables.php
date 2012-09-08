@@ -92,7 +92,7 @@ class JFormFieldTables extends JFormFieldList
 		{
 			return '<input type="text" value="' . $this->value . '" class="readonly" name="' . $this->name . '" readonly="true" />';
 		}
-		$c = ElementHelper::getRepeatCounter($this);
+		$c = FabrikAdminElementHelper::getRepeatCounter($this);
 		$readOnlyOnEdit = $this->element['readonlyonedit'];
 		if ($connectionDd != '')
 		{

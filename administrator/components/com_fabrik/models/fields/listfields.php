@@ -51,7 +51,7 @@ class JFormFieldListfields extends JFormFieldList
 		$controller = JRequest::getVar('view', JRequest::getVar('task'));
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$c = ElementHelper::getRepeatCounter($this);
+		$c = FabrikAdminElementHelper::getRepeatCounter($this);
 		$connection = $this->element['connection'];
 		/*
 		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
@@ -80,7 +80,7 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				else
 				{
-					$repeat = ElementHelper::getRepeat($this);
+					$repeat = FabrikAdminElementHelper::getRepeat($this);
 					$tableDd = $this->element['table'];
 					$opts = new stdClass;
 					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;

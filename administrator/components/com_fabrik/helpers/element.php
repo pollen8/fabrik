@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @since    3.0
  */
 
-class ElementHelper
+class FabrikAdminElementHelper
 {
 
 	/**
