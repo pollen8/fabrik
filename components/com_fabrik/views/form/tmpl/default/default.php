@@ -1,4 +1,15 @@
-<?php  /* The default template includes the following folder and files:
+<?php
+/**
+ * Default Form Template
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+
+/* The default template includes the following folder and files:
 
 images - this is the folder for the form template's images
 - add.png

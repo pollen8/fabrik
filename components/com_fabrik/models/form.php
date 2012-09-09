@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Form Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -24,102 +26,226 @@ require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 class FabrikFEModelForm extends FabModelForm
 {
 
-	/** @var int id */
+	/**
+	 * id
+	 * @var int
+	 */
 	public $id = null;
 
-	/** @var int set to -1 if form in ajax module, set to 1+ if in package */
+	/**
+	 * Set to -1 if form in ajax module, set to 1+ if in package
+	 *
+	 * @var int
+	 */
 	public $packageId = 0;
 
-	/* not used in database (need to be prefixed with "_")*/
-	/** @var array form's group elements*/
+	/**
+	 * Form's group elements
+	 *
+	 * @var array
+	 */
 	var $_elements = null;
 
-	/** @var object table model assocated with form*/
+	/**
+	 * List model assocated with form
+	 *
+	 * @var FabrikFEModelList
+	 */
 	protected $_listModel = null;
 
-	/** @var array of group ids that are actually tablejoins [groupid->joinid]*/
+	/**
+	 * Group ids that are actually tablejoins [groupid->joinid]
+	 *
+	 * @var array
+	 *
+	 */
 	var $_aJoinGroupIds = array();
 
-	/** @var bol true if editable if 0 then show view only verion of form */
+	/**
+	 * If editable if 0 then show view only verion of form
+	 *
+	 * @var bol true
+	 */
 	var $_editable = true;
 
-	/** @var string encoding type */
+	/**
+	 * Form encoding type
+	 *
+	 * @var string
+	 */
 	var $_enctype = "application/x-www-form-urlencoded";
 
-	/** @var array validation rule classes */
+	/**
+	 * Validation rule classes
+	 *
+	 * @var array
+	 */
 	var $_validationRuleClasses = null;
 
-	/**@var bool is the form running as a mambot or module(true)*/
+	/**
+	 * The form running as a mambot or module(true)
+	 *
+	 * @var bool
+	 */
 	public $isMambot = false;
 
-	/** @var array of join objects for the form */
+	/**
+	 *  Join objects for the form
+	 *
+	 *  @var array
+	 */
 	var $_aJoinObjs = array();
 
+	/**
+	 * Concat string to create full element names
+	 *
+	 * @var string
+	 */
 	public $joinTableElementStep = '___';
 
-	/** @var object parameters */
+	/**
+	 *  Parameters
+	 *
+	 *  @var JRegistry
+	 */
 	protected $_params = null;
 
-	/** @var int row id to submit */
+	/**
+	 * Row id to submit
+	 *
+	 * @var int
+	 */
 	var $_rowId = null;
 
-	/** @since 3.0
-	 * @var bool submitted as ajax*/
+	/**
+	 * Submitted as ajax
+	 *
+	 * @since 3.0
+	 * @var bool
+	 */
 	public $ajax = null;
 
-	/** @var object form **/
+	/**
+	 * Form table
+	 *
+	 * @var JTable
+	 */
 	var $_form = null;
 
-	/** @var object last current element found in hasElement()*/
+	/**
+	 * Last current element found in hasElement()
+	 *
+	 * @var object
+	 */
 	var $_currentElement = null;
 
-	/** @var bol if true encase table and element names with "`" when getting elemenet list */
+	/**
+	 * If true encase table and element names with "`" when getting elemenet list
+	 *
+	 * @var bool
+	 */
 	var $_addDbQuote = false;
 
 	var $_formData = null;
 
-	/** @var array form errors */
+	/**
+	 * Form errors
+	 *
+	 * @var array
+	 */
 	var $_arErrors = array();
 
-	/** @var object uploader helper */
+	/**
+	 * Uploader helper
+	 *
+	 * @var FabrikUploader
+	 */
 	protected $uploader = null;
 
-	/** @var array pages (array containing group ids for each page in the form **/
+	/**
+	 * Pages (array containing group ids for each page in the form)
+	 *
+	 * @var array
+	 */
 	var $pages = null;
 
-	/** @var object session model deals with storing incomplete pages **/
+	/**
+	 * Session model deals with storing incomplete pages
+	 *
+	 * @var FabrikFEModelFormsession
+	 */
 	public $sessionModel = null;
 
-	/** @var array modified data by any validation rule that uses replace functionality */
+	/**
+	 * Modified data by any validation rule that uses replace functionality
+	 *
+	 * @var array
+	 */
 	var $_modifiedValidationData = null;
 
 	public $groups = null;
 
-	/** store the form's previous data when processing */
+	/**
+	 * Store the form's previous data when processing
+	 *
+	 * @var array
+	 * /
 	var $_origData = null;
 
-	/** @var array stores elements not shown in table **/
+	/**
+	 * Stores elements not shown in the list view
+	 * @var array
+	 */
 	var $_elementsNotInTable = null;
 
+	/**
+	 * Form data
+	 *
+	 * @var array
+	 */
 	var $_data = null;
 
+	/**
+	 * Form data - keys use the full element name (listname___elementname)
+	 * @var unknown_type
+	 */
 	var $_formDataWithTableName = null;
 
-	/** @var bool should the form store the main row? Set to false in juser plugin if fabrik table is also #__users */
+	/**
+	 * Should the form store the main row? Set to false in juser
+	 * plugin if fabrik table is also #__users
+	 *
+	 * @var bool
+	 */
 	var $_storeMainRow = true;
 
 	/**
 	 * Query used to load form record.
+	 *
 	 * @var string
 	 */
 	public $query = null;
 
-	/** #var array specifies element name that have been overridden from a form plugin, so encrypted RO data should be ignored */
+	/**
+	 * Specifies element name that have been overridden from a form plugin,
+	 * so encrypted RO data should be ignored
+	 *
+	 * @var array
+	 */
 	var $_pluginUpdatedElements = array();
 
+	/**
+	 * Linked fabrik lists
+	 *
+	 * @var array
+	 */
 	var $_linkedFabrikLists = null;
 
-	/** @var bool are we copying a row?  i.e. using form's Copy button.  Plugin manager needs to know. */
+	/**
+	 * Are we copying a row?  i.e. using form's Copy button.  Plugin manager needs to know.
+	 *
+	 *  @var bool
+	 */
 	var $_copyingRow = false;
 
 	/**
@@ -1113,16 +1239,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	}
 
 	/**
-	 *
 	 * Intended for use by things like PHP form plugin code, PHP validations, etc.,
 	 * so folk don't have to access _formData directly.
 	 *
+	 * @param   string  $fullName     full element name
+	 * @param   bool    $raw          get raw data
+	 * @param   mixed   $default      value
+	 * @param   string  $repeatCount  repeat count if needed
+	 *
 	 * @since	3.0.6
 	 *
-	 * @param string $fullName full element name
-	 * @param bool $raw get raw data
-	 * @param mixed default value
-	 * @param string $repeatCount repeat count if needed
 	 * @return mixed
 	 */
 	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
@@ -1136,20 +1262,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if (array_key_exists($fullName, $this->_formData))
 		{
 			$value = $this->_formData[$fullName];
-		}
-		// Maybe we are being called from onAfterProcess hook, or somewhere else
-		// running after store, when non-joined data names have been reduced to short
-		// names in _formData, so peek in _fullFormData
-		else if (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
+		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
+		   * running after store, when non-joined data names have been reduced to short
+		   * names in _formData, so peek in _fullFormData
+		   */
+		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
 			$value = $this->_fullFormData[$fullName];
 		}
 		// Wasn't in the form's main table data, so try joins
-		else if (array_key_exists('join', $this->_formData))
+		elseif (array_key_exists('join', $this->_formData))
 		{
-			// We can't just loop through the ['join'] structure, as we need to
-			// know if the group is repeatable, and can't rely on key being an array,
-			// to determine that, as it might be a list element type.
+			/* We can't just loop through the ['join'] structure, as we need to
+			 * know if the group is repeatable, and can't rely on key being an array,
+			 * to determine that, as it might be a list element type.
+			 */
 			$groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{
@@ -1159,31 +1286,32 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (array_key_exists($fullName, $this->_formData['join'][$group->join_id]))
 					{
 						$value = $this->_formData['join'][$group->join_id][$fullName];
-						// if the group is repeatable, see if they want a specific index
+
+						// If the group is repeatable, see if they want a specific index
 						if ($groupModel->canRepeat())
 						{
 							if (isset($repeatCount))
 							{
-								// if they specified an index and it exists, condense return value down to just that
+								// If they specified an index and it exists, condense return value down to just that
 								if (array_key_exists($repeatCount, $value))
 								{
 									$value = $value[$repeatCount];
 								}
 								else
 								{
-									// if the index they wanted doesn't exist, set to default
+									// If the index they wanted doesn't exist, set to default
 									$value = $default;
 								}
 							}
 						}
-						// we found it, so break out of the foreach
+						// We found it, so break out of the foreach
 						break;
 					}
 				}
 			}
 		}
 
-		// if we didn't find it, set to default
+		// If we didn't find it, set to default
 		if (!isset($value))
 		{
 			$value = $default;
@@ -1556,19 +1684,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			// Back on track
 			if (is_array($data) && array_key_exists($oJoin->table_join . '___' . $oJoin->table_join_key, $data))
 			{
-				// $$$rob get the join tables full primary key
-				// $$$ hugh now building this further up, as we need it earlier
-				/*
-				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
-				$oJoinPk = $oJoin->table_join . '___';
-				foreach ($cols as $col)
-				{
-				    if ($col->Key == 'PRI')
-				    {
-				        $oJoinPk .= $col->Field;
-				    }
-				}
-				 */
+
 				$fullforeginKey = $oJoin->table_join . '___' . $oJoin->table_join_key;
 
 				$repeatParams = array();
@@ -1906,7 +2022,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				 * $$$hugh @FIXME - at this point we've removed tablename from _formdata keys (in processTodb()),
 				 * but element getValue() methods assume full name in _formData
 				 */
-				//$v = $elementModel->getValue($this->_formData);
+				// $v = $elementModel->getValue($this->_formData);
 				$v = $elementModel->getValue($this->_formDataWithTableName);
 				if ($elementModel->ignoreOnUpdate($v))
 				{
@@ -2866,8 +2982,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if ($this->saveMultiPage())
 		{
 			$srow = $this->getSessionData();
-			// Test if its a resumed paged form
-			// if so _arErrors will be filled so check all elements had no errors
+			/*
+			 * Test if its a resumed paged form
+			 * if so _arErrors will be filled so check all elements had no errors
+			 */
 			$multiPageErrors = false;
 			if ($srow->data != '')
 			{
@@ -2958,6 +3076,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			else
 			{
 				$sessionLoaded = false;
+
 				// Test if its a resumed paged form
 				if ($this->saveMultiPage())
 				{
@@ -3573,7 +3692,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			/**
 			 * $$$ hugh - we need to do this for non-repeat joins as well
 			 */
-			//if ($groupModel->canRepeat() && $groupModel->isJoin())
 			if ($groupModel->isJoin())
 			{
 
@@ -3736,7 +3854,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		array_shift($m);
 		return FabrikString::rtrimword(implode(":", $m), "}");
 	}
-	/* Jaanus: see text above about intro */
+	/**
+	 *  Jaanus: see text above about intro
+	 *
+	 *  @return  string  outro
+	 */
 	public function getOutro()
 	{
 		$params = $this->getParams();
@@ -3885,7 +4007,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$linkedform_linktype = $factedLinks->linkedform_linktype;
 		$linkedtable_linktype = $factedLinks->linkedlist_linktype;
 		$f = 0;
-		foreach ($joinsToThisKey as $element)
+		foreach ($joinsToThisKey as $joinKey => $element)
 		{
 			$key = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
@@ -3914,7 +4036,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
 				$recordCounts = $referringTable->getRecordCounts($element);
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				$links[$element->list_id][] = $element->listlabel . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
+				$label = $factedLinks->linkedformheader->$key;
+				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 			$f++;
 		}
@@ -4578,8 +4701,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	/**
 	 * Get redirect URL
 	 *
-	 * @param   bool    $incSession  set url in session?
-	 * @param   bool    $isMambot    is Mambot
+	 * @param   bool  $incSession  set url in session?
+	 * @param   bool  $isMambot    is Mambot
 	 *
 	 * @return   array  url: string  redirect url, baseRedirect (True: default redirect, False: plugin redirect)
 	 *

@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Fabrik Elemenet Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,98 +23,221 @@ jimport('joomla.filesystem.file');
 
 class plgFabrik_Element extends FabrikPlugin
 {
-	/** @var int element id */
+	/**
+	 * Element id
+	 *
+	 * @var int
+	 */
 	var $_id = null;
 
-	/** @var array javascript actions to attach to element */
+	/**
+	 * Javascript actions to attach to element
+	 *
+	 * @var array
+	 */
 	var $_jsActions = null;
 
-	/** @var object params */
+	/**
+	 * params
+	 *
+	 * @var object
+	 */
 	protected $_params = null;
 
-	/** @var array validation objects associated with the element */
+	/**
+	 * Validation objects associated with the element
+	 *
+	 * @var array
+	 */
 	var $_aValidations = null;
 
-	/** @var bol */
+	/**
+	 * Editable
+	 *
+	 * @var bool
+	 */
 	var $_editable = null;
 
-	/** @var bol */
+	/**
+	 * Is an upload element
+	 *
+	 * @var bol
+	 */
 	protected $_is_upload = 0;
 
-	/** @var bol */
+	/**
+	 * Does the element's data get recorded in the db
+	 *
+	 * @var bol
+	 */
 	var $_recordInDatabase = 1;
 
-	/** @var object to contain access rights **/
+	/**
+	 * Contain access rights
+	 *
+	 * @var object
+	 */
 	var $_access = null;
 
-	/**@var string validation error **/
+	/**
+	 * Validation error
+	 *
+	 * @var string
+	 */
 	var $_validationErr = null;
 
-	/** @var array stores possible element names to avoid repeat db queries **/
+	/**
+	 *  Stores possible element names to avoid repeat db queries
+	 *
+	 *  @var array
+	 */
 	var $_aFullNames = array();
 
-	/** @var object group model*/
+	/**
+	 * Group model
+	 *
+	 * @var object
+	 */
 	var $_group = null;
 
-	/** @var object form model*/
+	/**
+	 * Form model
+	 *
+	 * @var object
+	 */
 	var $_form = null;
 
-	/** @var object table model*/
+	/**
+	 * List model
+	 *
+	 * @var object
+	 */
 	protected $_list = null;
 
-	/** @var object JTable element object */
+	/**
+	 * Element object
+	 *
+	 * @var JTable
+	 */
 	var $_element = null;
 
 	/**
-	* If the element 'Include in search all' option is set to 'default' then this states if the
-	* element should be ignored from search all.
-	* @var bool  True, ignore in advanced search all.
-	*/
+	 * If the element 'Include in search all' option is set to 'default' then this states if the
+	 * element should be ignored from search all.
+	 *
+	 * @var bool  True, ignore in advanced search all.
+	 */
 	protected $ignoreSearchAllDefault = false;
 
 	/**
 	 * Does the element have a label
+	 *
 	 * @var bool
 	 */
 	protected $hasLabel = true;
 
-	/** @var bol does the element contain sub elements e.g checkboxes radiobuttons */
+	/** Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bol
+	 */
 	var $hasSubElements = false;
 
+	/**
+	 * Valid image extensions
+	 *
+	 * @var array
+	 */
 	var $_imageExtensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
 
-	/** @var bol is the element in a detailed view? **/
+	/**
+	 * Is the element in a detailed view?
+	 *
+	 * @var bool
+	 */
 	var $_inDetailedView = false;
 
+	/**
+	 * Default values
+	 *
+	 * @var array
+	 */
 	var $defaults = array();
 
+	/**
+	 * The element's HTML ids based on $repeatCounter
+	 *
+	 * @var array
+	 */
 	var $_HTMLids = null;
 
-	/** @var bol is a join element */
+	/**
+	 * Is a join element
+	 *
+	 * @var bool
+	 */
 	var $_isJoin = false;
 
+	/**
+	 * Is the element in a reapeat group
+	 *
+	 * @var bool
+	 */
 	var $_inRepeatGroup = null;
 
+	/**
+	 * Default value
+	 *
+	 * @var string
+	 */
 	var $_default = null;
 
-	/** @var object join model */
+	/**
+	 * Join model
+	 *
+	 * @var object
+	 */
 	var $_joinModel = null;
 
+	/**
+	 * Has the icon been set
+	 *
+	 * @var bool
+	 */
 	var $iconsSet = false;
 
-	/** @var object parent element row - if no parent returns elemnt */
+	/**
+	 * Parent element row - if no parent returns element
+	 *
+	 * @var object
+	 */
 	var $parent = null;
 
-	/** @var string actual table name (table or joined tables db table name)*/
+	/**
+	 * Actual table name (table or joined tables db table name)
+	 *
+	 * @var string
+	 */
 	var $actualTable = null;
 
-	/** @var bool ensures the query values are only escaped once */
+	/**
+	 * Ensures the query values are only escaped once
+	 *
+	 * @var bool
+	 */
 	var $escapedQueryValue = false;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'VARCHAR(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var  string
+	 */
 	protected $fieldSize = '255';
 
 	/**
@@ -652,7 +776,8 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				$this->_access->use = false;
 			}
-			else {
+			else
+			{
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
 				$this->_access->use = in_array($this->getElement()->access, $groups);
@@ -5351,7 +5476,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * is the element a join
+	 * Is the element a join
 	 *
 	 * @return  bool
 	 */
@@ -5378,7 +5503,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * encrypt an enitre columns worth of data, used when updating an element to encrypted
+	 * Encrypt an enitre columns worth of data, used when updating an element to encrypted
 	 * with existing data in the column
 	 *
 	 * @return  null
@@ -5396,7 +5521,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * decrypt an enitre columns worth of data, used when updating an element from encrypted to decrypted
+	 * Decrypt an enitre columns worth of data, used when updating an element from encrypted to decrypted
 	 * with existing data in the column
 	 *
 	 * @return  null

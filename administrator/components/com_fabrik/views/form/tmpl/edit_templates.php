@@ -1,3 +1,17 @@
+<?php
+/**
+ * Admin Form Edit:templates Tmpl
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <fieldset class="adminform">
 	<legend>
 		<?php echo JText::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
@@ -15,7 +29,7 @@
 		<?php endforeach; ?>
 	</ul>
 </fieldset>
-		
+
 <fieldset class="adminform">
 <legend>
 		<?php echo JText::_('COM_FABRIK_ADMIN_TEMPLATES'); ?>
@@ -25,7 +39,7 @@
 		<li>
 			<?php echo $field->label; ?><?php echo $field->input; ?>
 		</li>
-		<?php endforeach?>	
+		<?php endforeach?>
 	</ul>
 </fieldset>
 
@@ -38,6 +52,6 @@
 		<li>
 			<?php echo $field->label; ?><?php echo $field->input; ?>
 		</li>
-		<?php endforeach?>	
+		<?php endforeach?>
 	</ul>
 </fieldset>

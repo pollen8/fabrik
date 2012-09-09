@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,7 +18,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 /**
- * Fabrik Connection Model
+ * Fabrik List Model
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -915,7 +917,7 @@ class FabrikFEModelList extends JModelForm
 					. FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)) . '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . ' href="' . $link . '" title="' . $viewLabel . '">'
+				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $link . '" title="' . $viewLabel . '">'
 					. FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel)) . '<span>' . $viewLabel . '</span></a>';
 
 				// 3.0 actions now in list in one cell
@@ -7372,6 +7374,8 @@ class FabrikFEModelList extends JModelForm
 	 * used in package export
 	 *
 	 * @param   object  $oExporter  exporter
+	 *
+	 * @deprecated - not used?
 	 *
 	 * @return  string	sql to drop & or create table
 	 */
