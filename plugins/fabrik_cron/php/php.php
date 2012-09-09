@@ -1,13 +1,12 @@
 <?php
-
 /**
-* A cron task to email records to a give set of users
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * A cron task to email records to a give set of users
+ * @package Joomla
+ * @subpackage Fabrik
+ * @author Rob Clayburn
+ * @copyright (C) Rob Clayburn
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -15,7 +14,8 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
-class plgFabrik_Cronphp extends plgFabrik_Cron {
+class plgFabrik_Cronphp extends plgFabrik_Cron
+{
 
 	/**
 	 * Check if the user can use the active element
@@ -33,19 +33,27 @@ class plgFabrik_Cronphp extends plgFabrik_Cron {
 	}
 
 	/**
-	 * do the plugin action
+	 * Do the plugin action
 	 *
+	 * @return  int  number of records run, you can set this by setting the varaible $processed
+	 * in either your included script in php code.
 	 */
+
 	function process(&$data, &$listModel)
 	{
-	  $params = $this->getParams();
-	  $file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
-	  eval($params->get('cronphp_params'));
-	  require_once JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file;
+		$params = $this->getParams();
+		$file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
+		eval($params->get('cronphp_params'));
+		require_once JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file;
+		if (isset($processed))
+		{
+			return (int) $processed;
+		}
+		return 0;
 	}
 
 	/**
-	 * show a new for entering the form actions options
+	 * Show a new for entering the form actions options
 	 */
 
 	function renderAdminSettings()
@@ -53,18 +61,18 @@ class plgFabrik_Cronphp extends plgFabrik_Cron {
 		$this->getRow();
 		$pluginParams = $this->getParams();
 		$document = JFactory::getDocument();
-		?>
-		<div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
+?>
+		<div id="page-<?php echo $this->_name; ?>" class="pluginSettings" style="display:none">
 
 		<?php
-			// @TODO - work out why the language diddly doesn't work here, so we can make the above notes translateable?
-			echo $pluginParams->render('params');
-			echo $pluginParams->render('params', 'fields');
-			?>
+		// @TODO - work out why the language diddly doesn't work here, so we can make the above notes translateable?
+		echo $pluginParams->render('params');
+		echo $pluginParams->render('params', 'fields');
+		?>
 		</div>
 		<?php
-		return ;
+		return;
 	}
 
 }
-?>
+		?>

@@ -4,7 +4,7 @@
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @since       1.6
+ * @since       3.0
  */
 
 // No direct access.
@@ -47,9 +47,9 @@ class FabrikControllerCrons extends FabControllerAdmin
 	}
 
 	/**
-	 * run a cron task
+	 * Run the selected cron plugins
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function run()
