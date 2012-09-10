@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Abstract web service class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,21 +13,42 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
+/**
+ * Abstract web service class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.5
+ */
+
 abstract class FabrikWebService
 {
 
 	/**
-	 * @var    array  FabrikWebService instances container.
+	 * FabrikWebService instances container.
+	 *
 	 * @since  3.0.5
+	 *
+	 * @var    array
 	 */
 	protected static $instances = array();
 
+	/**
+	 * Get web service instance
+	 *
+	 * @param   array  $options  initial state options
+	 *
+	 * @throws Exception
+	 *
+	 * @return  FabrikWebService
+	 */
 
 	public static function getInstance($options = array())
 	{
 		// Sanitize the database connector options.
 		$options['driver'] = (isset($options['driver'])) ? preg_replace('/[^A-Z0-9_\.-]/i', '', $options['driver']) : 'soap';
 		$options['endpoint'] = (isset($options['endpoint'])) ? $options['endpoint'] : null;
+
 		// Get the options signature for the database connector.
 		$signature = md5(serialize($options));
 
@@ -40,6 +63,7 @@ abstract class FabrikWebService
 			{
 				// Derive the file path for the driver class.
 				$path = dirname(__FILE__) . '/webservice/' . $options['driver'] . '.php';
+
 				// If the file exists register the class with our class loader.
 				if (file_exists($path))
 				{
@@ -113,10 +137,20 @@ abstract class FabrikWebService
 		return self::$instances[$signature];
 	}
 
+	/**
+	 * Set the map which defines which webservice fields are mapped to
+	 * which Fabrik fields
+	 *
+	 * @param   array  $map  service map
+	 *
+	 * @return  void
+	 */
+
 	public function setMap($map)
 	{
-		// how to map the data from the web service to a Fabrik list
-		/* $this->map = array(
+		/* How to map the data from the web service to a Fabrik list:
+
+		 $this->map = array(
 		 array('from' => '{EventId}', 'to' => $fk),
 		array('from' => '{Genre}', 'to' => 'genres'),
 		array('from' => '{DoorOpen}', 'to' => 'Event_date'),
@@ -126,11 +160,22 @@ abstract class FabrikWebService
 		array('from' => '{AvailabilityStatus}', 'to' => 'ticket_cost', 'value' => 3, 'match' => 'false'),
 		array('from' => '{ShortText}', 'to' => 'Event_description_short'),
 		array('from' => '{Title} ({SubTitle})', 'to' => 'Event_title'),
-		array('from' => '{Price}', 'to' => 'Event_price_presale', 'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Normaal\') { return $p->Price;}} return false;', 'eval' => true),
-		array('from' => '{Price}', 'to' => 'Event_price_door', 'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Dagkassa\') { return $p->Price;}} return false;', 'eval' => true)
+		array('from' => '{Price}', 'to' => 'Event_price_presale', 'match' =>
+			'foreach($d->Price as $p) { if($p->TicketType == \'Normaal\') { return $p->Price;}} return false;', 'eval' => true),
+		array('from' => '{Price}', 'to' => 'Event_price_door',
+			'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Dagkassa\') { return $p->Price;}} return false;', 'eval' => true)
 		); */
 		$this->map = $map;
 	}
+
+	/**
+	 * Map web service data to Fabrik fields
+	 *
+	 * @param   array   $datas  web service data
+	 * @param   string  $fk     foreign key
+	 *
+	 * @return  array mapped data
+	 */
 
 	public function map($datas, $fk)
 	{
@@ -173,22 +218,28 @@ abstract class FabrikWebService
 	}
 
 	/**
-	 * query the web service to get the data
-	 * @param	string	method to call at web service (soap only)
-	 * @param	array	key value filters to send to web service to filter the data
-	 * @param	string	$startPoint of actual data, if soap this is an xpath expression, otherwise its a key.key2.key3 string to traverse the returned data to arrive at the data to map to the fabrik list
-	 * @param	string Result method name - soap only, if not set then "$method . 'Result' will be used.
+	 * Query the web service to get the data
+	 *
+	 * @param   string  $method      method to call at web service (soap only)
+	 * @param   array   $options     key value filters to send to web service to filter the data
+	 * @param   string  $startPoint  startPoint of actual data, if soap this is an xpath expression,
+	 * otherwise its a key.key2.key3 string to traverse the returned data to arrive at the data to map to the fabrik list
+	 * @param   string  $result      result method name - soap only, if not set then "$method . 'Result' will be used.
+	 *
 	 * @return	array	series of objects which can then be bound to the list using storeLocally()
 	 */
 
 	abstract function get($method, $options = array(), $startPoint = null, $result = null);
 
 	/**
-	 * store the data obtained from get() in a list
-	 * @param	object	$listModel to store the data in
-	 * @param	array	$data obtained from get()
-	 * @param	string	foreign key to map records in $data to the list models data.
-	 * @param	bool	should existing matched rows be updated or not?
+	 * Store the data obtained from get() in a list
+	 *
+	 * @param   object  $listModel  list model to store the data in
+	 * @param   array   $data       data obtained from get()
+	 * @param   string  $fk         foreign key to map records in $data to the list models data.
+	 * @param   bool    $update     should existing matched rows be updated or not?
+	 *
+	 * @return  void
 	 */
 
 	public function storeLocally($listModel, $data, $fk, $update)
@@ -223,20 +274,23 @@ abstract class FabrikWebService
 			}
 			if ($pk == '')
 			{
-				$this->addedCount ++;
+				$this->addedCount++;
 			}
 			else
 			{
-				$this->updateCount ++;
+				$this->updateCount++;
 			}
 			$listModel->storeRow($row, $pk);
 		}
 	}
 
 	/**
-	 * parse the filter values into driver type
-	 * @param	string	$val
-	 * @param	string	$type
+	 * Parse the filter values into driver type
+	 *
+	 * @param   string  $val   value
+	 * @param   string  $type  type
+	 *
+	 * @return  string
 	 */
 
 	public function getFilterValue($val, $type)
@@ -244,7 +298,7 @@ abstract class FabrikWebService
 		switch ($type)
 		{
 			case 'bool':
-				$val = (bool)$val;
+				$val = (bool) $val;
 				break;
 			case 'date':
 				$d = JFactory::getDate($val);
@@ -256,4 +310,3 @@ abstract class FabrikWebService
 		return $val;
 	}
 }
-?>

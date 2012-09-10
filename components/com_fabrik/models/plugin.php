@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Base Fabrik Plugin Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -11,21 +12,40 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-require_once(COM_FABRIK_FRONTEND . '/models/parent.php'); //required for fabble
 
 // Required for fabble
 require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 
+/**
+ * Base Fabrik Plugin Model
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikPlugin extends JPlugin
 {
 
-	/** @var bool determines if the admin settings are visible or hidden when rendered */
+	/**
+	 * If the admin settings are visible or hidden when rendered
+	 *
+	 * @var bool
+	 */
 	var $_adminVisible = false;
 
-	/** @var string path to xml file **/
+	/**
+	 * path to xml file
+	 *
+	 * @var string
+	 */
 	var $_xmlPath = null;
 
-	/** @var object params **/
+	/**
+	 * Params
+	 *
+	 * @var JRegistry
+	 */
 	protected $_params = null;
 
 	var $attribs = null;
@@ -34,25 +54,53 @@ class FabrikPlugin extends JPlugin
 
 	var $_row = null;
 
-	/** @var int order that the plugin is rendered */
+	/**
+	 * Order that the plugin is rendered
+	 *
+	 * @var int
+	 */
 	var $renderOrder = null;
 
 	protected $_counter;
 
 	protected $_pluginManager = null;
 
-	/** @var object jform */
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	public $jform = null;
+
+	/**
+	 * Set the plugin id
+	 *
+	 * @param   int  $id  id to use
+	 *
+	 * @return  void
+	 */
 
 	function setId($id)
 	{
 		$this->_id = $id;
 	}
 
+	/**
+	 * Get plugin id
+	 *
+	 * @return  int  id
+	 */
+
 	public function getId()
 	{
 		return $this->id;
 	}
+
+	/**
+	 * Get the plugin name
+	 *
+	 * @return string
+	 */
 
 	function getName()
 	{
@@ -75,7 +123,8 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * get the JForm object for the plugin
+	 * Get the JForm object for the plugin
+	 *
 	 * @return object jform
 	 */
 
@@ -174,7 +223,7 @@ class FabrikPlugin extends JPlugin
 
 			$id = isset($fieldset->name) ? ' id="' . $fieldset->name . '"' : '';
 
-			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"': '';
+			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"' : '';
 			$str .= '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
 			$form->repeat = $repeat;
@@ -251,7 +300,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Load params
 	 *
-	 * @return  object  params
+	 * @return  JRegistry  params
 	 */
 
 	public function getParams()
@@ -267,8 +316,11 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
+	 * Private load params
 	 *
+	 * @return JRegistry
 	 */
+
 	protected function _loadParams()
 	{
 		if (!isset($this->attribs))
@@ -287,6 +339,12 @@ class FabrikPlugin extends JPlugin
 		return $this->_params;
 	}
 
+	/**
+	 * Get db row/item loaded with id
+	 *
+	 * @return  JTable
+	 */
+
 	function getRow()
 	{
 		if (!isset($this->_row))
@@ -297,10 +355,24 @@ class FabrikPlugin extends JPlugin
 		return $this->_row;
 	}
 
+	/**
+	 * Set db row/item
+	 *
+	 * @param   JTable  $row  db item
+	 *
+	 * @return  void
+	 */
+
 	function setRow($row)
 	{
 		$this->_row = $row;
 	}
+
+	/**
+	 *  Get db row/item loaded
+	 *
+	 * @return  JTable
+	 */
 
 	function getTable()
 	{
@@ -375,6 +447,8 @@ class FabrikPlugin extends JPlugin
 
 	/**
 	 * J1.6 plugin wrapper for ajax_tables
+	 *
+	 * @return  void
 	 */
 
 	function onAjax_tables()
@@ -383,10 +457,12 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * ajax function to return a string of table drop down options
+	 * Ajax function to return a string of table drop down options
 	 * based on cid variable in query string
 	 *
+	 * @return  void
 	 */
+
 	function ajax_tables()
 	{
 		$cid = JRequest::getInt('cid', -1);
@@ -424,12 +500,20 @@ class FabrikPlugin extends JPlugin
 
 	/**
 	 * J1.6 plugin wrapper for ajax_fields
+	 *
+	 * @return  void
 	 */
 
 	function onAjax_fields()
 	{
 		$this->ajax_fields();
 	}
+
+	/**
+	 * Get a list of fields
+	 *
+	 * @return  string  json encoded list of fields
+	 */
 
 	function ajax_fields()
 	{
@@ -576,6 +660,15 @@ class FabrikPlugin extends JPlugin
 		echo json_encode($arr);
 	}
 
+	/**
+	 * Get js for managing the plugin in J admin
+	 *
+	 * @param   string  $name   plugin name
+	 * @param   string  $label  plugin label
+	 * @param   string  $html   html (not sure what this is?)
+	 *
+	 * @return  string  JS code to ini adminplugin class
+	 */
 	public function onGetAdminJs($name, $label, $html)
 	{
 		$opts = $this->getAdminJsOpts($html);
@@ -583,6 +676,14 @@ class FabrikPlugin extends JPlugin
 		$script = "new fabrikAdminPlugin('$name', '$label', $opts)";
 		return $script;
 	}
+
+	/**
+	 * Get the options to ini the J Admin js plugin controller class
+	 *
+	 * @param   string  $html
+	 *
+	 * @return  object
+	 */
 
 	protected function getAdminJsOpts($html)
 	{
@@ -607,10 +708,12 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Process the plugin, called when form is submitted
 	 *
 	 * @param   string	param name which contains the PHP code to eval
 	 * @param   array	data
+	 *
+	 * @return  bool
 	 */
 
 	function shouldProcess($paramName, $data = null)
@@ -635,7 +738,15 @@ class FabrikPlugin extends JPlugin
 		return $res;
 	}
 
-	function replace_num_entity($ord)
+	/**
+	 * Translates numeric entities to UTF-8
+	 *
+	 * @param   array  $ord  preg replace call back matched
+	 *
+	 * @return  string
+	 */
+
+	protected function replace_num_entity($ord)
 	{
 		$ord = $ord[1];
 		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
@@ -699,9 +810,11 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
+	 * Get the plugin manager
+	 *
 	 * @since 3.0
-	 * get the plugin manager
-	 * @return plugin manager
+	 *
+	 * @return  FabrikFEModelPluginmanager
 	 */
 
 	protected function getPluginManager()
@@ -713,4 +826,3 @@ class FabrikPlugin extends JPlugin
 		return $this->_pluginManager;
 	}
 }
-?>
