@@ -1,4 +1,15 @@
 <?php
+/**
+ * Contacts Custom Form Template: Element
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+ ?>
+<?php
 /*
  This part of the template is what actually renders each individual element.  You will be loading this
  template multiple times (once for each element you want to display) from your default_group.php file.
@@ -14,7 +25,7 @@
 		echo '<div>' . $element->tipAbove . '</div>';
 	}?>
 	<?php
-	// as this is a custom template, you may want to exclude $this->element->colum 
+	// as this is a custom template, you may want to exclude $this->element->colum
 	// which is the inline css required to abide by the group's column set up
 	?>
 	<div <?php echo @$this->element->column;?> class="<?php echo $this->element->containerClass;?>">

@@ -1,3 +1,14 @@
+<?php
+/**
+ * Admin Form Template
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+ ?>
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
@@ -24,7 +35,7 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 	foreach ($this->groups as $group) {?>
 		<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 		<legend><span><?php echo $group->title;?></span></legend>
-		
+
 		<?php if ($group->intro !== '') {?>
 		<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php }?>

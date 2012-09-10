@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to store the user's IP address
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.ip
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,6 +16,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.ip
+ * @since       3.0
  */
 
 class plgFabrik_elementIp extends plgFabrik_Element
@@ -21,23 +24,23 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = &$this->getParams();
+		$params = $this->getParams();
 
 		$rowid = JRequest::getVar('rowid', false);
-		//@TODO when editing a form with joined repeat group the rowid will be set but
-		//the record is in fact new
+
+		// @TODO when editing a form with joined repeat group the rowid will be set but the record is in fact new
 		if ($params->get('ip_update_on_edit') || !$rowid || ($this->_inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
 			$ip = $_SERVER['REMOTE_ADDR'];
@@ -79,9 +82,9 @@ class plgFabrik_elementIp extends plgFabrik_Element
 	 * Trigger called when a row is stored.
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
-	 * 
+	 *
 	 * @param   array  &$data  to store
-	 * 
+	 *
 	 * @return  void
 	 */
 
@@ -105,10 +108,10 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -119,10 +122,10 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
-	 * 
+	 *
 	 * @param   array  $data  form data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 
 	public function getDefaultValue($data = array())
@@ -136,11 +139,11 @@ class plgFabrik_elementIp extends plgFabrik_Element
 
 	/**
 	 * Determines the value for the element in the form view
-	 * 
+	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           options
-	 * 
+	 *
 	 * @return  string	value
 	 */
 
