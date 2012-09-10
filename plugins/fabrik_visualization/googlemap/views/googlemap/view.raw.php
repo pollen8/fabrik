@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Google Map Raw View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.googlemap
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,16 +14,25 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
- * Fabrik Fuson Chart Raw View
+ * Fabrik Google Map Raw View
  *
  * @package     Joomla.Plugin
- * @subpackage  Fabrik.visualization.fusionchart
+ * @subpackage  Fabrik.visualization.googlemap
+ * @since       3.0
  */
 
 class fabrikViewGooglemap extends JViewLegacy
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Display the view
+	 *
+	 * @param   string  $tmpl  template
+	 *
+	 * @return void
+	 */
+
+	public function display($tmpl = 'default')
 	{
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');

@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Fabrik Plugin Cron Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -23,10 +24,18 @@ jimport('joomla.application.component.model');
 class plgFabrik_Cron extends FabrikPlugin
 {
 
-	/** @var object plugin table row **/
+	/**
+	 * Plugin item
+	 *
+	 * @var object
+	 */
 	protected $row = null;
 
-	/** @var string log */
+	/**
+	 * Log
+	 *
+	 * @var string
+	 */
 	protected $log = null;
 
 	/**
@@ -50,7 +59,7 @@ class plgFabrik_Cron extends FabrikPlugin
 	}
 
 	/**
-	 * whether cron should automagically load table data
+	 * Whether cron should automagically load table data
 	 *
 	 * @return  bool
 	 */
@@ -61,7 +70,7 @@ class plgFabrik_Cron extends FabrikPlugin
 	}
 
 	/**
-	 * get the log out put
+	 * Get the log out put
 	 *
 	 * @return  string
 	 */

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Abstract web service class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,30 +14,34 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 /**
- * Web services, map web service data to Fabrik list
- * 
- * @package  Fabrik
- * @since    3.0.5
+ * Abstract web service class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.5
  */
 
 abstract class FabrikWebService
 {
 
 	/**
-	 * @var    array  FabrikWebService instances container.
+	 * FabrikWebService instances container.
+	 *
 	 * @since  3.0.5
+	 *
+	 * @var    array
 	 */
 
 	protected static $instances = array();
 
 	/**
-	 * Create an instance of the clas
-	 * 
-	 * @param   array  $options  instance options
-	 * 
-	 * @throws	Exception
-	 * 
-	 * @return  object
+	 * Get web service instance
+	 *
+	 * @param   array  $options  initial state options
+	 *
+	 * @throws Exception
+	 *
+	 * @return  FabrikWebService
 	 */
 
 	public static function getInstance($options = array())
@@ -133,16 +139,18 @@ abstract class FabrikWebService
 	}
 
 	/**
-	 * set map
-	 * 
-	 * @param   array  $map  data to
-	 * 
-	 * @return  null
+	 * Set the map which defines which webservice fields are mapped to
+	 * which Fabrik fields
+	 *
+	 * @param   array  $map  service map
+	 *
+	 * @return  void
 	 */
 
 	public function setMap($map)
 	{
 		/* How to map the data from the web service to a Fabrik list:
+
 		 $this->map = array(
 		 array('from' => '{EventId}', 'to' => $fk),
 		array('from' => '{Genre}', 'to' => 'genres'),
@@ -153,21 +161,21 @@ abstract class FabrikWebService
 		array('from' => '{AvailabilityStatus}', 'to' => 'ticket_cost', 'value' => 3, 'match' => 'false'),
 		array('from' => '{ShortText}', 'to' => 'Event_description_short'),
 		array('from' => '{Title} ({SubTitle})', 'to' => 'Event_title'),
-		array('from' => '{Price}', 'to' => 'Event_price_presale',
-		'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Normaal\') { return $p->Price;}} return false;', 'eval' => true),
+		array('from' => '{Price}', 'to' => 'Event_price_presale', 'match' =>
+			'foreach($d->Price as $p) { if($p->TicketType == \'Normaal\') { return $p->Price;}} return false;', 'eval' => true),
 		array('from' => '{Price}', 'to' => 'Event_price_door',
-		'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Dagkassa\') { return $p->Price;}} return false;', 'eval' => true)
+			'match' => 'foreach($d->Price as $p) { if($p->TicketType == \'Dagkassa\') { return $p->Price;}} return false;', 'eval' => true)
 		); */
 		$this->map = $map;
 	}
 
 	/**
-	 * Map web service data to Fabrik data
-	 * 
-	 * @param   array   $datas  data array
+	 * Map web service data to Fabrik fields
+	 *
+	 * @param   array   $datas  web service data
 	 * @param   string  $fk     foreign key
-	 * 
-	 * @return  array
+	 *
+	 * @return  array mapped data
 	 */
 
 	public function map($datas, $fk)
@@ -212,27 +220,27 @@ abstract class FabrikWebService
 
 	/**
 	 * Query the web service to get the data
-	 * 
-	 * @param   string  $method      to call at web service (soap only)
+	 *
+	 * @param   string  $method      method to call at web service (soap only)
 	 * @param   array   $options     key value filters to send to web service to filter the data
-	 * @param   string  $startPoint  of actual data, if soap this is an xpath expression, 
+	 * @param   string  $startPoint  startPoint of actual data, if soap this is an xpath expression,
 	 * otherwise its a key.key2.key3 string to traverse the returned data to arrive at the data to map to the fabrik list
-	 * @param   string  $result      method name - soap only, if not set then "$method . 'Result' will be used
-	 * 
-	 * @return  array	series of objects which can then be bound to the list using storeLocally()
+	 * @param   string  $result      result method name - soap only, if not set then "$method . 'Result' will be used.
+	 *
+	 * @return	array	series of objects which can then be bound to the list using storeLocally()
 	 */
 
 	public abstract function get($method, $options = array(), $startPoint = null, $result = null);
 
 	/**
-	 * store the data obtained from get() in a list
-	 * 
-	 * @param   object  $listModel  to store the data in
-	 * @param   array   $data       obtained from get()
+	 * Store the data obtained from get() in a list
+	 *
+	 * @param   object  $listModel  list model to store the data in
+	 * @param   array   $data       data obtained from get()
 	 * @param   string  $fk         foreign key to map records in $data to the list models data.
 	 * @param   bool    $update     should existing matched rows be updated or not?
-	 * 
-	 * @return  null
+	 *
+	 * @return  void
 	 */
 
 	public function storeLocally($listModel, $data, $fk, $update)
@@ -278,12 +286,12 @@ abstract class FabrikWebService
 	}
 
 	/**
-	 * parse the filter values into driver type
-	 * 
+	 * Parse the filter values into driver type
+	 *
 	 * @param   string  $val   value
 	 * @param   string  $type  type
-	 * 
-	 * @return  string  value
+	 *
+	 * @return  string
 	 */
 
 	public function getFilterValue($val, $type)

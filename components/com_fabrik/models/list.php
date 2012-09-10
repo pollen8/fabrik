@@ -28,16 +28,32 @@ require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 class FabrikFEModelList extends JModelForm
 {
 
-	/** @var int id of table to load */
+	/**
+	 * List id
+	 *
+	 * @var int
+	 */
 	public $id = null;
 
-	/** @var int package id */
+	/**
+	 * package id
+	 *
+	 * @var int
+	 */
 	public $packageId = null;
 
-	/** @var object the lists connection object */
+	/**
+	 * Lists connection object
+	 *
+	 * @var object
+	 */
 	protected $connection = null;
 
-	/** @var object table Table */
+	/**
+	 * List item
+	 *
+	 * @var JTable
+	 */
 	protected $table = null;
 
 	/** @var object table's form model */

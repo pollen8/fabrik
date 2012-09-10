@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render folder list
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.folder
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,6 +18,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.folder
+ * @since       3.0
  */
 
 class PlgFabrik_ElementFolder extends PlgFabrik_Element
@@ -105,4 +108,3 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 	}
 
 }
-?>

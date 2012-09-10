@@ -26,13 +26,23 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 
 	/**
 	 * Does the element have a label
+	 *
 	 * @var bool
 	 */
 	protected $hasLabel = false;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'INT(%s)';
 
+	/**
+	 * Db table field size
+	 *
+	 * @var  string
+	 */
 	protected $fieldLength = '1';
 
 	/**

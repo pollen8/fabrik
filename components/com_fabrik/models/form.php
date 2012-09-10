@@ -3817,22 +3817,43 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getIntro()
 	{
-		$match = ((int) $this->rowId === 0) ? 'new' : 'edit';
-		$remove = ((int) $this->rowId === 0) ? 'edit' : 'new';
+		$intro = $this->getForm()->intro;
+		return $this->parseIntroOutroPlaceHolders($intro);
+	}
+
+	/**
+	 * Parse into and outro text
+	 *
+	 * @param   string  $text  text to parse
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function parseIntroOutroPlaceHolders($text)
+	{
+		$match = ((int) $this->_rowId === 0) ? 'new' : 'edit';
+		$remove = ((int) $this->_rowId === 0) ? 'edit' : 'new';
 		$match = "/{" . $match . ":\s*.*?}/i";
 		$remove = "/{" . $remove . ":\s*.*?}/i";
-		$intro = $this->getForm()->intro;
-		$intro = preg_replace_callback($match, array($this, '_getIntro'), $intro);
-		$intro = preg_replace($remove, '', $intro);
-		$intro = str_replace('[', '{', $intro);
-		$intro = str_replace(']', '}', $intro);
+		$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
+		$text = preg_replace($remove, '', $text);
+		$text = str_replace('[', '{', $text);
+		$text = str_replace(']', '}', $text);
+		if (!$this->_editable)
+		{
+			$match = "/{details:\s*.*?}/i";
+			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
+		}
+		else
+		{
+			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
+			echo $text;
+		}
 		$w = new FabrikWorker;
-		$intro = $w->parseMessageForPlaceHolder($intro, $this->data, true);
-		/* $$$ rob 26/01/2011 - this was stopping content plugins from rendering.
-		 * $intro = str_replace('{','[', $intro);
-		 * $intro = str_replace('}',']', $intro);
-		 */
-		return $intro;
+		$text = $w->parseMessageForPlaceHolder($text, $this->_data, true);
+		return $text;
 	}
 
 	/**
@@ -3844,7 +3865,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * @return  string  intro text
 	 */
 
-	private function _getIntro($match)
+	private function _getIntroOutro($match)
 	{
 		$m = explode(":", $match[0]);
 		array_shift($m);
@@ -3855,37 +3876,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 *
 	 *  @return  string  outro
 	 */
+
 	public function getOutro()
 	{
 		$params = $this->getParams();
-		$match = ((int) $this->_rowId === 0) ? 'new' : 'edit';
-		$remove = ((int) $this->_rowId === 0) ? 'edit' : 'new';
-		$match = "/{" . $match . ":\s*.*?}/i";
-		$remove = "/{" . $remove . ":\s*.*?}/i";
 		$outro = $params->get('outro');
-		$outro = preg_replace_callback($match, array($this, '_getoutro'), $outro);
-		$outro = preg_replace($remove, '', $outro);
-		$outro = str_replace('[', '{', $outro);
-		$outro = str_replace(']', '}', $outro);
-		$w = new FabrikWorker;
-		$outro = $w->parseMessageForPlaceHolder($outro, $this->_data, true);
-		return $outro;
-	}
-
-	/**
-	 * Used from getoutro as preg_replace_callback function to strip
-	 * undeisred text from form label outro
-	 *
-	 * @param   array  $match  preg matched strings
-	 *
-	 * @return  string  outro text
-	 */
-
-	private function _getOutro($match)
-	{
-		$m = explode(':', $match[0]);
-		array_shift($m);
-		return FabrikString::rtrimword(implode(":", $m), "}");
+		return $this->parseIntroOutroPlaceHolders($outro);
 	}
 
 	/**

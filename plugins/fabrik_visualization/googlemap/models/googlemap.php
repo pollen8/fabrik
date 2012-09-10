@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Google Map Viz Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.googlemap
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -24,10 +26,26 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 class fabrikModelGooglemap extends FabrikFEModelVisualization
 {
 
+	/**
+	 * Out put text
+	 *
+	 * @var array
+	 */
 	protected $txt = null;
 
-	/* @param array of arrays (width, height) keyed on image icon*/
+	/**
+	 * Arrays (width, height) keyed on image icon
+	 *
+	 * @var array
+	 */
 	protected $markerSizes = array();
+
+	/**
+	 * Number of Fabrik records parsed
+	 *
+	 * @var int
+	 */
+	protected $recordCount = 0;
 
 	/**
 	 * Get HTML text

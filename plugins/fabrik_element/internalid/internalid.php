@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render internal id
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.internalid
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,6 +16,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.internalid
+ * @since       3.0
  */
 
 class PlgFabrik_ElementInternalid extends PlgFabrik_Element
@@ -49,8 +52,6 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		}
 		if (!$this->editable)
 		{
-			//as per http://fabrikar.com/forums/showthread.php?t=12867
-			//return "<!--" . stripslashes($value) . "-->";
 			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
 		}
 		/* no need to eval here as its done before hand i think ! */
@@ -74,7 +75,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 
 	public function getFieldDescription()
 	{
-		return "INT(6) NOT NULL AUTO_INCREMENT";
+		return "INT(11) NOT NULL AUTO_INCREMENT";
 	}
 
 	/**
@@ -104,13 +105,9 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		return true;
 	}
 
-	function onLoad()
-	{
-
-	}
-
 	/**
-	 * load a new set of default properites and params for the element
+	 * Load a new set of default properites and params for the element
+	 *
 	 * @return  object	element (id = 0)
 	 */
 

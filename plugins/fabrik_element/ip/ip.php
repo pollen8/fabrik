@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to store the user's IP address
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.ip
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,7 +16,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.ip
- * @since    3.0
+ * @since       3.0
  */
 
 class plgFabrik_elementIp extends PlgFabrik_Element
@@ -34,7 +36,7 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = &$this->getParams();
+		$params = $this->getParams();
 
 		$rowid = JRequest::getVar('rowid', false);
 		/**

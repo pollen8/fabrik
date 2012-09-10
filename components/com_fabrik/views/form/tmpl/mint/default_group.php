@@ -1,4 +1,15 @@
-<ul>
+<?php
+/**
+ * Mint Form Template: Group
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+ ?>
+ <ul>
 <?php foreach ($this->elements as $element) {
 	?>
 	<?php if ($this->tipLocation == 'above') {?>
