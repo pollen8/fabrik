@@ -64,7 +64,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	}
 
 	/**
-	 * will the element allow for multiple selections
+	 * Will the element allow for multiple selections
 	 *
 	 * @since	3.0.6
 	 *
@@ -170,6 +170,12 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
 		$originalValue = trim($value, "'");
+
+		/*
+		 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+		 * before it to escape it for the query.
+		 */
+		$originalValue = str_replace("/", "\\\\/", $originalValue);
 		$this->encryptFieldName($key);
 		switch ($condition)
 		{
@@ -183,6 +189,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 				$str = " $key $condition $value ";
 				break;
 		}
+		echo $str;
 		return $str;
 	}
 
