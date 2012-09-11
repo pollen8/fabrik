@@ -106,6 +106,8 @@ class FabrikFEModelListfilter extends FabModel
 			$this->clearFilters();
 		}
 
+
+
 		/**
 		 * $$$ fehers The filter is cleared and applied at once without having to clear it first and then apply it (would have to be two clicks).
 		 * useful in querystring filters if you want to clear old filters and apply new filters

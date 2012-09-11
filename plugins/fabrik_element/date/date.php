@@ -1185,6 +1185,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	/**
 	 * Get the table filter for the element
+	 * Note: uses FabDate as if date element first to be found in advanced search, and advanced search run on another element
+	 * the list model in getAdvancedSearchElementList() builds the first filter (this element) with the data from the first search
+	 * which was throwing '"500 - DateTime::__construct() ' errors
+	 *
+	 * see: http://fabrikar.com/forums/showthread.php?t=28231
 	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
@@ -1236,6 +1241,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			}
 		}
 		$htmlid = $this->getHTMLId();
+
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		if (in_array($element->filter_type, array('dropdown')))
 		{
@@ -1253,8 +1259,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				else
 				{
-					$default[0] = JFactory::getDate($default[0])->toFormat($format);
-					$default[1] = JFactory::getDate($default[1])->toFormat($format);
+					$d = new FabDate($default[0]);
+					$default[0] = $d->toFormat($format);
+					$d = new FabDate($default[1]);
+					$default[1] = $d->toFormat($format);
 				}
 				// Add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
@@ -1303,7 +1311,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				if ($default !== '')
 				{
-					$default = JFactory::getDate($default)->toFormat($format);
+					$d = new FabDate($default);
+					$default = $d->toFormat($format);
 				}
 				// Add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
@@ -1513,9 +1522,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			// Range values could already have been set in getFilterValue
 			if (!$this->rangeFilterSet)
 			{
-				// $$$ due to some changes in how we handle ranges, the following was no longer getting
-				// applied in getFilterValue, needed because on first submit of a filter an arbitrary time
-				// is being set (i.e. time "now").
+				/* $$$ due to some changes in how we handle ranges, the following was no longer getting
+				 * applied in getFilterValue, needed because on first submit of a filter an arbitrary time
+				 * is being set (i.e. time "now").
+				 */
 				$value[0] = $this->setMySQLTimeToZero($value[0]);
 				$value[1] = $this->setMySQLTimeToZero($value[1]);
 
@@ -1539,11 +1549,13 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$value[0] = $date->toSql($store_as_local);
 
 		$date = JFactory::getDate($value[1], $localTimeZone);
-		// $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
-		// This ends up with queries like "BETWEEN '2012-01-26 06:00:00' AND '2012-01-26 23:59:59'"
-		// with CST (GMT -6), which chops out 6 hours of the day range.
-		// Also, see comment above about maybe needing to take "save as local" in to account on this.
-		//$value[1] = $date->toSql(true);
+		/* $$$ hugh - why are we setting the 'local' arg on toSql() for end date but not the start date of the range?
+		 * This ends up with queries like "BETWEEN '2012-01-26 06:00:00' AND '2012-01-26 23:59:59'"
+		 * with CST (GMT -6), which chops out 6 hours of the day range.
+		 * Also, see comment above about maybe needing to take "save as local" in to account on this.
+		 */
+
+		// $value[1] = $date->toSql(true);
 		$value[1] = $date->toSql($store_as_local);
 
 		$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
@@ -2219,7 +2231,7 @@ class FabDate extends JDate
 		}
 		catch (Exception $e)
 		{
-			JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date');
+			JDEBUG ? JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date') : '';
 			$date = 'now';
 			/* catches 'Failed to parse time string (ublingah!) at position 0 (u)' exception.
 			 * don't use this object

@@ -1,4 +1,15 @@
-<?php if ($this->params->get('show_page_title', 1)) { ?>
+<?php
+/**
+ * Labels Above Form Template
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+ ?>
+ <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
@@ -11,7 +22,7 @@ if ($this->params->get('show-title', 1)) {?>
 <div class="formintro"><?php echo $form->intro; ?></div>
 <?php }?>
 <?php
-echo $form->startTag; 
+echo $form->startTag;
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">";
@@ -34,11 +45,11 @@ echo "$form->error</div>";?>
 		<?php if (trim($group->title) !== '') {?>
 			<legend><span><?php echo $group->title;?></span></legend>
 		<?php }?>
-		
+
 		<?php if ($group->intro !== '') {?>
 		<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php }?>
-		
+
 		<?php if ($group->canRepeat) {
 			foreach ($group->subgroups as $subgroup) {
 			?>

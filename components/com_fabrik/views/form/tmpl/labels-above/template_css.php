@@ -1,4 +1,15 @@
 <?php
+/**
+ * Labels Above Form Template: CSS
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+ ?>
+ <?php
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
@@ -196,7 +207,7 @@ section for dropdowns radio buttons etc**/
 }
 
 #{$view}_$c .fabrikSubGroupElements{
-	
+
 }
 
 #{$view}_$c .fabrikGroupRepeater{

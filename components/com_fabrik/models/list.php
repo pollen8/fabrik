@@ -28,16 +28,32 @@ require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 class FabrikFEModelList extends JModelForm
 {
 
-	/** @var int id of table to load */
+	/**
+	 * List id
+	 *
+	 * @var int
+	 */
 	public $id = null;
 
-	/** @var int package id */
+	/**
+	 * package id
+	 *
+	 * @var int
+	 */
 	public $packageId = null;
 
-	/** @var object the lists connection object */
+	/**
+	 * Lists connection object
+	 *
+	 * @var object
+	 */
 	protected $_oConn = null;
 
-	/** @var object table Table */
+	/**
+	 * List item
+	 *
+	 * @var JTable
+	 */
 	protected $_table = null;
 
 	/** @var object table's form model */
@@ -555,8 +571,7 @@ class FabrikFEModelList extends JModelForm
 
 		JDEBUG ? $profiler->mark('start format data') : null;
 		$this->formatData($this->_data);
-		/*
-		 $this->formatForJoins($this->_data); */
+
 		JDEBUG ? $profiler->mark('data formatted') : null;
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
 		return $this->_data;

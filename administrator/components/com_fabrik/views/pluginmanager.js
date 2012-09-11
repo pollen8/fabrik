@@ -5,6 +5,9 @@ var PluginManager = new Class({
 	topTotal: -1,
 	
 	initialize: function (plugins, id, type) {
+		if (typeOf(plugins) === 'string') {
+			plugins = [plugins];
+		}
 		this.id = id;
 		this.plugins = plugins;
 		this.type = type;

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render facebook open graph like button
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebooklike
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -26,15 +28,25 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 
 	/**
 	 * Does the element have a label
+	 *
 	 * @var bool
 	 */
 	protected $hasLabel = false;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'INT(%s)';
 
-	/** @var  string  db table field size */
-	protected $fieldSize = '1';
+	/**
+	 * Db table field size
+	 *
+	 * @var  string
+	 */
+	protected $fieldLength = '1';
+
 
 	/**
 	 * Shows the data formatted for the list view

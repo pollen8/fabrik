@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render facebook recommendations widget
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebookrecommendations
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,6 +20,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebookrecommendations
+ * @since       3.0
  */
 
 class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
@@ -25,15 +28,24 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
 
 	/**
 	 * Does the element have a label
+	 *
 	 * @var bool
 	 */
 	protected $hasLabel = false;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'INT(%s)';
 
-	/** @var  string  db table field size */
-	protected $fieldSize = '1';
+	/**
+	 * Db table field size
+	 *
+	 * @var  string
+	 */
+	protected $fieldLength = '1';
 
 	/**
 	 * Draws the html form element
@@ -44,7 +56,7 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
 	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
@@ -76,4 +88,3 @@ class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
 	}
 
 }
-?>
