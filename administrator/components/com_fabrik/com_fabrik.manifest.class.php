@@ -130,6 +130,28 @@ class Com_FabrikInstallerScript
 			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
 			return false;
 		}
+
+		// Joomla 3.0 db drivers and queries
+		$dest = 'libraries/joomla/database/driver';
+		$driverInstallLoc = $componentFrontend . '/driver/';
+
+		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+		if ($moveRes !== true)
+		{
+			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
+			return false;
+		}
+
+		$dest = 'libraries/joomla/database/query';
+		$driverInstallLoc = $componentFrontend . '/query/';
+		$moveRes = JFolder::copy($driverInstallLoc, $dest, JPATH_SITE, true, false);
+		if ($moveRes !== true)
+		{
+			echo "<p style=\"color:red\">failed to moved " . $driverInstallLoc . ' to ' . $dest . '</p>';
+			return false;
+		}
+
+
 		return true;
 	}
 

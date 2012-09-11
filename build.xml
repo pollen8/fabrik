@@ -617,6 +617,14 @@
 		<copy file="${basedir}/libraries/joomla/database/database/mysql_fab.php" todir="${cfg.destdir}/site/dbdriver" />
 		<copy file="${basedir}/libraries/joomla/database/database/mysqli_fab.php" todir="${cfg.destdir}/site/dbdriver" />
 
+		<!--  J3.0 db drivers -->
+		<mkdir dir="${cfg.destdir}/site/driver" />
+		<copy file="${basedir}/libraries/joomla/database/driver/mysql_fab.php" todir="${cfg.destdir}/site/driver" />
+		<copy file="${basedir}/libraries/joomla/database/driver/mysqli_fab.php" todir="${cfg.destdir}/site/driver" />
+		<mkdir dir="${cfg.destdir}/site/query" />
+		<copy file="${basedir}/libraries/joomla/database/query/mysql_fab.php" todir="${cfg.destdir}/site/query" />
+		<copy file="${basedir}/libraries/joomla/database/query/mysqli_fab.php" todir="${cfg.destdir}/site/query" />
+		
 		<mkdir dir="${cfg.destdir}/modules/mod_fabrik_form/" />
 		<copy todir="${cfg.destdir}/modules/mod_fabrik_form/">
 			<fileset dir="${basedir}/modules/mod_fabrik_form/">
