@@ -14,19 +14,19 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.dropdown
+ * @since       3.0
  */
 
 class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
 
-	var $defaults = null;
 	/**
-	* Method to set the element id
-	*
-	* @param   int  $id  element ID number
-	*
-	* @return  void
-	*/
+	 * Method to set the element id
+	 *
+	 * @param   int  $id  element ID number
+	 *
+	 * @return  void
+	 */
 	public function setId($id)
 	{
 		parent::setId($id);
@@ -73,7 +73,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		foreach ($values as $tmpval)
 		{
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
-			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES); //for values like '1"'
+
+			// For values like '1"'
+			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);
 			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
 			if (in_array($tmpval, $selected))
 			{
@@ -81,8 +83,10 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 			$i++;
 		}
-		//if we have added an option that hasnt been saved to the database. Note you cant have
-		// it not saved to the database and asking the user to select a value and label
+		/*
+		 * If we have added an option that hasnt been saved to the database. Note you cant have
+		 * it not saved to the database and asking the user to select a value and label
+		 */
 		if ($params->get('allow_frontend_addtodropdown', false) && !empty($selected))
 		{
 			foreach ($selected as $sel)
@@ -148,9 +152,11 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			if ($this->getElement()->default != '')
 			{
 				$default = $this->getElement()->default;
-				// nasty hack to fix #504 (eval'd default value)
-				// where _default not set on first getDefaultValue
-				// and then its called again but the results have already been eval'd once and are hence in an array
+				/*
+				 * Nasty hack to fix #504 (eval'd default value)
+				 * where _default not set on first getDefaultValue
+				 * and then its called again but the results have already been eval'd once and are hence in an array
+				 */
 				if (is_array($default))
 				{
 					$v = $default;
@@ -211,7 +217,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	/**
 	 * Repalce a value with its label
 	 *
-	 * @param   string	$selected  value
+	 * @param   string  $selected  value
 	 *
 	 * @return  string	label
 	 */
@@ -247,7 +253,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	 *
 	 * @param   string  $key            element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
-	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $label          search string - already quoted if specified in filter array options
 	 * @param   string  $originalValue  original filter value without quotes or %'s applied
 	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
 	 *
@@ -257,10 +263,10 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	public function getFilterQuery($key, $condition, $label, $originalValue, $type = 'normal')
 	{
 		$value = $label;
+		$db = JFactory::getDbo();
 		if ($type == 'searchall')
 		{
 			// $$$ hugh - (sometimes?) $label is already quoted, which is causing havoc ...
-			$db = JFactory::getDbo();
 			$values = $this->replaceLabelWithValue(trim($label, "'"));
 			if (empty($values))
 			{
@@ -284,12 +290,19 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		if ($params->get('multiple'))
 		{
 			$originalValue = trim($value, "'");
+			/*
+			 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+			 * before it to escape it for the query.
+			 */
+			$originalValue = str_replace("/", "\\\\/", $originalValue);
+
 			$where1 = ('["' . $originalValue . '",%');
 			$where2 = ('%,"' . $originalValue . '",%');
 			$where3 = ('%,"' . $originalValue . '"]');
 
-			return ' (' . $key . ' ' . $condition . ' ' . $value . ' OR ' . $key . ' LIKE \'' . $where1 . '\' OR ' . $key . ' LIKE \'' . $where2
-				. '\' OR ' . $key . ' LIKE \'' . $where3 . '\' )';
+			$str = "($key $condition $value " . " OR $key LIKE " . $db->quote('["' . $originalValue . '"%') . " OR $key LIKE "
+				. $db->quote('%"' . $originalValue . '"%') . " OR $key LIKE " . $db->quote('%"' . $originalValue . '"]') . ")";
+			return $str;
 		}
 		else
 		{

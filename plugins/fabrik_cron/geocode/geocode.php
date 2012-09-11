@@ -76,7 +76,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 		$geocode_state_element = $geocode_state_element_long ? FabrikString::shortColName($geocode_state_element_long) : '';
 		$geocode_zip_element_long = $params->get('geocode_zip_element');
 		$geocode_zip_element = $geocode_zip_element_long ? FabrikString::shortColName($geocode_zip_element_long) : '';
-		$geocode_country_element_long = $params->get('geocode_country_userid_element');
+		$geocode_country_element_long = $params->get('geocode_country_element');
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
 		$geocode_when = $params->get('geocode_zip_element', '1');
 
@@ -165,10 +165,10 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 						{
 							if ($row->$geocode_country_element)
 							{
-								$a_full_addr[] = $row->$geocode_zip_element;
+								$a_full_addr[] = $row->$geocode_country_element;
 							}
 						}
-						// now explode the address into a string
+						// Now explode the address into a string
 						$full_addr = implode(',', $a_full_addr);
 
 						// Did we actually get an address?
