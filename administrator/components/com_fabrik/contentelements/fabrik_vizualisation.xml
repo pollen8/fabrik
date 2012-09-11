@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <joomfish type="contentelement">
   <name>Fabrik - Vizualisation</name>
   <author>Manel Zaera, manelzaera@yahoo.es</author>
@@ -6,9 +6,9 @@
   <description>Definition for Fabrik Vizualisation</description>
   <reference>
       <table name="fabrik_visualizations">
-          <field type="referenceid" name="id" translate="0">ID</field>
-          <field type="titletext" name="label" translate="1">Title</field>
-          <field type="htmltext" name="intro_text" translate="1">Intro text</field>
+          <field name="id" translate="0" type="referenceid">ID</field>
+          <field name="label" translate="1" type="titletext">Title</field>
+          <field name="intro_text" translate="1" type="htmltext">Intro text</field>
       </table>
   </reference>
-</joomfish >
+</joomfish>

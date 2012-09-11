@@ -582,7 +582,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($ok)
 		{
 			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 			$ok = in_array($params->get('repeat_add_access', 1), $groups);
 		}
 		return $ok;
@@ -608,7 +608,7 @@ class FabrikFEModelGroup extends FabModel
 			if ($ok === -1)
 			{
 				$user = JFactory::getUser();
-				$groups = $user->authorisedLevels();
+				$groups = $user->getAuthorisedViewLevels();
 				$ok = in_array($params->get('repeat_delete_access', 1), $groups);
 			}
 		}

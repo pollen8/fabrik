@@ -1225,7 +1225,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	/**
 	 * Intended for use by things like PHP form plugin code, PHP validations, etc.,
-	 * so folk don't have to access _formData directly.
+	 * so folk don't have to access formData directly.
 	 *
 	 * @param   string  $fullName     full element name
 	 * @param   bool    $raw          get raw data
@@ -1244,19 +1244,19 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$fullName .= '_raw';
 		}
 		// Simplest case, element name exists in main group
-		if (array_key_exists($fullName, $this->_formData))
+		if (array_key_exists($fullName, $this->formData))
 		{
-			$value = $this->_formData[$fullName];
+			$value = $this->formData[$fullName];
 		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
 		   * running after store, when non-joined data names have been reduced to short
-		   * names in _formData, so peek in _fullFormData
+		   * names in formData, so peek in _fullFormData
 		   */
 		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
 			$value = $this->_fullFormData[$fullName];
 		}
 		// Wasn't in the form's main table data, so try joins
-		elseif (array_key_exists('join', $this->_formData))
+		elseif (array_key_exists('join', $this->formData))
 		{
 			/* We can't just loop through the ['join'] structure, as we need to
 			 * know if the group is repeatable, and can't rely on key being an array,
@@ -1266,11 +1266,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
-				if (array_key_exists($group->join_id, $this->_formData['join']))
+				if (array_key_exists($group->join_id, $this->formData['join']))
 				{
-					if (array_key_exists($fullName, $this->_formData['join'][$group->join_id]))
+					if (array_key_exists($fullName, $this->formData['join'][$group->join_id]))
 					{
-						$value = $this->_formData['join'][$group->join_id][$fullName];
+						$value = $this->formData['join'][$group->join_id][$fullName];
 
 						// If the group is repeatable, see if they want a specific index
 						if ($groupModel->canRepeat())
@@ -1471,7 +1471,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		/* Needed for plugins that are run after the data is submitted to the db
 		 * $$$ rob moved to outside processToDB() as this data is needed regardless of
 		 * whether we store in the db or not (for email data)
-		 * $this->_formDataWithTableName = $this->_formData;
+		 * $this->formDataWithTableName = $this->formData;
 		 */
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
 		if ($this->storeMainRow)
@@ -1550,26 +1550,26 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$oJoinPk = FabrikString::safeColNameToArrayKey($oJoin->params->pk);
 			}
 
-			if (array_key_exists('Copy', $this->_formData))
+			if (array_key_exists('Copy', $this->formData))
 			{
 				$this->_rowId = '';
 				/* $$$ hugh - nope, this is wrong, builds the wrong element name, we need to use the join's PK, not it's FK,
 				 * so we need the new 'pk' param if available, or build it from first principles.
 				 * So ... moved that code to just above, where we now build the oJoinPk.
-				 * $this->_formData['join'][$oJoin->id][$oJoin->table_join . '___' . $oJoin->table_key] = '';
+				 * $this->formData['join'][$oJoin->id][$oJoin->table_join . '___' . $oJoin->table_key] = '';
 				 */
-				if (is_array($this->_formData['join'][$oJoin->id][$oJoinPk]))
+				if (is_array($this->formData['join'][$oJoin->id][$oJoinPk]))
 				{
-					foreach ($this->_formData['join'][$oJoin->id][$oJoinPk] as &$ojpk)
+					foreach ($this->formData['join'][$oJoin->id][$oJoinPk] as &$ojpk)
 					{
 						$ojpk = '';
 					}
 				}
 				else
 				{
-					$this->_formData['join'][$oJoin->id][$oJoinPk] = '';
+					$this->formData['join'][$oJoin->id][$oJoinPk] = '';
 				}
-				$this->_formData['rowid'] = '';
+				$this->formData['rowid'] = '';
 			}
 			// $$$ rob 22/02/2011 could be a mutlfileupload with no images selected?
 			if (!array_key_exists($oJoin->id, $this->formData['join']))
@@ -2004,10 +2004,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				/* Check if the data gets inserted on update
 				 * $$$hugh @FIXME - at this point we've removed tablename from _formdata keys (in processTodb()),
-				 * but element getValue() methods assume full name in _formData
+				 * but element getValue() methods assume full name in formData
 				 */
-				// $v = $elementModel->getValue($this->_formData);
-				$v = $elementModel->getValue($this->_formDataWithTableName);
+				// $v = $elementModel->getValue($this->formData);
+				$v = $elementModel->getValue($this->formDataWithTableName);
 				if ($elementModel->ignoreOnUpdate($v))
 				{
 					// Currently only field password elements return true
@@ -4688,7 +4688,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$app = JFactory::getApplication();
 		if ($app->isAdmin())
 		{
-			if (array_key_exists('apply', $this->_formData))
+			if (array_key_exists('apply', $this->formData))
 			{
 				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid');
 			}
@@ -4699,7 +4699,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		else
 		{
-			if (array_key_exists('apply', $this->_formData))
+			if (array_key_exists('apply', $this->formData))
 			{
 				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
 					. '&listid=' . JRequest::getInt('listid');
@@ -4781,7 +4781,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$formdata = $session->get('com_fabrik.form.data');
 
 		// $$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $this->get('id'))
+		if ($registry && $registry->get('com_fabrik.searchform.fromForm') != $this->get('id'))
 		{
 			$msg = $this->getParams()->get('suppress_msgs', '0') == '0'
 				? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';

@@ -1,16 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<name>Validation Plugin General Options</name>
 	
 	<fields name="validationrule">
 		<fieldset name="params">
 		
-			<field name="plugin"
-				type="pluginlist"
-				plugin="fabrik_validationrule"
-				repeat="true"
-				class="inputbox elementtype"
-				label="COM_FABRIK_ACTION" />
+			<field class="inputbox elementtype" label="COM_FABRIK_ACTION" name="plugin" plugin="fabrik_validationrule" repeat="true" type="pluginlist"/>
 		</fieldset>
 	</fields>
 	

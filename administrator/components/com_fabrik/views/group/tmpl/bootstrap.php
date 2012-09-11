@@ -23,8 +23,33 @@ FabrikHelperHTML::script($srcs);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="row-fluid">
-		<div class="span5">
+
+<ul class="nav nav-tabs">
+		<li>
+	    	<a data-toggle="tab active" href="#details-info">
+	    		<?php echo JText::_('COM_FABRIK_DETAILS'); ?>
+	    	</a>
+	    </li>
+	    <li>
+	    	<a data-toggle="tab" href="#details-repeat">
+	    		<?php echo JText::_('COM_FABRIK_REPEAT')?>
+	    	</a>
+	    </li>
+	    <li>
+	    	<a data-toggle="tab" href="#details-layout">
+	    		<?php echo JText::_('COM_FABRIK_LAYOUT')?>
+	    	</a>
+	    </li>
+	    <li>
+	    	<a data-toggle="tab" href="#details-multipage">
+	    		<?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE')?>
+	    	</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content">
+
+		<div class="tab-pane active" id="details-info">
 			<fieldset class="form-horizontal">
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_DETAILS');?>
@@ -36,8 +61,7 @@ FabrikHelperHTML::script($srcs);
 			</fieldset>
 		</div>
 
-		<div class="span7">
-
+		<div class="tab-pane" id="details-repeat">
 			<fieldset class="form-horizontal">
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_REPEAT');?>
@@ -47,7 +71,9 @@ FabrikHelperHTML::script($srcs);
 				endforeach;
 				?>
 			</fieldset>
+		</div>
 
+		<div class="tab-pane" id="details-layout">
 			<fieldset class="form-horizontal">
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_LAYOUT');?>
@@ -57,7 +83,9 @@ FabrikHelperHTML::script($srcs);
 				endforeach;
 				?>
 			</fieldset>
+		</div>
 
+		<div class="tab-pane" id="details-multipage">
 			<fieldset class="form-horizontal">
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?>
@@ -67,7 +95,6 @@ FabrikHelperHTML::script($srcs);
 				endforeach;
 				?>
 			</fieldset>
-
 		</div>
 	</div>
 

@@ -1,49 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form>
 	<name>Package Edit Form</name>
 	
 	<fieldset name="details">
 		
-		<field name="id" 
-			type="text" 
-			default="0" 
-			required="true"
-			readonly="true" class="readonly"
-			label="JGLOBAL_FIELD_ID_LABEL"
-			description ="JGLOBAL_FIELD_ID_DESC" />
+		<field class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL" name="id" readonly="true" required="true" type="text"/>
 			
-		<field name="label" 
-			type="text"
-			required="true" 
-			size="40" 
-			label="COM_FABRIK_FIELD_PACKAGE_NAME_LABEL"
-			description="COM_FABRIK_FIELD_PACKAGE_NAME_DESC" />
+		<field description="COM_FABRIK_FIELD_PACKAGE_NAME_DESC" label="COM_FABRIK_FIELD_PACKAGE_NAME_LABEL" name="label" required="true" size="40" type="text"/>
 			
-		<field name="component_name" 
-			type="text"
-			required="true" 
-			size="40"
-			filter="cmd"
-			label="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_LABEL"
-			description="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_DESC" />
+		<field description="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_DESC" filter="cmd" label="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_LABEL" name="component_name" required="true" size="40" type="text"/>
 			
-		<field name="version" 
-			type="text"
-			required="true" 
-			size="6" 
-			label="COM_FABRIK_FIELD_PACKAGE_VERSION_LABEL"
-			description="COM_FABRIK_FIELD_PACKAGE_VERSION_DESC" />
+		<field description="COM_FABRIK_FIELD_PACKAGE_VERSION_DESC" label="COM_FABRIK_FIELD_PACKAGE_VERSION_LABEL" name="version" required="true" size="6" type="text"/>
 			
 	</fieldset>
 	
 	<fieldset name="publishing">
 	
-		<field name="published" 
-			type="radio"
-			class="btn-group"
-			default="1"
-			label="JSTATUS"
-			description="COM_FABRIK_FIELD_PACKAGE_PUBLISHED_DESC">
+		<field class="btn-group" default="1" description="COM_FABRIK_FIELD_PACKAGE_PUBLISHED_DESC" label="JSTATUS" name="published" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
@@ -53,8 +26,7 @@
 	<fields name="params">
 		<fieldset name="json">
 			
-			<field name="canvas"
-				type="Hiddenparams" value=""/>
+			<field name="canvas" type="Hiddenparams" value=""/>
 		</fieldset>
 	</fields>
 </form>

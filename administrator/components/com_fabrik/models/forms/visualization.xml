@@ -1,94 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form>
 	<name>Visualization Edit Form</name>
 	
-	<fieldset name="details" addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="details">
 				
-		<field name="id"
-			type="text" 
-			class="readonly"
-			size="10"
-			default="0"
-			readonly="true" 
-			label="COM_FABRIK_ID_LABEL" />
+		<field class="readonly" default="0" label="COM_FABRIK_ID_LABEL" name="id" readonly="true" size="10" type="text"/>
 			
-		<field name="asset_id" type="hidden" label="" filter="unset" />
+		<field filter="unset" label="" name="asset_id" type="hidden"/>
 		
-		<field name="label" 
-			type="text" 
-			size="35"
-			required="true"
-			label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL" 
-			description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC" />
+		<field description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC" label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL" name="label" required="true" size="35" type="text"/>
 			
-		<field name="intro_text" 
-			type="editor" 
-			rows="3" cols="30" 
-			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
-			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
+		<field cols="30" description="COM_FABRIK_FIELD_INTRODUCTION_DESC" label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" name="intro_text" rows="3" type="editor"/>
 			
-		<field name="plugin" 
-			type="pluginlist" 
-			plugin="fabrik_visualization" 
-			required="true"
-			label="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_LABEL" 
-			description="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_DESC"/>
+		<field description="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_DESC" label="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_LABEL" name="plugin" plugin="fabrik_visualization" required="true" type="pluginlist"/>
 			
 		</fieldset>
-	<fieldset name="publishing" >
+	<fieldset name="publishing">
 		
-		<field name="published" 
-			type="radio"
-			class="btn-group"
-			default="0" 
-			label="JPUBLISHED">
+		<field class="btn-group" default="0" label="JPUBLISHED" name="published" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="created_by" 
-			type="user"
-			label="COM_FABRIK_FIELD_AUTHOR_LABEL"
-			description="COM_FABRIK_FIELD_AUTHOR_DESC" />
+		<field description="COM_FABRIK_FIELD_AUTHOR_DESC" label="COM_FABRIK_FIELD_AUTHOR_LABEL" name="created_by" type="user"/>
 			
-		<field name="access" 
-			type="accesslevel"
-			label="JFIELD_ACCESS_LABEL" 
-			description="JFIELD_ACCESS_DESC" />
+		<field description="JFIELD_ACCESS_DESC" label="JFIELD_ACCESS_LABEL" name="access" type="accesslevel"/>
 
-		<field name="created" 
-			type="calendar"
-			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" />
+		<field label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" name="created" type="calendar"/>
 			
-		<field name="publish_up"
-			type="calendar"
-			label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" />
+		<field label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" name="publish_up" type="calendar"/>
 			
-		<field name="publish_down"
-			type="calendar"
-			label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" />
+		<field label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" name="publish_down" type="calendar"/>
 			
 	</fieldset>
 	
 	<fields name="params">
 		<fieldset name="more">
 			
-			<field name="show-title" 
-				type="radio"
-				class="btn-group"
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" 
-				description="COM_FABRIK_FIELD_SHOW_TITLE_DESC">
+			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_SHOW_TITLE_DESC" label="COM_FABRIK_FIELD_SHOW_TITLE_LABEL" name="show-title" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="show_filters"
-				type="radio"
-				class="btn-group"
-				default="1" 
-				label="COM_FABRIK_FIELD_SHOW_FILTERS_LABEL" 
-				description="COM_FABRIK_FIELD_SHOW_FILTERS_DESC">
+			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_SHOW_FILTERS_DESC" label="COM_FABRIK_FIELD_SHOW_FILTERS_LABEL" name="show_filters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

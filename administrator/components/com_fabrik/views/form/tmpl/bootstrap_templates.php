@@ -1,6 +1,8 @@
 <div class="tab-pane" id="tab-layout">
 
-    <fieldset class="form-horizontal">
+<div class="row-fluid">
+	<div class="span6">
+		<fieldset class="form-horizontal">
 	    <legend>
 			<?php echo JText::_('COM_FABRIK_FRONT_END_TEMPLATES'); ?>
 		</legend>
@@ -13,6 +15,9 @@
 		endforeach;
 		?>
 	</fieldset>
+	</div>
+
+	<div class="span6">
 
     <fieldset class="form-horizontal">
     	<legend>
@@ -23,6 +28,10 @@
 		endforeach;
 		?>
 	</fieldset>
+	</div>
+</div>
+
+
 
 	<fieldset class="form-horizontal">
     	<legend>

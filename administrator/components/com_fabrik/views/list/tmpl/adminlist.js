@@ -23,7 +23,8 @@ var ListForm = new Class({
 		this.watchTableDd();
 		if (document.id('addAJoin')) {
 			document.id('addAJoin').addEvent('click', function (e) {
-				this.addAJoin();
+				e.stop();
+				this.addJoin();
 			}.bind(this));
 		}
 		if (document.getElement('table.linkedLists')) {
@@ -48,8 +49,8 @@ var ListForm = new Class({
 		$$('.addOrder').addEvent('click', function (e) {
 			this.addOrderBy();
 		}.bind(this));
-		$$('.deleteOrder').addEvent('click', function (e) {
-			this.deleteOrderBy();
+		document.getElements('.deleteOrder').addEvent('click', function (e) {
+			this.deleteOrderBy(e);
 		}.bind(this));
 	},
 	
@@ -106,11 +107,6 @@ var ListForm = new Class({
 			}
 		}
 		return opts;	
-	},
-	
-	addAJoin: function (e) {
-		this.addJoin();
-		e.stop();
 	},
 	
 	watchTableDd: function () {
@@ -501,8 +497,9 @@ var adminFilters = new Class({
 
 		var checked = (selJoin !== '' || selFilter !== '' || selCondition !== '' || selValue !== '') ? true : false;
 		var delId = this.el.id + "-del-" + this.counter;
-		var a = new Element('a', {href: '#', 'id': delId, 'class': 'removeButton'});
-		td5.appendChild(a);
+		
+		var a = '<button id="' + delId + '" class="removeButton btn"><i class="icon-minus"></i> ' + Joomla.JText._('COM_FABRIK_DELETE') + '</button>'; 
+		td5.set('html', a);
 		tr.appendChild(td);
 		tr.appendChild(td1);
 		tr.appendChild(td2);

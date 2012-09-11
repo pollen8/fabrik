@@ -26,7 +26,7 @@ var FbRepeatGroup = new Class({
 			newc = this.counter + 1;
 			var id = div.id.replace('-' + this.counter, '-' + newc);
 			var c = new Element('div', {'class': 'repeatGroup', 'id': id}).set('html', div.innerHTML);
-			c.injectAfter(div);
+			c.inject(div, 'after');
 			this.counter = newc;
 			//update params ids
 			if (this.counter !== 0) {

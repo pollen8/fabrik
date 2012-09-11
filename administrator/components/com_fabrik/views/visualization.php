@@ -19,7 +19,7 @@ class FabrikViewVisualization {
 	function setVisualizationsToolbar()
 	{
 		JToolBarHelper::title(JText::_('VISUALIZATIONS'), 'fabrik-visualization.png');
-		JToolBarHelper::customX( 'copy', 'copy.png', 'copy_f2.png', 'Copy');
+		JToolBarHelper::custom( 'copy', 'copy.png', 'copy_f2.png', 'Copy');
 		JToolBarHelper::deleteList();
 		JToolBarHelper::editListX();
 		JToolBarHelper::addNewX();

@@ -1,26 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<name>List Plugin General Options</name>
 	
 	<fields name="params">
 		<fieldset name="params">
 		
-			<field name="plugin_state" 
-				type="radio"
-				repeat="true"
-				default="1" 
-				label="COM_FABRIK_PUBLISHED">
+			<field default="1" label="COM_FABRIK_PUBLISHED" name="plugin_state" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="plugins"
-				type="pluginlist"
-				plugin="fabrik_list"
-				repeat="true"
-				required="true"
-				class="inputbox elementtype"
-				label="COM_FABRIK_SELECT_DO" />
+			<field class="inputbox elementtype" label="COM_FABRIK_SELECT_DO" name="plugins" plugin="fabrik_list" repeat="true" required="true" type="pluginlist"/>
 		</fieldset>
 	</fields>
 	

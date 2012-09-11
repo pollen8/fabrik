@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <joomfish type="contentelement">
   <name>Fabrik - Elements</name>
   <author>Manel Zaera, manelzaera@yahoo.es Benjamin Rivalland - www.decisionpublique.fr</author>
@@ -6,14 +6,14 @@
   <description>Definition for Fabrik  Elements</description>
   <reference>
   	<table name="fabrik_elements">
-  		<field type="referenceid" name="id" translate="0">ID</field>
-  		<field type="titletext" name="label" translate="1">Label</field>  		
-			<field type="textarea" name="default" translate="1">Default</field>	 
-			<field type="textarea" name="sub_labels" translate="1">Sub labels</field> 		
-  		<field type="created_date" name="created" translate="0">Created</field>
-  		<field type="modified_date" name="modified" translate="0">Modified</field>  		
-  		<field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-  		<field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
+  		<field name="id" translate="0" type="referenceid">ID</field>
+  		<field name="label" translate="1" type="titletext">Label</field>  		
+			<field name="default" translate="1" type="textarea">Default</field>	 
+			<field name="sub_labels" translate="1" type="textarea">Sub labels</field> 		
+  		<field name="created" translate="0" type="created_date">Created</field>
+  		<field name="modified" translate="0" type="modified_date">Modified</field>  		
+  		<field name="checked_out" translate="0" type="checked_out_by">Check out by</field>
+  		<field name="checked_out_time" translate="0" type="checked_out_date">Check out date</field>
   	</table>
   </reference>
    <translationfilters>

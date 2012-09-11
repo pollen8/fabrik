@@ -52,7 +52,9 @@ class FabrikViewHome extends JViewLegacy
 		$this->logs = $db->loadObjectList();
 		$this->feed = $this->get('RSSFeed');
 		$this->addToolbar();
+		FabrikHelper::setViewLayout($this);
 		parent::display($tpl);
+		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**

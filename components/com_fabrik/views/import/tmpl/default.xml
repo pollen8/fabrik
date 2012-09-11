@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <metadata>
 	<layout title="Fabrik import layout">
 		<message>
@@ -7,7 +7,7 @@
 	</layout>
 	<state>
 		<description>Link to import data page</description>
-		<url >
+		<url>
 		</url>
 		<params>
 		</params>

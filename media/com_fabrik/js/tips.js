@@ -149,6 +149,9 @@ var FloatingTips = new Class({
 		}
 		tip.setStyle('opacity', 0);
 		tip.show();
+		if (typeOf(opts.position) === 'null') {
+			opts.position = 'left';
+		}
 		var offsetDistance = opts.distance;
 		switch (opts.position) {
 		case 'top':
@@ -166,6 +169,7 @@ var FloatingTips = new Class({
 			offset = {x: offsetDistance + padding, y: 0};
 			edge = 'left';
 			break;
+		default:
 		case 'left':
 			padding = tip.getStyle('border-left').toInt() + tip.getStyle('border-right').toInt();
 			offset = {x: -1 * offsetDistance - padding, y: 0};

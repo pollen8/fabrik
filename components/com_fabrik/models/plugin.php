@@ -156,6 +156,8 @@ class FabrikPlugin extends JPlugin
 
 	public function onRenderAdminSettings($data = array(), $repeatCounter = null)
 	{
+		$version = new JVersion;
+		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
 		$document = JFactory::getDocument();
 		$type = str_replace('fabrik_', '', $this->_type);
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
@@ -193,14 +195,15 @@ class FabrikPlugin extends JPlugin
 		// $$$ rob 27/04/2011 - listfields element needs to know things like the group_id, and
 		// as bind() onlys saves the values from $data with a corresponding xml field we set the raw data as well
 		$form->rawData = $data;
-		$str = '';
+		$str = array();
 
 		$repeatGroupCounter = 0;
 
 		// Filer the forms fieldsets for those starting with the correct $serachName prefix
 		foreach ($form->getFieldsets() as $fieldset)
 		{
-			$class = 'adminform ' . $type . 'Settings page-' . $this->_name;
+			$class = $j3 ? 'form-horizontal ' : 'adminform ';
+			$class .= $type . 'Settings page-' . $this->_name;
 			$repeat = isset($fieldset->repeatcontrols) && $fieldset->repeatcontrols == 1;
 
 			// Bind data for repeat groups
@@ -224,23 +227,25 @@ class FabrikPlugin extends JPlugin
 			$id = isset($fieldset->name) ? ' id="' . $fieldset->name . '"' : '';
 
 			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"' : '';
-			$str .= '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
+			$str[] = '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
 			$form->repeat = $repeat;
 			if ($repeat)
 			{
-				$str .= '<a class="addButton" href="#">' . JText::_('COM_FABRIK_ADD') . '</a>';
+				$str[] = '<a class="addButton btn" href="#"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
 			}
-			$str .= '<legend>' . JText::_($fieldset->label) . '</legend>';
+			$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
 			for ($r = 0; $r < $repeatDataMax; $r++)
 			{
 				if ($repeat)
 				{
-					$str .= '<div class="repeatGroup">';
+					$str[] = '<div class="repeatGroup">';
 					$form->repeatCounter = $r;
 				}
-				$str .= '
-			 <ul class="adminformlist">';
+				if (!$j3)
+				{
+					$str[] = '<ul class="adminformlist">';
+				}
 				foreach ($form->getFieldset($fieldset->name) as $field)
 				{
 					if ($repeat)
@@ -250,26 +255,39 @@ class FabrikPlugin extends JPlugin
 							$field->setValue($field->value[$r]);
 						}
 					}
-					$str .= '<li>' . $field->label . $field->input . '</li>';
+					if ($j3)
+					{
+						$str[] = '<div class="control-group">';
+						$str[] = '<div class="control-label">' . $field->label . '</div>';
+						$str[] = '<div class="controls">' . $field->input . '</div>';
+						$str[] = '</div>';
+					}
+					else
+					{
+						$str[] = '<li>' . $field->label . $field->input . '</li>';
+					}
 				}
 				if ($repeat)
 				{
-					$str .= '<li><a class="removeButton delete" href="#">' . JText::_('COM_FABRIK_REMOVE') . '</a></li>';
+					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a></li>';
 				}
-				$str .= '</ul>';
+				if (!$j3)
+				{
+					$str[] = '</ul>';
+				}
 				if ($repeat)
 				{
-					$str .= "</div>";
+					$str[] = "</div>";
 				}
 			}
-			$str .= '</fieldset>';
+			$str[] = '</fieldset>';
 		}
 		if (!empty($repeatScript))
 		{
 			$repeatScript = implode("\n", $repeatScript);
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
 		}
-		return $str;
+		return implode("\n", $str);
 	}
 
 	/**

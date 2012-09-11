@@ -17,7 +17,7 @@
 	    	</a>
 	    </li>
 	    <li>
-	    	<a data-toggle="tab" href="#data-joins">
+	    	<a data-toggle="tab" href="#table-sliders-data-joins">
 	    		<?php echo JText::_('COM_FABRIK_JOINS')?>
 	    	</a>
 	    </li>
@@ -78,27 +78,27 @@
 		<div class="tab-pane" id="data-prefilter">
 			<fieldset class="form-horizontal">
 			<a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
-				<i class="icon-plus-sign"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
+				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
 			<?php foreach ($this->form->getFieldset('prefilter') as $this->field):
 				echo $this->loadTemplate('control_group');
 			 endforeach;
 			 ?>
-			<table class="adminform" width="100%">
+			<table class="table table-striped" width="100%">
 				<tbody id="filterContainer">
 				</tbody>
 			</table>
 			</fieldset>
 		</div>
 
-		<div class="tab-pane" id="data-joins">
+		<div class="tab-pane" id="table-sliders-data-joins">
 			<fieldset>
 			<legend>
 				<?php echo JText::_('COM_FABRIK_JOINS');?>
 			</legend>
 			<?php if ($this->item->id != 0) { ?>
 			<a href="#" id="addAJoin" class="addButton btn">
-				<i class="icon-plus-sign"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
+				<i class="icon-plus"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
 			<div id="joindtd"></div>
 			<?php

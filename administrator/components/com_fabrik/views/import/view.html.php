@@ -32,6 +32,7 @@ class FabrikViewImport extends JViewLegacy
 	{
 		$this->form = $this->get('Form');
 		$this->addToolBar();
+		FabrikHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 
@@ -68,7 +69,7 @@ class FabrikViewImport extends JViewLegacy
 	{
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::customX('import.makeTableFromCSV', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
+		JToolBarHelper::custom('import.makeTableFromCSV', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 
@@ -84,7 +85,7 @@ class FabrikViewImport extends JViewLegacy
 	{
 		JRequest::setVar('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::customX('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
+		JToolBarHelper::custom('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 

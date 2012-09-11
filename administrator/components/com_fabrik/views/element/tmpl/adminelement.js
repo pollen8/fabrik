@@ -16,7 +16,7 @@ var fabrikAdminElement = new Class({
 	initialize: function (plugins, options, id) {
 		this.parent(plugins, id, 'validationrule');
 		this.setOptions(options);
-		this.watchPluginDd();
+		//this.watchPluginDd();
 		this.setParentViz();
 		
 		this.jsCounter = 0;
@@ -36,10 +36,15 @@ var fabrikAdminElement = new Class({
 			this.addJavascript(opt);
 		}.bind(this));
 		
+		if (jQuery) {
+			jQuery('#jform_plugin').bind('change', function (e) {
+				this.changePlugin(e);
+		    }.bind(this));
+		}
 		document.id('jform_plugin').addEvent('change', function (e) {
-			e.stop();
 			this.changePlugin(e);
 		}.bind(this));
+		
 	},
 	
 	changePlugin: function (e) {
@@ -62,7 +67,7 @@ var fabrikAdminElement = new Class({
 			'update': document.id('plugin-container'),
 			'onComplete': function (r) {
 				document.id('plugin-container').set('html', r);
-				$exec(this.script);
+				Browser.exec(this.script);
 			}.bind(this)
 		}).send();
 	},
@@ -144,6 +149,7 @@ var fabrikAdminElement = new Class({
 	},
 	
 	watchPluginDd: function () {
+		console.log('watch plugin ddd - mootools');
 		document.id('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var opt = e.target.get('value');

@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class fabrikViewPlugin extends JView
+class fabrikViewPlugin extends JViewLegacy
 {
 
 	/**

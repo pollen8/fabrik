@@ -48,9 +48,10 @@ class FabrikViewGroups extends JViewLegacy
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
+		FabrikHelper::setViewLayout($this);
 		$this->addToolbar();
 		parent::display($tpl);
+		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**

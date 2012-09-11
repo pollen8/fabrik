@@ -55,6 +55,11 @@ FabrikHelperHTML::script($srcs, $this->js);
 		    	</a>
 		    </li>
 		    <li>
+		    	<a data-toggle="tab" href="#tab-buttons">
+		    		<?php echo JText::_('COM_FABRIK_BUTTONS'); ?>
+		    	</a>
+		    </li>
+		    <li>
 		    	<a data-toggle="tab" href="#tab-process">
 		    		<?php echo JText::_('COM_FABRIK_FORM_PROCESSING'); ?>
 		    	</a>
@@ -89,6 +94,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 	<div class="tab-content">
 		<?php
 		echo $this->loadTemplate('details');
+		echo $this->loadTemplate('buttons');
 		echo $this->loadTemplate('process');
 		echo $this->loadTemplate('publishing');
 		echo $this->loadTemplate('groups');

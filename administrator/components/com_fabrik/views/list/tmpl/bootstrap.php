@@ -46,11 +46,10 @@ FabrikHelperHTML::script($srcs, $this->js);
 </script>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="row-fluid">
+	<div class="tabbable tabs-left">
 
-		<div class="span2" id="sidebar">
 
-				<ul class="nav nav-list">
+				<ul class="nav nav-tabs">
 					<li class="active">
 				    	<a data-toggle="tab" href="#details">
 				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
@@ -78,10 +77,9 @@ FabrikHelperHTML::script($srcs, $this->js);
 				    </li>
 				</ul>
 
-		</div>
 
 
-	    <div class="tab-content span10">
+	    <div class="tab-content">
 	    	<?php
 	    	echo $this->loadTemplate('details');
 	    	echo $this->loadTemplate('data');

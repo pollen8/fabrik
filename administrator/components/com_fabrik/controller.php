@@ -31,8 +31,6 @@ class FabrikController extends JControllerLegacy
 		$this->default_view = 'home';
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		parent::display();
-		// Load the submenu.
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**

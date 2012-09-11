@@ -19,10 +19,10 @@ class FabrikViewCron
 	function setCronsToolbar()
 	{
 		JToolBarHelper::title(JText::_('SCHEDULED TASKS'), 'fabrik-schedule.png');
-		JToolBarHelper::customX('run', 'upload.png', 'upload_f2.png', 'Run');
+		JToolBarHelper::custom('run', 'upload.png', 'upload_f2.png', 'Run');
 		JToolBarHelper::publishList();
 		JToolBarHelper::unpublishList();
-		JToolBarHelper::customX('copy', 'copy.png', 'copy_f2.png', 'Copy');
+		JToolBarHelper::custom('copy', 'copy.png', 'copy_f2.png', 'Copy');
 		JToolBarHelper::deleteList();
 		JToolBarHelper::editListX();
 		JToolBarHelper::addNewX();

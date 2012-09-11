@@ -411,7 +411,7 @@ var FbListInlineEdit = new Class({
 	
 					//delay the script to allow time for the dom to be updated
 					(function () {
-						$exec(this.javascript);
+						Browser.exec(this.javascript);
 					}.bind(this)).delay(1000);
 					td.empty().set('html', r);
 					this._animate(td, 'in');

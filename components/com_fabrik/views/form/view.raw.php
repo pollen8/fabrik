@@ -110,7 +110,7 @@ class fabrikViewForm extends JViewLegacy
 			{
 				$onLoad[] = "o.select();";
 				$onLoad[] = "o.focus();";
-				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JUtility::getToken() . "';";
+				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
 			}
 			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";

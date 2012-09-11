@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <metadata>
 	<layout title="csv">
 		<message>
@@ -7,11 +7,9 @@
 	</layout>
 	
 	<fields name="request">
-		<fieldset name="request" addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="request">
 	
-			<field name="listid" type="fabriktables" 
-				label="List" 
-				description="The list to export" />
+			<field description="The list to export" label="List" name="listid" type="fabriktables"/>
 				
 			</fieldset>
 	</fields>

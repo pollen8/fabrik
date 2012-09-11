@@ -1,45 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <form>
 	<name>Import list from CSV</name>
 	
 	<fieldset name="details">
 			
-		<field name="userfile"
-			type="file"
-			required="true"
-			label="COM_FABRIK_FIELD_CSV_FILE_LABEL"
-			description="COM_FABRIK_FIELD_CSV_FILE_DESC" />
+		<field description="COM_FABRIK_FIELD_CSV_FILE_DESC" label="COM_FABRIK_FIELD_CSV_FILE_LABEL" name="userfile" required="true" type="file"/>
 		
 	</fieldset>
 	
 	<fieldset name="append">
 		
-		<field name="drop_data"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC">
+		<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_DROP_DATA_LABEL" name="drop_data" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 		
-		<field name="overwrite"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC">
+		<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL" name="overwrite" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="inPutFormat"
-			type="radio"
-			class="btn-group"
-			default="csv"
-			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC">
+		<field class="btn-group" default="csv" description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL" name="inPutFormat" type="radio">
 				<option value="csv">CSV</option>
 				<option value="fabrikexcel">COM_FABRIK_FABRIK_EXCEL_IMPORT_FORMAT</option>
 				<option value="excel">COM_FABRIK_EXCEL_IMPORT_FORMAT</option>
@@ -48,53 +29,24 @@
 	
 	<fieldset name="format">
 		
-		<field name="field_delimiter"
-			type="text"
-			size="2" default=","
-			label="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_DESC" />
+		<field default="," description="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_LABEL" name="field_delimiter" size="2" type="text"/>
 		
-		<field name="tabdelimited"
-			type="checkbox"
-			default="false"
-			label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC" />
+		<field default="false" description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL" name="tabdelimited" type="checkbox"/>
 			
-		<field name="text_delimiter"
-			type="text" size="2" default='"'
-			label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL"
-			description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC" />
+		<field default="&quot;" description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL" name="text_delimiter" size="2" type="text"/>
 			
 		
 	</fieldset>
 	
 	<fieldset name="creation">
 		
-		<field name="connection_id"
-			type="connections"
-			required="true"
-			label="COM_FABRIK_FIELD_CONNECTION_LABEL"
-			description="COM_FABRIK_FIELD_CONNECTION_DESC" />
+		<field description="COM_FABRIK_FIELD_CONNECTION_DESC" label="COM_FABRIK_FIELD_CONNECTION_LABEL" name="connection_id" required="true" type="connections"/>
 			
-		<field name="db_table_name"
-				type="field"
-				required="true"
-				label="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_LABEL"
-				description="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_DESC" />
+		<field description="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_DB_TABLE_NAME_LABEL" name="db_table_name" required="true" type="field"/>
 				
-		<field name="label"
-				type="field"
-				required="true"
-				label="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_LABEL"
-				description="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_DESC" />
+		<field description="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_LIST_LABEL_LABEL" name="label" required="true" type="field"/>
 				
-			<field name="addkey"
-					type="radio"
-					class="btn-group"
-					required="true"
-					default="0"
-					label="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_LABEL"
-					description="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_DESC">
+			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_CREATE_PK_LABEL" name="addkey" required="true" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>		
 			</field>

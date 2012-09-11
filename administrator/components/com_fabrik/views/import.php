@@ -15,7 +15,7 @@ class FabrikViewImport {
 	function setcsvChooseElementTypesToolbar()
 	{
 		JToolBarHelper::title(JText::_('Assign element types'));
-		JToolBarHelper::customX( 'makeTableFromCSV', 'forward.png', 'forward.png', 'Continue', false);
+		JToolBarHelper::custom( 'makeTableFromCSV', 'forward.png', 'forward.png', 'Continue', false);
 		JToolBarHelper::cancel();
 	}
 

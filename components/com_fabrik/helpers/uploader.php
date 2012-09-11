@@ -46,7 +46,7 @@ class FabrikUploader extends JObject
 
 	public function __construct($formModel)
 	{
-		$this->_form = $formModel;
+		$this->form = $formModel;
 	}
 
 	/**

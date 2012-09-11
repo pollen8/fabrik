@@ -12,7 +12,24 @@
 // No direct access
 defined('_JEXEC') or die;
 ?>
-
+<script type="text/javascript">
+Joomla.submitform = function(task, form) {
+	if (typeof(form) === 'undefined') {
+		form = document.getElementById('fabrik-form');
+	}
+	if (typeof(task) !== 'undefined') {
+	form.task.value = task;
+	}
+	// Submit the form.
+	if (typeof form.onsubmit == 'function') {
+		form.onsubmit();
+	}
+	if (typeof form.fireEvent == "function") {
+		form.fireEvent('submit');
+	}
+	form.submit();
+};
+</script>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
 
 	<?php

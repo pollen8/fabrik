@@ -23,7 +23,7 @@ require_once 'fabmodeladmin.php';
  * @since       3.0.6
  */
 
-class FabrikModelPlugin extends JModel
+class FabrikModelPlugin extends JModelLegacy
 {
 
 	/**
@@ -34,7 +34,7 @@ class FabrikModelPlugin extends JModel
 
 	public function render()
 	{
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn($this->getState('plugin'), $this->getState('type'));
 		$feModel = $this->getPluginModel();
 		$plugin->getJForm()->model = $feModel;
@@ -99,7 +99,7 @@ class FabrikModelPlugin extends JModel
 		if ($type !== 'validationrule')
 		{
 			// Set the parent model e.g. form/list
-			$feModel = JModel::getInstance($type, 'FabrikFEModel');
+			$feModel = JModelLegacy::getInstance($type, 'FabrikFEModel');
 			$feModel->setId($this->getState('id'));
 		}
 		return $feModel;

@@ -22,7 +22,7 @@ class FabrikViewConenction {
 		JToolBarHelper::makeDefault('setdefault');
 		JToolBarHelper::publishList();
 		JToolBarHelper::unpublishList();
-		JToolBarHelper::customX( 'copy', 'copy.png', 'copy_f2.png', 'Copy');
+		JToolBarHelper::custom( 'copy', 'copy.png', 'copy_f2.png', 'Copy');
 		JToolBarHelper::deleteList();
 		JToolBarHelper::editListX();
 		JToolBarHelper::addNewX();

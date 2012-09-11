@@ -2841,7 +2841,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		if (!array_key_exists('allow_drop', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->allow_drop = in_array($this->getParams()->get('allow_drop'), $groups);
 		}
 		return $this->access->allow_drop;
@@ -2858,7 +2858,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		if (!array_key_exists('viewdetails', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
 		}
 		return $this->access->viewdetails;
@@ -2900,7 +2900,7 @@ class FabrikFEModelList extends JModelForm
 		if (!array_key_exists('edit', $this->access))
 		{
 			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 			$this->access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
 		return $this->access->edit;
@@ -2965,7 +2965,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if (!array_key_exists('delete', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
 		return $this->access->delete;
@@ -2997,7 +2997,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('csvimport', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->csvimport = in_array($this->getParams()->get('csv_import_frontend'), $groups);
 		}
 		return $this->access->csvimport;
@@ -3013,7 +3013,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('csvexport', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->csvexport = in_array($this->getParams()->get('csv_export_frontend'), $groups);
 		}
 		return $this->access->csvexport;
@@ -3029,7 +3029,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('groupby', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->groupby = in_array($this->getParams()->get('group_by_access'), $groups);
 		}
 		return $this->access->groupby;
@@ -3046,7 +3046,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		if (!array_key_exists('add', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->add = in_array($this->getParams()->get('allow_add'), $groups);
 		}
 		return $this->access->add;
@@ -3062,7 +3062,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists('view', $this->access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->view = in_array($this->getTable()->access, $groups);
 		}
 		return $this->access->view;
@@ -5569,7 +5569,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->_aRunCalculations;
 		}
 		$user = JFactory::getUser();
-		$aclGroups = $user->authorisedLevels();
+		$aclGroups = $user->getAuthorisedViewLevels();
 		$aCalculations = array();
 		$formModel = $this->getFormModel();
 		$aAvgs = array();
@@ -6300,7 +6300,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected function mustApplyFilter($gid)
 	{
-		return in_array($gid, JFactory::getUser()->authorisedLevels());
+		return in_array($gid, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
 	/**

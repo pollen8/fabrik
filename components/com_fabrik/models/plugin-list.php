@@ -57,7 +57,7 @@ class plgFabrik_List extends FabrikPlugin
 			return true;
 		}
 		$params = $this->getParams();
-		$groups = JFactory::getUser()->authorisedLevels();
+		$groups = JFactory::getUser()->getAuthorisedViewLevels();
 		return in_array($params->get($aclParam), $groups);
 	}
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <joomfish type="contentelement">
   <name>Fabrik - Groups</name>
   <author>Manel Zaera, manelzaera@yahoo.es</author>
@@ -6,9 +6,9 @@
   <description>Definition for Fabrik Groups</description>
   <reference>
   	<table name="fabrik_groups">
-  		<field type="referenceid" name="id" translate="0">ID</field>
-  		<field type="titletext" name="name" translate="1">Group Name</field>  		
-  		<field type="text" name="label" translate="1">Group Title</field>  
+  		<field name="id" translate="0" type="referenceid">ID</field>
+  		<field name="name" translate="1" type="titletext">Group Name</field>  		
+  		<field name="label" translate="1" type="text">Group Title</field>  
   	</table>
   </reference>
-</joomfish >
+</joomfish>

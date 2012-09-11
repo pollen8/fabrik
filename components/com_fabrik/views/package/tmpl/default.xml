@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <metadata>
 	<layout title="Package">
 		<message>
@@ -6,10 +6,9 @@
 		</message>
 	</layout>
 	
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="params"
-		label="COM_FABRIK_OPTIONS">
-			<field name="id" type="packagelist" active="1" label="COM_FABRIK_PACKAGE" description="The Package id to show" />
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="COM_FABRIK_OPTIONS" name="params">
+			<field active="1" description="The Package id to show" label="COM_FABRIK_PACKAGE" name="id" type="packagelist"/>
 		</fieldset>
 	</fields>
 </metadata>

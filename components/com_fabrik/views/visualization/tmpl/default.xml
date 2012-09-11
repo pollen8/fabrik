@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <metadata>
 	<layout title="Visualization">
 		<message>
@@ -6,16 +6,13 @@
 		</message>
 	</layout>
 	<fields name="request">
-		<fieldset name="request"
-				addfieldpath="/administrator/components/com_fabrik/models/fields">
-			<field name="id" type="visaulizationlist" default="0" label="Select Instance" description="" />
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="request">
+			<field default="0" description="" label="Select Instance" name="id" type="visaulizationlist"/>
 		</fieldset>
 	</fields>
-	<fields name="params" addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset name="params" label="COM_FABRIK_OPTIONS">
-			<field name="resetfilters" type="radio" default="0" 
-				label="COM_FABRIK_FIELD_RESET_FILTERS_LABEL" 
-				description="COM_FABRIK_FIELD_RESET_FILTERS_DESC">
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset label="COM_FABRIK_OPTIONS" name="params">
+			<field default="0" description="COM_FABRIK_FIELD_RESET_FILTERS_DESC" label="COM_FABRIK_FIELD_RESET_FILTERS_LABEL" name="resetfilters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
