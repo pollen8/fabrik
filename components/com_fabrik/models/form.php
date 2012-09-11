@@ -1194,7 +1194,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			 if (array_key_exists('fabrik_vars', $_REQUEST)
 			&& array_key_exists('querystring', $_REQUEST['fabrik_vars'])
 			&& array_key_exists($key, $_REQUEST['fabrik_vars']['querystring'])) {
-			$crypt = new JCrypt;
+			$crypt = FabrikWorker::getCrypt();
 			// turns out it isn't this simple, of course!  see above
 			$_REQUEST['fabrik_vars']['querystring'][$key] = $crypt->encrypt($val);
 			}
@@ -2129,7 +2129,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
 			jimport('joomla.utilities.simplecrypt');
-			$crypt = new JCrypt;
+			$crypt = FabrikWorker::getCrypt();
 			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
 			{
@@ -3833,15 +3833,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	protected function parseIntroOutroPlaceHolders($text)
 	{
-		$match = ((int) $this->_rowId === 0) ? 'new' : 'edit';
-		$remove = ((int) $this->_rowId === 0) ? 'edit' : 'new';
+		$match = ((int) $this->rowId === 0) ? 'new' : 'edit';
+		$remove = ((int) $this->rowId === 0) ? 'edit' : 'new';
 		$match = "/{" . $match . ":\s*.*?}/i";
 		$remove = "/{" . $remove . ":\s*.*?}/i";
 		$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
 		$text = preg_replace($remove, '', $text);
 		$text = str_replace('[', '{', $text);
 		$text = str_replace(']', '}', $text);
-		if (!$this->_editable)
+		if (!$this->editable)
 		{
 			$match = "/{details:\s*.*?}/i";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
@@ -3852,7 +3852,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			echo $text;
 		}
 		$w = new FabrikWorker;
-		$text = $w->parseMessageForPlaceHolder($text, $this->_data, true);
+		$text = $w->parseMessageForPlaceHolder($text, $this->data, true);
 		return $text;
 	}
 

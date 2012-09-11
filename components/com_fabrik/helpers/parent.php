@@ -524,6 +524,25 @@ class FabrikWorker
 	}
 
 	/**
+	 * Get the crypt object
+	 *
+	 * @since  3.1
+	 *
+	 * @return  JCrypt
+	 */
+
+	public static function getCrypt()
+	{
+		jimport('joomla.crypt.crypt');
+		jimport('joomla.crypt.key');
+		$config = JFactory::getConfig();
+		$secret = $config->get('secret');
+		$key = new JCryptKey('simple', $secret, $secret);
+		$crypt = new JCrypt(new JCryptCipherSimple, $key);
+		return $crypt;
+	}
+
+	/**
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *

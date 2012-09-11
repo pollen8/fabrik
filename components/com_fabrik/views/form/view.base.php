@@ -785,7 +785,7 @@ class FabrikViewFormBase extends JViewLegacy
 	{
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
-		$crypt = new JCrypt;
+		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$get = JRequest::get('get');
 		foreach ($get as $key => $input)
@@ -835,9 +835,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _cryptViewOnlyElements(&$aHiddenFields)
 	{
-		jimport('joomla.utilities.simplecrypt');
-		jimport('joomla.utilities.utility');
-		$crypt = new JCrypt;
+		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$fields = array();
 		$ro = $this->get('readOnlyVals');
