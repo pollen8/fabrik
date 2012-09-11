@@ -59,12 +59,14 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 		?>
 
 <?php  /* This is where the fieldset is set up */ ?>
-		<<?php echo $form->fieldsetTag ?> class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<<?php echo $form->fieldsetTag ?> class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
-		<?php if (trim($group->title) !== '')
-		{?>
+		<?php if (trim($group->title) !== '') :
+		?>
+		<div class="page-header">
 			<<?php echo $form->legendTag ?> class="legend"><span><?php echo $group->title;?></span></<?php echo $form->legendTag ?>>
-		<?php }?>
+		</div>
+		<?php endif;?>
 
 <?php  /* This is where the group intro is shown */ ?>
 		<?php if ($group->intro !== '') {?>
