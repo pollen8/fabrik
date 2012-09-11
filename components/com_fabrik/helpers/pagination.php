@@ -158,7 +158,7 @@ class FPagination extends JPagination
 		}
 		$selected = $this->_viewall ? 0 : $this->limit;
 		$js = '';
-		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox" size="1" onchange="' . $js . '"', 'value', 'text',
+		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox input-mini" size="1" onchange="' . $js . '"', 'value', 'text',
 			$selected
 		);
 		return $html;
@@ -317,14 +317,19 @@ class FPagination extends JPagination
 	{
 		// Reverse output rendering for right-to-left display.
 		$html = '<ul class="pagination">';
-		$html .= '<li class="pagination-start">' . $list['start']['data'] . '</li>';
-		$html .= '<li class="pagination-prev">' . $list['previous']['data'] . '</li>';
+		$class =  $list['start']['active'] == 1 ? ' ' : ' active';
+		$html .= '<li class="pagination-start' . $class . '">' . $list['start']['data'] . '</li>';
+		$class =  $list['previous']['active'] == 1 ? ' ' : ' active';
+		$html .= '<li class="pagination-prev' . $class . '">' . $list['previous']['data'] . '</li>';
 		foreach ($list['pages'] as $page)
 		{
-			$html .= '<li>' . $page['data'] . '</li>';
+			$class = $page['active'] == 1 ? '' : 'active';
+			$html .= '<li class="' . $class . '">' . $page['data'] . '</li>';
 		}
-		$html .= '<li class="pagination-next">' . $list['next']['data'] . '</li>';
-		$html .= '<li class="pagination-end">' . $list['end']['data'] . '</li>';
+		$class =  $list['next']['active'] == 1 ? ' ' : ' active';
+		$html .= '<li class="pagination-next' . $class . '">' . $list['next']['data'] . '</li>';
+		$class =  $list['end']['active'] == 1 ? ' ' : ' active';
+		$html .= '<li class="pagination-end' . $class . '">' . $list['end']['data'] . '</li>';
 		$html .= '</ul>';
 		return $html;
 	}
@@ -438,10 +443,11 @@ class FPagination extends JPagination
 		// Initialize variables
 		$html = array();
 		$html[] = '<div class="list-footer">';
+
 		$limitLabel = $this->showDisplayNum ? JText::_('COM_FABRIK_DISPLAY_NUM') : '';
-		$html[] = '<div class="limit">' . $limitLabel . $list['limitfield'] . '</div>';
+		$html[] = '<div class="limit"><div class="input-prepend input-append"><span class="add-on"><small>' . $limitLabel . '</small></span>' . $list['limitfield'] . '<span class="add-on"><small>' . $list['pagescounter'] . '</small></span></div></div>';
 		$html[] = $list['pageslinks'];
-		$html[] = '<div class="counter">' . $list['pagescounter'] . '</div>';
+		//$html[] = '<div class="counter">' .  . '</div>';
 		$html[] = '<input type="hidden" name="limitstart' . $this->id . '" id="limitstart' . $this->id . '" value="' . $list['limitstart'] . '" />';
 		$html[] = '</div>';
 		return implode("\n", $html);
