@@ -14,6 +14,8 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.filesystem.folder');
+
 // Could be that the sys plugin is installed but fabrik not
 if (!JFolder::exists('components/com_fabrik/'))
 {
