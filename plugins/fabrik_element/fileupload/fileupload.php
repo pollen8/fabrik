@@ -21,20 +21,31 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
  */
 
 class plgFabrik_ElementFileupload extends plgFabrik_Element
 {
 
-	/**@var object storage method adaptor object (filesystem/amazon s3) */
-	/* needs to be public as models have to see it */
+	/**
+	 * Storage method adaptor object (filesystem/amazon s3)
+	 * needs to be public as models have to see it
+	 *
+	 * @var object
+	 */
 	public $storage = null;
 
+	/**
+	 * Is the element an upload element
+	 *
+	 * @var bool
+	 */
 	protected $_is_upload = true;
 
 	/**
-	 * does the element store its data in a join table (1:n)
-	 * @return bool
+	 * Does the element store its data in a join table (1:n)
+	 *
+	 * @return  bool
 	 */
 
 	public function isJoin()
@@ -51,15 +62,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * decide whether to ingore data when updating a record
+	 * Determines if the data in the form element is used when updating a record
 	 *
-	 * @param	string	$val
-	 * @return	bool	true if you shouldnt update the data
+	 * @param   mixed  $val  element forrm data
+	 *
+	 * @return  bool  true if ignored on update, default = false
 	 */
 
-	function ignoreOnUpdate($val)
+	public function ignoreOnUpdate($val)
 	{
-		//check if its a CSV import if it is allow the val to be inserted
+		// Check if its a CSV import if it is allow the val to be inserted
 		if (JRequest::getCmd('task') === 'makeTableFromCSV' || $this->getListModel()->importingCSV)
 		{
 			return false;
@@ -70,9 +82,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$return = false;
 		if ($groupModel->canRepeat())
 		{
-			//$$$rob could be the case that we aren't uploading an element by have removed
-			//a repeat group (no join) with a file upload element, in this case processUpload has the correct
-			//file path settings.
+			/*$$$rob could be the case that we aren't uploading an element by have removed
+			 *a repeat group (no join) with a file upload element, in this case processUpload has the correct
+			 *file path settings.
+			 */
 			return false;
 		}
 		else
@@ -83,7 +96,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$joinid = $groupModel->getGroup()->join_id;
 				$fileJoinData = JArrayHelper::getValue($_FILES['join']['name'], $joinid, array());
 				$fdata = JArrayHelper::getValue($fileJoinData, $name);
-				//$fdata = $_FILES['join']['name'][$joinid][$name];
+
+				// $fdata = $_FILES['join']['name'][$joinid][$name];
 			}
 			else
 			{
@@ -97,9 +111,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				else
 				{
-					//if we can crop we need to store the cropped coordinated in the field data
-					// @see onStoreRow();
-					// above depreciated - not sure what to return here for the moment
+					/*if we can crop we need to store the cropped coordinated in the field data
+					 * @see onStoreRow();
+					 * above depreciated - not sure what to return here for the moment
+					 */
 					return false;
 				}
 			}
@@ -112,57 +127,58 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * Get the class to manage the form element
+	 *
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
+	 * @param   string  $script  script to load once class has loaded
 	 *
-	 * get the class to manage the form element
-	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
-	 * to ensure that the file is loaded only once
+	 * @return void
 	 */
 
-	function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '')
 	{
-		// $$$ hugh - adding js.new folder to make it easier to test new plupload git releases
-		// I just copy new stuff into js.new, and un-comment one of these as appropriate
+		/**
+		 * $$$ hugh - adding js.new folder to make it easier to test new plupload git releases
+		 * I just copy new stuff into js.new, and un-comment one of these as appropriate
+		 */
 		$js_dir = 'js';
-		//$js_dir = 'js.new';
 
+		// $js_dir = 'js.new';
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
 			$prefix = JDEBUG ? '' : '.min';
 			$runtimes = $params->get('ajax_runtime', 'html5');
-			parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload' . $prefix . '.js');
+			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
+			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $prefix . '.js');
 
 			if (strstr($runtimes, 'html5'))
 			{
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.html5' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $prefix . '.js');
 			}
 			if (strstr($runtimes, 'html4'))
 			{
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.html4' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $prefix . '.js');
 			}
 			if (strstr($runtimes, 'gears'))
 			{
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/gears_init.js');
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.gears' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $prefix . '.js');
 			}
 
 			if (strstr($runtimes, 'flash'))
 			{
-				parent::formJavascriptClass($srcs, 'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.flash' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $prefix . '.js');
 			}
 			if (strstr($runtimes, 'silverlight'))
 			{
-				parent::formJavascriptClass($srcs,
-					'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.silverlight' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $prefix . '.js');
 			}
 			if (strstr($runtimes, 'browserplus'))
 			{
-				parent::formJavascriptClass($srcs,
-					'plugins/fabrik_element/fileupload/lib/plupload/' . $js_dir . '/plupload.browserplus' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $prefix . '.js');
 			}
 		}
 		parent::formJavascriptClass($srcs, $script);
@@ -172,7 +188,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			$elementclasses = array();
 		}
-		//load up the default scipt
+		// Load up the default scipt
 		if ($script == '')
 		{
 			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
@@ -212,7 +228,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$value = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 		$value = $this->checkForSingleCropValue($value);
 
-		//repeat_image_repeat_image___params
+		// Repeat_image_repeat_image___params
 		$rawvalues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
 		$fdata = $this->getForm()->_data;
 		$rawkey = $this->getFullName(false, true, false) . '_raw';
@@ -235,11 +251,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				{
 					if (is_array($value[$x]))
 					{
-						//from failed validation
+						// From failed validation
 						foreach ($value[$x]['id'] as $tkey => $parts)
 						{
 							$o = new stdClass;
-							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;//$rawvalues[$x];
+							$o->id = 'alreadyuploaded_' . $element->id . '_' . $iCounter;
 							$o->name = array_pop(explode(DS, $tkey));
 							$o->path = $tkey;
 							if ($fileinfo = $this->getStorage()->getFileInfo($o->path))
@@ -261,7 +277,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					{
 						if (is_object($value[$x]))
 						{
-							//single crop image (not sure about the 0 settings in here)
+							// S Fngle crop image (not sure about the 0 settings in here)
 							$parts = explode(DS, $value[$x]->file);
 							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_0';
@@ -346,7 +362,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string  $data      data to show
-	 * @param	object  &$thisRow  all the data in the tables current row
+	 * @param   object  &$thisRow  all the data in the tables current row
 	 *
 	 * @return	string	formatted value
 	 */
@@ -374,9 +390,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * Shows the data formatted for the CSV export view
-	 * @param	string	data
-	 * @param	string	element name
-	 * @param	object	all the data in the tables current row
+	 *
+	 * @param   string  $data      element data
+	 * @param   object  &$thisRow  all the data in the tables current row
+	 *
 	 * @return	string	formatted value
 	 */
 
@@ -393,14 +410,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * shows the data formatted for the JSON export view
-	 * @param	string	data
-	 * @param	string	element name
-	 * @param	object	all the data in the tables current row
+	 * Shows the data formatted for the JSON export view
+	 *
+	 * @param   string  $data  file name
+	 * @param   string  $rows  all the data in the tables current row
+	 *
 	 * @return	string	formatted value
 	 */
 
-	function renderListData_json($data, $rows)
+	public function renderListData_json($data, $rows)
 	{
 		$data = explode(GROUPSPLITTER, $data);
 		$params = $this->getParams();
@@ -413,10 +431,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * encodes the file
-	 * @param	string	$file relative file path
-	 * @param	mixed	format to encode the file full|url|base64|raw|relative
-	 * @return	string	encoded file for export
+	 * Encodes the file
+	 *
+	 * @param   string  $file    relative file path
+	 * @param   mixed   $format  encode the file full|url|base64|raw|relative
+	 *
+	 * @return  string	encoded file for export
 	 */
 
 	protected function encodeFile($file, $format = 'relative')
@@ -447,32 +467,35 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * examine the file being displayed and load in the corresponding
+	 * Examine the file being displayed and load in the corresponding
 	 * class that deals with its display
-	 * @param	string	file
+	 *
+	 * @param   string  $file  file
+	 *
+	 * @return  object  element renderer
 	 */
 
-	function loadElement($file)
+	protected function loadElement($file)
 	{
 		$ext = JString::strtolower(JFile::getExt($file));
 		if (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php'))
 		{
-			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php');
+			require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/custom/' . $ext . '.php';
 		}
 		elseif (JFile::exists(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php'))
 		{
-			require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php');
+			require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/' . $ext . '.php';
 		}
 		else
 		{
-			//default down to allvideos content plugin
+			// Default down to allvideos content plugin
 			if (in_array($ext, array('flv', '3gp', 'divx')))
 			{
-				require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/allvideos.php');
+				require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/allvideos.php';
 			}
 			else
 			{
-				require(JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/default.php');
+				require JPATH_ROOT . '/plugins/fabrik_element/fileupload/element/default.php';
 			}
 		}
 		return $render;
@@ -483,12 +506,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 *
 	 * @param   string  $data      current cell data
 	 * @param   array   &$thisRow  current row data
-	 * @param   int    $i          repeat group count
+	 * @param   int     $i         repeat group count
 	 *
 	 * @return	string
 	 */
 
-	function _renderListData($data, $thisRow, $i = 0)
+	protected function _renderListData($data, &$thisRow, $i = 0)
 	{
 		$this->_repeatGroupCounter = $i;
 		$element = $this->getElement();
@@ -547,9 +570,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				if (!$canDownload)
 				{
 					$img = $params->get('fu_download_noaccess_image');
-					$noImg = ($img == '' || ! JFile::exists(COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img));
+					$noImg = ($img == '' || !JFile::exists(COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img));
 					$aClass = $noImg ? 'class="btn button"' : '';
-					$a = $params->get('fu_download_noaccess_url') == '' ? '' : '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
+					$a = $params->get('fu_download_noaccess_url') == '' ? ''
+						: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
 					$a2 = $params->get('fu_download_noaccess_url') == '' ? '' : '</a>';
 
 					if ($noImg)
@@ -576,7 +600,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 			}
-			//$title_name .= '_raw'; //Jaanus: WHY _raw? Do we really want to see the numbers instead of normal words? See also http://fabrikar.com/forums/showthread.php?p=123267 about f2
 			if (array_key_exists($title_name, $thisRow))
 			{
 				if (!empty($thisRow->$title_name))
@@ -590,8 +613,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if ($downloadImg !== '' && JFile::exists('media/com_fabrik/images/' . $downloadImg))
 			{
 				$aClass = '';
-				$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg . '" alt="'
-					. $title . '" />';
+				$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg . '" alt="' . $title . '" />';
 			}
 			else
 			{
@@ -631,15 +653,17 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * do we need to include the lighbox js code
+	 * Do we need to include the lighbox js code
 	 *
 	 * @return	bool
 	 */
 
-	function requiresLightBox()
+	public function requiresLightBox()
 	{
 		$params = $this->getParams();
-		//wont load it if in admin module with this condition. Testing returning true as some thing else is not right with it either.
+
+		// Wont load it if in admin module with this condition. Testing returning true as some thing else is not right with it either.
+
 		/*if (JRequest::getCmd('view') == 'list' && $params->get('fu_show_image_in_table')  == '0') {
 		 return false;
 		}*/
@@ -657,18 +681,21 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	public function storeDatabaseFormat($val, $data)
 	{
-		//val already contains group splitter from processUpload() code
+		// Val already contains group splitter from processUpload() code
 		return $val;
 	}
 
 	/**
-	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
-	 * @param	string	elements data
-	 * @param	int		repeat group counter
-	 * @return	bool	true if passes / false if falise validation
+	 * Checks the posted form data against elements INTERNAL validataion rule
+	 * e.g. file upload size / type
+	 *
+	 * @param   string  $data           elements data
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  bool	true if passes / false if falise validation
 	 */
 
-	function validate($data = array(), $repeatCounter = 0)
+	public function validate($data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
@@ -676,15 +703,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$this->_validationErr = '';
 		$errors = array();
 		$elName = $this->getFullName();
-		$elName = str_replace('[]', '', $elName); //remove any repeat group labels
+
+		// Remove any repeat group labels
+		$elName = str_replace('[]', '', $elName);
 		if ($groupModel->isJoin())
 		{
-			// $$$ hugh - kinda screws things up if 'join' is used in the element name!
-			/*
-			 $elTempName = str_replace('join', '', $elName);
-			$elTempName = str_replace('[', '', $elTempName);
-			$joinArray = explode(']', $elTempName);
-			 */
 			$joinArray = array();
 			if (!preg_match('#join\[(\d+)\]\[(\S+)\]#', $elName, $joinArray))
 			{
@@ -760,7 +783,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		return $ok;
 	}
 
-	function _getAllowedExtension()
+	/**
+	 * Get an array of allowed file extensions
+	 *
+	 * @return array
+	 */
+
+	protected function _getAllowedExtension()
 	{
 		$params = $this->getParams();
 		$allowedFiles = $params->get('ul_file_types');
@@ -781,12 +810,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * This checks the uploaded file type against the csv specified in the upload
 	 * element
-	 * @access PRIVATE
-	 * @param	string	filename
+	 *
+	 * @param   string  $myFileName  filename
+	 *
 	 * @return	bool	true if upload file type ok
 	 */
 
-	function _fileUploadFileTypeOK($myFileName)
+	protected function _fileUploadFileTypeOK($myFileName)
 	{
 		$aFileTypes = $this->_getAllowedExtension();
 		if ($myFileName == '')
@@ -805,12 +835,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * This checks that thte fileupload size is not greater than that specified in
 	 * the upload element
-	 * @access PRIVATE
-	 * @param	string	file size
+	 *
+	 * @param   string  $myFileSize  file size
+	 *
 	 * @return	bool	true if upload file type ok
 	 */
 
-	function _fileUploadSizeOK($myFileSize)
+	protected function _fileUploadSizeOK($myFileSize)
 	{
 		$params = $this->getParams();
 		$max_size = $params->get('ul_max_file_size') * 1000;
@@ -823,11 +854,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * if we are using plupload but not with crop
-	 * @param	string	element $name
+	 *
+	 * @param   string  $name  element
+	 *
 	 * @return	bool	if processed or not
 	 */
 
-	function processAjaxUploads($name)
+	protected function processAjaxUploads($name)
 	{
 		$params = $this->getParams();
 		if ($params->get('fileupload_crop') == false && JRequest::getCmd('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
@@ -849,6 +882,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				return true;
 			}
 			// $$$ hugh - no longer seems to be in $raw[0] ?
+
 			/*
 			$crop = (array)JArrayHelper::getValue($raw[0], 'crop');
 			$ids = (array)JArrayHelper::getValue($raw[0], 'id');
@@ -903,13 +937,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 *
 	 * If an image has been uploaded with ajax upload then we may need to crop it
-	 * @param	string	element $name
+	 *
+	 * @param   string  $name  element
+	 *
 	 * @return	bool	if processed or not
 	 */
 
-	function crop($name)
+	protected function crop($name)
 	{
 		$params = $this->getParams();
 		if ($params->get('fileupload_crop') == true && JRequest::getCmd('task') !== 'pluginAjax')
@@ -1050,12 +1085,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
+	 * Crop for smaller
 	 *
-	 * Enter description here ...
-	 * @param unknown_type $oImage
-	 * @param unknown_type $filepath
-	 * @param unknown_type $destCropFile
-	 * @param unknown_type $coords
+	 * @param   object  $oImage        image
+	 * @param   string  $filepath      source file
+	 * @param   string  $destCropFile  destination
+	 * @param   object  $coords        crop coordinates
+	 *
+	 * @return  void
 	 */
 
 	private function cropForSmaller($oImage, $filepath, $destCropFile, $coords)
@@ -1067,6 +1104,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$cropWidth = $coords->cropdim->w;
 		$cropHeight = $coords->cropdim->h;
 		$scale = (int) $coords->scale;
+
 		// Get the orignal file
 		list($origImage, $header) = $oImage->imageFromFile($filepath);
 
@@ -1074,12 +1112,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		list($origWidth, $origHeight) = getimagesize($filepath);
 		if ($scale !== 100)
 		{
-			//make a scaled verios of the original image
+			// Make a scaled verios of the original image
 			$destWidth = (int) $origWidth * ($scale / 100);
 			$destHeight = (int) $origHeight * ($scale / 100);
 
 			$scaledImage = imagecreatetruecolor($destWidth, $destHeight);
-			//copy the man image into the scaled image
+
+			// Copy the man image into the scaled image
 			imagecopyresampled($scaledImage, $origImage, 0, 0, 0, 0, $destWidth, $destHeight, $origWidth, $origHeight);
 			$origImage = $scaledImage;
 		}
@@ -1120,7 +1159,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 			// Rotate image
 			list($rotatedImgObject, $rotateWidth, $rotateHeight) = $oImage->rotate($destCropFile, $destCropFile, $coords->rotation * -1);
-			//scale it back to crop dims
+
+			// Scale it back to crop dims
 			$xx = $rotateWidth / 2 - 400 / 2;
 			$yy = $rotateHeight / 2 - 400 / 2;
 			$oImage->crop($destCropFile, $destCropFile, $xx, $yy, 400, 400);
@@ -1134,11 +1174,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * Enter description here ...
-	 * @param unknown_type $oImage
-	 * @param unknown_type $filepath
-	 * @param unknown_type $destCropFile
-	 * @param unknown_type $coords
+	 * Crop for larger
+	 *
+	 * @param   object  $oImage        image
+	 * @param   string  $filepath      source file
+	 * @param   string  $destCropFile  destination
+	 * @param   object  $coords        crop coordinates
+	 *
+	 * @return  void
 	 */
 
 	private function cropForLarger($oImage, $filepath, $destCropFile, $coords)
@@ -1154,40 +1197,46 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$cropWidth = $coords->cropdim->w;
 		$cropHeight = $coords->cropdim->h;
 		$scale = (int) $coords->scale;
-		//deprecaited (again lol)
-		//from here replaces commented code below
+
+		/* deprecaited (again lol)
+		 * from here replaces commented code below
+		 */
 		list($width, $height) = getimagesize($filepath);
 		$log['rotate'] = array('path' => $filepath, 'dest' => $destCropFile, 'rotation' => $coords->rotation * -1);
 		list($rotatedImgObject, $rotateWidth, $rotateHeight) = $oImage->rotate($filepath, $destCropFile, $coords->rotation * -1);
 
 		$xx = $rotateWidth / 2 - $width / 2;
 		$yy = $rotateHeight / 2 - $height / 2;
-		//need to crop image down to initial crop interface dimensions as rotate changes image dimensions
-		//$oImage->crop($destCropFile, $destCropFile, $xx , $yy , 400, 400);
-		//check if image  size is smaller than canvas size first
+
+		/* need to crop image down to initial crop interface dimensions as rotate changes image dimensions
+		 * $oImage->crop($destCropFile, $destCropFile, $xx , $yy , 400, 400);
+		 * check if image  size is smaller than canvas size first
+		 */
 		$destW = $imagedim->w < 400 ? $imagedim->w : 400;
 		$destH = $imagedim->h < 400 ? $imagedim->h : 400;
 
-		//@todo test for smaller image - set offset so that they dont appear at top
+		// @TODO test for smaller image - set offset so that they dont appear at top
 		$log['crop1'] = array($destCropFile, $destCropFile, $xx, $yy, $destW, $destH, 0, 0, $bg);
 		$oImage->crop($destCropFile, $destCropFile, $xx, $yy, $destW, $destH, 0, 0, $bg);
 		$destX = $imagedim->x - ($imagedim->w / 2);
 		$destY = $imagedim->y - ($imagedim->h / 2);
 
-		//make an image the size of the crop interface
+		// Make an image the size of the crop interface
 		$image_p = imagecreatetruecolor($destW, $destH);
 
 		list($image, $header) = $oImage->imageFromFile($destCropFile);
-		//figure out what the destination w/h should be (scaling the image based on the submitted scale value)
+
+		// Figure out what the destination w/h should be (scaling the image based on the submitted scale value)
 		$destwidth = $width * ((float) $scale / 100);
 		$destheight = $height * ((float) $scale / 100);
-		//create a file which resembles the crop interfaces image
+
+		// Create a file which resembles the crop interfaces image
 		$log['scale'] = array('dest' => $destCropFile, 'destX' => $destX, 'destY' => $destY, 'destWidth' => $destwidth, 'destHeight' => $destheight,
 			'sourceWidth' => $width, 'sourceHeight' => $height);
 		imagecopyresampled($image_p, $image, $destX, $destY, 0, 0, $destwidth, $destheight, $width, $height);
 		$oImage->imageToFile($destCropFile, $image_p);
 
-		//finally take the cropper coordinates and crop the image
+		// Finally take the cropper coordinates and crop the image
 		$offsetX = ($imagedim->w < 400) ? (400 - $imagedim->w) / 2 : 0;
 		$offsetY = ($imagedim->h < 400) ? (400 - $imagedim->h) / 2 : 0;
 
@@ -1202,11 +1251,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * OPTIONAL
+	 *
+	 * @return  void
 	 */
 
-	function processUpload()
+	public function processUpload()
 	{
-		//@TODO: test in joins
+		// @TODO: test in joins
 		$params = $this->getParams();
 		$request = JRequest::get('request');
 		$groupModel = $this->getGroup();
@@ -1226,8 +1277,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// Stops form data being updated with blank data.
 			return;
 		}
-		// if we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
-		// otherwise no standard image processed
+		/* If we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
+		 * otherwise no standard image processed
+		 */
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			// Stops form data being updated with blank data.
@@ -1291,7 +1343,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				else
 				{
-					$files[$i] = $imagesToKeep[$i];//$origData[$i]->$name;
+					$files[$i] = $imagesToKeep[$i];
 				}
 			}
 			foreach ($imagesToKeep as $k => $v)
@@ -1346,10 +1398,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			else
 			{
-				// $$$ hugh - fixing nasty bug where existing upload was getting wiped when editing an existing row and not uploading anything.
-				// I think this should work.  if we're not in a repeat group, then it doesn't matter how many rows were in origData, and hence
-				// how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
-				// b) it'll at least be in [0]
+				/* $$$ hugh - fixing nasty bug where existing upload was getting wiped when editing an existing row and not uploading anything.
+				 * I think this should work.  if we're not in a repeat group, then it doesn't matter how many rows were in origData, and hence
+				 * how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
+				 * b) it'll at least be in [0]
+				 */
 				if (!empty($imagesToKeep))
 				{
 					$files[] = $origData[0]->$name;
@@ -1357,10 +1410,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 		}
 		$files = array_flip(array_flip($files));
-		// $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
-		// so the double array_flip will have made 'holes' in the array, by removign duplicates.
-		// So, we need to re-index, otherwise the _formData['join'] data
-		// structure will end up havign holes in it in processToDb, and we drop data.
+		/* $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
+		 * so the double array_flip will have made 'holes' in the array, by removign duplicates.
+		 * So, we need to re-index, otherwise the _formData['join'] data
+		 * structure will end up havign holes in it in processToDb, and we drop data.
+		 */
 		$files = array_values($files);
 		if ($params->get('upload_delete_image'))
 		{
@@ -1390,11 +1444,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * delete the file
-	 * @param	$filename	string file name (not including JPATH)
+	 * Delete the file
+	 *
+	 * @param   string  $filename  file name (not including JPATH)
+	 *
+	 * @return  void
 	 */
 
-	function deleteFile($filename)
+	protected function deleteFile($filename)
 	{
 		$storage = $this->getStorage();
 		$file = $storage->clean(JPATH_SITE . '/' . $filename);
@@ -1429,10 +1486,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * used in notempty validation rule
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
 	 */
 
-	function dataConsideredEmpty($data, $repeatCounter)
+	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		if ((int) JRequest::getVar('rowid', 0) !== 0)
 		{
@@ -1447,8 +1510,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$r = JArrayHelper::getValue(JArrayHelper::fromObject($olddaata), $name, '') === '' ? true : false;
 				if (!$r)
 				{
-					//if an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
-					// has been uploaded
+					/* If an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
+					 * has been uploaded
+					 */
 					return false;
 				}
 			}
@@ -1494,18 +1558,21 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (!array_key_exists('name', $file))
 		{
 			$file = JRequest::getVar($name);
-			return $file == '' ? true : false;//ajax test - nothing in files
+
+			// Ajax test - nothing in files
+			return $file == '' ? true : false;
 		}
-		// no files selected?
+		// No files selected?
 		return $file['name'] == '' ? true : false;
 	}
 
 	/**
 	 * Process the upload (can be called via ajax from pluploader
 	 *
-	 * @param	array	$file info
-	 * @param	string	user selected upload folder
-	 * @param	int		repeat group counter
+	 * @param   array   &$file               file info
+	 * @param   string  $myFileDir           user selected upload folder
+	 * @param   int     $repeatGroupCounter  repeat group counter
+	 *
 	 * @return	string	location of uploaded file
 	 */
 
@@ -1568,11 +1635,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		// $$$ hugh @TODO - shouldn't we check to see if it's actually an image before we do any of this stuff???
 
-		//resize main image
+		// Resize main image
 		$oImage = FabimageHelper::loadLib($params->get('image_library'));
 		$oImage->setStorage($storage);
-		// $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
-		// tooltip on these options say 'leave blank for no resizing'
+
+		/* $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
+		 * tooltip on these options say 'leave blank for no resizing'
+		 */
 		$mainWidth = $params->get('fu_main_max_width', '');
 		$mainHeight = $params->get('fu_main_max_height', '');
 
@@ -1624,25 +1693,33 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		return $filepath;
 	}
 
-	function getStorage()
+	/**
+	 * Get the file storage object amazon s3/filesystem
+	 *
+	 * @return object
+	 */
+
+	public function getStorage()
 	{
 		if (!isset($this->storage))
 		{
 			$params = $this->getParams();
 			$storageType = JFilterInput::getInstance()->clean($params->get('fileupload_storage_type', 'filesystemstorage'), 'CMD');
-			require_once(JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php');
+			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$this->storage = new $storageType($params);
 		}
 		return $this->storage;
 	}
 
 	/**
-	 * get the full server file path for the upload, including the file name i
-	 * @param	int		repeat group counter
+	 * Get the full server file path for the upload, including the file name
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
 	 * @return	string	path
 	 */
 
-	function _getFilePath($repeatCounter = 0)
+	protected function _getFilePath($repeatCounter = 0)
 	{
 		if (!isset($this->_filePaths))
 		{
@@ -1657,8 +1734,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$elNameRaw = $elName . '_raw';
 		$params = $this->getParams();
 
-		//@TODO test with fileuploads in join groups
-
+		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin())
 		{
@@ -1673,8 +1749,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			else
 			{
-				//$myFileName = $_FILES['join']['name'][$joinid][$elNameNoJoinstr];
-				//@TODO test this:
 				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr] : @$_FILES['file']['name'];
 				$myFileDir = JArrayHelper::getValue($aData['join'][$joinid][$elNameNoJoinstr], 'ul_end_dir', '');
 			}
@@ -1683,8 +1757,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			if ($groupModel->canRepeat())
 			{
-				//$myFileName   = @$_FILES[$elName]['name'][$repeatCounter];
-				//@TODO test this:
 				$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'][$repeatCounter] : @$_FILES['file']['name'];
 				$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'][$repeatCounter]
 					: '';
@@ -1723,13 +1795,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * draws the form element
-	 * @param	array	data
-	 * @param	int		repeat group counter
-	 * @return	string	returns element html
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$this->_repeatGroupCounter = $repeatCounter;
 		$id = $this->getHTMLId($repeatCounter);
@@ -1761,12 +1835,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$formid = $formModel->getId();
 
 		$use_download_script = $params->get('fu_use_download_script', '0');
+
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
 		if (!$this->_editable && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
 		{
 			$links = array();
+			if (!is_array($value)) {
+				$value = (array) $value;
+			}
 			foreach ($value as $v)
 			{
 				$links[] = $this->downloadLink($v, $data, $repeatCounter);
@@ -1779,12 +1857,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$allRenders = '';
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable)
 		{
-			//failed validations - format different!
+
+			// Failed validations - format different!
 			if (array_key_exists('id', $values))
 			{
 				$values = array_keys($values['id']);
 			}
-			//end failed validations
+			// End failed validations
 
 			foreach ($values as $value)
 			{
@@ -1844,10 +1923,19 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		return implode("\n", $str);
 	}
 
+	/**
+	 * Check if a single crop iamge has been uploaded and set the value accordingly
+	 *
+	 * @param   array  $value  uploaded files
+	 *
+	 * @return mixed
+	 */
+
 	protected function checkForSingleCropValue($value)
 	{
 		$params = $this->getParams();
-		//if its a single upload crop element
+
+		// If its a single upload crop element
 		if ($params->get('ajax_upload') && $params->get('ajax_max', 4) == 1)
 		{
 			$singleCropImg = $value;
@@ -1864,10 +1952,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * make download link
-	 * @param	string	$value
-	 * @param	array	row $data
-	 * @param	int		repeat counter $repeatCounter
+	 * Make download link
+	 *
+	 * @param   string  $value          file path
+	 * @param   array   $data           row
+	 * @param   int     $repeatCounter  repeat counter
+	 *
 	 * @return	string	download link
 	 */
 
@@ -1889,8 +1979,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$img = $params->get('fu_download_noaccess_image');
 				return $img == '' ? ''
-					: '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION')
-						. '" />';
+					: '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
+						. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
 			}
 		}
 
@@ -1930,9 +2020,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
+	 * Load the required plupload runtime engines
+	 *
+	 * @param   string  $runtimes  runtimes
+	 *
 	 * @depreciated
-	 * load the required plupload runtime engines
-	 * @param string $runtimes
+	 *
+	 * @return  void
 	 */
 
 	protected function pluploadLRuntimes($runtimes)
@@ -1942,9 +2036,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * Create the html plupload widget plus css
-	 * @param	array	current html output
-	 * @param	int		repeat group counter
-	 * @param	array	existing files
+	 *
+	 * @param   array  $str            current html output
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $values         existing files
+	 *
 	 * @return	array	modified fileupload html
 	 */
 
@@ -1956,8 +2052,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$runtimes = $params->get('ajax_runtime', 'html5');
 		$w = (int) $params->get('ajax_dropbox_width', 300);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
-		//add span with id so that element fxs work.
 
+		// Add span with id so that element fxs work.
 		$pstr = array();
 		$pstr[] = '<span id="' . $id . '"></span>';
 		$pstr[] = '<div id="' . $id . '-widgetcontainer">';
@@ -2043,13 +2139,17 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Fabrik 3 - needs to be onAjax_upload not ajax_upload
 	 * triggered by plupload widget
+	 *
+	 * @return  void
 	 */
 
 	public function onAjax_upload()
 	{
-		//got this warning on fabrikar.com - not sure why set testing with errors off
 		/*
-		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
+		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
+		 *
+		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
+		 * <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
 		 */
 		/* error_reporting(0); */
 		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
@@ -2085,8 +2185,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			return;
 		}
-		require_once(COM_FABRIK_FRONTEND . '/helpers/uploader.php');
-		//@TODO test in join
+		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
+
+		// @TODO test in join
 		if (array_key_exists('file', $_FILES) || array_keys_exists('join', $_FILES))
 		{
 			$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid] : $_FILES['file']['name'],
@@ -2126,14 +2227,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * attach documents to the email
-	 * @param	string	data
-	 * @return	string	formatted value
+	 * Attach documents to the email
+	 *
+	 * @param   string  $data  data
+	 *
+	 * @return  string  formatted value
 	 */
 
-	function addEmailAttachement($data)
+	public function addEmailAttachement($data)
 	{
-		/// @TODO: check what happens here with open base_dir in effect //
+		// @TODO: check what happens here with open base_dir in effect
 		$params = $this->getParams();
 		if ($params->get('ul_email_file'))
 		{
@@ -2190,9 +2293,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$thumbDir = $w->parseMessageForPlaceHolder($thumbDir);
 			$thumbDir .= $params->get('thumb_prefix');
 
-			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . //replace the main image dir with thumb dir
-				", '\\\', '/')" . //replace the backslashes with forward slashes
-				", '\" alt=\"database join image\" />')";
+			// Replace the backslashes with forward slashes
+			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" .
+				", '\\\', '/')" . ", '\" alt=\"database join image\" />')";
 
 		}
 		else
@@ -2203,20 +2306,23 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * trigger called when a row is deleted
-	 * @param	array	grouped data of rows to delete
+	 * Trigger called when a row is deleted
+	 *
+	 * @param   array  $groups  grouped data of rows to delete
+	 *
+	 * @return  void
 	 */
 
-	function onDeleteRows($groups)
+	public function onDeleteRows($groups)
 	{
-		//cant delete files from unpublished elements
+		// Cant delete files from unpublished elements
 		if (!$this->canUse())
 		{
 			return;
 		}
 		$db = $this->getListModel()->getDb();
 		$storage = $this->getStorage();
-		require_once(COM_FABRIK_FRONTEND . '/helpers/uploader.php');
+		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 		$params = $this->getParams();
 		if ($params->get('upload_delete_image'))
 		{
@@ -2264,25 +2370,42 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 	}
 
-	function _return_bytes($val)
+	/**
+	 * Return the number of bytes
+	 *
+	 * @param   string  $val  e.g. 3m
+	 *
+	 * @return  int  bytes
+	 */
+
+	protected function _return_bytes($val)
 	{
 		$val = trim($val);
 		$last = JString::strtolower(substr($val, -1));
 		if ($last == 'g')
+		{
 			$val = $val * 1024 * 1024 * 1024;
+		}
 		if ($last == 'm')
+		{
 			$val = $val * 1024 * 1024;
+		}
 		if ($last == 'k')
+		{
 			$val = $val * 1024;
+		}
 		return $val;
 	}
 
 	/**
-	 * get the max upload size allowed by the server.
-	 * @return int kilobyte upload size
+	 * Get the max upload size allowed by the server.
+	 *
+	 * @deprecated  - not used?
+	 *
+	 * @return  int  kilobyte upload size
 	 */
 
-	function maxUpload()
+	public function maxUpload()
 	{
 		$post_value = $this->_return_bytes(ini_get('post_max_size'));
 		$upload_value = $this->_return_bytes(ini_get('upload_max_filesize'));
@@ -2344,11 +2467,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * not really an AJAX call, we just use the pluginAjax method so we can run this
+	 * Not really an AJAX call, we just use the pluginAjax method so we can run this
 	 * method for handling scripted downloads.
+	 *
+	 * @return  void
 	 */
 
-	function onAjax_download()
+	public function onAjax_download()
 	{
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement();
@@ -2409,8 +2534,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$app->redirect($url);
 				exit;
 			}
-
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Some time in the past
+			// Some time in the past
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 			header("Cache-Control: no-store, no-cache, must-revalidate");
 			header("Cache-Control: post-check=0, pre-check=0", false);
@@ -2419,12 +2544,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			header('Content-Length: ' . $thisFileInfo['filesize']);
 			header('Content-Type: ' . $thisFileInfo['mime_type']);
 			header('Content-Disposition: attachment; filename="' . $thisFileInfo['filename'] . '"');
-			// ... serve up the file ...
+
+			// Serve up the file
 			echo $filecontent;
-			//$this->downloadEmail($row, $filepath);
+
+			// $this->downloadEmail($row, $filepath);
 			$this->downloadHit($rowid, $repeatcount);
 			$this->downloadLog($row, $filepath);
-			// ... and we're done.
+
+			// And we're done.
 			exit();
 		}
 		else
@@ -2435,7 +2563,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 	}
 
-	function downloadHit($rowid, $repeatCount = 0)
+	/**
+	 * Update downloads hits table
+	 *
+	 * @param   int|string  $rowid        update table's primary key
+	 * @param   int         $repeatCount  repeat group counter
+	 *
+	 * @return  void
+	 */
+
+	protected function downloadHit($rowid, $repeatCount = 0)
 	{
 		// $$$ hugh @TODO - make this work for repeats and/or joins!
 		$params = $this->getParams();
@@ -2453,13 +2590,17 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * log the download
+	 * Log the download
+	 *
+	 * @param   object  $row       log download row
+	 * @param   string  $filepath  downloaded file's path
+	 *
 	 * @since 2.0.5
-	 * @param	object	row
-	 * @param	string	$filepath
+	 *
+	 * @return  void
 	 */
 
-	function downloadLog($row, $filepath)
+	protected function downloadLog($row, $filepath)
 	{
 		$params = $this->getParams();
 		if ((int) $params->get('fu_download_log', 0))
@@ -2480,9 +2621,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * called when save as copy form button clicked
-	 * @param	mixed	value to copy into new record
-	 * @return	mixed	value to copy into new record
+	 * Called when save as copy form button clicked
+	 *
+	 * @param   mixed  $val  value to copy into new record
+	 *
+	 * @return  mixed  value to copy into new record
 	 */
 
 	public function onSaveAsCopy($val)
@@ -2507,8 +2650,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * is the element a repeating element
-	 * @return bool
+	 * Is the element a repeating element
+	 *
+	 * @return  bool
 	 */
 
 	public function isRepeatElement()
@@ -2518,8 +2662,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * fabrik 3: needs to be onAjax_deleteFile
+	 * Fabrik 3: needs to be onAjax_deleteFile
 	 * delete a previously uploaded file via ajax
+	 *
+	 * @return  void
 	 */
 
 	public function onAjax_deleteFile()
@@ -2541,17 +2687,18 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
-	 * can be overwritten by plugin class
-	 * determines the value for the element in the form view
-	 * @param	array	data
-	 * @param	int		when repeating joinded groups we need to know what part of the array to access
-	 * @param	array	options
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           element value
+	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           options
+	 *
 	 * @return	string	value
 	 */
 
-	function getValue($data, $repeatCounter = 0, $opts = array())
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		//@TODO rename $this->defaults to $this->values
+		// @TODO rename $this->defaults to $this->values
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -2564,17 +2711,19 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
 
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			//otherwise get the default value so if we don't find the element's value in $data we fall back on this value
+			/* $$$rob - if no search form data submitted for the search element then the default
+			 * selection was being applied instead
+			 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
+			 */
 			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
-				// $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
-				//if ($groupModel->canRepeat() || !$this->isJoin()) {
+				/* $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
+				 * if ($groupModel->canRepeat() || !$this->isJoin()) {
+				 */
 				if ($groupModel->canRepeat())
 				{
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
@@ -2606,9 +2755,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							$value = $data['join'][$joinid][$rawname];
 						}
 					}
-					// $$$ rob if you have 2 tbl joins, one repeating and one not
-					// the none repeating one's values will be an array of duplicate values
-					// but we only want the first value
+					/* $$$ rob if you have 2 tbl joins, one repeating and one not
+					 * the none repeating one's values will be an array of duplicate values
+					 * but we only want the first value
+					 */
 					if (is_array($value) && !$this->isJoin())
 					{
 						$value = array_shift($value);
@@ -2619,7 +2769,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				if ($groupModel->canRepeat())
 				{
-					//repeat group NO join
+					// Repeat group NO join
 					$thisname = $name;
 					if (!array_key_exists($name, $data))
 					{
@@ -2629,12 +2779,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					{
 						if (is_array($data[$thisname]))
 						{
-							//occurs on form submission for fields at least
+							// Occurs on form submission for fields at least
 							$a = $data[$thisname];
 						}
 						else
 						{
-							//occurs when getting from the db
+							// Occurs when getting from the db
 							$a = json_decode($data[$thisname]);
 						}
 						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
@@ -2653,9 +2803,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					$value = implode(',', $value);
 				}
 			}
-			// $$$ hugh - don't know what this is for, but was breaking empty fields in repeat
-			// groups, by rendering the //..*..// seps.
-			// if ($value === '') { //query string for joined data
+			/* $$$ hugh - don't know what this is for, but was breaking empty fields in repeat
+			 * groups, by rendering the //..*..// seps.
+			 * if ($value === '') { //query string for joined data
+			 */
 			if ($value === '' && !$groupModel->canRepeat())
 			{
 				// Query string for joined data
