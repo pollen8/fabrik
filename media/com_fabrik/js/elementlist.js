@@ -50,11 +50,11 @@ var FbElementList =  new Class({
 			c = this.form.form;
 			var delegate = action + ':relay(input[type=' + this.type + '])';
 			c.addEvent(delegate, function (event, target) {
-				var subEls = document.id(subElsName).getElements('input');
+				var subEls = this._getSubElements();
 				if (subEls.contains(target)) {
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
 				}
-			});
+			}.bind(this));
 		}
 	},
 	
@@ -96,9 +96,8 @@ var FbElementList =  new Class({
 			if (this.type === 'radio') {
 				index = this.subElements.length;
 			}
-			document.id(this.form.form).fireEvent("change", {
-				target: $$('input[name='+i.name+']')[index]
-			});
+			var is = $$('input[name=' + i.name + ']');
+			document.id(this.form.form).fireEvent("change", {target: is[index]});
             
 			this._getSubElements();
 			if (v) {
