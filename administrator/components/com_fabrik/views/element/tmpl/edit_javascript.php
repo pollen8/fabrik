@@ -1,3 +1,4 @@
+<?php
 /**
  * Admin Element Edit:javascript Tmpl
  *
@@ -7,6 +8,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @since       3.0
  */
+?>
 <?php echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_JAVASCRIPT'), 'settings');
 ?>
 <div id="javascriptActions"></div>
