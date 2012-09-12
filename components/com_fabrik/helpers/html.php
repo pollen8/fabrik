@@ -109,6 +109,18 @@ class FabrikHelperHTML
 	protected static $modal = null;
 
 	/**
+	 * Form email link URL
+	 * @var string
+	 */
+	protected static $emailURL = null;
+
+	/**
+	 * Form print link URL
+	 * @var  string
+	 */
+	protected static $printURL = null;
+
+	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
@@ -321,19 +333,8 @@ EOD;
 		$form = $formModel->getForm();
 		$table = $formModel->getTable();
 		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
-		$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-			. "&rowid=" . $rowid . '&iframe=1&print=1';
-		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
-		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
-		 */
-		if (JRequest::getVar('usekey') !== null)
-		{
-			$url .= "&usekey=" . JRequest::getVar('usekey');
-		}
-		$link = JRoute::_($url);
+		$link = self::printURL($formModel);
 
-		// $$$ rob for some reason JRoute wasnt doing this ???
-		$link = str_replace('&', '&amp;', $link);
 		if ($params->get('icons', true))
 		{
 			$image = JHtml::_('image', 'system/printButton.png', JText::_('COM_FABRIK_PRINT'), null, true);
@@ -357,6 +358,41 @@ EOD;
 	}
 
 	/**
+	 * Create print URL
+	 *
+	 * @param   object  $formModel  form model
+	 *
+	 * @since   3.0.6
+	 *
+	 * @return  string
+	 */
+
+	public static function printURL($formModel)
+	{
+		$form = $formModel->getForm();
+		$table = $formModel->getTable();
+		if (isset(self::$printURL))
+		{
+			return self::$printURL;
+		}
+		$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
+		. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
+		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
+		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
+		*/
+		if (JRequest::getVar('usekey') !== null)
+		{
+			$url .= "&usekey=" . JRequest::getVar('usekey');
+		}
+		$url = JRoute::_($url);
+
+		// $$$ rob for some reason JRoute wasnt doing this ???
+		$url = str_replace('&', '&amp;', $url);
+		self::$printURL = $url;
+		return self::$printURL;
+	}
+
+	/**
 	 * Writes Email icon
 	 *
 	 * @param   object  $formModel  form model
@@ -367,30 +403,11 @@ EOD;
 
 	public static function emailIcon($formModel, $params)
 	{
-		$app = JFactory::getApplication();
-		$config = JFactory::getConfig();
 		$popup = $params->get('popup', 1);
 		if (!$popup)
 		{
 			$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=250,directories=no,location=no";
-			if ($app->isAdmin())
-			{
-				$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
-					. $formModel->getRowId();
-			}
-			else
-			{
-				$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
-					. $formModel->getRowId();
-			}
-
-			if (JRequest::getVar('usekey') !== null)
-			{
-				$url .= '&usekey=' . JRequest::getVar('usekey');
-			}
-			$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
-
-			$link = $url;
+			$link = self::emailURL($formModel);
 
 			if ($params->get('icons', true))
 			{
@@ -403,6 +420,43 @@ EOD;
 			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . JText::_('JGLOBAL_EMAIL')
 				. "\">$image</a>\n";
 		}
+	}
+
+	/**
+	 * Create URL for form email button
+	 *
+	 * @param   object  $formModel  form model
+	 *
+	 * @since 3.0.6
+	 *
+	 * @return  string
+	 */
+
+	public static function emailURL($formModel)
+	{
+		if (isset(self::$emailURL))
+		{
+			return self::$emailURL;
+		}
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
+			. $formModel->getRowId();
+		}
+		else
+		{
+			$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
+			. $formModel->getRowId();
+		}
+
+		if (JRequest::getVar('usekey') !== null)
+		{
+			$url .= '&usekey=' . JRequest::getVar('usekey');
+		}
+		$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
+		self::$emailURL = $url;
+		return self::$emailURL;
 	}
 
 	/**
@@ -1386,6 +1440,14 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
+		$app = JFactory::getApplication();
+		$version = new JVersion;
+
+		// Only use template test for testing in 2.5 with my temp J bootstrap template.
+		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5)
+		{
+			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
+		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
 		$src = str_replace("\\", "/", $src);
@@ -1394,6 +1456,16 @@ EOD;
 		{
 			return $src;
 		}
+
+		if (isset($properties['class']))
+		{
+			$properties['class'] .= ' fabrikImg';
+		}
+		else
+		{
+			$properties['class'] = 'fabrikImg';
+		}
+
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{

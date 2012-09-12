@@ -288,8 +288,8 @@ class plgFabrik_List extends FabrikPlugin
 	 *
 	 * @param   object  $params  plugin params
 	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements - first value is an object with a query
-	 * property which contains the current query:
+	 * @param   array   &$args   arguements - first value is an object with a JQuery object
+	 * contains the current query:
 	 * $args[0]->query
 	 *
 	 * @return  void;

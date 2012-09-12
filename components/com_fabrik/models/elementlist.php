@@ -224,18 +224,19 @@ class plgFabrik_ElementList extends plgFabrik_Element
 				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case 'auto-complete':
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-				$default = htmlspecialchars($default);
-				$return = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $htmlid . '" value="' . $default . '" />';
-				$return .= '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $htmlid
-					. '-auto-complete" size="' . $size . '" value="' . $default . '" />';
-				$selector = '#list_' . $listModel->getRenderContext() . ' .' . $htmlid;
-				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
+			case 'auto-complete': /* if (get_magic_quotes_gpc())
+								  {
+								      $default = stripslashes($default);
+								  }
+								  $default = htmlspecialchars($default);
+								  $return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $htmlid . '" value="' . $default . '" />';
+								  $return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $htmlid
+								      . '-auto-complete" size="' . $size . '" value="' . $default . '" />';
+								  $selector = '#list_' . $listModel->getRenderContext() . ' .' . $htmlid;
+								  FabrikHelperHTML::autoComplete($selector, $this->getElement()->id); */
 
+				$autoComplete = $this->autoCompleteFilter($default, $v);
+				$return = array_merge($return, $autoComplete);
 				break;
 		}
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
@@ -334,13 +335,35 @@ class plgFabrik_ElementList extends plgFabrik_Element
 	 * @return  string  json encoded options
 	 */
 
-	public function onAutocomplete_options()
+	/* public function onAutocomplete_options()
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement(true);
-		$listModel = $this->getListModel();
-		$rows = $this->filterValueList(true);
+
+		$cache = JCache::getInstance('callback',
+			array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
+				'storage' => 'file'));
+		$cache->setCaching(true);
+		$search = JRequest::getVar('value');
+		echo $cache->call(array('plgFabrik_elementList', 'cacheAutoCompleteOptions'), $this, $search);
+	} */
+
+	/**
+	 * Cache method to populate autocomplete options
+	 *
+	 * @param   plgFabrik_Element  $elementModel  element model
+	 * @param   string             $search        serch string
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return string  json encoded search results
+	 */
+
+	public static function cacheAutoCompleteOptions($elementModel, $search)
+	{
+		$listModel = $elementModel->getListModel();
+		$rows = $elementModel->filterValueList(true);
 		$v = addslashes(JRequest::getVar('value'));
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)

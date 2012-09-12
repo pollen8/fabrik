@@ -157,7 +157,7 @@ class FabrikViewFormBase extends JView
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->assignRef('list', $list);
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
-		$this->assignRef('linkedTables', $this->get('RelatedTables'));
+		$this->linkedTables = $this->get('RelatedTables');
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
 		$this->setMessage();
 
@@ -243,7 +243,7 @@ class FabrikViewFormBase extends JView
 		$title = '';
 		if ($app->getName() !== 'administrator')
 		{
-			$menus = JSite::getMenu();
+			$menus = $app->getMenu();
 			$menu = $menus->getActive();
 
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
@@ -294,6 +294,9 @@ class FabrikViewFormBase extends JView
 		$this->emailLink = '';
 		$this->printLink = '';
 		$this->pdfLink = '';
+		$this->pdfURL = '';
+		$this->emailURL = '';
+		$this->printURL = '';
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 		if ($this->showPrint)
 		{
@@ -305,10 +308,12 @@ class FabrikViewFormBase extends JView
 			if ($this->showEmail)
 			{
 				$this->emailLink = FabrikHelperHTML::emailIcon($model, $params);
+				$this->emailURL = FabrikHelperHTML::emailURL($model);
 			}
 			if ($this->showPrint)
 			{
 				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->_rowId);
+				$this->printURL = FabrikHelperHTML::printURL($model);
 			}
 		}
 		$this->showPDF = $params->get('pdf', $fbConfig->get('form_pdf', false));
@@ -324,6 +329,7 @@ class FabrikViewFormBase extends JView
 			}
 			else
 			{
+				$this->pdfURL = JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
 				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId())
 				. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}

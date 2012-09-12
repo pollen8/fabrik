@@ -3022,7 +3022,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->_data = array();
-		$data = array(FArrayHelper::toObject(JRequest::get('request')));
+		$data = JRequest::get('request');
+		$data = array(FArrayHelper::toObject($data));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -3128,7 +3129,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									$this->_rowId = isset($row->__pk_val) ? $row->__pk_val : $this->_rowId;
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-								$data[] = FArrayHelper::toObject(array_merge($row, JRequest::get('request')));
+								$request = JRequest::get('request');
+								$request = array_merge($row, $request);
+								$data[] = FArrayHelper::toObject($request);
 							}
 						}
 						FabrikHelperHTML::debug($data, 'form:getData from querying rowid= ' . $this->_rowId . ' (form not in Mambot and no errors)');
@@ -4100,7 +4103,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$page = 'index.php?';
 
 			// Get array of all querystring vars
-			$queryvars = $router->parse(JFactory::getURI());
+			$uri = JFactory::getURI();
+			$queryvars = $router->parse($uri);
 			if ($this->isAjax())
 			{
 				$queryvars['format'] = 'raw';
