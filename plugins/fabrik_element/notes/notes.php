@@ -16,6 +16,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.notes
+ * @since       3.0
  */
 
 class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
@@ -26,9 +27,9 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
-	 * 
+	 *
 	 * @param   int  $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string
 	 */
 
@@ -45,10 +46,10 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -61,12 +62,13 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	{
 		$db = $this->getDb();
 	}
+
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -89,6 +91,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		}
 		$str[] = '</ul></div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
+
 		//Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
 		if ($rowid > 0)
 		{
@@ -154,7 +157,18 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		return $this->components[$c];
 	}
 
-	function _buildQueryWhere($data = array(), $incWhere = true)
+	/**
+	 * Create the where part for the query that selects the list options
+	 *
+	 * @param   array   $data            current row data to use in placeholder replacements
+	 * @param   bool    $incWhere        should the additional user defined WHERE statement be included
+	 * @param   string  $thisTableAlias  db table alais
+	 * @param   array   $opts            options
+	 *
+	 * @return string
+	 */
+
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array())
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -162,12 +176,8 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$value = $params->get('notes_where_value');
 		$fk = $params->get('join_fk_column', '');
 		$rowid = $this->getFormModel()->getRowId();
-		// Jaanus - commented out as unnecessary, some variables moved above
-		/*if ($field == '') {
-		    return '';
-		}
-		 */
 		$where = array();
+
 		// Jaanus: here we can choose whether WHERE has to have single or (if field is the same as FK then only) custom (single or multiple) criterias,
 		if ($value != '')
 		{
@@ -190,10 +200,18 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 			$pk = $db->quoteName($this->getJoin()->table_join_alias) . '.' . $db->quoteName($params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
-		return 'WHERE ' . implode(" OR ", $where); //Jaanus: not sure why AND was originally here
+		return 'WHERE ' . implode(" OR ", $where);
 	}
 
-	protected function getOrderBy()
+	/**
+	 * Get options order by
+	 *
+	 * @param   string  $view  view mode '' or 'filter'
+	 *
+	 * @return  string  order by statement
+	 */
+
+	protected function getOrderBy($view = '')
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -209,8 +227,10 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
+	 * If _buildQuery needs additional fields then set them here, used in notes plugin
+	 *
 	 * @since 3.0rc1
-	 * if _buildQuery needs additional fields then set them here, used in notes plugin
+	 *
 	 * @return string fields to add e.g return ',name, username AS other'
 	 */
 
@@ -232,12 +252,16 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
+	 * If _buildQuery needs additional joins then set them here, used in notes plugin
+	 *
+	 * @param   mixed  $query  false to return string, or JQueryBuilder object
+	 *
 	 * @since 3.0rc1
-	 * if _buildQuery needs additional joins then set them here, used in notes plugin
-	 * @return string join statement to add
+	 *
+	 * @return string|JQueryerBuilder join statement to add
 	 */
 
-	protected function buildQueryJoin()
+	protected function buildQueryJoin($query = false)
 	{
 		$join = '';
 		$db = $this->getDb();
@@ -248,15 +272,24 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 			if ($user !== '')
 			{
 				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+				if (!$query)
+				{
 				$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user);
+				}
+				else
+				{
+					$query->join('LEFT', '#__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user));
+				}
 			}
 		}
-		return $join;
+		return $query ? $query : $join;
 	}
 
 	/**
+	 * Do you add a please select option to the cdd list
+	 *
 	 * @since 3.0b
-	 * do you add a please select option to the cdd list
+	 *
 	 * @return boolean
 	 */
 
@@ -278,12 +311,12 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$v = $db->quote(JRequest::getVar('v'));
 		$rowid = $this->getFormModel()->getRowId();
 
-		//Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
+		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
 		if ($rowid > 0)
 		{
 			$query->insert($table)->set($col . ' = ' . $v);
 
-			//Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
+			// Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
 			/*$field = $params->get('notes_where_element', '');
 			if ($field !== '') {
 			    $query->set($db->quoteName($field) . ' = ' . $db->quote($params->get('notes_where_value')));
@@ -311,19 +344,12 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 				$this->loadRow = $db->quote($db->insertid());
 				$opts = $this->_getOptions();
 				$row = $opts[0];
-				/* 	$query->clear();
-				    $query->select('*')->from($table)->where($key . ' = ' . $inertId);
-				    $db->setQuery($query);
-				    $row = $db->loadObject();*/
-
 				$return->msg = 'note added';
 				$return->data = $row;
 				$return->label = $this->getDisplayLabel($row);
 				echo json_encode($return);
 			}
 		}
-
 	}
 
 }
-?>

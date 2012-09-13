@@ -333,7 +333,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  array	option values
 	 */
 
-	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
@@ -361,33 +361,34 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		// $$$ rob 18/06/2012 cache the option vals on a per query basis (was previously incwhere but this was not ok
 		// for auto-completes in repeating groups
-		$sql = $this->_buildQuery($data, $incWhere);
-		if (isset($this->_optionVals[$sql]))
+		$sql = $this->_buildQuery($data, $incWhere, $opts);
+		$sqlKey = (string) $sql;
+		if (isset($this->_optionVals[$sqlKey]))
 		{
-			return $this->_optionVals[$sql];
+			return $this->_optionVals[$sqlKey];
 		}
 
 		$db->setQuery($sql);
 		FabrikHelperHTML::debug($db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
-		$this->_optionVals[$sql] = $db->loadObjectList();
+		$this->_optionVals[$sqlKey] = $db->loadObjectList();
 		if ($db->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, $db->getErrorMsg());
 		}
 		FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
-		if (!is_array($this->_optionVals[$sql]))
+		if (!is_array($this->_optionVals[$sqlKey]))
 		{
-			$this->_optionVals[$sql] = array();
+			$this->_optionVals[$sqlKey] = array();
 		}
 		$eval = $params->get('dabase_join_label_eval');
 		if (trim($eval) !== '')
 		{
-			foreach ($this->_optionVals[$sql] as $key => &$opt)
+			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
 			{
 				// $$$ hugh - added allowing removing an option by returning false
 				if (eval($eval) === false)
 				{
-					unset($this->_optionVals[$sql][$key]);
+					unset($this->_optionVals[$sqlKey][$key]);
 				}
 			}
 		}
@@ -395,12 +396,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// Remove tags from labels
 		if ($this->canUse())
 		{
-			foreach ($this->_optionVals[$sql] as $key => &$opt)
+			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
 			{
 				$opt->text = strip_tags($opt->text);
 			}
 		}
-		return $this->_optionVals[$sql];
+		return $this->_optionVals[$sqlKey];
 	}
 
 	/**
@@ -433,7 +434,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  array	option objects
 	 */
 
-	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$element = $this->getElement();
 		$params = $this->getParams();
@@ -441,7 +442,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->_joinDb = $this->getDb();
 		$col = $element->name;
 		$tmp = array();
-		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere);
+		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere, $opts);
 		foreach ($aDdObjs as &$o)
 		{
 			// For values like '1"'
@@ -525,14 +526,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param   array  $data      data
 	 * @param   bool   $incWhere  include where
 	 *
-	 * @return  mixed	string or false if query can't be built
+	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
 
-	function _buildQuery($data = array(), $incWhere = true)
+	protected function _buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
 		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
 
 		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
 		if (isset($this->_sql[$sig]))
 		{
 			return $this->_sql[$sig];
@@ -540,7 +542,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$formModel = $this->getForm();
-		$where = $this->_buildQueryWhere($data, $incWhere);
+		$query = $this->_buildQueryWhere($data, $incWhere, null, $opts, $query);
 
 		// $$$rob not sure these should be used anyway?
 		$table = $params->get('join_db_name');
@@ -557,28 +559,29 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			return false;
 		}
-		$query = $db->getQuery(true);
-		$sql = "SELECT DISTINCT($key) AS value, $val AS text";
+
+		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
 		{
 			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
-			$sql .= ', ' . $desc . ' AS description';
+			$query->select($desc . ' AS description');
 		}
-		$sql .= $this->getAdditionalQueryFields();
-		$sql .= ' FROM ' . $db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias);
-		$sql .= $this->buildQueryJoin();
-		$sql .= ' ' . $where . ' ';
+		$additionalFields = $this->getAdditionalQueryFields();
+		if ($additionalFields != '')
+		{
+			$query->select($additionalFields);
+		}
+		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
+		$query = $this->buildQueryJoin($query);
+
 		/* $$$ hugh - let them specify an order by, i.e. don't append default if the $where already has an 'order by'
 		 * @TODO - we should probably split 'order by' out in to another setting field, because if they are using
 		 * the 'apply where beneath' and/or 'apply where when' feature, any custom ordering will not be applied
 		 * if the 'where' is not being applied, which probably isn't what they want.
 		 */
-		if (!JString::stristr($where, 'order by'))
-		{
-			$sql .= $this->getOrderBy();
-		}
-		$this->_sql[$sig] = $sql;
+		$query = $this->getOrderBy('', $query);
+		$this->_sql[$sig] = $query;
 		return $this->_sql[$sig];
 	}
 
@@ -598,28 +601,31 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * If _buildQuery needs additional joins then set them here, used in notes plugin
 	 *
+	 * @param   mixed  $query  false to return string, or JQueryBuilder object
+	 *
 	 * @since 3.0rc1
 	 *
-	 * @return string join statement to add
+	 * @return string|JQueryerBuilder join statement to add
 	 */
 
-	protected function buildQueryJoin()
+	protected function buildQueryJoin($query = false)
 	{
-		return '';
+		return $query === false ? '' : $query;
 	}
 
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array   $data            current row data to use in placeholder replacements
-	 * @param   bool    $incWhere        should the additional user defined WHERE statement be included
-	 * @param   string  $thisTableAlias  db table alais
-	 * @param   array   $opts            options
+	 * @param   array            $data            current row data to use in placeholder replacements
+	 * @param   bool             $incWhere        should the additional user defined WHERE statement be included
+	 * @param   string           $thisTableAlias  db table alais
+	 * @param   array            $opts            options
+	 * @param   JDatabaseQuery   $query  append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string
+	 * @return string|JDatabaseQuery
 	 */
 
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array())
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		$where = '';
 		$listModel = $this->getlistModel();
@@ -642,6 +648,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);
 			$where = str_replace($this->orderBy, '', $where);
+			$where = str_replace($matches[0], '', $where);
 		}
 		if (!empty($this->_autocomplete_where))
 		{
@@ -651,18 +658,28 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			if (($mode == 'filter' && $filterType == 'auto-complete')
 				|| $mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
 			{
+
 				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
 			}
 		}
 		if ($where == '')
 		{
-			return $where;
+			return $query ? $query : $where;
 		}
 		$where = str_replace("{thistable}", $thisTableAlias, $where);
 		$w = new FabrikWorker;
 		$data = is_array($data) ? $data : array();
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
+		if (!$query)
+		{
 		return $where;
+		}
+		else
+		{
+			$where = JString::str_ireplace('WHERE', '', $where);
+			$query->where($where);
+			return $query;
+		}
 	}
 
 	/**
@@ -834,7 +851,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (!$formModel->isEditable() || !$this->_editable)
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
-			$defaultLabel = $this->renderListData($default, JArrayHelper::toObject($data));
+			$obj = JArrayHelper::toObject($data);
+			$defaultLabel = $this->renderListData($default, $obj);
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
@@ -1459,12 +1477,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Get options order by
 	 *
-	 * @param   string  $view  view mode '' or 'filter'
+	 * @param   string         $view   view mode '' or 'filter'
+	 * @param   JDatabasQuery  $query  set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
 
-	protected function getOrderBy($view = '')
+	protected function getOrderBy($view = '', $query = false)
 	{
 		if ($view == 'filter')
 		{
@@ -1483,17 +1502,42 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 
 			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinLabel : $joinKey;
-			return " ORDER BY $order ASC ";
+			if (!$query)
+			{
+				return " ORDER BY $order ASC ";
+			}
+			else
+			{
+				$query->order($order . ' ASC');
+				return $query;
+			}
 		}
 		else
 		{
 			if (isset($this->orderBy))
 			{
-				return $this->orderBy;
+				if (!$query)
+				{
+					return $this->orderBy;
+				}
+				else
+				{
+					$order = JString::str_ireplace('ORDER BY', '', $this->orderBy);
+					$query->order($order);
+					return $query;
+				}
 			}
 			else
 			{
-				return "ORDER BY text ASC ";
+				if (!$query)
+				{
+					return "ORDER BY text ASC ";
+				}
+				else
+				{
+					$query->order('text ASC');
+					return $query;
+				}
 			}
 		}
 	}
@@ -1509,14 +1553,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
-
-		// @TODO seems to me that actually table_join_alias is incorrect when the element is rendered as a checkbox?
-		/*if ($this->isJoin()) {
-		echo "<pre>";print_r($join);print_r($this->getElement());echo "</pre>";
-		return $db->quoteName($params->get('join_db_name')).'.'.$db->quoteName($params->get('join_key_column'));
-		} else {*/
 		return $db->quoteName($join->table_join_alias . '.' . $params->get('join_key_column'));
-		//}
 	}
 
 	/**
@@ -2089,7 +2126,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  string  json encoded options
 	 */
 
-	public function onAutocomplete_options()
+	/* public function onAutocomplete_options()
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->_id = JRequest::getInt('element_id');
@@ -2113,6 +2150,41 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		$tmp = $this->_getOptions(array(), 0, true);
 		echo json_encode($tmp);
+	} */
+
+	/**
+	 * Cache method to populate autocomplete options
+	 *
+	 * @param   plgFabrik_Element  $elementModel  element model
+	 * @param   string             $search        serch string
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return string  json encoded search results
+	 */
+
+	public static function cacheAutoCompleteOptions($elementModel, $search)
+	{
+		$params = $elementModel->getParams();
+		$db = FabrikWorker::getDbo();
+		$c = $elementModel->_getValColumn();
+		if (!strstr($c, 'CONCAT'))
+		{
+			$c = FabrikString::safeColName($c);
+		}
+		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
+		// default to "contains" for backward compat.
+		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+		{
+			$elementModel->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . $search . '%');
+		}
+		else
+		{
+			$elementModel->_autocomplete_where = $c . ' LIKE ' . $db->quote($search . '%');
+		}
+		$opts = array('mode' => 'filter');
+		$tmp = $elementModel->_getOptions(array(), 0, true, $opts);
+		return json_encode($tmp);
 	}
 
 	/**

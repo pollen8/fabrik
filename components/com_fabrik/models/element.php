@@ -5108,11 +5108,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement(true);
-
-		$cache = JCache::getInstance('callback',
-			array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
-				'storage' => 'file'));
-		$cache->setCaching(true);
+		$cache = FabrikWorker::getCache();
 		$search = JRequest::getVar('value');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}

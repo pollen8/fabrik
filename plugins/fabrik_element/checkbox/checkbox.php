@@ -189,7 +189,6 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 				$str = " $key $condition $value ";
 				break;
 		}
-		echo $str;
 		return $str;
 	}
 

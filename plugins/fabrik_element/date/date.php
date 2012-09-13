@@ -1393,33 +1393,40 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$hours = $timeZone->getOffset($d) / (60 * 60);
 		$dateInterval = new DateInterval('PT' . $hours . 'H');
 		$d->add($dateInterval);
-
 	}
 
 	/**
-	 * Ajax call to get auto complete options
+	 * Cache method to populate autocomplete options
 	 *
-	 * @return  string  json encoded options
+	 * @param   plgFabrik_Element  $elementModel  element model
+	 * @param   string             $search        serch string
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return string  json encoded search results
 	 */
 
-	public function onAutocomplete_options()
+	public static function cacheAutoCompleteOptions($elementModel, $search)
 	{
-		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->_id = JRequest::getInt('element_id');
-		$this->getElement(true);
-		$listModel = $this->getListModel();
+		$listModel = $elementModel->getListModel();
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$name = $this->getFullName(false, false, false);
+		$name = $elementModel->getFullName(false, false, false);
 		$query = $db->getQuery(true);
+
+		$params = $elementModel->getParams();
+		$format = $params->get('date_table_format');
+		$elementModel->strftimeTFormatToMySQL($format);
+
+		$search = $db->quote('%' . addslashes($search) . '%');
 		$query->select('DISTINCT(' . $name . ') AS value, ' . $name . ' AS text')->from($table->db_table_name)
-			->where($name . ' LIKE ' . $db->quote('%' . addslashes(JRequest::getVar('value') . '%')));
+			->where($name . ' LIKE ' . $search . ' OR DATE_FORMAT(' . $name . ', "' . $format . '" ) LIKE ' . $search);
 		$db->setQuery($query);
 		$tmp = $db->loadObjectList();
 		$ddData = array();
 		foreach ($tmp as &$t)
 		{
-			$this->toLabel($t->text);
+			$elementModel->toLabel($t->text);
 			if (!array_key_exists($t->text, $ddData))
 			{
 				$ddData[$t->text] = $t;

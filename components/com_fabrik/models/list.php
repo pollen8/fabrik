@@ -7647,7 +7647,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * gFet a single column of data from the table, test for element filters
+	 * Get a single column of data from the table, test for element filters
 	 *
 	 * @param   string  $col  column to get
 	 *
@@ -7658,36 +7658,58 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
-			$table = $this->getTable();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$db = $this->getDb();
-			$el = $this->getFormModel()->getElement($col);
-			$colQuoted = FabrikString::safeColName($col);
-			$el->encryptFieldName($colQuoted);
-			$tablename = $table->db_table_name;
-			$tablename = FabrikString::safeColName($tablename);
-			$query = "SELECT DISTINCT($colQuoted) FROM " . $tablename . ' ' . $this->_buildQueryJoin();
-			$query .= $this->_buildQueryWhere(false);
-			$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
-			$query = $this->pluginQuery($query);
-			$db->setQuery($query);
-			$res = $db->loadColumn();
+			$cache = FabrikWorker::getCache();
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col);
 			if (is_null($res))
 			{
-				JError::raiseNotice(500, 'list model getColumn Data for ' . $colQuoted . ' failed');
+				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
 			}
 			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
 			{
-				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));
+				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
 			}
-			FabrikHelperHTML::debug($query, 'filter:getColumnData query');
 			if (is_null($res))
 			{
 				$res = array();
 			}
+
 			$this->columnData[$col] = $res;
 		}
 		return $this->columnData[$col];
+	}
+
+	/**
+	 * Cached method to grab a colums' data, called from getColumnData()
+	 *
+	 * @param   int     $listId  list id
+	 * @param   string  $col     column to grab
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  column's values
+	 */
+
+	public static function columnData($listId, $col)
+	{
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$table = $listModel->getTable();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$db = $listModel->getDb();
+		$el = $listModel->getFormModel()->getElement($col);
+		$col = $db->quoteName($col);
+		$el->encryptFieldName($col);
+		$tablename = $table->db_table_name;
+		$tablename = FabrikString::safeColName($tablename);
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $col . ')')->from($tablename);
+		$query = $listModel->_buildQueryJoin($query);
+		$query = $listModel->_buildQueryWhere(false, $query);
+		$query = $listModel->pluginQuery($query);
+		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		$res = $db->loadColumn(0);
+		return $res;
 	}
 
 	/**
