@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of ascending / decending options
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.

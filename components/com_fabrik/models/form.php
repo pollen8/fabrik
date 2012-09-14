@@ -3006,8 +3006,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
-		$request = JRequest::get('request');
-		$data = array(FArrayHelper::toObject($request));
+		$data = JRequest::get('request');
+		$data = array(FArrayHelper::toObject($data));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -3113,8 +3113,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
 								$request = JRequest::get('request');
-								$merge = array_merge($row, $request);
-								$data[] = FArrayHelper::toObject($merge);
+								$request = array_merge($row, $request);
+								$data[] = FArrayHelper::toObject($request);
 							}
 						}
 						FabrikHelperHTML::debug($data, 'form:getData from querying rowid= ' . $this->rowId . ' (form not in Mambot and no errors)');

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders either a plain <textarea> or WYSIWYG editor
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('JPATH_BASE') or die();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a upload size field
+ * Renders either a plain <textarea> or WYSIWYG editor
  *
  * @package     Joomla
  * @subpackage  Form
@@ -70,18 +72,16 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 
 		// Get an editor object.
 		$editor = $this->getEditor();
-		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-		$default = $this->form->getValue($authorField);
-		$buttons = $buttons ? (is_array($buttons) ? array_merge($buttons, $hide) : $hide) : false;
-		return $editor->display($this->name, $value, $width, $height, $cols, $rows, $buttons, $this->id, $asset, $default);
+		return $editor
+			->display($this->name, htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8'), $width, $height, $cols, $rows,
+				$buttons ? (is_array($buttons) ? array_merge($buttons, $hide) : $hide) : false, $this->id, $asset,
+				$this->form->getValue($authorField));
 	}
 
 	/**
 	 * Method to get a JEditor object based on the form field.
 	 *
 	 * @return  object  The JEditor object.
-	 * 
-	 * @since   11.1
 	 */
 
 	protected function &getEditor()
@@ -103,7 +103,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 				// Get the database object.
 				$db = JFactory::getDBO();
 
-				// Iterate over the types looking for an existing editor.
+				// Iterate over teh types looking for an existing editor.
 				foreach ($types as $element)
 				{
 					// Build the query.

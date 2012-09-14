@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of tables, either fabrik lists, or db tables
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

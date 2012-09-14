@@ -1,4 +1,5 @@
-<?php /**
+<?php
+/**
  * Admin Element Edit:javascript Tmpl
  *
  * @package     Joomla.Administrator

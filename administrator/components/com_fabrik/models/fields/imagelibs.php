@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of installed image libraries
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders availble Image Libraries
+ * Renders a list of installed image libraries
  *
  * @package     Joomla
  * @subpackage  Form

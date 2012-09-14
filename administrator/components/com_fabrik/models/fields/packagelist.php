@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a repeating drop down list of packages
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Form Field class for showing hidden parameters
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

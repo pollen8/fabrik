@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders widget for (de)selecting available groups when editing a from
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a author element
+ * Renders widget for (de)selecting available groups when editing a from
  *
  * @package     Joomla
  * @subpackage  Form
@@ -107,15 +109,14 @@ class JFormFieldSwapList extends JFormFieldList
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
 		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox" size="10" style="width:100%;" ', 'value', 'text', null,
-			$this->id . '-from'
-		);
+			$this->id . '-from');
 		return array($groups, $list);
 	}
 
 	/**
-	 * get a list of groups currenly used by the form
+	 * Get a list of groups currenly used by the form
 	 *
-	 * @return  array	list of groups, html list of groups
+	 * @return  array  list of groups, html list of groups
 	 */
 
 	public function getCurrentGroupList()
@@ -131,8 +132,7 @@ class JFormFieldSwapList extends JFormFieldList
 		$db->setQuery($query);
 		$currentGroups = $db->loadObjectList();
 		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, 'class="inputbox" multiple="multiple" style="width:100%;" size="10" ',
-			'value', 'text', '/', $this->id
-		);
+			'value', 'text', '/', $this->id);
 		return array($currentGroups, $list);
 	}
 }

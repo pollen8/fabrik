@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of Fabrik visualizations
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,7 +16,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 require_once JPATH_SITE . '/components/com_fabrik/helpers/parent.php';
 
 /**
- * Renders a list of created visualizations
+ * Renders a list of Fabrik visualizations
  *
  * @package     Joomla
  * @subpackage  Form

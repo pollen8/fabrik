@@ -1,32 +1,37 @@
 <?php
 /**
- * @package     Joomla
+ * Entry point to Fabrik's administration pages
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 defined('_JEXEC') or die;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik')) {
+if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
+{
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-//load front end language file as well
+// Load front end language file as well
 $lang = JFactory::getLanguage();
-$lang->load('com_fabrik', JPATH_SITE.'/components/com_fabrik');
+$lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 
-//test if the system plugin is installed and published
-if (!defined('COM_FABRIK_FRONTEND')) {
+// Test if the system plugin is installed and published
+if (!defined('COM_FABRIK_FRONTEND'))
+{
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
 jimport('joomla.filesystem.file');
-JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js'): JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
-//added raw test for submitting forms via dbjoin add form.
-if (!in_array(JRequest::getVar('task'), array('plugin.pluginAjax', 'form.process')) && JRequest::getVar('format') !== 'raw') {
+// Raw test for submitting forms via dbjoin add form.
+if (!in_array(JRequest::getVar('task'), array('plugin.pluginAjax', 'form.process')) && JRequest::getVar('format') !== 'raw')
+{
 	FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 }
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
@@ -35,21 +40,23 @@ JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 jimport('joomla.application.component.controller');
 
 // System plugin check
-if (!defined('COM_FABRIK_FRONTEND')) {
+if (!defined('COM_FABRIK_FRONTEND'))
+{
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
 // Execute the task.
 $controller	= JControllerLegacy::getInstance('FabrikAdmin', array('name' => 'fabrik'));
 
-//test that they've published some element plugins!
+// Test that they've published some element plugins!
 $db = JFactory::getDbo();
 $query = $db->getQuery(true);
 $query->select('COUNT(extension_id)')->from('#__extensions')->where('enabled = 1 AND folder = "fabrik_element"');
 $db->setQuery($query);
-if (count($db->loadResult()) === 0) {
+if (count($db->loadResult()) === 0)
+{
 	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
 }
+
 $controller->execute(JRequest::getCmd('task', 'home.display'));
 $controller->redirect();
-?>

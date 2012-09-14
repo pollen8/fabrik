@@ -2454,7 +2454,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Get the table filter for the element
+	 * Get the list filter for the element
 	 *
 	 * @param   int   $counter  filter order
 	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
@@ -2521,22 +2521,33 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 
 			case "auto-complete":
-				$default = stripslashes($default);
-				$default = htmlspecialchars($default);
-
-				/**
-				 * $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters
-				 * showing and not produce invald html & duplicate js calls
-				 */
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $id
-					. '-auto-complete" size="' . $size . '" value="' . $default . '" />';
-				$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
-				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id);
+				$autoComplete = $this->autoCompleteFilter($default, $v);
+				$return = array_merge($return, $autoComplete);
 				break;
 		}
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
 		return implode("\n", $return);
+	}
+
+	protected function autoCompleteFilter($default, $v)
+	{
+		$listModel = $this->getListModel();
+		$default = stripslashes($default);
+		$default = htmlspecialchars($default);
+		$id = $this->getHTMLId() . 'value';
+		$size = (int) $this->getParams()->get('filter_length', 20);
+		/**
+		 * $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters
+		 * showing and not produce invald html & duplicate js calls
+		 */
+		$return = array();
+		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $id
+		. '-auto-complete" size="' . $size . '" value="' . $default . '" />';
+		$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
+		$element = $this->getElement();
+		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin);
+		return $return;
 	}
 
 	/**
@@ -4994,36 +5005,52 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * Ajax call to get auto complete options
+	 * Ajax call to get auto complete options (now caches results)
 	 *
 	 * @return  string  json encoded options
 	 */
 
 	public function onAutocomplete_options()
 	{
-		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->id = JRequest::getInt('element_id');
+		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
+		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement(true);
-		$listModel = $this->getListModel();
-		$db = $listModel->getDb();
-		$name = $this->getFullName(false, false, false);
+		$cache = FabrikWorker::getCache();
+		$search = JRequest::getVar('value');
+		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
+	}
 
-		// $$$ rob - previous method to make query did not take into account prefilters on main table
+	/**
+	 * Cache method to populate autocomplete options
+	 *
+	 * @param   plgFabrik_Element  $elementModel  element model
+	 * @param   string             $search        serch string
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return string  json encoded search results
+	 */
+
+	public static function cacheAutoCompleteOptions($elementModel, $search)
+	{
+		$name = $elementModel->getFullName(false, false, false);
+		$elementModel->encryptFieldName($name);
+		$listModel = $elementModel->getListModel();
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
 		$tableName = $listModel->getTable()->db_table_name;
-		$this->encryptFieldName($name);
-		$where = trim($listModel->buildQueryWhere(false));
-		$where .= ($where == '') ? ' WHERE ' : ' AND ';
-		$join = $listModel->buildQueryJoin();
-		$where .= $name . ' LIKE ' . $db->quote(addslashes('%' . JRequest::getVar('value') . '%'));
-		$query = "SELECT DISTINCT($name) AS value, $name AS text FROM $tableName $join $where";
+		$query->select('DISTINCT(' . $name . ') AS value, ' . $name . ' AS text')->from($tableName);
+		$query->where($name . ' LIKE ' . $db->quote(addslashes('%' . $search . '%')));
+		$query = $listModel->buildQueryJoin($query);
+		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
 		$db->setQuery($query);
 		$tmp = $db->loadObjectList();
 		foreach ($tmp as &$t)
 		{
-			$this->toLabel($t->text);
+			$elementModel->toLabel($t->text);
 		}
-		echo json_encode($tmp);
+		return json_encode($tmp);
 	}
 
 	/**

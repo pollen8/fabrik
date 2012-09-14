@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a fabrik element drop down
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.

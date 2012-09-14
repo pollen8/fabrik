@@ -25,8 +25,9 @@ jimport('joomla.application.component.modeladmin');
 class FabrikModelCron extends JModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CRON';
 

@@ -272,7 +272,7 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 		{
 			$this->html = $formModel->formData;
 		}
-		else if (!empty($formModel->_data))
+		elseif (!empty($formModel->_data))
 		{
 			$this->html = $formModel->data;
 		}

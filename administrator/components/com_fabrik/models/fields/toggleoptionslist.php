@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list which will toggle visibility of a specified group
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -37,23 +39,23 @@ class JFormFieldToggleoptionslist extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string	The field input markup.
+	 * @return	string	The field input markup.
 	 */
 
 	protected function getInput()
 	{
 		$script = "head.ready(function() {
 
-		if($('" . $this->id . "').get('value') == '" . $this->element['hide'] . "'){
-			$('" . $this->element['toggle'] . "').hide();
+		if (document.id('" . $this->id . "').get('value') == '" . $this->element['hide'] . "') {
+			document.id('" . $this->element['toggle'] . "').hide();
 		}
-			$('" . $this->id . "').addEvent('change', function(e){
+			document.id('" . $this->id . "').addEvent('change', function (e) {
 				var v = e.target.get('value');
-				if(v == '" . $this->element['show'] . "') {
-					$('" . $this->element['toggle'] . "').show();
-				} else{
+				if (v == '" . $this->element['show'] . "') {
+					document.id('" . $this->element['toggle'] . "').show();
+				} else {
 					if(v == '" . $this->element['hide'] . "') {
-						$('" . $this->element['toggle'] . "').hide();
+						document.id('" . $this->element['toggle'] . "').hide();
 					}
 				}
 			});

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin List Field class for Fabrik.
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

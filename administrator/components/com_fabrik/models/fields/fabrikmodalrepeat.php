@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Display a json loaded window with a repeatble set of sub fields
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.

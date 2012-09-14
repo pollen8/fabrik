@@ -926,13 +926,13 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($canEdit == 1)
 					{
-						if ($params->get('editlink') || $params->get('actionMethod') == 'floating')
+						if ($params->get('editlink') || $params->get('actionMethod', 'floating') == 'floating')
 						{
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod') == 'floating'))
+						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod', 'floating') == 'floating'))
 						{
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
@@ -940,7 +940,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					else
 					{
-						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating'))
+						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod', 'floating') == 'floating'))
 						{
 							if (empty($this->_aLinkElements))
 							{
@@ -955,7 +955,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 				}
-				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod') == 'floating'))
+				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod', 'floating') == 'floating'))
 				{
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
@@ -5490,7 +5490,7 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
 		{
 			return true;
 		}
@@ -5530,7 +5530,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView()))
+		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView()))
 		{
 			return true;
 		}

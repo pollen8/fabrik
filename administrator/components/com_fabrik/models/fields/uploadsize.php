@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a upload size field
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -30,10 +32,10 @@ class JFormFieldUploadsize extends JFormField
 	protected $name = 'Uploadsize';
 
 	/**
-	 * Ini settings can be in K, M or G
-	 * 
-* @param   string  $val  size string
-	 * 
+	 * Get the number of bytes for an ini setting
+	 *
+	 * @param   string  $val  ini seettings can be in K, M or G
+	 *
 	 * @return  int  bytes
 	 */
 
@@ -58,9 +60,9 @@ class JFormFieldUploadsize extends JFormField
 	}
 
 	/**
-	 * Method to get the field input markup.
+	 * Get input markup
 	 *
-	 * @return  string	The field input markup.
+	 * @return  string  HTML markup
 	 */
 
 	protected function getInput()
@@ -93,9 +95,9 @@ class JFormFieldUploadsize extends JFormField
 	}
 
 	/**
-	 * get the max upload size allowed by the server.
-	 * 
-	 * @return  int	 kilobyte upload size
+	 * Get the max upload size allowed by the server.
+	 *
+	 * @return	int	kilobyte upload size
 	 */
 
 	protected function getMax()

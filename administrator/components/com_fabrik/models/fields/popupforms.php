@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list releated forms that a db join element can be populated from
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

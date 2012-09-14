@@ -123,6 +123,10 @@ var FbDateTime = new Class({
 		var d = this.setTimeFromField(calendar.date);
 		this.update(d.format('db'));
 		if (this.cal.dateClicked) {
+			this.getDateField().fireEvent('change');
+			if (this.timeButton) {
+				this.getTimeField().fireEvent('change');
+			}
 			this.cal.callCloseHandler();
 		}
 		window.fireEvent('fabrik.date.select', this);

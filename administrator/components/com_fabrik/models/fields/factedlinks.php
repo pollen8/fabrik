@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a table of options for controlling the facet / related data links
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.

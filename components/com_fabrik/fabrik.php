@@ -113,7 +113,8 @@ else
  */
 if (strpos(JRequest::getCmd('task'), '.') !== false)
 {
-	$controller = array_shift(explode('.', JRequest::getCmd('task')));
+	$controller = explode('.', JRequest::getCmd('task'));
+	$controller = array_shift($controller);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
 	if (JFile::exists($path))
@@ -122,7 +123,8 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 
 		// Needed to process J content plugin (form)
 		JRequest::setVar('view', $controller);
-		$task = array_pop(explode('.', JRequest::getCmd('task')));
+		$task = explode('.', JRequest::getCmd('task'));
+		$task = array_pop($task);
 		$controller = new $classname;
 	}
 	else

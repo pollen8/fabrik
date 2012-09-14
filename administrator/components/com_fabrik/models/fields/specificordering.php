@@ -1,5 +1,8 @@
 <?php
 /**
+ * Renders a list of elements found in the current group
+ * for use in setting the element's order
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -17,6 +20,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of elements found in the current group
+ * for use in setting the element's order
  *
  * @package     Joomla
  * @subpackage  Form
@@ -47,7 +51,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 			. "\n AND published >= 0" . "\n ORDER BY ordering";
 		/**
 		 * $$$ rob - rather than trying to override the JHTML class lets
-		 * just swap {package} for the current package.	
+		 * just swap {package} for the current package.
 		 */
 		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
 		return JHTML::_('list.genericordering', $query);

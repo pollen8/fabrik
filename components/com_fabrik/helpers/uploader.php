@@ -270,7 +270,7 @@ class FabrikUploader extends JObject
 			$f = JString::rtrim($f, $version - 1);
 			$newFileName = $f . $version . "." . $ext;
 			$version++;
-			$newFileName = uploader::incrementFileName($origFileName, $newFileName, $version);
+			$newFileName = FabrikUploader::incrementFileName($origFileName, $newFileName, $version);
 		}
 		return $newFileName;
 	}

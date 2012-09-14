@@ -1,5 +1,7 @@
 <?php
 /**
+ * Create a list from an SQL query
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,6 @@ defined('JPATH_BASE') or die();
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
-// Missing class lead to error: Class 'JFormFieldList' not found
 JFormHelper::loadFieldClass('list');
 
 /**
