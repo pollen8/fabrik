@@ -3,15 +3,6 @@
 	<name>Form Edit Form</name>
 	<fieldset name="details">
 			
-<<<<<<< HEAD
-		<field class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL" name="id" readonly="true" required="true" type="text"/>
-			
-		<field description="COM_FABRIK_FIELD_TITLE_DESC" label="COM_FABRIK_FIELD_TITLE_LABEL" name="label" required="true" size="40" type="text"/>
-			
-		<field cols="6" description="COM_FABRIK_FIELD_INTRODUCTION_DESC" filter="FabrikHelper::filterText" label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" name="intro" rows="3" type="editor"/>
-			
-		<field description="COM_FABRIK_FIELD_ERROR_MSG_DESC" label="COM_FABRIK_FIELD_ERROR_MSG_LABEL" name="error" size="40" type="text"/>
-=======
 		<field name="id" 
 			type="text" 
 			default="0" 
@@ -41,7 +32,6 @@
 			size="40" 
 			label="COM_FABRIK_FIELD_ERROR_MSG_LABEL"
 			description="COM_FABRIK_FIELD_ERROR_MSG_DESC" />
->>>>>>> master
 			
 	</fieldset>
 	
@@ -74,9 +64,6 @@
 		
 		<fieldset name="details2">
 		
-<<<<<<< HEAD
-			<field cols="6" description="COM_FABRIK_FIELD_OUTRO_DESC" filter="FabrikHelper::filterText" label="COM_FABRIK_FIELD_OUTRO_LABEL" name="outro" rows="3" type="editor"/>
-=======
 			<field name="outro" 
 				type="editor"
 				filter="FabrikAdminHelper::filterText"
@@ -84,7 +71,6 @@
 				cols="6" 
 				label="COM_FABRIK_FIELD_OUTRO_LABEL"
 				description="COM_FABRIK_FIELD_OUTRO_DESC" />
->>>>>>> master
 				
 		</fieldset>
 		<fieldset name="buttons">

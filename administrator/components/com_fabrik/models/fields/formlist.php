@@ -38,7 +38,6 @@ class JFormFieldFormList extends JFormFieldList
 	 * @access	protected
 	 * @var		string
 	 */
-<<<<<<< HEAD
 	protected $name = 'Formlist';
 
 	/**
@@ -47,16 +46,6 @@ class JFormFieldFormList extends JFormFieldList
 	 * @return  array	The field option objects.
 	 */
 
-=======
-	var $_name = 'Formlist';
-
-	/**
-	 * Get list options
-	 *
-	 * @return  array
-	 */
-
->>>>>>> master
 	protected function getOptions()
 	{
 		$db = FabrikWorker::getDbo(true);
@@ -94,11 +83,7 @@ class JFormFieldFormList extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-<<<<<<< HEAD
-	 * @return  string	The field input markup.
-=======
 	 * @return	string	The field input markup.
->>>>>>> master
 	 */
 
 	protected function getInput()

@@ -147,13 +147,8 @@ class FabrikViewList extends JViewLegacy
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
-<<<<<<< HEAD
-		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
-=======
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
->>>>>>> master
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_LIST_NEW') : JText::_('COM_FABRIK_MANAGER_LIST_EDIT'), 'list.png');
 		if ($isNew)
 		{

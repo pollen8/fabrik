@@ -1,14 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
-<<<<<<< HEAD
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-=======
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
->>>>>>> master
  */
 
 // No direct access
@@ -59,11 +54,7 @@ class FabrikViewPackages extends JViewLegacy
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
-<<<<<<< HEAD
-		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
-=======
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
->>>>>>> master
 
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_PACKAGES'), 'packages.png');
 		if ($canDo->get('core.create'))

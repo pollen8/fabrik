@@ -22,16 +22,12 @@
 		
 		<field description="COM_FABRIK_FIELD_LABEL_DESC" label="COM_FABRIK_FIELD_LABEL_LABEL" name="label" required="true" size="40" type="text"/>
 
-<<<<<<< HEAD
-		<field cols="30" description="COM_FABRIK_FIELD_INTRODUCTION_DESC" filter="FabrikHelper::filterText" label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" name="introduction" rows="3" type="editor"/>
-=======
 		<field name="introduction"
 			type="editor"
 			filter="FabrikAdminHelper::filterText"
 			rows="3" cols="30"
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
->>>>>>> master
 	
 		<field filter="unset" name="asset_id" type="hidden"/>
 		
@@ -95,16 +91,12 @@
 	<fields name="params">
 	
 		<fieldset name="main">
-<<<<<<< HEAD
-		<field cols="30" description="COM_FABRIK_FIELD_OUTRO_DESC" filter="FabrikHelper::filterText" label="COM_FABRIK_FIELD_OUTRO_LABEL" name="outro" rows="3" type="editor"/>
-=======
 		<field name="outro"
 			type="editor"
 			filter="FabrikAdminHelper::filterText"
 			rows="3" cols="30"
 			label="COM_FABRIK_FIELD_OUTRO_LABEL"
 			description="COM_FABRIK_FIELD_OUTRO_DESC" />
->>>>>>> master
 		</fieldset>
 
 			<fieldset name="details2">

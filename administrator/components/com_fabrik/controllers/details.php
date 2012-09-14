@@ -47,11 +47,7 @@ class FabrikControllerDetails extends JControllerForm
 		// Set the layout
 		$view->setLayout($viewLayout);
 
-<<<<<<< HEAD
 		// @TODO check for cached version
-=======
-		// @Todo check for cached version
->>>>>>> master
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
 		$view->display();
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
