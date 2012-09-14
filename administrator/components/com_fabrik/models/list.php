@@ -643,9 +643,9 @@ class FabrikModelList extends FabModelAdmin
 			$row->modified = $datenow->toSql();
 			$row->modified_by = $user->get('id');
 		}
-		FabrikHelper::prepareSaveDate($row->publish_down);
-		FabrikHelper::prepareSaveDate($row->created);
-		FabrikHelper::prepareSaveDate($row->publish_up);
+		FabrikAdminHelper::prepareSaveDate($row->publish_down);
+		FabrikAdminHelper::prepareSaveDate($row->created);
+		FabrikAdminHelper::prepareSaveDate($row->publish_up);
 		$pk = JArrayHelper::getValue($data, 'db_primary_key');
 		if ($pk == '')
 		{

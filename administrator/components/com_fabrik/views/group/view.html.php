@@ -27,7 +27,7 @@ class FabrikViewGroup extends JView
 	/**
 	 * Display the view
 	 */
-	
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -49,7 +49,7 @@ class FabrikViewGroup extends JView
 	 * Add the page title and toolbar.
 	 * @since	1.6
 	 */
-	
+
 	protected function addToolbar()
 	{
 		JRequest::setVar('hidemainmenu', true);
@@ -57,7 +57,7 @@ class FabrikViewGroup extends JView
 		$isNew = ($this->item->id == 0);
 		$userId = $user->get('id');
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_GROUP_NEW') : JText::_('COM_FABRIK_MANAGER_GROUP_EDIT'), 'group.png');
 		if ($isNew)
 		{

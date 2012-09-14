@@ -63,7 +63,7 @@
 		
 		<field name="intro"
 			type="editor"
-			filter="FabrikHelper::filterText"
+			filter="FabrikAdminHelper::filterText"
 			rows="6"
 			cols="20"
 			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"

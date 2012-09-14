@@ -64,7 +64,7 @@ class FabrikViewHome extends JView
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
-		$canDo = FabrikHelper::getActions();
+		$canDo = FabrikAdminHelper::getActions();
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();

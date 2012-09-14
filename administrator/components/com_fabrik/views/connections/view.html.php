@@ -52,7 +52,7 @@ class FabrikViewConnections extends JView
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT.'/helpers/fabrik.php';
-		$canDo	= FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo	= FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_CONNECTIONS'), 'connections.png');
 		if ($canDo->get('core.create')) {

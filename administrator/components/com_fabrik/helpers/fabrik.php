@@ -9,7 +9,7 @@
  * @since       1.6
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikHelper
+class FabrikAdminHelper
 {
 
 	/**
@@ -241,5 +241,23 @@ class FabrikHelper
 			$text = $filter->clean($text, 'html');
 		}
 		return $text;
+	}
+
+	/**
+	 * Set the layout based on Joomla version
+	 * Allows for loading of new bootstrap admin templates in J3.0+
+	 *
+	 * @param   JView  &$view  current view to setLayout for
+	 *
+	 * @return  void
+	 */
+
+	public static function setViewLayout(&$view)
+	{
+		$v = new JVersion;
+		if ($v->RELEASE > 2.5)
+		{
+			$view->setLayout('bootstrap');
+		}
 	}
 }

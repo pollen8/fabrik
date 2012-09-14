@@ -86,7 +86,7 @@ class FabrikViewConnection extends JView
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_CONNECTION_NEW') : JText::_('COM_FABRIK_MANAGER_CONNECTION_EDIT'), 'connection.png');
 		if ($isNew)
 		{

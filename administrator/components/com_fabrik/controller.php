@@ -39,7 +39,7 @@ class FabrikController extends JController
 		parent::display();
 
 		// Load the submenu.
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**
