@@ -53,10 +53,10 @@ class FabrikViewLists extends JViewLegacy
 			return false;
 		}
 		$this->table_groups = $this->get('TableGroups');
-		FabrikHelper::setViewLayout($this);
+		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
 		parent::display($tpl);
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**
