@@ -1856,19 +1856,21 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the select part of the query
 	 *
+	 * @param   string  $mode  list/form - effects which elements are selected
+	 *
 	 * @return  string
 	 */
 
-	function _buildQuerySelect()
+	function _buildQuerySelect($mode = 'list')
 	{
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('queryselect: start') : null;
 		$db = $this->getDb();
 		$form = $this->getFormModel();
 		$table = $this->getTable();
-		$form->getGroupsHiarachy(true);
+		$form->getGroupsHiarachy();
 		JDEBUG ? $profiler->mark('queryselect: fields load start') : null;
-		$fields = $this->getAsFields();
+		$fields = $this->getAsFields($mode);
 		$pk = FabrikString::safeColName($table->db_primary_key);
 		$params = $this->getParams();
 		$this->selectSlug($fields);
@@ -2610,10 +2612,12 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the part of the table sql statement that selects which fields to load
 	 *
+	 * @param   string  $mode  list/form - effects which elements are selected
+	 *
 	 * @return  array	field names to select in getelement data sql query
 	 */
 
-	function &getAsFields()
+	function &getAsFields($mode = 'list')
 	{
 		$profiler = JProfiler::getInstance('Application');
 		if (isset($this->asfields))
@@ -2632,7 +2636,7 @@ class FabrikFEModelList extends JModelForm
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
-			$elementModels = $groupModel->getListQueryElements();
+			$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
 				$method = 'getAsField_' . $this->_outPutFormat;
