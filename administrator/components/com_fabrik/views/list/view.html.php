@@ -79,7 +79,7 @@ class FabrikViewList extends JViewLegacy
 			}
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
 		}
-		FabrikHelper::setViewLayout($this);
+		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 

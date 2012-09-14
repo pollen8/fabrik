@@ -74,7 +74,7 @@ class FabrikViewElement extends JViewLegacy
 			$this->elements = $this->get('Elements');
 		}
 		$this->assign('parent', $this->get('Parent'));
-		FabrikHelper::setViewLayout($this);
+		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 

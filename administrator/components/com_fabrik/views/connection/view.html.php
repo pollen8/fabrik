@@ -69,7 +69,7 @@ class FabrikViewConnection extends JViewLegacy
 			return false;
 		}
 		$this->addToolbar();
-		FabrikHelper::setViewLayout($this);
+		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 

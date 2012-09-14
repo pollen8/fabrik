@@ -42,9 +42,9 @@ class FabrikViewForms extends JViewLegacy
 		}
 
 		$this->addToolbar();
-		FabrikHelper::setViewLayout($this);
+		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**
