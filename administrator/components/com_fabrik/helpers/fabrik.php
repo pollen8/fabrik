@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Fabrik Component Helper
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,7 +23,7 @@ class FabrikHelper
 {
 
 	/**
-	 * prepare the date for saving
+	 * Prepare the date for saving
 	 * DATES SHOULD BE SAVED AS UTC
 	 *
 	 * @param   string  &$strdate  publish down date

@@ -1,10 +1,12 @@
 <?php
 /**
+ * JHtml element helper
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @since       1.6
+ * @since       3.0
  */
 
 // No direct access.
@@ -21,7 +23,7 @@ class ElementHelper
 {
 
 	/**
-	 * get html id
+	 * Get html id
 	 *
 	 * @param   object  $element       field
 	 * @param   string  $control_name  control name
@@ -44,7 +46,7 @@ class ElementHelper
 	}
 
 	/**
-	 * get full name
+	 * Get full name
 	 *
 	 * @param   object  $element       field
 	 * @param   string  $control_name  control name
@@ -67,7 +69,7 @@ class ElementHelper
 	}
 
 	/**
-	 * get repeat counter
+	 * Get repeat counter
 	 *
 	 * @param   object  $element  Jhtml field
 	 *
@@ -88,7 +90,7 @@ class ElementHelper
 	}
 
 	/**
-	 * get repeat
+	 * Get repeat
 	 *
 	 * @param   object  $element  Jhtml field
 	 *

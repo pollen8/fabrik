@@ -1,5 +1,7 @@
 <?php
 /**
+ * Form Field class for showing hidden parameters
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -33,7 +35,7 @@ class JFormFieldHiddenparams extends JFormField
 	 * @return	string	The field input markup.
 	 * @since	1.6
 	 */
-	
+
 	protected function getInput()
 	{
 		// Initialize some field attributes.

@@ -1,5 +1,8 @@
 <?php
 /**
+ * Renders a list of elements found in the current group
+ * for use in setting the element's order
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -17,6 +20,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of elements found in the current group
+ * for use in setting the element's order
  *
  * @package     Joomla
  * @subpackage  Form
@@ -30,23 +34,32 @@ class JFormFieldSpecificordering extends JFormFieldList
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Specificordering';
+	var $_name = 'Specificordering';
 
-	function getOptions()
+	/**
+	 * Get list options
+	 *
+	 * @return  array
+	 */
+
+	protected function getOptions()
 	{
 		//ONLY WORKS INSIDE ELEMENT :(
 		$db = FabrikWorker::getDbo();
 		$group_id = $this->form->getValue('group_id');
-			$query = "SELECT ordering AS value, name AS text".
-			"\n FROM #__{package}_elements ".
-			"\n WHERE group_id = " . (int) $group_id.
-			"\n AND published >= 0"."\n ORDER BY ordering";
-		// $$$ rob - rather than trying to override the JHTML class lets 
-		// just swap {package} for the current package.	
+		$query = "SELECT ordering AS value, name AS text" . "\n FROM #__{package}_elements " . "\n WHERE group_id = " . (int) $group_id
+			. "\n AND published >= 0" . "\n ORDER BY ordering";
+		// $$$ rob - rather than trying to override the JHTML class lets
+		// just swap {package} for the current package.
 		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
-		return JHTML::_('list.genericordering',  $query);
-
+		return JHTML::_('list.genericordering', $query);
 	}
+
+	/**
+	 * Get the HTML input
+	 *
+	 * @return  string  HTML output
+	 */
 
 	function getInput()
 	{
@@ -60,7 +73,8 @@ class JFormFieldSpecificordering extends JFormFieldList
 		else
 		{
 			$text = JText::_('COM_FABRIK_NEW_ITEMS_LAST');
-			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="'. $this->value . $text . '" />' ;
+			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="' . $this->value . $text
+				. '" />';
 		}
 		return $ordering;
 	}

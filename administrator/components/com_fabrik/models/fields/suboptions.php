@@ -1,5 +1,7 @@
 <?php
 /**
+ * Used in radios/checkbox elements for adding <options> to the element
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -15,7 +17,7 @@ jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 
 /**
- * Renders a repeating drop down list of packages
+ * Used in radios/checkbox elements for adding <options> to the element
  *
  * @package     Joomla
  * @subpackage  Form
@@ -25,19 +27,17 @@ jimport('joomla.form.helper');
 class JFormFieldSuboptions extends JFormField
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Subptions';
-
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	var $_name = 'Subptions';
 
 	/**
 	 * Method to get the field input markup.
 	 *
 	 * @return	string	The field input markup.
-	 * @since	1.6
 	 */
 
 	protected function getInput()
@@ -58,7 +58,8 @@ class JFormFieldSuboptions extends JFormField
 		<th style="width: 5%"></th>
 		<th style="width: 30%">' . JText::_('COM_FABRIK_VALUE') . '</th>
 		<th style="width: 30%">' . JText::_('COM_FABRIK_LABEL') . '</th>
-		<th style="width: 30%">' . JText::_('COM_FABRIK_DEFAULT') . '</th>
+		<th style="width: 30%">' . JText::_('COM_FABRIK_DEFAULT')
+			. '</th>
 	</tr>
 </table>
 <ul id="sub_subElementBody" class="subelements">

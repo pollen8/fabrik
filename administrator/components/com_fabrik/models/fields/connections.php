@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of connections
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -29,12 +31,17 @@ class JFormFieldConnections extends JFormFieldList
 	/**
 	 * Element name
 	 *
-	 * @access	protected
 	 * @var		string
 	 */
 	var $_name = 'Connections';
 
-	function getOptions()
+	/**
+	 * Get list options
+	 *
+	 * @return  array  options
+	 */
+
+	protected function getOptions()
 	{
 
 		// Initialize variables.

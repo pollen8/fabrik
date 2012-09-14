@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders widget for (de)selecting available groups when editing a from
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a author element
+ * Renders widget for (de)selecting available groups when editing a from
  *
  * @package     Joomla
  * @subpackage  Form
@@ -26,9 +28,15 @@ class JFormFieldSwapList extends JFormFieldList
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'SwapList';
+	var $_name = 'SwapList';
 
-	function getInput()
+	/**
+	 * Get the input
+	 *
+	 * @return  string  HTML output
+	 */
+
+	protected function getInput()
 	{
 		$from = $this->id . '-from';
 		$add = $this->id . '-add';
@@ -47,18 +55,20 @@ class JFormFieldSwapList extends JFormFieldList
 
 		if (empty($this->groups) && empty($this->currentGroups))
 		{
-			return  JText::_('COM_FABRIK_NO_GROUPS_AVAILABLE');
+			return JText::_('COM_FABRIK_NO_GROUPS_AVAILABLE');
 		}
 		else
 		{
-			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'. JText::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
+			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
+				. JText::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
 			$str .= $this->groupList;
-			$str .= '<input class="button" type="button" id="'.$this->id.'-add" value="'. JText::_('COM_FABRIK_ADD') . '" />';
-			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="' . JText::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
+			$str .= '<input class="button" type="button" id="' . $this->id . '-add" value="' . JText::_('COM_FABRIK_ADD') . '" />';
+			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
+				. JText::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
 			$str .= $this->currentGroupList;
-			$str .='<input class="button" type="button" value="'.JText::_('COM_FABRIK_UP').'" id="' . $this->id . '-up" />';
-			$str .='<input class="button" type="button" value="'.JText::_('COM_FABRIK_DOWN').'" id="' . $this->id . '-down" />';
-			$str .='<input class="button" type="button" value="'.JText::_('COM_FABRIK_REMOVE').'" id="' . $this->id . '-remove"/>';
+			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_UP') . '" id="' . $this->id . '-up" />';
+			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_DOWN') . '" id="' . $this->id . '-down" />';
+			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_REMOVE') . '" id="' . $this->id . '-remove"/>';
 			return $str;
 		}
 	}
@@ -69,8 +79,9 @@ class JFormFieldSwapList extends JFormFieldList
 	}
 
 	/**
-	 * get a list of unused groups
-	 * @return	array	list of groups, html list of groups
+	 * Get a list of unused groups
+	 *
+	 * @return  array  list of groups, html list of groups
 	 */
 
 	public function getGroupList()
@@ -85,19 +96,21 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->select('id AS value, name AS text')->from('#__{package}_groups');
 		if (!empty($usedgroups))
 		{
-			$query->where('id NOT IN(' . implode(',', $usedgroups) .')');
+			$query->where('id NOT IN(' . implode(',', $usedgroups) . ')');
 		}
 		$query->where('published <> -2');
 		$query->order(FabrikString::safeColName('text'));
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
-		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox" size="10" style="width:100%;" ', 'value', 'text', null, $this->id . '-from');
+		$list = JHTML::_('select.genericlist', $groups, 'jform[groups]', 'class="inputbox" size="10" style="width:100%;" ', 'value', 'text', null,
+			$this->id . '-from');
 		return array($groups, $list);
 	}
 
 	/**
-	 * get a list of groups currenly used by the form
-	 * @return	array	list of groups, html list of groups
+	 * Get a list of groups currenly used by the form
+	 *
+	 * @return  array  list of groups, html list of groups
 	 */
 
 	public function getCurrentGroupList()
@@ -107,12 +120,13 @@ class JFormFieldSwapList extends JFormFieldList
 		$query->select('fg.group_id AS value, g.name AS text');
 		$query->from('#__{package}_formgroup AS fg');
 		$query->join('LEFT', ' #__{package}_groups AS g ON fg.group_id = g.id');
-		$query->where('fg.form_id = '.(int) $this->form->getValue('id'));
+		$query->where('fg.form_id = ' . (int) $this->form->getValue('id'));
 		$query->where('g.name <> ""');
 		$query->order('fg.ordering');
 		$db->setQuery($query);
 		$currentGroups = $db->loadObjectList();
-		$list = JHTML::_('select.genericlist',  $currentGroups, $this->name, 'class="inputbox" multiple="multiple" style="width:100%;" size="10" ', 'value', 'text', '/', $this->id);
+		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, 'class="inputbox" multiple="multiple" style="width:100%;" size="10" ',
+			'value', 'text', '/', $this->id);
 		return array($currentGroups, $list);
 	}
 }

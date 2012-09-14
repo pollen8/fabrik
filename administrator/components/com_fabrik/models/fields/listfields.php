@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of elements found in a fabrik list
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -16,7 +18,7 @@ JFormHelper::loadFieldClass('list');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a list of elements found in a fabrik table
+ * Renders a list of elements found in a fabrik list
  *
  * @package     Joomla
  * @subpackage  Form
@@ -32,7 +34,11 @@ class JFormFieldListfields extends JFormFieldList
 	 */
 	var $_name = 'Listfields';
 
-	/** @var array objects resulting from this elements queries - keyed on idetifying hash */
+	/**
+	 * Objects resulting from this elements queries - keyed on idetifying hash
+	 *
+	 * @var  array
+	 */
 	protected $results = null;
 
 	/**

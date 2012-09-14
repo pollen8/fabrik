@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of ascending / decending options
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -9,7 +11,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a list of ascending / decending options
@@ -18,6 +20,7 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php')
  * @subpackage	Form
  * @since		1.6
  */
+
 class JFormFieldAscendingdescending extends JFormFieldList
 {
 	/**
@@ -25,15 +28,15 @@ class JFormFieldAscendingdescending extends JFormFieldList
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Ascendingdescending';
+	var $_name = 'Ascendingdescending';
 
-		/**
+	/**
 	 * Method to get the field options.
 	 *
 	 * @return	array	The field option objects.
 	 * @since	1.6
 	 */
-	
+
 	public function getOptions()
 	{
 		$opts[] = JHTML::_('select.option', 'ASC', JText::_('COM_FABRIK_ASCENDING'));

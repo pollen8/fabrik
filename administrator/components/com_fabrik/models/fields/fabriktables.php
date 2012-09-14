@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of fabrik lists or db tables
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -21,7 +23,7 @@ jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 /**
- * Renders a list of fabrik or db tables
+ * Renders a list of fabrik lists or db tables
  *
  * @package     Fabrik
  * @subpackage	Form
@@ -38,8 +40,11 @@ class JFormFieldFabrikTables extends JFormFieldList
 	 */
 	var $_name = 'Fabriktables';
 
-	//var $_array_counter = null;
-
+	/**
+	 * Fabrik lists
+	 *
+	 * @var  array
+	 */
 	protected static $fabriktables;
 
 	/**

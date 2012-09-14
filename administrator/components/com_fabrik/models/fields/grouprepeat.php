@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a radio group but only if the fabrik group is assigned to a form
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -27,10 +29,16 @@ class JFormFieldGrouprepeat extends JFormFieldRadio
 {
 	/**
 	 * Element name
-	 * @access	protected
+	 *
 	 * @var		string
 	 */
 	var	$_name = 'Grouprepeat';
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return	string	The field input markup.
+	 */
 
 	protected function getInput()
 	{

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of groups
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -34,8 +36,13 @@ class JFormFieldGroupList extends JFormFieldList
 	*/
 	var	$_name = 'Grouplist';
 
+	/**
+	 * Get list options
+	 *
+	 * @return  array
+	 */
 
-	function getOptions()
+	protected function getOptions()
 	{
 
 		if ($this->value == '')

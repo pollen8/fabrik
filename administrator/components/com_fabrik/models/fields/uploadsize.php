@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a upload size field
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -22,30 +24,48 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 class JFormFieldUploadsize extends JFormField
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Uploadsize';
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	var $_name = 'Uploadsize';
 
-	// $$$ hugh - ini settings can be in K, M or G
+	/**
+	 * Get the number of bytes for an ini setting
+	 *
+	 * @param   string  $val  ini seettings can be in K, M or G
+	 *
+	 * @return  int  bytes
+	 */
+
 	protected function _return_bytes($val)
 	{
 		$val = trim($val);
 		$last = JString::strtolower(JString::substr($val, -1));
 
-		if($last == 'g')
-			$val = $val*1024*1024*1024;
-		if($last == 'm')
-			$val = $val*1024*1024;
-		if($last == 'k')
-			$val = $val*1024;
-
+		if ($last == 'g')
+		{
+			$val = $val * 1024 * 1024 * 1024;
+		}
+		if ($last == 'm')
+		{
+			$val = $val * 1024 * 1024;
+		}
+		if ($last == 'k')
+		{
+			$val = $val * 1024;
+		}
 		return $val;
 	}
 
-	function getInput()
+	/**
+	 * Get input markup
+	 *
+	 * @return  string  HTML markup
+	 */
+
+	protected function getInput()
 	{
 		$size = $this->element['size'] ? 'size="' . $this->element['size'] . '"' : '';
 		$class = $this->element['class'] ? 'class="' . $this->element['class'] . '"' : 'class="text_area"';
@@ -58,11 +78,12 @@ class JFormFieldUploadsize extends JFormField
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see JFormField::getLabel()
+	 * Method to get the field label markup.
+	 *
+	 * @return  string  The field label markup.
 	 */
-	
-	function getLabel()
+
+	protected function getLabel()
 	{
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
@@ -74,7 +95,8 @@ class JFormFieldUploadsize extends JFormField
 	}
 
 	/**
-	 * get the max upload size allowed by the server.
+	 * Get the max upload size allowed by the server.
+	 *
 	 * @return	int	kilobyte upload size
 	 */
 

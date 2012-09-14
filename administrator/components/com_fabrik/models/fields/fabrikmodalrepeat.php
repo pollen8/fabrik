@@ -1,13 +1,11 @@
 <?php
 /**
+ * Display a json loaded window with a repeatble set of sub fields
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
-
-/**
- * display a json loaded window with a repeatble set of sub fields
  */
 
 defined('JPATH_BASE') or die;

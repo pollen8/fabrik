@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list of installed image libraries
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
- * Renders a list of elements found in a fabrik table
+ * Renders a list of installed image libraries
  *
  * @package     Joomla
  * @subpackage  Form
@@ -26,9 +28,14 @@ class JFormFieldImagelibs extends JFormFieldList
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Imagelibs';
+	var $_name = 'Imagelibs';
 
-	function getOptions()
+	/**
+	 * Get element options
+	 *
+	 * @return  array
+	 */
+	protected function getOptions()
 	{
 		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$imageLibs = FabimageHelper::getLibs();

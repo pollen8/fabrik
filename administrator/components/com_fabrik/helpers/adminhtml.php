@@ -1,5 +1,7 @@
 <?php
 /**
+ * Content Component HTML Helper
+ *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.

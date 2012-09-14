@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders the form's database name or a field to create one
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -9,7 +11,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders the form's database name or a field to create one
@@ -28,6 +30,12 @@ class JFormFieldFormDatabaseName extends JFormFieldText
 	* @var		string
 	*/
 	var	$_name = 'FormDatabaseName';
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @return	string	The field input markup.
+	 */
 
 	protected function getInput()
 	{

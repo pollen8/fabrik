@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a repeating drop down list of packages
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -9,7 +11,7 @@
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
 
 /**
  * Renders a repeating drop down list of packages
@@ -19,26 +21,30 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php')
  * @since       1.6
  */
 
-
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
 
 class JFormFieldPackageList extends JFormFieldList
-
 {
 	/**
-	* Element name
-	*
-	* @access	protected
-	* @var		string
-	*/
-	var	$_name = 'Packagelist';
+	 * Element name
+	 *
+	 * @access	protected
+	 * @var		string
+	 */
+	var $_name = 'Packagelist';
 
-	function getOptions()
+	/**
+	 * Get list options
+	 *
+	 * @return  array
+	 */
+
+	protected function getOptions()
 	{
-		$db	= FabrikWorker::getDbo();
+		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . FabrikString::safeColName(text));
 		$query->from('#__{package}_packages');
@@ -63,7 +69,7 @@ class JFormFieldPackageList extends JFormFieldList
 	{
 		if ($this->element['active'] == 1)
 		{
-			 $this->element['readonly'] = '';
+			$this->element['readonly'] = '';
 		}
 		else
 		{

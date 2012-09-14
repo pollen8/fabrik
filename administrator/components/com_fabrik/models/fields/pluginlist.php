@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin List Field class for Fabrik.
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -36,7 +38,8 @@ class JFormFieldPluginList extends JFormFieldList
 	 *
 	 * @return	array	The field option objects.
 	 */
-	public function getOptions()
+
+	protected function getOptions()
 	{
 		$group = (string) $this->element['plugin'];
 		$key = $this->element['key'];

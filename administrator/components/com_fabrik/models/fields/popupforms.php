@@ -1,5 +1,7 @@
 <?php
 /**
+ * Renders a list releated forms that a db join element can be populated from
+ *
  * @package     Joomla
  * @subpackage  Form
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -34,8 +36,13 @@ class JFormFieldPopupforms extends JFormFieldList
 	*/
 	var	$_name = 'Connections';
 
+	/**
+	 * Get list options
+	 *
+	 * @return  array
+	 */
 
-	function getOptions()
+	protected function getOptions()
 	{
 		// Initialize variables.
 		$options = array();
