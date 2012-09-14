@@ -1504,4 +1504,21 @@ class FabrikWorker
 		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
 		return JFile::exists($file);
 	}
+
+	/**
+	 * Get a cachec handler
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  JCache
+	 */
+
+	public static function getCache()
+	{
+		$cache = JCache::getInstance('callback',
+				array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
+						'storage' => 'file'));
+		$cache->setCaching(true);
+		return $cache;
+	}
 }

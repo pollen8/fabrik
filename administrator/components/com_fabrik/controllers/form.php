@@ -75,7 +75,7 @@ class FabrikControllerForm extends JControllerForm
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**

@@ -62,6 +62,7 @@ class FabrikControllerList extends JControllerForm
 		echo $fieldDropDown;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * delete list items
 	 *
@@ -69,6 +70,9 @@ class FabrikControllerList extends JControllerForm
 	 */
 
 	public function delete()
+=======
+	function delete()
+>>>>>>> master
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
@@ -97,12 +101,15 @@ class FabrikControllerList extends JControllerForm
 
 	}
 
+<<<<<<< HEAD
 	/**
 	 * filter list items
 	 *
 	 * @return  null
 	 */
 
+=======
+>>>>>>> master
 	public function filter()
 	{
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
@@ -115,10 +122,15 @@ class FabrikControllerList extends JControllerForm
 	}
 
 	/**
+<<<<<<< HEAD
 	 * show the lists data in the admin
 	 *
 	 * @return  null
 	 */
+=======
+	* show the lists data in the admin
+	*/
+>>>>>>> master
 
 	public function view()
 	{
@@ -130,9 +142,15 @@ class FabrikControllerList extends JControllerForm
 		$cid = JRequest::getInt('listid', $cid);
 
 		// Grab the model and set its id
+<<<<<<< HEAD
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);
 		$viewType = JFactory::getDocument()->getType();
+=======
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model->setState('list.id', $cid);
+		$viewType	= JFactory::getDocument()->getType();
+>>>>>>> master
 
 		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
@@ -144,6 +162,6 @@ class FabrikControllerList extends JControllerForm
 		$view->setLayout($viewLayout);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
 		$view->display();
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 }

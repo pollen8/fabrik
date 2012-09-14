@@ -55,7 +55,7 @@ class FabrikViewCrons extends JViewLegacy
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT.'/helpers/fabrik.php';
-		$canDo	= FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo	= FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_CRONS'), 'crons.png');
 

@@ -34,7 +34,17 @@
 		
 		<fieldset name="details2">
 		
+<<<<<<< HEAD
 		<field cols="20" description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" filter="FabrikHelper::filterText" label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL" name="intro" rows="6" type="editor"/>
+=======
+		<field name="intro"
+			type="editor"
+			filter="FabrikAdminHelper::filterText"
+			rows="6"
+			cols="20"
+			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
+			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
+>>>>>>> master
 			
 		</fieldset>
 	

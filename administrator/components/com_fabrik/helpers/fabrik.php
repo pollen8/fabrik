@@ -19,7 +19,7 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  Fabrik
  * @since       1.5
  */
-class FabrikHelper
+class FabrikAdminHelper
 {
 
 	/**

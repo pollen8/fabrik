@@ -3381,7 +3381,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$listModel = $this->getListModel();
 		$item = $listModel->getTable();
-		$sql = $listModel->buildQuerySelect();
+		$sql = $listModel->buildQuerySelect('form');
 		$sql .= $listModel->buildQueryJoin();
 		$emptyRowId = $this->rowId === '' ? true : false;
 		$random = JRequest::getVar('random');

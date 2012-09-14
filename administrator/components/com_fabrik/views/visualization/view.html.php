@@ -62,7 +62,7 @@ class FabrikViewVisualization extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$userId = $user->get('id');
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-		$canDo = FabrikHelper::getActions($this->state->get('filter.category_id'));
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : JText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT'), 'visualization.png');
 		if ($isNew)
 		{

@@ -142,7 +142,7 @@ class FabrikControllerList extends FabControllerForm
 			$cache->get($view, 'display', $cacheid);
 		}
 
-		FabrikHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
 	/**
