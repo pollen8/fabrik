@@ -4045,7 +4045,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$recordCounts = $referringTable->getRecordCounts($element, $pks);
 
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
-				$label = $factedLinks->linkedformheader->$key;
+
+				// $$$ tom - 2012-09-14 - This should be from the linkedlistheader:
+				// $label = $factedLinks->linkedformheader->$key;
+				$label = $factedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 			$f++;
@@ -4072,7 +4075,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						{
 							$val = JRequest::getVar($qsKey . '_raw', JRequest::getVar('rowid'));
 						}
-						$links[$element->list_id][] = $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
+						$label = $factedLinks->linkedformheader->$key;
+						$links[$element->list_id][] = $label . ': ' . $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
 					}
 				}
 				$f++;
