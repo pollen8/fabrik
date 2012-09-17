@@ -3856,7 +3856,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		else
 		{
 			$text = preg_replace("/{details:\s*.*?}/i", '', $text);
-			echo $text;
 		}
 		$w = new FabrikWorker;
 		$text = $w->parseMessageForPlaceHolder($text, $this->_data, true);
