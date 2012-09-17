@@ -369,7 +369,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 
 		$db->setQuery($sql);
-		FabrikHelperHTML::debug($db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
+		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
 		if ($db->getErrorNum() != 0)
 		{
@@ -2072,44 +2072,26 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 *
 	 * @param   string  $v              value
 	 * @param   string  $defaultLabel   default label
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   int     $repeatCounter  repeat group counter (3.0.7 deprecated)
 	 *
 	 * @return  string	label
 	 */
 
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
 	{
-		$n = $this->getFullName(false, true, false);
-		$n2 = $this->getFullName(false, false, false);
-		$data = array($n => $v, $n . '_raw' => $v);
 		$db = $this->getDb();
-
-
 		$query = $db->getQuery(true);
-		$val = $this->_getValColumn();
-		$join = $this->getJoin();
-
-		// @TODO add in buildQueryJoin() when we move over to JDatbaseQuery usage
-		$sql .= $this->buildQueryJoin();
-
-		$query->select($val . ' AS text')->from($join->table_join)->where($db->nameQuote($n2) . ' = ' . $db->quote($v));
+		$query = $this->_buildQuery(array(), false);
+		$key = $this->getJoinValueColumn();
+		$query->where($key . ' = ' . $db->quote($v));
 		$db->setQuery($query);
-		echo $query;
-		$r = $db->loadResult();
-		echo "r2 = $r<br>";
-
-
-		$tmp = $this->_getOptions($data, $repeatCounter, false);
-		foreach ($tmp as $obj)
+		$r = $db->loadObject();
+		if (!$r)
 		{
-			if ($obj->value == $v)
-			{
-				$defaultLabel = $obj->text;
-				break;
-			}
+			return $defaultLabel;
 		}
-		$r = is_null($defaultLabel) ? $v : $defaultLabel;
-		echo "r - $r <br>";
+		$r = isset($r->text) ? $r->text : $defaultLabel;
+		return $r;
 	}
 
 	/**
@@ -2125,7 +2107,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * is the dropdowns cnn the same as the main Joomla db
+	 * Is the dropdowns cnn the same as the main Joomla db
 	 * @return  bool
 	 */
 
