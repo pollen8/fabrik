@@ -184,7 +184,13 @@ class FabrikFEModelList extends JModelForm
 
 	protected $rows = null;
 
-	/** @var bool should a heading be added for action buttons (returns true if at least one row has buttons)*/
+	/**
+	 * Should a heading be added for action buttons (returns true if at least one row has buttons)
+	 *
+	 * @deprecated (since 3.0.7)
+	 *
+	 * @var bool
+	*/
 	protected $actionHeading = false;
 
 	/** @var array list of column data - used for filters */
@@ -1103,7 +1109,6 @@ class FabrikFEModelList extends JModelForm
 					{
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
-					$this->actionHeading = true;
 					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
 				}
 				else
@@ -5431,7 +5436,7 @@ class FabrikFEModelList extends JModelForm
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		// 3.0 actions now go in one column
-		if ($this->actionHeading == true)
+		if ($this->canSelectRows())
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
@@ -5445,6 +5450,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$r = '<li>' . $r . '</li>';
 			}
+
 			$headingButtons = array_merge($headingButtons, $res);
 			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
@@ -5571,7 +5577,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView()))
+		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
 		{
 			return true;
 		}
@@ -5819,7 +5825,7 @@ class FabrikFEModelList extends JModelForm
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
 		$origRowId = $rowId;
-
+		echo "<pre>data = ";print_r($data);;
 		// Don't save a record if no data collected
 		if ($isJoin && empty($data))
 		{
@@ -6203,6 +6209,7 @@ class FabrikFEModelList extends JModelForm
 			$crypt = new JSimpleCrypt();
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
+
 				// $$$ hugh - allow submission plugins to override RO data
 				// TODO - test this for joined data
 				if ($formModel->updatedByPlugin($key))
@@ -6210,13 +6217,19 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 				$key = FabrikString::shortColName($key);
+
 				/* $$$ hugh - trying to fix issue where encrypted elements from a main group end up being added to
 				 * a joined group's field list for the update/insert on the joined row(s).
 				 */
+				/*
+				 * $$$ rob - commenting it out as this was stopping data that was not viewable or editable from being included
+				 * in $data. Suggest that when you do run across this again the test is done against the $groupModel and the
+				 * passed in $isJoin and $joinGroupTable
+				 *
 				if (!array_key_exists($key, $data))
 				{
 					continue;
-				}
+				} */
 				foreach ($groups as $groupModel)
 				{
 					$elementModels = $groupModel->getPublishedElements();
