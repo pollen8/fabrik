@@ -20,7 +20,7 @@ require_once 'fabcontrollerform.php';
  * @since		3.0
  */
 
-class FabrikAdminControllerList  extends FabControllerForm
+class FabrikAdminControllerList extends FabControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
@@ -120,7 +120,7 @@ class FabrikAdminControllerList  extends FabControllerForm
 		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout = JRequest::getCmd('layout', 'default');
-		$view = $this->getView($this->view_item, $viewType, '');
+		$view = $this->getView($this->view_item, $viewType, 'FabrikView');
 		$view->setModel($model, true);
 
 		// Set the layout

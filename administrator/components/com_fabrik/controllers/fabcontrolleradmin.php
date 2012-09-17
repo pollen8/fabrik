@@ -25,6 +25,14 @@ jimport('joomla.application.component.controlleradmin');
 class FabControllerAdmin extends JControllerAdmin
 {
 	/**
+	 * Component name
+	 *
+	 * @var string
+	 */
+
+	var $option = 'com_fabrik';
+
+	/**
 	 * actally delete the requested items forms etc
 	 *
 	 * @return null

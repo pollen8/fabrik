@@ -33,7 +33,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-* @param   array  $config  An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
 	 * @see		JController
 	 * @since	1.6
@@ -47,14 +47,15 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	/**
 	 * Proxy for getModel.
 	 *
-* @param   string  $name    model name
-* @param   string  $prefix  model prefix
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
 	 *
 	 * @return  J model
 	 */
 
-	public function &getModel($name = 'List', $prefix = 'FabrikModel')
+	public function &getModel($name = 'List', $prefix = 'FabrikAdminModel')
 	{
+
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
 	}
@@ -79,7 +80,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		{
 			// Make sure the item ids are integers
 			JArrayHelper::toInteger($cid);
-			$model = $this->getModel('Form');
+			$model = $this->getModel('Form', 'FabrikAdminModel');
 			$formids = $model->swapListToFormIds($cid);
 
 			// Publish the items.

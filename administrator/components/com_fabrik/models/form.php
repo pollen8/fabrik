@@ -201,7 +201,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$this->_makeFormGroups($data, $currentGroups);
 		if ($record_in_database == '1')
 		{
-			$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 			$item = $listModel->loadFromFormId($formid);
 			if ($isnew)
 			{

@@ -53,7 +53,7 @@ class FabrikAdminControllerPackages extends FabControllerAdmin
 	 * @return  J model
 	 */
 
-	public function &getModel($name = 'Package', $prefix = 'FabrikModel')
+	public function &getModel($name = 'Package', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;

@@ -56,7 +56,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	 * @return  J model
 	 */
 
-	public function &getModel($name = 'Element', $prefix = 'FabrikModel')
+	public function &getModel($name = 'Element', $prefix = 'FabrikAdminModel')
 	{
 		$config = array();
 		$config['ignore_request'] = true;

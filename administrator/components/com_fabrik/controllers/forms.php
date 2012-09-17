@@ -54,7 +54,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	 * @return  model
 	 */
 
-	public function &getModel($name = 'Form', $prefix = 'FabrikModel')
+	public function &getModel($name = 'Form', $prefix = 'FabrikAdminModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;

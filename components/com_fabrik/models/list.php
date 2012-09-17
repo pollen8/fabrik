@@ -1627,7 +1627,7 @@ class FabrikFEModelList extends JModelForm
 					 * france	la rochelle
 					 *
 					 */
-					$pk = $join->_params->get('pk');
+					$pk = $join->params->get('pk');
 					if (!array_key_exists($pk, $tmpPks) || !is_array($tmpPks[$pk]))
 					{
 						$tmpPks[$pk] = array($pk);
@@ -3199,11 +3199,11 @@ class FabrikFEModelList extends JModelForm
 
 			$pks = $join->table_join;
 			$pks .= '.' . $pk[0]['colname'];
-			$join->_params->set('pk', $fabrikDb->quoteName($pks));
-			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->_params))->where('id = ' . (int) $join->id);
+			$join->params->set('pk', $fabrikDb->quoteName($pks));
+			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->params))->where('id = ' . (int) $join->id);
 			$db->setQuery($query);
 			$db->query();
-			$join->_params = new JRegistry($join->params);
+			$join->params = new JRegistry($join->params);
 		}
 	}
 
