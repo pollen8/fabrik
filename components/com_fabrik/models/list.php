@@ -506,8 +506,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->_data;
 		}
-		$traceModel = ini_get('mysql.trace_mode');
-
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
 		$fabrikDb = $this->getDb();
@@ -515,66 +513,95 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
-		$this->setBigSelects();
+		$cache = FabrikWorker::getCache();
+		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
+		$this->totalRecords = $results[0];
+		$this->_data = $results[1];
+		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
+		$pluginManager->runPlugins('onLoadData', $this, 'list');
+		return $this->_data;
+
+	}
+
+	/**
+	 * Cached Method to run the getData select query and do our Fabrik magikin'
+	 *
+	 * @param   int     $listId  list id
+	 * @param   string  $query   sql query
+	 * @param   int     $start   start of limit
+	 * @param   int     $length  limit length
+	 *
+	 * @return array (total records, data set)
+	 */
+
+	public static function finesseData($listId, $query, $start, $length)
+	{
+		$profiler = JProfiler::getInstance('Application');
+
+		$traceModel = ini_get('mysql.trace_mode');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$fabrikDb = $listModel->getDb();
+		$listModel->setBigSelects();
 
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in _buildQuery()
-		if ($this->mergeJoinedData())
+		if ($listModel->mergeJoinedData())
 		{
 			$fabrikDb->setQuery($query);
 		}
 		else
 		{
-			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
+			$fabrikDb->setQuery($query, $start, $length);
 		}
 
-		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
+		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
 		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the orignal query
 		 * fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
-		 * $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
-		 */
-		$this->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
+		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
+		*/
+		$listModel->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			jexit('getData:' . $fabrikDb->getErrorMsg());
 		}
 		// $$$ rob better way of getting total records
-		if ($this->mergeJoinedData())
+		if ($listModel->mergeJoinedData())
 		{
-			$this->totalRecords = $this->getTotalRecords();
+			$listModel->totalRecords = $listModel->getTotalRecords();
 		}
 		else
 		{
 			$fabrikDb->setQuery("SELECT FOUND_ROWS()");
-			$this->totalRecords = $fabrikDb->loadResult();
+			$listModel->totalRecords = $fabrikDb->loadResult();
 		}
-		if ($this->randomRecords)
+		if ($listModel->randomRecords)
 		{
-			shuffle($this->_data);
+			shuffle($listModel->_data);
 		}
 		ini_set('mysql.trace_mode', $traceModel);
-		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
+
 
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
-		$this->translateData($this->_data);
+		$listModel->translateData($listModel->_data);
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
 		}
 
-		$this->preFormatFormJoins($this->_data);
+		$listModel->preFormatFormJoins($listModel->_data);
 
 		JDEBUG ? $profiler->mark('start format for joins') : null;
-		$this->formatForJoins($this->_data);
+		$listModel->formatForJoins($listModel->_data);
 
 		JDEBUG ? $profiler->mark('start format data') : null;
-		$this->formatData($this->_data);
+		$listModel->formatData($listModel->_data);
 
 		JDEBUG ? $profiler->mark('data formatted') : null;
-		$pluginManager->runPlugins('onLoadData', $this, 'list');
-		return $this->_data;
+
+		return array($listModel->totalRecords, $listModel->_data);
 	}
 
 	/**
@@ -6246,8 +6273,16 @@ class FabrikFEModelList extends JModelForm
 
 	public function doCalculations()
 	{
+		$cache = FabrikWorker::getCache();
+		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
+	}
+
+	public static function cacheDoCalculations($listId)
+	{
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
 		$db = FabrikWorker::getDbo();
-		$formModel = $this->getFormModel();
+		$formModel = $listModel->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
@@ -6259,35 +6294,35 @@ class FabrikFEModelList extends JModelForm
 				$update = false;
 				if ($params->get('sum_on', 0) == 1)
 				{
-					$aSumCals = $elementModel->sum($this);
+					$aSumCals = $elementModel->sum($listModel);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
 					$update = true;
 				}
 				if ($params->get('avg_on', 0) == 1)
 				{
-					$aAvgCals = $elementModel->avg($this);
+					$aAvgCals = $elementModel->avg($listModel);
 					$params->set('avg_value_serialized', serialize($aAvgCals[1]));
 					$params->set('avg_value', $aAvgCals[0]);
 					$update = true;
 				}
 				if ($params->get('median_on', 0) == 1)
 				{
-					$medians = $elementModel->median($this);
+					$medians = $elementModel->median($listModel);
 					$params->set('median_value_serialized', serialize($medians[1]));
 					$params->set('median_value', $medians[0]);
 					$update = true;
 				}
 				if ($params->get('count_on', 0) == 1)
 				{
-					$aCountCals = $elementModel->count($this);
+					$aCountCals = $elementModel->count($listModel);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
 					$update = true;
 				}
 				if ($params->get('custom_calc_on', 0) == 1)
 				{
-					$aCustomCalcCals = $elementModel->custom_calc($this);
+					$aCustomCalcCals = $elementModel->custom_calc($listModel);
 					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
 					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
@@ -7651,7 +7686,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * gFet a single column of data from the table, test for element filters
+	 * Get a single column of data from the table, test for element filters
 	 *
 	 * @param   string  $col  column to get
 	 *
@@ -7662,36 +7697,58 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
-			$table = $this->getTable();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$db = $this->getDb();
-			$el = $this->getFormModel()->getElement($col);
-			$colQuoted = FabrikString::safeColName($col);
-			$el->encryptFieldName($colQuoted);
-			$tablename = $table->db_table_name;
-			$tablename = FabrikString::safeColName($tablename);
-			$query = "SELECT DISTINCT($colQuoted) FROM " . $tablename . ' ' . $this->_buildQueryJoin();
-			$query .= $this->_buildQueryWhere(false);
-			$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
-			$query = $this->pluginQuery($query);
-			$db->setQuery($query);
-			$res = $db->loadColumn();
+			$cache = FabrikWorker::getCache();
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col);
 			if (is_null($res))
 			{
-				JError::raiseNotice(500, 'list model getColumn Data for ' . $colQuoted . ' failed');
+				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
 			}
 			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
 			{
-				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));
+				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
 			}
-			FabrikHelperHTML::debug($query, 'filter:getColumnData query');
 			if (is_null($res))
 			{
 				$res = array();
 			}
+
 			$this->columnData[$col] = $res;
 		}
 		return $this->columnData[$col];
+	}
+
+	/**
+	 * Cached method to grab a colums' data, called from getColumnData()
+	 *
+	 * @param   int     $listId  list id
+	 * @param   string  $col     column to grab
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  column's values
+	 */
+
+	public static function columnData($listId, $col)
+	{
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$table = $listModel->getTable();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$db = $listModel->getDb();
+		$el = $listModel->getFormModel()->getElement($col);
+		$col = $db->quoteName($col);
+		$el->encryptFieldName($col);
+		$tablename = $table->db_table_name;
+		$tablename = FabrikString::safeColName($tablename);
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $col . ')')->from($tablename);
+		$query = $listModel->_buildQueryJoin($query);
+		$query = $listModel->_buildQueryWhere(false, $query);
+		$query = $listModel->pluginQuery($query);
+		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		$res = $db->loadColumn(0);
+		return $res;
 	}
 
 	/**
