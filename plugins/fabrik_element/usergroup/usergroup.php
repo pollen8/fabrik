@@ -55,7 +55,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		}
 		else
 		{
-			if ($userEl)
+			if ($userEl && !empty($thisUser->groups))
 			{
 				// Get the titles for the user groups.
 				$db = JFactory::getDbo();
@@ -65,6 +65,10 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups). ')');
 				$db->setQuery($query);
 				$selected = $db->loadColumn();
+			}
+			else
+			{
+				$selected = array();
 			}
 		}
 
