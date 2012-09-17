@@ -16,6 +16,7 @@ jimport('joomla.application.component.model');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.field
+ * @since       3.0
  */
 
 class plgFabrik_ElementField extends plgFabrik_Element
@@ -70,24 +71,26 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = $this->inputProperties($repeatCounter);
-		// $$$ rob - not sure why we are setting $data to the form's data
-		//but in table view when getting read only filter value from url filter this
-		// _form_data was not set to no readonly value was returned
-		// added little test to see if the data was actually an array before using it
+		/* $$$ rob - not sure why we are setting $data to the form's data
+		 * but in table view when getting read only filter value from url filter this
+		 * _form_data was not set to no readonly value was returned
+		 * added little test to see if the data was actually an array before using it
+		 */
 		if (is_array($this->_form->_data))
 		{
 			$data = $this->_form->_data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 
-		// $$$ hugh - if the form just failed validation, number formatted fields will already
-		// be formatted, so we need to un-format them before formatting them!
-		// $$$ rob - well better actually check if we are coming from a failed validation then :)
+		/* $$$ hugh - if the form just failed validation, number formatted fields will already
+		 * be formatted, so we need to un-format them before formatting them!
+		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
+		 */
 		if (JRequest::getCmd('task') == 'form.process')
 		{
 			$value = $this->unNumberFormat($value);
@@ -96,12 +99,9 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		if (!$this->_editable)
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
-			// $value = $this->numberFormat($value);
 			$format = $params->get('text_format_string');
 			if ($format != '')
 			{
-				//$value =  eval(sprintf($format,$value));
-				//not sure why this was being evald??
 				$value = sprintf($format, $value);
 			}
 			if ($params->get('password') == "1")
@@ -111,10 +111,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		//stop "'s from breaking the content out of the field.
-		// $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
-		//so add false flag to ensure its encoded once only
-		// $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
+		/* stop "'s from breaking the content out of the field.
+		 * $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
+		 * so add false flag to ensure its encoded once only
+		 * $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
+		 */
 		if (version_compare(phpversion(), '5.2.3', '<'))
 		{
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
@@ -128,14 +129,16 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
-	 * format guess link type
+	 * Format guess link type
 	 *
-	 * @param   string	$value
-	 * @param   array	data
-	 * @param   int		repeat counter
+	 * @param   string  &$value         original field value
+	 * @param   array   $data           record data
+	 * @param   int     $repeatCounter  repeat counter
+	 *
+	 * @return  void
 	 */
 
-	function _guessLinkType(&$value, $data, $repeatCounter = 0)
+	protected function _guessLinkType(&$value, $data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$guessed = false;
@@ -163,16 +166,11 @@ class plgFabrik_ElementField extends plgFabrik_Element
 				}
 			}
 		}
-		// $$$ hugh - this gets done in $listModel->_addLink(), called from element parent::renderListData()
-		/*
-		if (!$guessed) {
-		    $this->addCustomLink($value, $data, $repeatCounter);
-		}
-		 */
 	}
 
 	/**
-	 * get the guess type link target property
+	 * Get the guess type link target property
+	 *
 	 * @return  string
 	 */
 
@@ -234,7 +232,6 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		{
 			case 'text':
 			default:
-			//$objtype = "VARCHAR(255)";
 				$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 				break;
 			case 'integer':
@@ -249,10 +246,14 @@ class plgFabrik_ElementField extends plgFabrik_Element
 	}
 
 	/**
+	 * Get Joomfish options
+	 *
+	 * @deprecated - not supporting joomfish
+	 *
 	 * @return  array	key=>value options
 	 */
 
-	function getJoomfishOptions()
+	public function getJoomfishOptions()
 	{
 		$params = $this->getParams();
 		$return = array();
@@ -310,13 +311,21 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		return $val;
 	}
 
-	function _indStoreDatabaseFormat($val)
+	/**
+	 * Manupulates individual values posted form data for insertion into database
+	 *
+	 * @param   string  $val  this elements posted form data
+	 *
+	 * @return  string
+	 */
+
+	protected function _indStoreDatabaseFormat($val)
 	{
 		return $this->unNumberFormat($val);
 	}
 
 	/**
-	 * get the element's cell class
+	 * Get the element's cell class
 	 *
 	 * @since 3.0.4
 	 *
@@ -335,4 +344,3 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		return $classes;
 	}
 }
-?>
