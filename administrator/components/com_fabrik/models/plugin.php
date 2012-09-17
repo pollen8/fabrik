@@ -12,8 +12,6 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once 'fabmodeladmin.php';
-
 /**
  * Fabrik Admin Plugin Model
  * Used for loading via ajax form plugins
@@ -23,7 +21,7 @@ require_once 'fabmodeladmin.php';
  * @since       3.0.6
  */
 
-class FabrikModelPlugin extends JModelLegacy
+class FabrikAdminModelPlugin extends JModelLegacy
 {
 
 	/**

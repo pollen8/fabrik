@@ -19,7 +19,7 @@ jimport('joomla.application.component.controllerform');
  * @subpackage	Fabrik
  * @since		3.0
  */
-class FabrikControllerCron extends JControllerForm
+class FabrikAdminControllerCron extends JControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

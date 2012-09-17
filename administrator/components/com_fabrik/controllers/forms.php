@@ -18,7 +18,7 @@ require_once 'fabcontrolleradmin.php';
  * @subpackage	Fabrik
  * @since		3.0
  */
-class FabrikControllerForms extends FabControllerAdmin
+class FabrikAdminControllerForms extends FabControllerAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

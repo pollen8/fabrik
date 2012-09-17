@@ -20,7 +20,7 @@ require_once 'fabcontrolleradmin.php';
  * @since		3.0
  */
 
-class FabrikControllerGroups extends FabControllerAdmin
+class FabrikAdminControllerGroups extends FabControllerAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

@@ -26,6 +26,13 @@ abstract class FabModelAdmin extends JModelAdmin
 {
 
 	/**
+	 * Component name
+	 *
+	 * @var  string
+	 */
+	protected $option = 'com_fabrik';
+
+	/**
 	 * Get the list's active/selected plug-ins
 	 *
 	 * @return array

@@ -12,19 +12,21 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controlleradmin');
 
+require_once 'fabcontrollerform.php';
+
 /**
  * Upgrade controller
- * 
+ *
  * @package  Fabrik
  * @since    3.0
  */
 
-class FabrikControllerUpgrade extends JControllerAdmin
+class FabrikAdminControllerUpgrade extends JControllerAdmin
 {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 * @param   array  $config  options
 	 */
 
@@ -35,7 +37,7 @@ class FabrikControllerUpgrade extends JControllerAdmin
 
 	/**
 	 * delete all data from fabrik
-	 * 
+	 *
 	 * @return  null
 	 */
 

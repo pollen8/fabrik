@@ -13,14 +13,14 @@ defined('_JEXEC') or die;
 require_once 'fabcontrollerform.php';
 
 /**
- * List controller class.
+ * Admin List controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
  * @since		3.0
  */
 
-class FabrikControllerList extends FabControllerForm
+class FabrikAdminControllerList  extends FabControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

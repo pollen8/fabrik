@@ -20,7 +20,7 @@ jimport('joomla.application.component.controllerform');
  * @since		3.0
  */
 
-class FabrikControllerElement extends JControllerForm
+class FabrikAdminControllerElement extends JControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

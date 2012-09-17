@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       1.6
  */
 
-class FabrikViewGroups extends JViewLegacy
+class FabrikAdminViewGroups extends JViewLegacy
 {
 	protected $items;
 	protected $pagination;

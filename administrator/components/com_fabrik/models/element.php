@@ -14,6 +14,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.modeladmin');
 
+require_once 'fabmodeladmin.php';
+
 /**
  * Admin Element Model
  *
@@ -22,7 +24,7 @@ jimport('joomla.application.component.modeladmin');
  * @since       3.0
  */
 
-class FabrikModelElement extends JModelAdmin
+class FabrikAdminModelElement extends FabModelAdmin
 {
 	/**
 	 * The prefix to use with controller messages.

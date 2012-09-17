@@ -12,6 +12,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
+require_once 'fabcontrollerform.php';
+
 /**
  * Fabrik Plugin Controller
  *
@@ -19,7 +21,7 @@ jimport('joomla.application.component.controller');
  * @since    3.0
  */
 
-class FabrikControllerPlugin extends JControllerLegacy
+class FabrikAdminControllerPlugin extends FabControllerForm
 {
 	/**
 	 * Means that any method in Fabrik 2, e.e. 'ajax_upload' should

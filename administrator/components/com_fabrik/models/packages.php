@@ -11,7 +11,7 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modellist');
+require_once 'fabmodellist.php';
 
 /**
  * Fabrik Admin Packages Model
@@ -21,7 +21,7 @@ jimport('joomla.application.component.modellist');
  * @since       3.0
  */
 
-class FabrikModelPackages extends JModelList
+class FabrikAdminModelPackages extends FabModelList
 {
 
 	/**

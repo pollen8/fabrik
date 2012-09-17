@@ -22,7 +22,7 @@ require_once 'fabmodeladmin.php';
  * @since       3.0
  */
 
-class FabrikModelPackage extends FabModelAdmin
+class FabrikAdminModelPackage extends FabModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

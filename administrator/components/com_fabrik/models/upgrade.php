@@ -19,7 +19,7 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modeladmin');
+require_once 'fabmodeladmin.php';
 
 /**
  * Fabrik Admin Upgrade Model
@@ -29,7 +29,7 @@ jimport('joomla.application.component.modeladmin');
  * @since       3.0
  */
 
-class FabrikModelUpgrade extends JModel
+class FabrikModelUpgrade extends FabModelAdmin
 {
 
 	/**

@@ -45,8 +45,8 @@ JHTML::addIncludePath(JPATH_SITE . '/components/com_fabrik/jhelpers/' . $version
 // Register the element class with the loader
 JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik/element.php');
 
-JLoader::import('components.com_fabrik.classes.' . $version->RELEASE . '.formfield', JPATH_SITE . '/administrator', 'administrator.');
-JLoader::import('components.com_fabrik.classes.' . $version->RELEASE . '.form', JPATH_SITE . '/administrator', 'administrator.');
+JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.field', JPATH_SITE . '/administrator', 'administrator.');
+JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.form', JPATH_SITE . '/administrator', 'administrator.');
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 require_once COM_FABRIK_FRONTEND . '/models/fabrik.php';

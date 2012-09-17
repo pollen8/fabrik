@@ -20,7 +20,7 @@ require_once 'fabcontrollerform.php';
  * @since       3.0
  */
 
-class FabrikControllerImport extends FabControllerForm
+class FabrikAdminControllerImport extends FabControllerForm
 {
 
 	/**

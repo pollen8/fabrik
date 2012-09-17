@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		3.0
  */
-class FabrikViewConnection extends JViewLegacy
+class FabrikAdminViewConnection extends JViewLegacy
 {
 	/**
 	 * Form

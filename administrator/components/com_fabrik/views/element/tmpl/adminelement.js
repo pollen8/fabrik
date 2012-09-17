@@ -36,7 +36,7 @@ var fabrikAdminElement = new Class({
 			this.addJavascript(opt);
 		}.bind(this));
 		
-		if (jQuery) {
+		if (typeof(jQuery) !== 'undefined') {
 			jQuery('#jform_plugin').bind('change', function (e) {
 				this.changePlugin(e);
 		    }.bind(this));

@@ -12,7 +12,7 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modeladmin');
+require_once 'fabmodeladmin.php';
 
 /**
  * Fabrik Admin Visualization Model
@@ -22,7 +22,7 @@ jimport('joomla.application.component.modeladmin');
  * @since        3.0
  */
 
-class FabrikModelVisualization extends JModelAdmin
+class FabrikAdminModelVisualization extends FabModelAdmin
 {
 	/**
 	 * The prefix to use with controller messages.

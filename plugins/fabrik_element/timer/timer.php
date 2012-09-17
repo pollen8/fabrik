@@ -25,9 +25,11 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
-	protected $hasSubElements = false;
-
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'DATETIME';
 
 	/**

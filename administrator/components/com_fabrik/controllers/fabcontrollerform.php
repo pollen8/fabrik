@@ -23,6 +23,8 @@ jimport('joomla.application.component.controllerform');
 class FabControllerForm extends JControllerForm
 {
 
+	protected $option = 'com_fabrik';
+
 	/**
 	 * copy items
 	 *
@@ -48,5 +50,20 @@ class FabControllerForm extends JControllerForm
 		$extension = JRequest::getCmd('extension');
 		$extensionURL = ($extension) ? '&extension=' . JRequest::getCmd('extension') : '';
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
+	}
+
+	/**
+	 * Method to edit an existing record.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
+	 * (sometimes required to avoid router collisions).
+	 *
+	 * @return  boolean  True if access level check and checkout passes, false otherwise.
+	 */
+	public function edit($key = null, $urlVar = null)
+	{
+		$this->option = 'com_fabrik';
+		return parent::edit($key, $urlVar);
 	}
 }

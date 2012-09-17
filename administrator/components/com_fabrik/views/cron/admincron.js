@@ -10,7 +10,7 @@ var CronAdmin = new Class({
 	},
 	
 	watchSelector: function () {
-		if (jQuery) {
+		if (typeof(jQuery) !== 'undefined') {
 			jQuery('#jform_plugin').bind('change', function (e) {
 				this.changePlugin(e);
 		    }.bind(this));

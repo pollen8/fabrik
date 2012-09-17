@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controllerform');
 
+require_once 'fabcontrollerform.php';
+
 /**
  * Connection controller class.
  *
@@ -20,7 +22,7 @@ jimport('joomla.application.component.controllerform');
  * @since		1.6
  */
 
-class FabrikControllerConnection extends JControllerForm
+class FabrikAdminControllerConnection extends FabControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

@@ -397,6 +397,19 @@ abstract class JFormField
 	}
 
 	/**
+	 * Set value $$$ rob - custom for Fabrik?
+	 *
+	 * @param   mixed  $v  value
+	 *
+	 * @return  void
+	 */
+
+	public function setValue($v)
+	{
+		$this->value = $v;
+	}
+
+	/**
 	 * Method to get the id used for the field input tag.
 	 *
 	 * @param   string  $fieldId    The field element id.

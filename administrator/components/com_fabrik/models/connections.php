@@ -21,7 +21,7 @@ jimport('joomla.application.component.modellist');
  * @since       3.0
  */
 
-class FabrikModelConnections extends JModelList
+class FabrikAdminModelConnections extends JModelList
 {
 
 	/**

@@ -20,21 +20,26 @@ jimport('joomla.application.component.controllerform');
  * @since		3.0
  */
 
-class FabrikControllerVisualization extends JControllerForm
+class FabrikAdminControllerVisualization extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var		string
 	 */
+
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
 
 	/**
-	 * called via ajax to perform viz ajax task (defined by plugintask method)
+	 * Called via ajax to perform viz ajax task (defined by plugintask method)
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
 		$id = JRequest::getInt('visualizationid');
@@ -48,10 +53,11 @@ class FabrikControllerVisualization extends JControllerForm
 		{
 			echo $model->$pluginTask();
 		}
+		return $this;
 	}
 
 	/**
-	 * get html for viz plugin
+	 * Get html for viz plugin
 	 *
 	 * @return  null
 	 */

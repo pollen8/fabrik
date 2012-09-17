@@ -17,7 +17,7 @@ jimport('joomla.application.component.controlleradmin');
  * @since    3.0
  */
 
-class FabrikControllerHome extends JControllerAdmin
+class FabrikAdminControllerHome extends JControllerAdmin
 {
 
 	/**

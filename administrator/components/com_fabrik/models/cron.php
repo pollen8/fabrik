@@ -12,7 +12,7 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modeladmin');
+require_once 'fabmodeladmin.php';
 
 /**
  * Cron Admin Model
@@ -22,7 +22,7 @@ jimport('joomla.application.component.modeladmin');
  * @since       3.0
  */
 
-class FabrikModelCron extends JModelAdmin
+class FabrikAdminModelCron extends FabModelAdmin
 {
 	/**
 	 * The prefix to use with controller messages.

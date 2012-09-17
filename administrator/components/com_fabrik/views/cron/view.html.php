@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		1.5
  */
-class FabrikViewCron extends JViewLegacy
+class FabrikAdminViewCron extends JViewLegacy
 {
 	protected $form;
 	protected $item;
@@ -32,6 +32,7 @@ class FabrikViewCron extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
+
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');

@@ -20,7 +20,7 @@ require_once 'fabcontrollerform.php';
  * @since		3.0
  */
 
-class FabrikControllerElement extends FabControllerForm
+class FabrikAdminControllerElement extends FabControllerForm
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
@@ -151,12 +151,12 @@ class FabrikControllerElement extends FabControllerForm
 	/**
 	 * Method to save a record.
 	 *
-	 * @return  bool
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
-	 * @since	1.6
+	 * @return  boolean  True if successful, false otherwise.
 	 */
-
-	public function save()
+	public function save($key = null, $urlVar = null)
 	{
 		$ok = parent::save();
 		$app = JFactory::getApplication();

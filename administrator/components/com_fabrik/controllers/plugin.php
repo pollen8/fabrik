@@ -12,14 +12,16 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
+require_once 'fabcontrollerform.php';
+
 /**
  * Fabrik Plugin Controller
  *
  * @package  Fabrik
  * @since    3.0
  */
-
-class FabrikControllerPlugin extends JControllerLegacy
+echo "plugin controller <br>";
+class FabrikAdminControllerPlugin extends FabControllerForm
 {
 
 	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
@@ -35,6 +37,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 	public function pluginAjax()
 	{
+		echo "hhere";exit;
 		$plugin = JRequest::getVar('plugin', '');
 		$method = JRequest::getVar('method', '');
 		$group = JRequest::getVar('g', 'element');

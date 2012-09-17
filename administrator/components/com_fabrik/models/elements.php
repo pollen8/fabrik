@@ -21,7 +21,7 @@ require_once 'fabmodellist.php';
  * @since       3.0
  */
 
-class FabrikModelElements extends FabModelList
+class FabrikAdminModelElements extends FabModelList
 {
 
 	/**

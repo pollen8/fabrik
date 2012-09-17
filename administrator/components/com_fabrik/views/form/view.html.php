@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		3.0
  */
-class FabrikViewForm extends JViewLegacy
+class FabrikAdminViewForm extends JViewLegacy
 {
 	protected $form;
 	protected $item;
