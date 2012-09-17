@@ -2043,7 +2043,25 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
 	{
 		$n = $this->getFullName(false, true, false);
+		$n2 = $this->getFullName(false, false, false);
 		$data = array($n => $v, $n . '_raw' => $v);
+		$db = $this->getDb();
+
+
+		$query = $db->getQuery(true);
+		$val = $this->_getValColumn();
+		$join = $this->getJoin();
+
+		// @TODO add in buildQueryJoin() when we move over to JDatbaseQuery usage
+		$sql .= $this->buildQueryJoin();
+
+		$query->select($val . ' AS text')->from($join->table_join)->where($db->nameQuote($n2) . ' = ' . $db->quote($v));
+		$db->setQuery($query);
+		echo $query;
+		$r = $db->loadResult();
+		echo "r2 = $r<br>";
+
+
 		$tmp = $this->_getOptions($data, $repeatCounter, false);
 		foreach ($tmp as $obj)
 		{
@@ -2053,7 +2071,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				break;
 			}
 		}
-		return is_null($defaultLabel) ? $v : $defaultLabel;
+		$r = is_null($defaultLabel) ? $v : $defaultLabel;
+		echo "r - $r <br>";
 	}
 
 	/**
