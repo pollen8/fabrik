@@ -4027,12 +4027,23 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 				}
 
-				// $$$ hugh - changed to use _raw as key, see:
-				// http://fabrikar.com/forums/showthread.php?t=20020
+				/* $$$ hugh - changed to use _raw as key, see:
+				 * http://fabrikar.com/forums/showthread.php?t=20020
+				 */
 				$linkKey = $element->db_table_name . '___' . $element->name;
 				$linkKeyRaw = $linkKey . '_raw';
 				$popUpLink = JArrayHelper::getValue($linkedtable_linktype->$key, $f, false);
-				$recordCounts = $referringTable->getRecordCounts($element);
+
+				/* $$$ tom 2012-09-14 - If we don't have a key value, get all.  If we have a key value,
+				 * use it to restrict the count to just this entry.
+				 */
+				$pks = array();
+				if (!empty($val))
+				{
+					$pks[] = $val;
+				}
+				$recordCounts = $referringTable->getRecordCounts($element, $pks);
+
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 				$label = $factedLinks->linkedformheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);

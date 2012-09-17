@@ -1195,10 +1195,10 @@ class FabrikFEModelList extends JModelForm
 		$linkKey = FabrikString::safeColName($key);
 		$fparams = $listModel->getParams();
 
-		// Ensure that the facte table's require filters option is set to false
+		// Ensure that the facted list's "require filters" option is set to false
 		$fparams->set('require-filter', false);
 
-		// Ignore facted tables session filters
+		// Ignore facted lists session filters
 		$origIncSesssionFilters = JRequest::getVar('fabrik_incsessionfilters', true);
 		JRequest::setVar('fabrik_incsessionfilters', false);
 		$where = $listModel->_buildQueryWhere(JRequest::getVar('incfilters', 0));
@@ -1208,8 +1208,12 @@ class FabrikFEModelList extends JModelForm
 			$where .= trim($where) == '' ? ' WHERE ' : ' AND ';
 			$where .= "$linkKey IN (" . implode(',', $pks) . ")";
 		}
-		$listModel->set('_joinsSQL', null); //force reload of join sql
-		$listModel->set('includeCddInJoin', false); //trigger load of joins without cdd elements - seems to mess up count otherwise
+		// Force reload of join sql
+		$listModel->set('_joinsSQL', null);
+
+		// Trigger load of joins without cdd elements - seems to mess up count otherwise
+		$listModel->set('includeCddInJoin', false);
+
 		//see http://fabrikar.com/forums/showthread.php?t=12860
 		// $totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
 
