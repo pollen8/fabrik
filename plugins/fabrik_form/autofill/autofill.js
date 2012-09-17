@@ -20,11 +20,15 @@ var Autofill = new Class({
 	initialize: function (options) {
 		this.setOptions(options);
 		this.attached = [];
-		this.setupDone = false;
-		if (Browser.ie) {
-			// Event firing seems different in IE to other browsers - hack to fix 
+		/*if (Browser.ie) {
 			this.setUp(Fabrik.blocks['form_' + this.options.formid]);
-		}
+		} else {
+			Fabrik.addEvent('fabrik.form.elements.added', function (form) {
+				this.setUp(form);	
+			}.bind(this));
+		}*/
+		this.setupDone = false;
+		this.setUp(Fabrik.blocks['form_' + this.options.formid]);
 		Fabrik.addEvent('fabrik.form.elements.added', function (form) {
 			this.setUp(form);	
 		}.bind(this));

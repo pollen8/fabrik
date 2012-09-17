@@ -259,7 +259,7 @@ var FbElement =  new Class({
 	 */
 	getErrorElement: function ()
 	{
-		return this.getContainer().getElement('.fabrikErrorMessage');
+		return this.getContainer().getElements('.fabrikErrorMessage');
 	},
 	
 	/**
@@ -267,7 +267,7 @@ var FbElement =  new Class({
 	 */
 	getValidationFx: function () {
 		if (!this.validationFX) {
-			this.validationFX = new Fx.Morph(this.getErrorElement(), {duration: 500, wait: true});
+			this.validationFX = new Fx.Morph(this.getErrorElement()[0], {duration: 500, wait: true});
 		}
 		return this.validationFX;
 	},
@@ -280,6 +280,10 @@ var FbElement =  new Class({
 		classes.each(function (c) {
 			var r = classname === c ? container.addClass(c) : container.removeClass(c);
 		});
+		var errorElements = this.getErrorElement();
+		errorElements.each(function (e) {
+			e.empty();
+		});
 		switch (classname) {
 		case 'fabrikError':
 			a = new Element('a', {'href': '#', 'title': msg, 'events': {
@@ -287,14 +291,14 @@ var FbElement =  new Class({
 					e.stop();
 				}
 			}}).adopt(this.alertImage);
-			this.getErrorElement().empty().adopt(a);
+			errorElements[0].adopt(a);
 			Fabrik.tips.attach(a);
 			break;
 		case 'fabrikSuccess':
-			this.getErrorElement().empty().adopt(this.successImage);
+			errorElements[0].adopt(this.successImage);
 			break;
 		case 'fabrikValidating':
-			this.getErrorElement().empty().adopt(this.loadingImage);
+			errorElements[0].adopt(this.loadingImage);
 			break;
 		}
 

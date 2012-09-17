@@ -23,8 +23,19 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 class PlgFabrik_FormEmail extends PlgFabrik_Form
 {
 
+	/**
+	 * Attachement files
+	 *
+	 * @var array
+	 */
 	protected $attachments = array();
 
+	/**
+	 * Posted form keys that we don't want to include in the message
+	 * This is basically the fileupload elements
+	 *
+	 * @var array
+	 */
 	protected $dontEmailKeys = null;
 
 	/**
