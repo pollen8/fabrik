@@ -106,7 +106,26 @@
 					<option value="change">PLG_ELEMENT_GOOGLE_MAP_AS_YOU_TYPE</option>
 			</field>
 		</fieldset>
-		
+
+		<fieldset label="Radius Widget" name="plg-element-googlemap-radius">
+			<field name="fb_gm_radius" type="radio" default="0" label="PLG_ELEMENT_GOOGLEMAP_RADIUS_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="fb_gm_radius_unit" type="radio" default="k" label="PLG_ELEMENT_GOOGLEMAP_RADIUS_UNIT_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_UNIT_DESC">
+				<option value="m">Miles</option>
+				<option value="k">Kilometers</option>
+			</field>
+	
+			<field name="fb_gm_radius_write_element" type="listfields"  label="PLG_ELEMENT_GOOGLEMAP_RADIUS_WRITE_ELEMENT_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_WRITE_ELEMENT_DESC"/>
+			<field name="fb_gm_radius_read_element" type="listfields"  label="PLG_ELEMENT_GOOGLEMAP_RADIUS_READ_ELEMENT_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_READ_ELEMENT_DESC"/>
+			<field name="fb_gm_radius_default" type="text" size="3" default="50" label="PLG_ELEMENT_GOOGLEMAP_RADIUS_DEFAULT_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_DEFAULT_DESC"/>
+			<field name="fb_gm_radius_fitmap" type="radio" default="0" label="PLG_ELEMENT_GOOGLEMAP_RADIUS_FITMAP_LABEL" description="PLG_ELEMENT_GOOGLEMAP_RADIUS_FITMAP_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+	 	</fieldset>
+ 			
 		<fieldset label="Table settings" name="plg-element-googlemap-table">
 			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL" name="fb_gm_staticmap_tableview" type="radio">
 					<option value="0">JNO</option>

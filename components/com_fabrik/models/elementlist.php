@@ -417,14 +417,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
-
 			foreach ($vals as $val)
 			{
 				$l = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 				if (!$this->iconsSet == true)
 				{
-					$l = $this->getLabelForValue($val);
-					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
+					if (!is_a($this, 'plgFabrik_ElementDatabasejoin'))
+					{
+						$l = $this->getLabelForValue($val);
+					}
+					$l = $val;
+					$l = $this->_replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $thisRow, 'list');
 				$l = $listModel->_addLink($l, $this, $thisRow, $i);

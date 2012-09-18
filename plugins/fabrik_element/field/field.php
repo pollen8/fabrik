@@ -16,6 +16,7 @@ jimport('joomla.application.component.model');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.field
+ * @since       3.0
  */
 
 class PlgFabrik_ElementField extends PlgFabrik_Element
@@ -110,8 +111,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		/*
-		 * stop "'s from breaking the content out of the field.
+		/* stop "'s from breaking the content out of the field.
 		 * $$$ rob below now seemed to set text in field from "test's" to "test&#039;s" when failed validation
 		 * so add false flag to ensure its encoded once only
 		 * $$$ hugh - the 'double encode' arg was only added in 5.2.3, so this is blowing some sites up
@@ -129,14 +129,16 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
-	 * format guess link type
+	 * Format guess link type
 	 *
-	 * @param   string	$value
-	 * @param   array	data
-	 * @param   int		repeat counter
+	 * @param   string  &$value         original field value
+	 * @param   array   $data           record data
+	 * @param   int     $repeatCounter  repeat counter
+	 *
+	 * @return  void
 	 */
 
-	function _guessLinkType(&$value, $data, $repeatCounter = 0)
+	protected function _guessLinkType(&$value, $data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$guessed = false;
@@ -161,17 +163,11 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$guessed = true;
 			}
 		}
-		// $$$ hugh - this gets done in $listModel->_addLink(), called from element parent::renderListData()
-		/*
-		if (!$guessed)
-		{
-		    $this->addCustomLink($value, $data, $repeatCounter);
-		}
-		 */
 	}
 
 	/**
-	 * get the guess type link target property
+	 * Get the guess type link target property
+	 *
 	 * @return  string
 	 */
 
@@ -233,7 +229,6 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			case 'text':
 			default:
-			//$objtype = "VARCHAR(255)";
 				$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 				break;
 			case 'integer':
@@ -248,10 +243,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
+	 * Get Joomfish options
+	 *
+	 * @deprecated - not supporting joomfish
+	 *
 	 * @return  array	key=>value options
 	 */
 
-	function getJoomfishOptions()
+	public function getJoomfishOptions()
 	{
 		$params = $this->getParams();
 		$return = array();
@@ -309,13 +308,21 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		return $val;
 	}
 
-	function _indStoreDatabaseFormat($val)
+	/**
+	 * Manupulates individual values posted form data for insertion into database
+	 *
+	 * @param   string  $val  this elements posted form data
+	 *
+	 * @return  string
+	 */
+
+	protected function _indStoreDatabaseFormat($val)
 	{
 		return $this->unNumberFormat($val);
 	}
 
 	/**
-	 * get the element's cell class
+	 * Get the element's cell class
 	 *
 	 * @since 3.0.4
 	 *
@@ -334,4 +341,3 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		return $classes;
 	}
 }
-?>

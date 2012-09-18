@@ -11,7 +11,12 @@
 	
 	<fields name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-user-params">
-		
+			
+			<field name="user_element"
+				type="listfields"
+				description="PLG_ELEMENT_USERGROUP_USER_ELEMENT_DESC"
+				label="PLG_ELEMENT_USERGROUP_USER_ELEMENT_LABEL" />
+				
 		</fieldset>
 	</fields>
 </form>

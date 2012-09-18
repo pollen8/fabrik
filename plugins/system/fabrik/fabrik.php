@@ -87,7 +87,7 @@ class PlgSystemFabrik extends JPlugin
 
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
-		// Lload plugin params info
+		// Load plugin params info
 		$limit = $this->params->def('search_limit', 50);
 		$text = trim($text);
 		if ($text == '')

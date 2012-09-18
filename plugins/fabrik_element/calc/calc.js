@@ -67,9 +67,8 @@ var FbCalc = new Class({
 		var testdata = $H(this.form.getFormData());
 
 		testdata.each(function (v, k) {
-			if (k.test(/^join\[\d+\]/)) {
+			if (k.test(/^join\[\d+\]/) || k.test(/^fabrik_vars/)) {
 				formdata[k] = v;
-				
 			}
 		}.bind(this));
 		

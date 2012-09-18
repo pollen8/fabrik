@@ -40,10 +40,39 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		$id = $html_id;
 		$params = $this->getParams();
 
+		$formModel = $this->getFormModel();
+		$userEl = $formModel->getElement($params->get('user_element'), true);
+		if ($userEl)
+		{
+			$data = $formModel->getData();
+			$userid = $data[$userEl->getFullName(false, true, false) . '_raw'];
+			$thisUser = JFactory::getUser($userid);
+		}
 		$selected = $this->getValue($data, $repeatCounter);
-		//echo "select = ";print_r($selected);
-		//$selected = array(2 => 2);
-		return JHtml::_('access.usergroups', $name, $selected);
+		if ($this->canUse())
+		{
+			return JHtml::_('access.usergroups', $name, $selected);
+		}
+		else
+		{
+			if ($userEl && !empty($thisUser->groups))
+			{
+				// Get the titles for the user groups.
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true);
+				$query->select($db->quoteName('title'));
+				$query->from($db->quoteName('#__usergroups'));
+				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups). ')');
+				$db->setQuery($query);
+				$selected = $db->loadColumn();
+			}
+			else
+			{
+				$selected = array();
+			}
+		}
+
+		return implode(', ', $selected);
 	}
 
 	/**

@@ -14,7 +14,15 @@ jimport('joomla.application.component.view');
 class FabrikViewList extends JViewLegacy
 {
 
-	public function display()
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
+
+	public function display($tpl = null)
 	{
 		$session = JFactory::getSession();
 		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
@@ -26,7 +34,7 @@ class FabrikViewList extends JViewLegacy
 		JRequest::setVar('limit' . $model->getId(), $exporter->getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
-		// the table total
+		// the list total
 		$selectedFields = JRequest::getVar('fields', array(), 'default', 'array');
 		$model->setHeadingsForCSV($selectedFields);
 
@@ -35,13 +43,6 @@ class FabrikViewList extends JViewLegacy
 
 		$total = $model->getTotalRecords();
 
-		if ((int) $total === 0)
-		{
-			$notice = new stdClass;
-			$notice->err = JText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
-			echo json_encode($notice);
-			return;
-		}
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
 		if (is_null($session->get($key)))
 		{
@@ -51,6 +52,13 @@ class FabrikViewList extends JViewLegacy
 		$start = JRequest::getInt('start', 0);
 		if ($start <= $total)
 		{
+			if ((int) $total === 0)
+			{
+				$notice = new stdClass;
+				$notice->err = JText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
+				echo json_encode($notice);
+				return;
+			}
 			$exporter->writeFile($total);
 		}
 		else

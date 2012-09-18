@@ -530,7 +530,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$d = JRequest::get('request');
-		$this->getFormModel()->data = $d;
+
+		$formModel = $this->getFormModel();
+		$formModel->addEncrytedVarsToArray($d);
+		$this->getFormModel()->_data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
 

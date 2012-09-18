@@ -22,6 +22,8 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
 
 	protected static $geoJs = null;
+	
+	protected static $radiusJs = null;
 
 	protected static $usestatic = null;
 
@@ -46,7 +48,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		{
 			if ($params->get('fb_gm_staticmap_tableview'))
 			{
-				$d = $this->_staticMap($d, $w, $h);
+				$d = $this->_staticMap($d, $w, $h, null, $i, true, JArrayHelper::fromObject($thisRow));
 			}
 			if ($params->get('icon_folder') == '1')
 			{
@@ -166,6 +168,25 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	}
 
 	/**
+	 * as different map instances may or may not load radius widget JS we shouldnt put it in
+	 * formJavascriptClass() but call this code from elementJavascript() instead.
+	 * The files are still only loaded when needed and only once
+	 */
+	
+	protected function radiusJs()
+	{
+		if (!isset(self::$radiusJs))
+		{
+			$document = JFactory::getDocument();
+			$params = $this->getParams();
+			if ((int)$params->get('fb_gm_radius', '0'))
+			{
+				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
+				self::$radiusJs = true;
+			}
+		}
+	}
+	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
@@ -186,6 +207,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$dms = $this->_strToDMS($v);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$this->geoJs();
+		//$this->radiusJs();
 		$opts->lat = (float) $o->coords[0];
 		$opts->lon = (float) $o->coords[1];
 		$opts->lat_dms = (float) $dms->coords[0];
@@ -233,21 +255,57 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 		}
 		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
+		
+		$opts->use_radius = $params->get('fb_gm_radius','0') == '0' ? false : true;
+		$opts->radius_fitmap = $params->get('fb_gm_radius_fitmap','0') == '0' ? false : true;
+		$opts->radius_write_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_write_element', $repeatCounter) : false;
+		$opts->radius_read_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_read_element', $repeatCounter) : false;
+		$opts->radius_ro_value = $opts->use_radius ? $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter) : false;
+		$opts->radius_default = $params->get('fb_gm_radius_default', '50');
+		if ($opts->radius_ro_value === false)
+		{
+			$opts->radius_ro_value = $opts->radius_default;
+		}
+		$opts->radius_unit = $params->get('fb_gm_radius_unit', 'm');
+		$opts->radius_resize_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
+		$opts->radius_resize_off_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
+		
 		$opts = json_encode($opts);
 		return "new FbGoogleMap('$id', $opts)";
 	}
 
-	function _getGeocodeFieldId($which_field, $repeatCounter = 0)
+	function _getFieldValue($which_field, $data, $repeatCounter = 0) {
+		$params =& $this->getParams();
+		$field = $params->get($which_field, false);
+		if ($field) {
+			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+			if (!$this->_form->_editable) {
+				$elementModel->_inDetailedView = true;
+			}
+			return $elementModel->getValue($data, $repeatCounter);
+		}
+		return false;
+	}
+	
+	function _getFieldId($which_field, $repeatCounter = 0)
 	{
 		$listModel = $this->getlistModel();
 		$params = $this->getParams();
-		$field = $params->get('fb_gm_geocode_' . $which_field, false);
+		$field = $params->get($which_field, false);
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
+			if (!$this->_form->_editable) {
+				$elementModel->_inDetailedView = true;
+			}
 			return $elementModel->getHTMLId($repeatCounter);
 		}
-		return false;
+		return false;		
+	}
+	
+	function _getGeocodeFieldId($which_field, $repeatCounter = 0)
+	{
+		return $this->_getFieldId('fb_gm_geocode_' . $which_field, $repeatCounter);
 	}
 
 	/**
@@ -411,11 +469,12 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 * @param   int height
 	 * @param   int zoom level
 	 * @param   int $repeatCounter
-	 * @param bool is the static map in the table view
+	 * @param   bool is the static map in the table view
+	 * @param   array row / form data, needed for optional radius value
 	 * @return string static map html
 	 */
 
-	function _staticMap($v, $w = null, $h = null, $z = null, $repeatCounter = 0, $tableView = false)
+	function _staticMap($v, $w = null, $h = null, $z = null, $repeatCounter = 0, $tableView = false, $data = array())
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
@@ -463,6 +522,22 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$uri = JURI::getInstance();
 		$src = $uri->getScheme()
 			. "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=$type&amp;mobile=true&amp;markers=$markers&amp;sensor=false";
+
+		/**
+		 * if radius widget is being used, build an encoded polyline representing a circle
+		 */
+		if ((int)$params->get('fb_gm_radius', '0') == 1) {
+			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'googlemaps'.DS.'polyline_encoder'.DS.'class.polylineEncoder.php');
+			$polyEnc   = new PolylineEncoder();
+			$radius = $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter);
+			if ($radius === false || !isset($radius))
+			{
+				$radius = $params->get('fb_gm_radius_default', '50');;
+			}
+			$enc_str = $polyEnc->GMapCircle($lat, $lon, $radius);
+			$src .= "&amp;path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:" . $enc_str;
+		}
+		
 		$id = $tableView ? '' : "id=\"{$id}\"";
 		$str = "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
 		$str .= "</div>";
@@ -493,7 +568,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$h = $params->get('fb_gm_mapheight');
 		if ($this->_useStaticMap())
 		{
-			return $this->_staticMap($val, null, null, null, $repeatCounter);
+			return $this->_staticMap($val, null, null, null, $repeatCounter, false, $data);
 		}
 		else
 		{

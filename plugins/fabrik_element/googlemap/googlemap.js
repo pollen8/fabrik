@@ -1,12 +1,29 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
 	window.addEvent('domready', function () {
+		if (typeOf(Fabrik.googleMapRadius) === 'null') {
+			var script2 = document.createElement("script");
+			script2.type = "text/javascript";
+			script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
+			document.body.appendChild(script2);
+			Fabrik.googleMapRadius = true;
+		}
 		if (document.body) {
 			window.fireEvent('google.map.loaded');
 		} else {
 			console.log('no body');
 		}	
 	});
+}
+
+function googleradiusloaded() {
+	window.addEvent('domready', function () {
+		if (document.body) {
+			window.fireEvent('google.radius.loaded');
+		} else {
+			console.log('no body');
+		}	
+	});	
 }
 
 var FbGoogleMap = new Class({
@@ -44,11 +61,11 @@ var FbGoogleMap = new Class({
 			var s = this.options.sensor === false ? 'false' : 'true';
 			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
 			document.body.appendChild(script);
-			Fabrik.googelMap = true;
+			Fabrik.googleMap = true;
 		}
 	},
 	
-	initialize : function (element, options) {
+	initialize: function (element, options) {
 		this.parent(element, options);
 		this.loadScript();
 		// @TODO test google object when offline $type(google) isnt working
@@ -79,6 +96,9 @@ var FbGoogleMap = new Class({
 				break;
 			}
 			this.makeMap();
+		}.bind(this));
+		window.addEvent('google.radius.loaded', function () {
+			this.makeRadius();
 		}.bind(this));
 	},
 
@@ -257,7 +277,101 @@ var FbGoogleMap = new Class({
 		this.watchTab();
 	},
 
-	updateFromLatLng : function () {
+	radiusUpdatePosition: function () {
+		
+	},
+	
+	radiusUpdateDistance: function () {
+		if (this.options.radius_write_element) {
+			var distance = this.distanceWidget.get('distance');
+			if (this.options.radius_unit === 'm') {
+				distance = distance / 1.609344;
+			}
+			$(this.options.radius_write_element).value = parseFloat(distance).toFixed(2);
+			//$(this.options.radius_write_element).fireEvent('change', new Event.Mock($(this.options.radius_write_element), 'change'));
+
+		}
+	},
+	
+	radiusActiveChanged: function () {
+		// fired by the radius widget when move / drag operation is complete
+		// so let's fire the write element's change event.  Don't do this in updateDistance,
+		// as it'll keep firing as they drag.  We don't want to fire 'change' until the changing is finished
+		if (this.options.radius_write_element) {
+			if (!this.distanceWidget.get('active')) {
+				$(this.options.radius_write_element).fireEvent('change', new Event.Mock($(this.options.radius_write_element), 'change'));
+			}
+		}		
+	},
+	
+	radiusSetDistance: function () {
+		if (this.options.radius_read_element) {
+			var distance = document.id(this.options.radius_read_element).value;
+			if (this.options.radius_unit === 'm') {
+				distance = distance * 1.609344;
+			}
+			var pos = this.distanceWidget.get('sizer_position');
+			this.distanceWidget.set('distance', distance);
+			var center = this.distanceWidget.get('center');
+			this.distanceWidget.set('center', center);
+		}
+	},
+	
+	makeRadius: function () {
+		if (this.options.use_radius) {
+			if (this.options.radius_read_element && this.options.repeatCounter > 0) {
+				this.options.radius_read_element = this.options.radius_read_element.replace(/_\d+$/, "_" + this.options.repeatCounter);
+			}
+			if (this.options.radius_write_element && this.options.repeatCounter > 0) {
+				this.options.radius_write_element = this.options.radius_write_element.replace(/_\d+$/, "_" + this.options.repeatCounter);
+			}
+			var distance = this.options.radius_default;
+			if (!this.options.editable) {
+				distance = this.options.radius_ro_value;
+			}
+			else {
+				if (this.options.radius_read_element) {
+					distance = document.id(this.options.radius_read_element).value;
+				}
+				else if (this.options.radius_write_element) {
+					distance = document.id(this.options.radius_write_element).value;
+				}
+			}
+			if (this.options.radius_unit === 'm') {
+				distance = distance * 1.609344;
+			}
+			this.distanceWidget = new DistanceWidget({
+				map: this.map,
+				marker: this.marker,
+				distance: distance, // Starting distance in km.
+				maxDistance: 2500, // Twitter has a max distance of 2500km.
+				color: '#000000',
+				activeColor: '#5599bb',
+				sizerIcon: new google.maps.MarkerImage(this.options.radius_resize_off_icon),
+				activeSizerIcon: new google.maps.MarkerImage(this.options.radius_resize_icon)
+			});
+
+			google.maps.event.addListener(this.distanceWidget, 'distance_changed', this.radiusUpdateDistance.bind(this));
+			google.maps.event.addListener(this.distanceWidget, 'position_changed', this.radiusUpdatePosition.bind(this));
+			google.maps.event.addListener(this.distanceWidget, 'active_changed', this.radiusActiveChanged.bind(this));
+
+			if (this.options.radius_fitmap) {
+				this.map.setZoom(20);
+				this.map.fitBounds(this.distanceWidget.get('bounds'));
+			}
+			this.radiusUpdateDistance();
+			this.radiusUpdatePosition();
+			this.radiusAddActions();
+		}
+	},
+	
+	radiusAddActions: function () {
+		if (this.options.radius_read_element) {
+			document.id(this.options.radius_read_element).addEvent('change', this.radiusSetDistance.bind(this));
+		}
+	},
+	
+	updateFromLatLng: function () {
 		var lat = this.element.getElement('.lat').get('value').replace('° N', '').toFloat();
 		var lng = this.element.getElement('.lng').get('value').replace('° E', '').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);

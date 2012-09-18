@@ -659,11 +659,14 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-
 		$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 
+		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
+		if (!empty($groupIds) && is_object($groupIds[0]))
+		{
+			$groupIds = JArrayHelper::fromObject($groupIds[0]);
+		}
 		JArrayHelper::toInteger($groupIds);
-
 		$data = array();
 		if (!$isNew)
 		{
@@ -690,7 +693,21 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		}
 		else
 		{
-			$data[] = ($params->get('juser_field_usertype') != '') ? $groupId : $defaultGroup;
+			if ($params->get('juser_field_usertype') != '')
+			{
+				if (count($groupIds) === 1 && $groupIds[0] == 0)
+				{
+					$data = (array) $defaultGroup;
+				}
+				else
+				{
+					$data = $groupIds;
+				}
+			}
+			else
+			{
+				$data = (array) $defaultGroup;
+			}
 		}
 		return $data;
 	}
