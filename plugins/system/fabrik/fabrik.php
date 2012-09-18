@@ -17,6 +17,7 @@ jimport('joomla.filesystem.file');
  *
  * @package     Joomla.Plugin
  * @subpackage  System
+ * @since       3.0
  */
 
 class plgSystemFabrik extends JPlugin
@@ -29,29 +30,32 @@ class plgSystemFabrik extends JPlugin
 	 * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
 	 * This causes problems with cross-referencing necessary for the observer design pattern.
 	 *
-	 * @access	protected
-	 * @param	object $subject The object to observe
-	 * @param 	array  $config  An array that holds the plugin configuration
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An array that holds the plugin configuration
+	 *
 	 * @since	1.0
 	 */
 
-	function plgSystemFabrik(&$subject, $config)
+	public function plgSystemFabrik(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
 	}
 
 	/**
-	 * @since 3.0
-	 * need to call this here otherwise you get class exists error
+	 * Need to call this here otherwise you get class exists error
+	 *
+	 * @since   3.0
+	 *
+	 * @return  void
 	 */
 
-	function onAfterInitialise()
+	public function onAfterInitialise()
 	{
 		jimport('joomla.filesystem.file');
 		$p = JPATH_SITE . '/plugins/system/fabrik/';
 		$defines = JFile::exists($p . 'user_defines.php') ? $p . 'user_defines.php' : $p . 'defines.php';
 		$doc = JFactory::getDocument();
-		require_once($defines);
+		require_once $defines;
 	}
 
 	/**
@@ -60,13 +64,16 @@ class plgSystemFabrik extends JPlugin
 	 * The sql must return the following fields that are
 	 * used in a common display routine: href, title, section, created, text,
 	 * browsernav
-	 * @param string Target search string
-	 * @param string mathcing option, exact|any|all
-	 * @param string ordering option, newest|oldest|popular|alpha|category
-	 * @param mixed An array if restricted to areas, null if search all
+	 *
+	 * @param   string  $text      Target search string
+	 * @param   string  $phrase    mathcing option, exact|any|all
+	 * @param   string  $ordering  option, newest|oldest|popular|alpha|category
+	 * @param   mixed   $areas     An array if restricted to areas, null if search all
+	 *
+	 * @return  array
 	 */
 
-	function onDoContentSearch($text, $phrase = '', $ordering = '', $areas = null)
+	public function onDoContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
 		if (defined('COM_FABRIK_SEARCH_RUN'))
 		{
@@ -78,9 +85,9 @@ class plgSystemFabrik extends JPlugin
 		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo(true);
 
-		require_once(JPATH_SITE . '/components/com_content/helpers/route.php');
+		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
-		// Lload plugin params info
+		// Load plugin params info
 		$limit = $this->params->def('search_limit', 50);
 		$text = trim($text);
 		if ($text == '')
@@ -126,7 +133,8 @@ class plgSystemFabrik extends JPlugin
 		}
 		$section = $this->params->get('search_section_heading');
 		$urls = array();
-		//$$$ rob remove previous search results?
+
+		// $$$ rob remove previous search results?
 		JRequest::setVar('resetfilters', 1);
 
 		// Ensure search doesnt go over memory limits
@@ -138,10 +146,10 @@ class plgSystemFabrik extends JPlugin
 		$app = JFactory::getApplication();
 		foreach ($ids as $id)
 		{
-			//	Unset enough stuff in the table model to allow for correct query to be run
+			// Unset enough stuff in the table model to allow for correct query to be run
 			$listModel->reset();
 
-			/// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
+			// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
 			$key = 'com_fabrik.list' . $id . '.filter.searchall';
 			$app->setUserState($key, null);
 
@@ -178,10 +186,11 @@ class plgSystemFabrik extends JPlugin
 
 			// Test for swap too boolean mode
 			$mode = JRequest::getVar('searchphraseall', 'all');
+
 			// $params->set('search-mode-advanced', true);
 			$params->set('search-mode-advanced', $mode);
 
-			//The table shouldn't be included in the search results or we have reached the max number of records to show.
+			// The table shouldn't be included in the search results or we have reached the max number of records to show.
 			if (!$params->get('search_use') || $limit <= 0)
 			{
 				continue;
@@ -191,9 +200,6 @@ class plgSystemFabrik extends JPlugin
 			$params->set('search-mode', 'OR');
 
 			$allrows = $listModel->getData();
-			// $$$ rob -moved inside loop as dup records from joined data aren't all added to search results
-			// $limit = $limit - count( $allrows );
-
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_description', $table->label), true);
 			$descname = is_object($elementModel) ? $elementModel->getFullName(false, true) : '';
 
