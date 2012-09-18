@@ -1913,7 +1913,7 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('queryselect: fields loaded') : null;
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 
-		// $$$rob added raw as an option to fix issue in saving calendener data
+		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
 		{
 			$sfields .= ', ';
@@ -2617,7 +2617,7 @@ class FabrikFEModelList extends JModelForm
 					$p = $elementModel->getParams();
 					$o = $p->get('encrypt');
 					$p->set('encrypt', false);
-					$elementModel->getAsField_html($this->searchAllAsFields, $searchAllFields, '', $opts);
+					$elementModel->getAsField_html($this->searchAllAsFields, $searchAllFields, $opts);
 					$p->set('encrypt', $o);
 				}
 			}
