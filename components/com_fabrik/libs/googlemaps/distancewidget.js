@@ -9,6 +9,7 @@
  *
  * @constructor
  */
+	
 function DistanceWidget(opt_options) {
   var options = opt_options || {};
 
@@ -62,7 +63,6 @@ function DistanceWidget(opt_options) {
   });
 }
 DistanceWidget.prototype = new google.maps.MVCObject();
-
 
 /**
  * A radius widget that add a circle to a map and centers on a marker.
@@ -317,3 +317,16 @@ RadiusWidget.prototype.distanceBetweenPoints_ = function(p1, p2) {
   var d = R * c;
   return d;
 };
+
+/**
+ * $$$ hugh
+ * 
+ * had to add this callback to solve asyncronous loading issues with the main google maps code
+ * in the Fabrik map element, which loads the maps code with a document.createElement('script') async load.
+ * 
+ * Should probably redo this so the callback func is a CGI arg, rather than hard coded, but for now this
+ * will do.
+ * 
+ */
+
+googleradiusloaded();

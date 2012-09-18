@@ -1,5 +1,9 @@
 <?php
 /**
+ * 
+ * $$$ hugh - hacked around for Fabrik use, to allow using the 'radius widget' in static maps.
+ * Fixed a bunch of undefined notices, and added the GMapCircle() method.
+ * 
  * PolylineEncoder based on Mark McClure's Javascript PolylineEncoder
  * and Jim Hribar's PHP version. All nicely melted into a proper PHP5 class.
  * 
@@ -202,6 +206,44 @@ class PolylineEncoder
 	    $finalValue = $num + 63;
 	    $encodeString .= chr($finalValue);
 	    return $encodeString;
+	}
+	
+	/**
+	 * Code to build a polyline circle, stolen from:
+	 * http://stackoverflow.com/questions/7316963/drawing-a-circle-google-static-maps
+	 * Needed for drawing radius circle on static maps
+	 * 
+	 * @param unknown_type $Lat
+	 * @param unknown_type $Lng
+	 * @param unknown_type $Rad
+	 * @param unknown_type $Detail
+	 */
+	public function GMapCircle($Lat,$Lng,$Rad,$Detail=8){
+		$R    = 6371;
+	
+		$pi   = pi();
+	
+		$Lat  = ($Lat * $pi) / 180;
+		$Lng  = ($Lng * $pi) / 180;
+		$d    = $Rad / $R;
+	
+		$points = array();
+		$i = 0;
+	
+		for ($i = 0; $i <= 360; $i+=$Detail)
+		{
+			$brng = $i * $pi / 180;
+		
+			$pLat = asin(sin($Lat)*cos($d) + cos($Lat)*sin($d)*cos($brng));
+			$pLng = (($Lng + atan2(sin($brng)*sin($d)*cos($Lat), cos($d)-sin($Lat)*sin($pLat))) * 180) / $pi;
+			$pLat = ($pLat * 180) /$pi;
+		
+			$points[] = array($pLat,$pLng);
+		}
+	
+		$EncString = $this->encode($points);
+	
+		return $EncString->points;
 	}
 }
 ?>
