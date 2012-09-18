@@ -65,7 +65,7 @@ var FbGoogleMap = new Class({
 		}
 	},
 	
-	initialize : function (element, options) {
+	initialize: function (element, options) {
 		this.parent(element, options);
 		this.loadScript();
 		// @TODO test google object when offline $type(google) isnt working
@@ -269,14 +269,14 @@ var FbGoogleMap = new Class({
 		this.watchTab();
 	},
 
-	radiusUpdatePosition : function() {
+	radiusUpdatePosition: function () {
 		
 	},
 	
-	radiusUpdateDistance : function() {
+	radiusUpdateDistance: function () {
 		if (this.options.radius_write_element) {
 			var distance = this.distanceWidget.get('distance');
-			if (this.options.radius_unit == 'm') {
+			if (this.options.radius_unit === 'm') {
 				distance = distance / 1.609344;
 			}
 			$(this.options.radius_write_element).value = parseFloat(distance).toFixed(2);
@@ -285,7 +285,7 @@ var FbGoogleMap = new Class({
 		}
 	},
 	
-	radiusActiveChanged : function() {
+	radiusActiveChanged: function () {
 		// fired by the radius widget when move / drag operation is complete
 		// so let's fire the write element's change event.  Don't do this in updateDistance,
 		// as it'll keep firing as they drag.  We don't want to fire 'change' until the changing is finished
@@ -296,10 +296,10 @@ var FbGoogleMap = new Class({
 		}		
 	},
 	
-	radiusSetDistance : function() {
+	radiusSetDistance: function () {
 		if (this.options.radius_read_element) {
-			var distance = $(this.options.radius_read_element).value;
-			if (this.options.radius_unit == 'm') {
+			var distance = document.id(this.options.radius_read_element).value;
+			if (this.options.radius_unit === 'm') {
 				distance = distance * 1.609344;
 			}
 			var pos = this.distanceWidget.get('sizer_position');
@@ -309,13 +309,13 @@ var FbGoogleMap = new Class({
 		}
 	},
 	
-	makeRadius : function() {
+	makeRadius: function () {
 		if (this.options.use_radius) {
 			if (this.options.radius_read_element && this.options.repeatCounter > 0) {
-				this.options.radius_read_element = this.options.radius_read_element.replace(/_\d+$/, "_"+this.options.repeatCounter)
+				this.options.radius_read_element = this.options.radius_read_element.replace(/_\d+$/, "_" + this.options.repeatCounter);
 			}
 			if (this.options.radius_write_element && this.options.repeatCounter > 0) {
-				this.options.radius_write_element = this.options.radius_write_element.replace(/_\d+$/, "_"+this.options.repeatCounter)
+				this.options.radius_write_element = this.options.radius_write_element.replace(/_\d+$/, "_" + this.options.repeatCounter);
 			}
 			var distance = this.options.radius_default;
 			if (!this.options.editable) {
@@ -323,13 +323,13 @@ var FbGoogleMap = new Class({
 			}
 			else {
 				if (this.options.radius_read_element) {
-					distance = $(this.options.radius_read_element).value;
+					distance = document.id(this.options.radius_read_element).value;
 				}
 				else if (this.options.radius_write_element) {
-					distance = $(this.options.radius_write_element).value;
+					distance = document.id(this.options.radius_write_element).value;
 				}
 			}
-			if (this.options.radius_unit == 'm') {
+			if (this.options.radius_unit === 'm') {
 				distance = distance * 1.609344;
 			}
 			this.distanceWidget = new DistanceWidget({
@@ -347,23 +347,23 @@ var FbGoogleMap = new Class({
 			google.maps.event.addListener(this.distanceWidget, 'position_changed', this.radiusUpdatePosition.bind(this));
 			google.maps.event.addListener(this.distanceWidget, 'active_changed', this.radiusActiveChanged.bind(this));
 
-    		if (this.options.radius_fitmap) {
-    			this.map.setZoom(20);
-				this.map.fitBounds(this.distanceWidget.get('bounds'));   			
-    		}
+			if (this.options.radius_fitmap) {
+				this.map.setZoom(20);
+				this.map.fitBounds(this.distanceWidget.get('bounds'));
+			}
 			this.radiusUpdateDistance();
 			this.radiusUpdatePosition();
 			this.radiusAddActions();
 		}
 	},
 	
-	radiusAddActions : function() {
+	radiusAddActions: function () {
 		if (this.options.radius_read_element) {
-			$(this.options.radius_read_element).addEvent('change', this.radiusSetDistance.bind(this));
+			document.id(this.options.radius_read_element).addEvent('change', this.radiusSetDistance.bind(this));
 		}
 	},
 	
-	updateFromLatLng : function () {
+	updateFromLatLng: function () {
 		var lat = this.element.getElement('.lat').get('value').replace('° N', '').toFloat();
 		var lng = this.element.getElement('.lng').get('value').replace('° E', '').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
