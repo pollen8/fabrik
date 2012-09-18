@@ -5508,10 +5508,13 @@ class FabrikFEModelList extends JModelForm
 		ksort($arr);
 		foreach ($arr as $key => $val)
 		{
-			$bits = explode(':', $key);
-			$newkey = array_pop($bits);
-			$arr[$newkey] = $arr[$key];
-			unset($arr[$key]);
+			if (strstr($key, ':'))
+			{
+				$bits = explode(':', $key);
+				$newkey = array_pop($bits);
+				$arr[$newkey] = $arr[$key];
+				unset($arr[$key]);
+			}
 		}
 		return $arr;
 	}
@@ -5825,7 +5828,7 @@ class FabrikFEModelList extends JModelForm
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
 		$origRowId = $rowId;
-		echo "<pre>data = ";print_r($data);;
+
 		// Don't save a record if no data collected
 		if ($isJoin && empty($data))
 		{
