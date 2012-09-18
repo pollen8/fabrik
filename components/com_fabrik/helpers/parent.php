@@ -1518,7 +1518,9 @@ class FabrikWorker
 		$cache = JCache::getInstance('callback',
 				array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
 						'storage' => 'file'));
-		$cache->setCaching(true);
+		$config = JFactory::getConfig();
+		$doCache = $config->get('caching', 0) > 0 ? true : false;
+		$cache->setCaching($doCache);
 		return $cache;
 	}
 }

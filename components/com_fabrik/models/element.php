@@ -70,7 +70,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var bol
 	 */
-	var $_recordInDatabase = 1;
+	protected $_recordInDatabase = 1;
 
 	/**
 	 * Contain access rights
@@ -3016,7 +3016,9 @@ class plgFabrik_Element extends FabrikPlugin
 		 * $condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
 		 */
 		$condition = $this->getFilterCondition();
-		$prefix = '<input type="hidden" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
+
+		// Need to include class other wise csv export produces incorrect results when exporting
+		$prefix = '<input type="hidden" class="fabrik_filter" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
 		$return[] = $prefix . '[condition][' . $counter . ']" value="' . $condition . '" />';
 		$return[] = $prefix . '[join][' . $counter . ']" value="AND" />';
 		$return[] = $prefix . '[key][' . $counter . ']" value="' . $elName . '" />';

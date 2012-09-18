@@ -39,7 +39,9 @@ var FbDateTime = new Class({
 	},
 	
 	setUp: function () {
-		if (this.options.editable && !this.options.hidden) {
+		// Was also test on && !options.hidden but that stopped hidden elements from being saved correctly
+		// @see http://fabrikar.com/forums/showthread.php?t=27992
+		if (this.options.editable) {
 			this.watchButtons();
 			if (this.options.typing === false) {
 				this.disableTyping();

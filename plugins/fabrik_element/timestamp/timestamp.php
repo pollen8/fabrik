@@ -25,11 +25,17 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
+	 *
 	 * @var bool  True, ignore in advanced search all.
 	 */
 	protected $ignoreSearchAllDefault = true;
 
-	var $_recordInDatabase = false;
+	/**
+	 * Does the element's data get recorded in the db
+	 *
+	 * @var bol
+	 */
+	protected $_recordInDatabase = false;
 
 	/**
 	 * Get the element's HTML label
@@ -67,7 +73,7 @@ class plgFabrik_ElementTimestamp extends plgFabrik_Element
 	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);

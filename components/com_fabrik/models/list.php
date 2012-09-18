@@ -184,7 +184,13 @@ class FabrikFEModelList extends JModelForm
 
 	protected $rows = null;
 
-	/** @var bool should a heading be added for action buttons (returns true if at least one row has buttons)*/
+	/**
+	 * Should a heading be added for action buttons (returns true if at least one row has buttons)
+	 *
+	 * @deprecated (since 3.0.7)
+	 *
+	 * @var bool
+	*/
 	protected $actionHeading = false;
 
 	/** @var array list of column data - used for filters */
@@ -506,8 +512,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->_data;
 		}
-		$traceModel = ini_get('mysql.trace_mode');
-
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
 		$fabrikDb = $this->getDb();
@@ -515,66 +519,95 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
-		$this->setBigSelects();
+		$cache = FabrikWorker::getCache();
+		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
+		$this->totalRecords = $results[0];
+		$this->_data = $results[1];
+		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
+		$pluginManager->runPlugins('onLoadData', $this, 'list');
+		return $this->_data;
+
+	}
+
+	/**
+	 * Cached Method to run the getData select query and do our Fabrik magikin'
+	 *
+	 * @param   int     $listId  list id
+	 * @param   string  $query   sql query
+	 * @param   int     $start   start of limit
+	 * @param   int     $length  limit length
+	 *
+	 * @return array (total records, data set)
+	 */
+
+	public static function finesseData($listId, $query, $start, $length)
+	{
+		$profiler = JProfiler::getInstance('Application');
+
+		$traceModel = ini_get('mysql.trace_mode');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$fabrikDb = $listModel->getDb();
+		$listModel->setBigSelects();
 
 		// $$$ rob - if merging joined data then we don't want to limit
 		// the query as we have already done so in _buildQuery()
-		if ($this->mergeJoinedData())
+		if ($listModel->mergeJoinedData())
 		{
 			$fabrikDb->setQuery($query);
 		}
 		else
 		{
-			$fabrikDb->setQuery($query, $this->limitStart, $this->limitLength);
+			$fabrikDb->setQuery($query, $start, $length);
 		}
 
-		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $this->getTable()->label);
+		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
 		/* set 2nd param to false in attempt to stop joomfish db adaptor from translating the orignal query
 		 * fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
-		 * $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
-		 */
-		$this->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
+		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
+		*/
+		$listModel->_data = $fabrikDb->loadObjectList('', 'stdClass', false);
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			jexit('getData:' . $fabrikDb->getErrorMsg());
 		}
 		// $$$ rob better way of getting total records
-		if ($this->mergeJoinedData())
+		if ($listModel->mergeJoinedData())
 		{
-			$this->totalRecords = $this->getTotalRecords();
+			$listModel->totalRecords = $listModel->getTotalRecords();
 		}
 		else
 		{
 			$fabrikDb->setQuery("SELECT FOUND_ROWS()");
-			$this->totalRecords = $fabrikDb->loadResult();
+			$listModel->totalRecords = $fabrikDb->loadResult();
 		}
-		if ($this->randomRecords)
+		if ($listModel->randomRecords)
 		{
-			shuffle($this->_data);
+			shuffle($listModel->_data);
 		}
 		ini_set('mysql.trace_mode', $traceModel);
-		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
+
 
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
-		$this->translateData($this->_data);
+		$listModel->translateData($listModel->_data);
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
 		}
 
-		$this->preFormatFormJoins($this->_data);
+		$listModel->preFormatFormJoins($listModel->_data);
 
 		JDEBUG ? $profiler->mark('start format for joins') : null;
-		$this->formatForJoins($this->_data);
+		$listModel->formatForJoins($listModel->_data);
 
 		JDEBUG ? $profiler->mark('start format data') : null;
-		$this->formatData($this->_data);
+		$listModel->formatData($listModel->_data);
 
 		JDEBUG ? $profiler->mark('data formatted') : null;
-		$pluginManager->runPlugins('onLoadData', $this, 'list');
-		return $this->_data;
+
+		return array($listModel->totalRecords, $listModel->_data);
 	}
 
 	/**
@@ -1076,7 +1109,6 @@ class FabrikFEModelList extends JModelForm
 					{
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
-					$this->actionHeading = true;
 					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
 				}
 				else
@@ -1168,10 +1200,10 @@ class FabrikFEModelList extends JModelForm
 		$linkKey = FabrikString::safeColName($key);
 		$fparams = $listModel->getParams();
 
-		// Ensure that the facte table's require filters option is set to false
+		// Ensure that the facted list's "require filters" option is set to false
 		$fparams->set('require-filter', false);
 
-		// Ignore facted tables session filters
+		// Ignore facted lists session filters
 		$origIncSesssionFilters = JRequest::getVar('fabrik_incsessionfilters', true);
 		JRequest::setVar('fabrik_incsessionfilters', false);
 		$where = $listModel->_buildQueryWhere(JRequest::getVar('incfilters', 0));
@@ -1181,8 +1213,12 @@ class FabrikFEModelList extends JModelForm
 			$where .= trim($where) == '' ? ' WHERE ' : ' AND ';
 			$where .= "$linkKey IN (" . implode(',', $pks) . ")";
 		}
-		$listModel->set('_joinsSQL', null); //force reload of join sql
-		$listModel->set('includeCddInJoin', false); //trigger load of joins without cdd elements - seems to mess up count otherwise
+		// Force reload of join sql
+		$listModel->set('_joinsSQL', null);
+
+		// Trigger load of joins without cdd elements - seems to mess up count otherwise
+		$listModel->set('includeCddInJoin', false);
+
 		//see http://fabrikar.com/forums/showthread.php?t=12860
 		// $totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
 
@@ -1877,7 +1913,7 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('queryselect: fields loaded') : null;
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 
-		// $$$rob added raw as an option to fix issue in saving calendener data
+		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
 		{
 			$sfields .= ', ';
@@ -2581,7 +2617,7 @@ class FabrikFEModelList extends JModelForm
 					$p = $elementModel->getParams();
 					$o = $p->get('encrypt');
 					$p->set('encrypt', false);
-					$elementModel->getAsField_html($this->searchAllAsFields, $searchAllFields, '', $opts);
+					$elementModel->getAsField_html($this->searchAllAsFields, $searchAllFields, $opts);
 					$p->set('encrypt', $o);
 				}
 			}
@@ -5400,7 +5436,7 @@ class FabrikFEModelList extends JModelForm
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
 		// 3.0 actions now go in one column
-		if ($this->actionHeading == true)
+		if ($this->canSelectRows())
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
@@ -5414,6 +5450,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$r = '<li>' . $r . '</li>';
 			}
+
 			$headingButtons = array_merge($headingButtons, $res);
 			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
@@ -5540,7 +5577,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canView()))
+		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
 		{
 			return true;
 		}
@@ -5788,7 +5825,7 @@ class FabrikFEModelList extends JModelForm
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
 		$origRowId = $rowId;
-
+		echo "<pre>data = ";print_r($data);;
 		// Don't save a record if no data collected
 		if ($isJoin && empty($data))
 		{
@@ -6172,6 +6209,7 @@ class FabrikFEModelList extends JModelForm
 			$crypt = new JSimpleCrypt();
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
+
 				// $$$ hugh - allow submission plugins to override RO data
 				// TODO - test this for joined data
 				if ($formModel->updatedByPlugin($key))
@@ -6179,13 +6217,19 @@ class FabrikFEModelList extends JModelForm
 					continue;
 				}
 				$key = FabrikString::shortColName($key);
+
 				/* $$$ hugh - trying to fix issue where encrypted elements from a main group end up being added to
 				 * a joined group's field list for the update/insert on the joined row(s).
 				 */
+				/*
+				 * $$$ rob - commenting it out as this was stopping data that was not viewable or editable from being included
+				 * in $data. Suggest that when you do run across this again the test is done against the $groupModel and the
+				 * passed in $isJoin and $joinGroupTable
+				 *
 				if (!array_key_exists($key, $data))
 				{
 					continue;
-				}
+				} */
 				foreach ($groups as $groupModel)
 				{
 					$elementModels = $groupModel->getPublishedElements();
@@ -6246,8 +6290,16 @@ class FabrikFEModelList extends JModelForm
 
 	public function doCalculations()
 	{
+		$cache = FabrikWorker::getCache();
+		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
+	}
+
+	public static function cacheDoCalculations($listId)
+	{
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
 		$db = FabrikWorker::getDbo();
-		$formModel = $this->getFormModel();
+		$formModel = $listModel->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
@@ -6259,35 +6311,35 @@ class FabrikFEModelList extends JModelForm
 				$update = false;
 				if ($params->get('sum_on', 0) == 1)
 				{
-					$aSumCals = $elementModel->sum($this);
+					$aSumCals = $elementModel->sum($listModel);
 					$params->set('sum_value_serialized', serialize($aSumCals[1]));
 					$params->set('sum_value', $aSumCals[0]);
 					$update = true;
 				}
 				if ($params->get('avg_on', 0) == 1)
 				{
-					$aAvgCals = $elementModel->avg($this);
+					$aAvgCals = $elementModel->avg($listModel);
 					$params->set('avg_value_serialized', serialize($aAvgCals[1]));
 					$params->set('avg_value', $aAvgCals[0]);
 					$update = true;
 				}
 				if ($params->get('median_on', 0) == 1)
 				{
-					$medians = $elementModel->median($this);
+					$medians = $elementModel->median($listModel);
 					$params->set('median_value_serialized', serialize($medians[1]));
 					$params->set('median_value', $medians[0]);
 					$update = true;
 				}
 				if ($params->get('count_on', 0) == 1)
 				{
-					$aCountCals = $elementModel->count($this);
+					$aCountCals = $elementModel->count($listModel);
 					$params->set('count_value_serialized', serialize($aCountCals[1]));
 					$params->set('count_value', $aCountCals[0]);
 					$update = true;
 				}
 				if ($params->get('custom_calc_on', 0) == 1)
 				{
-					$aCustomCalcCals = $elementModel->custom_calc($this);
+					$aCustomCalcCals = $elementModel->custom_calc($listModel);
 					$params->set('custom_calc_value_serialized', serialize($aCustomCalcCals[1]));
 					$params->set('custom_calc_value', $aCustomCalcCals[0]);
 					$update = true;
@@ -7651,7 +7703,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * gFet a single column of data from the table, test for element filters
+	 * Get a single column of data from the table, test for element filters
 	 *
 	 * @param   string  $col  column to get
 	 *
@@ -7662,36 +7714,58 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
-			$table = $this->getTable();
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$db = $this->getDb();
-			$el = $this->getFormModel()->getElement($col);
-			$colQuoted = FabrikString::safeColName($col);
-			$el->encryptFieldName($colQuoted);
-			$tablename = $table->db_table_name;
-			$tablename = FabrikString::safeColName($tablename);
-			$query = "SELECT DISTINCT($colQuoted) FROM " . $tablename . ' ' . $this->_buildQueryJoin();
-			$query .= $this->_buildQueryWhere(false);
-			$query .= " LIMIT " . $fbConfig->get('filter_list_max', 100);
-			$query = $this->pluginQuery($query);
-			$db->setQuery($query);
-			$res = $db->loadColumn();
+			$cache = FabrikWorker::getCache();
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col);
 			if (is_null($res))
 			{
-				JError::raiseNotice(500, 'list model getColumn Data for ' . $colQuoted . ' failed');
+				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
 			}
 			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
 			{
-				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $colQuoted));
+				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
 			}
-			FabrikHelperHTML::debug($query, 'filter:getColumnData query');
 			if (is_null($res))
 			{
 				$res = array();
 			}
+
 			$this->columnData[$col] = $res;
 		}
 		return $this->columnData[$col];
+	}
+
+	/**
+	 * Cached method to grab a colums' data, called from getColumnData()
+	 *
+	 * @param   int     $listId  list id
+	 * @param   string  $col     column to grab
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  column's values
+	 */
+
+	public static function columnData($listId, $col)
+	{
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$table = $listModel->getTable();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$db = $listModel->getDb();
+		$el = $listModel->getFormModel()->getElement($col);
+		$col = $db->quoteName($col);
+		$el->encryptFieldName($col);
+		$tablename = $table->db_table_name;
+		$tablename = FabrikString::safeColName($tablename);
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $col . ')')->from($tablename);
+		$query = $listModel->_buildQueryJoin($query);
+		$query = $listModel->_buildQueryWhere(false, $query);
+		$query = $listModel->pluginQuery($query);
+		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		$res = $db->loadColumn(0);
+		return $res;
 	}
 
 	/**
