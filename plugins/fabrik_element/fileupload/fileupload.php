@@ -591,7 +591,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formModel = $this->getForm();
 			$formid = $formModel->getId();
 			$rowid = $thisRow->__pk_val;
-			$elementid = $this->_id;
+			$elementid = $this->id;
 			if ($params->get('fu_title_element') == '')
 			{
 				$title_name = $this->getFullName(true, true, false) . '__title';

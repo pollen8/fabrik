@@ -547,7 +547,7 @@ class FabrikFEModelList extends JModelForm
 		$listModel->setBigSelects();
 
 		// $$$ rob - if merging joined data then we don't want to limit
-		// the query as we have already done so in _buildQuery()
+		// the query as we have already done so in buildQuery()
 		if ($listModel->mergeJoinedData())
 		{
 			$fabrikDb->setQuery($query);
@@ -564,7 +564,7 @@ class FabrikFEModelList extends JModelForm
 		 * fabrik3 - 2nd param in j16 is now used - guessing that joomfish now uses the third param for the false switch?
 		 * $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		 */
-		$this->data = $fabrikDb->loadObjectList('', 'stdClass', false);
+		$listModel->data = $fabrikDb->loadObjectList('', 'stdClass', false);
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			jexit('getData:' . $fabrikDb->getErrorMsg());
@@ -816,7 +816,7 @@ class FabrikFEModelList extends JModelForm
 					$gKey = $sdata;
 
 					// If the group_by was added in in getAsFields remove it from the returned data set (to avoid mess in package view)
-					if ($this->_group_by_added)
+					if ($this->group_by_added)
 					{
 						unset($data[$i]->$groupBy);
 					}
@@ -7752,8 +7752,8 @@ class FabrikFEModelList extends JModelForm
 		$tablename = FabrikString::safeColName($tablename);
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $col . ')')->from($tablename);
-		$query = $listModel->_buildQueryJoin($query);
-		$query = $listModel->_buildQueryWhere(false, $query);
+		$query = $listModel->buildQueryJoin($query);
+		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
 		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
 		$res = $db->loadColumn(0);

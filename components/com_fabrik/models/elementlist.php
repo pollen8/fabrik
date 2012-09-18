@@ -427,7 +427,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 						$l = $this->getLabelForValue($val);
 					}
 					$l = $val;
-					$l = $this->_replaceWithIcons($l, 'list', $listModel->getTmpl());
+					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $thisRow, 'list');
 				$l = $listModel->_addLink($l, $this, $thisRow, $i);
