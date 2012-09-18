@@ -206,7 +206,7 @@
 
 	</fieldset>
 
-	<fieldset label="COM_FABRIK_SEF" name="sef">
+	<fieldset label="COM_FABRIK_SEF404" name="sef">
 		<field default="0" description="COM_FABRIK_SEF_PREPEND_MENU_TITLE_DESC" label="COM_FABRIK_SEF_PREPEND_MENU_TITLE_LABEL" name="fabrik_sef_prepend_menu_title" type="radio">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
