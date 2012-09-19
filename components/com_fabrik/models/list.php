@@ -519,6 +519,7 @@ class FabrikFEModelList extends JModelForm
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
+		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
 		return $this->_data;
@@ -602,7 +603,7 @@ class FabrikFEModelList extends JModelForm
 		$listModel->formatData($listModel->data);
 
 		JDEBUG ? $profiler->mark('data formatted') : null;
-		return array($listModel->totalRecords, $listModel->data);
+		return array($listModel->totalRecords, $listModel->data, $listModel->groupTemplates);
 	}
 
 	/**
@@ -809,7 +810,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$aGroupTitles[] = $sdata;
 						$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
-						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
+						$this->groupTemplates[$sdata] = nl2br($grouptemplate);
 						$groupedData[$sdata] = array();
 					}
 					$data[$i]->_groupId = $sdata;
