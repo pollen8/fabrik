@@ -365,7 +365,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$sql = $this->buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
 		if (isset($this->_optionVals[$sqlKey]))
-		if (isset($this->_optionVals[$sql]))
+		if (isset($this->_optionVals[$sqlKey]))
 		{
 			return $this->_optionVals[$sqlKey];
 		}
@@ -1260,13 +1260,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 			if (!FabrikWorker::isJSON($data))
 			{
-				$labeldata[] = $data;
+				$labeldata = $data;
 			}
 			else
 			{
 				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
 				// should really refactor so encoding goes in this if/else structure!
 				$labeldata = json_decode($data);
+			}
+
+			foreach ($labeldata as &$l)
+			{
+				$l = $this->getLabelForValue($l);
 			}
 		}
 
@@ -2095,7 +2100,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
-		$query = $this->_buildQuery(array(), false);
+		$query = $this->buildQuery(array(), false);
 		$key = $this->getJoinValueColumn();
 		$query->where($key . ' = ' . $db->quote($v));
 		$db->setQuery($query);
