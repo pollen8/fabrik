@@ -156,8 +156,12 @@ class FabrikFEModelList extends JModelForm
 	/** @var array list of group by statements added by list plugins */
 	var $_pluginQueryGroupBy = array();
 
-	/** @var array - used in views for rendering */
-	var $grouptemplates = array();
+	/**
+	 * Used in views for rendering
+	 *
+	 * @var array
+	 */
+	public $groupTemplates = array();
 
 	/** @var bool is the table a view **/
 	protected $isView = null;
@@ -523,6 +527,7 @@ class FabrikFEModelList extends JModelForm
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
+		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
 		return $this->_data;
@@ -607,7 +612,7 @@ class FabrikFEModelList extends JModelForm
 
 		JDEBUG ? $profiler->mark('data formatted') : null;
 
-		return array($listModel->totalRecords, $listModel->_data);
+		return array($listModel->totalRecords, $listModel->_data, $listModel->groupTemplates);
 	}
 
 	/**
@@ -784,7 +789,7 @@ class FabrikFEModelList extends JModelForm
 		$this->_aGroupInfo = array();
 		$groupTitle = array();
 
-		$this->grouptemplates = array();
+		$this->groupTemplates = array();
 
 		// Check if the data has a group by applied to it
 		$groupBy = $this->getGroupBy();
@@ -825,7 +830,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$aGroupTitles[] = $sdata;
 						$grouptemplate = ($w->parseMessageForPlaceHolder($groupTemplate, JArrayHelper::fromObject($data[$i])));
-						$this->grouptemplates[$sdata] = nl2br($grouptemplate);
+						$this->groupTemplates[$sdata] = nl2br($grouptemplate);
 						$groupedData[$sdata] = array();
 					}
 					$data[$i]->_groupId = $sdata;

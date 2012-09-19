@@ -430,7 +430,7 @@ class FabrikViewListBase extends JView
 		$this->assign('colCount', count($this->headings));
 
 		$this->assign('hasButtons', $this->get('hasButtons'));
-		$this->assignRef('grouptemplates', $model->grouptemplates);
+		$this->assignRef('grouptemplates', $model->groupTemplates);
 
 		$this->assignRef('params', $params);
 
