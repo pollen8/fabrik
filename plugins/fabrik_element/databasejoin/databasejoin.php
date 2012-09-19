@@ -1267,7 +1267,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// should really refactor so encoding goes in this if/else structure!
 				$labeldata = json_decode($data);
 			}
-
 			foreach ($labeldata as &$l)
 			{
 				$l = $this->getLabelForValue($l);
@@ -2186,7 +2185,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params = $elementModel->getParams();
 		$db = FabrikWorker::getDbo();
-		$c = $elementModel->_getValColumn();
+		$c = $elementModel->getValColumn();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);

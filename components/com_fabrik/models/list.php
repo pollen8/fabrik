@@ -154,7 +154,11 @@ class FabrikFEModelList extends JModelForm
 	/** @var array list of group by statements added by list plugins */
 	protected $pluginQueryGroupBy = array();
 
-	/** @var array - used in views for rendering */
+	/**
+	 * Used in views for rendering
+	 *
+	 * @var array
+	 */
 	public $groupTemplates = array();
 
 	/** @var bool is the table a view **/
@@ -603,6 +607,7 @@ class FabrikFEModelList extends JModelForm
 		$listModel->formatData($listModel->data);
 
 		JDEBUG ? $profiler->mark('data formatted') : null;
+
 		return array($listModel->totalRecords, $listModel->data, $listModel->groupTemplates);
 	}
 
