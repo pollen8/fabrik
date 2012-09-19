@@ -49,9 +49,9 @@ FabrikHelperHTML::script($srcs, $this->js);
 	<div class="tabbable tabs-left">
 
 
-				<ul class="nav nav-tabs">
+				<ul class="nav nav-tabs"style="margin-top:40px">
 					<li class="active">
-				    	<a data-toggle="tab" href="#details">
+				    	<a data-toggle="tab" href="#detailsX">
 				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
 				    	</a>
 				    </li>

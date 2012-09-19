@@ -18,7 +18,7 @@
 	
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="main">
 				
-		<field class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL" name="id" readonly="true" required="true" type="text"/>
+		<field class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL" name="id" readonly="true" type="text"/>
 		
 		<field description="COM_FABRIK_FIELD_LABEL_DESC" label="COM_FABRIK_FIELD_LABEL_LABEL" name="label" required="true" size="40" type="text"/>
 
@@ -101,16 +101,6 @@
 
 			<fieldset name="details2">
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_LIST_AJAX_DESC" label="COM_FABRIK_LIST_AJAX_LABEL" name="list_ajax" type="radio">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-				</field>
-				
-			<field class="btn-group" default="0" description="COM_FABRIK_LIST_AJAX_LINKS_DESC" label="COM_FABRIK_LIST_AJAX_LINKS_LABEL" name="list_ajax_links" type="radio">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-				</field>
-			
 		</fieldset>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping2">
 				
@@ -184,6 +174,12 @@
 		
 		<fieldset name="navigation">
 
+			<field class="btn-group" default="0" description="COM_FABRIK_LIST_AJAX_DESC" label="COM_FABRIK_LIST_AJAX_LABEL" name="list_ajax" type="radio">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+			</field>
+				
+			
 			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_SHOW_LIST_ADD_DESC" label="COM_FABRIK_FIELD_SHOW_LIST_ADD_LABEL" name="show-table-add" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
@@ -343,6 +339,11 @@
 		
 		<fieldset name="links">
 	
+			<field class="btn-group" default="0" description="COM_FABRIK_LIST_AJAX_LINKS_DESC" label="COM_FABRIK_LIST_AJAX_LINKS_LABEL" name="list_ajax_links" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+				
 			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_DETAIL_LINK_DESC" label="COM_FABRIK_FIELD_DETAIL_LINK_LABEL" name="detaillink" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>

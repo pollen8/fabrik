@@ -1,10 +1,9 @@
-<div class="tab-pane active" id="details">
-
+<div class="tab-pane active" id="detailsX">
 
 	<ul class="nav nav-tabs">
-		<li>
-	    	<a data-toggle="tab active" href="#details-details">
-	    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'); ?>
+		<li class="active">
+	    	<a data-toggle="tab" href="#details-publishing">
+	    		<?php echo JText::_('COM_FABRIK_TEXT'); ?>
 	    	</a>
 	    </li>
 	    <li>
@@ -41,14 +40,6 @@
 
 	<div class="tab-content">
 
-		<div class="tab-pane active" id="details-details">
-			<fieldset class="form-horizontal">
-				<?php foreach ($this->form->getFieldset('details2') as $this->field) :
-					echo $this->loadTemplate('control_group');
-				endforeach;
-				?>
-			</fieldset>
-		</div>
 
 		<div class="tab-pane" id="details-filters">
 		    <fieldset class="form-horizontal">
@@ -57,6 +48,19 @@
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				foreach ($this->form->getFieldset('filters') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+			</fieldset>
+		</div>
+
+		<div class="tab-pane active" id="details-publishing">
+			<fieldset class="form-horizontal">
+				<?php foreach ($this->form->getFieldset('main') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+				<?php foreach ($this->form->getFieldset('details2') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				?>
