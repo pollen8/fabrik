@@ -22,12 +22,12 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 {
 
 	/** @var object connection */
-	var $_cn = null;
+	protected $cn = null;
 
-	var $_joinDb = null;
+	protected $joinDb = null;
 
 	/** @var created in getJoin **/
-	var $_join = null;
+	protected $join = null;
 
 	/** @var string for simple join query*/
 	var $_sql = array();
@@ -260,9 +260,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	protected function getJoin()
 	{
-		if (isset($this->_join))
+		if (isset($this->join))
 		{
-			return $this->_join;
+			return $this->join;
 		}
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -277,8 +277,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			if ($join->element_id == $element->id)
 			{
-				$this->_join = $join;
-				return $this->_join;
+				$this->join = $join;
+				return $this->join;
 			}
 		}
 		if (!in_array(JRequest::getVar('task'), array('inlineedit', 'form.inlineedit')))
@@ -439,7 +439,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$showBoth = $params->get('show_both_with_radio_dbjoin', '0');
-		$this->_joinDb = $this->getDb();
+		$this->joinDb = $this->getDb();
 		$col = $element->name;
 		$tmp = array();
 		$aDdObjs = $this->_getOptionVals($data, $repeatCounter, $incWhere, $opts);
@@ -547,7 +547,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$rob not sure these should be used anyway?
 		$table = $params->get('join_db_name');
 		$key = $this->getJoinValueColumn();
-		$val = $this->_getValColumn();
+		$val = $this->getValColumn();
 		$join = $this->getJoin();
 		if ($table == '')
 		{
@@ -689,7 +689,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  string
 	 */
 
-	protected function _getValColumn()
+	protected function getValColumn()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
@@ -715,11 +715,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	function getDb()
 	{
 		$cn = $this->getConnection();
-		if (!$this->_joinDb)
+		if (!$this->joinDb)
 		{
-			$this->_joinDb = $cn->getDb();
+			$this->joinDb = $cn->getDb();
 		}
-		return $this->_joinDb;
+		return $this->joinDb;
 	}
 
 	/**
@@ -730,11 +730,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	function &getConnection()
 	{
-		if (is_null($this->_cn))
+		if (is_null($this->cn))
 		{
 			$this->_loadConnection();
 		}
-		return $this->_cn;
+		return $this->cn;
 	}
 
 	protected function connectionParam()
@@ -755,14 +755,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$cid = $this->getlistModel()->getConnection()->getConnection()->id;
 		if ($cid == $id)
 		{
-			$this->_cn = $this->getlistModel()->getConnection();
+			$this->cn = $this->getlistModel()->getConnection();
 		}
 		else
 		{
-			$this->_cn = JModel::getInstance('Connection', 'FabrikFEModel');
-			$this->_cn->setId($id);
+			$this->cn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$this->cn->setId($id);
 		}
-		return $this->_cn->getConnection();
+		return $this->cn->getConnection();
 	}
 
 	/**
@@ -1258,13 +1258,17 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 			if (!FabrikWorker::isJSON($data))
 			{
-				$labeldata[] = $data;
+				$labeldata = $data;
 			}
 			else
 			{
 				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
 				// should really refactor so encoding goes in this if/else structure!
 				$labeldata = json_decode($data);
+			}
+			foreach ($labeldata as &$l)
+			{
+				$l = $this->getLabelForValue($l);
 			}
 		}
 
@@ -2134,7 +2138,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->getElement(true);
 		$params = $this->getParams();
 		$db = FabrikWorker::getDbo();
-		$c = $this->_getValColumn();
+		$c = $this->getValColumn();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
@@ -2168,7 +2172,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$params = $elementModel->getParams();
 		$db = FabrikWorker::getDbo();
-		$c = $elementModel->_getValColumn();
+		$c = $elementModel->getValColumn();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
@@ -2200,7 +2204,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
-		$joinVal = $this->_getValColumn();
+		$joinVal = $this->getValColumn();
 		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
 		if ($return == '.')
 		{
@@ -2259,7 +2263,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
-		$jkey = $this->_getValColumn();
+		$jkey = $this->getValColumn();
 		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
 		$where = JString::stristr($where, 'order by') ? $where : '';
 		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name') . '.' . $jkey : $jkey;

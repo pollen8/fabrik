@@ -158,7 +158,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$displayParam = $this->_getValColumn();
+			$displayParam = $this->getValColumn();
 			if (is_a($user, 'JUser'))
 			{
 				$str = $user->get($displayParam);
@@ -623,7 +623,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
-		$tabletype = $this->_getValColumn();
+		$tabletype = $this->getValColumn();
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 
@@ -771,7 +771,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					break;
 				case 'field':
 				default:
-					$tabletype = $this->_getValColumn();
+					$tabletype = $this->getValColumn();
 					break;
 			}
 			$k = $db->quoteName($joinTableName . '.' . $tabletype);
@@ -784,7 +784,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$tabletype = $this->_getValColumn();
+				$tabletype = $this->getValColumn();
 				$k = $db->quoteName($joinTableName . '.' . $tabletype);
 			}
 		}
@@ -850,7 +850,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	{
 		static $displayMessage;
 		$params = $this->getParams();
-		$displayParam = $this->_getValColumn();
+		$displayParam = $this->getValColumn();
 		return $user->get($displayParam);
 	}
 
@@ -926,7 +926,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function _getValColumn()
+	protected function getValColumn()
 	{
 		static $displayMessage;
 		$params = $this->getParams();

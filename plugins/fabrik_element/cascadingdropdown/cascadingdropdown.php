@@ -234,7 +234,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
 	{
-		$this->_joinDb = $this->getDb();
+		$this->joinDb = $this->getDb();
 		$tmp = $this->_getOptionVals($data, $repeatCounter);
 		return $tmp;
 	}
@@ -599,7 +599,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return string
 	 */
 
-	function _getValColumn()
+	protected function getValColumn()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
@@ -618,7 +618,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	function getOrderByName()
 	{
-		$joinVal = $this->_getValColumn();
+		$joinVal = $this->getValColumn();
 		$joinVal = FabrikString::safeColName($joinVal);
 		return $joinVal;
 	}
@@ -636,14 +636,14 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$cid = $this->getlistModel()->getConnection()->getConnection()->id;
 		if ($cid == $id)
 		{
-			$this->_cn = $this->getlistModel()->getConnection();
+			$this->cn = $this->getlistModel()->getConnection();
 		}
 		else
 		{
-			$this->_cn = JModel::getInstance('Connection', 'FabrikFEModel');
-			$this->_cn->setId($id);
+			$this->cn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$this->cn->setId($id);
 		}
-		return $this->_cn->getConnection();
+		return $this->cn->getConnection();
 	}
 
 	/**
