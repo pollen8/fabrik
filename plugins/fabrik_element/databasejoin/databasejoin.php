@@ -365,7 +365,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$sql = $this->buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
 		if (isset($this->_optionVals[$sqlKey]))
-		if (isset($this->_optionVals[$sqlKey]))
 		{
 			return $this->_optionVals[$sqlKey];
 		}
@@ -544,7 +543,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$formModel = $this->getForm();
-		$where = $this->buildQueryWhere($data, $incWhere, null, $opts, $query);
+		$query = $this->buildQueryWhere($data, $incWhere, null, $opts, $query);
 
 		// $$$rob not sure these should be used anyway?
 		$table = $params->get('join_db_name');
