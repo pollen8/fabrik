@@ -825,4 +825,25 @@ class FabrikPlugin extends JPlugin
 		}
 		return $this->_pluginManager;
 	}
+
+	/**
+	 * Get user ids from group ids
+	 *
+	 * @param   array  $sendTo  user group id
+	 * @param  string  $field   field to return from user group. Default = 'id'
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  users' property defined in $field
+	 */
+
+	protected function getUsersInGroups($sendTo, $field = 'id')
+	{
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
+		->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
+		$db->setQuery($query);
+		return $db->loadColumn();
+	}
 }

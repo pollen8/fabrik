@@ -190,6 +190,12 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 		$query = $db->getQuery(true);
 		$email_to = array_map('trim', $email_to);
 
+		// Add any assigned groups to the to list
+		$sendTo = (array) $params->get('to_group');
+		$groupEmails = $this->getUsersInGroups($sendTo, $field = 'email');
+		$email_to = array_merge($email_to, $groupEmails);
+		$email_to = array_unique($email_to);
+
 		// Remove blank email addresses
 		$email_to = array_filter($email_to);
 		$dbEmailTo = array_map(array($db, 'quote'), $email_to);

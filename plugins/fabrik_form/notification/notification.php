@@ -176,24 +176,6 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 	}
 
 	/**
-	 * Get user ids from group ids
-	 *
-	 * @param   array  $sendTo  user group id
-	 *
-	 * @return  array  user ids
-	 */
-
-	protected function getUsersInGroups($sendTo)
-	{
-		$db = FabrikWorker::getDbo();
-		$query = $db->getQuery(true);
-		$query->select('DISTINCT(id)')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
-			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
-		$db->setQuery($query);
-		return $db->loadColumn();
-	}
-
-	/**
 	 * Test if the notifications should be fired
 	 *
 	 * @param   object  $formModel  form model
@@ -276,7 +258,6 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 				$fields2 = array_merge($fields, array('user_id = ' . $userid));
 				$query->insert('#__{package}_notification_event')->set($fields2);
 				$db->setQuery($query);
-				echo $query . "<br>";
 				$db->query();
 			}
 		}
