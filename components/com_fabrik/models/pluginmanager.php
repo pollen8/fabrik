@@ -350,7 +350,6 @@ class FabrikFEModelPluginmanager extends JModel
 			$query->order("group_id, e.ordering");
 			$db->setQuery($query);
 
-			//$elements = (array) $db->loadObjectList();
 			$elements = $db->loadObjectList();
 
 			if ($db->getErrorNum())

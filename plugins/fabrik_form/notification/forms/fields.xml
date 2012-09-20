@@ -2,6 +2,57 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-notification">
+		
+			<field name="send_mode"
+				type="toggleoptionsradio"
+				hide="0"
+				show="1"
+				default="0"
+				toggle="plg-form-notification-trigger"
+				alt="plg-form-notification-user"
+				repeat="true"
+				description="PLG_FORM_NOTIFICATION_MODE_DESC"
+				label="PLG_FORM_NOTIFICATION_MODE_LABEL">
+					<option value="0">PLG_FORM_NOTIFICATION_USER_SELECTION</option>
+					<option value="1">PLG_FORM_NOTIFICATION_TRIGGER</option>
+			</field>
+		
+		</fieldset>
+		
+		<fieldset name="plg-form-notification-user">
+			
+			<field name="notification_ajax"
+				type="radio"
+				default="0"
+				repeat="true"
+				label="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_LABEL"
+				description="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+		</fieldset>
+		
+		<fieldset name="plg-form-notification-trigger">
+			
+			<field name="trigger"
+				type="listfields"
+				repeat="true"
+				description="PLG_FORM_NOTIFICATION_TRIGGER_DESC"
+				label="PLG_FORM_NOTIFICATION_TRIGGER_LABEL" />
+			
+			<field name="trigger_value"
+				type="text"
+				repeat="true"
+				description="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_DESC"
+				label="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_LABEL" />
+			
+			<field name="sendto"
+				type="usergroup"
+				multiple="true"
+				size="6"
+				repeat="true"
+				description="PLG_FORM_NOTIFICATION_GROUP_DESC"
+				label="PLG_FORM_NOTIFICATION_GROUP_LABEL" />
 		</fieldset>
 	</fields>
 </form>

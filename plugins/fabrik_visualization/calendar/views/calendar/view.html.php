@@ -16,6 +16,7 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
+ * @since       3.0
  */
 
 class fabrikViewCalendar extends JView
