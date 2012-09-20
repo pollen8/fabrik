@@ -71,12 +71,16 @@
 			foreach ($this->form->getFieldset('grouping') as $this->field):
 				echo $this->loadTemplate('control_group');
 		 	endforeach;
+		 	foreach ($this->form->getFieldset('grouping2') as $this->field):
+		 	echo $this->loadTemplate('control_group');
+		 	endforeach;
 		 	?>
 			</fieldset>
 		</div>
 
 		<div class="tab-pane" id="data-prefilter">
 			<fieldset class="form-horizontal">
+			<legend><?php echo JText::_('COM_FABRIK_PREFILTERS')?></legend>
 			<a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
 				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
@@ -116,6 +120,7 @@
 
 		<div class="tab-pane" id="data-faceted">
 			<fieldset>
+				<legend><?php echo JText::_('COM_FABRIK_RELATED_DATA')?></legend>
 				<?php
 				foreach ($this->form->getFieldset('factedlinks') as $this->field) :
 					echo $this->loadTemplate('control_group');

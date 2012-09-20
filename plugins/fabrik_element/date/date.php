@@ -74,10 +74,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$groupModel = $this->getGroup();
 		$data = FabrikWorker::JSONtoData($data, true);
-		$f = $params->get('date_table_format', '%Y-%m-%d');
-		if ($f == 'Y-m-d')
+		$f = $params->get('date_table_format', 'Y-m-d');
+		if (strstr($f, '%'))
 		{
-			$f = '%Y-%m-%d';
+			FabDate::strftimeFormatToDateFormat($f);
 		}
 		$format = array();
 		foreach ($data as $d)
@@ -98,7 +98,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				else
 				{
-					$format[] = $date->toFormat($f, true);
+					$format[] = $date->format($f, true);
 				}
 			}
 			else
@@ -131,7 +131,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 		$groupModel = $this->getGroup();
 		$data = FabrikWorker::JSONtoData($data, true);
-		$f = $params->get('date_table_format', '%Y-%m-%d');
+		$f = $params->get('date_table_format', 'Y-m-d');
 		/* $$$ hugh - see http://fabrikar.com/forums/showthread.php?p=87507
 		 * Really don't think we need to worry about 'incraw' here. The raw, GMT/MySQL data will get
 		 * included in the _raw version of the element if incraw is selected. Here we just want to output
@@ -140,10 +140,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		 */
 		$incRaw = false;
 
-		if ($f == 'Y-m-d')
-		{
-			$f = '%Y-%m-%d';
-		}
 		$format = array();
 		foreach ($data as $d)
 		{
@@ -169,7 +165,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					}
 					else
 					{
-						$format[] = $date->toFormat($f, true);
+						$format[] = $date->format($f, true);
 					}
 				}
 			}
@@ -221,8 +217,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$element = $this->getElement();
-		$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
-		$timeformat = $params->get('date_time_format');
+		$format = $params->get('date_form_format', $params->get('date_table_format', 'Y-m-d'));
+		if (strstr($format, '%'))
+		{
+			FabDate::strftimeFormatToDateFormat($format);
+		}
+		$timeformat = $params->get('date_time_format', 'H:i');
 
 		// Value is in mySQL format
 		$value = $this->getValue($data, $repeatCounter);
@@ -260,18 +260,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 			// Get the formatted date
 			$local = true;
-			$date = $oDate->toFormat($format, true);
+			$date = $oDate->format($format, true);
 			$this->offsetDate = $oDate->toSql(true);
 			if (!$this->editable)
 			{
-				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->toFormat($timeformat, true) : '';
+				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->format($timeformat, true) : '';
 				return $date . $time;
 			}
 
 			// Get the formatted time
 			if ($params->get('date_showtime', 0))
 			{
-				$time = $oDate->toFormat($timeformat, true);
+				$time = $oDate->format($timeformat, true);
 			}
 		}
 		else
@@ -366,6 +366,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	protected function toMySQLGMT($date)
 	{
+		echo 'tomyslq';exit;
 		if ($this->resetToGMT)
 		{
 			// $$$ rob 3.0 offset is no longer an integer but a timezone string
@@ -500,11 +501,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$aNullDates = $this->getNullDates();
-		$f = $params->get('date_table_format', '%Y-%m-%d');
-		if ($f == 'Y-m-d')
-		{
-			$f = '%Y-%m-%d';
-		}
+		$f = $params->get('date_table_format', 'Y-m-d');
 		$tz_date = '';
 		if (!in_array($gmt_date, $aNullDates))
 		{
@@ -519,7 +516,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 			else
 			{
-				$tz_date = $date->toFormat($f, true);
+				$tz_date = $date->format($f, true);
 			}
 		}
 		return $tz_date;
@@ -537,7 +534,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
-		$f = $params->get('date_table_format', '%Y-%m-%d');
+		$f = $params->get('date_table_format', 'Y-m-d');
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$aNullDates = $this->getNullDates();
 		$format = array();
@@ -559,7 +556,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 			else
 			{
-				$v = $date->toFormat($f, true);
+				$v = $date->format($f, true);
 			}
 		}
 		else
@@ -625,7 +622,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-		return '<input type="text" class="span2" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
+		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
 	}
 
 	/**
@@ -1213,7 +1210,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		$format = $params->get('date_table_format', '%Y-%m-%d');
+		$format = $params->get('date_table_format', 'Y-m-d');
 
 		$fromTable = $origTable;
 
@@ -1261,9 +1258,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				else
 				{
 					$d = new FabDate($default[0]);
-					$default[0] = $d->toFormat($format);
+					$default[0] = $d->format($format);
 					$d = new FabDate($default[1]);
-					$default[1] = $d->toFormat($format);
+					$default[1] = $d->format($format);
 				}
 				// Add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
@@ -1291,7 +1288,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					{
 						$d = new FabDate($o->text);
 						$o->value = $d->toSql();
-						$o->text = $d->toFormat($format);
+						$o->text = $d->format($format);
 					}
 					if (!array_key_exists($o->value, $ddData))
 					{
@@ -1313,7 +1310,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				if ($default !== '')
 				{
 					$d = new FabDate($default);
-					$default = $d->toFormat($format);
+					$default = $d->format($format);
 				}
 				// Add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
@@ -1462,7 +1459,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			$orig_data = $data[$j][$key];
 			$date = JFactory::getDate($data[$j][$key]);
-			$data[$j][$key] = $date->toFormat($format, true);
+			$data[$j][$key] = $date->format($format, true);
 			/* $$$ hugh - bit of a hack specific to a customer who needs to import dates with year as 1899,
 			 * which we then change to 1999 using a tablecsv import script (don't ask!). But of course FabDate doesn't
 			 * like dates outside of UNIX timestamp range, so the previous line was zapping them. So I'm just restoring
@@ -1784,7 +1781,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	protected function toSeconds($date)
 	{
-		return (int) ($date->toFormat('%H') * 60 * 60) + (int) ($date->toFormat('%M') * 60) + (int) $date->toFormat('%S');
+		return (int) ($date->format('H') * 60 * 60) + (int) ($date->format('i') * 60) + (int) $date->format('s');
 	}
 
 	/**
@@ -2292,6 +2289,32 @@ class FabDate extends JDate
 			}
 		}
 		return $str;
+	}
+
+	/**
+	 * Converts strftime format into PHP date() format
+	 *
+	 * @param   string  $format  strftime format
+	 *
+	 * @since 3.0.7
+	 *
+	 * @return string  php date() format
+	 */
+
+	static public function strftimeFormatToDateFormat(&$format)
+	{
+		if (strstr($format, '%C'))
+		{
+			JError::raiseNotice(200, 'Cant convert %C strftime date format to date format, substituted with Y');
+		}
+
+		$search = array('%e', '%j', '%u', '%V', '%W', '%h', '%B', '%C', '%g', '%G', '%M', '%P', '%r', '%R', '%T', '%X', '%z', '%Z', '%D', '%F', '%s',
+				'%x', '%A', '%Y', '%m', '%d', '%H', '%S');
+
+		$replace = array(' j', 'z', 'w', 'W', 'W', 'M', 'F', 'Y', 'y', 'Y', 'i', 'a', '"g:i:s a', 'H:i', 'H:i:s', 'H:i:s', 'O', 'O', 'm/d/y"', 'Y-m-d', 'U',
+				'Y-m-d', 'l', 'Y', 'm', 'd', 'H', 's');
+
+		$format = str_replace($search, $replace, $format);
 	}
 
 	/**

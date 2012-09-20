@@ -27,7 +27,7 @@ var TableRowSelect = new Class({
 				});
 			
 				tbl.addEvent('click:relay(.fabrik_row)', function (e, r) {
-					var d = $A(r.id.split('_'));
+					var d = Array.from(r.id.split('_'));
 					var data = {};
 					data[this.triggerEl] = d.getLast();
 					var json = {

@@ -63,9 +63,9 @@
 			
 			<field default="" label="PLG_ELEMENT_FILEUPLOAD_IMAGE_LIBRARY_LABEL" name="image_library" type="imagelibs"/>
 				
-			<field default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_LABEL" name="fu_main_max_width" size="3" type="text"/>
+			<field default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_LABEL" name="fu_main_max_width" size="3" class="input-mini" type="text"/>
 				
-			<field default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_LABEL" name="fu_main_max_height" size="3" type="text"/>
+			<field default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_LABEL" name="fu_main_max_height" size="3" class="input-mini" type="text"/>
 				
 			<field description="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_DESC" label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL" name="fu_title_element" type="listfields" valueformat="tableelement"/>
 		</fieldset>
@@ -84,9 +84,9 @@
 			
 			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_SUFFIX_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_SUFFIX_LABEL" name="thumb_suffix" size="10" type="text"/>
 			
-			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_LABEL" name="thumb_max_width" size="3" type="text"/>
+			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_LABEL" name="thumb_max_width" size="3" class="input-mini" type="text"/>
 			
-			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_LABEL" name="thumb_max_height" size="3" type="text"/>
+			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_LABEL" name="thumb_max_height" size="3" class="input-mini" type="text"/>
 		</fieldset>
 	
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_CROP" name="plg-fileupload-crop">
@@ -99,9 +99,9 @@
 		<fieldset name="plg-fileupload-crop-opts">
 			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_LABEL" name="fileupload_crop_dir" size="35" type="text"/>
 
-			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL" name="fileupload_crop_width" size="3" type="text"/>
+			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL" name="fileupload_crop_width" size="3" class="input-mini" type="text"/>
 
-			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL" name="fileupload_crop_height" size="3" type="text"/>
+			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL" name="fileupload_crop_height" size="3" class="input-mini" type="text"/>
 			
 		</fieldset>
 		
@@ -148,7 +148,7 @@
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="60" description="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_LABEL" name="fileupload_amazon_auth_url" size="3" type="text"/>
+			<field default="60" description="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZON_AUTH_URL_LABEL" name="fileupload_amazon_auth_url" size="3" class="input-mini" type="text"/>
 				
 		</fieldset>
 		

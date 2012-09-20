@@ -40,16 +40,19 @@ FabrikHelperHTML::script($srcs, $this->js);
 
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {
+			console.log(document.formvalidator);
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
-	<div class="tabbable tabs-left">
+	<div class="row-fluid" id="elementFormTable">
+
+		<div class="span2">
 
 
-				<ul class="nav nav-tabs"style="margin-top:40px">
+				<ul class="nav nav-list"style="margin-top:40px">
 					<li class="active">
 				    	<a data-toggle="tab" href="#detailsX">
 				    		<?php echo JText::_('COM_FABRIK_DETAILS')?>
@@ -76,21 +79,21 @@ FabrikHelperHTML::script($srcs, $this->js);
 				    	</a>
 				    </li>
 				</ul>
+		</div>
+		<div class="span10">
 
+		    <div class="tab-content">
+		    	<?php
+		    	echo $this->loadTemplate('details');
+		    	echo $this->loadTemplate('data');
+		    	echo $this->loadTemplate('publishing');
+		    	echo $this->loadTemplate('plugins');
+		    	echo $this->loadTemplate('access');
+		    	?>
+		    </div>
 
-
-	    <div class="tab-content">
-	    	<?php
-	    	echo $this->loadTemplate('details');
-	    	echo $this->loadTemplate('data');
-	    	echo $this->loadTemplate('publishing');
-	    	echo $this->loadTemplate('plugins');
-	    	echo $this->loadTemplate('access');
-	    	?>
-	    </div>
-
-
-		<input type="hidden" name="task" value="" />
-		<?php echo JHtml::_('form.token'); ?>
+			<input type="hidden" name="task" value="" />
+			<?php echo JHtml::_('form.token'); ?>
+		</div>
 	</div>
 </form>

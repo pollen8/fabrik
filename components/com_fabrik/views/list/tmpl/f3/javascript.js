@@ -68,7 +68,7 @@ var FabrikGrid = new Class({
 			'width':'17px'
 		}}).adopt(
 			new Element('div', {'styles':{'height':this.container.getElement('.fabrikList').getStyle('height')}})
-		).injectInside(document.getElement('.scroll-x'));
+		).inject(document.getElement('.scroll-x'));
 		
 	//watch the mouse scroll in the scrollY div and move the yscroller's scroll pos
 	this.fxScrollMirror = new Fx.Scroll(this.yScroller);
@@ -117,7 +117,7 @@ var FabrikGrid = new Class({
 				}
 			}
 		}.bind(this));
-		var h = $A(this.container.getElements('.fabrik_ordercell').splice(0, 1));
+		var h = Array.from(this.container.getElements('.fabrik_ordercell').splice(0, 1));
 		h.each(function (r) {
 			r.addEvent('mouseover', function(e) {
 				this.resizeCol = e.target;

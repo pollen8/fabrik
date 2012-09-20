@@ -398,7 +398,7 @@ class FabrikFEModelExport
 	{
 		$db = FabrikWorker::getDbo();
 		initGzip();
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = $this->tableIds[0];
 		$listModel->setId($id);
 		$listModel->setOutPutFormat('csv');

@@ -127,7 +127,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 				{
 					$enddate = $startdate;
 				}
-				$strParam = "start=" . $startdate->toFormat('%Y/%m/%d') . ";end=" . $enddate->toFormat('%Y/%m/%d') . ";";
+				$strParam = "start=" . $startdate->format('Y/m/d') . ";end=" . $enddate->format('Y/m/d') . ";";
 				if ($process !== '')
 				{
 					$strParam .= "processId={$processid};";
@@ -149,7 +149,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 				{
 					$this->fc
 						->addGanttMilestone($d->__pk_val,
-							"date=" . $enddate->toFormat('%Y/%m/%d') . ";radius=10;color=333333;shape=Star;numSides=5;borderThickness=1");
+							"date=" . $enddate->format('Y/m/d') . ";radius=10;color=333333;shape=Star;numSides=5;borderThickness=1");
 				}
 
 				if ($connector !== '' && $d->$connectorraw !== '')
@@ -184,15 +184,15 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 				$c++;
 			}
 		}
-		$startyear = $mindate ? $mindate->toFormat('%Y') : date('Y');
-		$endyear = $maxdate ? $maxdate->toFormat('%Y') : 0;
+		$startyear = $mindate ? $mindate->format('Y') : date('Y');
+		$endyear = $maxdate ? $maxdate->format('Y') : 0;
 
 		$monthdisplay = $params->get('fusion_gannt_chart_monthdisplay');
 		$this->fc->addGanttCategorySet("bgColor=333333;fontColor=99cc00;isBold=1;fontSize=14");
 		for ($y = $startyear; $y <= $endyear; $y++)
 		{
-			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
-			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m') + 1 : 13;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->format('m') : 1;
+			$lastmonth = ($y == $endyear) ? $maxdate->format('m') + 1 : 13;
 
 			$start = date('Y/m/d', mktime(0, 0, 0, $firstmonth, 1, $y));
 			$end = date('Y/m/d', mktime(0, 0, 0, $lastmonth, 0, $y));
@@ -204,8 +204,8 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 		//echo "start year = $startyear end yera = $endyear ";exit;
 		for ($y = $startyear; $y <= $endyear; $y++)
 		{
-			$lastmonth = ($y == $endyear) ? $maxdate->toFormat('%m') + 1 : 13;
-			$firstmonth = ($y == $startyear) ? (int) $mindate->toFormat('%m') : 1;
+			$lastmonth = ($y == $endyear) ? $maxdate->format('m') + 1 : 13;
+			$firstmonth = ($y == $startyear) ? (int) $mindate->format('m') : 1;
 			for ($m = $firstmonth; $m < $lastmonth; $m++)
 			{
 				$starttime = mktime(0, 0, 0, $m, 1, $y);

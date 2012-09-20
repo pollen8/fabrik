@@ -13,8 +13,8 @@ if ($this->params->get('show-title', 1)) {?>
 <?php }
 echo $form->intro;
 $model = $this->getModel();
-$groupTmpl = $model->_editable ? 'group' : 'group_details';
-if ($model->_editable) {
+$groupTmpl = $model->editable ? 'group' : 'group_details';
+if ($model->editable) {
 echo '<form action="' . $form->action . '" class="fabrikForm form-horizontal" method="post" name="' . $form->name . '" id="' . $form->formid
 				. '" enctype="' . $model->getFormEncType() . '">';
 }
@@ -107,7 +107,7 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 	</<?php echo $form->fieldsetTag ?>>
 <?php
 	}
-	if ($model->_editable) {
+	if ($model->editable) {
 	echo $this->hiddenFields;
 	}
 	?>
@@ -117,7 +117,7 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 	<?php if ($this->hasActions) {?>
 	<div class="fabrikActions form-actions">
 
-	<div class="row">
+	<div class="row-fluid">
 		<div class="span4">
 			<div class="btn-group">
 			<?php

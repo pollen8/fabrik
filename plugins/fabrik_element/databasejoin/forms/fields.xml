@@ -39,9 +39,9 @@
 			
 		<field connection="params_join_conn_id" description="PLG_ELEMENT_DBJOIN_JOIN_LABEL_DESC" label="PLG_ELEMENT_DBJOIN_JOIN_LABEL_LABEL" name="join_val_column" table="params_join_db_name" type="listfields"/>
 			
-		<field cols="40" description="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_DESC" label="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_LABEL" name="join_val_column_concat" rows="8" type="textarea"/>
+		<field cols="40" description="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_DESC" label="PLG_ELEMENT_DBJOIN_OR_CONCAT_LABEL_LABEL" name="join_val_column_concat" rows="6" type="textarea"/>
 			
-		<field cols="40" description="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_DESC" label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL" name="database_join_where_sql" rows="8" type="textarea"/>
+		<field cols="40" description="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_DESC" label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL" name="database_join_where_sql" rows="6" type="textarea"/>
 			
 		<field default="1" description="PLG_ELEMENT_DBJOIN_JOIN_WHERE_ACCESS_DESC" label="PLG_ELEMENT_DBJOIN_JOIN_WHERE_ACCESS_LABEL" name="database_join_where_access" type="accesslevel"/>
 			
@@ -74,9 +74,9 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field deafult="0" description="PLG_ELEMENT_DBJOIN_Y_OFFSET_DESC" label="PLG_ELEMENT_DBJOIN_Y_OFFSET_LABEL" name="yoffset" size="3" type="text"/>
+		<field deafult="0" description="PLG_ELEMENT_DBJOIN_Y_OFFSET_DESC" label="PLG_ELEMENT_DBJOIN_Y_OFFSET_LABEL" name="yoffset" size="3" class="input-mini" type="text"/>
 			
-		<field deafult="0" description="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_DESC" label="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_LABEL" name="join_popupwidth" size="3" type="text"/>
+		<field deafult="0" description="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_DESC" label="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_LABEL" name="join_popupwidth" size="3" class="input-mini" type="text"/>
 			
 		<field default="0" description="PLG_ELEMENT_DBJOIN_READONLY_LINK_DESC" label="PLG_ELEMENT_DBJOIN_READONLY_LINK_LABEL" name="databasejoin_readonly_link" type="radio">
 				<option value="0">JNO</option>
@@ -99,7 +99,7 @@
 			
 		<field default="6" description="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_MULTILIST_SIZE_LABEL" name="dbjoin_multilist_size" size="2" type="field"/>
 
-		<field default="20" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_LABEL" name="dbjoin_autocomplete_size" size="3" type="field"/>
+		<field default="20" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_SIZE_LABEL" name="dbjoin_autocomplete_size" size="3" class="input-mini" type="field"/>
 
 		<field default="contains" description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_DESC" label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_LABEL" name="dbjoin_autocomplete_how" type="radio">
 				<option value="contains">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_CONTAINS</option>

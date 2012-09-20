@@ -35,9 +35,9 @@ var Mediabox;
 			]).setStyle("display", "none")
 		);
 
-		image = new Element("div", {id: "mbImage"}).injectInside(center);
+		image = new Element("div", {id: "mbImage"}).inject(center);
 
-		bottom = new Element("div", {id: "mbBottom"}).injectInside(bottomContainer).adopt(
+		bottom = new Element("div", {id: "mbBottom"}).inject(bottomContainer).adopt(
 			new Element("a", {id: "mbCloseLink", href: "#"}).addEvent("click", close),
 			nextLink = new Element("a", {id: "mbNextLink", href: "#"}).addEvent("click", next),
 			prevLink = new Element("a", {id: "mbPrevLink", href: "#"}).addEvent("click", previous),

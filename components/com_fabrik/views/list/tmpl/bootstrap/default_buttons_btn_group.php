@@ -2,7 +2,7 @@
 <?php if ($this->canGroupBy) :?>
 		<div class="btn-group">
 			<a href="#" class="btn dropdown-toggle groupBy" data-toggle="dropdown">
-				<i class="icon-random"></i>
+				<i class="icon-list-view"></i>
 				<?php echo JText::_('COM_FABRIK_GROUP_BY');?>
 			</a>
 			<ul class="dropdown-menu">
@@ -17,7 +17,7 @@
 <?php if ($this->showAdd) {?>
 
 		<a class="addbutton btn addRecord" href="<?php echo $this->addRecordLink;?>">
-			<i class="icon-plus-sign"></i>
+			<i class="icon-plus"></i>
 			<?php echo $this->addLabel?>
 		</a>
 <?php }?>

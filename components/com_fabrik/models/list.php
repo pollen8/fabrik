@@ -542,7 +542,7 @@ class FabrikFEModelList extends JModelForm
 		$profiler = JProfiler::getInstance('Application');
 
 		$traceModel = ini_get('mysql.trace_mode');
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$fabrikDb = $listModel->getDb();
 		$listModel->setBigSelects();
@@ -6289,7 +6289,7 @@ class FabrikFEModelList extends JModelForm
 
 	public static function cacheDoCalculations($listId)
 	{
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$db = FabrikWorker::getDbo();
 		$formModel = $listModel->getFormModel();
@@ -7741,7 +7741,7 @@ class FabrikFEModelList extends JModelForm
 
 	public static function columnData($listId, $col)
 	{
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$table = $listModel->getTable();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');

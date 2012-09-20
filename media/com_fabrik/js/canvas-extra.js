@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,CanvasRenderingContext2D:true,isMobile:true,click2:true,mousemove:true, */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,CanvasRenderingContext2D:true,isMobile:true,click2:true,mousemove:true, */
 
 (function () {
 	CanvasRenderingContext2D.prototype.__defineGetter__("width", function () {

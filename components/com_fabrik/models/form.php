@@ -2273,7 +2273,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->modifiedValidationData = array();
 		$w = new FabrikWorker;
 
-		// $joindata = array();
 		$ok = true;
 
 		// $$$ rob 01/07/2011 fileupload needs to examine records previous data for validations on edting records
@@ -2375,6 +2374,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							}
 						}
 					}
+
 					// Internal element plugin validations
 					if (!$elementModel->validate(@$form_data, $c))
 					{
@@ -2463,6 +2463,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$elementModel->defaults = null;
 			}
 		}
+
 		// Insert join data into request array
 		$post['join'] = $joindata;
 		JRequest::setVar('join', $joindata, 'post');
@@ -2470,8 +2471,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
 		}
+
 		FabrikHelperHTML::debug($this->errors, 'form:errors');
 		$this->setErrors($this->errors);
+
 		return $ok;
 	}
 

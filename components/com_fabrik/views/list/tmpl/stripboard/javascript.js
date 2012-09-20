@@ -60,7 +60,7 @@ var FabrikGrid = new Class({
 			'width':'17px'
 		}}).adopt(
 			new Element('div', {'styles':{'height':this.container.getElement('.fabrikList').getStyle('height')}})
-		).injectInside(document.getElement('.scroll-x'));
+		).inject(document.getElement('.scroll-x'));
 		
 	//watch the mouse scroll in the scrollY div and move the yscroller's scroll pos
 	this.fxScrollMirror = new Fx.Scroll(this.yScroller);

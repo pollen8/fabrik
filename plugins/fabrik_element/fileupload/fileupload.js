@@ -471,7 +471,7 @@ var ImageWidget = new Class({
 		} else {
 			filepath = el.retrieve('filepath');
 		}
-		el.injectInside(document.body).hide();
+		el.inject(document.body).hide();
 
 		(function () {
 			var show, imagew, imageh, imagex, imagey, i;

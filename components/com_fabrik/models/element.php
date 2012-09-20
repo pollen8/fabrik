@@ -4777,10 +4777,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$o->database_join_display_type = 'dropdown';
 		$o->joinType = 'simple';
 		$o->join_conn_id = -1;
-		$o->date_table_format = '%Y-%m-%d';
-		$o->date_form_format = '%Y-%m-%d %H:%M:%S';
+		$o->date_table_format = 'Y-m-d';
+		$o->date_form_format = 'Y-m-d H:i:s';
 		$o->date_showtime = 0;
-		$o->date_time_format = '%H:%M';
+		$o->date_time_format = 'H:i';
 		$o->date_defaulttotoday = 1;
 		$o->date_firstday = 0;
 		$o->multiple = 0;

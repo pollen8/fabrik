@@ -1265,8 +1265,10 @@ class FabrikAdminModelList extends FabModelAdmin
 			$form->error = JText::_('COM_FABRIK_FORM_ERROR_MSG_TEXT');
 			$form->submit_button_label = JText::_('COM_FABRIK_SAVE');
 			$form->published = $item->published;
-			$form->form_template = 'default';
-			$form->view_only_template = 'default';
+
+			$version = new JVersion;
+			$form->form_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
+			$form->view_only_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
 
 			if (!$form->store())
 			{

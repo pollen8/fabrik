@@ -2,7 +2,7 @@
 <form>
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date">
-			<field label="PLG_ELEMENT_WIDTH_LABEL" name="width" size="3" type="text"/>
+			<field label="PLG_ELEMENT_WIDTH_LABEL" name="width" size="3" class="input-mini" type="text"/>
 				
 			<field default="0" label="PLG_ELEMENT_DATE_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
@@ -28,9 +28,9 @@
 				<option value="1">PLG_ELEMENT_DATE_LOCAL_TIME</option>
 			</field>
 			
-			<field default="%Y-%m-%d" description="PLG_ELEMENT_DATE_TABLE_FORMAT_DESC" label="PLG_ELEMENT_DATE_TABLE_DATE_FORMAT_LABEL" length="20" name="date_table_format" type="text"/>
+			<field default="Y-m-d" description="PLG_ELEMENT_DATE_TABLE_FORMAT_DESC" label="PLG_ELEMENT_DATE_TABLE_DATE_FORMAT_LABEL" length="20" name="date_table_format" type="text"/>
 				
-			<field default="%Y-%m-%d" description="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_DESC" label="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_LABEL" length="20" name="date_form_format" type="text"/>
+			<field default="Y-m-d" description="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_DESC" label="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_LABEL" length="20" name="date_form_format" type="text"/>
 				
 			<field default="0" description="PLG_ELEMENT_DATE_DEFAULT_TODAY_DESC" label="PLG_ELEMENT_DATE_DEFAULT_TODAY_LABEL" name="date_defaulttotoday" type="radio">
 					<option value="0">JNO</option>
@@ -66,7 +66,7 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="%H:%M" description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" length="20" name="date_time_format" type="text"/>
+			<field default="H:i" description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" length="20" name="date_time_format" type="text"/>
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DATE_ADVANCED_HEADING" name="plg-element-date-advanced">

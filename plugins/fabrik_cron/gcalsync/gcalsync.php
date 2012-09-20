@@ -290,7 +290,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 					// Grab the start date, apply the tx offset, and format it for gcal
 					$start_date = JFactory::getDate($event->$gcal_start_date_element);
 					$start_date->setOffset($tzOffset);
-					$start_fdate = $start_date->toFormat('%Y-%m-%d %H:%M:%S');
+					$start_fdate = $start_date->toSql();
 					$date_array = explode(' ', $start_fdate);
 					$when->startTime = "{$date_array[0]}T{$date_array[1]}.000{$tzOffset}:00";
 
@@ -307,7 +307,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 					// Grab the end date, apply the tx offset, and format it for gcal
 					$end_date = JFactory::getDate($event->$gcal_end_date_element);
 					$end_date->setOffset($tzOffset);
-					$end_fdate = $end_date->toFormat('%Y-%m-%d %H:%M:%S');
+					$end_fdate = $end_date->toSql();
 					$date_array = explode(' ', $end_fdate);
 					$when->endTime = "{$date_array[0]}T{$date_array[1]}.000{$tzOffset}:00";
 					$newEvent->when = array($when);

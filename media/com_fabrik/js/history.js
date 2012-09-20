@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 var History = new Class({
 	initialize: function (undobutton, redobutton) {
@@ -24,7 +24,7 @@ var History = new Class({
 		Fabrik.addEvent('fabrik.history.add', function (e) {
 			this.add(e);
 		}.bind(this));
-		this.history = $A([]);
+		this.history = [];
 	},
 
 	undo : function () {

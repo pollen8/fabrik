@@ -48,6 +48,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout = JRequest::getCmd('layout', 'default');
+		$this->name = 'Fabrik';
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
@@ -88,6 +89,8 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 	public function process()
 	{
+		$this->name = 'Fabrik';
+
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
