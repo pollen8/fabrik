@@ -184,9 +184,15 @@ class FabrikPlugin extends JPlugin
 			if (is_object($val))
 			{
 				$val = isset($val->$repeatCounter) ? $val->$repeatCounter : '';
+				$data['params'][$key] = $val;
 			}
-			$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter) : $val;
+
+			else
+			{
+				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, 'not found!') : $val;
+			}
 		}
+
 		// Bind the plugins data to the form
 		$form->bind($data);
 
