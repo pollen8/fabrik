@@ -710,13 +710,14 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string	param name which contains the PHP code to eval
-	 * @param   array	data
+	 * @param   string             $paramName  param name which contains the PHP code to eval
+	 * @param   array              $data       data
+	 * @param   FabrikFEModelForm  $formModel  form model
 	 *
 	 * @return  bool
 	 */
 
-	function shouldProcess($paramName, $data = null)
+	protected function shouldProcess($paramName, $data = null, $formModel = null)
 	{
 		if (is_null($data))
 		{
@@ -729,6 +730,15 @@ class FabrikPlugin extends JPlugin
 			return true;
 		}
 		$w = new FabrikWorker;
+		if (!is_null($formModel))
+		{
+			$origData = $formModel->getOrigData();
+			$origData = JArrayHelper::fromObject($origData[0]);
+		}
+		else
+		{
+			$origData = array();
+		}
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $data));
 		$res = @eval($condition);
 		if (is_null($res))
@@ -842,7 +852,7 @@ class FabrikPlugin extends JPlugin
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
-		->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
+			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
 		$db->setQuery($query);
 		return $db->loadColumn();
 	}

@@ -75,7 +75,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon'))
+		if (!$this->shouldProcess('email_conditon', null, $formModel))
 		{
 			return;
 		}
