@@ -465,7 +465,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$time = JArrayHelper::getValue($value, 'time', '');
 			if ($time !== '')
 			{
-				list($h, $m, $s) = explode(':', $time);
+				$bits = explode(':', $time);
+				$h = JArrayHelper::getValue($bits, 0, 0);
+				$m = JArrayHelper::getValue($bits, 1, 0);
+				$s = JArrayHelper::getValue($bits, 2, 0);
 				$d->setTime($h, $m, $s);
 			}
 			$value = $d->toSql();
