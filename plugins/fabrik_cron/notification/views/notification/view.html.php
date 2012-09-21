@@ -22,6 +22,15 @@ jimport('joomla.application.component.view');
 class fabrikViewNotification extends JView
 {
 
+	/**
+	 * Still a wip access the view of subscribed notifcations with url:
+	 * http://localhost/fabrik30x/index.php?option=com_fabrik&task=cron.display&id=3
+	 *
+	 * deletion not routing right yet
+	 * langauge strings not loading either
+	 *
+	 */
+
 	function display($tpl = 'default')
 	{
 		$this->assignRef('rows', $this->get('UserNotifications'));

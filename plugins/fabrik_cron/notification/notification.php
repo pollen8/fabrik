@@ -40,7 +40,7 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 		->join('LEFT', '#__{package}_notification_event_sent AS s ON s.notification_event_id = e.id')
 		->join('INNER', '#__users AS observer_user ON observer_user.id = n.user_id')
 		->join('INNER', '#__users AS creator_user ON creator_user.id = e.user_id')
-		->where('(s.sent <> 1 OR s.sent IS NULL)  AND  n.user_id <> e.user_id');
+		->where('(s.sent <> 1 OR s.sent IS NULL)  AND  n.user_id <> e.user_id')
 		->order('n.reference');
 
 		/* $sql = "SELECT n.*, e.event AS event, e.id AS event_id,
