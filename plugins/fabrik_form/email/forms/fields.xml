@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-form-email">
+		<fieldset name="plg-form-email" label="To">
 		
-			<field description="PLG_FABRIK_FORM_EMAIL_TO_DESC" label="PLG_FABRIK_FORM_EMAIL_TO_LABEL" name="email_to" repeat="true" size="97" type="text"/>
+		<field description="PLG_FABRIK_FORM_EMAIL_TO_DESC" label="PLG_FABRIK_FORM_EMAIL_TO_LABEL" name="email_to" repeat="true" size="97" type="text"/>
 				
 			<field cols="55" description="PLG_FABRIK_FORM_EMAIL_TO_EVAL_DESC" label="PLG_FABRIK_FORM_EMAIL_TO_EVAL_LABEL" name="email_to_eval" repeat="true" rows="3" type="textarea"/>
+			
+			<field name="to_group"
+				type="usergroup"
+				multiple="true"
+				size="6"
+				repeat="true"
+				description="PLG_FABRIK_FORM_EMAIL_GROUP_DESC"
+				label="PLG_FABRIK_FORM_EMAIL_GROUP_LABEL" />
+				
+		</fieldset>
+		<fieldset name="plg-form-email-options" label="Options">
 				
 			<field description="PLG_FABRIK_EMAIL_FROM_DESC" label="PLG_FABRIK_EMAIL_FROM_LABEL" name="email_from" repeat="true" size="97" type="text"/>
 				

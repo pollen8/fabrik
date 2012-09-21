@@ -75,7 +75,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon'))
+		if (!$this->shouldProcess('email_conditon', null, $formModel))
 		{
 			return;
 		}
@@ -189,6 +189,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		$query = $db->getQuery(true);
 		$email_to = array_map('trim', $email_to);
+
+		// Add any assigned groups to the to list
+		$sendTo = (array) $params->get('to_group');
+		$groupEmails = $this->getUsersInGroups($sendTo, $field = 'email');
+		$email_to = array_merge($email_to, $groupEmails);
+		$email_to = array_unique($email_to);
 
 		// Remove blank email addresses
 		$email_to = array_filter($email_to);

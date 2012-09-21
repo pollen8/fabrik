@@ -1,6 +1,12 @@
-<?php if (count($this->rows) == 0) {
-echo JText::_('YOU_ARE_NOT_SUBSCRIBED_TO_ANY_NOTIFICATIONS');
-}else{?>
+<?php
+/**
+ *
+ */
+
+if (count($this->rows) == 0) :
+	echo JText::_('YOU_ARE_NOT_SUBSCRIBED_TO_ANY_NOTIFICATIONS');
+else:
+?>
 <form action="index.php" method="post" name="adminForm">
 		<table class="adminlist">
 			<thead>
@@ -17,12 +23,12 @@ echo JText::_('YOU_ARE_NOT_SUBSCRIBED_TO_ANY_NOTIFICATIONS');
 <tbody>
 <?php
 $k = 0;
-for ( $i = 0, $n = count($this->rows); $i < $n; $i ++ ) {
-				$row = & $this->rows[$i];
+for ($i = 0, $n = count($this->rows); $i < $n; $i ++) :
+	$row = $this->rows[$i];
 	?>
 	<tr class="<?php echo "row$k"; ?>">
 		<td>
-			<?php echo JHTML::_('grid.checkedout',   $row, $i);?>
+			<?php echo JHTML::_('grid.checkedout', $row, $i);?>
 		</td>
 		<td><a href="<?php echo $row->url?>"><?php echo $row->title?></a></td>
 		<td><?php echo $row->reason?></td>
@@ -30,7 +36,7 @@ for ( $i = 0, $n = count($this->rows); $i < $n; $i ++ ) {
 
 	<?php
 	$k = 1 - $k;
-}
+endfor;
 ?>
 </tbody>
 </table>
@@ -38,10 +44,10 @@ for ( $i = 0, $n = count($this->rows); $i < $n; $i ++ ) {
 <input type="submit" value="<?php echo JText::_('DELETE')?>" class="button"/></span></span></a></div>
 
 <input type="hidden" name="option" value="com_fabrik" />
-<input type="hidden" name="view" value="cron" />
-<input type="hidden" name="controller" value="cron.cronnotification" />
+<input type="hidden" name="view" value="cron.notification" />
 <input type="hidden" name="task" value="delete" />
 <input type="hidden" name="boxchecked" value="0" />
 <?php echo JHTML::_('form.token'); ?>
 </form>
-<?php }?>
+<?php endif;
+?>

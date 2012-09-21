@@ -330,17 +330,18 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		$db = $this->getDb();
 		$sql = $this->buildQuery($data, $incWhere, $repeatCounter);
+		$sqlKey = (string) $sql;
 		$db->setQuery($sql);
-		if (array_key_exists($sql, $this->_optionVals))
+		if (array_key_exists($sqlKey, $this->_optionVals))
 		{
-			return $this->_optionVals[$sql];
+			return $this->_optionVals[$sqlKey];
 		}
 		if (JDEBUG && JRequest::getVar('format') == 'raw')
 		{
 			//echo "/* ".$db->getQuery()." */\n";
 		}
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
-		$this->_optionVals[$sql] = $db->loadObjectList();
+		$this->_optionVals[$sqlKey] = $db->loadObjectList();
 		if ($db->getErrorNum())
 		{
 			JError::raiseError(501, $db->getErrorMsg());
@@ -349,7 +350,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			array_unshift($this->_optionVals[$sql], JHTML::_('select.option', '', $this->_getSelectLabel()));
 		}
-		return $this->_optionVals[$sql];
+		return $this->_optionVals[$sqlKey];
 	}
 
 	/**
@@ -495,21 +496,23 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			$whereBits = explode('___', $wherekey);
 			$wherekey = array_pop($whereBits);
-			$where = ' WHERE ' . $wherekey . ' = ' . $db->quote($whereval);
+			$where = $wherekey . ' = ' . $db->quote($whereval);
 		}
 		$filter = $params->get('cascadingdropdown_filter');
-		// $$$ hugh - temporary hack to work around this issue:
-		// http://fabrikar.com/forums/showthread.php?p=71288#post71288
-		// ... which is basically that if they are using {placeholders} in their
-		// filter query, there's no point trying to apply that filter if we
-		// aren't in form view, for instance when building a search filter
-		// or in table view when the cdd is in a repeat group, 'cos there won't
-		// be any {placeholder} data to use.
-		// So ... for now, if the filter contains {...}, and view!=form ... skip it
-		// $$$ testing fix for the bandaid, ccd JS should not be submitting data from form
+
+		/* $$$ hugh - temporary hack to work around this issue:
+		 * http://fabrikar.com/forums/showthread.php?p=71288#post71288
+		 * ... which is basically that if they are using {placeholders} in their
+		 * filter query, there's no point trying to apply that filter if we
+		 * aren't in form view, for instance when building a search filter
+		 * or in table view when the cdd is in a repeat group, 'cos there won't
+		 * be any {placeholder} data to use.
+		 * So ... for now, if the filter contains {...}, and view!=form ... skip it
+		 * $$$ testing fix for the bandaid, ccd JS should not be submitting data from form
+		 */
 		if (trim($filter) != '')
 		{
-			$where .= ($where == '') ? ' WHERE ' : ' AND ';
+			$where .= ($where == '') ? ' ' : ' AND ';
 			$where .= $filter;
 		}
 		$w = new FabrikWorker;
@@ -527,7 +530,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
+			// $where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where :  $this->_autocomplete_where;
+			$where .= $where == '' ? ' AND ' . $this->_autocomplete_where :  $this->_autocomplete_where;
+
 		}
 		$data = array_merge($data, $placeholders);
 		$where = $w->parseMessageForPlaceHolder($where, $data);
@@ -576,22 +581,31 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		$val = str_replace($db->quoteName($table), $db->quoteName($join->table_join_alias), $val);
-		// $$$ rob @todo commented query wont work when label/id selected from joined group of look up table
-		// not sure if we should fix this or just remove those elements from the cdd element id/label fields
-		//see http://fabrikar.com/forums/showthread.php?t=15546
-		//$this->_sql[$repeatCounter] = "SELECT DISTINCT($key) AS value, $val AS text FROM ".$db->quoteName($table) .' AS '.$db->quoteName($join->table_join_alias)." $where ".$listModel->buildQueryJoin()." ";
-		$sql = "SELECT DISTINCT($key) AS value, $val AS text";
+
+		$query = $db->getQuery(true);
+		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . 'AS text');
+
+		//$sql = "SELECT DISTINCT($key) AS value, $val AS text";
 		$desc = $params->get('cdd_desc_column', '');
 		if ($desc !== '')
 		{
-			$sql .= ', ' . FabrikString::safeColName($desc) . ' AS description';
+			//$sql .= ', ' . FabrikString::safeColName($desc) . ' AS description';
+			$query->select(FabrikString::safeColName($desc) . ' AS description');
 		}
-		$sql .= ' FROM ' . $db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias) . ' ' . $where;
-		$this->_sql[$sig] = $sql;
+		//$sql .= ' FROM ' . $db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias) . ' ' . $where;
+
+		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
+
+		$query->where(FabrikString::rtrimword($where));
+
 		if (!JString::stristr($where, 'order by'))
 		{
-			$this->_sql[$sig] .= " ORDER BY $orderby ASC ";
+			//$this->_sql[$sig] .= " ORDER BY $orderby ASC ";
+			$query->order($orderby . ' ASC');
+
 		}
+		$this->_sql[$sig] = $query;
+
 		FabrikHelperHTML::debug($this->_sql[$sig]);
 		return $this->_sql[$sig];
 	}

@@ -102,6 +102,9 @@ class FabrikAdminModelCron extends FabModelAdmin
 		}
 		JPluginHelper::importPlugin('fabrik_cron');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+
+		// Trim old f2 cron prefix.
+		$plugin = FabrikString::ltrimiword($plugin, 'cron');
 		if ($plugin == '')
 		{
 			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
@@ -127,7 +130,7 @@ class FabrikAdminModelCron extends FabModelAdmin
 		if (JRequest::getVar('lastrun') == '')
 		{
 			$date = JFactory::getDate();
-			$data['lastrun'] = $date->toSQl();
+			$data['lastrun'] = $date->toSql();
 		}
 		$data['params'] = json_encode($data['params']);
 		return parent::save($data);

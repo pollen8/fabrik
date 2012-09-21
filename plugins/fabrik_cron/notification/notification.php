@@ -1,5 +1,4 @@
 <?php
-
 /**
  * A cron task to email records to a give set of users
  * @package     Joomla
@@ -42,16 +41,27 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 	{
 
 		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('n.*, e.event AS event, e.id AS event_id,
+		n.user_id AS observer_id, observer_user.name AS observer_name, observer_user.email AS observer_email,
+		e.user_id AS creator_id, creator_user.name AS creator_name, creator_user.email AS creator_email')
+		->from('#__{package}_notification AS n')
+		->join('LEFT', '#__{package}_notification_event AS e ON e.reference = n.reference')
+		->join('LEFT', '#__{package}_notification_event_sent AS s ON s.notification_event_id = e.id')
+		->join('INNER', '#__users AS observer_user ON observer_user.id = n.user_id')
+		->join('INNER', '#__users AS creator_user ON creator_user.id = e.user_id')
+		->where('(s.sent <> 1 OR s.sent IS NULL)  AND  n.user_id <> e.user_id')
+		->order('n.reference');
 
-		$sql = "SELECT n.*, e.event AS event, e.id AS event_id,
+		/* $sql = "SELECT n.*, e.event AS event, e.id AS event_id,
 		n.user_id AS observer_id, observer_user.name AS observer_name, observer_user.email AS observer_email,
 		e.user_id AS creator_id, creator_user.name AS creator_name, creator_user.email AS creator_email
 		 FROM #__{package}_notification AS n" . "\n LEFT JOIN #__{package}_notification_event AS e ON e.reference = n.reference"
 			. "\n LEFT JOIN #__{package}_notification_event_sent AS s ON s.notification_event_id = e.id"
 			. "\n INNER JOIN #__users AS observer_user ON observer_user.id = n.user_id"
 			. "\n INNER JOIN #__users AS creator_user ON creator_user.id = e.user_id" . "\n WHERE (s.sent <> 1 OR s.sent IS NULL)"
-			. "\n AND  n.user_id <> e.user_id" . "\n ORDER BY n.reference"; //don't bother informing users about events that they've created themselves
-		$db->setQuery($sql);
+			. "\n AND  n.user_id <> e.user_id" . "\n ORDER BY n.reference"; //don't bother informing users about events that they've created themselves */
+		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
 		$config = JFactory::getConfig();
@@ -76,8 +86,12 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 			}
 			$usermsgs[$row->observer_email][] = $msg;
 
-			$sent[] = 'INSERT INTO #__{package}_notification_event_sent (`notification_event_id`, `user_id`, `sent`) VALUES (' . $row->event_id
-				. ', ' . $row->observer_id . ', 1)';
+			$query->clear();
+			$query->insert('#__{package}_notification_event_sent')
+			->set(array('notification_event_id = ' . $row->event_id, 'user_id = ' . $row->observer_id, 'sent = 1'));
+			$sent[] = (string) $query;
+			/* $sent[] = 'INSERT INTO #__{package}_notification_event_sent (`notification_event_id`, `user_id`, `sent`) VALUES (' . $row->event_id
+				. ', ' . $row->observer_id . ', 1)'; */
 		}
 		$subject = $sitename . ": " . JText::_('FABRIK_NOTIFICATION_EMAIL_SUBJECT');
 		foreach ($usermsgs as $email => $messages)
@@ -93,26 +107,4 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 		}
 	}
 
-	/**
-	 * show a new for entering the form actions options
-	 */
-
-	function renderAdminSettings()
-	{
-		//JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
-		$this->getRow();
-		$pluginParams = $this->getParams();
-
-		$document = JFactory::getDocument();
-?>
-<div id="page-<?php echo $this->_name; ?>" class="pluginSettings"
-	style="display: none"><?php
-		echo $pluginParams->render('params');
-						  ?></div>
-
-	<?php
-		return;
-	}
-
 }
-			?>

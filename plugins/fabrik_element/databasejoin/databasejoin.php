@@ -673,7 +673,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
 		if (!$query)
 		{
-		return $where;
+			return $where;
 		}
 		else
 		{
@@ -1366,6 +1366,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return implode("\n", $return);
 	}
 
+	/**
+	 * Get the hidden fields used to store additional filter information
+	 *
+	 * @return string  HTML fields
+	 */
+
 	protected function filterHiddenFields()
 	{
 		$params = $this->getParams();
@@ -1781,7 +1787,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$t = $params->get('join_db_name');
 		if ($k != '' && $l != '' & $t != '' && $rawval != '')
 		{
-			$db->setQuery("SELECT $l FROM $t WHERE $k = $rawval");
+			$query = $db->getQuery(true);
+			$query->select($l)->from($t)->where($k . ' = ' . $rawval);
+			$db->setQuery($query);
 			return $db->loadResult();
 		}
 		else
@@ -1942,7 +1950,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * get the join to database name
+	 * Get the join to database name
+	 *
 	 * @return  string	database name
 	 */
 
@@ -1975,17 +1984,21 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * On save of element, update its jos_fabrik_joins record and any decendants join record
+	 *
+	 * @param   array   $data       data
+	 * @param   string  $tableJoin  join table
+	 * @param   string  $keyCol     key column
+	 * @param   string  $label      label
+	 *
 	 * @since 3.0b
-	 * on save of element, update its jos_fabrik_joins record and any decendants join record
-	 * @param   array	$data
-	 * @param   string	$tableJoin
-	 * @param   string	$keyCol
-	 * @param   string	$label
+	 *
+	 * @return void
 	 */
 
 	protected function updateFabrikJoins($data, $tableJoin, $keyCol, $label)
 	{
-		//load join based on this element id
+		// Load join based on this element id
 		$this->updateFabrikJoin($data, $this->id, $tableJoin, $keyCol, $label);
 		$children = $this->getElementDescendents($this->id);
 		foreach ($children as $id)
@@ -1998,13 +2011,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Update an elements jos_fabrik_joins record
+	 *
+	 * @param   array   $data       data
+	 * @param   int     $elementId  element id
+	 * @param   string  $tableJoin  join table
+	 * @param   string  $keyCol     key
+	 * @param   string  $label      label
+	 *
 	 * @since 3.0b
-	 * update an elements jos_fabrik_joins record
-	 * @param   array	$data
-	 * @param   int		element id
-	 * @param   string	$tableJoin
-	 * @param   string	$keyCol
-	 * @param   string	$label
+	 *
+	 * @return void
 	 */
 
 	protected function updateFabrikJoin($data, $elementId, $tableJoin, $keyCol, $label)
@@ -2012,16 +2029,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = json_decode($data['params']);
 		$element = $this->getElement();
 		$join = FabTable::getInstance('Join', 'FabrikTable');
-		// $$$ rob 08/05/2012 - toggling from dropdown to multiselect set the list_id to 1, so if you
-		// reset to dropdown then this key would not load the existing join so a secondary join record
-		// would be created for the element.
-		//$key = array('element_id' => $data['id'], 'list_id' => 0);
-		// $$$ hugh - NOOOOOOOO!  Creating a new user element, $data['id'] is 0, so without the list_id => we end up loading the first
-		// list join at random, instead of a new row, which has SERIOUSLY BAD side effects, and is responsible for the Mysterious Disappearing
-		// Group issue ... 'cos the list_id gets set wrong.
-		// I *think* the actual problem is that we weren't setting $data['id'] to newly created element id in the element model save() method, before
-		// calling onSave(), which I've now done, but just to be on the safe side, put in some defensive code so id $data['id'] is 0, we make sure
-		// we don't load a random list join row!!
+
+		/* $$$ rob 08/05/2012 - toggling from dropdown to multiselect set the list_id to 1, so if you
+		 * reset to dropdown then this key would not load the existing join so a secondary join record
+		 * would be created for the element.
+		 * $key = array('element_id' => $data['id'], 'list_id' => 0);
+		 * $$$ hugh - NOOOOOOOO!  Creating a new user element, $data['id'] is 0, so without the list_id => we end up loading the first
+		 * list join at random, instead of a new row, which has SERIOUSLY BAD side effects, and is responsible for the Mysterious Disappearing
+		 * Group issue ... 'cos the list_id gets set wrong.
+		 * I *think* the actual problem is that we weren't setting $data['id'] to newly created element id in the element model save() method, before
+		 * calling onSave(), which I've now done, but just to be on the safe side, put in some defensive code so id $data['id'] is 0, we make sure
+		 * we don't load a random list join row!!
+		 */
 		if ($data['id'] == 0)
 		{
 			$key = array('element_id' => $data['id'], 'list_id' => 0);
@@ -2059,7 +2078,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	    {
 	    } */
 
-	function onRemove($drop = false)
+	/**
+	 * Called from admin element controller when element is removed
+	 *
+	 * @param   bool  $drop  has the user elected to drop column?
+	 *
+	 * @return  bool  save ok or not
+	 */
+
+	public function onRemove($drop = false)
 	{
 		$this->deleteJoins((int) $this->id);
 		parent::onRemove($drop);
@@ -2125,6 +2152,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * Is the dropdowns cnn the same as the main Joomla db
+	 *
 	 * @return  bool
 	 */
 
@@ -2133,42 +2161,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$config = JFactory::getConfig();
 		$cnn = $this->getListModel()->getConnection()->getConnection();
 
-		// if the table database is not the same as the joomla database then
-		// we should simply return a hidden field with the user id in it.
+		/*
+		 * If the table database is not the same as the joomla database then
+		 * we should simply return a hidden field with the user id in it.
+		 */
 		return $config->get('db') == $cnn->database;
 	}
-
-	/**
-	 * Ajax call to get auto complete options
-	 *
-	 * @return  string  json encoded options
-	 */
-
-	/* public function onAutocomplete_options()
-	{
-		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->id = JRequest::getInt('element_id');
-		$this->getElement(true);
-		$params = $this->getParams();
-		$db = FabrikWorker::getDbo();
-		$c = $this->getValColumn();
-		if (!strstr($c, 'CONCAT'))
-		{
-			$c = FabrikString::safeColName($c);
-		}
-		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
-		// default to "contains" for backward compat.
-		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
-		{
-			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
-		}
-		else
-		{
-			$this->_autocomplete_where = $c . ' LIKE ' . $db->quote(JRequest::getVar('value') . '%');
-		}
-		$tmp = $this->_getOptions(array(), 0, true);
-		echo json_encode($tmp);
-	} */
 
 	/**
 	 * Cache method to populate autocomplete options
@@ -2226,14 +2224,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return $return;
 	}
 
+	/**
+	 * PN 19-Jun-11: Construct an element error string.
+	 *
+	 * @return  string
+	 */
+
 	public function selfDiagnose()
 	{
 		$retStr = parent::selfDiagnose();
 		if ($this->pluginName == 'databasejoin')
 		{
-			//Get the attributes as a parameter object:
 			$params = $this->getParams();
-			//Process the possible errors returning an error string:
+
+			// Process the possible errors returning an error string:
 			if (!$params->get('join_db_name'))
 			{
 				$retStr .= "\nMissing Table";

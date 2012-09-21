@@ -15,7 +15,7 @@ var FbCascadingdropdown = new Class({
 		this.parent(element, options);
 		if (document.id(this.options.watch)) {
 			document.id(this.options.watch).addEvent('change', function (e) {
-				this.dowatch();
+				this.dowatch(e);
 			}.bind(this));
 		}
 		if (this.options.showDesc === true) {

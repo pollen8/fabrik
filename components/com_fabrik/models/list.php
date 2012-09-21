@@ -6221,15 +6221,22 @@ class FabrikFEModelList extends JModelForm
 				 */
 				/*
 				 * $$$ rob - commenting it out as this was stopping data that was not viewable or editable from being included
-				 * in $data. Suggest that when you do run across this again the test is done against the $groupModel and the
-				 * passed in $isJoin and $joinGroupTable
-				 *
-				if (!array_key_exists($key, $data))
+				 * in $data. New test added inside foreach loop below
+				 **/
+				/* if (!array_key_exists($key, $data))
 				{
 					continue;
 				} */
 				foreach ($groups as $groupModel)
 				{
+					// New test to replace if (!array_key_exists($key, $data))
+					if ($isJoin)
+					{
+						if ($groupModel->getGroup()->id != $joinGroupTable->id)
+						{
+							continue;
+						}
+					}
 					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $elementModel)
 					{
@@ -6550,6 +6557,13 @@ class FabrikFEModelList extends JModelForm
 			$preSQL = $w->parseMessageForPlaceHolder($preSQL);
 			$db->setQuery($preSQL);
 			$q = $db->loadObjectList();
+			if (!$q)
+			{
+				// Try the table's connection db for the query
+				$thisDb = $this->getDb();
+				$thisDb->setQuery($preSQL);
+				$q = $thisDb->loadObjectList();
+			}
 			if (!empty($q))
 			{
 				$q = $q[0];
