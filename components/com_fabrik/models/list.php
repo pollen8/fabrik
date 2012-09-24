@@ -8943,7 +8943,7 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
-				|| JRequest::getVar('task') === 'list.elementFilter')
+				|| JRequest::getVar('task') === 'list.elementFilter' || JRequest::getVar('setListRefFromRequest') == 1)
 			{
 				// Testing for ajax nav in content plugin or in advanced search
 				$this->setRenderContextFromRequest();
