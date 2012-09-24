@@ -9255,7 +9255,7 @@ class FabrikFEModelList extends JModelForm
 		$state = true;
 		foreach ($ids as $id)
 		{
-			$formModel->_rowId = $id;
+			$formModel->rowId = $id;
 			$formModel->unsetData();
 			$row = $formModel->getData();
 			$row['Copy'] = '1';

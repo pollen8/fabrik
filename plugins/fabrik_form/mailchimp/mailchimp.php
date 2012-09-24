@@ -49,6 +49,27 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 		{
 			$this->html = '';
 		}
+
+		// $this->getGroups($params);
+	}
+
+	protected function getGroups($params)
+	{
+		$listId = $params->get('mailchimp_listid');
+		$apiKey = $params->get('mailchimp_apikey');
+		if ($apiKey == '')
+		{
+			JError::raiseNotice(500, 'Mailchimp: no api key specified');
+			return false;
+		}
+		if ($listId == '')
+		{
+			JError::raiseNotice(500, 'Mailchimp: no list id specified');
+			return false;
+		}
+
+		$api = new MCAPI($params->get('mailchimp_apikey'));
+		$groups = $api->listInterestGroupings($listId);
 	}
 
 	/**
@@ -103,7 +124,7 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 
 		$emailKey = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
 		$firstNameKey = $formModel->getElement($params->get('mailchimp_firstname'), true)->getFullName();
-		$fname = $formModel->_formDataWithTableName[$firstNameKey];
+		$fname = $formModel->formDataWithTableName[$firstNameKey];
 		$opts['FNAME'] = $fname;
 		$opts['NAME'] = $fname;
 
@@ -114,7 +135,7 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 			$opts['LNAME'] = $lname;
 			$opts['NAME'] .= ' ' . $lname;
 		}
-		$email = $formModel->_formDataWithTableName[$emailKey];
+		$email = $formModel->formDataWithTableName[$emailKey];
 
 		$w = new FabrikWorker;
 
@@ -138,7 +159,7 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 						// DOn't use emailData as that contains html markup which is not shown in the list view
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->_formData);
 
-						// But... labels for db joins etc are not availabel in _formData
+						// But... labels for db joins etc are not availabel in formData
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);
 					}
 					$opts['GROUPINGS'] = $groups;
@@ -150,13 +171,21 @@ class PlgFabrik_FormMailchimp extends plgFabrik_Form
 		// By default this sends a confirmation email - you will not see new members until the link contained in it is clicked!
 		$emailType = $params->get('mailchimp_email_type', 'html');
 		$doubleOptin = (bool) $params->get('mailchimp_double_optin', true);
-		$updateExisting = (bool) $params->get('mailchimp_update_existing');
+		$updateExisting = (bool) $params->get('mailchimp_update_existing', true);
 		$retval = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
 		if ($api->errorCode)
 		{
-			$formModel->errors['mailchimp_error'] = true;
-			JError::raiseNotice($api->errorCode, $api->errorMessage);
-			return false;
+			JError::raiseNotice($api->errorCode, 'Mailchimp: ' . $api->errorMessage);
+
+			if ((bool) $params->get('mailchimp_fail_on_error', true) === true)
+			{
+				$formModel->errors['mailchimp_error'] = true;
+				 false;
+			}
+			else
+			{
+			return true;
+			}
 		}
 		else
 		{

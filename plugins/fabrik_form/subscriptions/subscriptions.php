@@ -307,7 +307,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
 		$testMode = (bool) $this->params->get('subscriptions_testmode', false);
 
-		$qs = '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
+		$qs = 'index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
 			. '&g=form&plugin=subscriptions&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 
 		if ($testMode)
@@ -387,6 +387,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$custom = JRequest::getVar('custom');
 		list($formid, $rowid) = explode(":", $custom);
 
+		$mail = JFactory::getMailer();
+
 		// Pretty sure they are added but double add
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
@@ -414,9 +416,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			$req .= '&' . $key . '=' . $value;
 		}
 
+		$sandBox = $_POST['test_ipn'] == 1;
+
 		// Post back to Subscriptions system to validate
-		$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
-		$header .= "Host: www.paypal.com:443\r\n";
+		$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
+		$header .= $sandBox ? "Host: www.sandbox.paypal.com:443\r\n" : "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
 
@@ -424,7 +428,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$test = JArrayHelper::fromObject(json_decode($test));
 		echo "<pre>";print_r($test);exit; */
 
-		$subscriptionsurl = ($_POST['test_ipn'] == 1) ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
+		$subscriptionsurl = $sandBox ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
 		// Assign posted variables to local variables
 		$item_name = JRequest::getVar('item_name');
@@ -466,7 +470,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 					 * check that payment_amount/payment_currency are correct
 					 * process payment
 					 */
-					if (JString::strcmp($res, "VERIFIED") == 0)
+					if (JString::strcmp(strtoupper($res), "VERIFIED") == 0)
 					{
 
 						$query = $db->getQuery(true);
@@ -474,74 +478,87 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 							->where($db->quoteName($ipn_txn_field) . ' = ' . $db->quote($txn_id));
 						$db->setQuery($query);
 						$txn_result = $db->loadResult();
-						if (!empty($txn_result))
+
+						if ($txn_type == 'subscr_signup')
 						{
-							if ($txn_result == 'Completed')
-							{
-								if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
-								{
-									$status = 'form.subscriptions.ipnfailure.txn_seen';
-									$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status";
-								}
-							}
-							elseif ($txn_result == 'Reversed')
-							{
-								if ($payment_status != 'Canceled_Reversal')
-								{
-									$status = 'form.subscriptions.ipnfailure.txn_seen';
-									$err_msg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
-								}
-							}
+							// Just a notification - no payment yet
 						}
-						if ($status == 'ok')
+						else
 						{
-							$set_list = array();
 
-							$set_list[$ipn_txn_field] = $txn_id;
-							$set_list[$ipn_payment_field] = $payment_amount;
-							$set_list[$ipn_status_field] = $payment_status;
-
-							$ipn = $this->getIPNHandler($params, $renderOrder);
-
-							if ($ipn !== false)
+							if (!empty($txn_result) && $txn_type != 'subscr_signup')
 							{
-								$request = $_REQUEST;
-								$ipn_function = 'payment_status_' . $payment_status;
-								if (method_exists($ipn, $ipn_function))
+								if ($txn_result == 'Completed')
 								{
-									$status = $ipn->$ipn_function($listModel, $request, $set_list, $err_msg);
-									if ($status != 'ok')
+									if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
 									{
-										break;
+										$status = 'form.subscriptions.ipnfailure.txn_seen';
+										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status" . (string) $query;
 									}
 								}
-								$txn_type_function = 'txn_type_' . $txn_type;
-								if (method_exists($ipn, $txn_type_function))
+								elseif ($txn_result == 'Reversed')
 								{
-									$status = $ipn->$txn_type_function($listModel, $request, $set_list, $err_msg);
-									if ($status != 'ok')
+									if ($payment_status != 'Canceled_Reversal')
 									{
-										break;
+										$status = 'form.subscriptions.ipnfailure.txn_seen';
+										$err_msg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
 									}
 								}
 							}
-
-							if (!empty($set_list))
+							if ($status == 'ok')
 							{
-								$set_array = array();
-								foreach ($set_list as $set_field => $set_value)
+								$set_list = array();
+
+								$set_list[$ipn_txn_field] = $txn_id;
+								$set_list[$ipn_payment_field] = $payment_amount;
+								$set_list[$ipn_status_field] = $payment_status;
+
+								$ipn = $this->getIPNHandler($params, $renderOrder);
+
+								if ($ipn !== false)
 								{
-									$set_value = $db->quote($set_value);
-									$set_field = $db->quoteName($set_field);
-									$set_array[] = "$set_field = $set_value";
+									$request = $_REQUEST;
+									$ipn_function = 'payment_status_' . $payment_status;
+									if (method_exists($ipn, $ipn_function))
+									{
+										$status = $ipn->$ipn_function($listModel, $request, $set_list, $err_msg);
+										if ($status != 'ok')
+										{
+											break;
+										}
+									}
+									else
+									{
+										$txn_type_function = 'txn_type_' . $txn_type;
+										if (method_exists($ipn, $txn_type_function))
+										{
+											$status = $ipn->$txn_type_function($listModel, $request, $set_list, $err_msg);
+											if ($status != 'ok')
+											{
+												break;
+											}
+										}
+									}
+
 								}
-								$query = $db->getQuery(true);
-								$query->update('#__fabrik_subs_invoices')->set(implode(',', $set_array))->where('id = ' . $db->quote($rowid));
-								$db->setQuery($query);
-								if (!$db->query())
+
+								if (!empty($set_list))
 								{
-									$status = 'form.subscriptions.ipnfailure.query_error';
-									$err_msg = 'sql query error: ' . $db->getErrorMsg();
+									$set_array = array();
+									foreach ($set_list as $set_field => $set_value)
+									{
+										$set_value = $db->quote($set_value);
+										$set_field = $db->quoteName($set_field);
+										$set_array[] = "$set_field = $set_value";
+									}
+									$query = $db->getQuery(true);
+									$query->update('#__fabrik_subs_invoices')->set(implode(',', $set_array))->where('id = ' . $db->quote($rowid));
+									$db->setQuery($query);
+									if (!$db->query())
+									{
+										$status = 'form.subscriptions.ipnfailure.query_error';
+										$err_msg = 'sql query error: ' . $db->getErrorMsg();
+									}
 								}
 							}
 						}
@@ -557,54 +574,53 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 
 		$receive_debug_emails = (array) $params->get('subscriptions_receive_debug_emails');
-		$receive_debug_emails = $receive_debug_emails[$renderOrder];
 		$send_default_email = (array) $params->get('subscriptions_send_default_email');
-		$send_default_email = $send_default_email[$renderOrder];
+		$emailtext = '';
+		foreach ($_POST as $key => $value)
+		{
+			$emailtext .= $key . " = " . $value . "\n\n";
+		}
+		$log->message = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res . "\n//////////////\n" . $req . "\n//////////////\n";
 		if ($status != 'ok')
 		{
-			foreach ($_POST as $key => $value)
-			{
-				$emailtext .= $key . " = " . $value . "\n\n";
-			}
-
-			if ($receive_debug_emails == '1')
-			{
-				$subject = $config->get('sitename') . ": Error with Fabrik Subscriptions IPN";
-				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
-			}
+			$subject = $config->get('sitename') . ": Error with Fabrik Subscriptions IPN";
 			$log->message_type = $status;
-			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $err_msg;
-			if ($send_default_email == '1')
-			{
-				$payer_emailtext = "There was an error processing your Subscriptions payment.  The administrator of this site has been informed.";
-				JUtility::sendMail($email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
-			}
+			$log->message .= $err_msg;
+			$payer_emailtext = "There was an error processing your Subscriptions payment.  The administrator of this site has been informed.";
 		}
 		else
 		{
-			foreach ($_POST as $key => $value)
-			{
-				$emailtext .= $key . " = " . $value . "\n\n";
-			}
-			if ($receive_debug_emails == '1')
-			{
-				$subject = $config->get('sitename') . ': IPN ' . $payment_status;
-				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
-			}
+			$subject = $config->get('sitename') . ': IPN ' . $payment_status;
 			$log->message_type = 'form.subscriptions.ipn.' . $payment_status;
-			$query = $db->getQuery();
-			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $query;
+			$log->message .= $query;
 
-			if ($send_default_email == '1')
-			{
-				$payer_subject = "Subscriptions success";
-				$payer_emailtext = "Your Subscriptions payment was succesfully processed.  The Subscriptions transaction id was $txn_id";
-				JUtility::sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
-			}
+			$payer_subject = "Subscriptions success";
+			$payer_emailtext = "Your Subscriptions payment was succesfully processed.  The Subscriptions transaction id was $txn_id";
 		}
 
-		$log->message .= "\n IPN custom function = $ipn_function";
-		$log->message .= "\n IPN custom transaction function = $txn_type_function";
+		if ($receive_debug_emails == '1')
+		{
+			$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
+		}
+
+		if ($send_default_email == '1')
+		{
+			$mail->sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
+		}
+		if (isset($ipn_function))
+		{
+			$log->message .= "\n IPN custom function = $ipn_function";
+		}
+		else
+		{
+			$log->message .= "\n No IPN custom function";
+		}
+		if (isset($txn_type_function))
+		{
+			$log->message .= "\n IPN custom transaction function = $txn_type_function";
+		} else {
+			$log->message .= "\n No IPN custom transaction function ";
+		}
 		$log->store();
 		jexit();
 	}

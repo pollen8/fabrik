@@ -53,6 +53,7 @@ class fabrikSubscriptionsIPN
 		$subject = html_entity_decode($subject, ENT_QUOTES);
 
 		$msgbuyer = 'Your payment on %s is pending. (Paypal transaction ID: %s)<br /><br />%s';
+		$txn_id = JRequest::getVar('txn_id', 'n/a');
 		$msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
 		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
 		JFactory::getMailer()->sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
@@ -112,10 +113,10 @@ class fabrikSubscriptionsIPN
 	 * occurs when someone first signs up for a subscription,
 	 * you should get a subscr_payment about 3 seconds afterwards.
 	 * So again i dont think we need to do anything here
-* @param $listModel
-* @param $request
-* @param $set_list
-* @param $err_msg
+	 * @param $listModel
+	 * @param $request
+	 * @param $set_list
+	 * @param $err_msg
 	 * @return unknown_type
 	 */
 
@@ -175,18 +176,20 @@ class fabrikSubscriptionsIPN
 	}
 
 	/**
-	 *  a subscription payment has been successfully made
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 * A subscription payment has been successfully made
+	 *
+	 * @param   $listModel
+	 * @param   $request
+	 * @param   $set_list
+	 * @param   $err_msg
+	 *
+	 * @return  string
 	 */
 
 	function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
 	{
 		$db = JFactory::getDbo();
-		$this->log('fabrik.ipn.txn_type_subscr_payment', json_enode($request));
+		$this->log('fabrik.ipn.txn_type_subscr_payment', json_encode($request));
 		$invoice = $this->checkInvoice($request);
 		if ($invoice === false)
 		{
@@ -195,11 +198,11 @@ class fabrikSubscriptionsIPN
 		// Update subscription details
 		$inv = $this->getInvoice($invoice);
 
-		$this->log('fabrik.ipn.txn_type_subscr_payment: invoice', json_enode($inv));
+		$this->log('fabrik.ipn.txn_type_subscr_payment: invoice', json_encode($inv));
 
 		$sub = $this->getSubscriptionFromInvoice($invoice);
 
-		$this->log('fabrik.ipn.txn_type_subscr_payment: sub', json_enode($sub));
+		$this->log('fabrik.ipn.txn_type_subscr_payment: sub', json_encode($sub));
 
 		$now = JFactory::getDate()->toSql();
 		$sub->status = 'Active';
@@ -214,17 +217,17 @@ class fabrikSubscriptionsIPN
 		$inv->pp_txn_type = $request['txn_type'];
 		$inv->pp_fee = $request['mc_fee'];
 		$inv->pp_payer_email = $request['payer_email'];
+
 		// $$$ hugh @TODO - make sure payment_amount == amount
 		$inv->paid = 1;
 		if (!$inv->store())
 		{
-			$this->log('fabrik.ipn.txn_type_subscr_payment: FAILED TO STORE INVOICE', json_enode($inv));
+			$this->log('fabrik.ipn.txn_type_subscr_payment: FAILED TO STORE INVOICE', json_encode($inv));
 		}
 		else
 		{
-			$this->log('fabrik.ipn.txn_type_subscr_payment: invoice stored', json_enode($inv));
+			$this->log('fabrik.ipn.txn_type_subscr_payment: invoice stored', json_encode($inv));
 		}
-
 
 		// Set user to desired group
 		$subUser = JFactory::getUser($sub->userid);
@@ -327,7 +330,7 @@ class fabrikSubscriptionsIPN
 	 * @return J table object
 	 */
 
-	private function getSubscriptionFromInvoice(string $inv)
+	private function getSubscriptionFromInvoice($inv)
 	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -349,7 +352,7 @@ class fabrikSubscriptionsIPN
 	 * @return unknown_type
 	 */
 
-	private function getInvoice(string $inv)
+	private function getInvoice($inv)
 	{
 		$row = JTable::getInstance('Invoice', 'FabrikTable');
 		$row->load(array('invoice_number' => $inv));
@@ -364,7 +367,7 @@ class fabrikSubscriptionsIPN
 	 * @return unknown_type
 	 */
 
-	private function reportError(string $msg, string $to, array $data)
+	private function reportError($msg, $to, $data)
 	{
 		$app = JFactory::getApplication();
 		$MailFrom = $app->getCfg('mailfrom');
@@ -376,7 +379,16 @@ class fabrikSubscriptionsIPN
 		}
 		$subject = 'fabrik.ipn.fabrikar_subs error';
 		JFactory::getMailer()->sendMail($MailFrom, $FromName, $to, $subject, $body);
+
+		// Include the JLog class.
+		jimport('joomla.log.log');
+
+		// Add the logger.
+		JLog::addLogger(array('text_file' => 'fabrik.subs.log.php'));
+
+		// Start logging...
 		JLog::add($body, JLog::ERROR, $subject);
+		continue;
 	}
 
 	private function log($subject, $body)
@@ -387,7 +399,7 @@ class fabrikSubscriptionsIPN
 
 	/**
 	 * ensures that an invoice num was found in the request data.
-* @param   array	$request
+	 * @param   array	$request
 	 * @return  mixed	false if not found, otherwise returns invoice num
 	 */
 

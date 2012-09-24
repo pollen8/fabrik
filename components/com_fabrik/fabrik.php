@@ -21,6 +21,8 @@ if (!defined('COM_FABRIK_FRONTEND'))
 
 require_once JPATH_COMPONENT . '/controller.php';
 
+$json = '{"option":"com_fabrik","task":"plugin.pluginAjax","formid":"22","g":"form","plugin":"subscriptions","method":"ipn","renderOrder":"2","mc_gross":"15.00","invoice":"505f48a3cbef23.51654962","protection_eligibility":"Eligible","address_status":"confirmed","payer_id":"MBW2ZTFZ5YFFL","address_street":"1 Main St","payment_date":"10:39:01 Sep 23, 2012 PDT","payment_status":"Completed","charset":"windows-1252","address_zip":"95131","first_name":"Rob","mc_fee":"0.79","address_country_code":"US","address_name":"Rob Clayburn","notify_version":"3.7","subscr_id":"I-T72LJ1SCJ9YC","custom":"22:6760","payer_status":"verified","business":"fr_1348421571_biz@pollen-8.co.uk","address_country":"United States","address_city":"San Jose","verify_sign":"AuLPCpBCF0LSxk6e1HGFcR67txtlAOk624SosG6NOm12aqWUP-sSaCCA","payer_email":"rob_1346249195_per@pollen-8.co.uk","txn_id":"6N219145TA530801X","payment_type":"instant","last_name":"Clayburn","address_state":"CA","receiver_email":"fr_1348421571_biz@pollen-8.co.uk","payment_fee":"","receiver_id":"NAJ6M2W79AK5G","txn_type":"subscr_payment","item_name":"fabrikar.com Monthly Standard  User: standard_rec_month (standard_rec_month)","mc_currency":"EUR","residence_country":"US","test_ipn":"1","transaction_subject":"fabrikar.com Monthly Standard  User: standard_rec_month (standard_rec_month)","payment_gross":"","ipn_track_id":"d1c06ff427611","Itemid":"77","view":"plugin","id":0}';
+echo "<pre>";print_r(json_decode($json));echo "</pre>";
 /**
  * Test for YQL & XML document type
  * use the format request value to check for document type
