@@ -426,7 +426,10 @@ class plgFabrik_ElementList extends plgFabrik_Element
 					{
 						$l = $this->getLabelForValue($val);
 					}
-					$l = $val;
+					else
+					{
+						$l = $val;
+					}
 					$l = $this->_replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $thisRow, 'list');
