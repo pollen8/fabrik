@@ -1258,17 +1258,17 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 			if (!FabrikWorker::isJSON($data))
 			{
-				$labeldata = $data;
+				$labeldata = (array) $data;
 			}
 			else
 			{
 				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
 				// should really refactor so encoding goes in this if/else structure!
-				$labeldata = json_decode($data);
+				$labeldata = (array) json_decode($data);
 			}
 			foreach ($labeldata as &$l)
 			{
-				$l = $this->getLabelForValue($l);
+				$l = $this->getLabelForValue($l, $l);
 			}
 		}
 
