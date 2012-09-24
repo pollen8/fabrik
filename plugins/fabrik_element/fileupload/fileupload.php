@@ -1277,6 +1277,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// Stops form data being updated with blank data.
 			return;
 		}
+		if (JRequest::getInt('fabrik_ajax') == 1)
+		{
+			// Inline edit for example no $_FILE data sent
+			return;
+		}
 		/* If we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
 		 * otherwise no standard image processed
 		 */
