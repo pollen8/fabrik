@@ -20,11 +20,11 @@ foreach ($this->data as $key => $val)
 		foreach ($val as $v):
 			if (is_array($v)) :
 				echo implode("<br>", $v);
-			else;
+			else:
 				echo implode("<br>", $val);
 			endif;
 		endforeach;
-	else;
+	else:
 		echo $val;
 	endif;
 	echo "</td></tr>";
