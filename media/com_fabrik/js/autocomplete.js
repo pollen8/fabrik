@@ -27,7 +27,9 @@ var FbAutocomplete = new Class({
 		this.cache = {};
 		this.selected = -1;
 		this.mouseinsde = false;
-		document.addEvent('keydown', this.doWatchKeys.bindWithEvent(this));
+		document.addEvent('keydown', function (e) {
+			this.doWatchKeys(e);
+		}.bind(this));
 		this.testMenuClose = this.doTestMenuClose.bindWithEvent(this);
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
@@ -36,8 +38,9 @@ var FbAutocomplete = new Class({
 			return;
 		}
 		this.getInputElement().setProperty('autocomplete', 'off');
-		this.doSearch = this.search.bindWithEvent(this);
-		this.getInputElement().addEvent('keyup', this.doSearch);
+		this.getInputElement().addEvent('keyup', function (e) {
+			this.search(e);
+		}.bind(this));
 		
 	},
 	
