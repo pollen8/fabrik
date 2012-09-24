@@ -127,7 +127,7 @@ class FabrikModelCron extends JModelAdmin
 
 	public function save($data)
 	{
-		if (JRequest::getVar('lastrun') == '')
+		if (JArrayHelper::getValue($data, 'lastrun') == '')
 		{
 			$date = JFactory::getDate();
 			$data['lastrun'] = $date->toSql();
