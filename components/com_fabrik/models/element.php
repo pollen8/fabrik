@@ -1283,7 +1283,7 @@ class plgFabrik_Element extends FabrikPlugin
 	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
-		$bLabel = $config->get('fbConf_wysiwyg_label', false) ? false : $this->get('hasLabel');
+		$bLabel = $this->get('hasLabel');
 		$element = $this->getElement();
 		$elementHTMLId = $this->getHTMLId($repeatCounter);
 		$this->modHTMLId($elementHTMLId);
