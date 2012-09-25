@@ -1,10 +1,10 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.element.cascadingdropdown
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.cascadingdropdown
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,11 +12,11 @@ defined('_JEXEC') or die();
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
 /**
-* Plugin element to render cascading dropdown
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.element.cascadingdropdown
-*/
+ * Plugin element to render cascading dropdown
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.element.cascadingdropdown
+ */
 
 class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 {
@@ -42,7 +42,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->_getWatchId($repeatCounter);
 		$opts->id = $this->_id;
-		$opts->def 	= $this->getValue(array(), $repeatCounter);
+		$opts->def = $this->getValue(array(), $repeatCounter);
 		$watchGroup = $this->_getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
@@ -89,11 +89,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::render()
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$db = $this->getDb();
 		$params = $this->getParams();
@@ -124,7 +128,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$tmp[] = JHTML::_('select.option', '', $this->_getSelectLabel());
 			}
 		}
-		$this->loadingImg = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
+		$this->loadingImg = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl,
+			array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader'));
 		//get the default label for the drop down (use in read only templates)
 		$defaultLabel = '';
 		$defaultValue = '';
@@ -166,12 +171,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			<option value="radio">Radio Buttons</option>
 			<option value="auto-complete">Auto-complete</option>
 			</param>
-			*/
+			 */
 
 			switch ($displayType)
 			{
 				/*case 'auto-complete':
-					$str .= "<input type=\"text\" size=\"20\" name=\"{$name}-auto-complete\" id=\"{$id}-auto-complete\" value=\"$defaultLabel\" class=\"fabrikinput inputbox autocomplete-trigger\"/>";
+				    $str .= "<input type=\"text\" size=\"20\" name=\"{$name}-auto-complete\" id=\"{$id}-auto-complete\" value=\"$defaultLabel\" class=\"fabrikinput inputbox autocomplete-trigger\"/>";
 				$str .= "<input type=\"hidden\" size=\"20\" name=\"{$name}\" id=\"{$id}\" value=\"$default\"/>";
 				break;
 				break;
@@ -182,8 +187,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				break;*/
 				default:
 				case 'dropdown':
-					$str[] = JHTML::_('select.genericlist', $tmp, $name, 'class="'.$class.'" '.$disabled.' size="1"', 'value', 'text', $default, $id);
-				break;
+					$str[] = JHTML::_('select.genericlist', $tmp, $name, 'class="' . $class . '" ' . $disabled . ' size="1"', 'value', 'text', $default, $id);
+					break;
 			}
 			$str[] = $this->loadingImg;
 			$str[] = ($displayType == "radio") ? "</div>" : '';
@@ -214,7 +219,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			{
 				$opt = $this->_optionVals[$i];
 				$display = in_array($opt->value, $default) ? '' : 'none';
-				$c = $i+1;
+				$c = $i + 1;
 				$str[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
 			}
 			$str[] = '</div>';
@@ -311,9 +316,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * get array of option values
 	 *
-	 * @param	array	$data
-	 * @param	int		repeat group counter
-	 * @return	array
+	 * @param   array	$data
+	 * @param   int		repeat group counter
+
+	 * @return  array
 	 */
 
 	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
@@ -350,7 +356,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * @since 3.0b
 	 * do you add a please select option to the cdd list
-	 * @return boolean
+	 * @return  bool
 	 */
 
 	protected function showPleaseSelect()
@@ -364,9 +370,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
-		return (bool)$params->get('cascadingdropdown_showpleaseselect', true);
+		return (bool) $params->get('cascadingdropdown_showpleaseselect', true);
 	}
-
 
 	function _getWatchFullName()
 	{
@@ -382,6 +387,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		return $elementModel->getHTMLId($repeatCounter);
 	}
 
+	/**
+	 * Get the element to watch. Changes to this element will trigger the cdd's lookup
+	 *
+	 * @return  plgFabrik_Element
+	 */
+
 	private function _getWatchElement()
 	{
 		if (!isset($this->watchElement))
@@ -389,9 +400,26 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$watch = $this->getParams()->get('cascadingdropdown_observe');
 			if ($watch == '')
 			{
-				JError::raiseError(500, 'No watch element set up for cdd'.$this->getElement()->id);
+				JError::raiseError(500, 'No watch element set up for cdd' . $this->getElement()->id);
 			}
+
 			$this->watchElement = $this->getFormModel()->getElement($watch, true);
+			if (!$this->watchElement)
+			{
+				// This element is a child element, so $watch is in the parent element (in another form)
+				$pluginManager = FabrikWorker::getPluginManager();
+				$parent = $pluginManager->getElementPlugin($watch);
+
+				// These are the possible watch elements
+				$children = $parent->getElementDescendents();
+
+				// Match the possible element ids with the current form's element ids
+				$elids = $this->getFormModel()->getElementIds();
+				$matched = array_values(array_intersect($elids, $children));
+
+				// Load the matched element
+				$this->watchElement = $pluginManager->getElementPlugin($matched[0]);
+			}
 		}
 		return $this->watchElement;
 	}
@@ -424,7 +452,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$fullName = $elementModel->getFullName(true, true, true);
 				if ($fullName == $watch)
 				{
-					//test for ajax update
+					// Test for ajax update
 					if (JRequest::getVar('fabrik_cascade_ajax_update') == 1)
 					{
 						$whereval = JRequest::getVar('v');
@@ -488,7 +516,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')
 		{
-			$wherekey = array_pop(explode('___', $wherekey));
+			$whereBits = explode('___', $wherekey);
+			$wherekey = array_pop($whereBits);
 			$where = $wherekey . ' = ' . $db->quote($whereval);
 		}
 		$filter = $params->get('cascadingdropdown_filter');
@@ -512,10 +541,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		// $$$ hugh - add some useful stuff to search data
 		if (!is_null($whereval))
 		{
-			$placeholders = array (
-				'whereval' => $whereval,
-				'wherekey' => $wherekey
-			);
+			$placeholders = array('whereval' => $whereval, 'wherekey' => $wherekey);
 		}
 		else
 		{
@@ -527,10 +553,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		if (!empty($this->_autocomplete_where))
 		{
 			// $where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where :  $this->_autocomplete_where;
-			$where .= $where == '' ? ' AND ' . $this->_autocomplete_where :  $this->_autocomplete_where;
+			$where .= $where == '' ? ' AND ' . $this->_autocomplete_where : $this->_autocomplete_where;
 
 		}
-		$data = array_merge($data,$placeholders);
+		$data = array_merge($data, $placeholders);
 		$where = $w->parseMessageForPlaceHolder($where, $data);
 
 		$table = $this->getDbName();
@@ -610,7 +636,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * get the element name or concat statement used to build the dropdown labels or
 	 * table data field
 	 *
-	 * @return string
+	 * @return  string
 	 */
 
 	protected function getValColumn()
@@ -630,7 +656,14 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 	}
 
-	function getOrderByName()
+	/**
+	 * Get the name of the field to order the table data by
+	 * can be overwritten in plugin class - but not currently done so
+	 *
+	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
+	 */
+
+	public function getOrderByName()
 	{
 		$joinVal = $this->getValColumn();
 		$joinVal = FabrikString::safeColName($joinVal);
@@ -638,9 +671,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * @access protected
 	 * load connection object
-	 * @return object connection table
+	 * @return  object	connection table
 	 */
 
 	protected function &_loadConnection()
@@ -686,8 +718,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see plgFabrik_ElementDatabasejoin::getFilter()
+	 * Get the table filter for the element
+	 *
+	 * @param   int   $counter  filter order
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
+	 *
+	 * @return  string	filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -698,7 +735,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$table = $listModel->getTable();
 		$fabrikDb = $listModel->getDb();
 		$elName = $this->getFilterFullName();
-		$htmlid	= $this->getHTMLId() . 'value';
+		$htmlid = $this->getHTMLId() . 'value';
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$v = $this->filterName($counter, $normal);
 
@@ -707,24 +744,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		//$fabrikDb->setQuery("SELECT db_table_name FROM #__{package}_tables WHERE id = {$params->get('cascadingdropdown_table')}");
 		$dbname = $fabrikDb->quoteName($this->getDbName());
-
-		// $$$ hugh - you know, we probably don't need to do any of this querying ... because
-		// as soon as the page loads, it's going to fire off AJAX calls to rebuild any cascade menus
-		// and blow away whatever we built here during page load. But if we're going to do a query
-		// here, it needs to take into account the value of the watched filter element.
-		// Of course, if they are only showing the cascade as a filter and not the watched element,
-		// then this is broken. Anyway ... main problem I'm working on here is DON'T load entire
-		// cascade table, as with big tables (like 65000 record 'city' tables) we don't want to build
-		// a ginormous SELECT that blows the browser away! See ticket #412.
-
-		// $$$rob - see line 451 - Im testing not running the query
-		/*$watch = $this->_getWatchFullName();
-		 $whereval = '';
-		$wherekey = array_pop( explode('___', $params->get('cascadingdropdown_key')));
-		if (isset($listModel->filters[$watch])) {
-		$whereval = $listModel->filters[$watch]['value'];
-		}
-		$sql = "SELECT DISTINCT($label) AS text, $id AS value FROM $dbname WHERE $wherekey = '$whereval' ORDER BY $label ASC";*/
 		$size = $params->get('filter_length', 20);
 		$return = array();
 		switch ($element->filter_type)
@@ -742,19 +761,21 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			case "field":
 			case '':
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" size="'.$size.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" size="' . $size . '" id="'
+					. $htmlid . '" />';
 				break;
 
 			case 'hidden':
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="'.$v.'" class="inputbox fabrik_filter" value="'.$default.'" id="'.$htmlid.'" />';
-				$return[] = '<input type="text" name="'.$element->id.'-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'.$size.'" value="'.$defaultLabel.'" id="'.$htmlid.'-auto-complete" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="text" name="' . $element->id . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'
+					. $size . '" value="' . $defaultLabel . '" id="' . $htmlid . '-auto-complete" />';
 				break;
 
 		}
@@ -770,10 +791,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * if used as a filter add in some JS code to watch observed filter element's changes
+	 * If used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
-	 * @param bol is the filter a normal (true) or advanced filter
-	 * @param string container
+	 *
+	 * @param   bool    $normal     is the filter a normal (true) or advanced filter
+	 * @param   string  $container  container
+	 *
+	 * @return  void
 	 */
 
 	public function filterJS($normal, $container)
@@ -785,21 +809,20 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		if ($element->filter_type == 'auto-complete')
 		{
 			FabrikHelperHTML::autoCompleteScript();
-			$htmlid	= $this->getHTMLId().'value';
+			$htmlid = $this->getHTMLId() . 'value';
 			$opts = new stdClass;
 			$opts->observerid = $observerid;
-			$opts->url = COM_FABRIK_LIVESITE.'/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='.$element->id.'&plugin=cascadingdropdown&method=autocomplete_options';
+			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='
+				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options';
 			$opts = json_encode($opts);
 
-			FabrikHelperHTML::addScriptDeclaration(
-		"head.ready(function() { new FabCddAutocomplete('$htmlid', $opts); });"
-			);
+			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { new FabCddAutocomplete('$htmlid', $opts); });");
 		}
 		if ($element->filter_type == 'dropdown')
 		{
 			$default = $this->getDefaultFilterVal($normal);
 			$observed = $this->_getObserverElement();
-			$filterid = $this->getHTMLId().'value';
+			$filterid = $this->getHTMLId() . 'value';
 			//$listModel = $this->getlistModel();
 			$formModel = $this->getForm();
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
@@ -808,7 +831,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$opts->filterid = $filterid;
 			$opts->elid = $this->_id;
 			$opts->def = $default;
-			$opts->filterobj = 'Fabrik.filter_'.$container;
+			$opts->filterobj = 'Fabrik.filter_' . $container;
 			$opts = json_encode($opts);
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
 		}
@@ -845,7 +868,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	/**
 	 * called when the element is saved
-	 * @return bool save ok or not
+	 * @return  bool save ok or not
 	 */
 
 	function onSave($data)
@@ -885,24 +908,25 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	function beforeSave(&$row)
 	{
-		// do nothing, just here to prevent join element method from running instead (which rmeoved join table
+		// do nothing, just here to prevent join element method from running instead (which removed join table
 		// entry if not pluginname==fabrikdatabasejoin
 		return true;
 	}
 
 	/**
+	 * Get an array of element html ids and their corresponding
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
-	 * @param int repeat group counter
-	 * @return array html ids to watch for validation
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  array  html ids to watch for validation
 	 */
 
 	function getValidationWatchElements($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		$ar = array(
-			'id' => $id,
-			'triggerEvent' => 'change'
-		);
+		$ar = array('id' => $id, 'triggerEvent' => 'change');
 		return array($ar);
 	}
 
@@ -922,7 +946,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$oldObeserveId = $params->get('cascadingdropdown_observe');
 		if (!array_key_exists($oldObeserveId, $elementMap))
 		{
-			JError::raiseWarning(E_ERROR, 'cascade dropdown: no id '.$oldObeserveId. ' found in '.implode(",", array_keys($elementMap)));
+			JError::raiseWarning(E_ERROR, 'cascade dropdown: no id ' . $oldObeserveId . ' found in ' . implode(",", array_keys($elementMap)));
 		}
 		$newObserveId = $elementMap[$oldObeserveId];
 		$params->set('cascadingdropdown_observe', $newObserveId);
@@ -1013,4 +1037,3 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	}
 
 }
-?>
