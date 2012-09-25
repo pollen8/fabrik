@@ -123,7 +123,7 @@ class fabrikViewGooglemap extends JView
 		}
 		$this->_setPath('template', $tmplpath);
 		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('grouptemplates', $this->get('GroupTemplates'));
+		$this->assignRef('groupTemplates', $this->get('GroupTemplates'));
 		echo parent::display($template);
 	}
 
