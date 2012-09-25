@@ -202,13 +202,13 @@ var Loader = new Class({
 			}
 			Fabrik.watchDelete(e, target);
 		});
-		document.addEvent('click:relay(.fabrik_edit a)', function (e, target) {
+		document.addEvent('click:relay(.fabrik_edit a, a.fabrik_edit)', function (e, target) {
 			if (e.rightClick) {
 				return;
 			}
 			Fabrik.watchEdit(e, target);
 		});
-		document.addEvent('click:relay(.fabrik_view a)', function (e, target) {
+		document.addEvent('click:relay(.fabrik_view a, a.fabrik_view)', function (e, target) {
 			if (e.rightClick) {
 				return;
 			}
