@@ -1348,7 +1348,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				break;
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
-				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);
 				break;
 
