@@ -37,11 +37,16 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			alert('Please wait - still loading');
 			return false;
 		}
-		if (task == 'element.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+		var msg = '';
+		var jsEvents = document.getElements('select[name*=js_action]').get('value');
+		if (jsEvents.length > 0 && jsEvents.contains('')) {
+			msg += '\n ' + Joomla.JText._('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
+		}
+		if (task == 'element.cancel' || (msg === '' && document.formvalidator.isValid(document.id('adminForm')))) {
 
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {
-			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>' + msg);
 		}
 	}
 </script>
