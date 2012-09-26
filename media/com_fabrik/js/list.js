@@ -4,7 +4,7 @@
 
 /* jshint mootools: true */
 /*
- * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true,
+ * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true,
  * $H:true,unescape:true,head:true,FbListActions:true,FbGroupedToggler:true,FbListKeys:true
  */
 

@@ -3,7 +3,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Asset:true */
 
 var FbElement =  new Class({
 	
@@ -57,12 +57,12 @@ var FbElement =  new Class({
 	fireEvents: function (evnts) {
 		if (this.hasSubElements()) {
 			this._getSubElements().each(function (el) {
-				$A(evnts).each(function (e) {
+				Array.from(evnts).each(function (e) {
 					el.fireEvent(e);
 				}.bind(this));
 			}.bind(this));
 		} else {
-			$A(evnts).each(function (e) {
+			Array.from(evnts).each(function (e) {
 				this.element.fireEvent(e);
 			}.bind(this));
 		}
@@ -385,7 +385,7 @@ var FbElement =  new Class({
 				suffixFound = true;
 			}
 		}
-		var bits = $A(n.split('_'));
+		var bits = Array.from(n.split('_'));
 		var i = bits.getLast();
 		if (typeOf(i.toInt()) === 'null') {
 			return bits.join('_');

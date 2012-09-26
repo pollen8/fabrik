@@ -519,7 +519,7 @@ var adminFilters = new Class({
 		
 		/*set default values*/ 
 		if (selJoin !== '') {
-			sels = $A(td.getElementsByTagName('SELECT'));
+			sels = Array.from(td.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selJoin) {
@@ -529,7 +529,7 @@ var adminFilters = new Class({
 			}
 		}
 		if (selFilter !== '') {
-			sels = $A(td1.getElementsByTagName('SELECT'));
+			sels = Array.from(td1.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selFilter) {
@@ -540,7 +540,7 @@ var adminFilters = new Class({
 		}				
 
 		if (selCondition !== '') {
-			sels = $A(td2.getElementsByTagName('SELECT'));
+			sels = Array.from(td2.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selCondition) {
@@ -551,7 +551,7 @@ var adminFilters = new Class({
 		}	
 		
 		if (selAccess !== '') {
-			sels = $A(td4.getElementsByTagName('SELECT'));
+			sels = Array.from(td4.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selAccess) {

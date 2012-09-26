@@ -422,7 +422,7 @@ var FbGoogleMapViz = new Class({
 					'href': '#',
 					'class': 'groupedLink' + k
 				}).set('text', i.groupkey));
-				h.injectInside(c);
+				h.inject(c);
 			}
 			this.grouped[i.groupkey].push(i);
 		}.bind(this));

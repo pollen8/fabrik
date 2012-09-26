@@ -411,11 +411,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 */
 		if (!JRequest::getVar('unlink', false) && (int) $data['id'] === 0)
 		{
-			$row->group_id = (int) $data['group_id'];
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
 			$query->join('INNER', '#__{package}_lists AS t ON j.table_join = t.db_table_name');
-			$query->where("group_id = $row->group_id AND element_id = 0");
+			$query->where('group_id = ' . (int) $data['group_id'] . ' AND element_id = 0');
 			$db->setQuery($query);
 			$joinTblId = (int) $db->loadResult();
 			$ignore = array($data['id']);
@@ -580,7 +579,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * a quicker and simpler way of doing this!
 		 */
 		$num_validations = count($params['validations']['plugin']);
-		$validation_plugins = $this->getValidations($elementModel, $params['validations']['plugin']);
+		$validations = JArrayHelper::getValue($params['validations'], 'plugin', array());
+		$validation_plugins = $this->getValidations($elementModel, $validations);
 		foreach ($validation_plugins as $plugin)
 		{
 			$plugin_form = $plugin->getJForm();
@@ -878,7 +878,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 		else
 		{
-			$listModel->dropIndex($row->name, 'order', 'INDEX', $size);
+			$listModel->dropIndex($row->name, 'order', 'INDEX');
 		}
 		if ($row->filter_type != '')
 		{
@@ -886,7 +886,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 		else
 		{
-			$listModel->dropIndex($row->name, 'filter', 'INDEX', $size);
+			$listModel->dropIndex($row->name, 'filter', 'INDEX');
 		}
 	}
 

@@ -621,7 +621,7 @@ var FbDateTime = new Class({
 				}
 			}
 		}.bind(this));
-		d.injectInside(document.body);
+		d.inject(document.body);
 		var mydrag = new Drag.Move(d);
 		return d;
 	},

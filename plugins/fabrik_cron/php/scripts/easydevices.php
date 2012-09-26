@@ -32,7 +32,7 @@ foreach($rows as $row) {
 
 	if($diff != 0) {
 	  $newDate = JFactory::getDate($diff);
-	  $diff = $newDate->toFormat('000-00-00 %H:%M:%S');
+	  $diff = $newDate->format('000-00-00 H:i:s');
 	}else{
 	  $diff = '000-00-00 00:00:00';
 	}

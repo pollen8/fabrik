@@ -17,7 +17,7 @@
 				
 			<field connection="params_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CHART_AXIS_LABEL_DESC" label="PLG_VISUALIZATION_CHART_AXIS_LABEL_LABEL" name="x_axis_label" table="params_chart_table" type="element"/>
 				
-			<field description="PLG_VISUALIZATION_CHART_AXIS_MEAUSREMENT_UNIT_DESC" label="PLG_VISUALIZATION_CHART_AXIS_MEAUSREMENT_UNIT_LABEL" name="x_axis_measurement_unit" size="3" type="text"/>
+			<field description="PLG_VISUALIZATION_CHART_AXIS_MEAUSREMENT_UNIT_DESC" label="PLG_VISUALIZATION_CHART_AXIS_MEAUSREMENT_UNIT_LABEL" name="x_axis_measurement_unit" size="3" class="input-mini" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_CHART_WHERE_DESC" label="PLG_VISUALIZATION_CHART_WHERE_LABEL" name="chart_where" size="60" type="text"/>
 				

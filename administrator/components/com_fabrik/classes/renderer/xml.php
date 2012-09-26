@@ -61,8 +61,8 @@ class JDocumentRendererXml extends JDocumentRenderer
 		if ($data->copyright !== '') {
 			$xml.= "\t\t<copyright>".htmlspecialchars($data->copyright, ENT_COMPAT, 'UTF-8')."</copyright>\n";
 		}
-		$xml.= "\t\t<date>".htmlspecialchars($now->toFormat('%d/%m/%Y'), ENT_COMPAT, 'UTF-8')."</date>\n";
-		$xml.= "\t\t<time>".htmlspecialchars($now->toFormat('%h:%m:%s'), ENT_COMPAT, 'UTF-8')."</time>\n";
+		$xml.= "\t\t<date>".htmlspecialchars($now->format('d/m/Y'), ENT_COMPAT, 'UTF-8')."</date>\n";
+		$xml.= "\t\t<time>".htmlspecialchars($now->format('H:i:s'), ENT_COMPAT, 'UTF-8')."</time>\n";
 		$xml.= "\t</channel>\n";
 		for ($i=0;$i<count($data->items);$i++)
 		{

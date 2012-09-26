@@ -2,7 +2,7 @@
 <form>
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-link">
-			<field default="20" label="PLG_ELEMENT_LINK_WIDTH_LABEL" name="width" size="3" type="text"/>
+			<field default="20" label="PLG_ELEMENT_LINK_WIDTH_LABEL" name="width" size="3" class="input-mini" type="text"/>
 				
 			<field cols="45" label="PLG_ELEMENT_LINK_DEFAULT_LABEL_LABEL" name="default" rows="6" type="textarea"/>
 		
@@ -26,7 +26,7 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="255" label="PLG_ELEMENT_LINK_MAX_LENGTH" name="maxlength" size="3" type="maxlength"/>
+			<field default="255" label="PLG_ELEMENT_LINK_MAX_LENGTH" name="maxlength" size="3" class="input-mini" type="maxlength"/>
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-link-bitly">

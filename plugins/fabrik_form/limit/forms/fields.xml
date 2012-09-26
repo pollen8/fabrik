@@ -14,7 +14,7 @@
 			
 			<field name="MODE" repeat="true" type="spacer"/>
 			
-			<field description="PLG_FORM_LIMIT_LENGTH_DESC" label="PLG_FORM_LIMIT_LENGTH_LABEL" name="limit_length" repeat="true" size="3" type="text"/>
+			<field description="PLG_FORM_LIMIT_LENGTH_DESC" label="PLG_FORM_LIMIT_LENGTH_LABEL" name="limit_length" repeat="true" size="3" class="input-mini" type="text"/>
 				
 			<field name="OR" type="spacer"/>
 	

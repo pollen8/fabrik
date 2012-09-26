@@ -18,7 +18,7 @@ jimport('joomla.application.component.view');
  * @subpackage	Fabrik
  * @since		1.5
  */
-class FabrikViewList extends JViewLegacy
+class FabrikAdminViewList extends JViewLegacy
 {
 
 	/**

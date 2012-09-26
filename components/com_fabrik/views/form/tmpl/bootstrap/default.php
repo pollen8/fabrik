@@ -117,7 +117,7 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 	<?php if ($this->hasActions) {?>
 	<div class="fabrikActions form-actions">
 
-	<div class="row">
+	<div class="row-fluid">
 		<div class="span4">
 			<div class="btn-group">
 			<?php

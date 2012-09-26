@@ -314,7 +314,7 @@ var FabrikComment = new Class({
 							c.getElements('.info').dispose();
 							new Element('span', {
 								'class' : 'info'
-							}).set('html', r).injectInside(c);
+							}).set('html', r).inject(c);
 						}.bind(this)
 					}).send();
 

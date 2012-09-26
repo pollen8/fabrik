@@ -6,7 +6,6 @@
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
-
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -188,7 +187,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
 		$model = $this->getModel();
-		if (!JError::isError($model))
+		if (!JError::isError($model) && $model !== false)
 		{
 			$view->setModel($model, true);
 		}

@@ -2072,13 +2072,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$pstr[] = '	<div class="fabrikslider-line" style="width: 100px;float:left;">';
 			$pstr[] = '		<div class="knob"></div>';
 			$pstr[] = '	</div>';
-			$pstr[] = '	<input name="zoom-val" value="" size="3" />';
+			$pstr[] = '	<input name="zoom-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
 			$pstr[] = '<div class="rotate" style="float:left;margin-top:10px;width:200px">' . JText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE') . ':';
 			$pstr[] = '	<div class="fabrikslider-line" style="width: 100px;float:left;">';
 			$pstr[] = '		<div class="knob"></div>';
 			$pstr[] = '	</div>';
-			$pstr[] = '	<input name="rotate-val" value="" size="3" />';
+			$pstr[] = '	<input name="rotate-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
 		}
 		$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';

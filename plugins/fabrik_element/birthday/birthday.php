@@ -87,7 +87,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				if (FabrikWorker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
-					$detailvalue = $date->toFormat($fd);
+					$detailvalue = $date->format($fd);
 				}
 				if (date('m-d') < $month . '-' . $day)
 				{
@@ -495,7 +495,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				/**
 				 * $$$ rob default to a format date
 				 * $date = JFactory::getDate($d);
-				 * $datedisp = $date->toFormat($ft);
+				 * $datedisp = $date->format($ft);
 				 * Jaanus: sorry, but in this manner the element doesn't work with dates earlier than 1901
 				 */
 

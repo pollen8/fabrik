@@ -712,7 +712,7 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="btn-primary button ' . $submitClass . '" name="submit" value="'
+			$form->submitButton = '<input type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit" value="'
 				. $form->submit_button_label . '" />';
 		}
 		else

@@ -121,7 +121,7 @@ var FbCascadingdropdown = new Class({
 					
 					if (this.options.showDesc === true && item.description) {
 						var classname = this.options.showPleaseSelect ? 'notice description-' + (k) : 'notice description-' + (k - 1);
-						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).injectInside(c);
+						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).inject(c);
 					}
 				}.bind(this));
 			} else {

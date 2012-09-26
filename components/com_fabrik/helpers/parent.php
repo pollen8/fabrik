@@ -345,7 +345,7 @@ class FabrikWorker
 		if (!empty($matches))
 		{
 			$d = JFactory::getDate($date);
-			$date = $d->toFormat($format);
+			$date = $d->format($format);
 		}
 
 		/* $$$ - hugh : urldecode (useful when ajax calls, may need better fix)

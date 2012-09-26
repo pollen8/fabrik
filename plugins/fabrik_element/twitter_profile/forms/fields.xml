@@ -4,7 +4,7 @@
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-twitter_profile">
 			
-			<field label="PLG_ELEMENT_TWITTER_PROFILE_WIDTH_LABEL" name="width" size="3" type="text"/>
+			<field label="PLG_ELEMENT_TWITTER_PROFILE_WIDTH_LABEL" name="width" size="3" class="input-mini" type="text"/>
 				
 			<field default="0" label="PLG_ELEMENT_TWITTER_PROFILE_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>

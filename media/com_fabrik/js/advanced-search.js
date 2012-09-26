@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 AdvancedSearch = new Class({
 	
@@ -12,7 +12,7 @@ AdvancedSearch = new Class({
 	initialize: function (options) {
 		this.setOptions(options);
 		this.form = document.id('advanced-search-win' + this.options.listref).getElement('form');
-		this.trs = $A([]);
+		this.trs = Array.from([]);
 		if (this.form.getElement('.advanced-search-add')) {
 			this.form.getElement('.advanced-search-add').removeEvents('click');
 			this.form.getElement('.advanced-search-add').addEvent('click', function (e) {

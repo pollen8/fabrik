@@ -47,7 +47,7 @@
 						
 						<field description="PLG_VIZ_TIMELINE_BAND_BACKGROUND_DESC" label="PLG_VIZ_TIMELINE_BAND_BACKGROUND_LABEL" name="timeline_band_background_colour" size="6" type="field"/>
 					
-						<field description="PLG_VIZ_TIMELINE_BAND_WIDTH_DESC" label="PLG_VIZ_TIMELINE_BAND_WIDTH_LABEL" name="timeline_band_width" size="3" type="field"/>
+						<field description="PLG_VIZ_TIMELINE_BAND_WIDTH_DESC" label="PLG_VIZ_TIMELINE_BAND_WIDTH_LABEL" name="timeline_band_width" size="3" class="input-mini" type="field"/>
 							
 						<field default="0" description="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_DESC" label="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_LABEL" name="timeline_band_as_overview" type="list">
 								<option value="0">JNO</option>

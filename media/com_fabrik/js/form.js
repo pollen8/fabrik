@@ -3,7 +3,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 var FbForm = new Class({
 
@@ -45,7 +45,7 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
-		this.bufferedEvents = $A([]);
+		this.bufferedEvents = [];
 		this.duplicatedGroups = $H({});
 	
 		this.fx = {};
@@ -730,7 +730,7 @@ var FbForm = new Class({
 
 	_showGroupError : function (r, d) {
 		var tmperr;
-		var gids = $A(this.options.pages.get(this.currentPage.toInt()));
+		var gids = Array.from(this.options.pages.get(this.currentPage.toInt()));
 		var err = false;
 		$H(d).each(function (v, k) {
 			k = k.replace(/\[(.*)\]/, '').replace(/%5B(.*)%5D/, '');// for dropdown validations
@@ -843,7 +843,7 @@ var FbForm = new Class({
 		}
 		if (this.options.ajax) {
 			var copy = this._getButton('Copy');
-			$A([apply, submit, copy]).each(function (btn) {
+			([apply, submit, copy]).each(function (btn) {
 				if (typeOf(btn) !== 'null') {
 					btn.addEvent('click', function (e) {
 						this.doSubmit(e, btn);
@@ -1347,7 +1347,7 @@ var FbForm = new Class({
 
 						// update the element id use el.element.id rather than input.id as
 						// that may contain _1 at end of id
-						var bits = $A(el.element.id.split('_'));
+						var bits = Array.from(el.element.id.split('_'));
 						bits.splice(bits.length - 1, 1, c);
 						input.id = bits.join('_');
 
@@ -1371,7 +1371,7 @@ var FbForm = new Class({
 					// events are cloned
 					
 					// $$$ rob fix for date element
-					var bits = $A(el.options.element.split('_'));
+					var bits = Array.from(el.options.element.split('_'));
 					bits.splice(bits.length - 1, 1, c);
 					subElementContainer.id = bits.join('_');
 				}

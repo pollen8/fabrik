@@ -231,7 +231,7 @@ Fabrik.Window = new Class({
 					'height': h + 'px',
 					'width': w
 				}
-			}).injectInside(this.window.getElement('.itemContent'));
+			}).inject(this.window.getElement('.itemContent'));
 			this.iframeEl.hide();
 			this.iframeEl.addEvent('load', function (e) {
 				Fabrik.loader.stop(this.window.getElement('.itemContent'));

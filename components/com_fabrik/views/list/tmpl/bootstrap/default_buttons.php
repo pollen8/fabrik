@@ -5,7 +5,7 @@
 <?php if ($this->showAdd) {?>
 
 		<li><a class="addbutton addRecord" href="<?php echo $this->addRecordLink;?>">
-			<i class="icon-plus-sign"></i>
+			<i class="icon-plus"></i>
 			<?php echo $this->addLabel?>
 		</a></li>
 <?php }?>
@@ -14,7 +14,7 @@
 
  <li class="dropdown">
 	<a href="#" class="dropdown-toggle groupBy" data-toggle="dropdown">
-		<i class="icon-random"></i>
+		<i class="icon-list-view"></i>
 		<?php echo JText::_('COM_FABRIK_GROUP_BY');?>
 		<b class="caret"></b>
 	</a>

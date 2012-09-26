@@ -29,12 +29,12 @@ var Slimbox;
 			]).setStyle("display", "none")
 		);
 
-		image = new Element("div", {id: "lbImage"}).injectInside(center).adopt(
+		image = new Element("div", {id: "lbImage"}).inject(center).adopt(
 			prevLink = new Element("a", {id: "lbPrevLink", href: "#"}).addEvent("click", previous),
 			nextLink = new Element("a", {id: "lbNextLink", href: "#"}).addEvent("click", next)
 		);
 
-		bottom = new Element("div", {id: "lbBottom"}).injectInside(bottomContainer).adopt(
+		bottom = new Element("div", {id: "lbBottom"}).inject(bottomContainer).adopt(
 			new Element("a", {id: "lbCloseLink", href: "#"}).addEvent("click", close),
 			caption = new Element("div", {id: "lbCaption"}),
 			number = new Element("div", {id: "lbNumber"}),

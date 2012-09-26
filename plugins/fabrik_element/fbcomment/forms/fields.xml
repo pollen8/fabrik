@@ -12,7 +12,7 @@
 				label="PLG_ELEMENT_FBCOMMENT_UNIQUE_ID_LABEL" 
 				description="PLG_ELEMENT_FBCOMMENT_FBCOMMENT_UNIQUE_ID_DESC" />
 				-->
-			<field default="300" label="PLG_ELEMENT_FBCOMMENT_WIDTH_LABEL" name="fbcomment_width" size="3" type="text"/>
+			<field default="300" label="PLG_ELEMENT_FBCOMMENT_WIDTH_LABEL" name="fbcomment_width" size="3" class="input-mini" type="text"/>
 				
 			<field default="10" label="PLG_ELEMENT_FBCOMMENT_NUMBER_OF_COMMENTS_LABEL" name="fbcomment_number_of_comments" type="text"/>
 			

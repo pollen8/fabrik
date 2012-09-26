@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Canvas:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Canvas:true */
 
 var FrontPackage = new Class({
 	Extends: Canvas,
