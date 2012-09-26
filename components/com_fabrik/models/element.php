@@ -1575,7 +1575,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   array  $newElements  copied element ids (keyed on original element id)
 	 *
-	 * @return  voidfunction check(
+	 * @return  void
 	 */
 
 	public function finalCopyCheck($newElements)
@@ -4333,7 +4333,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * can be overwritten in plugin classes
+	 * Can be overwritten in plugin classes
 	 * eg if changing from db join to field we need to remove the join
 	 * entry from the #__{package}_joins table
 	 *
@@ -5878,7 +5878,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * return an array of parameter names which should not get updated if a linked element's parent is saved
+	 * Return an array of parameter names which should not get updated if a linked element's parent is saved
 	 * notably any paramter which references another element id should be returned in this array
 	 * called from admin element model updateChildIds()
 	 * see cascadingdropdown element for example
