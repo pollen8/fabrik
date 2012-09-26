@@ -562,7 +562,7 @@ class FabrikViewListBase extends JView
 	}
 
 	/**
-	 * Get the table calculations
+	 * Get the list calculations
 	 *
 	 * @param   array   $aCols   columns
 	 * @param   string  $method  tip style?

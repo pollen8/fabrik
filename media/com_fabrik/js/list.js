@@ -346,14 +346,18 @@ var FbList = new Class({
 			'type': 'button',
 			'name': 'submit',
 			'value': Joomla.JText._('COM_FABRIK_EXPORT'),
-			'class': 'button',
+			'class': 'button exportCSVButton',
 			events: {
 				'click': function (e) {
 					e.stop();
 					e.target.disabled = true;
-					new Element('div', {
-						'id': 'csvmsg'
-					}).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>').inject(e.target, 'before');
+					var csvMsg = document.id('csvmsg');
+					if (typeOf(csvMsg) === 'null') {
+						csvMsg = new Element('div', {
+							'id': 'csvmsg'
+						}).inject(e.target, 'before');
+					}
+					csvMsg.set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
 					this.triggerCSVExport(0);
 				}.bind(this)
 
@@ -470,6 +474,7 @@ var FbList = new Class({
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
+						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
 			}.bind(this)
