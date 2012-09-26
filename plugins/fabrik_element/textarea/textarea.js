@@ -20,9 +20,11 @@ var FbTextarea = new Class({
 			this.element = document.id(this.options.element);
 		}
 		if (typeOf(this.element) === 'null') {
-
-			// Can occur when element is part of hidden first group
-			return;
+			this.element = document.id(this.options.htmlId);
+			if (typeOf(this.element) === 'null') {
+				// Can occur when element is part of hidden first group
+				return;
+			}
 		}
 		if (this.options.editable === true) {
 			var c = this.getContainer();
@@ -60,7 +62,8 @@ var FbTextarea = new Class({
 	getTextContainer: function ()
 	{
 		if (this.options.wysiwyg) {
-			var instance = tinyMCE.get(this.options.element);
+			var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+			var instance = tinyMCE.get(name);
 			if (instance) {
 				this.container = instance.getDoc();
 			} else {
