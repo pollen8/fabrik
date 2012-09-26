@@ -27,7 +27,9 @@ var FbDateTime = new Class({
 	},
 	
 	initialize: function (element, options) {
-		this.parent(element, options);
+		if (!this.parent(element, options)) {
+			return false;
+		}
 		this.hour = '0';
 		this.plugin = 'fabrikdate';
 		this.minute = '00';
