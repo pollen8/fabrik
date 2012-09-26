@@ -1345,12 +1345,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				break;
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $htmlid . '" value="' . $default . '" />';
-				$return[] = '<input type="text" name="' . $element->id . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '
-					. $htmlid . '-auto-complete" size="' . $size . '" value="' . $defaultLabel . '" />';
-				$return[] = $this->filterHiddenFields();
-				$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $htmlid;
-				FabrikHelperHTML::autoComplete($selector, $element->id, 'databasejoin');
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
+				$return = array_merge($return, $autoComplete);
 				break;
 
 		}
@@ -2124,6 +2120,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$query = $db->getQuery(true);
 		$query = $this->_buildQuery(array(), false);
 		$key = $this->getJoinValueColumn();
+		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
 		$db->setQuery($query);
 		$r = $db->loadObject();

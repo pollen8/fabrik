@@ -740,6 +740,9 @@ class FabrikFEModelList extends JModelForm
 			{
 				$elementModels = $groupModel->getPublishedListElements();
 			}
+			if (JRequest::getVar('test') == 1) {
+			echo "<pre>";print_r($data);echo "</pre>";
+			}
 			foreach ($elementModels as $elementModel)
 			{
 				$e = $elementModel->getElement();
@@ -767,6 +770,10 @@ class FabrikFEModelList extends JModelForm
 						{
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
+							if (JRequest::getVar('test') == 1) {
+								echo "<pre>col = $col, data = ";print_r($coldata);echo "</pre>";
+							}
+
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
 							$rawCol = $col . '_raw';
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if

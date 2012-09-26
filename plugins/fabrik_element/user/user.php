@@ -669,16 +669,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				break;
 
 			case "auto-complete":
-				if (get_magic_quotes_gpc())
-				{
-					$default = stripslashes($default);
-				}
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
-				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'
-					. $default . '" id="' . $htmlid . '-auto-complete" />';
-				$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
-				FabrikHelperHTML::autoComplete($selector, $this->getElement()->id, 'user');
+				$defaultLabel = $this->getLabelForValue($default);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
+				$return = array_merge($return, $autoComplete);
 				break;
 		}
 		if ($normal)

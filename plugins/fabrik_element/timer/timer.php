@@ -25,7 +25,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 class plgFabrik_ElementTimer extends plgFabrik_Element
 {
 
-	var $hasSubElements = false;
+	public $hasSubElements = false;
 
 	/** @var  string  db table field type */
 	protected $fieldDesc = 'DATETIME';
@@ -96,8 +96,6 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 		$params = &$this->getParams();
 		$element = $this->getElement();
 		$size = $params->get('timer_width', 9);
-
-		//$value = $element->default;
 		$value = $this->getValue($data, $repeatCounter);
 		if ($value == '')
 		{
@@ -171,7 +169,8 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
-		//$$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
+
+		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 

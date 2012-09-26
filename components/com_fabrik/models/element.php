@@ -138,9 +138,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 	/** Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
-	 * @var bol
+	 * @var bool
 	 */
-	var $hasSubElements = false;
+	public $hasSubElements = false;
 
 	/**
 	 * Valid image extensions
@@ -2584,9 +2584,24 @@ class plgFabrik_Element extends FabrikPlugin
 		return implode("\n", $return);
 	}
 
-	protected function autoCompleteFilter($default, $v)
+
+	/**
+	 * Build the HTML for the auto-complete filter
+	 *
+	 * @param   string  $default     label
+	 * @param   string  $v           field name
+	 * @param   string  $labelValue  label value
+	 *
+	 * @return  array  html bits
+	 */
+
+	protected function autoCompleteFilter($default, $v, $labelValue = null)
 	{
 		$listModel = $this->getListModel();
+		if (is_null($labelValue))
+		{
+			$labelValue = $default;
+		}
 		$default = stripslashes($default);
 		$default = htmlspecialchars($default);
 		$id = $this->getHTMLId() . 'value';
@@ -2597,8 +2612,8 @@ class plgFabrik_Element extends FabrikPlugin
 		 */
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $id
-		. '-auto-complete" size="' . $size . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger ' . $id
+		. '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 		$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
 		$element = $this->getElement();
 		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin);
