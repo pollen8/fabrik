@@ -53,6 +53,35 @@ class FabrikAdminControllerVisualization extends JControllerForm
 		{
 			echo $model->$pluginTask();
 		}
+		else
+		{
+			$task = JRequest::getVar('task');
+
+			$path = JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/controllers/' . $viz->plugin . '.php';
+			if (file_exists($path))
+			{
+				require_once $path;
+			}
+			else
+			{
+				JError::raiseNotice(400, 'could not load viz:' . $viz->plugin);
+				return;
+			}
+
+			$controllerName = 'FabrikControllerVisualization' . $viz->plugin;
+			$controller = new $controllerName();
+			$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/views');
+			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
+
+			//add the model path
+			$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
+			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+
+			$origId = JRequest::getInt('visualizationid');
+			JRequest::setVar('visualizationid', $id);
+			$controller->$task();
+
+		}
 		return $this;
 	}
 

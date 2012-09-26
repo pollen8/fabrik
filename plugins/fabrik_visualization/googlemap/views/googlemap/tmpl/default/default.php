@@ -34,7 +34,7 @@ $params = $this->params;
 	</table>
 </div>
 
-<?php foreach ($this->grouptemplates as $table => $templates) :
+<?php foreach ($this->groupTemplates as $table => $templates) :
 	foreach ($templates as $label => $content) :
 		?>
 		<div style="display:none" class="groupedContent groupedContent<?php echo $table . $label?>"><?php echo $content?></div>

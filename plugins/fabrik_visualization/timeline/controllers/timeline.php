@@ -18,7 +18,23 @@ jimport('joomla.application.component.controller');
  * @subpackage  Fabrik.visualization.timeline
  * @since       3.0
  */
+
 class FabrikControllerVisualizationtimeline extends FabrikControllerVisualization
 {
 
+	/**
+	 * Get a series of timeline events
+	 *
+	 * @return  void
+	 */
+
+	public function ajax_getEvents()
+	{
+		$viewName = 'timeline';
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$model = $this->getModel($viewName);
+		$id = JRequest::getInt('visualizationid', 0);
+		$model->setId($id);
+		$model->onAjax_getEvents();
+	}
 }

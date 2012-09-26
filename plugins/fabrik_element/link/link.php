@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.link
- * @since    3.0
+ * @since       3.0
  */
 
 class PlgFabrik_ElementLink extends PlgFabrik_Element
@@ -222,9 +222,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	/**
 	 * Turn form value into email formatted value
 	 *
-	 * @param   mixed  $value          element value
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  group repeat counter
+	 * @param   mixed  $value  element value
 	 *
 	 * @return  string  email formatted value
 	 */
@@ -365,13 +363,13 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 				$values[$name]['data']['label'] = array();
 				$values[$name]['data']['link'] = array();
 			}
-			$values[$name]['data']['label'][$c] = $data[0];
-			$values[$name]['data']['link'][$c] = $data[1];
+			$values[$name]['data']['label'][$c] = $data['label'];
+			$values[$name]['data']['link'][$c] = $data['link'];
 		}
 		else
 		{
-			$values[$name]['data']['label'] = $data[0];
-			$values[$name]['data']['link'] = $data[1];
+			$values[$name]['data']['label'] = $data['label'];
+			$values[$name]['data']['link'] = $data['link'];
 		}
 	}
 

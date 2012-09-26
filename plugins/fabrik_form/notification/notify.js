@@ -1,12 +1,12 @@
 var Notify = new Class({
 	
-	initialize: function(el, options) {
+	initialize: function (el, options) {
 		this.options = options;
 		var target = document.id(el);
-		if(target.getStyle('display') == 'none') {
+		if (target.getStyle('display') === 'none') {
 			target = target.getParent();
 		}
-		target.addEvent('mouseup', function(e) {
+		target.addEvent('mouseup', function (e) {
 			Fabrik.startLoading(this.options.senderBlock);
 			var myAjax = new Request({
 				url: 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=notification&method=toggleNotification',
@@ -19,9 +19,9 @@ var Notify = new Class({
 					rowid: this.options.rowid,
 					notify: document.id(el).checked
 				},
-				onComplete : function(r) {
+				onComplete : function (r) {
 						Fabrik.stopLoading(this.options.senderBlock, r);
-				}.bind(this)
+					}.bind(this)
 			}).send();
 
 		}.bind(this));

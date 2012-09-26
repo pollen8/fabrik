@@ -184,12 +184,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get the field name to use as the column that contains the join's label data
 	 *
-	 * @param   bool	use step in element name
+	 * @param   bool  $useStep  use step in element name
 	 *
 	 * @return  string	join label column either returns concat statement or quotes `tablename`.`elementname`
 	 */
 
-	function getJoinLabelColumn($useStep = false)
+	public function getJoinLabelColumn($useStep = false)
 	{
 		if (!isset($this->joinLabelCols))
 		{
@@ -239,12 +239,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * can be overwritten in the plugin class - see database join element for example
 	 * testing to see that if the aFields are passed by reference do they update the table object?
 	 *
-	 * @param   array	containing field sql
-	 * @param   array	containing field aliases
-	 * @param   string	table name (depreciated)
+	 * @param   array   &$aFields    containing field sql
+	 * @param   array   &$aAsFields  containing field aliases
+	 * @param   string  $table       table name (depreciated)
+	 *
+	 * @return  void
 	 */
 
-	function getAsField_csv(&$aFields, &$aAsFields, $table = '')
+	public function getAsField_csv(&$aFields, &$aAsFields, $table = '')
 	{
 		$this->getAsField_html($aFields, $aAsFields, $table);
 	}
@@ -522,10 +524,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * create the sql query used to get the join data
+	 * Create the sql query used to get the join data
 	 *
 	 * @param   array  $data      data
 	 * @param   bool   $incWhere  include where
+	 * @param   array  $opts      query options
 	 *
 	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
@@ -533,7 +536,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
 		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
-
+		$sig .= '.' . serialize($opts);
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		if (isset($this->_sql[$sig]))
@@ -1265,7 +1268,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
 				// should really refactor so encoding goes in this if/else structure!
-				$labeldata = json_decode($data);
+				$labeldata = (array) json_decode($data);
 			}
 			foreach ($labeldata as &$l)
 			{
@@ -1346,12 +1349,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				break;
 			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $htmlid . '" value="' . $default . '" />';
-				$return[] = '<input type="text" name="' . $element->id . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger '
-					. $htmlid . '-auto-complete" size="' . $size . '" value="' . $defaultLabel . '" />';
-				$return[] = $this->filterHiddenFields();
-				$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $htmlid;
-				FabrikHelperHTML::autoComplete($selector, $element->id, 'databasejoin');
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
+				$return = array_merge($return, $autoComplete);
 				break;
 
 		}
@@ -2127,6 +2126,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query = $db->getQuery(true);
 		$query = $this->buildQuery(array(), false);
 		$key = $this->getJoinValueColumn();
+		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
 		$db->setQuery($query);
 		$r = $db->loadObject();
@@ -2346,7 +2346,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * When the element is a repeatble join (e.g. db join checkbox) then figure out how many
 	 * records have been selected
 	 *
-	 * @param   array  $data  data
+	 * @param   array  $data    data
 	 * @param   object  $oJoin  join model
 	 *
 	 * @since 3.0rc1
@@ -2370,7 +2370,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 *
 	 * Should the 'label' field be quoted.  Overridden by databasejoin and extended classes,
 	 * which may use a CONCAT'ed label which musn't be quoted.
 	 *

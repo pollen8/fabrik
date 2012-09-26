@@ -763,6 +763,7 @@ class FabrikFEModelList extends JModelForm
 						{
 							$thisRow = $data[$i];
 							$coldata = $thisRow->$col;
+
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
 							$rawCol = $col . '_raw';
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
@@ -1517,7 +1518,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$class = 'fabrik_edit';
 		}
-		$data = '<a class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data . '</a>';
+		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data . '</a>';
 		return $data;
 	}
 
@@ -5430,9 +5431,9 @@ class FabrikFEModelList extends JModelForm
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		// 3.0 actions now go in one column
-		if ($this->canSelectRows())
+		if ($this->canSelectRows() || $this->canViewDetails())
 		{
+			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
 			$headingButtons = array();
 			if ($this->deletePossible())
@@ -5447,6 +5448,7 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$headingButtons = array_merge($headingButtons, $res);
+
 			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 
@@ -5535,7 +5537,8 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		//if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		if (($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
 		{
 			return true;
 		}
@@ -5576,6 +5579,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		$params = $this->getParams();
 		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
+		//if (($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
 		{
 			return true;
 		}
@@ -8944,7 +8948,7 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
-				|| JRequest::getVar('task') === 'list.elementFilter')
+				|| JRequest::getVar('task') === 'list.elementFilter' || JRequest::getVar('setListRefFromRequest') == 1)
 			{
 				// Testing for ajax nav in content plugin or in advanced search
 				$this->setRenderContextFromRequest();

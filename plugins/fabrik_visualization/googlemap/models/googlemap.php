@@ -618,7 +618,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		foreach ($models as $model)
 		{
 			$id = $model->getTable()->id;
-			$tmpls = $model->grouptemplates;
+			$tmpls = $model->groupTemplates;
 			foreach ($tmpls as $k => $v)
 			{
 				$k = preg_replace('#[^0-9a-zA-Z_]#', '', $k);

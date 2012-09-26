@@ -131,7 +131,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	/** Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
-	 * @var bol
+	 * @var bool
 	 */
 	public $hasSubElements = false;
 
@@ -1271,7 +1271,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
-		$bLabel = $config->get('fbConf_wysiwyg_label', false) ? false : $this->get('hasLabel');
+		$bLabel = $this->get('hasLabel');
 		$element = $this->getElement();
 		$elementHTMLId = $this->getHTMLId($repeatCounter);
 		$this->modHTMLId($elementHTMLId);
@@ -1538,7 +1538,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   array  $newElements  copied element ids (keyed on original element id)
 	 *
-	 * @return  voidfunction check(
+	 * @return  void
 	 */
 
 	public function finalCopyCheck($newElements)
@@ -2529,9 +2529,24 @@ class PlgFabrik_Element extends FabrikPlugin
 		return implode("\n", $return);
 	}
 
-	protected function autoCompleteFilter($default, $v)
+
+	/**
+	 * Build the HTML for the auto-complete filter
+	 *
+	 * @param   string  $default     label
+	 * @param   string  $v           field name
+	 * @param   string  $labelValue  label value
+	 *
+	 * @return  array  html bits
+	 */
+
+	protected function autoCompleteFilter($default, $v, $labelValue = null)
 	{
 		$listModel = $this->getListModel();
+		if (is_null($labelValue))
+		{
+			$labelValue = $default;
+		}
 		$default = stripslashes($default);
 		$default = htmlspecialchars($default);
 		$id = $this->getHTMLId() . 'value';
@@ -2542,8 +2557,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 */
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $id
-		. '-auto-complete" size="' . $size . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger ' . $id
+		. '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 		$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
 		$element = $this->getElement();
 		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin);
@@ -4224,7 +4239,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * can be overwritten in plugin classes
+	 * Can be overwritten in plugin classes
 	 * eg if changing from db join to field we need to remove the join
 	 * entry from the #__{package}_joins table
 	 *
@@ -5770,7 +5785,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * return an array of parameter names which should not get updated if a linked element's parent is saved
+	 * Return an array of parameter names which should not get updated if a linked element's parent is saved
 	 * notably any paramter which references another element id should be returned in this array
 	 * called from admin element model updateChildIds()
 	 * see cascadingdropdown element for example

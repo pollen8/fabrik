@@ -224,18 +224,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case 'auto-complete': /* if (get_magic_quotes_gpc())
-								  {
-								      $default = stripslashes($default);
-								  }
-								  $default = htmlspecialchars($default);
-								  $return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $htmlid . '" value="' . $default . '" />';
-								  $return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger ' . $htmlid
-								      . '-auto-complete" size="' . $size . '" value="' . $default . '" />';
-								  $selector = '#list_' . $listModel->getRenderContext() . ' .' . $htmlid;
-								  FabrikHelperHTML::autoComplete($selector, $this->getElement()->id); */
-
-				$autoComplete = $this->autoCompleteFilter($default, $v);
+			case 'auto-complete':
+				$defaultLabel = $this->getLabelForValue($default);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
@@ -426,7 +417,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$l = $this->getLabelForValue($val);
 					}
-					$l = $val;
+					else
+					{
+						$l = $val;
+					}
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $thisRow, 'list');

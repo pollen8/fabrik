@@ -20,7 +20,7 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualization
 {
-	function ajax_getMarkers($tmpl = 'default')
+	public function ajax_getMarkers($tmpl = 'default')
 	{
 		$viewName = 'googlemap';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');

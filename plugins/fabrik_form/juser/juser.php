@@ -100,12 +100,17 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	 * @param   object  $params  plugin params
 	 * @param   string  $pname   params property name to get the value for
 	 * @param   array   $data    posted form data
+	 * @param   mixed   $default default value
 	 *
 	 * @return  mixed  value
 	 */
 
-	private function getFieldValue($params, $pname, $data)
+	private function getFieldValue($params, $pname, $data, $default = '')
 	{
+		if ($params->get($pname) == '')
+		{
+			return $default;
+		}
 		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		$group = $elementModel->getGroup();
 		if ($group->isJoin())
@@ -113,7 +118,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			$data = $data['join'][$group->getGroup()->join_id];
 		}
 		$name = $elementModel->getFullName(false, true, false);
-		return JArrayHelper::getValue($data, $name);
+		return JArrayHelper::getValue($data, $name, $default);
 	}
 
 	/**
@@ -523,7 +528,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']);
+					$data['username'], $data['password_clear']
+				);
 			}
 			elseif ($params->get('juser_bypass_accountdetails') != 1)
 			{
@@ -659,7 +665,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+		//$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
+		$groupIds = $this->getFieldValue($params, 'juser_field_usertype', $formModel->_formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
 		if (!empty($groupIds) && is_object($groupIds[0]))

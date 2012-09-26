@@ -30,7 +30,6 @@ var FbAutocomplete = new Class({
 		document.addEvent('keydown', function (e) {
 			this.doWatchKeys(e);
 		}.bind(this));
-		
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
 		this.buildMenu();
 		if (!this.getInputElement()) {

@@ -25,6 +25,8 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
+	public $hasSubElements = false;
+
 	/**
 	 * Db table field type
 	 *
@@ -98,8 +100,6 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$params = &$this->getParams();
 		$element = $this->getElement();
 		$size = $params->get('timer_width', 9);
-
-		//$value = $element->default;
 		$value = $this->getValue($data, $repeatCounter);
 		if ($value == '')
 		{
