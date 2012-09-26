@@ -68,10 +68,6 @@ class JFormFieldPopupforms extends JFormFieldList
 		{
 			$options[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));
 		}
-		else
-		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
-		}
 		return $options;
 	}
 
