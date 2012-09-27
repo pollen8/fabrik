@@ -1711,7 +1711,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$params = $this->getParams();
 			$storageType = JFilterInput::getInstance()->clean($params->get('fileupload_storage_type', 'filesystemstorage'), 'CMD');
 			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
-			$this->storage = new $storageType($params);
+			$storageClass = JString::ucfirst($storageType);
+			$this->storage = new $storageClass($params);
 		}
 		return $this->storage;
 	}
@@ -1847,7 +1848,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (!$this->_editable && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
 		{
 			$links = array();
-			if (!is_array($value)) {
+			if (!is_array($value))
+			{
 				$value = (array) $value;
 			}
 			foreach ($value as $v)
@@ -2300,8 +2302,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$thumbDir .= $params->get('thumb_prefix');
 
 			// Replace the backslashes with forward slashes
-			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" .
-				", '\\\', '/')" . ", '\" alt=\"database join image\" />')";
+			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . ", '\\\', '/')"
+				. ", '\" alt=\"database join image\" />')";
 
 		}
 		else

@@ -17,7 +17,13 @@ var FbElement =  new Class({
 		isJoin: false,
 		joinId: 0
 	},
-		
+	
+	/**
+	 * Ini the element
+	 * 
+	 * @return  bool  false if document.id(this.options.element) not found
+	 */
+	
 	initialize: function (element, options) {
 		this.plugin = '';
 		options.element = element;
@@ -25,14 +31,16 @@ var FbElement =  new Class({
 		this.loadEvents = []; // need to store these for use if the form is reset
 		this.changeEvents = []; // need to store these for gory reasons to do with cloning
 		this.setOptions(options);
-		this.setElement();
+		return this.setElement();
 	},
 	
 	setElement: function () {
 		if (document.id(this.options.element)) {
 			this.element = document.id(this.options.element);
 			this.setorigId();
+			return true;
 		}
+		return false;
 	},
 	
 	get: function (v) {

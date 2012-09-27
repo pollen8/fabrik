@@ -136,6 +136,11 @@ a.fabrikTip {
 	background-color: #fff !important;
 }
 
+.auto-complete-container.advanced {
+	z-index: 11000;
+}
+
+
 .fabrikWindow-modal{
 	z-index: 10001;
 }

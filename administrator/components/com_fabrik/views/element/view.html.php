@@ -75,6 +75,7 @@ class FabrikAdminViewElement extends JViewLegacy
 		}
 		$this->assign('parent', $this->get('Parent'));
 		FabrikAdminHelper::setViewLayout($this);
+		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 		parent::display($tpl);
 	}
 

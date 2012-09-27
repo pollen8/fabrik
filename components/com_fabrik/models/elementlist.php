@@ -226,7 +226,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
-				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel);
+				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);
 				break;
 		}

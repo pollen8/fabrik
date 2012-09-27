@@ -1,156 +1,249 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-class storageAdaptor{
+/**
+ * Abstract Storage adaptor for Fabrik file upload element
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
-	/**@var string path or url to uploaded file */
-	var $uploadedFilePath = null;
+abstract class FabrikStorageAdaptor
+{
 
-	function __construct(&$params)
+	/**
+	 * Path or url to uploaded file
+	 *
+	 * @var string
+	 */
+	protected $uploadedFilePath = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   JRegistry  &$params  options
+	 */
+
+	public function __construct(&$params)
 	{
 		$this->params = $params;
 	}
 
-	function &getParams()
+	/**
+	 * Get params
+	 *
+	 * @return  JRegistry
+	 */
+
+	public function &getParams()
 	{
 		return $this->params;
 	}
 
-	function getUploadedFilePath()
+	/**
+	 * Get the uploaded file path
+	 *
+	 * @return  string
+	 */
+	public function getUploadedFilePath()
 	{
 		return $this->uploadedFilePath;
 	}
 
 	/**
-	 * does a file exist
-* @param $filepath
-	 * @return unknown_type
+	 * Does a file exist
+	 *
+	 * @param   string  $filepath  file path to test
+	 *
+	 * @return bool
 	 */
 
-	function exists($filepath)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function exists($filepath);
 
 	/**
-	 * does a folder exist
-* @param $folder
-	 * @return unknown_type
+	 * Does a folder exist
+	 *
+	 * @param   string  $path  folder path to test
+	 *
+	 * @return bool
 	 */
 
-	function folderExists($path)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function folderExists($path);
 
 	/**
-	 * create a folder
-* @param $path
-	 * @return unknown_type
+	 * Create a folder
+	 *
+	 * @param   string  $path  folder path
+	 *
+	 * @return bool
 	 */
 
-	function createFolder($path)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function createFolder($path);
 
-	function write($file, $buffer)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	/**
+	 * Write a file
+	 *
+	 * @param   string  $file    file name
+	 * @param   string  $buffer  the buffer to write
+	 *
+	 * @return  void
+	 */
 
-	function read( $path)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function write($file, $buffer);
 
-	function clean($path)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	/**
+	 * Read a file
+	 *
+	 * @param   string  $filepath  file path
+	 *
+	 * @return  mixed  Returns file contents or boolean False if failed
+	 */
 
-	function cleanName($filename, $repeatGroupCounter)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function read($filepath);
 
-	function delete($filepath)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	/**
+	 * Clean the file path
+	 *
+	 * @param   string  $path  path to clean
+	 *
+	 * @return  string  cleaned path
+	 */
 
-	function upload($tmpFile, $filepath)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	public abstract function clean($path);
 
-	function setPermissions($filepath)
-	{
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	/**
+	 * Clean a fle name
+	 *
+	 * @param   string  $filename       file name to clean
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string  cleaned name
+	 */
 
-	function urlToPath($url)
+	public abstract function cleanName($filename, $repeatCounter);
+
+	/**
+	 * Delete a file
+	 *
+	 * @param   string  $filepath  file to delete
+	 *
+	 * @return  void
+	 */
+
+	public abstract function delete($filepath);
+
+	/**
+	 * Moves an uploaded file to a destination folder
+	 *
+	 * @param   string  $tmpFile   The name of the php (temporary) uploaded file
+	 * @param   string  $filepath  The path (including filename) to move the uploaded file to
+	 *
+	 * @return  boolean True on success
+	 */
+
+	public abstract function upload($tmpFile, $filepath);
+
+	/**
+	 * Set a file's permissions
+	 *
+	 * @param   string  $filepath  file to set permissions for
+	 *
+	 * @return  string
+	 */
+
+	public abstract function setPermissions($filepath);
+
+	/**
+	 * Convert a full url into a full server path
+	 *
+	 * @param   string  $url  URL
+	 *
+	 * @return string  path
+	 */
+
+	public function urlToPath($url)
 	{
 		return $url;
 	}
 
 	/**
-	 * @abstract
-	 * do a final transform on the path name
-* @param $path
+	 * Do a final transform on the path name
+	 *
+	 * @param   string  &$filepath  path to parse
+	 *
+	 * @return  void
 	 */
-	function finalFilePathParse(&$path)
+
+	public function finalFilePathParse(&$filepath)
 	{
 
 	}
 
 	/**
-	 * convert a full server path into a full url
+	 * Convert a full server path into a full url
+	 *
+	 * @param   string  $path  server path
+	 *
+	 * @return  string  url
 	 */
-	function pathToURL($path)
+
+	public function pathToURL($path)
 	{
-		//return str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $url);
 		$path = COM_FABRIK_LIVESITE . str_replace(COM_FABRIK_BASE, '', $path);
 		$path = str_replace('\\', '/', $path);
 		return $path;
 	}
 
 	/**
-	 * @access public
-* @param string path to folder - eg /images/stories
+	 * Make recursive folders
+	 *
+	 * @param   string   $folderPath  path to folder - eg /images/stories
+	 * @param   bitmask  $mode        permissions
+	 *
+	 *  @return  mixed JError|void
 	 */
 
-	function makeRecursiveFolders( $folderPath, $mode = 0755)
+	public function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
-		if (!JFolder::exists($folderPath)) {
-			if (!JFolder::create($folderPath, $mode)) {
+		if (!JFolder::exists($folderPath))
+		{
+			if (!JFolder::create($folderPath, $mode))
+			{
 				return JError::raiseError(21, "Could not make dir $folderPath ");
 			}
 		}
 	}
 
-	function getFullPath($filepath) {
-		return JError::raiseWarning(500, 'method not implemeneted');
-	}
+	/**
+	 * Get the complete folder path, including the server root
+	 *
+	 * @param   string  $filepath  the file path
+	 *
+	 * @return  string
+	 */
+
+	public abstract function getFullPath($filepath);
 
 	/**
 	 * Allows storage model to modify pathname just before it is rendered.  For instance,
 	 * if using Amazon S3 with 'Authenticated URL' option.
 	 *
-	 * @access public
-* @param string path to file
-	 * @return string
+	 * @param   string  $filepath  path to file
+	 *
+	 * @return  string
 	 */
 
-	function preRenderPath($filepath) {
+	public function preRenderPath($filepath)
+	{
 		return $filepath;
 	}
 

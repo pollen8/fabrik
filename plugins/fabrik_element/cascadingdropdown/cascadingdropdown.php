@@ -471,7 +471,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	{
 		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
 		$sig .= '.' . serialize($opts);
-		$repeatCounter = $opts['repeatCounter'];
+		$repeatCounter = JArrayHelper::getValue($opts, 'repeatCounter', 0);
 		$db = FabrikWorker::getDbo();
 		if (isset($this->_sql[$sig]))
 		{

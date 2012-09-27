@@ -2521,7 +2521,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 
 			case "auto-complete":
-				$autoComplete = $this->autoCompleteFilter($default, $v);
+				$autoComplete = $this->autoCompleteFilter($default, $v, null, $normal);
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
@@ -2536,11 +2536,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $default     label
 	 * @param   string  $v           field name
 	 * @param   string  $labelValue  label value
+	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
 	 * @return  array  html bits
 	 */
 
-	protected function autoCompleteFilter($default, $v, $labelValue = null)
+	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
 	{
 		$listModel = $this->getListModel();
 		if (is_null($labelValue))
@@ -2559,9 +2561,21 @@ class PlgFabrik_Element extends FabrikPlugin
 		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
 		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger ' . $id
 		. '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
-		$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
+
+		$opts = array();
+		if ($normal)
+		{
+			$opts['menuclass'] = 'auto-complete-container';
+			$selector = '#listform_' . $listModel->getRenderContext() . ' .' . $id;
+		}
+		else
+		{
+			$selector = '.advancedSeach_' . $listModel->getRenderContext(). ' .' . $id;
+			$opts['menuclass'] = 'auto-complete-container advanced';
+		}
 		$element = $this->getElement();
-		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin);
+
+		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin, $opts);
 		return $return;
 	}
 

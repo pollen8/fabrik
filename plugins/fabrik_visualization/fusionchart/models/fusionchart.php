@@ -18,15 +18,17 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
+ * @since       3.0
  */
 
 class fabrikModelFusionchart extends FabrikFEModelVisualization
 {
 
-	protected function _getMinMax(&$totals)
-	{
-		return array('min' => min($totals), 'max' => max($totals));
-	}
+	/**
+	 * Get the chart parameters
+	 *
+	 * @return  string
+	 */
 
 	protected function getChartParams()
 	{
@@ -300,13 +302,15 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * set the chart messsages
+	 * Set the chart messsages
+	 *
 	 * @return null
 	 */
 
 	protected function setChartMessages()
 	{
 		$params = $this->getParams();
+
 		// Graph Messages
 		if ($params->get('fusionchart_message_loading'))
 		{
@@ -321,6 +325,14 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 			$this->FC->setChartMessage("ChartNoDataText=" . $params->get('fusionchart_message_nodata', 'No data to display.'));
 		}
 	}
+
+	/**
+	 * Replace placeholders in $msg with request variables
+	 *
+	 * @param   string  $msg  source string
+	 *
+	 * @return  string  replaced string
+	 */
 
 	private function _replaceRequest($msg)
 	{
@@ -338,6 +350,12 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		return $msg;
 	}
 
+	/**
+	 * Set the axis label
+	 *
+	 * @return  void
+	 */
+
 	protected function setAxisLabels()
 	{
 		$worker = new FabrikWorker;
@@ -349,7 +367,13 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 	}
 
-	function getFusionchart()
+	/**
+	 * Load the Fusion chart lib
+	 *
+	 * @return  string
+	 */
+
+	public function getFusionchart()
 	{
 		$this->cantTrendLine = array();
 		$document = JFactory::getDocument();
@@ -385,9 +409,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$chartType = $params->get('fusionchart_type');
 
 		// Create new chart
-		$this->FC = new FusionCharts("$chartType", "$w", "$h");
-		//$this->FC->setRenderer('javascript');
-		//$this->FC->JSC["debugmode"]=true;
+		$this->FC = new FusionCharts($chartType, $w, $h);
+
+		// $this->FC->setRenderer('javascript');
+		// $this->FC->JSC["debugmode"]=true;
+
 		// Define path to FC's SWF
 		$this->FC->setSWFPath($fc_swf_path);
 
@@ -446,17 +472,17 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 			}
 			else
 			{
-				// if no where clause, explicitly clear any previously set clause
+				// If no where clause, explicitly clear any previously set clause
 				$listModel->unsetPluginQueryWhere('fusionchart');
 			}
 
-			// $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
-			// session state/defaults when it calls getPagination, which is then returned as a cached
-			// object if we call getPagination after render().  So call it first, then render() will
-			// get our cached pagination, rather than vice versa.
+			/* $$$ hugh - remove pagination BEFORE calling render().  Otherwise render() applies
+			 * session state/defaults when it calls getPagination, which is then returned as a cached
+			 * object if we call getPagination after render().  So call it first, then render() will
+			 * get our cached pagination, rather than vice versa.
+			 */
 			$nav = $listModel->getPagination(0, 0, 0);
 			$listModel->render();
-			//$listModel->doCalculations();
 			$alldata = $listModel->getData();
 			$cals = $listModel->getCalculations();
 			$column = $chartElements[$this->c];
@@ -472,10 +498,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 
 			if (in_array($pref, $calc_prefixes))
 			{
-				// you shouldnt mix calculation elements with normal elements when creating the chart
-				// so if ONE calculation element is found we use the calculation data rather than normal element data
-				// this is because a calculation element only generates one value, if want to compare two averages then
-				//they get rendered as tow groups of data and on bar charts this overlays one average over the other, rather than next to it
+				/* you shouldnt mix calculation elements with normal elements when creating the chart
+				 * so if ONE calculation element is found we use the calculation data rather than normal element data
+				 * this is because a calculation element only generates one value, if want to compare two averages then
+				 * they get rendered as tow groups of data and on bar charts this overlays one average over the other, rather than next to it
+				 */
 				$calcfound = true;
 
 				$column = JString::substr($column, 6);
@@ -485,8 +512,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 				{
 					foreach ($caldata as $k => $o)
 					{
-						$calculationData[] = (float) $o->value;
-						$calculationLabels[] = trim(strip_tags($o->label));
+						if ($k !== 'Total')
+						{
+							$calculationData[] = (float) $o->value;
+							$calculationLabels[] = trim(strip_tags($o->label));
+						}
 					}
 				}
 				if (!empty($calculationData))
@@ -497,21 +527,25 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 
 				$gdata[$this->c] = implode(',', $tmpgdata);
 				$glabels[$this->c] = implode('|', $tmpglabels);
-				// $$$ hugh - playing around with pie charts
-				//$gsums[$this->c] = array_sum($tmpgdata);
+
+				/* $$$ hugh - playing around with pie charts
+				 * $gsums[$this->c] = array_sum($tmpgdata);
+				 */
 				$gsums[$this->c] = array_sum($calculationData);
 			}
 			else
 			{
 				$origColumn = $column;
-				$column = $column . "_raw"; //_raw fields are most likely to contain the value
+
+				// _raw fields are most likely to contain the value
+				$column = $column . '_raw';
 				foreach ($alldata as $group)
 				{
 					foreach ($group as $row)
 					{
 						if (!array_key_exists($column, $row))
 						{
-							//didnt find a _raw column - revent to orig
+							// Didn't find a _raw column - revent to orig
 							$column = $origColumn;
 							if (!array_key_exists($column, $row))
 							{
@@ -529,8 +563,10 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 					}
 					$gdata[$this->c] = implode(',', $tmpgdata);
 					$glabels[$this->c] = implode('|', $tmpglabels);
+
 					// $$$ hugh - playing around with pie charts
 					$gsums[$this->c] = array_sum($tmpgdata);
+
 					// $$$ hugh - playing with 'cumulative' option
 					$this->gcumulatives[$this->c] = array();
 					while (!empty($tmpgdata))
@@ -546,18 +582,15 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		if ($calcfound)
 		{
 			$calculationLabels = array_reverse($calculationLabels);
-			// $$$ rob implode with | and not ',' as :
-			//$labels = explode('|',$glabels[0]); is used below
-			//$glabels = array(implode(',', array_reverse($calculationLabels)));
 			$glabels = array(implode('|', array_reverse($calculationLabels)));
-			// $$$ rob end
 			$gdata = array(implode(',', $calculationData));
 		}
 
-		// $$$ hugh - pie chart data has to be summed - the API only takes a
-		// single dataset for pie charts.  And it doesn't make sense trying to
-		// chart individual row data for multiple elements in a pie chart.
-		// Also, labels need to be axisLabels, not $glabels
+		/* $$$ hugh - pie chart data has to be summed - the API only takes a
+		 * single dataset for pie charts.  And it doesn't make sense trying to
+		 * chart individual row data for multiple elements in a pie chart.
+		 * Also, labels need to be axisLabels, not $glabels
+		 */
 		switch ($chartType)
 		{
 			// Single Series Charts
@@ -567,11 +600,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 			case 'COLUMN3D':
 			case 'DOUGHNUT2D':
 			case 'DOUGHNUT3D':
-			case 'LINE':
-				// $$$ tom - for now I'm enabling Pie charts here so that it displays
-				// something until we do it properly as you said hugh
-				// Well maybe there's something I don't get but in fact FC already draw
-				// the pies by "percenting" the values of each data... if you know what I mean Hugh;)
+			case 'LINE': /* $$$ tom - for now I'm enabling Pie charts here so that it displays
+						  * something until we do it properly as you said hugh
+						  * Well maybe there's something I don't get but in fact FC already draw
+						  * the pies by "percenting" the values of each data... if you know what I mean Hugh;)
+						  */
 			case 'PIE2D':
 			case 'PIE3D':
 			case 'SCATTER':
@@ -602,11 +635,13 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 				}
 				else
 				{
-					// single table/elements, so use the row data
+					// Single table/elements, so use the row data
 					$labels = explode('|', $glabels[0]);
-					//$gsums = !array_key_exists(0, $chartCumulatives) || $chartCumulatives[0] == '0' ? explode(',', $gdata[0]) : explode(',', $gcumulatives[0]);
+
+					// $gsums = !array_key_exists(0, $chartCumulatives) || $chartCumulatives[0] == '0' ? explode(',', $gdata[0]) : explode(',', $gcumulatives[0]);
 					$gsums = JArrayHelper::getValue($chartCumulatives, 0, '0') == '0' ? explode(',', $gdata[0]) : $this->gcumulatives[0];
-					// scale to percentages
+
+					// Scale to percentages
 					$tot_sum = array_sum($gsums);
 					$arrData = array();
 					$labelStep = 0;
@@ -616,11 +651,12 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 						$labelStep = (int) (count($gsums) / $label_step_ratio);
 						$strParam .= ';labelStep=' . $labelStep;
 					}
-					//$$$tom: inversing array_combine as identical values in gsums will be
-					// dropped otherwise. Should I do that differently?
-					// $$$ hugh - can't use array_combine, as empty labels end up dropping values
-					//$arrComb = array_combine($labels, $gsums);
-					//foreach ($arrComb as $key => $value) {
+					/* $$$tom: inversing array_combine as identical values in gsums will be
+					 * dropped otherwise. Should I do that differently?
+					 * $$$ hugh - can't use array_combine, as empty labels end up dropping values
+					 * $arrComb = array_combine($labels, $gsums);
+					 * foreach ($arrComb as $key => $value) {
+					 */
 					if ($elTypes[0] == 'trendonly')
 					{
 						$str_params = '';
@@ -697,8 +733,6 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 						$strParam .= ';SYaxisName=' . implode(' ', $s_parents);
 					}
 
-					//$this->trendLine($gdata);
-
 					$label_step_ratio = (int) JArrayHelper::getValue($label_step_ratios, 0, 1);
 					if ($label_step_ratio > 1)
 					{
@@ -730,11 +764,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 					foreach ($gdata as $key => $chartdata)
 					{
 						$cdata = JArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
-						//$cdata = explode(',', $chartdata);
 						$dataset = $this->axisLabels[$key];
 						$extras = 'parentYAxis=' . $dual_y_parents[$key];
 						$this->FC->addDataset($dataset, $extras);
-						if ($elTypes[$key] == 'trendonly') {
+						if ($elTypes[$key] == 'trendonly')
+						{
 							$str_params = '';
 							$strParam .= ';connectNullData=1';
 							$min = min($cdata);
@@ -742,12 +776,14 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 							list($min, $max) = $this->getTrendMinMax($min, $max, $key);
 							$max_datapoints = $this->getMaxDatapoints($gdata);
 							$this->FC->addChartData($min, $str_params);
-							for ($x = 0; $x < $max_datapoints - 2; $x++) {
+							for ($x = 0; $x < $max_datapoints - 2; $x++)
+							{
 								$this->FC->addChartData('', $str_params);
 							}
 							$this->FC->addChartData($max, $str_params);
 						}
-						else {
+						else
+						{
 							$data_count = 0;
 							foreach ($cdata as $value)
 							{
@@ -765,7 +801,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$this->c > 1 ? $this->trendLine($gdata) : $this->trendLine();
 		$colours = implode(($calcfound ? '|' : ','), $gcolours);
 
-		# Set chart attributes
+		// Set chart attributes
 		if ($params->get('fusionchart_custom_attributes', ''))
 		{
 			$strParam .= ';' . trim($params->get('fusionchart_custom_attributes'));
@@ -773,7 +809,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$strParam = "$strParam";
 		$this->FC->setChartParams($strParam);
 
-		# Render Chart
+		// Render Chart
 		if ($chartType == 'MULTIAXISLINE')
 		{
 			// Nasty, nasty hack for MULTIAXIS, as the FC class doesn't support it.  So need to get the chart XML,
@@ -800,8 +836,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * add a trend line to the chart - not all chart types support rendering trendlines
-* @param   array	$gdata
+	 * Add a trend line to the chart - not all chart types support rendering trendlines
+	 *
+	 * @param   array  &$gdata  data
+	 *
+	 * @return  void
 	 */
 
 	protected function trendLine(&$gdata = null)
@@ -834,7 +873,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 					$cumulative = JArrayHelper::getValue($cumulatives, $nbe, '0');
 					if ($cumulative == '1')
 					{
-						// using cumulative values, so need to reset minmax to use those
+						// Using cumulative values, so need to reset minmax to use those
 						$min = min($this->gcumulatives[$nbe]);
 						$max = max($this->gcumulatives[$nbe]);
 					}
@@ -878,6 +917,16 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 	}
 
+	/**
+	 * Build the trendlne
+	 *
+	 * @param   int     $startval  trendline startValue
+	 * @param   int     $endval    trendline endValue
+	 * @param   string  $nbe       key used to get trendline displayvalue from $this->axixLables
+	 *
+	 * @return  void
+	 */
+
 	protected function buildTrendLine($startval, $endval, $nbe = null)
 	{
 		$params = $this->getParams();
@@ -890,14 +939,19 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		{
 			$strAddTrend .= ';isTrendZone=' . $params->get('fusionchart_trendiszone', '0');
 		}
-		//tooltext doesn't seem to be working:
+		// Tooltext doesn't seem to be working:
 		$strAddTrend .= ';tooltext=' . $params->get('fusionchart_trendlabel', '');
-		;
 		$strAddTrend .= ';color=' . JArrayHelper::getValue($elcolour, $nbe, '333333');
 		$strAddTrend .= ';alpha=' . JArrayHelper::getValue($elalpha, $nbe, 50);
 		$strAddTrend .= ';thickness=3';
 		$this->FC->addTrendLine($strAddTrend);
 	}
+
+	/**
+	 * Set the list ids
+	 *
+	 * @return  void
+	 */
 
 	protected function setListIds()
 	{
@@ -908,7 +962,17 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		}
 	}
 
-	function getTrendMinMax($min, $max, $nbe)
+	/**
+	 * Get the trend line min and max vclues
+	 *
+	 * @param   int     $min  trendline startValue
+	 * @param   int     $max  trendline endValue
+	 * @param   string  $nbe  key used to get trendline displayvalue from $this->axixLables
+	 *
+	 * @return  array  (start, end)
+	 */
+
+	protected function getTrendMinMax($min, $max, $nbe)
 	{
 		$params = $this->getParams();
 		$trendtypes = (array) $params->get('fusionchart_trend_type');
@@ -937,25 +1001,28 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 *
 	 * Returns maximum datapoints used by any dataset.
 	 * Used by 'trendonly' graphs, to work out how many null
 	 * data points to insert between min and max.
 	 *
+	 * @param   array  $data  data
+	 *
 	 * @since	3.0.6
-	 * @param array $data
+	 *
 	 * @return number
 	 */
-	function getMaxDatapoints($data)
+
+	protected function getMaxDatapoints($data)
 	{
 		$max_datapoints = 0;
-		foreach ($data as $d) {
+		foreach ($data as $d)
+		{
 			$datapoints = count(explode(',', $d));
-			if ($datapoints > $max_datapoints) {
+			if ($datapoints > $max_datapoints)
+			{
 				$max_datapoints = $datapoints;
 			}
 		}
 		return $max_datapoints;
 	}
 }
-?>

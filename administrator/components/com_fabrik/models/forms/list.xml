@@ -110,8 +110,29 @@
 					
 				<field cols="30" description="COM_FABRIK_FIELD_GROUP_BY_TEMPLATE_DESC" label="COM_FABRIK_FIELD_TEMPLATE_LABEL" name="group_by_template" rows="4" type="textarea"/>
 					
-				<field description="COM_FABRIK_FIELD_ORDER_DIRECTION_DESC" label="COM_FABRIK_FIELD_ORDER_DIRECTION_LABEL" name="group_by_order_dir" type="ascendingdescending"/>
-					
+				<field name="group_by_order_dir"
+					type="ascendingdescending"
+					label="COM_FABRIK_FIELD_ORDER_DIRECTION_LABEL"
+					description="COM_FABRIK_FIELD_ORDER_DIRECTION_DESC" />
+				
+				<field name="group_by_start_collapsed"
+					type="radio"
+					default="0"
+					description="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_DESC"
+					label="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>	
+				</field>
+				
+				<field name="group_by_collapse_others"
+					type="radio"
+					default="0"
+					description="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_DESC"
+					label="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>	
+				</field>
+				
 			</fieldset>
 	
 		<fieldset name="access2">

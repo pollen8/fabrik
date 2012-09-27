@@ -165,8 +165,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				foreach ($elementModels as $elementModel)
 				{
 					$o = new stdClass;
-					$element = $elementModel->getElement();
-					$o->label = FabrikString::getShortDdLabel($element->label);
+					$o->label = $elementModel->getFullName(false, false, false);
 					$o->value = 'fabrik_trigger_element_' . $elementModel->getFullName(false, true, false);
 					$aEls[] = $o;
 				}

@@ -340,6 +340,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$opts->maxType = $params->get('textarea_limit_type', 'char');
 		$opts->wysiwyg = $this->useWysiwyg();
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
+		$opts->htmlId = $this->getHTMLId($repeatCounter);
 		$opts = json_encode($opts);
 		return "new FbTextarea('$id', $opts)";
 	}

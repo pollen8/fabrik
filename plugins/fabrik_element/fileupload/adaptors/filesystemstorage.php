@@ -1,7 +1,7 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -11,36 +11,52 @@ defined('_JEXEC') or die();
 
 require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
-class filesystemstorage extends storageAdaptor
+/**
+ * Server File System Storage adaptor for Fabrik file upload element
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
+class Filesystemstorage extends FabrikStorageAdaptor
 {
 
 	/**
-	 * does a file exist
-	 * @param $filepath
-	 * @return unknown_type
+	 * Does a file exist
+	 *
+	 * @param   string  $filepath  file path to test
+	 *
+	 * @return bool
 	 */
-	function exists($filepath)
+
+	public function exists($filepath)
 	{
 		return JFile::exists($filepath);
 	}
 
 	/**
-	 * does a folder exist
-	 * @param $folder
-	 * @return unknown_type
+	 * Does a folder exist
+	 *
+	 * @param   string  $path  folder path to test
+	 *
+	 * @return bool
 	 */
-	function folderExists($path)
+
+	public function folderExists($path)
 	{
 		return JFolder::exists($path);
 	}
 
-	/*
-	 * create empty index.html for security
-	 * @param $path path to folder
+	/**
+	 * Create empty index.html for security
+	 *
+	 * @param   strng  $path  path to folder
+	 *
 	 * @return bool success
 	 */
 
-	function createIndexFile($path)
+	public function createIndexFile($path)
 	{
 		$index_file = $path . '/index.html';
 		if (!$this->exists($index_file))
@@ -52,12 +68,14 @@ class filesystemstorage extends storageAdaptor
 	}
 
 	/**
-	 * create a folder
-	 * @param $path
-	 * @return unknown_type
+	 * Create a folder
+	 *
+	 * @param   string  $path  folder path
+	 *
+	 * @return bool
 	 */
 
-	function createFolder($path)
+	public function createFolder($path)
 	{
 		if (JFolder::create($path))
 		{
@@ -66,15 +84,33 @@ class filesystemstorage extends storageAdaptor
 		return false;
 	}
 
-	function clean($path)
+	/**
+	 * Clean the file path
+	 *
+	 * @param   string  $path  path to clean
+	 *
+	 * @return  string  cleaned path
+	 */
+
+	public function clean($path)
 	{
 		return JPath::clean($path);
 	}
 
-	function cleanName($filename, $repeatCounter)
+	/**
+	 * Clean a fle name
+	 *
+	 * @param   string  $filename       file name to clean
+	 * @param   int     $repeatCounter  repeat group counter
+	 *
+	 * @return  string  cleaned name
+	 */
+
+	public function cleanName($filename, $repeatCounter)
 	{
-		// replace any non-alnum chars (except _ and - and .) with _
+		// Replace any non-alnum chars (except _ and - and .) with _
 		$filename_o = preg_replace('#[^a-zA-Z0-9_\-\.]#', '_', $filename);
+
 		// $$$peamak: add random filename
 		$params = $this->getParams();
 		if ($params->get('random_filename') == 1)
@@ -100,7 +136,15 @@ class filesystemstorage extends storageAdaptor
 		return $filename;
 	}
 
-	function delete($filepath)
+	/**
+	 * Delete a file
+	 *
+	 * @param   string  $filepath  file to delete
+	 *
+	 * @return  void
+	 */
+
+	public function delete($filepath)
 	{
 		JFile::delete($filepath);
 	}
@@ -108,13 +152,13 @@ class filesystemstorage extends storageAdaptor
 	/**
 	 * Moves an uploaded file to a destination folder
 	 *
-	 * @param string $src The name of the php (temporary) uploaded file
-	 * @param string $dest The path (including filename) to move the uploaded file to
+	 * @param   string  $tmpFile   The name of the php (temporary) uploaded file
+	 * @param   string  $filepath  The path (including filename) to move the uploaded file to
+	 *
 	 * @return  boolean True on success
-	 * @since       1.5
 	 */
 
-	function upload($tmpFile, $filepath)
+	public function upload($tmpFile, $filepath)
 	{
 		$this->uploadedFilePath = $filepath;
 		if (JFile::upload($tmpFile, $filepath))
@@ -124,22 +168,55 @@ class filesystemstorage extends storageAdaptor
 		return false;
 	}
 
-	function setPermissions($filepath)
+	/**
+	 * Set a file's permissions
+	 *
+	 * @param   string  $filepath  file to set permissions for
+	 *
+	 * @return  string
+	 */
+
+	public function setPermissions($filepath)
 	{
 		return JPath::setPermissions($filepath);
 	}
 
-	function write($file, $buffer)
+	/**
+	 * Write a file
+	 *
+	 * @param   string  $file    file name
+	 * @param   string  $buffer  the buffer to write
+	 *
+	 * @return  void
+	 */
+
+	public function write($file, $buffer)
 	{
 		JFile::write($file, $buffer);
 	}
 
-	function read($filepath)
+	/**
+	 * Read a file
+	 *
+	 * @param   string  $filepath  file path
+	 *
+	 * @return  mixed  Returns file contents or boolean False if failed
+	 */
+
+	public function read($filepath)
 	{
 		return JFile::read($filepath);
 	}
 
-	function getFileUrl($file)
+	/**
+	 * Get the file's URL
+	 *
+	 * @param   string  $file  file path
+	 *
+	 * @return  string  URL
+	 */
+
+	public function getFileUrl($file)
 	{
 		$livesite = COM_FABRIK_LIVESITE;
 		$livesite = rtrim($livesite, '/\\');
@@ -148,35 +225,38 @@ class filesystemstorage extends storageAdaptor
 	}
 
 	/**
-	 * get the thumbnail URL for the file given
+	 * Get the thumbnail URL for the file given
 	 *
-	 * @param string $file url
+	 * @param   string  $file  url
+	 *
 	 * @return string thumbnail url
 	 */
 
-	function _getThumb($file)
+	public function _getThumb($file)
 	{
 		return $this->_getSmallerFile($file, 'thumb');
 	}
 
 	/**
+	 * Get the path (relative to site root?) to the smaller file
 	 *
-	 * get the path (relative to site root?) to the smaller file
-	 * @param string large file path
-	 * @param string type (thumb or crop)
+	 * @param   string  $file  large file path
+	 * @param   string  $type  type (thumb or crop)
+	 *
+	 * @return  string
 	 */
 
-	function _getSmallerFile($file, $type)
+	protected function _getSmallerFile($file, $type)
 	{
 
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 
-		//$$$ rob wasnt working when getting thumb path on upload
+		// $$$ rob wasnt working when getting thumb path on upload
 		$ulDir = JPath::clean($params->get('ul_directory'));
 		$ulDir = str_replace("\\", "/", $ulDir);
 
-		//replace things like $my->id may barf on other stuff
+		// Replace things like $my->id may barf on other stuff
 		$afile = str_replace(JURI::root(), '', $file);
 		$afile = JString::ltrim($afile, "/");
 		$ulDir = JString::ltrim($ulDir, "/");
@@ -197,7 +277,7 @@ class filesystemstorage extends storageAdaptor
 
 		$ulDir = str_replace($match, $replace, $ulDir);
 
-		//$$$ rob wasnt working when getting thumb path on upload
+		// $$$ rob wasnt working when getting thumb path on upload
 		$typeDir = $type == 'thumb' ? $params->get('thumb_dir') : $params->get('fileupload_crop_dir');
 		$thumbdir = str_replace($match, $replace, $typeDir);
 		$ulDir = $w->parseMessageForPlaceHolder($ulDir);
@@ -207,10 +287,13 @@ class filesystemstorage extends storageAdaptor
 		$f = basename($file);
 		$dir = dirname($file);
 		$ext = JFile::getExt($f);
-		$fclean = str_replace('.' . $ext, '', $f); //remove extension
+
+		// Remove extension
+		$fclean = str_replace('.' . $ext, '', $f);
 		if ($type == 'thumb')
 		{
-			$file = $dir . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext; //$f replaced by $fclean, $ext
+			// $f replaced by $fclean, $ext
+			$file = $dir . '/' . $params->get('thumb_prefix') . $fclean . $params->get('thumb_suffix') . '.' . $ext;
 		}
 		else
 		{
@@ -219,42 +302,61 @@ class filesystemstorage extends storageAdaptor
 		return $file;
 	}
 
-	function _getCropped($file)
+	/**
+	 * Get the cropped file name
+	 *
+	 * @param   string  $file  large file name
+	 *
+	 * @return  string  cropped file name
+	 */
+
+	public function _getCropped($file)
 	{
 		return $this->_getSmallerFile($file, 'crop');
 	}
 
 	/**
-	 * convert a full url into a full server path
+	 * Convert a full url into a full server path
+	 *
+	 * @param   string  $url  URL
+	 *
 	 * @see /plugins/fabrik_element/fileupload/storageAdaptor#urlToPath($url)
+	 *
+	 * @return string  path
 	 */
 
-	function urlToPath($url)
+	public function urlToPath($url)
 	{
-		//$replace = JString::substr(COM_FABRIK_BASE, -1) == DS ? COM_FABRIK_BASE : COM_FABRIK_BASE . DS;
 		return str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $url);
 	}
 
 	/**
-	 * do a final transform on the path name
-	 * @param $path
+	 * Do a final transform on the path name
+	 *
+	 * @param   string  &$filepath  path to parse
+	 *
+	 * @return  void
 	 */
 
-	function finalFilePathParse(&$filepath)
+	public function finalFilePathParse(&$filepath)
 	{
-		// $$$ hugh - ooop!  Double Plus Ungood if JPATH_SITE is just /,
-		// which happens on some shared hosts which are chrooted (jailed)
-		// 'cos then we just strip out all the /'s in gthe path!
-		//$filepath = str_replace(JPATH_SITE, '', $filepath);
+		/* $$$ hugh - ooop!  Double Plus Ungood if JPATH_SITE is just /,
+		 * which happens on some shared hosts which are chrooted (jailed)
+		 * 'cos then we just strip out all the /'s in gthe path!
+		 *$filepath = str_replace(JPATH_SITE, '', $filepath);
+		 */
 		$filepath = preg_replace('#^' . preg_quote(JPATH_SITE, '#') . '#', '', $filepath);
 	}
 
 	/**
 	 * Get file info using getid3
-	 * @param $filepath
-	 * return array
+	 *
+	 * @param   string  $filepath  file path
+	 *
+	 * @return mixed array|false
 	 */
-	function getFileInfo($filepath)
+
+	public function getFileInfo($filepath)
 	{
 		if (!$this->exists($filepath))
 		{
@@ -270,7 +372,7 @@ class filesystemstorage extends storageAdaptor
 				error_reporting($current_level & ~E_DEPRECATED);
 			}
 			require_once COM_FABRIK_FRONTEND . '/libs/phpmimetypeclass/class.mime.php';
-			$mime = new MIMETypes();
+			$mime = new MIMETypes;
 			$thisFileInfo['filesize'] = filesize($filepath);
 			$thisFileInfo['filename'] = basename($filepath);
 			$thisFileInfo['mime_type'] = $mime->getMimeType($filepath);
@@ -282,7 +384,15 @@ class filesystemstorage extends storageAdaptor
 		}
 	}
 
-	function getFullPath($filepath)
+	/**
+	 * Get the complete folder path, including the server root
+	 *
+	 * @param   string  $filepath  the file path
+	 *
+	 * @return  string
+	 */
+
+	public function getFullPath($filepath)
 	{
 		if (!(preg_match('#^' . preg_quote(COM_FABRIK_BASE, '#') . '#', $filepath)))
 		{
@@ -291,4 +401,3 @@ class filesystemstorage extends storageAdaptor
 		return $filepath;
 	}
 }
-?>

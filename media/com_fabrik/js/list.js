@@ -135,6 +135,7 @@ var FbList = new Class({
 		'popup_height': 300,
 		'popup_offset_x': null,
 		'popup_offset_y': null,
+		'groupByOpts': {},
 		'listRef': '' // e.g. '1_com_fabrik_1'
 	},
 
@@ -149,7 +150,7 @@ var FbList = new Class({
 			'method': this.options.actionMethod,
 			'floatPos': this.options.floatPos
 		});
-		this.groupToggle = new FbGroupedToggler(this.form);
+		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
 			this.tbody = this.list.getElement('tbody');
@@ -346,14 +347,18 @@ var FbList = new Class({
 			'type': 'button',
 			'name': 'submit',
 			'value': Joomla.JText._('COM_FABRIK_EXPORT'),
-			'class': 'button',
+			'class': 'button exportCSVButton',
 			events: {
 				'click': function (e) {
 					e.stop();
 					e.target.disabled = true;
-					new Element('div', {
-						'id': 'csvmsg'
-					}).set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>').inject(e.target, 'before');
+					var csvMsg = document.id('csvmsg');
+					if (typeOf(csvMsg) === 'null') {
+						csvMsg = new Element('div', {
+							'id': 'csvmsg'
+						}).inject(e.target, 'before');
+					}
+					csvMsg.set('html', Joomla.JText._('COM_FABRIK_LOADING') + ' <br /><span id="csvcount">0</span> / <span id="csvtotal"></span> ' + Joomla.JText._('COM_FABRIK_RECORDS') + '.<br/>' + Joomla.JText._('COM_FABRIK_SAVING_TO') + '<span id="csvfile"></span>');
 					this.triggerCSVExport(0);
 				}.bind(this)
 
@@ -470,6 +475,7 @@ var FbList = new Class({
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
+						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
 			}.bind(this)
@@ -1099,10 +1105,20 @@ var FbListKeys = new Class({
  */
 
 var FbGroupedToggler = new Class({
-	initialize: function (container) {
+	Implements: Options,
+	
+	options: {
+		collapseOthers: false,
+		startCollapsed: false
+	},
+	
+	initialize: function (container, options) {
+		this.setOptions(options);
 		this.container = container;
-		this.collapseOthers = false;
 		this.toggleState = 'shown';
+		if (this.options.startCollapsed) {
+			this.collapse();
+		}
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
 			if (e.rightClick) {
 				return;
@@ -1110,7 +1126,7 @@ var FbGroupedToggler = new Class({
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
 			
-			if (this.collapseOthers) {
+			if (this.options.collapseOthers) {
 				this.collapse();
 			}
 			var h = e.target.getParent('.fabrik_groupheading');

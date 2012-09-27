@@ -324,6 +324,7 @@ class FabrikFEModelCSVExport
 	{
 		if (JRequest::getVar('inccalcs') == 1)
 		{
+			$incRaw = JRequest::getVar('incraw', true);
 			$calkeys = array('sums', 'avgs', 'medians', 'count');
 			foreach ($calkeys as $calkey)
 			{
@@ -340,7 +341,16 @@ class FabrikFEModelCSVExport
 					{
 						if (trim($akey) == trim($key) && $x != 0)
 						{
-							$default = $calcs[$calkey][$akey];
+							$json = $calcs[$calkey][$akey . '_obj'];
+							unset($json['']);
+							if (count($json) == 1)
+							{
+								$default = $json['Total']->value;
+							}
+							else
+							{
+								$default = json_encode($json);
+							}
 						}
 						$x++;
 					}
@@ -359,14 +369,22 @@ class FabrikFEModelCSVExport
 						if (array_key_exists('calc', $cal))
 						{
 							$aCalcs[$calkey][$x] = $cal['calc']->value;
+							if ($incRaw)
+							{
+								$aCalcs[$calkey][$x + 1] = $cal['calc']->value;
+							}
 						}
 						else
 						{
 							$aCalcs[$calkey][$x] = $default;
+							if ($incRaw)
+							{
+								$aCalcs[$calkey][$x + 1] = $default;
+							}
 						}
 					}
 				}
-				$str .= implode($this->delimiter, array_map(array($this, "quote"), array_values($aCalcs[$calkey])));
+				$str .= implode($this->delimiter, array_map(array($this, "quote"), $aCalcs[$calkey]));;
 				$str .= "\n";
 			}
 		}
