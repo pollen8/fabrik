@@ -135,6 +135,7 @@ var FbList = new Class({
 		'popup_height': 300,
 		'popup_offset_x': null,
 		'popup_offset_y': null,
+		'groupByOpts': {},
 		'listRef': '' // e.g. '1_com_fabrik_1'
 	},
 
@@ -149,7 +150,7 @@ var FbList = new Class({
 			'method': this.options.actionMethod,
 			'floatPos': this.options.floatPos
 		});
-		this.groupToggle = new FbGroupedToggler(this.form);
+		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
 			this.tbody = this.list.getElement('tbody');
@@ -1104,10 +1105,20 @@ var FbListKeys = new Class({
  */
 
 var FbGroupedToggler = new Class({
-	initialize: function (container) {
+	Implements: Options,
+	
+	options: {
+		collapseOthers: false,
+		startCollapsed: false
+	},
+	
+	initialize: function (container, options) {
+		this.setOptions(options);
 		this.container = container;
-		this.collapseOthers = false;
 		this.toggleState = 'shown';
+		if (this.options.startCollapsed) {
+			this.collapse();
+		}
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
 			if (e.rightClick) {
 				return;
@@ -1115,7 +1126,7 @@ var FbGroupedToggler = new Class({
 			e.stop();
 			e.preventDefault(); //should work according to http://mootools.net/blog/2011/09/10/mootools-1-4-0/
 			
-			if (this.collapseOthers) {
+			if (this.options.collapseOthers) {
 				this.collapse();
 			}
 			var h = e.target.getParent('.fabrik_groupheading');
