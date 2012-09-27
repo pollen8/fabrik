@@ -184,6 +184,13 @@ class fabrikViewCalendar extends JView
 		{
 			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
 		}
+
+		/* Adding custom.css, just for the heck of it */
+		$ab_css_file = $tmplpath . '/custom.css';
+		if (JFile::exists($ab_css_file))
+		{
+			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
+		}
 		return parent::display();
 	}
 
