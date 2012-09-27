@@ -2866,7 +2866,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		else
 		{
 			$this->rowId = FabrikWorker::getMenuOrRequestVar('rowid', $usersConfig->get('rowid'), $this->isMambot);
-			echo "this rowid = $this->rowId <br>";
 			if ($this->rowId == -2)
 			{
 				// If the default was set to -2 (load last row) then a pagination form plugin's row id should override menu settings
@@ -2885,7 +2884,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			$this->rowId = '-1';
 		}
-		echo "2) this rowid = $this->rowId <br>";
 		// Set rowid to -1 to load in the current users record
 		switch ($this->rowId)
 		{
@@ -2898,7 +2896,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				break;
 		}
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
-		echo "3) this rowid = $this->rowId <br>";
 		return $this->rowId;
 	}
 
@@ -3100,7 +3097,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug($fabrikDb->getQuery(), 'form:render');
 						$rows = $fabrikDb->loadObjectList();
-						echo "<pre>";print_r($rows);echo "</pre>";
 						if (is_null($rows))
 						{
 							JError::raiseWarning(500, $fabrikDb->getErrorMsg());

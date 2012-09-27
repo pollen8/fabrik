@@ -851,7 +851,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 		$html = array();
 
-		// $$$ hugh - still need to check $this->_editable, as content plugin sets it to false,
+		// $$$ hugh - still need to check $this->editable, as content plugin sets it to false,
 		// as no point rendering editable view for {fabrik view=element ...} in an article.
 		if (!$formModel->isEditable() || !$this->editable)
 		{

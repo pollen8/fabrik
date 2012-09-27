@@ -135,7 +135,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 
 	protected function show($params, $formModel)
 	{
-		/* Nobody except form model constuctor sets _editable property yet -
+		/* Nobody except form model constuctor sets editable property yet -
 		 * it sets in view.html.php only and after render() - too late I think
 		 * so no pagination output for frontend details veiw for example.
 		 * Let's set it here before use it
@@ -149,10 +149,10 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 				return true;
 				break;
 			case 'form':
-				return (bool) $formModel->_editable == 1;
+				return (bool) $formModel->editable == 1;
 				break;
 			case 'details':
-				return (bool) $formModel->_editable == 0;
+				return (bool) $formModel->editable == 0;
 				break;
 		}
 	}

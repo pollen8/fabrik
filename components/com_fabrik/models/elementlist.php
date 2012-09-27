@@ -497,7 +497,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$values = array_merge($values, $diff);
 
 			// Swap over the default value to the default label
-			if (!$this->_editable)
+			if (!$this->editable)
 			{
 				foreach ($diff as &$di)
 				{

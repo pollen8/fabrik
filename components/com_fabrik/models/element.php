@@ -1248,7 +1248,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return false;
 		}
-		if ($mode == 'form' && (!$formModel->_editable && $params->get('labelindetails', true) == false))
+		if ($mode == 'form' && (!$formModel->editable && $params->get('labelindetails', true) == false))
 		{
 			return false;
 		}

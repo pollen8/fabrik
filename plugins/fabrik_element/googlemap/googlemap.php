@@ -22,7 +22,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
 
 	protected static $geoJs = null;
-	
+
 	protected static $radiusJs = null;
 
 	protected static $usestatic = null;
@@ -172,14 +172,14 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 * formJavascriptClass() but call this code from elementJavascript() instead.
 	 * The files are still only loaded when needed and only once
 	 */
-	
+
 	protected function radiusJs()
 	{
 		if (!isset(self::$radiusJs))
 		{
 			$document = JFactory::getDocument();
 			$params = $this->getParams();
-			if ((int)$params->get('fb_gm_radius', '0'))
+			if ((int) $params->get('fb_gm_radius', '0'))
 			{
 				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
 				self::$radiusJs = true;
@@ -255,9 +255,9 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 		}
 		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
-		
-		$opts->use_radius = $params->get('fb_gm_radius','0') == '0' ? false : true;
-		$opts->radius_fitmap = $params->get('fb_gm_radius_fitmap','0') == '0' ? false : true;
+
+		$opts->use_radius = $params->get('fb_gm_radius', '0') == '0' ? false : true;
+		$opts->radius_fitmap = $params->get('fb_gm_radius_fitmap', '0') == '0' ? false : true;
 		$opts->radius_write_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_write_element', $repeatCounter) : false;
 		$opts->radius_read_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_read_element', $repeatCounter) : false;
 		$opts->radius_ro_value = $opts->use_radius ? $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter) : false;
@@ -269,24 +269,27 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->radius_unit = $params->get('fb_gm_radius_unit', 'm');
 		$opts->radius_resize_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 		$opts->radius_resize_off_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
-		
+
 		$opts = json_encode($opts);
 		return "new FbGoogleMap('$id', $opts)";
 	}
 
-	function _getFieldValue($which_field, $data, $repeatCounter = 0) {
-		$params =& $this->getParams();
+	function _getFieldValue($which_field, $data, $repeatCounter = 0)
+	{
+		$params = &$this->getParams();
 		$field = $params->get($which_field, false);
-		if ($field) {
+		if ($field)
+		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
-			if (!$this->_form->_editable) {
+			if (!$this->getFormModel()->editable)
+			{
 				$elementModel->_inDetailedView = true;
 			}
 			return $elementModel->getValue($data, $repeatCounter);
 		}
 		return false;
 	}
-	
+
 	function _getFieldId($which_field, $repeatCounter = 0)
 	{
 		$listModel = $this->getlistModel();
@@ -295,14 +298,15 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
-			if (!$this->_form->_editable) {
+			if (!$this->getFormModel()->editable)
+			{
 				$elementModel->_inDetailedView = true;
 			}
 			return $elementModel->getHTMLId($repeatCounter);
 		}
-		return false;		
+		return false;
 	}
-	
+
 	function _getGeocodeFieldId($which_field, $repeatCounter = 0)
 	{
 		return $this->_getFieldId('fb_gm_geocode_' . $which_field, $repeatCounter);
@@ -526,18 +530,20 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		/**
 		 * if radius widget is being used, build an encoded polyline representing a circle
 		 */
-		if ((int)$params->get('fb_gm_radius', '0') == 1) {
-			require_once(COM_FABRIK_FRONTEND.DS.'libs'.DS.'googlemaps'.DS.'polyline_encoder'.DS.'class.polylineEncoder.php');
-			$polyEnc   = new PolylineEncoder();
+		if ((int) $params->get('fb_gm_radius', '0') == 1)
+		{
+			require_once(COM_FABRIK_FRONTEND . DS . 'libs' . DS . 'googlemaps' . DS . 'polyline_encoder' . DS . 'class.polylineEncoder.php');
+			$polyEnc = new PolylineEncoder();
 			$radius = $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter);
 			if ($radius === false || !isset($radius))
 			{
-				$radius = $params->get('fb_gm_radius_default', '50');;
+				$radius = $params->get('fb_gm_radius_default', '50');
+				;
 			}
 			$enc_str = $polyEnc->GMapCircle($lat, $lon, $radius);
 			$src .= "&amp;path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:" . $enc_str;
 		}
-		
+
 		$id = $tableView ? '' : "id=\"{$id}\"";
 		$str = "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
 		$str .= "</div>";
