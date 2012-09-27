@@ -23,18 +23,26 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
+	 *
 	 * @var bool  True, ignore in advanced search all.
 	 */
 	protected $ignoreSearchAllDefault = true;
 
 	/**
 	 * Toggle to determine if storedatabaseformat resets the date to GMT
+	 *
 	 * @var bool
 	 */
 	protected $resetToGMT = true;
 
 	protected $rangeFilterSet = false;
 
+	/**
+	 * Date offset with TZ, for use in front end display
+	 *
+	 * @var string
+	 */
+	protected $offsetDate = null;
 	/**
 	 * Dates are stored in database as GMT times
 	 * i.e. with no offsets
@@ -1555,7 +1563,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$localTimeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 
 		$params = $this->getParams();
-		$store_as_local =  $params->get('date_store_as_local', '0') == '1';
+		$store_as_local = $params->get('date_store_as_local', '0') == '1';
 
 		$date = JFactory::getDate($value[0], $localTimeZone);
 		$value[0] = $date->toSql($store_as_local);
