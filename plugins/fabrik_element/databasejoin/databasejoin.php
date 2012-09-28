@@ -659,7 +659,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$mode = JArrayHelper::getValue($opts, 'mode', 'form');
 			$filterType = $element->filter_type;
 			if (($mode == 'filter' && $filterType == 'auto-complete')
-				|| $mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
+				|| ($mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
+				|| ($mode == 'filter' && $params->get('database_join_display_type') == 'auto-complete'))
 			{
 
 				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
