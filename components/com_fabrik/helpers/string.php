@@ -42,7 +42,7 @@ class FabrikString extends JString
 		if ($whitespace)
 		{
 			$word = preg_quote($word, '#');
-			$str = preg_replace("#^(\s*)($word)(.*)#", "$1$3", $str);
+			$str = preg_replace("#^(\s*)($word)(.*)#i", "$1$3", $str);
 		}
 		else
 		{
