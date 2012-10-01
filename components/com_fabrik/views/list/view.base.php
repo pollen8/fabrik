@@ -472,7 +472,7 @@ class FabrikViewListBase extends JView
 		 */
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JRegistry($menu->params);
+			$menu_params = new JRegistry( (string) $menu->params);
 			$params->set('page_title', $menu_params->get('page_title', $menu->title));
 			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 		}
