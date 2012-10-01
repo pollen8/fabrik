@@ -5441,7 +5441,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		if ($this->canSelectRows() || $this->canViewDetails())
+		if ($this->canSelectRows() || $this->canViewDetails() || $this->canEdit())
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -5547,8 +5547,7 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		//if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
-		if (($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		if (($this->canEdit($row) || $this->canViewDetails($row)))
 		{
 			return true;
 		}
@@ -5570,7 +5569,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Can the user select ANY row?
 	 * If you can delete then true returned, if not then check
-	 * available table plugins to see if they allow for row selection
+	 * available list plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
 	 *
 	 * @return  bool
@@ -5588,12 +5587,12 @@ class FabrikFEModelList extends JModelForm
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
-		//if (($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
+		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canEdit() || $this->canViewDetails()))
 		{
+			$this->canSelectRows = true;
 			return true;
 		}
-		$usedPlugins = (array) $params->get('plugin');
+		$usedPlugins = (array) $params->get('plugins');
 		if (empty($usedPlugins))
 		{
 			$this->canSelectRows = false;
