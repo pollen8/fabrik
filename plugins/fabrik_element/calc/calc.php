@@ -533,7 +533,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);
-		$this->getFormModel()->_data = $d;
+		$this->getFormModel()->data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
 

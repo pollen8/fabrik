@@ -522,11 +522,11 @@ class FabrikFEModelList extends JModelForm
 		$cache = FabrikWorker::getCache();
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
 		$this->totalRecords = $results[0];
-		$this->_data = $results[1];
+		$this->data = $results[1];
 		$this->groupTemplates = $results[2];
 		$nav = $this->getPagination($this->totalRecords, $this->limitStart, $this->limitLength);
 		$pluginManager->runPlugins('onLoadData', $this, 'list');
-		return $this->_data;
+		return $this->data;
 
 	}
 

@@ -2874,7 +2874,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		if ($this->getListModel()->getParams()->get('sef-slug', '') !== '')
 		{
-			echo "slug found ! <br>";
 			$this->rowId = explode(':', $this->rowId);
 			$this->rowId = array_shift($this->rowId);
 		}
@@ -3002,7 +3001,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function getData()
 	{
 		// If already set return it. If not was causing issues with the juser form plugin
-		// when it tried to modify the form->_data info, from within its onLoad method, when sync user option turned on.
+		// when it tried to modify the form->data info, from within its onLoad method, when sync user option turned on.
 		if (isset($this->data))
 		{
 			return $this->data;
@@ -4266,7 +4265,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
-		/* $$$ rob - 3.0 for some reason just using $this->_data was not right as join data was empty when editing exisitng record
+		/* $$$ rob - 3.0 for some reason just using $this->data was not right as join data was empty when editing exisitng record
 		 * $$$ hugh - commented this out, as a) running getData() twice is expensive, and b) it blows away any changes onLoad plugins
 		 * make to _data, like the juser plugin
 		 * Ran this change for a couple of weeks before committing, seems to work without it.

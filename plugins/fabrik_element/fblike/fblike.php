@@ -89,6 +89,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		echo "<pre>";print_r($data);
 		$params = $this->getParams();
 		$meta = array();
 		$formModel = $this->getForm();

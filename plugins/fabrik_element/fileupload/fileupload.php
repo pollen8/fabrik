@@ -220,7 +220,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$paramsKey = $this->getFullName(false, true, false);
 		$paramsKey = Fabrikstring::rtrimword($paramsKey, $this->getElement()->name);
 		$paramsKey .= 'params';
-		$formData = $this->getForm()->_data;
+		$formData = $this->getFormModel()->data;
 		$imgParams = JArrayHelper::getValue($formData, $paramsKey);
 
 		$value = $this->getValue(array(), $repeatCounter);
@@ -230,7 +230,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		// Repeat_image_repeat_image___params
 		$rawvalues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
-		$fdata = $this->getForm()->_data;
+		$fdata = $this->getFormModel()->data;
 		$rawkey = $this->getFullName(false, true, false) . '_raw';
 		$rawvalues = JArrayHelper::getValue($fdata, $rawkey, $rawvalues);
 		if (!is_array($rawvalues))
@@ -1982,7 +1982,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (!empty($aclEl))
 		{
 			$aclEl = $aclEl->getFullName();
-			$canDownload = in_array($data[$aclEl], JFactory::getUser()->authorisedLevels());
+			$canDownload = in_array($data[$aclEl], JFactory::getUser()->getAuthorisedViewLevels());
 			if (!$canDownload)
 			{
 				$img = $params->get('fu_download_noaccess_image');
@@ -1994,7 +1994,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$formid = $formModel->getId();
 		$rowid = JRequest::getVar('rowid', '0');
-		$elementid = $this->_id;
+		$elementid = $this->getId();
 		$title = basename($value);
 		if ($params->get('fu_title_element') == '')
 		{
@@ -2004,13 +2004,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
-		if (is_array($formModel->_data))
+		if (is_array($formModel->data))
 		{
-			if (array_key_exists($title_name, $formModel->_data))
+			if (array_key_exists($title_name, $formModel->data))
 			{
-				if (!empty($formModel->_data[$title_name]))
+				if (!empty($formModel->data[$title_name]))
 				{
-					$title = $formModel->_data[$title_name];
+					$title = $formModel->data[$title_name];
 					$titles = FabrikWorker::JSONtoData($title, true);
 					$title = JArrayHelper::getValue($titles, $repeatCounter, $title);
 				}

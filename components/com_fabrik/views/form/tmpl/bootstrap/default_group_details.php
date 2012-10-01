@@ -1,6 +1,5 @@
 <?php foreach ($this->elements as $element) :
 	 if ($element->hidden) {
-		//echo "<pre>";print_r($element);echo "</pre>";
 		?>
 
 		<?php

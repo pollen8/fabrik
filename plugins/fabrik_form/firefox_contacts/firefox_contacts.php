@@ -26,7 +26,7 @@ class plgFabrik_FormFirefox_contacts extends plgFabrik_Form
 
 	/**
 	 * Run when the form is loaded - after its data has been created
-	 * data found in $formModel->_data
+	 * data found in $formModel->data
 	 *
 	 * @param   object  $params      plugin params
 	 * @param   object  &$formModel  form model
