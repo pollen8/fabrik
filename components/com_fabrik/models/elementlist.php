@@ -344,17 +344,19 @@ class plgFabrik_ElementList extends plgFabrik_Element
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        serch string
+	 * @param   string             $search        search string
+	 * @param   array              $opts          options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return string  json encoded search results
 	 */
 
-	public static function cacheAutoCompleteOptions($elementModel, $search)
+	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$listModel = $elementModel->getListModel();
-		$rows = $elementModel->filterValueList(true);
+		$label = JArrayHelper::getValue($opts, 'label', '');
+		$rows = $elementModel->filterValueList(true, '', $label);
 		$v = addslashes(JRequest::getVar('value'));
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)

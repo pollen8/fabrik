@@ -2584,7 +2584,6 @@ class plgFabrik_Element extends FabrikPlugin
 		return implode("\n", $return);
 	}
 
-
 	/**
 	 * Build the HTML for the auto-complete filter
 	 *
@@ -2614,8 +2613,8 @@ class plgFabrik_Element extends FabrikPlugin
 		 */
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger ' . $id
-		. '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger '
+			. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 
 		$opts = array();
 		if ($normal)
@@ -2625,7 +2624,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$selector = '.advancedSeach_' . $listModel->getRenderContext(). ' .' . $id;
+			$selector = '.advancedSeach_' . $listModel->getRenderContext() . ' .' . $id;
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 		$element = $this->getElement();
@@ -2709,8 +2708,11 @@ class plgFabrik_Element extends FabrikPlugin
 				unset($rows[$j]);
 				} */
 
-				// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
-				unset($rows[$j]);
+				if (FabrikWorker::isJSON($rows[$j]))
+				{
+					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
+					unset($rows[$j]);
+				}
 			}
 			if (count($vals) > 1)
 			{
@@ -2794,6 +2796,26 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get the flter build method - all (2) or recorded data (1)
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  int
+	 */
+
+	protected function getFilterBuildMethod()
+	{
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$params = $this->getParams();
+		$filter_build = $params->get('filter_build_method', 0);
+		if ($filter_build == 0)
+		{
+			$filter_build = $usersConfig->get('filter_build_method');
+		}
+		return $filter_build;
+	}
+
+	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
@@ -2808,13 +2830,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$params = $this->getParams();
-		$filter_build = $params->get('filter_build_method', 0);
-		if ($filter_build == 0)
-		{
-			$filter_build = $usersConfig->get('filter_build_method');
-		}
+		$filter_build = $this->getFilterBuildMethod();
 		if ($filter_build == 2 && $this->hasSubElements)
 		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);

@@ -2188,6 +2188,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$c = FabrikString::safeColName($c);
 		}
+		$filterMethod = $elementModel->getFilterBuildMethod();
+		if ($filterMethod == 1)
+		{
+			$join = $elementModel->getJoin()->table_join;
+			$opts = array();
+			$opts['label'] = $join . '.' . $c;
+			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
+		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
 		// default to "contains" for backward compat.
 		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
