@@ -2703,11 +2703,14 @@ class plgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
-				if ($found)
-				{
-					// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
-					unset($rows[$j]);
-				}
+				/* if ($found)
+				 {
+				// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
+				unset($rows[$j]);
+				} */
+
+				// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
+				unset($rows[$j]);
 			}
 			if (count($vals) > 1)
 			{
