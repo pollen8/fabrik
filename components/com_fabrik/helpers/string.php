@@ -28,16 +28,29 @@ class FabrikString extends JString
 	 *
 	 * @param   $str   string  the string to be trimmed
 	 * @param   $word  string  the word to trim
+	 * @param   $whitespace  string  ignore but preserve leading whitespace
 	 *
 	 * @return  string  the trimmed string
 	 */
 
-	public static function ltrimword($str, $word = false)
+	public static function ltrimword($str, $word = false, $whitespace = false)
 	{
-		$pos = JString::strpos($str, $word);
-		if ($pos === 0)
+		if ($word === false)
 		{
-			$str = JString::substr($str, JString::strlen($word));
+			return $str;
+		}
+		if ($whitespace)
+		{
+			$word = preg_quote($word, '#');
+			$str = preg_replace("#^(\s*)($word)(.*)#i", "$1$3", $str);
+		}
+		else
+		{
+			$pos = JString::strpos($str, $word);
+			if ($pos === 0)
+			{
+				$str = JString::substr($str, JString::strlen($word));
+			}
 		}
 		return $str;
 	}
