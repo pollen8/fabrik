@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
 class FabrikFEModelListfilter extends FabModel
 {
 
-	protected $_request = null;
+	protected $request = null;
 
 	/**
 	 * Set the list model
@@ -68,7 +68,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	public function destroyRequest()
 	{
-		unset($this->_request);
+		unset($this->request);
 	}
 	/**
 	 * this merges session data for the fromForm with any request data
@@ -82,12 +82,12 @@ class FabrikFEModelListfilter extends FabModel
 		// Form or detailed views should not apply filters? what about querystrings to set up the default values?
 		if (JRequest::getCmd('view') == 'details' || JRequest::getCmd('view') == 'form')
 		{
-			$this->_request = array();
-			return $this->_request;
+			$this->request = array();
+			return $this->request;
 		}
-		if (isset($this->_request))
+		if (isset($this->request))
 		{
-			return $this->_request;
+			return $this->request;
 		}
 		$profiler = JProfiler::getInstance('Application');
 		$filters = array();
@@ -97,16 +97,14 @@ class FabrikFEModelListfilter extends FabModel
 		if (JRequest::getInt('clearfilters') === 1 && $this->activeTable())
 		{
 			$this->clearFilters();
-			$this->_request = array();
-			return $this->_request;
+			$this->request = array();
+			return $this->request;
 		}
 
 		if (JRequest::getVar('replacefilters') == 1)
 		{
 			$this->clearFilters();
 		}
-
-
 
 		/**
 		 * $$$ fehers The filter is cleared and applied at once without having to clear it first and then apply it (would have to be two clicks).
@@ -152,8 +150,8 @@ class FabrikFEModelListfilter extends FabModel
 		$this->getPostFilters($filters);
 		JDEBUG ? $profiler->mark('listfilter:post filters got') : null;
 		FabrikHelperHTML::debug($filters, 'filter array: after getpostfilters');
-		$this->_request = $filters;
-		FabrikHelperHTML::debug($this->_request, 'filter array');
+		$this->request = $filters;
+		FabrikHelperHTML::debug($this->request, 'filter array');
 		$this->checkAccess($filters);
 		$this->normalizeKeys($filters);
 		return $filters;
@@ -586,10 +584,13 @@ class FabrikFEModelListfilter extends FabModel
 
 			// $$$ rob so search all on checkboxes/radio buttons etc will take the search value of 'one' and return '1'
 			$newsearch = $elementModel->getFilterValue($search, $condition, $eval);
-			$search = $newsearch[0];
+
+			// $search = $newsearch[0];
+			$newsearch = $newsearch[0];
+
 			if ($key !== false)
 			{
-				$filters['value'][$key] = $search;
+				$filters['value'][$key] = $newsearch;
 				$filters['condition'][$key] = $condition;
 				$filters['join'][$key] = 'OR';
 				$filters['no-filter-setup'][$key] = ($element->filter_type == '') ? 1 : 0;
@@ -615,7 +616,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				$filters['value'][] = $search;
+				$filters['value'][] = $newsearch;
 				$filters['condition'][] = $condition;
 				$filters['join'][] = 'OR';
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;

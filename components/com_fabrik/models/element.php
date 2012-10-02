@@ -3166,6 +3166,39 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Esacepes a SINGLE query search string
+	 *
+	 * @param   string  $condition  filter condition
+	 * @param   value   &$value     value to esacpe
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  null
+	 */
+
+	private function escapeOneQueryValue($condition, &$value)
+	{
+		if ($condition == 'REGEXP')
+		{
+			$value = preg_quote($value);
+		}
+		/**
+		 * If doing a search via a querystring for O'Fallon then the ' is backslahed
+		 * in FabrikModelListfilter::getQuerystringFilters()
+		 * but the mySQL regexp needs it to be backquoted three times
+		 */
+
+		// If searching on '\' then don't double up \'s
+		if (strlen(str_replace('\\', '', $value)) > 0)
+		{
+			$value = str_replace("\\", "\\\\\\", $value);
+
+			// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
+			$value = str_replace("\\\\\\\\\\\\", "\\\\\\", $value);
+		}
+	}
+
+	/**
 	 * Esacepes the a query search string
 	 *
 	 * @param   string  $condition  filter condition
@@ -3184,38 +3217,14 @@ class plgFabrik_Element extends FabrikPlugin
 		$this->escapedQueryValue = true;
 		if (is_array($value))
 		{
-			/**
-			 * if doing a search via a querystring for O'Fallon then the ' is backslahed in
-			 *  FabrikModelListfilter::getQuerystringFilters()
-			 * but the mySQL regexp needs it to be backquoted three times
-			 */
 			foreach ($value as &$val)
 			{
-				if ($condition == 'REGEXP')
-				{
-					$val = preg_quote($val);
-				}
-				$val = str_replace("\\", "\\\\\\", $val);
-
-				// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
-				$val = str_replace("\\\\\\\\\\\\", "\\\\\\", $val);
+				$this->escapeOneQueryValue($condition, $val);
 			}
 		}
 		else
 		{
-			if ($condition == 'REGEXP')
-			{
-				$value = preg_quote($value);
-			}
-			/**
-			 * If doing a search via a querystring for O'Fallon then the ' is backslahed
-			 * in FabrikModelListfilter::getQuerystringFilters()
-			 * but the mySQL regexp needs it to be backquoted three times
-			 */
-			$value = str_replace("\\", "\\\\\\", $value);
-
-			// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
-			$value = str_replace("\\\\\\\\\\\\", "\\\\\\", $value);
+			$this->escapeOneQueryValue($condition, $value);
 		}
 	}
 
@@ -3772,7 +3781,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
-			$sql = $this->getSumQuery($listModel, $splitName) . " GROUP BY label";
+			$sql = $this->getSumQuery($listModel, $splitName) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -3792,7 +3801,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		else
 		{
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
-			$sql = $this->getSumQuery($listModel) . " GROUP BY label";
+			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
