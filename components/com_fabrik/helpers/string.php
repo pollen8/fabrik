@@ -200,6 +200,28 @@ class FabrikString extends JString
 	}
 
 	/**
+	 * Santize db fields names, can't just do regex on A-Z as languages like Chinese should be allowed
+	 *
+	 * @param   string  $name
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	public static function dbFieldName($str)
+	{
+		$name = JFilterInput::clean($str, 'CMD');
+
+		// Chinese characters?
+		if ($name === '')
+		{
+			$name = str_replace(array(' ', '.', '-'), '', $str) ;
+		}
+		return $name;
+	}
+
+	/**
 	 * Clean variable names for use as fabrik element names
 	 * whitespace compressed and replaced with '_'
 	 * replace all non-alphanumeric chars except _ and - with '_'

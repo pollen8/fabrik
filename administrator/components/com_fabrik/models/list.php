@@ -749,7 +749,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * the list view now enables us to alter en-mass some element properties
+	 * The list view now enables us to alter en-mass some element properties
 	 *
 	 * @param   object  $row  list item
 	 *
@@ -779,7 +779,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * check to see if a table exists
+	 * Check to see if a table exists
 	 *
 	 * @param   string  $tableName  name of table (ovewrites form_id val to test)
 	 *
@@ -806,7 +806,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * deals with ensuring joins are managed correctly when table is saved
+	 * Deals with ensuring joins are managed correctly when table is saved
 	 *
 	 * @param   array  $data  jform data
 	 *
@@ -930,7 +930,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * new join make the group, group elements and formgroup entries for the join data
+	 * New join make the group, group elements and formgroup entries for the join data
 	 *
 	 * @param   string  $tableKey       table key
 	 * @param   string  $joinTableKey   join to table key
@@ -970,7 +970,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * when saving a table that links to a database for the first time we
+	 * When saving a table that links to a database for the first time we
 	 * need to create all the elements based on the database table fields and their
 	 * column type
 	 *
@@ -1062,7 +1062,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * take a table name and make elements for all of its fields
+	 * Take a table name and make elements for all of its fields
 	 *
 	 * @param   int     $groupId    group id
 	 * @param   string  $tableName  table name
@@ -1229,7 +1229,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * when saving a list that links to a database for the first time we
+	 * When saving a list that links to a database for the first time we
 	 * automatically create a form to allow the update/creation of that tables
 	 * records
 	 *
@@ -1290,7 +1290,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * create a group
+	 * Create a group
 	 * used when creating a fabrik table from an existing db table
 	 *
 	 * NEW also creates the formgroup
@@ -1339,7 +1339,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * test if the main J user can create mySQL tables
+	 * Test if the main J user can create mySQL tables
 	 *
 	 * @return  bool
 	 */
@@ -1436,7 +1436,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * when copying a table we need to copy its joins as well
+	 * When copying a table we need to copy its joins as well
 	 * note that the group and elements already exists - just the join needs to be saved
 	 *
 	 * @param   int    $fromid      table id to copy from
@@ -1498,7 +1498,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * adds a primary key to the database table
+	 * Adds a primary key to the database table
 	 *
 	 * @param   string  $fieldName      the column name to make into the primary key
 	 * @param   bool    $autoIncrement  is the column an auto incrementing number
@@ -1554,7 +1554,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * internal function: add a key to the table
+	 * Internal function: add a key to the table
 	 *
 	 * @param   string  $fieldName      primary key column name
 	 * @param   bool    $autoIncrement  is the column auto incrementing
@@ -1598,7 +1598,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * internal function: drop the table's key
+	 * Internal function: drop the table's key
 	 *
 	 * @param   array  $aPriKey  existing key data
 	 *
@@ -1631,7 +1631,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * internal function: update an exisitng key in the table
+	 * Internal function: update an exisitng key in the table
 	 *
 	 * @param   string  $fieldName      primary key column name
 	 * @param   bool    $autoIncrement  is the column auto incrementing
@@ -1670,7 +1670,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * translation has been turned off for the table so delete the content
+	 * Translation has been turned off for the table so delete the content
 	 * element xml file
 	 *
 	 * @return  void
@@ -1686,7 +1686,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * write out the Joomfish contentelement xml file for the tables elements
+	 * Write out the Joomfish contentelement xml file for the tables elements
 	 *
 	 * @return  bool  true if written out ok
 	 */
@@ -2039,11 +2039,11 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * load the database object associated with the list
+	 * Load the database object associated with the list
 	 *
-	 * @since 3.0b
+	 * @since   3.0b
 	 *
-	 * @return object database
+	 * @return  object database
 	 */
 
 	public function &getDb()
@@ -2118,13 +2118,14 @@ class FabrikModelList extends FabModelAdmin
 		foreach ($elementModels as $elementModel)
 		{
 			$element = $elementModel->getElement();
-			/* replace all non alphanumeric characters with _ */
-			$objname = preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
+
+			// Replace all non alphanumeric characters with _
+			$objname = FabrikString::dbFieldName($element->name);//preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
 			if ($element->primary_key)
 			{
 				$keys[] = $objname;
 			}
-			/* any elements that are names the same (eg radio buttons) can not be entered twice into the database */
+			// Any elements that are names the same (eg radio buttons) can not be entered twice into the database
 			if (!in_array($objname, $arAddedObj))
 			{
 				$arAddedObj[] = $objname;
@@ -2164,7 +2165,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * create an element
+	 * Create an element
 	 *
 	 * @param   string  $name  element name
 	 * @param   array   $data  properties
@@ -2190,7 +2191,7 @@ class FabrikModelList extends FabModelAdmin
 	}
 
 	/**
-	 * return the default set of attributes when creating a new
+	 * Return the default set of attributes when creating a new
 	 * fabrik list
 	 *
 	 * @return string json enocoded Params

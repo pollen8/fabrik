@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
@@ -37,7 +36,7 @@ class FabrikControllerImport extends FabControllerForm
 	{
 		$user = JFactory::getUser();
 		$c = 0;
-		$listModel = &$this->getModel('List', 'FabrikFEModel');
+		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('list_id'));
 		$listModel->getTable();
 		$formModel = $listModel->getFormModel();
@@ -56,7 +55,7 @@ class FabrikControllerImport extends FabControllerForm
 			if ($add)
 			{
 				$element->id = 0;
-				$element->name = JFilterInput::clean($elname, 'CMD');
+				$element->name = FabrikString::dbFieldName($elname);
 				$element->label = JString::strtolower($elname);
 				$element->plugin = $plugins[$c];
 				$element->group_id = $groupId;
@@ -143,7 +142,7 @@ class FabrikControllerImport extends FabControllerForm
 			{
 				if ($add)
 				{
-					$name = JFilterInput::clean($elname, 'CMD');
+					$name = FabrikString::dbFieldName($elname);
 					$plugin = $plugins[$c];
 					$newElements[$name] = $plugin;
 					$model->matchedHeadings[$dbname . '.' . $name] = $name;
