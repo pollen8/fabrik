@@ -6243,9 +6243,17 @@ class FabrikFEModelList extends JModelForm
 				foreach ($groups as $groupModel)
 				{
 					// New test to replace if (!array_key_exists($key, $data))
+					// $$$ hugh - this stops elements from joined groups being added to main row, but see 'else'
 					if ($isJoin)
 					{
 						if ($groupModel->getGroup()->id != $joinGroupTable->id)
+						{
+							continue;
+						}
+					}
+					else {
+						// $$$ hugh - need test here if not $isJoin, to stop keys from joined groups being added to main row!
+						if ($groupModel->isJoin())
 						{
 							continue;
 						}
@@ -6254,6 +6262,7 @@ class FabrikFEModelList extends JModelForm
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
+						// $$$ hugh - I have a feeling this test is a Bad Thing <tm> as it is using short keys, so if two joined groups share the same element name(s) ...
 						if ($element->name == $key)
 						{
 							// Don't overwrite if something has been entered
