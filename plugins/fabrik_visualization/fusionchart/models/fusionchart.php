@@ -411,8 +411,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		// Create new chart
 		$this->FC = new FusionCharts($chartType, $w, $h);
 
-		// $this->FC->setRenderer('javascript');
-		// $this->FC->JSC["debugmode"]=true;
+		// If we are pro lets use the new JavaScript Library
+		if ($fc_version === 'pro_30')
+		{
+			$this->FC->setRenderer('javascript');
+		}
 
 		// Define path to FC's SWF
 		$this->FC->setSWFPath($fc_swf_path);
