@@ -85,6 +85,9 @@ var Autofill = new Class({
 		if (this.setupDone) {
 			return;
 		}
+		if (typeOf(form) === 'null') {
+			return;
+		}
 		try {
 			this.form = form;
 		} catch (err) {
