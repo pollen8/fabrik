@@ -15,13 +15,12 @@ $published = $this->state->get('filter.published');
 <fieldset class="batch">
 	<legend><?php echo JText::_('COM_FABRIK_BATCH_OPTIONS');?></legend>
 
-	<label for="batchaccess"><?php echo JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT')?></label>
-	<?php echo JHtml::_('access.level', 'batch[access]', '', '', false); ?>
-
 	<label for="batchview_access"><?php echo JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT')?></label>
 	<?php echo JHtml::_('access.level', 'batch[params][view_access]', '', '', false); ?>
 
 
+	<label for="batchaccess"><?php echo JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT')?></label>
+	<?php echo JHtml::_('access.level', 'batch[access]', '', '', false); ?>
 
 	<button type="submit" onclick="Joomla.submitbutton('elements.batch');">
 		<?php echo JText::_('JGLOBAL_BATCH_PROCESS'); ?>
