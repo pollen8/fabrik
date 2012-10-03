@@ -481,8 +481,12 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Once we have a few table joins, our select statements are
-	 * getting big enough to hit default select length max in MySQL.  Added per-table
+	 * getting big enough to hit default select length max in MySQL.  Added per-list
 	 * setting to enable_big_selects.
+	 *
+	 * 03/10/2012 - Should preserve any old list settings, but this is now set in the global config
+	 * We set it on the main J db in the system plugin setBigSelects() but should do here as well as we
+	 * may not be dealing with the same db.
 	 *
 	 * @since   3/16/2010
 	 *
@@ -497,7 +501,6 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		if ($params->get('enable_big_selects', $bigSelects))
 		{
-			echo "big selected";
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
 			$fabrikDb->query();
 		}
