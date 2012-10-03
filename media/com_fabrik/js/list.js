@@ -828,14 +828,17 @@ var FbList = new Class({
 				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
 				gcounter++;
 				for (i = 0; i < groupData.length; i++) {
-					if (typeOf(this.options.rowtemplate) === 'string') {
-						this.options.rowtemplate = new Element('div').set('html', this.options.rowtemplate).getChildren()[0];
-					}
-					container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
-					thisrowtemplate = new Element(container);
 
-					// ie tmp fix for mt 1.2 setHTML on table issue
-					thisrowtemplate.adopt(this.options.rowtemplate.clone());
+					if (typeOf(this.options.rowtemplate) === 'string') {
+						container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
+						thisrowtemplate = new Element(container);
+						thisrowtemplate.set('html', this.options.rowtemplate);
+					} else {
+						container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
+						thisrowtemplate = new Element(container);
+						// ie tmp fix for mt 1.2 setHTML on table issue
+						thisrowtemplate.adopt(this.options.rowtemplate.clone());
+					}
 					var row = $H(groupData[i]);
 					$H(row.data).each(function (val, key) {
 						var rowk = '.' + key;
