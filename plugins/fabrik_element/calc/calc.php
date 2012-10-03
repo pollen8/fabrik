@@ -555,7 +555,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
-		if ($fields[$this->getElement()->name]->Type == 'time')
+		$name = $this->getElement()->name;
+		$field = JArrayHelper::getValue($fields, $name, false);
+		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
@@ -583,7 +585,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
-		if ($fields[$this->getElement()->name]->Type == 'time')
+		$name = $this->getElement()->name;
+		$field = JArrayHelper::getValue($fields, $name, false);
+		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
@@ -611,7 +615,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	{
 		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
-		if ($fields[$this->getElement()->name]->Type == 'time')
+		$name = $this->getElement()->name;
+		$field = JArrayHelper::getValue($fields, $name, false);
+		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false, false);
 			$table = $listModel->getTable();
