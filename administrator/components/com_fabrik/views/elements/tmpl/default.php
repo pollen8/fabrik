@@ -118,6 +118,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering	= ($listOrder == 'e.ordering');
+			$params = new JRegistry($item->params);
 			$link = JRoute::_('index.php?option=com_fabrik&task=element.edit&id='.(int) $item->id);
 			$canCreate	= $user->authorise('core.create',		'com_fabrik.element.'.$item->group_id);
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.element.'.$item->group_id);
@@ -144,9 +145,12 @@ $saveOrder	= $listOrder == 'e.ordering';
 							echo  $item->name;
 						else :
 						?>
+						<span class="editlinktip hasTip"
+						title="<?php echo $item->name . "::" . $item->tip; ?>">
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->name; ?>
 						</a>
+						</span>
 					<?php endif;
 					?>
 					</td>
@@ -198,6 +202,8 @@ $saveOrder	= $listOrder == 'e.ordering';
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+
+	<?php echo $this->loadTemplate('batch'); ?>
 
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
