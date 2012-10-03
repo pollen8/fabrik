@@ -811,15 +811,6 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field name="enable_big_selects" 
-				type="radio" 
-				default="0"
-				label="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_LABEL" 
-				description="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_DESC">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field name="enable_single_sorting" 
 				type="radio" 
 				default="default"

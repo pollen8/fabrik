@@ -491,10 +491,13 @@ class FabrikFEModelList extends JModelForm
 
 	function setBigSelects()
 	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$bigSelects = $fbConfig->get('enable_big_selects', 0);
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
-		if ($params->get('enable_big_selects', 0))
+		if ($params->get('enable_big_selects', $bigSelects))
 		{
+			echo "big selected";
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
 			$fabrikDb->query();
 		}

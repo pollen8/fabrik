@@ -35,6 +35,9 @@ class FabrikViewList extends FabrikViewListBase
 	{
 		if (parent::display($tpl) !== false)
 		{
+			$app = JFactory::getApplication();
+			if (!$app->isAdmin())
+			{
 			$this->state = $this->get('State');
 			$this->params = $this->state->get('params');
 			$this->document = JFactory::getDocument();
@@ -51,6 +54,7 @@ class FabrikViewList extends FabrikViewListBase
 			if ($this->params->get('robots'))
 			{
 				$this->document->setMetadata('robots', $this->params->get('robots'));
+			}
 			}
 			$this->output();
 		}

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <config>
-
+	<fieldset label="COM_FABRIK_GLOBAL" name="global">
+	
+		<field name="enable_big_selects" 
+			type="radio" 
+			default="0"
+			label="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_LABEL" 
+			description="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+			
+	</fieldset>
 	<fieldset label="COM_FABRIK_LISTS" name="lists">
 
 		<field name="fbConf_alter_existing_db_cols"
