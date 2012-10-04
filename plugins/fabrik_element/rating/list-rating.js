@@ -67,7 +67,7 @@ var FbRatingList = new Class({
 		var ratingmsg = star.getParent('.fabrik_element').getElement('.ratingMessage');
 		Fabrik.loader.start(ratingmsg);
 		
-		var starRatingCover = new Element('div', {id: 'starRatingCover', styles: {bottom:0, top:0, right: 0, left:0, position:'absolute', cursor:'progress'} });
+		var starRatingCover = new Element('div', {id: 'starRatingCover', styles: {bottom: 0, top: 0, right: 0, left: 0, position: 'absolute', cursor: 'progress'} });
 		var starRatingContainer = star.getParent('.fabrik_element').getElement('div');
 		starRatingContainer.grab(starRatingCover, 'top');
 		
