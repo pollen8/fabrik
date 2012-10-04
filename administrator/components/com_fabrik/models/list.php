@@ -613,7 +613,9 @@ class FabrikModelList extends FabModelAdmin
 			$row->form_id = $this->getState('list.form_id');
 
 			// Create fabrik group
-			$groupData = array('name' => $row->label, 'label' => $row->label);
+			$groupData = FabrikWorker::formDefaults('group');
+			$groupData['name'] = $row->label;
+			$groupData['label'] = $row->label;
 
 			JRequest::setVar('_createGroup', 1, 'post');
 
@@ -945,8 +947,10 @@ class FabrikModelList extends FabModelAdmin
 	protected function makeNewJoin($tableKey, $joinTableKey, $joinType, $joinTable, $joinTableFrom, $isRepeat)
 	{
 		$formModel = $this->getFormModel();
-		$aData = array('name' => $this->getTable()->label . '- [' . $joinTable . ']', 'label' => $joinTable,);
-		$groupId = $this->createLinkedGroup($aData, true, $isRepeat);
+		$groupData = FabrikWorker::formDefaults('group');
+		$groupData['name'] = $this->getTable()->label . '- [' . $joinTable . ']';
+		$groupData['label'] = $joinTable;
+		$groupId = $this->createLinkedGroup($groupData, true, $isRepeat);
 
 		$origTable = JArrayHelper::getValue(JRequest::getVar('jform'), 'db_table_name');
 		$join = $this->getTable('Join');
@@ -1257,6 +1261,10 @@ class FabrikModelList extends FabModelAdmin
 			$createdate = $createdate->toSql();
 			$form = $this->getTable('Form');
 			$item = $this->getTable('List');
+
+			$defaults = FabrikWorker::formDefaults('form');
+			$form->bind($defaults);
+
 			$form->label = $item->label;
 			$form->record_in_database = 1;
 			$form->created = $createdate;

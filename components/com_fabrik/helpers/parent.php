@@ -1523,4 +1523,36 @@ class FabrikWorker
 		$cache->setCaching($doCache);
 		return $cache;
 	}
+
+	/**
+	 * Get the default values for a given JForm
+	 *
+	 * @param   string  $form  form name e.g. list, form etc
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  key field name, value default value
+	 */
+
+	public static function formDefaults($form)
+	{
+		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+		JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		$form = JForm::getInstance('com_fabrik.' . $form, $form, array('control' => '', 'load_data' => true));
+		$fs = $form->getFieldset();
+		$json = array('params' => array());
+
+		foreach ($fs as $name => $field)
+		{
+			if (substr($name, 0, 7) === 'params_') {
+				$name = str_replace('params_', '', $name);
+				$json['params'][$name] = $field->value;
+			}
+			else
+			{
+				$json[$name] = $field->value;
+			}
+		}
+		return $json;
+	}
 }
