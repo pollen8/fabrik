@@ -72,7 +72,7 @@ var FbRatingList = new Class({
 		starRatingContainer.grab(starRatingCover, 'top');
 		
 		var row = document.id(star).getParent('.fabrik_row');
-		var rowid = row.id.replace('list_' + this.options.listid + '_com_fabrik_' + this.options.listid + '_row_', '');
+		var rowid = row.id.replace('list_' + document.fabrikList.elements['listref'].value + '_row_', '');
 		var data = {
 			'option': 'com_fabrik',
 			'format': 'raw',
