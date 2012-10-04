@@ -281,7 +281,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get the html that is outputted by table plug-in buttons
+	 * Get the html that is outputted by list plug-in buttons
 	 *
 	 * @return  array  buttons
 	 */
@@ -5374,7 +5374,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
-			// Create columns containing links which point to tables associated with this table
+			// Create columns containing links which point to lists associated with this list
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$f = 0;
