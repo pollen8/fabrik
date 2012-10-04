@@ -1309,7 +1309,8 @@ var FbForm = new Class({
 				// NOW?)
 				container = input.getParent('.fabrikSubElementContainer');
 				var testid = (hasSubElements && container) ? container.id : input.id;
-				if (el.options.element === testid) {
+				var cloneName = el.getCloneName();
+				if (cloneName === testid) {
 					lastinput = input;
 					formElementFound = true;
 
@@ -1371,8 +1372,7 @@ var FbForm = new Class({
 					newEl.options.element = subElementContainer.id;
 					newEl._getSubElements();
 				} else {
-					newEl.element = document.id(lastinput.id);
-					newEl.options.element = lastinput.id;
+					newEl.cloneUpdateIds(lastinput.id);
 				}
 				//newEl.reset();
 				newElementControllers.push(newEl);
