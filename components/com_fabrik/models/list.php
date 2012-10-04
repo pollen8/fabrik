@@ -2966,7 +2966,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Checks if any one row is editalbe = used to get the correct headings
+	 * Checks if any one row is editable = used to get the correct headings
 	 *
 	 * @return  bool
 	 */
@@ -2994,7 +2994,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   object  $row  data
 	 * @param   string  $col  access control setting to compare against
 	 *
-	 * @return  mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
+	 * @return  mixed	- if ACL setting defined here return bool, otherwise return -1 to contiune with default acl setting
 	 */
 
 	protected function canUserDo($row, $col)
@@ -3016,10 +3016,6 @@ class FabrikFEModelList extends JModelForm
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
-			if ($canUserDo === true)
-			{
-				$this->_access->deletePossible = true;
-			}
 			return $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
@@ -3031,7 +3027,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Determin if any record can be deleted - used to see if we include the
+	 * Determine if any record can be deleted - used to see if we include the
 	 * delete button in the list view
 	 *
 	 * @return  bool
@@ -3039,14 +3035,18 @@ class FabrikFEModelList extends JModelForm
 
 	public function deletePossible()
 	{
-		if (is_object($this->_access))
+		$data = $this->getData();
+		foreach ($data as $rows)
 		{
-			if (array_key_exists('deletePossible', $this->_access))
+			foreach ($rows as $row)
 			{
-				return $this->_access->deletePossible;
+				if ($this->canDelete($row))
+				{
+					return true;
+				}
 			}
 		}
-		return $this->canDelete();
+		return false;
 	}
 
 	/**
@@ -5587,7 +5587,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->canSelectRows;
 		}
-		if ($this->canDelete())
+		if ($this->canDelete() || $this->canEditARow() || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
@@ -7215,13 +7215,13 @@ class FabrikFEModelList extends JModelForm
 	private function _replaceWithRowData($matches)
 	{
 		$match = $matches[0];
-		
+
 		// $$$ felixkat - J! plugin closings, i.e  {/foo} were getting caught here.
 		if (preg_match('[{/]', $match))
 		{
 			return $match;
 		}
-		
+
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
