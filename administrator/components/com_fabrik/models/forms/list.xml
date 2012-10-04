@@ -710,10 +710,11 @@
 				description="COM_FABRIK_EDIT_DESC" />
 			
 			<field name="actionMethod"
-				default="floating"
+				default="default"
 				type="list"
 				label="COM_FABRIK_FIELD_ACTION_METHOD_LABEL"
 				description="COM_FABRIK_FIELD_ACTION_METHOD_DESC">
+					<option value="default">JGLOBAL_USE_GLOBAL</option>
 					<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
 					<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
 			</field>

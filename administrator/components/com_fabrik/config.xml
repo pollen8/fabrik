@@ -67,6 +67,15 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+		
+		<field name="actionMethod"
+			default="floating"
+			type="list"
+			label="COM_FABRIK_FIELD_ACTION_METHOD_LABEL"
+			description="COM_FABRIK_FIELD_ACTION_METHOD_DESC">
+				<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
+				<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
+		</field>
 
 	</fieldset>
 
