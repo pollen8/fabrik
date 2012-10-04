@@ -23,8 +23,12 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class plgFabrik_ListRadius_search extends plgFabrik_List
 {
 
-	/** @var array place coordinates **/
-	var $placeCoordinates = null;
+	/**
+	 * Place coordinates
+	 *
+	 * @var array
+	 */
+	protected $placeCoordinates = null;
 
 	/**
 	 * Called when the list HTML filters are loaded
@@ -459,6 +463,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 	public function onLoadJavascriptInstance($params, $model, $args)
 	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
 		if (!is_object($this->getMapElement()))
 		{
 			return false;
