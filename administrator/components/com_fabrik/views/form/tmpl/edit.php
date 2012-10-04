@@ -80,11 +80,19 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<legend><?php echo JText::_('COM_FABRIK_FORM_PROCESSING');?></legend>
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel('record_in_database') . $this->form->getInput('record_in_database');
-					echo $this->form->getLabel('db_table_name') ?>
-					<?php if ($this->item->record_in_database != '1') :?>
-						<?php  echo $this->form->getInput('db_table_name'); ?>
-					<?php else : ?>
+					<?php
+					echo $this->form->getLabel('record_in_database');
+					if ($this->item->id == 0 || $this->item->record_in_database == 1) :
+						echo $this->form->getInput('record_in_database');
+					else :
+					echo '<span style="padding-top:5px;display:inline-block">';
+						echo $this->item->record_in_database == 1 ? JText::_('JYES') : JText::_('JNO');
+						echo '</span>';
+					endif;
+					echo $this->form->getLabel('db_table_name');
+					if ($this->item->record_in_database != '1') :
+						echo $this->form->getInput('db_table_name');
+					else :?>
 						<input class="readonly" readonly="readonly" id="database_name" name="_database_name" value="<?php echo $this->item->db_table_name;?>"  />
 						<input type="hidden" id="_connection_id" name="_connection_id" value="<?php echo $this->item->connection_id;?>"  />
 					<?php endif; ?>
