@@ -14,19 +14,43 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a list.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.5
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.5
  */
+
 class FabrikAdminViewList extends JViewLegacy
 {
+	/**
+	 * List form
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Item
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 * @var object
+	 */
 	protected $state;
+
+	/**
+	 * JS code
+	 * @var string
+	 */
 	protected $js;
 
 	/**
 	 * Display the list
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -38,6 +62,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$formModel->setId($this->item->form_id);
 		$this->state = $this->get('State');
 		$this->js = $this->get('Js');
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -68,14 +93,14 @@ class FabrikAdminViewList extends JViewLegacy
 
 			$orderdirs = FabrikWorker::JSONtoData($this->item->order_dir, true);
 			$this->order_dir = array();
+			$attribs = 'class="inputbox" size="1" ';
 			foreach ($orderdirs as $orderdir)
 			{
-				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text',
-					$orderdir);
+				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', $attribs, 'value', 'text', $orderdir);
 			}
 			if (empty($this->order_dir))
 			{
-				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', 'class="inputbox" size="1" ', 'value', 'text', '');
+				$this->order_dir[] = JHTML::_('select.genericlist', $orderDir, 'order_dir[]', $attribs, 'value', 'text', '');
 			}
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
 		}
@@ -84,9 +109,11 @@ class FabrikAdminViewList extends JViewLegacy
 	}
 
 	/**
-	 * show the list's linked forms etc
+	 * Show the list's linked forms etc
 	 *
-	 * @param $tpl
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function showLinkedElements($tpl = null)
@@ -99,8 +126,11 @@ class FabrikAdminViewList extends JViewLegacy
 	}
 
 	/**
-	 * see if the user wants to rename the list/form/groups
-	 * @param string $tpl
+	 * See if the user wants to rename the list/form/groups
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function confirmCopy($tpl = null)
@@ -131,13 +161,14 @@ class FabrikAdminViewList extends JViewLegacy
 			$lists[] = $row;
 		}
 		$this->assign('lists', $lists);
-		FabrikViewList::addConfirmCopyToolbar();
+		$this->addConfirmCopyToolbar();
 		parent::display($tpl);
 	}
 
 	/**
 	 * Add the page title and toolbar.
-	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()
@@ -147,7 +178,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
-		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_LIST_NEW') : JText::_('COM_FABRIK_MANAGER_LIST_EDIT'), 'list.png');
 		if ($isNew)
@@ -171,6 +202,7 @@ class FabrikAdminViewList extends JViewLegacy
 				{
 					JToolBarHelper::apply('list.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('list.save', 'JTOOLBAR_SAVE');
+
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{
@@ -190,8 +222,9 @@ class FabrikAdminViewList extends JViewLegacy
 	}
 
 	/**
-	 * Add the page title and toolbar.
-	 * @since	1.6
+	 * Add the page title and toolbar for the linked elements page
+	 *
+	 * @return  void
 	 */
 
 	protected function addLinkedElementsToolbar()
@@ -204,8 +237,9 @@ class FabrikAdminViewList extends JViewLegacy
 	}
 
 	/**
-	 * Add the page title and toolbar.
-	 * @since   3.0
+	 * Add the page title and toolbar for the confirm copy page
+	 *
+	 * @return  void
 	 */
 
 	protected function addConfirmCopyToolbar()

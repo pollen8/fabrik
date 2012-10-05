@@ -22,37 +22,82 @@ jimport('joomla.application.component.modelform');
 class FabrikFEModelImportcsv extends JModelForm
 {
 
-	/** @var array of cleaned heading names */
+	/**
+	 * Cleaned heading names
+	 *
+	 * @var array
+	 */
 	public $headings = null;
 
-	/** @var csv array data */
+	/**
+	 * CSV data
+	 *
+	 * @var array
+	 */
 	public $data = null;
 
-	/** @var array list of new headings found in csv file when importing */
+	/**
+	 * List of new headings found in csv file when importing
+	 *
+	 * @var array
+	 */
 	public $newHeadings = array();
 
-	/** @var array list of matched headings found in csv file when importing */
+	/**
+	 * List of matched headings found in csv file when importing
+	 *
+	 * @var array
+	 */
 	public $matchedHeadings = array();
 
-	/** @var array of table's join objects */
+	/**
+	 * List's join objects
+	 *
+	 * @var array
+	 */
 	public $joins = null;
 
-	/** @var object list model to import into */
+	/**
+	 * List model to import into
+	 *
+	 * @var object
+	 */
 	public $listModel = null;
 
+	/**
+	 * Number of records added
+	 *
+	 * @var int
+	 */
 	public $updatedCount = 0;
 
+	/**
+	 * CSV file name
+	 *
+	 * @var string
+	 */
 	protected $csvFile = null;
 
+	/**
+	 * Delimiter to split data by
+	 *
+	 * @var string
+	 */
 	protected $fieldDelimiter = null;
 
+	/**
+	 * Directory to which the csv file is imported
+	 *
+	 * @var string
+	 */
 	protected $baseDir = null;
 
 	/**
-	 * import the csv file
+	 * Import the csv file
 	 *
 	 * @return  boolean
 	 */
+
 	public function import()
 	{
 		$this->readCSV($this->getCSVFileName());
@@ -61,7 +106,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * gets the name of the csv file from the uploaded jform
+	 * Gets the name of the csv file from the uploaded jform
 	 *
 	 * @return string csv file name
 	 */
@@ -149,7 +194,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get the field delimiter from post
+	 * Get the field delimiter from post
 	 * and set in session 'com_fabrik.csv.fielddelimiter' for later use
 	 *
 	 * @return  string	delimiter character
@@ -174,17 +219,18 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get form data
+	 * Get form data
 	 *
 	 * @return  array
 	 */
+
 	protected function getFormData()
 	{
 		return array_key_exists('jform', $_POST) ? JRequest::getVar('jform') : JRequest::get('post');
 	}
 
 	/**
-	 * read the CSV file, store results in $this->headings and $this->data
+	 * Read the CSV file, store results in $this->headings and $this->data
 	 *
 	 * @param   string  $file  to read
 	 *
@@ -278,7 +324,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * return the first line of the imported data
+	 * Return the first line of the imported data
 	 *
 	 * @return  array
 	 */
@@ -289,7 +335,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * possibly setting large data in the session is a bad idea
+	 * Possibly setting large data in the session is a bad idea
 	 *
 	 * @deprecated
 	 *
@@ -304,7 +350,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get the directory to which the csv file is imported
+	 * Get the directory to which the csv file is imported
 	 *
 	 * @return  string	path
 	 */
@@ -336,7 +382,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * deletes the csv file and optionally removes its path from the session
+	 * Deletes the csv file and optionally removes its path from the session
 	 *
 	 * @param   bool  $clearSession  should we clear the session
 	 *
@@ -371,7 +417,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get the list model
+	 * Get the list model
 	 *
 	 * @return object table model
 	 */
@@ -494,7 +540,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * work out which published elements are not included
+	 * Work out which published elements are not included
 	 *
 	 * @return array element models whose defaults should be added to each of the imported
 	 * data's array. Keyed on element name.
@@ -629,10 +675,18 @@ class FabrikFEModelImportcsv extends JModelForm
 			// $$$ rob add in per row default values for missing elements
 			foreach ($defaultsToAdd as $k => $elementModel)
 			{
-				$aRow[$k] = $elementModel->getDefaultValue($aRow);
-				$aRow[$k . '_raw'] = $aRow[$k];
+				/* Added check as defaultsToAdd ALSO contained element keys for those elements which
+				 * are created from new csv columns, which previously didn't exist in the list
+				 */
+				if (!array_key_exists($k, $aRow))
+				{
+					$aRow[$k] = $elementModel->getDefaultValue($aRow);
+				}
+				if (!array_key_exists($k . '_raw', $aRow))
+				{
+					$aRow[$k . '_raw'] = $aRow[$k];
+				}
 			}
-
 			$model->getFormGroupElementData();
 
 			// Take any _raw values and replace their real elements with their data
@@ -768,7 +822,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * as each csv row is in a single line we need to fake the join data before
+	 * As each csv row is in a single line we need to fake the join data before
 	 * sending it of to be processed by the form model
 	 * Look at the table model and get all table joins
 	 * then insert data into the row
@@ -849,7 +903,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get Join Primary Key values
+	 * Get Join Primary Key values
 	 *
 	 * @param   object  $join  join row
 	 *
@@ -910,7 +964,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get an array of headings that should be added as part of the  import
+	 * Get an array of headings that should be added as part of the  import
 	 *
 	 * @return array
 	 */
@@ -921,7 +975,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * determine if the chooselementtypes view should contain a column where
+	 * Determine if the chooselementtypes view should contain a column where
 	 * the user selects the field to be the pk
 	 *
 	 * @return  bool	true if column shown
@@ -954,7 +1008,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	}
 
 	/**
-	 * get the csv files headings
+	 * Get the csv files headings
 	 *
 	 * @return  array
 	 */

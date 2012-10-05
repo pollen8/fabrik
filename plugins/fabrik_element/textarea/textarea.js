@@ -7,11 +7,35 @@ var FbTextarea = new Class({
 		
 		// $$$ rob need to slightly delay this as if lots of js loaded (eg maps)
 		// before the editor then the editor may not yet be loaded 
-		(function () {
-			this.getTextContainer();
-			this.watchTextContainer();	
-		}.bind(this)).delay(10000);
 		
+		this.periodFn = function () {
+			if (this.getTextContainer() !== false) {
+				this.watchTextContainer();
+				clearInterval(this.periodFn);
+			}
+		};
+		
+		this.periodFn.periodical(200, this);
+	},
+	
+	unclonableProperties: function ()
+	{
+		var props = this.parent();
+		props.push('container');
+		return props;
+	},
+	
+	/**
+	 * Set names/ids/elements ect when the elements group is cloned
+	 * 
+	 * @param   int  id  element id
+	 * @since   3.0.7
+	 */
+
+	cloneUpdateIds: function (id) {
+		this.element = document.id(id);
+		this.options.element = id;
+		this.options.htmlId = id;
 	},
 	
 	watchTextContainer: function ()
@@ -51,31 +75,69 @@ var FbTextarea = new Class({
 	},
 	
 	/**
+	 * Used to find element when form clones a group
+	 * WYSIWYG text editor needs to return something specific as options.element has to use name 
+	 * and not id.
+	 */
+	getCloneName: function () {
+		var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+		return name;
+	},
+	
+	/**
 	 * Run when element cloned in repeating group
 	 * 
 	 * @param   int  c  repeat group counter
 	 */
 	
 	cloned: function (c) {
+		if (this.options.wysiwyg) {
+			var p = this.element.getParent('.fabrikElement');
+			var txt = p.getElement('textarea').clone(true, true);
+			var charLeft = p.getElement('.fabrik_characters_left').clone();
+			p.empty();
+			p.adopt(txt);
+			if (typeOf(charLeft) !== 'null') {
+				p.adopt(charLeft);
+			}
+			txt.removeClass('mce_editable');
+			txt.setStyle('display', '');
+			this.element = txt;
+			var id = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+			tinyMCE.execCommand('mceAddControl', false, id);
+		}
 		this.getTextContainer();
 		this.watchTextContainer();
+	},
+	
+	/**
+	 * run when the element is decloled from the form as part of a deleted repeat group
+	 */
+	decloned: function (groupid) {
+		if (this.options.wysiwyg) {
+			var id = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+			tinyMCE.execCommand('mceFocus', false, id);                    
+			tinyMCE.execCommand('mceRemoveControl', false, id);
+		}
 	},
 	
 	getTextContainer: function ()
 	{
 		if (this.options.wysiwyg) {
 			var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
+			document.id(name).addClass('fabrikinput');
 			var instance = tinyMCE.get(name);
 			if (instance) {
 				this.container = instance.getDoc();
 			} else {
-				fconsole('didnt find wysiwyg edtor ...' + this.options.element);
+				return false;
 			}
 		} else {
 			// Regrab the element for inline editing (otherwise 2nd col you edit doesnt pickup the textarea.
 			this.element = document.id(this.options.element);
 			this.container = this.element;
 		}
+		return this.container;
 	},
 	
 	getContent: function ()

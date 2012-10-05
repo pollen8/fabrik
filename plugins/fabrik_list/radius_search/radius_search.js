@@ -1,18 +1,26 @@
 var FbListRadiusSearch = new Class({
 	Extends : FbListPlugin,
-	initialize : function (element, options) {
+	initialize : function (options) {
 		this.parent(options);
-		head.ready(function () {
 
-			this.element = document.id(element).getElement('.radus_search');
+		head.ready(function () {
+			this.listform = this.listform.getElement('.radus_search');
 			if (typeOf(this.options.value) === 'null') {
 				this.options.value = 0;
 			}
-			this.fx = new Fx.Slide(this.element.getElement('.radius_search_options'));
-			this.element.getElements('input[name^=radius_search_active]').addEvent('click', function (e) {
-				this.toggleActive(e);
+			this.fx = new Fx.Slide(this.listform.getElement('.radius_search_options'));
+			this.listform.getElements('input[name^=radius_search_active]').addEvent('click', function (e) {
+				switch (e.target.get('value')) {
+				case '1':
+					this.fx.slideIn();
+					break;
+				case '0':
+					this.fx.slideOut();
+					break;
+				}
 			}.bind(this));
-			var a = this.element.getElements('input[name^=radius_search_active]').filter(function (f) {
+			
+			var a = this.listform.getElements('input[name^=radius_search_active]').filter(function (f) {
 				return f.checked === true;
 			});
 			if (a[0].get('value') === '0') {
@@ -22,12 +30,12 @@ var FbListRadiusSearch = new Class({
 				this.toggleFields(e);
 			}.bind(this));
 			this.options.value = this.options.value.toInt();
-			if (typeOf(this.element) === 'null') {
+			if (typeOf(this.listform) === 'null') {
 				return;
 			}
-			var output = this.element.getElement('.radius_search_distance');
-			var output2 = this.element.getElement('.slider_output');
-			this.mySlide = new Slider(this.element.getElement('.fabrikslider-line'), this.element.getElement('.knob'), {
+			var output = this.listform.getElement('.radius_search_distance');
+			var output2 = this.listform.getElement('.slider_output');
+			this.mySlide = new Slider(this.listform.getElement('.fabrikslider-line'), this.listform.getElement('.knob'), {
 				onChange : function (pos) {
 					output.value = pos;
 					output2.set('text', pos + this.options.unit);
@@ -57,8 +65,8 @@ var FbListRadiusSearch = new Class({
 		if (typeOf(p) === 'null') {
 			alert(Joomla.JText._('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE'));
 		} else {
-			this.element.getElement('input[name=radius_search_lat]').value = p.coords.latitude.toFixed(2);
-			this.element.getElement('input[name=radius_search_lon]').value = p.coords.longitude.toFixed(2);
+			this.listform.getElement('input[name=radius_search_lat]').value = p.coords.latitude.toFixed(2);
+			this.listform.getElement('input[name=radius_search_lon]').value = p.coords.longitude.toFixed(2);
 		}
 	},
 
@@ -67,36 +75,29 @@ var FbListRadiusSearch = new Class({
 	},
 
 	toggleActive : function (e) {
-		switch (e.target.get('value')) {
-		case '1':
-			this.fx.slideIn();
-			break;
-		case '0':
-			this.fx.slideOut();
-			break;
-		}
+		
 	},
 
 	toggleFields : function (e) {
 		switch (e.target.get('value')) {
 		case 'latlon':
-			this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
-			this.element.getElement('.radius_search_coords_container').setStyle('display', '');
+			this.listform.getElement('.radius_search_place_container').hide();
+			this.listform.getElement('.radius_search_coords_container').show();
 			break;
 		case 'mylocation':
-			this.element.getElement('.radius_search_place_container').setStyle('display', 'none');
-			this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
+			this.listform.getElement('.radius_search_place_container').hide();
+			this.listform.getElement('.radius_search_coords_container').hide();
 			this.setGeoCenter(this.geocenterpoint);
 			break;
 		case 'place':
-			this.element.getElement('.radius_search_place_container').setStyle('display', '');
-			this.element.getElement('.radius_search_coords_container').setStyle('display', 'none');
+			this.listform.getElement('.radius_search_place_container').show();
+			this.listform.getElement('.radius_search_coords_container').hide();
 			break;
 		}
 	},
 
 	clearFilter : function () {
-		this.element.getElements('input[name^=radius_search_active]').filter(function (f) {
+		this.listform.getElements('input[name^=radius_search_active]').filter(function (f) {
 			return f.get('value') === '0';
 		}).getLast().checked = true;
 	}

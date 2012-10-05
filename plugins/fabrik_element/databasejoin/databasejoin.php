@@ -660,7 +660,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$mode = JArrayHelper::getValue($opts, 'mode', 'form');
 			$filterType = $element->filter_type;
 			if (($mode == 'filter' && $filterType == 'auto-complete')
-				|| $mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
+				|| ($mode == 'form' && $params->get('database_join_display_type') == 'auto-complete')
+				|| ($mode == 'filter' && $params->get('database_join_display_type') == 'auto-complete'))
 			{
 
 				$where .= JString::stristr($where, 'WHERE') ? ' AND ' . $this->_autocomplete_where : ' WHERE ' . $this->_autocomplete_where;
@@ -680,7 +681,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$where = JString::str_ireplace('WHERE', '', $where);
+			//$where = JString::str_ireplace('WHERE', '', $where);
+			$where = FabrikString::ltrimword($where, 'WHERE', true);
 			$query->where($where);
 			return $query;
 		}
@@ -1468,6 +1470,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$prefilterWhere = str_replace($elementName, $joinKey, $prefilterWhere);
 		if (trim($where) == '')
 		{
+			/* $$$ hugh - Sanity check - won't this screw things up if we have a complex prefilter with multiple filters using AND grouping? */
 			$prefilterWhere = str_replace('AND', 'WHERE', $prefilterWhere);
 		}
 		$where .= $prefilterWhere;
@@ -2187,6 +2190,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
+		}
+		$filterMethod = $elementModel->getFilterBuildMethod();
+		if ($filterMethod == 1)
+		{
+			$join = $elementModel->getJoin()->table_join;
+			$opts = array();
+			$opts['label'] = $join . '.' . $c;
+			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
 		// default to "contains" for backward compat.

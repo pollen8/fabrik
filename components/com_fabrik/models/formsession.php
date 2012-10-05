@@ -3,8 +3,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,12 +12,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-
-class FabrikFEModelFormsession extends FabModel {
-
-	/**
-	 * constructor
-	 */
+class FabrikFEModelFormsession extends FabModel
+{
 
 	protected $userid = null;
 
@@ -44,6 +40,10 @@ class FabrikFEModelFormsession extends FabModel {
 	/** var object cryptor **/
 	protected $crypt = null;
 
+	/**
+	 * constructor
+	 */
+
 	function __construct()
 	{
 		if (!defined('_FABRIKFORMSESSION_LOADED_FROM_COOKIE'))
@@ -55,11 +55,14 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * save the form data to #__{package}_form_sesson
-* @param   object	form $formModel
+	 * Save the form data to #__{package}_form_sesson
+	 *
+	 * @param   object  &$formModel  form model
+	 *
+	 * @return  null
 	 */
 
-	function savePage(&$formModel)
+	public function savePage(&$formModel)
 	{
 		//need to check for encrypted vars, unencrypt them and
 		//place them back in the array
@@ -85,7 +88,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
 		$row->last_page = JRequest::getVar('page');
-		$row->referring_url  = JRequest::getVar('HTTP_REFERER', '', 'server');
+		$row->referring_url = JRequest::getVar('HTTP_REFERER', '', 'server');
 		$row->data = $data;
 		$this->setCookie($hash);
 		if (!$row->store())
@@ -95,15 +98,18 @@ class FabrikFEModelFormsession extends FabModel {
 		// $$$ hugh - if we're saving the formdata in the session, we should set 'session.on'
 		// as per The New Way we're doing redirects, etc.
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.'.$this->getFormId().'.session.on', true);
+		$session->set('com_fabrik.form.' . $this->getFormId() . '.session.on', true);
 	}
 
 	/**
-	 * set the form session cookie
-* @param   string	$hash the actual key that is stored in the db table's hash field
+	 * Set the form session cookie
+	 *
+	 * @param   string  $hash  the actual key that is stored in the db table's hash field
+	 *
+	 * @return  null
 	 */
 
-	function setCookie($hash)
+	public function setCookie($hash)
 	{
 		if ($this->canUseCookie() === false)
 		{
@@ -118,16 +124,24 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * remove the form session cookie
+	 * Remove the form session cookie
+	 *
+	 * @return  null
 	 */
 
 	function removeCookie()
 	{
 		$user = JFactory::getUser();
-		$lifetime = time() -99986400;
+		$lifetime = time() - 99986400;
 		$key = (int) $user->get('id') . ':' . $this->getFormId() . ':' . $this->getRowId();
 		$res = setcookie($key, false, $lifetime, '/');
 	}
+
+	/**
+	 * Create the crypt class object
+	 *
+	 * @return  JSimpleCrypt
+	 */
 
 	protected function getCrypt()
 	{
@@ -144,14 +158,21 @@ class FabrikFEModelFormsession extends FabModel {
 		return $this->crypt;
 	}
 
+	/**
+	 * Set use cookie
+	 *
+	 * @param   bool  $bol  set use cookie true/false
+	 */
+
 	function useCookie($bol)
 	{
 		$this->useCookie = $bol;
 	}
 
 	/**
-	 * load in the saved session
-	 * @return  object	session table row
+	 * Load in the saved session
+	 *
+	 * @return object session table row
 	 */
 
 	function load()
@@ -176,7 +197,7 @@ class FabrikFEModelFormsession extends FabModel {
 				if ($cookieval !== '')
 				{
 					$this->status = JText::_('COM_FABRIK_LOADING_FROM_COOKIE');
-					$this->statusid =_FABRIKFORMSESSION_LOADED_FROM_COOKIE;
+					$this->statusid = _FABRIKFORMSESSION_LOADED_FROM_COOKIE;
 					$hash = $crypt->decrypt($cookieval);
 				}
 			}
@@ -184,7 +205,7 @@ class FabrikFEModelFormsession extends FabModel {
 		if ($hash !== '')
 		{
 			// no point loading it if the hash is empty
-			$row->load(array('hash'=> $hash));
+			$row->load(array('hash' => $hash));
 		}
 		if (is_null($row->id))
 		{
@@ -197,8 +218,11 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * @since	2.0.4
-	 * get the cookie name
+	 * Get the cookie name
+	 *
+	 * @since 2.0.4
+	 *
+	 * @return  string
 	 */
 
 	protected function getCookieKey()
@@ -209,9 +233,11 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * @since	2.0.4
-	 * if a plug has set a session var com_fabrik.form.X.session.on then we should be
+	 * If a plug has set a session var com_fabrik.form.X.session.on then we should be
 	 * using the session cookie, see form confirmation plugin for this in use
+	 *
+	 * @since 2.0.4
+	 *
 	 * @return  bool
 	 */
 
@@ -226,7 +252,9 @@ class FabrikFEModelFormsession extends FabModel {
 		return $this->useCookie;
 	}
 	/**
-	 * remove the saved session
+	 * Remove the saved session
+	 *
+	 * return  bool
 	 */
 
 	function remove()
@@ -258,7 +286,7 @@ class FabrikFEModelFormsession extends FabModel {
 		$db = $row->getDBO();
 		$row->hash = $hash;
 		$query = $db->getQuery(true);
-		$query->delete($db->quoteName($row->getTableName()))->where($row->getKeyName() .' = '. $db->quote($hash));
+		$query->delete($db->quoteName($row->getTableName()))->where('hash = ' . $db->quote($hash));
 		$db->setQuery($query);
 		$this->removeCookie();
 		$this->row = $row;
@@ -274,9 +302,10 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * get the hash identifier
+	 * Get the hash identifier
 	 * format userid:formid:rowid
-	 * @return  string	hash
+	 *
+	 * @return  string  hash
 	 */
 
 	function getHash()
@@ -290,8 +319,9 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * get a the user id
-	 * @return  mixed	user id if logged in, unique id if not
+	 * Get a the user id
+	 *
+	 * @return  mixed  user id if logged in, unique id if not
 	 */
 
 	function getUserId()
@@ -305,8 +335,11 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * set the form id whose record is being edited
-* @param   int	$id
+	 * Det the form id whose record is being edited
+	 *
+	 * @param   int  $id  form id
+	 *
+	 * @return  null
 	 */
 
 	function setFormId($id)
@@ -315,8 +348,11 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * set the row id that is being edited or saved
-* @param   int	$id
+	 * Set the row id that is being edited or saved
+	 *
+	 * @param   int  $id row id
+	 *
+	 * @return  null
 	 */
 
 	function setRowId($id)
@@ -325,7 +361,8 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * gets the row id - if not set uses request 'rowid' var
+	 * Gets the row id - if not set uses request 'rowid' var
+	 *
 	 * @return  int
 	 */
 
@@ -339,8 +376,9 @@ class FabrikFEModelFormsession extends FabModel {
 	}
 
 	/**
-	 * gets the form id - if not set uses request 'formid' var
-	 * @return  int
+	 * Gets the row id - if not set uses request 'rowid' var
+	 *
+	 * @return int  form id
 	 */
 
 	function getFormId()
@@ -352,4 +390,3 @@ class FabrikFEModelFormsession extends FabModel {
 		return $this->formid;
 	}
 }
-?>

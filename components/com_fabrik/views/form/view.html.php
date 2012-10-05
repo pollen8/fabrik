@@ -36,6 +36,32 @@ class fabrikViewForm extends FabrikViewFormBase
 		if (parent::display($tpl) !== false)
 		{
 			$this->output();
+			$app = JFactory::getApplication();
+			if (!$app->isAdmin())
+			{
+				$this->state = $this->get('State');
+				$this->document = JFactory::getDocument();
+				$model = $this->getModel();
+				$this->params = $this->state->get('params');
+				$row = $model->getData();
+				$w = new FabrikWorker;
+				if ($this->params->get('menu-meta_description'))
+				{
+					$desc = $w->parseMessageForPlaceHolder($this->params->get('menu-meta_description'), $row);
+					$this->document->setDescription($desc);
+				}
+
+				if ($this->params->get('menu-meta_keywords'))
+				{
+					$keywords = $w->parseMessageForPlaceHolder($this->params->get('menu-meta_keywords'), $row);
+					$this->document->setMetadata('keywords', $keywords);
+				}
+
+				if ($this->params->get('robots'))
+				{
+					$this->document->setMetadata('robots', $this->params->get('robots'));
+				}
+			}
 		}
 	}
 }

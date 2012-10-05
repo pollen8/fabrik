@@ -109,6 +109,18 @@ var FbElement =  new Class({
 		return ['form'];
 	},
 	
+	/**
+	 * Set names/ids/elements ect when the elements group is cloned
+	 * 
+	 * @param   int  id  element id
+	 * @since   3.0.7
+	 */
+
+	cloneUpdateIds: function (id) {
+		this.element = document.id(id);
+		this.options.element = id;
+	},
+	
 	runLoadEvent : function (js, delay) {
 		delay = delay ? delay : 0;
 		//should use eval and not Browser.exec to maintain reference to 'this'
@@ -458,7 +470,16 @@ var FbElement =  new Class({
 	},
 	
 	select: function () {},
-	focus: function () {}
+	focus: function () {},
+	
+	/**
+	 * Used to find element when form clones a group
+	 * WYSIWYG text editor needs to return something specific as options.element has to use name 
+	 * and not id.
+	 */
+	getCloneName: function () {
+		return this.options.element;
+	}
 });
 
 /**

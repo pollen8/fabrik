@@ -159,6 +159,11 @@ class FabrikAdminModelElements extends FabModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id, title')->from('#__viewlevels');
+		$db->setQuery($query);
+		$viewLevels = $db->loadObjectList('id');
 
 		// Get the join elemnent name of those elements not in a joined group
 		foreach ($items as &$item)
@@ -167,6 +172,10 @@ class FabrikAdminModelElements extends FabModelList
 			{
 				$item->full_element_name = $item->db_table_name . '___' . $item->name;
 			}
+			// Add a tip containing the access level information
+			$params = new JRegistry($item->params);
+			$item->tip = JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $viewLevels[$item->access]->title .
+			'<br />' . JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewLevels[$params->get('view_access')]->title;
 		}
 		return $items;
 	}
@@ -267,4 +276,25 @@ class FabrikAdminModelElements extends FabModelList
 		return $rows;
 	}
 
+	/**
+	 * Batch process element properties
+	 *
+	 * @param   array  $ids    element ids
+	 * @param   array  $batch  element properties to set to
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  bool
+	 */
+
+	public function batch($ids, $batch)
+	{
+		JArrayHelper::toInteger($ids);
+		foreach ($ids as $id)
+		{
+			$item = $this->getTable('Element');
+			$item->load($id);
+			$item->batch($batch);
+		}
+	}
 }

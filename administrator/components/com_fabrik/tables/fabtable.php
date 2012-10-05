@@ -38,4 +38,29 @@ class FabTable extends JTable
 		return parent::getInstance($type, $prefix, $config);
 	}
 
+	/**
+	 * Batch set a properties and params
+	 *
+	 * @param   array  $batch  properties and params
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  bool
+	 */
+
+	public function batch($batch)
+	{
+		$batchParams = JArrayHelper::getValue($batch, 'params');
+		unset($batch['params']);
+		$query = $this->_db->getQuery(true);
+		$this->bind($batch);
+		$params = json_decode($this->params);
+		foreach ($batchParams as $key => $val)
+		{
+			$params->$key = $val;
+		}
+		$this->params = json_encode($params);
+		return $this->store();
+	}
+
 }

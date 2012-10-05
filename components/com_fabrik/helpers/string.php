@@ -28,16 +28,29 @@ class FabrikString extends JString
 	 *
 	 * @param   $str   string  the string to be trimmed
 	 * @param   $word  string  the word to trim
+	 * @param   $whitespace  string  ignore but preserve leading whitespace
 	 *
 	 * @return  string  the trimmed string
 	 */
 
-	public static function ltrimword($str, $word = false)
+	public static function ltrimword($str, $word = false, $whitespace = false)
 	{
-		$pos = JString::strpos($str, $word);
-		if ($pos === 0)
+		if ($word === false)
 		{
-			$str = JString::substr($str, JString::strlen($word));
+			return $str;
+		}
+		if ($whitespace)
+		{
+			$word = preg_quote($word, '#');
+			$str = preg_replace("#^(\s*)($word)(.*)#i", "$1$3", $str);
+		}
+		else
+		{
+			$pos = JString::strpos($str, $word);
+			if ($pos === 0)
+			{
+				$str = JString::substr($str, JString::strlen($word));
+			}
 		}
 		return $str;
 	}
@@ -184,6 +197,28 @@ class FabrikString extends JString
 		}
 		$label = trim($label);
 		return $label;
+	}
+
+	/**
+	 * Santize db fields names, can't just do regex on A-Z as languages like Chinese should be allowed
+	 *
+	 * @param   string  $name
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	public static function dbFieldName($str)
+	{
+		$name = JFilterInput::clean($str, 'CMD');
+
+		// Chinese characters?
+		if ($name === '')
+		{
+			$name = str_replace(array(' ', '.', '-'), '', $str) ;
+		}
+		return $name;
 	}
 
 	/**

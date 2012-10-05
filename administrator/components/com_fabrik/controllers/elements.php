@@ -171,4 +171,22 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$view->display();
 	}
 
+	/**
+	 * Batch process elements, setting acl levels
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+
+	public function batch()
+	{
+		JRequest::checkToken() or die('Invalid Token');
+		$model = $this->getModel('Elements');
+		$cid = JRequest::getVar('cid', array(), '', 'array');
+		$opts = JRequest::getVar('batch');
+		$model->batch($cid, $opts);
+		$this->setRedirect('index.php?option=com_fabrik&view=elements', JText::_('COM_FABRIK_MSG_BATCH_DONE'));
+	}
+
 }

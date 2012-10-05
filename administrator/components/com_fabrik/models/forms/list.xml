@@ -379,11 +379,22 @@
 					<option value="1">JYES</option>
 			</field>
 		
-			<field description="COM_FABRIK_EDIT_URL_DESC" label="COM_FABRIK_EDIT_URL_LABEL" name="editurl" size="50" type="text"/>
+			<field name="editurl" 
+				type="text" size="50"
+				label="COM_FABRIK_EDIT_URL_LABEL" 
+				description="COM_FABRIK_EDIT_URL_DESC" />
 			
-			<field description="COM_FABRIK_EDIT_DESC" label="COM_FABRIK_EDIT_LABEL" name="editlabel" size="30" type="text"/>
+			<field name="editlabel"
+				type="text" size="30"
+				label="COM_FABRIK_EDIT_LABEL" 
+				description="COM_FABRIK_EDIT_DESC" />
 			
-			<field default="floating" description="COM_FABRIK_FIELD_ACTION_METHOD_DESC" label="COM_FABRIK_FIELD_ACTION_METHOD_LABEL" name="actionMethod" type="list">
+			<field name="actionMethod"
+				default="default"
+				type="list"
+				label="COM_FABRIK_FIELD_ACTION_METHOD_LABEL"
+				description="COM_FABRIK_FIELD_ACTION_METHOD_DESC">
+					<option value="default">JGLOBAL_USE_GLOBAL</option>
 					<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
 					<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
 			</field>
@@ -441,12 +452,11 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_DESC" label="COM_FABRIK_FIELD_ENABLE_BIG_SELECTS_LABEL" name="enable_big_selects" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field class="btn-group" default="default" description="COM_FABRIK_FIELD_ENABLE_SINGLE_ORDERING_DESC" label="COM_FABRIK_FIELD_ENABLE_SINGLE_ORDERING_LABEL" name="enable_single_sorting" type="radio">
+			<field class="btn-group" name="enable_single_sorting" 
+				type="radio" 
+				default="default"
+				label="COM_FABRIK_FIELD_ENABLE_SINGLE_ORDERING_LABEL" 
+				description="COM_FABRIK_FIELD_ENABLE_SINGLE_ORDERING_DESC">
 					<option value="default">JGLOBAL_USE_GLOBAL</option>
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>

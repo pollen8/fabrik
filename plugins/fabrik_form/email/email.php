@@ -192,7 +192,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 		// Add any assigned groups to the to list
 		$sendTo = (array) $params->get('to_group');
-		$groupEmails = $this->getUsersInGroups($sendTo, $field = 'email');
+		$groupEmails = (array) $this->getUsersInGroups($sendTo, $field = 'email');
 		$email_to = array_merge($email_to, $groupEmails);
 		$email_to = array_unique($email_to);
 
@@ -426,7 +426,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
-					if (is_array($data[$key]))
+					if (is_array(JArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
 						foreach ($data[$key] as $k => $v)
@@ -440,7 +440,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 					}
 					else
 					{
-						$val = $data[$key];
+						$val = JArrayHelper::getValue($data, $key);
 					}
 					$val = FabrikString::rtrimword($val, "<br />");
 					$val = stripslashes($val);

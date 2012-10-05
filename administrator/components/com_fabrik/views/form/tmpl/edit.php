@@ -53,12 +53,12 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('details') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label . $field->input; ?>
 				</li>
 				<?php endforeach; ?>
 				<?php foreach ($this->form->getFieldset('details2') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label . $field->input; ?>
 				</li>
 				<?php endforeach; ?>
 			</ul>
@@ -70,7 +70,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('buttons') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label . $field->input; ?>
 				</li>
 				<?php endforeach; ?>
 			</ul>
@@ -80,18 +80,31 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<legend><?php echo JText::_('COM_FABRIK_FORM_PROCESSING');?></legend>
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel('record_in_database') . $this->form->getInput('record_in_database');
-					echo $this->form->getLabel('db_table_name') ?>
-					<?php if ($this->item->record_in_database != '1') {?>
-						<?php  echo $this->form->getInput('db_table_name'); ?>
-					<?php } else { ?>
+					<?php
+					echo $this->form->getLabel('record_in_database');
+					if ($this->item->id == 0 || $this->item->record_in_database == 1)
+					:
+						echo $this->form->getInput('record_in_database');
+					else :
+					echo '<span style="padding-top:5px;display:inline-block">';
+						echo $this->item->record_in_database == 1 ? JText::_('JYES') : JText::_('JNO');
+						echo '</span>';
+					endif;
+					echo $this->form->getLabel('db_table_name');
+					if ($this->item->record_in_database != '1')
+					:
+						echo $this->form->getInput('db_table_name');
+					else :
+					?>
 						<input class="readonly" readonly="readonly" id="database_name" name="_database_name" value="<?php echo $this->item->db_table_name;?>"  />
 						<input type="hidden" id="_connection_id" name="_connection_id" value="<?php echo $this->item->connection_id;?>"  />
-					<?php }?>
+					<?php
+					endif;
+					?>
 				</li>
 				<?php foreach ($this->form->getFieldset('processing') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label . $field->input; ?>
 				</li>
 				<?php endforeach; ?>
 			</ul>
@@ -102,7 +115,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 			<ul class="adminformlist">
 				<?php foreach ($this->form->getFieldset('notes') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label . $field->input; ?>
 				</li>
 				<?php endforeach; ?>
 			</ul>
@@ -110,21 +123,21 @@ FabrikHelperHTML::script($srcs, $this->js);
 	</div>
 
 	<div class="width-50 fltrt">
-		<?php echo JHtml::_('tabs.start','table-tabs-'.$this->item->id, array('useCookie' => 1));
+		<?php echo JHtml::_('tabs.start', 'table-tabs-' . $this->item->id, array('useCookie' => 1));
 
 		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUP_LABEL_PUBLISHING_DETAILS'), 'form_publishing');
 		echo $this->loadTemplate('publishing');
 
-		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_GROUPS'), 'form_groups');
+		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_GROUPS'), 'form_groups');
 		echo $this->loadTemplate('groups');
 
-		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_LAYOUT'), 'form_templates');
+		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_LAYOUT'), 'form_templates');
 		echo $this->loadTemplate('templates');
 
-		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_OPTIONS'), 'form_options');
+		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_OPTIONS'), 'form_options');
 		echo $this->loadTemplate('options');
 
-		echo JHtml::_('tabs.panel',JText::_('COM_FABRIK_PLUGINS'), 'form_plugins');
+		echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_PLUGINS'), 'form_plugins');
 		echo $this->loadTemplate('plugins');
 		echo JHtml::_('tabs.end'); ?>
 	</div>

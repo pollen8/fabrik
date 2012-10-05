@@ -106,8 +106,6 @@ class FabrikFEModelListfilter extends FabModel
 			$this->clearFilters();
 		}
 
-
-
 		/**
 		 * $$$ fehers The filter is cleared and applied at once without having to clear it first and then apply it (would have to be two clicks).
 		 * useful in querystring filters if you want to clear old filters and apply new filters
@@ -586,10 +584,13 @@ class FabrikFEModelListfilter extends FabModel
 
 			// $$$ rob so search all on checkboxes/radio buttons etc will take the search value of 'one' and return '1'
 			$newsearch = $elementModel->getFilterValue($search, $condition, $eval);
-			$search = $newsearch[0];
+
+			// $search = $newsearch[0];
+			$newsearch = $newsearch[0];
+
 			if ($key !== false)
 			{
-				$filters['value'][$key] = $search;
+				$filters['value'][$key] = $newsearch;
 				$filters['condition'][$key] = $condition;
 				$filters['join'][$key] = 'OR';
 				$filters['no-filter-setup'][$key] = ($element->filter_type == '') ? 1 : 0;
@@ -615,7 +616,7 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				$filters['value'][] = $search;
+				$filters['value'][] = $newsearch;
 				$filters['condition'][] = $condition;
 				$filters['join'][] = 'OR';
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;

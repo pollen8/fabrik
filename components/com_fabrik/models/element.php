@@ -2529,7 +2529,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		return implode("\n", $return);
 	}
 
-
 	/**
 	 * Build the HTML for the auto-complete filter
 	 *
@@ -2559,8 +2558,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		 */
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger ' . $id
-		. '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger '
+			. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 
 		$opts = array();
 		if ($normal)
@@ -2570,7 +2569,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$selector = '.advancedSeach_' . $listModel->getRenderContext(). ' .' . $id;
+			$selector = '.advancedSeach_' . $listModel->getRenderContext() . ' .' . $id;
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 		$element = $this->getElement();
@@ -2648,9 +2647,15 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
-				if ($found)
+				/* if ($found)
+				 {
+				// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
+				unset($rows[$j]);
+				} */
+
+				if (FabrikWorker::isJSON($rows[$j]))
 				{
-					// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
+					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
 				}
 			}
@@ -2736,6 +2741,26 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get the flter build method - all (2) or recorded data (1)
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  int
+	 */
+
+	protected function getFilterBuildMethod()
+	{
+		$usersConfig = JComponentHelper::getParams('com_fabrik');
+		$params = $this->getParams();
+		$filter_build = $params->get('filter_build_method', 0);
+		if ($filter_build == 0)
+		{
+			$filter_build = $usersConfig->get('filter_build_method');
+		}
+		return $filter_build;
+	}
+
+	/**
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
@@ -2750,13 +2775,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
-		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$params = $this->getParams();
-		$filter_build = $params->get('filter_build_method', 0);
-		if ($filter_build == 0)
-		{
-			$filter_build = $usersConfig->get('filter_build_method');
-		}
+		$filter_build = $this->getFilterBuildMethod();
 		if ($filter_build == 2 && $this->hasSubElements)
 		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
@@ -3092,6 +3111,39 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Esacepes a SINGLE query search string
+	 *
+	 * @param   string  $condition  filter condition
+	 * @param   value   &$value     value to esacpe
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  null
+	 */
+
+	private function escapeOneQueryValue($condition, &$value)
+	{
+		if ($condition == 'REGEXP')
+		{
+			$value = preg_quote($value);
+		}
+		/**
+		 * If doing a search via a querystring for O'Fallon then the ' is backslahed
+		 * in FabrikModelListfilter::getQuerystringFilters()
+		 * but the mySQL regexp needs it to be backquoted three times
+		 */
+
+		// If searching on '\' then don't double up \'s
+		if (strlen(str_replace('\\', '', $value)) > 0)
+		{
+			$value = str_replace("\\", "\\\\\\", $value);
+
+			// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
+			$value = str_replace("\\\\\\\\\\\\", "\\\\\\", $value);
+		}
+	}
+
+	/**
 	 * Esacepes the a query search string
 	 *
 	 * @param   string  $condition  filter condition
@@ -3110,38 +3162,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->escapedQueryValue = true;
 		if (is_array($value))
 		{
-			/**
-			 * if doing a search via a querystring for O'Fallon then the ' is backslahed in
-			 *  FabrikModelListfilter::getQuerystringFilters()
-			 * but the mySQL regexp needs it to be backquoted three times
-			 */
 			foreach ($value as &$val)
 			{
-				if ($condition == 'REGEXP')
-				{
-					$val = preg_quote($val);
-				}
-				$val = str_replace("\\", "\\\\\\", $val);
-
-				// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
-				$val = str_replace("\\\\\\\\\\\\", "\\\\\\", $val);
+				$this->escapeOneQueryValue($condition, $val);
 			}
 		}
 		else
 		{
-			if ($condition == 'REGEXP')
-			{
-				$value = preg_quote($value);
-			}
-			/**
-			 * If doing a search via a querystring for O'Fallon then the ' is backslahed
-			 * in FabrikModelListfilter::getQuerystringFilters()
-			 * but the mySQL regexp needs it to be backquoted three times
-			 */
-			$value = str_replace("\\", "\\\\\\", $value);
-
-			// $$$rob check things havent been double quoted twice (occurs now that we are doing preg_quote() above to fix searches on '*'
-			$value = str_replace("\\\\\\\\\\\\", "\\\\\\", $value);
+			$this->escapeOneQueryValue($condition, $value);
 		}
 	}
 
@@ -3658,7 +3686,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$plugin = $pluginManager->getElementPlugin($splitSum);
 			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
 			$splitName = FabrikString::safeColName($splitName);
-			$sql = $this->getSumQuery($listModel, $splitName) . " GROUP BY label";
+			$sql = $this->getSumQuery($listModel, $splitName) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -3678,7 +3706,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		else
 		{
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
-			$sql = $this->getSumQuery($listModel) . " GROUP BY label";
+			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
@@ -36,10 +35,14 @@ class FabrikAdminControllerImport extends FabControllerForm
 	{
 		$user = JFactory::getUser();
 		$c = 0;
-		$listModel = &$this->getModel('List', 'FabrikFEModel');
+		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId(JRequest::getInt('list_id'));
-		$listModel->getTable();
+		$item = $listModel->getTable();
+		$adminListModel = $this->getModel('List', 'FabrikModel');
+		$adminListModel->loadFromFormId($item->form_id);
+
 		$formModel = $listModel->getFormModel();
+		$adminListModel->setFormModel($formModel);
 		$groupId = current(array_keys($formModel->getGroupsHiarachy()));
 		$plugins = JRequest::getVar('plugin');
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -55,7 +58,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			if ($add)
 			{
 				$element->id = 0;
-				$element->name = JFilterInput::clean($elname, 'CMD');
+				$element->name = FabrikString::dbFieldName($elname);
 				$element->label = JString::strtolower($elname);
 				$element->plugin = $plugins[$c];
 				$element->group_id = $groupId;
@@ -69,7 +72,8 @@ class FabrikAdminControllerImport extends FabControllerForm
 				$element->show_in_list_summary = 1;
 				$element->ordering = 0;
 				$element->params = $elementModel->getDefaultAttribs();
-				$headings[] = $element->name;
+				$headingKey = $item->db_table_name . '___' . $element->name;
+				$headings[$headingKey] = $element->name;
 				$element->store();
 				$where = " group_id = '" . $element->group_id . "'";
 				$element->move(1, $where);
@@ -80,7 +84,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 				// Need to remove none selected element's (that dont already appear in the table structure
 				// data from the csv data
 				$session = JFactory::getSession();
-				$allHeadings = $session->get('com_fabrik.csvheadings');
+				$allHeadings = (array) $session->get('com_fabrik.csvheadings');
 				$index = array_search($elname, $allHeadings);
 				if ($index !== false)
 				{
@@ -94,7 +98,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$c++;
 		}
 
-		$listModel->ammendTable();
+		$adminListModel->ammendTable();
 		if ($dataRemoved)
 		{
 			// Reindex data array
@@ -107,7 +111,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * cancel import
+	 * Cancel import
 	 *
 	 * @return  null
 	 */
@@ -118,7 +122,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * Make or update the table from the CSV file
+	 * Make or update the list from the CSV file
 	 *
 	 * @return  null
 	 */
@@ -129,7 +133,8 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$session = JFactory::getSession();
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$model->import();
-		if (JRequest::getInt('fabrik_list') == 0)
+		$listid = JRequest::getInt('fabrik_list', JRequest::getVar('list_id'));
+		if ($listid == 0)
 		{
 			$plugins = JRequest::getVar('plugin');
 			$createElements = JRequest::getVar('createElements', array());
@@ -142,7 +147,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			{
 				if ($add)
 				{
-					$name = JFilterInput::clean($elname, 'CMD');
+					$name = FabrikString::dbFieldName($elname);
 					$plugin = $plugins[$c];
 					$newElements[$name] = $plugin;
 					$model->matchedHeadings[$dbname . '.' . $name] = $name;
@@ -169,7 +174,8 @@ class FabrikAdminControllerImport extends FabControllerForm
 		{
 			$headings = $session->get('com_fabrik.matchedHeadings');
 			$model->matchedHeadings = $this->addElements($model, $headings);
-			JRequest::setVar('listid', JRequest::getInt('fabrik_list'));
+			$model->listModel = null;
+			JRequest::setVar('listid', $listid);
 		}
 		$msg = $model->insertData();
 		$this->setRedirect('index.php?option=com_fabrik&view=lists', $msg);

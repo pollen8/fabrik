@@ -185,7 +185,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			return false;
 		}
-		if (JRequest::getVar('ajax') == '1') {
+		if (JRequest::getVar('ajax') == '1')
+		{
 			return false;
 		}
 		return (bool) $params->get('use_wysiwyg', 0);
@@ -207,7 +208,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		$element = $this->getElement();
 		if ($element->hidden == '1')
 		{
-			 return $this->getHiddenField($name, $this->getValue($data, $repeatCounter), $id);
+			return $this->getHiddenField($name, $this->getValue($data, $repeatCounter), $id);
 		}
 		$params = $this->getParams();
 		$cols = $element->width;
@@ -326,7 +327,11 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			// $$$ rob need to use the NAME as the ID when wysiwyg end in joined group
 			$id = $this->getHTMLName($repeatCounter);
-			if ($this->inDetailedView)
+
+			// testing not using name as duplication of group does not trigger clone()
+			//$id = $this->getHTMLId($repeatCounter);
+
+			if ($this->_inDetailedView)
 			{
 				$id .= '_ro';
 			}

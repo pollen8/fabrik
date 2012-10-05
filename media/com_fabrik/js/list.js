@@ -153,7 +153,9 @@ var FbList = new Class({
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
-			this.tbody = this.list.getElement('tbody');
+			if (this.list.get('tag') === 'table') {
+				this.tbody = this.list.getElement('tbody');
+			}
 			if (typeOf(this.tbody) === 'null') {
 				this.tbody = this.list;
 			}
@@ -828,7 +830,7 @@ var FbList = new Class({
 				for (i = 0; i < groupData.length; i++) {
 
 					if (typeOf(this.options.rowtemplate) === 'string') {
-						container = (!this.options.rowtemplate.match(/<tr/)) ? 'div' : 'table';
+						container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
 						thisrowtemplate = new Element(container);
 						thisrowtemplate.set('html', this.options.rowtemplate);
 					} else {

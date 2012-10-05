@@ -113,7 +113,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		}
 		$opts->formels = $formEls;//$elementsNotInTable;
-		$opts->actionMethod = $params->get('actionMethod', 'floating');
+		$opts->actionMethod = $model->actionMethod();
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
 		$popUpWidth = $params->get('popup_width', '');
@@ -429,7 +429,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
 		$this->assignRef('groupheadings', $groupHeadings);
-		$this->calculations = $this->_getCalculations($this->headings, $params->get('actionMethod', 'floating'));
+		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
 		$this->assign('isGrouped', !($this->get('groupBy') == ''));
 		$this->assign('colCount', count($this->headings));
 
@@ -472,7 +472,7 @@ class FabrikViewListBase extends JViewLegacy
 		 */
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JRegistry($menu->params);
+			$menu_params = new JRegistry( (string) $menu->params);
 			$params->set('page_title', $menu_params->get('page_title', $menu->title));
 			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 		}

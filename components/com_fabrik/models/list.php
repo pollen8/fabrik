@@ -193,7 +193,7 @@ class FabrikFEModelList extends JModelForm
 	 * @deprecated (since 3.0.7)
 	 *
 	 * @var bool
-	*/
+	 */
 	protected $actionHeading = false;
 
 	/** @var array list of column data - used for filters */
@@ -280,7 +280,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get the html that is outputted by table plug-in buttons
+	 * Get the html that is outputted by list plug-in buttons
 	 *
 	 * @return  array  buttons
 	 */
@@ -477,8 +477,12 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Once we have a few table joins, our select statements are
-	 * getting big enough to hit default select length max in MySQL.  Added per-table
+	 * getting big enough to hit default select length max in MySQL.  Added per-list
 	 * setting to enable_big_selects.
+	 *
+	 * 03/10/2012 - Should preserve any old list settings, but this is now set in the global config
+	 * We set it on the main J db in the system plugin setBigSelects() but should do here as well as we
+	 * may not be dealing with the same db.
 	 *
 	 * @since   3/16/2010
 	 *
@@ -487,9 +491,11 @@ class FabrikFEModelList extends JModelForm
 
 	public function setBigSelects()
 	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$bigSelects = $fbConfig->get('enable_big_selects', 0);
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
-		if ($params->get('enable_big_selects', 0))
+		if ($params->get('enable_big_selects', $bigSelects))
 		{
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
 			$fabrikDb->query();
@@ -589,7 +595,6 @@ class FabrikFEModelList extends JModelForm
 			shuffle($listModel->data);
 		}
 		ini_set('mysql.trace_mode', $traceModel);
-
 
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		$listModel->translateData($listModel->data);
@@ -952,26 +957,29 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_edit = '';
 
 				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $edit_link . '" title="' . $editLabel . '">'
-					. FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel)) . '<span>' . $editLabel . '</span></a>';
+				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+					. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
+					. '<span>' . $editLabel . '</span></a>';
 
 				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="' . $link . '" title="' . $viewLabel . '">'
-					. FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel)) . '<span>' . $viewLabel . '</span></a>';
+				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+					. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel))
+					. '<span>' . $viewLabel . '</span></a>';
 
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
+				$actionMethod = $this->actionMethod();
 				if ($canView || $canEdit)
 				{
 					if ($canEdit == 1)
 					{
-						if ($params->get('editlink') || $params->get('actionMethod', 'floating') == 'floating')
+						if ($params->get('editlink') || $actionMethod == 'floating')
 						{
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $params->get('actionMethod', 'floating') == 'floating'))
+						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $actionMethod == 'floating'))
 						{
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
@@ -979,7 +987,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					else
 					{
-						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $params->get('actionMethod', 'floating') == 'floating'))
+						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $actionMethod == 'floating'))
 						{
 							if (empty($this->_aLinkElements))
 							{
@@ -994,7 +1002,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 				}
-				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $params->get('actionMethod', 'floating') == 'floating'))
+				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $actionMethod == 'floating'))
 				{
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
@@ -1107,6 +1115,30 @@ class FabrikFEModelList extends JModelForm
 					$row->fabrik_actions = '';
 				}
 			}
+		}
+	}
+
+	/**
+	 * Get the way row buttons are rendered floating/inline
+	 * Can be set either by global config or list options
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	public function actionMethod()
+	{
+		$params = $this->getParams();
+		if ($params->get('actionMethod', 'default') == 'default')
+		{
+			// Use global
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			return $fbConfig->get('actionMethod', 'floating');
+		}
+		else
+		{
+			return $params->get('actionMethod', 'floating');
 		}
 	}
 
@@ -1518,7 +1550,8 @@ class FabrikFEModelList extends JModelForm
 		{
 			$class = 'fabrik_edit';
 		}
-		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data . '</a>';
+		$data = '<a data-list="list_' . $this->getRenderContext() . '" class="fabrik___rowlink ' . $class . '" href="' . $link . '">' . $data
+			. '</a>';
 		return $data;
 	}
 
@@ -2491,21 +2524,21 @@ class FabrikFEModelList extends JModelForm
 
 							// Search all filter after a prefilter - alter 'join' value to 'AND'
 							/* if ($last_i && JArrayHelper::getValue($filters['search_type'], $last_i) == 'prefilter'
-								&& JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter')
+							    && JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter')
 							{
-								$filters['join'][$i] = 'AND';
+							    $filters['join'][$i] = 'AND';
 
-								// $$$ hugh - if using a search form, with a multiselect object (like checkbox) and prefilters, the gstart is never getting set, so have unbalanced )
-								if ($filters['search_type'][$i] == 'search')
-								{
-									$gstart = '(';
-									$groupedCount++;
-								}
+							    // $$$ hugh - if using a search form, with a multiselect object (like checkbox) and prefilters, the gstart is never getting set, so have unbalanced )
+							    if ($filters['search_type'][$i] == 'search')
+							    {
+							        $gstart = '(';
+							        $groupedCount++;
+							    }
 							}
 							else
 							{ */
-								$gstart = '(';
-								$groupedCount++;
+							$gstart = '(';
+							$groupedCount++;
 							// }
 						}
 						$ingroup = true;
@@ -2949,7 +2982,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Checks if any one row is editalbe = used to get the correct headings
+	 * Checks if any one row is editable = used to get the correct headings
 	 *
 	 * @return  bool
 	 */
@@ -2977,7 +3010,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   object  $row  data
 	 * @param   string  $col  access control setting to compare against
 	 *
-	 * @return  mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
+	 * @return  mixed	- if ACL setting defined here return bool, otherwise return -1 to contiune with default acl setting
 	 */
 
 	protected function canUserDo($row, $col)
@@ -2999,10 +3032,6 @@ class FabrikFEModelList extends JModelForm
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
-			if ($canUserDo === true)
-			{
-				$this->access->deletePossible = true;
-			}
 			return $canUserDo;
 		}
 		if (!array_key_exists('delete', $this->access))
@@ -3014,7 +3043,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Determin if any record can be deleted - used to see if we include the
+	 * Determine if any record can be deleted - used to see if we include the
 	 * delete button in the list view
 	 *
 	 * @return  bool
@@ -3022,11 +3051,18 @@ class FabrikFEModelList extends JModelForm
 
 	public function deletePossible()
 	{
-		if (array_key_exists('deletePossible', $this->access))
+		$data = $this->getData();
+		foreach ($data as $rows)
 		{
-			return $this->access->deletePossible;
+			foreach ($rows as $row)
+			{
+				if ($this->canDelete($row))
+				{
+					return true;
+				}
+			}
 		}
-		return $this->canDelete();
+		return false;
 	}
 
 	/**
@@ -3469,8 +3505,7 @@ class FabrikFEModelList extends JModelForm
 				if ($this->canAddFields())
 				{
 					$fabrikDb
-						->setQuery(
-							"ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+						->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
 					if (!$fabrikDb->query())
 					{
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
@@ -4139,7 +4174,7 @@ class FabrikFEModelList extends JModelForm
 
 			/* If we are rendering as a module dont pick up the menu item options (parmas already set in list module)
 			 * so first statement when rendenering a module, 2nd when posting to the component from a module.
-			*/
+			 */
 			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
 			{
 				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
@@ -4939,7 +4974,8 @@ class FabrikFEModelList extends JModelForm
 		$opts = new stdClass;
 
 		// $$$ rob - 20/208/2012 if list advanced search off return nothing
-		if ($params->get('advanced-filter') == 0) {
+		if ($params->get('advanced-filter') == 0)
+		{
 			return $opts;
 		}
 		$list = $this->getTable();
@@ -5358,7 +5394,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->actionHeading($aTableHeadings, $headingClass, $cellClass);
 			}
-			// Create columns containing links which point to tables associated with this table
+			// Create columns containing links which point to lists associated with this list
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
 			$f = 0;
@@ -5431,7 +5467,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		if ($this->canSelectRows() || $this->canViewDetails())
+		if ($this->canSelectRows() || $this->canViewDetails() || $this->canEdit())
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -5537,8 +5573,7 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		//if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
-		if (($this->canAdd() || $this->canEdit($row) || $this->canView($row)))
+		if (($this->canEdit($row) || $this->canViewDetails($row)))
 		{
 			return true;
 		}
@@ -5560,7 +5595,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Can the user select ANY row?
 	 * If you can delete then true returned, if not then check
-	 * available table plugins to see if they allow for row selection
+	 * available list plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
 	 *
 	 * @return  bool
@@ -5572,18 +5607,18 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->canSelectRows;
 		}
-		if ($this->canDelete())
+		if ($this->canDelete() || $this->canEditARow() || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($params->get('actionMethod', 'floating') == 'floating' && ($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
-		//if (($this->canAdd() || $this->canEdit() || $this->canViewDetails()))
+		if ($this->actionMethod() == 'floating' && ($this->canEdit() || $this->canViewDetails()))
 		{
+			$this->canSelectRows = true;
 			return true;
 		}
-		$usedPlugins = (array) $params->get('plugin');
+		$usedPlugins = (array) $params->get('plugins');
 		if (empty($usedPlugins))
 		{
 			$this->canSelectRows = false;
@@ -6229,14 +6264,23 @@ class FabrikFEModelList extends JModelForm
 				 **/
 				/* if (!array_key_exists($key, $data))
 				{
-					continue;
+				    continue;
 				} */
 				foreach ($groups as $groupModel)
 				{
 					// New test to replace if (!array_key_exists($key, $data))
+					// $$$ hugh - this stops elements from joined groups being added to main row, but see 'else'
 					if ($isJoin)
 					{
 						if ($groupModel->getGroup()->id != $joinGroupTable->id)
+						{
+							continue;
+						}
+					}
+					else
+					{
+						// $$$ hugh - need test here if not $isJoin, to stop keys from joined groups being added to main row!
+						if ($groupModel->isJoin())
 						{
 							continue;
 						}
@@ -6245,6 +6289,7 @@ class FabrikFEModelList extends JModelForm
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
+						// $$$ hugh - I have a feeling this test is a Bad Thing <tm> as it is using short keys, so if two joined groups share the same element name(s) ...
 						if ($element->name == $key)
 						{
 							// Don't overwrite if something has been entered
@@ -6608,7 +6653,7 @@ class FabrikFEModelList extends JModelForm
 			// ... matches everyting from first to last brace, like ...
 			// {$my->id} bar {$my->id}
 			//$pattern = "/({[^}]+}).*}?/s";
-			$pattern =   "/({[^}]+})/";
+			$pattern = "/({[^}]+})/";
 			for ($i = 0; $i < count($selValue); $i++)
 			{
 				$ok = preg_match($pattern, $selValue[$i], $matches);
@@ -7191,6 +7236,13 @@ class FabrikFEModelList extends JModelForm
 	private function replaceWithRowData($matches)
 	{
 		$match = $matches[0];
+
+		// $$$ felixkat - J! plugin closings, i.e  {/foo} were getting caught here.
+		if (preg_match('[{/]', $match))
+		{
+			return $match;
+		}
+
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
@@ -8947,8 +8999,9 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw') || JRequest::getVar('layout') == '_advancedsearch'
-				|| JRequest::getVar('task') === 'list.elementFilter' || JRequest::getVar('setListRefFromRequest') == 1)
+			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw')
+				|| JRequest::getVar('layout') == '_advancedsearch' || JRequest::getVar('task') === 'list.elementFilter'
+				|| JRequest::getVar('setListRefFromRequest') == 1)
 			{
 				// Testing for ajax nav in content plugin or in advanced search
 				$this->setRenderContextFromRequest();

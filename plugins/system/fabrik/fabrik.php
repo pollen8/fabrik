@@ -56,6 +56,27 @@ class PlgSystemFabrik extends JPlugin
 		$defines = JFile::exists($p . 'user_defines.php') ? $p . 'user_defines.php' : $p . 'defines.php';
 		$doc = JFactory::getDocument();
 		require_once $defines;
+		$this->setBigSelects();
+	}
+
+	/**
+	 * From Global configuration setting, set big select for main J database
+	 *
+	 * @since    3.0.7
+	 *
+	 * @return  void
+	 */
+
+	protected function setBigSelects()
+	{
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$bigSelects = $fbConfig->get('enable_big_selects', 0);
+		$db = JFactory::getDbo();
+		if ($bigSelects)
+		{
+			$db->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			$db->query();
+		}
 	}
 
 	/**
