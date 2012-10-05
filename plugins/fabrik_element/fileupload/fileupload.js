@@ -127,6 +127,7 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		this.uploader.bind('FilesRemoved', function (up, files) {
+			console.log('filesremvoed', up, files, this);
 		});
 
 		// (2) ON FILES ADDED ACTION
@@ -145,17 +146,21 @@ var FbFileUpload = new Class({
 					var del = new Element('div', {
 						'class' : 'plupload_file_action'
 					}).adopt(new Element('a', {
-						'href' : '#',
-						'style' : 'display:block',
-						events : {
-							'click' : this.pluploadRemoveFile.bindWithEvent(this)
+						'href': '#',
+						'style': 'display:block',
+						events: {
+							'click': function (e) {
+								this.pluploadRemoveFile(e, file);
+							}.bind(this)
 						}
 					}));
 					var a = new Element('a', {
 						'href' : '#',
 						alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
 						events : {
-							'click' : this.pluploadResize.bindWithEvent(this)
+							'click': function (e) {
+								this.pluploadResize(e);
+							}.bind(this)
 						}
 					});
 					if (this.options.crop) {
@@ -186,7 +191,6 @@ var FbFileUpload = new Class({
 
 		// (3) ON FILE UPLOAD PROGRESS ACTION
 		this.uploader.bind('UploadProgress', function (up, file) {
-			console.log('progress', up, file);
 			var f = document.id(file.id);
 			if (typeOf(f) !== 'null') {
 				document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
@@ -251,10 +255,23 @@ var FbFileUpload = new Class({
 		this.uploader.init();
 	},
 
-	pluploadRemoveFile : function (e) {
+	pluploadRemoveFile : function (e, file) {
 		e.stop();
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
 		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
+		
+		// Get a list of all of the uploaders files except the one to be deleted
+		var newFiles = [];
+		this.uploader.files.each(function (f) {
+			if (f.id !== id) {
+				newFiles.push(f);
+			}
+		});
+		
+		// Update the uploader's files with the new list.
+		this.uploader.files = newFiles;
+		
+		// Send a request to delete the file from the server.
 		new Request({
 			url: '',
 			data: {
@@ -270,7 +287,8 @@ var FbFileUpload = new Class({
 		}).send();
 		var li = e.target.getParent('.plupload_delete');
 		li.destroy();
-		// remove hidden fields as well
+
+		// Remove hidden fields as well
 		if (document.id('id_alreadyuploaded_' + this.options.id + '_' + id)) {
 			document.id('id_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
