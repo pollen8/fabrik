@@ -2274,7 +2274,6 @@ class FabrikModelList extends FabModelAdmin
 				$arGroups[] = $g->group_id;
 			}
 		}
-
 		$arAddedObj = array();
 		foreach ($arGroups as $group_id)
 		{
