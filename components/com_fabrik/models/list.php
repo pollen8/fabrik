@@ -1546,7 +1546,7 @@ class FabrikFEModelList extends JModelForm
 
 		// $$$ rob if its a custom link then we aren't linking to the details view so we should
 		// ignore the view details access settings
-		if (!$this->canViewDetails($row) && trim($customLink) == '')
+		if (!($this->canViewDetails($row) || $this->canEdit()) && trim($customLink) == '')
 		{
 			return $data;
 		}
