@@ -1253,15 +1253,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 */
 	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
 	{
+		$data = isset($this->_formData) ? $this->_formData : $this->_data;
 		$value = null;
 		if ($raw)
 		{
 			$fullName .= '_raw';
 		}
 		// Simplest case, element name exists in main group
-		if (array_key_exists($fullName, $this->_formData))
+		if (array_key_exists($fullName, $data))
 		{
-			$value = $this->_formData[$fullName];
+			$value = $data[$fullName];
 		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
 		   * running after store, when non-joined data names have been reduced to short
 		   * names in _formData, so peek in _fullFormData
@@ -1271,7 +1272,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$value = $this->_fullFormData[$fullName];
 		}
 		// Wasn't in the form's main table data, so try joins
-		elseif (array_key_exists('join', $this->_formData))
+		elseif (array_key_exists('join', $data))
 		{
 			/* We can't just loop through the ['join'] structure, as we need to
 			 * know if the group is repeatable, and can't rely on key being an array,
@@ -1281,11 +1282,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
-				if (array_key_exists($group->join_id, $this->_formData['join']))
+				if (array_key_exists($group->join_id, $data['join']))
 				{
-					if (array_key_exists($fullName, $this->_formData['join'][$group->join_id]))
+					if (array_key_exists($fullName, $data['join'][$group->join_id]))
 					{
-						$value = $this->_formData['join'][$group->join_id][$fullName];
+						$value = $data['join'][$group->join_id][$fullName];
 
 						// If the group is repeatable, see if they want a specific index
 						if ($groupModel->canRepeat())
@@ -2501,7 +2502,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function getErrors()
 	{
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$context = 'com_fabrik.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session = JFactory::getSession();
 
 		// Store errors in local array as clearErrors() removes $this->_arErrors
@@ -2531,7 +2532,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$context = 'com_fabrik.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$this->_arErrors = array();
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
@@ -2552,7 +2553,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$context = 'com_fabrik.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session->set($context . 'errors', $errors);
 		$session->set($context . 'session.on', true);
 	}
