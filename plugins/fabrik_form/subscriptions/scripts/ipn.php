@@ -22,22 +22,35 @@ class fabrikSubscriptionsIPN
 
 	}
 
-	function payment_status_Completed($listModel, $request, &$set_list, &$err_msg)
+	/**
+	 * Completed payment
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
+	 */
+
+	public function payment_status_Completed($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Completed', '');
 		return 'ok';
 	}
 
 	/**
+	 * Pending payment
 	 *
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
+	public function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Pending', '');
 		$app = JFactory::getApplication();
@@ -65,27 +78,52 @@ class fabrikSubscriptionsIPN
 		return 'ok';
 	}
 
-	function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
+	/**
+	 * Reversed payment
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
+	 */
+
+	public function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Reversed', '');
 		return 'ok';
 	}
 
-	function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
+	/**
+	 * Cancelled reversed payment
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
+	 */
+
+	public function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Cancelled_Reversal', '');
 		return 'ok';
 	}
 
 	/**
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 * Refunded payment
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
+	public function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.payment_status_Refunded', '');
 		$invoice = $this->checkInvoice($request);
@@ -103,39 +141,54 @@ class fabrikSubscriptionsIPN
 		return 'ok';
 	}
 
-	function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
+	/**
+	 * Transcation web accept
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
+	 */
+
+	public function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_web_accept', '');
 		return 'ok';
 	}
 
 	/**
-	 * occurs when someone first signs up for a subscription,
+	 * Occurs when someone first signs up for a subscription,
 	 * you should get a subscr_payment about 3 seconds afterwards.
 	 * So again i dont think we need to do anything here
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_signup', '');
 		return 'ok';
 	}
 
 	/**
-	 * the user has cancelled a subscription in Paypal,
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 * The user has cancelled a subscription in Paypal,
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_cancel', '');
 		$invoice = $this->checkInvoice($request);
@@ -155,21 +208,22 @@ class fabrikSubscriptionsIPN
 		$sub->cancel_date = $now;
 		$sub->store();
 		$this->fallbackPlan($sub);
-		// do we want to revert to a
 		return 'ok';
 	}
 
 	/**
 	 * this occurs when a user upgrades their account in Paypal
 	 * We don't allow this in fabrik so nothing should need to be done here
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_modify', '');
 		return 'ok';
@@ -178,15 +232,15 @@ class fabrikSubscriptionsIPN
 	/**
 	 * A subscription payment has been successfully made
 	 *
-	 * @param   $listModel
-	 * @param   $request
-	 * @param   $set_list
-	 * @param   $err_msg
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
 	 *
-	 * @return  string
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
 	{
 		$db = JFactory::getDbo();
 		$this->log('fabrik.ipn.txn_type_subscr_payment', json_encode($request));
@@ -235,7 +289,7 @@ class fabrikSubscriptionsIPN
 
 		$query = $db->getQuery(true);
 		$query->select('usergroup AS gid')->from('#__fabrik_subs_subscriptions AS s')->join('INNER', '#__fabrik_subs_plans AS p ON p.id = s.plan')
-			->where('userid = ' . $subUser->get('id')); //' and status = "Active"'
+			->where('userid = ' . $subUser->get('id'));
 		$db->setQuery($query);
 		$gid = $db->loadResult();
 
@@ -277,34 +331,36 @@ class fabrikSubscriptionsIPN
 	 * If you have paypal's 'Re-attempt on Failure option' option turned on then Paypal will try to
 	 * re-send the charge 3 days after the initial failed request.
 	 * Once the max number of failures has occurred Paypal sends out a thx_type_subscr_cancel call
-	 * Its there that we need to do somehthing
-	 * @param $listModel
-	 * @param $request
-	 * @param $set_list
-	 * @param $err_msg
-	 * @return unknown_type
+	 * Its there that we need to do something
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_failed', '');
 		return 'ok';
 	}
 
 	/**
-	 *
-	 * @param	$listModel
-	 * @param	$request
-	 * @param	$set_list
-	 * @param	$err_msg
-	 * @return	unknown_type
-	 *
-	 * seems to get called when you do a silver paypal payment (not sub)
+	 * Seems to get called when you do a silver paypal payment (not sub)
 	 * but as it occurs before anything else (eg. form.paypal.ipn.Completed the expired invoice doesnt
 	 * rest expired but shows as active
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 *
+	 * @return	mixed false or 'ok'
 	 */
 
-	function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg)
+	public function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg)
 	{
 		$this->log('fabrik.ipn.txn_type_subscr_eot', '');
 		$invoice = $this->checkInvoice($request);
@@ -325,9 +381,11 @@ class fabrikSubscriptionsIPN
 	}
 
 	/**
-	 * get subscription row from a given invoice number
-	 * @param string invoice number
-	 * @return J table object
+	 * Get subscription row from a given invoice number
+	 *
+	 * @param   string  $inv  invoice number
+	 *
+	 * @return  JTable object
 	 */
 
 	private function getSubscriptionFromInvoice($inv)
@@ -347,9 +405,11 @@ class fabrikSubscriptionsIPN
 	}
 
 	/**
-	 * get an invoice JTable object from its invoice number
-	 * @param unknown_type $inv
-	 * @return unknown_type
+	 * Get an invoice JTable object from its invoice number
+	 *
+	 * @param   string  $inv  invoice number
+	 *
+	 * @return JTable
 	 */
 
 	private function getInvoice($inv)
@@ -360,10 +420,12 @@ class fabrikSubscriptionsIPN
 	}
 
 	/**
+	 *Report an error by email and to fabrik.subs.log.php
 	 *
-	 * @param string $msg
-	 * @param string $to
-	 * @param array data to log
+	 * @param   string  $msg   message
+	 * @param   string  $to    to
+	 * @param   array   $data  data to log
+	 *
 	 * @return unknown_type
 	 */
 
@@ -391,23 +453,35 @@ class fabrikSubscriptionsIPN
 		continue;
 	}
 
+	/**
+	 * Log something
+	 *
+	 * @param   string  $subject  log subject
+	 * @param   string  $body     log message
+	 *
+	 * @return  void
+	 */
+
 	private function log($subject, $body)
 	{
-		// start logging...
+		// Start logging...
 		JLog::add($body, JLog::NOTICE, $subject);
 	}
 
 	/**
-	 * ensures that an invoice num was found in the request data.
-	 * @param   array	$request
+	 * Ensures that an invoice num was found in the request data.
+	 *
+	 * @param   array  $request  data to check
+	 *
 	 * @return  mixed	false if not found, otherwise returns invoice num
 	 */
 
-	private function checkInvoice(array $request)
+	private function checkInvoice($request)
 	{
 		$invoice = $request['invoice'];
 		$receiver_email = $request['receiver_email'];
-		//eekk no invoice number found in returned data - inform the sys admin
+
+		// Eekk no invoice number found in returned data - inform the sys admin
 		if ($invoice === '')
 		{
 			$this->reportError('missing invoice', $receiver_email, array_merge($request, $set_list));
@@ -417,11 +491,13 @@ class fabrikSubscriptionsIPN
 	}
 
 	/**
-	 * if the plan has a fall back plan -
+	 * If the plan has a fall back plan -
 	 * e.g. original subscription was broze, updates to silver and silver expires - should fall back to bronze
 	 * we want to change the user type
-	 * @param unknown_type $sub
-	 * @return unknown_type
+	 *
+	 * @param   object  $sub  subscription
+	 *
+	 * @return  void
 	 */
 
 	public function fallbackPlan($sub)
@@ -451,24 +527,25 @@ class fabrikSubscriptionsIPN
 
 		if ($fallback)
 		{
-			//create new subscription for fall back plan
+			// Create new subscription for fall back plan
 
-			//get the expration date (length of new plan - that of previous plan)
+			// Get the expration date (length of new plan - that of previous plan)
 			$newLength = $this->charToPeriod($newPlan->period_unit);
 			$oldLength = $this->charToPeriod($plan->period_unit);
 			$expDate = strtotime("+{$newPlan->duration} $newLength	");
 
 			$minus = strtotime("-{$plan->duration} $oldLength");
 
-			$this
-				->log('fabrik.ipn. fallback',
-					'expiration date = strtotime(+' . $newPlan->duration . ' ' . $newLength . ")\n minus = strtotime(-" . $plan->duration . ' '
-						. $oldLength . ") \n =: $expDate - $minus");
+			$logMsg = 'expiration date = strtotime(+' . $newPlan->duration . ' ' . $newLength . ")\n minus = strtotime(-" . $plan->duration . ' '
+						. $oldLength . ") \n =: $expDate - $minus";
+			$this->log('fabrik.ipn. fallback', $logMsg);
 			$expDate = JFactory::getDate()->toUnix() - ($expDate - $minus);
 
 			$sub = JTable::getInstance('Subscription', 'FabrikTable');
 			$sub->userid = $subUser->get('id');
-			$sub->type = 1; //paypal payment - no recurring
+
+			// Paypal payment - no recurring
+			$sub->type = 1;
 			$sub->status = 'Active';
 			$sub->signup_date = JFactory::getDate()->toSql();
 			$sub->plan = $newPlan->id;
@@ -486,6 +563,14 @@ class fabrikSubscriptionsIPN
 				->sendMail('rob@pollen-8.co.uk', 'fabrikar subs', 'rob@pollen-8.co.uk', 'fabrikar sub: fall back plan created', $msg, true);
 		}
 	}
+
+	/**
+	 * Turn a time period character into its full name
+	 *
+	 *  @param   string  $p  period character
+	 *
+	 *  @return  string  name
+	 */
 
 	private function charToPeriod($p)
 	{
@@ -509,5 +594,3 @@ class fabrikSubscriptionsIPN
 	}
 
 }
-
-?>

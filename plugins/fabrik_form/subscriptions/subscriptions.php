@@ -625,19 +625,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		jexit();
 	}
 
-	/* public function getBottomContent($params, $formModel)
-	{
-		$this->params = $params;
-		$this->formModel = $formModel;
-	}
-
-	public function getBottomContent_result($c)
-	{
-		$this->renderOrder = $c;
-		echo "notify url = " . $this->getNotifyUrl();;
-		return $this->getNotifyUrl();
-	} */
-
 	/**
 	 * Get the custom IPN class
 	 *
