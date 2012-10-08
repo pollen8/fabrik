@@ -403,7 +403,7 @@ class FabrikFEModelExport
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$id = $this->tableIds[0];
 		$listModel->setId($id);
-		$listModel->_outPutFormat = 'csv';
+		$listModel->setOutPutFormat('csv');
 		$table = $listModel->getTable();
 		header('Content-Type: text/plain');
 		header('Content-Disposition: attachment; filename="' . $table->label . '-export.csv"');

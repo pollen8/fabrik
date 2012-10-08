@@ -65,8 +65,12 @@ class FabrikFEModelList extends JModelForm
 	/** @var array column calculations */
 	protected $_aRunCalculations = array();
 
-	/** @var string table output format - set to rss to collect correct element data within function gettData()*/
-	protected $_outPutFormat = 'html';
+	/**
+	 * List output format - set to rss to collect correct element data within function getData()
+	 *
+	 * @var string
+	*/
+	protected $outPutFormat = 'html';
 
 	protected $isMambot = false;
 
@@ -358,10 +362,10 @@ class FabrikFEModelList extends JModelForm
 		{
 			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
 		}
-		$this->_outPutFormat = JRequest::getVar('format', 'html');
-		if ($this->_outPutFormat == 'fabrikfeed')
+		$this->outPutFormat = JRequest::getVar('format', 'html');
+		if ($this->outPutFormat == 'fabrikfeed')
 		{
-			$this->_outPutFormat = 'feed';
+			$this->outPutFormat = 'feed';
 		}
 
 		$item = $this->getTable();
@@ -430,7 +434,7 @@ class FabrikFEModelList extends JModelForm
 				$limitStart = $app->getUserStateFromRequest($context . 'limitstart', 'limitstart' . $id, $limitStart, 'int');
 			}
 		}
-		if ($this->_outPutFormat == 'feed')
+		if ($this->outPutFormat == 'feed')
 		{
 			$limitLength = JRequest::getVar('limit', $params->get('rsslimit', 150));
 			$maxLimit = $params->get('rsslimitmax', 2500);
@@ -530,7 +534,7 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
-		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength);
+		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
 		$this->groupTemplates = $results[2];
@@ -543,21 +547,22 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Cached Method to run the getData select query and do our Fabrik magikin'
 	 *
-	 * @param   int     $listId  list id
-	 * @param   string  $query   sql query
-	 * @param   int     $start   start of limit
-	 * @param   int     $length  limit length
+	 * @param   int     $listId        list id
+	 * @param   string  $query         sql query
+	 * @param   int     $start         start of limit
+	 * @param   int     $length        limit length
+	 * @param   string  $outPutFormat  output format csv/html/rss etc
 	 *
 	 * @return array (total records, data set)
 	 */
 
-	public static function finesseData($listId, $query, $start, $length)
+	public static function finesseData($listId, $query, $start, $length, $outPutFormat)
 	{
 		$profiler = JProfiler::getInstance('Application');
-
 		$traceModel = ini_get('mysql.trace_mode');
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
+		$listModel->setOutPutFormat($outPutFormat);
 		$fabrikDb = $listModel->getDb();
 		$listModel->setBigSelects();
 
@@ -721,7 +726,7 @@ class FabrikFEModelList extends JModelForm
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$method = 'renderListData_' . $this->_outPutFormat;
+		$method = 'renderListData_' . $this->outPutFormat;
 		$this->_aLinkElements = array();
 
 		// $$$ hugh - temp foreach fix
@@ -736,8 +741,8 @@ class FabrikFEModelList extends JModelForm
 			 * $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
 			 * $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
 			 */
-			if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv'
-				|| $this->_outPutFormat == 'feed')
+			if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
@@ -799,7 +804,7 @@ class FabrikFEModelList extends JModelForm
 
 		// Check if the data has a group by applied to it
 		$groupBy = $this->getGroupBy();
-		if ($groupBy != '' && $this->_outPutFormat != 'csv')
+		if ($groupBy != '' && $this->outPutFormat != 'csv')
 		{
 			$w = new FabrikWorker;
 			// 3.0 if not group by template spec'd byt group by assigned in qs then use that as the group by tmpl
@@ -869,7 +874,7 @@ class FabrikFEModelList extends JModelForm
 			$data = array($data);
 		}
 		JDEBUG ? $profiler->mark('table groupd by applied') : null;
-		if ($this->_outPutFormat != 'pdf' && $this->_outPutFormat != 'csv' && $this->_outPutFormat != 'feed')
+		if ($this->outPutFormat != 'pdf' && $this->outPutFormat != 'csv' && $this->outPutFormat != 'feed')
 		{
 			$this->addSelectBoxAndLinks($data);
 			FabrikHelperHTML::debug($data, 'table:data');
@@ -1537,7 +1542,7 @@ class FabrikFEModelList extends JModelForm
 	public function _addLink($data, &$elementModel, $row, $repeatCounter = 0)
 	{
 		$element = $elementModel->getElement();
-		if ($this->_outPutFormat == 'csv' || $element->link_to_detail == 0)
+		if ($this->outPutFormat == 'csv' || $element->link_to_detail == 0)
 		{
 			return $data;
 		}
@@ -1900,7 +1905,7 @@ class FabrikFEModelList extends JModelForm
 		$item = $this->getTable();
 		$pk = FabrikString::safeColName($item->db_primary_key);
 		$params = $this->getParams();
-		if (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf')))
+		if (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf')))
 		{
 			$slug = $params->get('sef-slug');
 			$raw = JString::substr($slug, JString::strlen($slug) - 4, 4) == '_raw' ? true : false;
@@ -1953,7 +1958,7 @@ class FabrikFEModelList extends JModelForm
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 
 		// $$$rob added raw as an option to fix issue in saving calendar data
-		if (trim($table->db_primary_key) != '' && (in_array($this->_outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
+		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
@@ -1981,7 +1986,7 @@ class FabrikFEModelList extends JModelForm
 		$table = $this->getTable();
 		$db = $this->getDb();
 		$this->selectedOrderFields = array();
-		if ($this->_outPutFormat == 'fabrikfeed' || $this->_outPutFormat == 'feed')
+		if ($this->outPutFormat == 'fabrikfeed' || $this->outPutFormat == 'feed')
 		{
 			$dateColId = (int) $params->get('feed_date', 0);
 			$q = $db->getQuery(true);
@@ -2714,7 +2719,7 @@ class FabrikFEModelList extends JModelForm
 			$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$method = 'getAsField_' . $this->_outPutFormat;
+				$method = 'getAsField_' . $this->outPutFormat;
 				if (!method_exists($elementModel, $method))
 				{
 					$method = 'getAsField_html';
@@ -2737,7 +2742,7 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('getAsFields: end of view test') : null;
 
 		// For raw data in packages
-		if ($this->_outPutFormat == 'raw')
+		if ($this->outPutFormat == 'raw')
 		{
 			$str = FabrikString::safeColName($table->db_primary_key) . ' AS __pk_val';
 			$this->fields[] = $str;
@@ -5287,7 +5292,7 @@ class FabrikFEModelList extends JModelForm
 		// Set it for use by groupModel->getPublishedListElements()
 		JRequest::setVar('fabrik_show_in_list', $showInList);
 
-		if (!in_array($this->_outPutFormat, array('pdf', 'csv')))
+		if (!in_array($this->outPutFormat, array('pdf', 'csv')))
 		{
 			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') !== 'end')
 			{
@@ -5325,7 +5330,7 @@ class FabrikFEModelList extends JModelForm
 					$label = $element->label;
 				}
 				$label = $w->parseMessageForPlaceHolder($label, array());
-				if ($elementParams->get('can_order') == '1' && $this->_outPutFormat != 'csv')
+				if ($elementParams->get('can_order') == '1' && $this->outPutFormat != 'csv')
 				{
 					$context = 'com_fabrik.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);
@@ -5387,7 +5392,7 @@ class FabrikFEModelList extends JModelForm
 			$headingClass = $this->removeHeadingCompositKey($headingClass);
 			$cellClass = $this->removeHeadingCompositKey($cellClass);
 		}
-		if (!in_array($this->_outPutFormat, array('pdf', 'csv')))
+		if (!in_array($this->outPutFormat, array('pdf', 'csv')))
 		{
 			// @TODO check if any plugins need to use the selector as well!
 			if ($this->canSelectRows() && $params->get('checkboxLocation', 'end') === 'end')
@@ -7686,7 +7691,7 @@ class FabrikFEModelList extends JModelForm
 		$fabrikDb = $this->getDb();
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
-		$this->_outPutFormat = 'json';
+		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $cursor, 1);
 		if ($mode == 'table')
 		{
@@ -7723,7 +7728,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
-		$this->_outPutFormat = 'json';
+		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $cursor, 1);
 		$data = $this->getData();
 		echo json_encode($data);
@@ -7739,7 +7744,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
-		$this->_outPutFormat = 'json';
+		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $cursor - 2, 1);
 		$data = $this->getData();
 		return json_encode($data);
@@ -7755,7 +7760,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
-		$this->_outPutFormat = 'json';
+		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, 0, 1);
 		$data = $this->getData();
 		return json_encode($data);
@@ -7771,7 +7776,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$total = JRequest::getInt('total', 0);
 		$this->getConnection();
-		$this->_outPutFormat = 'json';
+		$this->outPutFormat = 'json';
 		$nav = $this->getPagination(1, $total - 1, 1);
 		$data = $this->getData();
 		return json_encode($data);
@@ -8378,7 +8383,7 @@ class FabrikFEModelList extends JModelForm
 		$tableParams = $this->getParams();
 		$table = $this->getTable();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$method = 'renderListData_' . $this->_outPutFormat;
+		$method = 'renderListData_' . $this->outPutFormat;
 		$this->_aLinkElements = array();
 
 		// $$$ hugh - temp foreach fix
@@ -8386,8 +8391,8 @@ class FabrikFEModelList extends JModelForm
 		$ec = count($data);
 		foreach ($groups as $groupModel)
 		{
-			if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv'
-				|| $this->_outPutFormat == 'feed')
+			if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
@@ -8718,7 +8723,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getOutPutFormat()
 	{
-		return $this->_outPutFormat;
+		return $this->outPutFormat;
 	}
 
 	/**
@@ -8730,7 +8735,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function setOutPutFormat($f)
 	{
-		$this->_outPutFormat = $f;
+		$this->outPutFormat = $f;
 	}
 
 	/**
@@ -8904,8 +8909,8 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		foreach ($groups as $groupModel)
 		{
-			if (($params->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->_outPutFormat == 'csv'
-				|| $this->_outPutFormat == 'feed')
+			if (($params->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
