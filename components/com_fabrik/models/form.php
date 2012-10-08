@@ -2929,6 +2929,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->_listModel = null;
 		@set_time_limit(300);
 		$this->_rowId = $this->getRowId();
+		// $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		$this->checkAccessFromListSettings();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
 		if (in_array(false, $res))
