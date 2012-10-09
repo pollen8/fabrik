@@ -33,7 +33,7 @@ class FabrikViewList extends JViewLegacy
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
 		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
-		$input->set('limit' . $model->getId(), $exporter->_getStep());
+		$input->set('limit' . $model->getId(), $exporter->getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the list total
