@@ -42,10 +42,12 @@ class FabrikControllerForm extends JControllerForm
 	public function view()
 	{
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout = JRequest::getCmd('layout', 'default');
+		$viewLayout = $input->get('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
@@ -56,15 +58,16 @@ class FabrikControllerForm extends JControllerForm
 		// @TODO check for cached version
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
 
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf')))
+		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{
 			$view->display();
 		}
 		else
 		{
 			$user = JFactory::getUser();
-			$post = JRequest::get('post');
-			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$uri = JFactory::getURI();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			ob_start();
 			$cache->get($view, 'display', $cacheid);
@@ -75,7 +78,7 @@ class FabrikControllerForm extends JControllerForm
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->get('view', 'lists', 'word'));
 	}
 
 	/**
@@ -87,8 +90,10 @@ class FabrikControllerForm extends JControllerForm
 	public function process()
 	{
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$view = $this->getView($viewName, $viewType);
@@ -96,23 +101,23 @@ class FabrikControllerForm extends JControllerForm
 		{
 			$view->setModel($model, true);
 		}
-		$model->setId(JRequest::getInt('formid', 0));
+		$model->setId($input->getInt('formid', 0));
 
-		$this->isMambot = JRequest::getVar('_isMambot', 0);
+		$this->isMambot = $input->get('_isMambot', 0);
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->_rowId = $input->get('rowid', '', 'string');
 
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
 		if (!$model->validate())
 		{
 			// If its in a module with ajax or in a package or inline edit
-			if (JRequest::getCmd('fabrik_ajax'))
+			if ($input->get('fabrik_ajax'))
 			{
-				if (JRequest::getInt('elid') !== 0)
+				if ($input->getInt('elid') !== 0)
 				{
 					// Inline edit
 					$eMsgs = array();
@@ -138,7 +143,7 @@ class FabrikControllerForm extends JControllerForm
 
 			if ($this->isMambot)
 			{
-				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+				$input->set('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 			}
 			else
 			{
@@ -147,9 +152,9 @@ class FabrikControllerForm extends JControllerForm
 				 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
 				 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
 				 */
-				if (JRequest::getCmd('usekey') !== '')
+				if ($input->get('usekey') !== '')
 				{
-					JRequest::setVar('rowid', -1);
+					$input->set('rowid', -1);
 				}
 				$view->display();
 			}
@@ -178,13 +183,13 @@ class FabrikControllerForm extends JControllerForm
 
 		$msg = $model->getRedirectMessage($model);
 
-		if (JRequest::getInt('_packageId') !== 0)
+		if ($input->getInt('_packageId') !== 0)
 		{
-			$rowid = JRequest::getInt('rowid');
+			$rowid = $input->get('rowid', '', 'string');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
 			return;
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			$url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&view=list&format=raw&listid=' . $tid;
 			$this->setRedirect($url, $msg);
@@ -203,9 +208,11 @@ class FabrikControllerForm extends JControllerForm
 
 	protected function savepage()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Formsession', 'FabrikFEModel');
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
-		$formModel->setId(JRequest::getInt('formid'));
+		$formModel->setId($input->getInt('formid'));
 		$model->savePage($formModel);
 	}
 
@@ -221,14 +228,16 @@ class FabrikControllerForm extends JControllerForm
 
 	protected function makeRedirect(&$model, $msg = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 		if (array_key_exists('apply', $model->_formData))
 		{
-			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
-				. '&rowid=' . JRequest::getInt('rowid');
+			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
+				. '&rowid=' . $input->getInt('rowid');
 		}
 		else
 		{
@@ -245,7 +254,9 @@ class FabrikControllerForm extends JControllerForm
 
 	public function cck()
 	{
-		$catid = JRequest::getInt('catid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$catid = $input->getInt('catid');
 		$db = JFactory::getDBO();
 		$db->setQuery('SELECT id FROM #__fabrik_forms WHERE params LIKE \'%"cck_category":"' . $catid . '"%\'');
 
@@ -256,10 +267,10 @@ class FabrikControllerForm extends JControllerForm
 			echo "<a target=\"_blank\" href=\"index.php?option=com_fabrik&c=form\">" . JText::_('VIEW_FORMS') . "</a>";
 			return JError::raiseNotice(500, JText::_('SET_FORM_CCK_CATEGORY'));
 		}
-		JRequest::setVar('formid', $id);
+		$input->set('formid', $id);
 
 		// Tell fabrik to load js scripts normally
-		JRequest::setVar('iframe', 1);
+		$input->set('iframe', 1);
 		$this->view();
 	}
 
@@ -274,14 +285,15 @@ class FabrikControllerForm extends JControllerForm
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('list', 'FabrikFEModel');
-		$ids = array(JRequest::getVar('rowid', 0));
+		$ids = array($input->get('rowid', 0, 'string'));
 
-		$listid = JRequest::getInt('listid');
-		$limitstart = JRequest::getVar('limitstart' . $listid);
-		$length = JRequest::getVar('limit' . $listid);
+		$listid = $input->get('listid');
+		$limitstart = $input->getInt('limitstart' . $listid);
+		$length = $input->getInt('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
 		$model->setId($listid);
@@ -302,9 +314,9 @@ class FabrikControllerForm extends JControllerForm
 			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
-			JRequest::setVar('view', 'list');
+			$input->set('view', 'list');
 
 			$this->display();
 		}

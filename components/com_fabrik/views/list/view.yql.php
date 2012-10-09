@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package		Joomla
  * @subpackage	Fabik
@@ -12,15 +11,19 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewList extends JView{
+class FabrikViewList extends JView
+{
 
 	function display()
 	{
 		$document = JFactory::getDocument();
-		$model		=& $this->getModel();
+		$model = $this->getModel();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		$model->setId(JRequest::getVar('listid', $usersConfig->get('listid')));
+		$model->setId($input->getInt('listid', $usersConfig->get('listid')));
 		$model->render();
 		$table = $model->getTable();
 
@@ -33,5 +36,3 @@ class FabrikViewList extends JView{
 
 	}
 }
-?>
-

@@ -68,8 +68,10 @@ class FabrikControllerElement extends FabControllerForm
 
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
-		$gid = JRequest::getInt('filter_groupId');
+		$gid = $input->getInt('filter_groupId');
 		if ($gid !== 0)
 		{
 			$append .= '&filter_groupId=' . $gid;
@@ -84,11 +86,12 @@ class FabrikControllerElement extends FabControllerForm
 	function updatestructure()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('field', 'element');
-		$id = JRequest::getInt('id');
+		$id = $input->getInt('id');
 		$model->setId($id);
 		$db = $model->getListModel()->getDb();
 		$oldName = str_replace('`', '', $app->getUserState('com_fabrik.oldname'));
@@ -105,7 +108,7 @@ class FabrikControllerElement extends FabControllerForm
 		{
 			$msg = JText::_('COM_FABRIK_STRUCTURE_UPDATED');
 		}
-		if (JRequest::getCmd('origtask') == 'save')
+		if ($input->get('origtask') == 'save')
 		{
 			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
 		}
@@ -121,15 +124,17 @@ class FabrikControllerElement extends FabControllerForm
 
 	function cancelUpdatestructure()
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('field', 'element');
-		$model->setId(JRequest::getInt('id'));
+		$model->setId($input->getInt('id'));
 		$element = $model->getElement();
-		$element->name = JRequest::getWord('oldname');
-		$element->plugin = JRequest::getWord('origplugin');
+		$element->name = $input->getWord('oldname');
+		$element->plugin = $input->getWord('origplugin');
 		$element->store();
-		if (JRequest::getVar('origtask') == 'save')
+		if ($input->get('origtask') == 'save')
 		{
 			$this->setRedirect('index.php?option=com_fabrik&view=elements', $msg);
 		}
@@ -159,22 +164,26 @@ class FabrikControllerElement extends FabControllerForm
 	}
 
 	/**
-	 * when you go from a child to parent element, check in child before redirect
+	 * When you go from a child to parent element, check in child before redirect
+	 *
+	 * @return  void
 	 */
 
 	function parentredirect()
 	{
-		JRequest::checkToken() or die('Invalid Token');
-		$post = JRequest::get('post');
-		$id = (int) JArrayHelper::getValue($post['jform'], 'id', 0);
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$jform = $input->get('jform', array(), 'array');
+		$id = (int) JArrayHelper::getValue($jform, 'id', 0);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = JRequest::getVar('plugin', 'field', 'post');
+		$className = $input->post->get('plugin', 'field');
 		$elementModel = $pluginManager->getPlugIn($className, 'element');
 		$elementModel->setId($id);
 		$row = $elementModel->getElement();
 		$row->checkin();
-		$to = JRequest::getInt('redirectto');
-		$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id='. $to);
+		$to = $input->getInt('redirectto');
+		$this->setRedirect('index.php?option=com_fabrik&task=element.edit&id=' . $to);
 	}
 
 }

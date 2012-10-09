@@ -41,6 +41,9 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// Could be a dropdown with multivalues
 		if (is_array($data))
 		{
@@ -89,7 +92,7 @@ class plgFabrik_ValidationruleAreUniqueValues extends plgFabrik_Validationrule
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
 		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
 		 */
-		$rowid = JRequest::getVar('rowid');
+		$rowid = $input->get('rowid');
 		if (!empty($rowid))
 		{
 			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));

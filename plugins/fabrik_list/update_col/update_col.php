@@ -97,6 +97,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	public function process($params, &$model, $opts = array())
 	{
 		$db = $model->getDb();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$update = json_decode($params->get('update_col_updates'));
 		if (!$update)
@@ -112,7 +114,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$item = $model->getTable();
 
 		// Array_unique for left joined table data
-		$ids = array_unique(JRequest::getVar('ids', array(), 'method', 'array'));
+		$ids = array_unique($input->get('ids', array(), 'array'));
 		JArrayHelper::toInteger($ids);
 		$this->_row_count = count($ids);
 		$ids = implode(',', $ids);
@@ -130,8 +132,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$subject = $params->get('update_email_subject');
 			$eval = $params->get('eval', 0);
 			$config = JFactory::getConfig();
-			$from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
+			$from = $config->get('mailfrom');
+			$fromname = $config->get('fromname');
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 			$emailElement = $elementModel->getElement(true);
 			$emailField = $elementModel->getFullName(false, true, false);
@@ -225,7 +227,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache(JRequest::getCmd('option'));
+		$cache = JFactory::getCache($input->get('option'));
 		$cache->clean();
 
 		return true;
@@ -256,7 +258,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	private function _process(&$model, $col, $val)
 	{
-		$ids = JRequest::getVar('ids', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$ids = $app->input->get('ids', array(), 'array');
 		$model->updateRows($ids, $col, $val);
 	}
 

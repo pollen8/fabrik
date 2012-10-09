@@ -51,7 +51,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		 * f3 hack
 		 */
 
-		$view = JRequest::getCmd('view', 'list');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$view = $input->get('view', 'list');
 		switch ($view)
 		{
 			case 'item':
@@ -63,7 +65,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				$id = (int) $this->form->getValue('params.list_id');
 				break;
 			default:
-				$id = JRequest::getInt('id');
+				$id = $input->getInt('id');
 				break;
 		}
 		$feModel = JModel::getInstance($view, 'FabrikFEModel');
@@ -131,7 +133,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
 
-			if (JRequest::getVar('option') === 'com_fabrik')
+			if ($input->get('option') === 'com_fabrik')
 			{
 				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}

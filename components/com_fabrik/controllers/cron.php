@@ -64,18 +64,23 @@ class FabrikControllerCron extends JController
 		// Display the view
 		$view->assign('error', $this->getError());
 
+		$jinput = JFactory::getApplication()->input;
+
 		// F3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
+		if (in_array($jinput->getCmd('format'), array('raw', 'csv')))
 		{
 			$view->display();
 		}
 		else
 		{
-			$post = JRequest::get('post');
+			$post = $jinput->get('post');
 
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+
+			$uri = JFactory::getURI();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
@@ -91,8 +96,10 @@ class FabrikControllerCron extends JController
 	{
 		if (!isset($this->viewName))
 		{
+			$app = JFactory::getApplication();
+			$input = $app->input;
 			$item = FabTable::getInstance('Cron', 'FabrikTable');
-			$item->load(JRequest::getInt('id'));
+			$item->load($input->getInt('id'));
 			$this->viewName = $item->plugin;
 			$this->addViewPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/views');
 			$this->addModelPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');

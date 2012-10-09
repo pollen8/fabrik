@@ -141,10 +141,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$f = $params->get('date_table_format', '%Y-%m-%d');
 		/* $$$ hugh - see http://fabrikar.com/forums/showthread.php?p=87507
-		 * Really don't think we need to worry about 'incraw' here. The raw, GMT/MySQL data will get
+		 * Really don't think we need to worry about $app->input 'incraw' here. The raw, GMT/MySQL data will get
 		 * included in the _raw version of the element if incraw is selected. Here we just want to output
 		 * the regular non-raw, formatted, TZ'ed version.
-		 * $incRaw = JRequest::getVar('incraw', true);
 		 */
 		$incRaw = false;
 
@@ -221,6 +220,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$this->offsetDate = '';
 		$aNullDates = $this->getNullDates();
@@ -256,11 +257,11 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$oDate = JFactory::getDate($value);
 
 			// If we are coming back from a validation then we don't want to re-offset the date
-			if (JRequest::getVar('Submit', '') == '' || $params->get('date_defaulttotoday', 0))
+			if ($input->get('Submit', '') == '' || $params->get('date_defaulttotoday', 0))
 			{
 				// $$$ rob - date is always stored with time now, so always apply tz unless store_as_local set
 				// or if we are defaulting to today
-				$showLocale = ($params->get('date_defaulttotoday', 0) && JRequest::getInt('rowid') == 0 || $params->get('date_alwaystoday', false));
+				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getInt('rowid') == 0 || $params->get('date_alwaystoday', false));
 				if (!$store_as_local || $showLocale)
 				{
 					$oDate->setTimeZone($timeZone);
@@ -1385,8 +1386,10 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 
 	protected function getFilterHtmlId($range)
 	{
-		$counter = JRequest::getVar('counter', 0);
-		return $this->getHTMLId() . '_filter_range_' . $range . '_' . JRequest::getVar('task') . '.' . $counter;
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$counter = $input->get('counter', 0);
+		return $this->getHTMLId() . '_filter_range_' . $range . '_' . $input->get('task') . '.' . $counter;
 	}
 
 	/**

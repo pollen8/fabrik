@@ -127,15 +127,17 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 
 	protected function decide($v)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$ids = (array) $params->get('approvals_table');
 		$approveEls = (array) $params->get('approvals_approve_element');
 		foreach ($ids as $key => $listid)
 		{
-			if ($listid == JRequest::getInt('listid'))
+			if ($listid == $input->getInt('listid'))
 			{
 				$listModel = JModel::getInstance('List', 'FabrikFEModel');
-				$listModel->setId(JRequest::getInt('listid'));
+				$listModel->setId($input->getInt('listid'));
 				$item = $listModel->getTable();
 				$db = $listModel->getDbo();
 				$query = $db->getQuery(true);
@@ -143,7 +145,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 				try
 				{
 					$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
-						->where($item->db_primary_key . ' = ' . $db->quote(JRequest::getVar('rowid')));
+						->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
 					$db->setQuery($query);
 					$db->query();
 				}

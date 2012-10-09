@@ -32,10 +32,12 @@ class FabrikViewElement extends JView
 	{
 		echo "display";exit;
 	/* 	FabrikHelperHTML::framework();
-		$element = JRequest::getVar('element');
-		$elementid = JRequest::getVar('elid');
+	 	$app = JFactory::getApplication();
+	 	$input = $app->input;
+		$element = $input->get('element');
+		$elementid =  $input->get('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = JRequest::getVar('plugin');
+		$className =  $input->get('plugin');
 		print_r($className);exit;
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {

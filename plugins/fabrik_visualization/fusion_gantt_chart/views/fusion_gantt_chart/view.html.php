@@ -16,6 +16,7 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionganntchart
+ * @since       3.0
  */
 
 class fabrikViewFusion_gantt_chart extends JView
@@ -31,12 +32,14 @@ class fabrikViewFusion_gantt_chart extends JView
 
 	function display($tpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		if ($this->row->published == 0)
 		{
@@ -55,7 +58,7 @@ class fabrikViewFusion_gantt_chart extends JView
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$pluginParams = $model->getPluginParams();
 		$tpl = $pluginParams->get('fusion_gantt_chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl;

@@ -83,7 +83,7 @@ class FabrikFEModelPackage extends FabModel
 		$params = $app->getParams();
 
 		// Load state from the request.
-		$pk = JRequest::getInt('id', $params->get('id'));
+		$pk = $app->input->getInt('id', $params->get('id'));
 		$this->setState('package.id', $pk);
 
 		$this->setState('params', $params);

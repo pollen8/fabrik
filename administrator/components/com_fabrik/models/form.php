@@ -122,10 +122,12 @@ class FabrikModelForm extends FabModelAdmin
 
 	public function save($data)
 	{
-		$post = JRequest::get('post');
-		$data['params']['plugins'] = (array) JArrayHelper::getValue($post['jform'], 'plugin');
-		$data['params']['plugin_locations'] = (array) JArrayHelper::getValue($post['jform'], 'plugin_locations');
-		$data['params']['plugin_events'] = (array) JArrayHelper::getValue($post['jform'], 'plugin_events');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$jform = $input->get('jform', array(), 'array');
+		$data['params']['plugins'] = (array) JArrayHelper::getValue($jform, 'plugin');
+		$data['params']['plugin_locations'] = (array) JArrayHelper::getValue($jform, 'plugin_locations');
+		$data['params']['plugin_events'] = (array) JArrayHelper::getValue($jform, 'plugin_events');
 
 		/**
 		 * Move back into the main data array some values we are rendering as
@@ -338,7 +340,9 @@ class FabrikModelForm extends FabModelAdmin
 
 	public function updateDatabase()
 	{
-		$cid = JRequest::getVar('cid', null, 'post', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		$formId = $cid[0];
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formId);

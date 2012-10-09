@@ -1049,6 +1049,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function setValuesFromEncryt(&$post, $key, $data)
 	{
+		$app = JFactory::getApplication();
 		$group = $this->getGroup();
 		if ($group->isJoin())
 		{
@@ -1066,7 +1067,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		// $$$rob even though $post is passed by reference - by adding in the value
 		// we arent actually modifiying the $_POST var that post was created from
-		JRequest::setVar($key, $data);
+		$app->input->set($key, $data);
 	}
 
 	/**
@@ -1283,11 +1284,12 @@ class plgFabrik_Element extends FabrikPlugin
 	public function getLabel($repeatCounter, $tmpl = '')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
+		$app = JFactory::getApplication();
 		$bLabel = $this->get('hasLabel');
 		$element = $this->getElement();
 		$elementHTMLId = $this->getHTMLId($repeatCounter);
 		$this->modHTMLId($elementHTMLId);
-		$view = JRequest::getVar('view', 'form');
+		$view = $app->input->get('view', 'form');
 		if ($view == 'form' && !($this->canUse() || $this->canView()))
 		{
 			return '';
@@ -2342,7 +2344,9 @@ class plgFabrik_Element extends FabrikPlugin
 						$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
 						$fxadded[$jsAct->js_e_trigger] = true;
 					}
-					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
+					$f = JFilterInput::getInstance();
+					$post = $f->clean($_POST, 'array');
+					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, $post);
 					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
 
 					// $$$ need to use ciorrected triggerid here as well
@@ -2383,7 +2387,8 @@ class plgFabrik_Element extends FabrikPlugin
 		// $$$ rob test for db join fields
 		$elName = $this->getFilterFullName();
 		$elid = $this->getElement()->id;
-		$data = JRequest::get('request');
+		$f = JFilterInput::getInstance();
+		$data = $f->clean($_REQUEST, 'array');
 		$groupModel = $this->getGroup();
 		$group = $groupModel->getGroup();
 
@@ -4386,8 +4391,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function beforeSave(&$row)
 	{
-		$maskbits = 4;
-		$post = JRequest::get('post', $maskbits);
+		$safeHtmlFilter = JFilterInput::getInstance(null, null, 1, 1);
+		$post = $safeHtmlFilter->clean($_POST, 'array');
 		$post = $post['jform'];
 		$dbjoinEl = (is_subclass_of($this, 'plgFabrik_ElementDatabasejoin') || get_class($this) == 'plgFabrik_ElementDatabasejoin');
 		/**
@@ -4533,8 +4538,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$db = FabrikWorker::getDbo();
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
-		$this->_cnnId = JRequest::getInt('cid', 0);
-		$tbl = $db->quoteName(JRequest::getVar('table'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->_cnnId = $input->getInt('cid', 0);
+		$tbl = $db->quoteName($input->get('table'));
 		$fieldDropDown = $listModel->getFieldsDropDown($this->_cnnId, $tbl, '-', false, 'params[join_val_column]');
 		$fieldDropDown2 = $listModel->getFieldsDropDown($this->_cnnId, $tbl, '-', false, 'params[join_key_column]');
 		echo "$('addJoinVal').innerHTML = '$fieldDropDown';";
@@ -5041,7 +5048,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function onAjax_getFolders()
 	{
-		$rDir = JRequest::getVar('dir');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$rDir = $input->get('dir');
 		$folders = JFolder::folders($rDir);
 		if ($folders === false)
 		{
@@ -5165,10 +5174,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	public function onAutocomplete_options()
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
-		$this->setId(JRequest::getInt('element_id'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
 		$this->getElement(true);
 		$cache = FabrikWorker::getCache();
-		$search = JRequest::getVar('value');
+		$search = $input->get('value');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}
 
@@ -5667,16 +5678,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function inLineEdit()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
-		$listid = JRequest::getInt('listid');
-		$rowid = JRequest::getVar('rowid');
+		$listid = $input->getInt('listid');
+		$rowid = $input->get('rowid');
 		$elementid = $this->getElement()->id;
 		$listModel->setId($listid);
 		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
-		$className = JRequest::getVar('plugin');
+		$className = $input->get('plugin');
 		if (!$this->canUse())
 		{
-			if (JRequest::getVar('task') != 'element.save')
+			if ($input->get('task') != 'element.save')
 			{
 				echo JText::_("JERROR_ALERTNOAUTHOR");
 				return;
@@ -5697,7 +5710,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		FabrikHelperHTML::addPath(JPATH_SITE . '/administrator/templates/' . $template . '/images/', 'image', 'list');
 
 		// @TODO add acl checks here
-		$task = JRequest::getVar('task');
+		$task = $input->get('task');
 		$saving = ($task == 'element.save' || $task == 'save') ? true : false;
 		$htmlid = $this->getHTMLId($repeatCounter);
 		if ($this->canToggleValue() && ($task !== 'element.save' && $task !== 'save'))
@@ -5735,7 +5748,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
-		$listRef = 'list_' . JRequest::getVar('listref');
+		$listRef = 'list_' . $input->get('listref');
 		$doCalcs = "\n
 		Fabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ')';
 
@@ -5753,10 +5766,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$html .= '</li>';
 			$html .= '</ul>';
 
-			if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
+			if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
 			{
 				$html .= '<ul class="fabrik_buttons">';
-				if (JRequest::getBool('inlinecancel') == true)
+				if ($input->getBool('inlinecancel') == true)
 				{
 					$html .= '<li class="ajax-controls inline-cancel">';
 					$html .= '<a href="#" class="">';
@@ -5764,7 +5777,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 						. '<span></span></a>';
 					$html .= '</li>';
 				}
-				if (JRequest::getBool('inlinesave') == true)
+				if ($input->getBool('inlinesave') == true)
 				{
 					$html .= '<li class="ajax-controls inline-save">';
 					$html .= '<a href="#" class="">';
@@ -5840,9 +5853,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function loadMeForAjax()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
-		$this->_form->setId(JRequest::getVar('formid'));
-		$this->setId(JRequest::getInt('element_id'));
+		$this->_form->setId($input->getInt('formid'));
+		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 	}
 

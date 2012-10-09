@@ -164,7 +164,9 @@ class FabrikFEModelImportcsv extends JModelForm
 			JError::raiseWarning(500, JText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
 			return false;
 		}
-		$userfile = JRequest::getVar('jform', null, 'files');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$userfile = $input->files->get('jform');
 		if (!$userfile)
 		{
 			JError::raiseWarning(500, JText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
@@ -173,7 +175,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		jimport('joomla.filesystem.file');
 
 		$allowed = array('txt', 'csv', 'tsv');
-		if (!in_array(JFile::getExt($userfile['name']['userfile']), $allowed))
+		if (!in_array(JFile::getExt($userfile['userfile']['name']), $allowed))
 		{
 			JError::raiseError(500, 'File must be a csv file');
 			return false;
@@ -184,7 +186,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$to = JPath::clean($tmp_dir . '/' . $tmp_name);
 
-		$resultdir = JFile::upload($userfile['tmp_name']['userfile'], $to);
+		$resultdir = JFile::upload($userfile['userfile']['tmp_name'], $to);
 		if ($resultdir == false && !JFile::exists($to))
 		{
 			JError::raiseWarning(500, JText::_('Upload Error'));
@@ -226,7 +228,10 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	protected function getFormData()
 	{
-		return array_key_exists('jform', $_POST) ? JRequest::getVar('jform') : JRequest::get('post');
+		$app = JFactory::getAppplication();
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
+		return $app->input->get('jform', $post, 'array');
 	}
 
 	/**
@@ -424,10 +429,11 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	public function getlistModel()
 	{
+		$app = JFactory::getApplication();
 		if (!isset($this->listModel))
 		{
 			$this->listModel = JModel::getInstance('List', 'FabrikFEModel');
-			$this->listModel->setId(JRequest::getInt('listid'));
+			$this->listModel->setId($app->input->getInt('listid'));
 		}
 		return $this->listModel;
 	}
@@ -586,7 +592,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function insertData()
 	{
 		$user = JFactory::getUser();
-		$jform = JRequest::getVar('jform');
+		$app = JFactory::getApplication();
+		$jform = $app->input->get('jform', array(), 'array');
 		$dropData = (int) JArrayHelper::getValue($jform, 'drop_data', 0);
 		$overWrite = (int) JArrayHelper::getValue($jform, 'overwrite', 0);
 		$model = $this->getlistModel();
@@ -768,6 +775,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		// Ensure that the main row data doesn't contain and joined data (keep [join][x] though
 		$model = $this->getListModel();
+		$app = JFactory::getApplication();
 		$table = $model->getTable();
 		$dbname = $table->db_table_name;
 		foreach ($joindata as &$j)
@@ -815,7 +823,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				$fabrik_repeat_group[$groupid] = $counter;
 			}
 			// $$$ rob here we're setting up fabrik_repeat_group to allow the form to 'know' how many repeated records to insert.
-			JRequest::setVar('fabrik_repeat_group', $fabrik_repeat_group);
+			$app->input->set('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->_formData = $data;
 			FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
 			$formModel->processToDB();
@@ -840,7 +848,8 @@ class FabrikFEModelImportcsv extends JModelForm
 	private function _fakeJoinData($joindata, $aRow, $pkVal, &$formModel)
 	{
 		$origData = $aRow;
-		$overWrite = JRequest::getInt('overwrite', 0, 'post');
+		$app = JFactory::getApplication();
+		$overWrite = $app->input->getInt('overwrite', 0, 'post');
 		$joins = $this->getJoins();
 		$groups = $formModel->getGroups();
 		if (!empty($joins))
@@ -984,14 +993,17 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	public function getSelectKey()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ rob 30/01/2012 - if in csvimport cron plugin then we have to return true here
 		// otherwise a blank column is added to the import data meaniing overwrite date dunna workie
-		if (JRequest::getBool('cron_csvimport'))
+		if ($input->getBool('cron_csvimport'))
 		{
 			return true;
 		}
 		// $$$ rob 13/03/2012 - reimporting into exisiting list - should return true
-		if (JRequest::getInt('listid') !== 0)
+		if ($input->getInt('listid') !== 0)
 		{
 			return true;
 		}
@@ -1000,7 +1012,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		{
 			return false;
 		}
-		$post = JRequest::getVar('jform', array());
+		$post = $input->get('jform', array(), 'array');
 		if (JArrayHelper::getValue($post, 'addkey', 0) == 1)
 		{
 			return false;

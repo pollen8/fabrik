@@ -78,10 +78,14 @@ class fabrikModelKaltura extends FabrikFEModelVisualization
 
 	private function getKalturaPage()
 	{
-		$page = JRequest::getInt('page'); // read the current page from the request.
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$page = $input->getInt('page'); // read the current page from the request.
 		// page=1 is the first page
 		if ($page < 1)
+		{
 			$page = 1;
+		}
 		return $page;
 	}
 

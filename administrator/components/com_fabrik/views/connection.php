@@ -34,7 +34,9 @@ class FabrikViewConenction {
 
 	function setConnectionToolbar()
 	{
-		$task = JRequest::getVar('task', '', 'method', 'string');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$task = $input->get('task');
 		JToolBarHelper::title($task == 'add' ? JText::_('CONNECTION') . ': <small><small>[ '. JText::_('NEW') .' ]</small></small>' : JText::_('CONNECTION') . ': <small><small>[ '. JText::_('EDIT') .' ]</small></small>', 'fabrik-connection.png');
 		JToolBarHelper::save('save');
 		JToolBarHelper::apply('apply');
@@ -147,9 +149,9 @@ class FabrikViewConenction {
 	function edit($row) {
 		JHtml::_('behavior.framework');
 		FabrikViewConenction::setConnectionToolbar();
-		JRequest::setVar('hidemainmenu', 1);
-		$app =& JFactory::getApplication();
-		$config =& JFactory::getConfig();
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
+		$config = JFactory::getConfig();
 		if ($row->id == 1) {
 		  $app->enqueueMessage(JText::_('THIS IS THE ORIGINAL CONNECTION'));
 

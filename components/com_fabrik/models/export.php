@@ -44,21 +44,23 @@ class FabrikFEModelExport
 	var $_aFiles = array();
 
 	/**
-	 * load a package for export
+	 * Load a package for export
 	 *
 	 * @param int $id
 	 */
 	function load($id)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->packageModel = JModel::getInstance('Package', 'FabrikFEModel');
 		$this->packageModel->setId($id);
 		$this->packageModel->getPackage();
 		$this->packageModel->loadTables();
-		$this->format = JRequest::getVar('format', 'xml');
-		$this->includeData = JRequest::getVar('tabledata', false);
-		$this->fabrikData = JRequest::getVar('fabrikfields', false);
-		$this->label = JRequest::getVar('label', '');
-		$this->incTableStructure = JRequest::getVar('tablestructure', false);
+		$this->format = $input->get('format', 'xml');
+		$this->includeData = $input->get('tabledata', false);
+		$this->fabrikData = $input->get('fabrikfields', false);
+		$this->label = $input->get('label', '');
+		$this->incTableStructure = $input->get('tablestructure', false);
 		$this->setBufferFile();
 	}
 
@@ -165,20 +167,21 @@ class FabrikFEModelExport
 
 	function _buildXML()
 	{
-
-		$db = &FabrikWorker::getDbo();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$db = FabrikWorker::getDbo();
 		$this->clearExportBuffer();
 		$strXML = "<?xml version=\"1.0\" ?>\n";
 		$strXML .= "<install type=\"fabrik\" version=\"2.0\">\n";
 
-		$strXML .= "<creationDate>" . JRequest::getVar('creationDate', '', 'post') . "</creationDate>\n";
-		$strXML .= "<author>" . JRequest::getVar('creationDate', '', 'author') . "</author>\n";
-		$strXML .= "<copyright>" . JRequest::getVar('creationDate', '', 'copyright') . "</copyright>\n";
-		$strXML .= "<authorEmail>" . JRequest::getVar('creationDate', '', 'authoremail') . "</authorEmail>\n";
-		$strXML .= "<authorUrl>" . JRequest::getVar('creationDate', '', 'authorurl') . "</authorUrl>\n";
-		$strXML .= "<version>" . JRequest::getVar('creationDate', '', 'version') . "</version>\n";
-		$strXML .= "<liscence>" . JRequest::getVar('creationDate', '', 'license') . "</liscence>\n";
-		$strXML .= "<description>" . JRequest::getVar('creationDate', '', 'description') . "</description>\n";
+		$strXML .= "<creationDate>" . $input->get('creationDate', '') . "</creationDate>\n";
+		$strXML .= "<author>" . $input->get('author') . "</author>\n";
+		$strXML .= "<copyright>" . $input->get('copyright') . "</copyright>\n";
+		$strXML .= "<authorEmail>" . $input->get('authoremail') . "</authorEmail>\n";
+		$strXML .= "<authorUrl>" . $input->get('authorurl') . "</authorUrl>\n";
+		$strXML .= "<version>" . $input->get('version') . "</version>\n";
+		$strXML .= "<liscence>" . $input->get('license') . "</liscence>\n";
+		$strXML .= "<description>" . $input->get('description') . "</description>\n";
 
 		$aTableObjs = array();
 

@@ -20,6 +20,8 @@ if (!defined('COM_FABRIK_FRONTEND'))
 }
 
 require_once JPATH_COMPONENT . '/controller.php';
+$app = JFactory::getApplication();
+$input = $app->input;
 
 /**
  * Test for YQL & XML document type
@@ -28,7 +30,7 @@ require_once JPATH_COMPONENT . '/controller.php';
 $docs = array("yql", "xml");
 foreach ($docs as $d)
 {
-	if (JRequest::getCmd("type") == $d)
+	if ($input->getCmd("type") == $d)
 	{
 		// Get the class
 		require_once JPATH_SITE . '/administrator/components/com_fabrik/classes/' . $d . 'document.php';
@@ -46,7 +48,8 @@ JModel::addIncludePath(JPATH_COMPONENT . '/models');
 // models/ to models/adaptors the copied file will overwrite (NOT extend) the original
 JModel::addIncludePath(JPATH_COMPONENT . '/models/adaptors');
 
-$controllerName = JRequest::getCmd('view');
+
+$controllerName = $input->getCmd('view');
 
 // Check for a plugin controller
 
@@ -54,7 +57,7 @@ $controllerName = JRequest::getCmd('view');
 // &c=visualization.calendar
 
 $isplugin = false;
-$cName = JRequest::getCmd('controller');
+$cName = $input->getCmd('controller');
 if (JString::strpos($cName, '.') != false)
 {
 	list($type, $name) = explode('.', $cName);
@@ -87,9 +90,9 @@ else
 	 */
 
 	// Hack for package
-	if (JRequest::getCmd('view') == 'package' || JRequest::getCmd('view') == 'list')
+	if ($input->getCmd('view') == 'package' || $input->getCmd('view') == 'list')
 	{
-		$controller = JRequest::getCmd('view');
+		$controller = $input->getCmd('view');
 	}
 	else
 	{
@@ -111,9 +114,9 @@ else
  * the specific controller for that class - otherwse use $controller to load
  * required controller class
  */
-if (strpos(JRequest::getCmd('task'), '.') !== false)
+if (strpos($input->getCmd('task'), '.') !== false)
 {
-	$controller = explode('.', JRequest::getCmd('task'));
+	$controller = explode('.', $input->getCmd('task'));
 	$controller = array_shift($controller);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
@@ -122,8 +125,8 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 		require_once $path;
 
 		// Needed to process J content plugin (form)
-		JRequest::setVar('view', $controller);
-		$task = explode('.', JRequest::getCmd('task'));
+		$input->set('view', $controller);
+		$task = explode('.', $input->getCmd('task'));
 		$task = array_pop($task);
 		$controller = new $classname;
 	}
@@ -136,7 +139,7 @@ else
 {
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$controller = new $classname;
-	$task = JRequest::getCmd('task');
+	$task = $input->getCmd('task');
 }
 
 if ($isplugin)
@@ -147,34 +150,11 @@ if ($isplugin)
 	// Add the model path
 	$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
 }
-$app = JFactory::getApplication();
-$package = JRequest::getVar('package', 'fabrik');
+
+$package = $input->get('package', 'fabrik');
 $app->setUserState('com_fabrik.package', $package);
 
-// Web service testing
-JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
-if (JRequest::getVar('soap') == 1)
-{
-	$opts = array('driver' => 'soap', 'endpoint' => 'http://webservices.activetickets.com/members/ActiveTicketsMembersServices.asmx?WSDL',
-		'credentials' => array('Clientname' => "SPLFenix", 'LanguageCode' => "nl"));
-
-	$service = FabrikWebService::getInstance($opts);
-
-	$params = $opts['credentials'];
-	$params['From'] = JFactory::getDate()->toISO8601();
-	$params['To'] = JFactory::getDate('next year')->toISO8601();
-	$params['IncludePrices'] = true;
-	$params['MemberId'] = 14;
-	$method = JRequest::getVar($method, 'GetProgramList');
-	$program = $service->get($method, $params, '//ProgramList/Program', null);
-
-	$listModel = JModel::getInstance('List', 'FabrikFEModel');
-	$listModel->setId(7);
-	$service->storeLocally($listModel, $program);
-
-}
-
-if (JRequest::getVar('yql') == 1)
+if ($input->get('yql') == 1)
 {
 	$opts = array('driver' => 'yql', 'endpoint' => 'https://query.yahooapis.com/v1/public/yql');
 

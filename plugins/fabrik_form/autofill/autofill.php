@@ -76,16 +76,18 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 
 	public function onajax_getAutoFill()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
-		$cnn = (int) JRequest::getInt('cnn');
-		$element = JRequest::getVar('observe');
-		$value = JRequest::getVar('v');
-		JRequest::setVar('resetfilters', 1);
+		$cnn = (int) $input->getInt('cnn');
+		$element = $input->get('observe');
+		$value = $input->get('v');
+		$input->set('resetfilters', 1);
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
-			$formid = JRequest::getInt('formid');
-			JRequest::setVar($element, $value, 'get');
+			$formid = $input->getInt('formid');
+			$input->set($element, $value, 'get');
 			$model = JModel::getInstance('form', 'FabrikFEModel');
 			$model->setId($formid);
 			$listModel = $model->getlistModel();
@@ -93,7 +95,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		else
 		{
 			$listModel = JModel::getInstance('list', 'FabrikFEModel');
-			$listModel->setId(JRequest::getInt('table'));
+			$listModel->setId($input->getInt('table'));
 		}
 		if ($value !== '')
 		{
@@ -110,7 +112,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		}
 		else
 		{
-			$map = JRequest::getVar('map');
+			$map = $input->get('map');
 			$map = json_decode($map);
 			if (!empty($map))
 			{

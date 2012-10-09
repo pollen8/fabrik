@@ -89,7 +89,8 @@ class FabrikViewPackage extends JView
 
 	protected function addToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);

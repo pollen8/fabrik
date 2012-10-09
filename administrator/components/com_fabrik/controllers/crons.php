@@ -55,7 +55,9 @@ class FabrikControllerCrons extends FabControllerAdmin
 	public function run()
 	{
 		$db = FabrikWorker::getDbo(true);
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		JArrayHelper::toInteger($cid);
 		$cid = implode(',', $cid);
 		$query = $db->getQuery(true);

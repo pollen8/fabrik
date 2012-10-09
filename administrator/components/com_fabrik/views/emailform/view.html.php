@@ -28,8 +28,9 @@ class fabrikViewEmailform extends JView
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
 		$model = JModel::getInstance('form', 'FabrikFEModel');
-		$post = JRequest::get('post');
-		if (!array_key_exists('youremail', $post))
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if (!$input->get('youremail', false))
 		{
 			FabrikHelperHTML::emailForm($model);
 		}
@@ -43,7 +44,9 @@ class fabrikViewEmailform extends JView
 
 	function sendMail(&$email)
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// First, make sure the form was posted from a browser.
 		// For basic web-forms, we don't care about anything
@@ -61,21 +64,15 @@ class fabrikViewEmailform extends JView
 		}
 
 		// Attempt to defend against header injections:
-		$badStrings = array(
-		'Content-Type:',
-		'MIME-Version:',
-		'Content-Transfer-Encoding:',
-		'bcc:',
-		'cc:'
-		);
+		$badStrings = array('Content-Type:', 'MIME-Version:', 'Content-Transfer-Encoding:', 'bcc:', 'cc:');
 
 		// Loop through each POST'ed value and test if it contains
 		// one of the $badStrings:
 		foreach ($_POST as $k => $v)
-		 {
+		{
 			foreach ($badStrings as $v2)
 			{
-				if (JString::strpos($v, $v2 ) !== false)
+				if (JString::strpos($v, $v2) !== false)
 				{
 					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
 				}
@@ -85,11 +82,11 @@ class fabrikViewEmailform extends JView
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
-		$email = JRequest::getVar('email', '');
-		$yourname = JRequest::getVar('yourname', '');
-		$youremail = JRequest::getVar('youremail', '');
-		$subject_default = JText::sprintf( 'Email from', $yourname);
-		$subject = JRequest::getVar('subject', $subject_default);
+		$email = $input->get('email', '');
+		$yourname = $input->get('yourname', '');
+		$youremail = $input->get('youremail', '');
+		$subject_default = JText::sprintf('Email from', $yourname);
+		$subject = $input->get('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
 		if (!$email || !$youremail || (JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
@@ -98,16 +95,16 @@ class fabrikViewEmailform extends JView
 		}
 
 		$config = JFactory::getConfig();
-		$sitename = $config->getValue('sitename');
-		// link sent in email
+		$sitename = $config->get('sitename');
 
-		$link = JRequest::getVar('referrer');
-		// message text
-		$msg =JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
+		// Link sent in email
+		$link = $input->get('referrer');
+
+		// Message text
+		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
 
 		// mail function
 		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 
 }
-?>

@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 - 2010 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -17,37 +17,45 @@ jimport('joomla.application.component.controllerform');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerVisualization extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var		string
 	 */
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
 
 	/**
-	 * called via ajax to perform viz ajax task (defined by plugintask method)
+	 * Called via ajax to perform viz ajax task (defined by plugintask method)
+	 *
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
-		$id = JRequest::getInt('visualizationid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('visualizationid');
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
 		$viz->load($id);
 		$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
 		$model = $this->getModel($viz->plugin);
 		$model->setId($id);
-		$pluginTask = JRequest::getVar('plugintask', '', 'request');
+		$pluginTask = $input->get('plugintask', '', 'request');
 		if ($pluginTask !== '')
 		{
 			echo $model->$pluginTask();
 		}
 		else
 		{
-			$task = JRequest::getVar('task');
+			$task = $input->get('task');
 
 			$path = JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/controllers/' . $viz->plugin . '.php';
 			if (file_exists($path))
@@ -65,23 +73,32 @@ class FabrikControllerVisualization extends JControllerForm
 			$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/views');
 			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
-			//add the model path
+			// Add the model path
 			$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
 			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
-			$origId = JRequest::getInt('visualizationid');
-			JRequest::setVar('visualizationid', $id);
+			$origId = $input->getInt('visualizationid');
+			$input->set('visualizationid', $id);
 			$controller->$task();
 
 		}
 	}
 
+	/**
+	 * Get html for viz plugin
+	 *
+	 * @return  null
+	 */
+
 	public function getPluginHTML()
 	{
-		$plugin = JRequest::getCmd('plugin');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin');
 		$model = $this->getModel();
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
 
 }
+

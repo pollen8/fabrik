@@ -52,9 +52,9 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 			return;
 		}
 		$app = JFactory::getApplication();
-
+		$input = $app->input;
 		$formId = $formModel->getForm()->id;
-		$mode = JString::strtolower(JRequest::getCmd('view'));
+		$mode = JString::strtolower($input->get('view'));
 		$this->ids = $this->getNavIds($formModel);
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
@@ -178,13 +178,15 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 		{
 			return;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$opts = new stdClass;
 		$opts->liveSite = COM_FABRIK_LIVESITE;
-		$opts->view = JRequest::getCmd('view');
+		$opts->view = $input->get('view');
 		$opts->ids = $this->ids;
 		$opts->pkey = FabrikString::safeColNameToArrayKey($formModel->getTableModel()->getTable()->db_primary_key);
 		$opts = json_encode($opts);
-		$form = &$formModel->getForm();
+		$form = $formModel->getForm();
 		$container = $formModel->_editable ? 'form' : 'details';
 		$container .= "_" . $form->id;
 
@@ -201,10 +203,12 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 
 	public function onXRecord()
 	{
-		$formid = JRequest::getInt('formid');
-		$rowid = JRequest::getVar('rowid');
-		$mode = JRequest::getVar('mode', 'details');
-		$model = &JModel::getInstance('Form', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$formid = $input->getInt('formid');
+		$rowid = $input->get('rowid');
+		$mode = $input->get('mode', 'details');
+		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formid);
 		$model->_rowId = $rowid;
 		$ids = $this->getNavIds($model);

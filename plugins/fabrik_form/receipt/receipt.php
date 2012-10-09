@@ -80,12 +80,14 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 	{
 		if ($params->get('ask-receipt'))
 		{
-			$post = JRequest::get('post');
-			if (!array_key_exists('fabrik_email_copy', $post))
+			if (!array_key_exists('fabrik_email_copy', $_POST))
 			{
 				return;
 			}
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$rowid = $input->get('rowid');
 		$config = JFactory::getConfig();
 		$w = new FabrikWorker;
 
@@ -96,9 +98,9 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
-			. JRequest::getVar('rowid');
+			. $rowid;
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
-			. JRequest::getVar('rowid');
+			. $rowid;
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);

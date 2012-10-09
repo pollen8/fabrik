@@ -39,9 +39,10 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 
 	public function getBottomContent($params, $formModel)
 	{
+		$app = JFactory::getApplication();
 		if ($params->get('mailchimp_userconfirm', true))
 		{
-			$checked = JRequest::getVar('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
+			$checked = $app->input->get('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
 			$this->html = '<label class="mailchimpsignup"><input type="checkbox" name="fabrik_mailchimp_signup" class="fabrik_mailchimp_signup" value="1" '
 				. $checked . '/>' . $params->get('mailchimp_signuplabel') . '</label>';
 		}
@@ -79,7 +80,8 @@ class plgFabrik_FormMailchimp extends plgFabrik_Form
 
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();
-		$post = JRequest::get('post');
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
 		if (!array_key_exists('fabrik_mailchimp_signup', $post) && (bool) $params->get('mailchimp_userconfirm', true) === true)
 		{
 			return;

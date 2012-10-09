@@ -44,14 +44,16 @@ class FabrikControllerList extends JController
 	public function display($model = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'list', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'list');
 		$modelName = $viewName;
-		$layout = JRequest::getWord('layout', 'default');
+		$layout = $input->getWord('layout', 'default');
 		$viewType = $document->getType();
 		if ($viewType == 'pdf')
 		{
 			// In PDF view only shown the main component content.
-			JRequest::setVar('tmpl', 'component');
+			$input->set('tmpl', 'component');
 		}
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
@@ -69,15 +71,16 @@ class FabrikControllerList extends JController
 		// Display the view
 		$view->assign('error', $this->getError());
 
-		$post = JRequest::get('post');
 
 		// Build unique cache id on url, post and user id
 		$user = JFactory::getUser();
-		$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+		$uri = JFactory::getURI();
+		$uri = $uri->toString(array('path', 'query'));
+		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
 
 		// F3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
+		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
 		{
 			$view->display();
 		}
@@ -95,14 +98,16 @@ class FabrikControllerList extends JController
 
 	public function order()
 	{
-		$modelName = JRequest::getVar('view', 'list', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$modelName = $input->get('view', 'list');
 		$model = $this->getModel($modelName, 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$model->setOrderByAndDir();
 
 		// $$$ hugh - unset 'resetfilters' in case it was set on QS of original list load.
-		JRequest::setVar('resetfilters', 0);
-		JRequest::setVar('clearfilters', 0);
+		$input->set('resetfilters', 0);
+		$input->set('clearfilters', 0);
 		$this->display();
 	}
 
@@ -120,14 +125,14 @@ class FabrikControllerList extends JController
 		 * $$$ rob 28/12/20111 changed from clearfilters as clearfilters removes jpluginfilters (filters
 		 * set by content plugin which we want to remain sticky. Otherwise list clear button removes the
 		 * content plugin filters
-		 * JRequest::setVar('resetfilters', 1);
+		 * $app->input->set('resetfilters', 1);
 		 */
 
 		/**
 		 * $$$ rob 07/02/2012 if reset filters set in the menu options then filters not cleared
 		 * so instead use replacefilters which doesnt look at the menu item parameters.
 		 */
-		JRequest::setVar('replacefilters', 1);
+		$app->input->set('replacefilters', 1);
 		$this->filter();
 	}
 
@@ -139,9 +144,11 @@ class FabrikControllerList extends JController
 
 	public function filter()
 	{
-		$modelName = JRequest::getVar('view', 'list', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$modelName = $input->get('view', 'list');
 		$model = $this->getModel($modelName, 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		FabrikHelperHTML::debug('', 'list model: getRequestData');
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
@@ -159,13 +166,14 @@ class FabrikControllerList extends JController
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('list', 'FabrikFEModel');
-		$ids = JRequest::getVar('ids', array(), 'request', 'array');
-		$listid = JRequest::getInt('listid');
-		$limitstart = JRequest::getInt('limitstart' . $listid);
-		$length = JRequest::getInt('limit' . $listid);
+		$ids = $input->get('ids', array(), 'array');
+		$listid = $input->getInt('listid');
+		$limitstart = $input->getInt('limitstart' . $listid);
+		$length = $input->getInt('limit' . $listid);
 
 		$model->setId($listid);
 		$oldtotal = $model->getTotalRecords();
@@ -173,12 +181,12 @@ class FabrikControllerList extends JController
 
 		$total = $oldtotal - count($ids);
 
-		$ref = JRequest::getVar('fabrik_referrer', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'post');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&listid=' . $listid);
 
 		// $$$ hugh - for some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 		if (empty($ref))
 		{
-			$ref = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'server');
+			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid);
 		}
 		if ($total >= $limitstart)
 		{
@@ -191,9 +199,9 @@ class FabrikControllerList extends JController
 			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
-			JRequest::setVar('view', 'list');
+			$input->set('view', 'list');
 			$this->display();
 		}
 		else
@@ -225,13 +233,11 @@ class FabrikControllerList extends JController
 	public function doPlugin()
 	{
 		$app = JFactory::getApplication();
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if (is_array($cid))
-		{
-			$cid = $cid[0];
-		}
+		$input = $app->input;
+		$cid = $input->get('cid', array(0), 'array');
+		$cid = $cid[0];
 		$model = $this->getModel('list', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid', $cid));
+		$model->setId($input->getInt('listid', $cid));
 		/**
 		 * $$$ rob need to ask the model to get its data here as if the plugin calls $model->getData
 		 * then the other plugins are recalled which makes the current plugins params incorrect.
@@ -240,12 +246,12 @@ class FabrikControllerList extends JController
 		$model->getData();
 
 		// If showing n tables in article page then ensure that only activated table runs its plugin
-		if (JRequest::getInt('id') == $model->get('id') || JRequest::getVar('origid', '') == '')
+		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '') == '')
 		{
 			$msgs = $model->processPlugin();
-			if (JRequest::getVar('format') == 'raw')
+			if ($input->get('format') == 'raw')
 			{
-				JRequest::setVar('view', 'list');
+				$input->set('view', 'list');
 				$model->setRenderContext($model->getId());
 				$context = 'com_fabrik.list' . $model->getRenderContext() . '.msg';
 				$session = JFactory::getSession();
@@ -260,16 +266,16 @@ class FabrikControllerList extends JController
 			}
 		}
 		// 3.0 use redirect rather than calling view() as that gave an sql error (joins seemed not to be loaded for the list)
-		$format = JRequest::getVar('format', 'html');
+		$format = $input->get('format', 'html');
 		$defaultRef = 'index.php?option=com_fabrik&view=list&listid=' . $model->getId() . '&format=' . $format;
 		if ($format !== 'raw')
 		{
-			$ref = JRequest::getVar('fabrik_referrer', $defaultRef, 'post');
+			$ref = $input->post->get('fabrik_referrer', $defaultRef);
 
 			// For some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 			if (empty($ref))
 			{
-				$ref = JRequest::getVar('HTTP_REFERER', $defaultRef, 'server');
+				$ref = $input->server->get('HTTP_REFERER', $defaultRef);
 			}
 		}
 		else
@@ -287,7 +293,9 @@ class FabrikControllerList extends JController
 
 	public function elementFilter()
 	{
-		$id = JRequest::getInt('id');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('id');
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$model->setId($id);
 		echo $model->getAdvancedElementFilter();

@@ -147,7 +147,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if ($params->get('use_wysiwyg', 0) && JRequest::getInt('ajax') !== 1)
+		$app = JFactory::getApplication();
+		if ($params->get('use_wysiwyg', 0) && $app->input->getInt('ajax') !== 1)
 		{
 			return preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
 		}
@@ -180,11 +181,13 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	protected function useWysiwyg()
 	{
 		$params = $this->getParams();
-		if (JRequest::getVar('format') == 'raw')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('format') == 'raw')
 		{
 			return false;
 		}
-		if (JRequest::getVar('ajax') == '1')
+		if ($input->get('ajax') == '1')
 		{
 			return false;
 		}
@@ -202,6 +205,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
@@ -238,7 +243,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		}
 		if ($wysiwyg)
 		{
-			if (JRequest::getVar('ajax') == 1)
+			if ($input->get('ajax') == 1)
 			{
 				// $bits['class'] .= " mce_editable";
 				$str = "<textarea ";

@@ -91,12 +91,13 @@ class plgFabrik_Cron extends FabrikPlugin
 
 	public function queryStringActivated()
 	{
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		if (!$params->get('require_qs', false))
 		{
 			// Querystring not required so plugin should be activated
 			return true;
 		}
-		return JRequest::getInt('fabrik_cron', 0);
+		return $app->input->getInt('fabrik_cron', 0);
 	}
 }

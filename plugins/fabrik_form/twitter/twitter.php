@@ -87,10 +87,11 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		$session = JFactory::getSession();
 		global $_SESSION;
 		$app = JFactory::getApplication();
-		$this->buildModel(JRequest::getInt('formid'));
+		$input = $app->input;
+		$this->buildModel($input->get('formid'));
 		$params = $this->getParams();
 
-		$renderOrder = JRequest::getInt('renderOrder');
+		$renderOrder = $input->getInt('renderOrder');
 
 		$consumer_key = $params->get('twitter_consumer_key');
 		if (is_array($consumer_key))
@@ -132,9 +133,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	protected function sendTweet($params, $connection)
 	{
 		$session = JFactory::getSession();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$formdata = $session->get('com_fabrik.form.data');
 		$app = JFactory::getApplication();
-		/* If method is set change API call made. Test is called by default. */
+
+		// If method is set change API call made. Test is called by default.
 		$content = $connection->get('account/rate_limit_status');
 
 		if ($content->remaining_hits <= 0)
@@ -162,7 +166,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 			default:
 				JError::raiseNotice(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
 		}
-		$url = JRequest::getVar('fabrik_referrer', '');
+		$url = $input->get('fabrik_referrer', '');
 		$context = $this->formModel->getRedirectContext();
 		$url = $session->get($context . 'url', array($url));
 		$url = array_shift($url);
@@ -180,6 +184,8 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	private function _process($params, &$formModel)
 	{
 		global $_SESSION;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->formModel = $formModel;
 		$session = JFactory::getSession();
 
@@ -203,7 +209,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		if ($params->get('twitter_oauth_token_secret') !== '')
 		{
 
-			JRequest::setVar('oauth_verifier', $params->get('twitter_oauth_verifier'));
+			$input->set('oauth_verifier', $params->get('twitter_oauth_verifier'));
 			$token = $params->get('twitter_oauth_token');
 			$secret = $params->get('twitter_oauth_token_secret');
 			$connection = new TwitterOAuth($consumer_key, $consumer_secret, $token, $secret);
@@ -250,8 +256,10 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 
 	public function getEmailData()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$data = parent::getEmailData();
-		$id = JRequest::getVar('rowid');
+		$id = $input->get('rowid');
 		$formId = $this->formModel->getId();
 		$data['fabrik_editurl'] = COM_FABRIK_LIVESITE
 			. JRoute::_("index.php?option=com_fabrik&amp;view=form&amp;formid=" . $formId . "&amp;rowid=" . $id);
@@ -368,11 +376,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	public function onAuthenticateAdmin()
 	{
 		$app = JFactory::getApplication();
-		$formModel = $this->buildModel(JRequest::getInt('formid'));
+		$input = $app->input;
+		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
-		$consumer_key = JRequest::getVar('twitter_consumer_key');
-		$consumer_secret = JRequest::getVar('twitter_consumer_secret');
-		$counter = JRequest::getInt('repeatCounter');
+		$consumer_key = $input->get('twitter_consumer_key');
+		$consumer_secret = $input->get('twitter_consumer_secret');
+		$counter = $input->getInt('repeatCounter');
 		$consumer_key = (array) $params->get('twitter_consumer_key');
 		$consumer_key = $consumer_key[$counter];
 
@@ -382,7 +391,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		$callback = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='
 			. $formModel->getId();
-		$callback .= "&repeatCounter=" . JRequest::getInt('repeatCounter');
+		$callback .= "&repeatCounter=" . $input->getInt('repeatCounter');
 
 		if (!function_exists('curl_init'))
 		{
@@ -427,10 +436,11 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	public function onUpdateAdmin()
 	{
 		$app = JFactory::getApplication();
-		$formModel = $this->buildModel(JRequest::getInt('formid'));
+		$input = $app->input;
+		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
 
-		$renderOrder = JRequest::getInt('renderOrder');
+		$renderOrder = $input->getInt('renderOrder');
 
 		$consumer_key = $params->get('twitter_consumer_key');
 		$consumer_key = $consumer_key[$renderOrder];
@@ -444,12 +454,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 
 		// Save the access token to the element params
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
-		$formModel->setId(JRequest::getInt('formid'));
+		$formModel->setId($input->getInt('formid'));
 		$row = $formModel->getForm();
 
 		$params = $formModel->getParams();
 		$opts = $params->toArray();
-		$counter = JRequest::getVar('repeatCounter');
+		$counter = $input->get('repeatCounter');
 		$pairs = array('twitter_oauth_token' => 'oauth_token', 'twitter_oauth_token_secret' => 'oauth_token_secret',
 			'twitter_oauth_user' => 'screen_name');
 

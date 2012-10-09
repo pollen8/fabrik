@@ -80,18 +80,21 @@ class plgFabrik_ElementVideo extends plgFabrik_Element
 
 	function renderPopup()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
-		$format = JRequest::getVar('format', '');
-		//when loaded via ajax adding scripts into the doc head wont load them
+		$format = $input->get('format', '');
+
+		// When loaded via ajax adding scripts into the doc head wont load them
 		echo "<script type='text/javascript'>";
-		require(COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js');
+		require COM_FABRIK_FRONTEND . '/media/com_fabrik/js/element.js';
 		echo "</script>";
 		echo "<script type='text/javascript'>";
-		require(JPATH_ROOT . '/plugins/fabrik_element/video/video.js');
+		require JPATH_ROOT . '/plugins/fabrik_element/video/video.js';
 		echo "</script>";
 
 		$params = $this->getParams();
-		$value = JRequest::getVar('data');
+		$value = $input->get('data');
 		$loop = ($params->get('fbVideoLoop', 0) == 1) ? 'true' : 'false';
 		$autoplay = ($params->get('fbVideoAutoPlay', 0) == 1) ? 'true' : 'false';
 		$controller = ($params->get('fbVideoController', 0) == 1) ? 'true' : 'false';
@@ -224,7 +227,10 @@ class plgFabrik_ElementVideo extends plgFabrik_Element
 
 	function processUpload()
 	{
-		$aData = JRequest::get('post');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$filter = JFilterInput::getInstance();
+		$aData = $filter->clean($_POST, 'array');
 		$elName = $this->getFullName(true, true, false);
 		if (strstr($elName, 'join'))
 		{
@@ -233,14 +239,14 @@ class plgFabrik_ElementVideo extends plgFabrik_Element
 			$joinArray = explode(']', $elTempName);
 			$elName = $joinArray[1];
 			$aFile = $_FILES['join'];
-			$aFile = JRequest::getVar('join', '', 'files', 'array');
-			$myFileName = $aFile['name'][$joinArray[0]][$joinArray[1]];
-			$myTempFileName = $aFile['tmp_name'][$joinArray[0]][$joinArray[1]];
+			$aFile = $input->files->get('join', array(), 'array');
+			$myFileName = $aFile[$joinArray[0]][$joinArray[1]]['name'];
+			$myTempFileName = $aFile[$joinArray[0]][$joinArray[1]]['tmp_name'];
 			$aData['join'][$joinArray[0]][$joinArray[1]] = '';
 		}
 		else
 		{
-			$aFile = JRequest::getVar($elName, '', 'files', 'array');
+			$aFile = $input->files->get($elName, array(), 'array');
 			$myFileName = $aFile['name'];
 			$myTempFileName = $aFile['tmp_name'];
 		}

@@ -43,7 +43,9 @@ class FabrikControllerForm extends JController
 	public function display()
 	{
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
 
 		if ($viewName == 'details')
@@ -64,7 +66,7 @@ class FabrikControllerForm extends JController
 		 */
 		if (!$model->hasErrors())
 		{
-			$context = 'com_fabrik.form.' . JRequest::getInt('formid');
+			$context = 'com_fabrik.form.' . $input->getInt('formid');
 			$model->_arErrors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
@@ -100,7 +102,9 @@ class FabrikControllerForm extends JController
 	public function process()
 	{
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
 		$model = $this->getModel('form', 'FabrikFEModel');
@@ -108,23 +112,23 @@ class FabrikControllerForm extends JController
 		{
 			$view->setModel($model, true);
 		}
-		$model->setId(JRequest::getInt('formid', 0));
-		$this->isMambot = JRequest::getVar('isMambot', 0);
+		$model->setId($input->getInt('formid', 0));
+		$this->isMambot = $input->get('isMambot', 0);
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->_rowId = $input->get('rowid', '', 'string');
 
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
-		if (JRequest::getBool('fabrik_ignorevalidation', false) != true)
+		if ($input->getBool('fabrik_ignorevalidation', false) != true)
 		{
 			// Put in when saving page of form
 			if (!$model->validate())
 			{
 				// If its in a module with ajax or in a package
-				if (JRequest::getInt('_packageId') !== 0)
+				if ($input->getInt('_packageId') !== 0)
 				{
 					$data = array('modified' => $model->_modifiedValidationData);
 
@@ -176,19 +180,19 @@ class FabrikControllerForm extends JController
 		$msg = $model->getParams()->get('suppress_msgs', '0') == '0'
 			? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 
-		if (JRequest::getInt('elid') !== 0)
+		if ($input->getInt('elid') !== 0)
 		{
 			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
 
-		if (JRequest::getInt('_packageId') !== 0)
+		if ($input->getInt('_packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
 			return;
 		}
-		JRequest::setVar('view', 'list');
+		$input->set('view', 'list');
 		echo $this->display();
 	}
 
@@ -204,6 +208,7 @@ class FabrikControllerForm extends JController
 	protected function makeRedirect(&$model, $msg = null)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
@@ -212,8 +217,8 @@ class FabrikControllerForm extends JController
 		{
 			if (array_key_exists('apply', $model->_formData))
 			{
-				$url = "index.php?option=com_fabrik&c=form&task=form&formid=" . JRequest::getInt('formid') . "&listid=" . JRequest::getInt('listid')
-					. "&rowid=" . JRequest::getInt('rowid');
+				$url = "index.php?option=com_fabrik&c=form&task=form&formid=" . $input->getInt('formid') . "&listid=" . $input->getInt('listid')
+					. "&rowid=" . $input->getInt('rowid');
 			}
 			else
 			{
@@ -225,8 +230,8 @@ class FabrikControllerForm extends JController
 		{
 			if (array_key_exists('apply', $model->_formData))
 			{
-				$url = "index.php?option=com_fabrik&c=form&view=form&formid=" . JRequest::getInt('formid') . "&rowid=" . JRequest::getInt('rowid')
-					. "&listid=" . JRequest::getInt('listid');
+				$url = "index.php?option=com_fabrik&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getInt('rowid')
+					. "&listid=" . $input->getInt('listid');
 			}
 			else
 			{
@@ -238,7 +243,7 @@ class FabrikControllerForm extends JController
 				else
 				{
 					// Return to the page that called the form
-					$url = JRequest::getVar('fabrik_referrer', "index.php", 'post');
+					$url = $input->get('fabrik_referrer', "index.php");
 				}
 				// @TODO this global doesnt exist in j1.6
 				$Itemid = $app->getMenu('site')->getActive()->id;

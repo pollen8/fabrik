@@ -1,17 +1,16 @@
 <?php
 /**
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
 
-//load front end language file as well
+// Load front end language file as well
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 if (!defined('COM_FABRIK_FRONTEND'))
@@ -23,14 +22,15 @@ jimport('joomla.application.component.helper');
 JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
+$input = $app->input;
 
 require_once(COM_FABRIK_FRONTEND . '/controller.php');
 require_once(COM_FABRIK_FRONTEND . '/controllers/visualization.php');
 
-//$$$rob looks like including the view does something to the layout variable
-$origLayout = JRequest::getVar('layout');
+// $$$rob looks like including the view does something to the layout variable
+$origLayout = $input->get('layout', '', 'string');
 require_once(COM_FABRIK_FRONTEND . '/views/list/view.html.php');
-JRequest::setVar('layout', $origLayout);
+$input->set('layout', $origLayout);
 
 require_once(COM_FABRIK_FRONTEND . '/views/package/view.html.php');
 
@@ -41,8 +41,10 @@ $document = JFactory::getDocument();
 require_once(COM_FABRIK_FRONTEND . '/controllers/package.php');
 require_once(COM_FABRIK_FRONTEND . '/views/form/view.html.php');
 
-$id	= intval($params->get('id', 1));
-/*this all works fine for a list
+$id = intval($params->get('id', 1));
+
+/*
+ * This all works fine for a list
  * going to try to load a package so u can access the form and list
  */
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
@@ -50,7 +52,7 @@ $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 $viewName = 'visualization';
 $db = FabrikWorker::getDbo();
 $query = $db->getQuery(true);
-$query->select('plugin')->from('#__{package}_visualizations')->where('id = '.(int) $id);
+$query->select('plugin')->from('#__{package}_visualizations')->where('id = ' . (int) $id);
 $db->setQuery($query);
 $name = $db->loadResult();
 $path = JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/controllers/' . $name . '.php';
@@ -68,12 +70,11 @@ $controller = new $controllerName();
 $controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/views');
 $controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
-//add the model path
+// Add the model path
 $modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/models');
 $modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
-$origId = JRequest::getInt('visualizationid');
-JRequest::setVar('visualizationid', $id);
+$origId = $input->getInt('visualizationid');
+$input->set('visualizationid', $id);
 $controller->display();
-JRequest::setVar('visualizationid', $origId);
-?>
+$input->set('visualizationid', $origId);

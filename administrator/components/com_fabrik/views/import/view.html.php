@@ -43,7 +43,9 @@ class FabrikViewImport extends JView
 
 	public function chooseElementTypes()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$this->chooseElementTypesToolBar();
 		$session = JFactory::getSession();
 		$this->assign('data', $session->get('com_fabrik.csvdata'));
@@ -66,7 +68,9 @@ class FabrikViewImport extends JView
 
 	protected function chooseElementTypesToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		JToolBarHelper::customX('import.makeTableFromCSV', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
@@ -82,7 +86,9 @@ class FabrikViewImport extends JView
 
 	protected function addToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		JToolBarHelper::customX('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');

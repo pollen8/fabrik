@@ -1,16 +1,16 @@
 <?php
 /**
-* @version		$Id: feed.php 10381 2008-06-01 03:35:53Z pasamio $
-* @package		Joomla.Framework
-* @subpackage	Document
-* @copyright	Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved.
-* @license		GNU/GPL, see LICENSE.php
-* Joomla! is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-* See COPYRIGHT.php for copyright notices and details.
-*/
+ * @version		$Id: feed.php 10381 2008-06-01 03:35:53Z pasamio $
+ * @package		Joomla.Framework
+ * @subpackage	Document
+ * @copyright	Copyright (C) 2005 - 2008 Open Source Matters. All rights reserved.
+ * @license		GNU/GPL, see LICENSE.php
+ * Joomla! is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ * See COPYRIGHT.php for copyright notices and details.
+ */
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
@@ -34,9 +34,9 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $syndicationURL = "";
+	var $syndicationURL = "";
 
-	 /**
+	/**
 	 * Image feed element
 	 *
 	 * optional
@@ -44,7 +44,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		object
 	 * @access	public
 	 */
-	 var $image = null;
+	var $image = null;
 
 	/**
 	 * Copyright feed elememnt
@@ -54,9 +54,9 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $copyright = "";
+	var $copyright = "";
 
-	 /**
+	/**
 	 * Published date feed element
 	 *
 	 *  optional
@@ -64,9 +64,9 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $pubDate = "";
+	var $pubDate = "";
 
-	 /**
+	/**
 	 * Lastbuild date feed element
 	 *
 	 * optional
@@ -74,9 +74,9 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $lastBuildDate = "";
+	var $lastBuildDate = "";
 
-	 /**
+	/**
 	 * Editor feed element
 	 *
 	 * optional
@@ -84,7 +84,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $editor = "";
+	var $editor = "";
 
 	/**
 	 * Docs feed element
@@ -92,9 +92,9 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $docs = "";
+	var $docs = "";
 
-	 /**
+	/**
 	 * Editor email feed element
 	 *
 	 * optional
@@ -102,7 +102,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $editorEmail = "";
+	var $editorEmail = "";
 
 	/**
 	 * Webmaster email feed element
@@ -112,7 +112,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $webmaster = "";
+	var $webmaster = "";
 
 	/**
 	 * Category feed element
@@ -122,7 +122,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $category = "";
+	var $category = "";
 
 	/**
 	 * TTL feed attribute
@@ -132,7 +132,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $ttl = "";
+	var $ttl = "";
 
 	/**
 	 * Rating feed element
@@ -142,7 +142,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $rating = "";
+	var $rating = "";
 
 	/**
 	 * Skiphours feed element
@@ -152,7 +152,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $skipHours = "";
+	var $skipHours = "";
 
 	/**
 	 * Skipdays feed element
@@ -162,7 +162,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @var		string
 	 * @access	public
 	 */
-	 var $skipDays = "";
+	var $skipDays = "";
 
 	/**
 	 * The feed items collection
@@ -194,40 +194,41 @@ class JDocumentFabrikfeed extends JDocument
 	 * @param array		$params		Associative array of attributes
 	 * @return 	The rendered data
 	 */
-	function render( $cache = false, $params = array())
+	function render($cache = false, $params = array())
 	{
-		global $option;
-
 		// Get the feed type
-		$type = JRequest::getCmd('type', 'rss');
+		$app = JFactory::getApplication();
+		$type = $app->input->get('type', 'rss');
+		$option = $app->input->get('option');
 
 		/*
 		 * Cache TODO In later release
 		 */
-		$cache		= 0;
+		$cache = 0;
 		$cache_time = 3600;
-		$cache_path = JPATH_BASE.DS.'cache';
+		$cache_path = JPATH_BASE . DS . 'cache';
 
 		// set filename for rss feeds
-		$file = strtolower( str_replace( '.', '', $type ) );
-		$file = $cache_path.DS.$file.'_'.$option.'.xml';
-
+		$file = strtolower(str_replace('.', '', $type));
+		$file = $cache_path . DS . $file . '_' . $option . '.xml';
 
 		// Instantiate feed renderer and set the mime encoding
-		$renderer =& $this->loadRenderer(($type) ? $type : 'rss');
-		
-		if (!is_a($renderer, 'JDocumentRenderer')) {
+		$renderer = &$this->loadRenderer(($type) ? $type : 'rss');
+
+		if (!is_a($renderer, 'JDocumentRenderer'))
+		{
 			JError::raiseError(404, JText::_('Resource Not Found'));
 		}
 		$this->setMimeEncoding($renderer->getContentType());
 		//output
 		// Generate prolog
-		$data	= "<?xml version=\"1.0\" encoding=\"".$this->_charset."\"?>\n";
-		$data	.= "<!-- generator=\"".$this->getGenerator()."\" -->\n";
+		$data = "<?xml version=\"1.0\" encoding=\"" . $this->_charset . "\"?>\n";
+		$data .= "<!-- generator=\"" . $this->getGenerator() . "\" -->\n";
 
-		 // Generate stylesheet links
-		foreach ($this->_styleSheets as $src => $attr ) {
-			$data .= "<?xml-stylesheet href=\"$src\" type=\"".$attr['mime']."\"?>\n";
+		// Generate stylesheet links
+		foreach ($this->_styleSheets as $src => $attr)
+		{
+			$data .= "<?xml-stylesheet href=\"$src\" type=\"" . $attr['mime'] . "\"?>\n";
 		}
 
 		// Render the feed
@@ -243,7 +244,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * @param object JFabrikfeedItem $item The feeditem to add to the feed.
 	 * @access public
 	 */
-	function addItem( &$item )
+	function addItem(&$item)
 	{
 		$item->source = $this->link;
 		$this->items[] = $item;
@@ -288,7 +289,7 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $description;
+	var $description;
 
 	/**
 	 * Author item element
@@ -298,9 +299,9 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $author;
+	var $author;
 
-	 /**
+	/**
 	 * Author email element
 	 *
 	 * optional
@@ -308,8 +309,7 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $authorEmail;
-
+	var $authorEmail;
 
 	/**
 	 * Category element
@@ -319,9 +319,9 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $category;
+	var $category;
 
-	 /**
+	/**
 	 * Comments element
 	 *
 	 * optional
@@ -329,17 +329,17 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $comments;
+	var $comments;
 
-	 /**
+	/**
 	 * Enclosure element
 	 *
 	 * @var		object
 	 * @access	public
 	 */
-	 var $enclosure =  null;
+	var $enclosure = null;
 
-	 /**
+	/**
 	 * Guid element
 	 *
 	 * optional
@@ -347,7 +347,7 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $guid;
+	var $guid;
 
 	/**
 	 * Published date
@@ -369,9 +369,9 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $pubDate;
+	var $pubDate;
 
-	 /**
+	/**
 	 * Source element
 	 *
 	 * optional
@@ -379,20 +379,20 @@ class JFabrikFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $source;
+	var $source;
 
-
-	 /**
+	/**
 	 * Set the JFabrikfeedEnclosure for this item
 	 *
 	 * @access public
 	 * @param object $enclosure The JFabrikfeedItem to add to the feed.
 	 */
-	 function setEnclosure($enclosure)	{
+	function setEnclosure($enclosure)
+	{
 		// $$$ hugh - fixing enclosures ... $enclosure arg is an array,
 		// need to instantiate JFabrikFeedEnclosure and pas it the array
 		$this->enclosure = new JFabrikFeedEnclosure($enclosure);
-	 }
+	}
 }
 
 /**
@@ -413,7 +413,7 @@ class JFabrikFeedEnclosure extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $url = "";
+	var $url = "";
 
 	/**
 	 * Lenght enclosure element
@@ -423,9 +423,9 @@ class JFabrikFeedEnclosure extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $length = "";
+	var $length = "";
 
-	 /**
+	/**
 	 * Type enclosure element
 	 *
 	 * required
@@ -433,17 +433,19 @@ class JFabrikFeedEnclosure extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $type = "";
-	 
-	 // $$$ hugh - added class creator which takes the $enclosure array
-	 // and stuffs the elements into the class vars
-	 function JFabrikFeedEnclosure($enclosure) {
-		if (!empty($enclosure)) {
+	var $type = "";
+
+	// $$$ hugh - added class creator which takes the $enclosure array
+	// and stuffs the elements into the class vars
+	function JFabrikFeedEnclosure($enclosure)
+	{
+		if (!empty($enclosure))
+		{
 			$this->url = $enclosure['url'];
 			$this->length = $enclosure['length'];
 			$this->type = $enclosure['type'];
 		}
-	 }
+	}
 }
 
 /**
@@ -464,9 +466,9 @@ class JFabrikFeedImage extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $title = "";
+	var $title = "";
 
-	 /**
+	/**
 	 * URL image attribute
 	 *
 	 * required
@@ -484,9 +486,9 @@ class JFabrikFeedImage extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $link = "";
+	var $link = "";
 
-	 /**
+	/**
 	 * witdh image attribute
 	 *
 	 * optional
@@ -494,9 +496,9 @@ class JFabrikFeedImage extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $width;
+	var $width;
 
-	 /**
+	/**
 	 * Title feed attribute
 	 *
 	 * optional
@@ -504,9 +506,9 @@ class JFabrikFeedImage extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $height;
+	var $height;
 
-	 /**
+	/**
 	 * Title feed attribute
 	 *
 	 * optional
@@ -514,5 +516,5 @@ class JFabrikFeedImage extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $description;
+	var $description;
 }

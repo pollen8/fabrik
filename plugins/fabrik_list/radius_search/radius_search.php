@@ -143,14 +143,16 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		{
 			return $this->placeCoordinates;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$mapElement = $this->getMapElement();
 		$mapName = $mapElement->getFullName(false, true, false);
 		$placeElement = $this->getPlaceElement()->getElement();
 		$db = $this->model->getDb();
-		$usekey = JRequest::getVar('usekey');
-		JRequest::setVar('usekey', $placeElement->name);
+		$usekey = $input->get('usekey');
+		$input->set('usekey', $placeElement->name);
 		$row = $this->model->getRow($db->quote($place));
-		JRequest::SetVar('usekey', $usekey);
+		$input->set('usekey', $usekey);
 		if (is_object($row))
 		{
 			$coords = explode(':', str_replace(array('(', ')'), '', $row->$mapName));
@@ -189,16 +191,18 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 	public function onGetPostFilter($params, &$model, &$args)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->model = $model;
 		$filters = $model->tmpFilters;
-		$v = JRequest::getVar('radius_search_distance');
+		$v = $input->get('radius_search_distance');
 		if ($v == '')
 		{
 			// V is empty for radius search = not adding in filters n onGetPostFilter() <br><br>';
 			return;
 		}
 
-		$active = JRequest::getVar('radius_search_active', array(1));
+		$active = $input->get('radius_search_active', array(1), 'array');
 		if ($active[0] == 0)
 		{
 			// Need to clear out any session filter (occurs when you search with r filter, then deactivate the filter
@@ -244,9 +248,10 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	protected function getQuery($params)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$baseContext = $this->getSessionContext();
 		$values = JArrayHelper::getValue($filters, 'value', array());
-		$type = JRequest::getVar('radius_search_type');
+		$type = $input->get('radius_search_type', array(''), 'array');
 		if ($type[0] == 'place')
 		{
 			$place = $app->getUserStateFromRequest($baseContext . 'radius_search_place', 'radius_search_place');
@@ -260,7 +265,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		}
 		if (trim($latitude) === '' && trim($longitude) === '')
 		{
-			JRequest::setVar('radius_search_active', array(0));
+			$input->set('radius_search_active', array(0));
 			return;
 		}
 		$el = $this->getMapElement();
@@ -298,7 +303,8 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$this->model = $model;
 		$key = $this->onGetFilterKey();
 		$app = JFactory::getApplication();
-		$active = JRequest::getVar('radius_search_active', array(0));
+		$input = $app->input;
+		$active = $input->get('radius_search_active', array(0), 'array');
 		if ($active[0] == 0)
 		{
 			return;

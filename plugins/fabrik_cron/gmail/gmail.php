@@ -15,7 +15,8 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once(COM_FABRIK_FRONTEND . '/models/plugin-cron.php');
 
-class plgFabrik_Crongmail extends plgFabrik_Cron {
+class plgFabrik_Crongmail extends plgFabrik_Cron
+{
 
 	/**
 	 * do the plugin action
@@ -27,10 +28,12 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 	public function process(&$data, &$listModel)
 	{
 		$params = $this->getParams();
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$email = $params->get('plugin-options.email');
 		$pw = $params->get('plugin-options.password');
-		if ($email == '' || $pw == '') {
+		if ($email == '' || $pw == '')
+		{
 			return;
 		}
 
@@ -51,106 +54,125 @@ class plgFabrik_Crongmail extends plgFabrik_Cron {
 		//$imageLib = FabimageHelper::loadLib('GD2');
 		//	$imageLib->setStorage($storage);
 
-		$storeData 	= array();
+		$storeData = array();
 		$numProcessed = 0;
-		foreach ($inboxes as $inbox) {
-			$url = $server.$inbox;
-			$mbox = imap_open ($url, $email, $pw);
+		foreach ($inboxes as $inbox)
+		{
+			$url = $server . $inbox;
+			$mbox = imap_open($url, $email, $pw);
 
-			if (!$mbox) {
+			if (!$mbox)
+			{
 				JError::raiseNotice(400, JText::_("PLG_CRON_GMAIL_ERROR_CONNECT") . imap_last_error());
 				continue;
 			}
 
-			$MC = imap_check( $mbox);
+			$MC = imap_check($mbox);
 
 			$mailboxes = imap_list($mbox, $server, '*');
-			echo "<pre>";print_r($mailboxes);
+			echo "<pre>";
+			print_r($mailboxes);
 			$lastid = $params->get('plugin-options.lastid', 0);
 
-			if ($lastid == 0) {
+			if ($lastid == 0)
+			{
 				$result = imap_fetch_overview($mbox, "1:$MC->Nmsgs");
 				echo $lastid;
 				$mode = 0; //retrieve emails by message number
-			} else {
+			}
+			else
+			{
 				// retrieve emails by message id;
 				$result = imap_fetch_overview($mbox, "$lastid:*", FT_UID);
-				if(count($result)>0) {
+				if (count($result) > 0)
+				{
 					unset($result[0]);
 				}
 			}
 			// Fetch an overview for all messages in INBOX
 			//$result = imap_fetch_overview($mbox, "1:$lastid", $mode);
 
-print_r($result);exit;
+			print_r($result);
+			exit;
 			$numProcessed += count($result);
-			foreach ($result as $overview) {
-				if ($overview->uid > $lastid) {
+			foreach ($result as $overview)
+			{
+				if ($overview->uid > $lastid)
+				{
 					$lastid = $overview->uid;
 				}
 
 				$content = '';
 				$thisData = array();
 
-				preg_match( "/<(.*)>/", $overview->from, $matches);
+				preg_match("/<(.*)>/", $overview->from, $matches);
 
 				$thisData[$fromField] = $overview->from;
-				$thisData[$titleField] = $this->getTitle( $overview);
+				$thisData[$titleField] = $this->getTitle($overview);
 				$thisData[$dateField] = JFactory::getDate($overview->date)->toSql();
 				$thisData['imageFound'] = false;
 
-				$thisData[$fromField] = (empty( $matches )) ? $overview->from : "<a href=\"mailto:$matches[1]\">$overview->from</a>";
+				$thisData[$fromField] = (empty($matches)) ? $overview->from : "<a href=\"mailto:$matches[1]\">$overview->from</a>";
 				//use server time for all incomming messages.
 				$date = JFactory::getDate();
 				$thisData['processed_date'] = $date->toSql();
-				$struct = imap_fetchstructure( $mbox, $overview->msgno);
+				$struct = imap_fetchstructure($mbox, $overview->msgno);
 				$parts = create_part_array($struct);
-				foreach($parts as $part) {
+				foreach ($parts as $part)
+				{
 
 					//type 5 is image - full list here http://algorytmy.pl/doc/php/function.imap-fetchstructure.php
-					if($part['part_object']->type == 5) {
-						$filecontent = imap_fetchbody( $mbox, $overview->msgno, $part['part_number']);
+					if ($part['part_object']->type == 5)
+					{
+						$filecontent = imap_fetchbody($mbox, $overview->msgno, $part['part_number']);
 
 						$attachmentName = '';
 						$pname = 'parameters';
-						if (is_object($part['part_object']->parameters) ) {
+						if (is_object($part['part_object']->parameters))
+						{
 							//can be in dparamenters instead?
-							$pname= 'dparameters';
+							$pname = 'dparameters';
 						}
 						$attarray = $part['part_object']->$pname;
-						if ($attarray[0]->value == "us-ascii" || $attarray[0]->value == "US-ASCII") {
-							if ($attarray[1]->value != "") {
+						if ($attarray[0]->value == "us-ascii" || $attarray[0]->value == "US-ASCII")
+						{
+							if ($attarray[1]->value != "")
+							{
 								$attachmentName = $attarray[1]->value;
 							}
-						} elseif ($attarray[0]->value != "iso-8859-1" && $attarray[0]->value != "ISO-8859-1" && $attarray[0]->value != 'utf-8') {
+						}
+						elseif ($attarray[0]->value != "iso-8859-1" && $attarray[0]->value != "ISO-8859-1" && $attarray[0]->value != 'utf-8')
+						{
 							$attachmentName = $attarray[0]->value;
 						}
 
-						if ($attachmentName != '') {
+						if ($attachmentName != '')
+						{
 							//randomize file name
 							$ext = JFile::getExt($attachmentName);
 							$name = JFile::stripExt($attachmentName);
-							$name .= '-' . JUserHelper::genRandomPassword(5).'.'.$ext;
+							$name .= '-' . JUserHelper::genRandomPassword(5) . '.' . $ext;
 							$thisData['attachmentName'] = $name;
 							$thisData['imageFound'] = true;
-							$fileContent = imap_fetchbody( $mbox, $overview->msgno, 2);
-							$thisData['imageBuffer'] = imap_base64( $filecontent);
+							$fileContent = imap_fetchbody($mbox, $overview->msgno, 2);
+							$thisData['imageBuffer'] = imap_base64($filecontent);
 						}
 					}
 					/*
 					 * Message parts - third param in imap_fetchbody
 					 * (empty) - Entire message
-						0 - Message header
-						1 - MULTIPART/ALTERNATIVE
-						1.1 - TEXT/PLAIN
-						1.2 - TEXT/HTML
-						2 - file.ext
+					    0 - Message header
+					    1 - MULTIPART/ALTERNATIVE
+					    1.1 - TEXT/PLAIN
+					    1.2 - TEXT/HTML
+					    2 - file.ext
 					 */
 
-					$content =  @imap_fetchbody( $mbox, $overview->msgno, 1.2); //html
+					$content = @imap_fetchbody($mbox, $overview->msgno, 1.2); //html
 
-					if (strip_tags($content) == '') {
-						$content =  @imap_fetchbody( $mbox, $overview->msgno, 1.1); //plain text
+					if (strip_tags($content) == '')
+					{
+						$content = @imap_fetchbody($mbox, $overview->msgno, 1.1); //plain text
 					}
 
 					//this encodes text with  =20 correctly i think
@@ -163,20 +185,23 @@ print_r($result);exit;
 					//
 					// now only adding if part type is 0
 
-					if (strip_tags($content) == '') {
+					if (strip_tags($content) == '')
+					{
 
-						if($part['part_object']->type == 0) {
-							$content =  @imap_fetchbody( $mbox, $overview->msgno, 1); //multipart alternative
+						if ($part['part_object']->type == 0)
+						{
+							$content = @imap_fetchbody($mbox, $overview->msgno, 1); //multipart alternative
 						}
 					}
 				}
 				$content = $this->removeReplyText($content);
 				//remove any style sheets
-				$content =  preg_replace('/<\s*style.+?<\s*\/\s*style.*?>/si', ' ', $content);
+				$content = preg_replace('/<\s*style.+?<\s*\/\s*style.*?>/si', ' ', $content);
 				$thisData[$contentField] = $content;
 
-				foreach($thisData as $key=>$val) {
-					JRequest::setVar($key, $val);
+				foreach ($thisData as $key => $val)
+				{
+					$input->set($key, $val);
 				}
 				$formModel = $listModel->getForm();
 				unset($listModel->getFormModel()->_formData);
@@ -184,8 +209,9 @@ print_r($result);exit;
 
 				//// TEST!!!!!!!
 
-				if ($deleteMail) {
-					imap_delete( $mbox, $overview->msgno);
+				if ($deleteMail)
+				{
+					imap_delete($mbox, $overview->msgno);
 				}
 
 			}
@@ -195,24 +221,24 @@ print_r($result);exit;
 		$this->_row->store();
 
 		/*	foreach ($storeData as &$data) {
-			$relLargeImagePath = '';
-			$largeImagePath = '';
-			$smallImagePath = '';
-			if ($data['imageFound']) {
-			// @TODO process images to fileupload element
-			if (isset($data['imageBuffer'] )) {
-			$relLargeImagePath = '/media/com_fabrik/' . $data['id'] .  '/galleries/images/' . $data['attachmentName'];
-			$largeImagePath = JPATH_BASE.$relLargeImagePath;
+		    $relLargeImagePath = '';
+		    $largeImagePath = '';
+		    $smallImagePath = '';
+		    if ($data['imageFound']) {
+		    // @TODO process images to fileupload element
+		    if (isset($data['imageBuffer'] )) {
+		    $relLargeImagePath = '/media/com_fabrik/' . $data['id'] .  '/galleries/images/' . $data['attachmentName'];
+		    $largeImagePath = JPATH_BASE.$relLargeImagePath;
 
-			$smallImagePath = JPATH_BASE . '/media/com_fabrik/' . $data['id'] . '/galleries/thumbs/' . $data['attachmentName'];
-			JFile::write( $largeImagePath, $data['imageBuffer']);
-			$imageLib->resize(400, 400, $largeImagePath, $largeImagePath);
-			$imageLib->resize(125, 125, $largeImagePath, $smallImagePath);
-			$title = "<a href='".JURI::base()."/media/com_fabrik/".$data['id']."/galleries/images/".$data['attachmentName']."' rel='lightbox[]' title='".$data['attachmentName']."'>
-			<img class='fabrikLightBoxImage' src='".JURI::base()."/media/com_fabrik/".$data['id']."/galleries/thumbs/".$data['attachmentName']."' alt='media' /></a>" . $title;
-			}
-			}
-			}*/
+		    $smallImagePath = JPATH_BASE . '/media/com_fabrik/' . $data['id'] . '/galleries/thumbs/' . $data['attachmentName'];
+		    JFile::write( $largeImagePath, $data['imageBuffer']);
+		    $imageLib->resize(400, 400, $largeImagePath, $largeImagePath);
+		    $imageLib->resize(125, 125, $largeImagePath, $smallImagePath);
+		    $title = "<a href='".JURI::base()."/media/com_fabrik/".$data['id']."/galleries/images/".$data['attachmentName']."' rel='lightbox[]' title='".$data['attachmentName']."'>
+		    <img class='fabrikLightBoxImage' src='".JURI::base()."/media/com_fabrik/".$data['id']."/galleries/thumbs/".$data['attachmentName']."' alt='media' /></a>" . $title;
+		    }
+		    }
+		    }*/
 
 		imap_expunge($mbox);
 		imap_close($mbox);
@@ -225,12 +251,15 @@ print_r($result);exit;
 	 * @return string content
 	 */
 
-	protected function removeReplyText($content ) {
+	protected function removeReplyText($content)
+	{
 		// try to remove reply text
-		$content = preg_replace( "/\n\>(.*)/", '', $content);
+		$content = preg_replace("/\n\>(.*)/", '', $content);
 		$content = explode("\n", $content);
-		for($i = count($content)-1; $i >= 0; $i--) {
-			if (trim($content[$i]) == '') {
+		for ($i = count($content) - 1; $i >= 0; $i--)
+		{
+			if (trim($content[$i]) == '')
+			{
 				unset($content[$i]);
 			}
 		}
@@ -239,9 +268,10 @@ print_r($result);exit;
 
 		// test for date and message that preceeds reply text
 		//e.g. "2009/9/2 Dev Site for Play Simon Games "
-		$matches= array();
-		$res = preg_match( "/[0-9]{4}\/[0-9]{1,2}\/[0-9]{1,2}/", $last, $matches);
-		if ($res == 0) {
+		$matches = array();
+		$res = preg_match("/[0-9]{4}\/[0-9]{1,2}\/[0-9]{1,2}/", $last, $matches);
+		if ($res == 0)
+		{
 			$content .= "\n$last";
 		}
 		return $content;
@@ -253,11 +283,12 @@ print_r($result);exit;
 	 * @return string email subject
 	 */
 
-	private function getTitle( $overview )
+	private function getTitle($overview)
 	{
 		$title = $overview->subject;
 		//remove 'RE: ' from title
-		if (JString::strtoupper(substr($title, 0, 3)) == 'RE:') {
+		if (JString::strtoupper(substr($title, 0, 3)) == 'RE:')
+		{
 			$title = JString::substr($title, 3, JString::strlen($title));
 		}
 		return $title;
@@ -265,39 +296,59 @@ print_r($result);exit;
 
 }
 
-function create_part_array($structure, $prefix="") {
-	if (isset($structure->parts)&& sizeof($structure->parts) > 0) {    // There some sub parts
-		foreach ($structure->parts as $count => $part) {
-			add_part_to_array($part, $prefix.($count+1), $part_array);
+function create_part_array($structure, $prefix = "")
+{
+	if (isset($structure->parts) && sizeof($structure->parts) > 0)
+	{ // There some sub parts
+		foreach ($structure->parts as $count => $part)
+		{
+			add_part_to_array($part, $prefix . ($count + 1), $part_array);
 		}
-	}else{    // Email does not have a seperate mime attachment for text
-		$part_array[] = array('part_number' => $prefix.'1', 'part_object' => $structure);
+	}
+	else
+	{ // Email does not have a seperate mime attachment for text
+		$part_array[] = array('part_number' => $prefix . '1', 'part_object' => $structure);
 	}
 	return $part_array;
 }
 // Sub function for create_part_array(). Only called by create_part_array() and itself.
-function add_part_to_array($obj, $partno, & $part_array) {
+function add_part_to_array($obj, $partno, &$part_array)
+{
 	$part_array[] = array('part_number' => $partno, 'part_object' => $obj);
-	if ($obj->type == 2) { // Check to see if the part is an attached email message, as in the RFC-822 type
-		if (sizeof($obj->parts) > 0) {    // Check to see if the email has parts
-			foreach ($obj->parts as $count => $part) {
+	if ($obj->type == 2)
+	{ // Check to see if the part is an attached email message, as in the RFC-822 type
+		if (sizeof($obj->parts) > 0)
+		{ // Check to see if the email has parts
+			foreach ($obj->parts as $count => $part)
+			{
 				// Iterate here again to compensate for the broken way that imap_fetchbody() handles attachments
-				if (sizeof($part->parts) > 0) {
-					foreach ($part->parts as $count2 => $part2) {
-						add_part_to_array($part2, $partno.".".($count2+1), $part_array);
+				if (sizeof($part->parts) > 0)
+				{
+					foreach ($part->parts as $count2 => $part2)
+					{
+						add_part_to_array($part2, $partno . "." . ($count2 + 1), $part_array);
 					}
-				}else{    // Attached email does not have a seperate mime attachment for text
-					$part_array[] = array('part_number' => $partno.'.'.($count+1), 'part_object' => $obj);
+				}
+				else
+				{ // Attached email does not have a seperate mime attachment for text
+					$part_array[] = array('part_number' => $partno . '.' . ($count + 1), 'part_object' => $obj);
 				}
 			}
-		}else{    // Not sure if this is possible
-			$part_array[] = array('part_number' => $prefix.'.1', 'part_object' => $obj);
 		}
-	}else{    // If there are more sub-parts, expand them out.
-		if(isset($obj->parts) && is_array($obj->parts)) {
-			if (sizeof($obj->parts) > 0) {
-				foreach ($obj->parts as $count => $p) {
-					add_part_to_array($p, $partno.".".($count+1), $part_array);
+		else
+		{ // Not sure if this is possible
+			$part_array[] = array('part_number' => $prefix . '.1', 'part_object' => $obj);
+		}
+	}
+	else
+	{ // If there are more sub-parts, expand them out.
+		if (isset($obj->parts) && is_array($obj->parts))
+		{
+			if (sizeof($obj->parts) > 0)
+			{
+				foreach ($obj->parts as $count => $p)
+				{
+					add_part_to_array($p, $partno . "." . ($count + 1), $part_array);
 				}
 			}
 		}

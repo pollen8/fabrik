@@ -40,6 +40,9 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 
 	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// Could be a dropdown with multivalues
 		if (is_array($data))
 		{
@@ -59,11 +62,11 @@ class plgFabrik_ValidationruleIsUniqueValue extends plgFabrik_Validationrule
 		/* $$$ hugh - need to check to see if we're editing a record, otherwise
 		 * will fail 'cos it finds the original record (assuming this element hasn't changed)
 		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
-		 * $rowid = JRequest::getVar('rowid');
+		 * $rowid = $input->get('rowid');
 		 * Have to do it by grabbing PK from request, 'cos rowid isn't set on AJAX validation
 		 */
 		$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
-		$rowid = JRequest::getVar($pk, '');
+		$rowid = $input->get($pk, '');
 		if (!empty($rowid))
 		{
 			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));

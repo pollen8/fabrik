@@ -34,12 +34,13 @@ class FabrikController extends JController
 
 	public function display($cachable = false, $urlparams = false)
 	{
+		$app = JFactory::getApplication();
 		$this->default_view = 'home';
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		parent::display();
 
 		// Load the submenu.
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($app->input->getWord('view', 'lists'));
 	}
 
 	/**

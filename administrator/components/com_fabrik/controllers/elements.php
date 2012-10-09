@@ -1,20 +1,23 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Elements list controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 
 class FabrikControllerElements extends FabControllerAdmin
@@ -31,7 +34,8 @@ class FabrikControllerElements extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-	 * @param	array An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -39,13 +43,17 @@ class FabrikControllerElements extends FabControllerAdmin
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$this->registerTask('showInListView',	'toggleInList');	// value = 0
-		$this->registerTask('hideFromListView',	'toggleInList');	// value = 0
+		$this->registerTask('showInListView', 'toggleInList');
+		$this->registerTask('hideFromListView', 'toggleInList');
 	}
 
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
+	 * @return  J model
 	 */
 
 	public function &getModel($name = 'Element', $prefix = 'FabrikModel')
@@ -59,16 +67,18 @@ class FabrikControllerElements extends FabControllerAdmin
 	public function toggleInList()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
 		// Get items to publish from the request.
-		$cid = JRequest::getVar('cid', array(), '', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		$data = array('showInListView' => 1, 'hideFromListView' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, JText::_($this->text_prefix.'_NO_ITEM_SELECTED'));
+			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{
@@ -103,9 +113,11 @@ class FabrikControllerElements extends FabControllerAdmin
 	 * Set up page asking about what to delete
 	 *
 	 * @since	1.6
+	 *
+	 * @return null
 	 */
 
-	function delete()
+	public function delete()
 	{
 		$model = $this->getModel('Elements');
 		$viewType = JFactory::getDocument()->getType();
@@ -115,25 +127,32 @@ class FabrikControllerElements extends FabControllerAdmin
 		{
 			$view->setModel($model, true);
 		}
-		//used to load in the confirm form fields
+
+		// Used to load in the confirm form fields
 		$view->setModel($this->getModel('list'));
 		$view->display();
 	}
 
 	/**
-	 * cancel delete element
-	 * @return null
+	 * Cancel delete element
+	 *
+	 * @return  null
 	 */
 
-	function cancel()
+	public function cancel()
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=elements');
 	}
 
+	/**
+	 * Set up the page to ask for which group to copy the element to
+	 *
+	 * @return  null
+	 */
 
 	public function copySelectGroup()
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$model = $this->getModel('Elements');
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
@@ -142,7 +161,8 @@ class FabrikControllerElements extends FabControllerAdmin
 		{
 			$view->setModel($model, true);
 		}
-		//used to load in the confirm form fields
+
+		// Used to load in the confirm form fields
 		$view->setModel($this->getModel('list'));
 		$view->display();
 	}
@@ -157,10 +177,12 @@ class FabrikControllerElements extends FabControllerAdmin
 
 	public function batch()
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Elements');
-		$cid = JRequest::getVar('cid', array(), '', 'array');
-		$opts = JRequest::getVar('batch');
+		$cid = $input->get('cid', array(), 'array');
+		$opts = $input->get('batch', array(), 'array');
 		$model->batch($cid, $opts);
 		$this->setRedirect('index.php?option=com_fabrik&view=elements', JText::_('COM_FABRIK_MSG_BATCH_DONE'));
 	}

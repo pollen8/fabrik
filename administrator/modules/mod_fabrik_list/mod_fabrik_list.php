@@ -28,9 +28,10 @@ require_once COM_FABRIK_FRONTEND . '/controller.php';
 require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 
 // $$$rob looks like including the view does something to the layout variable
-$origLayout = JRequest::getVar('layout');
+$input = $app->input;
+$origLayout = $input->get('layout');
 require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
-JRequest::setVar('layout', $origLayout);
+$input->set('layout', $origLayout);
 
 require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
 JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
@@ -46,16 +47,16 @@ if ($listId === 0)
 $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list))
 {
-	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
+	$input->set('fabrik_show_in_list', $listels->show_in_list);
 }
 
 $useajax = $params->get('useajax');
 $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
 $layout	= $params->get('fabriklayout', 'default');
-JRequest::setVar('layout', $layout);
+$input->set('layout', $layout);
 
-/*this all works fine for a list
+/* this all works fine for a list
  * going to try to load a package so u can access the form and list
  */
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
@@ -76,7 +77,7 @@ $model->setRenderContext($module->id);
 if ($limit !== 0)
 {
 	$app->setUserState('com_fabrik.list' . $model->getRenderContext() . '.limitlength', $limit);
-	JRequest::setVar('limit', $limit);
+	$input->set('limit', $limit);
 }
 
 if ($useajax !== '')
@@ -113,15 +114,15 @@ $view->isMambot = true;
 // Display the view
 $view->assign('error', $controller->getError());
 
-$post = JRequest::get('post');
-
 // Build unique cache id on url, post and user id
 $user = JFactory::getUser();
-$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $listId));
+$uri = JFactory::getURI();
+$uri = $uri->toString(array('path', 'query'));
+$cacheid = serialize(array($uri, $_POST, $user->get('id'), get_class($view), 'display', $listId));
 $cache = JFactory::getCache('com_fabrik', 'view');
 
 // F3 cache with raw view gives error
-if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
+if (in_array($input->get('format'), array('raw', 'csv')))
 {
 	$view->display();
 }
@@ -129,5 +130,5 @@ else
 {
 	$cache->get($view, 'display', $cacheid);
 }
-JRequest::setVar('layout', $origLayout);
-JRequest::setVar('fabrik_show_in_list', null);
+$input->set('layout', $origLayout);
+$input->set('fabrik_show_in_list', null);

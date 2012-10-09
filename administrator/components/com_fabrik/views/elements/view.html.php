@@ -111,7 +111,9 @@ class FabrikViewElements extends JView
 	protected function confirmdelete($tpl = null)
 	{
 		$model = $this->getModel();
-		$model->setState('filter.cid', JRequest::getVar('cid', array(), 'default', 'array'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model->setState('filter.cid', $input->get('cid', array(), 'array'));
 		$this->items = $this->get('Items');
 		$this->addConfirmDeleteToolbar();
 		parent::display($tpl);
@@ -125,7 +127,9 @@ class FabrikViewElements extends JView
 
 	protected function addConfirmDeleteToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENT_CONFIRM_DELETE'), 'element.png');
 		JToolBarHelper::save('elements.dodelete', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('elements.cancel', 'JTOOLBAR_CANCEL');
@@ -135,9 +139,11 @@ class FabrikViewElements extends JView
 
 	public function copySelectGroup($tpl = null)
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$model = $this->getModel();
-		$model->setState('filter.cid', JRequest::getVar('cid', array(), 'default', 'array'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model->setState('filter.cid', $input->get('cid', array(), 'array'));
 		$this->items = $this->get('Items');
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -150,7 +156,9 @@ class FabrikViewElements extends JView
 
 	protected function addConfirmCopyToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENT_COPY_TO_WHICH_GROUP'), 'element.png');
 		JToolBarHelper::save('element.copy', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('elements.cancel', 'JTOOLBAR_CANCEL');

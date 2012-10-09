@@ -44,6 +44,8 @@ class FabrikControllerVisualization extends JController
 	public function display()
 	{
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
 		if ($viewName == '')
 		{
@@ -68,17 +70,17 @@ class FabrikControllerVisualization extends JController
 		$view->assign('error', $this->getError());
 
 		// F3 cache with raw view gives error
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv')))
+		if (in_array($app->get('format'), array('raw', 'csv')))
 		{
 			$view->display();
 		}
 		else
 		{
-			$post = JRequest::get('post');
-
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$uri = JFactory::getURI();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $app->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
@@ -93,7 +95,8 @@ class FabrikControllerVisualization extends JController
 	protected function getViewName()
 	{
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
-		$viz->load(JRequest::getInt('id'));
+		$app = JFactory::getApplication();
+		$viz->load($app->input->getInt('id'));
 		$viewName = $viz->plugin;
 		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
 		JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');

@@ -41,10 +41,11 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	{
 		$params = $this->getParams();
 		$lists = $params->get('timeline_table', array());
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$session = JFactory::getSession();
 
-		$key = 'com_fabrik.timeline.total.' . JRequest::getInt('visualizationid');
+		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
 		if (!$session->has($key))
 		{
 			$totals = $this->getTotal();
@@ -54,8 +55,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		{
 			$totals = $session->get($key);
 		}
-		$currentList = JRequest::getInt('currentList', 0);
-		$start = JRequest::getInt('start', 0);
+		$currentList = $input->getInt('currentList', 0);
+		$start = $input->getInt('start', 0);
 
 		$res = new stdClass;
 		$fabrik = new stdClass;
@@ -71,7 +72,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 
 			$c = array_search($currentList, $lists);
 			$res->events = $this->jsonEvents($currentList, $totals[$currentList], $start, $c);
-
 
 			if ($start + $this->step > $totals[$currentList])
 			{
@@ -130,8 +130,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	protected function endAjax_getEvents(&$res)
 	{
 		$session = JFactory::getSession();
-		$key = 'com_fabrik.timeline.total.' . JRequest::getInt('visualizationid');
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
 		$res->done = 1;
 		$session->clear($key);
 	}
@@ -150,6 +151,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	protected function jsonEvents($listId, $total, $start, $c)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$document = JFactory::getDocument();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
@@ -171,13 +173,12 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$textColour = JArrayHelper::getValue($textColours, $c);
 		$className = JArrayHelper::getValue($classNames, $c);
 
-
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 
 		$eventdata = array();
-		JRequest::setVar('limit' . $listId, $this->step);
-		JRequest::setVar('limitstart' . $listId, $start);
+		$input->set('limit' . $listId, $this->step);
+		$input->set('limitstart' . $listId, $start);
 		$listModel->setLimits();
 
 

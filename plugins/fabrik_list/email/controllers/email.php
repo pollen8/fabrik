@@ -47,7 +47,11 @@ class FabrikControllerListemail extends JController
 
 	function popupwin()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
 
@@ -55,16 +59,16 @@ class FabrikControllerListemail extends JController
 		$view = $this->getView($viewName, $viewType);
 
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('id'));
+		$listModel->setId($input->getInt('id'));
 		$formModel = $listModel->getFormModel();
+
 		// Push a model into the view
-		
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
-		
+
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
-		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));
+		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
 		if (!JError::isError($model))
 		{
 			$view->setModel($model, true);
@@ -83,14 +87,15 @@ class FabrikControllerListemail extends JController
 
 	function doemail()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('id'));
-		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));
+		$listModel->setId($input->getInt('id'));
+		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
 		$model->listModel = $listModel;
 		$model->doEmail();
 	}
 
 }
-?>

@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -17,7 +17,7 @@ jimport('joomla.application.component.controllerform');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerElement extends JControllerForm
 {
@@ -30,31 +30,41 @@ class FabrikControllerElement extends JControllerForm
 	protected $default_view = 'element';
 
 	/**
-	 * called via ajax to load in a given plugin's HTML settings
+	 * Called via ajax to load in a given plugin's HTML settings
+	 *
+	 * @return  void
 	 */
 
 	public function getPluginHTML()
 	{
-		$plugin = JRequest::getCmd('plugin');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin');
 		$model = $this->getModel();
-		$model->setState('element.id', JRequest::getInt('id'));
+		$model->setState('element.id', $input->getInt('id'));
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
-	
+
 	/**
-	 * (non-PHPdoc)
-	 * @see JControllerForm::save()
+	 * Method to save a record.
+	 *
+	 * @param   string  $key     The name of the primary key of the URL variable.
+	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 *
+	 * @return  boolean  True if successful, false otherwise.
 	 */
 
 	public function save($key = null, $urlVar = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getModel('list', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('listid'));
-		$rowId = JRequest::getVar('rowid');
-		$key = JRequest::getVar('element');
+		$listModel->setId($input->getInt('listid'));
+		$rowId = $input->get('rowid', '', 'string');
+		$key = $input->get('element');
 		$key = array_pop(explode('___', $key));
-		$value = JRequest::getVar('value');
+		$value = $input->get('value', '', 'string');
 		$listModel->storeCell($rowId, $key, $value);
 		$this->mode = 'readonly';
 		$this->display();

@@ -20,7 +20,7 @@ jimport('joomla.application.component.view');
  */
 class FabrikViewList extends JView
 {
-	
+
 
 	/**
 	 * display a json object representing the table data.
@@ -29,14 +29,16 @@ class FabrikViewList extends JView
 	function display()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
+		$app = JFactory::getApplication();
 		$model = JModel::getInstance('List', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$this->setModel($model, true);
 		$item = $model->getTable();
 		$params = $model->getParams();
 		$model->render();
 		$this->emptyDataMessage = $params->get('empty_data_msg');
-		$rowid = JRequest::getInt('rowid');
+		$rowid = $input->getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->getData();
 		$nav = $model->getPagination();
@@ -74,7 +76,7 @@ class FabrikViewList extends JView
 		if (!empty($msg)) {
 			$d['msg'] = $msg[0]['message'];
 		}
-		
+
 		echo json_encode($d);
 	}
 
@@ -86,16 +88,18 @@ class FabrikViewList extends JView
 	private function getTmpl()
 	{
 		$app = JFactory::getApplication();
+		$app = JFactory::getApplication();
+		$input->set('hidemainmenu', true);
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$params = $model->getParams();
 		if ($app->isAdmin()) {
 			$tmpl = $params->get('admin_template');
 			if ($tmpl == -1 || $tmpl == '') {
-				$tmpl = JRequest::getVar('layout', $item->template);
+				$tmpl = $input->get('layout', $item->template);
 			}
 		} else {
-			$tmpl = JRequest::getVar('layout', $item->template);
+			$tmpl = $input->get('layout', $item->template);
 		}
 		return $tmpl;
 	}

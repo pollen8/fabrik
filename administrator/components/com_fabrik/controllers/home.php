@@ -39,7 +39,7 @@ class FabrikControllerHome extends JControllerAdmin
 		$model->reset();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
 	}
-	
+
 	function dropData()
 	{
 		$model = $this->getModel('Home');
@@ -60,14 +60,18 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * ajax function to update any drop down that contains records relating to the selected table
+	 * Ajax function to update any drop down that contains records relating to the selected table
 	 * called each time the selected table is changed
+	 *
+	 * @return  void
 	 */
 
 	function ajax_updateColumDropDowns()
 	{
-		$cnnId = JRequest::getInt('cid', 1);
-		$tbl = JRequest::getVar('table', '');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cnnId = $input->getInt('cid', 1);
+		$tbl = $input->get('table', '', 'string');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
 		$fieldDropDown2 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'group_by');
@@ -83,7 +87,7 @@ class FabrikControllerHome extends JControllerAdmin
 
 	function getRSSFeed()
 	{
-		//  get RSS parsed object
+		// Get RSS parsed object
 		$options = array();
 		$options['rssUrl']		= 'http://feeds.feedburner.com/fabrik';
 		$options['cache_time']	= 86400;

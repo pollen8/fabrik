@@ -32,8 +32,8 @@ class fabrikViewCsv extends JView
 
 	public function display($tpl = null)
 	{
-
-		$this->listid = JRequest::getVar('listid', 0);
+		$app = JFactory::getApplication();
+		$this->listid = $app->input->get('listid', 0);
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
 		$this->setModel($listModel, true);
@@ -92,7 +92,7 @@ class fabrikViewCsv extends JView
 
 		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
-		$opts->winid = JRequest::getVar('winid', '');
+		$opts->winid = $app->input->get('winid', '');
 		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_CSV_COMPLETE');

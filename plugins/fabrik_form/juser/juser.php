@@ -307,6 +307,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	public function onBeforeStore($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
 
@@ -342,9 +343,9 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$data = $formModel->_formData;
 
 		// Check for request forgeries
-		JRequest::checkToken() or jexit('Invalid Token');
+		JSession::checkToken() or jexit('Invalid Token');
 
-		$option = JRequest::getCmd('option');
+		$option = $input->get('option');
 
 		$original_id = 0;
 		if ($params->get('juser_field_userid') != '')
@@ -486,11 +487,11 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			return false;
 		}
 		$session = JFactory::getSession();
-		JRequest::setVar('newuserid', $user->id);
-		JRequest::setVar('newuserid', $user->id, 'cookie');
+		$input->set('newuserid', $user->id);
+		$input->cookie->set('newuserid', $user->id);
 		$session->set('newuserid', $user->id);
-		JRequest::setVar('newuserid_element', $this->useridfield);
-		JRequest::setVar('newuserid_element', $this->useridfield, 'cookie');
+		$input->set('newuserid_element', $this->useridfield);
+		$input->cookie->set('newuserid_element', $this->useridfield);
 		$session->set('newuserid_element', $this->useridfield);
 		/*
 		 * Time for the email magic so get ready to sprinkle the magic dust...

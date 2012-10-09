@@ -28,17 +28,21 @@ class FabrikControllerDetails extends JControllerForm
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
 	/**
-	 * show the form in the admin
+	 * Show the form in the admin
+	 *
+	 * @return  void
 	 */
 
 	function view()
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
-		JRequest::setVar('view', 'details');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('view', 'details');
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout	= $input->get('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 
@@ -48,7 +52,7 @@ class FabrikControllerDetails extends JControllerForm
 		// @Todo check for cached version
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
 		$view->display();
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
 
 }

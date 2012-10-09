@@ -39,9 +39,11 @@ class FabrikControllerForm extends JControllerForm
 	{
 		$document = JFactory::getDocument();
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout = JRequest::getCmd('layout', 'default');
+		$viewLayout = $input->get('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 
@@ -61,7 +63,9 @@ class FabrikControllerForm extends JControllerForm
 	public function process()
 	{
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'form');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 
@@ -71,22 +75,22 @@ class FabrikControllerForm extends JControllerForm
 		{
 			$view->setModel($model, true);
 		}
-		$model->setId(JRequest::getInt('formid', 0));
-		$this->isMambot = JRequest::getVar('_isMambot', 0);
+		$model->setId($input->get('formid', 0));
+		$this->isMambot = $input->get('_isMambot', 0);
 		$model->getForm();
-		$model->_rowId = JRequest::getVar('rowid', '');
+		$model->_rowId = $input->get('rowid', '', 'string');
 
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
 		if (!$model->validate())
 		{
 			// If its in a module with ajax or in a package or inline edit
-			if (JRequest::getCmd('fabrik_ajax'))
+			if ($input->get('fabrik_ajax'))
 			{
-				if (JRequest::getInt('elid') !== 0)
+				if ($input->getInt('elid') !== 0)
 				{
 					// Inline edit
 					$eMsgs = array();
@@ -111,7 +115,7 @@ class FabrikControllerForm extends JControllerForm
 			}
 			if ($this->isMambot)
 			{
-				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+				$input->set('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 
 				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
 				// might as well use the 'savepage' mechanism, as it's already there!
@@ -147,19 +151,19 @@ class FabrikControllerForm extends JControllerForm
 
 		$msg = $model->getRedirectMessage($model);
 
-		if (JRequest::getInt('elid') !== 0)
+		if ($input->getInt('elid') !== 0)
 		{
 			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
-		if (JRequest::getInt('_packageId') !== 0)
+		if ($input->getInt('_packageId') !== 0)
 		{
-			$rowid = JRequest::getInt('rowid');
+			$rowid = $input->getInt('rowid');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
 			return;
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			$url = 'index.php?option=com_fabrik&view=list&format=raw&listid=' . $tid;
 			$this->setRedirect($url, $msg);
@@ -182,14 +186,16 @@ class FabrikControllerForm extends JControllerForm
 
 	protected function makeRedirect($model, $msg = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 		if (array_key_exists('apply', $model->_formData))
 		{
-			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&listid=' . JRequest::getInt('listid')
-				. '&rowid=' . JRequest::getInt('rowid');
+			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
+				. '&rowid=' . $input->getInt('rowid');
 		}
 		else
 		{

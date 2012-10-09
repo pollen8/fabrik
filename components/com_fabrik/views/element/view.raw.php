@@ -30,19 +30,20 @@ class FabrikViewElement extends JView{
 
 	function display($tpl = null)
 	{
-		echo "form id = ".JRequest::getInt('formid');exit;
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$ids = JRequest::getVar('plugin');
-		foreach ($ids as $id) {
+		$ids = $input->get('plugin', array(), 'array');
+		foreach ($ids as $id)
+		{
 			$plugin = $pluginManager->getElementPlugin($id);
 		}
-/* 		$elementid = JRequest::getVar('elid');
+/* 		$elementid = $input->get('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = JRequest::getVar('plugin');
+		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$plugin->inLineEdit(); */
 	}
 
 }
-?>

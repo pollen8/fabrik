@@ -38,8 +38,9 @@ class FabrikControllerPackage extends JController
 	public function display()
 	{
 		$document = JFactory::getDocument();
-
-		$viewName = JRequest::getVar('view', 'package', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'package');
 
 		$viewType = $document->getType();
 

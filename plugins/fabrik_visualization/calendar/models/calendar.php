@@ -117,14 +117,17 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 
 	function save()
 	{
-		$user = &JFactory::getUser();
-		$post = JRequest::get('post');
+		$user = JFactory::getUser();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
 		if (!$this->bind($post))
 		{
 			return JError::raiseWarning(500, $this->getError());
 		}
 
-		$params = JRequest::getVar('params', array(), 'post');
+		$params = $input->get('params', array(), 'array');
 		$this->params = json_encode($params);
 		if ($this->id == 0)
 		{
@@ -235,7 +238,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	function setRequestFilters()
 	{
 		$this->setupEvents();
-		$request = JRequest::get('request');
+		$filter = JFilterInput::getInstance();
+		$request = $filter->clean($_REQUEST, 'array');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 
 		foreach ($this->_events as $listid => $record)
@@ -468,13 +472,17 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * delete an event
+	 * Delete an event
+	 *
+	 * @return  void
 	 */
 
 	public function deleteEvent()
 	{
-		$id = (int) JRequest::getVar('id');
-		$listid = JRequest::getInt('listid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('id');
+		$listid = $input->getInt('listid');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$list = $listModel->getTable();
@@ -489,4 +497,3 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 }
-

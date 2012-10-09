@@ -243,6 +243,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	protected function canRate($row_id = null, $ids = array())
 	{
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		if ($params->get('rating-mode') == 'user-rating')
 		{
@@ -251,7 +252,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		}
 		if (is_null($row_id))
 		{
-			$row_id = JRequest::getInt('rowid');
+			$row_id = $app->input->getInt('rowid');
 		}
 		$list = $this->getListModel()->getTable();
 		$listid = $list->id;
@@ -273,10 +274,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
-		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
+		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
 			return JText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
 		}
@@ -298,8 +301,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 			$str[] = '<img src="' . $imagepath . 'clear_rating_out' . $ext . '" style="' . $css . 'padding:3px;" alt="clear" class="rate_-1" />';
 		}
 		$listid = $this->getlistModel()->getTable()->id;
-		$formid = JRequest::getInt('formid');
-		$row_id = JRequest::getInt('rowid');
+		$formid = $input->getInt('formid');
+		$row_id = $input->getInt('rowid');
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			$avg = $value;
@@ -343,10 +346,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	public function storeDatabaseFormat($val, $data)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
-		$listid = JRequest::getInt('listid');
-		$formid = JRequest::getInt('formid');
-		$row_id = JRequest::getInt('rowid');
+		$listid = $input->getInt('listid');
+		$formid = $input->getInt('formid');
+		$row_id = $input->getInt('rowid');
 		if ($params->get('rating-mode') == 'user-rating')
 		{
 			list($val, $total) = $this->getRatingAverage($val, $listid, $formid, $row_id);
@@ -362,17 +367,19 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	public function onAjax_rate()
 	{
-		$this->setId(JRequest::getInt('element_id'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
 		$listid = $list->id;
 		$formid = $listModel->getFormModel()->getId();
-		$row_id = JRequest::getVar('row_id');
-		$rating = JRequest::getInt('rating');
+		$row_id = $input->get('row_id');
+		$rating = $input->getInt('rating');
 		$this->doRating($listid, $formid, $row_id, $rating);
 
-		if (JRequest::getVar('mode') == 'creator-rating')
+		if ($input->get('mode') == 'creator-rating')
 		{
 			// @todo FIX for joins as well
 
@@ -475,9 +482,11 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$params = $this->getParams();
-		if (JRequest::getVar('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
+		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
 			return;
 		}
@@ -485,8 +494,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$element = $this->getElement();
 		$data = $this->_form->_data;
 		$listid = $this->getlistModel()->getTable()->id;
-		$formid = JRequest::getInt('formid');
-		$row_id = JRequest::getInt('rowid');
+		$formid = $input->getInt('formid');
+		$row_id = $input->getInt('rowid');
 		$value = $this->getValue($data, $repeatCounter);
 		if ($params->get('rating-mode') != 'creator-rating')
 		{
@@ -499,12 +508,12 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
 		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
 		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, array(), true);
-		$opts->row_id = JRequest::getInt('rowid');
+		$opts->row_id = $input->getInt('rowid');
 		$opts->elid = $this->getElement()->id;
 		$opts->userid = (int) $user->get('id');
 		$opts->canRate = (bool) $this->canRate();
 		$opts->mode = $params->get('rating-mode');
-		$opts->view = JRequest::getCmd('view');
+		$opts->view = $input->get('view');
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
 

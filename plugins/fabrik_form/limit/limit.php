@@ -46,6 +46,8 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 	 */
 	private function _process($params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
@@ -53,7 +55,7 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 		{
 			return true;
 		}
-		if (JRequest::getCmd('view') === 'details' || $formModel->getRowId() > 0)
+		if ($input->get('view') === 'details' || $formModel->getRowId() > 0)
 		{
 			return true;
 		}

@@ -35,6 +35,8 @@ class plgFabrik_FormKunena extends plgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		jimport('joomla.filesystem.file');
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/class.kunena.php';
 		$define = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
@@ -69,19 +71,19 @@ class plgFabrik_FormKunena extends plgFabrik_Form
 		$action = 'post';
 
 		// Added action in request
-		JRequest::setVar('action', $action);
+		$input->set('action', $action);
 		$func = 'post';
 		$contentURL = 'empty';
-		JRequest::setVar('catid', $catid);
+		$input->set('catid', $catid);
 		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->_fullFormData);
 		$subject = $params->get('kunena_title');
-		JRequest::SetVar('message', $msg);
+		$input->set('message', $msg);
 		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->_fullFormData);
 
 		// Added subject in request
-		JRequest::SetVar('subject', $subject);
-		$origId = JRequest::getVar('id');
-		JRequest::setVar('id', 0);
+		$input->set('subject', $subject);
+		$origId = $input->get('id');
+		$input->set('id', 0);
 		/*
 		ob_start();
 		include ($postfile);
@@ -91,10 +93,10 @@ class plgFabrik_FormKunena extends plgFabrik_Form
 		include $postfile;
 		$mypost = new CKunenaPost;
 
-		// Public CKunenaPost::display() will call protected method CKunenaPost::post() if JRequest action is 'post'
+		// Public CKunenaPost::display() will call protected method CKunenaPost::post() if $app->input action is 'post'
 		$mypost->display();
 		ob_end_clean();
-		JRequest::setVar('id', $origId);
+		$input->set('id', $origId);
 	}
 
 }

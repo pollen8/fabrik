@@ -471,9 +471,11 @@ class FabrikPlugin extends JPlugin
 
 	function ajax_tables()
 	{
-		$cid = JRequest::getInt('cid', -1);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->getInt('cid', -1);
 		$rows = array();
-		$showFabrikLists = JRequest::getVar('showf', false);
+		$showFabrikLists = $input->get('showf', false);
 		if ($showFabrikLists)
 		{
 			$db = FabrikWorker::getDbo(true);
@@ -523,17 +525,19 @@ class FabrikPlugin extends JPlugin
 
 	function ajax_fields()
 	{
-		$tid = JRequest::getVar('t');
-		$keyType = JRequest::getVar('k', 1);
-		$showAll = JRequest::getVar('showall', false);//if true show all fields if false show fabrik elements
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$tid = $input->get('t');
+		$keyType = $input->get('k', 1);
+		$showAll = $input->get('showall', false);//if true show all fields if false show fabrik elements
 
 		//only used if showall = false, includes validations as separate entries
-		$incCalculations = JRequest::getVar('calcs', false);
+		$incCalculations = $input->get('calcs', false);
 		$arr = array();
 		if ($showAll)
 		{
 			//show all db columns
-			$cid = JRequest::getVar('cid', -1);
+			$cid = $input->get('cid', -1);
 			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
 			$cnn->setId($cid);
 			$db = $cnn->getDb();
@@ -572,13 +576,13 @@ class FabrikPlugin extends JPlugin
 			$model->setId($tid);
 			$table = $model->getTable();
 			$groups = $model->getFormGroupElementData();
-			$published = JRequest::getVar('published', false);
-			$showintable = JRequest::getVar('showintable', false);
+			$published = $input->get('published', false);
+			$showintable = $input->get('showintable', false);
 			foreach ($groups as $g => $groupModel)
 			{
 				if ($groupModel->isJoin())
 				{
-					if (JRequest::getVar('excludejoined') == 1)
+					if ($input->get('excludejoined') == 1)
 					{
 						continue;
 					}

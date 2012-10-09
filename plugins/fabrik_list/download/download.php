@@ -88,7 +88,9 @@ class plgFabrik_ListDownload extends plgFabrik_List
 
 	public function process($params, &$model, $opts = array())
 	{
-		$ids = JRequest::getVar('ids', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$ids = $input->get('ids', array(), 'array');
 		$download_table = $params->get('download_table');
 		$download_fk = $params->get('download_fk');
 		$download_file = $params->get('download_file');

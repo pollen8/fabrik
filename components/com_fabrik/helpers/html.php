@@ -149,8 +149,10 @@ class FabrikHelperHTML
 
 	public static function windows($selector = '', $params = array())
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$script = '';
-		if (JRequest::getVar('format') == 'json')
+		if ($input->get('format') == 'json')
 		{
 			return;
 		}
@@ -240,9 +242,11 @@ EOD;
 	public static function emailForm($formModel, $template = '')
 	{
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$form = $formModel->getForm();
 		$document->setTitle($form->label);
-		$document->addStyleSheet("templates/'. $template .'/css/template_css.css");
+		$document->addStyleSheet('templates/' . $template . '/css/template_css.css');
 ?>
 <form method="post" action="index.php" name="frontendForm">
 	<table>
@@ -275,11 +279,10 @@ EOD;
 				onclick="window.close();" /></td>
 		</tr>
 	</table>
-	<input name="referrer"
-		value="<?php echo JRequest::getVar('referrer') ?>" type="hidden" /> <input
-		type="hidden" name="option" value="com_fabrik" /> <input type="hidden"
-		name="view" value="emailform" /> <input type="hidden" name="tmpl"
-		value="component" />
+	<input name="referrer" value="<?php echo $input->get('referrer'); ?>" type="hidden" />
+	<input type="hidden" name="option" value="com_fabrik" />
+	<input type="hidden" name="view" value="emailform" />
+	<input type="hidden" name="tmpl" value="component" />
 
 	 <?php echo JHTML::_('form.token'); ?></form>
 		<?php
@@ -369,6 +372,8 @@ EOD;
 
 	public static function printURL($formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$form = $formModel->getForm();
 		$table = $formModel->getTable();
 		if (isset(self::$printURL))
@@ -376,13 +381,13 @@ EOD;
 			return self::$printURL;
 		}
 		$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-		. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
+			. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
-		*/
-		if (JRequest::getVar('usekey') !== null)
+		 */
+		if ($input->get('usekey') !== null)
 		{
-			$url .= "&usekey=" . JRequest::getVar('usekey');
+			$url .= "&usekey=" . $input->get('usekey');
 		}
 		$url = JRoute::_($url);
 
@@ -439,20 +444,20 @@ EOD;
 			return self::$emailURL;
 		}
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		if ($app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
-			. $formModel->getRowId();
+				. $formModel->getRowId();
 		}
 		else
 		{
-			$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
-			. $formModel->getRowId();
+			$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->getRowId();
 		}
 
-		if (JRequest::getVar('usekey') !== null)
+		if ($input->get('usekey') !== null)
 		{
-			$url .= '&usekey=' . JRequest::getVar('usekey');
+			$url .= '&usekey=' . $input->get('usekey');
 		}
 		$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
 		self::$emailURL = $url;
@@ -568,11 +573,13 @@ EOD;
 
 	public static function cssAsAsset()
 	{
-		$tpl = JRequest::getVar('tmpl');
-		$iframe = JRequest::getVar('iframe');
-		$print = JRequest::getVar('print');
-		$format = JRequest::getVar('format');
-		return JRequest::getVar('format') == 'raw' || ($tpl == 'component' && $iframe != 1) && $print != 1 && $format !== 'pdf';
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$tpl = $input->get('tmpl');
+		$iframe = $input->get('iframe');
+		$print = $input->get('print');
+		$format = $input->get('format');
+		return $input->get('format') == 'raw' || ($tpl == 'component' && $iframe != 1) && $print != 1 && $format !== 'pdf';
 	}
 
 	/**
@@ -879,7 +886,8 @@ EOD;
 
 	public static function addScriptDeclaration($script)
 	{
-		if (JRequest::getCmd('format') == 'raw')
+		$app = JFactory::getApplication();
+		if ($app->input->get('format') == 'raw')
 		{
 			echo '<script type="text/javascript">' . $script . '</script>';
 		}
@@ -899,7 +907,8 @@ EOD;
 
 	public static function addStyleDeclaration($style)
 	{
-		if (JRequest::getCmd('format') == 'raw')
+		$app = JFactory::getApplication();
+		if ($app->input->get('format') == 'raw')
 		{
 			echo '<style type="text/css">' . $style . '</script>';
 		}
@@ -919,7 +928,9 @@ EOD;
 	public static function inAjaxLoadedPage()
 	{
 		// Are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
-		$option = JRequest::getCmd('option');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$option = $input->get('option');
 		if ($option !== 'com_fabrik' && $option !== 'com_content')
 		{
 			return false;
@@ -934,8 +945,8 @@ EOD;
 				return false;
 			}
 		}
-		return JRequest::getVar('format') == 'raw'
-			|| (JRequest::getVar('tmpl') == 'component' && JRequest::getInt('iframe') != 1 && JRequest::getVar('format') !== 'pdf');
+		return $input->get('format') == 'raw'
+			|| ($input->get('tmpl') == 'component' && $input->get('iframe') != 1 && $input->get('format') !== 'pdf');
 	}
 
 	/**
@@ -950,6 +961,7 @@ EOD;
 
 	public static function isDebug($enabled = false)
 	{
+		$app = JFactory::getApplication();
 		$config = JComponentHelper::getParams('com_fabrik');
 		if ($enabled && $config->get('use_fabrikdebug') == 0)
 		{
@@ -961,7 +973,7 @@ EOD;
 		}
 		$config = JFactory::getConfig();
 		$debug = (int) $config->get('debug');
-		return $debug === 1 || JRequest::getInt('fabrikdebug', 0) == 1;
+		return $debug === 1 || $app->input->get('fabrikdebug', 0) == 1;
 	}
 
 	/**
@@ -980,11 +992,8 @@ EOD;
 			return;
 		}
 		$document = JFactory::getDocument();
-		/*
-		$config = JFactory::getConfig();
-		$debug = $config->get('debug');
-		$ext = $debug || (int) JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
-		*/
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$ext = self::isDebug() ? '.js' : '-min.js';
 
 		$file = (array) $file;
@@ -1017,7 +1026,7 @@ EOD;
 			 * scripts in them stops the $onLoad method from being run see:
 			 * https://github.com/Fabrik/fabrik/issues/412
 			 */
-			if (in_array($f, self::$scripts) && JRequest::getCmd('format') !== 'raw')
+			if (in_array($f, self::$scripts) && $input->get('format') !== 'raw')
 			{
 				continue;
 			}
@@ -1026,7 +1035,7 @@ EOD;
 				self::$scripts[] = $f;
 			}
 
-			if (JRequest::getCmd('format') == 'raw')
+			if ($input->get('format') == 'raw')
 			{
 				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';
 				echo '<script type="text/javascript">Asset.javascript(\'' . $f . '\', {' . $opts . '});</script>';
@@ -1036,7 +1045,7 @@ EOD;
 				$src[] = "'" . $f . "'";
 			}
 		}
-		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw' && !empty($src))
+		if ($onLoad !== '' && $input->get('format') != 'raw' && !empty($src))
 		{
 			if (self::inAjaxLoadedPage())
 			{
@@ -1145,15 +1154,17 @@ EOD;
 	public static function debug($content, $title = 'output:')
 	{
 		$config = JComponentHelper::getParams('com_fabrik');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if ($config->get('use_fabrikdebug') == 0)
 		{
 			return;
 		}
-		if (JRequest::getBool('fabrikdebug', 0, 'request') != 1)
+		if ($input->getBool('fabrikdebug', 0, 'request') != 1)
 		{
 			return;
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			return;
 		}

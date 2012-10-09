@@ -51,8 +51,9 @@ class plgFabrik_ElementCount extends plgFabrik_Element
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
+		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo();
-		if (JRequest::getVar('c') != 'form')
+		if ($app->input->get('c') != 'form')
 		{
 			$params = $this->getParams();
 			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . "___" . $this->_element->name));

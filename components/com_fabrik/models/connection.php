@@ -200,7 +200,9 @@ class FabrikFEModelConnection extends JModel
 		}
 		$cn = $this->getConnection();
 		$session = JFactory::getSession();
-		if (JRequest::getCmd('task') == 'test')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('task') == 'test')
 		{
 			$session->clear('fabrik.connection.' . $cn->id);
 			$dbs = array();
@@ -239,7 +241,7 @@ class FabrikFEModelConnection extends JModel
 				 * you can only use one connection on the site? As JDatabase::getInstance() forces a new connection if its options
 				 * signature is not found, then fabrik's default connection won't be created, hence defaulting to that one
 				 */
-				if ($cn->default == 1 && JRequest::getCmd('task') !== 'test')
+				if ($cn->default == 1 && $input->get('task') !== 'test')
 				{
 					$dbs[$cn->id] = FabrikWorker::getDbo();
 
@@ -259,7 +261,7 @@ class FabrikFEModelConnection extends JModel
 					{
 						// $$$ rob - unset the connection as caching it will mean that changes we make to the incorrect connection in admin, will not result
 						// in the test connection link informing the user that the changed connection properties are now correct
-						if (JRequest::getCmd('task') == 'test')
+						if ($input->get('task') == 'test')
 						{
 							$session->clear('fabrik.connection.' . $cn->id);
 							$this->_connection = null;

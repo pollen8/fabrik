@@ -27,32 +27,37 @@ class FabrikViewList extends JView
 	public function display($tpl = null)
 	{
 		$session = JFactory::getSession();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		//JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$model->setOutPutFormat('csv');
-		$exporter->model =& $model;
-		JRequest::setVar('limitstart'.$model->getId(), JRequest::getInt('start', 0));
-		JRequest::setVar('limit'.$model->getId(), $exporter->_getStep());
-		//$model->limitLength = $exporter->_getStep();
+		$exporter->model = &$model;
+		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
+		$input->set('limit' . $model->getId(), $exporter->_getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the table total
-		$selectedFields = JRequest::getVar('fields', array(), 'default', 'array');
+		$selectedFields = $input->get('fields', array(), 'array');
 		$model->setHeadingsForCSV($selectedFields);
 
-		$total 	= $model->getTotalRecords();
+		$total = $model->getTotalRecords();
 
-		$key = 'fabrik.list.'.$model->getId().'csv.total';
-		if (is_null($session->get($key))) {
+		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+		if (is_null($session->get($key)))
+		{
 			$session->set($key, $total);
 		}
 
-		$start = JRequest::getInt('start', 0);
-		if ($start <= $total) {
+		$start = $input->getInt('start', 0);
+		if ($start <= $total)
+		{
 			$exporter->writeFile($total);
-		} else {
+		}
+		else
+		{
 			$session->clear($key);
 			$exporter->downloadFile();
 		}

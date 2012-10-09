@@ -37,6 +37,9 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 /** @var string separator used in repeat elements/groups IS USED IN F3 */
 define("GROUPSPLITTER", "//..*..//");
 
+$app = JFactory::getApplication();
+$input = $app->input;
+
 // Override JHTML -needed for framework overrde
 $version = new JVersion;
 JHTML::addIncludePath(JPATH_SITE . '/components/com_fabrik/jhelpers/' . $version->RELEASE . '/');
@@ -45,7 +48,7 @@ JHTML::addIncludePath(JPATH_SITE . '/components/com_fabrik/jhelpers/' . $version
 JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik/element.php');
 
 // $$$ rob 30/10/2011 commented out as we need to load these classes for the list menu form
-//if (JRequest::getCmd('option') != 'com_menus') {
+//if ($input->get('option') != 'com_menus') {
 	JLoader::import('components.com_fabrik.classes.formfield', JPATH_SITE . '/administrator', 'administrator.');
 	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE . '/administrator', 'administrator.');
 //}
@@ -61,11 +64,10 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 require_once COM_FABRIK_FRONTEND . '/models/element.php';
 require_once COM_FABRIK_FRONTEND . '/models/elementlist.php';
 
-$app = JFactory::getApplication();
 if ($app->isAdmin())
 {
 	// Load in front end model path
-	if (JRequest::getVar('option') !== 'com_acymailing')
+	if ($input->get('option') !== 'com_acymailing')
 	{
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 	}

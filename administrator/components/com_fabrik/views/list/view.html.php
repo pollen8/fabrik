@@ -134,7 +134,9 @@ class FabrikViewList extends JView
 
 	public function confirmCopy($tpl = null)
 	{
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(0), 'array');
 		$lists = array();
 		$model = $this->getModel();
 		foreach ($cid as $id)
@@ -172,8 +174,9 @@ class FabrikViewList extends JView
 
 	protected function addToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);
@@ -228,7 +231,9 @@ class FabrikViewList extends JView
 
 	protected function addLinkedElementsToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_LINKED_ELEMENTS'), 'list.png');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::divider();
@@ -243,7 +248,9 @@ class FabrikViewList extends JView
 
 	protected function addConfirmCopyToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_COPY'), 'list.png');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::save('list.doCopy', 'JTOOLBAR_SAVE');

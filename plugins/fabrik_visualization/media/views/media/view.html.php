@@ -16,6 +16,7 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
+ * @since       3.0
  */
 
 class fabrikViewMedia extends JView
@@ -31,9 +32,11 @@ class fabrikViewMedia extends JView
 
 	function display($tmpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 
@@ -59,7 +62,7 @@ class fabrikViewMedia extends JView
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
 		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('params', $model->getParams());
 		$pluginParams = $model->getPluginParams();

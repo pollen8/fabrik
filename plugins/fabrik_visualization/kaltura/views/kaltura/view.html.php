@@ -33,11 +33,12 @@ class fabrikViewKaltura extends JView
 	{
 		FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $app->getParams('com_fabrik');
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 		$this->assign('params', $params);
@@ -59,7 +60,7 @@ EOT;
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/kaltura/views/kaltura/tmpl/' . $tpl . '/template.css');
 		$template = null;
 		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->_setPath('template', $tmplpath);
 

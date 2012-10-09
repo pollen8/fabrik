@@ -64,11 +64,10 @@ class FabrikFEModelFormsession extends FabModel
 
 	public function savePage(&$formModel)
 	{
-		//need to check for encrypted vars, unencrypt them and
-		//place them back in the array
-		//$post = JRequest::get('post');
-		//$$$ rob test as things like db joins had no raw data.
+		// Need to check for encrypted vars, unencrypt them and place them back in the array
 		$post = $formModel->setFormData();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$formModel->copyToRaw($post);
 		$fabrik_vars = JArrayHelper::getValue($post, 'fabrik_vars', array());
 		$querystring = JArrayHelper::getValue($fabrik_vars, 'querystring', array());
@@ -87,8 +86,8 @@ class FabrikFEModelFormsession extends FabModel
 		$row->user_id = (int) $user->get('id');
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
-		$row->last_page = JRequest::getVar('page');
-		$row->referring_url = JRequest::getVar('HTTP_REFERER', '', 'server');
+		$row->last_page = $input->get('page');
+		$row->referring_url = $input->server->get('HTTP_REFERER', '');
 		$row->data = $data;
 		$this->setCookie($hash);
 		if (!$row->store())
@@ -367,9 +366,10 @@ class FabrikFEModelFormsession extends FabModel
 
 	function getRowId()
 	{
+		$app = JFactory::getApplication();
 		if (is_null($this->rowid))
 		{
-			$this->rowid = JRequest::getInt('rowid');
+			$this->rowid = $app->input->getInt('rowid');
 		}
 		return (int) $this->rowid;
 	}
@@ -382,9 +382,10 @@ class FabrikFEModelFormsession extends FabModel
 
 	function getFormId()
 	{
+		$app = JFactory::getApplication();
 		if (is_null($this->formid))
 		{
-			$this->formid = JRequest::getInt('formid');
+			$this->formid = $app->input->getInt('formid');
 		}
 		return $this->formid;
 	}

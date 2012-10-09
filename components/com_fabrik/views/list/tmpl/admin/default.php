@@ -1,4 +1,7 @@
-<?php if (!JFactory::getApplication()->isAdmin())
+<?php
+$app = JFactory::getApplication();
+$input = $app->input;
+if (!$app->isAdmin())
 {
 	JError::raiseNotice(500, JText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
 	return;
@@ -21,7 +24,7 @@
 
 <?php if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
-} // end show filters 
+} // end show filters
 //for some really ODD reason loading the headings template inside the group
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
@@ -32,7 +35,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 <?php $fbConfig = JComponentHelper::getParams('com_fabrik');
 		if ($fbConfig->get('use_fabrikdebug', false) == 1) {?>
 <label>
-<?php $checked = JRequest::getVar('fabrikdebug', 0) == 1 ? 'checked="checked"' : '';?>
+<?php $checked = $input->get('fabrikdebug', 0) == 1 ? 'checked="checked"' : '';?>
 	<input type="checkbox" name="fabrikdebug" value="1" <?php echo $checked?> onclick="document.fabrikList.submit()" />
 	<?php echo JText::_('debug')?>
 </label>
@@ -105,7 +108,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 				}
 				?>
 				</tr>
-			
+
 			<?php }?>
 			</tbody>
 			<?php $gCounter++;
@@ -116,5 +119,3 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 </div>
 </form>
 <?php echo $this->table->outro;?>
-
-

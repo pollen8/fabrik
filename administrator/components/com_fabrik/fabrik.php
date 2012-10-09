@@ -26,11 +26,14 @@ if (!defined('COM_FABRIK_FRONTEND'))
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 
+$app = JFactory::getApplication();
+$input = $app->input;
+
 jimport('joomla.filesystem.file');
 JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
 // Raw test for submitting forms via dbjoin add form.
-if (!in_array(JRequest::getVar('task'), array('plugin.pluginAjax', 'form.process')) && JRequest::getVar('format') !== 'raw')
+if (!in_array($input->get('task'), array('plugin.pluginAjax', 'form.process')) && $input->get('format') !== 'raw')
 {
 	FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 }
@@ -58,5 +61,5 @@ if (count($db->loadResult()) === 0)
 	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
 }
 
-$controller->execute(JRequest::getCmd('task', 'home.display'));
+$controller->execute($input->get('task', 'home.display'));
 $controller->redirect();

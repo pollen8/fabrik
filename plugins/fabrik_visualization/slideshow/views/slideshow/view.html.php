@@ -1,16 +1,24 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.slideshow
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ *
+ * Slideshow Viz View
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.slideshow
+ * @since       3.0
+ */
 class fabrikViewSlideshow extends JView
 {
 
@@ -24,10 +32,12 @@ class fabrikViewSlideshow extends JView
 
 	function display($tpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		if ($this->row->published == 0)
 		{
@@ -40,7 +50,7 @@ class fabrikViewSlideshow extends JView
 		$this->assign('params', $params);
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$this->assign('containerId', $this->get('ContainerId'));

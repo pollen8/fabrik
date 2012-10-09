@@ -197,7 +197,9 @@ class FabrikModelLists extends FabModelList
 
 	public function getDbTableNames()
 	{
-		$cid = JRequest::getVar('cid', array(), 'post', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		JArrayHelper::toInteger($cid);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);

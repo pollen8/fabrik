@@ -16,6 +16,7 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.googlemap
+ * @since       3.0
  */
 
 class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualization
@@ -23,9 +24,11 @@ class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualizati
 	public function ajax_getMarkers($tmpl = 'default')
 	{
 		$viewName = 'googlemap';
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel($viewName);
-		$id = JRequest::getInt('visualizationid', 0);
+		$id = $input->getInt('visualizationid', 0);
 		$model->setId($id);
 		$model->onAjax_getMarkers();
 	}

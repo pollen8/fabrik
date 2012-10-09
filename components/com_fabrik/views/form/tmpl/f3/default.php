@@ -8,6 +8,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @since       3.0
  */
+
+$app = JFactory::getApplication();
+$input = $app->input;
  ?>
  <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
@@ -15,7 +18,7 @@
 <?php $form = $this->form;
 //echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
-<h1><?php echo JRequest::getVar('rowid', 0) == '0' ? 'Add ' : 'Edit ';
+<h1><?php echo $input->get('rowid', 0) == '0' ? 'Add ' : 'Edit ';
 echo $form->label;?></h1>
 <?php }
 echo $form->intro;

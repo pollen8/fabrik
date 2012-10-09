@@ -61,6 +61,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 	private function _process($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->formModel = $formModel;
 		jimport('joomla.filesystem.file');
 		$w = new FabrikWorker;
@@ -182,11 +183,11 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 
 		// Add link to record
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=" . $formModel->getId();
-		if (JRequest::getVar('usekey'))
+		if ($input->get('usekey'))
 		{
-			$viewURL .= "&usekey=" . JRequest::getVar('usekey');
+			$viewURL .= "&usekey=" . $input->get('usekey');
 		}
-		$viewURL .= "&rowid=" . JRequest::getVar('rowid');
+		$viewURL .= "&rowid=" . $input->get('rowid');
 
 		$msg = JString::str_ireplace('{LINK}', $viewURL, $msg);
 

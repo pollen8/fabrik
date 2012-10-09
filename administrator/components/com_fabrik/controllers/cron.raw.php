@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @package Joomla.Administrator
  * @subpackage Fabrik
  * @since		1.6
@@ -19,6 +19,7 @@ jimport('joomla.application.component.controllerform');
  * @subpackage	Fabrik
  * @since		1.6
  */
+
 class FabrikControllerCron extends JControllerForm
 {
 	/**
@@ -28,12 +29,16 @@ class FabrikControllerCron extends JControllerForm
 	protected $text_prefix = 'COM_FABRIK_CRON';
 
 	/**
-	 * called via ajax to load in a given plugin's HTML settings
+	 * Called via ajax to load in a given plugin's HTML settings
+	 *
+	 * @return  void
 	 */
 
 	public function getPluginHTML()
 	{
-		$plugin = JRequest::getCmd('plugin');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->getCmd('plugin');
 		$model = $this->getModel();
 		$model->getForm();
 		echo $model->getPluginHTML( $plugin);

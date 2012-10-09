@@ -158,7 +158,9 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				$opts['no_note'] = 1;
 				$opts['custom'] = '';
 
-				$tmp = array_merge(JRequest::get('data'), JArrayHelper::fromObject($sub));
+				$filter = JFilterInput::getInstance();
+				$post = $filter->clean($_POST, 'array');
+				$tmp = array_merge($post, JArrayHelper::fromObject($sub));
 
 				// 'http://fabrikar.com/ '.$sub->item_name.' - User: subtest26012010 (subtest26012010)';
 				$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);
@@ -442,14 +444,16 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		 * so we don't have to pass the teg_msg around as a QS arg between us and PayPal,
 		 * and just grab it from params directly.
 		 */
-		$formid = JRequest::getInt('formid');
-		$rowid = JRequest::getInt('rowid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$formid = $input->getInt('formid');
+		$rowid = $input->getInt('rowid');
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModel::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
 		$params = $formModel->getParams();
 		$ret_msg = (array) $params->get('paypal_return_msg', array());
-		$ret_msg = $ret_msg[JRequest::getInt('renderOrder')];
+		$ret_msg = $ret_msg[$input->getInt('renderOrder')];
 		if ($ret_msg)
 		{
 			$w = new FabrikWorker;
@@ -463,7 +467,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				{
 					$all_data[] = "$key: $val";
 				}
-				JRequest::setVar('show_all', implode('<br />', $all_data));
+				$input->set('show_all', implode('<br />', $all_data));
 			}
 			$ret_msg = str_replace('[', '{', $ret_msg);
 			$ret_msg = str_replace(']', '}', $ret_msg);
@@ -485,6 +489,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 	public function onIpn()
 	{
 		$config = JFactory::getConfig();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
@@ -493,7 +499,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$log->store();
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
-		$custom = JRequest::getVar('custom');
+		$custom = $input->get('custom');
 		list($formid, $rowid, $ipn_value) = explode(":", $custom);
 
 		// Pretty sure they are added but double add
@@ -510,7 +516,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		 * @TODO shortColName won't handle joined data, need to fix this to use safeColName
 		 * (don't forget to change quoteName stuff later on as well)
 		 */
-		$renderOrder = JRequest::getInt('renderOrder');
+		$renderOrder = $input->getInt('renderOrder');
 		$ipn_txn_field = (array) $params->get('paypal_ipn_txn_id_element', array());
 		$ipn_txn_field = FabrikString::shortColName($ipn_txn_field[$renderOrder]);
 
@@ -558,17 +564,17 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		}
 
 		// Assign posted variables to local variables
-		$item_name = JRequest::getVar('item_name');
-		$item_number = JRequest::getVar('item_number');
-		$payment_status = JRequest::getVar('payment_status');
-		$payment_amount = JRequest::getVar('mc_gross');
-		$payment_currency = JRequest::getVar('mc_currency');
-		$txn_id = JRequest::getVar('txn_id');
-		$txn_type = JRequest::getVar('txn_type');
-		$receiver_email = JRequest::getVar('receiver_email');
-		$payer_email = JRequest::getVar('payer_email');
-		$buyer_address = JRequest::getVar('address_status') . ' - ' . JRequest::getVar('address_street') . ' ' . JRequest::getVar('address_zip')
-			. ' ' . JRequest::getVar('address_state') . ' ' . JRequest::getVar('address_city') . ' ' . JRequest::getVar('address_country_code');
+		$item_name = $input->get('item_name', '', 'string');
+		$item_number = $input->get('item_number', '', 'string');
+		$payment_status = $input->get('payment_status', '', 'string');
+		$payment_amount = $input->get('mc_gross', '', 'string');
+		$payment_currency = $input->get('mc_currency', '', 'string');
+		$txn_id = $input->get('txn_id', '', 'string');
+		$txn_type = $input->get('txn_type', '', 'string');
+		$receiver_email = $input->get('receiver_email', '', 'string');
+		$payer_email = $input->get('payer_email', '', 'string');
+		$buyer_address = $input->get('address_status', '', 'string') . ' - ' . $input->get('address_street', '', 'string') . ' ' . $input->get('address_zip', '', 'string')
+			. ' ' . $input->get('address_state', '', 'string') . ' ' . $input->get('address_city', '', 'string') . ' ' . $input->get('address_country_code', '', 'string');
 
 		$status = 'ok';
 		$err_msg = '';

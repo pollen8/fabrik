@@ -247,6 +247,8 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 	function validate($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (!$this->canUse())
 		{
 			return true;
@@ -254,10 +256,11 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		if ($params->get('captcha-method') == 'recaptcha')
 		{
 			$privatekey = $params->get('recaptcha_privatekey');
-			if (JRequest::getVar('recaptcha_response_field'))
+			$challenge = $input->get('recaptcha_challenge_field');
+			$response = $input->get('recaptcha_response_field')
+			if ($input->get('recaptcha_response_field'))
 			{
-				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], JRequest::getVar('recaptcha_challenge_field'),
-					JRequest::getVar('recaptcha_response_field'));
+				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], $challenge, $response);
 				return ($resp->is_valid) ? true : false;
 			}
 

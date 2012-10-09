@@ -34,12 +34,14 @@ class fabrikViewGooglemap extends JView
 
 	public function display($tpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::slimbox();
 		$document = JFactory::getDocument();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$js = $model->getJs();
 		$this->txt = $model->getText();
@@ -108,7 +110,7 @@ class fabrikViewGooglemap extends JView
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$this->assign('sidebarPosition', $params->get('fb_gm_use_overlays_sidebar'));
 		if ($this->get('ShowSideBar'))

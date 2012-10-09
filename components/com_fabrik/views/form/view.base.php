@@ -50,6 +50,7 @@ class FabrikViewFormBase extends JView
 	{
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
@@ -90,7 +91,7 @@ class FabrikViewFormBase extends JView
 		$this->setTitle($w, $params, $model);
 		FabrikHelperHTML::debug($params->get('note'), 'note');
 		$params->def('icons', $app->getCfg('icons'));
-		$params->set('popup', (JRequest::getVar('tmpl') == 'component') ? 1 : 0);
+		$params->set('popup', ($input->get('tmpl') == 'component') ? 1 : 0);
 
 		$this->editable = $model->_editable;
 
@@ -177,19 +178,21 @@ class FabrikViewFormBase extends JView
 
 	public function output()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$w = new FabrikWorker;
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
 		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false))
 		{
-			$opt = JRequest::getVar('option');
-			JRequest::setVar('option', 'com_content');
+			$opt = $input->get('option');
+			$input->set('option', 'com_content');
 			jimport('joomla.html.html.content');
 			$text .= '{emailcloak=off}';
 			$text = JHTML::_('content.prepare', $text);
 			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-			JRequest::setVar('option', $opt);
+			$input->set('option', $opt);
 		}
 
 		// Allows you to use {placeholders} in form template.
@@ -240,6 +243,7 @@ class FabrikViewFormBase extends JView
 	{
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$title = '';
 		if ($app->getName() !== 'administrator')
 		{
@@ -255,9 +259,9 @@ class FabrikViewFormBase extends JView
 			}
 			else
 			{
-				$params->set('show_page_title', JRequest::getInt('show_page_title', 0));
-				$params->set('page_title', JRequest::getVar('title', $title));
-				$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
+				$params->set('show_page_title', $input->getInt('show_page_title', 0));
+				$params->set('page_title', $input->get('title', $title));
+				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
 			if (!$this->isMambot)
 			{
@@ -288,6 +292,8 @@ class FabrikViewFormBase extends JView
 	protected function _addButtons()
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
 		$params = $model->getParams();
 		$this->showEmail = $params->get('email', $fbConfig->get('form_email', 0));
@@ -303,7 +309,7 @@ class FabrikViewFormBase extends JView
 			$text = JHTML::_('image.site', 'printButton.png', '/images/', null, null, JText::_('Print'));
 			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
-		if (JRequest::getVar('tmpl') != 'component')
+		if ($input->get('tmpl') != 'component')
 		{
 			if ($this->showEmail)
 			{
@@ -347,6 +353,7 @@ class FabrikViewFormBase extends JView
 	protected function _addJavascript($tableId)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
 
@@ -430,7 +437,7 @@ class FabrikViewFormBase extends JView
 		else
 		{
 			// Form submitted but fails validation - needs to go to the last page
-			$start_page = JRequest::getInt('currentPage', 0);
+			$start_page = $input->getInt('currentPage', 0);
 		}
 
 		$opts = new stdClass;
@@ -463,7 +470,7 @@ class FabrikViewFormBase extends JView
 		// then we want to know the id of the window so we can set its showSpinner() method
 
 		// 3.0 changed to fabrik_window_id (automatically appended by Fabrik.Window xhr request to load window data
-		$opts->fabrik_window_id = JRequest::getVar('fabrik_window_id', '');
+		$opts->fabrik_window_id = $input->get('fabrik_window_id', '');
 		$opts->submitOnEnter = (bool) $params->get('submit_on_enter', false);
 
 		// For editing groups with joined data and an empty joined record (ie no joined records)
@@ -641,6 +648,7 @@ class FabrikViewFormBase extends JView
 	protected function _loadTmplBottom(&$form)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = $menuItem ? $menuItem->id : 0;
 		$model = $this->getModel();
@@ -648,10 +656,10 @@ class FabrikViewFormBase extends JView
 		$canDelete = $listModel->canDelete($model->_data);
 		$params = $model->getParams();
 		$task = 'form.process';
-		$reffer = JRequest::getVar('HTTP_REFERER', '', 'server');
+		$reffer = $input->server->get('HTTP_REFERER', '');
 
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
-		$reffer = str_replace('&', '&amp;', JRequest::getVar('fabrik_referrer', $reffer));
+		$reffer = str_replace('&', '&amp;', $input->get('fabrik_referrer', $reffer));
 
 		$this_rowid = is_array($model->_rowId) ? implode('|', $model->_rowId) : $model->_rowId;
 		$fields = array('<input type="hidden" name="listid" value="' . $listModel->getId() . '" />',
@@ -736,7 +744,7 @@ class FabrikViewFormBase extends JView
 		// $$$ hugh - hide actions section is we're printing, or if not actions selected
 		$noButtons = (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton) && empty($form->gobackButton)
 				&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton) && empty($form->resetButton));
-		if (JRequest::getVar('print', '0') == '1' || $noButtons)
+		if ($input->get('print', '0') == '1' || $noButtons)
 		{
 			$this->hasActions = false;
 		}
@@ -760,9 +768,9 @@ class FabrikViewFormBase extends JView
 		}
 
 		// $$$ hugh - testing social_profile_hash stuff
-		if (JRequest::getVar('fabrik_social_profile_hash', '') != '')
+		if ($input->get('fabrik_social_profile_hash', '') != '')
 		{
-			$fields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . JRequest::getCmd('fabrik_social_profile_hash', '')
+			$fields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash', '')
 				. '" id="fabrik_social_profile_hash" />';
 		}
 
@@ -788,7 +796,8 @@ class FabrikViewFormBase extends JView
 		jimport('joomla.utilities.utility');
 		$crypt = new JSimpleCrypt;
 		$formModel = $this->getModel();
-		$get = JRequest::get('get');
+		$filter = JFilterInput::getInstance();
+		$get = $filter->clean($_GET, 'array');
 		foreach ($get as $key => $input)
 		{
 			// 	$$$ rob test if passing in _raw value via qs -used in fabsubs
@@ -934,7 +943,9 @@ class FabrikViewFormBase extends JView
 
 	protected function cck()
 	{
-		if (JRequest::getVar('task') === 'cck')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('task') === 'cck')
 		{
 			$model = $this->getModel();
 			$params = $model->getParams();
@@ -943,20 +954,20 @@ class FabrikViewFormBase extends JView
 			$document = JFactory::getDocument();
 			$opts = new stdClass;
 			$opts->livesite = JURI::base();
-			$opts->ename = JRequest::getVar('e_name');
-			$opts->catid = JRequest::getInt('catid');
-			$opts->section = JRequest::getInt('section');
+			$opts->ename = $input->get('e_name');
+			$opts->catid = $input->getInt('catid');
+			$opts->section = $input->getInt('section');
 			$opts->formid = $row->id;
 
 			$tmpl = ($row->form_template == '') ? "default" : $row->form_template;
-			$tmpl = JRequest::getVar('cck_layout', $tmpl);
+			$tmpl = $input->get('cck_layout', $tmpl);
 
 			$opts->tmplList = FabrikHelperAdminHTML::templateList('form', 'fabrik_cck_template', $tmpl);
 
 			$views = array();
 			$views[] = JHTML::_('select.option', 'form');
 			$views[] = JHTML::_('select.option', 'details');
-			$selView = JRequest::getVar('cck_view');
+			$selView = $input->get('cck_view');
 			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
 
 			$opts = json_encode($opts);

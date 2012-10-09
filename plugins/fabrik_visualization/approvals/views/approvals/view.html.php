@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
-* Approval HTML View 
+* Approval HTML View
 *
 * @package		Joomla.Plugin
 * @subpackage	Fabrik.visualization.slideshow
@@ -32,8 +32,10 @@ class fabrikViewApprovals extends JView
 	public function display($tpl = 'default')
 	{
 		$model = $this->getModel();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
+		$id = $input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 		$this->assign('id', $id);
 		$this->assignRef('row', $this->get('Visualization'));
@@ -66,15 +68,15 @@ class fabrikViewApprovals extends JView
 		FabrikHelperHTML::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		$opt = JRequest::getVar('option');
-		$view = JRequest::getCmd('view');
-		JRequest::setVar('view', 'article');
-		JRequest::setVar('option', 'com_content');
+		$opt = $input->get('option');
+		$view = $input->get('view');
+		$input->set('view', 'article');
+		$input->set('option', 'com_content');
 		jimport('joomla.html.html.content');
 		$text .= '{emailcloak=off}';
 		$text = JHTML::_('content.prepare', $text);
 		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-		JRequest::setVar('option', $opt);
+		$input->set('option', $opt);
 		echo $text;
 	}
 

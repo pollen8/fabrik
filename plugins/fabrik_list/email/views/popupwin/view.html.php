@@ -10,12 +10,14 @@ class fabrikViewPopupwin extends JView
 
 	function display($tmpl = 'default')
 	{
-		$renderOrder = JRequest::getInt('renderOrder');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$renderOrder = $input->getInt('renderOrder');
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-		
+
 		$this->assign('fieldList', $this->get('ToField'));
 		$records = $this->get('records');
 		if (count($records) == 0)
@@ -35,4 +37,3 @@ class fabrikViewPopupwin extends JView
 	}
 
 }
-?>

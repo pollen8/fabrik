@@ -52,19 +52,20 @@ class plgSystemFabrikcron extends JPlugin
 	protected function doCron()
 	{
 		$app = JFactory::getApplication();
-		if ($app->isAdmin() || JRequest::getVar('option') == 'com_acymailing')
+		$input = $app->input;
+		if ($app->isAdmin() || $input->get('option') == 'com_acymailing')
 		{
 			return;
 		}
 		// $$$ hugh - don't want to run on things like AJAX calls
-		if (JRequest::getVar('format', '') == 'raw')
+		if ($input->get('format', '') == 'raw')
 		{
 			return;
 		}
 
 		// Get all active tasks
 		$db = FabrikWorker::getDbo(true);
-		$now = JRequest::getVar('fabrikcron_run', false);
+		$now = $input->get('fabrikcron_run', false);
 
 		$log = FabTable::getInstance('Log', 'FabrikTable');
 

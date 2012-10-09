@@ -1,20 +1,23 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Lists list controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerLists extends FabControllerAdmin
 {
@@ -29,7 +32,8 @@ class FabrikControllerLists extends FabControllerAdmin
 	/**
 	 * Constructor.
 	 *
-	 * @param	array An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -41,7 +45,11 @@ class FabrikControllerLists extends FabControllerAdmin
 
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
+	 * @return  J model
 	 */
 
 	public function &getModel($name = 'List', $prefix = 'FabrikModel')
@@ -51,20 +59,22 @@ class FabrikControllerLists extends FabControllerAdmin
 	}
 
 	/**
-	 * Method to publish a list of taxa
+	 * Method to publish a list of items
 	 *
-	 * @since	1.6
+	 * @return  null
 	 */
 
 	function publish()
 	{
-		$cid = JRequest::getVar('cid', array(), '', 'array');
-		$data = array('publish' => 1, 'unpublish' => 0, 'archive'=> 2, 'trash' => -2, 'report'=>-3);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
+		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
 		if (empty($cid))
 		{
-			JError::raiseWarning(500, JText::_($this->text_prefix.'_NO_ITEM_SELECTED'));
+			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
 		}
 		else
 		{
@@ -72,6 +82,7 @@ class FabrikControllerLists extends FabControllerAdmin
 			JArrayHelper::toInteger($cid);
 			$model = $this->getModel('Form');
 			$formids = $model->swapListToFormIds($cid);
+
 			// Publish the items.
 			$formKeys = array();
 			if (!$model->publish($formids, $value))
@@ -80,7 +91,7 @@ class FabrikControllerLists extends FabControllerAdmin
 			}
 			else
 			{
-				//publish the groups
+				// Publish the groups
 				$groupModel = $this->getModel('Group');
 				if (is_object($groupModel))
 				{
@@ -93,7 +104,7 @@ class FabrikControllerLists extends FabControllerAdmin
 						}
 						else
 						{
-							//publish the elements
+							// Publish the elements
 							$elementModel = $this->getModel('Element');
 							$elementIds = $elementModel->swapGroupToElementIds($groupids);
 							if (!$elementModel->publish($elementIds, $value))
@@ -103,19 +114,20 @@ class FabrikControllerLists extends FabControllerAdmin
 						}
 					}
 				}
-				//finally publish the list
+				// Finally publish the list
 				parent::publish();
 			}
 		}
-		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list, false));
+		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
 	/**
 	 * Set up page asking about what to delete
-	 * @since	1.6
+	 *
+	 * @return  null
 	 */
 
-	function delete()
+	public function delete()
 	{
 		$model = $this->getModel();
 		$viewType = JFactory::getDocument()->getType();
@@ -125,7 +137,7 @@ class FabrikControllerLists extends FabControllerAdmin
 		{
 			$view->setModel($model, true);
 		}
-		//used to load in the confirm form fields
+		// Used to load in the confirm form fields
 		$view->setModel($this->getModel('list'));
 		$view->display();
 	}

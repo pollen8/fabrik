@@ -11,22 +11,25 @@
 
 // No direct access
 defined('_JEXEC') or die;
+$app = JFactory::getApplication();
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
 
 	<?php
-	$cid	= JRequest::getVar('cid', array(), 'post', 'array');
-	foreach ($cid as $id) { ?>
+	$cid	= $app->input->get('cid', array(), 'array');
+	foreach ($cid as $id) : ?>
 		<input type="hidden" name="cid[]" value="<?php echo $id ;?>" />
-	<?php } ?>
+	<?php endforeach; ?>
 
 	<fieldset class="adminform">
 		<legend><?php echo JText::_('COM_FABRIK_DELETE_FROM');?></legend>
 		<ul class="adminformlist">
-		<?php for ($i=0; $i < count($this->items); $i++) {?>
-  		<li><?php echo $this->items[$i]?></li>
-		<?php }?>
+		<?php for ($i = 0; $i < count($this->items); $i++) :?>
+  			<li>
+  				<?php echo $this->items[$i]?>
+  			</li>
+		<?php endfor; ?>
 		</ul>
 
 		<ul>

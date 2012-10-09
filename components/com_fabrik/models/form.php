@@ -259,8 +259,9 @@ class FabrikFEModelForm extends FabModelForm
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
+		$app = JFactory::getApplication();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getInt('formid', $usersConfig->get('formid'));
+		$id = $app->input->getInt('formid', $usersConfig->get('formid'));
 		$this->setId($id);
 	}
 
@@ -331,6 +332,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function checkAccessFromListSettings()
 	{
 		$form = $this->getForm();
+		$app = JFactory::getApplication();
 		if ($form->record_in_database == 0)
 		{
 			return 2;
@@ -362,7 +364,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			/*editing from - can we edit?*/
+			// Editing from - can we edit?
 			if ($listModel->canEdit($this->_data))
 			{
 				$ret = 2;
@@ -370,7 +372,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		// $$$rob refractored from view
 		$this->_editable = ($ret == 1 && $this->_editable == '1') ? false : true;
-		if (JRequest::getVar('view', 'form') == 'details')
+		if ($app->input->get('view', 'form') == 'details')
 		{
 			$this->_editable = false;
 		}
@@ -388,6 +390,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getTmpl()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
@@ -413,7 +416,7 @@ class FabrikFEModelForm extends FabModelForm
 					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
 				}
 			}
-			if (JRequest::getVar('mjmarkup') == 'iphone')
+			if ($input->get('mjmarkup') == 'iphone')
 			{
 				$tmpl = 'iwebkit';
 			}
@@ -421,7 +424,7 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 
 		// Finally see if the options are overridden by a querystring var
-		$tmpl = JRequest::getVar('layout', $tmpl);
+		$tmpl = $input->get('layout', $tmpl);
 
 		// Test it exists - otherwise revert to default tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
@@ -442,6 +445,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormCss()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$tmpl = $this->getTmpl();
 		$v = $this->_editable ? 'form' : 'details';
 		/* check for a form template file (code moved from view) */
@@ -471,7 +475,7 @@ class FabrikFEModelForm extends FabModelForm
 				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom_css.php' . $qs);
 			}
 		}
-		if ($app->isAdmin() && JRequest::getVar('tmpl') === 'components')
+		if ($app->isAdmin() && $input->get('tmpl') === 'components')
 		{
 			FabrikHelperHTML::stylesheet('administrator/templates/system/css/system.css');
 		}
@@ -510,7 +514,9 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$params = $this->getParams();
 		$label = $this->getLabel();
-		if (JRequest::getVar('view') == 'details')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('view') == 'details')
 		{
 			if (!$params->get('show-title-in-detail-view', true))
 			{
@@ -936,7 +942,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	protected function setOrigData()
 	{
-		if (JRequest::getInt('rowid') == 0)
+		$app = JFactory::getApplication();
+		if ($app->input->getInt('rowid') == 0)
 		{
 			$this->_origData = array(new stdClass);
 		}
@@ -991,7 +998,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function process()
 	{
-		if (JRequest::getCmd('format') == 'raw')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('format') == 'raw')
 		{
 			/* $$$ hugh - although this is useful, so things like harmless notices don't mess with JSON
 			 * formatting in AJAX calls, it causes a nasty situation on machines with Suhosin installed.
@@ -1054,7 +1063,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache(JRequest::getCmd('option'));
+		$cache = JFactory::getCache($input->get('option'));
 		$cache->clean();
 
 		// $$$rob run this before as well as after onAfterProcess (ONLY for redirect plugin)
@@ -1333,10 +1342,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->_formData;
 		}
+		$app = JFactory::getApplication();
 		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
 
-		$this->ajaxPost = JRequest::getBool('fabrik_ajax');
-		$aData = JRequest::get('post', JREQUEST_ALLOWRAW);
+		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
+		$aData = $_POST;
 		array_walk_recursive($aData, array($this, '_clean'));
 
 		// Set here so element can call formModel::updateFormData()
@@ -1394,7 +1404,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	private function callElementPreprocess()
 	{
-		$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 		$groups = $this->getGroupsHiarachy();
 
 		// Curerntly this is just used by calculation elements
@@ -1454,6 +1466,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function processToDB()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getListModel();
 		$listModel->setBigSelects();
 		$item = $listModel->getTable();
@@ -1501,8 +1515,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		// to the new insertid
 		if (array_key_exists('Copy', $this->_formData))
 		{
-			$u = str_replace('rowid=' . $origid, 'rowid=' . $insertId, JRequest::getVar('HTTP_REFERER', '', 'server'));
-			JRequest::setVar('fabrik_referrer', $u);
+			$u = str_replace('rowid=' . $origid, 'rowid=' . $insertId, $input->get('HTTP_REFERER', '', 'server'));
+			$input->set('fabrik_referrer', $u);
 		}
 		$tmpKey = str_replace("`", "", $item->db_primary_key);
 		$joinKeys[$tmpKey] = $insertId;
@@ -1522,7 +1536,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		// $$$ hugh - pretty sure we need to unset 'usekey' now, as it is not relavent to joined data,
 		// and it messing with storeRow of joins
-		JRequest::setVar('usekey', '');
+		$input->set('usekey', '');
 		$_POST['usekey'] = '';
 		$_REQUEST['usekey'] = '';
 
@@ -1596,7 +1610,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$data = FArrayHelper::getValue($this->_formData['join'], $oJoin->id, array(), 'array');
 
 			$groups = $this->getGroupsHiarachy();
-			$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'post', 'array');
+			$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
 
 			$joinType = isset($oJoin->params->type) ? $oJoin->params->type : '';
 			if ((int) $oJoin->group_id !== 0 && $joinType !== 'repeatElement')
@@ -1941,7 +1955,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 
 		// Testing for saving pages
-		JRequest::setVar('rowid', $insertId);
+		$input->set('rowid', $insertId);
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))
 		{
 			return;
@@ -1998,6 +2012,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	protected function submitToDatabase($rowId = '0')
 	{
+		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
 		$pluginManager = FabrikWorker::getPluginManager();
 		/*
@@ -2062,7 +2077,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$item = $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
 
-		$usekey = JRequest::getVar('usekey', '');
+		$usekey = $app->input->get('usekey', '');
 		if (!empty($usekey))
 		{
 			return $listModel->lastInsertId;
@@ -2214,6 +2229,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function copyToRaw(&$post)
 	{
 		$groups = $this->getGroupsHiarachy();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
@@ -2246,7 +2263,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					if (!array_key_exists($elName2 . '_raw', $post))
 					{
 						// Post required getValue() later on
-						JRequest::setVar($elName2 . '_raw', @$post[$elName2]);
+						$input->set($elName2 . '_raw', @$post[$elName2]);
 						$post[$elName2 . '_raw'] = @$post[$elName2];
 					}
 				}
@@ -2274,7 +2291,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function validate()
 	{
-		if ((bool) JRequest::getBool('fabrik_ignorevalidation', false) === true)
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ((bool) $input->getBool('fabrik_ignorevalidation', false) === true)
 		{
 			// Put in when saving page of form
 			return true;
@@ -2323,8 +2342,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->copyToRaw($post);
 
 		$groups = $this->getGroupsHiarachy();
-		$repeatTotals = JRequest::getVar('fabrik_repeat_group', array(0), 'request', 'array');
-		$ajaxPost = JRequest::getBool('fabrik_ajax');
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'array');
+		$ajaxPost = $input->getBool('fabrik_ajax');
 
 		$joindata = isset($post['join']) ? $post['join'] : array();
 
@@ -2351,7 +2370,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 				// $$ rob incorrect for ajax validation on joined elements
 				// $elName = $elementModel->getFullName(true, true, false);
-				$elName = JRequest::getBool('fabrik_ajax') ? $elementModel->getHTMLId(0) : $elementModel->getFullName(true, true, false);
+				$elName = $input->getBool('fabrik_ajax') ? $elementModel->getHTMLId(0) : $elementModel->getFullName(true, true, false);
 				$this->_arErrors[$elName] = array();
 				$elName2 = $elementModel->getFullName(false, true, false);
 
@@ -2450,7 +2469,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									{
 										$elDbVals = $testreplace;
 										$this->_modifiedValidationData[$elName] = $testreplace;
-										JRequest::setVar($elName . '_raw', $elDbVals);
+										$input->set($elName . '_raw', $elDbVals);
 										$post[$elName . '_raw'] = $elDbVals;
 									}
 								}
@@ -2473,7 +2492,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					}
 					else
 					{
-						JRequest::setVar($elName, $elDbVals);
+						$input->set($elName, $elDbVals);
 						$post[$elName] = $elDbVals;
 					}
 				}
@@ -2483,7 +2502,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		// Insert join data into request array
 		$post['join'] = $joindata;
-		JRequest::setVar('join', $joindata, 'post');
+		$input->set('join', $joindata);
+
+		//Might be: ?
+		// $input->post->set('join', $joindata);
 		if (!empty($this->_arErrors))
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);
@@ -2820,13 +2842,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function paginateRowId($dir)
 	{
 		$db = FabrikWorker::getDbo();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$c = $dir == 1 ? '>=' : '<=';
 		$limit = $dir == 1 ? 'LIMIT 2' : '';
 		$intLimit = $dir == 1 ? 2 : 0;
 		$listModel = $this->getListModel();
 		$order = $listModel->_buildQueryOrder();
 		$item = $listModel->getTable();
-		$rowid = JRequest::getInt('rowid');
+		$rowid = $input->getInt('rowid');
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
 			->where($item->db_primary_key . ' ' . $c . ' ' . $rowid);
@@ -2837,7 +2861,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			if (count($ids) >= 2)
 			{
-				JRequest::setVar('rowid', $ids[$dir]);
+				$input->set('rowid', $ids[$dir]);
 				return true;
 			}
 			else
@@ -2847,7 +2871,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		if (count($ids) - 2 >= 0)
 		{
-			JRequest::setVar('rowid', $ids[count($ids) - 2]);
+			$input->set('rowid', $ids[count($ids) - 2]);
 			return true;
 		}
 		return false;
@@ -2869,12 +2893,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->_rowId;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$user = JFactory::getUser();
 
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
 		// the request rowid for the mambot as that value is destinded for the component
-		if ($this->isMambot && JRequest::getCmd('option') == 'com_fabrik')
+		if ($this->isMambot && $input->get('option') == 'com_fabrik')
 		{
 			$this->_rowId = $usersConfig->get('rowid');
 		}
@@ -3022,7 +3048,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->_data = array();
-		$data = JRequest::get('request');
+		$f = JFilterInput::getInstance();
+		$data = $f->clean($_REQUEST, 'array');
+
 		$data = array(FArrayHelper::toObject($data));
 		$form = $this->getForm();
 
@@ -3031,7 +3059,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		if (!$form->record_in_database)
 		{
 			FabrikHelperHTML::debug($data, 'form:getData from $_REQUEST');
-			$data = JRequest::get('request');
+			$data = $f->clean($_REQUEST, 'array');
 		}
 		else
 		{
@@ -3063,7 +3091,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 				else
 				{
-					// $$$ rob - use setFormData rather than JRequest::get()
+					// $$$ rob - use setFormData rather than $_GET
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
 					$data = FArrayHelper::toObject($data, 'stdClass', false);
@@ -3129,7 +3157,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 									$this->_rowId = isset($row->__pk_val) ? $row->__pk_val : $this->_rowId;
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-								$request = JRequest::get('request');
+								$filter = JFilterInput::getInstance();
+								$request = $filter->clean($_REQUEST, 'array');
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
 							}
@@ -3194,7 +3223,6 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					else
 					{
 						// $$$ rob was causing notices when adding record with joined groups as $data[0]->join unset if we just use request
-						// $data = JRequest::get('request');
 						$data = JArrayHelper::fromObject($data[0]);
 					}
 				}
@@ -3379,6 +3407,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		}
 		$db = FabrikWorker::getDbo();
 		$conf = JFactory::getConfig();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$form = $this->getForm();
 		if (!$form->record_in_database)
 		{
@@ -3389,7 +3419,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$sql = $listModel->_buildQuerySelect('form');
 		$sql .= $listModel->_buildQueryJoin();
 		$emptyRowId = $this->_rowId === '' ? true : false;
-		$random = JRequest::getVar('random');
+		$random = $input->get('random');
 		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
 		if ($usekey != '')
 		{
@@ -3404,8 +3434,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$aRowIds = explode('|', $this->_rowId);
 			}
 		}
-		$comparison = JRequest::getVar('usekey_comparison', '=');
-		$viewpk = JRequest::getVar('view_primary_key');
+		$comparison = $input->get('usekey_comparison', '=');
+		$viewpk = $input->get('view_primary_key');
 
 		// $$$ hugh - changed this to !==, as in rowid=-1/usekey situations, we can have a rowid of 0
 		// I don't THINK this will have any untoward side effects, but ...
@@ -3641,7 +3671,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		if (is_null($this->ajax))
 		{
-			$this->ajax = JRequest::getBool('ajax', false);
+			$app = JFactory::getApplication();
+			$this->ajax = $app->input->getBool('ajax', false);
 			$groups = $this->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{
@@ -3923,15 +3954,17 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	{
 		// Array key = old id value new id
 		$this->groupidmap = array();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$groupModels = $this->getGroups();
 		$this->_form = null;
 		$form = $this->getTable();
 		$form->id = false;
 
 		// Rob newFormLabel set in table copy
-		if (JRequest::getVar('newFormLabel', '') !== '')
+		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = JRequest::getVar('newFormLabel');
+			$form->label = $input->get('newFormLabel');
 		}
 		$res = $form->store();
 		if (!$res)
@@ -3975,6 +4008,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function getRelatedTables()
 	{
 		$db = FabrikWorker::getDbo(true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$links = array();
 		$params = $this->getParams();
 		if (!$params->get('show-referring-table-releated-data', false))
@@ -3986,7 +4021,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 		// $$$ rob - not sure that referring_table is anything other than the form's table id
 		// but for now just defaulting to that if no other variable found (e.g when links in sef urls)
-		$tid = JRequest::getInt('referring_table', JRequest::getInt('listid', $listModel->getTable()->id));
+		$tid = $input->getInt('referring_table', $input->getInt('listid', $listModel->getTable()->id));
 		$referringTable->setId($tid);
 		$tmpKey = '__pk_val';
 		$tableParams = $referringTable->getParams();
@@ -4011,18 +4046,18 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			if (isset($linkedLists->$key) && $linkedLists->$key != 0)
 			{
 				$qsKey = $referringTable->getTable()->db_table_name . '___' . $element->name;
-				$val = JRequest::getVar($qsKey);
+				$val = $input->get($qsKey);
 				if ($val == '')
 				{
 					// Default to row id if we are coming from a main link (and not a related data link)
-					$val = JRequest::getVar($qsKey . '_raw', '');
+					$val = $input->get($qsKey . '_raw', '', 'string');
 					if (empty($val))
 					{
 						$thisKey = $this->getListModel()->getTable()->db_table_name . '___' . $element->join_key_column . '_raw';
 						$val = JArrayHelper::getValue($this->_data, $thisKey, $val);
 						if (empty($val))
 						{
-							$val = JRequest::getVar('rowid');
+							$val = $input->get('rowid');
 						}
 					}
 				}
@@ -4070,10 +4105,10 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 						// $$$ hugh - what?  Eh?  WhaddidIdo?  Anyway, we use $linkKey up ^^ there somewhere, so we need to define it earlier!
 						$linkKey = @$element->db_table_name . '___' . @$element->name;
-						$val = JRequest::getVar($linkKey);
+						$val = $input->get($linkKey, '', 'string');
 						if ($val == '')
 						{
-							$val = JRequest::getVar($qsKey . '_raw', JRequest::getVar('rowid'));
+							$val = $input->get($qsKey . '_raw', $input->get('rowid'));
 						}
 						$label = $factedLinks->linkedformheader->$key;
 						$links[$element->list_id][] = $label . ': ' . $referringTable->viewFormLink($popUpLink, $element, null, $linkKey, $val, false, $f);
@@ -4111,7 +4146,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$action = 'index.php?option=com_fabrik&view=form&formid=' . $this->getId();
 			return $action;
 		}
-		$option = JRequest::getCmd('option');
+		$option = $app->input->get('option');
 		if ($option === 'com_fabrik')
 		{
 			$page = 'index.php?';
@@ -4267,6 +4302,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			return $this->groupView;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$rob - do regardless of whether form is editable as $data is required for hidden encrypted fields
 		// and not used anywhere else (avoids a warning message)
 		$data = array();
@@ -4350,7 +4388,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 							else
 							{
 								// Show empty groups if we are validating a posted form
-								if (JRequest::getCmd('task') !== 'process' && JRequest::getCmd('task') !== 'form.process')
+								if ($input->get('task') !== 'process' && $input->get('task') !== 'form.process')
 								{
 									$this->getSessionData();
 									if ($this->sessionModel->row->data === '')
@@ -4402,7 +4440,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				}
 			}
 			// Test failed validated forms, repeat group counts are in request
-			$repeatGroups = (array) JRequest::getVar('fabrik_repeat_group');
+			$repeatGroups = $input->get('fabrik_repeat_group', array(), 'array');
 			if (!empty($repeatGroups))
 			{
 				$repeatGroup = JArrayHelper::getValue($repeatGroups, $gkey, $repeatGroup);
@@ -4515,7 +4553,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					// Jaanus: if not form view with "details only" option and not details view with "form only" option
-					if (!($showGroup == 2 && $this->_editable) && !($showGroup == 3 && JRequest::getVar('view', 'form') == 'details')
+					if (!($showGroup == 2 && $this->_editable) && !($showGroup == 3 && $input->get('view', 'form') == 'details')
 						&& !($showGroup == 4 && !$groupModel->canView()))
 					{
 						$this->groupView[$group->name] = $group;
@@ -4592,6 +4630,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	protected function populateState()
 	{
 		$app = JFactory::getApplication('site');
+		$input = $app->input;
 		if (!$app->isAdmin())
 		{
 			// Load the menu item / component parameters.
@@ -4599,11 +4638,11 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 			$this->setState('params', $params);
 
 			// Load state from the request.
-			$pk = JRequest::getInt('formid', $params->get('formid'));
+			$pk = $input->getInt('formid', $params->get('formid'));
 		}
 		else
 		{
-			$pk = JRequest::getInt('formid');
+			$pk = $input->getInt('formid');
 		}
 		$this->setState('form.id', $pk);
 	}
@@ -4616,22 +4655,24 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function inLineEditResult()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getListModel();
 		$listid = $listModel->getId();
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
-		$elementid = JRequest::getInt('elid');
+		$elementid = $input->getInt('elid');
 		$elmentModel = $this->getElement($elementid, true);
-		$rowid = JRequest::getVar('rowid');
+		$rowid = $input->get('rowid');
 		$listModel->setId($listid);
 
 		// If the inline edit stored a element join we need to reset back the table
 		$listModel->getTable(true);
 		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
-		$key = JRequest::getVar('element');
+		$key = $input->get('element');
 		$html = '';
 		$html .= $elmentModel->renderListData($data[$key], $data);
-		$listRef = 'list_' . JRequest::getVar('listref');
+		$listRef = 'list_' . $input->get('listref');
 		$doCalcs = "\nFabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ")";
 		$html .= '<script type="text/javasript">';
 		$html .= $doCalcs;
@@ -4726,11 +4767,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function getRedirectURL($incSession = true, $isMambot = false)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		if ($app->isAdmin())
 		{
 			if (array_key_exists('apply', $this->_formData))
 			{
-				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid');
+				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid');
 			}
 			else
 			{
@@ -4741,20 +4783,20 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		{
 			if (array_key_exists('apply', $this->_formData))
 			{
-				$url = 'index.php?option=com_fabrik&view=form&formid=' . JRequest::getInt('formid') . '&rowid=' . JRequest::getInt('rowid')
-					. '&listid=' . JRequest::getInt('listid');
+				$url = 'index.php?option=com_fabrik&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid')
+					. '&listid=' . $input->getInt('listid');
 			}
 			else
 			{
 				if ($isMambot)
 				{
 					// Return to the same page
-					$url = JArrayHelper::getvalue($_SERVER, 'HTTP_REFERER', 'index.php');
+					$url = JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', 'index.php');
 				}
 				else
 				{
 					// Return to the page that called the form
-					$url = urldecode(JRequest::getVar('fabrik_referrer', 'index.php', 'post'));
+					$url = urldecode($input->post->get('fabrik_referrer', 'index.php'));
 				}
 				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 				if ($url == '')
@@ -4766,7 +4808,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					else
 					{
 						// No menu link so redirect back to list view
-						$url = 'index.php?option=com_fabrik&view=list&listid=' . JRequest::getInt('listid');
+						$url = 'index.php?option=com_fabrik&view=list&listid=' . $input->getInt('listid');
 					}
 				}
 			}
