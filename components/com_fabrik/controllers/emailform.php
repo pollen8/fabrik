@@ -34,8 +34,9 @@ class FabrikControllerEmailform extends JControllerLegacy
 	public function display()
 	{
 		$document = JFactory::getDocument();
-
-		$viewName = JRequest::getVar('view', 'emailform', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'emailform');
 		$modelName = 'form';
 
 		$viewType = $document->getType();

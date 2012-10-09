@@ -321,26 +321,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Ajax call to get auto complete options
-	 *
-	 * @return  string  json encoded options
-	 */
-
-	/* public function onAutocomplete_options()
-	{
-		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->setId(JRequest::getInt('element_id'));
-		$this->getElement(true);
-
-		$cache = JCache::getInstance('callback',
-			array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
-				'storage' => 'file'));
-		$cache->setCaching(true);
-		$search = JRequest::getVar('value');
-		echo $cache->call(array('plgFabrik_elementList', 'cacheAutoCompleteOptions'), $this, $search);
-	} */
-
-	/**
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
@@ -354,10 +334,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
+		$app = JFactory::getApplication();
 		$listModel = $elementModel->getListModel();
 		$label = JArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
-		$v = addslashes(JRequest::getVar('value'));
+		$v = addslashes($app->input->get('value'));
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)
 		{
@@ -471,6 +452,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
@@ -537,7 +520,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$elBeforeLabel = (bool) $this->getParams()->get('element_before_label', true);
 
 		// Element_before_label
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			$optionsPerRow = 1;
 		}

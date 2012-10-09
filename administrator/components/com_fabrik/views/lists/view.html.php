@@ -119,7 +119,8 @@ class FabrikAdminViewLists extends JViewLegacy
 
 	protected function addConfirmDeleteToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_CONFIRM_DELETE'), 'list.png');
 		JToolBarHelper::save('lists.dodelete', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
@@ -129,7 +130,8 @@ class FabrikAdminViewLists extends JViewLegacy
 
 	protected function addImportToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		JToolBarHelper::save('lists.doimport', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');

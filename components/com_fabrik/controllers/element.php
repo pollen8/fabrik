@@ -54,8 +54,9 @@ class FabrikControllerElement extends JControllerLegacy
 	public function display()
 	{
 		$document = JFactory::getDocument();
-
-		$viewName = JRequest::getVar('view', 'element', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'element', 'cmd');
 		$modelName = $viewName;
 
 		$viewType = $document->getType();
@@ -82,12 +83,14 @@ class FabrikControllerElement extends JControllerLegacy
 
 	public function save()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getModel('list', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('listid'));
-		$rowId = JRequest::getVar('rowid');
-		$key = JRequest::getVar('element');
-		$key = array_pop(explode("___", $key));
-		$value = JRequest::getVar('value');
+		$listModel->setId($input->getInt('listid'));
+		$rowId = $input->get('rowid');
+		$key = $input->get('element');
+		$key = array_pop(explode('___', $key));
+		$value = $input->get('value');
 		$listModel->storeCell($rowId, $key, $value);
 		$this->mode = 'readonly';
 		$this->display();

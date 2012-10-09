@@ -73,10 +73,12 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	public function toggleInList()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
 		// Get items to publish from the request.
-		$cid = JRequest::getVar('cid', array(), '', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		$data = array('showInListView' => 1, 'hideFromListView' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
@@ -138,7 +140,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	}
 
 	/**
-	 * cancel delete element
+	 * Cancel delete element
 	 *
 	 * @return  null
 	 */
@@ -156,7 +158,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 
 	public function copySelectGroup()
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$model = $this->getModel('Elements');
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
@@ -181,10 +183,12 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 
 	public function batch()
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Elements');
-		$cid = JRequest::getVar('cid', array(), '', 'array');
-		$opts = JRequest::getVar('batch');
+		$cid = $input->get('cid', array(), 'array');
+		$opts = $input->get('batch', array(), 'array');
 		$model->batch($cid, $opts);
 		$this->setRedirect('index.php?option=com_fabrik&view=elements', JText::_('COM_FABRIK_MSG_BATCH_DONE'));
 	}

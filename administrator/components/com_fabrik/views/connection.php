@@ -1,16 +1,16 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
-
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-class FabrikViewConenction {
+class FabrikViewConenction
+{
 
 	/**
 	 * set up the menu when viewing the list of connections
@@ -22,35 +22,45 @@ class FabrikViewConenction {
 		JToolBarHelper::makeDefault('setdefault');
 		JToolBarHelper::publishList();
 		JToolBarHelper::unpublishList();
-		JToolBarHelper::custom( 'copy', 'copy.png', 'copy_f2.png', 'Copy');
+		JToolBarHelper::custom('copy', 'copy.png', 'copy_f2.png', 'Copy');
 		JToolBarHelper::deleteList();
 		JToolBarHelper::editListX();
 		JToolBarHelper::addNewX();
 	}
 
 	/**
-	 * set up the menu when editing the connection
+	 * Set up the menu when editing the connection
+	 *
+	 * @return  void
 	 */
 
 	function setConnectionToolbar()
 	{
-		$task = JRequest::getVar('task', '', 'method', 'string');
-		JToolBarHelper::title($task == 'add' ? JText::_('CONNECTION') . ': <small><small>[ '. JText::_('NEW') .' ]</small></small>' : JText::_('CONNECTION') . ': <small><small>[ '. JText::_('EDIT') .' ]</small></small>', 'fabrik-connection.png');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$task = $input->get('task');
+		JToolBarHelper::title(
+			$task == 'add' ? JText::_('CONNECTION') . ': <small><small>[ ' . JText::_('NEW') . ' ]</small></small>'
+				: JText::_('CONNECTION') . ': <small><small>[ ' . JText::_('EDIT') . ' ]</small></small>', 'fabrik-connection.png');
 		JToolBarHelper::save('save');
 		JToolBarHelper::apply('apply');
-		JToolBarHelper::cancel( 'cancel');
+		JToolBarHelper::cancel('cancel');
 	}
 
 	/**
-	 * show a list of all the connections
-* @param array of connection objects
-* @param object page navigation
+	 * Show a list of all the connections
+	 *
+	 * @param   array  $rows     connection objects
+	 * @param   object $pageNav  page navigation
+	 *
+	 * @return  void
 	 */
 
-	function show( $rows, $pageNav) {
+	function show($rows, $pageNav)
+	{
 		FabrikViewConenction::setConnectionsToolbar();
-		$user	  = &JFactory::getUser();
-		 ?>
+		$user = JFactory::getUser();
+?>
 		<form action="index.php" method="post" name="adminForm">
 		<table class="adminlist">
 			<thead>
@@ -79,41 +89,48 @@ class FabrikViewConenction {
 			<tbody>
 			<?php
 		$k = 0;
-		for ( $i = 0, $n = count($rows); $i < $n; $i ++) {
-			$row = & $rows[$i];
-			$checked		= JHTML::_('grid.checkedout',   $row, $i);
-			$link 	= JRoute::_( 'index.php?option=com_fabrik&c=connection&task=edit&cid='. $row->id);
+		for ($i = 0, $n = count($rows); $i < $n; $i++)
+		{
+			$row = &$rows[$i];
+			$checked = JHTML::_('grid.checkedout', $row, $i);
+			$link = JRoute::_('index.php?option=com_fabrik&c=connection&task=edit&cid=' . $row->id);
 			$row->published = $row->state;
-			$published		= JHTML::_('grid.published', $row, $i);
+			$published = JHTML::_('grid.published', $row, $i);
 			?>
 			<tr class="<?php echo "row$k"; ?>">
 				<td width="1%"><?php echo $row->id; ?></td>
 				<td width="1%"><?php echo $checked; ?></td>
 				<td width="29%">
 					<?php
-					if ($row->checked_out && ( $row->checked_out != $user->get('id'))) {
-						echo $row->description;
-					} else {
+			if ($row->checked_out && ($row->checked_out != $user->get('id')))
+			{
+				echo $row->description;
+			}
+			else
+			{
 					?>
 						<a href="<?php echo $link; ?>" >
 						<?php
-						echo $row->description;
-					}
-					?>
+				echo $row->description;
+			}
+						?>
 					</a>
 				</td>
 				<td width="25%">
 					<?php echo $row->host; ?>
 				</td>
 				<td align="center">
-				<?php if ($row->default == 1) { ?>
+				<?php if ($row->default == 1)
+			{ ?>
 					<img src="templates/khepri/images/menu/icon-16-default.png" alt="<?php echo JText::_('DEFAULT'); ?>" />
-				<?php } else { ?>
+				<?php }
+			else
+			{ ?>
 				&nbsp;
 				<?php } ?>
 			</td>
 				<td>
-					<?php echo $published;?>
+					<?php echo $published; ?>
 				</td>
 				<td width="20%" >
 					<?php echo $row->database; ?>
@@ -127,43 +144,48 @@ class FabrikViewConenction {
 			<?php
 			$k = 1 - $k;
 		}
-		?>
+			?>
 			</tbody>
 		</table>
 		<input type="hidden" name="option" value="com_fabrik" />
 		<input type="hidden" name="boxchecked" value="0" />
 		<input type="hidden" name="c" value="connection" />
 		<input type="hidden" name="task" value="" />
-		<?php echo JHTML::_( 'form.token'); ?>
+		<?php echo JHTML::_('form.token'); ?>
 	</form>
 	<?php
 	}
 
 	/**
-	 * edits a database connection
-* @param object connection
+	 * Edits a database connection
+	 *
+	 * @param   object  $row  connection
+	 *
+	 * @return  void
 	 */
 
 	function edit($row)
 	{
 		JHtml::_('behavior.framework');
 		FabrikViewConenction::setConnectionToolbar();
-		JRequest::setVar('hidemainmenu', 1);
 		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		$config = JFactory::getConfig();
 		if ($row->id == 1)
 		{
 			$app->enqueueMessage(JText::_('THIS IS THE ORIGINAL CONNECTION'));
-			if (!($config->get('host') == $row->host && $config->get('user') == $row->user && $config->get('password') == $row->password && $config->get('db') == $row->database))
+			if (!($config->get('host') == $row->host && $config->get('user') == $row->user && $config->get('password') == $row->password
+				&& $config->get('db') == $row->database))
 			{
 				JError::raiseWarning(E_WARNING, JText::_('YOUMUSTSAVETHISCNN'));
 			}
-			$row->host =$config->get('host');
+			$row->host = $config->get('host');
 			$row->user = $config->get('user');
 			$row->password = $config->get('password');
 			$row->database = $config->get('db');
+
 		}
-		?>
+	?>
 		<form action="index.php" method="post" name="adminForm">
 		<div class="col100">
 			<fieldset class="adminform">
@@ -190,13 +212,14 @@ class FabrikViewConenction {
 			</tr>
 			<tr>
 				<td valign="top" class="key">
-					<label for="user"><?php echo JText::_('USER');?></label>
+					<label for="user"><?php echo JText::_('USER'); ?></label>
 				</td>
 				<td><input class="inputbox" type="text" name="user" id="user" size="75" value="<?php echo $row->user; ?>" /></td>
 			</tr>
-			<?php if ($row->host != ""){?>
+			<?php if ($row->host != "")
+		{ ?>
 				<tr>
-				<td valign="top" class="key"><?php echo JText::_('ENTER PASSWORD OR LEAVE AS IS');  ?></td>
+				<td valign="top" class="key"><?php echo JText::_('ENTER PASSWORD OR LEAVE AS IS'); ?></td>
 				<td></td>
 			</tr>
 			<?php } ?>
@@ -226,10 +249,10 @@ class FabrikViewConenction {
 		<input type="hidden" name="id" value="<?php echo $row->id; ?>" />
 		</fieldset>
 		</div>
-		<?php echo JHTML::_( 'form.token');
-		echo JHTML::_('behavior.keepalive'); ?>
+		<?php echo JHTML::_('form.token');
+		echo JHTML::_('behavior.keepalive');
+		?>
 	</form>
 <?php
- }
+	}
 }
-?>

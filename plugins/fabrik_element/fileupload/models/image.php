@@ -38,6 +38,9 @@ class imageRender
 
 	function render(&$model, &$params, $file, $thisRow = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ hugh - added this hack to let people use elementname__title as a title element
 		// for the image, to show in the lightbox popup.
 		// So we have to work out if we're being called from a table or form
@@ -51,7 +54,7 @@ class imageRender
 		{
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
-		if (JRequest::getVar('view') == 'list')
+		if ($input->get('view') == 'list')
 		{
 			$listModel = $model->getlistModel();
 			if (array_key_exists($title_name, $thisRow))

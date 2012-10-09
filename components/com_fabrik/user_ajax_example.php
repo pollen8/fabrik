@@ -16,7 +16,12 @@
  * index.php?option=com_fabrik&format=raw&task=plugin.userAjax&method=userExists&username=" + myUsername;
  *
  * Fabrik will automatically try and call the function name specified in your 'method='.
- * You are responsible for grabbing any other parameters, using JRequest::getVar('variablename'),
+ * You are responsible for grabbing any other parameters, using:
+ *
+ *  $app = JFactory::getApplication();
+    $input = $app->input;
+    $input->get('variablename'),
+
  * as per the $myUsername exmaple in userExists() below.
  *
  * The userExists() example is designed to test if a username given in a text element
@@ -68,21 +73,25 @@
  */
 
 /* MOS Intruder Alerts */
-defined('_JEXEC' ) or die('Restricted access');
+defined('_JEXEC') or die('Restricted access');
 
-class userAjax {
-	function userExists() {
+class userAjax
+{
+	function userExists()
+	{
 		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
 		$retStr = '';
-		$myUsername = JRequest::getVar('username', '');
-		$query = "SELECT name from #__users WHERE username = '$myUsername' LIMIT 1";
-		$db->setQuery($query);
-		$results = $db->loadObjectList();
-		if ($thisName = $results[0]->name) {
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$myUsername = $input->get('username', '');
+		$query->select('name')->from('#__users')->where('username = ' . $db->quote($myUsername))
+		$db->setQuery($query, 1, 0);
+		$result = $db->loadResult();
+		if ($thisName = $result)
+		{
 			$retStr = "The username $myUsername is already in use by $thisName";
 		}
 		echo $retStr;
 	}
 }
-
-?>

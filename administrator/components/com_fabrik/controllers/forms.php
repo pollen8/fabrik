@@ -69,7 +69,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	public function updateDatabase()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$this->setRedirect('index.php?option=com_fabrik&view=forms');
 		$this->getModel()->updateDatabase();
 		$this->setMessage(JText::_('COM_FABRIK_DATABASE_UPDATED'));
@@ -83,11 +83,10 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 
 	public function listview()
 	{
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if (is_array($cid))
-		{
-			$cid = $cid[0];
-		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(0), 'array');
+		$cid = $cid[0];
 		$db = JFactory::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__fabrik_lists')->where('form_id = ' . (int) $cid);

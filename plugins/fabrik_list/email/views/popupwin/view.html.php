@@ -10,7 +10,9 @@ class fabrikViewPopupwin extends JViewLegacy
 
 	function display($tmpl = 'default')
 	{
-		$renderOrder = JRequest::getInt('renderOrder');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$renderOrder = $input->getInt('renderOrder');
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
@@ -35,4 +37,3 @@ class fabrikViewPopupwin extends JViewLegacy
 	}
 
 }
-?>

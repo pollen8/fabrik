@@ -312,13 +312,15 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 	public function getPluginHTML($plugin = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$str = '';
 		$item = $this->getItem();
 		if (is_null($plugin))
 		{
 			$plugin = $item->plugin;
 		}
-		JRequest::setvar('view', 'element');
+		$input->set('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '')
@@ -370,6 +372,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function validate($form, $data, $group = null)
 	{
 		$ok = parent::validate($form, $data);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Standard jform validation failed so we shouldn't test further as we can't be sure of the data
 		if (!$ok)
@@ -408,7 +412,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * Test for duplicate names
 		 * unlinking produces this error
 		 */
-		if (!JRequest::getVar('unlink', false) && (int) $data['id'] === 0)
+		if (!$input->get('unlink', false) && (int) $data['id'] === 0)
 		{
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
@@ -484,6 +488,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		jimport('joomla.utilities.date');
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$new = $data['id'] == 0 ? true : false;
 		$params = $data['params'];
 		$data['name'] = FabrikString::iclean($data['name']);
@@ -520,7 +525,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 		}
 		// Only update the element name if we can alter existing columns, otherwise the name and field name become out of sync
-		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : $input->get('name_orig', '');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
 		foreach ($ar as $a)
@@ -539,7 +544,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$elementModel->beforeSave($row);
 
 		// Unlink linked elements
-		if (JRequest::getVar('unlink') == 'on')
+		if ($input->get('unlink') == 'on')
 		{
 			$data['parent_id'] = 0;
 		}
@@ -622,12 +627,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 */
 		$this->updateChildIds($row);
 		$elementModel->getElement()->bind($data);
-		$origName = JRequest::getVar('name_orig', '', 'post', 'cmd');
+		$origName = $input->get('name_orig', '');
 		list($update, $q, $oldName, $newdesc, $origDesc) = $listModel->shouldUpdateElement($elementModel, $origName);
 
 		if ($update)
 		{
-			$origplugin = JRequest::getVar('plugin_orig');
+			$origplugin = $input->get('plugin_orig');
 			$config = JFactory::getConfig();
 			$prefix = $config->get('dbprefix');
 			$tablename = $listModel->getTable()->db_table_name;
@@ -654,9 +659,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$app->setUserState('com_fabrik.origplugin', $origplugin);
 			$app->setUserState('com_fabrik.oldname', $oldName);
 			$app->setUserState('com_fabrik.newname', $data['name']);
-			$app->setUserState('com_fabrik.origtask', JRequest::getCmd('task'));
+			$app->setUserState('com_fabrik.origtask', $input->get('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
-			$task = JRequest::getCmd('task');
+			$task = $input->get('task');
 			$url = 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id . '&origplugin=' . $origplugin . '&origtask='
 				. $task . '&plugin=' . $row->plugin;
 			$app->setUserState('com_fabrik.redirect', $url);
@@ -905,27 +910,35 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * updated to apply js changes to descendents as well.  NOTE that this means
 		 * all descendents (i.e. children of children, etc), not just direct children.
 		 */
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this_id = $this->getState($this->getName() . '.id');
 		$ids = $this->getElementDescendents($this_id);
 		$ids[] = $this_id;
 		$db = FabrikWorker::getDbo(true);
-		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id IN (" . implode(',', $ids) . ")");
+		$query = $db->getQuery(true);
+		$query->delete('#__{package}_jsactions')->where('element_id IN (' . implode(',', $ids) . ')');
+		$db->setQuery($query);
 		$db->query();
-		$post = JRequest::get('post');
-		if (array_key_exists('js_action', $post['jform']) && is_array($post['jform']['js_action']))
+		$jform = $input->get('jform', array(), 'array');
+		$eEvent = $input->get('js_e_event', array(), 'array');
+		$eTrigger = $input->get('js_e_trigger', array(), 'array');
+		$eCond = $input->get('js_e_condition', array(), 'array');
+		$eVal = $input->get('js_e_value', array(), 'array');
+		if (array_key_exists('js_action', $jform) && is_array($jform['js_action']))
 		{
-			for ($c = 0; $c < count($post['jform']['js_action']); $c++)
+			for ($c = 0; $c < count($jform['js_action']); $c++)
 			{
-				$jsAction = $post['jform']['js_action'][$c];
+				$jsAction = $jform['js_action'][$c];
 				$params = new stdClass;
-				$params->js_e_event = $post['js_e_event'][$c];
-				$params->js_e_trigger = $post['js_e_trigger'][$c];
-				$params->js_e_condition = $post['js_e_condition'][$c];
-				$params->js_e_value = $post['js_e_value'][$c];
+				$params->js_e_event = $eEvent[$c];
+				$params->js_e_trigger = $eTrigger[$c];
+				$params->js_e_condition = $eCond[$c];
+				$params->js_e_value = $eVal[$c];
 				$params = json_encode($params);
 				if ($jsAction != '')
 				{
-					$code = $post['jform']['js_code'][$c];
+					$code = $jform['js_code'][$c];
 					$code = str_replace("}", "}\n", $code);
 					$code = str_replace('"', "'", $code);
 					foreach ($ids as $id)
@@ -978,8 +991,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function delete(&$pks)
 	{
 		// Initialize variables
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$drops = (array) JRequest::getVar('drop');
+		$drops = $input->get('drop', array(), 'array');
 		foreach ($pks as $id)
 		{
 			$drop = array_key_exists($id, $drops) && $drops[$id][0] == '1';
@@ -1026,9 +1041,11 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 	public function copy()
 	{
-		$cid = JRequest::getVar('cid', null, 'post', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		JArrayHelper::toInteger($cid);
-		$names = JRequest::getVar('name', null, 'post', 'array');
+		$names = $input->get('name', array(), 'array');
 		$rule = $this->getTable('element');
 		foreach ($cid as $id => $groupid)
 		{

@@ -254,11 +254,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$form = $this->getForm();
 
-		// $$$ hugh - need to copy the array, otherwise we blow away join data
-		// from _formData in $joindata foreach below.
-		//$d = $form->formData;
+		/*
+		 * $$$ hugh - need to copy the array, otherwise we blow away join data
+		 * from _formData in $joindata foreach below.
+		 */
 		$d = unserialize(serialize($form->formData));
-
 		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
@@ -525,11 +525,13 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	public function onAjax_calc()
 	{
-		$this->setId(JRequest::getInt('element_id'));
+		$app = JFactory::getApplication();
+		$this->setId($app->input->getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
 		$w = new FabrikWorker;
-		$d = JRequest::get('request');
+		$filter = JFilterInput::getInstance();
+		$d = $filter->clean($_REQUEST, 'array');
 
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);

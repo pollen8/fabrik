@@ -337,7 +337,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	private function _replaceRequest($msg)
 	{
 		$db = JFactory::getDbo();
-		$request = JRequest::get('request');
+		$filter = JFilterInput::getInstance();
+		$request = $filter->clean($_REQUEST, 'array');
 		foreach ($request as $key => $val)
 		{
 			if (is_string($val))

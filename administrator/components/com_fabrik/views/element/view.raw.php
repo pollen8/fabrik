@@ -29,23 +29,26 @@ class FabrikAdminViewElement extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$ids = JRequest::getVar('plugin');
-		foreach ($ids as $id) {
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$ids = $input->get('plugin', array(), 'array');
+		foreach ($ids as $id)
+		{
 			//$plugin = $pluginManager->getElementPlugin($id);
 		}
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		$formModel->setId(JRequest::getInt('formid'));
+		$formModel->setId($input->getInt('formid'));
 		$formModel->inLineEdit();
-		/* $elementid = JRequest::getVar('elid');
+		/* $elementid = $input->getInt('elid');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = JRequest::getVar('plugin');
+		$className = $input->get('plugin');
 		$plugin =& $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$plugin->inLineEdit();
 
-		$task = JRequest::getVar('task');
+		$task = $input->get('task');
 		if ($task !== 'element.save' && $task !== 'save') {
-			JFactory::getCache('com_fabrik')->clean();
+		    JFactory::getCache('com_fabrik')->clean();
 		} */
 	}
 

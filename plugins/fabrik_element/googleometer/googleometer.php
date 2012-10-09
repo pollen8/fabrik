@@ -39,15 +39,16 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = &$this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
 		$range = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		if (JRequest::getCmd('task') === 'details')
+		if ($input->get('task') === 'details')
 		{
 			$data = $data[$fullName];
 			$str = $this->_renderListData($data, $range);

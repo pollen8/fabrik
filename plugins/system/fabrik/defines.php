@@ -38,6 +38,9 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 /** @var string separator used in repeat elements/groups IS USED IN F3 */
 define("GROUPSPLITTER", "//..*..//");
 
+$app = JFactory::getApplication();
+$input = $app->input;
+
 // Override JHTML -needed for framework overrde
 $version = new JVersion;
 JHTML::addIncludePath(JPATH_SITE . '/components/com_fabrik/jhelpers/' . $version->RELEASE . '/');
@@ -59,11 +62,10 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 require_once COM_FABRIK_FRONTEND . '/models/element.php';
 require_once COM_FABRIK_FRONTEND . '/models/elementlist.php';
 
-$app = JFactory::getApplication();
 if ($app->isAdmin())
 {
 	// Load in front end model path
-	if (JRequest::getVar('option') !== 'com_acymailing')
+	if ($input->get('option') !== 'com_acymailing')
 	{
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 	}

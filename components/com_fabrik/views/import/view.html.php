@@ -33,7 +33,9 @@ class fabrikViewImport extends JViewLegacy
 	public function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
-		$this->listid = JRequest::getVar('listid', 0);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->listid = $input->getInt('listid', 0);
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
 		$this->table = $listModel->getTable();
@@ -58,11 +60,14 @@ class fabrikViewImport extends JViewLegacy
 
 	private function setFieldSets()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// From list data view in admin
-		$id = JRequest::getInt('listid', 0);
+		$id = $input->getInt('listid', 0);
 
 		// From list of lists checkbox selection
-		$cid = JRequest::getVar('cid', array(0));
+		$cid = $input->get('cid', array(0), 'array');
 		JArrayHelper::toInteger($cid);
 		if ($id === 0)
 		{

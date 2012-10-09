@@ -38,8 +38,10 @@ class FabrikAdminControllerConnection extends FabControllerForm
 
 	public function test()
 	{
-		JRequest::checkToken() or die('Invalid Token');
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		$cid = array((int) $cid[0]);
 		$link = 'index.php?option=com_fabrik&view=connections';
 		foreach ($cid as $id)

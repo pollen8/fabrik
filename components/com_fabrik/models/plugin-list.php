@@ -226,8 +226,10 @@ class plgFabrik_List extends FabrikPlugin
 		{
 			return false;
 		}
-		$postedRenderOrder = JRequest::getInt('fabrik_listplugin_renderOrder', -1);
-		return JRequest::getVar('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$postedRenderOrder = $input->getInt('fabrik_listplugin_renderOrder', -1);
+		return $input->get('fabrik_listplugin_name') == $this->buttonPrefix && $this->renderOrder == $postedRenderOrder;
 	}
 
 	/**

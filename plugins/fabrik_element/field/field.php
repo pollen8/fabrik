@@ -73,6 +73,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = $this->inputProperties($repeatCounter);
@@ -91,7 +92,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 * be formatted, so we need to un-format them before formatting them!
 		 * $$$ rob - well better actually check if we are coming from a failed validation then :)
 		 */
-		if (JRequest::getCmd('task') == 'form.process')
+		if ($app->input->get('task') == 'form.process')
 		{
 			$value = $this->unNumberFormat($value);
 		}

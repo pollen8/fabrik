@@ -74,10 +74,12 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	public function setDefault()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		JSesssion::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get items to publish from the request.
-		$cid = JRequest::getVar('cid', array(), 'default', 'array');
+		$cid = $input->get('cid', array(), 'array');
 		$data = array('setDefault' => 1, 'unsetDefault' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
@@ -111,4 +113,5 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 		}
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
+
 }

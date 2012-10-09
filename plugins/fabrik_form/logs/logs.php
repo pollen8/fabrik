@@ -55,7 +55,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 
 	protected function getMessageType($rowid)
 	{
-		if (JRequest::getVar('view') == 'details')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if $input->get('view') == 'details')
 		{
 			return 'form.details';
 		}
@@ -117,11 +119,12 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 	{
 		$this->formModel = $formModel;
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$db = FabrikWorker::getDBO();
 		$query = $db->getQuery(true);
-		$rowid = JRequest::getVar('rowid', '');
+		$rowid = $input->get('rowid', '');
 		$loading = strstr($messageType, 'form.load');
-		$http_referrer = JRequest::getVar('HTTP_REFERER', 'no HTTP_REFERER', 'SERVER');
+		$http_referrer = $input->server->get('HTTP_REFERER', 'no HTTP_REFERER');
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
 		$username = $user->get('username');
@@ -202,9 +205,8 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 				$newData = $this->getNewData($formModel);
 				if (!empty($data))
 				{
-					$post = JRequest::get('post');
-					// $elementModel = JModelLegacy::getInstance('element', 'FabrikModel');
-					// $element = $elementModel->getElement(true);
+					$filter = JFilterInput::getInstance();
+					$post = $filter->clean($_POST, 'array');
 					$tableModel = $formModel->getTable();
 
 					$origDataCount = count(array_keys(JArrayHelper::fromObject($formModel->_origData[0])));

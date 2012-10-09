@@ -28,7 +28,8 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 	public function process(&$data, &$listModel)
 	{
 		$params = $this->getParams();
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$email = $params->get('plugin-options.email');
 		$pw = $params->get('plugin-options.password');
 		if ($email == '' || $pw == '')
@@ -105,7 +106,6 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 				preg_match("/<(.*)>/", $overview->from, $matches);
 
 				$thisData[$fromField] = $overview->from;
-
 				$thisData[$titleField] = $this->getTitle($overview);
 				$thisData[$dateField] = JFactory::getDate($overview->date)->toSql();
 				$thisData['imageFound'] = false;
@@ -200,7 +200,7 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 
 				foreach ($thisData as $key => $val)
 				{
-					JRequest::setVar($key, $val);
+					$input->set($key, $val);
 				}
 				$formModel = $listModel->getForm();
 				unset($listModel->getFormModel()->formData);

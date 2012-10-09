@@ -74,11 +74,13 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
-		if (JRequest::getVar('view') != 'details')
+		if ($input->get('view') != 'details')
 		{
 			$name = $this->getHTMLName($repeatCounter);
 			$id = $this->getHTMLId($repeatCounter);
@@ -98,7 +100,8 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			$bits['type'] = $type;
 			$bits['name'] = $name;
 			$bits['id'] = $id;
-			//stop "'s from breaking the content out of the field.
+
+			// Stop "'s from breaking the content out of the field.
 			$bits['value'] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 			$bits['size'] = $size;
 			$bits['maxlength'] = $maxlength;

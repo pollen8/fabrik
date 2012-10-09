@@ -145,8 +145,10 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$sub = $db->loadObject();
 
 		// @TODO test replace various placeholders
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_REQUEST, 'array');
 		$name = $config->get('sitename') . ' {plan_name}  User: {jos_fabrik_subs_users___name} ({jos_fabrik_subs_users___username})';
-		$tmp = array_merge(JRequest::get('data'), JArrayHelper::fromObject($sub));
+		$tmp = array_merge($post, JArrayHelper::fromObject($sub));
 
 		// 'http://fabrikar.com/ '.$sub->item_name. ' - User: subtest26012010 (subtest26012010)';
 		$opts['item_name'] = $w->parseMessageForPlaceHolder($name, $tmp);
@@ -333,8 +335,10 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	public function onThanks()
 	{
-		$formid = JRequest::getInt('formid');
-		$rowid = JRequest::getInt('rowid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$formid = $input->getInt('formid');
+		$rowid = $input->getInt('rowid');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);
@@ -355,7 +359,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 				{
 					$all_data[] = "$key: $val";
 				}
-				JRequest::setVar('show_all', implode('<br />', $all_data));
+				$input->set('show_all', implode('<br />', $all_data));
 			}
 			$ret_msg = str_replace('[', '{', $ret_msg);
 			$ret_msg = str_replace(']', '}', $ret_msg);
@@ -377,6 +381,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	public function onIpn()
 	{
 		$config = JFactory::getConfig();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
 		$log->message_type = 'fabrik.ipn.start';
@@ -384,7 +390,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$log->store();
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
-		$custom = JRequest::getVar('custom');
+		$custom = $input->get('custom');
 		list($formid, $rowid) = explode(":", $custom);
 
 		$mail = JFactory::getMailer();
@@ -398,7 +404,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 
-		$renderOrder = JRequest::getInt('renderOrder');
+		$renderOrder = $input->getInt('renderOrder');
 		$ipn_txn_field = 'pp_txn_id';
 		$ipn_payment_field = 'amount';
 
@@ -431,15 +437,15 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$subscriptionsurl = $sandBox ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
 		// Assign posted variables to local variables
-		$item_name = JRequest::getVar('item_name');
-		$item_number = JRequest::getVar('item_number');
-		$payment_status = JRequest::getVar('payment_status');
-		$payment_amount = JRequest::getVar('mc_gross');
-		$payment_currency = JRequest::getVar('mc_currency');
-		$txn_id = JRequest::getVar('txn_id');
-		$txn_type = JRequest::getVar('txn_type');
-		$receiver_email = JRequest::getVar('receiver_email');
-		$payer_email = JRequest::getVar('payer_email');
+		$item_name = $input->get('item_name', '', 'string');
+		$item_number = $input->get('item_number', '', 'string');
+		$payment_status = $input->get('payment_status', '', 'string');
+		$payment_amount = $input->get('mc_gross', '', 'string');
+		$payment_currency = $input->get('mc_currency', '', 'string');
+		$txn_id = $input->get('txn_id', '', 'string');
+		$txn_type = $input->get('txn_type', '', 'string');
+		$receiver_email = $input->get('receiver_email', '', 'string');
+		$payer_email = $input->get('payer_email', '', 'string');
 
 		$status = 'ok';
 		$err_msg = '';

@@ -37,10 +37,11 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 
 	public function pluginAjax()
 	{
-		echo "hhere";exit;
-		$plugin = JRequest::getVar('plugin', '');
-		$method = JRequest::getVar('method', '');
-		$group = JRequest::getVar('g', 'element');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin', '');
+		$method = $input->get('method', '');
+		$group = $input->get('g', 'element');
 
 		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
 		{
@@ -67,8 +68,10 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	public function userAjax()
 	{
 		$db = FabrikWorker::getDbo();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
-		$method = JRequest::getVar('method', '');
+		$method = $input->get('method', '');
 		$userAjax = new userAjax($db);
 		if (method_exists($userAjax, $method))
 		{
@@ -87,7 +90,9 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	public function doCron(&$pluginManager)
 	{
 		$db = FabrikWorker::getDbo();
-		$cid = JRequest::getVar('element_id', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('element_id', array(), 'array');
 		JArrayHelper::toInteger($cid);
 		if (empty($cid))
 		{

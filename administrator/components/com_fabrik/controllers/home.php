@@ -46,7 +46,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * reset fabrik !!!
+	 * Reset fabrik !!!
 	 *
 	 * @return  null
 	 */
@@ -60,7 +60,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * install sample form
+	 * Install sample form
 	 *
 	 * @return null
 	 */
@@ -73,19 +73,22 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * ajax function to update any drop down that contains records relating to the selected table
+	 * Ajax function to update any drop down that contains records relating to the selected table
 	 * called each time the selected table is changed
 	 *
 	 * @deprecated
 	 *
-	 * @return null
+	 * @return void
 	 */
 
 	public function ajax_updateColumDropDowns()
 	{
 		JError::raiseNotice(500, 'ajax_updateColumDropDowns deprecated');
-		/* $cnnId = JRequest::getInt('cid', 1);
-		$tbl = JRequest::getVar('table', '');
+		/*
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cnnId = $input->getInt('cid', 1);
+		$tbl = $input->get('table', '', 'string');
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
 		$fieldDropDown2 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'group_by');
@@ -106,7 +109,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	 */
 	public function getRSSFeed()
 	{
-		//  get RSS parsed object
+		// Get RSS parsed object
 		$options = array();
 		$options['rssUrl']		= 'http://feeds.feedburner.com/fabrik';
 		$options['cache_time']	= 86400;

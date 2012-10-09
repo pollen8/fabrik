@@ -11,6 +11,10 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
+$app = JFactory::getApplication();
+$input = $app->input;
+$jform = $input->get('jform', array(), 'array');
 ?>
 <form action="index.php" method="post" name="adminForm">
 	<?php if (!empty($this->newHeadings)) :
@@ -113,7 +117,6 @@ defined('_JEXEC') or die;
 	</tbody>
 </table>
 <?php endif;
-$jform = JRequest::getVar('jform');
 ?>
 
 <?php if (!$this->selectPKField) : ?>
@@ -123,8 +126,8 @@ $jform = JRequest::getVar('jform');
 	<input type="hidden" name="list_id" value="<?php echo $this->table->id;?>" />
 	<input type="hidden" name="task" value="import.makeTableFromCSV" />
 	<input type="hidden" name="boxchecked" value="" />
-	<input type="hidden" name="jform[drop_data]" value="<?php echo JRequest::getVar('drop_data') ?>" />
-	<input type="hidden" name="jform[overwrite]" value="<?php echo JRequest::getVar('overwrite') ?>" />
+	<input type="hidden" name="jform[drop_data]" value="<?php echo $input->get('drop_data') ?>" />
+	<input type="hidden" name="jform[overwrite]" value="<?php echo $input->get('overwrite') ?>" />
 	<input type="hidden" name="connection_id" value="<?php echo JArrayHelper::getValue($jform, 'connection_id')?>" />
 	<input type="hidden" name="jform[addkey]" value="<?php echo JArrayHelper::getValue($jform, 'addkey');?>" />
 	<input type="hidden" name="label" value="<?php echo JArrayHelper::getValue($jform, 'label')?>" />

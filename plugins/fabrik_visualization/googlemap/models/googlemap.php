@@ -70,6 +70,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		{
 			return '';
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
@@ -87,9 +89,9 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->center = $params->get('fb_gm_center');
 		if ($opts->center == 'querystring')
 		{
-			$opts->lat = JRequest::getVar('latitude', '') == '' ? $opts->lat : (float) JRequest::getVar('latitude');
-			$opts->lon = JRequest::getVar('longitude', '') == '' ? $opts->lon : (float) JRequest::getVar('longitude');
-			$opts->zoomlevel = JRequest::getVar('zoom', '') == '' ? $opts->zoomlevel : JRequest::getVar('zoom');
+			$opts->lat = $input->get('latitude', '') == '' ? $opts->lat : (float) $input->get('latitude');
+			$opts->lon = $input->get('longitude', '') == '' ? $opts->lon : (float) $input->get('longitude');
+			$opts->zoomlevel = $input->get('zoom', '') == '' ? $opts->zoomlevel : $input->get('zoom');
 		}
 		$opts->ajax_refresh = (bool) $params->get('fb_gm_ajax_refresh', false);
 		$opts->ajax_refresh_center = (bool) $params->get('fb_gm_ajax_refresh_center', true);
@@ -240,6 +242,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 
 	public function getJSIcons()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$icons = array();
 		$w = new FabrikWorker;
 		$uri = JURI::getInstance();
@@ -288,8 +292,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			// Are we using random start location for icons?
 			$listModel->_randomRecords = ($params->get('fb_gm_random_marker') == 1 && $recLimit != 0) ? true : false;
 
-			// Used in table model setLimits
-			JRequest::setVar('limit' . $listid, $recLimit);
+			// Used in list model setLimits
+			$input->set('limit' . $listid, $recLimit);
 			$listModel->setLimits();
 			$nav = $listModel->getPagination(0, 0, $recLimit);
 			$data = $listModel->getData();

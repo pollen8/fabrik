@@ -29,14 +29,16 @@ class FabrikAdminViewList extends JViewLegacy
 	function display()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
+		$app = JFactory::getApplication();
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$this->setModel($model, true);
 		$item = $model->getTable();
 		$params = $model->getParams();
 		$model->render();
 		$this->emptyDataMessage = $params->get('empty_data_msg');
-		$rowid = JRequest::getInt('rowid');
+		$rowid = $input->getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->getData();
 		$nav = $model->getPagination();
@@ -86,16 +88,18 @@ class FabrikAdminViewList extends JViewLegacy
 	private function getTmpl()
 	{
 		$app = JFactory::getApplication();
+		$app = JFactory::getApplication();
+		$input->set('hidemainmenu', true);
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$params = $model->getParams();
 		if ($app->isAdmin()) {
 			$tmpl = $params->get('admin_template');
 			if ($tmpl == -1 || $tmpl == '') {
-				$tmpl = JRequest::getVar('layout', $item->template);
+				$tmpl = $input->get('layout', $item->template);
 			}
 		} else {
-			$tmpl = JRequest::getVar('layout', $item->template);
+			$tmpl = $input->get('layout', $item->template);
 		}
 		return $tmpl;
 	}

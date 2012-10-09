@@ -16,6 +16,7 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
+ * @since       3.0
  */
 
 class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
@@ -24,8 +25,10 @@ class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
 	function getPlaylist()
 	{
 		$model= $this->getModel('media');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getInt('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0) ), 'get');
+		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0) ), 'get');
 		$model->setId($id);
 		$model->getVisualization();
 		echo $model->getPlaylist();

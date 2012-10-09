@@ -26,7 +26,7 @@ class FabControllerForm extends JControllerForm
 	protected $option = 'com_fabrik';
 
 	/**
-	 * copy items
+	 * Copy items
 	 *
 	 * @return  null
 	 */
@@ -34,7 +34,9 @@ class FabControllerForm extends JControllerForm
 	public function copy()
 	{
 		$model = $this->getModel();
-		$cid = JRequest::getVar('cid', array(), '', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('cid', array(), 'array');
 		if (empty($cid))
 		{
 			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
@@ -47,8 +49,8 @@ class FabControllerForm extends JControllerForm
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
-		$extension = JRequest::getCmd('extension');
-		$extensionURL = ($extension) ? '&extension=' . JRequest::getCmd('extension') : '';
+		$extension = $input->get('extension');
+		$extensionURL = ($extension) ? '&extension=' . $extension : '';
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
 	}
 
@@ -59,8 +61,11 @@ class FabControllerForm extends JControllerForm
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
 	 * (sometimes required to avoid router collisions).
 	 *
+	 * @since   3.1
+	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
 	 */
+
 	public function edit($key = null, $urlVar = null)
 	{
 		$this->option = 'com_fabrik';

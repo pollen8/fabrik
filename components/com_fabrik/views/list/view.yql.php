@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage	Fabik
@@ -18,10 +17,13 @@ class FabrikViewList extends JViewLegacy
 	function display()
 	{
 		$document = JFactory::getDocument();
-		$model		=& $this->getModel();
+		$model = $this->getModel();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
-		$model->setId(JRequest::getVar('listid', $usersConfig->get('listid')));
+		$model->setId($input->getInt('listid', $usersConfig->get('listid')));
 		$model->render();
 		$table = $model->getTable();
 
@@ -34,5 +36,3 @@ class FabrikViewList extends JViewLegacy
 
 	}
 }
-?>
-

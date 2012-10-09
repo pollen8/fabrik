@@ -32,15 +32,17 @@ class FabrikAdminModelPlugin extends JModelLegacy
 
 	public function render()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn($this->getState('plugin'), $this->getState('type'));
 		$feModel = $this->getPluginModel();
 		$plugin->getJForm()->model = $feModel;
 
 		$data = $this->getData();
-		JRequest::setVar('view', $this->getState('type'));
+		$input->set('view', $this->getState('type'));
 		$str = $plugin->onRenderAdminSettings($data, $this->getState('c'));
-		JRequest::setVar('view', 'plugin');
+		$input->set('view', 'plugin');
 
 		return $str;
 	}

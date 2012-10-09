@@ -62,6 +62,8 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		jimport('joomla.mail.helper');
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
@@ -111,9 +113,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$message = stripslashes($message);
 
 		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
-			. JRequest::getVar('rowid');
+			. $input->get('rowid');
 		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
-			. JRequest::getVar('rowid');
+			. $input->get('rowid');
 		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
 		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);

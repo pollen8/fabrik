@@ -1,7 +1,7 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -13,7 +13,9 @@ class FabrikViewCron
 {
 
 	/**
-	 * set up the menu when viewing the list of cron jobs
+	 * Set up the menu when viewing the list of cron jobs
+	 *
+	 * @return  void
 	 */
 
 	function setCronsToolbar()
@@ -29,12 +31,16 @@ class FabrikViewCron
 	}
 
 	/**
-	 * set up the menu when editing the cron job
+	 * Set up the menu when editing the cron job
+	 *
+	 * @return  void
 	 */
 
 	function setCronToolbar()
 	{
-		$task = JRequest::getVar('task', '', 'method', 'string');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$task = $input->get('task', '');
 		JToolBarHelper::title(
 			$task == 'add' ? JText::_('SCHEDULED TASK') . ': <small><small>[ ' . JText::_('NEW') . ' ]</small></small>'
 				: JText::_('SCHEDULED TASK') . ': <small><small>[ ' . JText::_('EDIT') . ' ]</small></small>', 'fabrik-schedule.png');
@@ -45,19 +51,23 @@ class FabrikViewCron
 
 	/**
 	 * Display the form to add or edit a cronjob
-	 * @param object cronjob
-	 * @param object parameters from attributes
-	 * @param array lists
-	 * @param object pluginmanager
+	 *
+	 * @param   object  $row            cronjob
+	 * @param   object  $params         parameters from attributes
+	 * @param   array   $lists          lists
+	 * @param   object  &pluginManager  pluginmanager
+	 *
+	 * @return  void
 	 */
 
 	function edit($row, $params, $lists, &$pluginManager)
 	{
-		JRequest::setVar('hidemainmenu', 1);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
 		FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
 		FabrikHelperHTML::tips();
-		$document = &JFactory::getDocument();
+		$document = JFactory::getDocument();
 		FabrikHelperHTML::addScriptDeclaration(
 			"
 			head.ready(function() {
@@ -159,15 +169,18 @@ class FabrikViewCron
 
 	/**
 	 * Display all available cron tasks
-	 * @param array array of cron objects
-	 * @param object page navigation
-	 * @param array lists
+	 *
+	 * @param   array   $rows     array of cron objects
+	 * @param   object  $pageNav  page navigation
+	 * @param   array   $lists    lists
+	 *
+	 * @return  void
 	 */
 
 	function show($rows, $pageNav, $lists)
 	{
 		FabrikViewCron::setCronsToolbar();
-		$user = &JFactory::getUser();
+		$user = JFactory::getUser();
 	?>
 		<form action="index.php" method="post" name="adminForm">
 		<table class="adminlist">
@@ -236,4 +249,3 @@ class FabrikViewCron
 	</form>
 	<?php }
 }
-	?>

@@ -67,9 +67,11 @@ class FabrikControllerForm extends JControllerLegacy
 	public function inlineedit()
 	{
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
-		$viewLayout = JRequest::getCmd('layout', 'default');
+		$viewLayout = $input->get('layout', 'default');
 		$view = $this->getView('form', $viewType, '');
 		$view->setModel($model, true);
 
@@ -93,7 +95,9 @@ class FabrikControllerForm extends JControllerLegacy
 	{
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
 		if ($viewName == 'emailform')
 		{
@@ -121,15 +125,16 @@ class FabrikControllerForm extends JControllerLegacy
 
 		// Workaround for token caching
 
-		if (in_array(JRequest::getCmd('format'), array('raw', 'csv', 'pdf')))
+		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{
 			$view->display();
 		}
 		else
 		{
 			$user = JFactory::getUser();
-			$post = JRequest::get('post');
-			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$uri = JFactory::getURI();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			ob_start();
 			$cache->get($view, 'display', $cacheid);
@@ -151,30 +156,32 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function process()
 	{
-		if (JRequest::getCmd('format', '') == 'raw')
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		if ($input->get('format', '') == 'raw')
 		{
 			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		}
 		$model = $this->getModel('form', 'FabrikFEModel');
-		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
+		$viewName = $input->get('view', 'form');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
 		if (!JError::isError($model))
 		{
 			$view->setModel($model, true);
 		}
-		$model->setId(JRequest::getInt('formid', 0));
+		$model->setId($input->getInt('formid', 0));
 
-		$this->isMambot = JRequest::getVar('isMambot', 0);
+		$this->isMambot = $input->get('isMambot', 0);
 		$model->getForm();
-		$model->rowId = JRequest::getVar('rowid', '');
+		$model->rowId = $input->get('rowid', '');
 
 		/**
 		 * $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission
 		 * as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
 		 * indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
 		 */
-		if (JRequest::getVar('Copy', '') != '')
+		if ($input->get('Copy', '') != '')
 		{
 			$model->copyingRow(true);
 		}
@@ -182,15 +189,15 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
 
 		if (!$model->validate())
 		{
 			// If its in a module with ajax or in a package or inline edit
-			if (JRequest::getCmd('fabrik_ajax'))
+			if ($input->get('fabrik_ajax'))
 			{
-				if (JRequest::getInt('elid') !== 0)
+				if ($input->getInt('elid') !== 0)
 				{
 					// Inline edit
 					$eMsgs = array();
@@ -225,9 +232,9 @@ class FabrikControllerForm extends JControllerLegacy
 				 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
 				 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
 				 */
-				if (JRequest::getCmd('usekey') !== '')
+				if ($input->get('usekey') !== '')
 				{
-					JRequest::setVar('rowid', -1);
+					$input->set('rowid', -1);
 				}
 				$view->display();
 			}
@@ -238,7 +245,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->clearErrors();
 
 		$model->process();
-		if (JRequest::getInt('elid') !== 0)
+		if ($input->get('elid') !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
@@ -260,11 +267,11 @@ class FabrikControllerForm extends JControllerLegacy
 		$msg = $this->getRedirectMessage($model);
 
 		// @todo -should get handed off to the json view to do this
-		if (JRequest::getInt('fabrik_ajax') == 1)
+		if ($input->getInt('fabrik_ajax') == 1)
 		{
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
-			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => JRequest::getVar('rowid'));
+			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => $input->get('rowid', '', 'string'));
 			if (!$this->baseRedirect && $this->isMambot)
 			{
 				$session = JFactory::getSession();
@@ -290,9 +297,9 @@ class FabrikControllerForm extends JControllerLegacy
 			return;
 		}
 
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
-			JRequest::setVar('view', 'list');
+			$input->set('view', 'list');
 			$this->display();
 			return;
 		}
@@ -347,10 +354,12 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function ajax_validate()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('form', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('formid', 0));
+		$model->setId($input->getInt('formid', 0));
 		$model->getForm();
-		$model->rowId = JRequest::getVar('rowid', '');
+		$model->rowId = $input->get('rowid', '', 'string');
 		$model->validate();
 		$data = array('modified' => $model->modifiedValidationData);
 
@@ -367,9 +376,11 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function savepage()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Formsession', 'FabrikFEModel');
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
-		$formModel->setId(JRequest::getInt('formid'));
+		$formModel->setId($input->getInt('formid'));
 		$model->savePage($formModel);
 	}
 
@@ -382,9 +393,11 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function removeSession()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
-		$sessionModel->setFormId(JRequest::getInt('formid', 0));
-		$sessionModel->setRowId(JRequest::getInt('rowid', 0));
+		$sessionModel->setFormId($input->getInt('formid', 0));
+		$sessionModel->setRowId($input->getInt('rowid', 0));
 		$sessionModel->remove();
 		$this->display();
 	}
@@ -397,9 +410,11 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function paginate()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Form', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('formid'));
-		$model->paginateRowId(JRequest::getVar('dir'));
+		$model->setId($input->getInt('formid'));
+		$model->paginateRowId($input->get('dir'));
 		$this->display();
 	}
 
@@ -412,14 +427,15 @@ class FabrikControllerForm extends JControllerLegacy
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('list', 'FabrikFEModel');
-		$ids = array(JRequest::getVar('rowid', 0));
+		$ids = array($input->get('rowid', 0));
 
-		$listid = JRequest::getInt('listid');
-		$limitstart = JRequest::getVar('limitstart' . $listid);
-		$length = JRequest::getVar('limit' . $listid);
+		$listid = $input->getInt('listid');
+		$limitstart = $input->getInt('limitstart' . $listid);
+		$length = $input->getInt('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
 		$model->setId($listid);
@@ -427,7 +443,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 		$total = $oldtotal - count($ids);
 
-		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=table&listid=$listid", 'post');
+		$ref = $input->get('fabrik_referrer', "index.php?option=com_fabrik&view=table&listid=$listid");
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
@@ -440,10 +456,9 @@ class FabrikControllerForm extends JControllerLegacy
 			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
-			JRequest::setVar('view', 'list');
-
+			$input->set('view', 'list');
 			$this->display();
 		}
 		else

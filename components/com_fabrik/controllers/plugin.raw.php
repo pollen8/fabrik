@@ -36,9 +36,11 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 	public function pluginAjax()
 	{
-		$plugin = JRequest::getVar('plugin', '');
-		$method = JRequest::getVar('method', '');
-		$group = JRequest::getVar('g', 'element');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin', '');
+		$method = $input->get('method', '');
+		$group = $input->get('g', 'element');
 		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
 		{
 			$o = new stdClass;
@@ -55,7 +57,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * custom user ajax class handling as per F1.0.x
+	 * Custom user ajax class handling as per F1.0.x
 	 *
 	 * @return  null
 	 */
@@ -64,7 +66,8 @@ class FabrikControllerPlugin extends JControllerLegacy
 	{
 		$db = FabrikWorker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
-		$method = JRequest::getVar('method', '');
+		$app = JFactory::getApplication();
+		$method = $app->input->get('method', '');
 		$userAjax = new userAjax($db);
 		if (method_exists($userAjax, $method))
 		{
@@ -73,7 +76,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 	}
 
 	/**
-	 * do Cron task
+	 * Do Cron task
 	 *
 	 * @param   object  &$pluginManager  pluginmanager
 	 *
@@ -83,12 +86,13 @@ class FabrikControllerPlugin extends JControllerLegacy
 	public function doCron(&$pluginManager)
 	{
 		$db = FabrikWorker::getDbo();
-		$cid = JRequest::getVar('element_id', array(), 'method', 'array');
-		$query = $db->getQuery();
+		$app = JFactory::getApplication();
+		$cid = $app->input->get('element_id', array(), 'array');
+		$query = $db->getQuery(true);
 		$query->select('id, plugin')->from('#__{package}_cron');
 		if (!empty($cid))
 		{
-			$query->where(" id IN (" . implode(',', $cid) . ")");
+			$query->where(' id IN (' . implode(',', $cid) . ')');
 		}
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();

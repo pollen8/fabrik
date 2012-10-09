@@ -42,9 +42,11 @@ class FabrikControllerPlugin extends JControllerLegacy
 
 	public function pluginAjax()
 	{
-		$plugin = JRequest::getVar('plugin', '');
-		$method = JRequest::getVar('method', '');
-		$group = JRequest::getVar('g', 'element');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin', '');
+		$method = $input->get('method', '');
+		$group = $input->get('g', 'element');
 		/**
 		 * $$$ hugh - playing around trying to fix a viz AJAX issue, figured we might need
 		 * to set up the dispatcher first and pass it to importPlugin, which doesn't hurt, but
@@ -79,7 +81,9 @@ class FabrikControllerPlugin extends JControllerLegacy
 	{
 		$db = FabrikWorker::getDbo();
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
-		$method = JRequest::getVar('method', '');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$method = $input->get('method', '');
 		$userAjax = new userAjax($db);
 		if (method_exists($userAjax, $method))
 		{
@@ -98,7 +102,9 @@ class FabrikControllerPlugin extends JControllerLegacy
 	public function doCron(&$pluginManager)
 	{
 		$db = FabrikWorker::getDbo();
-		$cid = JRequest::getVar('element_id', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->get('element_id', array(), 'array');
 		JArrayHelper::toInteger($cid);
 		if (empty($cid))
 		{

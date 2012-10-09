@@ -14,12 +14,13 @@ defined('_JEXEC') or die;
 
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-
+$app = JFactory::getApplication();
+$input = $app->input;
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
 	<?php
-	$cid = JRequest::getVar('cid', array(), 'post', 'array');
+	$cid = $input->get('cid', array(), 'array');
 	foreach ($cid as $id) : ?>
 		<input type="hidden" name="cid[]" value="<?php echo $id ;?>" />
 	<?php endforeach; ?>
@@ -27,7 +28,9 @@ JHtml::_('behavior.formvalidation');
 	<fieldset class="adminform">
 		<ul class="adminformlist">
 		<?php for ($i = 0; $i < count($this->items); $i++) :?>
-  		<li><?php echo $this->items[$i]?></li>
+  			<li>
+  				<?php echo $this->items[$i]?>
+  			</li>
 		<?php endfor; ?>
 		</ul>
 

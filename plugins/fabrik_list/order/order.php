@@ -105,16 +105,18 @@ class plgFabrik_ListOrder extends plgFabrik_List
 	{
 		// Get list model
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model->setId($input->getInt('listid'));
 		$db = $model->getDb();
-		$direction = JRequest::getVar('direction');
+		$direction = $input->get('direction');
 
-		$orderEl = $model->getFormModel()->getElement(JRequest::getInt('orderelid'), true);
+		$orderEl = $model->getFormModel()->getElement($input->getInt('orderelid'), true);
 		$table = $model->getTable();
-		$origOrder = JRequest::getVar('origorder');
+		$origOrder = $input->get('origorder');
 		$orderBy = $db->quoteName($orderEl->getElement()->name);
-		$order = JRequest::getVar('order');
-		$dragged = JRequest::getVar('dragged');
+		$order = $input->get('order');
+		$dragged = $input->get('dragged');
 
 		// Are we dragging up or down?
 		$origPos = array_search($dragged, $origOrder);
@@ -186,7 +188,7 @@ class plgFabrik_ListOrder extends plgFabrik_List
 				$db->query();
 			}
 		}
-		$model->reorder(JRequest::getInt('orderelid'));
+		$model->reorder($input->getInt('orderelid'));
 	}
 
 }

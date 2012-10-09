@@ -44,7 +44,9 @@ class FabrikAdminViewImport extends JViewLegacy
 
 	public function chooseElementTypes()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$this->chooseElementTypesToolBar();
 		$session = JFactory::getSession();
 		$this->assign('data', $session->get('com_fabrik.csvdata'));
@@ -67,7 +69,9 @@ class FabrikAdminViewImport extends JViewLegacy
 
 	protected function chooseElementTypesToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		$version = new JVersion;
 		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';
@@ -85,7 +89,9 @@ class FabrikAdminViewImport extends JViewLegacy
 
 	protected function addToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		$version = new JVersion;
 		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';

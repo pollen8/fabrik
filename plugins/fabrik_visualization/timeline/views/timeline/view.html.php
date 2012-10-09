@@ -32,6 +32,8 @@ class fabrikViewTimeline extends JViewLegacy
 
 	public function display($tpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
@@ -40,14 +42,14 @@ class fabrikViewTimeline extends JViewLegacy
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('timeline', 'visualization');
 
-		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
+		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();
 
 		$js = $model->render();
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('row', $row);
-		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ? 1 : 0);
+		$this->assign('showFilters', $input->getInt('showfilters', 1) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$params = $model->getParams();

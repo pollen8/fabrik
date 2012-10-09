@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -14,12 +14,12 @@ jimport('joomla.application.component.view');
 class FabrikViewList extends JViewLegacy
 {
 
-
 	function display()
 	{
 		$app = JFactory::getApplication();
-		$Itemid	= $app->getMenu('site')->getActive()->id;
-		$config	= JFactory::getConfig();
+		$input = $app->input;
+		$Itemid = $app->getMenu('site')->getActive()->id;
+		$config = JFactory::getConfig();
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');
@@ -32,13 +32,14 @@ class FabrikViewList extends JViewLegacy
 
 		// $$$ hugh - modified this so you can enable QS filters on RSS links
 		// by setting &incfilters=1
-		JRequest::setVar('incfilters', JRequest::getInt('incfilters', 0));
+		$input->set('incfilters', $input->getInt('incfilters', 0));
 
 		$table = $model->getTable();
 		$model->render();
-		$params	= $model->getParams();
+		$params = $model->getParams();
 
-		if ($params->get('rss') == '0') {
+		if ($params->get('rss') == '0')
+		{
 			return '';
 		}
 
@@ -46,65 +47,83 @@ class FabrikViewList extends JViewLegacy
 		$form = $formModel->getForm();
 
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
-		/* get headings */
+
+		// Get headings
 		$aTableHeadings = array();
 		$groupModels = $formModel->getGroupsHiarachy();
 
 		$titleEl = $params->get('feed_title');
 		$dateEl = $params->get('feed_date');
-		foreach ($groupModels as $groupModel) {
+		foreach ($groupModels as $groupModel)
+		{
 			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel) {
+			foreach ($elementModels as $elementModel)
+			{
 				$element = $elementModel->getElement();
-				if ($element->id == $titleEl) {
+				if ($element->id == $titleEl)
+				{
 					$titleEl = $elementModel->getFullName(false, true, false);
 				}
-				if ($element->id == $dateEl) {
+				if ($element->id == $dateEl)
+				{
 					$dateEl = $elementModel->getFullName(false, true, false);
 					$rawdateEl = $dateEl . '_raw';
 				}
 				$elParams = $elementModel->getParams();
 
-				if ($elParams->get('show_in_rss_feed') == '1') {
+				if ($elParams->get('show_in_rss_feed') == '1')
+				{
 					$heading = $element->label;
-					if ($elParams->get('show_label_in_rss_feed') == '1') {
-						$aTableHeadings[$heading]['label']	 = $heading;
-					} else {
-						$aTableHeadings[$heading]['label']	 = '';
+					if ($elParams->get('show_label_in_rss_feed') == '1')
+					{
+						$aTableHeadings[$heading]['label'] = $heading;
+					}
+					else
+					{
+						$aTableHeadings[$heading]['label'] = '';
 					}
 					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName(false, true);
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 					// $$$ hugh - adding enclosure stuff for podcasting
-					if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1') {
+					if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')
+					{
 						$aTableHeadings[$heading]['enclosure'] = true;
 					}
-					else {
+					else
+					{
 						$aTableHeadings[$heading]['enclosure'] = false;
 					}
 				}
 			}
 		}
 
-		foreach ($aJoinsToThisKey as $element) {
+		foreach ($aJoinsToThisKey as $element)
+		{
 			$element = $elementModel->getElement();
 			$elParams = new JRegistry($element->attribs);
-			if ($elParams->get('show_in_rss_feed') == '1') {
+			if ($elParams->get('show_in_rss_feed') == '1')
+			{
 				$heading = $element->label;
 
-				if ($elParams->get('show_label_in_rss_feed') == '1') {
-					$aTableHeadings[$heading]['label']	 = $heading;
-				} else {
-					$aTableHeadings[$heading]['label']	 = '';
+				if ($elParams->get('show_label_in_rss_feed') == '1')
+				{
+					$aTableHeadings[$heading]['label'] = $heading;
+				}
+				else
+				{
+					$aTableHeadings[$heading]['label'] = '';
 				}
 				$aTableHeadings[$heading]['colName'] = $element->db_table_name . "___" . $element->name;
 				$aTableHeadings[$heading]['dbField'] = $element->name;
 				$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 				// $$$ hugh - adding enclosure stuff for podcasting
-				if ($element->plugin == 'fileupload'  || $elParams->get('use_as_rss_enclosure', '0') == '1') {
+				if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')
+				{
 					$aTableHeadings[$heading]['enclosure'] = true;
 				}
-				else {
+				else
+				{
 					$aTableHeadings[$heading]['enclosure'] = false;
 				}
 			}
@@ -116,8 +135,8 @@ class FabrikViewList extends JViewLegacy
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
 		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
-		/* check for a custom css file and include it if it exists*/
-		$tmpl = JRequest::getVar('layout', $table->template);
+		// Check for a custom css file and include it if it exists
+		$tmpl = $input->get('layout', $table->template);
 		$csspath = COM_FABRIK_FRONTEND . 'views/list/tmpl/' . $tmpl . '/feed.css';
 		if (file_exists($csspath))
 		{
@@ -128,9 +147,7 @@ class FabrikViewList extends JViewLegacy
 
 		//list of tags to look for in the row data
 		//- if they are there don't put them in the desc but put them in as a seperate item param
-		$rsstags = array(
-			'<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"'
-		);
+		$rsstags = array('<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"');
 		foreach ($rows as $group)
 		{
 			foreach ($group as $row)
@@ -149,38 +166,43 @@ class FabrikViewList extends JViewLegacy
 				$item = new JFabrikFeedItem();
 
 				$enclosures = array();
-				foreach ($aTableHeadings as $heading=>$dbcolname) {
-					if ($dbcolname['enclosure']) {
+				foreach ($aTableHeadings as $heading => $dbcolname)
+				{
+					if ($dbcolname['enclosure'])
+					{
 						// $$$ hugh - diddling aorund trying to add enclosures
 						$colName = $dbcolname['colName'] . '_raw';
 						$enclosure_url = $row->$colName;
-						if (!empty($enclosure_url)) {
+						if (!empty($enclosure_url))
+						{
 							$remote_file = false;
 							// Element value should either be a full path, or relative to J! base
-							if (strstr($enclosure_url, 'http://') && !strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
+							if (strstr($enclosure_url, 'http://') && !strstr($enclosure_url, COM_FABRIK_LIVESITE))
+							{
 								$enclosure_file = $enclosure_url;
 								$remote_file = true;
 							}
-							elseif (strstr($enclosure_url, COM_FABRIK_LIVESITE)) {
+							elseif (strstr($enclosure_url, COM_FABRIK_LIVESITE))
+							{
 								$enclosure_file = str_replace(COM_FABRIK_LIVESITE, COM_FABRIK_BASE, $enclosure_url);
 							}
-							elseif (preg_match('#^'. COM_FABRIK_BASE . "#", $enclosure_url)) {
+							elseif (preg_match('#^' . COM_FABRIK_BASE . "#", $enclosure_url))
+							{
 								$enclosure_file = $enclosure_url;
 								$enclosure_url = str_replace(COM_FABRIK_BASE, '', $enclosure_url);
 							}
-							else {
-								$enclosure_file = COM_FABRIK_BASE.$enclosure_url;
-								$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\','/',$enclosure_url);
+							else
+							{
+								$enclosure_file = COM_FABRIK_BASE . $enclosure_url;
+								$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\', '/', $enclosure_url);
 							}
-							if ($remote_file || (file_exists($enclosure_file) && !is_dir($enclosure_file))) {
+							if ($remote_file || (file_exists($enclosure_file) && !is_dir($enclosure_file)))
+							{
 								$enclosure_type = '';
-								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file)) {
+								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file))
+								{
 									$enclosure_size = $this->get_filesize($enclosure_file, $remote_file);
-									$enclosures[] = array(
-										'url' => $enclosure_url,
-										'length' => $enclosure_size,
-										'type' => $enclosure_type
-									);
+									$enclosures[] = array('url' => $enclosure_url, 'length' => $enclosure_size, 'type' => $enclosure_type);
 									// no need to insert the URL in the description, as feed readers should
 									// automagically show 'media' when they see an 'enclosure', so just move on ..
 									continue;
@@ -196,16 +218,16 @@ class FabrikViewList extends JViewLegacy
 					$rsscontent = strip_tags($row->$dbcolname['colName']);
 
 					$found = false;
-					foreach ($rsstags as $rsstag =>$namespace)
+					foreach ($rsstags as $rsstag => $namespace)
 					{
 						if (strstr($rsscontent, $rsstag))
 						{
 							$found = true;
-							$rsstag = JString::substr($rsstag, 1, JString::strlen($rsstag)-2);
+							$rsstag = JString::substr($rsstag, 1, JString::strlen($rsstag) - 2);
 							if (!strstr($document->_namespace, $namespace))
 							{
 								$document->_itemTags[] = $rsstag;
-								$document->_namespace .=  $namespace . " ";
+								$document->_namespace .= $namespace . " ";
 							}
 							break;
 						}
@@ -242,15 +264,17 @@ class FabrikViewList extends JViewLegacy
 				}
 
 				// url link to article
-				$link = JRoute::_('index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->slug);
-				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->slug;
+				$link = JRoute::_(
+					'index.php?option=com_fabrik&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
+				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id
+					. '&rowid=' . $row->slug;
 
 				// strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
 				if ($dateEl != '')
 				{
-					$date = $row->$dateEl ? date('r', strtotime(@$row->$rawdateEl) ) : '';
+					$date = $row->$dateEl ? date('r', strtotime(@$row->$rawdateEl)) : '';
 				}
 				else
 				{
@@ -277,8 +301,10 @@ class FabrikViewList extends JViewLegacy
 		}
 	}
 
-	protected function get_filesize($path, $remote = false) {
-		if ($remote) {
+	protected function get_filesize($path, $remote = false)
+	{
+		if ($remote)
+		{
 			$ch = curl_init($path);
 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -291,7 +317,8 @@ class FabrikViewList extends JViewLegacy
 			curl_close($ch);
 			return $size;
 		}
-		else {
+		else
+		{
 			return filesize($path);
 		}
 	}

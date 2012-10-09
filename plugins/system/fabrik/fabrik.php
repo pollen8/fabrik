@@ -100,6 +100,8 @@ class PlgSystemFabrik extends JPlugin
 		{
 			return;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
@@ -156,7 +158,7 @@ class PlgSystemFabrik extends JPlugin
 		$urls = array();
 
 		// $$$ rob remove previous search results?
-		JRequest::setVar('resetfilters', 1);
+		$input->set('resetfilters', 1);
 
 		// Ensure search doesnt go over memory limits
 		$memory = (int) FabrikString::rtrimword(ini_get('memory_limit'), 'M') * 1000000;
@@ -192,21 +194,21 @@ class PlgSystemFabrik extends JPlugin
 			}
 			// $$$rob set this to current table
 			// Otherwise the fabrik_list_filter_all var is not used
-			JRequest::setVar('listid', $id);
+			$input->set('listid', $id);
 
 			$listModel->setId($id);
 			$filterModel = $listModel->getFilterModel();
 			$requestKey = $filterModel->getSearchAllRequestKey();
 
 			// Set the request variable that fabrik uses to search all records
-			JRequest::setVar($requestKey, $text, 'post');
+			$input->set($requestKey, $text, 'post');
 
 			$table = $listModel->getTable(true);
 			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
 
 			// Test for swap too boolean mode
-			$mode = JRequest::getVar('searchphraseall', 'all');
+			$mode = $input->get('searchphraseall', 'all');
 
 			// $params->set('search-mode-advanced', true);
 			$params->set('search-mode-advanced', $mode);

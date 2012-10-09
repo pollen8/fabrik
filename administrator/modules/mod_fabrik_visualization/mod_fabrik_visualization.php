@@ -22,14 +22,15 @@ jimport('joomla.application.component.helper');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
+$input = $app->input;
 
 require_once COM_FABRIK_FRONTEND . '/controller.php';
 require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
 
 // $$$rob looks like including the view does something to the layout variable
-$origLayout = JRequest::getVar('layout');
+$origLayout = $input->get('layout', '', 'string');
 require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
-JRequest::setVar('layout', $origLayout);
+$input->set('layout', $origLayout);
 
 require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
 
@@ -41,7 +42,9 @@ require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 
 $id = intval($params->get('id', 1));
-/*this all works fine for a list
+
+/*
+ * This all works fine for a list
  * going to try to load a package so u can access the form and list
  */
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
@@ -67,11 +70,11 @@ $controller = new $controllerName();
 $controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/views');
 $controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
-//add the model path
+// Add the model path
 $modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/models');
 $modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
-$origId = JRequest::getInt('visualizationid');
-JRequest::setVar('visualizationid', $id);
+$origId = $input->getInt('visualizationid');
+$input->set('visualizationid', $id);
 $controller->display();
-JRequest::setVar('visualizationid', $origId);
+$input->set('visualizationid', $origId);

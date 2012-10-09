@@ -75,7 +75,8 @@ class plgFabrik_ListCopy extends plgFabrik_List
 
 	public function process($params, &$model, $opts = array())
 	{
-		$ids = JRequest::getVar('ids', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$ids = $app->input->get('ids', array(), 'array');
 		$formModel = $model->getFormModel();
 		return $model->copyRows($ids);
 	}
@@ -90,7 +91,8 @@ class plgFabrik_ListCopy extends plgFabrik_List
 
 	public function process_result($c)
 	{
-		$ids = JRequest::getVar('ids', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$ids = $app->input->get('ids', array(), 'array');
 		return JText::sprintf('PLG_LIST_ROWS_COPIED', count($ids));
 	}
 

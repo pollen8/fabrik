@@ -111,7 +111,9 @@ class FabrikAdminViewElement extends JViewLegacy
 	protected function addConfirmToolbar()
 	{
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENT_EDIT'), 'element.png');
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::save('element.updatestructure', 'JTOOLBAR_SAVE');
 		JToolBarHelper::cancel('element.cancelUpdatestructure', 'JTOOLBAR_CANCEL');
 	}
@@ -126,8 +128,9 @@ class FabrikAdminViewElement extends JViewLegacy
 
 	protected function addToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$user = JFactory::getUser();
 		$userId = $user->get('id');
 		$isNew = ($this->item->id == 0);

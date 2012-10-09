@@ -42,20 +42,22 @@ class FabrikAdminControllerVisualization extends JControllerForm
 	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
-		$id = JRequest::getInt('visualizationid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('visualizationid');
 		$viz = FabTable::getInstance('Visualization', 'FabrikTable');
 		$viz->load($id);
 		$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
 		$model = $this->getModel($viz->plugin);
 		$model->setId($id);
-		$pluginTask = JRequest::getVar('plugintask', '', 'request');
+		$pluginTask = $input->get('plugintask', '', 'request');
 		if ($pluginTask !== '')
 		{
 			echo $model->$pluginTask();
 		}
 		else
 		{
-			$task = JRequest::getVar('task');
+			$task = $input->get('task');
 
 			$path = JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/controllers/' . $viz->plugin . '.php';
 			if (file_exists($path))
@@ -73,12 +75,12 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/views');
 			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
-			//add the model path
+			// Add the model path
 			$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
 			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
-			$origId = JRequest::getInt('visualizationid');
-			JRequest::setVar('visualizationid', $id);
+			$origId = $input->getInt('visualizationid');
+			$input->set('visualizationid', $id);
 			$controller->$task();
 
 		}
@@ -93,7 +95,9 @@ class FabrikAdminControllerVisualization extends JControllerForm
 
 	public function getPluginHTML()
 	{
-		$plugin = JRequest::getCmd('plugin');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin');
 		$model = $this->getModel();
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);

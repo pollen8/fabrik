@@ -191,6 +191,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	public function getJoinLabelColumn($useStep = false)
 	{
+		$app = JFactory::getApplication();
 		if (!isset($this->joinLabelCols))
 		{
 			$this->joinLabelCols = array();
@@ -202,7 +203,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$db = $this->getDb();
 		$join = $this->getJoin();
-		if (($params->get('join_val_column_concat') != '') && JRequest::getVar('overide_join_val_column_concat') != 1)
+		if (($params->get('join_val_column_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
 			$w = new FabrikWorker;
@@ -259,6 +260,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function getJoin()
 	{
+		$app = JFactory::getApplication();
 		if (isset($this->join))
 		{
 			return $this->join;
@@ -284,7 +286,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				return $this->join;
 			}
 		}
-		if (!in_array(JRequest::getVar('task'), array('inlineedit', 'form.inlineedit')))
+		if (!in_array($app->input->get('task'), array('inlineedit', 'form.inlineedit')))
 		{
 			/*
 			 * suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
@@ -297,7 +299,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * load this elements joins
+	 * Load this elements joins
+	 *
+	 * @return  array
 	 */
 
 	function getJoins()
@@ -509,9 +513,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		// $$$ hugh - adding 'where when' so can control whether to apply WHERE either on
 		// new, edit or both (1, 2 or 3)
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$wherewhen = $params->get('database_join_where_when', '3');
-		$isnew = JRequest::getInt('rowid', 0) === 0;
+		$isnew = $app->input->get('rowid', 0) === 0;
 		if ($isnew && $wherewhen == '2')
 		{
 			return false;
@@ -1928,9 +1933,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function onAjax_getOptions()
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->id = JRequest::getInt('element_id');
+		$app = JFactory::getApplication();
+		$this->id = $app->input->getInt('element_id');
 		$this->getElement(true);
-		echo json_encode($this->_getOptions(JRequest::get('request')));
+		$filter = JFilterInput::getInstance();
+		$request = $filter->clean($_REQUEST, 'array');
+		echo json_encode($this->_getOptions($request));
 	}
 
 	/**

@@ -30,10 +30,12 @@ class FabrikControllerVisualizationtimeline extends FabrikControllerVisualizatio
 
 	public function ajax_getEvents()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$viewName = 'timeline';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel($viewName);
-		$id = JRequest::getInt('visualizationid', 0);
+		$id = $input->getInt('visualizationid', 0);
 		$model->setId($id);
 		$model->onAjax_getEvents();
 	}

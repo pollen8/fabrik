@@ -133,9 +133,12 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	public function validate($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$post = JRequest::get('post');
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
 		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
@@ -150,7 +153,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		else
 		{
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
-			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
+			if ($input->get('rowid') === 0 && $input->getInt($k, 0, 'post') === 0 && $data === '')
 			{
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;

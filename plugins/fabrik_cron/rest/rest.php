@@ -15,7 +15,8 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
-class plgFabrik_CronRest extends plgFabrik_Cron {
+class plgFabrik_CronRest extends plgFabrik_Cron
+{
 
 	/**
 	 * do the plugin action
@@ -30,7 +31,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$params = $this->getParams();
 
 		$config_method = 'GET';
-		$config_userpass = $params->get('username').':'.$params->get('password');
+		$config_userpass = $params->get('username') . ':' . $params->get('password');
 		$config_headers[] = 'Accept: application/xml';
 		$endpoint = $params->get('endpoint');
 
@@ -45,9 +46,11 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		curl_close($chandle);
 
 		$xml = new SimpleXMLElement($output);
-		//drill down to the specified xpath location for our data
+
+		// Drill down to the specified xpath location for our data
 		$xpath = $params->get('xpath');
-		if ($xpath !== '') {
+		if ($xpath !== '')
+		{
 			$xml = $xml->xpath($xpath);
 		}
 		$adminListModel->dbTableFromXML($params->get('key'), $params->get('create_list'), $xml);
@@ -55,16 +58,19 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 
 	}
 
-
 	protected function createList($listModel, $adminListModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$table = $params->get('create_list');
-		if ($table == '') {
+		if ($table == '')
+		{
 			return;
 		}
 		$db = FabrikWorker::getDbo();
-		//see if we have a list that already points to the table
+
+		// See if we have a list that already points to the table
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->quoteName($table));
 		$db->setQuery($query);
@@ -75,7 +81,7 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 
 		$data = array();
 
-		//fill in some default data
+		// Fill in some default data
 		$data['filter_action'] = 'onchange';
 		$data['access'] = 1;
 		$data['id'] = $res;
@@ -84,11 +90,10 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		$data['db_table_name'] = $table;
 		$data['published'] = 1;
 		$data['created'] = $now;
-		$data['created_by']= $user->get('id');
+		$data['created_by'] = $user->get('id');
 
-		JRequest::setVar('jform', $data);
+		$input->set('jform', $data);
 		$adminListModel->save($data);
 	}
 
 }
-?>

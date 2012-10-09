@@ -33,6 +33,7 @@ class fabrikViewCalendar extends JViewLegacy
 	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
 
@@ -40,15 +41,15 @@ class fabrikViewCalendar extends JViewLegacy
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
+		$id = $input->get('id', $usersConfig->get('visualizationid', $input->get('visualizationid', 0)));
 		$model->setId($id);
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 		$this->assign('params', $params);
 		$this->assign('containerId', $model->getJSRenderContext());
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('showTitle', JRequest::getInt('show-title', 1));
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showTitle', $input->getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$calendar = $this->row;
@@ -70,7 +71,8 @@ class fabrikViewCalendar extends JViewLegacy
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 
 		// Get the active menu item
-		$urlfilters = JRequest::get('get');
+		$filter = JFilterInput::getInstance();
+		$urlfilters = $filter->clean($_GET, 'array');
 		unset($urlfilters['option']);
 		unset($urlfilters['view']);
 		unset($urlfilters['controller']);
@@ -194,12 +196,14 @@ class fabrikViewCalendar extends JViewLegacy
 
 	function chooseaddevent()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$view->_layout = 'chooseaddevent';
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
 		$o = $model->getAddStandardEventFormInfo();
 		$calendar = $model->getVisualization();

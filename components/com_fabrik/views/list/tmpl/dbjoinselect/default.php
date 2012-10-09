@@ -1,4 +1,7 @@
-<?php if ($this->params->get('show-title', 1)) {?>
+<?php
+$app = JFactory::getApplication();
+$input = $app->input;
+if ($this->params->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
 
@@ -65,9 +68,7 @@ print_r($this->hiddenFields);
 <?php
 FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/dbjoinselect/javascript.js');
 $script = "head.ready(function() {
-var trs = new TableRowSelect('".JRequest::getVar('triggerElement') . "', ".(int) $this->form->id.");
+var trs = new TableRowSelect('" . $input->get('triggerElement') . "', " . (int) $this->form->id.");
 });
 ";
 FabrikHelperHTML::addScriptDeclaration($script);
-
-?>

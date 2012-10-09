@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -20,12 +20,13 @@ class FabrikViewList extends JViewLegacy
 
 	function display()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$table = $model->getTable();
 		$params = $model->getParams();
-		//$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
-		$rowid = JRequest::getInt('rowid');
+		$rowid = $input->getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
 		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
@@ -72,9 +73,8 @@ class FabrikViewList extends JViewLegacy
 			}
 		}
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model'=>'list', 'data' => $data,
-		'headings' => $this->headings,
-			'formid'=> $model->getTable()->form_id,
+		$d = array('id' => $table->id, 'listRef' => $input->get('listref'), 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
+			'headings' => $this->headings, 'formid' => $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
@@ -91,25 +91,30 @@ class FabrikViewList extends JViewLegacy
 	}
 
 	/**
-	 * get the view template name
-	 * @return string template name
+	 * Get the view template name
+	 *
+	 * @return  string template name
 	 */
 
 	private function getTmpl()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
 		$table = $model->getTable();
 		$params = $model->getParams();
-		if ($app->isAdmin()) {
+		if ($app->isAdmin())
+		{
 			$tmpl = $params->get('admin_template');
-			if ($tmpl == -1 || $tmpl == '') {
-				$tmpl = JRequest::getVar('layout', $table->template);
+			if ($tmpl == -1 || $tmpl == '')
+			{
+				$tmpl = $input->get('layout', $table->template);
 			}
-		} else {
-			$tmpl = JRequest::getVar('layout', $table->template);
+		}
+		else
+		{
+			$tmpl = $input->get('layout', $table->template);
 		}
 		return $tmpl;
 	}
 }
-?>

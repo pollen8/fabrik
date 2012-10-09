@@ -33,9 +33,9 @@ class fabrikAdminViewPlugin extends JViewLegacy
 	public function display($tpl = null)
 	{
 		$model = $this->getModel();
+		$app = JFactory::getApplication();
 		$this->setStates();
-
-		if (JRequest::getVar('task') == 'top')
+		if ($app->input->get('task') == 'top')
 		{
 			echo $model->top();
 			return;
@@ -52,10 +52,12 @@ class fabrikAdminViewPlugin extends JViewLegacy
 	protected function setStates()
 	{
 		$model = $this->getModel();
-		$model->setState('type', JRequest::getVar('type'));
-		$model->setState('plugin', JRequest::getVar('plugin'));
-		$model->setState('c', JRequest::getInt('c'));
-		$model->setState('id', JRequest::getInt('id', 0));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model->setState('type', $input->get('type'));
+		$model->setState('plugin', $input->get('plugin'));
+		$model->setState('c', $input->getInt('c'));
+		$model->setState('id', $input->getInt('id', 0));
 	}
 
 }

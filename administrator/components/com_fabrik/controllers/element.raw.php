@@ -31,16 +31,18 @@ class FabrikAdminControllerElement extends JControllerForm
 	protected $default_view = 'element';
 
 	/**
-	 * called via ajax to load in a given plugin's HTML settings
+	 * Called via ajax to load in a given plugin's HTML settings
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function getPluginHTML()
 	{
-		$plugin = JRequest::getCmd('plugin');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$plugin = $input->get('plugin');
 		$model = $this->getModel();
-		$model->setState('element.id', JRequest::getInt('id'));
+		$model->setState('element.id', $input->getInt('id'));
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
@@ -56,12 +58,14 @@ class FabrikAdminControllerElement extends JControllerForm
 
 	public function save($key = null, $urlVar = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getModel('list', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('listid'));
-		$rowId = JRequest::getVar('rowid');
-		$key = JRequest::getVar('element');
+		$listModel->setId($input->getInt('listid'));
+		$rowId = $input->get('rowid', '', 'string');
+		$key = $input->get('element');
 		$key = array_pop(explode('___', $key));
-		$value = JRequest::getVar('value');
+		$value = $input->get('value', '', 'string');
 		$listModel->storeCell($rowId, $key, $value);
 		$this->mode = 'readonly';
 		$this->display();

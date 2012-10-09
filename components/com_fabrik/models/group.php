@@ -425,7 +425,8 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedElements = array();
 		}
-		$ids = (array) JRequest::getVar('elementid');
+		$app = JFactory::getApplication();
+		$ids = (array) $app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
@@ -461,9 +462,12 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements = array();
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', array());
+		$showInList = (array) $input->get('fabrik_show_in_list', array());
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->listQueryElements))
 		{
@@ -485,7 +489,7 @@ class FabrikFEModelGroup extends FabModel
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
 					 * and thus visible in the page source
 					 */
-					if (JRequest::getVar('view') == 'list' && !$elementModel->canView())
+					if ($input->get('view') == 'list' && !$elementModel->canView())
 					{
 						continue;
 					}
@@ -522,9 +526,12 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedListElements = array();
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', array());
+		$showInList = (array) $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->publishedListElements))
 		{
@@ -761,11 +768,13 @@ class FabrikFEModelGroup extends FabModel
 
 	public function copy()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$elements = $this->getMyElements();
 		$group = $this->getGroup();
 
 		// NewGroupNames set in table copy
-		$newNames = JRequest::getVar('newGroupNames', array());
+		$newNames = $input->get('newGroupNames', array(), 'array');
 		if (array_key_exists($group->id, $newNames))
 		{
 			$group->name = $newNames[$group->id];

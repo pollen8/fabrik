@@ -53,7 +53,9 @@ class FabrikAdminViewGroup extends JViewLegacy
 
 	protected function addToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$user = JFactory::getUser();
 		$isNew = ($this->item->id == 0);
 		$userId = $user->get('id');

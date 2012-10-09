@@ -258,10 +258,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 		{
 			return $this->getFilterFormURL;
 		}
-		$option = JRequest::getCmd('option');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$option = $input->get('option');
 
 		// Get the router
-		$app = JFactory::getApplication();
 		$router = $app->getRouter();
 
 		$uri = clone (JURI::getInstance());
@@ -398,8 +399,10 @@ class FabrikFEModelVisualization extends JModelLegacy
 		if (is_null($this->params))
 		{
 			$v = $this->getVisualization();
+			$app = JFactory::getApplication();
+			$input = $app->input;
 			$this->params = new JRegistry($v->params);
-			$this->params->set('show-title', JRequest::getInt('show-title', $this->params->get('show-title', 1)));
+			$this->params->set('show-title', $input->getInt('show-title', $this->params->get('show-title', 1)));
 		}
 		return $this->params;
 	}

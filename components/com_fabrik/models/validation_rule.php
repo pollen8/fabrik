@@ -80,7 +80,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public function shouldValidate($data, $c)
 	{
 		$params = $this->getParams();
-		$post = JRequest::get('post');
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
 		$v = (array) $params->get($this->pluginName . '-validation_condition');
 		if (!array_key_exists($c, $v))
 		{

@@ -70,8 +70,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		/**
 		 *  $$$ rob - if embedding a form inside a details view then rowid is true (for the detailed view) but we are still showing a new form
-		 *  instead take a look at the element form's rowId;
-		 *  $rowid = JRequest::getVar('rowid', false);
+		 *  so take a look at the element form's rowId and not app input
 		 */
 		$rowid = $this->getForm()->rowId;
 		/**
@@ -200,6 +199,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function preProcess($c)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 
 		/**
@@ -212,12 +213,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 */
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport')
+			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
 			{
 				$context = 'fabrik.plugin.profile_id';
-				if (JRequest::getVar('fabrik_social_profile_hash', '') != '')
+				if ($input->get('fabrik_social_profile_hash', '') != '')
 				{
-					$context = 'fabrik.plugin.' . JRequest::getVar('fabrik_social_profile_hash', '') . '.profile_id';
+					$context = 'fabrik.plugin.' . $input->get('fabrik_social_profile_hash', '') . '.profile_id';
 				}
 				$session = JFactory::getSession();
 				if ($session->has($context))
@@ -255,8 +256,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					}
 					$form->updateFormData($key, $profile_id);
 					$form->updateFormData($rawkey, $profile_id);
-					JRequest::setVar($key, $profile_id, 'POST');
-					JRequest::setVar($rawkey, $profile_id, 'POST');
+					$input->post->set($key, $profile_id);
+					$input->post->set($rawkey, $profile_id);
 				}
 			}
 		}
@@ -274,12 +275,15 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function onStoreRow(&$data)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ hugh - special case, if we have just run the fabrikjuser plugin, we need to
 		// use the 'newuserid' as set by the plugin.
-		$newuserid = JRequest::getInt('newuserid', 0);
+		$newuserid = $input->getInt('newuserid', 0);
 		if (!empty($newuserid))
 		{
-			$newuserid_element = JRequest::getVar('newuserid_element', '');
+			$newuserid_element = $input->get('newuserid_element', '');
 			$this_fullname = $this->getFullName(false, true, false);
 			if ($newuserid_element == $this_fullname)
 			{
@@ -299,7 +303,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport')
+			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
 			{
 				$session = JFactory::getSession();
 				if ($session->has('fabrik.plugin.profile_id'))
@@ -313,10 +317,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		// $$$ rob if in joined data then $data['rowid'] isnt set - use JRequest var instead
+		// $$$ rob if in joined data then $data['rowid'] isnt set - use $input->get var instead
 		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
-		if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport')
+		if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
 		{
 
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
@@ -375,7 +379,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function canView()
 	{
-		if (JRequest::getVar('task', '') == 'processForm')
+		$app = JFactory::getApplication();
+		if ($app->input->get('task', '') == 'processForm')
 		{
 			return true;
 		}
@@ -535,6 +540,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Cludge for 2 scenarios
 		if (array_key_exists('rowid', $data))
@@ -567,7 +574,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			// selection was being applied instead
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty valdiation failed on user element
-			if (JArrayHelper::getValue($opts, 'use_default', true) == false && !in_array(JRequest::getCmd('task'), array('processForm', 'view')))
+			if (JArrayHelper::getValue($opts, 'use_default', true) == false && !in_array($input->get('task'), array('processForm', 'view')))
 			{
 				return '';
 			}
@@ -727,7 +734,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			 * by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
 			 * value if it was then we want to filter on the key and not the label
 			 */
-			if (!array_key_exists($key, JRequest::get('get')))
+			$filter = JFilterInput::getInstance();
+			$get = $filter->clean($_GET, 'array');
+			if (!array_key_exists($key, $get))
 			{
 				$key = $db->quoteName($joinTableName . '.id');
 				$this->encryptFieldName($key);

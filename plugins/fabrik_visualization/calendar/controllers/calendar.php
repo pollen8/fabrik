@@ -55,9 +55,11 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	function getEvents()
 	{
 		$viewName = 'calendar';
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = &$this->getModel($viewName);
-		$id = JRequest::getInt('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)), 'get');
+		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)), 'get');
 		$model->setId($id);
 		echo $model->getEvents();
 	}
@@ -68,11 +70,13 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$viewName = 'calendar';
 
 		$viewType = $document->getType();
+
 		// Set the default view name from the Request
 		$view = &$this->getView($viewName, $viewType);
 
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$view->setModel($formModel);
+
 		// Push a model into the view
 		$model = &$this->getModel($viewName);
 
@@ -82,11 +86,13 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 
 	function addEvForm()
 	{
-		$listid = JRequest::getInt('listid');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$listid = $input->getInt('listid');
 		$viewName = 'calendar';
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model = &$this->getModel($viewName);
-		$id = JRequest::getInt('visualizationid', $usersConfig->get('visualizationid', 0));
+		$model = $this->getModel($viewName);
+		$id = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
 		if (array_key_exists($listid, $model->_events))
@@ -99,17 +105,17 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 			$prefix = $config->get('dbprefix');
 			$datefield = $prefix . 'fabrik_calendar_events___start_date';
 		}
-		$rowid = JRequest::getInt('rowid');
+		$rowid = $input->getInt('rowid');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$table = $listModel->getTable();
-		JRequest::setVar('view', 'form');
-		JRequest::setVar('formid', $table->form_id);
-		JRequest::setVar('tmpl', 'component');
-		JRequest::setVar('ajax', '1');
+		$input->set('view', 'form');
+		$input->set('formid', $table->form_id);
+		$input->set('tmpl', 'component');
+		$input->set('ajax', '1');
 		$link = 'index.php?option=com_fabrik&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
-		$link .= '&jos_fabrik_calendar_events___visualization_id=' . JRequest::getInt('jos_fabrik_calendar_events___visualization_id');
-		$start_date = JRequest::getVar('start_date', '');
+		$link .= '&jos_fabrik_calendar_events___visualization_id=' . $input->getInt('jos_fabrik_calendar_events___visualization_id');
+		$start_date = $input->get('start_date', '');
 		if (!empty($start_date))
 		{
 			$link .= "&$datefield=" . $start_date;
@@ -119,4 +125,3 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$this->setRedirect($link);
 	}
 }
-?>

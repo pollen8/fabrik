@@ -10,8 +10,10 @@
 defined('_JEXEC') or die();
 $db = FabrikWorker::getDbo();
 $user = JFactory::getUser();
+$app = JFactory::getApplication();
+$input = $app->input;
 
-$ids = JRequest::getVar('ids', array());
+$ids = $input->get('ids', array(), 'array');
 $sql = "SELECT id, title FROM eadtu_project WHERE id IN (" . implode(',', $ids) . ")";
 $db->setQuery($sql);
 $rows = $db->loadObjectList();

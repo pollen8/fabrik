@@ -28,7 +28,7 @@ class fabrikModelNotification extends JModel
 	 * @return array
 	 */
 
-	function getUserNotifications()
+	public function getUserNotifications()
 	{
 		$rows = $this->getRows();
 		if (!$rows)
@@ -63,6 +63,11 @@ class fabrikModelNotification extends JModel
 		return $rows;
 	}
 
+	/**
+	 * Make notification db tables
+	 *
+	 * @return  void
+	 */
 	protected function makeDbTable()
 	{
 		$db = FabrikWorker::getDbo();
@@ -87,6 +92,12 @@ class fabrikModelNotification extends JModel
 		}
 	}
 
+	/**
+	 * Get Rows
+	 *
+	 * @return  array
+	 */
+
 	protected function getRows()
 	{
 		$user = JFactory::getUser();
@@ -94,7 +105,6 @@ class fabrikModelNotification extends JModel
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_notification')->where('user_id = ' . (int) $user->get('id'));
 		$db->setQuery($query);
-		//echo $db->replacePrefix($query);
 		return $db->loadObjectList();
 	}
 
@@ -107,8 +117,9 @@ class fabrikModelNotification extends JModel
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
-		$ids = JRequest::getVar('cid', array());
+		JSessoin::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$ids = $app->input->get('cid', array());
 		JArrayHelper::toInteger($ids);
 		if (empty($ids))
 		{

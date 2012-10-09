@@ -30,32 +30,33 @@ class FabrikViewElement extends JViewLegacy
 
 	function display($tpl = null)
 	{
-		echo "display";
-		exit;
-		/* 	FabrikHelperHTML::framework();
-		    $element = JRequest::getVar('element');
-		    $elementid = JRequest::getVar('elid');
-		    $pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		    $className = JRequest::getVar('plugin');
-		    print_r($className);exit;
-		    $plugin = $pluginManager->getPlugIn($className, 'element');
-		    if (JError::isError($plugin)) {
-		        JError::handleMessage($plugin);
-		        return;
-		    }
-		    $plugin->setId($elementid);
-		    $data = array();
-		    $repeatCounter = 0;
-		    $groupModel = $plugin->getGroup();
-		    $srcs = array();
-		    $plugin->formJavascriptClass($srcs);
-		    echo "srcs = ";print_r($srcs);
-		    FabrikHelperHTML::script($srcs);
-		    $html = '<script>';
-		    $html .= $plugin->elementJavascript($repeatCounter);
-		    $html .= '</script>';
-		    $html .= $plugin->preRenderElement($data, $repeatCounter, $groupModel);
-		    echo $html; */
+		echo "display";exit;
+	/* 	FabrikHelperHTML::framework();
+	 	$app = JFactory::getApplication();
+	 	$input = $app->input;
+		$element = $input->get('element');
+		$elementid =  $input->get('elid');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+		$className =  $input->get('plugin');
+		print_r($className);exit;
+		$plugin = $pluginManager->getPlugIn($className, 'element');
+		if (JError::isError($plugin)) {
+			JError::handleMessage($plugin);
+			return;
+		}
+		$plugin->setId($elementid);
+		$data = array();
+		$repeatCounter = 0;
+		$groupModel = $plugin->getGroup();
+		$srcs = array();
+		$plugin->formJavascriptClass($srcs);
+		echo "srcs = ";print_r($srcs);
+		FabrikHelperHTML::script($srcs);
+		$html = '<script>';
+		$html .= $plugin->elementJavascript($repeatCounter);
+		$html .= '</script>';
+		 $html .= $plugin->preRenderElement($data, $repeatCounter, $groupModel);
+		echo $html; */
 	}
 
 }

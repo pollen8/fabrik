@@ -11,6 +11,8 @@ class fabrikViewPackage extends JViewLegacy
 	function display($tpl = null)
 	{
 		FabrikHelperHTML::framework();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$state = $this->get('State');
 		$item = $this->get('Item');
 		$document = JFactory::getDocument();
@@ -25,7 +27,8 @@ class fabrikViewPackage extends JViewLegacy
 
 		// $$$ rob 08/11/2011 test if component name set but still rendering
 		// in option=com_fabrik then we should use fabrik as the package
-		if (JRequest::getCmd('option') === 'com_fabrik') {
+		if ($input->get('option') === 'com_fabrik')
+		{
 			$item->component_name = 'fabrik';
 		}
 		$opts = JArrayHelper::getvalue($canvas, 'options', array());
@@ -35,7 +38,7 @@ class fabrikViewPackage extends JViewLegacy
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));
-		$id =$this->get('State')->get('package.id');
+		$id = $this->get('State')->get('package.id');
 		$script = "head.ready(function() {
 			new FrontPackage({
 		tabs : $tabs,
@@ -48,20 +51,19 @@ class fabrikViewPackage extends JViewLegacy
 		});";
 		$document->addScriptDeclaration($script);
 
-		//force front end templates
+		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$tmpl = !isset($item->template) ? 'default' : $item->template;
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$text = $this->loadTemplate();
-		$opt = JRequest::getVar('option');
-		JRequest::setVar('option', 'com_content');
+		$opt = $input->get('option');
+		$input->set('option', 'com_content');
 		jimport('joomla.html.html.content');
 		$text .= '{emailcloak=off}';
 		$text = JHTML::_('content.prepare', $text);
 		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-		JRequest::setVar('option', $opt);
+		$input->set('option', $opt);
 		echo $text;
 	}
 
 }
-?>

@@ -300,6 +300,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	public function onAjax_addNote()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->loadMeForAjax();
 		$return = new stdClass;
 		$db = $this->getDb();
@@ -308,7 +310,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$table = $db->quoteName($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
 		$key = $db->quoteName($params->get('join_key_column'));
-		$v = $db->quote(JRequest::getVar('v'));
+		$v = $db->quote($input->get('v'));
 		$rowid = $this->getFormModel()->getRowId();
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
@@ -331,7 +333,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$fk = $params->get('join_fk_column', '');
 			if ($fk !== '')
 			{
-				$query->set($db->quoteName($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
+				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
 			}
 			$db->setQuery($query);
 

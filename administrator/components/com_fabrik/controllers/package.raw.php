@@ -31,7 +31,7 @@ class FabrikAdminControllerPackage extends JControllerForm
 	/**
 	 * Constructor
 	 *
-* @param   array  $config  options
+	 * @param   array  $config  options
 	 */
 
 	public function __construct($config = array())
@@ -47,10 +47,12 @@ class FabrikAdminControllerPackage extends JControllerForm
 
 	public function dolist()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$list = JRequest::getCmd('list', 'form');
-		$selected = JRequest::getVar('selected');
+		$list = $input->get('list', 'form');
+		$selected = $input->get('selected');
 		$query->select('id, label')->from('#__fabrik_' . $list . 's');
 		if ($selected != '')
 		{

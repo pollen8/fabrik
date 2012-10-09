@@ -54,7 +54,9 @@ class JFormFieldListfields extends JFormFieldList
 		{
 			$this->results = array();
 		}
-		$controller = JRequest::getVar('view', JRequest::getVar('task'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$controller = $input->get('view', $input->get('task'));
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
 		$c = FabrikAdminElementHelper::getRepeatCounter($this);
@@ -69,7 +71,7 @@ class JFormFieldListfields extends JFormFieldList
 		switch ($controller)
 		{
 			case 'validationrule':
-				$id = JRequest::getInt('id');
+				$id = $input->getInt('id');
 				$pluginManager = FabrikWorker::getPluginManager();
 				$elementModel = $pluginManager->getElementPlugin($id);
 				$element = $elementModel->getElement();
@@ -214,7 +216,9 @@ class JFormFieldListfields extends JFormFieldList
 
 	protected function loadFromGroupId($groupId)
 	{
-		$controller = JRequest::getVar('view', JRequest::getVar('task'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$controller = $input->get('view', $input->get('task'));
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);

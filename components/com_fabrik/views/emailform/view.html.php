@@ -26,7 +26,8 @@ class fabrikViewEmailform extends JViewLegacy
 	{
 		FabrikHelperHTML::framework();
 		$model = $this->getModel('form');
-		$post = JRequest::get('post');
+		$filter = JFilterInput::getInstance();
+		$post = $filter->clean($_POST, 'array');
 		if (!array_key_exists('youremail', $post))
 		{
 			FabrikHelperHTML::emailForm($model);
@@ -41,7 +42,9 @@ class fabrikViewEmailform extends JViewLegacy
 
 	function sendMail(&$email)
 	{
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// First, make sure the form was posted from a browser.
 		// For basic web-forms, we don't care about anything
@@ -76,11 +79,11 @@ class fabrikViewEmailform extends JViewLegacy
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
-		$email = JRequest::getVar('email', '');
-		$yourname = JRequest::getVar('yourname', '');
-		$youremail = JRequest::getVar('youremail', '');
+		$email = $input->get('email', '');
+		$yourname = $input->get('yourname', '');
+		$youremail = $input->get('youremail', '');
 		$subject_default = JText::sprintf('Email from', $yourname);
-		$subject = JRequest::getVar('subject', $subject_default);
+		$subject = $input->get('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
 		if (!$email || !$youremail || (JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
@@ -92,7 +95,7 @@ class fabrikViewEmailform extends JViewLegacy
 		$sitename = $config->get('sitename');
 		// link sent in email
 
-		$link = JRequest::getVar('referrer');
+		$link = $input->get('referrer');
 		// message text
 		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
 
