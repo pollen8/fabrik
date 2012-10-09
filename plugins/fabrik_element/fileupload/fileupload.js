@@ -227,7 +227,6 @@ var FbFileUpload = new Class({
 			resizebutton.href = response.uri;
 			resizebutton.id = 'resizebutton_' + file.id;
 			resizebutton.store('filepath', response.filepath);
-			console.log('upload response, ', response);
 			this.widget.setImage(response.uri, response.filepath, file.params);
 			new Element('input', {
 				'type' : 'hidden',
@@ -478,9 +477,7 @@ var ImageWidget = new Class({
 			this.showWin();
 			return;
 		}
-		
 		this.img = Asset.image(uri);
-
 		var el = new Element('img', {
 			src : uri
 		});
@@ -491,59 +488,74 @@ var ImageWidget = new Class({
 		}
 		el.inject(document.body).hide();
 
-		(function () {
-			var show, imagew, imageh, imagex, imagey, i;
-			if (!this.images.has(filepath)) {
-				show = false;
-				params = params ? params : new CloneObject(this.imageDefault, true, []);
-				this.images.set(filepath, params);
-				var s = el.getDimensions(true);
-				imagew = s.width;
-				imageh = s.height;
-				
-				// as imagedim is changed when the image is scaled, but we still want to store the original
-				// image dimensions for when we come to re-edit it.
-				// not sure we actually need it - but seems a good idea to have a reference to the original image size
-				params.mainimagedim = params.imagedim;
-				params.mainimagedim.w = imagew;
-				params.mainimagedim.h = imageh;
-				imagex = params.imagedim.x;
-				imagey = params.imagedim.y;
-			} else {
-				show = true;
-				i = this.images.get(filepath);
-				imagew = 400;
-				imageh = 400;
-				imagex = i.imagedim.x;
-				imagey = i.imagedim.y;
-			}
+		var opts = [filepath, params, el];
+		this.periodSetUpFn = this.setUpFn.periodical(500, this, opts);
+	},
+	
+	/**
+	 * Need to periodically run this as on page load timing of loading seems to effect if the Asset is loaded
+	 * If its not loaded then the s.width and height are 0, so use tearDown to control if the function is repeated
+	 * 
+	 *  @since 3.0.7
+	 */
 
+	setUpFn: function (filepath, params, el) {
+		var show, imagew, imageh, imagex, imagey, i;
+		var tearDown = true;
+		if (!this.images.has(filepath)) {
+			show = false;
+			params = params ? params : new CloneObject(this.imageDefault, true, []);
+			this.images.set(filepath, params);
+			var s = el.getDimensions(true);
+			imagew = s.width;
+			imageh = s.height;
+			if (s.width === 0 && s.height === 0) {
+				tearDown = false;
+			}
+			
+			// as imagedim is changed when the image is scaled, but we still want to store the original
+			// image dimensions for when we come to re-edit it.
+			// not sure we actually need it - but seems a good idea to have a reference to the original image size
+			params.mainimagedim = params.imagedim;
+			params.mainimagedim.w = imagew;
+			params.mainimagedim.h = imageh;
+			imagex = params.imagedim.x;
+			imagey = params.imagedim.y;
+		} else {
+			show = true;
 			i = this.images.get(filepath);
-			if (this.scaleSlide) {
-				this.scaleSlide.set(i.scale);
-			}
-			if (this.rotateSlide) {
-				this.rotateSlide.set(i.rotation);
-			}
-			if (this.cropperCanvas) {
-				this.cropperCanvas.x = i.cropdim.x;
-				this.cropperCanvas.y = i.cropdim.y;
-				this.cropperCanvas.w = i.cropdim.w;
-				this.cropperCanvas.h = i.cropdim.h;
-			}
-			this.imgCanvas.w = imagew;
-			this.imgCanvas.h = imageh;
-			this.imgCanvas.x = imagex;
-			this.imgCanvas.y = imagey;
-			this.imgCanvas.rotation = i.rotation;
-			this.imgCanvas.scale = i.scale / 100;
-			if (show) {
-				this.showWin();
-			}
+			imagew = 400;
+			imageh = 400;
+			imagex = i.imagedim.x;
+			imagey = i.imagedim.y;
+		}
 
+		i = this.images.get(filepath);
+		if (this.scaleSlide) {
+			this.scaleSlide.set(i.scale);
+		}
+		if (this.rotateSlide) {
+			this.rotateSlide.set(i.rotation);
+		}
+		if (this.cropperCanvas) {
+			this.cropperCanvas.x = i.cropdim.x;
+			this.cropperCanvas.y = i.cropdim.y;
+			this.cropperCanvas.w = i.cropdim.w;
+			this.cropperCanvas.h = i.cropdim.h;
+		}
+		this.imgCanvas.w = imagew;
+		this.imgCanvas.h = imageh;
+		this.imgCanvas.x = imagex;
+		this.imgCanvas.y = imagey;
+		this.imgCanvas.rotation = i.rotation;
+		this.imgCanvas.scale = i.scale / 100;
+		if (show) {
+			this.showWin();
+		}
+		if (tearDown) {
 			el.destroy();
-		}.bind(this)).delay(500);
-
+			clearInterval(this.periodSetUpFn);
+		}
 	},
 	
 	makeImgCanvas: function () {
