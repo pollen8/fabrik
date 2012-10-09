@@ -2911,9 +2911,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elementWhere = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
-			$elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
+			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
+			//$elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
+			$elementWhere = preg_replace("#^(\s*)(WHERE)(.*)#i", "$1AND$3", $elementWhere);
+
 		}
-		$sql .= $elementWhere;
+		$sql .= ' ' . $elementWhere;
 
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
