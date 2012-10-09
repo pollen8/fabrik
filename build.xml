@@ -548,6 +548,13 @@
 			</fileset>
 		</copy>
 		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/bootstrap" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl/bootstrap">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/bootstrap">
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
+		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/div" />
 		<copy todir="${cfg.destdir}/site/views/list/tmpl/div">
 			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/div" />
@@ -565,6 +572,12 @@
 		<copy todir="${cfg.destdir}/site/views/form/tmpl/bluesky">
 			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bluesky" />
 		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bootstrap" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/bootstrap">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bootstrap" />
+		</copy>
+		
 		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/contacts_custom" />
 		<copy todir="${cfg.destdir}/site/views/form/tmpl/contacts_custom">
 			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/contacts_custom" />
