@@ -69,7 +69,7 @@ class FabrikFEModelList extends JModelForm
 	 * List output format - set to rss to collect correct element data within function getData()
 	 *
 	 * @var string
-	*/
+	 */
 	protected $outPutFormat = 'html';
 
 	protected $isMambot = false;
@@ -534,7 +534,8 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
-		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
+		$results = $cache
+			->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
 		$this->groupTemplates = $results[2];
@@ -4840,8 +4841,9 @@ class FabrikFEModelList extends JModelForm
 		$opts->container = $container;
 		$opts->type = $type;
 		$opts->id = $type === 'list' ? $this->getId() : $id;
-		$opts->ref = $type === 'list' ? $this->getRenderContext() : $ref;
+		$opts->ref = $this->getRenderContext();
 		$opts->advancedSearch = $this->getAdvancedSearchOpts();
+		$opts->advancedSearch->controller = $type;
 		$opts = json_encode($opts);
 		$fscript = "
 		Fabrik.filter_{$container} = new FbListFilter($opts);\n";
@@ -8029,6 +8031,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getAdvancedElementFilter()
 	{
+		$app = JFactory::getApplication();
 		$element = JRequest::getVar('element');
 		$elementid = JRequest::getVar('elid');
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -8036,7 +8039,14 @@ class FabrikFEModelList extends JModelForm
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$el = $plugin->getElement();
-		$container = 'listform_' . $this->getRenderContext();
+		if ($app->input->get('context') == 'visualization')
+		{
+			$container = $app->input->get('parentView');
+		}
+		else
+		{
+			$container = 'listform_' . $this->getRenderContext();
+		}
 		$script = $plugin->filterJS(false, $container);
 		FabrikHelperHTML::addScriptDeclaration($script);
 		echo $plugin->getFilter(JRequest::getInt('counter', 0), false);
@@ -8992,9 +9002,16 @@ class FabrikFEModelList extends JModelForm
 	public function setRenderContext($id = null)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
+		$task = $input->getCmd('task');
+		if (strstr($task, '.'))
+		{
+			$task = explode('.', $task);
+			$task = array_pop($task);
+		}
 
 		// $$$ rob if admin filter task = filter and not list.filter
-		if (JRequest::getVar('task') == 'list.filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter'))
+		if ($task == 'filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter'))
 		{
 			$this->setRenderContextFromRequest();
 		}

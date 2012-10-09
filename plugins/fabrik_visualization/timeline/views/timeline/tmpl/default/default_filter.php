@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.timeline
@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
- if ($this->showFilters)
+if ($this->showFilters)
 {
 ?>
 <form method="post" action="" name="filter" action="<?php echo $this->filterFormURL; ?>">
@@ -19,7 +19,8 @@
 	  <table class="filtertable fabrikTable fabrikList">
 		  <thead>
 		  	<tr>
-		  		<th colspan="2"><?php echo $table ?></th>
+		  		<th><?php echo $table ?></th>
+		  		<th style="text-align:right;"><?php echo $this->advancedSearch;?></th>
 		  	</tr>
 		  </thead>
 		  <tfoot>
@@ -57,5 +58,5 @@
 	}
 	?>
 </form>
-<?php 
+<?php
 }

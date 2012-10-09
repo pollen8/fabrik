@@ -219,6 +219,55 @@ class FabrikFEModelVisualization extends JModel
 	}
 
 	/**
+	 * Create advanced search links
+	 *
+	 * @since    3.0.7
+	 *
+	 * @return   string
+	 */
+
+	public function getAdvancedSearchLink()
+	{
+		$app = JFactory::getApplication();
+		$links = array();
+		$listModels = $this->getlistModels();
+		$js = array();
+		$i = 0;
+		foreach ($listModels as $listModel)
+		{
+			$params = $listModel->getParams();
+			if ($params->get('advanced-filter', '0'))
+			{
+				$table = $listModel->getTable();
+				$tmpl = $listModel->getTmpl();
+				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
+				//. '&parentView=' . $this->getContainerId();
+
+				$url .= '&amp;tkn=' . JSession::getFormToken();
+				$links[$table->label] = $url;
+			}
+		}
+		$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
+		$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
+		$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
+
+		if (count($links) === 1)
+		{
+			return '<a href="' . array_pop($links) . '" class="advanced-search-link">' . $img . '</a>';
+		}
+		else
+		{
+			$str = $img . '<ul>';
+			foreach ($links as $label => $url)
+			{
+				$str .= '<li><a href="' . $url . '" class="advanced-search-link">' . $label . '</a></li>';
+			}
+			$str = '</ul>';
+		}
+	}
+
+	/**
 	 * Get Viz render contenxt
 	 *
 	 * @since   3.0.6

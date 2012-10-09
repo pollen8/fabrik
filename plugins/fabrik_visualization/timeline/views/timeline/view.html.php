@@ -33,6 +33,7 @@ class fabrikViewTimeline extends JView
 	public function display($tpl = 'default')
 	{
 		$srcs = FabrikHelperHTML::framework();
+
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 
@@ -49,6 +50,7 @@ class fabrikViewTimeline extends JView
 		$this->assignRef('row', $row);
 		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
+		$this->advancedSearch = $this->get('AdvancedSearchLink');
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$params = $model->getParams();
 		$this->assignRef('params', $params);
@@ -63,6 +65,8 @@ class fabrikViewTimeline extends JView
 		FabrikHelperHTML::stylesheetFromPath($tmplpath . '/template.css');
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
+		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
+		$srcs[] = 'media/com_fabrik/js/encoder.js';
 
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::script($srcs, $js);
