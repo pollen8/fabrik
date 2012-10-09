@@ -25,8 +25,8 @@ FabrikHelperHTML::script($srcs);
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
 <ul class="nav nav-tabs">
-		<li>
-	    	<a data-toggle="tab active" href="#details-info">
+		<li class="active">
+	    	<a data-toggle="tab" href="#details-info">
 	    		<?php echo JText::_('COM_FABRIK_DETAILS'); ?>
 	    	</a>
 	    </li>

@@ -57,7 +57,7 @@ $listDirn	= $this->state->get('list.direction');
 					<?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'l.id', $listDirn, $listOrder); ?>
 				</th>
 				<th width="1%">
-					<input type="checkbox" name="toggle" value="" onclick="checkAll(this);" />
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" />
 				</th>
 				<th width="16%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LIST_NAME', 'label', $listDirn, $listOrder); ?>
