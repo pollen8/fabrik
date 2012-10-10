@@ -13,6 +13,7 @@ jimport('joomla.filesystem.file');
 // Load front end language file as well
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
+
 if (!defined('COM_FABRIK_FRONTEND'))
 {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
@@ -75,6 +76,10 @@ $modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visuali
 $modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
 $origId = $input->getInt('visualizationid');
+$origView = $input->get('view');
+
+$input->set('view', $viewName);
 $input->set('visualizationid', $id);
 $controller->display();
 $input->set('visualizationid', $origId);
+$input->set('view', $origView);

@@ -284,6 +284,13 @@ class PlgFabrik_Element extends FabrikPlugin
 			$row = FabTable::getInstance('Element', 'FabrikTable');
 			$row->load($this->id);
 			$this->element = $row;
+
+			// 3.1 reset the params at the same time. Seems to be required for ajax autocomplete
+			if ($force)
+			{
+				unset($this->params);
+				$p = $this->getParams();
+			}
 		}
 		return $this->element;
 	}

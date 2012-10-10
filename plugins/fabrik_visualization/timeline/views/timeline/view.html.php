@@ -35,6 +35,7 @@ class fabrikViewTimeline extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
+
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
 
@@ -51,6 +52,7 @@ class fabrikViewTimeline extends JViewLegacy
 		$this->assignRef('row', $row);
 		$this->assign('showFilters', $input->getInt('showfilters', 1) === 1 ? 1 : 0);
 		$this->assignRef('filters', $this->get('Filters'));
+		$this->advancedSearch = $this->get('AdvancedSearchLink');
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$params = $model->getParams();
 		$this->assignRef('params', $params);
@@ -65,10 +67,14 @@ class fabrikViewTimeline extends JViewLegacy
 		FabrikHelperHTML::stylesheetFromPath($tmplpath . '/template.css');
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
+		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
+		$srcs[] = 'media/com_fabrik/js/encoder.js';
 
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::script($srcs, $js);
 
+		JText::script('COM_FABRIK_ADVANCED_SEARCH');
+		JText::script('COM_FABRIK_LOADING');
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => 'timelineDatePicker_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 		$this->datePicker = '<input type="text" name="timelineDatePicker" id="timelineDatePicker" value="" />' . $img;

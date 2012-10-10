@@ -127,14 +127,16 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		echo json_encode($return);
 	}
 
+	/**
+	 * End the ajax get events
+	 *
+	 * @param   object  &$res  return object
+	 */
+
 	protected function endAjax_getEvents(&$res)
 	{
-		$session = JFactory::getSession();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
+		$this->clearSession();
 		$res->done = 1;
-		$session->clear($key);
 	}
 
 	/**
@@ -164,6 +166,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$colours = (array) $params->get('timeline_colour', array());
 		$textColours = (array) $params->get('timeline_text_color', array());
 		$classNames = (array) $params->get('timeline_class', array());
+		$evals = (array) $params->get('eval_template', array());
 
 		$template = JArrayHelper::getValue($templates, $c);
 		$colour = JArrayHelper::getValue($colours, $c);
@@ -172,6 +175,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$title = JArrayHelper::getValue($labels, $c);
 		$textColour = JArrayHelper::getValue($textColours, $c);
 		$className = JArrayHelper::getValue($classNames, $c);
+		$eval = JArrayHelper::getValue($evals, $c);
 
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -213,6 +217,10 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 					{
 						$event = new stdClass;
 						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
+						if ($eval)
+						{
+							$html = eval($html);
+						}
 						$event->description = $html;
 						$event->start = array_key_exists($startdate . '_raw', $row) ? $row->{$startdate . '_raw'} : $row->$startdate;
 						$event->end = $event->start;
@@ -253,6 +261,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 					}
 				}
 			}
+			// $eventdata['query'] = $listModel->mainQuery;
 		}
 		return $eventdata;
 	}
@@ -277,6 +286,16 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		return $totals;
 	}
 
+	protected function clearSession()
+	{
+		$session = JFactory::getSession();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$session = JFactory::getSession();
+		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
+		$session->clear($key);
+	}
+
 	/**
 	 * Internally render the plugin, and add required script declarations
 	 * to the document
@@ -289,6 +308,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$document = JFactory::getDocument();
+		$this->clearSession();
 		$w = new FabrikWorker;
 		jimport('string.normalise');
 		$document->addScript('http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true');
@@ -305,97 +325,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 
 		$lists = $params->get('timeline_table', array());
 		$eventdata = array();
-		/* foreach ($lists as $listid)
-		{
-			$template = JArrayHelper::getValue($templates, $c);
-			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
-			$listModel->setId($listid);
-			$table = $listModel->getTable();
-			$nav = $listModel->getPagination(0, 0, 0);
-
-			$colour = JArrayHelper::getValue($colours, $c);
-			$startdate = JArrayHelper::getValue($startdates, $c);
-			$enddate = JArrayHelper::getValue($enddates, $c);
-			$title = JArrayHelper::getValue($labels, $c);
-			$textColour = JArrayHelper::getValue($textColours, $c);
-			$className = JArrayHelper::getValue($classNames, $c);
-
-			$data = $listModel->getData();
-
-			if ($listModel->canView() || $listModel->canEdit())
-			{
-				$elements = $listModel->getElements();
-				$enddate2 = $enddate;
-				$startdate2 = $startdate;
-				$endKey = FabrikString::safeColName($enddate2);
-				$startKey = FabrikString::safeColName($startdate2);
-				if (!array_key_exists($endKey, $elements))
-				{
-					$endKey = $startKey;
-					$enddate2 = $startdate2;
-				}
-				$endElement = $elements[$endKey];
-
-				if (!array_key_exists($startKey, $elements))
-				{
-					JError::raiseError(500, $startdate2 . " not found in the list, is it published?");
-				}
-				$startElement = $elements[$startKey];
-				$endParams = $endElement->getParams();
-				$startParams = $startElement->getParams();
-
-				foreach ($data as $group)
-				{
-					if (is_array($group))
-					{
-						foreach ($group as $row)
-						{
-							$event = new stdClass;
-							$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
-							$event->description = $html;
-							$event->start = array_key_exists($startdate . '_raw', $row) ? $row->{$startdate . '_raw'} : $row->$startdate;
-							$event->end = $event->start;
-							if (trim($enddate) !== '')
-							{
-								$end = array_key_exists($enddate . '_raw', $row) ? $row->{$enddate . '_raw'} : @$row->$enddate;
-								$event->end = ($end >= $event->start) ? $end : '';
-
-								$sDate = JFactory::getDate($event->end);
-								$sDate->setTimezone($timeZone);
-								$event->end = $sDate->toISO8601(true);
-								$bits = explode('+', $event->end);
-								$event->end = $bits[0] . '+00:00';
-							}
-							$sDate = JFactory::getDate($event->start);
-							$sDate->setTimezone($timeZone);
-							$event->start = $sDate->toISO8601(true);
-							$bits = explode('+', $event->start);
-							$event->start = $bits[0] . '+00:00';
-
-							$event->title = strip_tags(@$row->$title);
-
-							$url = $this->getLinkURL($listModel, $row, $c);
-							$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;
-							$event->image = '';
-							$event->color = $colour;
-							$event->textColor = $textColour;
-							$event->classname = isset($row->$className) ? $row->$className : '';
-							$event->classname = strip_tags($event->classname);
-							$event->classname = $this->toVariable($event->classname);
-							if ($event->start !== '' && !is_null($event->start))
-							{
-								if ($event->end == $event->start)
-								{
-									$event->end = '';
-								}
-								$eventdata[] = $event;
-							}
-						}
-					}
-				}
-			}
-			$c++;
-		} */
 		$json = new StdClass;
 		$json->dateTimeFormat = 'ISO8601';
 		$json->events = array();
@@ -403,8 +332,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$json = json_encode($json);
 		$options = new stdClass;
 		$options->id = $this->getId();
-		$options->listRef ='list' . $lists[0] . '_' . JFactory::getApplication()->scope . '_' . $lists[0];
-		// $options->listRef = 'list43_mod_fabrik_visualization_43';
+		$options->listRef ='list' . $lists[0] . '_' . $app->scope . '_' . $lists[0];
 		$options->step = $this->step;
 		$options->admin = (bool) $app->isAdmin();
 		$options->dateFormat = $params->get('timeline_date_format', '%c');

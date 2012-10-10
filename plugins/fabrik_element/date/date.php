@@ -2126,7 +2126,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function filterJS($normal, $container)
 	{
-
 		$element = $this->getElement();
 		if ($normal && ($element->filter_type !== 'field' && $element->filter_type !== 'range'))
 		{
@@ -2136,7 +2135,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getFilterHtmlId(0);
 		$id2 = $this->getFilterHtmlId(1);
-
+		$opts = new stdClass;
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');

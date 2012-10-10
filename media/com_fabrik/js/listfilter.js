@@ -6,7 +6,9 @@ var FbListFilter = new Class({
 		'container': '',
 		'type': 'list',
 		'id': '',
-		'advancedSearch': {}
+		'advancedSearch': {
+			'controller': 'list'
+		}
 	},
 
 	initialize: function (options) {
@@ -53,11 +55,12 @@ var FbListFilter = new Class({
 						p.clearFilter();
 					});
 				}
+				var injectForm = this.container.get('tag') === 'form' ? this.container : this.container.getElement('form');
 				new Element('input', {
 					'name': 'resetfilters',
 					'value': 1,
 					'type': 'hidden'
-				}).inject(this.container);
+				}).inject(injectForm);
 				if (this.options.type === 'list') {
 					this.list.submit('list.clearfilter');
 				} else {
@@ -86,6 +89,10 @@ var FbListFilter = new Class({
 					y: this.options.popwiny,
 					onContentLoaded: function (win) {
 						var list = Fabrik.blocks['list_' + this.options.ref];
+						if (typeOf(list) === 'null') {
+							list = Fabrik.blocks[this.options.container];
+							this.options.advancedSearch.parentView = this.options.container;
+						}
 						list.advancedSearch = new AdvancedSearch(this.options.advancedSearch);
 					}.bind(this)
 				};
@@ -96,6 +103,9 @@ var FbListFilter = new Class({
 
 	getList: function () {
 		this.list = Fabrik.blocks[this.options.type + '_' + this.options.ref];
+		if (typeOf(this.list) === 'null') {
+			this.list = Fabrik.blocks[this.options.container];
+		}
 		return this.list;
 	},
 

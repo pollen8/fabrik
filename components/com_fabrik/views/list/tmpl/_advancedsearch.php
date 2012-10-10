@@ -49,12 +49,19 @@ $input = $app->input;
 		class="button fabrikFilter advanced-search-apply"
 		name="applyAdvFabrikFilter"
 		type="button">
+
 	<input value="<?php echo JText::_('COM_FABRIK_CLEAR')?>" class="button advanced-search-clearall" type="button">
-	<input type="hidden" name="option" value="com_fabrik" />
-	<input type="hidden" name="view" value="<?php echo $input->get('nextview', 'list')?>" />
-	<input type="hidden" name="listid" value="<?php echo $this->listid?>" />
-	<input type="hidden" name="task" value="list.filter" />
 	<input type="hidden" name="advanced-search" value="1" />
 	<input type="hidden" name="<?php echo $input->get('tkn', 'request')?>" value="1" />
 
+	<?php
+	$scope = $input->get('scope', 'com_fabrik');
+	if ($scope == 'com_fabrik') :?>
+		<input type="hidden" name="option" value="<?php echo $input->get('option')?>" />
+		<input type="hidden" name="view" value="<?php echo $input->get('nextview', 'list'); ?>" />
+		<input type="hidden" name="listid" value="<?php echo $this->listid?>" />
+		<input type="hidden" name="task" value="<?php echo $input->get('nextview', 'list'); ?>.filter" />
+	<?php
+	endif;
+	?>
 </form>
