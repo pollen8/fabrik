@@ -554,6 +554,11 @@ var ImageWidget = new Class({
 		}
 		if (tearDown) {
 			el.destroy();
+			
+			// Incase ctr + f5 loading of page meant that win was opened
+			if (this.win) {
+				this.win.close();
+			}
 			clearInterval(this.periodSetUpFn);
 		}
 	},
