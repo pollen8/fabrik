@@ -5089,7 +5089,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if (array_key_exists($k, $advanced))
 					{
-						$advanced[$k][] = $filters[$k][$i];
+						$advanced[$k][] = JArrayHelper::getValue($filters[$k], $i, '');
 					}
 					else
 					{
