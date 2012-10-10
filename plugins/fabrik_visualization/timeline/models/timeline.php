@@ -165,6 +165,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$colours = (array) $params->get('timeline_colour', array());
 		$textColours = (array) $params->get('timeline_text_color', array());
 		$classNames = (array) $params->get('timeline_class', array());
+		$evals = (array) $params->get('eval_template', array());
 
 		$template = JArrayHelper::getValue($templates, $c);
 		$colour = JArrayHelper::getValue($colours, $c);
@@ -173,7 +174,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$title = JArrayHelper::getValue($labels, $c);
 		$textColour = JArrayHelper::getValue($textColours, $c);
 		$className = JArrayHelper::getValue($classNames, $c);
-
+		$eval = JArrayHelper::getValue($evals, $c);
 
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -215,6 +216,10 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 					{
 						$event = new stdClass;
 						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
+						if ($eval)
+						{
+							$html = eval($html);
+						}
 						$event->description = $html;
 						$event->start = array_key_exists($startdate . '_raw', $row) ? $row->{$startdate . '_raw'} : $row->$startdate;
 						$event->end = $event->start;
