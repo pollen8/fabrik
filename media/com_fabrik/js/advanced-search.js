@@ -30,14 +30,29 @@ AdvancedSearch = new Class({
 	},
 	
 	watchApply: function () {
-		if (!this.options.ajax) {
-			return;
-		}
+		
 		this.form.getElement('.advanced-search-apply').addEvent('click', function (e) {
+			Fabrik.fireEvent('fabrik.advancedSearch.submit', this);
+			var filterManager = Fabrik['filter_' + this.options.parentView];
+			
+			// Format date advanced search fields to db format before posting
+			if (typeOf(filterManager) !== 'null') {
+				filterManager.onSubmit();
+			}
+			if (!this.options.ajax) {
+				return;
+			}
 			e.stop();
-			var list = Fabrik.blocks['list_' + this.options.listref];
 			list.submit(this.options.controller + '.filter');
 		}.bind(this));
+	},
+	
+	getList: function () {
+		var list = Fabrik.blocks['list_' + this.options.listref];
+		if (typeOf(list) === 'null') {
+			list = Fabrik.blocks[this.options.parentView];
+		}
+		return list;
 	},
   
 	watchDelete: function () {

@@ -158,11 +158,11 @@ class FabrikFEModelVisualization extends JModel
 		return $lists[$id];
 	}
 
-	function getGalleryTableId()
-	{
-		$params = $this->getParams();
-		return $params->get('gallery_category_table');
-	}
+	/**
+	 * Make HTML container div id
+	 *
+	 * @return string
+	 */
 
 	public function getContainerId()
 	{
@@ -241,8 +241,8 @@ class FabrikFEModelVisualization extends JModel
 				$table = $listModel->getTable();
 				$tmpl = $listModel->getTmpl();
 				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
-				//. '&parentView=' . $this->getContainerId();
+					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list')
+					. '&scope&amp;=' . $app->scope;
 
 				$url .= '&amp;tkn=' . JSession::getFormToken();
 				$links[$table->label] = $url;
@@ -297,7 +297,8 @@ class FabrikFEModelVisualization extends JModel
 
 	/**
 	 * set the url for the filter form's action
-	 * @return string action url
+	 *
+	 * @return  string	action url
 	 */
 
 	public function getFilterFormURL()
@@ -306,10 +307,11 @@ class FabrikFEModelVisualization extends JModel
 		{
 			return $this->getFilterFormURL;
 		}
-		$option = JRequest::getCmd('option');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$option = $input->get('option');
 
 		// Get the router
-		$app = JFactory::getApplication();
 		$router = $app->getRouter();
 
 		$uri = clone (JURI::getInstance());
@@ -427,7 +429,7 @@ class FabrikFEModelVisualization extends JModel
 	 * @return  void
 	 */
 
-	function setId($id)
+	public function setId($id)
 	{
 		$this->setState('id', $id);
 

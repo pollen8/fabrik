@@ -110,6 +110,11 @@ var FbVisTimeline = new Class({
 			}.bind(this)
 		});
 		
+		Fabrik.addEvent('fabrik.advancedSearch.submit', function (e) {
+			console.log('cancel ajax');
+			this.ajax.cancel();
+		}.bind(this));
+		
 		this.ajax.send();
 
 		window.addEvent('resize', function () {
@@ -200,6 +205,14 @@ var FbVisTimeline = new Class({
 		var newdate = new Date(this.cal.date.getTime() - (this.cal.date.getTimezoneOffset() * 60000));
 		//this.tl.getBand(0).setCenterVisibleDate(newdate);
 		this.tl.getBand(0).scrollToCenter(newdate);
+		
+	},
+	
+	/**
+	 * Ajax advanced search filter called
+	 * @TODO implement this 
+	 */
+	submit: function () {
 		
 	}
 });
