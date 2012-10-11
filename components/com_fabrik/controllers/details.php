@@ -439,7 +439,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$ids = array($input->get('rowid', 0, 'string'));
 
 		$listid = $input->getInt('listid');
-		$limitstart = $input->::getInt('limitstart' . $listid);
+		$limitstart = $input->getInt('limitstart' . $listid);
 		$length = $input->getInt('limit' . $listid);
 
 		$oldtotal = $model->getTotalRecords();
