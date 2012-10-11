@@ -15,8 +15,10 @@
 		<filename plugin="subscriptions">subscriptions.php</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
-		<folder>scripts</folder>
 		<folder>language</folder>
+		<folder>scripts</folder>
+		<folder>sql</folder>
+		<folder>tables</folder>
 	</files>
 	
 </extension>

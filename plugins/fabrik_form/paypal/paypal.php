@@ -75,7 +75,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				$email = array_shift($email);
 			}
 		}
-		$opts['business'] = "$email";
+		$opts['business'] = $email;
 
 		$amount = $params->get('paypal_cost');
 		$amount = $w->parseMessageForPlaceHolder($amount, $data);
@@ -94,7 +94,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				$amount = array_shift($amount);
 			}
 		}
-		$opts['amount'] = "$amount";
+		$opts['amount'] = $amount;
 
 		// $$$tom added Shipping Cost params
 		$shipping_amount = $params->get('paypal_shipping_cost');

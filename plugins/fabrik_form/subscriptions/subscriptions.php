@@ -12,6 +12,8 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
+JTable::addIncludePath(JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables');
+//echo JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables';
 
 /**
  * Redirects the browser to subscriptions to perform payment
@@ -244,6 +246,9 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$surl = (array) $session->get($context . 'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
+
+		$sub = $this->createSubscription();
+		$this->createInvoice($sub);
 
 		// @TODO use JLog instead of fabrik log
 		// JLog::add($subject . ', ' . $body, JLog::NOTICE, 'com_fabrik');
@@ -499,7 +504,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 									if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
 									{
 										$status = 'form.subscriptions.ipnfailure.txn_seen';
-										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status" . (string) $query;
+										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status"
+											. (string) $query;
 									}
 								}
 								elseif ($txn_result == 'Reversed')
@@ -586,7 +592,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$emailtext .= $key . " = " . $value . "\n\n";
 		}
-		$log->message = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res . "\n//////////////\n" . $req . "\n//////////////\n";
+		$log->message = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res
+			. "\n//////////////\n" . $req . "\n//////////////\n";
 		if ($status != 'ok')
 		{
 			$subject = $config->get('sitename') . ": Error with Fabrik Subscriptions IPN";
@@ -624,7 +631,9 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		if (isset($txn_type_function))
 		{
 			$log->message .= "\n IPN custom transaction function = $txn_type_function";
-		} else {
+		}
+		else
+		{
 			$log->message .= "\n No IPN custom transaction function ";
 		}
 		$log->store();
@@ -641,5 +650,109 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	{
 		require_once 'plugins/fabrik_form/subscriptions/scripts/ipn.php';
 		return new fabrikSubscriptionsIPN;
+	}
+
+	/**
+	 * Get plan
+	 *
+	 * @return  object  plan
+	 */
+	protected function getPlan()
+	{
+		if (!isset($this->plan))
+		{
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			$planid = $input->getInt('fabsubs_users___plan_id', $input->getInt('fabsubs_users___plan_id_raw'));
+			$db = JFactory::getDBO();
+			$query = $db->getQuery(true);
+
+			$query->select('*')->from('fabsubs_plans')->where('id = ' . $planid);
+			$db->setQuery($query);
+			$this->plan = $db->loadObject();
+		}
+		return $this->plan;
+	}
+
+	/**
+	 * Create the subscription
+	 *
+	 * @return  JTable subcription
+	 */
+
+	protected function createSubscription()
+	{
+		$gateway = $this->getGateway();
+		$db = JFactory::getDbo();
+		$app = JFactory::getApplication();
+		$date = JFactory::getDate();
+		$input = $app->input;
+		$user = JFactory::getUser();
+		$sub = JTable::getInstance('Subscription', 'FabrikTable');
+
+		// Replace fields with db prefix
+		$cycleField = $db->replacePrefix('#__fabrik_subs_users___billing_cycle');
+		echo "cycle field = $cycleField <br>";
+		$gatewayField = $db->replacePrefix('#__fabrik_subs_users___gateway');
+		echo "cycle field = $gatewayField <br>";
+
+		// If upgrading fall back to logged in user id
+		$sub->userid = $input->getInt('newuserid', $user->get('id'));
+		$sub->primary = 1;
+		$sub->type = $input->getInt($gatewayField);
+		$sub->status = $plan->free == 1 ? 'Active' : 'Pending';
+		$sub->signup_date = $date->toSql();
+		$sub->plan = $plan->id;
+
+		$sub->lifetime = $input->getInt('lifetime', 0);
+
+		$sub->recurring = $gateway->subscription;
+
+		// $$$ rob not sure this is working yet! - Guessing that item_number contains the billing cycle id!?
+		$sub->billing_cycle_id = $input->getInt($cycleField);
+
+		$input->setVar('recurring', $sub->recurring);
+		$sub->store();
+		//eleven-ten-1
+		echo "<pre>";print_r($_REQUEST);
+		echo "<pre>";print_r($sub);exit;
+		return $sub;
+	}
+
+	/**
+	 * Create an invoice for a subscription
+	 *
+	 * @return  bool
+	 */
+
+	protected function createInvoice($sub)
+	{
+		$gateway = $this->getGateway();
+		$plan = $this->getPlan();
+
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$date = JFactory::getDate();
+
+		$invoice = JTable::getInstance('Invoices', 'Table');
+		$invoice->invoice_number = uniqid('', true);
+		JRequest::setVar('invoice_number', $invoice->invoice_number);
+		$invoice->gateway_id = $gateway->id;
+
+		// $$$ rob now costs stored in fabsubs_plan_billing_cycle
+		$query->select('*')->from('#__fabrik_subs_plan_billing_cycle')->where('id = ' . (int) $sub->billing_cycle_id);
+		$db->setQuery($query);
+		$billingCycle = $db->loadObject();
+
+		$this->log('fabrik.ipn createInvoice: billing Cycle query', $db->getQuery());
+		$this->log('fabrik.ipn createInvoice: request vars', json_encode($_REQUEST));
+		$invoice->currency = $billingCycle->currency;
+		$invoice->amount = $billingCycle->cost;
+
+		$invoice->created_date = $date->toSql();
+		$invoice->subscr_id = $sub->id;
+		return $invoice->store();
 	}
 }
