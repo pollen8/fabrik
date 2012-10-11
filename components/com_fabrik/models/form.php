@@ -1509,6 +1509,14 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->formData[$tmpKey] = $insertId;
 		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
 		$this->_fullFormData[$tmpKey] = $insertId; //need for things like the redirect plugin
+		$this->formData[$tmpKey] = $insertId;
+		$this->formData[$tmpKey . '_raw'] = $insertId;
+		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
+		$this->formData[FabrikString::shortColName($item->db_primary_key) . '_raw'] = $insertId;
+
+		// Need for things like the redirect plugin
+		$this->fullFormData[$tmpKey] = $insertId;
+		$this->fullFormData[$tmpKey . '_raw'] = $insertId;
 		$this->_fullFormData['rowid'] = $insertId;
 		$this->formData['rowid'] = $insertId;
 		$this->formDataWithTableName['rowid'] = $insertId;

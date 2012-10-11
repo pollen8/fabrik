@@ -41,7 +41,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 
-		if (!$this->shouldProcess('paypal_conditon'))
+		if (!$this->shouldProcess('paypal_conditon', $data, $formModel))
 		{
 			return true;
 		}

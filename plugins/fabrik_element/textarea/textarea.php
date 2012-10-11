@@ -257,7 +257,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			else
 			{
 				$editor = JFactory::getEditor();
-				$str = $editor->display($name, $value, $rows, $rows, $cols, $rows, true, $id);
+				$str = $editor->display($name, $value, $cols*10, $rows*15, $cols, $rows, true, $id);
 			}
 		}
 		else

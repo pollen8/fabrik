@@ -2204,7 +2204,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$join = $elementModel->getJoin()->table_join;
 			$opts = array();
-			$opts['label'] = $join . '.' . $c;
+			$opts['label'] = !strstr($c, 'CONCAT') ? $join . '.' . $c : $c;
 			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"

@@ -7,7 +7,7 @@ fabrikMainError -fabrikError -fabrikGroup -groupintro -fabrikSubGroup -fabr
 Other form elements that can be styled here are:
 legend
 fieldset
-To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.?>
+To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.*/?>
 <!--If you have set to show the page title in the forms layout parameters, then the page title will show-->
 <?php if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
@@ -92,8 +92,8 @@ echo "$form->error</div>";?>
 	</div>
 
 <?php
-echo $form->outro;
+echo $form->endTag;echo $form->outro;
 
-echo $form->endTag;
+
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();?>

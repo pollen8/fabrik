@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 ?>
-<table>
+<table border="1">
 <?php
 foreach ($this->data as $key => $val)
 {
@@ -36,6 +36,7 @@ foreach ($this->data as $key => $val)
 <p>Below out puts the form's join data one record at a time:</p>
 <table>
 <?php
+echo "<pre>";print_r($this->data['join']);echo "</pre>";
 $joindata = $this->data['join'];
 foreach (array_keys($joindata) as $joinkey) :
 	$keys = array_keys($joindata[$joinkey]);
@@ -43,7 +44,9 @@ foreach (array_keys($joindata) as $joinkey) :
 	for ($i = 0; $i < $length; $i++) :
 		echo '<tr><td colspan="2"><h3>record ' . $i . '</h3></td></tr>';
 		foreach ($keys as $k) :
-			echo '<tr><td>' . $k . '</td><td>' . $this->data['join'][$joinkey][$k][$i] . '</td></tr>';
+			echo '<tr><td>' . $k . '</td><td>';
+		print_r( htmlentities($this->data['join'][$joinkey][$k][$i]));
+		echo  '</td></tr>';
 		endforeach;
 	endfor;
 endforeach;
