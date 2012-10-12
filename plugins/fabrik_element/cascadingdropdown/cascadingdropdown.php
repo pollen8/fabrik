@@ -32,6 +32,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	public function elementJavascript($repeatCounter)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		if ($params->get('cdd_display_type') == 'auto-complete')
@@ -43,7 +45,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->_getWatchId($repeatCounter);
 		$opts->id = $this->_id;
-		$opts->def = $this->getValue(array(), $repeatCounter);
+
+		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
+		$rowid = $input->getInt('rowid', 0);
+		$fullName = $this->getFullName(false, true, true);
+		$watchName = $this->_getWatchFullName();
+		$qsValue = $input->get($fullName, '');
+		$qsWatchValue = $input->get($watchName, '');
+		$opts->def = $this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+
 		$watchGroup = $this->_getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
@@ -107,6 +117,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$db = $this->getDb();
 		$params = $this->getParams();
 		$element = $this->getElement();
@@ -126,7 +138,14 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
-		if (!$this->_editable || ($this->_editable && $rowid != 0))
+		/*
+		$fullName = $this->getFullName(false, true, true);
+		$watchName = $this->_getWatchFullName();
+		$qsValue = $input->get($fullName, '');
+		$qsWatchValue = $input->get($watchName, '');
+		if (!$this->_editable || ($this->_editable && $rowid != 0) || ($this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		*/
+		if (!$this->_editable || ($this->_editable && $rowid != 0) || ($this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
@@ -149,6 +168,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			{
 				$defaultValue = $obj->value;
 				$defaultLabel = $obj->text;
+				break;
 			}
 		}
 		$id = $this->getHTMLId($repeatCounter);
