@@ -30,13 +30,167 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function payment_status_Completed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.payment_status_Completed', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.payment_status_Completed', $msg);
+		return $this->activateSubscription($listModel, $request, &$set_list, &$err_msg, false);
+	}
+
+	/**
+	 * Activate a subscription
+	 *
+	 * @param   object  $listModel  list model
+	 * @param   array   $request    request data
+	 * @param   array   &$set_list  new invoice properties
+	 * @param   array   &$err_msg   error message
+	 * @param   bool    $recurring  is it a recurring subscription
+	 *
+	 * @return  bool
+	 */
+	protected function activateSubscription($listModel, $request, &$set_list, &$err_msg, $recurring = true)
+	{
+
+		$db = JFactory::getDbo();
+		$mail = JFactory::getMailer();
+		$app = JFactory::getApplication();
+
+		$invoice = $this->checkInvoice($request);
+		if ($invoice === false)
+		{
+			$this->reportError('activate subscription: failed invoice check');
+			return false;
+		}
+
+		// Update subscription details
+		$inv = $this->getInvoice($invoice);
+		if ($inv === false)
+		{
+			$this->reportError('activate subscription: didnt load invoice id: ' . $invoice);
+			return false;
+		}
+
+		$sub = $this->getSubscriptionFromInvoice($invoice);
+		if ($sub === false)
+		{
+			$this->reportError('activate subscription: didnt load sub for invoice id: ' . $invoice);
+			return false;
+		}
+		$sub->activate();
+
+		// Update invoice status
+		$inv->update($request);
+
+		// Set user to desired group
+		$subUser = $this->setUserGroup($sub);
+		if (!$subUser)
+		{
+			$this->reportError('couldnt load or set groups on user');
+			return false;
+		}
+
+		$subErrors = $subUser->getErrors();
+		if (!empty($subErrors))
+		{
+			$msg = $subUser->getError() . "<br>" . $subUser->get('email') . " / userid = " . $subUser->get('id') . ' NOT set to ' . $gid[0];
+			$this->reportError($msg);
+		}
+		else
+		{
+			$msg = $subUser->get('id') . ' set to ' . implode(', ', $subUser->groups) . "\n last error in user : " . $subUser->getError() . "\n " . $db->getErrorMsg();
+			$this->log('fabrik.ipn.setusergid', $msg);
+		}
+
+		$mailFrom = $app->getCfg('mailfrom');
+		$fromName = $app->getCfg('fromname');
+		$siteName = $app->getCfg('sitename');
+
+		$txn_id = $request['txn_id'];
+		$payer_email = $request['payer_email'];
+		$receiver_email = $request['receiver_email'];
+
+		$subject = $recurring ? "%s - Subscription payment complete" : "%s - Payment complete";
+		$subject = sprintf($subject, $siteName);
+		$subject = html_entity_decode($subject, ENT_QUOTES);
+		$type = $recurring ? 'subscription payment' : 'payment';
+		$msgbuyer = 'Your ' . $type . ' on %s has successfully completed. (Paypal transaction ID: %s)<br /><br />%s';
+		$msgbuyer = sprintf($msgbuyer, $siteName, $txn_id, $siteName);
+		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
+		$mail->sendMail($mailFrom, $fromName, $payer_email, $subject, $msgbuyer, true);
+
+		$msgseller = $type . ' success on %s. (Paypal transaction ID: %s)<br /><br />%s';
+		$msgseller = sprintf($msgseller, $siteName, $txn_id, $siteName);
+		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
+
+		$mail->sendMail($mailFrom, $fromName, $receiver_email, $subject, $msgseller, true);
+		$this->expireOldSubs($subUser->get('id'));
+		return true;
+	}
+
+	/**
+	 * Set the users groups based on the subscription
+	 *
+	 * @param   JTable  $sub  subscription table
+	 *
+	 * @return  JUser  subscription user
+	 */
+
+	protected function setUserGroup($sub)
+	{
+		$subUser = JFactory::getUser($sub->userid);
+		$this->log('fabrik.ipn.txn_type_subscr_payment sub userid', $subUser->get('id'));
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('usergroup')->from('#__fabrik_subs_plans')->where('id = ' . $sub->plan);
+		$db->setQuery($query);
+		$gid = $db->loadResult();
+		$this->log('fabrik.ipn.txn_type_subscr_payment gid query', $db->getQuery());
+		$groups = JUserHelper::getUserGroups($subUser->id);
+		$subUser->groups = array_merge($groups, (array) $gid);
+		$subUser->save();
+		return $subUser;
+	}
+
+	/**
+	 * Expire all but the most recent subs
+	 *
+	 * @param   int  $userid  user id
+	 */
+	protected function expireOldSubs($userid)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		// Don't load up active accounts with no eot_date!
+		$query->select('id')->from('#__fabrik_subs_subscriptions')->where('userid = ' . (int) $userid)
+			->where('status = "Active" AND date(format(eot_date, "%Y") = "000"')->order('lastpay_date DESC');
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+
+		if (count($rows) > 1)
+		{
+			// User can have up to one active subscirption - if theres more we're going to expire the older ones
+			for ($i = 1; $i < count($rows); $i++)
+			{
+				$sub = JTable::getInstance('Subscription', 'FabrikTable');
+				$subid = (int) $rows[$i]->id;
+				if ($subid !== 0)
+				{
+					$sub->load($subid);
+					$sub->expire('Expire Old Subs');
+				}
+			}
+		}
+		$msg = new stdClass();
+		$msg->subscriptionids = $rows;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.expireOldSubs', $msg);
 	}
 
 	/**
@@ -47,7 +201,7 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
@@ -66,7 +220,7 @@ class fabrikSubscriptionsIPN
 		$subject = html_entity_decode($subject, ENT_QUOTES);
 
 		$msgbuyer = 'Your payment on %s is pending. (Paypal transaction ID: %s)<br /><br />%s';
-		$txn_id = JRequest::getVar('txn_id', 'n/a');
+		$txn_id = $app->input->get('txn_id', 'n/a');
 		$msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
 		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
 		JFactory::getMailer()->sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
@@ -75,7 +229,7 @@ class fabrikSubscriptionsIPN
 		$msgseller = sprintf($msgseller, $SiteName, $txn_id, $SiteName);
 		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
 		JFactory::getMailer()->sendMail($MailFrom, $FromName, $receiver_email, $subject, $msgseller, true);
-		return 'ok';
+		return true;
 	}
 
 	/**
@@ -86,13 +240,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.payment_status_Reversed', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.payment_status_Reversed', $msg);
+		return true;
 	}
 
 	/**
@@ -103,42 +261,80 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.payment_status_Cancelled_Reversal', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.payment_status_Cancelled_Reversal', $msg);
+		return true;
 	}
 
 	/**
-	 * Refunded payment
+	 * Refunded payment and cancel subscription
 	 *
 	 * @param   object  $listModel  list model
 	 * @param   array   $request    request data
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.payment_status_Refunded', '');
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.payment_status_Refunded', $msg);
 		$invoice = $this->checkInvoice($request);
 		if (!$invoice)
 		{
 			return false;
 		}
 		$sub = $this->getSubscriptionFromInvoice($invoice);
+		$sub->refund();
+		$this->recalibrateUser($sub->userid);
+		return true;
+	}
 
-		$now = JFactory::getDate()->toSql();
-		$sub->status = 'Refunded';
-		$sub->cancel_date = $now;
-		$sub->eot_date = $now;
-		$sub->store();
-		return 'ok';
+	/**
+	 * If user subs changed then this fn will work out and set the correct
+	 * access levels for the user
+	 *
+	 * @param   int  $userId  user id
+	 *
+	 * @return  JUser
+	 */
+
+	protected function recalibrateUser($userId)
+	{
+		$user = JFactory::getUser($userId);
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('usergroup')->from('#__fabrik_subs_subscriptions AS s')
+		->join('LEFT', '#__fabrik_subs_plans AS p ON s.plan = p.id')
+		->where('s.userid = ' . $user->id . ' AND s.status = "Active"');
+
+		$db->setQuery($query);
+		$groups = $db->loadColumn();
+
+		// Get the base user group - normally 'registered' by may be set otherwise
+		$config = JComponentHelper::getParams('com_users');
+		$gid = $config->get('new_usertype');
+		$groups[] = $gid;
+		$groups = array_unique($groups);
+		$this->log('fabrik.subs.recalibrateUser', $user->get('id') . ' groups: ' . implode(',', $groups));
+
+		$user->groups = $groups;
+		$user->save();
+		return $user;
+
 	}
 
 	/**
@@ -149,13 +345,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_web_accept', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_web_accept', $msg);
+		return true;
 	}
 
 	/**
@@ -168,13 +368,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_subscr_signup', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_signup', $msg);
+		return true;
 	}
 
 	/**
@@ -185,12 +389,16 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_subscr_cancel', '');
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_cancel', $msg);
 		$invoice = $this->checkInvoice($request);
 		if (!$invoice)
 		{
@@ -203,12 +411,9 @@ class fabrikSubscriptionsIPN
 			$this->log('fabrik.ipn.txn_type_subscr_cancel subscription not found', $invoice . ' not found so didnt cancel a subscription');
 			return false;
 		}
-		$now = JFactory::getDate()->toSql();
-		$sub->status = 'Cancelled';
-		$sub->cancel_date = $now;
-		$sub->store();
-		$this->fallbackPlan($sub);
-		return 'ok';
+		$sub->cancel();
+		$this->recalibrateUser($sub->userid);
+		return true;
 	}
 
 	/**
@@ -220,13 +425,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_subscr_modify', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_modify', $msg);
+		return true;
 	}
 
 	/**
@@ -237,91 +446,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
 	{
-		$db = JFactory::getDbo();
-		$this->log('fabrik.ipn.txn_type_subscr_payment', json_encode($request));
-		$invoice = $this->checkInvoice($request);
-		if ($invoice === false)
-		{
-			return false;
-		}
-		// Update subscription details
-		$inv = $this->getInvoice($invoice);
-
-		$this->log('fabrik.ipn.txn_type_subscr_payment: invoice', json_encode($inv));
-
-		$sub = $this->getSubscriptionFromInvoice($invoice);
-
-		$this->log('fabrik.ipn.txn_type_subscr_payment: sub', json_encode($sub));
-
-		$now = JFactory::getDate()->toSql();
-		$sub->status = 'Active';
-		$sub->lastpay_date = $now;
-		$sub->store();
-
-		// Update invoice status
-		$inv->transaction_date = $now;
-		$inv->pp_txn_id = $request['txn_id'];
-		$inv->pp_payment_status = $request['payment_status'];
-		$inv->pp_payment_amount = $request['mc_gross'];
-		$inv->pp_txn_type = $request['txn_type'];
-		$inv->pp_fee = $request['mc_fee'];
-		$inv->pp_payer_email = $request['payer_email'];
-
-		// $$$ hugh @TODO - make sure payment_amount == amount
-		$inv->paid = 1;
-		if (!$inv->store())
-		{
-			$this->log('fabrik.ipn.txn_type_subscr_payment: FAILED TO STORE INVOICE', json_encode($inv));
-		}
-		else
-		{
-			$this->log('fabrik.ipn.txn_type_subscr_payment: invoice stored', json_encode($inv));
-		}
-
-		// Set user to desired group
-		$subUser = JFactory::getUser($sub->userid);
-		$this->log('fabrik.ipn.txn_type_subscr_payment sub userid', $subUser->get('id'));
-
-		$query = $db->getQuery(true);
-		$query->select('usergroup AS gid')->from('#__fabrik_subs_subscriptions AS s')->join('INNER', '#__fabrik_subs_plans AS p ON p.id = s.plan')
-			->where('userid = ' . $subUser->get('id'));
-		$db->setQuery($query);
-		$gid = $db->loadResult();
-
-		$this->log('fabrik.ipn.txn_type_subscr_payment', 'set user group to:' . $gid);
-
-		$this->log('fabrik.ipn.txn_type_subscr_payment gid query', $db->getQuery());
-
-		$this->log('fabrik.ipn.setusergid', $subUser->get('id') . ' set to ' . $gid . "\n " . $db->getQuery() . "\n " . $db->getErrorMsg());
-		$subUser->groups = (array) $gid;
-		$subUser->save();
-
-		$app = JFactory::getApplication();
-		$MailFrom = $app->getCfg('mailfrom');
-		$FromName = $app->getCfg('fromname');
-		$SiteName = $app->getCfg('sitename');
-
-		$payer_email = $request['payer_email'];
-
-		$subject = "%s - Subscription payment complete";
-		$subject = sprintf($subject, $SiteName);
-		$subject = html_entity_decode($subject, ENT_QUOTES);
-
-		$msgbuyer = 'Your subscription payment on %s has successfully completed. (Paypal transaction ID: %s)<br /><br />%s';
-		$msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
-		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
-		JFactory::getMailer()->sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
-
-		$msgseller = 'Subscription payment success on %s. (Paypal transaction ID: %s)<br /><br />%s';
-		$msgseller = sprintf($msgseller, $SiteName, $txn_id, $SiteName);
-		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
-		JFactory::getMailer()->sendMail($MailFrom, $FromName, $receiver_email, $subject, $msgseller, true);
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_payment', $msg);
+		return $this->activateSubscription($tableModel, $request, &$set_list, &$err_msg, true);
 	}
 
 	/**
@@ -338,13 +473,17 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_subscr_failed', '');
-		return 'ok';
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_failed', $msg);
+		return true;
 	}
 
 	/**
@@ -357,33 +496,42 @@ class fabrikSubscriptionsIPN
 	 * @param   array   &$set_list  new invoice properties
 	 * @param   array   &$err_msg   error message
 	 *
-	 * @return	mixed false or 'ok'
+	 * @return bool
 	 */
 
 	public function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg)
 	{
-		$this->log('fabrik.ipn.txn_type_subscr_eot', '');
+		$msg = new stdClass();
+		$msg->request = $request;
+		$msg->set_list = $set_list;
+		$msg = json_encode($msg);
+		$this->log('fabrik.ipn.txn_type_subscr_eot', $msg);
 		$invoice = $this->checkInvoice($request);
 		if (!$invoice)
 		{
+			$this->log('fabrik.ipn.txn_type_subscr_eot', 'no invoice found for :'. json_encode($request));
 			return false;
 		}
 		$sub = $this->getSubscriptionFromInvoice($invoice);
 		if ($sub->recurring != 1)
 		{
 			$this->log('fabrik.ipn.txn_type_subscr_eot', 'not expiring as sub is not recurring (so eot is triggered on sub signup)');
+			/*
+			 * $$$ rob 09/06/2011 added cos I think if user has one sub non recurring
+			 * and that expires and they sign up for a new one (possibly before the
+			 * end of the first subs term, both subs are expired if we don't return here
+			 */
+			return true;
 		}
-		$now = JFactory::getDate()->toSql();
-		$sub->status = 'Expired';
-		$sub->eot_date = $now;
-		$sub->store();
-		return 'ok';
+		$sub->expire('Expired');
+		$this->recalibrateUser($sub->userid);
+		return true;
 	}
 
 	/**
 	 * Get subscription row from a given invoice number
 	 *
-	 * @param   string  $inv  invoice number
+	 * @param   string  $inv  invoice id
 	 *
 	 * @return  JTable object
 	 */
@@ -392,7 +540,7 @@ class fabrikSubscriptionsIPN
 	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('subscr_id')->from('#__fabrik_subs_invoices')->where('invoice_number = ' . $db->quote($inv));
+		$query->select('subscr_id')->from('#__fabrik_subs_invoices')->where('id = ' . $db->quote($inv));
 		$db->setQuery($query);
 		$subid = (int) $db->loadResult();
 		if ($subid === 0)
@@ -415,7 +563,7 @@ class fabrikSubscriptionsIPN
 	private function getInvoice($inv)
 	{
 		$row = JTable::getInstance('Invoice', 'FabrikTable');
-		$row->load(array('invoice_number' => $inv));
+		$row->load($inv);
 		return $row;
 	}
 
@@ -429,11 +577,15 @@ class fabrikSubscriptionsIPN
 	 * @return unknown_type
 	 */
 
-	private function reportError($msg, $to, $data)
+	private function reportError($msg, $to = '', $data = array())
 	{
 		$app = JFactory::getApplication();
 		$MailFrom = $app->getCfg('mailfrom');
 		$FromName = $app->getCfg('fromname');
+		if ($to === '')
+		{
+			$to = $FromName;
+		}
 		$body = "\n\n\\";
 		foreach ($data as $k => $v)
 		{
@@ -473,12 +625,12 @@ class fabrikSubscriptionsIPN
 	 *
 	 * @param   array  $request  data to check
 	 *
-	 * @return  mixed	false if not found, otherwise returns invoice num
+	 * @return  mixed	false if not found, otherwise returns invoice id
 	 */
 
 	private function checkInvoice($request)
 	{
-		$invoice = $request['invoice'];
+		$invoice = $request['invoiceid'];
 		$receiver_email = $request['receiver_email'];
 
 		// Eekk no invoice number found in returned data - inform the sys admin
@@ -497,57 +649,55 @@ class fabrikSubscriptionsIPN
 	 *
 	 * @param   object  $sub  subscription
 	 *
+	 * @deprecated - should use recalibrateUser();
+	 *
 	 * @return  void
 	 */
 
 	public function fallbackPlan($sub)
 	{
-		// @TODO below code does not loook up the users actual plans but used a field fall_back_plan which we dont have now
+		// @TODO need to do this with the respect to the plan billing cycles
+
 		return;
+		$mail = JFactory::getMailer();
 		$plan = JTable::getInstance('Plan', 'FabrikTable');
 		$newPlan = JTable::getInstance('Plan', 'FabrikTable');
 		$plan->load((int) $sub->plan);
-		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan . ' = ' . (int) $plan->fall_back_plan);
+		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan .' = ' . (int) $plan->fall_back_plan);
 		$fallback = false;
-		if ($plan->fall_back_plan != 0)
-		{
+		if ($plan->fall_back_plan != 0) {
 			$fallback = true;
-			$newPlan->load((int) $plan->fall_back_plan);
-			$gid = (int) $newPlan->usergroup;
-		}
-		else
-		{
-			$config = JComponentHelper::getParams('com_users');
-			$gid = $config->get('new_usertype');
+			$newPlan->load((int)$plan->fall_back_plan);
+			$gid = (int)$newPlan->usergroup;
+			if ($gid <18) {
+				$gid = 18;
+			}
+		} else {
+			$gid = 18;
 		}
 		$subUser = JFactory::getUser($sub->userid);
-		$this->log('fabrik.ipn. fallback', $subUser->get('id') . ' gid set to ' . $gid);
-		$subUser->groups = (array) $gid;
+		$subUser->gid = $gid;
+		$this->log('fabrik.ipn. fallback', $subUser->get('id') .' gid set to ' . $gid);
 		$subUser->save();
 
-		if ($fallback)
-		{
-			// Create new subscription for fall back plan
+		if ($fallback) {
+			//create new subscription for fall back plan
 
-			// Get the expration date (length of new plan - that of previous plan)
+			//get the expration date (length of new plan - that of previous plan)
 			$newLength = $this->charToPeriod($newPlan->period_unit);
 			$oldLength = $this->charToPeriod($plan->period_unit);
 			$expDate = strtotime("+{$newPlan->duration} $newLength	");
 
 			$minus = strtotime("-{$plan->duration} $oldLength");
 
-			$logMsg = 'expiration date = strtotime(+' . $newPlan->duration . ' ' . $newLength . ")\n minus = strtotime(-" . $plan->duration . ' '
-						. $oldLength . ") \n =: $expDate - $minus";
-			$this->log('fabrik.ipn. fallback', $logMsg);
-			$expDate = JFactory::getDate()->toUnix() - ($expDate - $minus);
+			$this->log('fabrik.ipn. fallback', 'expiration date = strtotime(+'.$newPlan->duration.' '.$newLength.")\n minus = strtotime(-" .$plan->duration.' '.$oldLength.") \n =: $expDate - $minus"	);
+			$expDate = JFactory::getDate()->toUnix() - ( $expDate - $minus);
 
-			$sub = JTable::getInstance('Subscription', 'FabrikTable');
+			$sub = JTable::getInstance('Subscriptions', 'Table');
 			$sub->userid = $subUser->get('id');
-
-			// Paypal payment - no recurring
-			$sub->type = 1;
+			$sub->type = 1; //paypal payment - no recurring
 			$sub->status = 'Active';
-			$sub->signup_date = JFactory::getDate()->toSql();
+			$sub->signup_date = JFactory::getDate()->toMySQL();
 			$sub->plan = $newPlan->id;
 			$sub->recurring = 0;
 			$sub->lifetime = 0;
@@ -555,13 +705,13 @@ class fabrikSubscriptionsIPN
 			$this->log('fabrik.ipn. fallback', 'new sub expiration set to ' . $sub->expiration);
 			$sub->store();
 			$msg = "<h3>new sub expiration set to $sub->expiration</h3>";
-			foreach ($sub as $k => $v)
+			foreach ($sub as $k=>$v)
 			{
 				$msg .= "$k = $v <br>";
 			}
-			JFactory::getMailer()
-				->sendMail('rob@pollen-8.co.uk', 'fabrikar subs', 'rob@pollen-8.co.uk', 'fabrikar sub: fall back plan created', $msg, true);
+			$mail->sendMail('rob@pollen-8.co.uk', 'fabrikar subs', 'rob@pollen-8.co.uk', 'fabrikar sub: fall back plan created', $msg, true);
 		}
+
 	}
 
 	/**

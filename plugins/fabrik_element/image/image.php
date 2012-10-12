@@ -393,7 +393,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	function onAjax_files()
 	{
 		$app = JFactory::getApplication();
-		$folder = $app->input->('folder');
+		$folder = $app->input->get('folder');
 		$pathA = JPath::clean(JPATH_SITE . '/' . $folder);
 		$folder = array();
 		$files = array();

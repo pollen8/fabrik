@@ -381,7 +381,7 @@ EOD;
 			return self::$printURL;
 		}
 		$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-			. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
+			. "&rowid=" . $formModel->getRowId() . '&iframe=1&print=1';
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
 		 */
@@ -783,6 +783,8 @@ EOD;
 
 			if (!self::inAjaxLoadedPage())
 			{
+				$version = new JVersion;
+				$app = JFactory::getApplication();
 
 				/*
 				 * required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
@@ -809,7 +811,16 @@ EOD;
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
-				$src[] = 'media/com_fabrik/js/tips.js';
+
+				// Only use template test for testing in 2.5 with my temp J bootstrap template.
+				if (in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5)
+				{
+					$src[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
+				}
+				else
+				{
+					$src[] = 'media/com_fabrik/js/tips.js';
+				}
 				$src[] = 'media/com_fabrik/js/window.js';
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 

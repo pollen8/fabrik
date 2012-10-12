@@ -283,7 +283,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
 			if (!$this->getFormModel()->editable)
 			{
-				$elementModel->_inDetailedView = true;
+				$elementModel->inDetailedView = true;
 			}
 			return $elementModel->getValue($data, $repeatCounter);
 		}
@@ -300,7 +300,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
 			if (!$this->getFormModel()->editable)
 			{
-				$elementModel->_inDetailedView = true;
+				$elementModel->inDetailedView = true;
 			}
 			return $elementModel->getHTMLId($repeatCounter);
 		}

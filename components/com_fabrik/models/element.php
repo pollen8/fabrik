@@ -1326,21 +1326,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
 				{
-					$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-					foreach ($validations as $pluginc => $validation)
-					{
-						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
-					}
-					$validationHovers[] = '</ul></div>';
-					$title = implode('', $validationHovers);
-					$opts = new stdClass;
-					$opts->position = 'top';
-					$opts = json_encode($opts);
-					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl, array('class' => 'fabrikTip', 'opts' => $opts, 'title' => $title));
+					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl);
 				}
 			}
 			$model = $this->getFormModel();
-			$str .= $this->rollover($l, $model->data);
+			$str .= $this->rollover($l, $model->data, 'form', $tmpl);
 			if ($bLabel && !$this->isHidden())
 			{
 				$str .= '</label>';
@@ -1383,37 +1373,61 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $txt   label
 	 * @param   array   $data  row data
 	 * @param   string  $mode  form/list render context
+	 * @param   string  $tmpl  template
 	 *
 	 * @return  string  label with tip
 	 */
 
-	protected function rollover($txt, $data = array(), $mode = 'form')
+	protected function rollover($txt, $data = array(), $mode = 'form', $tmpl = '')
 	{
 		if (is_object($data))
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
+		$params = $this->getParams();
+		$formModel = $this->getFormModel();
+		$validationTip = '';
+		$rollOver = '';
+		$pos = $params->get('tiplocation', 'top');
+		$opts = new stdClass();
+		$opts->position = $pos;
+		$opts->notice = true;
+
+		if ($this->editable)
+		{
+			$validations = array_unique($this->getValidations());
+			if (count($validations) > 0)
+			{
+				$lines = array();
+				$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
+				foreach ($validations as $pluginc => $validation)
+				{
+					$lines[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
+				}
+				$lines = array_unique($lines);
+				$validationHovers = array_merge($validationHovers, $lines);
+				$validationHovers[] = '</ul></div>';
+				$validationTip  = implode('', $validationHovers);
+				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
+			}
+		}
+
 		if ($this->isTipped($mode))
 		{
-			$params = $this->getParams();
-			$formModel = $this->getFormModel();
 			$rollOver = $this->getTip($data);
-			$pos = $params->get('tiplocation', 'top');
-			$opts = "{position:'$pos', notice:true}";
-			if ($rollOver == '')
-			{
-				return $txt;
-			}
-			$rollOver = '<span>' . $rollOver . '</span>';
-
-			// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
-			$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
-			return '<span class="fabrikTip" opts="' . $opts . '" title="' . $rollOver . '">' . $txt . '</span>';
 		}
-		else
+		$rollOver .= $validationTip;
+
+		if ($rollOver == '')
 		{
 			return $txt;
 		}
+		$rollOver = '<span>' . $rollOver . '</span>';
+		$opts = json_encode($opts);
+
+		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
+		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
+		return '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
 	}
 
 	/**
@@ -1440,6 +1454,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		$tip = trim(JText::_($tip));
 		$tip = JText::_($tip);
+
 		$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
 	}

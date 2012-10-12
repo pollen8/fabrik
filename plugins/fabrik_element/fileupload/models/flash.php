@@ -1,14 +1,21 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Fileupload - Plugin element to render Flash files
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
 
 class flashRender
 {
@@ -51,7 +58,6 @@ class flashRender
 		$relPath = str_replace("\\", "/", JPATH_SITE . $file);
 		$thisFileInfo = $getID3->analyze($relPath);
 
-		//var_dump($relPath, $thisFileInfo);
 		$w = $params->get('fu_main_max_width', 0);
 		$h = $params->get('fu_main_max_height', 0);
 		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo))
@@ -139,4 +145,3 @@ class flashRender
 		}
 	}
 }
-?>

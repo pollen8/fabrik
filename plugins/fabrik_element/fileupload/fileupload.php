@@ -328,7 +328,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->id = $this->_id;
+		$opts->id = $this->getId();
 		if ($this->isJoin())
 		{
 			$opts->isJoin = true;
@@ -2187,7 +2187,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		error_reporting(E_ERROR | E_PARSE);
 
 		$o = new stdClass;
-		$this->_id = $input->getInt('element_id');
+		$this->setId($input->getInt('element_id'));
 		$groupModel = $this->getGroup();
 
 		if (!$this->validate())

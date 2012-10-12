@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `#__fabrik_subs_subscriptions` (
   `lastpay_date` datetime default '0000-00-00 00:00:00',
   `cancel_date` datetime default '0000-00-00 00:00:00',
   `eot_date` datetime default '0000-00-00 00:00:00',
+  `eot_cause` varchar(30) default NULL,
   `plan` int(6) default NULL,
   `recurring` int(1) NOT NULL default '0',
   `lifetime` int(1) NOT NULL default '0',
