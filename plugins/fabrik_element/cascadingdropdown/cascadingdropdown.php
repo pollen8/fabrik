@@ -694,16 +694,25 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * Get the name of the field to order the table data by
 	 * can be overwritten in plugin class - but not currently done so
+	 * $$$ hugh - commenting this out as it needs to be same as databasejoin element
 	 *
 	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
 	 */
-
+/*
 	public function getOrderByName()
 	{
+		$params = $this->getParams();
+		$join = $this->getJoin();
+		$joinTable = $join->table_join_alias;
 		$joinVal = $this->getValColumn();
-		$joinVal = FabrikString::safeColName($joinVal);
-		return $joinVal;
+		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
+		if ($return == '.')
+		{
+			$return = parent::getOrderByName();
+		}
+		return $return;
 	}
+*/
 
 	/**
 	 * Load connection object
