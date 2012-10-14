@@ -154,6 +154,8 @@ class FabrikModelGroup extends FabModelAdmin
 			$data['created'] = JFactory::getDate()->toSql();
 
 		}
+		$makeJoin = false;
+		$unMakeJoin = false;
 		if ($this->checkRepeatAndPK($data))
 		{
 
@@ -161,6 +163,11 @@ class FabrikModelGroup extends FabModelAdmin
 			if ($makeJoin)
 			{
 				$data['is_join'] = 1;
+			}
+			else if ($data['is_join'] == 1)
+			{
+				$unMakeJoin = true;
+				$data['is_join'] = 0;
 			}
 		}
 		else
@@ -197,6 +204,10 @@ class FabrikModelGroup extends FabModelAdmin
 			else
 			{
 				// $data['is_join'] =  0; // NO! none repeat joined groups were getting unset here - not right!
+				if ($unMakeJoin)
+				{
+					$this->unMakeJoinedGroup($data);
+				}
 				$return = parent::save($data);
 			}
 		}
@@ -365,6 +376,38 @@ class FabrikModelGroup extends FabModelAdmin
 		$join->store();
 		$data['is_join'] = 1;
 		return true;
+	}
+
+	/**
+	 *
+	 * Repeat has been turned off for a group, so we need to remove the join.
+	 * For now, leave the repeat table intact, just remove the join
+	 * and the 'id' and 'parent_id' elements.
+	 *
+	 * @param    array  &$data  jform data
+	 * @return boolean
+	 */
+	public function unMakeJoinedGroup(&$data)
+	{
+		if (empty($data['id']))
+		{
+			return false;
+		}
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->delete('#__{package}_joins')->where('group_id = ' . $data['id']);
+		$db->setQuery($query);
+		$return = $db->query();
+
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_elements')->where('group_id  = ' . $data['id'] . ' AND name IN ("id", "parent_id")');
+		$db->setQuery($query);
+		$elids = $db->loadColumn();
+		$elementModel = JModel::getInstance('Element', 'FabrikModel');
+		$return = $elementModel->delete($elids);
+
+		// kinda meaningless return, but ...
+		return $return;
 	}
 
 	/**
