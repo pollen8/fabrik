@@ -48,7 +48,7 @@ class FabrikAdminControllerList extends JControllerForm
 		if ($table != '')
 		{
 			$table = FabrikString::safeColName($table);
-			$name = $input->get('name', 'jform[params][table_key][]');
+			$name = $input->get('name', 'jform[params][table_key][]', '', 'string');
 			$sql = 'DESCRIBE ' . $table;
 			$db->setQuery($sql);
 			$aFields = $db->loadObjectList();

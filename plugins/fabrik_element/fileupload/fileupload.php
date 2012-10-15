@@ -81,7 +81,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		$fullName = $this->getFullName(true, true, false);
 		$params = $this->getParams();
-		$groupModel = $this->_group;
+		$groupModel = $this->getGroupModel();
 		$return = false;
 		if ($groupModel->canRepeat())
 		{
@@ -581,7 +581,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 					if ($noImg)
 					{
-						$img = JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION');
+						$img = '<i class="icon-circle-arrow-right"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION');
 					}
 					else
 					{
@@ -621,7 +621,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			else
 			{
 				$aClass = 'class="btn btn-primary button"';
-				$title = '<i class="icon-download icon-white"></i>' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
+				$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 			}
 			$link = COM_FABRIK_LIVESITE
 				. 'index.php?option=com_fabrik&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='

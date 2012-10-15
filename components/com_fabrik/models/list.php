@@ -1335,7 +1335,7 @@ class FabrikFEModelList extends JModelForm
 		$bits[] = 'formid=' . $formid;
 		$bits[] = 'referring_table=' . $this->getTable()->id;
 
-		// $$$ hugh - change in fabrikdatabasejoin getValue() means we have to append _raw to key name
+		// $$$ hugh - change in databasejoin getValue() means we have to append _raw to key name
 		if ($key != '')
 		{
 			$bits[] = $key . '_raw=' . $val;
@@ -6440,7 +6440,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Check to see if prefilter should be applied
 	 *
-	 * @param   int  $gid  group id to check against
+	 * @param   int  $gid  view access level to check against
 	 *
 	 * @return  bool	must apply filter
 	 */
@@ -7988,7 +7988,7 @@ class FabrikFEModelList extends JModelForm
 							$elementModel->getParams()->set('join_val_column_concat', '');
 
 							// $$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
-							if ($elementModel->getElement()->plugin == 'fabrikdatabasejoin')
+							if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 							{
 								$dbkey2 = FabrikString::safeColName($elementModel->getFullName(false, false, false));
 								$this->elements[$sig][$dbkey2] = $elementModel;

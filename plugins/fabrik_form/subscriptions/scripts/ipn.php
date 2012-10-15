@@ -18,7 +18,7 @@ class fabrikSubscriptionsIPN
 		jimport('joomla.log.log');
 
 		// Add the logger.
-		JLog::addLogger(array('logger' => 'database'));
+		//JLog::addLogger(array('logger' => 'database'));
 
 	}
 

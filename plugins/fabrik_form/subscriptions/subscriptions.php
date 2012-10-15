@@ -242,19 +242,19 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
+
 		$this->params = $params;
 		$this->formModel = $formModel;
 		$app = JFactory::getApplication();
-		$data = $formModel->_fullFormData;
-		$this->data = $data;
+		$this->data = $formModel->_fullFormData;
 		if (!$this->shouldProcess('subscriptions_conditon'))
 		{
+			echo "no proces";exit;
 			return true;
 		}
-		$emailData = $this->getEmailData();
+		//$emailData = $this->getEmailData();
 		$w = $this->getWorker();
 		$ipn = $this->getIPNHandler();
-
 		$testMode = $this->params->get('subscriptions_testmode', false);
 		$url = $testMode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 		$opts = array();
@@ -265,7 +265,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		list($item_raw, $item) = $this->getItemName($params);
 		$opts['item_name'] = $item;
 		$this->setSubscriptionValues($opts);
-
 		$opts['currency_code'] = $this->getCurrencyCode();
 		$opts['notify_url'] = $this->getNotifyUrl();
 		$opts['return'] = $this->getReturnUrl();
@@ -281,8 +280,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		$url .= implode('&', $qs);
 
-		//$url .= http_build_query($opts);
-
 		// $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
 		// - instead a session var is set as the preferred redirect url
 
@@ -292,7 +289,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$surl = (array) $session->get($context . 'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
-
 
 
 		// @TODO use JLog instead of fabrik log
@@ -694,8 +690,17 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	protected function getIPNHandler()
 	{
-		require_once 'plugins/fabrik_form/subscriptions/scripts/ipn.php';
-		return new fabrikSubscriptionsIPN;
+		$ipn = 'plugins/fabrik_form/subscriptions/scripts/ipn.php';
+		if (JFile::exists($ipn))
+		{
+			require_once $ipn;
+			return new fabrikSubscriptionsIPN;
+		}
+		else
+		{
+			JError::raiseError(404, 'Missing subs IPN file');
+		}
+
 	}
 
 	/**
@@ -717,12 +722,13 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 				$query = $db->getQuery(true);
 
-				$query->select('*')->from('fabsubs_plans')->where('id = ' . $planid);
+				$query->select('*')->from('#__fabrik_subs_plans')->where('id = ' . $planid);
 				$db->setQuery($query);
 				$this->plan = $db->loadObject();
 
 				if ($error = $db->getErrorMsg())
 				{
+					echo "err!";exit;
 					throw new Exception($error);
 				}
 

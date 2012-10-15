@@ -279,7 +279,7 @@ EOD;
 				onclick="window.close();" /></td>
 		</tr>
 	</table>
-	<input name="referrer" value="<?php echo $input->get('referrer'); ?>" type="hidden" />
+	<input name="referrer" value="<?php echo $input->get('referrer', '', 'string'); ?>" type="hidden" />
 	<input type="hidden" name="option" value="com_fabrik" />
 	<input type="hidden" name="view" value="emailform" />
 	<input type="hidden" name="tmpl" value="component" />

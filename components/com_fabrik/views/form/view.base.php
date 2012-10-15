@@ -658,7 +658,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$reffer = $input->server->get('HTTP_REFERER', '');
 
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
-		$reffer = str_replace('&', '&amp;', $input->get('fabrik_referrer', $reffer));
+		$reffer = str_replace('&', '&amp;', $input->get('fabrik_referrer', $reffer, 'string'));
 
 		$this_rowid = is_array($model->rowId) ? implode('|', $model->rowId) : $model->rowId;
 		$fields = array('<input type="hidden" name="listid" value="' . $listModel->getId() . '" />',

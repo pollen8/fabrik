@@ -26,7 +26,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 	echo $c;
 }?>
 	<div class="boxflex">
-		<table class="table table-striped"" id="list_<?php echo $this->table->renderid;?>" >
+		<table class="table table-striped" id="list_<?php echo $this->table->renderid;?>" >
 		 <tfoot>
 			<tr class="fabrik___heading">
 				<td colspan="<?php echo count($this->headings);?>">

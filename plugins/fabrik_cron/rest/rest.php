@@ -19,10 +19,10 @@ class plgFabrik_CronRest extends plgFabrik_Cron
 {
 
 	/**
-	 * do the plugin action
-* @param array data
-* @param object list model
-* @param object admin list model
+	 * Do the plugin action
+	 * @param array data
+	 * @param object list model
+	 * @param object admin list model
 	 * @return number of records updated
 	 *
 	 */

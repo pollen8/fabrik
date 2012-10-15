@@ -124,7 +124,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		$query = $db->getQuery(true);
 		$rowid = $input->get('rowid', '');
 		$loading = strstr($messageType, 'form.load');
-		$http_referrer = $input->server->get('HTTP_REFERER', 'no HTTP_REFERER');
+		$http_referrer = $input->server->get('HTTP_REFERER', 'no HTTP_REFERER', 'string');
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
 		$username = $user->get('username');

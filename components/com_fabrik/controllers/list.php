@@ -181,12 +181,12 @@ class FabrikControllerList extends JControllerLegacy
 
 		$total = $oldtotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&listid=' . $listid);
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'string');
 
 		// $$$ hugh - for some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 		if (empty($ref))
 		{
-			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid);
+			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'string');
 		}
 		if ($total >= $limitstart)
 		{
@@ -270,12 +270,12 @@ class FabrikControllerList extends JControllerLegacy
 		$defaultRef = 'index.php?option=com_fabrik&view=list&listid=' . $model->getId() . '&format=' . $format;
 		if ($format !== 'raw')
 		{
-			$ref = $input->post->get('fabrik_referrer', $defaultRef);
+			$ref = $input->post->get('fabrik_referrer', $defaultRef, 'string');
 
 			// For some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 			if (empty($ref))
 			{
-				$ref = $input->server->get('HTTP_REFERER', $defaultRef);
+				$ref = $input->server->get('HTTP_REFERER', $defaultRef. 'string');
 			}
 		}
 		else

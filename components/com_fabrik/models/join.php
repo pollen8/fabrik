@@ -102,7 +102,7 @@ class FabrikFEModelJoin extends FabModel
 			}
 			else
 			{
-				$this->join->load($this->_id);
+				$this->join->load($this->id);
 			}
 			if (is_string($this->join->params))
 			{

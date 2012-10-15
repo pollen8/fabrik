@@ -965,10 +965,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			return JError::raiseWarning(500, $join->getError());
 		}
 		// $$$ hugh @TODO - create new 'pk' param
-		// $this->getFEModel()->setJoinPK($join);
-		$_POST['jform']['db_table_name'] = $joinTable;
-		$this->createLinkedElements($groupId);
-		$_POST['jform']['db_table_name'] = $origTable;
+		$this->createLinkedElements($groupId, $joinTable);
 	}
 
 	/**
@@ -976,12 +973,13 @@ class FabrikAdminModelList extends FabModelAdmin
 	 * need to create all the elements based on the database table fields and their
 	 * column type
 	 *
-	 * @param   int  $groupId  group id
+	 * @param   int     $groupId    group id
+	 * @param   string  $tableName  table name - if not set then use jform's db_table_name (@since 3.1)
 	 *
 	 * @return  void
 	 */
 
-	private function createLinkedElements($groupId)
+	private function createLinkedElements($groupId, $tableName = '')
 	{
 		$db = FabrikWorker::getDbo(true);
 		$app = JFactory::getApplication();
@@ -990,8 +988,11 @@ class FabrikAdminModelList extends FabModelAdmin
 		$config = JFactory::getConfig();
 		$createdate = JFactory::getDate();
 		$createdate = $createdate->toSql();
-		$jform = $input->get('jform', array(), 'array');
-		$tableName = JArrayHelper::getValue($jform, 'db_table_name');
+		if ($tableName === '')
+		{
+			$jform = $input->get('jform', array(), 'array');
+			$tableName = JArrayHelper::getValue($jform, 'db_table_name');
+		}
 		$formModel = $this->getFormModel();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$ordering = 0;

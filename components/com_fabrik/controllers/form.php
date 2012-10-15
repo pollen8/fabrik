@@ -245,7 +245,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->clearErrors();
 
 		$model->process();
-		if ($input->get('elid') !== 0)
+		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
@@ -443,7 +443,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 		$total = $oldtotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', "index.php?option=com_fabrik&view=table&listid=$listid");
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=table&listid=' . $listid, 'string');
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;

@@ -4646,7 +4646,15 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
 		$elementid = $input->getInt('elid');
+		if ($elementid === 0)
+		{
+			return;
+		}
 		$elmentModel = $this->getElement($elementid, true);
+		if (!$elmentModel)
+		{
+			return;
+		}
 		$rowid = $input->get('rowid');
 		$listModel->setId($listid);
 

@@ -89,7 +89,7 @@ class fabrikViewEmailform extends JViewLegacy
 		$sitename = $config->get('sitename');
 
 		// Link sent in email
-		$link = $input->get('referrer');
+		$link = $input->get('referrer', '', 'string');
 
 		// Message text
 		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);

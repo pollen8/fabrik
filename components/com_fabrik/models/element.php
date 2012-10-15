@@ -1816,7 +1816,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$elHTMLName = $this->getFullName(true, true);
 		$aElements[$this->getElement()->name] = $element;
-		$namedData[$elHTMLName] = $element;
+
+		// $$$ rob 12/10/2012 - $namedData is the formModels data - commenting out as the form data needs to be consistent
+		// as we loop over elements - this was setting from a string to an object ?!!!???!!
+		// $namedData[$elHTMLName] = $element;
 		if ($elHTMLName)
 		{
 			// $$$ rob was key'd on int but thats not very useful for templating
@@ -3085,7 +3088,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getElement();
 		$elName = $this->getFilterFullName();
-		if ($element->plugin != 'fabrikdatabasejoin')
+		if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
 		{
 			$elName = FabrikString::safeColName($elName);
 		}

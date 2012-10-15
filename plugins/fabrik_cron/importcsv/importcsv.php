@@ -1,12 +1,9 @@
 <?php
-
 /**
- * A cron task to email records to a give set of users
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.importcsv
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -19,8 +16,9 @@ require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
 /**
  * Cron Import CSV class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.email
+ * @since       3.0
  */
 
 class plgFabrik_Cronimportcsv extends plgFabrik_Cron
@@ -49,10 +47,14 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 		return false;
 	}
 
-	/*
+	/**
+	 * Get the list id from the filename
+	 *
+	 * @param   string  $tableName  The name of the file to be loaded.  Should only be file name--not a path.
+	 *
 	 * @author Kyle
-	 * @param string $tableName   The name of the file to be loaded.  Should only be file name--not a path.
-	 * @return int tableid      The id frabrik gives the list that hold information about files named $tablename
+	 *
+	 * @return  int  listid  The id frabrik gives the list that hold information about files named $tablename
 	 * returns an empty() type if no table exists with the same name as $tablename.
 	 */
 
@@ -64,19 +66,22 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 			$this->db = FabrikWorker::getDbo(true);
 		}
 		$query = $this->db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $this->db->Quote($tableName));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $this->db->quote($tableName));
 		$this->db->setQuery($query);
 		$id = $this->db->loadResult();
 		return $id;
 	}
 
 	/**
-	 * do the plugin action
+	 * Do the plugin action
 	 *
-	 * @return number of records updated
+	 * @param   array   &$data  data
+	 * @param   object  $listModel  list model
+	 *
+	 * @return  int  number of records updated
 	 */
 
-	function process(&$data, &$listModel)
+	public function process(&$data, $listModel)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
