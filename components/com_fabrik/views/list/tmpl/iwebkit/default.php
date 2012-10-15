@@ -21,7 +21,7 @@ if ($this->params->get('show_page_title', 1)) { ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
 <?php } ?>
 
-<?php if ($this->params->get('show-title', 1)) {?>
+<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<?php echo $this->table->label;?>
 <?php }?>
 </div>

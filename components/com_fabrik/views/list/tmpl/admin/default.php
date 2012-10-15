@@ -11,7 +11,7 @@
 		<?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?>
 	</div>
 <?php } ?>
-<?php if ($this->params->get('show-title', 1)) {?>
+<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
 <?php echo $this->table->intro;?>
@@ -21,7 +21,7 @@
 
 <?php if ($this->showFilters) {
 	echo $this->loadTemplate('filter');
-} // end show filters 
+} // end show filters
 //for some really ODD reason loading the headings template inside the group
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
@@ -105,7 +105,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 				}
 				?>
 				</tr>
-			
+
 			<?php }?>
 			</tbody>
 			<?php $gCounter++;
