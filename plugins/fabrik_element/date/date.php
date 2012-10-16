@@ -251,7 +251,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$calopts['readonly'] = 'readonly';
 		}
 
-		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
+		$str[] = '<div class="fabrikSubElementContainer input-append" id="' . $id . '">';
 		if (!in_array($value, $aNullDates) && FabrikWorker::isDate($value))
 		{
 			$oDate = JFactory::getDate($value);
@@ -303,11 +303,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			$timelength = JString::strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField span1" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+			$str[] = '<input class="inputbox fabrikinput timeField span3" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
-			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, $opts);
-			//$str[] = '<i class="icon-time"></i>';
+
+			$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
+			$img = '<span class="add-on">' . FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts) . '</span>';
+			$str[] = $img;
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -633,6 +635,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
+
+		// $img = '<button class="btn">' . $img . '</button>';
+		$img = '<span class="add-on">' . $img . '</span>';
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
 	}
@@ -650,13 +655,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$params = $this->getParams();
 		$opts = new stdClass;
 		$opts->inputField = $id;
-		$opts->ifFormat = $params->get('date_form_format');
 		$opts->button = $id . "_cal_img";
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
+		FabDate::dateFormatToStrftimeFormat($opts->ifFormat);
 		$opts->hasValidations = empty($validations) ? false : true;
 		$opts->dateAllowFunc = $params->get('date_allow_func');
 
@@ -755,19 +760,12 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$params = $this->getParams();
 			$element = $this->getElement();
 			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-			$store_as_local = (int) $params->get('date_store_as_local', 0);
+			$local = (bool) $params->get('date_store_as_local', 0);
 			if ($params->get('date_defaulttotoday', 0))
 			{
-				if ($store_as_local)
-				{
-					$localDate = date('Y-m-d H:i:s');
-					$oTmpDate = JFactory::getDate(strtotime($localDate));
-				}
-				else
-				{
-					$oTmpDate = JFactory::getDate();
-				}
-				$default = $oTmpDate->toSql();
+				$oTmpDate = JFactory::getDate();
+				$oTmpDate->setTimeZone($timeZone);
+				$default = $oTmpDate->toSql($local);
 			}
 			else
 			{
@@ -2328,6 +2326,19 @@ class FabDate extends JDate
 
 		$replace = array(' j', 'z', 'w', 'W', 'W', 'M', 'F', 'Y', 'y', 'Y', 'i', 'a', '"g:i:s a', 'H:i', 'H:i:s', 'H:i:s', 'O', 'O', 'm/d/y"', 'Y-m-d', 'U',
 				'Y-m-d', 'l', 'Y', 'm', 'd', 'H', 's');
+
+		$format = str_replace($search, $replace, $format);
+	}
+
+	static public function dateFormatToStrftimeFormat(&$format)
+	{
+		$search = array('d', 'D', 'j', 'l', 'N', 'S', 'w', 'z', 'W', 'F', 'm', 'M', 'n', 't', 'L', 'o', 'Y',
+				'y', 'a', 'A', 'B', 'g', 'G', 'h', 'H', 'i', 's', 'u',
+				'e', 'I', 'O', 'P', 'T', 'Z', 'c', 'r', 'U');
+
+		$replace = array('%d', '%a', '%e', '%A', '%u', '', '%w', '%j', '%V', '%B', '%m', '%b', '%m', '', '', '%g', '%Y',
+				'%y', '%P', '%p', '', '%l', '%H', '%I', '%H', '%M', '%S', '',
+				'%z', '', '', '', '%z', '', '%c', '%a, %d %b %Y %H:%M:%S %z', '%s');
 
 		$format = str_replace($search, $replace, $format);
 	}

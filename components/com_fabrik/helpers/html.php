@@ -1463,11 +1463,7 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		$app = JFactory::getApplication();
-		$version = new JVersion;
-
-		// Only use template test for testing in 2.5 with my temp J bootstrap template.
-		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5 && !$srcOnly)
+		if (FabrikWorker::j3() && !$srcOnly)
 		{
 			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
 		}
