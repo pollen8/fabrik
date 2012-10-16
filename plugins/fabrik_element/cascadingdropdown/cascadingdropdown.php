@@ -49,12 +49,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowid = $input->getInt('rowid', 0);
 		$fullName = $this->getFullName(false, true, true);
-		$watchName = $this->_getWatchFullName();
+		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
 		$opts->def = $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
-		$watchGroup = $this->_getWatchElement()->getGroup()->getGroup();
+		$watchGroup = $this->getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && JRequest::getInt('rowid', 0) != 0);
@@ -140,7 +140,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$show_please = $this->showPleaseSelect();
 		/*
 		$fullName = $this->getFullName(false, true, true);
-		$watchName = $this->_getWatchFullName();
+		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
 		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
@@ -313,7 +313,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	protected function _replaceAjaxOptsWithDbJoinOpts(&$opts)
 	{
 		$groups = $this->getFormModel()->getGroupsHiarachy();
-		$watch = $this->_getWatchFullName();
+		$watch = $this->getWatchFullName();
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
@@ -417,10 +417,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function _getWatchFullName()
+	protected function getWatchFullName()
 	{
 		$listModel = $this->getlistModel();
-		$elementModel = $this->_getWatchElement();
+		$elementModel = $this->getWatchElement();
 		return $elementModel->getFullName();
 	}
 
@@ -435,7 +435,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	protected function _getWatchId($repeatCounter = 0)
 	{
 		$listModel = $this->getlistModel();
-		$elementModel = $this->_getWatchElement();
+		$elementModel = $this->getWatchElement();
 		return $elementModel->getHTMLId($repeatCounter);
 	}
 
@@ -445,7 +445,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	 * @return  plgFabrik_Element
 	 */
 
-	private function _getWatchElement()
+	protected function getWatchElement()
 	{
 		if (!isset($this->watchElement))
 		{
@@ -499,7 +499,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$element = $this->getElement();
 
-		$watch = $this->_getWatchFullName();
+		$watch = $this->getWatchFullName();
 		$whereval = null;
 		$groups = $this->getForm()->getGroupsHiarachy();
 
