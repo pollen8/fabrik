@@ -323,7 +323,9 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Makes sure that the form is not viewable based on the table's access settings
+	 * Makes sure that the form is not viewable based on the list's access settings
+	 *
+	 * Also sets the form's editable state, if it can record in to a db table
 	 *
 	 * @return  int  0 = no access, 1 = view only , 2 = full form view, 3 = add record only
 	 */
@@ -346,10 +348,11 @@ class FabrikFEModelForm extends FabModelForm
 			$ret = 1;
 		}
 		$pRowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot);
-		/* new form can we add?*/
+
+		// New form can we add?
 		if ($this->_rowId == 0 || $pRowid == '-1')
 		{
-			/*if they can edit can they also add?*/
+			// If they can edit can they also add
 			if ($listModel->canAdd())
 			{
 				$ret = 3;
@@ -362,14 +365,14 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			/*editing from - can we edit?*/
+			// Editing from - can we edit
 			if ($listModel->canEdit($this->_data))
 			{
 				$ret = 2;
 			}
 		}
-		// $$$rob refractored from view
-		$editable = ($ret == 1 && $this->isEditable() == '1') ? false : true;
+		// If no access (0) or read only access (1) set the form to not be editable
+		$editable = ($ret <= 1) ? false : true;
 		$this->setEditable($editable);
 		if (JRequest::getVar('view', 'form') == 'details')
 		{
