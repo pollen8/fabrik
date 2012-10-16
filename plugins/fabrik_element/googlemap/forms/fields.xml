@@ -149,7 +149,7 @@
 			
 	 	</fieldset>
  			
-		<fieldset label="Table settings" name="plg-element-googlemap-table">
+		<fieldset label="List settings" name="plg-element-googlemap-table">
 			<field default="0"
 				class="btn-group"
 				description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL" name="fb_gm_staticmap_tableview" type="radio">
@@ -166,7 +166,7 @@
 				
 			<field class="input-mini" default="150" label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" name="fb_gm_table_mapheight" size="3" type="text"/>
 				
-			<field default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_table_zoomlevel" size="3" type="text"/>
+			<field class="input-mini" default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_table_zoomlevel" size="3" type="text"/>
 		</fieldset>
 	</fields>
 </form>
