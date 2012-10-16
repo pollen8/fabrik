@@ -14,7 +14,7 @@ if (!$app->isAdmin())
 		<?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?>
 	</div>
 <?php } ?>
-<?php if ($this->params->get('show-title', 1)) {?>
+<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
 <?php echo $this->table->intro;?>

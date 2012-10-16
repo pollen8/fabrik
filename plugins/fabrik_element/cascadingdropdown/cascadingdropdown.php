@@ -32,6 +32,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	public function elementJavascript($repeatCounter)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
@@ -44,7 +46,15 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->getWatchId($repeatCounter);
 		$opts->id = $this->id;
-		$opts->def = $this->getValue(array(), $repeatCounter);
+
+		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
+		$rowid = $input->getInt('rowid', 0);
+		$fullName = $this->getFullName(false, true, true);
+		$watchName = $this->getWatchFullName();
+		$qsValue = $input->get($fullName, '', 'string');
+		$qsWatchValue = $input->get($watchName, '', 'string');
+		$opts->def = $this->editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+
 		$watchGroup = $this->getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
@@ -109,6 +119,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$db = $this->getDb();
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
@@ -129,7 +141,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = $app->input->getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
-		if (!$this->editable || ($this->editable && $rowid != 0))
+		/*
+		$fullName = $this->getFullName(false, true, true);
+		$watchName = $this->getWatchFullName();
+		$qsValue = $input->get($fullName, '');
+		$qsWatchValue = $input->get($watchName, '');
+		if (!$this->_editable || ($this->_editable && $rowid != 0) || ($this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		*/
+		if (!$this->editable || ($this->editable && $rowid != 0) || ($this->editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
@@ -152,6 +171,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			{
 				$defaultValue = $obj->value;
 				$defaultLabel = $obj->text;
+				break;
 			}
 		}
 		$id = $this->getHTMLId($repeatCounter);
@@ -704,16 +724,25 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get the name of the field to order the table data by
 	 * can be overwritten in plugin class - but not currently done so
+	 * $$$ hugh - commenting this out as it needs to be same as databasejoin element
 	 *
 	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
 	 */
-
+/*
 	public function getOrderByName()
 	{
+		$params = $this->getParams();
+		$join = $this->getJoin();
+		$joinTable = $join->table_join_alias;
 		$joinVal = $this->getValColumn();
-		$joinVal = FabrikString::safeColName($joinVal);
-		return $joinVal;
+		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
+		if ($return == '.')
+		{
+			$return = parent::getOrderByName();
+		}
+		return $return;
 	}
+*/
 
 	/**
 	 * Load connection object

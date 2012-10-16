@@ -483,8 +483,8 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			$params->set('show_page_title', $input->getInt('show_page_title', 0));
 			$params->set('page_title', $input->get('title', ''));
-			$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 		}
+		$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
 
 		$title = $params->get('page_title');
 		if (empty($title))

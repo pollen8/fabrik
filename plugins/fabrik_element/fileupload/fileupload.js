@@ -4,7 +4,7 @@ var FbFileUpload = new Class({
 		this.plugin = 'fileupload';
 		this.parent(element, options);
 		this.toppath = this.options.dir;
-		if (this.options.folderSelect === 1 && this.options.editable === 1) {
+		if (this.options.folderSelect === "1" && this.options.editable === true) {
 			this.ajaxFolder();
 		}
 		

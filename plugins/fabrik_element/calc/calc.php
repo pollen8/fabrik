@@ -495,12 +495,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$params = $this->getParams();
 		$calc = $params->get('calc_calculation');
-		$obs = explode(',', $params->get('calc_ajax_observe'));
+		$obs = preg_replace('#\s#', '', $params->get('calc_ajax_observe'));
+		$obs = explode(',', $obs);
 		if (preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0)
 		{
 			$matches = $matches[0];
 			$obs = array_merge($obs, $matches);
 		}
+		$obs = array_unique($obs);
 		foreach ($obs as &$m)
 		{
 			$m = str_replace(array('{', '}'), '', $m);

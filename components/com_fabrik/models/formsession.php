@@ -24,7 +24,7 @@ class FabrikFEModelFormsession extends FabModel
 	protected $rowid = null;
 
 	/** @var string status message */
-	protected $status = null;
+	public $status = null;
 
 	/** @var int status id **/
 	protected $statusid = null;

@@ -1,7 +1,7 @@
 <?php
 $app = JFactory::getApplication();
 $input = $app->input;
-if ($this->params->get('show-title', 1)) {?>
+<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
 
