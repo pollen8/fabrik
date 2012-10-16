@@ -5,9 +5,9 @@
 		
 			<field description="PLG_ELEMENT_FBLIKEBOX_PAGE_ID_DESC" label="PLG_ELEMENT_FBLIKEBOX_PAGE_ID_LABEL" name="fblikebox_pageid" type="text"/>
 				
-			<field default="300" label="PLG_ELEMENT_FBLIKEBOX_WIDTH_LABEL" name="fblikebox_width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBLIKEBOX_WIDTH_LABEL" name="fblikebox_width" size="3" type="text"/>
 				
-			<field default="300" label="PLG_ELEMENT_FBLIKEBOX_HEIGHT_LABEL" name="fblikebox_height" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBLIKEBOX_HEIGHT_LABEL" name="fblikebox_height" size="3" type="text"/>
 				
 			<field default="true" label="PLG_ELEMENT_FBLIKEBOX_HEADER_LABEL" name="fblikebox header" type="radio">
 					<option value="0">JNO</option>

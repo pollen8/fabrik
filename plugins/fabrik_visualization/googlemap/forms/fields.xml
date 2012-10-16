@@ -22,7 +22,7 @@
 				
 			<field connection="params_googlemap_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_ELEMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_ELEMENT_LABEL" name="fb_gm_polyline_element" table="params_googlemap_table" type="element"/>
 				
-			<field default="10" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_LABEL" name="fb_gm_polyline_width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="10" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_LABEL" name="fb_gm_polyline_width" size="3" type="text"/>
 				
 			<field default="#CCFFFF" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_LABEL" name="fb_gm_polyline_colour" size="7" type="text"/>
 			
@@ -31,7 +31,7 @@
 				<option value="1">JYES</option>
 			</field>
 			
-			<field default="0.35" description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_LABEL" name="fb_gm_polygon_fillOpacity" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="0.35" description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_LABEL" name="fb_gm_polygon_fillOpacity" size="3" type="text"/>
 			<field default="#CCFFFF" description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_LABEL" name="fb_gm_polygon_fillColor" size="8" type="text"/>		
 	
 			<field connection="params_googlemap_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_LABEL" name="fb_gm_title_element" table="params_googlemap_table" type="element"/>
@@ -54,9 +54,9 @@
 					<option value="querystring">PLG_VISUALIZATION_GOOGLEMAP_QUERY_STRING</option>
 			</field>
 			
-			<field default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
 				
-			<field default="300" label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" type="text"/>
 				
 			<field directory="/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/" label="template" name="fb_gm_layout" type="folderlist"/>
 				
@@ -117,7 +117,7 @@
 			
 			<field default="10,50" description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_SPLIT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_SPLIT_LABEL" name="fb_gm_cluster_splits" size="10" type="text"/>
 				
-			<field default="5" description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_LABEL" name="fb_gm_cluster_icon_increment" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="5" description="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_CLUSTER_ICON_INCREMENT_LABEL" name="fb_gm_cluster_icon_increment" size="3" type="text"/>
 				
 		</fieldset>
 

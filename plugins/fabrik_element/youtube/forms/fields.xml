@@ -2,7 +2,7 @@
 <form>
 	<fields name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-youtube">
-			<field default="60" description="" label="Width" name="width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="60" description="" label="Width" name="width" size="3" type="text"/>
 			<field default="" label="Default" name="default" size="50" type="text"/>
 			<field default="1" description="" label="INCLUDERELATEDVIDEOS" name="include_related" type="radio">
 				<option value="0">No</option>
@@ -24,8 +24,8 @@
 				<option value="normal">500x405</option>
 				<option value="big">660x525</option>
 			</field>
-			<field description="ORWIDTHPLAYERDESC" label="ORWIDTHPLAYER" name="or_width_player" size="3" class="input-mini" type="text"/>
-			<field description="ORHEIGHTPLAYERDESC" label="ORHEIGHTPLAYER" name="or_height_player" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="ORWIDTHPLAYERDESC" label="ORWIDTHPLAYER" name="or_width_player" size="3" type="text"/>
+			<field class="input-mini" description="ORHEIGHTPLAYERDESC" label="ORHEIGHTPLAYER" name="or_height_player" size="3" type="text"/>
 			<field default="0" description="DISPLAYINTABLEDESC" label="DISPLAYINTABLE" name="display_in_table" type="radio">
 				<option value="0">Mini</option>
 				<option value="1">Display link</option>

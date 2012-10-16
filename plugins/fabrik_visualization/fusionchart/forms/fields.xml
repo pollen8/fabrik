@@ -33,9 +33,9 @@
 						
 			<field description="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_EL_COLOUR_LABEL" name="fusionchart_elcolour" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_LABEL" name="fusionchart_elalpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ELALPHA_LABEL" name="fusionchart_elalpha" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_DESC" label="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_LABEL" name="fusion_label_step_ratio" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_DESC" label="PLG_VISUALIZATION_FUSIONCHART_LABEL_STEP_RATIO_LABEL" name="fusion_label_step_ratio" size="3" type="text"/>
 				
 			<field connection="params_fusionchart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_AXIS_LABEL_LABEL" name="fusion_x_axis_label" table="params_fusionchart_table" type="element"/>
 				
@@ -138,7 +138,7 @@
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_BG_PROPERTIES" name="background">
 			<field description="PLG_VISUALIZATION_FUSIONCHART_BG_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BG_COLOR_LABEL" name="fusionchart_bgcolor" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_BG_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BG_ALPHA_LABEL" name="fusionchart_bgalpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_BG_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BG_ALPHA_LABEL" name="fusionchart_bgalpha" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_BG_IMG_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BG_IMG_LABEL" name="fusionchart_bgimg" size="30" type="text"/>
 				
@@ -147,11 +147,11 @@
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_CANVAS_PROPERTIES" name="canvas">
 			<field description="PLG_VISUALIZATION_FUSIONCHART_CNV_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_COLOR_LABEL" name="fusionchart_cnvcolor" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CNV_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_ALPHA_LABEL" name="fusionchart_cnvalpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CNV_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_ALPHA_LABEL" name="fusionchart_cnvalpha" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_COLOR_LABEL" name="fusionchart_bordercolor" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_THICKNESS_LABEL" name="fusionchart_borderthick" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CNV_BORDER_THICKNESS_LABEL" name="fusionchart_borderthick" size="3" type="text"/>
 				
 		</fieldset>
 
@@ -231,7 +231,7 @@
 					<option value="Verdana">Verdana</option>
 			</field>
 			
-			<field description="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTSIZE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTSIZE_LABEL" name="fusionchart_basefont_size" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTSIZE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTSIZE_LABEL" name="fusionchart_basefont_size" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTCOLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_BASE_FONTCOLOR_LABEL" name="fusionchart_basefont_color" size="7" type="text"/>
 				
@@ -242,16 +242,16 @@
 					<option value="Verdana">Verdana</option>
 			</field>
 			
-			<field description="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTSIZE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTSIZE_LABEL" name="fusionchart_outcnv_basefont_size" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTSIZE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTSIZE_LABEL" name="fusionchart_outcnv_basefont_size" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTCOLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_OUTCNV_BASE_FONTCOLOR_LABEL" name="fusionchart_outcnv_basefont_color" size="7" type="text"/>
 				
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_NUM_FORMAT_OPTS" name="numbers">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_NUM_PREFIX_DESC" label="PLG_VISUALIZATION_FUSIONCHART_NUM_PREFIX_LABEL" name="fusionchart_num_prefix" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_NUM_PREFIX_DESC" label="PLG_VISUALIZATION_FUSIONCHART_NUM_PREFIX_LABEL" name="fusionchart_num_prefix" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_NUM_SUFFIX_DESC" label="PLG_VISUALIZATION_FUSIONCHART_NUM_SUFFIX_LABEL" name="fusionchart_num_suffix" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_NUM_SUFFIX_DESC" label="PLG_VISUALIZATION_FUSIONCHART_NUM_SUFFIX_LABEL" name="fusionchart_num_suffix" size="3" type="text"/>
 				
 			<field default="0" description="PLG_VISUALIZATION_FUSIONCHART_FORMAT_NUM_DESC" label="PLG_VISUALIZATION_FUSIONCHART_FORMAT_NUM_LABEL" name="fusionchart_formatnumber" type="radio">
 					<option value="0">JNO</option>
@@ -263,35 +263,35 @@
 				<option value="1">JYES</option>
 			</field>
 			
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_SEP_LABEL" name="fusionchart_decimal_sep" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_SEP_LABEL" name="fusionchart_decimal_sep" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_THOUSAND_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_THOUSAND_SEP_LABEL" name="fusionchart_thousand_sep" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_THOUSAND_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_THOUSAND_SEP_LABEL" name="fusionchart_thousand_sep" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_PRECISION_LABEL" name="fusionchart_decimal_precision" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DECIMAL_PRECISION_LABEL" name="fusionchart_decimal_precision" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_DECIMAL_PRECISION_LABEL" name="fusionchart_divline_decimal_precision" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_DECIMAL_PRECISION_LABEL" name="fusionchart_divline_decimal_precision" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_LIMITS_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_LIMITS_DECIMAL_PRECISION_LABEL" name="fusionchart_limits_decimal_precision" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_LIMITS_DECIMAL_PRECISION_DESC" label="PLG_VISUALIZATION_FUSIONCHART_LIMITS_DECIMAL_PRECISION_LABEL" name="fusionchart_limits_decimal_precision" size="3" type="text"/>
 
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_ZERO_PLANE" name="zeroplane">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_ZERO_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ZERO_THICKNESS_LABEL" name="fusionchart_zero_thick" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_ZERO_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ZERO_THICKNESS_LABEL" name="fusionchart_zero_thick" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_ZERO_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ZERO_COLOR_LABEL" name="fusionchart_zero_color" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_ZERO_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ZERO_ALPHA_LABEL" name="fusionchart_zero_alpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_ZERO_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_ZERO_ALPHA_LABEL" name="fusionchart_zero_alpha" size="3" type="text"/>
 				
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_DIV_LINES_H" name="divlines">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_NUMBER_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_NUMBER_LABEL" name="fusionchart_divline_number" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_NUMBER_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_NUMBER_LABEL" name="fusionchart_divline_number" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_COLOR_LABEL" name="fusionchart_divline_color" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_THICKNESS_LABEL" name="fusionchart_divline_thick" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_THICKNESS_LABEL" name="fusionchart_divline_thick" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALPHA_LABEL" name="fusionchart_divline_alpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALPHA_LABEL" name="fusionchart_divline_alpha" size="3" type="text"/>
 				
 			<field default="1" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_SHOWVALUE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_SHOWVALUE_LABEL" name="fusionchart_divline_showvalue" type="radio">
 					<option value="0">JNO</option>
@@ -300,22 +300,22 @@
 			
 			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_COLOR_LABEL" name="fusionchart_divline_alt_hgrid_color" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_ALPHA_LABEL" name="fusionchart_divline_alt_hgrid_alpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_HGRID_ALPHA_LABEL" name="fusionchart_divline_alt_hgrid_alpha" size="3" type="text"/>
 				
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_DIV_LINES_V" name="vert_divlines">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_NUMBER_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_NUMBER_LABEL" name="fusionchart_vdivline_number" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_NUMBER_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_NUMBER_LABEL" name="fusionchart_vdivline_number" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_COLOR_LABEL" name="fusionchart_vdivline_color" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_THICKNESS_LABEL" name="fusionchart_vdivline_thick" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_THICKNESS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_THICKNESS_LABEL" name="fusionchart_vdivline_thick" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_ALPHA_LABEL" name="fusionchart_vdivline_alpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_VDIVLINE_ALPHA_LABEL" name="fusionchart_vdivline_alpha" size="3" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_COLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_COLOR_LABEL" name="fusionchart_divline_alt_vgrid_color" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_ALPHA_LABEL" name="fusionchart_divline_alt_vgrid_alpha" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_ALPHA_DESC" label="PLG_VISUALIZATION_FUSIONCHART_DIVLINE_ALT_VGRID_ALPHA_LABEL" name="fusionchart_divline_alt_vgrid_alpha" size="3" type="text"/>
 				
 		</fieldset>
 
@@ -329,18 +329,18 @@
 				
 			<field description="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_BORDERCOLOR_DESC" label="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_BORDERCOLOR_LABEL" name="fusionchart_hovercap_bordercolor" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_SEP_LABEL" name="fusionchart_hovercap_sep" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_SEP_DESC" label="PLG_VISUALIZATION_FUSIONCHART_HOVERCAP_SEP_LABEL" name="fusionchart_hovercap_sep" size="3" type="text"/>
 				
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_CH_MARGIN" name="margins">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CHART_LEFTMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_LEFTMARGIN_LABEL" name="fusionchart_chart_leftmargin" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CHART_LEFTMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_LEFTMARGIN_LABEL" name="fusionchart_chart_leftmargin" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CHART_RIGHTMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_RIGHTMARGIN_LABEL" name="fusionchart_chart_rightmargin" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CHART_RIGHTMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_RIGHTMARGIN_LABEL" name="fusionchart_chart_rightmargin" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CHART_TOPMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_TOPMARGIN_LABEL" name="fusionchart_chart_topmargin" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CHART_TOPMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_TOPMARGIN_LABEL" name="fusionchart_chart_topmargin" size="3" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_CHART_BOTTOMMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_BOTTOMMARGIN_LABEL" name="fusionchart_chart_bottommargin" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" description="PLG_VISUALIZATION_FUSIONCHART_CHART_BOTTOMMARGIN_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CHART_BOTTOMMARGIN_LABEL" name="fusionchart_chart_bottommargin" size="3" type="text"/>
 				
 		</fieldset>
 

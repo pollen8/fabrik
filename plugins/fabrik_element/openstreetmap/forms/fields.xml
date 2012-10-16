@@ -33,20 +33,20 @@
 				
 			<field default="-4.2007" description="PLG_ELEMENT_OPENSTREETMAP_LONG_DESC" label="PLG_ELEMENT_OPENSTREETMAP_LONG_LABEL" name="fb_osm_long" size="10" type="text"/>
 				
-			<field default="4" description="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_LABEL" name="fb_osm_zoomlevel" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="4" description="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_LABEL" name="fb_osm_zoomlevel" size="3" type="text"/>
 				
-			<field default="200" label="PLG_ELEMENT_OPENSTREETMAP_MAP_WIDTH_LABEL" name="fb_osm_mapwidth" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="200" label="PLG_ELEMENT_OPENSTREETMAP_MAP_WIDTH_LABEL" name="fb_osm_mapwidth" size="3" type="text"/>
 				
-			<field default="150" label="PLG_ELEMENT_OPENSTREETMAP_MAP_HEIGHT_LABEL" name="fb_osm_mapheight" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="150" label="PLG_ELEMENT_OPENSTREETMAP_MAP_HEIGHT_LABEL" name="fb_osm_mapheight" size="3" type="text"/>
 			
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_OPENSTREETMAP_LIST_SETTINGS" name="plg-element-openstreetmap-table">
-			<field default="200" label="PLG_ELEMENT_OPENSTREETMAP_MAP_WIDTH_LABEL" name="fb_osm_table_mapwidth" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="200" label="PLG_ELEMENT_OPENSTREETMAP_MAP_WIDTH_LABEL" name="fb_osm_table_mapwidth" size="3" type="text"/>
 				
-			<field default="150" label="PLG_ELEMENT_OPENSTREETMAP_MAP_HEIGHT_LABEL" name="fb_osm_table_mapheight" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="150" label="PLG_ELEMENT_OPENSTREETMAP_MAP_HEIGHT_LABEL" name="fb_osm_table_mapheight" size="3" type="text"/>
 				
-			<field default="4" description="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_LABEL" name="fb_osm_table_zoomlevel" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="4" description="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_OPENSTREETMAP_ZOOM_LEVEL_LABEL" name="fb_osm_table_zoomlevel" size="3" type="text"/>
 				
 		</fieldset>
 

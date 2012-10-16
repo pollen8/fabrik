@@ -10,7 +10,7 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="4" label="PLG_ELEMENT_CHECKBOX_OPTIONS_PER_ROW_LABEL" name="ck_options_per_row" size="2"  class="input-mini" type="text"/>
+			<field class="input-mini" default="4" label="PLG_ELEMENT_CHECKBOX_OPTIONS_PER_ROW_LABEL" name="ck_options_per_row" size="2" type="text"/>
 				
 		</fieldset>
 		
@@ -42,7 +42,7 @@
 		</fieldset>
 		
 		<fieldset name="plg-checkbox-advanced">
-			<field default="" description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC" label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL" name="options_split_str"  class="input-mini" size="10" type="text"/>
+			<field class="input-mini" default="" description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC" label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL" name="options_split_str" size="10" type="text"/>
 		</fieldset>
 	</fields>
 </form>

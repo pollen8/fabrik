@@ -16,11 +16,7 @@
 				
 			<field cols="40" description="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_DESC" label="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_LABEL" name="timeline_detailtemplate" rows="8" type="textarea"/>
 			
-			<field name="eval_template"
-				type="radio"
-				description="PLG_VIZ_TIMELINE_EVAL_DESC"
-				label="PLG_VIZ_TIMELINE_EVAL_LABEL"
-				default="0">
+			<field default="0" description="PLG_VIZ_TIMELINE_EVAL_DESC" label="PLG_VIZ_TIMELINE_EVAL_LABEL" name="eval_template" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
@@ -56,7 +52,7 @@
 						
 						<field description="PLG_VIZ_TIMELINE_BAND_BACKGROUND_DESC" label="PLG_VIZ_TIMELINE_BAND_BACKGROUND_LABEL" name="timeline_band_background_colour" size="6" type="field"/>
 					
-						<field description="PLG_VIZ_TIMELINE_BAND_WIDTH_DESC" label="PLG_VIZ_TIMELINE_BAND_WIDTH_LABEL" name="timeline_band_width" size="3" class="input-mini" type="field"/>
+						<field class="input-mini" description="PLG_VIZ_TIMELINE_BAND_WIDTH_DESC" label="PLG_VIZ_TIMELINE_BAND_WIDTH_LABEL" name="timeline_band_width" size="3" type="field"/>
 							
 						<field default="0" description="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_DESC" label="PLG_VIZ_TIMELINE_BAND_AS_OVERVIEW_LABEL" name="timeline_band_as_overview" type="list">
 								<option value="0">JNO</option>
