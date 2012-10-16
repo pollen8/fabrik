@@ -215,7 +215,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 					foreach ($group as $row)
 					{
 						$event = new stdClass;
-						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row));
+						$data = JArrayHelper::fromObject($row);
+						$html = $w->parseMessageForPlaceHolder($template, $data);
 						if ($eval)
 						{
 							$html = eval($html);
