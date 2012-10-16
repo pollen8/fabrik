@@ -135,6 +135,7 @@ var PluginManager = new Class({
 					this.addPlugin(plugin);
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
+				this.updateBootStrap();
 			}.bind(this),
 			onFailure: function (xhr) {
 				console.log('fail', xhr);
@@ -147,6 +148,22 @@ var PluginManager = new Class({
 		Fabrik.requestQueue.add(request);
 	},
 	
+	// Bootstrap specific
+	
+	updateBootStrap: function () {
+		document.getElements('.radio.btn-group label').addClass('btn');
+		 
+		 document.getElements(".btn-group input[checked=checked]").each(function (el) {
+			if (el.get('value') === '') {
+	           document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
+	        } else if (el.get('value') === '0') {
+	           document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
+	        } else {
+	        	document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
+	        }
+	    });
+	},
+	
 	/**
 	 * Watch the plugin select list
 	 */
@@ -155,7 +172,7 @@ var PluginManager = new Class({
 		document.id('adminForm').addEvent('change:relay(select.elementtype)', function (event, target) {
 			event.preventDefault();
 			var plugin = target.get('value');
-			var container = target.getParent('.adminform');
+			var container = target.getParent('.pluginContanier');
 			target.getParent('.actionContainer').getElement('h3 a span').set('text', plugin);
 			var c = container.id.replace('formAction_', '').toInt();
 			this.addPlugin(plugin, c);
@@ -183,6 +200,7 @@ var PluginManager = new Class({
 			},
 			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts'),
 			onComplete: function () {
+				this.updateBootStrap();
 			}.bind(this)
 		});
 		this.pluginTotal ++;
@@ -190,7 +208,7 @@ var PluginManager = new Class({
 	},
 
 	deletePlugin: function (e) {
-		if (e.target.findClassUp('adminform').id.test(/_\d+$/)) {
+		if (e.target.getParent('.pluginContanier').id.test(/_\d+$/)) {
 			var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea').each(function (i) {
 				var s = i.name.match(/\[[0-9]+\]/);

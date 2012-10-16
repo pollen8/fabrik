@@ -69,19 +69,7 @@ var fabrikAdminElement = new Class({
 				document.id('plugin-container').set('html', r);
 				Browser.exec(this.script);
 				
-				// Bootstrap specific
-				 document.getElements('.radio.btn-group label').addClass('btn');
-				 
-				 document.getElements(".btn-group input[checked=checked]").each(function (el) {
-					if (el.get('value') === '') {
-			           document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
-			        } else if (el.get('value') === '0') {
-			           document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
-			        } else {
-			        	document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
-			        }
-			    });
-				 
+				this.updateBootStrap();
 			}.bind(this)
 		}).send();
 	},

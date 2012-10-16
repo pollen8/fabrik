@@ -115,9 +115,12 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	{
 		$data = $this->getData();
 		$c = $this->getState('c') + 1;
+		$version = new JVersion;
+		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
+		$class = $j3 ? '' : 'adminform ';
 		$str = array();
 		$str[] = '<div class="pane-slider content pane-down">';
-		$str[] = '<fieldset class="adminform pluginContanier" id="formAction_' . $c . '"><ul>';
+		$str[] = '<fieldset class="' . $class . 'pluginContanier" id="formAction_' . $c . '"><ul>';
 		$formName = 'com_fabrik.' . $this->getState('type') . '-plugin';
 		$topForm = new JForm($formName, array('control' => 'jform'));
 		$topForm->repeatCounter = $c;
