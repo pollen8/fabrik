@@ -521,7 +521,7 @@ class plgFabrik_FormComment extends plgFabrik_Form
 		if ($this->doDigg())
 		{
 			$digg = $this->getDigg();
-			$digg->_editable = true;
+			$digg->setEditable(true);
 			$digg->commentDigg = true;
 			$digg->commentId = $comment->id;
 			if (JRequest::getVar('listid') == '')

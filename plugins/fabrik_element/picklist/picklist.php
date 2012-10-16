@@ -104,7 +104,7 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 
 		$str = "<div $attribs>$fromlist</div><div class='picklistcontainer'>$tolist</div>";
 		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}

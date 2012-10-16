@@ -93,7 +93,7 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	{
 		$element = $this->getElement();
 		$value = '';
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if ($element->hidden == '1')
 			{

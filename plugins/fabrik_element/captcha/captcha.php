@@ -140,7 +140,7 @@ class plgFabrik_ElementCaptcha extends plgFabrik_Element
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$value = $this->getValue($data, $repeatCounter);
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if ($element->hidden == '1')
 			{

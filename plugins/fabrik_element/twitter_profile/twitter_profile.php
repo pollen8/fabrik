@@ -105,7 +105,7 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 		if ($element->hidden == '1') {
 			$type = "hidden";
 		}
-		if (!$this->_editable) {
+		if (!$this->isEditable()) {
 			$value = $this->format($value);
 			return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}

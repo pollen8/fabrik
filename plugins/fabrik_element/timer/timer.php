@@ -121,7 +121,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}

@@ -69,7 +69,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 		$fd = $params->get('details_date_format', 'd.m.Y');
 		$dateandage = (int) $params->get('details_dateandage', '0');
 
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if (!in_array($value, $aNullDates))
 			{

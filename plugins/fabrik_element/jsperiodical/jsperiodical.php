@@ -96,7 +96,7 @@ class plgFabrik_ElementJSPeriodical extends plgFabrik_Element
 			$type = "hidden";
 		}
 		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			$format = $params->get('text_format_string');
 			if ($format != '')

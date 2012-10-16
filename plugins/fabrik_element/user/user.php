@@ -81,7 +81,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		if ($params->get('update_on_edit') || !$rowid || ($this->_inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
 			// Set user to logged in user
-			if ($this->_editable)
+			if ($this->isEditable())
 			{
 				$user = JFactory::getUser();
 			}
@@ -144,7 +144,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			return $this->_getHiddenField($name, $user->get('id'), $html_id);
 		}
 		$str = '';
-		if ($this->_editable)
+		if ($this->isEditable())
 		{
 			$value = is_object($user) ? $user->get('id') : '';
 			if ($element->hidden)

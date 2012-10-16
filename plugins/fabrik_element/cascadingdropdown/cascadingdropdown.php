@@ -52,12 +52,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$watchName = $this->_getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
-		$opts->def = $this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+		$opts->def = $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
 		$watchGroup = $this->_getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
-		$opts->editing = ($this->_editable && JRequest::getInt('rowid', 0) != 0);
+		$opts->editing = ($this->isEditable() && JRequest::getInt('rowid', 0) != 0);
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
 		$opts = json_encode($opts);
 		return "new FbCascadingdropdown('$id', $opts)";
@@ -130,7 +130,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		 * $$$ hugh - need to rethink this approach, see ticket #725. When editing, we need
 		 * to build options and selection on server side, otherwise daisy chained CDD's don't
 		 * work due to timing issues in JS between onComplete and get_options calls.
-		 * $tmp = 	$this->_editable ? array() : $this->_getOptions($data);
+		 * $tmp = 	$this->isEditable() ? array() : $this->_getOptions($data);
 		 * So ... we want to get options if not editable, or if editing an existing row.
 		 * See also small change to attachedToForm() in JS, and new 'editing' option in
 		 * elementJavascript() above, so the JS won't get options on init when editing an existing row
@@ -143,9 +143,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$watchName = $this->_getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
-		if (!$this->_editable || ($this->_editable && $rowid != 0) || ($this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
 		*/
-		if (!$this->_editable || ($this->_editable && $rowid != 0) || ($this->_editable && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
@@ -226,7 +226,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$str[] = ($displayType == "radio") ? "</div>" : '';
 		}
 
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if ($params->get('cascadingdropdown_readonly_link') == 1)
 			{
@@ -403,7 +403,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
-		if (!$this->_editable && JRequest::getVar('method') !== 'ajax_getOptions')
+		if (!$this->isEditable() && JRequest::getVar('method') !== 'ajax_getOptions')
 		{
 			return false;
 		}

@@ -1845,7 +1845,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
-		if (!$this->_editable && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
+		if (!$this->isEditable() && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))
 		{
 			$links = array();
 			if (!is_array($value))
@@ -1862,7 +1862,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$render = new stdClass;
 		$render->output = '';
 		$allRenders = '';
-		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->_editable)
+		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 
 			// Failed validations - format different!
@@ -1890,7 +1890,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 			}
 		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if ($render->output == '' && $params->get('default_image') != '')
 			{

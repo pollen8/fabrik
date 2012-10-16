@@ -220,7 +220,7 @@ class plgFabrik_Form extends FabrikPlugin
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 
-		$model->_editable = false;
+		$model->setEditable(false);
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -312,7 +312,7 @@ class plgFabrik_Form extends FabrikPlugin
 					// in a new form (joined grouped) even when editing a record
 					$elementModel->_inRepeatGroup = $groupModel->canRepeat();
 					$elementModel->_inJoin = $groupModel->isJoin();
-					$elementModel->_editable = false;
+					$elementModel->setEditable(false);
 
 					if ($elementModel->_inJoin)
 					{

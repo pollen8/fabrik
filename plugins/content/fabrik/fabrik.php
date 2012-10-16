@@ -307,7 +307,7 @@ class plgContentFabrik extends JPlugin
 				return;
 			}
 			$model->setId($id);
-			$model->_editable = false;
+			$model->setEditable(false);
 			$form = $model->getForm();
 			$listModel = $model->getListModel();
 			$table = $listModel->getTable();

@@ -215,7 +215,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$bits = array();
 		$wysiwyg = $this->useWysiwyg();
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			if (!$wysiwyg)
 			{

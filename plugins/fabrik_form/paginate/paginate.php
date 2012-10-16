@@ -150,10 +150,10 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 				return true;
 				break;
 			case 'form':
-				return (bool) $formModel->_editable == 1;
+				return (bool) $formModel->isEditable() == 1;
 				break;
 			case 'details':
-				return (bool) $formModel->_editable == 0;
+				return (bool) $formModel->isEditable() == 0;
 				break;
 		}
 	}
@@ -184,9 +184,9 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 		$opts->ids = $this->ids;
 		$opts->pkey = FabrikString::safeColNameToArrayKey($formModel->getTableModel()->getTable()->db_primary_key);
 		$opts = json_encode($opts);
-		$form = &$formModel->getForm();
-		$container = $formModel->_editable ? 'form' : 'details';
-		$container .= "_" . $form->id;
+		$form = $formModel->getForm();
+		$container = $formModel->isEditable() ? 'form' : 'details';
+		$container .= '_' . $form->id;
 
 		$scripts = array('plugins/fabrik_form/paginate/scroller.js', 'media/com_fabrik/js/encoder.js');
 		$code = "$container.addPlugin(new FabRecordSet($container, $opts));";

@@ -69,7 +69,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element
 		$width = (int) $params->get('slider_width', 250);
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return $val;
 		}

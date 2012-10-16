@@ -92,13 +92,13 @@ class FabrikViewFormBase extends JView
 		$params->def('icons', $app->getCfg('icons'));
 		$params->set('popup', (JRequest::getVar('tmpl') == 'component') ? 1 : 0);
 
-		$this->editable = $model->_editable;
+		$this->editable = $model->isEditable();
 
 		$form->label = $this->get('label');
 		$form->intro = $model->getIntro();
 		$form->outro = $model->getOutro();
 		$form->action = $this->get('Action');
-		$form->formid = $model->_editable ? "form_" . $model->getId() : 'details_' . $model->getId();
+		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
 		if ($form->error === '')
@@ -136,7 +136,7 @@ class FabrikViewFormBase extends JView
 		$this->_loadTmplBottom($form);
 		JDEBUG ? $profiler->mark('form view: after tmpl bottom loaded') : null;
 
-		if ($model->_editable)
+		if ($model->isEditable())
 		{
 			$form->startTag = '<form action="' . $form->action . '" class="fabrikForm" method="post" name="' . $form->name . '" id="' . $form->formid
 				. '" enctype="' . $model->getFormEncType() . '">';
@@ -181,7 +181,7 @@ class FabrikViewFormBase extends JView
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
-		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->_editable === false))
+		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->isEditable() === false))
 		{
 			$opt = JRequest::getVar('option');
 			JRequest::setVar('option', 'com_content');
@@ -352,7 +352,7 @@ class FabrikViewFormBase extends JView
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$jsControllerKey = $model->_editable ? 'form_' . $model->getId() : 'details_' . $model->getId();
+		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 
 		$srcs = FabrikHelperHTML::framework();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
@@ -415,7 +415,7 @@ class FabrikViewFormBase extends JView
 		$form = $model->getForm();
 		FabrikHelperHTML::mocha();
 
-		$bkey = $model->_editable ? 'form_' . $model->getId() : 'details_' . $model->getId();
+		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
@@ -443,7 +443,7 @@ class FabrikViewFormBase extends JView
 		$opts->pages = $model->getPages();
 		$opts->plugins = array();
 		$opts->multipage_save = (int) $model->saveMultiPage();
-		$opts->editable = $model->_editable;
+		$opts->editable = $model->isEditable();
 		$opts->start_page = $start_page;
 		$opts->inlineMessage = (bool) $this->isMambot;
 
@@ -533,7 +533,7 @@ class FabrikViewFormBase extends JView
 		foreach ($groups as $groupModel)
 		{
 			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
-			if ($showGroup == -1 || ($showGroup == 2 && $model->_editable))
+			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
 			{
 				// $$$ rob unpublished group so dont include the element js
 				continue;
@@ -552,11 +552,11 @@ class FabrikViewFormBase extends JView
 				}
 				$fullName = $elementModel->getFullName();
 				$id = $elementModel->getHTMLId();
-				$elementModel->_editable = ($model->_editable);
+				$elementModel->setEditable($model->isEditable());
 
 				// If the view is a form then we should always add the js as long as the element is editable or viewable
 				// if the view is details then we should only add hte js if the element is viewable.
-				if (($elementModel->canUse() && $model->_editable) || $elementModel->canView())
+				if (($elementModel->canUse() && $model->isEditable()) || $elementModel->canView())
 				{
 					for ($c = 0; $c < $max; $c++)
 					{
@@ -567,7 +567,7 @@ class FabrikViewFormBase extends JView
 							$aObjs[] = $ref;
 						}
 						$validations = $elementModel->getValidations();
-						if (!empty($validations) && $elementModel->_editable)
+						if (!empty($validations) && $elementModel->isEditable())
 						{
 							$watchElements = $elementModel->getValidationWatchElements($c);
 							foreach ($watchElements as $watchElement)
@@ -709,7 +709,7 @@ class FabrikViewFormBase extends JView
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
 			? '<input type="button" class="button btn" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
-		if ($model->_editable && $params->get('submit_button', 1))
+		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);

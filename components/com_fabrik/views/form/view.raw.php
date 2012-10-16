@@ -103,7 +103,7 @@ class fabrikViewForm extends JView
 		{
 			$elementModel = $model->getElement($id, true);
 			$elementModel->getElement();
-			$elementModel->_editable = true;
+			$elementModel->setEditable(true);
 			$elementModel->formJavascriptClass($srcs);
 			$onLoad[] = "var o = " . $elementModel->elementJavascript($repeatCounter) . ";";
 			if ($eCounter === 0)
@@ -168,7 +168,7 @@ class fabrikViewForm extends JView
 		$view = JRequest::getVar('view', 'form');
 		if ($view == 'details')
 		{
-			$model->_editable = false;
+			$model->setEditable(false);
 		}
 
 		$groups = $model->getGroupsHiarachy();
@@ -255,20 +255,20 @@ class fabrikViewForm extends JView
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
 				{
-					if (!$model->_editable)
+					if (!$model->isEditable())
 					{
 						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
 						 * db join add append data doesn't work if for example the popup form is set to allow adding,
 						 * but not editing records
 						 * $elementModel->_inDetailedView = true;
 						 */
-						$elementModel->_editable = false;
+						$elementModel->setEditable(false);
 					}
 
 					// Force reload?
 					$elementModel->_HTMLids = null;
 					$elementHTMLId = $elementModel->getHTMLId($c);
-					if (!$model->_editable)
+					if (!$model->isEditable())
 					{
 						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->_data, $c);
 					}
@@ -277,7 +277,7 @@ class fabrikViewForm extends JView
 						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->_data, $c);
 					}
 					// Test for paginate plugin
-					if (!$model->_editable)
+					if (!$model->isEditable())
 					{
 						$elementModel->_HTMLids = null;
 						$elementModel->_inDetailedView = true;

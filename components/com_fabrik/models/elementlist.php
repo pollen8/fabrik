@@ -499,7 +499,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			$values = array_merge($values, $diff);
 
 			// Swap over the default value to the default label
-			if (!$this->_editable)
+			if (!$this->isEditable())
 			{
 				foreach ($diff as &$di)
 				{
@@ -511,7 +511,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			}
 			$labels = array_merge($labels, $diff);
 		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			$aRoValues = array();
 			for ($i = 0; $i < count($values); $i++)

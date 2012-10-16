@@ -331,7 +331,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 		$rootFolder = str_replace('/', DS, $rootFolder);
-		if ($canSelect && $this->_editable)
+		if ($canSelect && $this->isEditable())
 		{
 			$str[] = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>';
 			if (array_key_exists($name, $data))

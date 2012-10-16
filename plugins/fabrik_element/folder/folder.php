@@ -76,7 +76,7 @@ class plgFabrik_ElementFolder extends plgFabrik_Element
 			}
 		}
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}

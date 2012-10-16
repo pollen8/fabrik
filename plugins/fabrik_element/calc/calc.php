@@ -455,7 +455,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$str = array();
 		if ($this->canView())
 		{
-			if (!$this->_editable)
+			if (!$this->isEditable())
 			{
 				$value = $this->_replaceWithIcons($value);
 				$str[] = $value;

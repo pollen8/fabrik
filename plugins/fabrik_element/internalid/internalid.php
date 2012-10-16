@@ -50,7 +50,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 		{
 			$type .= " elementErrorHighlight";
 		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
 		}

@@ -172,7 +172,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			$_lbl = trim($value['label']);
 			$_lnk = trim($value['link']);
