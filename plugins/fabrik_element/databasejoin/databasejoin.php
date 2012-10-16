@@ -860,7 +860,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		// $$$ hugh - still need to check $this->editable, as content plugin sets it to false,
 		// as no point rendering editable view for {fabrik view=element ...} in an article.
-		if (!$formModel->isEditable() || !$this->editable)
+		if (!$formModel->isEditable() || !$this->isEditable())
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
 			$obj = JArrayHelper::toObject($data);
@@ -916,8 +916,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 						$rawname = $this->getFullName(false, true, false) . '_raw';
 
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value', 'text', $options_per_row, $this->editable);
-						if ($this->isJoin() && $this->editable)
+						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value',
+							'text', $options_per_row, $this->isEditable());
+						if ($this->isJoin() && $this->isEditable())
 						{
 							$join = $this->getJoin();
 							$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
@@ -950,14 +951,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 							$html[] = '<div class="fabrikHide">';
 							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
 							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text',
-								$options_per_row, $this->editable);
+								$options_per_row, $this->isEditable());
 							$html[] = '</div>';
 						}
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'multilist':
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-						if ($this->editable)
+						if ($this->isEditable())
 						{
 							$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
 							$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
@@ -967,7 +968,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						{
 							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
 							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs, $defaults, 'value', 'text',
-								$options_per_row, $this->editable);
+								$options_per_row, $this->isEditable());
 						}
 						$defaultLabel = implode("\n", $html);
 						break;
@@ -991,14 +992,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						break;
 				}
 
-				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->editable)
+				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->isEditable())
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
 					$html[] = '<a href="#" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
-				if ($params->get('fabrikdatabasejoin_frontend_add') && $this->editable)
+				if ($params->get('fabrikdatabasejoin_frontend_add') && $this->isEditable())
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$html[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';

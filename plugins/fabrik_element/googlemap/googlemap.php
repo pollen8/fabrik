@@ -218,14 +218,14 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
-		$opts->drag = (bool) $formModel->editable;
+		$opts->drag = (bool) $formModel->isEditable();
 		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_gm_maptype');
 		$opts->scrollwheel = (bool) $params->get('fb_gm_scroll_wheel');
 		$opts->streetView = (bool) $params->get('fb_gm_street_view');
-		$opts->latlng = $this->editable ? (bool) $params->get('fb_gm_latlng', false) : false;
+		$opts->latlng = $this->isEditable() ? (bool) $params->get('fb_gm_latlng', false) : false;
 		$opts->sensor = (bool) $params->get('fb_gm_sensor', false);
-		$opts->latlng_dms = $this->editable ? (bool) $params->get('fb_gm_latlng_dms', false) : false;
+		$opts->latlng_dms = $this->isEditable() ? (bool) $params->get('fb_gm_latlng_dms', false) : false;
 		$opts->geocode = $params->get('fb_gm_geocode', '0');
 		$opts->geocode_event = $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields = array();
@@ -281,7 +281,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
-			if (!$this->getFormModel()->editable)
+			if (!$this->getFormModel()->isEditable())
 			{
 				$elementModel->inDetailedView = true;
 			}
@@ -298,7 +298,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if ($field)
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($field);
-			if (!$this->getFormModel()->editable)
+			if (!$this->getFormModel()->isEditable())
 			{
 				$elementModel->inDetailedView = true;
 			}
@@ -332,7 +332,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 			else
 			{
-				self::$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->editable);
+				self::$usestatic = ($params->get('fb_gm_staticmap') == '1' && !$this->isEditable());
 			}
 		}
 		return self::$usestatic;
@@ -586,41 +586,41 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 			// If its not editable and theres no val don't show the map
-			if ((!$this->editable && $val != '') || $this->editable)
+			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
-				if ($this->editable && $params->get('fb_gm_geocode') != '0')
+				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
 					$str .= '<div style="margin-bottom:5px">';
 				}
-				if ($this->editable && $params->get('fb_gm_geocode') == 1)
+				if ($this->isEditable() && $params->get('fb_gm_geocode') == 1)
 				{
 					$str .= '<input class="geocode_input inputbox" style="margin-right:5px"/>';
 				}
 
-				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->editable)
+				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->isEditable())
 				{
 					$str .= '<input class="button geocode" type="button" value="' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '" />';
 				}
-				if ($this->editable && $params->get('fb_gm_geocode') != '0')
+				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
 					$str .= '</div>';
 				}
 				$str .= '<div class="map" style="width:' . $w . 'px; height:' . $h . 'px"></div>';
 				$str .= '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . htmlspecialchars($val, ENT_QUOTES) . '" />';
-				if (($this->editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1')
+				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1')
 				{
 					$arrloc = explode(',', $val);
 					$arrloc[0] = str_replace("(", "", $arrloc[0]);
 					$arrloc[1] = array_key_exists(1, $arrloc) ? str_replace(")", "", array_shift(explode(":", $arrloc[1]))) : '';
-					$edit = $this->editable ? '' : 'disabled="true"';
+					$edit = $this->isEditable() ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
 					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat"/>
 					<input ' . $edit . ' size="23" value="' . $arrloc[1] . ' ° E"  class="inputbox lng"/></div>';
 				}
-				if (($this->editable || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1')
+				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1')
 				{
 					$dms = $this->_strToDMS($val);
-					$edit = $this->editable ? '' : 'disabled="true"';
+					$edit = $this->isEditable() ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
 					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[0] . '" style="margin-right:5px" class="latdms"/>
 					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[1] . '"  class="lngdms"/></div>';

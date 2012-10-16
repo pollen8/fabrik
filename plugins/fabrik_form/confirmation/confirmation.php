@@ -119,7 +119,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 		// Set an error so we can reshow the same form for confirmation purposes
 		$formModel->errors['confirmation_required'] = true;
 		$form->error = JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
-		$formModel->editable = false;
+		$formModel->setEditable(false);
 
 		// Clear out unwanted buttons
 		$formParams = $formModel->getParams();

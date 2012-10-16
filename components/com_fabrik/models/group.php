@@ -751,7 +751,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
 		$group->name = $groupTable->name;
-		$group->displaystate = ($group->canRepeat == 1 && $formModel->editable) ? 1 : 0;
+		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();

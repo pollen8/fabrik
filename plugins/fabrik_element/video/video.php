@@ -171,7 +171,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 			$type = "hidden";
 		}
 		$sizeInfo = " size=\"$element->width\" maxlength=\"$maxlength\"";
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			$format = $params->get('text_format_string');
 			if ($format != '')

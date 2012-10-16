@@ -92,7 +92,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			{
 				$type .= " elementErrorHighlight";
 			}
-			if (!$this->editable)
+			if (!$this->isEditable())
 			{
 				return ($element->hidden == '1') ? '<!-- ' . $value . ' -->' : $value;
 			}

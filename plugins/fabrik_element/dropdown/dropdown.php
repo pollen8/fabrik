@@ -99,7 +99,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			}
 		}
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}

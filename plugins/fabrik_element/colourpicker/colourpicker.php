@@ -71,7 +71,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			return;
 		}
@@ -122,7 +122,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id
 			. '" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('
 			. $value . ')"></div>';
-		if ($this->editable)
+		if ($this->isEditable())
 		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget" style="color:#000;z-index:99999;left:200px;background-color:#EEEEEE;border:1px solid #333333;width:390px;padding:0 0 5px 0;"></div>';
 		}

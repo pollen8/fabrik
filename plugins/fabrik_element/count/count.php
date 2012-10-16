@@ -127,7 +127,7 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 		    if ($element->hidden == '1') {
 		    $type = "hidden";
 		    }
-		    if (!$this->editable) {
+		    if (!$this->isEditable()) {
 		    return($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		    }
 

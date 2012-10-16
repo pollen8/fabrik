@@ -177,7 +177,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			}
 			else
 			{
-				$usestatic = ($params->get('fb_osm_staticmap') && !$this->editable);
+				$usestatic = ($params->get('fb_osm_staticmap') && !$this->isEditable());
 			}
 		}
 		return $usestatic;
@@ -266,7 +266,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 		$opts->scalecontro = $params->get('fb_osm_scalecontrol');
 		$opts->maptypecontrol = $params->get('fb_osm_maptypecontrol');
 		$opts->overviewcontrol = $params->get('fb_osm_overviewcontrol');
-		$opts->drag = ($this->getFormModel()->editable) ? true : false;
+		$opts->drag = ($this->getFormModel()->isEditable()) ? true : false;
 		$opts->staticmap = $this->_useStaticMap() ? true : false;
 		$opts->maptype = $params->get('fb_osm_maptype');
 		$opts->key = $params->get('fb_osm_key');
@@ -312,7 +312,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			}
 			$str = '';
 			//if its not editable and theres no val don't show the map
-			if ((!$this->editable && $val != '') || $this->editable)
+			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
 				$str = "<div id=\"" . $id . "_map\" style=\"width:{$w}px; height:{$h}px\"></div>";
 				$str .= "<input type='hidden' name='$name' id='" . $id . "' value='$val'/>";
@@ -321,7 +321,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			{
 				$str .= JText::_('No location selected');
 			}
-			if (!$this->editable)
+			if (!$this->isEditable())
 			{
 				$str .= $this->_microformat($val);
 			}

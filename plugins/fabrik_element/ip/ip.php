@@ -64,7 +64,7 @@ class plgFabrik_elementIp extends PlgFabrik_Element
 		$str = '';
 		if ($this->canView())
 		{
-			if (!$this->editable)
+			if (!$this->isEditable())
 			{
 				$str = $ip;
 			}

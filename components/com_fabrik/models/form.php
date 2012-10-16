@@ -363,10 +363,11 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 		// $$$rob refractored from view
-		$this->editable = ($ret == 1 && $this->editable == '1') ? false : true;
+		$editable = ($ret == 1 && $this->isEditable() == '1') ? false : true;
+		$this->setEditable($editable);
 		if ($app->input->get('view', 'form') == 'details')
 		{
-			$this->editable = false;
+			$this->setEditable(false);
 		}
 		return $ret;
 	}
@@ -395,11 +396,11 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if ($app->isAdmin())
 			{
-				$tmpl = $this->editable ? $params->get('admin_form_template') : $params->get('admin_details_template');
+				$tmpl = $this->isEditable() ? $params->get('admin_form_template') : $params->get('admin_details_template');
 			}
 			if ($tmpl == '')
 			{
-				if ($this->editable)
+				if ($this->isEditable())
 				{
 					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
 				}
@@ -435,8 +436,9 @@ class FabrikFEModelForm extends FabModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$tmpl = $this->getTmpl();
-		$v = $this->editable ? 'form' : 'details';
-		/* check for a form template file (code moved from view) */
+		$v = $this->isEditable() ? 'form' : 'details';
+
+		// Check for a form template file (code moved from view)
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getId();
@@ -3883,7 +3885,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$text = preg_replace($remove, '', $text);
 		$text = str_replace('[', '{', $text);
 		$text = str_replace(']', '}', $text);
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			$match = "/{details:\s*.*?}/i";
 			$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
@@ -3934,7 +3936,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function getLabel()
 	{
 		$label = $this->getForm()->label;
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			return str_replace("{Add/Edit}", '', $label);
 		}
@@ -4456,14 +4458,16 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 					 */
 					$elementModel->setFormModel($this);
 					$elementModel->tmpl = $tmpl;
+
 					/* $$$rob test don't include the element in the form is we can't use and edit it
 					 * test for captcha element when user logged in
 					 */
-					if (!$this->editable)
+					if (!$this->isEditable())
 					{
 						$elementModel->inDetailedView = true;
 					}
-					if (!$this->editable && !$elementModel->canView())
+
+					if (!$this->isEditable() && !$elementModel->canView())
 					{
 						continue;
 					}
@@ -4538,7 +4542,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				{
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					// Jaanus: if not form view with "details only" option and not details view with "form only" option
-					if (!($showGroup == 2 && $this->editable) && !($showGroup == 3 && $input->get('view', 'form') == 'details')
+					if (!($showGroup == 2 && $this->isEditable()) && !($showGroup == 3 && $input->get('view', 'form') == 'details')
 						&& !($showGroup == 4 && !$groupModel->canView()))
 					{
 						$this->groupView[$group->name] = $group;
@@ -4682,6 +4686,21 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	public function isEditable()
 	{
 		return $this->editable;
+	}
+
+	/**
+	 * Set editable state
+	 *
+	 * @since 3.0.7
+	 *
+	 * @param   bool  $editable  editable state
+	 *
+	 * @return  void
+	 */
+
+	public function setEditable($editable)
+	{
+		$this->_editable = $editable;
 	}
 
 	/**

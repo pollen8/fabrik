@@ -71,7 +71,7 @@ class PlgFabrik_ElementAccess extends PlgFabrik_Element
 			}
 		}
 		$gtree = $this->getOpts();
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			$row = new stdClass;
 			return $this->renderListData($arSelected[0], $row);

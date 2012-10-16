@@ -734,6 +734,34 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Is the element editable - wrapper for _editable property as 3.1 uses editable
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return bool
+	 */
+
+	public function isEditable()
+	{
+		return $this->_editable;
+	}
+
+	/**
+	 * Set the element edit state - wrapper for _editable property as 3.1 uses editable
+	 *
+	 * @since 3.0.7
+	 *
+	 * @param   bool  $editable  is the element edtiable
+	 *
+	 * @return  void
+	 */
+
+	public function setEditable($editable)
+	{
+		$this->_editable = $editable;
+	}
+
+	/**
 	 * Check user can view the read only element & view in list view
 	 *
 	 * @return  bool  can view or not
@@ -1256,7 +1284,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return false;
 		}
-		if ($mode == 'form' && (!$formModel->editable && $params->get('labelindetails', true) == false))
+		if ($mode == 'form' && (!$formModel->isEditable() && $params->get('labelindetails', true) == false))
 		{
 			return false;
 		}
@@ -1321,7 +1349,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl);
 			}
-			if ($this->editable)
+			if ($this->isEditable())
 			{
 				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
@@ -1679,11 +1707,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		if (!$this->canUse())
 		{
-			$this->editable = false;
+			$this->setEditable(false);
 		}
 		else
 		{
-			$this->editable = ($model->editable) ? true : false;
+			$editable = $model->isEditable() ? true : false;
+			$this->setEditable($editable);
 		}
 		$params = $this->getParams();
 
@@ -1849,7 +1878,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$this->_inJoin = $groupModel->isJoin();
 		$opts = array('runplugins' => 1);
 		$this->getValue($data, $repeatCounter, $opts);
-		if ($this->editable)
+		if ($this->isEditable())
 		{
 			return $this->render($data, $repeatCounter);
 		}
@@ -1882,7 +1911,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return '';
 		}
-		$this->editable = false;
+		$this->setEditable(false);
 		$v = $this->render($data, $repeatCounter);
 		$this->addCustomLink($v, $data, $repeatCounter);
 		return $v;
@@ -1900,7 +1929,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function addCustomLink(&$v, $data, $repeatCounter = 0)
 	{
-		if ($this->editable)
+		if ($this->isEditable())
 		{
 			return $v;
 		}
@@ -4215,13 +4244,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$opts = new stdClass;
 		$data = $this->getFormModel()->data;
 		$opts->repeatCounter = $repeatCounter;
-		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->editable;
+		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->isEditable();
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$validationEls = array();
 		$validations = $this->getValidations();
-		if (!empty($validations) && $this->editable)
+		if (!empty($validations) && $this->isEditable())
 		{
 			$watchElements = $this->getValidationWatchElements($repeatCounter);
 			foreach ($watchElements as $watchElement)
@@ -5629,11 +5658,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				echo JText::_("JERROR_ALERTNOAUTHOR");
 				return;
 			}
-			$this->editable = false;
+			$this->setEditable(false);
 		}
 		else
 		{
-			$this->editable = true;
+			$this->setEditable(true);
 		}
 		$groupModel = $this->getGroup();
 

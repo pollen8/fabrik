@@ -49,7 +49,7 @@ class PlgFabrik_ElementSugarid extends PlgFabrik_Element
 		{
 			$type .= " elementErrorHighlight";
 		}
-		if (!$this->editable)
+		if (!$this->isEditable())
 		{
 			return "<!--" . stripslashes($value) . "-->";
 		}
