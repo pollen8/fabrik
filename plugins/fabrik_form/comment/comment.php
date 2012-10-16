@@ -684,7 +684,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		// Then map that data (for correct render order) onto this plugins params
 		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
-		if ($res === false)
+		/* if ($res === false)
 		{
 			// Attempt to create the db table?
 			$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
@@ -701,7 +701,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				exit;
 			}
 
+		} */
+
+		// $$$ rob 16/10/2012 db queries run when element/plugin selected in admin, so just return false if error now
+		if ($res === false)
+		{
+			JError::raiseError(500, $row->getError());
+			exit;
 		}
+
 		$obj = new stdClass;
 
 		// Do this to get the depth of the comment

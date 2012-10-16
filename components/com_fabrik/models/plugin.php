@@ -156,6 +156,7 @@ class FabrikPlugin extends JPlugin
 
 	public function onRenderAdminSettings($data = array(), $repeatCounter = null)
 	{
+		$this->makeDbTable();
 		$version = new JVersion;
 		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
 		$document = JFactory::getDocument();
@@ -188,7 +189,6 @@ class FabrikPlugin extends JPlugin
 				$val = isset($val->$repeatCounter) ? $val->$repeatCounter : '';
 				$data['params'][$key] = $val;
 			}
-
 			else
 			{
 				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, 'not found!') : $val;
@@ -275,7 +275,8 @@ class FabrikPlugin extends JPlugin
 				}
 				if ($repeat)
 				{
-					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a></li>';
+					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
+						. '</a></li>';
 				}
 				if (!$j3)
 				{
@@ -884,5 +885,41 @@ class FabrikPlugin extends JPlugin
 			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
 		$db->setQuery($query);
 		return $db->loadColumn();
+	}
+
+	/**
+	 * Make db tables if found, called from onRenderAdminSettings - seems plugins cant run their own sql files atm
+	 *
+	 * @since   3.1a
+	 *
+	 * @return  void
+	 */
+
+	protected function makeDbTable()
+	{
+		$db = FabrikWorker::getDbo();
+
+		// Attempt to create the db table?
+		$file = COM_FABRIK_BASE . '/plugins/' . $this->_type . '/' . $this->_name . '/sql/install.mysql.uft8.sql';
+		if (JFile::exists($file))
+		{
+			$sql = JFile::read($file);
+			$sqls = explode(";", $sql);
+			if (!empty($sqls))
+			{
+				foreach ($sqls as $sql)
+				{
+					if (trim($sql) !== '')
+					{
+						$db->setQuery($sql);
+
+						if (!$db->query())
+						{
+							JError::raiseError(500, $db->getErrorMsg());
+						}
+					}
+				}
+			}
+		}
 	}
 }

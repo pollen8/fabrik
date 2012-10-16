@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset label="field" name="plg-element-rating">
+		<fieldset name="plg-element-rating">
 		
 			<field default="user-rating" description="PLG_ELEMENT_RATING_MODE_DESC" label="PLG_ELEMENT_RATING_MODE_LABEL" name="rating-mode" type="list">
 					<option value="user-rating">User rating</option>

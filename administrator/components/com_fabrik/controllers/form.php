@@ -51,7 +51,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout = $input->get('layout', 'default');
 		$this->name = 'Fabrik';
-		$view = $this->getView('form', $viewType, '');
+		$view = $this->getView('Form', $viewType, '');
 		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
@@ -60,6 +60,9 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		// @TODO check for cached version
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+
+		$view->display();
+		return;
 
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{

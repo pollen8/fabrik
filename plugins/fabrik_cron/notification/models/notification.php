@@ -70,26 +70,7 @@ class fabrikModelNotification extends JModel
 	 */
 	protected function makeDbTable()
 	{
-		$db = FabrikWorker::getDbo();
-
-		// Attempt to create the db table?
-		$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_cron/notification/sql/install.mysql.uft8.sql');
-		$sqls = explode(";", $sql);
-		if (!empty($sqls))
-		{
-			foreach ($sqls as $sql)
-			{
-				if (trim($sql) !== '')
-				{
-					$db->setQuery($sql);
-
-					if (!$db->query())
-					{
-						JError::raiseError(500, $db->getErrorMsg());
-					}
-				}
-			}
-		}
+		parent::makeDbTable();
 	}
 
 	/**
