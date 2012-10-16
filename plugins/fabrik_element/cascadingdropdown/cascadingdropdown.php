@@ -52,8 +52,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
-		$opts->def = $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
-
+		// $$$ hugh - Rob, is there a better way of finding out if validation has failed than looking at _arErrors?
+		$opts->def = empty($this->getFormModel()->_arErrors) && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
+		if (is_array($opts->def))
+		{
+			$opts->def = $opts->def[0];
+		}
 		$watchGroup = $this->getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
@@ -138,6 +143,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
+		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
 		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
