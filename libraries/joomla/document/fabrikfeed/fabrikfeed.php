@@ -176,7 +176,7 @@ class JDocumentFabrikfeed extends JDocument
 	 * Class constructor
 	 *
 	 * @access protected
-* @param   array	$options Associative array of options
+	 * @param   array	$options Associative array of options
 	 */
 	function __construct($options = array())
 	{
@@ -190,27 +190,29 @@ class JDocumentFabrikfeed extends JDocument
 	 * Render the document
 	 *
 	 * @access public
-* @param boolean 	$cache		If true, cache the output
-* @param array		$params		Associative array of attributes
+	 * @param boolean 	$cache		If true, cache the output
+	 * @param array		$params		Associative array of attributes
 	 * @return 	The rendered data
 	 */
 	function render($cache = false, $params = array())
 	{
-		// Get the feed type
 		$app = JFactory::getApplication();
-		$type = $app->input->get('type', 'rss');
-		$option = $app->input->get('option');
+		$input = $app->input;
+		$option = $input->get('option');
+
+		// Get the feed type
+		$type = $input->get('type', 'rss');
 
 		/*
 		 * Cache TODO In later release
 		 */
 		$cache = 0;
 		$cache_time = 3600;
-		$cache_path = JPATH_BASE . DS . 'cache';
+		$cache_path = JPATH_BASE . '/cache';
 
 		// set filename for rss feeds
 		$file = strtolower(str_replace('.', '', $type));
-		$file = $cache_path . DS . $file . '_' . $option . '.xml';
+		$file = $cache_path . '/' . $file . '_' . $option . '.xml';
 
 		// Instantiate feed renderer and set the mime encoding
 		$renderer = &$this->loadRenderer(($type) ? $type : 'rss');
@@ -220,7 +222,7 @@ class JDocumentFabrikfeed extends JDocument
 			JError::raiseError(404, JText::_('Resource Not Found'));
 		}
 		$this->setMimeEncoding($renderer->getContentType());
-		//output
+
 		// Generate prolog
 		$data = "<?xml version=\"1.0\" encoding=\"" . $this->_charset . "\"?>\n";
 		$data .= "<!-- generator=\"" . $this->getGenerator() . "\" -->\n";
@@ -241,7 +243,7 @@ class JDocumentFabrikfeed extends JDocument
 	/**
 	 * Adds an JFabrikfeedItem to the feed.
 	 *
-* @param object JFabrikfeedItem $item The feeditem to add to the feed.
+	 * @param object JFabrikfeedItem $item The feeditem to add to the feed.
 	 * @access public
 	 */
 	function addItem(&$item)
@@ -385,7 +387,7 @@ class JFabrikFeedItem extends JObject
 	 * Set the JFabrikfeedEnclosure for this item
 	 *
 	 * @access public
-* @param object $enclosure The JFabrikfeedItem to add to the feed.
+	 * @param object $enclosure The JFabrikfeedItem to add to the feed.
 	 */
 	function setEnclosure($enclosure)
 	{

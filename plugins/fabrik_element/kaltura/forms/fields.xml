@@ -9,7 +9,9 @@
 				
 			<field description="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_DESC" label="PLG_ELEMENT_KALTURA_WEB_SERVICE_SECRET_LABEL" name="kaltura_webservice_secret" type="text"/>
 				
-			<field default="1" description="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_DESC" label="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_LABEL" name="kaltura_show_closebutton" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_DESC" label="PLG_ELEMENT_KALTURA_SHOW_CLOSE_BUTTON_LABEL" name="kaltura_show_closebutton" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

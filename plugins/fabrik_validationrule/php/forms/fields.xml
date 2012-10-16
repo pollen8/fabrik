@@ -8,7 +8,7 @@
 				
 			<field cols="30" description="PLG_VALIDATIONRULE_PHP_CODE_DESC" label="PLG_VALIDATIONRULE_PHP_CODE_LABEL" name="php-code" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="1" description="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_DESC" label="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_LABEL" name="php-match" repeat="true" type="radio">
+			<field default="1" description="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_DESC" label="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_LABEL" name="php-match" repeat="true" type="list">
 					<option value="0">PLG_VALIDATIONRULE_PHP_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_PHP_MATCH</option>
 			</field>

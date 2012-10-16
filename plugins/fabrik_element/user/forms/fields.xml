@@ -2,7 +2,9 @@
 <form>
 	<fields>
 		<fieldset name="plg-element-user">
-			<field default="0" label="PLG_ELEMENT_USER_HIDDEN_LABEL" name="hidden" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_USER_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -24,17 +26,23 @@
 					<option value="activation">Activation</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_USER_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_EDIT_LABEL" name="update_on_edit" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_USER_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_EDIT_LABEL" name="update_on_edit" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_USER_UPDATE_ON_COPY_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_COPY_LABEL" name="update_on_copy" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_USER_UPDATE_ON_COPY_DESC" label="PLG_ELEMENT_USER_UPDATE_ON_COPY_LABEL" name="update_on_copy" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_DESC" label="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_LABEL" name="user_use_social_plugin_profile" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_DESC" label="PLG_ELEMENT_USER_USE_SOCIAL_PROFILE_LABEL" name="user_use_social_plugin_profile" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

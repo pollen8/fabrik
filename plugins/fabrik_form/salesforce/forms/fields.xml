@@ -34,7 +34,9 @@
 					
 				<field default="WebformSID" description="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_DESC" label="PLG_FABRIK_FORM_SALESFORCE_CUSTOMID_LABEL" name="salesforce_customid" repeat="true" type="text"/>
 					
-				<field default="0" description="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_DESC" label="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_LABEL" name="salesforce_allowupsert" repeat="true" type="radio">
+				<field default="0"
+					class="btn-group"
+					description="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_DESC" label="PLG_FABRIK_FORM_SALESFORCE_ALLOWUPSERTS_LABEL" name="salesforce_allowupsert" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>

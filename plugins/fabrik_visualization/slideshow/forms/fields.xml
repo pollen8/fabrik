@@ -10,7 +10,9 @@
 					<option value="4">PLG_VISUALIZATION_SLIDESHOW_FOLD</option>
 			</field>
 			
-			<field default="0" description="PLG_VISUALIZATION_SLIDESHOW_THUMBNAILS_DESC" label="PLG_VISUALIZATION_SLIDESHOW_THUMBNAILS_LABEL" name="slideshow_viz_thumbnails" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_VISUALIZATION_SLIDESHOW_THUMBNAILS_DESC" label="PLG_VISUALIZATION_SLIDESHOW_THUMBNAILS_LABEL" name="slideshow_viz_thumbnails" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

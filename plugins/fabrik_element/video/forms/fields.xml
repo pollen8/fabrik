@@ -6,31 +6,43 @@
 			
 			<field description="UPLOAD_DIR_LONG" label="UPLOAD_DIR" name="ul_directory" size="30" type="text"/>	
 
-			<field default="1" description="" label="CONTROLLER" name="fbVideoController" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="1"
+				class="btn-group"
+				description="" label="CONTROLLER" name="fbVideoController" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
-			<field default="0" description="" label="AUTOPLAY" name="fbVideoAutoPlay" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="" label="AUTOPLAY" name="fbVideoAutoPlay" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
-			<field default="0" description="" label="LOOP" name="fbVideoLoop" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="" label="LOOP" name="fbVideoLoop" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			
-			<field default="1" description="" label="ENABLEJS" name="fbVideoEnableJS" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="1"
+				class="btn-group"
+				description="" label="ENABLEJS" name="fbVideoEnableJS" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
-			<field default="0" description="" label="PLAYEVERYFRAME" name="fbVideoPlayEveryFrame" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="" label="PLAYEVERYFRAME" name="fbVideoPlayEveryFrame" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
-			<field default="0" description="" label="SHOWVIDEOINTABLE" name="fbVideoShowVideoInTable" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="" label="SHOWVIDEOINTABLE" name="fbVideoShowVideoInTable" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			<field default="300" label="WIDTH" name="fbVideoWidth" type="text"/>

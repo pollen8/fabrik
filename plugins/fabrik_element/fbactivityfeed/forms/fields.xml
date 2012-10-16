@@ -7,11 +7,13 @@
 				
 			<field description="PLG_ELEMENT_FBFEED_DOMAIN_DESC" label="PLG_ELEMENT_FBFEED_DOMAIN_LABEL" name="fbactivityfeed_domain" type="text"/>
 				
-			<field default="300" label="PLG_ELEMENT_FBFEED_WIDTH_LABEL" name="fbactivityfeed_width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBFEED_WIDTH_LABEL" name="fbactivityfeed_width" size="3" type="text"/>
 				
-			<field default="300" label="PLG_ELEMENT_FBFEED_HEIGHT_LABEL" name="fbactivityfeed_height" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBFEED_HEIGHT_LABEL" name="fbactivityfeed_height" size="3" type="text"/>
 				
-			<field default="true" label="PLG_ELEMENT_FBFEED_HEADER_LABEL" name="fbactivityfeed header" type="radio">
+			<field default="true"
+				class="btn-group"
+				label="PLG_ELEMENT_FBFEED_HEADER_LABEL" name="fbactivityfeed header" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

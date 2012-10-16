@@ -5,17 +5,23 @@
 		
 			<field description="PLG_ELEMENT_FOLDER_PATH_DESC" label="PLG_ELEMENT_FOLDER_PATH_LABEL" name="fbfolder_path" size="20" type="text"/>
 				
-			<field default="1" label="PLG_ELEMENT_FOLDER_LIST_FOLDERS_LABEL" name="folder_listfolders" type="radio">
+			<field default="1"
+				class="btn-group"
+				label="PLG_ELEMENT_FOLDER_LIST_FOLDERS_LABEL" name="folder_listfolders" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" label="PLG_ELEMENT_FOLDER_LIST_FILES_LABEL" name="folder_listfiles" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_FOLDER_LIST_FILES_LABEL" name="folder_listfiles" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="1" label="PLG_ELEMENT_FOLDER_ALLOW_NONE_LABEL" name="folder_allownone" type="radio">
+			<field default="1"
+				class="btn-group"
+				label="PLG_ELEMENT_FOLDER_ALLOW_NONE_LABEL" name="folder_allownone" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

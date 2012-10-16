@@ -1,4 +1,4 @@
-<?php // No direct access
+<?php // no direct access
 defined('_JEXEC') or die('Restricted access'); 
 foreach ($cloud as $c) {
 echo $c;

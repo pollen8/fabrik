@@ -3,7 +3,9 @@
 	<fields>
 		<fieldset name="plg-element-note">
 					
-				<field default="0" label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
+				<field default="0"
+					class="btn-group"
+					label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 					</field>

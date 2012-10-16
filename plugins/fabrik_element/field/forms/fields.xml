@@ -3,9 +3,11 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset label="field" name="plg-element-field">
 		
-			<field default="20" label="PLG_ELEMENT_FIELD_WIDTH_LABEL" name="width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="20" label="PLG_ELEMENT_FIELD_WIDTH_LABEL" name="width" size="3" type="text"/>
 			
-			<field default="0" description="PLG_ELEMENT_FIELD_HIDDEN_DESC" label="PLG_ELEMENT_FIELD_HIDDEN_LABEL" name="hidden" type="radio">
+			<field default="0" 
+				class="btn-group"
+				description="PLG_ELEMENT_FIELD_HIDDEN_DESC" label="PLG_ELEMENT_FIELD_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -30,7 +32,7 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="255" label="PLG_ELEMENT_FIELD_MAX_LENGTH_LABEL" name="maxlength" size="3" class="input-mini" type="maxlength"/>
+			<field class="input-mini" default="255" label="PLG_ELEMENT_FIELD_MAX_LENGTH_LABEL" name="maxlength" size="3" type="maxlength"/>
 				
 			<field default="0" description="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_DESC" label="PLG_ELEMENT_FIELD_DISABLE_ELEMENT_LABEL" name="disable" type="radio">
 					<option value="0">JNO</option>
@@ -66,9 +68,9 @@
 					<option value="1">JYES</option>
 			</field>
 		
-			<field default="," description="PLG_ELEMENT_FIELD_THOUSAND_SEP_DESC" label="PLG_ELEMENT_FIELD_THOUSAND_SEP_LABEL" name="field_thousand_sep" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="," description="PLG_ELEMENT_FIELD_THOUSAND_SEP_DESC" label="PLG_ELEMENT_FIELD_THOUSAND_SEP_LABEL" name="field_thousand_sep" size="3" type="text"/>
 		
-			<field default="." description="PLG_ELEMENT_FIELD_DECIMAL_SEP_DESC" label="PLG_ELEMENT_FIELD_DECIMAL_SEP_LABEL" name="field_decimal_sep" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="." description="PLG_ELEMENT_FIELD_DECIMAL_SEP_DESC" label="PLG_ELEMENT_FIELD_DECIMAL_SEP_LABEL" name="field_decimal_sep" size="3" type="text"/>
 			
 			<field description="PLG_ELEMENT_FIELD_FORMAT_STRING_DESC" label="PLG_ELEMENT_FIELD_FORMAT_STRING_LABEL" name="text_format_string" size="60" type="text"/>
 		</fieldset>

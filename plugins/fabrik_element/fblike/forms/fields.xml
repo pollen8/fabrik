@@ -12,12 +12,14 @@
 					<option value="button_count">button_count</option>
 			</field>
 			
-			<field default="false" label="PLG_ELEMENT_FBLIKE_SHOW_FACES_LABEL" name="fblike_showfaces" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_FBLIKE_SHOW_FACES_LABEL" name="fblike_showfaces" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="300" label="PLG_ELEMENT_FBLIKE_WIDTH_LABEL" name="fblike_width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBLIKE_WIDTH_LABEL" name="fblike_width" size="3" type="text"/>
 				
 			<field default="like" label="PLG_ELEMENT_FBLIKE_ACTION_LABEL" name="fblike action" type="list">
 					<option value="like">like</option>

@@ -2,7 +2,7 @@
 <form>
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-link">
-			<field default="20" label="PLG_ELEMENT_LINK_WIDTH_LABEL" name="width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="20" label="PLG_ELEMENT_LINK_WIDTH_LABEL" name="width" size="3" type="text"/>
 				
 			<field cols="45" label="PLG_ELEMENT_LINK_DEFAULT_LABEL_LABEL" name="default" rows="6" type="textarea"/>
 		
@@ -21,16 +21,20 @@
 					<option value="mediabox">PLG_ELEMENT_LINK_MEDIABOX</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_LINK_SMART_LINK_DESC" label="PLG_ELEMENT_LINK_SMART_LINK_LABEL" name="link_smart_link" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_LINK_SMART_LINK_DESC" label="PLG_ELEMENT_LINK_SMART_LINK_LABEL" name="link_smart_link" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="255" label="PLG_ELEMENT_LINK_MAX_LENGTH" name="maxlength" size="3" class="input-mini" type="maxlength"/>
+			<field class="input-mini" default="255" label="PLG_ELEMENT_LINK_MAX_LENGTH" name="maxlength" size="3" type="maxlength"/>
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-link-bitly">
-			<field default="0" description="PLG_ELEMENT_LINK_USE_BITLY_DESC" label="PLG_ELEMENT_LINK_USE_BITLY_LABEL" name="use_bitly" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_LINK_USE_BITLY_DESC" label="PLG_ELEMENT_LINK_USE_BITLY_LABEL" name="use_bitly" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

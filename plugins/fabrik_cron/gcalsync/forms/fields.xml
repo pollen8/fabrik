@@ -6,7 +6,7 @@
 			<field class="readonly" description="PLG_CRON_GCAL_NOTES_DESC" disabled="true" label="PLG_CRON_GCAL_NOTES_LABEL" name="gcal_notice" readonly="true" type="text">
 			
 			</field>
-			<field default="from" description="PLG_CRON_GCAL_UPLOAD_DESC" label="PLG_CRON_GCAL_UPLOAD_LABEL" name="gcal_sync_upload_events" type="radio">
+			<field default="from" description="PLG_CRON_GCAL_UPLOAD_DESC" label="PLG_CRON_GCAL_UPLOAD_LABEL" name="gcal_sync_upload_events" type="list">
 					<option value="from">PLG_CRON_GCAL_FROM_GCAL</option>
 					<option value="to">PLG_CRON_GCAL_TO_GCAL</option>
 					<option value="both">PLG_CRON_GCAL_BOTH</option>

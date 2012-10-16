@@ -10,7 +10,9 @@
 				
 			<field cols="30" description="PLG_FORM_TWITTERTMPLFIELD_DESC" label="PLG_FORM_TWITTERTMPLFIELD_LABEL" name="twitter_msg_tmpl" repeat="true" rows="6" type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_TWITTERSHOWSUCCESSMSG_DESC" label="PLG_FORM_TWITTERSHOWSUCCESSMSG_LABEL" name="twitter-show-success-msg" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_TWITTERSHOWSUCCESSMSG_DESC" label="PLG_FORM_TWITTERSHOWSUCCESSMSG_LABEL" name="twitter-show-success-msg" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

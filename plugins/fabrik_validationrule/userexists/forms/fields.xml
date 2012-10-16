@@ -6,7 +6,7 @@
 				
 			<field cols="30" description="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_DESC" label="PLG_VALIDATIONRULE_USEREXISTS_CONDITION_LABEL" name="userexists-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="fail_if_exist" description="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_DESC" label="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_LABEL" name="userexists_or_not" repeat="true" type="radio">
+			<field default="fail_if_exist" description="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_DESC" label="PLG_VALIDATIONRULE_USEREXISTS_EXISTS_OR_NOT_LABEL" name="userexists_or_not" repeat="true" type="list">
 					<option value="fail_if_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_EXISTS</option>
 					<option value="fail_if_not_exists">PLG_VALIDATIONRULE_USEREXISTS_FAIL_IF_NOT_EXISTS</option>
 			</field>

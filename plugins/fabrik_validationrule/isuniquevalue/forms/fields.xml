@@ -6,7 +6,9 @@
 				
 			<field cols="30" description="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISUNIQUE_CONDITION_LABEL" name="isuniquevalue-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="0" label="PLG_VALIDATIONRULE_ISUNIQUE_CASE_SENSETIVE_LABEL" name="isuniquevalue-caseinsensitive" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_VALIDATIONRULE_ISUNIQUE_CASE_SENSETIVE_LABEL" name="isuniquevalue-caseinsensitive" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

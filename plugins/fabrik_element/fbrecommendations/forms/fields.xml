@@ -7,11 +7,13 @@
 			
 			<field description="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_DESC" label="PLG_ELEMENT_FBRECOMMENDATION_DOMAIN_LABEL" name="fbrecommendations_domain" type="text"/>
 			
-			<field default="300" label="PLG_ELEMENT_FBRECOMMENDATION_WIDTH_LABEL" name="fbrecommendations_width" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBRECOMMENDATION_WIDTH_LABEL" name="fbrecommendations_width" size="3" type="text"/>
 			
-			<field default="300" label="PLG_ELEMENT_FBRECOMMENDATION_HEIGHT_LABEL" name="fbrecommendations_height" size="3" class="input-mini" type="text"/>
+			<field class="input-mini" default="300" label="PLG_ELEMENT_FBRECOMMENDATION_HEIGHT_LABEL" name="fbrecommendations_height" size="3" type="text"/>
 			
-			<field default="true" label="PLG_ELEMENT_FBRECOMMENDATION_HEADER_LABEL" name="fbrecommendations header" type="radio">
+			<field default="1"
+				class="btn-group"
+				label="PLG_ELEMENT_FBRECOMMENDATION_HEADER_LABEL" name="fbrecommendations header" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

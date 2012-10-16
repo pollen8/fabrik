@@ -9,7 +9,9 @@
 				<option value="details">PLG_FORM_PAGINATE_DETAILS</option>
 		</field>
 		
-		<field default="1" description="PLG_FORM_PAGINATE_AJAX_DESC" label="PLG_FORM_PAGINATE_AJAX_LABEL" name="paginate_ajax" repeat="true" type="radio">
+		<field default="1"
+			class="btn-group"
+			description="PLG_FORM_PAGINATE_AJAX_DESC" label="PLG_FORM_PAGINATE_AJAX_LABEL" name="paginate_ajax" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>	
 		</field>

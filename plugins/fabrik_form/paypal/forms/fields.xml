@@ -7,7 +7,7 @@
 				
 			<field description="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_DESC" label="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_LABEL" name="paypal_accountemail_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
 
-			<field default="_xclick" description="PLG_FORM_PAYPAL_PAYMENT_TYPE_DESC" label="PLG_FORM_PAYPAL_PAYMENT_TYPE_LABEL" name="paypal_cmd" repeat="true" type="radio">
+			<field default="_xclick" description="PLG_FORM_PAYPAL_PAYMENT_TYPE_DESC" label="PLG_FORM_PAYPAL_PAYMENT_TYPE_LABEL" name="paypal_cmd" repeat="true" type="list">
 					<option value="_xclick">PLG_FORM_PAYPAL_ONE_OFF</option>
 					<option value="_xclick-subscriptions">PLG_FORM_PAYPAL_SUBSCRIPTION</option>
 			</field>
@@ -16,7 +16,9 @@
 				
 			<field cols="30" default="" description="PLG_FORM_PAYPAL_COST_DESC" label="PLG_FORM_PAYPAL_COST_LABEL" name="paypal_cost" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_PAYPAL_EVAL_COST_DESC" label="PLG_FORM_PAYPAL_EVAL_COST_LABEL" name="paypal_cost_eval" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_EVAL_COST_DESC" label="PLG_FORM_PAYPAL_EVAL_COST_LABEL" name="paypal_cost_eval" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -25,7 +27,9 @@
 				
 			<field cols="30" description="PLG_FORM_PAYPAL_PURCHASE_ITEM_DESC" label="PLG_FORM_PAYPAL_PURCHASE_ITEM_LABEL" name="paypal_item" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_PAYPAL_EVAL_ITEM_DESC" label="PLG_FORM_PAYPAL_EVAL_ITEM_LABEL" name="paypal_item_eval" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_EVAL_ITEM_DESC" label="PLG_FORM_PAYPAL_EVAL_ITEM_LABEL" name="paypal_item_eval" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -62,7 +66,9 @@
 			
 			<field cols="30" default="" description="PLG_FORM_PAYPAL_SHIPPING_COST_DESC" label="PLG_FORM_PAYPAL_SHIPPING_COST_LABEL" name="paypal_shipping_cost" repeat="true" rows="5" type="textarea"/>
 				
- 			<field default="0" description="PLG_FORM_PAYPAL_EVAL_SHIPPING_COST_DESC" label="PLG_FORM_PAYPAL_EVAL_COST_LABEL" name="paypal_shipping_cost_eval" repeat="true" type="radio">
+ 			<field default="0"
+ 				class="btn-group"
+ 				description="PLG_FORM_PAYPAL_EVAL_SHIPPING_COST_DESC" label="PLG_FORM_PAYPAL_EVAL_COST_LABEL" name="paypal_shipping_cost_eval" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -91,7 +97,9 @@
 				
 			<field connection="params_paypal_shippingdata_connection" description="PLG_FORM_PAYPAL_SHIPPING_COUNTRY_DESC" label="PLG_FORM_PAYPAL_SHIPPING_COUNTRY_LABEL" name="paypal_shippingdata_country" repeat="true" table="params_paypal_shippingdata_table" type="element"/>
 				
-			<field default="0" description="PLG_FORM_PAYPAL_SHIPPING_OVERRIDE_DESC" label="PLG_FORM_PAYPAL_SHIPPING_OVERRIDE_LABEL" name="paypal_shipping_address_override" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_SHIPPING_OVERRIDE_DESC" label="PLG_FORM_PAYPAL_SHIPPING_OVERRIDE_LABEL" name="paypal_shipping_address_override" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -116,17 +124,23 @@
 
 			<field cols="30" description="PLG_FORM_PAYPAL_CONDITION_DESC" label="PLG_FORM_PAYPAL_CONDITION_LABEL" name="paypal_conditon" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_PAYPAL_TEST_MODE_DESC" label="PLG_FORM_PAYPAL_TEST_MODE_LABEL" name="paypal_testmode" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_TEST_MODE_DESC" label="PLG_FORM_PAYPAL_TEST_MODE_LABEL" name="paypal_testmode" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="1" description="PLG_FORM_PAYPAL_DEBUG_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEBUG_EMAIL_LABEL" name="paypal_receive_debug_emails" repeat="true" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_DEBUG_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEBUG_EMAIL_LABEL" name="paypal_receive_debug_emails" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="1" description="PLG_FORM_PAYPAL_DEFAULT_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEFAULT_EMAIL_LABEL" name="paypal_send_default_email" repeat="true" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_FORM_PAYPAL_DEFAULT_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEFAULT_EMAIL_LABEL" name="paypal_send_default_email" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

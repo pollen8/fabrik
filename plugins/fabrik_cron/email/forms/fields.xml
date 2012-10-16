@@ -9,7 +9,9 @@
 				
 			<field cols="60" description="PLG_CRON_EMAIL_MESSAGE_DESC" label="PLG_CRON_EMAIL_MESSAGE_LABEL" name="message" rows="8" type="textarea"/>
 				
-			<field default="0" description="PLG_CRON_EMAIL_EVAL_DESC" label="PLG_CRON_EMAIL_EVAL_LABEL" name="cronemail-eval" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_CRON_EMAIL_EVAL_DESC" label="PLG_CRON_EMAIL_EVAL_LABEL" name="cronemail-eval" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -24,7 +26,9 @@
 				
 			<field description="PLG_CRON_EMAIL_VALUE_DESC" label="PLG_CRON_EMAIL_VALUE_LABEL" name="cronemail-updatefield-value" type="text"/>
 
-			<field default="0" description="PLG_CRON_EMAIL_UPDATE_EVAL_DESC" label="PLG_CRON_EMAIL_UPDATE_EVAL_LABEL" name="cronemail-updatefield-eval" type="radio">
+			<field 
+				class="btn-group"
+				default="0" description="PLG_CRON_EMAIL_UPDATE_EVAL_DESC" label="PLG_CRON_EMAIL_UPDATE_EVAL_LABEL" name="cronemail-updatefield-eval" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

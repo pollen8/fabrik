@@ -2,7 +2,9 @@
 <form>
 	<fields>
 		<fieldset name="plg-element-display">
-			<field default="0" label="PLG_ELEMENT_DISPLAY_EVAL_LABEL" name="eval" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_DISPLAY_EVAL_LABEL" name="eval" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -14,9 +16,11 @@
 	
 	<fields name="params">
 		<fieldset name="extra">
-			<field default="1" label="PLG_ELEMENT_DISPLAY_SHOW_LABEL_LABEL" name="display_showlabel" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="1"
+				class="btn-group"
+				label="PLG_ELEMENT_DISPLAY_SHOW_LABEL_LABEL" name="display_showlabel" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 		</fieldset>
 	</fields>

@@ -2,12 +2,16 @@
 <form>
 	<fields>
 		<fieldset name="plg-element-cascadingdropdown">
-			<field default="0" label="PLG_ELEMENT_CDD_HIDDEN" name="hidden" type="radio">
-							<option value="0">JNO</option>
-							<option value="1">JYES</option>
-					</field>
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_CDD_HIDDEN" name="hidden" type="radio">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 					
-				<field default="0" label="PLG_ELEMENT_CDD_EVAL_LABEL" name="eval" type="radio">
+				<field default="0"
+					class="btn-group"
+					label="PLG_ELEMENT_CDD_EVAL_LABEL" name="eval" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 					</field>
@@ -41,7 +45,9 @@
 				
 		
 			
-			<field default="1" description="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_DESC" label="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_LABEL" name="cascadingdropdown_showpleaseselect" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_DESC" label="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_LABEL" name="cascadingdropdown_showpleaseselect" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -51,7 +57,9 @@
 		</fieldset>
 		
 		<fieldset name="plg-cascadingdropdown-frontend">
-			<field default="0" description="PLG_ELEMENT_CDD_READONLY_LINK_DESC" label="PLG_ELEMENT_CDD_READONLY_LINK_LABEL" name="cascadingdropdown_readonly_link" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CDD_READONLY_LINK_DESC" label="PLG_ELEMENT_CDD_READONLY_LINK_LABEL" name="cascadingdropdown_readonly_link" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

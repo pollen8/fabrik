@@ -6,7 +6,9 @@
 				
 			<field description="PLG_LIST_ORDER_ELEMENT_DESC" label="PLG_LIST_ORDER_ELEMENT_LABEL" name="order_element" repeat="true" type="listfields"/>
 			
-			<field default="1" description="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_DESC" label="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_LABEL" name="order_element_as_handle" repeat="true" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_DESC" label="PLG_LIST_ORDER_ELEMENT_AS_HANDLE_LABEL" name="order_element_as_handle" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>

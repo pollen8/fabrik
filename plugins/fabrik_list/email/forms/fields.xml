@@ -5,7 +5,9 @@
 				
 			<field default="1" label="PLG_FABRIK_LIST_EMAIL_ACCESS_LABEL" name="emailtable_access" repeat="true" type="accesslevel"/>
 		
-			<field default="0" description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC" label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL" name="emailtable_from_user" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC" label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL" name="emailtable_from_user" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -23,7 +25,9 @@
 			
 			<field cols="60" description="PLG_LIST_MESSAGE_DESC" label="PLG_LIST_MESSAGE_LABEL" name="email_message" repeat="true" rows="4" type="textarea"/>
 				
-			<field default="1" description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC" label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL" name="emailtable_allow_attachment" repeat="true" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC" label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL" name="emailtable_allow_attachment" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>

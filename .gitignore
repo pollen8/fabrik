@@ -18,12 +18,6 @@ includes/*
 language/*
 libraries/*
 !libraries/dompdf/
-!libraries/joomla/database/database/mysql_fab.php
-!libraries/joomla/database/database/mysqli_fab.php
-!libraries/joomla/database/driver/mysql_fab.php
-!libraries/joomla/database/driver/mysqli_fab.php
-!libraries/joomla/database/query/mysql_fab.php
-!libraries/joomla/database/query/mysqli_fab.php
 modules/*
 !modules/mod_fabrik_form
 !modules/mod_fabrik_list
