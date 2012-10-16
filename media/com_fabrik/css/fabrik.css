@@ -520,3 +520,13 @@ table.fabrikList .oddRow1 {
 .fabrikGroup ul li.date span {
 	display:inline
 }
+
+/** Bootstrap google maps fun */
+
+.fabrikElement .map img { 
+  max-width: none;
+}
+
+.fabrikElement .map label { 
+  width: auto; display:inline; 
+} 
