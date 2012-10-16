@@ -4700,7 +4700,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 
 	public function setEditable($editable)
 	{
-		$this->_editable = $editable;
+		$this->editable = $editable;
 	}
 
 	/**

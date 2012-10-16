@@ -743,7 +743,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function isEditable()
 	{
-		return $this->_editable;
+		return $this->editable;
 	}
 
 	/**
@@ -758,7 +758,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function setEditable($editable)
 	{
-		$this->_editable = $editable;
+		$this->editable = $editable;
 	}
 
 	/**
