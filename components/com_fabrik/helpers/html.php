@@ -1467,7 +1467,7 @@ EOD;
 		$version = new JVersion;
 
 		// Only use template test for testing in 2.5 with my temp J bootstrap template.
-		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5)
+		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5 && !$srcOnly)
 		{
 			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
 		}
