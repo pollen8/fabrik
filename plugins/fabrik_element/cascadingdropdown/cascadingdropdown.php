@@ -138,14 +138,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
-		/*
-		$fullName = $this->getFullName(false, true, true);
-		$watchName = $this->getWatchFullName();
-		$qsValue = $input->get($fullName, '');
-		$qsWatchValue = $input->get($watchName, '');
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
-		*/
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
