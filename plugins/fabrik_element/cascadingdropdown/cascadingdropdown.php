@@ -143,7 +143,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
+		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
+		//if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
 		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
