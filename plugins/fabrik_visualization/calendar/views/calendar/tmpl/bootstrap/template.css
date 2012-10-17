@@ -1,39 +1,15 @@
-.addEventButton{
-	display:block;
-	background:transparent url(images/plus-sign.png) no-repeat top left;
-	margin:5px;
-	padding:0px 5px 5px 20px;
+.viewContainer table{
+	width: 100%;
 }
-
-ul.viewMode{
-	text-align:right;
-	padding:0 !important;
-	margin:0 !important;
-	list-style:none !important;
-}
-
-.viewMode li{
-	display:inline-block;
-	background-image:none !important;
-	border:1px solid #999999;
-	background-color:#f7f7f7;
-	margin:0 3px !important;
-	padding:3px !important;
-	cursor:pointer;
-}
-
-.viewMode li:hover{
-	background-color:#FFFFFF;
-}
-
 .fabrikEvent{
 	overflow:hidden !important;
 }
 
-.viewContainer {
-	background-color: '#EFEFEF';
-	padding: 5px;
+.fabrikEvent a,
+.fabrikEvent a:hover {
+	color:#fff;
 }
+
 .popWin{
 	padding:5px;
 	background-color:#ffffff;
@@ -88,11 +64,6 @@ ul.viewMode{
 
 /*** end legend ***/
 	
-/**** calendarNav ****/
-
-.calendarNav{
-	background-color:rgb(247, 247, 247);
-}
 
 /** hack?? for forms **/
 

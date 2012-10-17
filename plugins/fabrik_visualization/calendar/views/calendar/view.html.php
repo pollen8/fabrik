@@ -144,6 +144,19 @@ class fabrikViewCalendar extends JViewLegacy
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
 
+		if (FabrikWorker::j3())
+		{
+			$options->buttons = '<div class="btn-group">
+			<button class="btn popupDelete" data-task="deleteCalEvent"><i class="icon-delete"></i></button>
+			<button class="btn popupEdit" data-task="editCalEvent"><i class="icon-edit"></i></button>
+			<button class="btn popupView" data-task="viewCalEvent"><i class="icon-eye"></i></button>
+			</div>';
+		}
+		else
+		{
+			$options->buttons = '<img src="' . COM_FABRIK_LIVESITE + '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png"
+				alt = "del" class="fabrikDeleteEvent" />' . JText::_('PLG_VISUALIZATION_CALENDAR_DELETE');
+		}
 		$json = json_encode($options);
 
 		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');
