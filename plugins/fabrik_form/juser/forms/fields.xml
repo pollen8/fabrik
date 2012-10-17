@@ -54,7 +54,9 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL" name="synchro_users" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL" name="synchro_users" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

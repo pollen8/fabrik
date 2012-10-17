@@ -31,7 +31,7 @@ $row = $this->row;
 
 			<?php if ($this->canAdd) :
 			?>
-			<a href="#" class="btn btn-success" title="Add an event"><i class="icon-plus"></i> <?php echo JText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
+			<a href="#" class="btn btn-success addEventButton" title="Add an event"><i class="icon-plus"></i> <?php echo JText::_('PLG_VISUALIZATION_CALENDAR_ADD') ?></a>
 		<?php endif;
 		?>
 		</div>

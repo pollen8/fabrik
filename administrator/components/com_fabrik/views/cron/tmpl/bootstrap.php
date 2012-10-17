@@ -20,6 +20,7 @@ JHtml::_('behavior.keepalive');
 $fbConfig = JComponentHelper::getParams('com_fabrik');
 $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 $srcs[] = 'administrator/components/com_fabrik/views/cron/admincron.js';
 
 $opts = new stdClass;
@@ -46,17 +47,9 @@ FabrikHelperHTML::script($srcs, $js);
 				?>
 			</fieldset>
 
-			<fieldset class="form-horizontal">
-		    	<legend>
-		    		<?php echo JText::_('COM_FABRIK_OPTIONS');?>
-		    	</legend>
-				<div id="plugin-container">
-					<?php echo $this->pluginFields;?>
-				</div>
-			</fieldset>
 		</div>
 
-		<div clas="span5">
+		<div clas="span6">
 
 			<fieldset class="form-horizontal">
 		    	<legend>
@@ -76,6 +69,15 @@ FabrikHelperHTML::script($srcs, $js);
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				?>
+			</fieldset>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<fieldset class="form-horizontal">
+				<div id="plugin-container">
+					<?php echo $this->pluginFields;?>
+				</div>
 			</fieldset>
 		</div>
 	</div>

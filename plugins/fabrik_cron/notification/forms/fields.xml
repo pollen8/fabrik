@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-cron-email">
+		<fieldset name="plg-cron-email" label="COM_FABRIK_OPTIONS">
 			
 			<field description="PLG_CRON_EMAIL_TO_DESC" label="PLG_CRON_EMAIL_TO_LABEL" name="to" size="30" type="text"/>
 				

@@ -1,10 +1,16 @@
 var CronAdmin = new Class({
 	
+	Extends: PluginManager,
+	
 	Implements: [Options, Events],
 	
-	options: {},
+	options: {
+		plugin: ''
+	},
 	
 	initialize: function (options) {
+		plugins = [];
+		this.parent(plugins);
 		this.setOptions(options);
 		this.watchSelector();
 	},
@@ -31,7 +37,11 @@ var CronAdmin = new Class({
 				'format': 'raw',
 				'plugin': e.target.get('value')
 			},
-			'update': document.id('plugin-container')
+			'update': document.id('plugin-container'),
+			'onComplete': function () {
+				this.updateBootStrap();
+			}.bind(this)
+			
 		}).send();
 	}
 });

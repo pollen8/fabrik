@@ -523,7 +523,8 @@ table.fabrikList .oddRow1 {
 
 /** Bootstrap google maps fun */
 
-.fabrikElement .map img { 
+.fabrikElement .map img,
+.fabrik_visualization .mapviz img { 
   max-width: none;
 }
 

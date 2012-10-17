@@ -1427,7 +1427,7 @@ EOD;
 
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file = JString::ltrim($file, DS);
+		$file = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 		$src = '';
 		foreach ($paths as $path)

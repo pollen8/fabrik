@@ -21,14 +21,17 @@ var PluginManager = new Class({
 		this.watchDelete();
 		this.watchAdd();
 		
-		document.id('plugins').addEvent('click:relay(h3.title)', function (e, target) {
-			document.id('plugins').getElements('h3.title').each(function (h) {
-				if (h !== target) {
-					h.removeClass('pane-toggler-down');
-				}
+		var pluginArea = document.id('plugins');
+		if (typeOf(pluginArea) !== 'null') {
+			pluginArea.addEvent('click:relay(h3.title)', function (e, target) {
+				document.id('plugins').getElements('h3.title').each(function (h) {
+					if (h !== target) {
+						h.removeClass('pane-toggler-down');
+					}
+				});
+				target.toggleClass('pane-toggler-down');
 			});
-			target.toggleClass('pane-toggler-down');
-		});
+		}
 	},
 	
 	iniAccordian: function () {
@@ -99,11 +102,14 @@ var PluginManager = new Class({
 	},
 	
 	watchAdd: function () {
-		document.id('addPlugin').addEvent('click', function (e) {
-			e.stop();
-			this.accordion.display(-1);
-			this.addTop();
-		}.bind(this));
+		var addPlugin = document.id('addPlugin');
+		if (typeOf(addPlugin) !== 'null') {
+			addPlugin.addEvent('click', function (e) {
+				e.stop();
+				this.accordion.display(-1);
+				this.addTop();
+			}.bind(this));
+		}
 	},
 	
 	addTop: function (plugin) {
@@ -161,7 +167,6 @@ var PluginManager = new Class({
 	        } else {
 	        	document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
 	        }
-			debugger;
 			if (typeof(jQuery) !== 'undefined') {
 				jQuery('*[rel=tooltip]').tooltip();
 			}
