@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset name="plg-element-note">
-					
-				<field default="0"
-					class="btn-group"
-					label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
-					
-				<field cols="6" label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" name="default" rows="5" type="textarea"/>
+		<fieldset name="plg-element-note" label="COM_FABRIK_DEFAULT">
 			
+			<field cols="6" label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" name="default" rows="5" type="textarea"/>
+					
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+					
 			</fieldset>
 	</fields>
 	
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-note-params">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-note-params" label="COM_FABRIK_OPTIONS">
 			<field label="PLG_ELEMENT_NOTES_CONNECTION_LABEL" name="join_conn_id" type="connections"/>
 						
 			<field description="PLG_ELEMENT_NOTES_TABLE_DESC" label="PLG_ELEMENT_NOTES_TABLE_LABEL" name="join_db_name" observe="params_join_conn_id" type="tables"/>
@@ -34,7 +34,9 @@
 				
 			<field connection="params_join_conn_id" description="PLG_ELEMENT_NOTES_ORDER_FIELD_DESC" label="PLG_ELEMENT_NOTES_ORDER_FIELD_LABEL" name="notes_order_element" table="params_join_db_name" type="listfields"/>
 				
-			<field description="PLG_ELEMENT_NOTES_ORDER_DIR_DESC" label="PLG_ELEMENT_NOTES_ORDER_DIR_LABEL" name="notes_order_dir" type="list">
+			<field description="PLG_ELEMENT_NOTES_ORDER_DIR_DESC"
+				class="input-small"
+				label="PLG_ELEMENT_NOTES_ORDER_DIR_LABEL" name="notes_order_dir" type="list">
 					<option value="ASC">ASC</option>
 					<option value="DESC">DESC</option>
 			</field>

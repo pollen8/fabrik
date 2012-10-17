@@ -146,15 +146,57 @@ class FabrikPlugin extends JPlugin
 	}
 
 	/**
+	 * Create bootstrap horizontal tab headings from fieldset labels
+	 * Used for rendering viz plugin options
+	 *
+	 * @param   JForm  $form     plugin form
+	 * @param   array  &$output  plugin render output
+	 *
+	 * @since   3.1
+	 *
+	 * @return  void
+	 */
+
+	protected function renderFromNavTabHeadings($form, &$output)
+	{
+		$fieldsets = $form->getFieldsets();
+		if (count($fieldsets) <= 1)
+		{
+			return;
+		}
+		$output[] = '<div class="row-fluid">';
+		$output[] = '<ul class="nav nav-tabs">';
+		$i = 0;
+
+		foreach ($fieldsets as $fieldset)
+		{
+			if (isset($fieldset->modal) && $fieldset->modal)
+			{
+				continue;
+			}
+			$class = $i === 0 ? ' class="active"' : '';
+			$id = 'tab-' . $fieldset->name;
+			$output[] = '<li' . $class . '>
+		    	<a data-toggle="tab" href="#' . $id . '">
+		    		' . JText::_($fieldset->label) . '
+		    	</a>
+		    </li>';
+			$i ++;
+		}
+		$output[] = '</ul>';
+		$output[] = '</div>';
+	}
+	/**
 	 * Render the element admin settings
 	 *
-	 * @param   array  $data           admin data
-	 * @param   int    $repeatCounter  repeat plugin counter
+	 * @param   array   $data           admin data
+	 * @param   int     $repeatCounter  repeat plugin counter
+	 * @param   string  $mode           how the fieldsets should be rendered currently support 'nav-tabs' (@since 3.1)
 	 *
 	 * @return  string	admin html
 	 */
 
-	public function onRenderAdminSettings($data = array(), $repeatCounter = null)
+	public function onRenderAdminSettings($data = array(), $repeatCounter = null, $mode = null)
 	{
 		$this->makeDbTable();
 		$version = new JVersion;
@@ -205,9 +247,27 @@ class FabrikPlugin extends JPlugin
 
 		$repeatGroupCounter = 0;
 
-		// Filer the forms fieldsets for those starting with the correct $serachName prefix
-		foreach ($form->getFieldsets() as $fieldset)
+		if ($mode === 'nav-tabs')
 		{
+			$this->renderFromNavTabHeadings($form, $str);
+			$str[] = '<div class="tab-content">';
+		}
+
+		$c = 0;
+		$fieldsets = $form->getFieldsets();
+		if (count($fieldsets) <= 1)
+		{
+			$mode = null;
+		}
+
+		// Filer the forms fieldsets for those starting with the correct $serachName prefix
+		foreach ($fieldsets as $fieldset)
+		{
+			if ($mode === 'nav-tabs')
+			{
+				$tabClass = $c === 0 ? ' active' : '';
+				$str[] = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '">';
+			}
 			$class = $j3 ? 'form-horizontal ' : 'adminform ';
 			$class .= $type . 'Settings page-' . $this->_name;
 			$repeat = isset($fieldset->repeatcontrols) && $fieldset->repeatcontrols == 1;
@@ -236,11 +296,21 @@ class FabrikPlugin extends JPlugin
 			$str[] = '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
 			$form->repeat = $repeat;
+			$j3 = FabrikWorker::j3();
 			if ($repeat)
 			{
-				$str[] = '<a class="addButton btn" href="#"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+				$bClass = $j3 ? 'btn' : 'addButton';
+ 				$str[] = '<a class="' . $bClass . '" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+ 				if ($j3)
+ 				{
+ 					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
+ 					. '</a>';
+ 				}
 			}
-			$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
+			if (is_null($mode))
+			{
+				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
+			}
 			for ($r = 0; $r < $repeatDataMax; $r++)
 			{
 				if ($repeat)
@@ -273,7 +343,7 @@ class FabrikPlugin extends JPlugin
 						$str[] = '<li>' . $field->label . $field->input . '</li>';
 					}
 				}
-				if ($repeat)
+				if ($repeat && !$j3)
 				{
 					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
 						. '</a></li>';
@@ -288,7 +358,16 @@ class FabrikPlugin extends JPlugin
 				}
 			}
 			$str[] = '</fieldset>';
+			if ($mode === 'nav-tabs')
+			{
+				$str[] = '</div>';
+			}
 		}
+		if ($mode === 'nav-tabs')
+		{
+			$str[] = '</div>';
+		}
+
 		if (!empty($repeatScript))
 		{
 			$repeatScript = implode("\n", $repeatScript);

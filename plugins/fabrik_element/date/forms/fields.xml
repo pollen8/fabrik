@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date" label="COM_FABRIK_OPTIONS">
 			<field class="input-mini" label="PLG_ELEMENT_WIDTH_LABEL" name="width" size="3" type="text"/>
 				
 			<field default="0"

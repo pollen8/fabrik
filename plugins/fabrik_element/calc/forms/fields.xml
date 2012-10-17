@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-calc">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-calc" label="COM_FABRIK_OPTIONS">
 			
 			<field default="0"
 				class="btn-group"
@@ -16,7 +16,7 @@
 	</fields>
 	
 	<fields name="params">	
-		<fieldset name="plg-calc-extra">
+		<fieldset name="plg-calc-extra" label="COM_FABRIK_MORE">
 			
 			<field cols="60" description="PLG_ELEMENT_CALC_CALCULATION_DESC" label="PLG_ELEMENT_CALC_CALCULATION_LABEL" name="calc_calculation" rows="10" type="textarea"/>
 				

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset name="plg-element-databasejoin">
+		<fieldset name="plg-element-databasejoin" label="COM_FABRIK_OPTIONS">
 			<field default="0"
 				class="btn-group"
 				description="PLG_ELEMENT_DBJOIN_EVAL_DESC" label="PLG_ELEMENT_DBJOIN_EVAL_LABEL" name="eval" type="radio">
@@ -21,8 +21,10 @@
 	</fields>
 	
 	<fields name="params">
-	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-databasejoin-params">
-		
+
+	
+	<fieldset label="COM_FABRIK_DATA" name="plg-databasejoin-simple">
+	
 		<field default="dropdown" description="PLG_ELEMENT_DBJOIN_RENDER_JOIN_DESC" label="PLG_ELEMENT_DBJOIN_RENDER_JOIN_LABEL" name="database_join_display_type" type="list">
 				<option value="dropdown">PLG_ELEMENT_DBJOIN_DROPDOWN_LIST</option>
 				<option value="radio">PLG_ELEMENT_DBJOIN_RADIOBUTTONS</option>
@@ -30,10 +32,6 @@
 				<option value="checkbox">PLG_ELEMENT_DBJOIN_CHECKBOX</option>
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 		</field>
-		
-	</fieldset>
-	
-	<fieldset label="Data" name="plg-databasejoin-simple">
 		
 		<field label="PLG_ELEMENT_DBJOIN_CONNECTION" name="join_conn_id" type="connections"/> 
 			

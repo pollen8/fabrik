@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection">
+		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection" label="COM_FABRIK_DATA">
 
 			<field label="COM_FABRIK_FIELD_CONNECTION_LABEL" name="fusion_gantt_chart_connection" type="connections"/>
 

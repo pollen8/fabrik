@@ -4,7 +4,8 @@
 		<fieldset label="" name="plg-element-slider">
 			<field class="input-mini" default="250" label="PLG_ELEMENT_SLIDER_WIDTH_LABEL" name="slider_width" size="3" type="text"/>
 				
-			<field default="100" description="PLG_ELEMENT_SLIDER_STEPS_DESC" label="PLG_ELEMENT_SLIDER_STEPS_LABEL" name="slider-steps" type="text"/>
+			<field class="input-mini"
+				default="100" description="PLG_ELEMENT_SLIDER_STEPS_DESC" label="PLG_ELEMENT_SLIDER_STEPS_LABEL" name="slider-steps" type="text"/>
 				
 			<field description="PLG_ELEMENT_SLIDER_LABELS_DESC" label="PLG_ELEMENT_SLIDER_LABELS_LABEL" name="slider-labels" size="30" type="text"/>
 				

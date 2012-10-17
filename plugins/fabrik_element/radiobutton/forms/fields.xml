@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-element-radiobutton">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-radiobutton">
 		
-		<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
+			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
 			<field default="0"
 				class="btn-group"

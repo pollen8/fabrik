@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-checkbox">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-checkbox" label="COM_FABRIK_OPTIONS">
 		
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
@@ -49,7 +49,7 @@
 			
 		</fieldset>
 		
-		<fieldset name="plg-checkbox-advanced">
+		<fieldset name="plg-checkbox-advanced" label="COM_FABRIK_ADVANCED">
 			<field class="input-mini" default="" description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC" label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL" name="options_split_str" size="10" type="text"/>
 		</fieldset>
 	</fields>

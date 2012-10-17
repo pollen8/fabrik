@@ -21,6 +21,7 @@ JHtml::_('behavior.keepalive');
 $fbConfig = JComponentHelper::getParams('com_fabrik');
 $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 $srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
 
 $opts = new stdClass;
@@ -50,9 +51,6 @@ FabrikHelperHTML::script($srcs, $js);
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_OPTIONS');?>
 		    	</legend>
-				<div id="plugin-container">
-					<?php echo $this->pluginFields;?>
-				</div>
 			</fieldset>
 
 		</div>
@@ -78,6 +76,12 @@ FabrikHelperHTML::script($srcs, $js);
 				endforeach;
 				?>
 			</fieldset>
+		</div>
+
+		<div class="span12">
+			<div id="plugin-container">
+				<?php echo $this->pluginFields;?>
+			</div>
 		</div>
 
 	</div>

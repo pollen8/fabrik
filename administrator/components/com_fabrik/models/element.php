@@ -325,7 +325,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		if ($plugin == '')
 		{
-			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
+			$str = '<div class="alert">' . JText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
 		}
 		else
 		{
@@ -336,7 +336,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 			else
 			{
-				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
+				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, 'nav-tabs');
 			}
 		}
 		return $str;

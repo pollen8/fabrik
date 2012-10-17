@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-element-captcha">
+		<fieldset name="plg-element-captcha" label="COM_FABRIK_OPTIONS">
 			<field default="0"
 				class="btn-group"
 				description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" name="captcha-showloggedin" type="radio">

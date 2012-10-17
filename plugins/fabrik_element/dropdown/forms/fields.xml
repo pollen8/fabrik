@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset name="plg-dropdown-mutli">
+		<fieldset name="plg-dropdown-mutli" label="COM_FABRIK_DATA">
 		
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 			
@@ -14,15 +14,6 @@
 			
 			<field class="input-mini" default="3" description="PLG_ELEMENT_DROPDOWN_MULTISIZE_DESC" label="PLG_ELEMENT_DROPDOWN_MULTISIZE_LABEL" name="dropdown_multisize" size="3" type="text"/>
 
-			<field cols="45" label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
-				
-			<field default="0"
-				class="btn-group"
-				label="PLG_ELEMENT_DROPDOWN_EVAL_LABEL" name="eval" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-							
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_DROPDOWN_FRONT_END_ADDITIONS" name="plg-dropdown-add">
@@ -56,8 +47,10 @@
 		
 	</fields>
 	<fields>
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-dropdown">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-dropdown" label="COM_FABRIK_OPTIONS">
 			
+			<field cols="45" label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
+						
 			<field default="0"
 				class="btn-group"
 				label="PLG_ELEMENT_DROPDOWN_EVAL_LABEL" name="eval" type="radio">
@@ -65,8 +58,6 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field cols="45" label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
-		
 		</fieldset>
 	</fields>
 </form>

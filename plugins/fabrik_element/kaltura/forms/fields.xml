@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset label="field" name="plg-element-kaltura">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-kaltura">
 		
 			<field description="PLG_ELEMENT_KALTURA_PARTENER_ID_DESC" label="PLG_ELEMENT_KALTURA_PARTENER_ID_LABEL" name="kaltura_partnerid" type="text"/>
 				

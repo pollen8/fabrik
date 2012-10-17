@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset name="plg-element-user">
+		<fieldset label="PLG_ELEMENT_USER_HIDDEN_LABEL" name="plg-element-user">
 			<field default="0"
 				class="btn-group"
 				label="PLG_ELEMENT_USER_HIDDEN_LABEL" name="hidden" type="radio">
@@ -12,7 +12,7 @@
 	</fields>
 	
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-user-params">
+		<fieldset label="COM_FABRIK_OPTIONS" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-user-params">
 		
 			<field default="0" description="PLG_ELEMENT_USER_DISPLAY_DATA_DESC" label="PLG_ELEMENT_USER_DISPLAY_DATA_LABEL" name="my_table_data" type="list">
 					<option value="id">ID</option>

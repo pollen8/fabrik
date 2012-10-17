@@ -2,7 +2,7 @@
 <form>
 	<fields name="params">
 		
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar-params" repeat="1" repeatcontrols="1" repeatmin="1">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" label="COM_FABRIK_DATA" name="plg-visualization-calendar-params" repeat="1" repeatcontrols="1" repeatmin="1">
 			
 			<field description="PLG_VISUALIZATION_CALENDAR_CONNECTION_DESC" label="PLG_VISUALIZATION_CALENDAR_CONNECTION_LABEL" name="calendar_connection" type="connections"/>
 				
@@ -18,7 +18,7 @@
 			<field description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC" label="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_LABEL" name="legendtext" type="text"/>
 		</fieldset>
 		
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar" label="COM_FABRIK_OPTIONS">
 			<field directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/" label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" name="calendar_layout" type="folderlist"/>
 				
 			<field default="1"

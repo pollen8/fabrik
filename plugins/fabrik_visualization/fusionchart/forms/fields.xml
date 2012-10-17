@@ -2,7 +2,7 @@
 <form>
 	<fields name="params">
 
-		<fieldset name="options" repeat="1" repeatcontrols="1">
+		<fieldset name="options" repeat="1" repeatcontrols="1" label="COM_FABRIK_OPTIONS">
 			
 			<field description="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL_DESC" label="PLG_VISUALIZATION_FUSIONCHART_CONNECTION_LABEL" name="fusionchart_connection" type="connections"/>
 		
@@ -99,9 +99,9 @@
 		
 			<field description="PLG_VISUALIZATION_FUSIONCHART_PALETTE_COLORS_DESC" label="PLG_VISUALIZATION_FUSIONCHART_PALETTE_COLORS_LABEL" name="fusionchart_palette_colors" size="50" type="text"/>
 		
-			<field default="300" description="PLG_VISUALIZATION_FUSIONCHART_WIDTH_DESC" label="PLG_VISUALIZATION_FUSIONCHART_WIDTH_LABEL" name="fusionchart_width" size="5" type="text"/>
+			<field default="300" description="PLG_VISUALIZATION_FUSIONCHART_WIDTH_DESC" class="input-mini" label="PLG_VISUALIZATION_FUSIONCHART_WIDTH_LABEL" name="fusionchart_width" size="5" type="text"/>
 				
-			<field default="200" description="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_DESC" label="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_LABEL" name="fusionchart_height" size="5" type="text"/>
+			<field default="200" description="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_DESC" class="input-mini" label="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_LABEL" name="fusionchart_height" size="5" type="text"/>
 				
 			<field directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/" label="PLG_VISUALIZATION_FUSIONCHART_TEMPLATE_LABEL" name="fusionchart_layout" type="folderlist"/>
 				
@@ -171,9 +171,9 @@
 		</fieldset>
 
 		<fieldset label="PLG_VISUALIZATION_FUSIONCHART_SPACER_CH_NUM_LIMIT" name="numerical_limits">
-			<field description="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MINVALUE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MINVALUE_LABEL" name="fusionchart_yaxis_minvalue" size="7" type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MINVALUE_DESC" class="input-mini" label="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MINVALUE_LABEL" name="fusionchart_yaxis_minvalue" size="7" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MAXVALUE_DESC" label="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MAXVALUE_LABEL" name="fusionchart_yaxis_maxvalue" size="7" type="text"/>
+			<field description="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MAXVALUE_DESC" class="input-mini" label="PLG_VISUALIZATION_FUSIONCHART_YAXIS_MAXVALUE_LABEL" name="fusionchart_yaxis_maxvalue" size="7" type="text"/>
 				
 		</fieldset>
 
