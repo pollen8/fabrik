@@ -283,6 +283,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$opts->jsevents = $this->getJsEvents();
 		$opts->elements = $this->getElements();
 		$opts->id = (int) $item->id;
+		$opts->deleteButton = FabrikWorker::j3() ? '<a class="btn btn-danger"><i class="icon-delete"></i> ' : '<a class="removeButton">';
+		$opts->deleteButton .= JText::_('COM_FABRIK_DELETE') . '</a>';
 		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_ACTION');

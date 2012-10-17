@@ -141,12 +141,27 @@ class FabrikAdminModelPlugin extends JModelLegacy
 
 			foreach ($topForm->getFieldset($fieldset->name) as $field)
 			{
+				if (!$j3)
+				{
 				$str[] = '<li>' . $field->label . $field->input . '</li>';
+				}
+				else
+				{
+					$str[] = '<div class="control-group"><div class="control-label">' . $field->label;
+					$str[] = '</div><div class="controls">' . $field->input . '</div></div>';
+				}
 			}
 		}
 		$str[] = '</ul>';
 		$str[] = '<div class="pluginOpts" style="clear:left"></div>';
-		$str[] = '<a href="#" class="delete removeButton">' . JText::_('COM_FABRIK_DELETE') . '</a>';
+		if ($j3)
+		{
+			$str[] = '<div class="span12"><a href="#" class="btn btn-danger" data-button="removeButton"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a></div>';
+		}
+		else
+		{
+			$str[] = '<a href="#" class="delete removeButton">' . JText::_('COM_FABRIK_DELETE') . '</a>';
+		}
 		$str[] = '</fieldset>';
 		$str[] = '</div>';
 		return implode("\n", $str);

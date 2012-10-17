@@ -3,7 +3,7 @@
 		<legend><?php echo JText::_('COM_FABRIK_VALIDATIONS')?></legend>
 		<div id="plugins">
 		</div>
-		<a href="#" class="btn" id="addPlugin">
+		<a href="#" class="btn btn-success" id="addPlugin">
 			<i class="icon-plus"></i>
 			<?php echo JText::_('COM_FABRIK_ADD'); ?>
 		</a>

@@ -10,7 +10,8 @@ var fabrikAdminElement = new Class({
 	options: {
 		id: 0,
 		parentid: 0,
-		jsevents: []
+		jsevents: [],
+		deleteButton : 'removeButton'
 	},
 
 	initialize: function (plugins, options, id) {
@@ -103,6 +104,9 @@ var fabrikAdminElement = new Class({
 		var triggers = this._makeSel(this.jsCounter, 'js_e_trigger[]', this.eTrigger, opt.params.js_e_trigger, Joomla.JText._('COM_FABRIK_SELECT_ON'));
 		var condition = this._makeSel(this.jsCounter, 'js_e_condition[]', this.eConditions, opt.params.js_e_condition, Joomla.JText._('COM_FABRIK_IS'));
 		
+		var td = new Element('td', {'colspan': 2});
+		td.set('html', this.options.deleteButton);
+		
 		var content = new Element('table', {
 			'class': 'paramlist admintable adminform',
 			'id': 'jsAction_' + this.jsCounter
@@ -133,17 +137,14 @@ var fabrikAdminElement = new Class({
 						'value': opt.params.js_e_value
 					}) 
 				])),
-				new Element('tr').adopt(new Element('td', {'colspan': 2}).adopt(new Element('a', {
-					'href': '#',
-					'class': 'removeButton',
-					'events': {
-						'click': function (e) {
-							this.deleteJS(e);
-						}.bind(this)
-					}
-				}).appendText(Joomla.JText._('COM_FABRIK_DELETE'))))
+				new Element('tr').adopt(td)
 			])
+			
+			
 		);
+		td.getElement('a').addEvent('click', function (e) {
+			this.deleteJS(e);
+		}.bind(this));
 		var div = new Element('div');
 		content.inject(div);
 		div.inject(document.id('javascriptActions'));

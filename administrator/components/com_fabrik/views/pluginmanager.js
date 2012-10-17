@@ -90,7 +90,7 @@ var PluginManager = new Class({
 	},
 	
 	watchDelete: function () {
-		document.id('adminForm').addEvent('click:relay(a.removeButton)', function (event, target) {
+		document.id('adminForm').addEvent('click:relay(a.removeButton, a[data-button=removeButton])', function (event, target) {
 			event.preventDefault();
 			this.pluginTotal --;
 			this.topTotal --;
@@ -223,7 +223,8 @@ var PluginManager = new Class({
 
 	deletePlugin: function (e) {
 		if (e.target.getParent('.pluginContanier').id.test(/_\d+$/)) {
-			var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
+			// var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
+			var x = e.target.getParent('fieldset').id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea').each(function (i) {
 				var s = i.name.match(/\[[0-9]+\]/);
 				if (s) {

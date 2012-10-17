@@ -362,6 +362,7 @@ class FabrikPlugin extends JPlugin
 			{
 				$str[] = '</div>';
 			}
+			$c ++;
 		}
 		if ($mode === 'nav-tabs')
 		{
