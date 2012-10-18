@@ -162,19 +162,19 @@ var PluginManager = new Class({
 	updateBootStrap: function () {
 		document.getElements('.radio.btn-group label').addClass('btn');
 		 
-		 document.getElements(".btn-group input[checked=checked]").each(function (el) {
+		document.getElements(".btn-group input[checked=checked]").each(function (el) {
 			if (el.get('value') === '') {
-	           document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
-	        } else if (el.get('value') === '0') {
-	           document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
-	        } else {
-	        	document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
-	        }
+				document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
+			} else if (el.get('value') === '0') {
+				document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
+			} else {
+				document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
+			}
 			if (typeof(jQuery) !== 'undefined') {
 				jQuery('*[rel=tooltip]').tooltip();
 			}
-			
-			document.getElements('.hasTip').each(function(el) {
+
+			document.getElements('.hasTip').each(function (el) {
 				var title = el.get('title');
 				if (title) {
 					var parts = title.split('::', 2);
@@ -182,7 +182,7 @@ var PluginManager = new Class({
 					el.store('tip:text', parts[1]);
 				}
 			});
-			var JTooltips = new Tips($$('.hasTip'), { maxTitleChars: 50, fixed: false});
+			var JTooltips = new Tips($$('.hasTip'), {maxTitleChars: 50, fixed: false});
 	    });
 	},
 	

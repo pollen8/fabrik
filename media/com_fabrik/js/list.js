@@ -1134,7 +1134,6 @@ var FbGroupedToggler = new Class({
 			if (this.options.collapseOthers) {
 				this.collapse();
 			}
-			debugger;
 			var h = e.target.getParent('.fabrik_groupheading');
 			var img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
 			var state = img.retrieve('showgroup', true);

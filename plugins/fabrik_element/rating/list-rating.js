@@ -18,7 +18,7 @@ var FbRatingList = new Class({
 		if (this.options.mode === 'creator-rating') {
 			return;
 		}
-		this.col = $$('.fabrik_row___' + id +', .' + id);
+		this.col = $$('.fabrik_row___' + id + ', .' + id);
 		this.origRating = {};
 		this.col.each(function (tr) {
 			var stars = tr.getElements('.starRating');

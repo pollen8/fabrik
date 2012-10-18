@@ -941,18 +941,18 @@ var fabrikCalendar = new Class({
 	render: function (options) {
 		this.setOptions(options);
 		document.addEvent('click:relay(button[data-task=deleteCalEvent], a[data-task=deleteCalEvent])', function (event, target) {
-			 event.preventDefault();
-			 this.deleteEntry();
+			event.preventDefault();
+			this.deleteEntry();
 		}.bind(this));
-		
+
 		document.addEvent('click:relay(button[data-task=editCalEvent], a[data-task=editCalEvent])', function (event, target) {
-			 event.preventDefault();
-			 this.editEntry();
+			event.preventDefault();
+			this.editEntry();
 		}.bind(this));
 		
 		document.addEvent('click:relay(button[data-task=viewCalEvent], a[data-task=viewCalEvent])', function (event, target) {
-			 event.preventDefault();
-			 this.viewEntry();
+			event.preventDefault();
+			this.viewEntry();
 		}.bind(this));
 		
 		this.windowopts.title = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');

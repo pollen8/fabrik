@@ -63,7 +63,7 @@ Fabrik.Window = new Class({
 	
 	makeWindow: function ()
 	{
-		var draggerC, dragger, expandButton;
+		var draggerC, dragger, expandButton, expandIcon, resizeIcon;
 		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
 		d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
@@ -88,24 +88,24 @@ Fabrik.Window = new Class({
 			hclass += ' draggable';
 			draggerC = new Element('div', {'class': 'bottomBar'});
 			dragger = new Element('div', {'class': 'dragger'});
-				resizeIcon = Fabrik.iconGen.create(icon.resize, {
-					scale: 0.8, 
-					rotate: 0,
-					shadow: {
-						color: '#fff',
-						translate: {x: 0, y: 1}
-					},
-					fill: {
-						color: ['#999', '#666']
-					}
-				});
-			}
-			resizeIcon.inject(dragger);
-			draggerC.adopt(dragger);
+			resizeIcon = Fabrik.iconGen.create(icon.resize, {
+				scale: 0.8, 
+				rotate: 0,
+				shadow: {
+					color: '#fff',
+					translate: {x: 0, y: 1}
+				},
+				fill: {
+					color: ['#999', '#666']
+				}
+			});
+		}
+		resizeIcon.inject(dragger);
+		draggerC.adopt(dragger);
 		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
 		handleParts.push(label);
 		if (this.options.bootstrap) {
-			var expandIcon = new Element('i.icon-out-2.small'); 
+			expandIcon = new Element('i.icon-out-2.small'); 
 		} else {
 			expandIcon = Fabrik.iconGen.create(icon.expand, {scale: 0.4, fill: {
 				color: ['#666666', '#999999']
