@@ -271,7 +271,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 			$local = true;
 			$date = $oDate->toFormat($format, true);
 			$this->offsetDate = $oDate->toSql(true);
-			if (!$this->isEditable())
+			if (!$this->_editable)
 			{
 				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->toFormat($timeformat, true) : '';
 				return $date . $time;
@@ -285,7 +285,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		}
 		else
 		{
-			if (!$this->isEditable())
+			if (!$this->_editable)
 			{
 				return '';
 			}

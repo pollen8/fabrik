@@ -96,7 +96,7 @@ class plgFabrik_ElementField extends plgFabrik_Element
 			$value = $this->unNumberFormat($value);
 		}
 		$value = $this->numberFormat($value);
-		if (!$this->isEditable())
+		if (!$this->_editable)
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
 			$format = $params->get('text_format_string');
