@@ -17,20 +17,18 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="params">
 
-			<field default="0" description="If table view selected then setting this to yes will recaculate the table calculations each time the table is viewed (can slow down your tables performance)" label="Reload Calculations" name="calculations" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="If table view selected then setting this to yes will recaculate the table calculations each time the table is viewed (can slow down your tables performance)" label="Reload Calculations" name="calculations" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
-			<!-- <field name="fabriklayout" type="folderlist" 
-				directory="/components/com_fabrik/views/list/tmpl/"
-				label="Template" 
-				descrption="The table template to use" /> -->
-				
-				
 			<field descrption="The table template to use" directory="/components/com_fabrik/views/list/tmpl/" label="Template" name="listlayout" type="folderlist"/>
 				
-			<field default="0" description="COM_FABRIK_FIELD_RESET_FILTERS_DESC" label="COM_FABRIK_FIELD_RESET_FILTERS_LABEL" name="resetfilters" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="COM_FABRIK_FIELD_RESET_FILTERS_DESC" label="COM_FABRIK_FIELD_RESET_FILTERS_LABEL" name="resetfilters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -95,7 +93,9 @@
 					</fields>
 				</field>
 				
-				<field default="10" description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL" name="rows_per_page" size="4" type="text"/>
+				<field default="10"
+					class="input-mini"
+					description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL" name="rows_per_page" size="4" type="text"/>
 			</fieldset>
 	</fields>
 </metadata>

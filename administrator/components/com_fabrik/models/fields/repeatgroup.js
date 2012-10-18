@@ -20,7 +20,8 @@ var FbRepeatGroup = new Class({
 
 	watchAdd : function () {
 		var newid;
-		this.element.getElement('a.addButton').addEvent('click', function (e) {
+		console.log(this.element);
+		this.element.getElement('a[data-button=addButton]').addEvent('click', function (e) {
 			e.stop();
 			var div = this.element.getElements('div.repeatGroup').getLast();
 			newc = this.counter + 1;
@@ -79,8 +80,8 @@ var FbRepeatGroup = new Class({
 	},
 	
 	watchDelete : function () {
-		this.element.getElements('a.removeButton').removeEvents();
-		this.element.getElements('a.removeButton').each(function (r, x) {
+		this.element.getElements('a[data-button=deleteButton]').removeEvents();
+		this.element.getElements('a[data-button=deleteButton]').each(function (r, x) {
 			r.addEvent('click', function (e) {
 				e.stop();
 				var count = this.getCounter();

@@ -1324,10 +1324,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$elementid = 'fb_el_' . $elementHTMLId;
 		$str = '';
+		$j3 = FabrikWorker::j3();
 		if ($this->canView() || $this->canUse())
 		{
 			$rollOver = $this->isTipped();
-			$labelClass = 'fabrikLabel ';
+			$labelClass = 'fabrikLabel control-label';
 			if (empty($element->label))
 			{
 				$labelClass .= ' fabrikEmptyLabel';
@@ -1344,19 +1345,22 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
-			$l = $element->label;
+			$l = $j3 ? '' : $element->label;
+			$iconOpts = array('icon-class' => 'small');
 			if ($rollOver)
 			{
-				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl);
+				$l .= FabrikHelperHTML::image('question-sign.png', 'form', $tmpl, $iconOpts) . ' ';
 			}
 			if ($this->isEditable())
 			{
 				$validations = array_unique($this->getValidations());
 				if (count($validations) > 0)
 				{
-					$l .= FabrikHelperHTML::image('notempty.png', 'form', $tmpl);
+					$emptyIcon = $j3 ? 'star.png' : 'notempty.png';
+					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
+			$l .= $j3 ? $element->label : '';
 			$model = $this->getFormModel();
 			$str .= $this->rollover($l, $model->data, 'form', $tmpl);
 			if ($bLabel && !$this->isHidden())
@@ -1419,6 +1423,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pos = $params->get('tiplocation', 'top');
 		$opts = new stdClass();
 		$opts->position = $pos;
+		$opts->trigger = 'hover';
 		$opts->notice = true;
 
 		if ($this->editable)
@@ -4391,7 +4396,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$db->query();
 
 		$query->clear();
-		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
+		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('INNER', ' #__{package}_joins AS j ON j.element_id = e.id')
 			->where('e.parent_id = ' . $id);
 		$db->setQuery($query);
 		$join_ids = $db->loadColumn();

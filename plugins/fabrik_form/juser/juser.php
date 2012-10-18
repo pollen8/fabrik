@@ -310,6 +310,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$input = $app->input;
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
+		$mail = JFactory::getMailer();
 
 		// Load up com_users lang - used in email text
 		$lang->load('com_users');
@@ -448,7 +449,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			if (($useractivation == '1' || $useractivation == '2') && !$bypassActivation)
 			{
 				jimport('joomla.user.helper');
-				$data['activation'] = JUtility::getHash(JUserHelper::genRandomPassword());
+				$data['activation'] = JApplication::getHash(JUserHelper::genRandomPassword());
 				$data['block'] = 1;
 			}
 		}
@@ -542,7 +543,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			// Send the registration email.
 			if ($emailSubject !== '')
 			{
-				$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+				$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
 				$db = JFactory::getDBO();
 				/*
@@ -666,8 +667,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		//$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
-		$groupIds = $this->getFieldValue($params, 'juser_field_usertype', $formModel->_formData, $defaultGroup);
+		//$groupIds = (array) JArrayHelper::getValue($formModel->formData, $this->gidfield, $defaultGroup);
+		$groupIds = $this->getFieldValue($params, 'juser_field_usertype', $formModel->formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
 		if (!empty($groupIds) && is_object($groupIds[0]))

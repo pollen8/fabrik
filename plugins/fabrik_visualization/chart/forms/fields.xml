@@ -3,7 +3,7 @@
 		<fields name="params">
 			
 		
-		<fieldset name="plg-visualization-chart-params" repeat="1" repeatcontrols="1" repeatmin="1">
+		<fieldset name="plg-visualization-chart-params" label="COM_FABRIK_DATA" repeat="1" repeatcontrols="1" repeatmin="1">
 			
 			<field label="PLG_VISUALIZATION_CHART_CONNECTION_LABEL" name="chart_connection" type="connections"/>
 					
@@ -21,13 +21,15 @@
 				
 			<field description="PLG_VISUALIZATION_CHART_WHERE_DESC" label="PLG_VISUALIZATION_CHART_WHERE_LABEL" name="chart_where" size="60" type="text"/>
 				
-			<field default="1" description="PLG_VISUALIZATION_CHART_SHOW_FILTERS_DESC" label="PLG_VISUALIZATION_CHART_SHOW_FILTERS_LABEL" name="chart_show_filters" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_VISUALIZATION_CHART_SHOW_FILTERS_DESC" label="PLG_VISUALIZATION_CHART_SHOW_FILTERS_LABEL" name="chart_show_filters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 		</fieldset>
 		
-		<fieldset name="rest">
+		<fieldset name="rest" label="COM_FABRIK_OPTIONS">
 			<field directory="/plugins/fabrik_visualization/chart/views/chart/tmpl/" label="PLG_VISUALIZATION_CHART_TEMPLATE_LABEL" name="chart_layout" type="folderlist"/>
 		
 			<field default="BarChart" label="PLG_VISUALIZATION_CHART_CHART_TYPE_LABEL" name="graph_type" type="list">
@@ -44,19 +46,23 @@
 					<option value="s">PLG_VISUALIZATION_CHART_SCATTER_PLOT</option>
 			</field>
 			
-			<field default="1" label="PLG_VISUALIZATION_CHART_FILL_LINE_GRAPH_LABEL" name="fill_line_graph" type="radio">
+			<field default="1"
+				class="btn-group"
+				label="PLG_VISUALIZATION_CHART_FILL_LINE_GRAPH_LABEL" name="fill_line_graph" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" label="PLG_VISUALIZATION_CHART_SHOW_LEGEND_LABEL" name="graph_show_legend" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_VISUALIZATION_CHART_SHOW_LEGEND_LABEL" name="graph_show_legend" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field description="PLG_VISUALIZATION_CHART_WIDTH_DESC" label="PLG_VISUALIZATION_CHART_WIDTH_LABEL" name="chart_width" size="5" type="text"/>
+			<field description="PLG_VISUALIZATION_CHART_WIDTH_DESC" class="input-mini" label="PLG_VISUALIZATION_CHART_WIDTH_LABEL" name="chart_width" size="5" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_CHART_HEIGHT_DESC" label="PLG_VISUALIZATION_CHART_HEIGHT_LABEL" name="chart_height" size="5" type="text"/>
+			<field description="PLG_VISUALIZATION_CHART_HEIGHT_DESC" class="input-mini" label="PLG_VISUALIZATION_CHART_HEIGHT_LABEL" name="chart_height" size="5" type="text"/>
 				
 			<field description="PLG_VISUALIZATION_CHART_CHDS_DESC" label="PLG_VISUALIZATION_CHART_CHDS_LABEL" name="chart_chds" size="60" type="text"/>
 				

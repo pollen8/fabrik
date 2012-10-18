@@ -590,16 +590,16 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			{
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
-					$str .= '<div style="margin-bottom:5px">';
+					$str .= '<div style="margin-bottom:5px" class="control-group input-append">';
 				}
 				if ($this->isEditable() && $params->get('fb_gm_geocode') == 1)
 				{
-					$str .= '<input class="geocode_input inputbox" style="margin-right:5px"/>';
+					$str .= '<input type="text" class="geocode_input inputbox" />';
 				}
 
 				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->isEditable())
 				{
-					$str .= '<input class="button geocode" type="button" value="' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '" />';
+					$str .= '<button class="button btn btn-info geocode" type="button">' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
 				}
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{

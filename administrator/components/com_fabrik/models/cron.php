@@ -107,12 +107,12 @@ class FabrikAdminModelCron extends FabModelAdmin
 		$plugin = FabrikString::ltrimiword($plugin, 'cron');
 		if ($plugin == '')
 		{
-			$str = JText::_('COM_FABRIK_SELECT_A_PLUGIN');
+			$str = '<div class="alert">' . JText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
 		}
 		else
 		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Cron');
-			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
+			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, 'nav-tabs');
 		}
 		return $str;
 	}

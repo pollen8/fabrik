@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset name="plg-element-cascadingdropdown">
-			<field default="0" label="PLG_ELEMENT_CDD_HIDDEN" name="hidden" type="radio">
-							<option value="0">JNO</option>
-							<option value="1">JYES</option>
-					</field>
+		<fieldset name="plg-element-cascadingdropdown" label="COM_FABRIK_OPTIONS">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_CDD_HIDDEN" name="hidden" type="radio">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 					
-				<field default="0" label="PLG_ELEMENT_CDD_EVAL_LABEL" name="eval" type="radio">
+				<field default="0"
+					class="btn-group"
+					label="PLG_ELEMENT_CDD_EVAL_LABEL" name="eval" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 					</field>
@@ -18,7 +22,7 @@
 	</fields>
 	
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-cascadingdropdown-params">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-cascadingdropdown-params" label="COM_FABRIK_DATA">
 			<field label="PLG_ELEMENT_CDD_CONNECTION_LABEL" name="cascadingdropdown_connection" type="connections"/>
 						
 			<field connection_in_repeat="false" description="PLG_ELEMENT_CDD_TABLE_DESC" label="PLG_ELEMENT_CDD_TABLE_LABEL" name="cascadingdropdown_table" observe="params_cascadingdropdown_connection" type="fabriktables"/>
@@ -30,18 +34,20 @@
 			<field cols="40" description="PLG_ELEMENT_CDD_LABEL_CONCAT_DESC" label="PLG_ELEMENT_CDD_LABEL_CONCAT_LABEL" name="cascadingdropdown_label_concat" rows="8" type="textarea"/>
 		</fieldset>
 		
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-cascadingdropdown-watch">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-cascadingdropdown-watch" label="PLG_ELEMENT_CDD_WATCH">
 			<field description="PLG_ELEMENT_CDD_WATCH_DESC" label="PLG_ELEMENT_CDD_WATCH_LABEL" name="cascadingdropdown_observe" type="listfields"/>
 				
 			<field connection="params_cascadingdropdown_connection" connection_in_repeat="false" description="PLG_ELEMENT_CDD_KEY_DESC" label="PLG_ELEMENT_CDD_KEY_LABEL" name="cascadingdropdown_key" table="params_cascadingdropdown_table" type="element"/>
 		</fieldset>
 		
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-cascadingdropdown-advanced">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-cascadingdropdown-advanced" label="COM_FABRIK_ADVANCED">
 			<field cols="40" description="PLG_ELEMENT_CDD_WHERE_DESC" label="PLG_ELEMENT_CDD_WHERE_LABEL" name="cascadingdropdown_filter" rows="8" type="textarea"/>
 				
 		
 			
-			<field default="1" description="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_DESC" label="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_LABEL" name="cascadingdropdown_showpleaseselect" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_DESC" label="PLG_ELEMENT_CDD_SHOW_PLEASE_SELECT_LABEL" name="cascadingdropdown_showpleaseselect" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -50,8 +56,10 @@
 			
 		</fieldset>
 		
-		<fieldset name="plg-cascadingdropdown-frontend">
-			<field default="0" description="PLG_ELEMENT_CDD_READONLY_LINK_DESC" label="PLG_ELEMENT_CDD_READONLY_LINK_LABEL" name="cascadingdropdown_readonly_link" type="radio">
+		<fieldset name="plg-cascadingdropdown-frontend" label="COM_FABRIK_FRONT_END">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CDD_READONLY_LINK_DESC" label="PLG_ELEMENT_CDD_READONLY_LINK_LABEL" name="cascadingdropdown_readonly_link" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

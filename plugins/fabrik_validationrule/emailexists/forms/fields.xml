@@ -6,7 +6,7 @@
 				
 			<field cols="30" description="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_DESC" label="PLG_VALIDATIONRULE_EMAILEXISTS_CONDTION_LABEL" name="emailexists-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="fail_if_exist" description="PLG_VALIDATIONRULE_EXISTS_OR_NOT_DESC" label="PLG_VALIDATIONRULE_EXISTS_OR_NOT_LABEL" name="emailexists_or_not" repeat="true" type="radio">
+			<field default="fail_if_exist" description="PLG_VALIDATIONRULE_EXISTS_OR_NOT_DESC" label="PLG_VALIDATIONRULE_EXISTS_OR_NOT_LABEL" name="emailexists_or_not" repeat="true" type="list">
 					<option value="fail_if_exists">PLG_VALIDATIONRULE_FAIL_IF_EXISTS</option>
 					<option value="fail_if_not_exists">PLG_VALIDATIONRULE_FAIL_IF_DOES_NOT_EXISTS</option>
 			</field>

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields>
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date" label="COM_FABRIK_OPTIONS">
 			<field class="input-mini" label="PLG_ELEMENT_WIDTH_LABEL" name="width" size="3" type="text"/>
 				
-			<field default="0" label="PLG_ELEMENT_DATE_HIDDEN_LABEL" name="hidden" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_DATE_HIDDEN_LABEL" name="hidden" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				
-			<field default="0" label="PLG_ELEMENT_DATE_EVAL_LABEL" name="eval" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
 			
 			<field cols="45" label="PLG_ELEMENT_DATE_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
-		
+				
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_DATE_EVAL_LABEL" name="eval" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	</fields>
 		
@@ -23,32 +27,44 @@
 		
 		<fieldset label="PLG_ELEMENT_DATE_FORMATTING_HEADING" name="plg-element-date-extra">
 			
-			<field default="0" description="PLG_ELEMENT_DATE_STORE_AS_DESC" label="PLG_ELEMENT_DATE_STORE_AS_LABEL" name="date_store_as_local" type="radio">
+			<field default="0"
+				class="input-small"
+				description="PLG_ELEMENT_DATE_STORE_AS_DESC" label="PLG_ELEMENT_DATE_STORE_AS_LABEL" name="date_store_as_local" type="list">
 				<option value="0">PLG_ELEMENT_DATE_UTC</option>
 				<option value="1">PLG_ELEMENT_DATE_LOCAL_TIME</option>
 			</field>
 			
-			<field default="Y-m-d" description="PLG_ELEMENT_DATE_TABLE_FORMAT_DESC" label="PLG_ELEMENT_DATE_TABLE_DATE_FORMAT_LABEL" length="20" name="date_table_format" type="text"/>
+			<field default="Y-m-d"
+				class="input-mini"
+				description="PLG_ELEMENT_DATE_TABLE_FORMAT_DESC" label="PLG_ELEMENT_DATE_TABLE_DATE_FORMAT_LABEL" length="20" name="date_table_format" type="text"/>
 				
-			<field default="Y-m-d" description="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_DESC" label="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_LABEL" length="20" name="date_form_format" type="text"/>
+			<field default="Y-m-d"
+				class="input-mini"
+				description="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_DESC" label="PLG_ELEMENT_DATE_FORM_DATE_FORMAT_LABEL" length="20" name="date_form_format" type="text"/>
 				
-			<field default="0" description="PLG_ELEMENT_DATE_DEFAULT_TODAY_DESC" label="PLG_ELEMENT_DATE_DEFAULT_TODAY_LABEL" name="date_defaulttotoday" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_DEFAULT_TODAY_DESC" label="PLG_ELEMENT_DATE_DEFAULT_TODAY_LABEL" name="date_defaulttotoday" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_DATE_ALWAYS_TODAY_DESC" label="PLG_ELEMENT_DATE_ALWAYS_TODAY_LABEL" name="date_alwaystoday" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_ALWAYS_TODAY_DESC" label="PLG_ELEMENT_DATE_ALWAYS_TODAY_LABEL" name="date_alwaystoday" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_DESC" label="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_LABEL" name="date_firstday" type="radio">
+			<field default="0" description="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_DESC" label="PLG_ELEMENT_DATE_FIRST_WEEK_DAY_LABEL" name="date_firstday" type="list">
 					<option value="6">SATURDAY</option>
 					<option value="0">SUNDAY</option>
 					<option value="1">MONDAY</option>
 			</field>
 				
-			<field default="1" description="PLG_ELEMENT_DATE_ALLOW_TYPING_IN_FIELD_DESC" label="PLG_ELEMENT_DATE_ALLOW_TYPING_IN_FIELD_LABEL" name="date_allow_typing_in_field" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_ALLOW_TYPING_IN_FIELD_DESC" label="PLG_ELEMENT_DATE_ALLOW_TYPING_IN_FIELD_LABEL" name="date_allow_typing_in_field" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -61,16 +77,22 @@
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DATE_TIME_HEADING" name="plg-element-date-time">
-			<field default="0" description="PLG_ELEMENT_DATE_SHOW_TIME_DESC" label="PLG_ELEMENT_DATE_SHOW_TIME_LABEL" name="date_showtime" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_SHOW_TIME_DESC" label="PLG_ELEMENT_DATE_SHOW_TIME_LABEL" name="date_showtime" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="H:i" description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" length="20" name="date_time_format" type="text"/>
+			<field default="H:i"
+				class="input-mini"
+				description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" length="20" name="date_time_format" type="text"/>
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DATE_ADVANCED_HEADING" name="plg-element-date-advanced">
-			<field default="0" description="PLG_ELEMENT_DATE_ADVANCED_DESC" label="PLG_ELEMENT_DATE_ADVANCED_LABEL" name="date_advanced" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_ADVANCED_DESC" label="PLG_ELEMENT_DATE_ADVANCED_LABEL" name="date_advanced" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>		

@@ -7,17 +7,23 @@
 				
 			<field cols="45" label="PLG_ELEMENT_TIMER_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 				
-			<field default="0" description="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_DESC" label="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_LABEL" name="timer_disable" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_DESC" label="PLG_ELEMENT_TIMER_DISABLE_ELEMENT_LABEL" name="timer_disable" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_TIMER_AUTO_START_DESC" label="PLG_ELEMENT_TIMER_AUTO_START_LABEL" name="timer_autostart" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_TIMER_AUTO_START_DESC" label="PLG_ELEMENT_TIMER_AUTO_START_LABEL" name="timer_autostart" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_TIMER_READ_ONLY_DESC" label="PLG_ELEMENT_TIMER_READ_ONLY_LABEL" name="timer_readonly" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_TIMER_READ_ONLY_DESC" label="PLG_ELEMENT_TIMER_READ_ONLY_LABEL" name="timer_readonly" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

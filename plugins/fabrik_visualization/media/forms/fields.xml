@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection">
+		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection" label="COM_FABRIK_DATA">
 			<field label="Connection" name="media_connection" type="connections"/>
-		</fieldset>
-
-		<fieldset name="options" repeat="0" repeatcontrols="0">
 			
 			<field default="jw" description="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_DESC" label="PLG_VISUALIZATION_MEDIA_WHICH_PLAYER_LABEL" name="media_which_player" type="list">
 				<option value="jw">JW</option>
@@ -30,10 +27,10 @@
 			
 		</fieldset>
 
-		<fieldset name="rest">
-			<field description="PLG_VISUALIZATION_MEDIA_WIDTH_DESC" label="PLG_VISUALIZATION_MEDIA_WIDTH_LABEL" name="media_width" size="5" type="text"/>
+		<fieldset name="rest" label="COM_FABRIK_OPTIONS">
+			<field description="PLG_VISUALIZATION_MEDIA_WIDTH_DESC" label="PLG_VISUALIZATION_MEDIA_WIDTH_LABEL" name="media_width" class="input-mini" size="5" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_MEDIA_HEIGHT_DESC" label="PLG_VISUALIZATION_MEDIA_HEIGHT_LABEL" name="media_height" size="5" type="text"/>
+			<field description="PLG_VISUALIZATION_MEDIA_HEIGHT_DESC" label="PLG_VISUALIZATION_MEDIA_HEIGHT_LABEL" name="media_height" class="input-mini" size="5" type="text"/>
 
 		</fieldset>
 	</fields>

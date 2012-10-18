@@ -8920,7 +8920,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($this->tmpl == '')
 			{
-				$this->tmpl = 'default';
+				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
 			if ($app->scope !== 'mod_fabrik_list')
 			{

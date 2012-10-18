@@ -2,7 +2,7 @@
 <form>
 	<fields addpath="/administrator/components/com_fabrik/elements" name="params">
 		
-		<fieldset name="plg-visualization-timeline" repeat="1" repeatcontrols="1">
+		<fieldset name="plg-visualization-timeline" repeat="1" repeatcontrols="1" label="COM_FABRIK_DATA">
 			
 			<field label="PLG_VIZ_TIMELINE_CONNECTION_LABEL" name="timeline_connection" type="connections"/>
 				
@@ -16,11 +16,13 @@
 				
 			<field cols="40" description="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_DESC" label="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_LABEL" name="timeline_detailtemplate" rows="8" type="textarea"/>
 			
-			<field default="0" description="PLG_VIZ_TIMELINE_EVAL_DESC" label="PLG_VIZ_TIMELINE_EVAL_LABEL" name="eval_template" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_VIZ_TIMELINE_EVAL_DESC" label="PLG_VIZ_TIMELINE_EVAL_LABEL" name="eval_template" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-				
+		
 			<field description="PLG_VIZ_TIMELINE_CUSTOM_LINK_DESC" label="PLG_VIZ_TIMELINE_CUSTOM_LINK_LABEL" name="timeline_customlink" size="70" type="text"/>
 				
 			<field default="#58A0DC" description="PLG_VIZ_TIMELINE_COLOUR_DESC" label="PLG_VIZ_TIMELINE_COLOUR_LABEL" name="timeline_colour" size="8" type="text"/>
@@ -31,7 +33,7 @@
 			
 		</fieldset>
 		
-		<fieldset name="plg-visualization-layout">
+		<fieldset name="plg-visualization-layout" label="PLG_VIZ_TIMELINE_BANDS">
 			
 			<field description="PLG_VIZ_TIMELINE_BANDS_DESC" label="PLG_VIZ_TIMELINE_BANDS_LABEL" name="timeline_bands" type="fabrikmodalrepeat">
 			

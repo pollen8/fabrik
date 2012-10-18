@@ -101,7 +101,7 @@
 				<?php echo JText::_('COM_FABRIK_JOINS');?>
 			</legend>
 			<?php if ($this->item->id != 0) { ?>
-			<a href="#" id="addAJoin" class="addButton btn">
+			<a href="#" id="addAJoin" class="btn">
 				<i class="icon-plus"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
 			<div id="joindtd"></div>

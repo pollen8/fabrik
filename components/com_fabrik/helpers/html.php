@@ -1427,7 +1427,7 @@ EOD;
 
 	public static function getImagePath($file, $type = 'form', $tmpl = '')
 	{
-		$file = JString::ltrim($file, DS);
+		$file = JString::ltrim($file, DIRECTORY_SEPARATOR);
 		$paths = self::addPath('', 'image', $type, true);
 		$src = '';
 		foreach ($paths as $path)
@@ -1463,13 +1463,10 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		$app = JFactory::getApplication();
-		$version = new JVersion;
-
-		// Only use template test for testing in 2.5 with my temp J bootstrap template.
-		if ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5)
+		if (FabrikWorker::j3() && !$srcOnly)
 		{
-			return '<i class="icon-' . JFile::stripExt($file) . '"></i>';
+			$class = JArrayHelper::getValue($properties, 'icon-class', '');
+			return '<i class="icon-' . JFile::stripExt($file) . ' ' . $class .'"></i>';
 		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-checkbox">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-checkbox" label="COM_FABRIK_OPTIONS">
 		
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
-			<field default="1" description="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_LABEL" name="element_before_label" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_LABEL" name="element_before_label" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -24,24 +26,30 @@
 		
 		<fieldset label="PLG_ELEMENT_CHECKBOX_FRONTEND_SELECT" name="plg-checkbox-add">
 		
-			<field default="0" description="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_DESC" label="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_LABEL" name="allow_frontend_addtocheckbox" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_DESC" label="PLG_ELEMENT_CHECKBOX_ALLOW_ADD_LABEL" name="allow_frontend_addtocheckbox" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_LABEL" name="chk-allowadd-onlylabel" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ONLY_ADD_LABEL_LABEL" name="chk-allowadd-onlylabel" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_LABEL" name="chk-savenewadditions" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_CHECKBOX_SAVE_NEW_ADDITIONS_LABEL" name="chk-savenewadditions" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
 		</fieldset>
 		
-		<fieldset name="plg-checkbox-advanced">
+		<fieldset name="plg-checkbox-advanced" label="COM_FABRIK_ADVANCED">
 			<field class="input-mini" default="" description="PLG_ELEMENT_CHECKBOX_SEPARATOR_DESC" label="PLG_ELEMENT_CHECKBOX_SEPARATOR_LABEL" name="options_split_str" size="10" type="text"/>
 		</fieldset>
 	</fields>

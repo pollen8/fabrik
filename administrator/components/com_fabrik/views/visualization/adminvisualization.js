@@ -1,5 +1,7 @@
 var AdminVisualization = new Class({
 	
+	Extends: PluginManager,
+	
 	Implements: [Options, Events],
 	
 	options: {},
@@ -23,15 +25,25 @@ var AdminVisualization = new Class({
 	},
 	
 	changePlugin: function (e) {
-		var myAjax = new Request.HTML({
+		var myAjax = new Request({
 			url: 'index.php',
+			'evalResponse': false,
+			'evalScripts' : function (script, text) {
+					this.script = script;
+				}.bind(this),
 			'data': {
 				'option': 'com_fabrik',
 				'task': 'visualization.getPluginHTML',
 				'format': 'raw',
 				'plugin': e.target.get('value')
 			},
-			'update': document.id('plugin-container')
+			'update': document.id('plugin-container'),
+			'onComplete': function (r) {
+				document.id('plugin-container').set('html', r);
+				Browser.exec(this.script);
+				console.log(this.script);
+				this.updateBootStrap();
+			}.bind(this)
 		}).send();
 	}
 });

@@ -116,7 +116,7 @@ class FabrikAdminModelVisualization extends FabModelAdmin
 		else
 		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Visualization');
-			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item));
+			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, 'nav-tabs');
 		}
 		return $str;
 	}

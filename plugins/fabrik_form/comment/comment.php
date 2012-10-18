@@ -366,7 +366,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 		$data[] = '<tr>';
 		$data[] = '<td colspan="2">';
-		$data[] = '<input type="button" class="button" style="margin-left:0" value="' . JText::_('PLG_FORM_COMMENT_POST_COMMENT') . '" />';
+		$data[] = '<button class="button btn btn-success submit" style="margin-left:0">';
+		$data[] = '<i class="icon-comments-2"></i> ';
+		$data[] = JText::_('PLG_FORM_COMMENT_POST_COMMENT');
+		$data[] = '</button>';
 		$data[] = '<input type="hidden" name="reply_to" value="' . $reply_to . '" />';
 		$data[] = '<input type="hidden" name="renderOrder" value="' . $this->renderOrder . '" />';
 		$data[] = '</td>';
@@ -509,10 +512,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
+		$j3 = FabrikWorker::j3();
 		$name = (int) $comment->annonymous == 0 ? $comment->name : JText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$data = array();
 		$data[] = '<div class="metadata">';
-		$data[] = $name . ' ' . JText::_('PLG_FORM_COMMENT_WROTE_ON') . ' <small>' . JHTML::date($comment->time_date) . '</small>';
+		$data[] = '<i class="icon-user"></i> ';
+		$data[] = $name . ' ' . JText::_('PLG_FORM_COMMENT_WROTE_ON');
+		$data[] = '<i class="icon-calendar"></i> ';
+		$data[] = ' <small>' . JHTML::date($comment->time_date) . '</small>';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_form/comment/images/', 'image', 'form', false);
 		$insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
@@ -522,7 +529,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$r = (int) $comment->rating;
 			for ($i = 0; $i < $r; $i++)
 			{
-				$data[] = '<img src="' . $insrc . '" alt="star" />';
+				$data[] = $j3 ? '<i class="icon-star"></i> ' : '<img src="' . $insrc . '" alt="star" />';
 			}
 			$data[] = '</div>';
 		}
@@ -684,7 +691,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		// Then map that data (for correct render order) onto this plugins params
 		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
-		if ($res === false)
+		/* if ($res === false)
 		{
 			// Attempt to create the db table?
 			$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
@@ -701,7 +708,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				exit;
 			}
 
+		} */
+
+		// $$$ rob 16/10/2012 db queries run when element/plugin selected in admin, so just return false if error now
+		if ($res === false)
+		{
+			JError::raiseError(500, $row->getError());
+			exit;
 		}
+
 		$obj = new stdClass;
 
 		// Do this to get the depth of the comment

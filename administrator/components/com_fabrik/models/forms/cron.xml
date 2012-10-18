@@ -23,9 +23,12 @@
 	
 		<fieldset label="run" name="run">
 	
-			<field default="5" description="COM_FABRIK_CRON_FIELD_EVERY_DESC" label="COM_FABRIK_CRON_FIELD_EVERY_LABEL" name="frequency" required="true" size="3" type="text"/>
+			<field default="5"
+				class="input-mini" description="COM_FABRIK_CRON_FIELD_EVERY_DESC" label="COM_FABRIK_CRON_FIELD_EVERY_LABEL" name="frequency" required="true" size="3" type="text"/>
 				
-			<field default="minute" description="COM_FABRIK_CRON_FIELD_UNIT_DESC" label="COM_FABRIK_CRON_FIELD_UNIT_LABEL" name="unit" type="list">
+			<field default="minute"
+				class="input-small"
+				description="COM_FABRIK_CRON_FIELD_UNIT_DESC" label="COM_FABRIK_CRON_FIELD_UNIT_LABEL" name="unit" type="list">
 					<option value="second">COM_FABRIK_CRON_SECOND</option>
 					<option value="minute">COM_FABRIK_CRON_MINUTE</option>
 					<option value="hour">COM_FABRIK_CRON_HOUR</option>

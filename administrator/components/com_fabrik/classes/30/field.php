@@ -461,7 +461,11 @@ abstract class JFormField
 		if ($this->repeat)
 		{
 			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
-			$id .= '-' . $repeatCounter . '-';
+			$id .= '-' . $repeatCounter;
+			if (get_class($this) === 'JFormFieldRadio')
+			{
+				$id .= '-';
+			}
 		}
 		return $id;
 	}

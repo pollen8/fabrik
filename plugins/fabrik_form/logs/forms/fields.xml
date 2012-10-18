@@ -2,7 +2,9 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-logs">
-			<field default="0" description="PLG_FORM_LOG_RECORDINDB_DESC" label="PLG_FORM_LOG_RECORDINDB_LABEL" name="logs_record_in_db" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_RECORDINDB_DESC" label="PLG_FORM_LOG_RECORDINDB_LABEL" name="logs_record_in_db" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
@@ -11,29 +13,39 @@
 				
 			<field default="Y-m-d H:i:s" description="PLG_FORM_LOG_DATENOW_DESC" label="PLG_FORM_LOG_DATENOW_LABEL" name="logs_date_now" repeat="true" size="30" type="text"/>
 				
-			<field default="0" label="PLG_FORM_LOG_RECORDIP_LABEL" name="logs_record_ip" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_FORM_LOG_RECORDIP_LABEL" name="logs_record_ip" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 			
-			<field default="0" label="PLG_FORM_LOG_RECORDREFERER_LABEL" name="logs_record_referer" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_FORM_LOG_RECORDREFERER_LABEL" name="logs_record_referer" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" label="PLG_FORM_LOG_RECORDUSERAGENT_LABEL" name="logs_record_useragent" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_FORM_LOG_RECORDUSERAGENT_LABEL" name="logs_record_useragent" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 	
 			<field cols="40" default="" description="PLG_FORM_LOG_ORCUSTOM_DESC" label="PLG_FORM_LOG_ORCUSTOM_LABEL" name="custom_msg" repeat="true" rows="6" type="textarea"/>
 				
-			<field default="0" description="PLG_FORM_LOG_COMPAREDATA_DESC" label="PLG_FORM_LOG_COMPAREDATA_LABEL" name="compare_data" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_COMPAREDATA_DESC" label="PLG_FORM_LOG_COMPAREDATA_LABEL" name="compare_data" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FORM_LOG_MAKEFILE_DESC" label="PLG_FORM_LOG_MAKEFILE_LABEL" name="make_file" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_MAKEFILE_DESC" label="PLG_FORM_LOG_MAKEFILE_LABEL" name="make_file" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -42,7 +54,9 @@
 				
 			<field default="mylogs" description="PLG_FORM_LOG_FILE_DESC" label="PLG_FORM_LOG_FILE_LABEL" name="logs_file" repeat="true" size="30" type="text"/>
 				
-			<field default="0" description="PLG_FORM_LOG_RANDOMFILENAME_DESC" label="PLG_FORM_LOG_RANDOMFILENAME_LABEL" name="logs_random_filename" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_RANDOMFILENAME_DESC" label="PLG_FORM_LOG_RANDOMFILENAME_LABEL" name="logs_random_filename" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -57,7 +71,7 @@
 			
 			<field default="-----" description="PLG_FORM_LOG_SEPARATOR_DESC" label="PLG_FORM_LOG_SEPARATOR_LABEL" name="logs_separator" repeat="true" size="30" type="text"/>
 				
-			<field default="a" description="PLG_FORM_LOG_AORW_DESC" label="PLG_FORM_LOG_AORW_LABEL" name="logs_append_or_overwrite" repeat="true" type="radio">
+			<field default="a" description="PLG_FORM_LOG_AORW_DESC" label="PLG_FORM_LOG_AORW_LABEL" name="logs_append_or_overwrite" repeat="true" type="list">
 					<option value="a">PLG_FORM_LOG_APPEND</option>
 					<option value="w">PLG_FORM_LOG_OVERWRITE</option>
 			</field>
@@ -75,14 +89,18 @@
 				<option value="2">Generic</option>
 			</field>
 
-			<field default="0" description="PLG_FORM_LOG_FORM_LOAD_DESC" label="PLG_FORM_LOG_FORM_LOAD_LABEL" name="log_form_load" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="id">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_FORM_LOAD_DESC" label="PLG_FORM_LOG_FORM_LOAD_LABEL" name="log_form_load" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="id">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FORM_LOG_SEND_EMAIL_DESC" label="PLG_FORM_LOG_SEND_EMAIL_LABEL" name="log_send_email" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_LOG_SEND_EMAIL_DESC" label="PLG_FORM_LOG_SEND_EMAIL_LABEL" name="log_send_email" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			<field description="PLG_FORM_LOG_SEND_EMAIL_TO_DESC" label="PLG_FORM_LOG_SEND_EMAIL_TO_LABEL" name="log_send_email_to" repeat="true" size="30" type="text"/>

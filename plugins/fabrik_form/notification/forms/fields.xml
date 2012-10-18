@@ -12,7 +12,9 @@
 		
 		<fieldset name="plg-form-notification-user">
 			
-			<field default="0" description="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_DESC" label="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_LABEL" name="notification_ajax" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_DESC" label="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_LABEL" name="notification_ajax" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

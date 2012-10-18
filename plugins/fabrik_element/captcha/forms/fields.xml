@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-element-captcha">
-			<field default="0" description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" name="captcha-showloggedin" type="radio">
-				<option value="0">No</option>
-				<option value="1">Yes</option>
+		<fieldset name="plg-element-captcha" label="COM_FABRIK_OPTIONS">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_DESC" label="PLG_ELEMENT_CAPTCHA_SHOW_WHEN_LOGGED_IN_LABEL" name="captcha-showloggedin" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
-			<field default="standard" description="" label="PLG_ELEMENT_CAPTCHA_METHOD_LABEL" name="captcha-method" type="radio">
+			<field default="standard" description="" label="PLG_ELEMENT_CAPTCHA_METHOD_LABEL" name="captcha-method" type="list">
 				<option value="standard">Standard</option>
 				<option value="recaptcha">Recaptcha</option>
 			</field>
@@ -28,7 +30,7 @@
 		<fieldset label="PLG_ELEMENT_RECAPTCHA_CAPTCHA_FIELDSET_LABEL" name="plg-captcha-recaptcha">
 			<field description="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_DESC" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PUBLIC_KEY_LABEL" name="recaptcha_publickey" size="30" type="text"/>
 			<field default="" descripton="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_DESC" label="PLG_ELEMENT_CAPTCHA_RECAPTCHA_PRIVATE_KEY_LABEL" name="recaptcha_privatekey" size="30" type="text"/>
-			<field default="red" description="RECAPTCHA_THEME_DESC" label="PLG_ELEMENT_RECAPTCHA_THEME" name="recaptcha_theme" type="radio">
+			<field default="red" description="RECAPTCHA_THEME_DESC" label="PLG_ELEMENT_RECAPTCHA_THEME" name="recaptcha_theme" type="list">
 				<option value="red">Red</option>
 				<option value="white">White</option>
 				<option value="blackglass">Black Glass</option>

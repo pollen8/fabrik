@@ -355,7 +355,6 @@ var FbDateTime = new Class({
 		}
 		
 		var i = this.getContainer().getElement('i.icon-calendar');
-		console.log(i);
 	},
 
 	addNewEventAux : function (action, js) {
@@ -468,7 +467,7 @@ var FbDateTime = new Class({
 	getTimeButton: function () {
 		this.timeButton = this.getContainer().getElement('.timeButton');
 		if (typeOf(this.timeButton) === 'null') {
-			this.timeButton = this.getContainer().getElement('i.icon-time');
+			this.timeButton = this.getContainer().getElement('i.icon-clock');
 		}
 		return this.timeButton;
 	},

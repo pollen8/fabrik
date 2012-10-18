@@ -21,6 +21,26 @@ $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 $saveOrder	= $listOrder == 'e.ordering';
 
+$states	= array(
+		1	=> array(
+				'hideFromListView',
+				'COM_FABRIK_SHOW_IN_LIST',
+				'COM_FABRIK_REMOVE_FROM_LIST_VIEW',
+				'COM_FABRIK_SHOW_IN_LIST',
+				false,
+				'publish',
+				'publish'
+		),
+		0	=> array(
+				'showInListView',
+				'COM_FABRIK_REMOVE_FROM_LIST_VIEW',
+				'COM_FABRIK_SHOW_IN_LIST',
+				'COM_FABRIK_REMOVE_FROM_LIST_VIEW',
+				false,
+				'unpublish',
+				'unpublish'
+		),
+);
 
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=elements'); ?>" method="post" name="adminForm" id="adminForm">
@@ -153,7 +173,8 @@ $saveOrder	= $listOrder == 'e.ordering';
 				?>
 					</td>
 					<td><?php echo $item->id; ?></td>
-					<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
+					<td><?php $checkbox = JHtml::_('grid.id', $i, $item->id);
+					echo $checkbox; ?></td>
 					<td>
 						<?php
 						if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
@@ -181,7 +202,9 @@ $saveOrder	= $listOrder == 'e.ordering';
 						<?php echo $item->plugin; ?>
 					</td>
 					<td>
-						<?php echo JHtmlGrid::boolean($i, $item->show_in_list_summary, 'elements.showInListView', 'elements.hideFromListView');?>
+						<?php
+						echo JHtml::_('jgrid.state', $states, $item->show_in_list_summary, $i, 'elements.', true, true);
+						?>
 					</td>
 					<td>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>

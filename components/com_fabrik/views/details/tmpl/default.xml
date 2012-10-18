@@ -20,7 +20,9 @@
 				
 			<field description="COM_FABRIK_FIELD_KEY_NAME_DESC" label="COM_FABRIK_FIELD_KEY_NAME_LABEL" name="usekey" size="15" type="text"/>
 				
-			<field default="0" description="COM_FABRIK_FIELD_SHOW_RANDOM_RECORDS_DESC" label="COM_FABRIK_FIELD_SHOW_RANDOM_RECORDS_LABEL" name="random" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="COM_FABRIK_FIELD_SHOW_RANDOM_RECORDS_DESC" label="COM_FABRIK_FIELD_SHOW_RANDOM_RECORDS_LABEL" name="random" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

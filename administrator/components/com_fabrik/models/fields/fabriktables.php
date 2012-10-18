@@ -93,10 +93,11 @@ class JFormFieldFabrikTables extends JFormFieldList
 		$script = array();
 		if ($connectionDd != '' && !array_key_exists($this->id, $fabriktables))
 		{
+			$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 			if ($this->form->repeat)
 			{
 				// In repeat fieldset/group
-				$connectionDd = $connectionDd . '-' . $this->form->repeatCounter;
+				$connectionDd = $connectionDd . '-' . $repeatCounter;
 			}
 			else
 			{
@@ -109,7 +110,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$opts->value = $this->value;
 			$opts->connInRepeat = (bool) $this->element['connection_in_repeat'][0];
 			$opts->inRepeatGroup = $this->form->repeat;
-			$opts->repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
+			$opts->repeatCounter = $repeatCounter;
 			$opts->container = 'test';
 			$opts = json_encode($opts);
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";

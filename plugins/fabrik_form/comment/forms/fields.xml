@@ -17,22 +17,30 @@
 
 			<field description="PLG_FORM_COMMENT_LOCK_COMMENTS_DESC" label="PLG_FORM_COMMENT_LOCK_COMMENTS_LABEL" name="comment_lock_element" repeat="true" type="listfields" valueformat="tableelement"/>
 			
-			<field default="0" description="PLG_FORM_COMMENT_ALLOW_RATING_DESC" label="PLG_FORM_COMMENT_ALLOW_RATING_LABEL" name="comment-internal-rating" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_ALLOW_RATING_DESC" label="PLG_FORM_COMMENT_ALLOW_RATING_LABEL" name="comment-internal-rating" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC" label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL" name="comment-notify-admins" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			
-			<field default="0" description="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_DESC" label="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_LABEL" name="comment-internal-anonymous" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_NOTIFY_ADMINS_DESC" label="PLG_FORM_COMMENT_NOTIFY_ADMINS_LABEL" name="comment-notify-admins" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC" label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL" name="comment-internal-notify" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_DESC" label="PLG_FORM_COMMENT_ALLOW_ANANYMOUS_LABEL" name="comment-internal-anonymous" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field default="0"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_DESC" label="PLG_FORM_COMMENT_NOTIFY_ON_NEW_COMMENT_LABEL" name="comment-internal-notify" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -43,12 +51,16 @@
 					<option value="2">Automatic</option>
 			</field>
 			
-			<field default="1" description="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_DESC" label="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_LABEL" name="comment-show-count-in-title" repeat="true" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_DESC" label="PLG_FORM_COMMENT_SHOW_COUNT_IN_TITLE_LABEL" name="comment-show-count-in-title" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field deafult="0" description="PLG_FORM_COMMENT_DIGG_DESC" label="PLG_FORM_COMMENT_DIGG_LABEL" name="comment-digg" repeat="true" type="radio">
+			<field deafult="0"
+				class="btn-group"
+				description="PLG_FORM_COMMENT_DIGG_DESC" label="PLG_FORM_COMMENT_DIGG_LABEL" name="comment-digg" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

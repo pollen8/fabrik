@@ -34,5 +34,6 @@ $row = $this->row;
 	<div><?php echo $row->intro_text;?></div>
 	<?php }
 	?>
-
+	<div class="well well-small monthDisplay">
+	</div>
 </div>

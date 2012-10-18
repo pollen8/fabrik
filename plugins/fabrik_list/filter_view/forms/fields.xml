@@ -13,7 +13,9 @@
 							
 							<field cols="50" label="PLG_LIST_FILTER_VIEW_FILTER_LABEL" name="url" rows="3" type="textarea"/>
 							
-							<field default="0" label="count" name="count" repeat="true" type="radio">
+							<field default="0"
+								class="btn-group"
+								label="count" name="count" repeat="true" type="radio">
 									<option value="0">JNO</option>
 									<option value="1">JYES</option>	
 							</field>

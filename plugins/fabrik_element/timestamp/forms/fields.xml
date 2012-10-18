@@ -4,12 +4,14 @@
 
 		<fieldset name="plg-element-timestamp">
 
-			<field default="0" description="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_DESC" label="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_LABEL" name="gmt_or_local" type="radio">
+			<field default="0" description="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_DESC" label="PLG_ELEMENT_TIMESTAMP_GMT_OR_LOCAL_LABEL" name="gmt_or_local" type="list">
 				<option value="0">GMT</option>
 				<option value="1">Local Server Time</option>
 			</field>
 
-			<field default="0" descripton="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_LABEL" name="timestamp_update_on_edit" type="radio">
+			<field default="0"
+				class="btn-group"
+				descripton="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_TIMESTAMP_UPDATE_ON_EDIT_LABEL" name="timestamp_update_on_edit" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>

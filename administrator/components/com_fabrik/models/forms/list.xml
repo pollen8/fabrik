@@ -117,6 +117,7 @@
 				
 				<field name="group_by_start_collapsed"
 					type="radio"
+					class="btn-group"
 					default="0"
 					description="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_DESC"
 					label="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_LABEL">
@@ -126,6 +127,7 @@
 				
 				<field name="group_by_collapse_others"
 					type="radio"
+					class="btn-group"
 					default="0"
 					description="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_DESC"
 					label="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_LABEL">

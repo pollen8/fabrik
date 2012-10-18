@@ -6,7 +6,9 @@
 				
 			<field cols="30" description="PLG_VALIDATIONRULE_ISEMAIL_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISEMAIL_CONDITION_LABEL" name="isemail-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
-			<field default="0" description="PLG_VALIDATIONRULE_ALLOW_EMPTY_DESC" label="PLG_VALIDATIONRULE_ALLOW_EMPTY_LABEL" name="isemail-allow_empty" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_VALIDATIONRULE_ALLOW_EMPTY_DESC" label="PLG_VALIDATIONRULE_ALLOW_EMPTY_LABEL" name="isemail-allow_empty" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

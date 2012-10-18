@@ -1,5 +1,5 @@
 
-
+<div class="row-fluid">
 <ul class="nav nav-pills  pull-left">
 
 <?php if ($this->showAdd) {?>
@@ -28,7 +28,7 @@
 
 <?php endif ?>
 
-<?php if ($this->showClearFilters) :?>
+<?php if ($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))) :?>
 	<li><a class="clearFilters" href="#">
 			<i class="icon-refresh"></i>
 			<?php echo JText::_('COM_FABRIK_CLEAR')?>
@@ -87,16 +87,21 @@
 	<?php }?>
 
 </ul>
+<?php if (array_key_exists('all', $this->filters) || $this->filter_action != 'onchange') :
+?>
 <ul class="nav pull-right">
 	<li>
-	<?php if (array_key_exists('all', $this->filters)) {
-			 echo $this->filters['all']->element ?>
-			<?php }?>
-			<?php if ($this->filter_action != 'onchange') {?>
-			<input type="button" class="btn fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
-			<?php } ?>
+	<?php if (array_key_exists('all', $this->filters)) :
+		echo $this->filters['all']->element;
+	endif;
+	if ($this->filter_action != 'onchange') :?>
+	<input type="button" class="btn fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
+	<?php
+	endif;
+	?>
  </li>
 </ul>
-
-
-<p></p>
+<?php
+endif;
+?>
+</div>

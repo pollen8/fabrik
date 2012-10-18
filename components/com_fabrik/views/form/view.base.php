@@ -655,7 +655,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$canDelete = $listModel->canDelete($model->data);
 		$params = $model->getParams();
 		$task = 'form.process';
-		$reffer = $input->server->get('HTTP_REFERER', '');
+		$reffer = $input->server->get('HTTP_REFERER', '', 'string');
 
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
 		$reffer = str_replace('&', '&amp;', $input->get('fabrik_referrer', $reffer, 'string'));

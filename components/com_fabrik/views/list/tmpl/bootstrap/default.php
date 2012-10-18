@@ -54,10 +54,14 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 
 			if ($this->isGrouped) : ?>
 			<tbody>
-			<tr class="fabrik_groupheading">
+			<tr class="fabrik_groupheading fabrik_groupheading info">
 				<td colspan="<?php echo $this->colCount;?>">
-					<a href="#" class="toggle">
-						<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
+				<?php if ($this->emptyDataMessage != '') : ?>
+				<a href="#" class="toggle">
+				<?php else: ?>
+					<a href="#" class="toggle fabrikTip" title="<?php echo $this->emptyDataMessage?>" opts='{trigger: "hover"}'>
+				<?php endif;?>
+						<?php echo FabrikHelperHTML::image('arrow-down.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
 						<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
 					</a>
 				</td>
@@ -65,15 +69,6 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 			</tbody>
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
-			<?php if ($this->isGrouped) : ?>
-			<tr>
-				<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
-					<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
-						<?php echo $this->emptyDataMessage; ?>
-					</div>
-				</td>
-			</tr>
-			<?php endif ?>
 			<?php
 			foreach ($group as $this->_row) :
 				echo $this->loadTemplate('row');

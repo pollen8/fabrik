@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
-		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection">
+		<fieldset description="CONNECTIONONLYFABRIKTABLES" name="connection" label="COM_FABRIK_DATA">
 
 			<field label="COM_FABRIK_FIELD_CONNECTION_LABEL" name="fusion_gantt_chart_connection" type="connections"/>
 
 			<field connection_in_repeat="false" label="PLG_VISUALIZATION_GANTT_TABLE_LABEL" name="fusion_gantt_chart_table" observe="params_fusion_gantt_chart_connection" repeat="0" type="fabriktables"/>
 				
-			<field default="1" description="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_DESC" label="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_LABEL" name="fusion_gantt_chart_show_filters" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_DESC" label="PLG_VISUALIZATION_GANNT_SHOW_FILTERS_LABEL" name="fusion_gantt_chart_show_filters" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

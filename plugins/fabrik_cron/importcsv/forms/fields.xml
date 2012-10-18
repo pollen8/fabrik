@@ -5,9 +5,11 @@
 				
 			<field description="PLG_CRON_IMPORTCSV_DIR_DESC" label="PLG_CRON_IMPORTCSV_DIR_LABEL" name="cron_importcsv_directory" size="30" type="text"/>
 				
-			<field default="0" description="PLG_CRON_IMPORTCSV_USETABLENAME_DESC" label="PLG_CRON_IMPORTCSV_USETABLENAME_LABEL" name="cron_importcsv_usetablename" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="PLG_CRON_IMPORTCSV_USETABLENAME_DESC" label="PLG_CRON_IMPORTCSV_USETABLENAME_LABEL" name="cron_importcsv_usetablename" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			<field default="1" description="PLG_CRON_IMPORTCSV_MAXFILES_DESC" label="PLG_CRON_IMPORTCSV_MAXFILES_LABEL" name="cron_importcsv_maxfiles" size="2" type="text"/>
@@ -16,14 +18,18 @@
 
 			<field default="&quot;" description="PLG_CRON_IMPORTCSV_TEXT_DELIMITER_DESC" label="PLG_CRON_IMPORTCSV_TEXT_DELIMITER_LABEL" name="cron_importcsv_text_delimiter" size="2" type="text"/>
 		
-			<field default="0" description="PLG_CRON_IMPORTCSV_DROPDATA_DESC" label="PLG_CRON_IMPORTCSV_DROPDATA_LABEL" name="cron_importcsv_dropdata" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="PLG_CRON_IMPORTCSV_DROPDATA_DESC" label="PLG_CRON_IMPORTCSV_DROPDATA_LABEL" name="cron_importcsv_dropdata" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_CRON_IMPORTCSV_OVERWRITE_DESC" label="PLG_CRON_IMPORTCSV_OVERWRITE_LABEL" name="cron_importcsv_overwrite" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="0"
+				class="btn-group"
+				description="PLG_CRON_IMPORTCSV_OVERWRITE_DESC" label="PLG_CRON_IMPORTCSV_OVERWRITE_LABEL" name="cron_importcsv_overwrite" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			<field default="1" description="PLG_CRON_IMPORTCSV_FILEACTION_DESC" label="PLG_CRON_IMPORTCSV_FILEACTION_LABEL" name="cron_importcsv_deletefile" type="list">

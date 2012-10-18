@@ -63,7 +63,9 @@
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_MAP_TO_LABEL" name="map_to" repeat="true" type="listfields"/>
 						<field cols="30" label="PLG_FABRIK_LIST_WEBSERVICE_MAP_MATCH_LABEL" name="map_match" repeat="true" rows="3" type="textarea"/>
 						<field label="PLG_FABRIK_LIST_WEBSERVICE_MAP_VALUE_LABEL" name="map_value" type="text"/>
-						<field default="0" label="PLG_FABRIK_LIST_WEBSERVICE_EVAL_LABEL" name="map_eval" repeat="true" type="radio">
+						<field default="0"
+							class="btn-group"
+							label="PLG_FABRIK_LIST_WEBSERVICE_EVAL_LABEL" name="map_eval" repeat="true" type="radio">
 								<option value="0">JNO</option>
 								<option value="1">JYES</option>	
 						</field>
@@ -71,7 +73,9 @@
 				</fields>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_LIST_WEBSERVICE_UPDATE_EXISTING_DESC" label="PLG_FABRIK_LIST_WEBSERVICE_UPDATE_EXISTING_LABEL" name="webservice_update_existing" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_LIST_WEBSERVICE_UPDATE_EXISTING_DESC" label="PLG_FABRIK_LIST_WEBSERVICE_UPDATE_EXISTING_LABEL" name="webservice_update_existing" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>

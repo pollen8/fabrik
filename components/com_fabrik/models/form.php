@@ -387,6 +387,7 @@ class FabrikFEModelForm extends FabModelForm
 		$params = $this->getParams();
 		$item = $this->getForm();
 		$tmpl = '';
+		$default = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$document = JFactory::getDocument();
 		if ($document->getType() === 'pdf')
 		{
@@ -402,11 +403,11 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				if ($this->isEditable())
 				{
-					$tmpl = $item->form_template == '' ? 'default' : $item->form_template;
+					$tmpl = $item->form_template == '' ? $default : $item->form_template;
 				}
 				else
 				{
-					$tmpl = $item->view_only_template == '' ? 'default' : $item->view_only_template;
+					$tmpl = $item->view_only_template == '' ? $default : $item->view_only_template;
 				}
 			}
 		}
@@ -418,7 +419,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Test it exists - otherwise revert to default tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
 		{
-			$tmpl = 'default';
+			$tmpl = $default;
 		}
 		$item->form_template = $tmpl;
 		return $tmpl;
@@ -4808,7 +4809,7 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				else
 				{
 					// Return to the page that called the form
-					$url = urldecode($input->post->get('fabrik_referrer', 'index.php'));
+					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
 				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 				if ($url == '')

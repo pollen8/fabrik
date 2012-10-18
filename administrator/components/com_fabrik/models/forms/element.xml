@@ -4,19 +4,23 @@
 	
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="details">
 		
-		<field class="readonly" default="0" label="COM_FABRIK_ID_LABEL" name="id" readonly="true" size="10" type="text"/>
-		
 		<field filter="unset" name="asset_id" type="hidden"/>
 		
 		<field description="COM_FABRIK_FIELD_ELEMENT_NAME_DESC" label="COM_FABRIK_FIELD_ELEMENT_NAME_LABEL" name="name" required="true" size="35" type="text"/>
 			
 		<field description="COM_FABRIK_FIELD_ELEMENT_LABEL_DESC" label="COM_FABRIK_FIELD_ELEMENT_LABEL_LABEL" name="label" size="35" type="textorwysiwyg"/>
+		
+		<field description="COM_FABRIK_FIELD_ELEMENT_PLUGIN_DESC" label="COM_FABRIK_FIELD_ELEMENT_PLUGIN_LABEL" name="plugin" plugin="fabrik_element" required="true" type="pluginlist"/>
 			
+	</fieldset>
+	
+	<fieldset name="details2">
+		
+		<field class="readonly" default="0" label="COM_FABRIK_ID_LABEL" name="id" readonly="true" size="10" type="text"/>
 		<field description="COM_FABRIK_FIELD_GROUP_DESC" label="COM_FABRIK_FIELD_GROUP_LABEL" name="group_id" required="true" type="grouplist"/>
 			
 		<field description="COM_FABRIK_FIELD_ORDER_DESC" label="COM_FABRIK_FIELD_ORDER_LABEL" name="ordering" type="specificordering"/>
-			
-		<field description="COM_FABRIK_FIELD_ELEMENT_PLUGIN_DESC" label="COM_FABRIK_FIELD_ELEMENT_PLUGIN_LABEL" name="plugin" plugin="fabrik_element" required="true" type="pluginlist"/>
+		
 	</fieldset>
 	
 	<fieldset name="publishing">

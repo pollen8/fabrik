@@ -52,7 +52,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
-		$ext = $params->get('rating-pngorgif', '.png');
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 		$data = FabrikWorker::JSONtoData($data, true);
 
@@ -60,8 +59,9 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			. 'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
 			. $this->getElement()->id;
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
-		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
-		$outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
+		$imgOpts = array('bootstrap' => false);
+		$insrc = FabrikHelperHTML::image("star_in.png", 'list', @$this->tmpl, $imgOpts, true);
+		$outsrc = FabrikHelperHTML::image("star_out.png", 'list', @$this->tmpl, $imgOpts, true);
 
 		$url .= '&amp;row_id=' . $thisRow->__pk_val;
 		$url .= '&amp;elementname=' . $this->getElement()->id;
@@ -89,14 +89,14 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			{
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
-				$str[] = $a . '<img src="' . $imagepath . 'star_in' . $ext . '" style="padding-left:1px;" alt="' . $r . '" class="starRating rate_'
+				$str[] = $a . '<img src="' . $imagepath . 'star_in.png" style="padding-left:1px;" alt="' . $r . '" class="starRating rate_'
 					. $r . '"/>' . $a2;
 			}
 			for ($s = $avg; $s < 5; $s++)
 			{
 				$r = $s + 1;
 				$a = str_replace('{r}', $r, $atpl);
-				$str[] = $a . '<img src="' . $imagepath . 'star_out' . $ext . '" style="padding-left:1px;" alt="' . $r . '" class="starRating rate_'
+				$str[] = $a . '<img src="' . $imagepath . 'star_out.png" style="padding-left:1px;" alt="' . $r . '" class="starRating rate_'
 					. $r . '"/>' . $a2;
 			}
 			if ($params->get('rating-mode') != 'creator-rating')
@@ -283,7 +283,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			return JText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
 		}
-		$ext = $params->get('rating-pngorgif', '.png');
 		$element = $this->getElement();
 		$css = $this->canRate() ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
@@ -291,14 +290,15 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'form', false);
-		$insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
-		$outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
-		$clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
+		$imgOpts = array('bootstrap' => false);
+		$insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, $imgOpts, true);
+		$outsrc = FabrikHelperHTML::image("star_out.png", 'form', @$this->tmpl, $imgOpts, true);
+		$clearsrc = FabrikHelperHTML::image("clear_rating_out.png", 'form', @$this->tmpl, $imgOpts, true);
 		$str = array();
 		$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
 		if ($params->get('rating-nonefirst') && $this->canRate())
 		{
-			$str[] = '<img src="' . $imagepath . 'clear_rating_out' . $ext . '" style="' . $css . 'padding:3px;" alt="clear" class="rate_-1" />';
+			$str[] = '<img src="' . $imagepath . 'clear_rating_out.png" style="' . $css . 'padding:3px;" alt="clear" class="rate_-1" />';
 		}
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
@@ -448,7 +448,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$date = JFactory::getDate('now', $tzoffset);
 		$strDate = $db->quote($date->toSql());
 		$userid = $db->quote($this->getStoreUserId($listid, $row_id));
-		$elementid = $this->getElement()->id;
+		$elementid = (int) $this->getElement()->id;
+		$query = $db->getQuery(true);
+		$formid = (int) $formid;
+		$listid = (int) $listid;
+		$rating = (int) $rating;
+		$row_id = $db->quote($row_id);
 		$db
 			->setQuery(
 				"INSERT INTO #__fabrik_ratings (user_id, listid, formid, row_id, rating, date_created, element_id)
@@ -504,10 +509,10 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 		$opts = new stdClass;
 		$ext = $params->get('rating-pngorgif', '.png');
-		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'form', @$this->tmpl, array(), true);
-		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'form', @$this->tmpl, array(), true);
-		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out$ext", 'form', @$this->tmpl, array(), true);
-		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in$ext", 'form', @$this->tmpl, array(), true);
+		$opts->insrc = FabrikHelperHTML::image("star_in.png", 'form', @$this->tmpl, array(), true);
+		$opts->outsrc = FabrikHelperHTML::image("star_out.png", 'form', @$this->tmpl, array(), true);
+		$opts->clearoutsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_out.png", 'form', @$this->tmpl, array(), true);
+		$opts->clearinsrc = $clearsrc = FabrikHelperHTML::image("clear_rating_in.png", 'form', @$this->tmpl, array(), true);
 		$opts->row_id = $input->getInt('rowid');
 		$opts->elid = $this->getElement()->id;
 		$opts->userid = (int) $user->get('id');
@@ -533,16 +538,17 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$id = $this->getHTMLId();
-		$list = $this->getlistModel()->getTable();
-		$ext = $params->get('rating-pngorgif', '.png');
+		$listModel = $this->getlistModel();
+		$list = $listModel->getTable();
 		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
 		$opts->imagepath = $imagepath;
 		$opts->elid = $this->getElement()->id;
-		$opts->insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);
-		$opts->outsrc = FabrikHelperHTML::image("star_out$ext", 'list', @$this->tmpl, array(), true);
+		$opts->insrc = FabrikHelperHTML::image("star_in.png", 'list', @$this->tmpl, array(), true);
+		$opts->outsrc = FabrikHelperHTML::image("star_out.png", 'list', @$this->tmpl, array(), true);
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
+		$opts->listRef = $listModel->getRenderContext();
 		$opts->userid = (int) $user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);

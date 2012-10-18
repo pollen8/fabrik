@@ -19,37 +19,51 @@
 			
 		<field default="0" description="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_LABEL" name="juser_field_default_group" repeat="true" type="usergroup"/>
 			
-		<field default="0" description="PLG_FABRIK_FORM_JUSER_DELETE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_DELETE_USERS_LABEL" name="juser_delete_user" repeat="true" type="radio">
+		<field default="0"
+			class="btn-group"
+			description="PLG_FABRIK_FORM_JUSER_DELETE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_DELETE_USERS_LABEL" name="juser_delete_user" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>		
 			
-		<field default="0" description="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_LABEL" name="juser_bypass_activation" repeat="true" type="radio">
+		<field default="0"
+			class="btn-group"
+			description="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_LABEL" name="juser_bypass_activation" repeat="true" type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 			
-			<field default="1" description="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_LABEL" name="juser_bypass_registration" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field default="1"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_LABEL" name="juser_bypass_registration" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL" name="juser_bypass_accountdetails" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL" name="juser_bypass_accountdetails" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 				
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_DESC" label="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_LABEL" name="juser_auto_login" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_DESC" label="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_LABEL" name="juser_auto_login" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL" name="synchro_users" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL" name="synchro_users" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0" description="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_DESC" label="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_LABEL" name="juser_sync_on_edit" repeat="true" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_DESC" label="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_LABEL" name="juser_sync_on_edit" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

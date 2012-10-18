@@ -21,14 +21,17 @@ var PluginManager = new Class({
 		this.watchDelete();
 		this.watchAdd();
 		
-		document.id('plugins').addEvent('click:relay(h3.title)', function (e, target) {
-			document.id('plugins').getElements('h3.title').each(function (h) {
-				if (h !== target) {
-					h.removeClass('pane-toggler-down');
-				}
+		var pluginArea = document.id('plugins');
+		if (typeOf(pluginArea) !== 'null') {
+			pluginArea.addEvent('click:relay(h3.title)', function (e, target) {
+				document.id('plugins').getElements('h3.title').each(function (h) {
+					if (h !== target) {
+						h.removeClass('pane-toggler-down');
+					}
+				});
+				target.toggleClass('pane-toggler-down');
 			});
-			target.toggleClass('pane-toggler-down');
-		});
+		}
 	},
 	
 	iniAccordian: function () {
@@ -90,7 +93,7 @@ var PluginManager = new Class({
 	},
 	
 	watchDelete: function () {
-		document.id('adminForm').addEvent('click:relay(a.removeButton)', function (event, target) {
+		document.id('adminForm').addEvent('click:relay(a.removeButton, a[data-button=removeButton])', function (event, target) {
 			event.preventDefault();
 			this.pluginTotal --;
 			this.topTotal --;
@@ -99,21 +102,27 @@ var PluginManager = new Class({
 	},
 	
 	watchAdd: function () {
-		document.id('addPlugin').addEvent('click', function (e) {
-			e.stop();
-			this.accordion.display(-1);
-			this.addTop();
-		}.bind(this));
+		var addPlugin = document.id('addPlugin');
+		if (typeOf(addPlugin) !== 'null') {
+			addPlugin.addEvent('click', function (e) {
+				e.stop();
+				this.accordion.display(-1);
+				this.addTop();
+			}.bind(this));
+		}
 	},
 	
 	addTop: function (plugin) {
 		plugin = plugin ? plugin : '';
-		var div = new Element('div.actionContainer.panel');
-		var toggler = new Element('h3.title.pane-toggler').adopt(new Element('a', {'href': '#'}).adopt(new Element('span').set('text', plugin)));
+		var div = new Element('div.actionContainer.panel.accordion-group');
+		var a = new Element('a.accordion-toggle', {'href': '#'}).adopt(new Element('span.pluginTitle').set('text', plugin));
+		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(
+		new Element('strong').adopt(a));
 			
 		div.adopt(toggler);
+		div.adopt(new Element('div.accordion-body'));
 		div.inject(document.id('plugins'));
-		var append = document.id('plugins').getElements('.actionContainer').getLast();
+		var append = document.id('plugins').getElements('.actionContainer .accordion-body').getLast();
 		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
 		
 		var request = new Request.HTML({
@@ -135,6 +144,7 @@ var PluginManager = new Class({
 					this.addPlugin(plugin);
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
+				this.updateBootStrap();
 			}.bind(this),
 			onFailure: function (xhr) {
 				console.log('fail', xhr);
@@ -147,6 +157,35 @@ var PluginManager = new Class({
 		Fabrik.requestQueue.add(request);
 	},
 	
+	// Bootstrap specific
+	
+	updateBootStrap: function () {
+		document.getElements('.radio.btn-group label').addClass('btn');
+		 
+		 document.getElements(".btn-group input[checked=checked]").each(function (el) {
+			if (el.get('value') === '') {
+	           document.getElement("label[for=" + el.get('id') + "]").addClass('active btn-primary');
+	        } else if (el.get('value') === '0') {
+	           document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-danger');
+	        } else {
+	        	document.getElement("label[for=" +  el.get('id') + "]").addClass('active btn-success');
+	        }
+			if (typeof(jQuery) !== 'undefined') {
+				jQuery('*[rel=tooltip]').tooltip();
+			}
+			
+			document.getElements('.hasTip').each(function(el) {
+				var title = el.get('title');
+				if (title) {
+					var parts = title.split('::', 2);
+					el.store('tip:title', parts[0]);
+					el.store('tip:text', parts[1]);
+				}
+			});
+			var JTooltips = new Tips($$('.hasTip'), { maxTitleChars: 50, fixed: false});
+	    });
+	},
+	
 	/**
 	 * Watch the plugin select list
 	 */
@@ -155,8 +194,8 @@ var PluginManager = new Class({
 		document.id('adminForm').addEvent('change:relay(select.elementtype)', function (event, target) {
 			event.preventDefault();
 			var plugin = target.get('value');
-			var container = target.getParent('.adminform');
-			target.getParent('.actionContainer').getElement('h3 a span').set('text', plugin);
+			var container = target.getParent('.pluginContanier');
+			target.getParent('.actionContainer').getElement('span.pluginTitle').set('text', plugin);
 			var c = container.id.replace('formAction_', '').toInt();
 			this.addPlugin(plugin, c);
 		}.bind(this));
@@ -183,6 +222,7 @@ var PluginManager = new Class({
 			},
 			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts'),
 			onComplete: function () {
+				this.updateBootStrap();
 			}.bind(this)
 		});
 		this.pluginTotal ++;
@@ -190,8 +230,9 @@ var PluginManager = new Class({
 	},
 
 	deletePlugin: function (e) {
-		if (e.target.findClassUp('adminform').id.test(/_\d+$/)) {
-			var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
+		if (e.target.getParent('.pluginContanier').id.test(/_\d+$/)) {
+			// var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
+			var x = e.target.getParent('fieldset').id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea').each(function (i) {
 				var s = i.name.match(/\[[0-9]+\]/);
 				if (s) {

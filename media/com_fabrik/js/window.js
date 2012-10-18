@@ -45,7 +45,8 @@ Fabrik.Window = new Class({
 		onContentLoaded: function () {
 			this.fitToContent();
 		},
-		destroy: false
+		destroy: false,
+		bootstrap: false
 	},
 	
 	modal: false,
@@ -75,32 +76,41 @@ Fabrik.Window = new Class({
 			this.close(e);
 		}.bind(this);
 		var del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
-		art.inject(del);
+		if (this.options.bootstrap) {
+			del.adopt(new Element('i.icon-cancel.small'));
+		} else {
+			art.inject(del);
+		}
+		
 		
 		var hclass = 'handlelabel';
 		if (!this.modal) {
 			hclass += ' draggable';
 			draggerC = new Element('div', {'class': 'bottomBar'});
 			dragger = new Element('div', {'class': 'dragger'});
-			var resizeIcon = Fabrik.iconGen.create(icon.resize, {
-				scale: 0.8, 
-				rotate: 0,
-				shadow: {
-					color: '#fff',
-					translate: {x: 0, y: 1}
-				},
-				fill: {
-					color: ['#999', '#666']
-				}
-			});
+				resizeIcon = Fabrik.iconGen.create(icon.resize, {
+					scale: 0.8, 
+					rotate: 0,
+					shadow: {
+						color: '#fff',
+						translate: {x: 0, y: 1}
+					},
+					fill: {
+						color: ['#999', '#666']
+					}
+				});
+			}
 			resizeIcon.inject(dragger);
 			draggerC.adopt(dragger);
-		}
 		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
 		handleParts.push(label);
-		var expandIcon = Fabrik.iconGen.create(icon.expand, {scale: 0.4, fill: {
-			color: ['#666666', '#999999']
-		}});
+		if (this.options.bootstrap) {
+			var expandIcon = new Element('i.icon-out-2.small'); 
+		} else {
+			expandIcon = Fabrik.iconGen.create(icon.expand, {scale: 0.4, fill: {
+				color: ['#666666', '#999999']
+			}});
+		}
 		if (this.options.expandable && this.modal === false) {
 			expandButton = new Element('a', {'href': '#', 'class': 'expand', 'events': {
 				'click': function (e) {

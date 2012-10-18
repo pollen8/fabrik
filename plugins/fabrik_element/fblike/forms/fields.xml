@@ -12,7 +12,9 @@
 					<option value="button_count">button_count</option>
 			</field>
 			
-			<field default="false" label="PLG_ELEMENT_FBLIKE_SHOW_FACES_LABEL" name="fblike_showfaces" type="radio">
+			<field default="0"
+				class="btn-group"
+				label="PLG_ELEMENT_FBLIKE_SHOW_FACES_LABEL" name="fblike_showfaces" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

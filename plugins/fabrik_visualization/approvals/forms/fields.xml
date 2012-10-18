@@ -2,7 +2,7 @@
 <form>
 	<fields name="params">
 		
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-approvals-params" repeat="1" repeatcontrols="1" repeatmin="1">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" label="COM_FABRIK_DATA" name="plg-visualization-approvals-params" repeat="1" repeatcontrols="1" repeatmin="1">
 			
 			<field description="PLG_VIZ_APPROVALS_CONNECTION_DESC" label="PLG_VIZ_APPROVALS_CONNECTION_LABEL" name="approvals_connection" type="connections"/>
 				
