@@ -2964,6 +2964,8 @@ class FabrikFEModelForm extends FabModelForm
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
+		$session = JFactory::getSession();
+		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->_data);
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
