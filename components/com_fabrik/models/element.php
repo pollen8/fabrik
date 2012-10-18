@@ -4396,7 +4396,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$db->query();
 
 		$query->clear();
-		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
+		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('INNER', ' #__{package}_joins AS j ON j.element_id = e.id')
 			->where('e.parent_id = ' . $id);
 		$db->setQuery($query);
 		$join_ids = $db->loadColumn();

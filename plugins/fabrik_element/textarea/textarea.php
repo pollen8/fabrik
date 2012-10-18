@@ -74,12 +74,13 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 					$qs = strstr($url, '?');
 					if (substr($url, -1) === '?')
 					{
-						$thisurl = "$url$name=$d";
+						$thisurl = $url . $name . '[value]=' . $d;
 					}
 					else
 					{
-						$thisurl = strstr($url, '?') ? "$url&$name=" . urlencode($d) : "$url?$name=" . urlencode($d);
+						$thisurl = strstr($url, '?') ? $url . '&' . $name . '[value]=' . urlencode($d) : $url . '?' . $name . '[value]=' . urlencode($d);
 					}
+					$thisurl .= '&' . $name . '[condition]=CONTAINS';
 				}
 				else
 				{
