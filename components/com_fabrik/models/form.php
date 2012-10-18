@@ -2725,11 +2725,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array  $opts    'includePublised' can be set to 0; @since 3.0.7
 	 *
 	 * @return  array  ints ids
 	 */
 
-	public function getElementIds($ignore = array())
+	public function getElementIds($ignore = array(), $opts = array())
 	{
 		$aEls = array();
 		$groups = $this->getGroupsHiarachy();
@@ -2741,7 +2742,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$class = get_class($elementModel);
 				if (!in_array($class, $ignore))
 				{
-					$aEls[] = (int) $elementModel->getElement()->id;
+					$element = $elementModel->getElement();
+					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+					{
+						continue;
+					}
+					$aEls[] = (int) $element->id;
 				}
 			}
 		}

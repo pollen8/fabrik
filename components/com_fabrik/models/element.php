@@ -2996,7 +2996,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 		}
 		$sql .= ' ' . $elementWhere;
-
+echo $sql;
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
