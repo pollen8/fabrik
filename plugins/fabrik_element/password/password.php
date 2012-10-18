@@ -107,9 +107,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
-		$html = array();
-		$html[] = $this->buildInput('input', $bits);
-		$html[] = '<span class="strength"></span>';
+		$pw1 = $this->buildInput('input', $bits);
 		$origname = $element->name;
 		$element->name = $element->name . "_check";
 		$name = $this->getHTMLName($repeatCounter);
@@ -117,8 +115,35 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
 		$bits['id'] = $name;
-		$html[] = $this->buildInput('input', $bits);
+		if (FabrikWorker::j3())
+		{
+			$bits['style'] = 'margin-top:20px';
+		}
+		$pw2 = $this->buildInput('input', $bits);
 		$element->name = $origname;
+
+		$html = array();
+
+		if (FabrikWorker::j3())
+		{
+
+			$html[] = '<div class="row-fluid">';
+			$html[] = '<div class="span5">';
+			$html[] = $pw1;
+			$html[] = '<br />';
+			$html[] = $pw2;
+			$html[] = '</div>';
+			$html[] = '<div class="span4">';
+			$html[] = '<div class="strength progress progress-striped"></div>';
+			$html[] = '</div>';
+			$html[] = '</div>';
+		}
+		else
+		{
+			$html[] = $pw1;
+			$html[] = '<span class="strength"></span>';
+			$html[] = $pw2;
+		}
 		return implode("\n", $html);
 	}
 

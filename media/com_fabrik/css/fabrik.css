@@ -528,6 +528,10 @@ table.fabrikList .oddRow1 {
   max-width: none;
 }
 
+[class^="icon-"].small{
+	font-size: 10px;
+}
+
 .fabrikElement .map label { 
   width: auto; display:inline; 
 } 

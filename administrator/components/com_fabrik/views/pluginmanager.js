@@ -114,12 +114,15 @@ var PluginManager = new Class({
 	
 	addTop: function (plugin) {
 		plugin = plugin ? plugin : '';
-		var div = new Element('div.actionContainer.panel');
-		var toggler = new Element('h3.title.pane-toggler').adopt(new Element('a', {'href': '#'}).adopt(new Element('span').set('text', plugin)));
+		var div = new Element('div.actionContainer.panel.accordion-group');
+		var a = new Element('a.accordion-toggle', {'href': '#'}).adopt(new Element('span.pluginTitle').set('text', plugin));
+		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(
+		new Element('strong').adopt(a));
 			
 		div.adopt(toggler);
+		div.adopt(new Element('div.accordion-body'));
 		div.inject(document.id('plugins'));
-		var append = document.id('plugins').getElements('.actionContainer').getLast();
+		var append = document.id('plugins').getElements('.actionContainer .accordion-body').getLast();
 		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
 		
 		var request = new Request.HTML({
@@ -192,7 +195,7 @@ var PluginManager = new Class({
 			event.preventDefault();
 			var plugin = target.get('value');
 			var container = target.getParent('.pluginContanier');
-			target.getParent('.actionContainer').getElement('h3 a span').set('text', plugin);
+			target.getParent('.actionContainer').getElement('span.pluginTitle').set('text', plugin);
 			var c = container.id.replace('formAction_', '').toInt();
 			this.addPlugin(plugin, c);
 		}.bind(this));

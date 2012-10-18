@@ -17,7 +17,6 @@ var fabrikAdminElement = new Class({
 	initialize: function (plugins, options, id) {
 		this.parent(plugins, id, 'validationrule');
 		this.setOptions(options);
-		//this.watchPluginDd();
 		this.setParentViz();
 		
 		this.jsCounter = 0;

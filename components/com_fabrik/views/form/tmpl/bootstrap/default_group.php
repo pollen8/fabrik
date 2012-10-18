@@ -9,9 +9,8 @@
 ?>
 
 	<div class="control-group <?php echo $element->containerClass; ?>">
-	<label for="<?php echo $element->id ?>" class="control-label">
-		<?php echo $element->label_raw ?>
-	</label>
+
+	<?php echo $element->label;?>
 	<div class="controls">
 
 		<?php if ($this->tipLocation == 'above') : ?>
