@@ -174,7 +174,19 @@ var ListForm = new Class({
 			'value': joinId
 		});
 		
-		var sContent = new Element('table', {'class': 'adminform', 'id': 'join' + this.joinCounter}).adopt([
+		var delButton = new Element('a', {
+			'href': '#',
+			'class': 'btn btn-danger',
+			'events': {
+				'click': function (e) {
+				    this.deleteJoin(e);
+					return false;
+				}.bind(this)
+			}
+		});
+		
+		delButton.set('html', '<i class="icon-delete"></i> ' + Joomla.JText._('COM_FABRIK_DELETE'));
+		var sContent = new Element('table', {'class': 'adminform table table-stripped', 'id': 'join' + this.joinCounter}).adopt([
 			new Element('thead').adopt([
 				new Element('tr', {
 					events: {
@@ -251,16 +263,7 @@ var ListForm = new Class({
 			
 					new Element('tr').adopt([
 						new Element('td', {'colspan': '2'}).adopt([
-							new Element('a', {
-								'href': '#',
-								'class': 'removeButton',
-								'events': {
-									'click': function (e) {
-									    this.deleteJoin(e);
-										return false;
-									}.bind(this)
-								}
-							}).set('text', Joomla.JText._('COM_FABRIK_DELETE'))
+							delButton
 						])
 					])
 				])

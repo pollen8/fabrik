@@ -159,6 +159,7 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->groupByOpts = new stdClass;
 		$opts->groupByOpts->collapseOthers = (bool) $params->get('group_by_collapse_others', false);
 		$opts->groupByOpts->startCollapsed = (bool) $params->get('group_by_start_collapsed', false);
+		$opts->groupByOpts->bootstrap = FabrikWorker::j3();
 
 		// If table data starts as empty then we need the html from the row
 		// template otherwise we can't add a row to the table

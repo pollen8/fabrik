@@ -362,4 +362,3 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	}
 
 }
-?>

@@ -238,7 +238,7 @@ var FbList = new Class({
 		this.exportWindowOpts.onContentLoaded = function () {
 			this.fitToContent();
 		};
-		Fabrik.getWindow(this.exportWindowOpts);
+		this.csvWindow = Fabrik.getWindow(this.exportWindowOpts);
 	},
 
 	makeCSVExportForm: function () {
@@ -473,11 +473,12 @@ var FbList = new Class({
 						this.triggerCSVExport(res.count);
 					} else {
 						var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count + '&Itemid=' + this.options.Itemid;
-						var msg = Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
-						msg += ' <a href="' + finalurl + '">' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a>';
+						var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
+						msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '"><i class="icon-download"></i> ' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
+						this.csvWindow.fitToContent();
 						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
@@ -1112,7 +1113,8 @@ var FbGroupedToggler = new Class({
 	
 	options: {
 		collapseOthers: false,
-		startCollapsed: false
+		startCollapsed: false,
+		bootstrap: false
 	},
 	
 	initialize: function (container, options) {
@@ -1132,8 +1134,9 @@ var FbGroupedToggler = new Class({
 			if (this.options.collapseOthers) {
 				this.collapse();
 			}
+			debugger;
 			var h = e.target.getParent('.fabrik_groupheading');
-			var img = h.getElement('img');
+			var img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
 			var state = img.retrieve('showgroup', true);
 			var rows = h.getParent().getNext();
 			state ? rows.hide() : rows.show();
@@ -1145,10 +1148,20 @@ var FbGroupedToggler = new Class({
 	},
 	
 	setIcon: function (img, state) {
-		if (state) {
-			img.src = img.src.replace('orderasc', 'orderneutral');
+		if (this.options.bootstrap) {
+			if (!state) {
+				img.removeClass('icon-arrow-right');
+				img.addClass('icon-arrow-down');
+			} else {
+				img.addClass('icon-arrow-right');
+				img.removeClass('icon-arrow-down');
+			}
 		} else {
-			img.src = img.src.replace('orderneutral', 'orderasc');
+			if (state) {
+				img.src = img.src.replace('orderasc', 'orderneutral');
+			} else {
+				img.src = img.src.replace('orderneutral', 'orderasc');
+			}
 		}
 	},
 	
