@@ -95,55 +95,33 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$value = '';
 		if (!$this->isEditable())
 		{
-			if ($element->hidden == '1')
-			{
-				return '<!--' . $value . '-->';
-			}
-			else
-			{
-				return $value;
-			}
+			return $value;
 		}
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 		$pw1 = $this->buildInput('input', $bits);
 		$origname = $element->name;
-		$element->name = $element->name . "_check";
+		$element->name = $element->name . '_check';
 		$name = $this->getHTMLName($repeatCounter);
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_CONFIRM_PASSWORD');
 		$bits['class'] .= ' fabrikSubElement';
 		$bits['name'] = $name;
 		$bits['id'] = $name;
-		if (FabrikWorker::j3())
-		{
-			$bits['style'] = 'margin-top:20px';
-		}
 		$pw2 = $this->buildInput('input', $bits);
 		$element->name = $origname;
 
 		$html = array();
-
+		$html[] = $pw1;
 		if (FabrikWorker::j3())
 		{
-
-			$html[] = '<div class="row-fluid">';
-			$html[] = '<div class="span5">';
-			$html[] = $pw1;
-			$html[] = '<br />';
-			$html[] = $pw2;
-			$html[] = '</div>';
-			$html[] = '<div class="span4">';
-			$html[] = '<div class="strength progress progress-striped"></div>';
-			$html[] = '</div>';
-			$html[] = '</div>';
+			$html[] = '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
 		}
 		else
 		{
-			$html[] = $pw1;
 			$html[] = '<span class="strength"></span>';
-			$html[] = $pw2;
 		}
+		$html[] = $pw2;
 		return implode("\n", $html);
 	}
 
@@ -201,6 +179,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$formparams = $this->getForm()->getParams();
 		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
+		$opts->progressbar = FabrikWorker::j3() ? true : false;
 		$opts = json_encode($opts);
 		$lang = new stdClass;
 

@@ -2,12 +2,11 @@ var FbPassword = new Class({
 	Extends: FbElement,
 	
 	options: {
-		progressbar: true
+		progressbar: false
 	},
 	
 	initialize: function (element, options) {
 		this.parent(element, options);
-		console.log(this.options);
 		if (!this.options.editable) {
 			return;
 		}
@@ -52,6 +51,7 @@ var FbPassword = new Class({
 				html = '<span style="color:red">' + Joomla.JText._('PLG_ELEMENT_PASSWORD_WEAK') + '</span>';
 			}
 		} else {
+			// Bootstrap progress bar
 			html += '<div class="bar bar-warning" style="width: 10%;"></div>';
 			var tipTitle = Joomla.JText._('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
 			if (enoughRegex.test(pwd.value)) {
@@ -72,12 +72,6 @@ var FbPassword = new Class({
 			jQuery(strength).tooltip('destroy');
 			jQuery(strength).tooltip(options);
 		}
-		
-		/*
-		 * <div class="bar bar-success" style="width: 35%;"></div>
-<div class="bar bar-warning" style="width: 20%;"></div>
-<div class="bar bar-danger" style="width: 10%;"></div>
-		 */
 		strength.set('html', html);
 	},
 
