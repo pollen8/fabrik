@@ -1266,8 +1266,10 @@ EOD;
 	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'com_fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
-			. '&plugin=' . $plugin . '&method=autocomplete_options';
+			. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{

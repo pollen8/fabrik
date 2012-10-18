@@ -2395,7 +2395,7 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * get the default value for the list filter
+	 * Get the default value for the list filter
 	 *
 	 * @param   bool  $normal   is the filter a normal or advanced filter
 	 * @param   int   $counter  filter order

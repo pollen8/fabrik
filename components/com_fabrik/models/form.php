@@ -650,18 +650,20 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups))
 		{
 			$params = $this->getParams();
-			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
-INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
- WHERE fg.form_id = " . (int) $this->getId() . " AND published = 1";
+			$query = $db->getQuery(true);
+			$query->select(' *, fg.group_id AS group_id, RAND() AS rand_order')
+			->from('#__{package}_formgroup AS fg')
+			->join('INNER', '#__{package}_groups as g ON g.id = fg.group_id')
+			->where('fg.form_id = ' . (int) $this->getId() . ' AND published = 1');
 			if ($params->get('randomise_groups') == 1)
 			{
-				$sql .= " ORDER BY rand_order";
+				$query->order('rand_order');
 			}
 			else
 			{
-				$sql .= " ORDER BY fg.ordering";
+				$query->order('fg.ordering');
 			}
-			$db->setQuery($sql);
+			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
 			if ($db->getErrorNum())
 			{

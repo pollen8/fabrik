@@ -1298,6 +1298,28 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
+	 * Get the default value for the list filter
+	 *
+	 * @param   bool  $normal   is the filter a normal or advanced filter
+	 * @param   int   $counter  filter order
+	 *
+	 * @return  string
+	 */
+
+	protected function getDefaultFilterVal($normal = true, $counter = 0)
+	{
+		$default = parent::getDefaultFilterVal($normal, $counter);
+		$element = $this->getElement();
+
+		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
+		if ($element->filter_type == 'field')
+		{
+			$default = $this->getLabelForValue($default, $default, $counter);
+		}
+		return $default;
+	}
+
+	/**
 	 * Get the list filter for the element
 	 *
 	 * @param   int   $counter  filter order
