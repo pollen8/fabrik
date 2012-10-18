@@ -20,7 +20,6 @@ var FabrikComment = new Class({
 		this.fx = {};
 		this.fx.toggleForms = $H();
 		this.spinner = new Spinner('fabrik-comments', {'message': 'loading'});
-		this.doAjaxDeleteComplete = this.deleteComplete.bindWithEvent(this);
 		this.ajax = {};
 		this.ajax.deleteComment = new Request({
 			'url': '', 
@@ -123,7 +122,7 @@ var FabrikComment = new Class({
 			if (!input) {
 				return;
 			}
-			f.getElement('input[type=button]').addEvent('click', function (e) {
+			f.getElement('button.submit').addEvent('click', function (e) {
 				this.doInput(e);
 			}.bind(this));
 			

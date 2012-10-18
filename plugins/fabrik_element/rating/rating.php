@@ -448,7 +448,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$date = JFactory::getDate('now', $tzoffset);
 		$strDate = $db->quote($date->toSql());
 		$userid = $db->quote($this->getStoreUserId($listid, $row_id));
-		$elementid = $this->getElement()->id;
+		$elementid = (int) $this->getElement()->id;
+		$query = $db->getQuery(true);
+		$formid = (int) $formid;
+		$listid = (int) $listid;
+		$rating = (int) $rating;
+		$row_id = $db->quote($row_id);
 		$db
 			->setQuery(
 				"INSERT INTO #__fabrik_ratings (user_id, listid, formid, row_id, rating, date_created, element_id)
@@ -533,7 +538,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$id = $this->getHTMLId();
-		$list = $this->getlistModel()->getTable();
+		$listModel = $this->getlistModel();
+		$list = $listModel->getTable();
 		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$imagepath = JUri::root() . '/plugins/fabrik_element/rating/images/';
@@ -542,6 +548,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->insrc = FabrikHelperHTML::image("star_in.png", 'list', @$this->tmpl, array(), true);
 		$opts->outsrc = FabrikHelperHTML::image("star_out.png", 'list', @$this->tmpl, array(), true);
 		$opts->ajaxloader = FabrikHelperHTML::image("ajax-loader.gif", 'list', @$this->tmpl, array(), true);
+		$opts->listRef = $listModel->getRenderContext();
 		$opts->userid = (int) $user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
