@@ -62,7 +62,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		}
 		// $$$ rob 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
-		$icon = FabrikHelperHTML::image('tag.png', 'form', @$this->tmpl, array('alt' => 'tag'));
+		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
+		$icon = FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => 'tag'));
 		foreach ($data as $d)
 		{
 			$d = trim($d);
@@ -133,7 +134,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$opts['wordcount'] = (int) $params->get('textarea-truncate', 0);
 			$opts['tip'] = $params->get('textarea-hover');
 			$opts['position'] = $params->get('textarea_hover_location', 'top');
-			$data = fabrikString::truncate($data, $opts);
+			$data = FabrikString::truncate($data, $opts);
 		}
 		return $data;
 	}
