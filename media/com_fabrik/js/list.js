@@ -212,7 +212,8 @@ var FbList = new Class({
 			minimizable: false,
 			width: 360,
 			height: 120,
-			content: ''
+			content: '',
+			bootstrap: this.options.j3
 		};
 		if (this.options.view === 'csv') {
 			//for csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
