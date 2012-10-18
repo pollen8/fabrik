@@ -171,6 +171,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
+		$app = JFactory::getApplication();
 		if ($this->isJoin())
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -179,7 +180,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		else
 		{
-			$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+			// Autocomplete with concat label was not working if we called the parent method
+			if ($app->input->get('method') === 'autocomplete_options')
+			{
+				$listModel = $this->getListModel();
+				$db = $listModel->getDb();
+				$data = array();
+				$opts = array();
+				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+				$rows = $this->_getOptionVals($data, 0, true, $opts);
+			}
+			else
+			{
+				$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+			}
 		}
 		return $rows;
 	}
