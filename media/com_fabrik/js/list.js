@@ -1167,9 +1167,10 @@ var FbGroupedToggler = new Class({
 	
 	collapse: function () {
 		this.container.getElements('.fabrik_groupdata').hide();
-		var i = this.container.getElements('.fabrik_groupheading a img');
+		var selector = this.options.bootstrap ? 'i' : 'img';
+		var i = this.container.getElements('.fabrik_groupheading a ' + selector);
 		if (i.length === 0) {
-			i = this.container.getElements('.fabrik_groupheading img');
+			i = this.container.getElements('.fabrik_groupheading ' + selector);
 		}
 		i.each(function (img) {
 			img.store('showgroup', false);

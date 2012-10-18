@@ -42,7 +42,6 @@ var FloatingTips = new Class({
 		this.elements = $$(elements);
 		this.elements.each(function (trigger) {
 			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
-			console.log(opts);
 			opts.content = trigger.get('title');
 			trigger.erase('title');
 			opts.placement = opts.position;
