@@ -120,10 +120,25 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		$view->isMambot = $this->isMambot;
 
+		// If we can't edit the record redirect to details view
+		if ($model->checkAccessFromListSettings() <= 1)
+		{
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			if ($app->isAdmin())
+			{
+				$url = 'index.php?option=com_fabrik&task=details.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
+			}
+			else
+			{
+				$url = 'index.php?option=com_fabrik&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
+			}
+			$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
+			$this->setRedirect(JRoute::_($url), JText::_($msg), 'notice');
+			return;
+		}
 		// Display the view
 		$view->assign('error', $this->getError());
-
-		// Workaround for token caching
 
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{
@@ -140,6 +155,8 @@ class FabrikControllerForm extends JControllerLegacy
 			$cache->get($view, 'display', $cacheid);
 			$contents = ob_get_contents();
 			ob_end_clean();
+
+			// Workaround for token caching
 			$token = JSession::getFormToken();
 			$search = '#<input type="hidden" name="[0-9a-f]{32}" value="1" />#';
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';

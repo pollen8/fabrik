@@ -41,6 +41,10 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		{
 			return false;
 		}
+		if (is_array($data))
+		{
+			$data = $data[0];
+		}
 		$params = $this->getParams();
 
 		// As ornot is a radio button it gets json encoded/decoded as an object

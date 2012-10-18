@@ -316,7 +316,9 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Makes sure that the form is not viewable based on the table's access settings
+	 * Makes sure that the form is not viewable based on the list's access settings
+	 *
+	 * Also sets the form's editable state, if it can record in to a db table
 	 *
 	 * @return  int  0 = no access, 1 = view only , 2 = full form view, 3 = add record only
 	 */
@@ -340,10 +342,11 @@ class FabrikFEModelForm extends FabModelForm
 			$ret = 1;
 		}
 		$pRowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot);
-		/* new form can we add?*/
+
+		// New form can we add?
 		if ($this->rowId == 0 || $pRowid == '-1')
 		{
-			/*if they can edit can they also add?*/
+			// If they can edit can they also add
 			if ($listModel->canAdd())
 			{
 				$ret = 3;
@@ -362,8 +365,8 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 2;
 			}
 		}
-		// $$$rob refractored from view
-		$editable = ($ret == 1 && $this->isEditable() == '1') ? false : true;
+		// If no access (0) or read only access (1) set the form to not be editable
+		$editable = ($ret <= 1) ? false : true;
 		$this->setEditable($editable);
 		if ($app->input->get('view', 'form') == 'details')
 		{
@@ -2735,11 +2738,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array  $opts    'includePublised' can be set to 0; @since 3.0.7
 	 *
 	 * @return  array  ints ids
 	 */
 
-	public function getElementIds($ignore = array())
+	public function getElementIds($ignore = array(), $opts = array())
 	{
 		$aEls = array();
 		$groups = $this->getGroupsHiarachy();
@@ -2751,7 +2755,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$class = get_class($elementModel);
 				if (!in_array($class, $ignore))
 				{
-					$aEls[] = (int) $elementModel->getElement()->id;
+					$element = $elementModel->getElement();
+					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+					{
+						continue;
+					}
+					$aEls[] = (int) $element->id;
 				}
 			}
 		}
@@ -2950,6 +2959,9 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->listModel = null;
 		@set_time_limit(300);
 		$this->rowId = $this->getRowId();
+
+		// $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		$this->checkAccessFromListSettings();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
 		if (in_array(false, $res))

@@ -3240,11 +3240,11 @@ class FabrikFEModelList extends JModelForm
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			$ids = $form->getElementIds();
+			$ids = $form->getElementIds(array(), array('includePublised' => false));
 			$db = FabrikWorker::getDbo(true);
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
-			$query->select('*')->from('#__{package}_joins')->where('list_id = ' . $id, 'OR');
+			$query->select('*')->from('#__{package}_joins')->where('(element_id = 0 AND list_id = ' . $id . ')', 'OR');
 			if (!empty($ids))
 			{
 				$query->where('element_id IN ( ' . implode(', ', $ids) . ')');

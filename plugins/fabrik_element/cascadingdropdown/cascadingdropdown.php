@@ -53,8 +53,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '', 'string');
 		$qsWatchValue = $input->get($watchName, '', 'string');
-		$opts->def = $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+		$opts->def = $this->getFormModel()->hasErrors && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
+		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
+		if (is_array($opts->def))
+		{
+			$opts->def = $opts->def[0];
+		}
 		$watchGroup = $this->getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
@@ -141,14 +146,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = $app->input->getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
-		/*
-		$fullName = $this->getFullName(false, true, true);
-		$watchName = $this->getWatchFullName();
-		$qsValue = $input->get($fullName, '');
-		$qsWatchValue = $input->get($watchName, '');
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
-		*/
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || ($this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue)))
+		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
+		//if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
+		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
