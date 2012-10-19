@@ -176,7 +176,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
 		$whereClause = "($pk IN (" . implode(",", $ids) . "))";
 		$cond = $params->get('emailtable_condition');
-		$cond = JArrayHelper::getValue($cond, $renderOrder);
+		//$cond = JArrayHelper::getValue($cond, $renderOrder);
 		if (trim($cond) !== '')
 		{
 			$whereClause .= ' AND (' . $cond . ')';
