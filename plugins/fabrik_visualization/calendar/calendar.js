@@ -115,6 +115,7 @@ var fabrikCalendar = new Class({
 		if (opts.left) {
 			style.left = opts.left.toInt() + 1 + 'px';
 		}
+		style['max-width'] = opts['max-width'] ? opts['max-width'] - 10 + 'px' : '';
 			
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;
 		if (opts.view === 'monthView') {
@@ -254,7 +255,7 @@ var fabrikCalendar = new Class({
 						top = top + (existingEvents * height);
 						var left = width * colcounter;
 						// var opts = {'width': width, 'height': height, 'view': 'monthView'};
-						var opts = {'view': 'monthView'};
+						var opts = {'view': 'monthView', 'max-width': width};
 						opts.top = top;
 						if (window.ie) {
 							opts.left = left;							
@@ -466,7 +467,7 @@ var fabrikCalendar = new Class({
 		var v = opts.divclass.substr(1, opts.divclass.length);
 		width -= td.getStyle('border-width').toInt(); 
 		opts = {'margin-left': marginleft + 'px', 'height': height, 'view': 'weekView', 'background-color': this._getColor(this.options.colors.headingBg)};
-		// opts.width = width + 'px',
+		opts['max-width'] = width + 'px';
 		opts.left = left;
 		opts.top = top;
 		opts.color = this._getColor(this.options.colors.headingColor, entry.startdate);
