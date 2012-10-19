@@ -288,13 +288,14 @@ class FabrikAdminModelHome extends FabModelAdmin
 			$fabrikDb = $connModel->getDb();
 			if (!JError::isError($fabrikDb))
 			{
-				$fabrikDb->setQuery("DROP $row->db_table_name");
+				$fabrikDb->setQuery("DROP TABLE IF EXISTS $row->db_table_name");
+				$fabrikDb->query();
 			}
 			else
 			{
 				jexit("error with getting connection id " . $row->connection_id . " for " . $row->db_table_name);
 			}
-			$fabrikDb->query();
+
 		}
 	}
 
