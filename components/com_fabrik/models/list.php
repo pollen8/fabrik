@@ -492,6 +492,9 @@ class FabrikFEModelList extends JModelForm
 	 * We set it on the main J db in the system plugin setBigSelects() but should do here as well as we
 	 * may not be dealing with the same db.
 	 *
+	 * 2012-10-19 - $$$ hugh - trouble with preserving old list settings is there is no way to change them, without
+	 * directly poking around in the params in the database.  Commenting out the per-list checking.
+	 *
 	 * @since   3/16/2010
 	 *
 	 * @return  void
@@ -501,10 +504,14 @@ class FabrikFEModelList extends JModelForm
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$bigSelects = $fbConfig->get('enable_big_selects', 0);
+		/*
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
 		if ($params->get('enable_big_selects', $bigSelects))
+		*/
+		if ($bigSelects)
 		{
+			$fabrikDb = $this->getDb();
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
 			$fabrikDb->query();
 		}
