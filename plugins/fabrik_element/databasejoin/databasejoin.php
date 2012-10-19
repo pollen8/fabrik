@@ -171,6 +171,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
+		$app = JFactory::getApplication();
 		if ($this->isJoin())
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -179,7 +180,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		else
 		{
-			$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+			// Autocomplete with concat label was not working if we called the parent method
+			if ($app->input->get('method') === 'autocomplete_options')
+			{
+				$listModel = $this->getListModel();
+				$db = $listModel->getDb();
+				$data = array();
+				$opts = array();
+				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+				$rows = $this->_getOptionVals($data, 0, true, $opts);
+			}
+			else
+			{
+				$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+			}
 		}
 		return $rows;
 	}
@@ -1281,6 +1295,28 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
+	}
+
+	/**
+	 * Get the default value for the list filter
+	 *
+	 * @param   bool  $normal   is the filter a normal or advanced filter
+	 * @param   int   $counter  filter order
+	 *
+	 * @return  string
+	 */
+
+	protected function getDefaultFilterVal($normal = true, $counter = 0)
+	{
+		$default = parent::getDefaultFilterVal($normal, $counter);
+		$element = $this->getElement();
+
+		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
+		if ($element->filter_type == 'field')
+		{
+			$default = $this->getLabelForValue($default, $default, $counter);
+		}
+		return $default;
 	}
 
 	/**

@@ -2395,7 +2395,7 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * get the default value for the list filter
+	 * Get the default value for the list filter
 	 *
 	 * @param   bool  $normal   is the filter a normal or advanced filter
 	 * @param   int   $counter  filter order
@@ -2991,12 +2991,11 @@ class plgFabrik_Element extends FabrikPlugin
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
-			//$elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
+			// $elementWhere = JString::str_ireplace('WHERE ', 'AND ', $elementWhere);
 			$elementWhere = preg_replace("#^(\s*)(WHERE)(.*)#i", "$1AND$3", $elementWhere);
 
 		}
 		$sql .= ' ' . $elementWhere;
-
 		$sql .= "\n" . $groupBy;
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));

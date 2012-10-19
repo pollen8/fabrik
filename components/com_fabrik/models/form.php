@@ -650,18 +650,20 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups))
 		{
 			$params = $this->getParams();
-			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
-INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
- WHERE fg.form_id = " . (int) $this->getId() . " AND published = 1";
+			$query = $db->getQuery(true);
+			$query->select(' *, fg.group_id AS group_id, RAND() AS rand_order')
+			->from('#__{package}_formgroup AS fg')
+			->join('INNER', '#__{package}_groups as g ON g.id = fg.group_id')
+			->where('fg.form_id = ' . (int) $this->getId() . ' AND published = 1');
 			if ($params->get('randomise_groups') == 1)
 			{
-				$sql .= " ORDER BY rand_order";
+				$query->order('rand_order');
 			}
 			else
 			{
-				$sql .= " ORDER BY fg.ordering";
+				$query->order('fg.ordering');
 			}
-			$db->setQuery($sql);
+			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
 			if ($db->getErrorNum())
 			{
@@ -2725,11 +2727,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array  $opts    'includePublised' can be set to 0; @since 3.0.7
 	 *
 	 * @return  array  ints ids
 	 */
 
-	public function getElementIds($ignore = array())
+	public function getElementIds($ignore = array(), $opts = array())
 	{
 		$aEls = array();
 		$groups = $this->getGroupsHiarachy();
@@ -2741,7 +2744,12 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 				$class = get_class($elementModel);
 				if (!in_array($class, $ignore))
 				{
-					$aEls[] = (int) $elementModel->getElement()->id;
+					$element = $elementModel->getElement();
+					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+					{
+						continue;
+					}
+					$aEls[] = (int) $element->id;
 				}
 			}
 		}
@@ -2956,6 +2964,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
+		$session = JFactory::getSession();
+		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->_data);
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
