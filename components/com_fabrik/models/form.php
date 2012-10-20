@@ -1720,13 +1720,13 @@ class FabrikFEModelForm extends FabModelForm
 						{
 							$element = $elementModel->getElement();
 							$n = $elementModel->getFullName(false, true, false);
-							$v = (is_array($data[$n]) && array_key_exists($c, $data[$n])) ? $data[$n][$c] : '';
+							$v = (array_key_exists($n, $data) && is_array($data[$n]) && array_key_exists($c, $data[$n])) ? $data[$n][$c] : '';
 							$repData[$element->name] = $v;
 							$n_raw = $n . '_raw';
 
 							// $$$ rob 11/04/2012 - repeat elements don't have raw values so use the value as the default raw value
 							$defaultRaw = $joinType == 'repeatElement' ? $v : '';
-							$v_raw = (is_array($data[$n_raw]) && array_key_exists($c, $data[$n_raw])) ? $data[$n_raw][$c] : $defaultRaw;
+							$v_raw = (array_key_exists($n_raw, $data) && is_array($data[$n_raw]) && array_key_exists($c, $data[$n_raw])) ? $data[$n_raw][$c] : $defaultRaw;
 							$repData[$element->name . '_raw'] = $v_raw;
 
 							// Store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
