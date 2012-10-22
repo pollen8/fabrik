@@ -369,4 +369,22 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		return parent::renderListData($data, $thisRow);
 	}
 
+	/**
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
+
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$params = $this->getParams();
+		$sep = $params->get('time_separatorlabel', JText::_(':'));
+		$value = implode($sep, $value);
+		return $value;
+	}
+
 }
