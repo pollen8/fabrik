@@ -40,47 +40,35 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		$endpoint = $params->get('endpoint');
 
 		$headers = array('Content-Type: application/xml', 'Accept: application/xml');
-		$endpoint = $params->get('endpoint');
+
+		// Set where we should post the REST request to
+		$endpoint = $w->parseMessageForPlaceholder($endpoint);
 		$endpoint = $w->parseMessageForPlaceholder($endpoint);
 
-		// Here we set up CURL to grab the data from Unfuddle
+		// What is the root node for the xml data we are sending
+		$xmlParent = $params->get('xml_parent', 'ticket');
+		$xmlParent = $w->parseMessageForPlaceholder($xmlParent);
+		$xml = new SimpleXMLElement('<' . $xmlParent . '></' . $xmlParent . '>');
+
+		// Set up CURL object
 		$chandle = curl_init();
-		$ticket = new SimpleXMLElement("<ticket></ticket>");
 
-		$ignore = array('trkr_tickets___id');
-		if ($formModel->_origRowId == 0)
-		{
-			$ingore[] = 'id';
-		}
-		/*foreach($formModel->_formData as $key => $val){
-		    if ($formModel->hasElement($key) && !in_array($key, $ignore)) {
-		        if (is_array($val)) {
-		            $val = implode(',', $val);
-		        }
-		        $ticket->addChild($key, $val);
-		    }
-		}
-		 */
-		/*
-		 * $ticket = new SimpleXMLElement("<ticket></ticket>");
-		 * $ticket->addChild('assignee-id',  $this->config['default_assignee']);
-		 * $ticket->addChild('component-id', $data['component']);
-		 * $ticket->addChild('description',  $data['description']);
-		$ticket->addChild('milestone-id', 47420);
-		 * $ticket->addChild('priority',     $data['priority']);
-		 * $ticket->addChild('severity-id',  $data['severity']);
-		$ticket->addChild('status',       'new');
-		$ticket->addChild('summary',      'test REST API from fabrik');
-		 */
-
-		$include = array('milestone-id', 'status', 'summary');
+		// Set which fields should be included in the XML data.
+		$include = $w->parseMessageForPlaceholder($params->get('include_list', 'milestone-id, status, summary'));
+		$include = explode(',', $include);
 		foreach ($include as $i)
 		{
-			echo "$i = " . $formModel->_formData[$i] . "<br>";
-			$ticket->addChild($i, $formModel->_formData[$i]);
+			if (array_key_exists($i, $formModel->_formData))
+			{
+				$xml->addChild($i, $formModel->_formData[$i]);
+			}
+			elseif (array_key_exists($i, $formModel->_fullFormData, $i))
+			{
+				$xml->addChild($i, $formModel->_fullFormData[$i]);
+			}
 		}
 
-		$output = $ticket->asXML();
+		$output = $xml->asXML();
 
 		$curl_options = array(CURLOPT_URL => $endpoint, CURLOPT_RETURNTRANSFER => 1, CURLOPT_HTTPHEADER => $headers, CURLOPT_POST => 1,
 			CURLOPT_POSTFIELDS => $output, CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_USERPWD => $config_userpass,
@@ -93,7 +81,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		$output = curl_exec($chandle);
 
 		$httpCode = curl_getinfo($chandle, CURLINFO_HTTP_CODE);
-		echo $httpCode . " : ";
 		switch ($httpCode)
 		{
 			case '400':
@@ -123,7 +110,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			die("ERROR: " . curl_error($chandle));
 		}
 		curl_close($chandle);
-		exit;
 	}
 
 }
