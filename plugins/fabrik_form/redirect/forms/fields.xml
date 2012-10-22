@@ -17,6 +17,13 @@
 			</field>
 			
 			<field cols="60" description="PLG_FORM_REDIRECT_CONDITION_DESC" label="PLG_FORM_REDIRECT_CONDITION_LABEL" name="redirect_conditon" repeat="true" rows="5" type="textarea"/>
+		</fieldset>
+		
+		<fieldset label="PLG_FORM_REDIRECT_MODULE_OPTIONS_TITLE" name="plg-form-redirect-module">
+			<field default="1" description="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_DESC" label="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_LABEL" name="redirect_content_reset_form" repeat="true" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 				
 			<field default="popup" description="PLG_FORM_REDIRECT_CONTENT_HOW_DESC" label="PLG_FORM_REDIRECT_CONTENT_HOW_LABEL" name="redirect_content_how" repeat="true" type="list">
 					<option value="popup">PLG_FORM_REDIRECT_CONTENT_HOW_POPUP</option>
@@ -34,11 +41,6 @@
 
 			<field description="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_DESC" label="PLG_FORM_REDIRECT_CONTENT_POPUP_TITLE_LABEL" name="redirect_content_popup_title" repeat="true" size="50" type="text"/>
 				
-			<field default="1" description="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_DESC" label="PLG_FORM_REDIRECT_CONTENT_RESET_FORM_LABEL" name="redirect_content_reset_form" repeat="true" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>			
-			
 		</fieldset>
 	</fields>
 </form>
