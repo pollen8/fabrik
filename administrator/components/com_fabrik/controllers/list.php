@@ -15,9 +15,9 @@ require_once 'fabcontrollerform.php';
 /**
  * List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikControllerList extends FabControllerForm
@@ -28,7 +28,10 @@ class FabrikControllerList extends FabControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * @var int  id
+	 * Used from content plugin when caching turned on to ensure correct element rendered)
+	 */
 	protected $cacheId = 0;
 
 	/**
@@ -53,7 +56,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * set up a confirmation screen asking about renaming the list you want to copy
+	 * Set up a confirmation screen asking about renaming the list you want to copy
 	 *
 	 * @return mixed notice or null
 	 */
@@ -76,7 +79,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * actually copy the list
+	 * Actually copy the list
 	 *
 	 * @return  null
 	 */
@@ -93,7 +96,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * show the lists data in the admin
+	 * Show the lists data in the admin
 	 *
 	 * @param   object  $model  list model
 	 *
@@ -103,7 +106,7 @@ class FabrikControllerList extends FabControllerForm
 	public function view($model = null)
 	{
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if(is_array($cid))
+		if (is_array($cid))
 		{
 			$cid = $cid[0];
 		}
@@ -122,6 +125,7 @@ class FabrikControllerList extends FabControllerForm
 		$viewLayout = JRequest::getCmd('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
+
 		// Set the layout
 		$view->setLayout($viewLayout);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
@@ -144,6 +148,11 @@ class FabrikControllerList extends FabControllerForm
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
 
+	/**
+	 * Show the elements associated with the list
+	 *
+	 * @return  void
+	 */
 	public function showLinkedElements()
 	{
 		$document = JFactory::getDocument();
@@ -156,6 +165,7 @@ class FabrikControllerList extends FabControllerForm
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		$view->setModel($formModel);
+
 		// Set the layout
 		$view->setLayout($viewLayout);
 		$view->showLinkedElements();
@@ -194,7 +204,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * clear filters
+	 * Clear filters
 	 *
 	 * @return  null
 	 */
@@ -207,7 +217,9 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * filter the list data
+	 * Filter the list data
+	 *
+	 * @return  void
 	 */
 
 	public function filter()
@@ -226,12 +238,12 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * delete rows from table
+	 * Delete rows from table
 	 *
 	 * @return  null
 	 */
 
-	function delete()
+	public function delete()
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
@@ -270,7 +282,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * empty a table of records and reset its key to 0
+	 * Empty a table of records and reset its key to 0
 	 *
 	 * @return  null
 	 */
@@ -285,7 +297,7 @@ class FabrikControllerList extends FabControllerForm
 	}
 
 	/**
-	 * run a list plugin
+	 * Run a list plugin
 	 *
 	 * @return  null
 	 */

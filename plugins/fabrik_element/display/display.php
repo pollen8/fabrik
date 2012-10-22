@@ -19,10 +19,18 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementDisplay extends plgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var  string
+	 */
 	protected $fieldDesc = 'TEXT';
 
-	/** @var bool override default value as we don't want to record this in database*/
+	/**
+	 * Does the element's data get recorded in the db
+	 *
+	 * @var bol
+	 */
 	var $_recordInDatabase = false;
 
 	/**
@@ -123,4 +131,3 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 }
-?>

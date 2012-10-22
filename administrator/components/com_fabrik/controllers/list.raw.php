@@ -1,11 +1,11 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -17,7 +17,7 @@ jimport('joomla.application.component.controllerform');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerList extends JControllerForm
 {
@@ -29,6 +29,8 @@ class FabrikControllerList extends JControllerForm
 
 	/**
 	 * ajax load drop down of all columns in a given table
+	 *
+	 * @return  null
 	 */
 
 	public function ajax_loadTableDropDown()
@@ -59,10 +61,16 @@ class FabrikControllerList extends JControllerForm
 		echo $fieldDropDown;
 	}
 
-	function delete()
+	/**
+	 * Delete list items
+	 *
+	 * @return  null
+	 */
+
+	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
@@ -88,6 +96,12 @@ class FabrikControllerList extends JControllerForm
 
 	}
 
+	/**
+	 * Filter list items
+	 *
+	 * @return  null
+	 */
+
 	public function filter()
 	{
 		// Check for request forgeries
@@ -102,8 +116,10 @@ class FabrikControllerList extends JControllerForm
 	}
 
 	/**
-	* show the lists data in the admin
-	*/
+	 * Show the lists data in the admin
+	 *
+	 * @return  void
+	 */
 
 	public function view()
 	{

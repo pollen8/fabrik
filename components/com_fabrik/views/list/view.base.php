@@ -414,7 +414,15 @@ class FabrikViewListBase extends JView
 				$document->addHeadLink($this->rssLink, 'alternate', 'rel', $attribs);
 			}
 		}
-		$this->pdfLink = JRoute::_('index.php?option=com_fabrik&view=list&format=pdf&listid=' . $item->id);
+		if ($app->isAdmin())
+		{
+			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id .'&format=pdf&tmpl=component');
+		}
+		else
+		{
+			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&view=list&format=pdf&listid=' . $item->id);
+		}
+
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$this->assign('groupByHeadings', $this->get('GroupByHeadings'));
 		$this->filter_action = $this->get('FilterAction');
@@ -443,7 +451,7 @@ class FabrikViewListBase extends JView
 		$this->getManagementJS($this->rows);
 
 		// Get dropdown list of other tables for quick nav in admin
-		$this->tablePicker = $app->isAdmin() ? FabrikHelperHTML::tableList($this->table->id) : '';
+		$this->tablePicker = $app->isAdmin() && $app->input->get('format') !== 'pdf' ? FabrikHelperHTML::tableList($this->table->id) : '';
 
 		$this->buttons();
 
