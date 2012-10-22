@@ -110,7 +110,6 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	function getToField()
 	{
-=======
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->id = $input->getInt('id');
@@ -173,7 +172,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$ids = (array) $input->get($key, array(), 'array');
+		if ($key === 'recordids')
+		{
+			$ids = explode(',', $input->get($key, '', 'string'));
+		}
+		else
+		{
+			$ids = (array) $input->get($key, array(), 'array');
+		}
+
 		JArrayHelper::toInteger($ids);
 		if (empty($ids))
 		{
@@ -187,7 +194,6 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$pk2 = FabrikString::safeColNameToArrayKey($pk) . '_raw';
 		$whereClause = "($pk IN (" . implode(",", $ids) . "))";
 		$cond = $params->get('emailtable_condition');
-		$cond = JArrayHelper::getValue($cond, $renderOrder);
 		if (trim($cond) !== '')
 		{
 			$whereClause .= ' AND (' . $cond . ')';
@@ -249,6 +255,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	public function doEmail()
 	{
 		$listModel = $this->listModel;
+		$mail = JFactory::getMailer();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		jimport('joomla.mail.helper');
@@ -262,7 +269,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$params = $this->getParams();
-		$to = $input->get('list_email_to');
+		$to = $input->get('list_email_to', '', 'string');
 		$renderOrder = $input->getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type', 'list');
 		$fromUser = $params->get('emailtable_from_user');
@@ -299,6 +306,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$updated = array();
 		foreach ($data as $group)
 		{
+
 			foreach ($group as $row)
 			{
 				if ($toType == 'list')
@@ -316,12 +324,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 					$mailtos = explode(',', $mailto);
 					foreach ($mailtos as $mailto)
 					{
-						$mailto = $w->parseMessageForPlaceholder($mailto, $row);
-						if (JMailHelper::isEmailAddress($mailto))
+						$thisMailto = $w->parseMessageForPlaceholder($mailto, $row);
+						if (JMailHelper::isEmailAddress($thisMailto))
 						{
 							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 							$thismessage = $w->parseMessageForPlaceholder($message, $row);
-							$res = JUtility::sendMail($email_from, $email_from, $mailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
+							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
 							if ($res)
 							{
 								$sent++;

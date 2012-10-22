@@ -9,8 +9,17 @@
 				
 			<field description="PLG_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL" name="endpoint" repeat="true" size="50" type="text"/>	
 					
-			<field description="PLG_FORM_REST_KEY_DESC" label="PLG_FORM_REST_KEY_LABEL" name="key" repeat="true" type="field"/>
+			<field name="xml_parent"
+				type="field"
+				description="PLG_FORM_REST_XML_PARENT_DESC"
+				label="PLG_FORM_REST_XML_PARENT_LABEL" />
 				
+			<field name="include_list"
+				type="textarea"
+				rows="6"
+				cols="10"
+				description="PLG_FORM_REST_INCLUDE_LIST_DESC"
+				label="PLG_FORM_REST_INCLUDE_LIST_LABEL" />
 		</fieldset>
 	</fields>
 </form>

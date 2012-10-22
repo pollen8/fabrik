@@ -34,7 +34,9 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 
 	public function onLoad($params, &$formModel)
 	{
-		if ((!$formModel->isEditable()) && ($params->get('log_details') != '0'))
+		$app = JFactory::getApplication();
+		$view = $app->input->get('view', 'form');
+		if ((!$formModel->isEditable() || $view == 'details') && ($params->get('log_details') != '0'))
 		{
 			$this->log($params, $formModel, 'form.load.details');
 		}

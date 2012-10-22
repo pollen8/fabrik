@@ -888,8 +888,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$htmlid = $this->getHTMLId() . 'value';
 			$opts = new stdClass;
 			$opts->observerid = $observerid;
+			$app = JFactory::getApplication();
+			$package = $app->getUserState('com_fabrik.package', 'com_fabrik');
 			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='
-				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options';
+				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options&package=' . $package;
 			$opts = json_encode($opts);
 
 			FabrikHelperHTML::addScriptDeclaration("head.ready(function() { new FabCddAutocomplete('$htmlid', $opts); });");

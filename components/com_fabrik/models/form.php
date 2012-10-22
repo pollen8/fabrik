@@ -645,18 +645,20 @@ class FabrikFEModelForm extends FabModelForm
 		if (!isset($this->_publishedformGroups) || empty($this->_publishedformGroups))
 		{
 			$params = $this->getParams();
-			$sql = "SELECT *, fg.group_id AS group_id, RAND() AS rand_order FROM #__{package}_formgroup AS fg
-INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
- WHERE fg.form_id = " . (int) $this->getId() . " AND published = 1";
+			$query = $db->getQuery(true);
+			$query->select(' *, fg.group_id AS group_id, RAND() AS rand_order')
+			->from('#__{package}_formgroup AS fg')
+			->join('INNER', '#__{package}_groups as g ON g.id = fg.group_id')
+			->where('fg.form_id = ' . (int) $this->getId() . ' AND published = 1');
 			if ($params->get('randomise_groups') == 1)
 			{
-				$sql .= " ORDER BY rand_order";
+				$query->order('rand_order');
 			}
 			else
 			{
-				$sql .= " ORDER BY fg.ordering";
+				$query->order('fg.ordering');
 			}
-			$db->setQuery($sql);
+			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
 			if ($db->getErrorNum())
 			{
@@ -1721,13 +1723,13 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 						{
 							$element = $elementModel->getElement();
 							$n = $elementModel->getFullName(false, true, false);
-							$v = (is_array($data[$n]) && array_key_exists($c, $data[$n])) ? $data[$n][$c] : '';
+							$v = (array_key_exists($n, $data) && is_array($data[$n]) && array_key_exists($c, $data[$n])) ? $data[$n][$c] : '';
 							$repData[$element->name] = $v;
 							$n_raw = $n . '_raw';
 
 							// $$$ rob 11/04/2012 - repeat elements don't have raw values so use the value as the default raw value
 							$defaultRaw = $joinType == 'repeatElement' ? $v : '';
-							$v_raw = (is_array($data[$n_raw]) && array_key_exists($c, $data[$n_raw])) ? $data[$n_raw][$c] : $defaultRaw;
+							$v_raw = (array_key_exists($n_raw, $data) && is_array($data[$n_raw]) && array_key_exists($c, $data[$n_raw])) ? $data[$n_raw][$c] : $defaultRaw;
 							$repData[$element->name . '_raw'] = $v_raw;
 
 							// Store any params set in the individual plug-in (see fabrikfileupload::processUpload()->crop()
@@ -2979,6 +2981,8 @@ INNER JOIN #__{package}_groups as g ON g.id = fg.group_id
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
+		$session = JFactory::getSession();
+		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->_data);
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}

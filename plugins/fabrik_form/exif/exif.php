@@ -34,7 +34,9 @@ class plgFabrik_FormExif extends plgFabrik_Form
 		}
 		else
 		{
-			list($base, $divider) = split("/", $value, 2);
+			$bits = explode('/', $value, 2);
+			$base = JArrayHelper::getValue($bits, 0);
+			$divider = JArrayHelper::getValue($bits, 1);
 			return ($divider == 0) ? sprintf($format, 0) : sprintf($format, ($base / $divider));
 		}
 	}

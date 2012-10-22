@@ -404,7 +404,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * determines if a condition has been set and decides if condition is matched
+	 * Determines if a condition has been set and decides if condition is matched
 	 *
 	 * @param   object  $params  plugin params
 	 *
