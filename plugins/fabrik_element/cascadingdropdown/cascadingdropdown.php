@@ -23,6 +23,20 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 {
 
 	/**
+	 * J Paramter name for the field containing the label value
+	 *
+	 * @var string
+	 */
+	protected $labelParam = 'cascadingdropdown_label';
+
+	/**
+	 * J Parameter name for the field containiing the concat label
+	 *
+	 * @var string
+	 */
+	protected $concatLabelParam = 'cascadingdropdown_label_concat';
+
+	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
@@ -52,8 +66,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '');
 		$qsWatchValue = $input->get($watchName, '');
+
 		// $$$ hugh - Rob, is there a better way of finding out if validation has failed than looking at _arErrors?
 		$opts->def = empty($this->getFormModel()->_arErrors) && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+
 		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
 		if (is_array($opts->def))
 		{
@@ -143,6 +159,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = JRequest::getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
+
 		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
 		//if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
 		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
@@ -636,7 +653,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$val = FabrikString::safeColName($params->get('cascadingdropdown_label'));
+			$val = FabrikString::safeColName($params->get($this->labelParam));
 			$val = preg_replace("#^`($table)`\.#", $db->quoteName($join->table_join_alias) . '.', $val);
 			foreach ($tables as $tid)
 			{
@@ -701,7 +718,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
 			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-			$bits = explode('___', $params->get('cascadingdropdown_label'));
+			$bits = explode('___', $params->get($this->labelParam));
 			return $join->table_join_alias . '___' . $bits[1];
 		}
 		else
@@ -806,7 +823,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$v = $this->filterName($counter, $normal);
 
 		$id = array_pop(explode('___', $params->get('cascadingdropdown_id')));
-		$label = array_pop(explode('___', $params->get('cascadingdropdown_label')));
+		$label = array_pop(explode('___', $params->get($this->labelParam)));
 
 		$dbname = $fabrikDb->quoteName($this->getDbName());
 		$size = $params->get('filter_length', 20);
@@ -1069,6 +1086,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
 	{
+		echo "cdd getfilterquery $key, $condition, $value <br>";
 		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
 		 used in prefilter dropdown in admin to allow users to prefilter on raw db join value*/
 		$db = $this->getDb();
@@ -1097,7 +1115,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
-			$key = FabrikString::safeColName($params->get('cascadingdropdown_label'));
+			$key = FabrikString::safeColName($params->get($this->labelParam));
 		}
 		$this->encryptFieldName($key);
 		$str = "$key $condition $value";
