@@ -147,7 +147,7 @@ div.calendar{
 #listform_$c .fabrik_groupheading,
 #listform_$c .fabrik___heading,
 .advancedSeach_$c .fabrik___heading{
-	background-color: #c0c0c0;
+	background: #c0c0c0;
 	border-bottom: 1px solid #B7B7B7;
 	border-top: 1px solid #FFFFFF;
 	color: #777777;
@@ -164,9 +164,12 @@ div.calendar{
 #listform_$c .fabrik_groupheading,
 #listform_$c tfoot td{
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+}
+
+#listform_$c .fabrik_groupheading td{
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 }
 
 #listform_$c .fabrik_groupheading a{
