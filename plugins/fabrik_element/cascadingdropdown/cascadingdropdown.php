@@ -505,6 +505,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 	protected function _buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
+		$app = JFactory::getApplication();
 		$sig = isset($this->_autocomplete_where) ? $this->_autocomplete_where . '.' . $incWhere : $incWhere;
 		$sig .= '.' . serialize($opts);
 		$repeatCounter = JArrayHelper::getValue($opts, 'repeatCounter', 0);
@@ -580,7 +581,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 								{
 									// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
 									// but should probably select none.
-									$whereval = '';
+
+									// Unless its a cdd autocomplete list filter - seems sensible to populate that with the values matching the search term
+									if ($app->input->get('method') !== 'autocomplete_options')
+									{
+										$whereval = '';
+									}
 								}
 							}
 						}
@@ -630,7 +636,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= $where == '' ? ' AND ' . $this->_autocomplete_where : $this->_autocomplete_where;
+			$where .= $where !== '' ? ' AND ' . $this->_autocomplete_where : $this->_autocomplete_where;
 
 		}
 		$data = array_merge($data, $placeholders);
@@ -918,6 +924,22 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$opts = json_encode($opts);
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
 		}
+	}
+
+	/**
+	 * Get the field name for the joined tables' pk
+	 *
+	 *  @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getJoinValueFieldName()
+	{
+		$params = $this->getParams();
+		$full = $params->get('cascadingdropdown_id');
+		$bits = explode('___', $full);
+		return JArrayHelper::getValue($bits, 1, $full);
 	}
 
 	/**

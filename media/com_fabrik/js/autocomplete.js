@@ -252,17 +252,24 @@ var FbAutocomplete = new Class({
 	
 });
 
-var FbCddAutocomplete = new Class({
+var FabCddAutocomplete = new Class({
 	
 	Extends: FbAutocomplete,
 	
-	search: function () {
+	search: function (e) {
+		var key;
 		var v = this.getInputElement().get('value');
 		if (v === '') {
 			this.element.value = '';
 		}
 		if (v !== this.searchText && v !== '') {
-			var key = document.id(this.options.observerid).get('value') + '.' + v;
+			var observer = document.id(this.options.observerid);
+			if (typeOf(observer) !== 'null') {
+				key = observer.get('value') + '.' + v;
+			} else {
+				this.parent(e);
+				return;
+			}
 			this.positionMenu();
 			if (this.cache[key]) {
 				this.populateMenu(this.cache[key]);

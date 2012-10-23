@@ -1615,9 +1615,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
-		return $db->quoteName($join->table_join_alias . '.' . $params->get('join_key_column'));
+		return $db->quoteName($join->table_join_alias . '.' . $this->getJoinValueFieldName());
 	}
 
+	/**
+	 * Get the field name for the joined tables' pk
+	 *
+	 *  @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getJoinValueFieldName()
+	{
+		$params = $this->getParams();
+		return $params->get('join_key_column');
+	}
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
@@ -2261,7 +2274,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$join = $elementModel->getJoin()->table_join;
 			$opts = array();
-			$opts['label'] = !strstr($c, 'CONCAT') ? $join . '.' . $c : $c;
+			if (!strstr($c, 'CONCAT'))
+			{
+				$opts['label'] = strstr($c, '.') ? $c : $join . '.' . $c;
+			}
+			else
+			{
+				$opts['label'] =  $c;
+			}
 			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
