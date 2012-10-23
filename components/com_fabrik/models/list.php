@@ -2059,7 +2059,7 @@ class FabrikFEModelList extends JModelForm
 					if ($dir != '' && $dir != '-' && trim($dir) != 'Array')
 					{
 						$strOrder == '' ? $strOrder = "\n ORDER BY " : $strOrder .= ',';
-						$strOrder .= $element->getOrderByName() . " $dir";
+						$strOrder .= $element->getOrderByName() . ' ' . $dir;
 						$this->orderEls[] = $element->getOrderByName();
 						$this->orderDirs[] = $dir;
 						$element->getAsField_html($this->selectedOrderFields, $aAsFields);

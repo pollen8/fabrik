@@ -1817,7 +1817,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return FabrikString::safeColName($elName);
 	}
-	
+
 	protected function getLabelParamVal()
 	{
 		if (isset($this->labelParamVal))
@@ -2292,7 +2292,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
 		$joinVal = $this->getValColumn();
-		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
+		if (!strstr($joinVal, 'CONCAT'))
+		{
+			$return = strstr($joinVal, '___') ? FabrikString::safeColName($joinVal) : $joinTable . '.' . $joinVal;
+		}
+		else
+		{
+			$return = $joinVal;
+		}
 		if ($return == '.')
 		{
 			$return = parent::getOrderByName();
