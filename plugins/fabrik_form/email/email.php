@@ -87,7 +87,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 
 		if (JFile::exists($emailTemplate))
 		{
-			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this
+			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
 				->_getTemplateEmail($emailTemplate);
 
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
@@ -261,11 +261,12 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
 	 * @param   string  $tmpl  path to template
+	 * @param   object  $formModel  form model for this plugin
 	 *
 	 * @return string email message
 	 */
 
-	protected function _getPHPTemplateEmail($tmpl)
+	protected function _getPHPTemplateEmail($tmpl, $formModel)
 	{
 		$emailData = $this->data;
 
