@@ -3087,6 +3087,20 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than JRequest::get()
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
+					// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+					// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+					// but from this point on, code is expecting even non-repeat join data to be arrays.
+					$groups = $this->getGroupsHiarachy();
+					foreach ($groups as $groupModel)
+					{
+						if ($groupModel->isJoin() && !$groupModel->canRepeat())
+						{
+							foreach ($data['join'][$groupModel->getJoinId()] as &$el)
+							{
+								$el = array($el);
+							}
+						}
+					}
 					$data = FArrayHelper::toObject($data, 'stdClass', false);
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
@@ -3107,7 +3121,23 @@ class FabrikFEModelForm extends FabModelForm
 					if ($srow->data != '')
 					{
 						$sessionLoaded = true;
-						$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
+						// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+						// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+						// but from this point on, code is expecting even non-repeat join data to be arrays.
+						$tmp_data = unserialize($srow->data);
+						$groups = $this->getGroupsHiarachy();
+						foreach ($groups as $groupModel)
+						{
+							if ($groupModel->isJoin() && !$groupModel->canRepeat())
+							{
+								foreach ($tmp_data['join'][$groupModel->getJoinId()] as &$el)
+								{
+									$el = array($el);
+								}
+							}
+						}
+						//$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
+						$data = array(FArrayHelper::toObject(array_merge($tmp_data, JArrayHelper::fromObject($data[0]))));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
@@ -3747,6 +3777,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($f->Key == 'PRI')
 					{
 						$pkField = $tblJoin->table_join . '___' . $f->Field;
+						break;
 					}
 				}
 				$usedkeys = array();
