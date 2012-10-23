@@ -5,7 +5,7 @@ $buttonCount = (int) $_REQUEST['buttoncount'];
 $buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
 echo "
 #listform_$c table.fabrikList {
-	clear:right;
+	clear: right;
 	border-collapse: collapse;
 	margin-top: 10px;
 	color: #444444;
@@ -13,6 +13,11 @@ echo "
 	but it seems nicer to have the table full width
 	- then you can right align the top buttons against it */
 	width:100%;
+}
+
+#listform_$c .fabrikFilterContainer {
+	float: right;
+	width: 50%;
 }
 
 #listform_$c table.fabrikList .groupdataMsg{
@@ -198,11 +203,6 @@ div.calendar{
 #listform_$c .firstPage,.previousPage,.aPage,.nextPage,.lastPage {
 	display: inline;
 	padding: 3px;
-}
-
-#listform_$c table.filtertable {
-	width: 50%;
-	float: right;
 }
 
 #listform_$c .fabrikHover {
