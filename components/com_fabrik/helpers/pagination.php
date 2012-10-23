@@ -74,6 +74,13 @@ class FPagination extends JPagination
 	public $showDisplayNum = true;
 
 	/**
+	 * Add a 'show all' option to display # select list
+	 *
+	 * @var bool
+	 */
+	public $viewAll = false;
+
+	/**
 	 * Set the pagination ID
 	 *
 	 * @param  int  $id id
@@ -156,7 +163,7 @@ class FPagination extends JPagination
 		{
 			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
 		}
-		$selected = $this->_viewall ? 0 : $this->limit;
+		$selected = $this->viewAll ? 0 : $this->limit;
 		$js = '';
 		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox input-mini" size="1" onchange="' . $js . '"', 'value', 'text',
 			$selected
@@ -172,7 +179,7 @@ class FPagination extends JPagination
 	 * @return   string  HTML link
 	 */
 
-	protected function _item_active(&$item)
+	protected function _item_active(JPaginationObject $item)
 	{
 		$app = JFactory::getApplication();
 		if ($app->isAdmin())
@@ -361,7 +368,7 @@ class FPagination extends JPagination
 		// $$$ hugh - need to work out if we need & or ?
 		$sepchar = strstr($this->url, '?') ? '&amp;' : '?';
 		$data->all = new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
-		if (!$this->_viewall)
+		if (!$this->viewAll)
 		{
 			$data->all->base = '0';
 			$data->all->link = $admin ? "{$sepchar}limitstart=" : JRoute::_("{$sepchar}limitstart=");
@@ -418,7 +425,7 @@ class FPagination extends JPagination
 			$offset = ($i - 1) * $this->limit;
 
 			$data->pages[$i] = new JPaginationObject($i);
-			if ($i != $this->get('pages.current') || $this->_viewall)
+			if ($i != $this->get('pages.current') || $this->viewAll)
 			{
 				$data->pages[$i]->base = $offset;
 				$data->pages[$i]->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $offset

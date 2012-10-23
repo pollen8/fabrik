@@ -68,7 +68,8 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$url .= '&amp;userid=' . $user->get('id');
 		$url .= '&amp;nonajax=1';
 		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
-		$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
+		$colData = $this->getListModel()->getData();
+		$ids = JArrayHelper::getColumn($colData, '__pk_val');
 		$canRate = $this->canRate($row_id, $ids);
 		for ($i = 0; $i < count($data); $i++)
 		{

@@ -69,13 +69,11 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 	public function getRSSFeed()
 	{
-		//  get RSS parsed object
-		$options = array();
-		$options['rssUrl'] = 'http://feeds.feedburner.com/fabrik';
-		$options['cache_time'] = 86400;
+		//  Get RSS parsed object - Turn off error reporting as SimplePie creates strict error notices.
+		$origError = error_reporting();
+		error_reporting(0);
+		$rssDoc = JSimplepieFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);
 
-		//$rssDoc = JFactory::getFeedParser('RSS', $options);
-		$rssDoc = JFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');
@@ -116,6 +114,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 
 			$output .= '</table>';
 		}
+		error_reporting($origError);
 		return $output;
 	}
 
