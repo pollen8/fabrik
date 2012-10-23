@@ -116,6 +116,9 @@ class FabrikControllerForm extends JController
 		}
 		$view->isMambot = $this->isMambot;
 
+		// Get data as it will be needed for ACL when testing if current row is editable.
+		$model->getData();
+
 		// If we can't edit the record redirect to details view
 		if ($model->checkAccessFromListSettings() <= 1)
 		{

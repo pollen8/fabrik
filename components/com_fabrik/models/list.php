@@ -2978,9 +2978,6 @@ class FabrikFEModelList extends JModelForm
 		/* $$$ hugh - AAAAAAGHHHH!!!  This one took a while ...
 		 * canUserDo() returns true, false, or -1 ... when "loose" testing with !=
 		 * then true is the same as -1.  But we want strict testing, with !==
-		 * so it isn't the same!
-		 * Hmmm - I just noticed canDelete() already has a !== here.
-		 * if ($canUserDo != -1) {
 		 */
 		if ($canUserDo !== -1)
 		{
