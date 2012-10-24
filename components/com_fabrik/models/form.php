@@ -1141,6 +1141,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$ns = $val;
 
+			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
 			$ns_full = &$this->_fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
@@ -1155,6 +1156,7 @@ class FabrikFEModelForm extends FabModelForm
 			$ns_full = $val;
 
 			// $$$ hugh - FIXME - nope, this won't work!  We don't know which path node is the element name.
+			// $$$ hugh again - should now work, with little preg_replace hack, if last part is numeric, then second to last will be element name
 			if ($update_raw)
 			{
 				if (preg_match('#\.\d+$#', $key))
