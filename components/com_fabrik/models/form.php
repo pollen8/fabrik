@@ -1141,23 +1141,32 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$ns = $val;
 
-			$ns = &$this->_fullFormData;
+			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
+			$ns_full = &$this->_fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
 				// If any node along the registry path does not exist, create it
 				// if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-				if (!isset($ns[$nodes[$i]]))
+				if (!isset($ns_full[$nodes[$i]]))
 				{
-					$ns[$nodes[$i]] = array();
+					$ns_full[$nodes[$i]] = array();
 				}
-				$ns = &$ns[$nodes[$i]];
+				$ns_full = &$ns_full[$nodes[$i]];
 			}
-			$ns = $val;
+			$ns_full = $val;
 
 			// $$$ hugh - FIXME - nope, this won't work!  We don't know which path node is the element name.
+			// $$$ hugh again - should now work, with little preg_replace hack, if last part is numeric, then second to last will be element name
 			if ($update_raw)
 			{
-				$key .= '_raw';
+				if (preg_match('#\.\d+$#', $key))
+				{
+					$key = preg_replace('#(.*)(\.\d+)$#', '$1_raw$2', $key);
+				}
+				else
+				{
+					$key .= '_raw';
+				}
 				$nodes = explode('.', $key);
 				$count = count($nodes);
 				$pathNodes = $count - 1;
@@ -1165,31 +1174,31 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					$pathNodes = 0;
 				}
-				$ns = &$this->_formData;
+				$ns_raw = &$this->_formData;
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
 					// if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-					if (!isset($ns[$nodes[$i]]))
+					if (!isset($ns_raw[$nodes[$i]]))
 					{
-						$ns[$nodes[$i]] = array();
+						$ns_raw[$nodes[$i]] = array();
 					}
-					$ns = &$ns[$nodes[$i]];
+					$ns_raw = &$ns_raw[$nodes[$i]];
 				}
-				$ns = $val;
+				$ns_raw = $val;
 
-				$ns = $this->_fullFormData;
+				$ns_raw_full = $this->_fullFormData;
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
 					// if (!isset($this->_formData[$nodes[$i]])) { //this messed up for joined data
-					if (!isset($ns[$nodes[$i]]))
+					if (!isset($ns_raw_full[$nodes[$i]]))
 					{
-						$ns[$nodes[$i]] = array();
+						$ns_raw_full[$nodes[$i]] = array();
 					}
-					$ns = &$ns[$nodes[$i]];
+					$ns_raw_full = &$ns_raw_full[$nodes[$i]];
 				}
-				$ns = $val;
+				$ns_raw_full = $val;
 			}
 		}
 		else
@@ -3087,6 +3096,20 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than JRequest::get()
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
+					// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+					// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+					// but from this point on, code is expecting even non-repeat join data to be arrays.
+					$groups = $this->getGroupsHiarachy();
+					foreach ($groups as $groupModel)
+					{
+						if ($groupModel->isJoin() && !$groupModel->canRepeat())
+						{
+							foreach ($data['join'][$groupModel->getJoinId()] as &$el)
+							{
+								$el = array($el);
+							}
+						}
+					}
 					$data = FArrayHelper::toObject($data, 'stdClass', false);
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
@@ -3107,7 +3130,23 @@ class FabrikFEModelForm extends FabModelForm
 					if ($srow->data != '')
 					{
 						$sessionLoaded = true;
-						$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
+						// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+						// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+						// but from this point on, code is expecting even non-repeat join data to be arrays.
+						$tmp_data = unserialize($srow->data);
+						$groups = $this->getGroupsHiarachy();
+						foreach ($groups as $groupModel)
+						{
+							if ($groupModel->isJoin() && !$groupModel->canRepeat())
+							{
+								foreach ($tmp_data['join'][$groupModel->getJoinId()] as &$el)
+								{
+									$el = array($el);
+								}
+							}
+						}
+						//$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
+						$data = array(FArrayHelper::toObject(array_merge($tmp_data, JArrayHelper::fromObject($data[0]))));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
@@ -3747,6 +3786,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($f->Key == 'PRI')
 					{
 						$pkField = $tblJoin->table_join . '___' . $f->Field;
+						break;
 					}
 				}
 				$usedkeys = array();

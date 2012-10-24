@@ -626,6 +626,21 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
+	 *
+	 * Get the group's join_id
+	 *
+	 * @return  mixed   join_id, or false if not a join
+	 */
+	public function getJoinId()
+	{
+		if (!$this->isJoin())
+		{
+			return false;
+		}
+		return $this->getGroup()->join_id;
+	}
+
+	/**
 	 * Get the group's associated join model
 	 *
 	 * @return  object  join model

@@ -495,6 +495,7 @@ class FabrikFEModelList extends JModelForm
 	 * 2012-10-19 - $$$ hugh - trouble with preserving old list settings is there is no way to change them, without
 	 * directly poking around in the params in the database.  Commenting out the per-list checking.
 	 *
+	 * @deprecated   now handled in FabrikHelper::getDbo(), as it needs to apply to all queruies, including internal / default connection ones.
 	 * @since   3/16/2010
 	 *
 	 * @return  void
