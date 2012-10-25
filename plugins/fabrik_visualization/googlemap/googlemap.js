@@ -77,7 +77,7 @@ var FbGoogleMapViz = new Class({
 			break;
 		}
 		
-		head.ready(function () {
+		window.addEvent('fabrik.load', function() {
 			if (typeOf(this.element_map) === 'null') {
 				return;
 			}

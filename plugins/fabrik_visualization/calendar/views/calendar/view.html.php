@@ -221,7 +221,7 @@ class fabrikViewCalendar extends JView
 		 *in the end decided to set a call back to the main calendar object (via the package manager)
 		 * to load up the new add event form
 		 */
-		$script = "head.ready(function() {
+		$script = "window.addEvent('fabrik.load', function() {
 			//oCalendar" . $model->getId()
 			. ".addListenTo('chooseeventwin');
 		$('fabrik_event_type').addEvent('change', function(e) {

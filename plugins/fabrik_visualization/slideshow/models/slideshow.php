@@ -290,7 +290,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 	public function getJS()
 	{
 		$params = $this->getParams();
-		$str = "head.ready(function() {\n";
+		$str = "window.addEvent('fabrik.load', function() {\n";
 		$viz = $this->getVisualization();
 
 		$use_thumbs = $params->get('slideshow_viz_thumbnails', 0);

@@ -162,7 +162,7 @@ class FabrikHelperHTML
 			return;
 		}
 
-		$script .= "head.ready(function() {";
+		$script .= "window.addEvent('fabrik.load', function() {";
 		if ($selector == '')
 		{
 			return;
@@ -541,7 +541,10 @@ EOD;
 			{
 				if (!strstr($file, 'fabrik.css'))
 				{
-					echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});
+					echo "<script type=\"text/javascript\">
+					requirejs(['mootools'], function () {
+					var v = new Asset.css('" . $file . "', {});
+					});
 				</script>\n";
 
 					self::$ajaxCssFiles[] = $file;
@@ -747,7 +750,7 @@ EOD;
 		{
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
 				'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
-				'media/com_fabrik/js/lib/mcl/Thread.js', 'media/com_fabrik/js/lib/canvas-extra.js');
+				'media/com_fabrik/js/lib/mcl/Thread.js', 'media/com_fabrik/js/canvas-extra.js');
 			self::script($src);
 			self::$mcl = true;
 		}
@@ -759,7 +762,7 @@ EOD;
 	 * @return  array  framework js files
 	 */
 
-	public static function framework()
+	public static function framework($requireJs = true)
 	{
 		if (!self::$framework)
 		{
@@ -774,8 +777,8 @@ EOD;
 				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
-			if (!self::inAjaxLoadedPage())
-			{
+			/* if (!self::inAjaxLoadedPage())
+			{ */
 
 				/*
 				 * required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
@@ -789,7 +792,10 @@ EOD;
 				 */
 				JHtml::_('behavior.framework', true);
 
-				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+
+				$document = JFactory::getDocument();
+				$tag = '<script data-main="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/js/main.js" src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js"></script>';
+				$document->addCustomTag($tag);
 
 				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
@@ -810,15 +816,17 @@ EOD;
 				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
 				 * in some browsers it's not available when other things (like map viz) are loading
 				 */
-				self::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';});");
 
+				self::addScriptDeclaration("
+					window.addEvent('fabrik.loaded', function () {
+						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
+					});
+				");
 				$script = array();
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
 
 				$tipOpts = self::tipOpts();
-				self::addScriptDeclaration(
-					"head.ready(function () {
-	Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
+				$tipJs = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
 						. ");
 	Fabrik.addEvent('fabrik.list.updaterows', function () {
 		//reattach new tips after list redraw,
@@ -826,10 +834,14 @@ EOD;
 	});
 	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
 		Fabrik.tips.hideAll();
-	});
-});
-				");
-			}
+	});";
+
+			self::addScriptDeclaration("window.addEvent('fabrik.loaded', function () {
+					requirejs(['tips', 'encoder'], function () {
+						" . $tipJs . "
+					});
+					});");
+			//}
 			self::$framework = $src;
 		}
 		return self::$framework;
@@ -885,6 +897,7 @@ EOD;
 		}
 		else
 		{
+			// $script = "window.addEvent('fabrik.load', function () {" . $script . "});";
 			JFactory::getDocument()->addScriptDeclaration($script);
 		}
 	}
@@ -965,101 +978,55 @@ EOD;
 	}
 
 	/**
-	 * Wrapper for JHTML::Script()
+	 * Wrapper for JHTML::Script() loading with require.js
 	 *
-	 * @param   mixed   $file    string or array of files to load
-	 * @param   string  $onLoad  optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+	 * @param   mixed   $file       string or array of files to load
+	 * @param   string  $onLoad     optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 *
 	 * @return  void
 	 */
 
-	public static function script($file, $onLoad = '')
+	public static function scriptRequire($file, $onLoad = '')
 	{
-		if (empty($file))
-		{
-			return;
-		}
 		$document = JFactory::getDocument();
-		/*
-		$config = JFactory::getConfig();
-		$debug = $config->get('debug');
-		$ext = $debug || (int) JRequest::getInt('fabrikdebug', 0) === 1 ? '.js' : '-min.js';
-		*/
-		$ext = self::isDebug() ? '.js' : '-min.js';
-
-		$file = (array) $file;
-		$src = array();
-		foreach ($file as $f)
+		$basePath = 'media/com_fabrik/js/';
+		$files = (array) $file;
+		foreach ($files as &$file)
 		{
-			if (!(JString::stristr($f, 'http://') || JString::stristr($f, 'https://')))
+			if (strstr($file, $basePath))
 			{
-				if (!JFile::exists(COM_FABRIK_BASE . '/' . $f))
-				{
-					continue;
-				}
-			}
-			if (JString::stristr($f, 'http://') || JString::stristr($f, 'https://'))
-			{
-				$f = $f;
+			$file = str_replace($basePath, '', $file);
+			$file = str_replace('.js', '', $file);
 			}
 			else
 			{
-				$compressedFile = str_replace('.js', $ext, $f);
-				if (JFile::exists($compressedFile))
-				{
-					$f = $compressedFile;
-				}
-				$f = COM_FABRIK_LIVESITE . $f;
+				$file = COM_FABRIK_LIVESITE . $file;
 			}
 
-			/*
-			 * Check if already loaded? Have to do this as multiple head.js calls with identical
-			 * scripts in them stops the $onLoad method from being run see:
-			 * https://github.com/Fabrik/fabrik/issues/412
-			 */
-			if (in_array($f, self::$scripts) && JRequest::getCmd('format') !== 'raw')
-			{
-				continue;
-			}
-			else
-			{
-				self::$scripts[] = $f;
-			}
+		}
+		$require = 'requirejs(' . json_encode($files) . ', function () {
+		' . $onLoad . '
+		});';
 
-			if (JRequest::getCmd('format') == 'raw')
-			{
-				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';
-				echo '<script type="text/javascript">Asset.javascript(\'' . $f . '\', {' . $opts . '});</script>';
-			}
-			else
-			{
-				$src[] = "'" . $f . "'";
-			}
-		}
-		if ($onLoad !== '' && JRequest::getCmd('format') != 'raw' && !empty($src))
-		{
-			if (self::inAjaxLoadedPage())
-			{
-				$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
-			}
-			else
-			{
-				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
-			}
-			$src[] = $onLoad;
-		}
-		if (!empty($src))
-		{
-			$document->addScriptDeclaration('head.js(' . implode(",\n", array_unique($src)) . ');' . "\n");
-		}
-		else
-		{
-			// Ppreviously loaded $file but with js code in $onLoad which should still be added
-			if (!empty($onLoad))
-			{
-				$document->addScriptDeclaration('head.ready(function () {' . $onLoad . '});' . "\n");
-			}
-		}
+		$require = "window.addEvent('fabrik.loaded', function () {
+		" . $require . "
+		});";
+		$document->addScriptDeclaration($require);
+	}
+
+	/**
+	 * Wrapper for JHTML::Script()
+	 *
+	 * @param   mixed   $file       string or array of files to load
+	 * @param   string  $onLoad     optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+	 * @param   bool    $requireJs  should we load scripts via require.js (TRUE) or head.js (FALSE)
+	 *
+	 * @return  void
+	 */
+
+	public static function script($file, $onLoad = '', $requireJs = false)
+	{
+		self::scriptRequire($file, $onLoad);
 	}
 
 	/**
@@ -1125,7 +1092,7 @@ EOD;
 
 		// Attach tooltips to document
 		// Force the zindex to 9999 so that it appears above the popup window.
-		$tooltipInit = 'head.ready(function() {if(typeOf(' . $selectorPrefix . ') !== \'null\' && ' . $selectorPrefix . '.getElements(\'' . $selector
+		$tooltipInit = 'window.addEvent("fabrik.load", function() {if(typeOf(' . $selectorPrefix . ') !== \'null\' && ' . $selectorPrefix . '.getElements(\'' . $selector
 			. '\').length !== 0) {window.JTooltips = new Tips(' . $selectorPrefix . '.getElements(\'' . $selector . '\'), ' . $options
 			. ');$$(".tool-tip").setStyle("z-index", 999999);}});';
 		/* self::addScriptDeclaration($tooltipInit); */
@@ -1178,7 +1145,7 @@ EOD;
 			$style .= ".fabrikDebugOutput pre{padding:5px;background:#efefef;color:#999;}";
 			$style .= ".fabrikDebugHidden{display:none}";
 			self::addStyleDeclaration($style);
-			$script = "head.ready(function() {
+			$script = "window.addEvent('fabrik.load', function() {
 			$$('.fabrikDebugOutputTitle').each(function(title) {
 				title.addEvent('click', function(e) {
 					title.getNext().toggleClass('fabrikDebugHidden');
@@ -1249,7 +1216,7 @@ EOD;
 		self::autoCompleteScript();
 		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
 		$str = json_encode($json);
-		self::addScriptDeclaration("head.ready(function() { new FbAutocomplete('$htmlid', $str); });");
+		self::addScriptDeclaration("window.addEvent('fabrik.load', function() { new FbAutocomplete('$htmlid', $str); });");
 	}
 
 	/**

@@ -6,7 +6,7 @@ var FbSlideshowViz = new Class({
 	
 	initialize: function (element, options) {
 		this.setOptions(options);
-		head.ready(function () {
+		window.addEvent('fabrik.load', function() {
 			var opts = {
 				controller: true,
 				delay: parseInt(this.options.slideshow_delay, 10),

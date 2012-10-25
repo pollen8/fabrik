@@ -75,8 +75,7 @@ class FabrikViewListBase extends JView
 
 		$this->_row = new stdClass;
 		$script = array();
-		$script[] = "head.ready(function() {";
-
+		//$script[] = "window.addEvent('fabrik.load', function() {";
 		$params = $model->getParams();
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
@@ -232,11 +231,9 @@ class FabrikViewListBase extends JView
 		$this->assign('pluginBeforeList', $pluginManager->_data);
 
 		$script[] = $model->filterJs;
-		$script[] = "});";
+		// $script[] = "});";
 		$script = implode("\n", $script);
-
-		FabrikHelperHTML::script($src);
-		FabrikHelperHTML::addScriptDeclaration($script);
+		FabrikHelperHTML::script($src, $script);
 		$this->getElementJs();
 
 		// Reset data back to original settings

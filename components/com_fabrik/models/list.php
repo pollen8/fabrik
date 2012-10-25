@@ -8183,7 +8183,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if ($script !== '')
 		{
-			$script = "head.ready(function() {\n" . $script . "});\n";
+			$script = "window.addEvent('fabrik.load', function() {\n" . $script . "});\n";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 	}

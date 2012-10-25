@@ -3,7 +3,7 @@ var fbVisApprovals = new Class({
 	options: {},
 	initialize: function (el, options) {
 		this.setOptions(options);
-		head.ready(function () {
+		window.addEvent('fabrik.load', function() {
 			this.el = document.id(el);
 			document.addEvent('click:relay(a.approve)', function (e) {
 				var el = e.target;

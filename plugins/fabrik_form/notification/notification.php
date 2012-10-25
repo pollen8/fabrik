@@ -69,7 +69,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 		if ($params->get('notification_ajax', 0) == 1)
 		{
 			FabrikHelperHTML::script('components/com_fabrik/plugins/form/notification/notify.js');
-			$script = "head.ready(function() {
+			$script = "window.addEvent('fabrik.load', function() {
 				var notify = new Notify('$id', $opts);
  			});";
 

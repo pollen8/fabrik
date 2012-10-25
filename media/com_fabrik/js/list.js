@@ -19,7 +19,7 @@ var FbListPlugin = new Class({
 		this.result = true; // set this to false in window.fireEvents to stop
 												// current action (eg stop ordering when
 												// fabrik.list.order run)
-		head.ready(function () {
+		window.addEvent('fabrik.loaded', function() {
 			this.listform = this.getList().getForm();
 			var l = this.listform.getElement('input[name=listid]');
 			// in case its in a viz
@@ -614,7 +614,7 @@ var FbList = new Class({
 			// not sure why but on ajax first load of xhr content the form object does not ini
 			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
 			// find out what the problem is here but for now this band aid is a help
-			var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
+			/*var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
 			var winOpts = {
 				'id': 'add.' + this.id,
 				'title': this.options.popup_edit_label,
@@ -625,7 +625,7 @@ var FbList = new Class({
 				'height': this.options.popup_height,
 			    'onContentLoaded': function () {}
 			};
-			var w = Fabrik.getWindow(winOpts);
+			var w = Fabrik.getWindow(winOpts);*/
 		}
 	},
 	

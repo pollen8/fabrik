@@ -17,13 +17,13 @@ class fabrikViewPackage extends JView
 		$srcs = array('media/com_fabrik/js/icons.js', 'media/com_fabrik/js/icongen.js', 'media/com_fabrik/js/canvas.js',
 		'media/com_fabrik/js/history.js', 'media/com_fabrik/js/keynav.js', 'media/com_fabrik/js/tabs.js',
 		'media/com_fabrik/js/pages.js', 'media/com_fabrik/js/frontpackage.js');
-		
+
 		FabrikHelperHTML::script($srcs);
 
 		FabrikHelperHTML::stylesheet('media/com_fabrik/css/package.css');
 		$canvas = $item->params->get('canvas');
-		
-		// $$$ rob 08/11/2011 test if component name set but still rendering 
+
+		// $$$ rob 08/11/2011 test if component name set but still rendering
 		// in option=com_fabrik then we should use fabrik as the package
 		if (JRequest::getCmd('option') === 'com_fabrik') {
 			$item->component_name = 'fabrik';
@@ -36,7 +36,7 @@ class fabrikViewPackage extends JView
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));
 		$id =$this->get('State')->get('package.id');
-		$script = "head.ready(function() {
+		$script = "window.addEvent('fabrik.load', function() {
 			new FrontPackage({
 		tabs : $tabs,
 		tabelement : 'packagemenu',

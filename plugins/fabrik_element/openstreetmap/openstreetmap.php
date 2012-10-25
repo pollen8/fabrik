@@ -260,7 +260,7 @@ class plgFabrik_ElementOpenstreetmap extends plgFabrik_Element
 		$opts->key = $params->get('fb_osm_key');
 		$opts->defaultLayer = $params->get('fb_osm_defaultlayer');
 		$opts = json_encode($opts);
-		FabrikHelperHTML::addScriptDeclaration("head.ready(function() {new FbOpenStreetMap('$id', $opts);});");
+		FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.load', function() {new FbOpenStreetMap('$id', $opts);});");
 		return $str;
 	}
 	/**

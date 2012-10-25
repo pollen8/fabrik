@@ -3,9 +3,9 @@
 	$filterFound = array_key_exists($key, $this->filters);
 	?>
 	<th class="<?php echo $this->headingClass[$key]['class']?>" style="<?php echo $this->headingClass[$key]['style']?>">
-		
-		<?php 
-	
+
+		<?php
+
 			echo '<span class="heading">' . $heading . '</span>';
 		?>
 		<?php if ($filterFound) {
@@ -20,7 +20,7 @@
 <?php $doc = JFactory::getDocument();
 $doc->addScript(JURI::root(true).'/media/com_fabrik/js/filtertoggle.js');
 $doc->addScriptDeclaration("
-head.ready(function(){
+window.addEvent('fabrik.load', function() {
 	new FabFilterToggle('".$this->list->renderid."');
 });
 "); ?>

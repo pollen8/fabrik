@@ -71,7 +71,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			return '';
 		}
 		$params = $this->getParams();
-		$str = "head.ready(function() {";
+		$str = "window.addEvent('fabrik.load', function() {";
 		$viz = $this->getVisualization();
 
 		$opts = new stdClass;

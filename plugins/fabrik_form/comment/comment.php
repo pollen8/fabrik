@@ -257,7 +257,7 @@ class plgFabrik_FormComment extends plgFabrik_Form
 		JText::script('PLG_FORM_COMMENT_PLEASE_ENTER_A_NAME_BEFORE_POSTING');
 		JText::script('PLG_FORM_COMMENT_ENTER_EMAIL_BEFORE_POSTNG');
 
-		$script = "head.ready(function() {
+		$script = "window.addEvent('fabrik.load', function() {
 		var comments = new FabrikComment('fabrik-comments', $opts);";
 
 		if ($this->doDigg())

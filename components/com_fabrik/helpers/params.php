@@ -47,7 +47,7 @@ class fabrikParams extends JParameter
 		{
 			return $p;
 		}
-		foreach ($default->children() as $node) 
+		foreach ($default->children() as $node)
 		{
 			$p[] = $node->attributes('name');
 		}
@@ -326,7 +326,7 @@ class fabrikParams extends JParameter
 			FabrikHelperHTML::script('components/com_fabrik/libs/params.js');
 			// watch add and remove buttons
 			$document = JFactory::getDocument();
-			$script = "head.ready(function() {
+			$script = "window.addEvent('fabrik.load', function() {
 			 new RepeatParams('container{$this->_identifier}', {repeatMin:$repeatMin});
 	});";
 			FabrikHelperHTML::addScriptDeclaration($script);

@@ -626,7 +626,7 @@ class FabrikViewFormBase extends JView
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
 		$srcs[] = 'media/com_fabrik/js/encoder.js';
-		FabrikHelperHTML::script($srcs, $str);
+		FabrikHelperHTML::scriptRequire($srcs, $str);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
@@ -960,7 +960,7 @@ class FabrikViewFormBase extends JView
 			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
 
 			$opts = json_encode($opts);
-			$script = "head.ready(function() {
+			$script = "window.addEvent('fabrik.load', function() {
 		new adminCCK($opts);
 		});";
 			$document->addScriptDeclaration($script);

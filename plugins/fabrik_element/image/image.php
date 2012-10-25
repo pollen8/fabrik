@@ -490,7 +490,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$('view_imagefiles').src = root + file;
 			}
 
-			head.ready(function() {
+			window.addEvent('fabrik.load', function() {
 			$('paramsimagepath').addEvent('change', function(e) {
 				var event = new Event(e);
 				event.stop;

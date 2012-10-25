@@ -7,7 +7,7 @@ var FbListInlineEdit = new Class({
 		this.editors = {};
 		this.inedit = false;
 		this.saving = false;
-		head.ready(function () {
+		window.addEvent('fabrik.load', function() {
 			//assigned in list.js fabrik3
 			if (typeOf(this.getList().getForm()) === 'null') {
 				return false;

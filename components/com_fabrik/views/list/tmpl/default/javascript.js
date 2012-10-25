@@ -1,7 +1,7 @@
 /**
  * @author Robert
  */
-head.ready(function() {
+window.addEvent('fabrik.load', function() {
 	$A($$('.fabrikList tr')).each(function(r){
 		document.id(r).addEvent('mouseover', function(e){
 			if (r.hasClass('oddRow0') || r.hasClass('oddRow1')){
