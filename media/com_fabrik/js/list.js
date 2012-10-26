@@ -625,6 +625,12 @@ var FbList = new Class({
 				'height': this.options.popup_height,
 			    'onContentLoaded': function () {}
 			};
+			if (typeOf(this.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = this.options.popup_offset_x;
+			}
+			if (typeOf(this.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = this.options.popup_offset_y;
+			}
 			var w = Fabrik.getWindow(winOpts);
 		}
 	},
