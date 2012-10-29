@@ -8406,7 +8406,7 @@ class FabrikFEModelList extends JModelForm
 		$ec = count($data);
 		foreach ($groups as $groupModel)
 		{
-			if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+			/* if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
 				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
@@ -8414,7 +8414,14 @@ class FabrikFEModelList extends JModelForm
 			else
 			{
 				$elementModels = $groupModel->getPublishedListElements();
-			}
+			} */
+
+			/*
+			 * $$$ rob 29/10/2012 - see http://fabrikar.com/forums/showthread.php?t=28830
+			 * Calc may be set to show in list via menu item, but groupModel::getPublishedListElements() doesn't know
+			 * this. Seems best to run all calcs regardless of whether they are set to show in list.
+			 */
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
 				$col = $elementModel->getFullName(false, true, false);
