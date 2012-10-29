@@ -58,7 +58,7 @@ class plgFabrik_FormRedirect extends plgFabrik_Form
 		 */
 		$this->data = array_merge($this->getEmailData(), $formModel->_formData);
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
-		$this->_data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
+		$this->_data->jump_page = JRoute::_($w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data));
 		$this->_data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params))
 		{
