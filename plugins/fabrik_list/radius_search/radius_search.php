@@ -149,7 +149,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$db = $this->model->getDb();
 		$usekey = JRequest::getVar('usekey');
 		JRequest::setVar('usekey', $placeElement->name);
-		$row = $this->model->getRow($db->quote($place));
+		$row = $this->model->getRow($place);
 		JRequest::SetVar('usekey', $usekey);
 		if (is_object($row))
 		{

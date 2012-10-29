@@ -3479,10 +3479,14 @@ class FabrikFEModelForm extends FabModelForm
 				for ($k = 0; $k < count($usekey); $k++)
 				{
 					// Ensure that the key value is not quoted as we Quote() afterwards
+					/*
+					 * $$$ rob 29/10/2012
+					 * commenting out as if key value = "ile d'ax" then this is set to "ile dax" which then returns no rows.
+					 * quote() shoudl deal with backslashing "'" so not sure why this line was here.
 					if (strstr($aRowIds[$k], "'"))
 					{
 						$aRowIds[$k] = str_replace("'", '', $aRowIds[$k]);
-					}
+					} */
 					if ($comparison == '=')
 					{
 						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);
