@@ -271,7 +271,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$local = true;
 			$date = $oDate->format($format, true);
 			$this->offsetDate = $oDate->toSql(true);
-			if (!$this->_editable)
+			if (!$this->isEditable())
 			{
 				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->format($timeformat, true) : '';
 				return $date . $time;
@@ -285,7 +285,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 		else
 		{
-			if (!$this->_editable)
+			if (!$this->isEditable())
 			{
 				return '';
 			}
@@ -1412,13 +1412,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
 	 * @param   string             $search        serch string
+	 * @param   array              $opts          options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return string  json encoded search results
 	 */
 
-	public static function cacheAutoCompleteOptions($elementModel, $search)
+	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$listModel = $elementModel->getListModel();
 		$table = $listModel->getTable();

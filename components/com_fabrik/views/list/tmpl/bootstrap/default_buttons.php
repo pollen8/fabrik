@@ -46,7 +46,7 @@
 
 
 
-<?php if ($this->showCSVImport || showCSV) :?>
+<?php if ($this->showCSVImport || $this->showCSV) :?>
  <li class="dropdown">
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 		<i class="icon-upload"></i>

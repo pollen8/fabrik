@@ -2991,7 +2991,7 @@ class FabrikFEModelForm extends FabModelForm
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->_data);
+		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->data);
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}

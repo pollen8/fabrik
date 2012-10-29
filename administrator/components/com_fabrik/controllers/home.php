@@ -110,10 +110,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	public function getRSSFeed()
 	{
 		// Get RSS parsed object
-		$options = array();
-		$options['rssUrl']		= 'http://feeds.feedburner.com/fabrik';
-		$options['cache_time']	= 86400;
-		$rssDoc = JFactory::getFeedParser('RSS', $options);
+		$rssDoc = JSimplepieFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);
 		if ($rssDoc == false)
 		{
 			$output = JText::_('Error: Feed not retrieved');

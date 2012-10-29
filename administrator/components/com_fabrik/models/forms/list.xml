@@ -341,7 +341,7 @@
 	
 		<fieldset name="layout">
 			
-			<field default="admin" description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" hide_default="1" hide_none="0" label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL" name="admin_template" type="folderlist"/>
+			<field default="" description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" hide_default="1" hide_none="0" label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL" name="admin_template" type="folderlist"/>
 				
 			<field description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" name="empty_data_msg" size="70" type="text"/>
 				
