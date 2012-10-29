@@ -9,9 +9,13 @@ var FbTextarea = new Class({
 		// before the editor then the editor may not yet be loaded 
 		
 		this.periodFn = function () {
-			if (this.getTextContainer() !== false) {
-				this.watchTextContainer();
-				clearInterval(this.periodFn);
+			
+			// Seems that tinyMCE isn't created if FbLike element published in form
+			if (typeof tinyMCE !== 'undefined') {
+				if (this.getTextContainer() !== false) {
+					this.watchTextContainer();
+					clearInterval(this.periodFn);
+				}
 			}
 		};
 		

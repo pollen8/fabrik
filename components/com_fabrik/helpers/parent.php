@@ -1369,7 +1369,6 @@ class FabrikWorker
 		}
 		if (is_numeric($data))
 		{
-			echo "$data is numeric not json";
 			return false;
 		}
 		return json_decode($data) !== null;
