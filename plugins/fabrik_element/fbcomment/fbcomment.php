@@ -57,7 +57,7 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+		$str = '';
 
 		// $id = $params->get('fbcomment_uniqueid');
 		$href = $params->get('fbcomment_href');
@@ -65,10 +65,33 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 		$num = $params->get('fbcomment_number_of_comments', 10);
 		$colour = $params->get('fb_comment_scheme') == '' ? '' : ' colorscheme="dark" ';
 
-		// $str .= "<fb:comments xid=\"$id\" numposts=\"$num\" width=\"$width\" />";
-		$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num . '" width="' . $width . '"' . $colour
-			. '></fb:comments>';
+		if (empty($href))
+		{
+			$app = JFactory::getApplication();
+			$rowid = $app->input->getInt('rowid');
+			if ($rowid != 0)
+			{
+				$formModel = $this->getForm();
+				$formid = $formModel->getId();
+				$href = 'index.php?option=com_fabrik&view=form&formid=' . $formid . '&rowid=' . $rowid;
+				$href = JRoute::_($href);
+				$href = COM_FABRIK_LIVESITE_ROOT . $href;
+			}
+		}
+		else {
 
+		}
+		if (!empty($href))
+		{
+			$w = new FabrikWorker;
+			$href = $w->parseMessageForPlaceHolder($href, $data);
+			$str .= FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+			$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num . '" width="' . $width . '"' . $colour . '></fb:comments>';
+		}
+		else
+		{
+			$str .= JText::_('PLG_ELEMENT_FBCOMMENT_AVAILABLE_WHEN_SAVED');
+		}
 		return $str;
 	}
 

@@ -1702,9 +1702,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
+			$join = $this->getJoin();
+			//$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($this->getLabelParamVal());
+			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
+
 			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
 			// $k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
-			$str = "$key $condition $value";
+			$str = "$k $condition $value";
 		}
 		else
 		{
