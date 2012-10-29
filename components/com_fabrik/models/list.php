@@ -5017,7 +5017,7 @@ class FabrikFEModelList extends JModelForm
 		$arr = array();
 		foreach ($elements as $e)
 		{
-			$key = FabrikString::safeColName($e->getFullName(false, false, false));
+			$key = $e->getFilterFullName();
 			$arr[$key] = array('id' => $e->getId(), 'plugin' => $e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
@@ -5042,7 +5042,7 @@ class FabrikFEModelList extends JModelForm
 			$elParams = $elementModel->getParams();
 			if ($elParams->get('inc_in_adv_search', 1))
 			{
-				$elName = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+				$elName = $elementModel->getFilterFullName();
 				if (!$first)
 				{
 					$first = true;
