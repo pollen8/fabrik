@@ -832,45 +832,47 @@ var FbList = new Class({
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
 				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
-				gcounter++;
-				for (i = 0; i < groupData.length; i++) {
-
-					if (typeOf(this.options.rowtemplate) === 'string') {
-						container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
-						thisrowtemplate = new Element(container);
-						thisrowtemplate.set('html', this.options.rowtemplate);
-					} else {
-						container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
-						thisrowtemplate = new Element(container);
-						// ie tmp fix for mt 1.2 setHTML on table issue
-						thisrowtemplate.adopt(this.options.rowtemplate.clone());
-					}
-					var row = $H(groupData[i]);
-					$H(row.data).each(function (val, key) {
-						var rowk = '.' + key;
-						var cell = thisrowtemplate.getElement(rowk);
-						if (typeOf(cell) !== 'null' && cell.get('tag') !== 'a') {
-							cell.set('html', val);
+				if (typeOf(tbody) !== 'null') {
+					gcounter++;
+					for (i = 0; i < groupData.length; i++) {
+	
+						if (typeOf(this.options.rowtemplate) === 'string') {
+							container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
+							thisrowtemplate = new Element(container);
+							thisrowtemplate.set('html', this.options.rowtemplate);
+						} else {
+							container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
+							thisrowtemplate = new Element(container);
+							// ie tmp fix for mt 1.2 setHTML on table issue
+							thisrowtemplate.adopt(this.options.rowtemplate.clone());
 						}
-						rowcounter ++;
-					}.bind(this));
-					// thisrowtemplate.getElement('.fabrik_row').id = 'list_' + this.id +
-					// '_row_' + row.get('__pk_val');
-					thisrowtemplate.getElement('.fabrik_row').id = row.id;
-					if (typeOf(this.options.rowtemplate) === 'string') {
-						var c = thisrowtemplate.getElement('.fabrik_row').clone();
-						c.id = row.id;
-						var newClass = row['class'].split(' ');
-						for (j = 0; j < newClass.length; j ++) {
-							c.addClass(newClass[j]);
+						var row = $H(groupData[i]);
+						$H(row.data).each(function (val, key) {
+							var rowk = '.' + key;
+							var cell = thisrowtemplate.getElement(rowk);
+							if (typeOf(cell) !== 'null' && cell.get('tag') !== 'a') {
+								cell.set('html', val);
+							}
+							rowcounter ++;
+						}.bind(this));
+						// thisrowtemplate.getElement('.fabrik_row').id = 'list_' + this.id +
+						// '_row_' + row.get('__pk_val');
+						thisrowtemplate.getElement('.fabrik_row').id = row.id;
+						if (typeOf(this.options.rowtemplate) === 'string') {
+							var c = thisrowtemplate.getElement('.fabrik_row').clone();
+							c.id = row.id;
+							var newClass = row['class'].split(' ');
+							for (j = 0; j < newClass.length; j ++) {
+								c.addClass(newClass[j]);
+							}
+							c.inject(tbody);
+						} else {
+							var r = thisrowtemplate.getElement('.fabrik_row');
+							r.inject(tbody);
+							thisrowtemplate.empty();
 						}
-						c.inject(tbody);
-					} else {
-						var r = thisrowtemplate.getElement('.fabrik_row');
-						r.inject(tbody);
-						thisrowtemplate.empty();
+						counter++;
 					}
-					counter++;
 				}
 			}.bind(this));
 
