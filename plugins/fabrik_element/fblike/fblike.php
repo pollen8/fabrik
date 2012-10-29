@@ -47,7 +47,6 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 	 */
 	protected $fieldLength = '1';
 
-
 	/**
 	 * Shows the data formatted for the list view
 	 *
@@ -67,7 +66,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 		// $$$ rob no need to get other meta data as we are linking to the details which contains full meta info on what it is
 		// you are liking
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->getValue('sitename');
+		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:admins'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 
@@ -120,7 +119,6 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 				}
 			}
 		}
-
 		$locEl = $formModel->getElement($params->get('fblike_location'), true);
 		if ($locEl != '')
 		{
@@ -134,7 +132,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 			}
 		}
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-		$meta['og:site_name'] = $config->getValue('sitename');
+		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
@@ -171,14 +169,14 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 		{
 			$href = '';
 		}
-
 		$layout = $params->get('fblike_layout', 'standard');
 		$showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
 		$width = $params->get('fblike_width', 300);
 		$action = $params->get('fblike_action', 'like');
 		$font = $params->get('fblike_font', 'arial');
 		$colorscheme = $params->get('fblike_colorscheme', 'light');
-		$str = "<fb:like $href layout=\"$layout\" show_faces=\"$showfaces\" width=\"$width\" action=\"$action\" font=\"$font\" colorscheme=\"$colorscheme\" />";
+		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action
+			. '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
 		return $str;
 	}
 
