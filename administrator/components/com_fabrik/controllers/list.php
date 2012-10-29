@@ -15,9 +15,9 @@ require_once 'fabcontrollerform.php';
 /**
  * Admin List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerList extends FabControllerForm
@@ -28,7 +28,10 @@ class FabrikAdminControllerList extends FabControllerForm
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * @var int  id
+	 * Used from content plugin when caching turned on to ensure correct element rendered)
+	 */
 	protected $cacheId = 0;
 
 	/**
@@ -53,7 +56,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * set up a confirmation screen asking about renaming the list you want to copy
+	 * Set up a confirmation screen asking about renaming the list you want to copy
 	 *
 	 * @return mixed notice or null
 	 */
@@ -78,7 +81,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * actually copy the list
+	 * Actually copy the list
 	 *
 	 * @return  null
 	 */
@@ -97,7 +100,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * show the lists data in the admin
+	 * Show the lists data in the admin
 	 *
 	 * @param   object  $model  list model
 	 *
@@ -149,11 +152,10 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * show the linked elements
+	 * Show the elements associated with the list
 	 *
-	 * @return  null
+	 * @return  void
 	 */
-
 	public function showLinkedElements()
 	{
 		$document = JFactory::getDocument();
@@ -209,7 +211,7 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * clear filters
+	 * Clear filters
 	 *
 	 * @return  null
 	 */
@@ -222,9 +224,9 @@ class FabrikAdminControllerList extends FabControllerForm
 	}
 
 	/**
-	 * filter the list data
+	 * Filter the list data
 	 *
-	 * @return  null
+	 * @return  void
 	 */
 
 	public function filter()

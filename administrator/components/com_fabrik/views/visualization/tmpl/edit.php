@@ -21,6 +21,7 @@ JHtml::_('behavior.keepalive');
 $fbConfig = JComponentHelper::getParams('com_fabrik');
 $srcs = FabrikHelperHTML::framework();
 $srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
 $srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
 
 $opts = new stdClass;

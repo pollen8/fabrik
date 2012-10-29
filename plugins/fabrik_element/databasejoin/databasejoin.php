@@ -45,6 +45,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected $dbname = null;
 
 	/**
+	 * J Paramter name for the field containing the cdd label value
+	 *
+	 * @var string
+	 */
+	protected $labelParam = 'join_val_column';
+
+	/**
+	 * J Parameter name for the field containiing the concat label
+	 *
+	 * @var string
+	 */
+	protected $concatLabelParam = 'join_val_column_concat';
+
+	/**
 	 * Create the SQL select 'name AS alias' segment for list/form queries
 	 *
 	 * @param   array  &$aFields    array of element names
@@ -217,9 +231,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$db = $this->getDb();
 		$join = $this->getJoin();
-		if (($params->get('join_val_column_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
+		if (($params->get($this->concatLabelParam) != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
+			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return 'CONCAT(' . $val . ')';
@@ -718,13 +732,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
-		if ($params->get('join_val_column_concat') == '')
+		if ($params->get($this->concatLabelParam) == '')
 		{
-			return $params->get('join_val_column');
+			return $this->getLabelParamVal();
 		}
 		else
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('join_val_column_concat'));
+			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
 			return 'CONCAT(' . $val . ')';
@@ -1350,7 +1364,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if (in_array($element->filter_type, array('range', 'dropdown', '')))
 		{
 			$joinVal = $this->getJoinLabelColumn();
-			$incJoin = (trim($params->get('join_val_column_concat')) == '' && trim($params->get('database_join_where_sql') == '')) ? false : true;
+			$incJoin = (trim($params->get($this->concatLabelParam)) == '' && trim($params->get('database_join_where_sql') == '')) ? false : true;
 			$rows = $this->filterValueList($normal, null, $joinVal, '', $incJoin);
 			if (!$rows)
 			{
@@ -1422,7 +1436,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $elName . '[join_db_name]" value="' . $params->get('join_db_name') . '" />';
 		$return[] = '<input type="hidden" name="' . $elName . '[join_key_column]" value="' . $params->get('join_key_column') . '" />';
-		$return[] = '<input type="hidden" name="' . $elName . '[join_val_column]" value="' . $params->get('join_val_column') . '" />';
+		$return[] = '<input type="hidden" name="' . $elName . '[join_val_column]" value="' . $this->getLabelParamVal() . '" />';
 		return implode("\n", $return);
 	}
 
@@ -1608,9 +1622,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$db = FabrikWorker::getDbo();
-		return $db->quoteName($join->table_join_alias . '.' . $params->get('join_key_column'));
+		return $db->quoteName($join->table_join_alias . '.' . $this->getJoinValueFieldName());
 	}
 
+	/**
+	 * Get the field name for the joined tables' pk
+	 *
+	 *  @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getJoinValueFieldName()
+	{
+		$params = $this->getParams();
+		return $params->get('join_key_column');
+	}
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
@@ -1669,7 +1696,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				 */
 				if (!$this->_rawFilter)
 				{
-					$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_val_column'));
+					$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($this->getLabelParamVal());
 				}
 				else
 				{
@@ -1682,9 +1709,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
+			$join = $this->getJoin();
+			//$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($this->getLabelParamVal());
+			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
+
 			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
 			// $k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
-			$str = "$key $condition $value";
+			$str = "$k $condition $value";
 		}
 		else
 		{
@@ -1702,7 +1733,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$fType = $this->getElement()->filter_type;
 					if ($fType == 'auto-complete' || $fType == 'field')
 					{
-						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_val_column'));
+						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get($this->labelParam));
 					}
 					else
 					{
@@ -1753,7 +1784,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		$to = $params->get('join_db_name');
 		$key = $db->quoteName($to . '.' . $params->get('join_key_column'));
-		$label = $db->quoteName($to . '.' . $params->get('join_val_column'));
+		$label = $db->quoteName($to . '.' . $this->getLabelParamVal());
 		$v = $jointable . '.' . $shortName;
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
 			->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
@@ -1783,7 +1814,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$fields = array('auto-complete', 'field');
-		if ($params->get('join_val_column_concat', '') !== '' && in_array($element->filter_type, $fields))
+		if ($params->get($this->concatLabelParam, '') !== '' && in_array($element->filter_type, $fields))
 		{
 			return htmlspecialchars($this->getJoinLabelColumn(), ENT_QUOTES);
 		}
@@ -1801,7 +1832,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			if ($element->filter_type == 'field')
 			{
-				$elName = $join_db_name . '___' . $params->get('join_val_column');
+				$elName = $join_db_name . '___' . $this->getLabelParamVal();
 			}
 			else
 			{
@@ -1809,6 +1840,24 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 		return FabrikString::safeColName($elName);
+	}
+
+	protected function getLabelParamVal()
+	{
+		if (isset($this->labelParamVal))
+		{
+			return $this->labelParamVal;
+		}
+		$params = $this->getParams();
+		$label = $params->get($this->labelParam);
+		if (JString::strpos($label, '___'))
+		{
+			// CDD is stored as full element name - db join as simple element name
+			$bits = explode('___', $label);
+			$label = $bits[1];
+		}
+		$this->labelParamVal = $label;
+		return $this->labelParamVal;
 	}
 
 	/**
@@ -1827,7 +1876,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$orig = $params->get('database_join_where_sql');
 		$k = $params->get('join_key_column');
-		$l = $params->get('join_val_column');
+		$l = $this->getLabelParamVal();
 		$t = $params->get('join_db_name');
 		if ($k != '' && $l != '' & $t != '' && $rawval != '')
 		{
@@ -1929,7 +1978,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->id = $this->id;
 		$opts->fullName = $this->getFullName(false, true, false);
 		$opts->key = $table . '___' . $params->get('join_key_column');
-		$opts->label = $table . '___' . $params->get('join_val_column');
+		$opts->label = $table . '___' . $this->getLabelParamVal();
 		$opts->formid = $this->getForm()->getForm()->id;
 		$opts->listid = $popuplistid;
 		$opts->listRef = '_com_fabrik_' . $opts->listid;
@@ -2241,7 +2290,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$join = $elementModel->getJoin()->table_join;
 			$opts = array();
-			$opts['label'] = !strstr($c, 'CONCAT') ? $join . '.' . $c : $c;
+			if (!strstr($c, 'CONCAT'))
+			{
+				$opts['label'] = strstr($c, '.') ? $c : $join . '.' . $c;
+			}
+			else
+			{
+				$opts['label'] =  $c;
+			}
 			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
@@ -2272,7 +2328,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
 		$joinVal = $this->getValColumn();
-		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
+		if (!strstr($joinVal, 'CONCAT'))
+		{
+			$return = strstr($joinVal, '___') ? FabrikString::safeColName($joinVal) : $joinTable . '.' . $joinVal;
+		}
+		else
+		{
+			$return = $joinVal;
+		}
 		if ($return == '.')
 		{
 			$return = parent::getOrderByName();
@@ -2302,7 +2365,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$retStr .= "\nMissing Key";
 			}
-			if ((!$params->get('join_val_column')) && (!$params->get('join_val_column_concat')))
+			if ((!$params->get($this->labelParam)) && (!$params->get($this->concatLabelParam)))
 			{
 				$retStr = "\nMissing Label";
 			}
@@ -2437,7 +2500,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function quoteLabel()
 	{
 		$params = $this->getParams();
-		return $params->get('join_val_column_concat', '') == '';
+		return $params->get($this->concatLabelParam, '') == '';
 	}
 
 }

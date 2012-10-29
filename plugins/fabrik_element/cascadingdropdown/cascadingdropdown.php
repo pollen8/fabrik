@@ -23,6 +23,20 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 {
 
 	/**
+	 * J Paramter name for the field containing the label value
+	 *
+	 * @var string
+	 */
+	protected $labelParam = 'cascadingdropdown_label';
+
+	/**
+	 * J Parameter name for the field containiing the concat label
+	 *
+	 * @var string
+	 */
+	protected $concatLabelParam = 'cascadingdropdown_label_concat';
+
+	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
@@ -53,7 +67,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '', 'string');
 		$qsWatchValue = $input->get($watchName, '', 'string');
-		$opts->def = $this->getFormModel()->hasErrors && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+		$opts->def = $this->getFormModel()->hasErrors() && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
 		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
 		if (is_array($opts->def))
@@ -146,6 +160,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$tmp = array();
 		$rowid = $app->input->getInt('rowid', 0);
 		$show_please = $this->showPleaseSelect();
+
 		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
 		//if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
 		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
@@ -573,7 +588,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 								{
 									// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
 									// but should probably select none.
-									$whereval = '';
+
+									// Unless its a cdd autocomplete list filter - seems sensible to populate that with the values matching the search term
+									if ($app->input->get('method') !== 'autocomplete_options')
+									{
+										$whereval = '';
+									}
 								}
 							}
 						}
@@ -623,7 +643,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (!empty($this->_autocomplete_where))
 		{
-			$where .= $where == '' ? ' AND ' . $this->_autocomplete_where : $this->_autocomplete_where;
+			$where .= $where !== '' ? ' AND ' . $this->_autocomplete_where : $this->_autocomplete_where;
 
 		}
 		$data = array_merge($data, $placeholders);
@@ -646,7 +666,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$val = FabrikString::safeColName($params->get('cascadingdropdown_label'));
+			$val = FabrikString::safeColName($params->get($this->labelParam));
 			$val = preg_replace("#^`($table)`\.#", $db->quoteName($join->table_join_alias) . '.', $val);
 			foreach ($tables as $tid)
 			{
@@ -711,7 +731,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
 			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-			$bits = explode('___', $params->get('cascadingdropdown_label'));
+			$bits = explode('___', $params->get($this->labelParam));
 			return $join->table_join_alias . '___' . $bits[1];
 		}
 		else
@@ -817,7 +837,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		$id = explode('___', $params->get('cascadingdropdown_id'));
 		$id = array_pop($id);
-		$label = explode('___', $params->get('cascadingdropdown_label'));
+		$label = explode('___', $params->get($this->labelParam));
 		$label = array_pop($label);
 		$dbname = $fabrikDb->quoteName($this->getDbName());
 		$size = $params->get('filter_length', 20);
@@ -912,6 +932,22 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts = json_encode($opts);
 			return "Fabrik.filter_{$container}.addFilter('$element->plugin', new CascadeFilter('$observerid', $opts));\n";
 		}
+	}
+
+	/**
+	 * Get the field name for the joined tables' pk
+	 *
+	 *  @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getJoinValueFieldName()
+	{
+		$params = $this->getParams();
+		$full = $params->get('cascadingdropdown_id');
+		$bits = explode('___', $full);
+		return JArrayHelper::getValue($bits, 1, $full);
 	}
 
 	/**
@@ -1110,7 +1146,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
-			$key = FabrikString::safeColName($params->get('cascadingdropdown_label'));
+			$key = FabrikString::safeColName($params->get($this->labelParam));
 		}
 		$this->encryptFieldName($key);
 		$str = "$key $condition $value";

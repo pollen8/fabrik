@@ -154,9 +154,12 @@ div.calendar{
 #listform_$c .fabrik_groupheading,
 #listform_$c tfoot td{
 	background: -moz-linear-gradient(center top , #DCECF4, #BECED2) repeat scroll 0 0 #E7E7E7;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BECED2', endColorstr='#DCECF4'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#DCECF4),
 		to(#BECED2) );
+}
+
+#listform_$c .fabrik_groupheading td{
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BECED2', endColorstr='#DCECF4'); /* for IE */
 }
 
 #listform_$c .fabrik_groupheading a{

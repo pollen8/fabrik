@@ -47,7 +47,6 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	 */
 	protected $fieldLength = '1';
 
-
 	/**
 	 * Shows the data formatted for the list view
 	 *

@@ -47,6 +47,7 @@ AdvancedSearch = new Class({
 				return;
 			}
 			e.stop();
+			var list = this.getList();
 			list.submit(this.options.controller + '.filter');
 		}.bind(this));
 	},

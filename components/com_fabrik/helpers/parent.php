@@ -1208,6 +1208,21 @@ class FabrikWorker
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
 				'prefix' => $dbprefix);
 			self::$database[$sig] = JDatabase::getInstance($options);
+
+			/*
+			 *  $$$ hugh - testing doing bigSelects stuff here
+			 *  Reason being, some folk on shared hosting plans with very restrictive MySQL
+			 *  setups are hitting the 'big selects' problem on Fabrik internal queries, not
+			 *  just on their List specific queries.  So we need to apply 'big selects' to our
+			 *  default connection as well, essentially enabling it for ALL queries we do.
+			 */
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			if ($fbConfig->get('enable_big_selects', 0) == '1')
+			{
+				$fabrikDb = self::$database[$sig];
+				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+				$fabrikDb->query();
+			}
 		}
 		return self::$database[$sig];
 	}

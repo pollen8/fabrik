@@ -216,8 +216,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 					foreach ($group as $row)
 					{
 						$event = new stdClass;
-						$data = JArrayHelper::fromObject($row);
-						$html = $w->parseMessageForPlaceHolder($template, $data);
+						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row), false, true);
 						if ($eval)
 						{
 							$html = eval($html);
@@ -398,7 +397,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$customLink = JArrayHelper::getValue($customLink, $c, '');
 		if ($customLink !== '')
 		{
-			$url = $w->parseMessageForPlaceHolder($customLink, JArrayHelper::fromObject($row));
+			$url = @ $w->parseMessageForPlaceHolder($customLink, JArrayHelper::fromObject($row), false, true);
 			$url = str_replace('{rowid}', $row->__pk_val, $url);
 		}
 		else

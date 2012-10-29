@@ -1,4 +1,4 @@
-<?php 
+<?php
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
@@ -9,8 +9,8 @@ echo "
 	padding-top:10px;
 }
 #listform_$c div.fabrik_row {
-	float:left; 
-	border:1px solid; 
+	float:left;
+	border:1px solid;
 	width:220px;
 	overflow:hidden;
 	padding:10px;
@@ -181,6 +181,10 @@ div.calendar{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+}
+
+#listform_$c .fabrik_groupheading td{
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 }
 
 

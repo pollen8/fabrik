@@ -39,7 +39,88 @@
 					<option value="light">light</option>
 					<option value="dark">dark</option>
 			</field>
+			
+			<field name="fblike_locale"
+				default="en_US"
+				size="5"
+				type="text"
+				label="PLG_ELEMENT_FBLIKE_LOCALE_LABEL"
+				description="PLG_ELEMENT_FBLIKE_LOCALE_DESC" />
 					
+		</fieldset>
+		
+		<fieldset label="PLG_ELEMENT_FBLIKE_REQUIRED" name="plg-element-fblike-required">
+			<field name="fblike_title"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_TITLE_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_TITLE_DESC" />
+				
+			<field name="fblike_type"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_TYPE_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_TYPE_DESC" />
+				
+			<field name="fblike_image"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_IMAGE_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_IMAGE_DESC" />
+			
+			<field name="fblike_description"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_DESCRIPTION_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_DESCRIPTION_DESC" />
+			
+		</fieldset>
+		
+		<fieldset label="PLG_ELEMENT_FBLIKE_CONTACT" name="plg-element-fblike-opengraph-contact">
+			<field name="fblike_email"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_EMAIL_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_EMAIL_DESC" />
+				
+			<field name="fblike_phone_number"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_PHONE_NUMBER_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_PHONE_NUMBER_DESC" />
+				
+			<field name="fblike_fax_number"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_FAX_NUMBER_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_FAX_NUMBER_DESC" />
+				
+		</fieldset>
+		
+		<fieldset label="PLG_ELEMENT_FBLIKE_LOCATION" name="plg-element-fblike-opengraph-location">
+			<field name="fblike_location"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_LOCATION_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_LOCATION_DESC" />
+				
+			<field name="fblike_street_address"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_STREET_ADDRESS_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_STREET_ADDRESS_DESC" />
+				
+			<field name="fblike_locality"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_LOCALITY_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_LOCALITY_DESC" />
+				
+			<field name="fblike_region"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_REGION_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_REGION_DESC" />
+				
+			<field name="fblike_postal_code"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_POSTAL_CODE_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_POSTAL_CODE_DESC" />
+				
+			<field name="fblike_country"
+				type="listfields" 
+				label="PLG_ELEMENT_FBLIKE_OG_COUNTRY_LABEL"
+				description="PLG_ELEMENT_FBLIKE_OG_COUNTRY_DESC" />
+			
 		</fieldset>
 
 	</fields>

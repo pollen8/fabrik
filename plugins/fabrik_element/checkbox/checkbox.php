@@ -180,10 +180,12 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		switch ($condition)
 		{
 			case '=':
+			case '<>':
+				$condition2 = $condition == '=' ? 'LIKE' : 'NOT LIKE';
+				$glue  = $condition == '=' ? 'OR' : 'AND';
 				$db = FabrikWorker::getDbo();
-				$str = "($key $condition $value " . " OR $key LIKE " . $db->quote('["' . $originalValue . '"%') . " OR $key LIKE "
-					. $db->quote('%"' . $originalValue . '"%') . " OR $key LIKE " . $db->quote('%"' . $originalValue . '"]') . ")";
-
+				$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
+				. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";
 				break;
 			default:
 				$str = " $key $condition $value ";

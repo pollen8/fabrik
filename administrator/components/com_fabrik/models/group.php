@@ -163,8 +163,15 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			}
 			else if ($data['is_join'] == 1)
 			{
+				/*
+				 * $$$ rob - this was destroying legitimate joins on saving the group
+				 * see http://fabrikar.com/forums/showthread.php?t=29385
+				 * commenting out for now until Hugh can take another look at what ever he was trying to solve
+				 * in commit #ee697dd
+				 *
 				$unMakeJoin = true;
 				$data['is_join'] = 0;
+				*/
 			}
 		}
 		else

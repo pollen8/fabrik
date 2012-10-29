@@ -2,7 +2,7 @@
 /**
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
- * @author      Jaanus Nurmoja
+ * @author      Jaanus Nurmoja <email@notknown.com>
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,6 +17,7 @@ defined('_JEXEC') or die();
  * @subpackage  Fabrik.element.time
  * @since       3.0
  */
+
 class PlgFabrik_ElementTime extends PlgFabrik_Element
 {
 
@@ -28,7 +29,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Draws the form element
 	 *
-	 * @param   array  $data  to      prepopulate element with
+	 * @param   array  $data           Dat to prepopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
 	 *
 	 * @return  string  returns element html
@@ -42,10 +43,12 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$bits = array();
-		// $$$ rob - not sure why we are setting $data to the form's data
-		//but in table view when getting read only filter value from url filter this
-		// _form_data was not set to no readonly value was returned
-		// added little test to see if the data was actually an array before using it
+		/*
+		 * $$$ rob - not sure why we are setting $data to the form's data
+		 * but in table view when getting read only filter value from url filter this
+		 * _form_data was not set to no readonly value was returned
+		 * added little test to see if the data was actually an array before using it
+		 */
 		$formModel = $this->getFormModel();
 		if (is_array($formModel->data))
 		{
@@ -60,6 +63,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			{
 				// Avoid 0000-00-00
 				list($hour, $min, $sec) = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
 				if ($fd == 'H:i:s')
@@ -88,7 +92,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		else
 		{
 			// Wierdness for failed validaion
-			$value = strstr($value, ',') ? array_reverse(explode(',', $value)) : explode(':', $value);
+			$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
 			$hourvalue = JArrayHelper::getValue($value, 0);
 			$minvalue = JArrayHelper::getValue($value, 1);
 			$secvalue = JArrayHelper::getValue($value, 2);
@@ -138,11 +142,11 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
-	 * @return  string	value
+	 * @return string value
 	 */
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
@@ -170,8 +174,6 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				{
 					if ($groupModel->canRepeat())
 					{
-						// $data = str_replace(null, '', $data); just tried to make null data visible for rep. group
-
 						if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname]))
 						{
 							$value = $data['join'][$joinid][$rawname][$repeatCounter];
@@ -186,12 +188,13 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 					}
 					else
 					{
-						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname,
-							JArrayHelper::getValue($data['join'][$joinid], $name, $value));
+						$jVal = JArrayHelper::getValue($data['join'][$joinid], $name, $value);
+						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname, $jVal);
 
-						// $$$ rob if you have 2 tbl joins, one repeating and one not
-						// the none repeating one's values will be an array of duplicate values
-						// but we only want the first value
+						/* $$$ rob if you have 2 tbl joins, one repeating and one not
+						 * the none repeating one's values will be an array of duplicate values
+						 * but we only want the first value
+						 */
 						if (is_array($value))
 						{
 							$value = array_shift($value);
@@ -217,11 +220,11 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			}
 			if ($value === '')
 			{
-				//query string for joined data
+				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $name, $value);
 			}
-			//@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+			// @TODO perhaps we should change this to $element->value and store $element->default as the actual default value
+			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
@@ -248,8 +251,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	/**
 	 * get the value to store the value in the db
 	 *
-	 * @param   mixed	$val (array normally but string on csv import)
-	 * @return  string	yyyy-mm-dd
+	 * @param   mixed  $val  (array normally but string on csv import)
+	 *
+	 * @return  string  yyyy-mm-dd
 	 */
 
 	private function _indStoreDBFormat($val)
@@ -261,13 +265,12 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	}
 
 	/**
-	 * Does the element conside the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array  $data           Data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 
 	public function dataConsideredEmpty($data, $repeatCounter)
@@ -318,8 +321,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
 		$groupModel = $this->getGroup();
-
-		// Jaanus: removed condition canrepeat() from renderListData: weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
+		/*
+		 * Jaanus: removed condition canrepeat() from renderListData:
+		 * weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
+		 */
 		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
@@ -359,6 +364,24 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		}
 		$data = json_encode($format);
 		return parent::renderListData($data, $thisRow);
+	}
+
+	/**
+	 * Turn form value into email formatted value
+	 *
+	 * @param   mixed  $value          element value
+	 * @param   array  $data           form data
+	 * @param   int    $repeatCounter  group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
+
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$params = $this->getParams();
+		$sep = $params->get('time_separatorlabel', JText::_(':'));
+		$value = implode($sep, $value);
+		return $value;
 	}
 
 }

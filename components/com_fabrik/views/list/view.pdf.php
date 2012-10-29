@@ -1,27 +1,38 @@
 <?php
-
 /**
- * @package     Joomla
- * @subpackage	Fabik
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license		GNU/GPL
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0.5
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
-require_once 'components/com_fabrik/views/list/view.base.php';
+require_once COM_FABRIK_FRONTEND . '/views/list/view.base.php';
+
+/**
+ * PDF List view
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0.5
+ */
 
 class FabrikViewList extends FabrikViewListBase
 {
 
 	/**
-	 * display the template
-	 * @param   sting	$tpl
+	 * Display the template
+	 *
+	 * @param   sting  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
-	function display($tpl = null)
+	public function display($tpl = null)
 	{
 		parent::display($tpl);
 		$this->nav = '';
@@ -34,7 +45,9 @@ class FabrikViewList extends FabrikViewListBase
 	}
 
 	/**
-	 * build an object with the button icons based on the current tmpl
+	 * Build an object with the button icons based on the current tmpl
+	 *
+	 * @return  void
 	 */
 
 	protected function buttons()
@@ -44,8 +57,13 @@ class FabrikViewList extends FabrikViewListBase
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see	FabrikViewFormBase::setTitle()
+	 * Set page title
+	 *
+	 * @param   object  $w        Fabrikworker
+	 * @param   object  &$params  list params
+	 * @param   object  $model    list model
+	 *
+	 * @return  void
 	 */
 
 	protected function setTitle($w, &$params, $model)

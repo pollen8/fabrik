@@ -727,7 +727,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$joinTableName = '#__users';
 		}
 		$db = JFactory::getDbo();
-		if ($type == 'querystring' || $type = 'jpluginfilters')
+		if ($type == 'querystring' || $type == 'jpluginfilters')
 		{
 			$key = FabrikString::safeColNameToArrayKey($key);
 			/* $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
