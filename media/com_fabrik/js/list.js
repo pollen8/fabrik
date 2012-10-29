@@ -7,7 +7,6 @@
  * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true,
  * $H:true,unescape:true,head:true,FbListActions:true,FbGroupedToggler:true,FbListKeys:true
  */
-
 var FbListPlugin = new Class({
 	Implements: [Events, Options],
 	options: {
@@ -19,16 +18,14 @@ var FbListPlugin = new Class({
 		this.result = true; // set this to false in window.fireEvents to stop
 												// current action (eg stop ordering when
 												// fabrik.list.order run)
-		window.addEvent('fabrik.loaded', function() {
-			this.listform = this.getList().getForm();
-			var l = this.listform.getElement('input[name=listid]');
-			// in case its in a viz
-			if (typeOf(l) === 'null') {
-				return;
-			}
-			this.listid = l.value;
-			this.watchButton();
-		}.bind(this));
+		this.listform = this.getList().getForm();
+		var l = this.listform.getElement('input[name=listid]');
+		// in case its in a viz
+		if (typeOf(l) === 'null') {
+			return;
+		}
+		this.listid = l.value;
+		this.watchButton();
 	},
 
 	/**
@@ -792,6 +789,7 @@ var FbList = new Class({
 	},
 
 	_updateRows: function (data) {
+		var tbody;
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);
@@ -825,46 +823,48 @@ var FbList = new Class({
 			var gcounter = 0;
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
-				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
-				gcounter++;
-				for (i = 0; i < groupData.length; i++) {
-
-					if (typeOf(this.options.rowtemplate) === 'string') {
-						container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
-						thisrowtemplate = new Element(container);
-						thisrowtemplate.set('html', this.options.rowtemplate);
-					} else {
-						container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
-						thisrowtemplate = new Element(container);
-						// ie tmp fix for mt 1.2 setHTML on table issue
-						thisrowtemplate.adopt(this.options.rowtemplate.clone());
-					}
-					var row = $H(groupData[i]);
-					$H(row.data).each(function (val, key) {
-						var rowk = '.' + key;
-						var cell = thisrowtemplate.getElement(rowk);
-						if (typeOf(cell) !== 'null' && cell.get('tag') !== 'a') {
-							cell.set('html', val);
+				tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
+				if (typeOf(tbody) !== 'null') {
+					gcounter++;
+					for (i = 0; i < groupData.length; i++) {
+	
+						if (typeOf(this.options.rowtemplate) === 'string') {
+							container = (this.options.rowtemplate.trim().slice(0, 3) === '<tr') ? 'table' : 'div';
+							thisrowtemplate = new Element(container);
+							thisrowtemplate.set('html', this.options.rowtemplate);
+						} else {
+							container = this.options.rowtemplate.get('tag') === 'tr' ? 'table' : 'div';
+							thisrowtemplate = new Element(container);
+							// ie tmp fix for mt 1.2 setHTML on table issue
+							thisrowtemplate.adopt(this.options.rowtemplate.clone());
 						}
-						rowcounter ++;
-					}.bind(this));
-					// thisrowtemplate.getElement('.fabrik_row').id = 'list_' + this.id +
-					// '_row_' + row.get('__pk_val');
-					thisrowtemplate.getElement('.fabrik_row').id = row.id;
-					if (typeOf(this.options.rowtemplate) === 'string') {
-						var c = thisrowtemplate.getElement('.fabrik_row').clone();
-						c.id = row.id;
-						var newClass = row['class'].split(' ');
-						for (j = 0; j < newClass.length; j ++) {
-							c.addClass(newClass[j]);
+						var row = $H(groupData[i]);
+						$H(row.data).each(function (val, key) {
+							var rowk = '.' + key;
+							var cell = thisrowtemplate.getElement(rowk);
+							if (typeOf(cell) !== 'null' && cell.get('tag') !== 'a') {
+								cell.set('html', val);
+							}
+							rowcounter ++;
+						}.bind(this));
+						// thisrowtemplate.getElement('.fabrik_row').id = 'list_' + this.id +
+						// '_row_' + row.get('__pk_val');
+						thisrowtemplate.getElement('.fabrik_row').id = row.id;
+						if (typeOf(this.options.rowtemplate) === 'string') {
+							var c = thisrowtemplate.getElement('.fabrik_row').clone();
+							c.id = row.id;
+							var newClass = row['class'].split(' ');
+							for (j = 0; j < newClass.length; j ++) {
+								c.addClass(newClass[j]);
+							}
+							c.inject(tbody);
+						} else {
+							var r = thisrowtemplate.getElement('.fabrik_row');
+							r.inject(tbody);
+							thisrowtemplate.empty();
 						}
-						c.inject(tbody);
-					} else {
-						var r = thisrowtemplate.getElement('.fabrik_row');
-						r.inject(tbody);
-						thisrowtemplate.empty();
+						counter++;
 					}
-					counter++;
 				}
 			}.bind(this));
 

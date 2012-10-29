@@ -4,7 +4,6 @@
 
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true */
-
 var FbElement =  new Class({
 	
 	Implements: [Events, Options],

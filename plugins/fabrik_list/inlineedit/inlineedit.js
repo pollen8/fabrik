@@ -7,14 +7,12 @@ var FbListInlineEdit = new Class({
 		this.editors = {};
 		this.inedit = false;
 		this.saving = false;
-		window.addEvent('fabrik.load', function() {
-			//assigned in list.js fabrik3
-			if (typeOf(this.getList().getForm()) === 'null') {
-				return false;
-			}
-			this.listid = this.options.listid;
-			this.setUp();
-		}.bind(this));
+		// Assigned in list.js fabrik3
+		if (typeOf(this.getList().getForm()) === 'null') {
+			return false;
+		}
+		this.listid = this.options.listid;
+		this.setUp();
 		
 		Fabrik.addEvent('fabrik.list.clearrows', function () {
 			this.cancel();			

@@ -1,4 +1,5 @@
-var FbListPHP = new Class({
+require(['fab/list'], function () {
+	FbListPHP = new Class({
 	Extends: FbListPlugin,
 	initialize: function (options) {
 		this.parent(options);
@@ -33,4 +34,5 @@ var FbListPHP = new Class({
 		}
 		this.list.submit('list.doPlugin');
 	}
+});
 });

@@ -4385,6 +4385,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($script == '')
 		{
 			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
+			///$name = $this->getElement()->plugin;
+			//$script = 'element/' . $name . '/' . $name . '.js';
 		}
 		if (empty($elementclasses[$script]))
 		{

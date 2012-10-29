@@ -274,6 +274,25 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		return "new FbGoogleMap('$id', $opts)";
 	}
 
+	/**
+	 * Get the class to manage the form element
+	 *
+	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 * @param   string  $script  script to load once class has loaded
+	 *
+	 * @return void
+	 */
+
+	/* public function formJavascriptClass(&$srcs, $script = '')
+	{
+		$params = $this->getParams();
+		$s = (bool) $params->get('fb_gm_sensor', false) ? 'true' : 'false';
+		$srcs[] = 'http://maps.googleapis.com/maps/api/js?sensor=' . $s;
+		parent::formJavascriptClass($srcs, $script);
+	} */
+
 	function _getFieldValue($which_field, $data, $repeatCounter = 0)
 	{
 		$params = &$this->getParams();

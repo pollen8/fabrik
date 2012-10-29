@@ -51,7 +51,7 @@ class JFormFieldToggleoptionsradio extends JFormFieldRadio
 	{
 		$alt = $this->element['alt'];
 		$script = array();
-		$script[] = "head.ready(function() {
+		$script[] = "window.addEvent('domready', function() {
 		var s = document.id('" . $this->id . "').getElements('input').filter(function (e) {
 		return (e.checked);
 		});

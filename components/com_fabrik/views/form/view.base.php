@@ -167,6 +167,9 @@ class FabrikViewFormBase extends JView
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
+
+		$js = FabrikHelperHTML::getAllJS();
+		//$document->addScriptDeclaration($js);
 	}
 
 	/**
@@ -518,9 +521,10 @@ class FabrikViewFormBase extends JView
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
+
 		$script[] = "window.$bkey = new FbForm(" . $model->getId() . ", $opts);";
 		$script[] = "if(typeOf(Fabrik) !== 'null') {";
-		$script[] = "Fabrik.addBlock('$bkey', $bkey);";
+		$script[] = "\tFabrik.addBlock('$bkey', $bkey);";
 		$script[] = "}";
 
 		// Instantaite js objects for each element
@@ -626,7 +630,7 @@ class FabrikViewFormBase extends JView
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
 		$srcs[] = 'media/com_fabrik/js/encoder.js';
-		FabrikHelperHTML::scriptRequire($srcs, $str);
+		FabrikHelperHTML::script($srcs, $str, 'fn' . $bkey);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
@@ -960,7 +964,7 @@ class FabrikViewFormBase extends JView
 			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
 
 			$opts = json_encode($opts);
-			$script = "window.addEvent('fabrik.load', function() {
+			$script = "window.addEvent('fabrik.loaded', function() {
 		new adminCCK($opts);
 		});";
 			$document->addScriptDeclaration($script);

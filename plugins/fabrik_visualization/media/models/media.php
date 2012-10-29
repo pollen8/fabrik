@@ -262,7 +262,6 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 	public function getJs()
 	{
 		$params = $this->getParams();
-		$str = "window.addEvent('fabrik.load', function() {";
 		$viz = $this->getVisualization();
 		$opts = new stdClass;
 		$opts->which_player = $params->get('media_which_player', 'jw');
@@ -281,7 +280,6 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		$str .= "$ref = new FbMediaViz('media_div', $opts)";
 		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$str .= $this->getFilterJs();
-		$str .= "});\n";
 		return $str;
 	}
 }

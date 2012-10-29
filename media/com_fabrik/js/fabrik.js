@@ -68,10 +68,53 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
+	
 	success: function (text) {
-		
+		var options = this.options, response = this.response;
+
+		response.html = text.stripScripts(function (script) {
+			response.javascript = script;
+		});
+
+		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+		if (match) {
+			response.html = match[1];
+		}
+		var temp = new Element('div').set('html', response.html);
+
+		response.tree = temp.childNodes;
+		response.elements = temp.getElements(options.filter || '*');
+
+		if (options.filter) {
+			response.tree = response.elements;
+		}
+		if (options.update) {
+			var update = document.id(options.update).empty();
+			if (options.filter) {
+				update.adopt(response.elements);
+			} else {
+				
+				update.set('html', response.html);
+			}
+		} else if (options.append) {
+			var append = document.id(options.append);
+			if (options.filter) {
+				response.elements.reverse().inject(append);
+			} else {
+				append.adopt(temp.getChildren());
+			}
+		}
+		if (options.evalScripts) {
+			Browser.exec(response.javascript);
+		}
+
+		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
+	}
+	
+	/*success: function (text) {
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+		console.log(srcs);
 		var urls = [];
 		if (typeOf(srcs) !== 'null') {
 			for (var x = 0; x < srcs.length; x++) {
@@ -82,7 +125,6 @@ Request.HTML = new Class({
 					}
 				}
 			}
-			debugger;
 			var scriptadd = "requirejs(['" + urls.join("','") + "'], function () {})";
 			Browser.exec(scriptadd);
 		}
@@ -110,11 +152,13 @@ Request.HTML = new Class({
 		}
 		if (options.evalScripts) {
 			// response.javascript = "(function () {"+response.javascript+"}).delay(6000)";
-			Browser.exec(response.javascript);
+			console.log(response.javascript);
+			//Browser.exec(response.javascript);
+			eval(response.javascript);
 		}
 
 		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
-	}
+	}*/
 });
 
 /**
@@ -181,3 +225,236 @@ var Loader = new Class({
 		delete this.spinners[inline];
 	}
 });
+
+/**
+ * Create the Fabrik name space
+ */
+
+requirejs(['fab/icons', 'fab/icongen'],
+function () {
+	if (typeof(Fabrik) === "undefined") {
+		
+		Fabrik = {};
+		Fabrik.events = {};
+		Fabrik.Windows = {};
+		Fabrik.loader = new Loader();
+		Fabrik.blocks = {};
+		Fabrik.addBlock = function (blockid, block) {
+			Fabrik.blocks[blockid] = block;
+			Fabrik.fireEvent('fabrik.block.added', block);
+		};
+		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
+			Fabrik.watchDelete(e, target);
+		});
+		document.addEvent('click:relay(.fabrik_edit a, a.fabrik_edit)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
+			Fabrik.watchEdit(e, target);
+		});
+		document.addEvent('click:relay(.fabrik_view a, a.fabrik_view)', function (e, target) {
+			if (e.rightClick) {
+				return;
+			}
+			Fabrik.watchView(e, target);
+		});
+		
+		// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
+		// build its window.
+		Fabrik.iconGen = new IconGenerator({scale: 0.5});
+		
+		Fabrik.removeEvent = function (type, fn) {
+			if (Fabrik.events[type]) {
+				var index = Fabrik.events[type].indexOf(fn);
+				if (index !== -1) {
+					delete Fabrik.events[type][index];
+				}
+			}
+		};
+		
+		// Events test: replacing window.addEvents as they are reset when you reload mootools in ajax window.
+		// need to load mootools in ajax window otherwise Fabrik classes dont correctly load
+		Fabrik.addEvent = function (type, fn) {
+			if (!Fabrik.events[type]) {
+				Fabrik.events[type] = [];
+			}
+			if (!Fabrik.events[type].contains(fn)) {
+				Fabrik.events[type].push(fn);
+			}
+		};
+		
+		Fabrik.addEvents = function (events) {
+			for (var event in events) {
+				Fabrik.addEvent(event, events[event]);
+			}
+			return this;
+		};
+		
+		Fabrik.fireEvent = function (type, args, delay) {
+			var events = Fabrik.events;
+			if (!events || !events[type]) {
+				return this;
+			}
+			args = Array.from(args);
+	
+			events[type].each(function (fn) {
+				if (delay) {
+					fn.delay(delay, this, args);
+				} else {
+					fn.apply(this, args);
+				}
+			}, this);
+			return this;
+		};
+		
+		Fabrik.requestQueue = new RequestQueue();
+		
+		/** Globally observe delete links **/
+		
+		Fabrik.watchDelete = function (e, target) {
+			var l, ref, r;
+			r = e.target.getParent('.fabrik_row');
+			if (!r) {
+				r = Fabrik.activeRow;
+			}
+			if (r) {
+				var chx = r.getElement('input[type=checkbox][name*=id]');
+				if (typeOf(chx) !== 'null') {
+					chx.checked = true;
+				}
+				ref = r.id.split('_');
+				ref = ref.splice(0, ref.length - 2).join('_');
+				l = Fabrik.blocks[ref];
+			} else {
+				// CheckAll
+				ref = e.target.getParent('.fabrikList');
+				if (typeOf(ref) !== 'null') {
+					// Embedded in list
+					ref = ref.id;
+					l = Fabrik.blocks[ref];
+				} else {
+					// Floating
+					ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
+					l = Fabrik.blocks[ref];
+					if (l.options.actionMethod === 'floating') { // should only check all for floating tips
+						l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
+							c.checked = true;
+						});
+					}
+				}
+			}
+			// Get correct list block
+			if (!l.submit('list.delete')) {
+				e.stop();
+			}
+		};
+		
+		/**
+		 * Globally watch list edit links
+		 * 
+		 * @param   event    e       relayed click event
+		 * @param   domnode  target  <a> link
+		 * 
+		 * @since 3.0.7
+		 */
+		Fabrik.watchEdit = function (e, target) {
+			var listRef = target.get('data-list');
+			var list = Fabrik.blocks[listRef];
+			var row = list.getActiveRow(e);
+			if (!list.options.ajax_links) {
+				return;
+			}
+			e.preventDefault();
+			if (!row) {
+				return;
+			}
+			list.setActive(row);
+			var rowid = row.id.split('_').getLast();
+			if (list.options.links.edit === '') {
+				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				loadMethod = 'xhr';
+			} else {
+				if (e.target.get('tag') === 'a') {
+					a = e.target;
+				} else {
+					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+				}
+				url = a.get('href');
+				loadMethod = 'iframe';
+			}
+			// Make id the same as the add button so we reuse the same form.
+			var winOpts = {
+				'id': 'add.' + listRef,
+				'title': list.options.popup_edit_label,
+				'loadMethod': loadMethod,
+				'contentURL': url,
+				'width': list.options.popup_width,
+				'height': list.options.popup_height
+			};
+			if (typeOf(list.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = list.options.popup_offset_x;
+			}
+			if (typeOf(list.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = list.options.popup_offset_y;
+			}
+			Fabrik.getWindow(winOpts);
+		};
+		
+		/**
+		 * Globally watch list edit links
+		 * 
+		 * @param   event    e       relayed click event
+		 * @param   domnode  target  <a> link
+		 * 
+		 * @since 3.0.7
+		 */
+		
+		Fabrik.watchView = function (e, target) {
+			var listRef = target.get('data-list');
+			var list = Fabrik.blocks[listRef];
+			if (!list.options.ajax_links) {
+				return;
+			}
+			e.preventDefault();
+			var row = list.getActiveRow(e);
+			if (!row) {
+				return;
+			}
+			list.setActive(row);
+			var rowid = row.id.split('_').getLast();
+			if (list.options.links.detail === '') {
+				url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+				loadMethod = 'xhr';
+			} else {
+				if (e.target.get('tag') === 'a') {
+					a = e.target;
+				} else {
+					a = typeOf(e.target.getElement('a')) !== 'null' ? e.target.getElement('a') : e.target.getParent('a');
+				}
+				url = a.get('href');
+				loadMethod = 'iframe';
+			}
+			var winOpts = {
+				'id': 'view.' + '.' + listRef + '.' + rowid,
+				'title': list.options.popup_view_label,
+				'loadMethod': loadMethod,
+				'contentURL': url,
+				'width': list.options.popup_width,
+				'height': list.options.popup_height
+			};
+			if (typeOf(list.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = list.options.popup_offset_x;
+			}
+			if (typeOf(list.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = list.options.popup_offset_y;
+			}
+			Fabrik.getWindow(winOpts);
+		};
+		
+		window.fireEvent('fabrik.loaded');
+	}
+}()
+);

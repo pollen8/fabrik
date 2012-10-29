@@ -3,7 +3,7 @@ var FbListRadiusSearch = new Class({
 	initialize : function (options) {
 		this.parent(options);
 
-		window.addEvent('fabrik.load', function() {
+		window.addEvent('fabrik.loaded', function() {
 			this.listform = this.listform.getElement('.radus_search');
 			if (typeOf(this.options.value) === 'null') {
 				this.options.value = 0;

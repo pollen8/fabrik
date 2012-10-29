@@ -115,6 +115,7 @@ class fabrikViewForm extends JView
 			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
 		}
+		echo "<pre>";print_r($onLoad);echo "</pre>";
 		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
 

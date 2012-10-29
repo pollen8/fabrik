@@ -52,7 +52,6 @@ class FabrikViewListBase extends JView
 		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
-
 		$model->getCustomJsAction($src);
 		$src[] = 'media/com_fabrik/js/encoder.js';
 
@@ -75,7 +74,6 @@ class FabrikViewListBase extends JView
 
 		$this->_row = new stdClass;
 		$script = array();
-		//$script[] = "window.addEvent('fabrik.load', function() {";
 		$params = $model->getParams();
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
@@ -231,7 +229,6 @@ class FabrikViewListBase extends JView
 		$this->assign('pluginBeforeList', $pluginManager->_data);
 
 		$script[] = $model->filterJs;
-		// $script[] = "});";
 		$script = implode("\n", $script);
 		FabrikHelperHTML::script($src, $script);
 		$this->getElementJs();
@@ -453,6 +450,9 @@ class FabrikViewListBase extends JView
 		$this->buttons();
 
 		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
+
+		$js = FabrikHelperHTML::getAllJS();
+		$document->addScriptDeclaration($js);
 	}
 
 	/**

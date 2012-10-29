@@ -202,7 +202,7 @@ class FabrikControllerForm extends JController
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			// JRequest::checkToken() or die('Invalid Token');
 		}
 
 		if (!$model->validate())

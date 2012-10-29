@@ -20,7 +20,7 @@
 <?php $doc = JFactory::getDocument();
 $doc->addScript(JURI::root(true).'/media/com_fabrik/js/filtertoggle.js');
 $doc->addScriptDeclaration("
-window.addEvent('fabrik.load', function() {
+window.addEvent('fabrik.loaded', function() {
 	new FabFilterToggle('".$this->list->renderid."');
 });
 "); ?>

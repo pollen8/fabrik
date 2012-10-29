@@ -364,7 +364,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
+		$js .= "window.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
 
 		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
 		$form = $this->getForm();

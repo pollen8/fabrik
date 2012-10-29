@@ -44,7 +44,7 @@ class JFormFieldToggleoptionslist extends JFormFieldList
 
 	protected function getInput()
 	{
-		$script = "head.ready(function() {
+		$script = "window.addEvent('domready', function() {
 
 		if (document.id('" . $this->id . "').get('value') == '" . $this->element['hide'] . "') {
 			document.id('" . $this->element['toggle'] . "').hide();

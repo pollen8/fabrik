@@ -326,7 +326,7 @@ class fabrikParams extends JParameter
 			FabrikHelperHTML::script('components/com_fabrik/libs/params.js');
 			// watch add and remove buttons
 			$document = JFactory::getDocument();
-			$script = "window.addEvent('fabrik.load', function() {
+			$script = "window.addEvent('fabrik.loaded', function() {
 			 new RepeatParams('container{$this->_identifier}', {repeatMin:$repeatMin});
 	});";
 			FabrikHelperHTML::addScriptDeclaration($script);

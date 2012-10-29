@@ -52,13 +52,15 @@ class FabrikViewCron {
 	function edit($row, $params, $lists, &$pluginManager )
 		{
 		JRequest::setVar('hidemainmenu', 1);
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
+		// FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		// FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
 		FabrikHelperHTML::tips();
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		FabrikHelperHTML::addScriptDeclaration(
 			"
-			head.ready(function() {
+				requirejs(['administrator/components/com_fabrik/views/namespace',
+				'administrator/components/com_fabrik/views/admincron'],
+			function() {
 				new adminCron({'sel':'" . $row->plugin . "'});
 			});
 

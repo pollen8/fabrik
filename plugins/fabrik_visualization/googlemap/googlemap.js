@@ -77,81 +77,79 @@ var FbGoogleMapViz = new Class({
 			break;
 		}
 		
-		window.addEvent('fabrik.load', function() {
-			if (typeOf(this.element_map) === 'null') {
-				return;
-			}
-			var mapOpts = {
-				center: new google.maps.LatLng(this.options.lat, this.options.lon),
-				zoom: this.options.zoomlevel.toInt(),
-				mapTypeId: this.options.maptype,
-				scaleControl: this.options.scalecontrol,
-				mapTypeControl: this.options.maptypecontrol,
-				overviewMapControl: this.options.overviewcontrol,
-				scrollwheel: this.options.scrollwheel,
-				zoomControl: this.options.zoom,
-				zoomControlOptions: {style: this.options.zoomStyle} 
-			};
-			this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
+		if (typeOf(this.element_map) === 'null') {
+			return;
+		}
+		var mapOpts = {
+			center: new google.maps.LatLng(this.options.lat, this.options.lon),
+			zoom: this.options.zoomlevel.toInt(),
+			mapTypeId: this.options.maptype,
+			scaleControl: this.options.scalecontrol,
+			mapTypeControl: this.options.maptypecontrol,
+			overviewMapControl: this.options.overviewcontrol,
+			scrollwheel: this.options.scrollwheel,
+			zoomControl: this.options.zoom,
+			zoomControlOptions: {style: this.options.zoomStyle} 
+		};
+		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
 
-			this.infoWindow = new google.maps.InfoWindow({
-				content: ''
-			});
-			this.bounds = new google.maps.LatLngBounds();
-			
-			/*
-			if (this.options.clustering) {
-				this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
-			}
-			*/
-			
-			this.addIcons();
-			this.addOverlays();
-			
-			google.maps.event.addListener(this.map, "click", this.setCookies.bindWithEvent(this));
-			google.maps.event.addListener(this.map, "moveend", this.setCookies.bindWithEvent(this));
-			google.maps.event.addListener(this.map, "zoomend", this.setCookies.bindWithEvent(this));
+		this.infoWindow = new google.maps.InfoWindow({
+			content: ''
+		});
+		this.bounds = new google.maps.LatLngBounds();
+		
+		/*
+		if (this.options.clustering) {
+			this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
+		}
+		*/
+		
+		this.addIcons();
+		this.addOverlays();
+		
+		google.maps.event.addListener(this.map, "click", this.setCookies.bindWithEvent(this));
+		google.maps.event.addListener(this.map, "moveend", this.setCookies.bindWithEvent(this));
+		google.maps.event.addListener(this.map, "zoomend", this.setCookies.bindWithEvent(this));
 
-			if (this.options.use_cookies) {
-				// $$$ jazzbass - get previous stored location
-				var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
-				var mymaplat = Cookie.read("mymaplat_" + this.options.id);
-				var mymaplng = Cookie.read("mymaplng_" + this.options.id);
+		if (this.options.use_cookies) {
+			// $$$ jazzbass - get previous stored location
+			var mymapzoom = Cookie.read("mymapzoom_" + this.options.id);
+			var mymaplat = Cookie.read("mymaplat_" + this.options.id);
+			var mymaplng = Cookie.read("mymaplng_" + this.options.id);
 
-				if (mymaplat && mymaplat !== '0' && mymapzoom !== '0') {
-					this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()), mymapzoom.toInt());
-				} else {
-					this.center();
-				}
-			}
-			else {
+			if (mymaplat && mymaplat !== '0' && mymapzoom !== '0') {
+				this.map.setCenter(new google.maps.LatLng(mymaplat.toFloat(), mymaplng.toFloat()), mymapzoom.toInt());
+			} else {
 				this.center();
 			}
-			//end
-			
-			if (typeof(Slimbox) !== 'undefined') {
-				Slimbox.scanPage();
-			} else if (typeof(Mediabox) !== 'undefined') {
-				Mediabox.scanPage();
-			}
+		}
+		else {
+			this.center();
+		}
+		//end
+		
+		if (typeof(Slimbox) !== 'undefined') {
+			Slimbox.scanPage();
+		} else if (typeof(Mediabox) !== 'undefined') {
+			Mediabox.scanPage();
+		}
 
-			//clear filter list
-			this.container =  document.id(this.options.container);
-			if (typeOf(this.container) !== 'null') {
-				var c = this.container.getElement('.clearFilters');
-				if (c) {
-					c.addEvent('click', function (e) {
-						this.container.getElements('.fabrik_filter').each(function (f) {
-							f.value = '';
-						});
-						e.stop();
-						this.container.getElement('form[name=filter]').submit();
-					}.bind(this));
-				}
+		//clear filter list
+		this.container =  document.id(this.options.container);
+		if (typeOf(this.container) !== 'null') {
+			var c = this.container.getElement('.clearFilters');
+			if (c) {
+				c.addEvent('click', function (e) {
+					this.container.getElements('.fabrik_filter').each(function (f) {
+						f.value = '';
+					});
+					e.stop();
+					this.container.getElement('form[name=filter]').submit();
+				}.bind(this));
 			}
+		}
 
-			this.setPolyLines();
-		}.bind(this));
+		this.setPolyLines();
 	},
 	
 	setPolyLines: function () {

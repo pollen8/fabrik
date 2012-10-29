@@ -322,7 +322,8 @@ class plgFabrik_List extends FabrikPlugin
 	{
 		$this->onGetFilterKey();
 		$p = $this->onGetFilterKey_result();
-		return 'plugins/fabrik_list/' . $p . '/' . $p . '.js';
+		$file = 'plugins/fabrik_list/' . $p . '/' . $p . '.js';
+		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;
 	}
 
 }

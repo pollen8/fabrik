@@ -36,7 +36,7 @@ class fabrikViewPackage extends JView
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));
 		$id =$this->get('State')->get('package.id');
-		$script = "window.addEvent('fabrik.load', function() {
+		$script = "window.addEvent('fabrik.loaded', function() {
 			new FrontPackage({
 		tabs : $tabs,
 		tabelement : 'packagemenu',

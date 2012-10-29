@@ -39,6 +39,6 @@ var Labels = new Class({
        
 });
 
-window.addEvent('fabrik.load', function() {
+window.addEvent('fabrik.loaded', function() {
 	new Labels();
 });

@@ -6,7 +6,7 @@ var TableRowSelect = new Class({
 	initialize:function(triggerEl, formid){
 		this.triggerEl = triggerEl;
 		this.formid = formid;
-		window.addEvent('fabrik.load', function() {
+		window.addEvent('fabrik.loaded', function() {
 			this.setUp();
 		}.bind(this));	
 	},

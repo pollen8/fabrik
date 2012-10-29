@@ -906,7 +906,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options&package=' . $package;
 			$opts = json_encode($opts);
 
-			FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.load', function() { new FabCddAutocomplete('$htmlid', $opts); });");
+			FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.loaded', function() { new FabCddAutocomplete('$htmlid', $opts); });");
 		}
 		if ($element->filter_type == 'dropdown')
 		{

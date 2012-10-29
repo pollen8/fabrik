@@ -9,7 +9,7 @@ $opts = new stdClass;
 $opts->listref = 'listform_' . $this->listref;
 $opts = json_encode($opts);
 $script = "
-window.addEvent('fabrik.load', function() {
+window.addEvent('fabrik.loaded', function() {
 	new FabrikGrid($opts);
 });";
 FabrikHelperHTML::addScriptDeclaration($script)
