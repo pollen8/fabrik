@@ -33,6 +33,7 @@ class fabrikViewCalendar extends JView
 	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
 
@@ -40,15 +41,15 @@ class fabrikViewCalendar extends JView
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$id = JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0)));
+		$id = $input->get('id', $usersConfig->get('visualizationid', $input->get('visualizationid', 0)));
 		$model->setId($id);
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 		$this->assign('params', $params);
 		$this->assign('containerId', $model->getJSRenderContext());
 		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('showTitle', JRequest::getInt('show-title', 1));
+		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->assign('showTitle', $input->getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 
 		$calendar = $model->_row;
@@ -196,14 +197,18 @@ class fabrikViewCalendar extends JView
 
 	function chooseaddevent()
 	{
-		$view->_layout = 'chooseaddevent';
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		//$view->_layout = 'chooseaddevent';
+		$this->setLayout('chooseaddevent');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$rows = $model->getEventLists();
 		$o = $model->getAddStandardEventFormInfo();
+		$calendar = $model->getVisualization();
 		$options = array();
 		$options[] = JHTML::_('select.option', '', JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
 		if ($o != null)
@@ -213,44 +218,41 @@ class fabrikViewCalendar extends JView
 		}
 		$model->getEvents();
 		$config = JFactory::getConfig();
-		$prefix = $config->getValue('config.dbprefix');
-		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value',
-			'text', '', 'fabrik_event_type');
+		$prefix = $config->get('dbprefix');
+		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');
 
 		/*tried loading in iframe and as an ajax request directly - however
 		 *in the end decided to set a call back to the main calendar object (via the package manager)
 		 * to load up the new add event form
 		 */
-		$script = "head.ready(function() {
-			//oCalendar" . $model->getId()
-			. ".addListenTo('chooseeventwin');
-		$('fabrik_event_type').addEvent('change', function(e) {
-		var fid = $(e.target).get('value');
-		var o = ({'d':'','listid':fid,'rowid':0});
-		o.datefield = '{$prefix}fabrik_calendar_events___start_date';
-		o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';
-		o.labelfield = '{$prefix}fabrik_calendar_events___label';
-		";
+		$ref = $model->getJSRenderContext();
+		$script = array();
+		$script[] = "head.ready(function() {";
+		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
+		$script[] = "var fid = e.target.get('value');";
+		$script[] = "var o = ({'d':'','listid':fid,'rowid':0});";
+		$script[] = "o.datefield = '{$prefix}fabrik_calendar_events___start_date';";
+		$script[] = "o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';";
+		$script[] = "o.labelfield = '{$prefix}fabrik_calendar_events___label';";
+
 		foreach ($model->_events as $tid => $arr)
 		{
 			foreach ($arr as $ar)
 			{
-				$script .= "if(" . $ar['formid'] . " == fid)	{\n";
-				$script .= "o.datefield = '" . $ar['startdate'] . "'\n";
-				$script .= "o.datefield2 = '" . $ar['enddate'] . "'\n";
-				$script .= "o.labelfield = '" . $ar['label'] . "'\n";
-				$script .= "}\n";
+				$script[] = "if(".$ar['formid']." == fid)	{";
+				$script[] = "o.datefield = '".$ar['startdate'] . "'";
+				$script[] = "o.datefield2 = '".$ar['enddate'] . "'";
+				$script[] = "o.labelfield = '".$ar['label'] . "'";
+				$script[] = "}\n";
 			}
 		}
-		$script .= "var o = JSON.encode(o);
-		// @TODO deal with this via window.fireEvent()
-			//oPackage.sendMessage('chooseeventwin', 'addEvForm' , true, o);
+		$script[] = "Fabrik.blocks['" . $ref . "'].addEvForm(o);";
+		$script[] = "Fabrik.Windows.chooseeventwin.close();";
+		$script[] = "});";
+		$script[] = "});";
 
-	});
-	});
-	";
-		FabrikHelperHTML::addScriptDeclaration($script);
 		echo '<h2>' . JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_CHOOSE_AN_EVENT_TYPE') . ':</h2>';
 		echo $this->_eventTypeDd;
+		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
 	}
 }
