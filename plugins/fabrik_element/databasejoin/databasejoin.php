@@ -2218,8 +2218,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
+		//echo $query . "<br>";
 		$db->setQuery($query);
 		$r = $db->loadObject();
+		//echo "r = ";print_r($r);
 		if (!$r)
 		{
 			return $defaultLabel;

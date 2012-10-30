@@ -78,14 +78,16 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 				$href = COM_FABRIK_LIVESITE_ROOT . $href;
 			}
 		}
-		else {
-
-		}
 		if (!empty($href))
 		{
 			$w = new FabrikWorker;
 			$href = $w->parseMessageForPlaceHolder($href, $data);
-			$str .= FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'));
+			$locale = $params->get('fbcomment_locale', 'en_US');
+			if (empty($locale))
+			{
+				$locale = "en_US";
+			}
+			$str .= FabrikHelperHTML::facebookGraphAPI($params->get('opengraph_applicationid'), $locale);
 			$str .= '<div id="fb-root"><fb:comments href="' . $href . '" nmigrated="1" um_posts="' . $num . '" width="' . $width . '"' . $colour . '></fb:comments>';
 		}
 		else

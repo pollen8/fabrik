@@ -20,6 +20,9 @@
 				<option value="">light</option>
 				<option value="dark"/>	
 			</field>
+			
+			<field default="en_US" label="PLG_ELEMENT_FBCOMMENT_LOCALE_LABEL" name="fbcomment_locale" type="text" description="PLG_ELEMENT_FBCOMMENT_LOCALE_DESC" />
+			
 		</fieldset>
 
 		</fields>
