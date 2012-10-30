@@ -1288,6 +1288,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		else
 		{
+			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
+			$col = $this->getFullName(false, true, false) . '_raw';
+			$row = JArrayHelper::fromObject($thisRow);
+			$data = JArrayHelper::getValue($row, $col, $data);
+
 			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 			if (!FabrikWorker::isJSON($data))
 			{
@@ -2213,8 +2218,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
+		echo $query . "<br>";
 		$db->setQuery($query);
 		$r = $db->loadObject();
+		echo "r = ";print_r($r);
 		if (!$r)
 		{
 			return $defaultLabel;
