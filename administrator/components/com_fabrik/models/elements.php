@@ -175,7 +175,7 @@ class FabrikModelElements extends FabModelList
 			// Add a tip containing the access level information
 			$params = new JRegistry($item->params);
 			$item->tip = JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $viewLevels[$item->access]->title .
-			'<br />' . JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewLevels[$params->get('view_access')]->title;
+			'<br />' . JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewLevels[$params->get('view_access', 1)]->title;
 		}
 		return $items;
 	}
