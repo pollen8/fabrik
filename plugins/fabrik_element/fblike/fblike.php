@@ -48,6 +48,14 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 	protected $fieldLength = '1';
 
 	/**
+	 * If the list view cant see details records we can't render the plugin
+	 * use this var to set single notice
+	 *
+	 * @var  bool
+	 */
+	protected static $warned = false;
+
+	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string  $data      elements data
@@ -55,6 +63,7 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 	 *
 	 * @return  string	formatted value
 	 */
+
 
 	public function renderListData($data, &$thisRow)
 	{
@@ -73,6 +82,16 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 		// In list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
 		$url = $this->getListModel()->linkHref($this, $thisRow);
+		if ($url === '')
+		{
+			if (!static::$warned) {
+				JError::raiseNotice(500, 'Your list needs to have viewable details records for the FB Like button to work');
+				static::$warned = true;
+			}
+
+			return '';
+		}
+
 		return $str . $this->_render($url);
 		return parent::renderListData($data, $thisRow);
 	}
