@@ -23,7 +23,11 @@ if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/'))
 }
 define("COM_FABRIK_BASE",  str_replace(DS . 'administrator', '', JPATH_BASE) . DS);
 define("COM_FABRIK_FRONTEND",  COM_FABRIK_BASE . 'components/com_fabrik');
-define("COM_FABRIK_LIVESITE",  str_replace('/administrator', '', JURI::base()));
+
+// Ensure no trailing '/' in COM_FABRIK_LIVESITE
+$ls = str_replace('/administrator', '', JURI::base());
+$ls = JString::substr($ls, -1) == '/' ? JString::substr($ls, 0, JString::strlen($ls) - 1) : $ls;
+define("COM_FABRIK_LIVESITE",  $ls);
 define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme', 'host', 'port')));
 define("FABRIKFILTER_TEXT", 0);
 define("FABRIKFILTER_EVAL", 1);

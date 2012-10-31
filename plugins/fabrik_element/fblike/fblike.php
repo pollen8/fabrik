@@ -64,7 +64,6 @@ class plgFabrik_ElementFblike extends plgFabrik_Element
 	 * @return  string	formatted value
 	 */
 
-
 	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
