@@ -4348,6 +4348,11 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				$data[$key] = htmlspecialchars($val, ENT_QUOTES);
 			}
+			else
+			{
+				// Not sure what the htmlspecialchars is for above but if we dont assign here we loose join data
+				$data[$key] = $val;
+			}
 		}
 
 		$this->groupView = array();

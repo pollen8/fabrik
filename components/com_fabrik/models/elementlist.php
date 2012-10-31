@@ -611,10 +611,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			$formModel = $this->getForm();
 			$element = $this->getElement();
 
-			// $$$rob - if no search form data submitted for the checkbox search element then the default
-			// selecton was being applied instead
-			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
-
+			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getValueFullName($opts);
 
 			// $name could already be in _raw format - so get inverse name e.g. with or without raw
@@ -708,7 +705,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 			$formModel = $this->getForm();
 
 			// Stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			if (JArrayHelper::getValue($opts, 'runplugins', false) == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}

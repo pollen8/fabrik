@@ -509,7 +509,7 @@ class FabrikFEModelList extends JModelForm
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
 		if ($params->get('enable_big_selects', $bigSelects))
-		*/
+		 */
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
@@ -6199,10 +6199,10 @@ class FabrikFEModelList extends JModelForm
 		 but it certainly breaks things like onCopyRow(), where (for instance) user
 		 elements will get reset to 0 by this code.
 		 */
+		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
 		if (!empty($origdata))
 		{
 			$gcounter = 0;
-			$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
 			foreach ($groups as $groupModel)
 			{
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
@@ -6317,21 +6317,29 @@ class FabrikFEModelList extends JModelForm
 							// if (!$elementModel->canUse() && $elementModel->canView()) {
 							if (!$elementModel->canUse())
 							{
-								// Repeat groups no join:
-								if (is_array($encrypted))
+								// Repeat groups
+								$default = array();
+								$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+								for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount++)
 								{
-									$v = array();
-									foreach ($encrypted as $e)
+									$enc = JArrayHelper::getValue($encrypted, $repeatCount);
+
+									if (is_array($enc))
 									{
-										$e = urldecode($e);
-										$v[] = empty($e) ? '' : $crypt->decrypt($e);
+										$v = array();
+										foreach ($enc as $e)
+										{
+											$e = urldecode($e);
+											$v[] = empty($e) ? '' : $crypt->decrypt($e);
+										}
+										$v = json_encode($v);
 									}
-									$v = json_encode($v);
-								}
-								else
-								{
-									$encrypted = urldecode($encrypted);
-									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
+									else
+									{
+										$enc = urldecode($enc);
+										$v = !empty($enc) ? $crypt->decrypt($enc) : '';
+									}
+
 								}
 
 								/* $$$ hugh - also gets called in storeRow(), not sure if we really need to
@@ -8407,13 +8415,13 @@ class FabrikFEModelList extends JModelForm
 		foreach ($groups as $groupModel)
 		{
 			/* if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-				|| $this->outPutFormat == 'feed')
+			    || $this->outPutFormat == 'feed')
 			{
-				$elementModels = $groupModel->getPublishedElements();
+			    $elementModels = $groupModel->getPublishedElements();
 			}
 			else
 			{
-				$elementModels = $groupModel->getPublishedListElements();
+			    $elementModels = $groupModel->getPublishedListElements();
 			} */
 
 			/*

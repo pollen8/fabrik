@@ -2719,12 +2719,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
 
-			/* $$$rob - if no search form data submitted for the search element then the default
-			 * selection was being applied instead
-			 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
-			 */
-			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
-
+			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())

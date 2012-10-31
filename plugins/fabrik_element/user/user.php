@@ -576,18 +576,13 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// to the current logged in user and not the previously selected one
 		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
 		{
-			// 	$$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty valdiation failed on user element
-			if (JArrayHelper::getValue($opts, 'use_default', true) == false && !in_array(JRequest::getCmd('task'), array('processForm', 'view')))
+			if (!in_array(JRequest::getCmd('task'), array('processForm', 'view')))
 			{
 				return '';
 			}
-			else
-			{
-				return $this->getDefaultValue($data);
-			}
+			return $this->getDefaultOnACL($data, $opts);
 		}
 		$res = parent::getValue($data, $repeatCounter, $opts);
 		return $res;
