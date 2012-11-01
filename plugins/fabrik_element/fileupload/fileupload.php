@@ -570,7 +570,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				if (!$canDownload)
 				{
 					$img = $params->get('fu_download_noaccess_image');
-					$noImg = ($img == '' || !JFile::exists(COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img));
+					$noImg = ($img == '' || !JFile::exists('media/com_fabrik/images/' . $img));
 					$aClass = $noImg ? 'class="btn button"' : '';
 					$a = $params->get('fu_download_noaccess_url') == '' ? ''
 						: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
@@ -592,6 +592,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formid = $formModel->getId();
 			$rowid = $thisRow->__pk_val;
 			$elementid = $this->_id;
+			$title = '';
 			if ($params->get('fu_title_element') == '')
 			{
 				$title_name = $this->getFullName(true, true, false) . '__title';
