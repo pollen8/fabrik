@@ -11,7 +11,7 @@ var Suboptions = new Class({
 		this.counter = 0;
 		this.name = name;
 		document.id('addSuboption').addEvent('click', function (e) {
-			this.addOption();
+			this.addOption(e);
 		}.bind(this));
 		this.options.sub_values.each(function (v, x) {
 			var chx = this.options.sub_initial_selection.indexOf(v) === -1 ? '' : "checked='checked'";
@@ -47,6 +47,8 @@ var Suboptions = new Class({
 		sValue = sValue ? sValue : '';
 		sText = sText ? sText : '';
 		var chx = "<input class=\"inputbox sub_initial_selection\" type=\"checkbox\" value=\"" + sValue + "\" name='" + this.name + "[sub_initial_selection][]' id=\"sub_checked_" + this.counter + "\" " + sCurChecked + " />";
+		var delButton = new Element('td', {width: '20%'}).set('html', this.options.delButton);
+		delButton.getElement('a').id = 'sub_delete_' + this.counter;
 		var li = new Element('li', {id: 'sub_content_' + this.counter}).adopt([
 			new Element('table',  {width: '100%'}).adopt([
 				new Element('tbody').adopt([
@@ -79,13 +81,7 @@ var Suboptions = new Class({
 								new Element('td', {width: '10%'}).set('html',
 									chx
 								),
-								new Element('td', {width: '20%'}).adopt(
-									new Element('a', {
-										'class': 'removeButton',
-										href: '#',
-										id: 'sub_delete_' + this.counter
-									}).set('text', 'Delete')
-								)
+								delButton
 								])
 							])
 						])
@@ -96,7 +92,7 @@ var Suboptions = new Class({
 			li.inject(document.id('sub_subElementBody'));
 		}
 		document.id('sub_delete_' + this.counter).addEvent('click', function (e) {
-			this.removeSubElement();
+			this.removeSubElement(e);
 		}.bind(this));
 		
 		if (!this.sortable) {

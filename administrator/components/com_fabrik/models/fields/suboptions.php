@@ -49,13 +49,25 @@ class JFormFieldSuboptions extends JFormField
 		$default->sub_values = array();
 		$default->sub_labels = array();
 		$default->sub_initial_selection = array();
-		$opts = $this->value == '' ? json_encode($default) : json_encode($this->value);
+		$opts = $this->value == '' ? $default : $this->value;
+		$delClass = FabrikWorker::j3() ? 'btn btn-danger' : 'removeButton';
+		$delButton = '<a class="' . $delClass . '" href="#"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a>';
+		if (is_array($opts))
+		{
+			$opts['delButton'] = $delButton;
+		}
+		else
+		{
+			$opts->delButton = $delButton;
+		}
+		$opts = json_encode($opts);
 		$script = "new Suboptions('$this->name', $opts);";
+		$addClass = FabrikWorker::j3() ? 'btn btn-success' : 'addButton';
 		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/suboptions.js', $script);
 		$html = '<div style="float:left;width:100%">
 
 <table style="width: 100%">
-	<tr>
+	<tr style="text-align:left">
 		<th style="width: 5%"></th>
 		<th style="width: 30%">' . JText::_('COM_FABRIK_VALUE') . '</th>
 		<th style="width: 30%">' . JText::_('COM_FABRIK_LABEL') . '</th>
@@ -65,8 +77,7 @@ class JFormFieldSuboptions extends JFormField
 </table>
 <ul id="sub_subElementBody" class="subelements">
 	<li></li>
-</ul>
-<a class="addButton" href="#" id="addSuboption">' . JText::_('COM_FABRIK_ADD') . '</a></div>';
+</ul><a class="' . $addClass. '" href="#" id="addSuboption"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a></div>';
 		return $html;
 	}
 

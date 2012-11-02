@@ -230,7 +230,11 @@ var PluginManager = new Class({
 	},
 
 	deletePlugin: function (e) {
-		if (e.target.getParent('.pluginContanier').id.test(/_\d+$/)) {
+		var c = e.target.getParent('.pluginContanier');
+		if (typeOf(c) === 'null') {
+			return;
+		}
+		if (c.id.test(/_\d+$/)) {
 			// var x = e.target.findClassUp('adminform').id.match(/_(\d+)$/)[1].toInt();
 			var x = e.target.getParent('fieldset').id.match(/_(\d+)$/)[1].toInt();
 			document.id('plugins').getElements('input, select, textarea').each(function (i) {
