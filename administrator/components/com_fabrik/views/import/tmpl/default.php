@@ -19,7 +19,7 @@ $input = $app->input;
 $input->set('hidemainmenu', true);
 ?>
 
-<form enctype="multipart/form-data" action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
+<form enctype="multipart/form-data" action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 <div class="width-100 fltlft">
 	<?php
 $id = $input->getInt('listid', 0); // from list data view in admin

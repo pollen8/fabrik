@@ -13,7 +13,7 @@
 defined('_JEXEC') or die;
 ?>
 
-<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
+<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<table class="adminlist">
 	<tbody>
 		<?php for ($i = 0; $i < count($this->items); $i++) :

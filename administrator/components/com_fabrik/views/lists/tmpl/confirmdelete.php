@@ -16,7 +16,7 @@ $app = JFactory::getApplication();
 <script type="text/javascript">
 Joomla.submitform = function(task, form) {
 	if (typeof(form) === 'undefined') {
-		form = document.getElementById('fabrik-form');
+		form = document.getElementById('adminForm');
 	}
 	if (typeof(task) !== 'undefined') {
 	form.task.value = task;
@@ -31,7 +31,7 @@ Joomla.submitform = function(task, form) {
 	form.submit();
 };
 </script>
-<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
+<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
 	<?php
 	$cid	= $app->input->get('cid', array(), 'array');
