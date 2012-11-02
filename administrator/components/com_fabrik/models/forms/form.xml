@@ -213,9 +213,15 @@
 			
 			<field description="COM_FABRIK_FIELD_SUBMIT_SUCCESS_MSG_DESC" label="COM_FABRIK_FIELD_SUBMIT_SUCCESS_MSG_LABEL" name="submit-success-msg" size="45" type="text"/>
 				
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_SUPPRESS_MSGS_DESC" label="COM_FABRIK_FIELD_SUPPRESS_MSGS_LABEL" name="suppress_msgs" type="radio">
+			<field name="suppress_msgs"
+				type="list" 
+				default="0" 
+				label="COM_FABRIK_FIELD_SUPPRESS_MSGS_LABEL" 
+				description="COM_FABRIK_FIELD_SUPPRESS_MSGS_DESC">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+					<option value="1">COM_FABRIK_SUPPRESS_SUCCESS_MSGS</option>
+					<option value="2">COM_FABRIK_SUPPRESS_ACL_MSGS</option>
+					<option value="3">COM_FABRIK_SUPPRESS_ALL_MSGS</option>
 			</field>				
 				
 			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_SPOOF_CHECK_DESC" label="COM_FABRIK_FIELD_SPOOF_CHECK_LABEL" name="spoof_check" type="radio">

@@ -82,17 +82,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$formModel = $this->getForm();
 			$element = $this->getElement();
 			$params = $this->getParams();
-
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
-			{
-				$default = '';
-			}
-			else
-			{
-				$default = $this->getDefaultValue($data);
-			}
+			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			if ($groupModel->isJoin())
 			{

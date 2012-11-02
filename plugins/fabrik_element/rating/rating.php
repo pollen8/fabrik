@@ -74,18 +74,11 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		for ($i = 0; $i < count($data); $i++)
 		{
 			$avg = $this->_renderListData($data[$i], $thisRow);
-			if (!$canRate)
-			{
-				$atpl = '';
-				$a2 = '';
-			}
-			else
-			{
-				$atpl = "<a href=\"{$url}&amp;rating={r}\">";
-				$a2 = "</a>";
-			}
+			$atpl = '';
+			$a2 = '';
+			$css = $canRate ? 'cursor:pointer;' : '';
 			$str = array();
-			$str[] = '<div style="width:101px">';
+			$str[] = '<div style="width:101px;position:relative;">';
 			for ($s = 0; $s < $avg; $s++)
 			{
 				$r = $s + 1;

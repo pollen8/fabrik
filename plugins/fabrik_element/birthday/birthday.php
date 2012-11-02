@@ -247,9 +247,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$joinid = $groupModel->getGroup()->join_id;
 			$formModel = $this->getForm();
 
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+			$value = $this->getDefaultOnACL($data, $opts);
 
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . "_raw";

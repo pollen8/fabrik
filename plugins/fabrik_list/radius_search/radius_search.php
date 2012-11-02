@@ -151,7 +151,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$db = $this->model->getDb();
 		$usekey = $input->get('usekey');
 		$input->set('usekey', $placeElement->name);
-		$row = $this->model->getRow($db->quote($place));
+		$row = $this->model->getRow($place);
 		$input->set('usekey', $usekey);
 		if (is_object($row))
 		{

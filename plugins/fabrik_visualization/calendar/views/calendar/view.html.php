@@ -211,7 +211,8 @@ class fabrikViewCalendar extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$view->_layout = 'chooseaddevent';
+		//$view->_layout = 'chooseaddevent';
+		$this->setLayout('chooseaddevent');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$model = $this->getModel();
@@ -236,6 +237,7 @@ class fabrikViewCalendar extends JViewLegacy
 		 *in the end decided to set a call back to the main calendar object (via the package manager)
 		 * to load up the new add event form
 		 */
+		$ref = $model->getJSRenderContext();
 		$script = array();
 		$script[] = "head.ready(function() {";
 		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
@@ -245,7 +247,7 @@ class fabrikViewCalendar extends JViewLegacy
 		$script[] = "o.datefield2 = '{$prefix}fabrik_calendar_events___end_date';";
 		$script[] = "o.labelfield = '{$prefix}fabrik_calendar_events___label';";
 
-		foreach ($model->_events as $tid=>$arr)
+		foreach ($model->_events as $tid => $arr)
 		{
 			foreach ($arr as $ar)
 			{
@@ -256,7 +258,7 @@ class fabrikViewCalendar extends JViewLegacy
 				$script[] = "}\n";
 			}
 		}
-		$script[] = "Fabrik.blocks['calendar_" . $calendar->id . "'].addEvForm(o);";
+		$script[] = "Fabrik.blocks['" . $ref . "'].addEvForm(o);";
 		$script[] = "Fabrik.Windows.chooseeventwin.close();";
 		$script[] = "});";
 		$script[] = "});";

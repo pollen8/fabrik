@@ -1374,6 +1374,10 @@ class FabrikWorker
 		{
 			return false;
 		}
+		if (is_numeric($data))
+		{
+			return false;
+		}
 		return json_decode($data) !== null;
 	}
 

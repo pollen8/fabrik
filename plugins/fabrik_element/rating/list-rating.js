@@ -18,7 +18,7 @@ var FbRatingList = new Class({
 		if (this.options.mode === 'creator-rating') {
 			return;
 		}
-		this.col = $$('.fabrik_row___' + id + ', .' + id);
+		this.col = $$('.' + id);
 		this.origRating = {};
 		this.col.each(function (tr) {
 			var stars = tr.getElements('.starRating');
@@ -68,6 +68,11 @@ var FbRatingList = new Class({
 		this.rating = this._getRating(star);
 		var ratingmsg = star.getParent('.fabrik_element').getElement('.ratingMessage');
 		Fabrik.loader.start(ratingmsg);
+		
+		var starRatingCover = new Element('div', {id: 'starRatingCover', styles: {bottom: 0, top: 0, right: 0, left: 0, position: 'absolute', cursor: 'progress'} });
+		var starRatingContainer = star.getParent('.fabrik_element').getElement('div');
+		starRatingContainer.grab(starRatingCover, 'top');
+		
 		var row = document.id(star).getParent('.fabrik_row');
 		var rowid = row.id.replace('list_' + this.options.listRef + '_row_', '');
 		var data = {
@@ -94,6 +99,7 @@ var FbRatingList = new Class({
 				star.getParent('.fabrik_element').getElements('img').each(function (i, x) {
 					i.src = (x < r) ? this.options.insrc : this.options.outsrc;
 				}.bind(this));
+				document.id('starRatingCover').destroy();
 			}.bind(this)
 		}).send();
 	}

@@ -9,9 +9,13 @@ var FbTextarea = new Class({
 		// before the editor then the editor may not yet be loaded 
 		
 		this.periodFn = function () {
-			if (this.getTextContainer() !== false) {
-				this.watchTextContainer();
-				clearInterval(this.periodFn);
+			
+			// Seems that tinyMCE isn't created if FbLike element published in form
+			if (typeof tinyMCE !== 'undefined') {
+				if (this.getTextContainer() !== false) {
+					this.watchTextContainer();
+					clearInterval(this.periodFn);
+				}
 			}
 		};
 		
@@ -123,7 +127,7 @@ var FbTextarea = new Class({
 	
 	getTextContainer: function ()
 	{
-		if (this.options.wysiwyg) {
+		if (this.options.wysiwyg && this.options.editable) {
 			var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
 			document.id(name).addClass('fabrikinput');
 			var instance = tinyMCE.get(name);

@@ -291,6 +291,9 @@ var FbForm = new Class({
 		case 'slide toggle':
 			fx.slide.toggle();
 			break;
+		case 'clear':
+			this.formElements.get(id).clear();
+			break;
 		}
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);

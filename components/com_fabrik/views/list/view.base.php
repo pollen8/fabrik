@@ -149,6 +149,7 @@ class FabrikViewListBase extends JViewLegacy
 		$csvOpts->inctabledata = (int) $params->get('csv_include_data');
 		$csvOpts->incraw = (int) $params->get('csv_include_raw_data');
 		$csvOpts->inccalcs = (int) $params->get('csv_include_calculations');
+		$csvOpts->custom_qs = $params->get('csv_custom_qs', '');
 		$opts->csvOpts = $csvOpts;
 
 		$opts->csvFields = $this->get('CsvFields');

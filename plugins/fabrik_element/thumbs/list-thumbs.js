@@ -5,11 +5,11 @@
  */
 var FbThumbsList = new Class({
 
-    options: {
-	    'imageover': '',
-	    'imageout': '',
-	    'userid': ''
-    },
+	options: {
+		'imageover': '',
+		'imageout': '',
+		'userid': ''
+	},
 
 	Implements: [Events, Options],
 	

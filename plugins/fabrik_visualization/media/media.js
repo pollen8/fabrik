@@ -18,17 +18,17 @@ var FbMediaViz = new Class({
 		if (this.options.which_player === 'jw') {
 			jwplayer("jw_player").setup({
 				//'flashplayer': this.options.jw_swf_url,
-			    'width': this.options.width,
-			    'height': this.options.height,
-			    'playlistfile': this.options.jw_playlist_url,
-			    'playlist.position': 'right',
-			    //'playlist.size': this.options.height,
-			    'skin': this.options.jw_skin,
-			    'modes': [
-			        {type: 'flash', src: this.options.jw_swf_url},
-			        {type: 'html5'},
-			        {type: 'download'}
-			    ]
+				'width': this.options.width,
+				'height': this.options.height,
+				'playlistfile': this.options.jw_playlist_url,
+				'playlist.position': 'right',
+				//'playlist.size': this.options.height,
+				'skin': this.options.jw_skin,
+				'modes': [
+					{type: 'flash', src: this.options.jw_swf_url},
+					{type: 'html5'},
+					{type: 'download'}
+				]
 			});			
 		}
 	}

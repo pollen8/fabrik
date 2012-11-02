@@ -6,17 +6,17 @@ var FbVisCoverflow = new Class({
 		this.setOptions(options);
 
 		widget = Runway.createOrShowInstaller(
-		    document.getElementById("coverflow"),
-		    {
-		        // examples of initial settings
-		        // slideSize: 200,
-		        // backgroundColorTop: "#fff",
-		        
-		        // event handlers
-		        onReady: function () {
-		            widget.setRecords(json);
-		        }
-		    }
+			document.getElementById("coverflow"),
+			{
+				// examples of initial settings
+				// slideSize: 200,
+				// backgroundColorTop: "#fff",
+				
+				// event handlers
+				onReady: function () {
+					widget.setRecords(json);
+				}
+			}
 		);
 	}
 });

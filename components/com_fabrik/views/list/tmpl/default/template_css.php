@@ -109,7 +109,7 @@ div.calendar{
 
 /** autocomplete container inject in doc body not in #forn_$c */
 .auto-complete-container{
-	overflow-y: hidden;
+	overflow: hidden;
 	border-radius:0 0 6px 6px;
 	box-shadow:2px 2px 6px rgba(100, 100, 100, 150);
 	border:1px solid #999
@@ -131,8 +131,6 @@ div.calendar{
 	margin:0 !important;
 	cursor:hand;
 	font-size:0.9em;
-	color: #eee;
-	text-shadow: 0 1px 0 #666;
 }
 
 .auto-complete-container li:hover{

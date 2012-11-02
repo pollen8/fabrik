@@ -403,17 +403,8 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			$element = $this->getElement();
 			$listModel = $this->getlistModel();
 			$params = $this->getParams();
+			$value = $this->getDefaultOnACL($data, $opts);
 
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
-			{
-				$value = '';
-			}
-			else
-			{
-				$value = $this->getDefaultValue($data);
-			}
 			$table = $listModel->getTable();
 			if ($groupModel->canRepeat() == '1')
 			{

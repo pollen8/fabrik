@@ -206,8 +206,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
 
-		$msg = $model->getParams()->get('suppress_msgs', '0') == '0'
-			? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+		$msg = $model->showSuccessMsg() ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 
 		if ($input->getInt('_packageId') !== 0)
 		{

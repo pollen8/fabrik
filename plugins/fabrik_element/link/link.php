@@ -432,11 +432,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$joinid = $group->join_id;
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
-			/*
-			 * $$$rob - if no search form data submitted for the search element then the default
-			 * selection was being applied instead
-			 */
-			$default = array_key_exists('use_default', $opts) && $opts['use_default'] == false ? '' : $this->getDefaultValue($data);
+
+			$default = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			if ($groupModel->isJoin())
 			{

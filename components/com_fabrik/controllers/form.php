@@ -136,8 +136,8 @@ class FabrikControllerForm extends JControllerLegacy
 			{
 				$url = 'index.php?option=com_fabrik&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
-			$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
-			$this->setRedirect(JRoute::_($url), JText::_($msg), 'notice');
+			$msg = $model->aclMessage();
+			$this->setRedirect(JRoute::_($url), $msg, 'notice');
 			return;
 		}
 		// Display the view

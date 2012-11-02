@@ -831,16 +831,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 			else
 			{
-				// $$$rob - if no search form data submitted for the search element then the default
-				// selecton was being applied instead
-				if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
-				{
-					$value = '';
-				}
-				else
-				{
-					$value = $this->getDefaultValue($data);
-				}
+				$value = $this->getDefaultOnACL($data, $opts);
+
 				// $$$ hugh - as we now run removeTableNameFromSaveData(), I think we just need the short name?
 				$name = $this->getFullName(false, true, false);
 				if ($groupModel->isJoin())

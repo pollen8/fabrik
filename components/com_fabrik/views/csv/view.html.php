@@ -83,6 +83,7 @@ class fabrikViewCsv extends JView
 		$csvOpts->inctabledata = (int) $listParams->get('csv_include_data');
 		$csvOpts->incraw = (int) $listParams->get('csv_include_raw_data');
 		$csvOpts->inccalcs = (int) $listParams->get('csv_include_calculations');
+		$csvOpts->custom_qs = $listParams->get('csv_custom_qs', '');
 		$opts->csvOpts = $csvOpts;
 
 		$opts->csvFields = $this->get('CsvFields');
