@@ -2398,7 +2398,19 @@ class plgFabrik_Element extends FabrikPlugin
 						$fxadded[$jsAct->js_e_trigger] = true;
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
-					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+
+					if ($jsAct->js_e_condition == 'hidden') {
+						$js = "if (this.getContainer().getStyle('display') === 'none') {";
+					}
+					elseif ($jsAct->js_e_condition == 'shown')
+					{
+						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+					}
+					else
+					{
+						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+					}
+
 
 					// $$$ need to use ciorrected triggerid here as well
 					// $js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
