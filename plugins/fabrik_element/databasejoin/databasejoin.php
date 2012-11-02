@@ -824,6 +824,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+
 		// For repetaing groups we need to unset this where each time the element is rendered
 		unset($this->_autocomplete_where);
 		if ($this->isJoin())
@@ -1018,8 +1020,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->isEditable())
 				{
+					$forms = $this->getLinkedForms();
+					$popupform = (int) $params->get('databasejoin_popupform');
+					$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
+
 					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
-					$html[] = '<a href="#" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
+					if ($app->isAdmin())
+					{
+						$chooseUrl = 'index.php?option=com_fabrik&task=list.view&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+					}
+					else
+					{
+						$chooseUrl = 'index.php?option=com_fabrik&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+					}
+					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 

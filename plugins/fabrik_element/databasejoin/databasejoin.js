@@ -319,7 +319,8 @@ var FbDatabasejoin = new Class({
 		this.activeSelect = true;
 		e.stop();
 		var id = this.element.id + '-popupwin-select';
-		var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=dbjoinselect&ajax=1&listid=" + this.options.listid;
+		var url = this.getContainer().getElement('a.toggle-selectoption').href;
+		url += '&layout=dbjoinselect';
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
 		url += '&c=' + this.options.listRef;
