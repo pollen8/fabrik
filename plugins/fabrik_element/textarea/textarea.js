@@ -125,7 +125,7 @@ var FbTextarea = new Class({
 	
 	getTextContainer: function ()
 	{
-		if (this.options.wysiwyg) {
+		if (this.options.wysiwyg && this.options.editable) {
 			var name = this.options.isGroupJoin ? this.options.htmlId : this.options.element;
 			document.id(name).addClass('fabrikinput');
 			var instance = tinyMCE.get(name);

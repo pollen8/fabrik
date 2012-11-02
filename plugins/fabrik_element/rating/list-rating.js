@@ -72,7 +72,7 @@ var FbRatingList = new Class({
 		starRatingContainer.grab(starRatingCover, 'top');
 		
 		var row = document.id(star).getParent('.fabrik_row');
-		var rowid = row.id.replace('list_' + document.fabrikList.elements['listref'].value + '_row_', '');
+		var rowid = row.id.replace('list_' + document.fabrikList.elements.listref.value + '_row_', '');
 		var data = {
 			'option': 'com_fabrik',
 			'format': 'raw',
@@ -96,7 +96,7 @@ var FbRatingList = new Class({
 				Fabrik.loader.stop(ratingmsg);
 				star.getParent('.fabrik_element').getElements('img').each(function (i, x) {
 					i.src = (x < r) ? this.options.insrc : this.options.outsrc;
-				}.bind(this))
+				}.bind(this));
 				document.id('starRatingCover').destroy();
 			}.bind(this)
 		}).send();
