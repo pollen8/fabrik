@@ -997,8 +997,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					// Get the LABEL from the form's data.
 						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
 
-						// $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
-						if ($formModel->hasErrors())
+						/*
+						 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
+						 * 02/11/2012 if new form then labels not present either.
+						 */
+						if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 						{
 							$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
 						}
