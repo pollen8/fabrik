@@ -172,7 +172,7 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 			{
 				if (!isset($pic->$slideshow_viz_file))
 				{
-					JError::raiseNotice(E_NOTICE, $params->get('slideshow_viz_file', '') . ' not found - is it set to show in the table view?');
+					JError::raiseNotice(E_NOTICE, $params->get('slideshow_viz_file', '') . ' not found - is it set to show in the list view?');
 					break 2;
 				}
 				$pic->$slideshow_viz_file = str_replace("\\", "/", $pic->$slideshow_viz_file);
