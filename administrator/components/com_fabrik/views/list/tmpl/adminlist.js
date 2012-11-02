@@ -179,7 +179,7 @@ var ListForm = new Class({
 			'class': 'btn btn-danger',
 			'events': {
 				'click': function (e) {
-				    this.deleteJoin(e);
+					this.deleteJoin(e);
 					return false;
 				}.bind(this)
 			}

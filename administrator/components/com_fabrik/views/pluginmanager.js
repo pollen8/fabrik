@@ -183,7 +183,7 @@ var PluginManager = new Class({
 				}
 			});
 			var JTooltips = new Tips($$('.hasTip'), {maxTitleChars: 50, fixed: false});
-	    });
+		});
 	},
 	
 	/**

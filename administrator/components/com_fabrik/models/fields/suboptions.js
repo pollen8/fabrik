@@ -82,10 +82,10 @@ var Suboptions = new Class({
 									chx
 								),
 								delButton
-								])
 							])
 						])
-					]);
+					])
+				]);
 		if (document.id('sub_subElementBody').getElement('li').innerHTML === '') {
 			li.replaces(document.id('sub_subElementBody').getElement('li'));
 		} else {

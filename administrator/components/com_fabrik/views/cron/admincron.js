@@ -19,7 +19,7 @@ var CronAdmin = new Class({
 		if (typeof(jQuery) !== 'undefined') {
 			jQuery('#jform_plugin').bind('change', function (e) {
 				this.changePlugin(e);
-		    }.bind(this));
+			}.bind(this));
 		}
 		
 		document.id('jform_plugin').addEvent('change', function (e) {
