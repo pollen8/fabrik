@@ -287,7 +287,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @return  array	option objects
 	 */
 
-	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$this->getDb();
 		$tmp = $this->_getOptionVals($data, $repeatCounter);
@@ -373,13 +373,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * Get array of option values
 	 *
 	 * @param   array  $data           data
-	 * @param   int	   $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       include where sql statement
+	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   bool   $incWhere       do we add custom where statement into sql
 	 *
-	 * @return  array
+	 * @return  array	option values
 	 */
 
-	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		if (!isset($this->_optionVals))
 		{

@@ -354,7 +354,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 * @return  void
 	 */
 
-	protected function prepareTable(&$item)
+	protected function prepareTable($table)
 	{
 	}
 

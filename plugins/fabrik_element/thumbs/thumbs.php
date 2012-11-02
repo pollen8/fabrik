@@ -544,10 +544,20 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		return $return;
 	}
 
-	public function onRenderAdminSettings($data = array(), $repeatCounter = null)
+	/**
+	 * Render the element admin settings
+	 *
+	 * @param   array   $data           admin data
+	 * @param   int     $repeatCounter  repeat plugin counter
+	 * @param   string  $mode           how the fieldsets should be rendered currently support 'nav-tabs' (@since 3.1)
+	 *
+	 * @return  string	admin html
+	 */
+
+	public function onRenderAdminSettings($data = array(), $repeatCounter = null, $mode = null)
 	{
 		$this->install();
-		return parent::onRenderAdminSettings($data, $repeatCounter);
+		return parent::onRenderAdminSettings($data, $repeatCounter, $mode);
 	}
 
 	public function install()
