@@ -44,12 +44,29 @@
 		
 		<fieldset label="log" name="log">
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_LOG_CRON_EVENTS_DESC" label="COM_FABRIK_CRON_FIELD_LOG_EVENTS_LABEL" name="log" type="radio">
+			<field name="log"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_CRON_FIELD_LOG_EVENTS_DESCRIPTION"
+				label="COM_FABRIK_CRON_FIELD_LOG_EVENTS_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="log_email"
+				type="field"
+				default=""
+				label="COM_FABRIK_FIELD_CRON_LOG_EMAIL_LABEL"
+				size="50"
+				description="COM_FABRIK_FIELD_CRON_LOG_EMAIL_DESC" />
 				
-			<field class="btn-group" default="0" description="COM_FABRIK_CRON_FIELD_REQUIRE_QS_DESC" label="COM_FABRIK_CRON_FIELD_REQUIRE_QS_LABEL" name="require_qs" type="radio">
+			<field name="require_qs"
+				type="radio"
+				class="btn-group" 
+				default="0"
+				description="COM_FABRIK_CRON_FIELD_REQUIRE_QS_DESC"
+				label="COM_FABRIK_CRON_FIELD_REQUIRE_QS_LABEL">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>	
 			</field>

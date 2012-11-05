@@ -178,7 +178,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		if (in_array($element->filter_type, array('range', 'dropdown', '')))
 		{
 			$rows = $this->filterValueList($normal);
-			JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
+			if ($params->get('filter_groupby') != -1)
+			{
+				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
+			}
 			if (!in_array('', $values))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));

@@ -233,7 +233,7 @@ class FabrikPlugin extends JPlugin
 			}
 			else
 			{
-				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, 'not found!') : $val;
+				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, '') : $val;
 			}
 		}
 
