@@ -4366,6 +4366,15 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
+
+			if ($groupModel->canRepeat())
+			{
+				$group->tmpl =  $groupParams->get('repeat_template', 'repeatgroup');
+			}
+			else
+			{
+				$group->tmpl = 'group';
+			}
 			$aElements = array();
 
 			// Check if group is acutally a table join

@@ -44,105 +44,101 @@ fieldset
 To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.
 
 If you have set to show the page title in the forms layout parameters, then the page title will show */
-?>
-<?php if ($this->params->get('show_page_title', 1)) { ?>
+
+$form = $this->form;
+
+if ($this->params->get('show_page_title', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
-<?php } ?>
-<?php $form = $this->form;
-//echo $form->startTag;
-if ($this->params->get('show-title', 1)) {?>
+<?php
+endif;
 
-<?php  /*This will show the forms label */?>
-<h1><?php echo $form->label;?></h1>
+if ($this->params->get('show-title', 1)) :?>
+	<h1>
+		<?php echo $form->label;?>
+	</h1>
+<?php
+endif;
 
-<?php  /*This area will show the form's intro as well as any errors */ ?>
-<?php }
+// Form intro and start
 echo $form->intro;
 echo $form->startTag;
 echo $this->plugintop;
+
+// Error message
 $active = ($form->error != '') ? '' : ' fabrikHide';
-echo "<div class=\"fabrikMainError fabrikError$active\">";
+echo '<div class="fabrikMainError fabrikError' . $active . '">';
 echo FabrikHelperHTML::image('alert.png', 'form', $this->tmpl);
-echo "$form->error</div>";?>
+echo "$form->error</div>";
+
+// Buttons
+if ($this->showEmail) :
+	echo $this->emailLink;
+endif;
+if ($this->showPDF) :
+	echo $this->pdfLink;
+endif;
+if ($this->showPrint) :
+	echo $this->printLink;
+endif;
+
+// Related data template
+echo $this->loadTemplate('relateddata');
+
+// Loop over the form's groups rendering them
+foreach ($this->groups as $group) :
+	$this->group = $group;
+
+	// Create the group fieldset ?>
+	<<?php echo $form->fieldsetTag ?> class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+
 	<?php
-	if ($this->showEmail) {
-		echo $this->emailLink;
-	}
-	if ($this->showPDF) {
-		echo $this->pdfLink;
-	}
-	if ($this->showPrint) {
-		echo $this->printLink;
-	}
-	echo $this->loadTemplate('relateddata');
-	foreach ($this->groups as $group) {
-		?>
-
-<?php  /* This is where the fieldset is set up */ ?>
-		<<?php echo $form->fieldsetTag ?> class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-
-		<?php if (trim($group->title) !== '')
-		{?>
-			<<?php echo $form->legendTag ?> class="legend"><span><?php echo $group->title;?></span></<?php echo $form->legendTag ?>>
-		<?php }?>
-
-<?php  /* This is where the group intro is shown */ ?>
-		<?php if ($group->intro !== '') {?>
-		<div class="groupintro"><?php echo $group->intro ?></div>
-		<?php }?>
-
-		<?php if ($group->canRepeat) {
-			foreach ($group->subgroups as $subgroup) {
-			?>
-				<div class="fabrikSubGroup">
-					<div class="fabrikSubGroupElements">
-						<?php
-						$this->elements = $subgroup;
-						echo $this->loadTemplate('group');
-						?>
-					</div>
-					<?php if ($group->editable) { ?>
-						<div class="fabrikGroupRepeater">
-							<?php if ($group->canAddRepeat) {?>
-							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('add.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
-							</a>
-							<?php }?>
-							<?php if ($group->canDeleteRepeat) {?>
-							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('del.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
-							</a>
-							<?php }?>
-						</div>
-					<?php } ?>
-				</div>
-				<?php
-			}
-		} else {
-			$this->elements = $group->elements;
-			echo $this->loadTemplate('group');
-		}?>
-	</<?php echo $form->fieldsetTag ?>>
-<?php
-	}
-	echo $this->hiddenFields;
+	// Do we add a legend?
+	if (trim($group->title) !== '') :
 	?>
-	<?php echo $this->pluginbottom; ?>
+		<<?php echo $form->legendTag ?> class="legend">
+			<span>
+				<?php echo $group->title;?>
+			</span>
+		</<?php echo $form->legendTag ?>>
+	<?php
+	endif;
+	?>
 
-<?php  /* This is where the buttons at the bottom of the form are set up */ ?>
-	<?php if ($this->hasActions) {?>
+	<?php
+	// Show the group intro
+	if ($group->intro !== '') :?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+	<?php
+	endif;
+
+	// Load the group template - this can be :
+	//  * default_group.php - standard group non-repeating rendered as an unordered list
+	//  * default_repeatgroup.php - repeat group rendered as an unordered list
+	//  * default_repeatgroup.table.php - repeat group rendered in a table.
+
+	$this->elements = $group->elements;
+	echo $this->loadTemplate($group->tmpl);
+	?>
+</<?php echo $form->fieldsetTag ?>>
+<?php
+endforeach;
+
+// Add the form's hidden fields
+echo $this->hiddenFields;
+
+// Add any content assigned by form plug-ins
+echo $this->pluginbottom;
+
+// Render the form's buttons
+if ($this->hasActions) :?>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
 	<?php echo $form->nextButton?> <?php echo $form->prevButton?>
 	 <?php echo $form->applyButton;?>
-	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
+	<?php echo $form->copyButton  . ' ' . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>
-	<?php } ?>
-
 <?php
+endif;
 echo $form->endTag;
 echo $form->outro;
-
-
-
 echo $this->pluginend;
-echo FabrikHelperHTML::keepalive();?>
+echo FabrikHelperHTML::keepalive();

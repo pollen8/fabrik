@@ -81,6 +81,15 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="repeat_template"
+				type="list"
+				default="repeatgroup"
+				description="COM_FABRIK_FIELD_REPEAT_GROUP_TMPL_DESC"
+				label="COM_FABRIK_FIELD_REPEAT_GROUP_TMPL_LABEL">
+					<option value="repeatgroup">COM_FABRIK_REPEAT_GROUP_TMPL_LIST</option>
+					<option value="repeatgroup_table">COM_FABRIK_REPEAT_GROUP_TMPL_TABLE</option>
+			</field>
 
 			<field name="repeat_max"
 				type="text"
