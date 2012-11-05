@@ -447,7 +447,7 @@ var FbList = new Class({
 		opts.Itemid = this.options.Itemid;
 		opts.listid = this.id;
 		opts.listref = this.id;
-		this.csvopts.custom_qs.split('&').each(function (qs) {
+		this.options.csvOpts.custom_qs.split('&').each(function (qs) {
 			var key = qs.split('=');
 			opts[key[0]] = key[1];
 		});
