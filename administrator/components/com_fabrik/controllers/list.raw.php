@@ -147,4 +147,26 @@ class FabrikControllerList extends JControllerForm
 		$view->display();
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 	}
+
+	/**
+	 * Order the lists
+	 *
+	 * @return  null
+	 */
+
+	public function order()
+	{
+		// Check for request forgeries
+		JRequest::checkToken() or die('Invalid Token');
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$id = JRequest::getInt('listid');
+		$model->setId($id);
+		JRequest::setvar('cid', $id);
+		$model->setOrderByAndDir();
+
+		// $$$ hugh - unset 'resetfilters' in case it was set on QS of original table load.
+		JRequest::setVar('resetfilters', 0);
+		JRequest::setVar('clearfilters', 0);
+		$this->view();
+	}
 }
