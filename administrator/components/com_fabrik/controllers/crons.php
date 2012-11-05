@@ -54,6 +54,8 @@ class FabrikControllerCrons extends FabControllerAdmin
 
 	public function run()
 	{
+		$mailer = JFactory::getMailer();
+		$config = JFactory::getConfig();
 		$db = FabrikWorker::getDbo(true);
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		JArrayHelper::toInteger($cid);
@@ -100,10 +102,19 @@ class FabrikControllerCrons extends FabControllerAdmin
 			}
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisListModel, $thisAdminListModel);
+
+			$log->message = $plugin->getLog() . "\n\n" . $log->message;
 			if ($plugin->getParams()->get('log', 0) == 1)
 			{
-				$log->message = $plugin->getLog() . "\n\n" . $log->message;
 				$log->store();
+			}
+
+			// Email log message
+			$recipient = explode(',', $plugin->getParams()->get('log_email', ''));
+			if (!empty($recipient))
+			{
+				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
+				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
 			}
 		}
 		$this->setRedirect('index.php?option=com_fabrik&view=crons', $c . ' records updated');
