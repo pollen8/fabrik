@@ -59,6 +59,9 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 		$sitename = $config->getValue('sitename');
 		$sent = array();
 		$usermsgs = array();
+
+		$successMails = array();
+		$failedMails = array();
 		foreach ($rows as $row)
 		{
 			/*
@@ -87,13 +90,27 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 		foreach ($usermsgs as $email => $messages)
 		{
 			$msg = implode(' ', $messages);
-			$res = JUtility::sendMail($email_from, $email_from, $email, $subject, $msg, true);
+			if (JUtility::sendMail($email_from, $email_from, $email, $subject, $msg, true))
+			{
+				$successMails[] = $email;
+			}
+			else
+			{
+				$failedMails[] = $email;
+			}
+
 		}
 		if (!empty($sent))
 		{
 			$sent = implode(';', $sent);
 			$db->setQuery($sent);
 			$db->query();
+		}
+		$this->log = count($sent) . ' notifications sent.<br />';
+		$this->log .= 'Emailed users: <ul><li>' . implode('</li><li>', $successMails) . '</li></ul>';
+		if (!empty($failedMails))
+		{
+			$this->log .= 'Failed emails: <ul><li>' . implode('</li><li>', $failedMails) . '</li></ul>';
 		}
 	}
 

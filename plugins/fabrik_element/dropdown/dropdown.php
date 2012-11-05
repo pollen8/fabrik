@@ -305,12 +305,24 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 			 */
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
 
-			$where1 = ('["' . $originalValue . '",%');
-			$where2 = ('%,"' . $originalValue . '",%');
-			$where3 = ('%,"' . $originalValue . '"]');
-
-			$str = "($key $condition $value " . " OR $key LIKE " . $db->quote('["' . $originalValue . '"%') . " OR $key LIKE "
-				. $db->quote('%"' . $originalValue . '"%') . " OR $key LIKE " . $db->quote('%"' . $originalValue . '"]') . ")";
+			switch ($condition)
+			{
+				case '=':
+					$condition2 = 'LIKE';
+					$glue = 'OR';
+					break;
+				case '<>':
+					$condition2 = 'NOT LIKE';
+					$glue = 'AND';
+					break;
+				default:
+					$condition2 = 'LIKE';
+					$glue = 'OR';
+					break;
+			}
+			$db = FabrikWorker::getDbo();
+			$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
+			. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";
 			return $str;
 		}
 		else

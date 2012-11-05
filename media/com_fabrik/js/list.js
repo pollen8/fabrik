@@ -444,6 +444,11 @@ var FbList = new Class({
 		opts.Itemid = this.options.Itemid;
 		opts.listid = this.id;
 		opts.listref = this.id;
+		this.csvopts.custom_qs.split('&').each(function (qs) {
+			var key = qs.split('=');
+			opts[key[0]] = key[1];
+		});
+		
 		var myAjax = new Request.JSON({
 			url: '',
 			method: 'post',
@@ -620,9 +625,16 @@ var FbList = new Class({
 				'visible': false,
 				'width': this.options.popup_width,
 				'height': this.options.popup_height,
-			    'onContentLoaded': function () {}
+				'onContentLoaded': function () {}
 			};
 			var w = Fabrik.getWindow(winOpts);*/
+			if (typeOf(this.options.popup_offset_x) !== 'null') {
+				winOpts.offset_x = this.options.popup_offset_x;
+			}
+			if (typeOf(this.options.popup_offset_y) !== 'null') {
+				winOpts.offset_y = this.options.popup_offset_y;
+			}
+			var w = Fabrik.getWindow(winOpts);
 		}
 	},
 	

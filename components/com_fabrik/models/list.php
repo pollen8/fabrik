@@ -513,7 +513,7 @@ class FabrikFEModelList extends JModelForm
 		$fabrikDb = $this->getDb();
 		$params = $this->getParams();
 		if ($params->get('enable_big_selects', $bigSelects))
-		*/
+		 */
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
@@ -5021,7 +5021,7 @@ class FabrikFEModelList extends JModelForm
 		$arr = array();
 		foreach ($elements as $e)
 		{
-			$key = FabrikString::safeColName($e->getFullName(false, false, false));
+			$key = $e->getFilterFullName();
 			$arr[$key] = array('id' => $e->getId(), 'plugin' => $e->getElement()->plugin);
 		}
 		$opts->elementMap = $arr;
@@ -5046,7 +5046,7 @@ class FabrikFEModelList extends JModelForm
 			$elParams = $elementModel->getParams();
 			if ($elParams->get('inc_in_adv_search', 1))
 			{
-				$elName = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+				$elName = $elementModel->getFilterFullName();
 				if (!$first)
 				{
 					$first = true;
@@ -6203,10 +6203,10 @@ class FabrikFEModelList extends JModelForm
 		 but it certainly breaks things like onCopyRow(), where (for instance) user
 		 elements will get reset to 0 by this code.
 		 */
+		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
 		if (!empty($origdata))
 		{
 			$gcounter = 0;
-			$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
 			foreach ($groups as $groupModel)
 			{
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
@@ -6321,21 +6321,29 @@ class FabrikFEModelList extends JModelForm
 							// if (!$elementModel->canUse() && $elementModel->canView()) {
 							if (!$elementModel->canUse())
 							{
-								// Repeat groups no join:
-								if (is_array($encrypted))
+								// Repeat groups
+								$default = array();
+								$repeatGroupCount = JArrayHelper::getValue($repeatGroupCounts, $groupModel->getGroup()->id);
+								for ($repeatCount = 0; $repeatCount < $repeatGroupCount; $repeatCount++)
 								{
-									$v = array();
-									foreach ($encrypted as $e)
+									$enc = JArrayHelper::getValue($encrypted, $repeatCount);
+
+									if (is_array($enc))
 									{
-										$e = urldecode($e);
-										$v[] = empty($e) ? '' : $crypt->decrypt($e);
+										$v = array();
+										foreach ($enc as $e)
+										{
+											$e = urldecode($e);
+											$v[] = empty($e) ? '' : $crypt->decrypt($e);
+										}
+										$v = json_encode($v);
 									}
-									$v = json_encode($v);
-								}
-								else
-								{
-									$encrypted = urldecode($encrypted);
-									$v = !empty($encrypted) ? $crypt->decrypt($encrypted) : '';
+									else
+									{
+										$enc = urldecode($enc);
+										$v = !empty($enc) ? $crypt->decrypt($enc) : '';
+									}
+
 								}
 
 								/* $$$ hugh - also gets called in storeRow(), not sure if we really need to
@@ -8410,15 +8418,22 @@ class FabrikFEModelList extends JModelForm
 		$ec = count($data);
 		foreach ($groups as $groupModel)
 		{
-			if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-				|| $this->outPutFormat == 'feed')
+			/* if (($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+			    || $this->outPutFormat == 'feed')
 			{
-				$elementModels = $groupModel->getPublishedElements();
+			    $elementModels = $groupModel->getPublishedElements();
 			}
 			else
 			{
-				$elementModels = $groupModel->getPublishedListElements();
-			}
+			    $elementModels = $groupModel->getPublishedListElements();
+			} */
+
+			/*
+			 * $$$ rob 29/10/2012 - see http://fabrikar.com/forums/showthread.php?t=28830
+			 * Calc may be set to show in list via menu item, but groupModel::getPublishedListElements() doesn't know
+			 * this. Seems best to run all calcs regardless of whether they are set to show in list.
+			 */
+			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
 				$col = $elementModel->getFullName(false, true, false);

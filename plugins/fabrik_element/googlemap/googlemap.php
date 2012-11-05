@@ -730,17 +730,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			$listModel = $this->getlistModel();
 			$params = $this->getParams();
 
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
-			{
-				$value = '';
-			}
-			else
-			{
-				$value = $this->getDefaultValue($data);
-			}
-
+			$value = $this->getDefaultOnACL($data, $opts);
 			$table = $listModel->getTable();
 			if ($groupModel->canRepeat() == '1')
 			{

@@ -529,7 +529,8 @@ EOD;
 		// $$$ hugh - moved this to top of function, as we now apply livesite in either usage cases below.
 		if (!strstr($file, COM_FABRIK_LIVESITE))
 		{
-			$file = COM_FABRIK_LIVESITE . '/' . $file;
+			$ls = JString::substr(COM_FABRIK_LIVESITE, -1) == '/' ? COM_FABRIK_LIVESITE : COM_FABRIK_LIVESITE . '/';
+			$file = $ls . $file;
 		}
 		if (self::cssAsAsset())
 		{

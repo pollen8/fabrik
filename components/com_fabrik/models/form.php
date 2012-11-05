@@ -3479,10 +3479,14 @@ class FabrikFEModelForm extends FabModelForm
 				for ($k = 0; $k < count($usekey); $k++)
 				{
 					// Ensure that the key value is not quoted as we Quote() afterwards
+					/*
+					 * $$$ rob 29/10/2012
+					 * commenting out as if key value = "ile d'ax" then this is set to "ile dax" which then returns no rows.
+					 * quote() shoudl deal with backslashing "'" so not sure why this line was here.
 					if (strstr($aRowIds[$k], "'"))
 					{
 						$aRowIds[$k] = str_replace("'", '', $aRowIds[$k]);
-					}
+					} */
 					if ($comparison == '=')
 					{
 						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);
@@ -4344,6 +4348,11 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				$data[$key] = htmlspecialchars($val, ENT_QUOTES);
 			}
+			else
+			{
+				// Not sure what the htmlspecialchars is for above but if we dont assign here we loose join data
+				$data[$key] = $val;
+			}
 		}
 
 		$this->groupView = array();
@@ -4883,6 +4892,53 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Should we show success messages
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function showSuccessMsg()
+	{
+		$mode = $this->getParams()->get('suppress_msgs', '0');
+		return ($mode == 0 || $mode == 2);
+	}
+
+	/**
+	 * Should we show ACL messages
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function showACLMsg()
+	{
+		$mode = $this->getParams()->get('suppress_msgs', '0');
+		return $mode == 0 || $mode == 1;
+	}
+
+	/**
+	 * If trying to add/edit a record when the user doesn't have rights to do so,
+	 * what message, if any should we show.
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return string
+	 */
+
+	public function aclMessage()
+	{
+		if (!$this->showACLMsg())
+		{
+			return '';
+		}
+		$input = JFactory::getApplication()->input;
+		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
+		return JText::_($msg);
+	}
+	/**
 	 * Get redirect message
 	 *
 	 * @return  string  redirect message
@@ -4899,8 +4955,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ rob 30/03/2011 if using as a search form don't show record added message
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $this->get('id'))
 		{
-			$msg = $this->getParams()->get('suppress_msgs', '0') == '0'
-				? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+			$msg = $this->showSuccessMsg() ? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		}
 		else
 		{

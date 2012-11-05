@@ -162,16 +162,7 @@ class plgFabrik_elementIp extends plgFabrik_Element
 		}
 		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
 		{
-			// $$$rob - if no search form data submitted for the search element then the default
-			// selection was being applied instead
-			if (array_key_exists('use_default', $opts) && $opts['use_default'] == false)
-			{
-				$value = '';
-			}
-			else
-			{
-				$value = $this->getDefaultValue($data);
-			}
+			$value = $this->getDefaultOnACL($data, $opts);
 			return $value;
 		}
 		$res = parent::getValue($data, $repeatCounter, $opts);

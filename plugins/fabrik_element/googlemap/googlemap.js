@@ -240,7 +240,7 @@ var FbGoogleMap = new Class({
 							}
 						} else {
 							alert("Geocoder failed due to: " + status);
-				        }
+						}
 					}.bind(this));						
 				}
 			}.bind(this));

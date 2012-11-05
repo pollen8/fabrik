@@ -174,8 +174,8 @@ var fabrikCalendar = new Class({
 		this.activeDay = e.target.getParent();
 		var newtop = loc.top - this.popWin.getSize().y;
 		var fxopts = {
-		    'opacity': [0, 1],
-		    'top': [loc.top + 50, loc.top - 10]
+			'opacity': [0, 1],
+			'top': [loc.top + 50, loc.top - 10]
 		};
 		this.inFadeOut = false;
 		this.popWin.setStyles({'left': loc.left + 20, 'top': loc.top});

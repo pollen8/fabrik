@@ -255,7 +255,7 @@ var ListForm = new Class({
 								'class': 'removeButton',
 								'events': {
 									'click': function (e) {
-									    this.deleteJoin(e);
+										this.deleteJoin(e);
 										return false;
 									}.bind(this)
 								}

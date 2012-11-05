@@ -37,27 +37,25 @@ var IconGenerator = new Class({
 
 		var art = new ART(opts.size.width * opts.scale, opts.size.height * opts.scale);
 		var group = new ART.Group();
-	  
-	  // cache the path
+
+		// Cache the path
 		var iconPath = new ART.Path(icon);
-	  
-	  // create the white shadow
+
+		// Create the white shadow
 		if (opts.shadow) {
 			iconShadow = new ART.Shape(iconPath);
 			iconShadow.scale(opts.scale, opts.scale);
 			iconShadow.fill(opts.shadow.color);
 			iconShadow.translate(opts.shadow.translate.x, opts.shadow.translate.y);
 		}
-		// create an icon with the gradient
+		// Create an icon with the gradient
 		icon = new ART.Shape(iconPath);
 		
-	  
 		icon.scale(opts.scale, opts.scale);
 	 
 		icon.fill(opts.fill.color[0], opts.fill.color[1]);
 		
-		
-		//test stroke (border)
+		// Test stroke (border)
 		if (options.stroke) {
 			icon.stroke(options.stroke.color, options.stroke.width);
 		}

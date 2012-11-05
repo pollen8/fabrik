@@ -824,6 +824,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+
 		// For repetaing groups we need to unset this where each time the element is rendered
 		unset($this->_autocomplete_where);
 		if ($this->isJoin())
@@ -997,8 +999,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					// Get the LABEL from the form's data.
 						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
 
-						// $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
-						if ($formModel->hasErrors())
+						/*
+						 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
+						 * 02/11/2012 if new form then labels not present either.
+						 */
+						if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 						{
 							$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
 						}
@@ -1015,8 +1020,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->isEditable())
 				{
+					$forms = $this->getLinkedForms();
+					$popupform = (int) $params->get('databasejoin_popupform');
+					$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
+
 					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
-					$html[] = '<a href="#" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
+					if ($app->isAdmin())
+					{
+						$chooseUrl = 'index.php?option=com_fabrik&task=list.view&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+					}
+					else
+					{
+						$chooseUrl = 'index.php?option=com_fabrik&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+					}
+					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
@@ -1288,6 +1305,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		else
 		{
+			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
+			$col = $this->getFullName(false, true, false) . '_raw';
+			$row = JArrayHelper::fromObject($thisRow);
+			$data = JArrayHelper::getValue($row, $col, $data);
+
 			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 			if (!FabrikWorker::isJSON($data))
 			{
@@ -1702,9 +1724,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
+			$join = $this->getJoin();
+			//$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($this->getLabelParamVal());
+			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
+
 			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
 			// $k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
-			$str = "$key $condition $value";
+			$str = "$k $condition $value";
 		}
 		else
 		{
@@ -2209,8 +2235,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
+		//echo $query . "<br>";
 		$db->setQuery($query);
 		$r = $db->loadObject();
+		//echo "r = ";print_r($r);
 		if (!$r)
 		{
 			return $defaultLabel;

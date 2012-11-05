@@ -1112,6 +1112,36 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Helper method to get the default value used in getValue()
+	 * For readonly elements:
+	 *    If the form is new we need to get the default value
+	 *    If the form is being edited we don't want to get the default value
+	 * Otherwise use the 'use_default' value in $opts, defaulting to true
+	 *
+	 * @param   array  $data   form data
+	 * @param   array  $opts   options
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return  mixed	value
+	 */
+	protected function getDefaultOnACL($data, $opts)
+	{
+		// rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
+		if (!$this->isEditable() && JArrayHelper::getValue($data, 'rowid') != 0)
+		{
+			$opts['use_default'] = false;
+		}
+
+		/**
+		 * $$$rob - if no search form data submitted for the search element then the default
+		 * selection was being applied instead
+		 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
+		 */
+		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+	}
+
+	/**
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           form data
@@ -1128,20 +1158,16 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$this->defaults = array();
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults))
+		$key = $repeatCounter . '.' . serialize($opts);
+		if (!array_key_exists($key, $this->defaults))
 		{
 			$groupModel = $this->getGroup();
 			$group = $groupModel->getGroup();
 			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
 			$formModel = $this->getFormModel();
 			$element = $this->getElement();
-			/**
-			 * $$$rob - if no search form data submitted for the search element then the default
-			 * selection was being applied instead
-			 * otherwise get the default value so if we don't find the element's value in $data we fall back on this value
-			 */
-			$value = JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
 
+			$value = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
@@ -1236,9 +1262,9 @@ class plgFabrik_Element extends FabrikPlugin
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-			$this->defaults[$repeatCounter] = $value;
+			$this->defaults[$key] = $value;
 		}
-		return $this->defaults[$repeatCounter];
+		return $this->defaults[$key];
 	}
 
 	/**
@@ -2372,7 +2398,19 @@ class plgFabrik_Element extends FabrikPlugin
 						$fxadded[$jsAct->js_e_trigger] = true;
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
-					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+
+					if ($jsAct->js_e_condition == 'hidden') {
+						$js = "if (this.getContainer().getStyle('display') === 'none') {";
+					}
+					elseif ($jsAct->js_e_condition == 'shown')
+					{
+						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+					}
+					else
+					{
+						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+					}
+
 
 					// $$$ need to use ciorrected triggerid here as well
 					// $js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";

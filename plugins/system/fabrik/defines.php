@@ -23,8 +23,9 @@ if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/'))
 }
 define("COM_FABRIK_BASE",  str_replace(DS . 'administrator', '', JPATH_BASE) . DS);
 define("COM_FABRIK_FRONTEND",  COM_FABRIK_BASE . 'components/com_fabrik');
-define("COM_FABRIK_LIVESITE",  str_replace('/administrator', '', JURI::base()));
 
+define("COM_FABRIK_LIVESITE",  str_replace('/administrator', '', JURI::base()));
+define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme', 'host', 'port')));
 define("FABRIKFILTER_TEXT", 0);
 define("FABRIKFILTER_EVAL", 1);
 define("FABRIKFILTER_QUERY", 2);
