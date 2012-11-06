@@ -450,6 +450,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
+		if ($params->get('cdd_display_type') == 'checkbox')
+		{
+			return false;
+		}
 		return (bool) $params->get('cascadingdropdown_showpleaseselect', true);
 	}
 

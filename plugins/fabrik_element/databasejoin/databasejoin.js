@@ -158,10 +158,9 @@ var FbDatabasejoin = new Class({
 	getCheckboxIDTmplNode: function () {
 		if (!this.chxTmplIDNode && this.options.displayType === 'checkbox')
 		{
-			var chxs = this.element.getElements('> .fabrik_subelement');
+			var chxs = this.element.getElements('.fabrikHide > .fabrik_subelement');
 			this.chxTmplIDNode = chxs.getLast().clone();
 		}
-		console.log('chx id node', this.chxTmplIDNode);
 		return this.chxTmplIDNode;
 	},
 	

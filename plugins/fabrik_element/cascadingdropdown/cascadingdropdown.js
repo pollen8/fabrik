@@ -118,7 +118,7 @@ var FbCascadingdropdown = new Class({
 						item.text = item.text.replace(/\n/g, '<br />');
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
-						this.makeSubElement(item, origvalue);
+						this.addOption(item.value, item.text);
 						//new Element('option', opts).set('text', item.text).inject(this.element);
 					}
 					
@@ -133,7 +133,7 @@ var FbCascadingdropdown = new Class({
 					if (this.options.editable === false) {
 						new Element('div').set('text', item.text).inject(this.element);
 					} else {
-						this.makeSubElement(item, origvalue);
+						this.addOption(item.value, item.text);
 						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 					}
 				}
@@ -170,23 +170,6 @@ var FbCascadingdropdown = new Class({
 		}).send();
 	},
 	
-	makeSubElement: function (item, origvalue) {
-		this.addOption(item.value, item.text);
-		return;
-		/*var opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
-		switch (this.options.displayType)
-		{
-		case 'checkbox':
-			return new Element('checkbox')
-			break;
-		case 'dropdown':
-			 falls through 
-		default:
-			return new Element('option', opts).set('text', item.text)
-			break;
-		}*/
-	},
-	
 	destroyElement: function () {
 		switch (this.options.displayType)
 		{
@@ -202,9 +185,10 @@ var FbCascadingdropdown = new Class({
 	},
 	
 	cloned: function (c) {
-		//c is the repeat group count
+		// c is the repeat group count
 		this.myAjax = null;
-		//cloned seems to be called correctly 
+		
+		// Ccloned seems to be called correctly 
 		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {
 				// $$$ hugh - nope, 'cos watch already has the _X appended to it!
@@ -233,7 +217,7 @@ var FbCascadingdropdown = new Class({
 		}
 		if (this.options.watchInSameGroup === true) {
 			this.element.empty();
-			//set ingoreAjax so that the ajax event that is fired when the element is added to the form manager
+			// Set ingoreAjax so that the ajax event that is fired when the element is added to the form manager
 			// does not update the newly cloned dropdown
 			this.ignoreAjax = true;
 		}
