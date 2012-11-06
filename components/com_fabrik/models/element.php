@@ -3478,7 +3478,7 @@ class plgFabrik_Element extends FabrikPlugin
 					// Query the joined table concatanating into one field
 					$jointable = $this->getJoinModel()->getJoin()->table_join;
 					$pk = $this->getListModel()->getTable()->db_primary_key;
-					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE parent_id = $pk)";
 					$value = str_replace("'", '', $value);
 					$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
 					$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
