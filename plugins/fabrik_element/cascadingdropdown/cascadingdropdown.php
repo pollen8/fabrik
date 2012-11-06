@@ -212,13 +212,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			// $$$ rob display type not set up in parameters as not had time to test fully yet
 
-			/*		<param name="cdd_display_type" type="list" default="dropdown" label="RENDERJOIN" description="RENDERJOINDESC">
-			 <option value="dropdown">Drop down list</option>
-			<option value="radio">Radio Buttons</option>
-			<option value="auto-complete">Auto-complete</option>
-			</param>
-			 */
-
 			switch ($displayType)
 			{
 				/*case 'auto-complete':
@@ -985,7 +978,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
 			return false;
 		}
-		$element = $this->getElement();
+		return parent::onSave();
+		/* $element = $this->getElement();
 		$table_join = $this->getDbName();
 		if (!$table_join)
 		{
@@ -1010,7 +1004,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$o->type = 'element';
 		$join->params = json_encode($o);
 		$join->store();
-		return true;
+		return true; */
 	}
 
 	/**

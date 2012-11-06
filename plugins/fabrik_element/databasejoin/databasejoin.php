@@ -928,14 +928,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						{
 							$defaultValue = $tmp[0]->value;
 						}
-						// $$$ rob 24/05/2011 - add options per row
-						$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value',
 							'text', $options_per_row);
 						break;
 					case 'checkbox':
-						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+						$defaultLabel = implode("\n", $html);
+						/* $defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 						$rawname = $this->getFullName(false, true, false) . '_raw';
 
@@ -977,7 +977,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 								$options_per_row, $this->isEditable());
 							$html[] = '</div>';
 						}
-						$defaultLabel = implode("\n", $html);
+						$defaultLabel = implode("\n", $html); */
 						break;
 					case 'multilist':
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
@@ -1065,6 +1065,58 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$html[] = '</div>';
 		}
 		return implode("\n", $html);
+	}
+
+	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $defaults)
+	{
+		$formModel = $this->getFormModel();
+		$id = $this->getHTMLId($repeatCounter);
+		$idname = $this->getFullName(false, true, false) . '_id';
+		$thisElName = $this->getHTMLName($repeatCounter);
+		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
+
+		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
+		$rawname = $this->getFullName(false, true, false) . '_raw';
+
+		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, 'class="fabrikinput inputbox" id="' . $id . '"', $defaults, 'value',
+				'text', $options_per_row, $this->isEditable());
+		if ($this->isJoin() && $this->isEditable())
+		{
+			$join = $this->getJoin();
+			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
+			if ($groupModel->canRepeat())
+			{
+				$joinidsName .= '[' . $repeatCounter . '][]';
+				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $joinId . '.' . $rawname . '.' . $repeatCounter, 'not found');
+			}
+			else
+			{
+				$joinidsName .= '[]';
+				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
+			}
+			$tmpids = array();
+			foreach ($tmp as $obj)
+			{
+				$o = new stdClass;
+				$o->text = $obj->text;
+				if (in_array($obj->value, $defaults))
+				{
+					$index = array_search($obj->value, $defaults);
+					$o->value = JArrayHelper::getValue($joinids, $index);
+				}
+				else
+				{
+					$o->value = 0;
+				}
+				$tmpids[] = $o;
+			}
+			$html[] = '<div class="fabrikHide">';
+			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
+			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text',
+					$options_per_row, $this->isEditable());
+			$html[] = '</div>';
+		}
 	}
 
 	/**
@@ -2052,7 +2104,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = json_decode($data['params']);
 		if (!$this->isJoin())
 		{
-			$this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
+			// $this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
+			$this->updateFabrikJoins($data, $this->getDbName(), $this->getJoinValueFieldName(), $this->labelParam);
+
 		}
 		return parent::onSave();
 	}
