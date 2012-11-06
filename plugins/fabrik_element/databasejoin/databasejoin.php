@@ -261,7 +261,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			if (!$this->isJoin())
 			{
-				JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
+				JError::raiseWarning(500, 'db join: Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			}
 			$label = $this->getElement()->name;
 		}
@@ -372,7 +372,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db = $this->getDb();
 
 		// $$$ hugh - attempting to make sure we never do an uncontrained query for auto-complete
-		$displayType = $params->get('database_join_display_type', 'dropdown');
+		$displayType = $this->getDisplayType();
 		$value = (array) $this->getValue($data, $repeatCounter);
 
 		/*
@@ -517,7 +517,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	protected function showPleaseSelect()
 	{
 		$params = $this->getParams();
-		$displayType = $params->get('database_join_display_type', 'dropdown');
+		$displayType = $this->getDisplayType();
 		if ($displayType == 'dropdown' && $params->get('database_join_show_please_select', true))
 		{
 			return true;
@@ -840,7 +840,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$aGroupRepeats[$element->group_id] = $groupModel->canRepeat();
-		$displayType = $params->get('database_join_display_type', 'dropdown');
+		$displayType = $this->getDisplayType();
 		$db = $this->getDb();
 		if (!$db)
 		{
@@ -940,41 +940,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'multilist':
-						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-						if ($this->isEditable())
-						{
-							$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
-							$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
-							$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $defaults, $id);
-						}
-						else
-						{
-							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-							$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs, $defaults, 'value', 'text',
-								$options_per_row, $this->isEditable());
-						}
+						$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'auto-complete':
-					// Get the LABEL from the form's data.
-						$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
-
-						/*
-						 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
-						 * 02/11/2012 if new form then labels not present either.
-						 */
-						if ($formModel->hasErrors() || $formModel->getRowId() == 0)
-						{
-							$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
-						}
-						$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
-						$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName
-							. '" id="' . $id . '-auto-complete" value="' . JArrayHelper::getValue($label, 0)
-							. '" class="fabrikinput inputbox autocomplete-trigger"/>';
-
-						// $$$ rob - class property required when cloning repeat groups - don't remove
-						$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
-							. JArrayHelper::getValue($default, 0, '') . '"/>';
+						$this->renderAutoComplete($data, $repeatCounter, $html, $defaults);
 						break;
 				}
 
@@ -1026,6 +996,97 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		}
 		return implode("\n", $html);
 	}
+
+	/**
+	 * Render autocomplete in form
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array  &$html          HTML to assign output to
+	 * @param   array  $defaults       Default values
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+
+	protected function renderAutoComplete($data, $repeatCounter, &$html, $defaults)
+	{
+		$formModel = $this->getFormModel();
+		$thisElName = $this->getHTMLName($repeatCounter);
+		$params = $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
+
+		// Get the LABEL from the form's data.
+		$label = (array) $this->getValue($data, $repeatCounter, array('valueFormat' => 'label'));
+
+		/*
+		 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
+		* 02/11/2012 if new form then labels not present either.
+		*/
+		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
+		{
+			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
+		}
+		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
+		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName
+		. '" id="' . $id . '-auto-complete" value="' . JArrayHelper::getValue($label, 0)
+		. '" class="fabrikinput inputbox autocomplete-trigger"/>';
+
+		// $$$ rob - class property required when cloning repeat groups - don't remove
+		$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
+				. JArrayHelper::getValue($default, 0, '') . '"/>';
+	}
+
+	/**
+	 * Render multi-select list in form
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array  &$html          HTML to assign output to
+	 * @param   array  $tmp            List of value/label objects
+	 * @param   array  $defaults       Default values
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+
+	protected function renderMultiSelectList($data, $repeatCounter, &$html, $tmp, $defaults)
+	{
+		$formModel = $this->getFormModel();
+		$thisElName = $this->getHTMLName($repeatCounter);
+		$params = $this->getParams();
+		$idname = $this->getFullName(false, true, false) . '_id';
+		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
+		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+		if ($this->isEditable())
+		{
+			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
+			$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
+			$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $defaults, $id);
+		}
+		else
+		{
+			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
+			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $thisElName, $attribs, $defaults, 'value', 'text',
+					$options_per_row, $this->isEditable());
+		}
+	}
+
+	/**
+	 * Render checkbox list in form
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array  &$html          HTML to assign output to
+	 * @param   array  $tmp            List of value/label objects
+	 * @param   array  $defaults       Default values
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
 
 	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $defaults)
 	{
@@ -1748,11 +1809,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
 			$join = $this->getJoin();
-			//$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($this->getLabelParamVal());
 			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
 
-			// $$$rob wasnt working for 2nd+ db join element to same table (where key = `countries_0`.`label`)
-			// $k = '`' . $params->get('join_db_name'). "`.`".$params->get('join_val_column').'`';
 			$str = "$k $condition $value";
 		}
 		else
@@ -1766,18 +1824,22 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 			else
 			{
+				$dbName = $this->getDbName();
 				if ($this->isJoin())
 				{
 					$fType = $this->getElement()->filter_type;
-					if ($fType == 'auto-complete' || $fType == 'field')
+
+					//
+					//if ($fType == 'auto-complete' || $fType == 'field')
+					if ($fType == 'field')
 					{
-						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get($this->labelParam));
+						$where = $db->quoteName($dbName . '.' . $this->getLabelParamVal());
 					}
 					else
 					{
-						$where = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_key_column'));
+						$where = $db->quoteName($dbName . '.' . $this->getJoinValueFieldName());
 					}
-					$groupBy = $db->quoteName($params->get('join_db_name') . '.parent_id');
+					$groupBy = $db->quoteName($dbName . '.parent_id');
 					$rows = $this->checkboxRows($groupBy, $condition, $value, $where);
 					$joinIds = array_keys($rows);
 					if (!empty($rows))
@@ -1987,7 +2049,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$c = explode(' ', parent::containerClass($element));
 		$params = $this->getParams();
-		$c[] = 'mode-' . $params->get('database_join_display_type', 'dropdown');
+		$c[] = 'mode-' . $this->getDisplayType();
 		return implode(' ', $c);
 	}
 
@@ -2026,7 +2088,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->popupform = $popupform;
 		$opts->popwiny = $params->get('yoffset', 0);
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
-		$opts->displayType = $params->get('database_join_display_type', 'dropdown');
+		$opts->displayType = $this->getDisplayType();
 		$opts->show_please_select = $params->get('database_join_show_please_select');
 		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->display_type == 'auto-complete'
@@ -2079,6 +2141,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function onSave($data)
 	{
 		$params = json_decode($data['params']);
+		if (!$this->canEncrypt() && !empty($params->encrypt))
+		{
+			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
+			return false;
+		}
 		if (!$this->isJoin())
 		{
 			// $this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
@@ -2206,16 +2273,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$join->params = json_encode($o);
 		$join->store();
 	}
-
-	/**
-	 * called before the element is saved
-	 * @ $$$ rob: moved up to element model level
-	 * @param   object	row that is going to be updated
-	 */
-
-	/* 	function beforeSave(&$row)
-	    {
-	    } */
 
 	/**
 	 * Called from admin element controller when element is removed
@@ -2529,7 +2586,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function getJoinRepeatCount($data, $oJoin)
 	{
-		$displayType = $this->getParams()->get('database_join_display_type', 'dropdown');
+		$displayType = $this->getDisplayType();
+
 		if ($displayType === 'multilist')
 		{
 			$join = $this->getJoinModel()->getJoin();
@@ -2540,6 +2598,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			return parent::getJoinRepeatCount($data, $oJoin);
 		}
+	}
+
+	/**
+	 * Get the display type (list,checkbox,mulitselect etc)
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getDisplayType()
+	{
+		return $this->getParams()->get('database_join_display_type', 'dropdown');
 	}
 
 	/**

@@ -26,9 +26,11 @@
 				label="PLG_ELEMENT_CDD_DISPLAY_AS_LABEL"
 				description="PLG_ELEMENT_CDD_DISPLAY_AS_LABEL">
 					<option value="dropdown">PLG_ELEMENT_CDD_DROPDOWN</option>
+					<option value="auto-complete">PLG_ELEMENT_CDD_AUTOCOMPLETE</option>
 					<option value="checkbox">PLG_ELEMENT_CDD_CHECKBOX_LIST</option>
+					<option value="multilist">PLG_ELEMENT_CDD_MULTILIST</option>
 					<!-- <option value="radio">PLG_ELEMENT_CDD_RADIO_LIST</option>
-					<option value="auto-complete">PLG_ELEMENT_CDD_AUTOCOMPLETE</option> -->
+					 -->
 				</field>
 			
 			<field label="PLG_ELEMENT_CDD_CONNECTION_LABEL" name="cascadingdropdown_connection" type="connections"/>
