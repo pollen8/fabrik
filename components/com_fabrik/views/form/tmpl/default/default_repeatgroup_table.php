@@ -17,6 +17,7 @@ $group = $this->group;
 
 		// Load each repeated group in a <tr>
 		foreach ($group->subgroups as $subgroup) :
+			$this->elements = $subgroup;
 			echo $this->loadTemplate('repeatgroup_row');
 		endforeach;
 		?>
