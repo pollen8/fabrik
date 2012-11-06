@@ -225,7 +225,9 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				case 'checkbox':
 					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
 					break;
-
+				case 'radio':
+					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
+					break;
 				case 'multilist':
 					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
 					$defaultLabel = implode("\n", $html);
@@ -460,7 +462,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
-		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
+		if (in_array($this->getDisplayType(), array('checkbox', 'multilist', 'radio')))
 		{
 			return false;
 		}

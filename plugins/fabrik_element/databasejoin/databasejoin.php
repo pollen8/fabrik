@@ -926,14 +926,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
-					// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
-						if ($defaultValue == '' && !empty($tmp))
-						{
-							$defaultValue = $tmp[0]->value;
-						}
-						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value',
-							'text', $options_per_row);
+						$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 						break;
 					case 'checkbox':
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
@@ -995,6 +988,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$html[] = '</div>';
 		}
 		return implode("\n", $html);
+	}
+
+	protected function renderRadioList($data, $repeatCounter, &$html, $tmp, $defaultValue)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$thisElName = $this->getHTMLName($repeatCounter);
+		$params = $this->getParams();
+		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
+
+		// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
+		if ($defaultValue == '' && !empty($tmp))
+		{
+			$defaultValue = $tmp[0]->value;
+		}
+		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
+		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value',
+				'text', $options_per_row);
 	}
 
 	/**
