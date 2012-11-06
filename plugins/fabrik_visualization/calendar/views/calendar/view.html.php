@@ -47,7 +47,7 @@ class fabrikViewCalendar extends JViewLegacy
 		$params = $model->getParams();
 		$this->assign('params', $params);
 		$this->assign('containerId', $model->getJSRenderContext());
-		$this->assignRef('filters', $this->get('Filters'));
+		$this->filters = $this->get('Filters');
 		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
 		$this->assign('showTitle', $input->getInt('show-title', 1));
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
@@ -185,7 +185,7 @@ class fabrikViewCalendar extends JViewLegacy
 		FabrikHelperHTML::script($srcs, $js);
 
 		$viewName = $this->getName();
-		$this->assignRef('params', $model->getParams());
+		$this->params = $model->getParams();
 		$tpl = $params->get('calendar_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);

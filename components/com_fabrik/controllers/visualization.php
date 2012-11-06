@@ -38,10 +38,15 @@ class FabrikControllerVisualization extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.
+	 *
+	 * @since   12.2
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = array())
 	{
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
@@ -80,10 +85,11 @@ class FabrikControllerVisualization extends JControllerLegacy
 			$user = JFactory::getUser();
 			$uri = JFactory::getURI();
 			$uri = $uri->toString(array('path', 'query'));
-			$cacheid = serialize(array($uri, $app->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
+		return $this;
 	}
 
 	/**
