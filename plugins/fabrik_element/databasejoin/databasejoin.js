@@ -172,7 +172,6 @@ var FbDatabasejoin = new Class({
 			
 			this.chxTmplNode = chxs.getLast().clone();
 		}
-		console.log('chx node', this.chxTmplNode);
 		return this.chxTmplNode;
 	},
 	
@@ -569,18 +568,22 @@ var FbDatabasejoin = new Class({
 			if (this.options.showDesc === true) {
 				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
 			}
-			if (this.options.displayType === 'checkbox') {
-				// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-				var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
-				var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
-				this.element.addEvent('click:relay(' + selector + ')', function (i) {
-					this.element.getElements(selector).each(function (tmp, k) {
-						if (tmp === i.target) {
-							this.element.getElements(idSelector)[k].checked = i.target.checked;
-						}
-					}.bind(this));
+			this.watchJoinCheckboxes();
+		}
+	},
+	
+	watchJoinCheckboxes: function () {
+		if (this.options.displayType === 'checkbox') {
+			// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
+			var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
+			var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
+			this.element.addEvent('click:relay(' + selector + ')', function (i) {
+				this.element.getElements(selector).each(function (tmp, k) {
+					if (tmp === i.target) {
+						this.element.getElements(idSelector)[k].checked = i.target.checked;
+					}
 				}.bind(this));
-			}
+			}.bind(this));
 		}
 	},
 	

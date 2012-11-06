@@ -81,6 +81,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && JRequest::getInt('rowid', 0) != 0);
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
+		$this->elementJavascriptJoinOpts($opts);
+		echo "<pre>";print_r($opts);echo "</pre>";
 		$opts = json_encode($opts);
 		return "new FbCascadingdropdown('$id', $opts)";
 	}
@@ -101,10 +103,12 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$db = $this->getDb();
 		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
+			echo "cdd getJoinLabelColumkn label = $label <br>";
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
 			return 'CONCAT(' . $val . ')';
 		}
 		$label = FabrikString::shortColName($join->_params->get('join-label'));
+
 		if ($label == '')
 		{
 			JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
@@ -746,7 +750,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 
 		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
-
+		$query = $this->buildQueryJoin($query);
 		$query->where(FabrikString::rtrimword($where));
 
 		if (!JString::stristr($where, 'order by'))
@@ -773,8 +777,10 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
 			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-			$bits = explode('___', $params->get($this->labelParam));
-			return $join->table_join_alias . '___' . $bits[1];
+			/* $bits = explode('___', $params->get($this->labelParam));
+			return $join->table_join_alias . '___' . $bits[1]; */
+
+			return $this->getLabelParamVal();
 		}
 		else
 		{

@@ -23,6 +23,7 @@ var FbCascadingdropdown = new Class({
 				this.showDesc(e);
 			}.bind(this));
 		}
+		this.watchJoinCheckboxes();
 	},
 	
 	attachedToForm: function ()
@@ -107,7 +108,6 @@ var FbCascadingdropdown = new Class({
 			}
 			
 			this.myAjax = null;
-			debugger;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {
 					// $$$ rob if loading edit form, at page load, u may have a previously selected value 
@@ -133,7 +133,6 @@ var FbCascadingdropdown = new Class({
 					if (this.options.editable === false) {
 						new Element('div').set('text', item.text).inject(this.element);
 					} else {
-						debugger;
 						this.makeSubElement(item, origvalue);
 						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 					}
@@ -192,7 +191,6 @@ var FbCascadingdropdown = new Class({
 		switch (this.options.displayType)
 		{
 		case 'checkbox':
-			debugger;
 			this.getContainer().getElements('.fabrik_subelement').destroy();
 			break;
 		case 'dropdown':

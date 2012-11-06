@@ -241,6 +241,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return 'CONCAT(' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
+		$label = $params->get($label);
 		$joinTableName = is_object($join) ? $join->table_join_alias : '';
 		$this->joinLabelCols[(int) $useStep] = $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
 		return $this->joinLabelCols[(int) $useStep];
@@ -935,49 +936,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					case 'checkbox':
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
 						$defaultLabel = implode("\n", $html);
-						/* $defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-						$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-						$rawname = $this->getFullName(false, true, false) . '_raw';
-
-						$html[] = FabrikHelperHTML::aList($displayType, $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaults, 'value',
-							'text', $options_per_row, $this->isEditable());
-						if ($this->isJoin() && $this->isEditable())
-						{
-							$join = $this->getJoin();
-							$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
-							if ($groupModel->canRepeat())
-							{
-								$joinidsName .= '[' . $repeatCounter . '][]';
-								$joinids = FArrayHelper::getNestedValue($data, 'join.' . $joinId . '.' . $rawname . '.' . $repeatCounter, 'not found');
-							}
-							else
-							{
-								$joinidsName .= '[]';
-								$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
-							}
-							$tmpids = array();
-							foreach ($tmp as $obj)
-							{
-								$o = new stdClass;
-								$o->text = $obj->text;
-								if (in_array($obj->value, $defaults))
-								{
-									$index = array_search($obj->value, $defaults);
-									$o->value = JArrayHelper::getValue($joinids, $index);
-								}
-								else
-								{
-									$o->value = 0;
-								}
-								$tmpids[] = $o;
-							}
-							$html[] = '<div class="fabrikHide">';
-							$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-							$html[] = FabrikHelperHTML::aList($displayType, $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text',
-								$options_per_row, $this->isEditable());
-							$html[] = '</div>';
-						}
-						$defaultLabel = implode("\n", $html); */
 						break;
 					case 'multilist':
 						$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
@@ -1085,7 +1043,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				'text', $options_per_row, $this->isEditable());
 		if ($this->isJoin() && $this->isEditable())
 		{
-			echo "adding hidden fields to $thisElName <br>";
 			$join = $this->getJoin();
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
 			if ($groupModel->canRepeat())
@@ -1329,9 +1286,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function renderListData($data, &$thisRow)
 	{
+		echo "<br><hr>db join render list data: " . $this->getElement()->name . "<br /></pre>";
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$labeldata = array();
+
 		if (!$groupModel->isJoin() && $groupModel->canRepeat())
 		{
 			$opts = $this->_getOptionVals();
@@ -1365,20 +1324,32 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$row = JArrayHelper::fromObject($thisRow);
 			$data = JArrayHelper::getValue($row, $col, $data);
 
-			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
-			if (!FabrikWorker::isJSON($data))
+			// Rendered as checkbox/mutliselect
+			if (strstr($data, GROUPSPLITTER))
 			{
-				$labeldata = (array) $data;
+				$labeldata = explode(GROUPSPLITTER, $data);
 			}
 			else
 			{
-				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
-				// should really refactor so encoding goes in this if/else structure!
-				$labeldata = (array) json_decode($data);
+				// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
+				if (!FabrikWorker::isJSON($data))
+				{
+					 $labeldata = (array) $data;
+					echo "<b>to here</b>";print_r($labeldata);
+				}
+				else
+				{
+					echo "<b>to here2</b>";print_r($data);
+					// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
+					// should really refactor so encoding goes in this if/else structure!
+					$labeldata = (array) json_decode($data);
+				}
 			}
 			foreach ($labeldata as &$l)
 			{
+				echo "get label for value $l <br>";
 				$l = $this->getLabelForValue($l, $l);
+				echo "label = $l <br>";
 			}
 		}
 
@@ -1852,8 +1823,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$groupBy = 'value';
 		}
-		$to = $params->get('join_db_name');
-		$key = $db->quoteName($to . '.' . $params->get('join_key_column'));
+		$to = $this->getDbName();
+		$key = $db->quoteName($to . '.' . $this->getJoinValueFieldName());
 		$label = $db->quoteName($to . '.' . $this->getLabelParamVal());
 		$v = $jointable . '.' . $shortName;
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
@@ -1867,6 +1838,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
 		$db->setQuery($query, $offset, $limit);
+		echo "checkbox row query = " . $db->getQuery() . "<br>";
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
 		return $rows;
@@ -2063,8 +2035,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->autoCompleteOpts = $opts->display_type == 'auto-complete'
 			? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
 		$opts->allowadd = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
+		$this->elementJavascriptJoinOpts($opts);
+		$opts->isJoin = $this->isJoin();
+		return json_encode($opts);
+	}
+
+	protected function elementJavascriptJoinOpts(&$opts)
+	{
 		if ($this->isJoin())
 		{
+			$element = $this->getElement();
 			$join = $this->getJoin();
 			$opts->joinTable = $join->table_join;
 
@@ -2075,8 +2055,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$opts->joinId = $join->id;
 			$opts->isJoin = true;
 		}
-		$opts->isJoin = $this->isJoin();
-		return json_encode($opts);
 	}
 
 	/**
@@ -2285,13 +2263,20 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
 	{
+
+		if ($this->isJoin())
+		{
+			$rows = array_values($this->checkboxRows());
+			echo "<pre>";print_r($rows);echo "</pre>";
+		}
+
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$query = $this->_buildQuery(array(), false);
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
-		//echo $query . "<br>";
+		echo $query . "<br>";
 		$db->setQuery($query);
 		$r = $db->loadObject();
 		//echo "r = ";print_r($r);
@@ -2471,12 +2456,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$jkey = $this->getValColumn();
 		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
 		$where = JString::stristr($where, 'order by') ? $where : '';
-		$jkey = !strstr($jkey, 'CONCAT') ? $params->get('join_db_name') . '.' . $jkey : $jkey;
+
+		echo "jkye = $jkey <br>";
+		$dbName = $this->getDbName();
+		$jkey = !strstr($jkey, 'CONCAT') ? $dbName . '.' . $jkey : $jkey;
+		echo "jkye = $jkey <br>";
 
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable
-		LEFT JOIN " . $params->get('join_db_name') . " ON " . $params->get('join_db_name') . "." . $params->get('join_key_column') . " = $jointable."
-			. $this->_element->name . " WHERE " . $jointable . ".parent_id = " . $item->db_primary_key . ")";
+		LEFT JOIN " . $dbName . " ON " . $dbName . "." . $this->getJoinValueFieldName() . " = $jointable."
+			. $this->getElement()->name . " WHERE " . $jointable . ".parent_id = " . $item->db_primary_key . ")";
 		if ($addAs)
 		{
 			$sql .= ' AS ' . $fullElName;
