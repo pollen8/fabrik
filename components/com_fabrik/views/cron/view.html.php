@@ -20,7 +20,6 @@ class FabrikViewCron extends JView
 		$app = JFactory::getApplication();
 		FabrikHelperHTML::script($srcs);
 		$model = $this->getModel();
-		print_r($model);exit;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
 		$visualization = $model->getVisualization();

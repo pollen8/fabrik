@@ -82,7 +82,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$opts->editing = ($this->isEditable() && JRequest::getInt('rowid', 0) != 0);
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
 		$this->elementJavascriptJoinOpts($opts);
-		echo "<pre>";print_r($opts);echo "</pre>";
 		$opts = json_encode($opts);
 		return "new FbCascadingdropdown('$id', $opts)";
 	}

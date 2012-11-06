@@ -406,8 +406,6 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		$sLabels = array();
 
 		// Repeat group data
-		echo "renderlist data (elementlist) for $element->name";print_r($data);
-		echo "<br>";
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$uls = array();
 		$useIcon = $params->get('icon_folder', 0);

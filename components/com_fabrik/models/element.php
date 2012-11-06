@@ -1561,7 +1561,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
 
-		$key = $element->name . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
+		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
 			. $incRepeatGroup;
 		if (isset($this->_aFullNames[$key]))
 		{

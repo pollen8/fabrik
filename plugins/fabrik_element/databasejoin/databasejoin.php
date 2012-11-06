@@ -241,7 +241,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			return 'CONCAT(' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
-		$label = $params->get($label);
+
+		// Depending on the plugin getJoinLabel() returns a params property or the actaul name, so default to it if we cant find a property
+		$label = $params->get($label, $label);
 		$joinTableName = is_object($join) ? $join->table_join_alias : '';
 		$this->joinLabelCols[(int) $useStep] = $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
 		return $this->joinLabelCols[(int) $useStep];
@@ -1195,7 +1197,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$fields = $db->loadObjectList();
 		if (!$fields)
 		{
-			echo $db->getErrorMsg();
+			 $db->getErrorMsg();
 		}
 		if (is_array($fields))
 		{
@@ -1286,7 +1288,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function renderListData($data, &$thisRow)
 	{
-		echo "<br><hr>db join render list data: " . $this->getElement()->name . "<br /></pre>";
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$labeldata = array();
@@ -1335,11 +1336,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				if (!FabrikWorker::isJSON($data))
 				{
 					 $labeldata = (array) $data;
-					echo "<b>to here</b>";print_r($labeldata);
 				}
 				else
 				{
-					echo "<b>to here2</b>";print_r($data);
 					// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
 					// should really refactor so encoding goes in this if/else structure!
 					$labeldata = (array) json_decode($data);
@@ -1347,9 +1346,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			}
 			foreach ($labeldata as &$l)
 			{
-				echo "get label for value $l <br>";
 				$l = $this->getLabelForValue($l, $l);
-				echo "label = $l <br>";
 			}
 		}
 
@@ -1827,6 +1824,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $db->quoteName($to . '.' . $this->getJoinValueFieldName());
 		$label = $db->quoteName($to . '.' . $this->getLabelParamVal());
 		$v = $jointable . '.' . $shortName;
+		$query->select($jointable . '.id AS id');
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
 			->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
 		if (!is_null($condition) && !is_null($value))
@@ -1838,7 +1836,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$query->where($where . ' ' . $condition . ' ' . $value);
 		}
 		$db->setQuery($query, $offset, $limit);
-		echo "checkbox row query = " . $db->getQuery() . "<br>";
 		$groupBy = FabrikString::shortColName($groupBy);
 		$rows = $db->loadObjectList($groupBy);
 		return $rows;
@@ -2266,8 +2263,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		if ($this->isJoin())
 		{
-			$rows = array_values($this->checkboxRows());
-			echo "<pre>";print_r($rows);echo "</pre>";
+			$rows = ($this->checkboxRows('id'));
+			if (array_key_exists($v, $rows))
+			{
+				return $rows[$v]->text;
+			}
 		}
 
 		$db = $this->getDb();
@@ -2276,10 +2276,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
 		$query->where($key . ' = ' . $db->quote($v));
-		echo $query . "<br>";
 		$db->setQuery($query);
 		$r = $db->loadObject();
-		//echo "r = ";print_r($r);
 		if (!$r)
 		{
 			return $defaultLabel;
@@ -2457,10 +2455,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
 		$where = JString::stristr($where, 'order by') ? $where : '';
 
-		echo "jkye = $jkey <br>";
 		$dbName = $this->getDbName();
 		$jkey = !strstr($jkey, 'CONCAT') ? $dbName . '.' . $jkey : $jkey;
-		echo "jkye = $jkey <br>";
 
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable

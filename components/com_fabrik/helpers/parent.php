@@ -1293,7 +1293,6 @@ class FabrikWorker
 
 	public static function JSONtoData($data, $toArray = false)
 	{
-echo "json to data $data <br>";
 		if (is_string($data))
 		{
 			if (!strstr($data, '{'))

@@ -729,7 +729,6 @@ class FabrikFEModelList extends JModelForm
 
 	function formatData(&$data)
 	{
-		echo "<pre>";print_r($data);echo "</pre>";
 		$profiler = JProfiler::getInstance('Application');
 		jimport('joomla.filesystem.file');
 		$form = $this->getFormModel();
