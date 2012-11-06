@@ -430,6 +430,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	getValue: function () {
+		var v = null;
 		this.getElement();
 		if (!this.options.editable) {
 			return this.options.value;
@@ -456,13 +457,21 @@ var FbDatabasejoin = new Class({
 		case 'auto-complete':
 			return this.element.value;
 		case 'radio':
-			var v = '';
+			v = '';
 			this._getSubElements().each(function (sub) {
 				if (sub.checked) {
 					v = sub.get('value');
 					return v;
 				}
 				return null;
+			});
+			return v;
+		case 'checkbox':
+			v = [];
+			this._getSubElements().each(function (sub) {
+				if (sub.checked) {
+					v.push(sub.get('value'));
+				}
 			});
 			return v;
 		}

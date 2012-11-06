@@ -41,6 +41,7 @@ var FbCascadingdropdown = new Class({
 	dowatch: function (e)
 	{
 		var v = e.target.get('value');
+		var v = Fabrik.blocks[this.form.form.id].formElements[this.options.watch].getValue();
 		this.change(v, e.target.id);
 	},
 	

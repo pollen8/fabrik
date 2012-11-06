@@ -1070,9 +1070,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $defaults)
 	{
 		$formModel = $this->getFormModel();
+		$groupModel = $this->getGroupModel();
 		$id = $this->getHTMLId($repeatCounter);
 		$idname = $this->getFullName(false, true, false) . '_id';
 		$thisElName = $this->getHTMLName($repeatCounter);
+		$params = $this->getParams();
 		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
 
 		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
