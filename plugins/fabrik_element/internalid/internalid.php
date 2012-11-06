@@ -45,27 +45,12 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
-		$type = "hidden";
-		if (isset($this->_elementError) && $this->_elementError != '')
-		{
-			$type .= " elementErrorHighlight";
-		}
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
 		}
-		$hidden = 'hidden';
-		/* no need to eval here as its done before hand i think ! */
-		if ($element->eval == "1" and !isset($data[$name]))
-		{
-			$str = "<input class=\"inputbox $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" value=\"$value\" />\n";
-		}
-		else
-		{
-			$value = stripslashes($value);
-			$str = "<input class=\"inputbox fabrikinput $type\" type=\"$hidden\" name=\"$name\" id=\"$id\" value=\"$value\" />\n";
-		}
-		return $str;
+		$value = stripslashes($value);
+		return '<input class="inputbox fabrikinput hidden" type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 	}
 
 	/**

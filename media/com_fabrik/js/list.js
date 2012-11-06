@@ -452,8 +452,9 @@ var FbList = new Class({
 			opts[key[0]] = key[1];
 		});
 		
+		// Append the custom_qs to the URL to enable querystring filtering of the list data
 		var myAjax = new Request.JSON({
-			url: '',
+			url: '?' + this.options.csvOpts.custom_qs,
 			method: 'post',
 			data: opts,
 			onError: function (text, error) {
