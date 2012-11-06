@@ -2149,7 +2149,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (!$this->isJoin())
 		{
 			// $this->updateFabrikJoins($data, $this->getDbName(), $params->join_key_column, $params->join_val_column);
-			$this->updateFabrikJoins($data, $this->getDbName(), $this->getJoinValueFieldName(), $this->labelParam);
+			$this->updateFabrikJoins($data, $this->getDbName(), $this->getJoinValueFieldName(), $this->getLabelParamVal());
 
 		}
 		return parent::onSave();
