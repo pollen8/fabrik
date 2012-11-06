@@ -410,7 +410,7 @@ var FbList = new Class({
 			if (!opts) {
 				opts = {};
 				if (typeOf(document.id('exportcsv')) !== 'null') {
-					$A(['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel']).each(function (v) {
+					['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel'].each(function (v) {
 						var inputs = document.id('exportcsv').getElements('input[name=' + v + ']');
 						if (inputs.length > 0) {
 							opts[v] = inputs.filter(function (i) {
@@ -448,13 +448,14 @@ var FbList = new Class({
 		opts.Itemid = this.options.Itemid;
 		opts.listid = this.id;
 		opts.listref = this.id;
-		this.csvopts.custom_qs.split('&').each(function (qs) {
+		this.options.csvOpts.custom_qs.split('&').each(function (qs) {
 			var key = qs.split('=');
 			opts[key[0]] = key[1];
 		});
 		
+		// Append the custom_qs to the URL to enable querystring filtering of the list data
 		var myAjax = new Request.JSON({
-			url: '',
+			url: '?' + this.options.csvOpts.custom_qs,
 			method: 'post',
 			data: opts,
 			onError: function (text, error) {

@@ -594,7 +594,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$formModel = $this->getForm();
 			$formid = $formModel->getId();
 			$rowid = $thisRow->__pk_val;
-			$elementid = $this->id;
+			$elementid = $this->getId();
 			if ($params->get('fu_title_element') == '')
 			{
 				$title_name = $this->getFullName(true, true, false) . '__title';
@@ -1874,12 +1874,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$links[] = $this->downloadLink($v, $data, $repeatCounter);
 			}
-			return implode("\n", $links);
+			return count($links) < 2 ? implode("\n", $links) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $links) . '</li></ul>';
 		}
 
 		$render = new stdClass;
 		$render->output = '';
-		$allRenders = '';
+		$allRenders = array();
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 
@@ -1904,7 +1904,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				if ($render->output != '')
 				{
-					$allRenders .= $render->output;
+					$allRenders[] = $render->output;
 				}
 			}
 		}
@@ -1915,7 +1915,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
 			}
 			$str[] = '<div class="fabrikSubElementContainer">';
-			$str[] = $allRenders;
+			$str[] = count($allRenders) < 2 ? implode("\n", $allRenders) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $allRenders) . '</li></ul>';
 			$str[] = '</div>';
 			return implode("\n", $str);
 		}

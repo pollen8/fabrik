@@ -1092,18 +1092,19 @@ var FbForm = new Class({
 	},
 
 	watchGroupButtons : function () {
-		this.unwatchGroupButtons();
-		this.form.getElements('.deleteGroup').each(function (g, i) {
-			g.addEvent('click', function (e) {
-				this.deleteGroup(e);
-			}.bind(this));
+		
+		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
+			e.preventDefault();
+			this.deleteGroup(e);
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function (g, i) {
-			g.addEvent('click', function (e) {
-				this.duplicateGroup(e);
-			}.bind(this));
+		
+		
+		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
+			e.preventDefault();
+			this.duplicateGroup(e);
 		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
+		
+		this.form.addEvent('click:relay(.fabrikSubGroup)', function (e, subGroup) {
 			var r = subGroup.getElement('.fabrikGroupRepeater');
 			if (r) {
 				subGroup.addEvent('mouseenter', function (e) {
@@ -1113,24 +1114,7 @@ var FbForm = new Class({
 					r.fade(0.2);
 				});
 			}
-		});
-	},
-
-	unwatchGroupButtons : function () {
-		this.form.getElements('.deleteGroup').each(function (g, i) {
-			g.removeEvent('click', function (e) {
-				this.deleteGroup(e);
-			}.bind(this));
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function (g, i) {
-			g.removeEvent('click', function (e) {
-				this.duplicateGroup(e);
-			}.bind(this));
-		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
-			subGroup.removeEvents('mouseenter');
-			subGroup.removeEvents('mouseleave');
-		});
 	},
 
 	deleteGroup: function (e) {
@@ -1219,13 +1203,20 @@ var FbForm = new Class({
 
 	hideLastGroup : function (groupid, subGroup) {
 		var sge = subGroup.getElement('.fabrikSubGroupElements');
+		var notice = new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
+		if (typeOf(sge) === 'null') {
+			sge = subGroup;
+			var add = sge.getElement('.addGroup');
+			var lastth = sge.getParent('table').getElements('thead th').getLast();
+			add.inject(lastth);
+		}
 		sge.setStyle('display', 'none');
-		new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA')).inject(sge, 'after');
+		notice.inject(sge, 'after');
 	},
 
 	isFirstRepeatSubGroup : function (group) {
 		var subgroups = group.getElements('.fabrikSubGroup');
-		return subgroups.length === 1 && subgroups[0].getElement('.fabrikNotice');
+		return subgroups.length === 1 && group.getElement('.fabrikNotice');
 	},
 
 	getSubGroupToClone : function (groupid) {
@@ -1290,8 +1281,21 @@ var FbForm = new Class({
 			var subgroups = group.getElements('.fabrikSubGroup');
 			// user has removed all repeat groups and now wants to add it back in
 			// remove the 'no groups' notice
-			subgroups[0].getElement('.fabrikNotice').dispose();
-			subgroups[0].getElement('.fabrikSubGroupElements').show();
+			
+			var sub = subgroups[0].getElement('.fabrikSubGroupElements');
+			if (typeOf(sub) === 'null') {
+				group.getElement('.fabrikNotice').dispose();
+				sub = subgroups[0];
+				
+				// Table group
+				var add = group.getElement('.addGroup');
+				add.inject(sub.getElement('td.fabrikGroupRepeater'));
+				sub.setStyle('display', '');				
+			} else {
+				subgroups[0].getElement('.fabrikNotice').dispose();
+				subgroups[0].getElement('.fabrikSubGroupElements').show();
+			}
+
 			this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 			return;
 		}
@@ -1308,7 +1312,12 @@ var FbForm = new Class({
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
-		group.appendChild(clone);
+		if (group.getElement('table.repeatGroupTable')) {
+			group.getElement('table.repeatGroupTable').appendChild(clone);
+		} else {
+			group.appendChild(clone);
+		}
+		
 		tocheck.each(function (i) {
 			i.setProperty('checked', true);
 		});
@@ -1445,8 +1454,6 @@ var FbForm = new Class({
 		// note I commented out the increment of c a few lines above//duplicate
 		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
-		this.unwatchGroupButtons();
-		this.watchGroupButtons();
 	},
 
 	update : function (o) {

@@ -1081,7 +1081,21 @@ class PlgFabrik_Element extends FabrikPlugin
 			FArrayHelper::setValue($_REQUEST, $jkey, $data);
 
 			// Seems the only way to add it into $post? FArrayHelper bug I guess but too scared to alter that at the moement
-			$post['join'][$group->getGroup()->join_id][$key] = $data;
+
+			// Repeat group data
+			if ($group->canRepeat())
+			{
+				$repeatCounts = JArrayHelper::getValue($post, 'fabrik_repeat_group', array());
+				$c = JArrayHelper::getValue($repeatCounts, $group->getId());
+				for ($x = 0; $x < $c; $x ++)
+				{
+					$post['join'][$group->getGroup()->join_id][$key][$x] = $data[$x];
+				}
+			}
+			else
+			{
+				$post['join'][$group->getGroup()->join_id][$key] = $data;
+			}
 		}
 		else
 		{

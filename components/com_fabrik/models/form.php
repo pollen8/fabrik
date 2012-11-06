@@ -2190,7 +2190,7 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if (is_array($encrypted))
 								{
-									// Repeat groups no join
+									// Repeat groups
 									$v = array();
 									foreach ($encrypted as $e)
 									{
@@ -3219,7 +3219,9 @@ class FabrikFEModelForm extends FabModelForm
 
 						// If empty data return and trying to edit a record then show error
 						JDEBUG ? $profiler->mark('formmodel getData: empty test') : null;
-						if (empty($data) && $this->rowId != '')
+
+						// Was empty($data) but that is never empty. Had issue where list prefilter meant record was not loaded, but no message shown in form
+						if (empty($rows) && $this->rowId != '')
 						{
 							// $$$ hugh - special case when using -1, if user doesn't have a record yet
 							if (FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot) == '-1')
@@ -4404,6 +4406,15 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
+
+			if ($groupModel->canRepeat())
+			{
+				$group->tmpl =  $groupParams->get('repeat_template', 'repeatgroup');
+			}
+			else
+			{
+				$group->tmpl = 'group';
+			}
 			$aElements = array();
 
 			// Check if group is acutally a table join

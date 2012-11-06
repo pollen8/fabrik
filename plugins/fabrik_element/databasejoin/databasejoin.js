@@ -478,7 +478,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	getValues: function () {
-		var v = $A([]);
+		var v = [];
 		var search = (this.options.display_type !== 'dropdown') ? 'input' : 'option';
 		document.id(this.element.id).getElements(search).each(function (f) {
 			v.push(f.value);

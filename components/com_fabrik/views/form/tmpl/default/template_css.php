@@ -160,6 +160,14 @@ echo "
 	width:50%;
 }
 
+#{$view}_$c table.repeatGroupTable {
+	width: 100%;
+}
+#{$view}_$c .repeatGroupTable .fabrikElementContainer {
+	display:table-cell;
+}
+
+
 /*This controls the styling of the buttons area at the bottom of your form*/
 #{$view}_$c .fabrikActions{
 	padding:10px;
@@ -236,7 +244,7 @@ section for dropdowns radio buttons etc**/
 	/* float:left; */
 }
 
-#{$view}_$c .fabrikGroupRepeater{
+#{$view}_$c div.fabrikGroupRepeater{
 	position: absolute;
 	right: 10px;
 	top: 0;

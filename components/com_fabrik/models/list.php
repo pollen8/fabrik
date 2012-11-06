@@ -5990,7 +5990,9 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		$this->addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
+
+		// Testing using ONLY form model addEncrytedVarsToArray() - this seems redundant/duplicate
+		// $this->addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
 		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)
@@ -6168,6 +6170,8 @@ class FabrikFEModelList extends JModelForm
 	 * @param   object  $joinGroupTable  join group table
 	 *
 	 * @since	1.0.6
+	 *
+	 * @deprecated  since 3.0.7 - we should be using formmodel addEncrytedVarsToArray() only
 	 *
 	 * @return  void
 	 */

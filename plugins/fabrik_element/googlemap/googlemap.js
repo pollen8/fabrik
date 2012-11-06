@@ -561,7 +561,7 @@ var FbGoogleMap = new Class({
 	cloned : function (c) {
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
-			var bits = $A(field.split('_'));
+			var bits = field.split('_');
 			var i = bits.getLast();
 			if (i !== i.toInt()) {
 				return bits.join('_');
