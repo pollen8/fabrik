@@ -58,7 +58,8 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->getWatchId($repeatCounter);
-		$opts->id = $this->_id;
+		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
+		$opts->id = $this->getId();
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowid = $input->getInt('rowid', 0);
@@ -209,7 +210,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		}
 		// Not yet implemented always going to use dropdown for now
 		$displayType = $params->get('cdd_display_type', 'dropdown');
-		$str = array();
+		$html = array();
 		if ($this->canUse())
 		{
 			// $$$ rob display type not set up in parameters as not had time to test fully yet
@@ -228,14 +229,18 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$str .= " <img src=\''.COM_FABRIK_LIVESITE."media/com_fabrik/images/ajax-loader.gif\" class=\"loader\" alt=\''.JText::_('Loading')
 				."\" style=\"display:none;padding-left:10px;\" />";
 				break;*/
+
+				case 'checkbox':
+					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+					break;
 				default:
 				case 'dropdown':
 					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"';
-					$str[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
+					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 					break;
 			}
-			$str[] = $this->loadingImg;
-			$str[] = ($displayType == "radio") ? "</div>" : '';
+			$html[] = $this->loadingImg;
+			$html[] = ($displayType == "radio") ? "</div>" : '';
 		}
 
 		if (!$this->isEditable())
@@ -258,17 +263,36 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		if ($params->get('cdd_desc_column', '') !== '')
 		{
-			$str[] = '<div class="dbjoin-description">';
+			$html[] = '<div class="dbjoin-description">';
 			for ($i = 0; $i < count($this->_optionVals); $i++)
 			{
 				$opt = $this->_optionVals[$i];
 				$display = in_array($opt->value, $default) ? '' : 'none';
 				$c = $i + 1;
-				$str[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
+				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
 			}
-			$str[] = '</div>';
+			$html[] = '</div>';
 		}
-		return implode("\n", $str);
+		return implode("\n", $html);
+	}
+
+	/**
+	 * Does the element store its data in a join table (1:n)
+	 *
+	 * @return	bool
+	 */
+
+	public function isJoin()
+	{
+		$params = $this->getParams();
+		if (in_array($params->get('cdd_display_type'), array('checkbox', 'multilist')))
+		{
+			return true;
+		}
+		else
+		{
+			return parent::isJoin();
+		}
 	}
 
 	/**

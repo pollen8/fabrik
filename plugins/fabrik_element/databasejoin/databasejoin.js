@@ -84,7 +84,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	getBlurEvent: function () {
-		if (this.options.display_type === 'auto-complete') {
+		if (this.options.displayType === 'auto-complete') {
 			return 'change'; 
 		}
 		return this.parent();
@@ -102,9 +102,9 @@ var FbDatabasejoin = new Class({
 	{
 		var opt, selected, chxed;
 		if (v === '') {
-			return;
+			// return;
 		}
-		switch (this.options.display_type) {
+		switch (this.options.displayType) {
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
@@ -118,21 +118,23 @@ var FbDatabasejoin = new Class({
 			labelfield.value = l;
 			break;
 		case 'checkbox':
+			chxed = (v === this.options.value) ? true : false;
 			var chxs = this.element.getElements('> .fabrik_subelement');
-			var newchx = chxs.getLast().clone();
+			var newchx = this.getCheckboxTmplNode().clone();
 			newchx.getElement('span').set('text', l);
 			newchx.getElement('input').set('value', v);
 			var last = chxs.length === 0 ? this.element : chxs.getLast();
-			newchx.inject(last, 'after');
-			newchx.getElement('input').checked = true;
+			var injectWhere = chxs.length === 0 ? 'bottom' : 'after';
+			newchx.inject(last,injectWhere);
+			newchx.getElement('input').checked = chxed;
 			
 			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
-			var newid = ids.getLast().clone();
+			var newid = this.getCheckboxIDTmplNode().clone();
 			newid.getElement('span').set('text', l);
 			newid.getElement('input').set('value', 0); // to add a new join record set to 0
-			last = ids.length === 0 ? this.element.getElements('.fabrikHide') : ids.getLast();
-			newid.inject(last, 'after');
-			newid.getElement('input').checked = true;
+			last = ids.length === 0 ? this.element.getElement('.fabrikHide') : ids.getLast();
+			newid.inject(last, injectWhere);
+			newid.getElement('input').checked = chxed;
 			
 			break;
 		case 'radio':
@@ -153,6 +155,27 @@ var FbDatabasejoin = new Class({
 		}
 	},
 	
+	getCheckboxIDTmplNode: function () {
+		if (!this.chxTmplIDNode && this.options.displayType === 'checkbox')
+		{
+			var chxs = this.element.getElements('> .fabrik_subelement');
+			this.chxTmplIDNode = chxs.getLast().clone();
+		}
+		console.log('chx id node', this.chxTmplIDNode);
+		return this.chxTmplIDNode;
+	},
+	
+	getCheckboxTmplNode: function () {
+		if (!this.chxTmplNode && this.options.displayType === 'checkbox')
+		{
+			var chxs = this.element.getElements('> .fabrik_subelement');
+			
+			this.chxTmplNode = chxs.getLast().clone();
+		}
+		console.log('chx node', this.chxTmplNode);
+		return this.chxTmplNode;
+	},
+	
 	/**
 	 * send an ajax request to requery the element options and update the element if new options found
 	 * @param	string	(optional) additional value to get the updated value for (used in select)
@@ -171,7 +194,7 @@ var FbDatabasejoin = new Class({
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
 		// and do thing with it in onComplete?
-		if (this.options.display_type === 'auto-complete' && v === '') {
+		if (this.options.displayType === 'auto-complete' && v === '') {
 			return;
 		}
 		if (v) {
@@ -185,7 +208,7 @@ var FbDatabasejoin = new Class({
 			onSuccess: function (json) {
 				var existingValues = this.getOptionValues();
 				//if duplicating an element in a repeat group when its auto-complete we dont want to update its value
-				if (this.options.display_type === 'auto-complete' && v === '' && existingValues.length === 0) {
+				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
 					return;
 				}
 				json.each(function (o) {
@@ -206,7 +229,7 @@ var FbDatabasejoin = new Class({
 	getOptionValues: function () {
 		var o;
 		var values = [];
-		switch (this.options.display_type) {
+		switch (this.options.displayType) {
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
@@ -243,13 +266,13 @@ var FbDatabasejoin = new Class({
 				var v = r.data[this.options.key];
 				var l = r.data[this.options.label];
 					
-				switch (this.options.display_type) {
+				switch (this.options.displayType) {
 				case 'dropdown':
 				/* falls through */
 				case 'multilist':
 					var o = this.element.getElements('option').filter(function (o, x) {
 						if (o.get('value') === v) {
-							this.options.display_type === 'dropdown' ? this.element.selectedIndex = x : o.selected = true;
+							this.options.displayType === 'dropdown' ? this.element.selectedIndex = x : o.selected = true;
 							return true;
 						}
 					}.bind(this));
@@ -386,7 +409,7 @@ var FbDatabasejoin = new Class({
 		}
 		if (!found) {
 			//if (this.element.get('tag') === 'input') {
-			if (this.options.display_type === 'auto-complete') {
+			if (this.options.displayType === 'auto-complete') {
 				this.element.value = val;
 				this.updateFromServer(val);
 			} else {
@@ -438,7 +461,7 @@ var FbDatabasejoin = new Class({
 		if (typeOf(this.element) === 'null') {
 			return '';
 		}
-		switch (this.options.display_type) {
+		switch (this.options.displayType) {
 		case 'dropdown':
 		/* falls through */
 		default:
@@ -479,7 +502,7 @@ var FbDatabasejoin = new Class({
 	
 	getValues: function () {
 		var v = $A([]);
-		var search = (this.options.display_type !== 'dropdown') ? 'input' : 'option';
+		var search = (this.options.displayType !== 'dropdown') ? 'input' : 'option';
 		document.id(this.element.id).getElements(search).each(function (f) {
 			v.push(f.value);
 		});
@@ -499,7 +522,7 @@ var FbDatabasejoin = new Class({
 		}.bind(this));
 		this.init();
 		this.watchSelect();
-		if (this.options.display_type === 'auto-complete') {
+		if (this.options.displayType === 'auto-complete') {
 			//update auto-complete fields id and create new autocompleter object for duplicated element
 			var f = this.getAutoCompleteLabelField();
 			f.id = this.element.id + '-auto-complete';
@@ -510,6 +533,9 @@ var FbDatabasejoin = new Class({
 	},
 	
 	init: function () {
+		
+		this.getCheckboxTmplNode();
+		this.getCheckboxIDTmplNode();
 		//if users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.startEvent = this.start.bindWithEvent(this);
@@ -518,7 +544,7 @@ var FbDatabasejoin = new Class({
 				//fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
 					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
-					if (this.options.display_type === 'auto-complete') {
+					if (this.options.displayType === 'auto-complete') {
 						//need to get v if autocomplete and updating from posted popup form as we only want to get ONE 
 						// option back inside updateFromServer;
 						var myajax = new Request.JSON({

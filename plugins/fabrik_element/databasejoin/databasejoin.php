@@ -1085,6 +1085,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				'text', $options_per_row, $this->isEditable());
 		if ($this->isJoin() && $this->isEditable())
 		{
+			echo "adding hidden fields to $thisElName <br>";
 			$join = $this->getJoin();
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
 			if ($groupModel->canRepeat())
@@ -2055,7 +2056,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;
 		$opts->popwiny = $params->get('yoffset', 0);
-		$opts->display_type = $params->get('database_join_display_type', 'dropdown');
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $params->get('database_join_display_type', 'dropdown');
 		$opts->show_please_select = $params->get('database_join_show_please_select');
@@ -2442,7 +2442,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	}
 
 	/**
-	 * does the element store its data in a join table (1:n)
+	 * Does the element store its data in a join table (1:n)
+	 *
 	 * @return	bool
 	 */
 
