@@ -91,7 +91,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	/**
-	 * adds an option to the db join element, for dropdowns and radio buttons
+	 * Adds an option to the db join element, for dropdowns and radio buttons
 	 * (where only one selection is possible from a visible list of options)
 	 * the new option is only selected if its value = this.options.value
 	 * @param	string	value
@@ -100,7 +100,7 @@ var FbDatabasejoin = new Class({
 	
 	addOption: function (v, l)
 	{
-		var opt, selected, chxed;
+		var opt, selected, chxed, last, subOpts = [], injectWhere, labelfield;
 		if (v === '') {
 			// return;
 		}
@@ -119,14 +119,14 @@ var FbDatabasejoin = new Class({
 			break;
 		case 'checkbox':
 			chxed = (v === this.options.value) ? true : false;
-			var chxs = this.element.getElements('> .fabrik_subelement');
-			var newchx = this.getCheckboxTmplNode().clone();
-			newchx.getElement('span').set('text', l);
-			newchx.getElement('input').set('value', v);
-			var last = chxs.length === 0 ? this.element : chxs.getLast();
-			var injectWhere = chxs.length === 0 ? 'bottom' : 'after';
-			newchx.inject(last,injectWhere);
-			newchx.getElement('input').checked = chxed;
+			subOpts = this.element.getElements('> .fabrik_subelement');
+			opt = this.getCheckboxTmplNode().clone();
+			opt.getElement('span').set('text', l);
+			opt.getElement('input').set('value', v);
+			last = subOpts.length === 0 ? this.element : subOpts.getLast();
+			injectWhere = subOpts.length === 0 ? 'bottom' : 'after';
+			opt.inject(last, injectWhere);
+			opt.getElement('input').checked = chxed;
 			
 			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
 			var newid = this.getCheckboxIDTmplNode().clone();
@@ -150,11 +150,21 @@ var FbDatabasejoin = new Class({
 				'name': this.options.element + '[]',
 				'value': v
 			}), new Element('span').set('text', l)]));
-			opt.inject(document.id(this.element.id).getElements('.fabrik_subelement').getLast(), 'after');
+			subOpts = this.element.getElements('> .fabrik_subelement');
+			last = subOpts.length === 0 ? this.element : subOpts.getLast();
+			injectWhere = subOpts.length === 0 ? 'bottom' : 'after';
+			opt.inject(last, injectWhere);
 			break;
 		}
 	},
 	
+	/**
+	 * As cdd elements clear out the sub options before repopulating we need
+	 * to grab a copy of one of the checkboxes to use as a template node when recreating
+	 * the list
+	 * 
+	 * @return  dom node .fabrik_subelement (hidden id checkbox containing fk value)
+	 */
 	getCheckboxIDTmplNode: function () {
 		if (!this.chxTmplIDNode && this.options.displayType === 'checkbox')
 		{
@@ -164,6 +174,13 @@ var FbDatabasejoin = new Class({
 		return this.chxTmplIDNode;
 	},
 	
+	/**
+	 * As cdd elements clear out the sub options before repopulating we need
+	 * to grab a copy of one of the checkboxes to use as a template node when recreating
+	 * the list
+	 * 
+	 * @return  dom node .fabrik_subelement (visible checkbox)
+	 */
 	getCheckboxTmplNode: function () {
 		if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 		{
@@ -175,7 +192,8 @@ var FbDatabasejoin = new Class({
 	},
 	
 	/**
-	 * send an ajax request to requery the element options and update the element if new options found
+	 * Send an ajax request to requery the element options and update the element if new options found
+	 * 
 	 * @param	string	(optional) additional value to get the updated value for (used in select)
 	 */
 	

@@ -41,7 +41,6 @@ var FbCascadingdropdown = new Class({
 	
 	dowatch: function (e)
 	{
-		var v = e.target.get('value');
 		var v = Fabrik.blocks[this.form.form.id].formElements[this.options.watch].getValue();
 		this.change(v, e.target.id);
 	},
@@ -173,11 +172,13 @@ var FbCascadingdropdown = new Class({
 	destroyElement: function () {
 		switch (this.options.displayType)
 		{
+		case 'radio':
+			/* falls through */
 		case 'checkbox':
 			this.getContainer().getElements('.fabrik_subelement').destroy();
 			break;
 		case 'dropdown':
-			 /* falls through */ 
+			/* falls through */ 
 		default:
 			this.element.empty();
 			break;
