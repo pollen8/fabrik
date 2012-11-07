@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabrik3-package" default="fabrik.all">
-<!-- <project name="fabrik3-package" default="xml.update.repoistory"> -->
+<!-- <project name="fabrik3-package" default="fabrik.all"> -->
+<project name="fabrik3-package" default="xml.update.repoistory">
 
 <!--  fabrik.all -->
 	<property file="build_config.ini" />
@@ -768,13 +768,26 @@
 				
 				
 				
-				<!-- <regexp pattern="version=\&quot;(.*?)\&quot;"/> -->
+				
+				
+				
+				
 				<!-- Update target platform -->
-				<replaceregexp flags="">
-					<regexp pattern="extension(.*)version=&quot;(.*)&quot;"/>
-					<substitution expression="version=\&quot;ahhhhhhhhh\&quot;"/>
+				
+				<replaceregexp flags="sg">
+					<regexp pattern="&lt;extension.*version=&quot;(\d\.\d)&quot;\s*\/&gt;" />
+					<substitution expression="${1}3.1${3}"/>
 			  		<fileset dir="${basedir}">
-			  			<!-- <include name="**/administrator/components/com_fabrik/*.xml"/> -->
+						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+					</fileset>
+				</replaceregexp>
+				
+				<!-- <replaceregexp flags="sg">
+					<regexp pattern="&lt;extension.*version=&quot;(\d\.\d)&quot;\s*\/&gt;" />
+					<substitution expression="${1}3.1${3}"/>
+					
+			  		<fileset dir="${basedir}">
+			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
 						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
 						<!-- <include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
 						<include name="**/plugins/fabrik**/**/*.xml"/>
@@ -783,7 +796,7 @@
 						<include name="**/plugins/**/fabrik/*.xml"/>
 						<include name="**/plugins/system/fabrikcron/*.xml"/> -->
 					</fileset>
-				</replaceregexp>
+				</replaceregexp> -->
 
 					
 					<!--  need to do /:node/:node as fabrik.xml sets a namespace (xmlns) -->
