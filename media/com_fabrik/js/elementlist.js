@@ -46,7 +46,6 @@ var FbElementList =  new Class({
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 		} else {
-			var subElsName = this.element.id;
 			c = this.form.form;
 			var delegate = action + ':relay(input[type=' + this.type + '])';
 			c.addEvent(delegate, function (event, target) {
