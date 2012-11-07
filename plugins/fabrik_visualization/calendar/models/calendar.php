@@ -361,6 +361,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 							$row->_listid = $table->id;
 							$row->_canDelete = (bool) $listModel->canDelete();
 							$row->_canEdit = (bool) $listModel->canEdit($row);
+							$row->_canView = (bool) $listModel->canViewDetails();
 
 							// $$$ rob added timezone offset how on earth was this not picked up before :o
 							// $$$ hugh because we suck?

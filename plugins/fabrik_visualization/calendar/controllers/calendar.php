@@ -113,7 +113,8 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$input->set('formid', $table->form_id);
 		$input->set('tmpl', 'component');
 		$input->set('ajax', '1');
-		$link = 'index.php?option=com_fabrik&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
+		$nextView = $input->get('nextview', 'form');
+		$link = 'index.php?option=com_fabrik&view=' . $nextView . '&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
 		$link .= '&jos_fabrik_calendar_events___visualization_id=' . $input->getInt('jos_fabrik_calendar_events___visualization_id');
 		$start_date = $input->get('start_date', '');
 		if (!empty($start_date))

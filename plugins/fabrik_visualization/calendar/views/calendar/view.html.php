@@ -143,14 +143,14 @@ class fabrikViewCalendar extends JViewLegacy
 		$options->close = (int) $params->get('close-hour', 24);
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
+		$options->j3 = FabrikWorker::j3();
 
 		if (FabrikWorker::j3())
 		{
-			$options->buttons = '<div class="btn-group">
-			<button class="btn popupDelete" data-task="deleteCalEvent"><i class="icon-delete"></i></button>
-			<button class="btn popupEdit" data-task="editCalEvent"><i class="icon-edit"></i></button>
-			<button class="btn popupView" data-task="viewCalEvent"><i class="icon-eye"></i></button>
-			</div>';
+			$options->buttons = new stdClass;
+			$options->buttons->del = '<button class="btn popupDelete" data-task="deleteCalEvent"><i class="icon-delete"></i></button>';
+			$options->buttons->edit = '<button class="btn popupEdit" data-task="editCalEvent"><i class="icon-edit"></i></button>';
+			$options->buttons->view = '<button class="btn popupView" data-task="viewCalEvent"><i class="icon-eye"></i></button>';
 		}
 		else
 		{

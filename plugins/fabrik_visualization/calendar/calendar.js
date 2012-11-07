@@ -19,7 +19,8 @@ var fabrikCalendar = new Class({
 			'del': 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw'
 		},
 		monthday: {'width': 90, 'height': 80},
-		restFilterStart: 'na'
+		restFilterStart: 'na',
+		j3: false
 	},
 	
 	initialize: function (el) {
@@ -80,7 +81,7 @@ var fabrikCalendar = new Class({
 	
 	_makeEventRelDiv: function (entry, opts, aDate)
 	{
-		var x;
+		var x, eventCont;
 		var label = entry.label;
 		opts.left === opts.left ? opts.left : 0;
 		opts['margin-left'] === opts['margin-left'] ? opts['margin-left'] : 0;
@@ -121,16 +122,47 @@ var fabrikCalendar = new Class({
 		if (opts.view === 'monthView') {
 			style.width -= 1;
 		}
-		var eventCont = new Element('div', {
-			'class': 'fabrikEvent label',
-			'id': id,
-			'styles': style
-		});
-		eventCont.addEvent('mouseenter', function (e) {
-			this.doPopupEvent(e, entry, label);		
-		}.bind(this));
+		if (this.options.j3) {
+			var buttons = '';
+			if (entry._canDelete) {
+				buttons += this.options.buttons.del;
+			}
+			if (entry._canEdit) {
+				buttons += this.options.buttons.edit;
+			}
+			if (entry._canView) {
+				buttons += this.options.buttons.view;
+			}
+			var dataContent = 'Start: ' + new Date(entry.startdate).format('%X') + '<br /> End :' + entry.enddate.format('%X');
+			if (buttons !== '') {
+				buttons += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>'; 
+			}
+			eventCont = new Element('a', {
+				'class': 'fabrikEvent label',
+				'id': id,
+				'styles': style,
+				'rel': 'popover',
+				'data-original-title': label + '<button class="close" data-popover="' + id + '">&times;</button>',
+				'data-content': dataContent,
+				'data-placement': 'top',
+				'data-html': 'true',
+				'data-trigger' : 'click'
+			});
+			if (typeof(jQuery) !== 'undefined') {
+				jQuery(eventCont).popover();
+			}
+		} else {
+			eventCont = new Element('div', {
+				'class': 'fabrikEvent label',
+				'id': id,
+				'styles': style
+			});
+			eventCont.addEvent('mouseenter', function (e) {
+				this.doPopupEvent(e, entry, label);		
+			}.bind(this));
+		}
 		
-		if (entry.link !== '' && this.options.readonly === false) {
+		if (entry.link !== '' && this.options.readonly === false && this.options.j3 === false) {
 			x = new Element('a', {'href': entry.link, 'class': 'fabrikEditEvent', 
 				'events': {
 				'click': function (e) {
@@ -146,6 +178,7 @@ var fabrikCalendar = new Class({
 		} else {
 			x = new Element('span').appendText(label);
 		}
+		
 		eventCont.adopt(x);
 		return eventCont;
 	},
@@ -310,7 +343,9 @@ var fabrikCalendar = new Class({
 		if (typeOf(this.popup) === 'null') {
 			var popLabel = new Element('div', {'class': 'popLabel'});
 			var del = new Element('div', {'class': 'popupDelete'}).set('html', this.options.buttons);
+			
 			this.popup = new Element('div', {'class': 'popWin', 'styles': {'position': 'absolute'}}).adopt([popLabel, del]);
+			
 			this.popup.inject(document.body);
 			/********** FX EVETNT *************/
 			this.activeArea = null;
@@ -675,10 +710,12 @@ var fabrikCalendar = new Class({
 	
 	addEvForm: function (o)
 	{
-		console.log('addEvForm', o);
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;
+		if (o.nextView) {
+			url += 'nextview=' + o.nextView;
+		} 
 		if (typeof(this.doubleclickdate) !== 'undefined') {
 			url += '&start_date=' + this.doubleclickdate;
 		}
@@ -956,6 +993,15 @@ var fabrikCalendar = new Class({
 			this.viewEntry();
 		}.bind(this));
 		
+		document.addEvent('click:relay(.popover button.close)', function (event, target) {
+			var popover = '#' + target.get('data-popover');
+			jQuery(popover).popover('hide');
+		}.bind(this));
+		
+		document.addEvent('click:relay(a.fabrikEvent)', function (e, target) {
+			this.activeHoverEvent = e.target.hasClass('fabrikEvent') ? e.target : e.target.getParent('.fabrikEvent');
+		}.bind(this));
+		
 		this.windowopts.title = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 		this.windowopts.y = this.options.popwiny;
 		this.popWin = this._makePopUpWin();
@@ -1118,6 +1164,7 @@ var fabrikCalendar = new Class({
 	},
 	
 	deleteEntry: function () {
+		debugger;
 		var key = this.activeHoverEvent.id.replace('fabrikEvent_', '');
 		var i = key.split('_');
 		var listid = i[0];
@@ -1143,6 +1190,16 @@ var fabrikCalendar = new Class({
 		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
 		o.rowid = i[1];
 		o.listid = i[0];
+		this.addEvForm(o);
+	},
+	
+	viewEntry: function () {
+		var o = {};
+		o.id = this.options.formid;
+		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
+		o.rowid = i[1];
+		o.listid = i[0];
+		o.nextView = 'details';
 		this.addEvForm(o);
 	},
 	

@@ -3068,6 +3068,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return $this->data;
 		}
+		$this->getRowId();
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
