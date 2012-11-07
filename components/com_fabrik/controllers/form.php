@@ -141,7 +141,7 @@ class FabrikControllerForm extends JControllerLegacy
 			return;
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{

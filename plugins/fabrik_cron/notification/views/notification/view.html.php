@@ -33,7 +33,7 @@ class fabrikViewNotification extends JView
 
 	function display($tpl = 'default')
 	{
-		$this->assignRef('rows', $this->get('UserNotifications'));
+		$this->rows = $this->get('UserNotifications');
 
 		$viewName = $this->getName();
 

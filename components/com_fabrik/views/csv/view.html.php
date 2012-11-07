@@ -40,7 +40,7 @@ class fabrikViewCsv extends JView
 		$this->table = $listModel->getTable();
 		$data = array();
 		$this->getManagementJS($data);
-		$this->assign('id', $this->get('id'));
+		$this->id = $this->get('id');
 		$this->form = $this->get('Form');
 		if (!$listModel->canCSVExport())
 		{

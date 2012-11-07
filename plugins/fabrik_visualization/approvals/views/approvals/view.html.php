@@ -37,15 +37,12 @@ class fabrikViewApprovals extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = $input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
-		$this->assign('id', $id);
-		$this->assignRef('row', $this->get('Visualization'));
-		$this->assign('rows', $this->get('Rows'));
-
-		$this->assign('containerId', $this->get('ContainerId'));
-
+		$this->id = $id;
+		$this->row = $this->get('Visualization');
+		$this->rows = $this->get('Rows');
+		$this->containerId = $this->get('ContainerId');
 		$this->calName = $this->get('VizName');
-
-		$this->assignRef('params', $model->getParams());
+		$this->params = $model->getParams();
 		$tpl = $this->params->get('approvals_layout', $tpl);
 		$tmplpath = JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);

@@ -77,7 +77,7 @@ class FabrikControllerListemail extends JControllerLegacy
 		$view->setModel($formModel);
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		return $view->display();
 	}
 

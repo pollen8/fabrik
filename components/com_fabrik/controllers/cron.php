@@ -62,7 +62,7 @@ class FabrikControllerCron extends JController
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		$jinput = JFactory::getApplication()->input;
 

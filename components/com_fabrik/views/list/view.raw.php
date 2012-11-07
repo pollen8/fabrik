@@ -29,7 +29,7 @@ class FabrikViewList extends JViewLegacy
 		$rowid = $input->getInt('rowid');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
-		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
+		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$nav = $model->getPagination();
 		$form = $model->getFormModel();
 		$c = 0;

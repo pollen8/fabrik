@@ -412,7 +412,7 @@ class plgContentFabrik extends JPlugin
 		}
 
 		// Display the view
-		$view->assign('error', $controller->getError());
+		$view->error = $controller->getError();
 		$view->isMambot = true;
 		$displayed = false;
 

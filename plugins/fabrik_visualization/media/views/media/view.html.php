@@ -57,14 +57,14 @@ class fabrikViewMedia extends JViewLegacy
 		$media = $model->getRow();
 		$this->media = $model->getMedia();
 
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('params', $model->getParams());
+		$this->containerId = $this->get('ContainerId');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filters = $this->get('Filters');
+		$this->params = $model->getParams();
 		$tmpl = $params->get('media_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/media/views/media/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);

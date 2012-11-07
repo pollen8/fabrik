@@ -71,7 +71,7 @@ class FabrikControllerPackage extends JControllerLegacy
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		$view->display();
 		return $this;
 	}

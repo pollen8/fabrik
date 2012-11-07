@@ -1,9 +1,9 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.chart
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.visualization.chart
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 // Check to ensure this file is included in Joomla!
@@ -14,11 +14,12 @@ jimport('joomla.application.component.view');
 /**
 * Fabrik Calendar HTML View
 *
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.chart
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.visualization.chart
+* @since       3.0
 */
 
-class fabrikViewChart extends JViewLegacy
+class FabrikViewChart extends JViewLegacy
 {
 
 	/**
@@ -29,7 +30,7 @@ class fabrikViewChart extends JViewLegacy
 	* @return  mixed  A string if successful, otherwise a JError object.
 	*/
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -47,24 +48,24 @@ class fabrikViewChart extends JViewLegacy
 			return '';
 		}
 		$calendar = $model->getRow();
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
+		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		if ($this->requiredFiltersFound)
 		{
-			$this->assign('chart', $this->get('Chart'));
+			$this->chart = $this->get('Chart');
 		}
 		else
 		{
-			$this->assign('chart', '');
+			$this->chart = '';
 		}
 		$params = $model->getParams();
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('chart', 'visualization');
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->:getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0);
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->containerId = $this->get('ContainerId');
+		$this->filters = $this->get('Filters');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0;
+		$this->filterFormURL = $this->get('FilterFormURL');
 
 		$tpl = $params->get('chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/chart/views/chart/tmpl/' . $tpl;

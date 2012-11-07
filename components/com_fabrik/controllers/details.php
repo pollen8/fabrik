@@ -88,7 +88,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$view->isMambot = $this->isMambot;
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{

@@ -133,7 +133,7 @@ if (!JError::isError($model))
 $view->isMambot = true;
 
 // Display the view
-$view->assign('error', $controller->getError());
+$view->error = $controller->getError();
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);

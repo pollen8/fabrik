@@ -44,12 +44,12 @@ class fabrikViewCoverflow extends JViewLegacy
 			$model->render();
 		}
 		$params = $model->getParams();
-		$this->assign('params', $params);
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('row', $row);
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('filters', $this->get('Filters'));
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->params = $params;
+		$this->containerId = $this->get('ContainerId');
+		$this->row = $row;
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filters = $this->get('Filters');
+		$this->filterFormURL = $this->get('FilterFormURL');
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/coverflow/views/coverflow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
