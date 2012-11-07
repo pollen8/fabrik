@@ -11,7 +11,7 @@
 
 $group = $this->group;
  ?>
-<tr class="fabrikSubGroupElements fabrikSubGroup">
+<tr class="fabrikSubGroupElements fabrikSubGroup oddRow<?php echo $this->i % 2;?>">
 <?php foreach ($this->elements as $element) :
 	?>
 	<td class="<?php echo $element->containerClass; ?>">
