@@ -55,12 +55,12 @@ Event.Mock = function(target,type){
                 , false //bubbles - set to false because the event should like normal fireEvent
                 , true //cancelable
             );
+        } else if( document.createEventObject) {
+        	// Internet explorer 8?
+        	e = document.createEventObject();
         }
-        
         e = new Event(e);
-        
         e.target = target;
-        
         return e;
 }
 

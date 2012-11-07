@@ -52,6 +52,8 @@ class plgSystemFabrikcron extends JPlugin
 	protected function doCron()
 	{
 		$app = JFactory::getApplication();
+		$mailer = JFactory::getMailer();
+		$config = JFactory::getConfig();
 		if ($app->isAdmin() || JRequest::getVar('option') == 'com_acymailing')
 		{
 			return;
@@ -122,6 +124,7 @@ class plgSystemFabrikcron extends JPlugin
 
 		foreach ($rows as $row)
 		{
+			$params = $plugin->getParams();
 			$log->message = '';
 			$log->id = null;
 			$log->referring_url = '';
@@ -138,7 +141,7 @@ class plgSystemFabrikcron extends JPlugin
 				$db->query();
 				continue;
 			}
-			$tid = (int) $plugin->getParams()->get('table');
+			$tid = (int) $params->get('table');
 			$thisListModel = clone ($listModel);
 			if ($tid !== 0)
 			{
@@ -199,9 +202,17 @@ class plgSystemFabrikcron extends JPlugin
 			$db->query();
 
 			// Log if asked for
-			if ($plugin->getParams()->get('log', 0) == 1)
+			if ($params->get('log', 0) == 1)
 			{
 				$log->store();
+			}
+
+			// Email log message
+			$recipient = explode(',', $params->get('log_email', ''));
+			if (!empty($recipient))
+			{
+				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
+				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
 			}
 		}
 	}

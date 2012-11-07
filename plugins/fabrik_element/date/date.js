@@ -388,6 +388,12 @@ var FbDateTime = new Class({
 			// going to return null, swhich will then blow up in a few lines.
 			date = Date.parse(val);
 			if (date === null) {
+				
+				// Yes, but we still need to clear the fields! (e.g. from reset())
+				this.subElements.each(function (subEl) {
+					subEl.value = '';
+				});
+				this.cal.date = '';
 				return;
 			}
 		} else {

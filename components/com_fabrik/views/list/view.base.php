@@ -35,6 +35,7 @@ class FabrikViewListBase extends JView
 	protected function getManagementJS($data = array())
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
@@ -171,7 +172,7 @@ class FabrikViewListBase extends JView
 
 		// $$$rob if you are loading a table in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
-		$opts->winid = JRequest::getVar('winid', '');
+		$opts->winid = $input->get('winid', '');
 		$opts = json_encode($opts);
 
 		JText::script('COM_FABRIK_PREV');
@@ -274,6 +275,7 @@ class FabrikViewListBase extends JView
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Force front end templates
 		$tmpl = $this->get('tmpl');
@@ -376,7 +378,7 @@ class FabrikViewListBase extends JView
 		$this->showCSVImport = $model->canCSVImport();
 		$this->canGroupBy = $model->canGroupBy();
 		$this->assignRef('navigation', $nav);
-		$this->nav = JRequest::getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
+		$this->nav = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
 			? $nav->getListFooter($this->renderContext, $this->get('tmpl')) : '';
 		$this->nav = '<div class="fabrikNav">' . $this->nav . '</div>';
 		$this->fabrik_userid = $user->get('id');
@@ -472,6 +474,7 @@ class FabrikViewListBase extends JView
 	protected function setTitle($w, &$params, $model)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
 		$menus = $app->getMenu();
 		$menu = $menus->getActive();
@@ -487,8 +490,8 @@ class FabrikViewListBase extends JView
 		}
 		else
 		{
-			$params->set('show_page_title', JRequest::getInt('show_page_title', 0));
-			$params->set('page_title', JRequest::getVar('title', ''));
+			$params->set('show_page_title', $input->getInt('show_page_title', 0));
+			$params->set('page_title', $input->get('title', '', 'string'));
 		}
 		$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
 
@@ -512,19 +515,21 @@ class FabrikViewListBase extends JView
 
 	protected function output()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
 		if ($params->get('process-jplugins'))
 		{
-			$opt = JRequest::getVar('option');
-			JRequest::setVar('option', 'com_content');
+			$opt = $input->get('option');
+			$input->set('option', 'com_content');
 			jimport('joomla.html.html.content');
 			$text .= '{emailcloak=off}';
 			$text = JHTML::_('content.prepare', $text);
 			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-			JRequest::setVar('option', $opt);
+			$input->set('option', $opt);
 		}
 		JDEBUG ? $profiler->mark('end fabrik display') : null;
 
@@ -726,17 +731,18 @@ class FabrikViewListBase extends JView
 	protected function loadTemplateBottom()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$model = $this->getModel();
 		$item = $model->getTable();
 
-		$reffer = str_replace('&', '&amp;', JRequest::getVar('REQUEST_URI', '', 'server'));
+		$reffer = str_replace('&', '&amp;', $input->server->get('REQUEST_URI', ''));
 		$reffer = FabrikString::removeQSVar($reffer, 'fabrik_incsessionfilters');
 		$this->hiddenFields = array();
 
 		// $$$ rob 15/12/2011 - if in com_content then doing this means you cant delete rows
-		$this->hiddenFields[] = '<input type="hidden" name="option" value="' . JRequest::getCmd('option', 'com_fabrik') . '" />';
+		$this->hiddenFields[] = '<input type="hidden" name="option" value="' . $input->get('option', 'com_fabrik') . '" />';
 
 		// $$$ rob 28/12/2011 but when using com_content as a value you cant filter!
 		// $this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
@@ -745,7 +751,7 @@ class FabrikViewListBase extends JView
 
 		// $$$ rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		// revert to view var. Used when showing table in article/blog layouts
-		$view = JRequest::getVar('origview', JRequest::getVar('view', 'list'));
+		$view = $input->get('origview', $input->get('view', 'list'));
 		$this->hiddenFields[] = '<input type="hidden" name="view" value="' . $view . '" />';
 
 		$this->hiddenFields[] = '<input type="hidden" name="listid" value="' . $item->id . '"/>';
@@ -758,7 +764,7 @@ class FabrikViewListBase extends JView
 
 		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 
-		// $packageId = JRequest::getInt('_packageId', 0);
+		// $packageId = $input->getInt('_packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
 		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="' . $packageId . '" />';
@@ -779,7 +785,7 @@ class FabrikViewListBase extends JView
 		$this->hiddenFields[] = '<input type="hidden" name="incfilters" value="1" />';
 
 		// $$$ hugh - testing social profile hash stuff
-		if (JRequest::getVar('fabrik_social_profile_hash', '') != '')
+		if ($input->get('fabrik_social_profile_hash', '') != '')
 		{
 			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . JRequest::getVar('fabrik_social_profile_hash')
 				. '" />';
@@ -796,6 +802,8 @@ class FabrikViewListBase extends JView
 	 */
 	protected function advancedSearch($tpl)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
 		$id = $model->getState('list.id');
 		$this->assign('tmpl', $this->get('tmpl'));
@@ -804,7 +812,7 @@ class FabrikViewListBase extends JView
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
 		$this->assignRef('rows', $this->get('advancedSearchRows'));
-		$action = JRequest::getVar('HTTP_REFERER', 'index.php?option=com_fabrik', 'server');
+		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik');
 		$this->assign('action', $action);
 		$this->assign('listid', $id);
 	}

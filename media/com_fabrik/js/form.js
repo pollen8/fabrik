@@ -3,7 +3,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 var FbForm = new Class({
 
@@ -45,10 +45,8 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
-		this.bufferedEvents = $A([]);
+		this.bufferedEvents = [];
 		this.duplicatedGroups = $H({});
-		this.clickDeleteGroup = this.deleteGroup.bindWithEvent(this);
-		this.clickDuplicateGroup = this.duplicateGroup.bindWithEvent(this);
 	
 		this.fx = {};
 		this.fx.elements = [];
@@ -293,6 +291,9 @@ var FbForm = new Class({
 		case 'slide toggle':
 			fx.slide.toggle();
 			break;
+		case 'clear':
+			this.formElements.get(id).clear();
+			break;
 		}
 		fx.lastMethod = method;
 		Fabrik.fireEvent('fabrik.form.doelementfx', [this]);
@@ -328,8 +329,12 @@ var FbForm = new Class({
 				submit.setStyle('opacity', 0.5);
 			}
 			this.form.getElement('.fabrikPagePrevious').disabled = "disabled";
-			this.form.getElement('.fabrikPageNext').addEvent('click', this._doPageNav.bindWithEvent(this, [ 1 ]));
-			this.form.getElement('.fabrikPagePrevious').addEvent('click', this._doPageNav.bindWithEvent(this, [ -1 ]));
+			this.form.getElement('.fabrikPageNext').addEvent('click', function (e) {
+				this._doPageNav(e, 1);
+			}.bind(this));
+			this.form.getElement('.fabrikPagePrevious').addEvent('click', function (e) {
+				this._doPageNav(e, -1);
+			}.bind(this));
 			this.setPageButtons();
 			this.hideOtherPages();
 		}
@@ -604,11 +609,15 @@ var FbForm = new Class({
 		if (el.className === 'fabrikSubElementContainer') {
 			// check for things like radio buttons & checkboxes
 			el.getElements('.fabrikinput').each(function (i) {
-				i.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ true ]));
+				i.addEvent(triggerEvent, function (e) {
+					this.doElementValidation(e, true);
+				}.bind(this));
 			}.bind(this));
 			return;
 		}
-		el.addEvent(triggerEvent, this.doElementValidation.bindWithEvent(this, [ false ]));
+		el.addEvent(triggerEvent, function (e) {
+			this.doElementValidation(e, false);
+		}.bind(this));
 	},
 
 	// as well as being called from watchValidation can be called from other
@@ -675,7 +684,9 @@ var FbForm = new Class({
 			url: url,
 			method: this.options.ajaxmethod,
 			data: d,
-			onComplete: this._completeValidaton.bindWithEvent(this, [ id, origid ])
+			onComplete: function (e) {
+				this._completeValidaton(e, id, origid);
+			}.bind(this)
 		}).send();
 	},
 
@@ -722,7 +733,7 @@ var FbForm = new Class({
 
 	_showGroupError : function (r, d) {
 		var tmperr;
-		var gids = $A(this.options.pages.get(this.currentPage.toInt()));
+		var gids = Array.from(this.options.pages.get(this.currentPage.toInt()));
 		var err = false;
 		$H(d).each(function (v, k) {
 			k = k.replace(/\[(.*)\]/, '').replace(/%5B(.*)%5D/, '');// for dropdown validations
@@ -835,15 +846,18 @@ var FbForm = new Class({
 		}
 		if (this.options.ajax) {
 			var copy = this._getButton('Copy');
-			$A([apply, submit, copy]).each(function (btn) {
+			([apply, submit, copy]).each(function (btn) {
 				if (typeOf(btn) !== 'null') {
-					btn.addEvent('click', this.doSubmit.bindWithEvent(this, [btn]));
+					btn.addEvent('click', function (e) {
+						this.doSubmit(e, btn);
+					}.bind(this));
 				}
 			}.bind(this));
 			
-		}
-		else {
-			this.form.addEvent('submit', this.doSubmit.bindWithEvent(this));
+		} else {
+			this.form.addEvent('submit', function (e) {
+				this.doSubmit(e);
+			}.bind(this));
 		}
 	},
 
@@ -1078,14 +1092,24 @@ var FbForm = new Class({
 	},
 
 	watchGroupButtons : function () {
-		this.unwatchGroupButtons();
 		this.form.getElements('.deleteGroup').each(function (g, i) {
-			g.addEvent('click', this.clickDeleteGroup);
+			g.addEvent('click', function (e) {
+				this.deleteGroup(e);
+			}.bind(this));
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function (g, i) {
-			g.addEvent('click', this.clickDuplicateGroup);
+		
+		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
+			e.preventDefault();
+			this.deleteGroup(e);
 		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
+		
+		
+		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
+			e.preventDefault();
+			this.duplicateGroup(e);
+		}.bind(this));
+		
+		this.form.addEvent('click:relay(.fabrikSubGroup)', function (e, subGroup) {
 			var r = subGroup.getElement('.fabrikGroupRepeater');
 			if (r) {
 				subGroup.addEvent('mouseenter', function (e) {
@@ -1095,20 +1119,7 @@ var FbForm = new Class({
 					r.fade(0.2);
 				});
 			}
-		});
-	},
-
-	unwatchGroupButtons : function () {
-		this.form.getElements('.deleteGroup').each(function (g, i) {
-			g.removeEvent('click', this.clickDeleteGroup);
 		}.bind(this));
-		this.form.getElements('.addGroup').each(function (g, i) {
-			g.removeEvent('click', this.clickDuplicateGroup);
-		}.bind(this));
-		this.form.getElements('.fabrikSubGroup').each(function (subGroup) {
-			subGroup.removeEvents('mouseenter');
-			subGroup.removeEvents('mouseleave');
-		});
 	},
 
 	deleteGroup: function (e) {
@@ -1197,13 +1208,22 @@ var FbForm = new Class({
 
 	hideLastGroup : function (groupid, subGroup) {
 		var sge = subGroup.getElement('.fabrikSubGroupElements');
+		var notice = new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
+		if (typeOf(sge) === 'null') {
+			sge = subGroup;
+			var add = sge.getElement('.addGroup');
+			var lastth = sge.getParent('table').getElements('thead th').getLast();
+			if (typeOf(add) !== 'null') {
+				add.inject(lastth);
+			}
+		}
 		sge.setStyle('display', 'none');
-		new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA')).inject(sge, 'after');
+		notice.inject(sge, 'after');
 	},
 
 	isFirstRepeatSubGroup : function (group) {
 		var subgroups = group.getElements('.fabrikSubGroup');
-		return subgroups.length === 1 && subgroups[0].getElement('.fabrikNotice');
+		return subgroups.length === 1 && group.getElement('.fabrikNotice');
 	},
 
 	getSubGroupToClone : function (groupid) {
@@ -1268,8 +1288,21 @@ var FbForm = new Class({
 			var subgroups = group.getElements('.fabrikSubGroup');
 			// user has removed all repeat groups and now wants to add it back in
 			// remove the 'no groups' notice
-			subgroups[0].getElement('.fabrikNotice').dispose();
-			subgroups[0].getElement('.fabrikSubGroupElements').show();
+			
+			var sub = subgroups[0].getElement('.fabrikSubGroupElements');
+			if (typeOf(sub) === 'null') {
+				group.getElement('.fabrikNotice').dispose();
+				sub = subgroups[0];
+				
+				// Table group
+				var add = group.getElement('.addGroup');
+				add.inject(sub.getElement('td.fabrikGroupRepeater'));
+				sub.setStyle('display', '');				
+			} else {
+				subgroups[0].getElement('.fabrikNotice').dispose();
+				subgroups[0].getElement('.fabrikSubGroupElements').show();
+			}
+
 			this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 			return;
 		}
@@ -1286,7 +1319,12 @@ var FbForm = new Class({
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
-		group.appendChild(clone);
+		if (group.getElement('table.repeatGroupTable')) {
+			group.getElement('table.repeatGroupTable').appendChild(clone);
+		} else {
+			group.appendChild(clone);
+		}
+		
 		tocheck.each(function (i) {
 			i.setProperty('checked', true);
 		});
@@ -1329,7 +1367,7 @@ var FbForm = new Class({
 
 						// update the element id use el.element.id rather than input.id as
 						// that may contain _1 at end of id
-						var bits = $A(el.element.id.split('_'));
+						var bits = Array.from(el.element.id.split('_'));
 						bits.splice(bits.length - 1, 1, c);
 						input.id = bits.join('_');
 
@@ -1353,7 +1391,7 @@ var FbForm = new Class({
 					// events are cloned
 					
 					// $$$ rob fix for date element
-					var bits = $A(el.options.element.split('_'));
+					var bits = Array.from(el.options.element.split('_'));
 					bits.splice(bits.length - 1, 1, c);
 					subElementContainer.id = bits.join('_');
 				}
@@ -1423,8 +1461,6 @@ var FbForm = new Class({
 		// note I commented out the increment of c a few lines above//duplicate
 		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
-		this.unwatchGroupButtons();
-		this.watchGroupButtons();
 	},
 
 	update : function (o) {

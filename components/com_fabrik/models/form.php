@@ -1651,6 +1651,7 @@ class FabrikFEModelForm extends FabModelForm
 				// Set join groups repeat to that of the elements options
 				if ($elementModel->isJoin())
 				{
+					// Set the group to be repeating
 					$joinGroup->getParams()->set('repeat_group_button', 1);
 
 					// Set repeat count
@@ -2186,7 +2187,7 @@ class FabrikFEModelForm extends FabModelForm
 								// Was testing for: if (!$elementModel->canUse() && $elementModel->canView()) {
 								if (is_array($encrypted))
 								{
-									// Repeat groups no join
+									// Repeat groups
 									$v = array();
 									foreach ($encrypted as $e)
 									{
@@ -3199,7 +3200,9 @@ class FabrikFEModelForm extends FabModelForm
 						// If empty data return and trying to edit a record then show error
 						// occurs if user trying to edit a record forbidden by a prefilter rule
 						JDEBUG ? $profiler->mark('formmodel getData: empty test') : null;
-						if (empty($data) && $this->_rowId != '')
+
+						// Was empty($data) but that is never empty. Had issue where list prefilter meant record was not loaded, but no message shown in form
+						if (empty($rows) && $this->_rowId != '')
 						{
 							// $$$ hugh - special case when using -1, if user doesn't have a record yet
 							if (FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot) == '-1')
@@ -4366,6 +4369,15 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
+
+			if ($groupModel->canRepeat())
+			{
+				$group->tmpl =  $groupParams->get('repeat_template', 'repeatgroup');
+			}
+			else
+			{
+				$group->tmpl = 'group';
+			}
 			$aElements = array();
 
 			// Check if group is acutally a table join
@@ -4892,6 +4904,53 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Should we show success messages
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function showSuccessMsg()
+	{
+		$mode = $this->getParams()->get('suppress_msgs', '0');
+		return ($mode == 0 || $mode == 2);
+	}
+
+	/**
+	 * Should we show ACL messages
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function showACLMsg()
+	{
+		$mode = $this->getParams()->get('suppress_msgs', '0');
+		return $mode == 0 || $mode == 1;
+	}
+
+	/**
+	 * If trying to add/edit a record when the user doesn't have rights to do so,
+	 * what message, if any should we show.
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return string
+	 */
+
+	public function aclMessage()
+	{
+		if (!$this->showACLMsg())
+		{
+			return '';
+		}
+		$input = JFactory::getApplication()->input;
+		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
+		return JText::_($msg);
+	}
+	/**
 	 * Get redirect message
 	 *
 	 * @return  string  redirect message
@@ -4908,8 +4967,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$ rob 30/03/2011 if using as a search form don't show record added message
 		if ($registry && $registry->getValue('com_fabrik.searchform.fromForm') != $this->get('id'))
 		{
-			$msg = $this->getParams()->get('suppress_msgs', '0') == '0'
-				? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+			$msg = $this->showSuccessMsg() ? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		}
 		else
 		{

@@ -61,7 +61,7 @@ var FbOpenStreetMap = new Class({
 
 			this.addMarker();
 			this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-	    
+
 			var controls = {
 					drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
 				};
@@ -81,8 +81,6 @@ var FbOpenStreetMap = new Class({
 		var str = m.toShortString() + ":" + this.map.getZoom();
 		this.element.value = str;
 	},
-
-
 
 	getLonLat : function (lon, lat) {
 		var lonlat = new OpenLayers.LonLat(parseFloat(lon), parseFloat(lat));

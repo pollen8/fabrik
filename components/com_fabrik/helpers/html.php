@@ -1250,7 +1250,8 @@ EOD;
 		self::autoCompleteScript();
 		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
 		$str = json_encode($json);
-		self::addScriptDeclaration("head.ready(function() { new FbAutocomplete('$htmlid', $str); });");
+		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
+		self::addScriptDeclaration("head.ready(function() { new $class('$htmlid', $str); });");
 	}
 
 	/**
@@ -1275,6 +1276,10 @@ EOD;
 		if ($c != '')
 		{
 			$json->onSelections = $c;
+		}
+		foreach ($opts as $k => $v)
+		{
+			$json->$k = $v;
 		}
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');

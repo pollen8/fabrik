@@ -1085,7 +1085,21 @@ class plgFabrik_Element extends FabrikPlugin
 			FArrayHelper::setValue($_REQUEST, $jkey, $data);
 
 			// Seems the only way to add it into $post? FArrayHelper bug I guess but too scared to alter that at the moement
-			$post['join'][$group->getGroup()->join_id][$key] = $data;
+
+			// Repeat group data
+			if ($group->canRepeat())
+			{
+				$repeatCounts = JArrayHelper::getValue($post, 'fabrik_repeat_group', array());
+				$c = JArrayHelper::getValue($repeatCounts, $group->getId());
+				for ($x = 0; $x < $c; $x ++)
+				{
+					$post['join'][$group->getGroup()->join_id][$key][$x] = $data[$x];
+				}
+			}
+			else
+			{
+				$post['join'][$group->getGroup()->join_id][$key] = $data;
+			}
 		}
 		else
 		{
@@ -1547,7 +1561,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
 
-		$key = $element->name . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
+		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
 			. $incRepeatGroup;
 		if (isset($this->_aFullNames[$key]))
 		{
@@ -2398,7 +2412,19 @@ class plgFabrik_Element extends FabrikPlugin
 						$fxadded[$jsAct->js_e_trigger] = true;
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
-					$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+
+					if ($jsAct->js_e_condition == 'hidden') {
+						$js = "if (this.getContainer().getStyle('display') === 'none') {";
+					}
+					elseif ($jsAct->js_e_condition == 'shown')
+					{
+						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+					}
+					else
+					{
+						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+					}
+
 
 					// $$$ need to use ciorrected triggerid here as well
 					// $js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
@@ -3452,7 +3478,7 @@ class plgFabrik_Element extends FabrikPlugin
 					// Query the joined table concatanating into one field
 					$jointable = $this->getJoinModel()->getJoin()->table_join;
 					$pk = $this->getListModel()->getTable()->db_primary_key;
-					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '//..*..//') FROM $jointable WHERE parent_id = $pk)";
+					$key = "(SELECT GROUP_CONCAT(id SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE parent_id = $pk)";
 					$value = str_replace("'", '', $value);
 					$query = "($key = '$value' OR $key LIKE '$value" . GROUPSPLITTER . "%' OR
 					$key LIKE '" . GROUPSPLITTER . "$value" . GROUPSPLITTER . "%' OR
@@ -5141,7 +5167,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		}
 		$params = $this->getParams();
 		$inc = $params->get('inc_in_search_all', 1);
-
 		if ($inc == 2 && $advancedMode)
 		{
 			if ($this->ignoreSearchAllDefault)
@@ -5157,7 +5182,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				}
 			}
 		}
-
 		return ($inc == 1 || $inc == 2) ? true : false;
 	}
 
@@ -5233,14 +5257,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        serch string
+	 * @param   string             $search        search string
+	 * @param   array              $opts          options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return string  json encoded search results
 	 */
 
-	public static function cacheAutoCompleteOptions($elementModel, $search)
+	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$name = $elementModel->getFullName(false, false, false);
 		$elementModel->encryptFieldName($name);
