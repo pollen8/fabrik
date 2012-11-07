@@ -776,7 +776,7 @@
 				
 				<replaceregexp flags="sg">
 					<regexp pattern="&lt;extension.*version=&quot;(\d\.\d)&quot;\s*\/&gt;" />
-					<substitution expression="${1}3.1${3}"/>
+					<substitution expression="allllll"/>
 			  		<fileset dir="${basedir}">
 						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
 					</fileset>
@@ -789,12 +789,12 @@
 			  		<fileset dir="${basedir}">
 			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
 						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
-						<!-- <include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
 						<include name="**/plugins/fabrik**/**/*.xml"/>
 						<exclude name="**/FusionCharts/**" />
 						<exclude name="**/FusionChartsFree/**" />
 						<include name="**/plugins/**/fabrik/*.xml"/>
-						<include name="**/plugins/system/fabrikcron/*.xml"/> -->
+						<include name="**/plugins/system/fabrikcron/*.xml"/>
 					</fileset>
 				</replaceregexp> -->
 
