@@ -3,23 +3,56 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-form-rest">
 			
-			<field default="" description="PLG_FORM_REST_USERNAME_DESC" label="PLG_FORM_REST_USERNAME_LABEL" name="username" repeat="true" type="field"/>
+			<field name="username"
+				type="field"
+				default=""
+				repeat="true"
+				description="PLG_FORM_REST_USERNAME_DESC" 
+				label="PLG_FORM_REST_USERNAME_LABEL" />
 			
-			<field description="PLG_FORM_REST_PASSWORD_DESC" label="PLG_FORM_REST_PASSWORD_LABEL" name="password" repeat="true" type="text"/>
+			<field name="password"
+				type="text"
+				repeat="true"
+				description="PLG_FORM_REST_PASSWORD_DESC"
+				label="PLG_FORM_REST_PASSWORD_LABEL" />
 				
-			<field description="PLG_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL" name="endpoint" repeat="true" size="50" type="text"/>	
+			<field name="endpoint"
+				type="text"
+				repeat="true"
+				size="60"
+				description="PLG_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL"/>	
+				
+			<field name="put"
+				type="text"
+				repeat="true"
+				size="60"
+				description="PLG_REST_PUT_ENDPOINT_DESC" label="PLG_FORM_REST_PUT_ENDPOINT_LABEL"/>	
 					
 			<field name="xml_parent"
 				type="field"
+				repeat="true"
 				description="PLG_FORM_REST_XML_PARENT_DESC"
 				label="PLG_FORM_REST_XML_PARENT_LABEL" />
 				
 			<field name="include_list"
 				type="textarea"
+				repeat="true"
 				rows="6"
 				cols="10"
 				description="PLG_FORM_REST_INCLUDE_LIST_DESC"
 				label="PLG_FORM_REST_INCLUDE_LIST_LABEL" />
+				
+			<field name="foreign_key"
+				type="listfields"
+				repeat="true"
+				description="PLG_FORM_REST_FOREIGN_KEY_DESC"
+				label="PLG_FORM_REST_FOREIGN_KEY_LABEL" />
+			
+			<!-- <field name="response_fk"
+				type="field"
+				repeat="true"
+				description="PLG_FORM_REST_RESPONSE_FK_DESC"
+				label="PLG_FORM_REST_RESPONSE_FK_LABEL" /> -->
 		</fieldset>
 	</fields>
 </form>
