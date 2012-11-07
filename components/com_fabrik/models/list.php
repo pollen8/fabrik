@@ -7060,28 +7060,15 @@ class FabrikFEModelList extends JModelForm
 	{
 		$db = $this->getDb();
 		$item = $this->getTable();
-		if ($item->db_table_name !== '')
-		{
-			$sql = "DROP TABLE IF EXISTS " . $db->quoteName($item->db_table_name);
-			$db->setQuery($sql);
-			if (!$db->query())
-			{
-				return JError::raiseError(500, 'drop:' . JText::_($db->getErrorMsg()));
-			}
-		}
+		$db->dropTable($item->db_table_name);
+
 		// Remove any groups that were set to be repeating and hence were storing in their own db table.
 		$joinModels = $this->getInternalRepeatJoins();
 		foreach ($joinModels as $joinModel)
 		{
 			if ($joinModel->getJoin()->table_join !== '')
 			{
-				$sql = "DROP TABLE IF EXISTS " . $db->quoteName($joinModel->getJoin()->table_join);
-				$db->setQuery($sql);
-				$db->query();
-				if ($db->getErrorNum())
-				{
-					JError::raiseError(500, 'drop internal group tables: ' . $db->getErrorMsg());
-				}
+				$db->dropTable($joinModel->getJoin()->table_join);
 			}
 		}
 		return true;

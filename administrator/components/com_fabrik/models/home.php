@@ -144,9 +144,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		}
 		$groupId = $db->insertid();
 
-		$sql = "DROP TABLE IF EXISTS $dbTableName;";
-		$defaulDb->setQuery($sql);
-		$defaulDb->query();
+		$defaulDb->dropTable($dbTableName);
 
 		echo "<li>Group 'Contact Details' created</li>";
 		echo "<li>Element 'Email' added to group 'Contact Details'</li>";
@@ -287,8 +285,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 			$fabrikDb = $connModel->getDb();
 			if (!JError::isError($fabrikDb))
 			{
-				$fabrikDb->setQuery("DROP TABLE IF EXISTS $row->db_table_name");
-				$fabrikDb->query();
+				$fabrikDb->dropTable($row->db_table_name);
 			}
 			else
 			{

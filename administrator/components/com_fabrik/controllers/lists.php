@@ -45,15 +45,17 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	}
 
 	/**
-	 * Proxy for getModel.
+	 * Method to get a model object, loading it if required.
 	 *
-	 * @param   string  $name    model name
-	 * @param   string  $prefix  model prefix
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  J model
+	 * @return  object  The model.
+	 *
+	 * @since   12.2
 	 */
-
-	public function &getModel($name = 'List', $prefix = 'FabrikAdminModel')
+	public function getModel($name = 'List', $prefix = 'FabrikAdminModel', $config = array())
 	{
 
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));

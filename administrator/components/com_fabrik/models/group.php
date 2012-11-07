@@ -461,7 +461,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);
 		$elids = $db->loadColumn();
-		$elementModel = JModelLegacy::getInstance('Element', 'FabrikModel');
+		$elementModel = JModelLegacy::getInstance('Element', 'FabrikAdminModel');
 		return $elementModel->delete($elids);
 	}
 

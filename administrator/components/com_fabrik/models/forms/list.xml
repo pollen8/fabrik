@@ -41,7 +41,9 @@
 	
 	<fieldset name="main_template">
 		
-		<field description="COM_FABRIK_FIELD_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="COM_FABRIK_FIELD_TEMPLATE_LABEL" name="template" type="folderlist"/>
+		<field description="COM_FABRIK_FIELD_TEMPLATE_DESC"
+			hide_default="0" hide_none="1"
+			directory="/components/com_fabrik/views/list/tmpl/" label="COM_FABRIK_FIELD_TEMPLATE_LABEL" name="template" type="folderlist"/>
 	
 	</fieldset>
 	
@@ -341,7 +343,12 @@
 	
 		<fieldset name="layout">
 			
-			<field default="" description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" hide_default="1" hide_none="0" label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL" name="admin_template" type="folderlist"/>
+			<field name="admin_template"
+				hide_default="0" hide_none="1"
+				default=""
+				directory="/components/com_fabrik/views/list/tmpl/"
+				description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC"
+				label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL"  type="folderlist"/>
 				
 			<field description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" name="empty_data_msg" size="70" type="text"/>
 				
@@ -351,7 +358,13 @@
 					<option value="1">JSHOW</option>
 			</field>
 			
-			<field default="admin" description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl" hide_default="1" hide_none="0" label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" name="pdf_template" type="folderlist"/>
+			<field name="pdf_template"
+				type="folderlist"
+				default=""
+				hide_default="0" hide_none="1"
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC"
+				directory="/components/com_fabrik/views/list/tmpl"
+				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL"/>
 			
 			<field class="btn-group" default="1" description="COM_FABRIK_SHOW_TITLE_DESC" label="COM_FABRIK_SHOW_TITLE_LABEL" name="show-title" type="radio">
 					<option value="0">JNO</option>

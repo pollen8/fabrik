@@ -1813,7 +1813,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$feModel = $this->getFEModel();
 		$fabrikDatabase = $feModel->getDb();
-		$dbconfigprefix = JApplication::getCfg("dbprefix");
+		$dbconfigprefix = $app->getCfg('dbprefix');
 
 		// Iterate the items to delete each one.
 		foreach ($pks as $i => $pk)
@@ -1821,7 +1821,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$feModel->setId($pk);
 			if ($table->load($pk))
 			{
-				$feModel->set('_table', $table);
+				$feModel->setTable($table);
 				if ($drop)
 				{
 					if (strncasecmp($table->db_table_name, $dbconfigprefix, JString::strlen($dbconfigprefix)) == 0)
@@ -1948,7 +1948,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$groupids = (array) $db->loadColumn();
 
 		// Delete groups
-		$groupModel = JModelLegacy::getInstance('Group', 'FabrikModel');
+		$groupModel = JModelLegacy::getInstance('Group', 'FabrikAdminModel');
 		$groupModel->delete($groupids, $deleteElements);
 		return $form;
 	}

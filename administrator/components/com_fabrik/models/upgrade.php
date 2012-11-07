@@ -84,12 +84,8 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$qItemTable = $cDb->quoteName($item->db_table_name);
 
 			// Drop the bkup table
-			$cDb->setQuery("DROP TABLE IF EXISTS " . $qTable);
-			if (!$cDb->query())
-			{
-				JError::raiseError(500, $cDb->getErrorMsg());
-				return false;
-			}
+			$cDb->dropTable($qTable);
+
 			// Test table exists
 			if (!in_array($item->db_table_name, $cnnTables[$item->connection_id]))
 			{
