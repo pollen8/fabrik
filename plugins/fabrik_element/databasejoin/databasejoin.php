@@ -1668,17 +1668,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$params = $this->getParams();
 			$joinKey = $this->getJoinValueColumn();
 			$joinLabel = $this->getJoinLabelColumn();
-			$groupByCol = $params->get('filter_groupby', 'text');
-			if ($groupByCol != -1)
-			{
-				$groupByCol = $groupByCol == 'text' ? $joinLabel : $joinKey;
-				$order = 'ORDER BY ' . $groupByCol . ' ASC';
-			}
-			else
-			{
-				$order = $this->orderBy;
-			}
-
 			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinLabel : $joinKey;
 			if (!$query)
 			{
@@ -2387,14 +2376,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        serch string
+	 * @param   string             $search        search string
+	 * @param   array              $opts          options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return string  json encoded search results
 	 */
 
-	public static function cacheAutoCompleteOptions($elementModel, $search)
+	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$params = $elementModel->getParams();
 		$db = FabrikWorker::getDbo();
