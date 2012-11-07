@@ -71,7 +71,6 @@ class FabrikControllerList extends JControllerLegacy
 		// Display the view
 		$view->assign('error', $this->getError());
 
-
 		// Build unique cache id on url, post and user id
 		$user = JFactory::getUser();
 		$uri = JFactory::getURI();

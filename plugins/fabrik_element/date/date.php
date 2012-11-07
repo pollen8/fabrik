@@ -1403,7 +1403,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        serch string
+	 * @param   string             $search        search string
 	 * @param   array              $opts          options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7

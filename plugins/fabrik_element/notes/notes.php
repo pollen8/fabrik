@@ -160,11 +160,11 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array            $data            current row data to use in placeholder replacements
-	 * @param   bool             $incWhere        should the additional user defined WHERE statement be included
-	 * @param   string           $thisTableAlias  db table alais
-	 * @param   array            $opts            options
-	 * @param   JDatabaseQuery   $query  append where to JDatabaseQuery object or return string (false)
+	 * @param   array            $data            Current row data to use in placeholder replacements
+	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string           $thisTableAlias  Db table alais
+	 * @param   array            $opts            Options
+	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
@@ -201,14 +201,22 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
-		return 'WHERE ' . implode(" OR ", $where);
+		if ($query)
+		{
+			$query->where(implode(' OR ', $where));
+			return $query;
+		}
+		else
+		{
+			return 'WHERE ' . implode(' OR ', $where);
+		}
 	}
 
 	/**
 	 * Get options order by
 	 *
-	 * @param   string         $view   view mode '' or 'filter'
-	 * @param   JDatabasQuery  $query  set to false to return a string
+	 * @param   string         $view   Ciew mode '' or 'filter'
+	 * @param   JDatabasQuery  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */

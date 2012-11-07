@@ -75,7 +75,7 @@ class FabrikViewFormBase extends JViewLegacy
 				return false;
 			}
 		}
-		$this->assign('rowid', $model->rowId);
+		$this->assign('rowid', $model->getRowId());
 		$this->assign('access', $model->checkAccessFromListSettings());
 		if ($this->access == 0)
 		{
@@ -260,7 +260,7 @@ class FabrikViewFormBase extends JViewLegacy
 			else
 			{
 				$params->set('show_page_title', $input->getInt('show_page_title', 0));
-				$params->set('page_title', $input->get('title', $title));
+				$params->set('page_title', $input->get('title', $title, 'string'));
 				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
 			if (!$this->isMambot)
@@ -318,7 +318,7 @@ class FabrikViewFormBase extends JViewLegacy
 			}
 			if ($this->showPrint)
 			{
-				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->rowId);
+				$this->printLink = FabrikHelperHTML::printIcon($model, $params, $model->getRowId());
 				$this->printURL = FabrikHelperHTML::printURL($model);
 			}
 		}
@@ -454,7 +454,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$opts->inlineMessage = (bool) $this->isMambot;
 
 		// $$$rob dont int this as keys may be string
-		$opts->rowid = (string) $model->rowId;
+		$opts->rowid = (string) $model->getRowId();
 
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
@@ -660,7 +660,7 @@ class FabrikViewFormBase extends JViewLegacy
 		// $$$rob - if returning from a failed validation then we should use the fabrik_referrer post var
 		$reffer = str_replace('&', '&amp;', $input->get('fabrik_referrer', $reffer, 'string'));
 
-		$this_rowid = is_array($model->rowId) ? implode('|', $model->rowId) : $model->rowId;
+		$this_rowid = is_array($model->getRowId()) ? implode('|', $model->getRowId()) : $model->getRowId();
 		$fields = array('<input type="hidden" name="listid" value="' . $listModel->getId() . '" />',
 			'<input type="hidden" name="listref" value="' . $listModel->getId() . '" />',
 			'<input type="hidden" name="rowid" value="' . $this_rowid . '" />', '<input type="hidden" name="Itemid" value="' . $Itemid . '" />',
@@ -706,7 +706,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
 			? '<input type="reset" class="btn button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
-		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->rowId != ''
+		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
 			? '<input type="submit" class="btn button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
@@ -742,7 +742,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		// $$$ hugh - hide actions section is we're printing, or if not actions selected
 		$noButtons = (empty($form->nextButton) && empty($form->prevButton) && empty($form->submitButton) && empty($form->gobackButton)
-			&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton) && empty($form->resetButton));
+				&& empty($form->deleteButton) && empty($form->applyButton) && empty($form->copyButton) && empty($form->resetButton));
 		if ($input->get('print', '0') == '1' || $noButtons)
 		{
 			$this->hasActions = false;

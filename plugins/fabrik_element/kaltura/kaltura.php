@@ -203,4 +203,3 @@ class PlgFabrik_ElementKaltura extends PlgFabrik_Element
 	}
 
 }
-		 ?>

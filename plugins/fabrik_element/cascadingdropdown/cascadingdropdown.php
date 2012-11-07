@@ -222,17 +222,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			switch ($displayType)
 			{
 				case 'checkbox':
-					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
 					break;
 				case 'radio':
 					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 					break;
 				case 'multilist':
-					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
+					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $default);
 					$defaultLabel = implode("\n", $html);
 					break;
 				case 'auto-complete':
-					$this->renderAutoComplete($data, $repeatCounter, $html, $defaults);
+					$this->renderAutoComplete($data, $repeatCounter, $html, $default);
 					break;
 				default:
 				case 'dropdown':
@@ -312,9 +312,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get a list of the HTML options used in the database join drop down / radio buttons
 	 *
-	 * @param   array  $data           from current record (when editing form?)
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we include custom where in query
+	 * @param   array  $data           From current record (when editing form?)
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we include custom where in query
+	 * @param   array  $opts           Additional optiosn passed intto _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
@@ -404,9 +405,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get array of option values
 	 *
-	 * @param   array  $data           data
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we add custom where statement into sql
+	 * @param   array  $data           Data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we add custom where statement into sql
+	 * @param   array  $opts           Addtional options passed into _buildQuery()
 	 *
 	 * @return  array	option values
 	 */

@@ -2,7 +2,7 @@
 <extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 
 	<name>Fabrik</name>
-	<creationDate>October 2012</creationDate>
+	<creationDate>November 2012</creationDate>
 	<author>Fabrik</author>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>GNU/GPL</license>

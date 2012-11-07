@@ -2,7 +2,7 @@
 <extension group="fabrik_form" method="upgrade" type="plugin" version="2.5">
 	<name>Fabrik Form - vBulletin forum</name>
 	<author>Hugh Messenger</author>
-	<creationDate>October 2012</creationDate>
+	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>

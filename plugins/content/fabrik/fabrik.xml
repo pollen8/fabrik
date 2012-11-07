@@ -2,7 +2,7 @@
 <extension group="content" method="upgrade" type="plugin" version="2.5">
 	<name>plg_fabrik</name>
 	<author>Pollen 8 Design Ltd</author>
-	<creationDate>October 2012</creationDate>
+	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>

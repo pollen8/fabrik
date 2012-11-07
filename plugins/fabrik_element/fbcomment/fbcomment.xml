@@ -2,7 +2,7 @@
 <extension group="fabrik_element" method="upgrade" type="plugin" version="2.5">
 	<name>plg_fabrik_element_fbcomment</name>
 	<author>Rob Clayburn</author>
-	<creationDate>October 2012</creationDate>
+	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
