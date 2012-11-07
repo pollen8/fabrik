@@ -3064,12 +3064,13 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get options order by
 	 *
-	 * @param   string  $view  view mode '' or 'filter'
+	 * @param   string         $view   Ciew mode '' or 'filter'
+	 * @param   JDatabasQuery  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
 
-	protected function getOrderBy($view = '')
+	protected function getOrderBy($view = '', $query = false)
 	{
 		if (isset($this->orderBy))
 		{
@@ -4562,9 +4563,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Turn form value into email formatted value
 	 *
-	 * @param   mixed  $value          element value
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  group repeat counter
+	 * @param   mixed  $value          Element value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Group repeat counter
 	 *
 	 * @return  string  email formatted value
 	 */
@@ -6098,17 +6099,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * Create the where part for the query that selects the list options (not applicable for most elements except joins)
+	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array   $data            current row data to use in placeholder replacements
-	 * @param   bool    $incWhere        should the additional user defined WHERE statement be included
-	 * @param   string  $thisTableAlias  db table alais
-	 * @param   array   $opts            options
+	 * @param   array            $data            Current row data to use in placeholder replacements
+	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string           $thisTableAlias  Db table alais
+	 * @param   array            $opts            Options
+	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
 	 *
-	 * @return string
+	 * @return string|JDatabaseQuery
 	 */
 
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array())
+	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		return '';
 	}

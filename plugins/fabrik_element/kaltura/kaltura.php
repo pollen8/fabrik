@@ -202,16 +202,4 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 		return "new FbKaltura('$id', $opts)";
 	}
 
-	/**
-	 * load the javascript class that manages interaction with the form element
-	 * should only be called once
-	 * @return string javascript class file
-	 */
-
-	function formJavascriptClass(&$srcs)
-	{
-		parent::formJavascriptClass($srcs);
-	}
-
 }
-		 ?>

@@ -313,14 +313,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * Get a list of the HTML options used in the database join drop down / radio buttons
 	 *
-	 * @param   array  $data           from current record (when editing form?)
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we include custom where in query
+	 * @param   array  $data           From current record (when editing form?)
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we include custom where in query
+	 * @param   array  $opts           Additional optiosn passed intto _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
 
-	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptions($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		$this->getDb();
 		$tmp = $this->_getOptionVals($data, $repeatCounter);
@@ -405,14 +406,15 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	/**
 	 * Get array of option values
 	 *
-	 * @param   array  $data           data
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we add custom where statement into sql
+	 * @param   array  $data           Data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we add custom where statement into sql
+	 * @param   array  $opts           Addtional options passed into _buildQuery()
 	 *
 	 * @return  array	option values
 	 */
 
-	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true)
+	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
 		if (!isset($this->_optionVals))
 		{

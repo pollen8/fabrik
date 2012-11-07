@@ -356,12 +356,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$db->setQuery($query);
 		return $db->loadObjectList();
 	}
+
 	/**
 	 * Get array of option values
 	 *
-	 * @param   array  $data           data
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we add custom where statement into sql
+	 * @param   array  $data           Data
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we add custom where statement into sql
+	 * @param   array  $opts           Addtional options passed into _buildQuery()
 	 *
 	 * @return  array	option values
 	 */
@@ -460,9 +462,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Get a list of the HTML options used in the database join drop down / radio buttons
 	 *
-	 * @param   array  $data           from current record (when editing form?)
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   bool   $incWhere       do we include custom where in query
+	 * @param   array  $data           From current record (when editing form?)
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   bool   $incWhere       Do we include custom where in query
+	 * @param   array  $opts           Additional optiosn passed intto _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
@@ -650,11 +653,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array            $data            current row data to use in placeholder replacements
-	 * @param   bool             $incWhere        should the additional user defined WHERE statement be included
-	 * @param   string           $thisTableAlias  db table alais
-	 * @param   array            $opts            options
-	 * @param   JDatabaseQuery   $query  append where to JDatabaseQuery object or return string (false)
+	 * @param   array            $data            Current row data to use in placeholder replacements
+	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string           $thisTableAlias  Db table alais
+	 * @param   array            $opts            Options
+	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
@@ -1654,8 +1657,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Get options order by
 	 *
-	 * @param   string         $view   view mode '' or 'filter'
-	 * @param   JDatabasQuery  $query  set to false to return a string
+	 * @param   string         $view   Ciew mode '' or 'filter'
+	 * @param   JDatabasQuery  $query  Set to false to return a string
 	 *
 	 * @return  string  order by statement
 	 */
