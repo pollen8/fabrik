@@ -1208,7 +1208,9 @@ var FbForm = new Class({
 			sge = subGroup;
 			var add = sge.getElement('.addGroup');
 			var lastth = sge.getParent('table').getElements('thead th').getLast();
+			if (typeOf(add) !== 'null') {
 			add.inject(lastth);
+			}
 		}
 		sge.setStyle('display', 'none');
 		notice.inject(sge, 'after');

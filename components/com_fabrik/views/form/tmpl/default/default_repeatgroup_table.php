@@ -16,9 +16,11 @@ $group = $this->group;
 		<?php
 
 		// Load each repeated group in a <tr>
+		$this->i = 0;
 		foreach ($group->subgroups as $subgroup) :
 			$this->elements = $subgroup;
 			echo $this->loadTemplate('repeatgroup_row');
+			$this->i ++;
 		endforeach;
 		?>
 	</tbody>
