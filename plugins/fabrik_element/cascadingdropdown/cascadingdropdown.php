@@ -51,15 +51,18 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$id = $this->getHTMLId($repeatCounter);
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		if ($params->get('cdd_display_type') == 'auto-complete')
+		if ($this->getDisplayType() == 'auto-complete')
 		{
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'fabrikcascadingdropdown');
+			$autoOpts = array();
+			$autoOpts['observerid'] = $this->getWatchId($repeatCounter);
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'cascadingdropdown', $autoOpts);
 		}
 		FabrikHelperHTML::script('media/com_fabrik/js/lib/Event.mock.js');
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->showPleaseSelect = $this->showPleaseSelect();
 		$opts->watch = $this->getWatchId($repeatCounter);
-		$opts->id = $this->id;
+		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
+		$opts->id = $this->getId();
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowid = $input->getInt('rowid', 0);
@@ -79,6 +82,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && $app->input->getInt('rowid', 0) != 0);
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
+		$this->elementJavascriptJoinOpts($opts);
 		$opts = json_encode($opts);
 		return "new FbCascadingdropdown('$id', $opts)";
 	}
@@ -103,9 +107,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			return 'CONCAT(' . $val . ')';
 		}
 		$label = FabrikString::shortColName($join->params->get('join-label'));
+
 		if ($label == '')
 		{
-			JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
+			// This is being raised with checkbox rendering and using dropdown filter, everything seems to be working with using hte element name though!
+			// JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
 		$joinTableName = $join->table_join_alias;
@@ -208,40 +214,34 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		// Not yet implemented always going to use dropdown for now
 		$displayType = $params->get('cdd_display_type', 'dropdown');
-		$str = array();
+		$html = array();
 		if ($this->canUse())
 		{
 			// $$$ rob display type not set up in parameters as not had time to test fully yet
 
-			/*		<param name="cdd_display_type" type="list" default="dropdown" label="RENDERJOIN" description="RENDERJOINDESC">
-			 <option value="dropdown">Drop down list</option>
-			<option value="radio">Radio Buttons</option>
-			<option value="auto-complete">Auto-complete</option>
-			</param>
-			 */
-
 			switch ($displayType)
 			{
-				/*case 'auto-complete':
-				    $str .= "<input type=\"text\" size=\"20\" name=\"{$name}-auto-complete\" id=\"{$id}-auto-complete\"
-				    value=\"$defaultLabel\" class=\"fabrikinput inputbox autocomplete-trigger\"/>";
-				$str .= "<input type=\"hidden\" size=\"20\" name=\"{$name}\" id=\"{$id}\" value=\"$default\"/>";
-				break;
-				break;
+				case 'checkbox':
+					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+					break;
 				case 'radio':
-				$str .= "<div class='fabrikSubElementContainer' id='$id'>";
-				$str .= FabrikHelperHTML::radioList($tmp, $name, 'class="'.$class.'" '.$disabled.' id="'.$id.'"', $default, 'value', 'text');
-				$str .= " <img src=\''.COM_FABRIK_LIVESITE."media/com_fabrik/images/ajax-loader.gif\" class=\"loader\" alt=\''.JText::_('Loading')
-				."\" style=\"display:none;padding-left:10px;\" />";
-				break;*/
+					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
+					break;
+				case 'multilist':
+					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
+					$defaultLabel = implode("\n", $html);
+					break;
+				case 'auto-complete':
+					$this->renderAutoComplete($data, $repeatCounter, $html, $defaults);
+					break;
 				default:
 				case 'dropdown':
 					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"';
-					$str[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
+					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 					break;
 			}
-			$str[] = $this->loadingImg;
-			$str[] = ($displayType == "radio") ? "</div>" : '';
+			$html[] = $this->loadingImg;
+			$html[] = ($displayType == "radio") ? "</div>" : '';
 		}
 
 		if (!$this->isEditable())
@@ -264,17 +264,49 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if ($params->get('cdd_desc_column', '') !== '')
 		{
-			$str[] = '<div class="dbjoin-description">';
+			$html[] = '<div class="dbjoin-description">';
 			for ($i = 0; $i < count($this->_optionVals); $i++)
 			{
 				$opt = $this->_optionVals[$i];
 				$display = in_array($opt->value, $default) ? '' : 'none';
 				$c = $i + 1;
-				$str[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
+				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
 			}
-			$str[] = '</div>';
+			$html[] = '</div>';
 		}
-		return implode("\n", $str);
+		return implode("\n", $html);
+	}
+
+	/**
+	 * Does the element store its data in a join table (1:n)
+	 *
+	 * @return	bool
+	 */
+
+	public function isJoin()
+	{
+		$params = $this->getParams();
+		if (in_array($this->getDisplayType(), array('checkbox', 'multilist')))
+		{
+			return true;
+		}
+		else
+		{
+			return parent::isJoin();
+		}
+	}
+
+	/**
+	 * Get the display type (list,checkbox,mulitselect etc)
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function getDisplayType()
+	{
+		return $this->getParams()->get('cdd_display_type', 'dropdown');
 	}
 
 	/**
@@ -429,6 +461,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			return false;
 		}
+		if (in_array($this->getDisplayType(), array('checkbox', 'multilist', 'radio')))
+		{
+			return false;
+		}
 		return (bool) $params->get('cascadingdropdown_showpleaseselect', true);
 	}
 
@@ -539,7 +575,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					// Test for ajax update
 					if ($input->get('fabrik_cascade_ajax_update') == 1)
 					{
-						$whereval = $input->get('v');
+
+						// Allow for multiple values - e.g. when observing a db join rendered as a checkbox
+						$whereval = $input->get('v', array(), 'array');
+						if (count($whereval) === 1)
+						{
+							$whereval = $whereval[0];
+						}
+						elseif (empty($whereval))
+						{
+							$whereval = '';
+						}
 					}
 					else
 					{
@@ -602,13 +648,27 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				}
 			}
 		}
+
 		$where = '';
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')
 		{
 			$whereBits = explode('___', $wherekey);
 			$wherekey = array_pop($whereBits);
-			$where = $wherekey . ' = ' . $db->quote($whereval);
+			$where = $wherekey;
+			if (is_array($whereval))
+			{
+				foreach ($whereval as &$v)
+				{
+					$v = $db->quote($v);
+				}
+				$where .=  ' IN (' . implode(',', $whereval) . ')';
+			}
+			else
+			{
+				$where .=  ' = ' .$db->quote($whereval);
+			}
+
 		}
 		$filter = $params->get('cascadingdropdown_filter');
 
@@ -704,7 +764,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
-
+		$query = $this->buildQueryJoin($query);
 		$query->where(FabrikString::rtrimword($where));
 
 		if (!JString::stristr($where, 'order by'))
@@ -731,8 +791,10 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
 			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-			$bits = explode('___', $params->get($this->labelParam));
-			return $join->table_join_alias . '___' . $bits[1];
+			/* $bits = explode('___', $params->get($this->labelParam));
+			return $join->table_join_alias . '___' . $bits[1]; */
+
+			return $this->getLabelParamVal();
 		}
 		else
 		{
@@ -740,29 +802,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			return 'CONCAT(' . $val . ')';
 		}
 	}
-
-	/**
-	 * Get the name of the field to order the table data by
-	 * can be overwritten in plugin class - but not currently done so
-	 * $$$ hugh - commenting this out as it needs to be same as databasejoin element
-	 *
-	 * @return string column to order by tablename___elementname and yes you can use aliases in the order by clause
-	 */
-/*
-	public function getOrderByName()
-	{
-		$params = $this->getParams();
-		$join = $this->getJoin();
-		$joinTable = $join->table_join_alias;
-		$joinVal = $this->getValColumn();
-		$return = !strstr($joinVal, 'CONCAT') ? $joinTable . '.' . $joinVal : $joinVal;
-		if ($return == '.')
-		{
-			$return = parent::getOrderByName();
-		}
-		return $return;
-	}
-*/
 
 	/**
 	 * Load connection object
@@ -814,79 +853,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Get the table filter for the element
-	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
-	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 *
-	 * @return  string	filter html
-	 */
-
-	public function getFilter($counter = 0, $normal = true)
-	{
-		$params = $this->getParams();
-		$element = $this->getElement();
-		$listModel = $this->getlistModel();
-		$table = $listModel->getTable();
-		$fabrikDb = $listModel->getDb();
-		$elName = $this->getFilterFullName();
-		$htmlid = $this->getHTMLId() . 'value';
-		$default = $this->getDefaultFilterVal($normal, $counter);
-		$v = $this->filterName($counter, $normal);
-
-		$id = explode('___', $params->get('cascadingdropdown_id'));
-		$id = array_pop($id);
-		$label = explode('___', $params->get($this->labelParam));
-		$label = array_pop($label);
-		$dbname = $fabrikDb->quoteName($this->getDbName());
-		$size = $params->get('filter_length', 20);
-		$return = array();
-		switch ($element->filter_type)
-		{
-			case "dropdown":
-				$oDistinctData = array();
-				$rows[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_FILTER_PLEASE_SELECT'));
-				if (is_array($oDistinctData))
-				{
-					$rows = array_merge($rows, $oDistinctData);
-				}
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
-				break;
-
-			case "field":
-			case '':
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" size="' . $size . '" id="'
-					. $htmlid . '" />';
-				break;
-
-			case 'hidden':
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
-				break;
-
-			case "auto-complete":
-				$defaultLabel = $this->getLabelForValue($default);
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
-				$return[] = '<input type="text" name="' . $element->id . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" size="'
-					. $size . '" value="' . $defaultLabel . '" id="' . $htmlid . '-auto-complete" />';
-				break;
-
-		}
-		if ($normal)
-		{
-			$return[] = $this->getFilterHiddenFields($counter, $elName);
-		}
-		else
-		{
-			$return[] = $this->getAdvancedFilterHiddenFields();
-		}
-		return implode("\n", $return);
-	}
-
-	/**
 	 * If used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
 	 *
@@ -926,7 +892,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$opts = new stdClass;
 			$opts->formid = $formModel->get('id');
 			$opts->filterid = $filterid;
-			$opts->elid = $this->id;
+			$opts->elid = $this->getId();
 			$opts->def = $default;
 			$opts->filterobj = 'Fabrik.filter_' . $container;
 			$opts = json_encode($opts);
@@ -975,50 +941,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Called from admin element controller when element saved
-	 *
-	 * @param   array  $data  posted element save data
-	 *
-	 * @return  bool  save ok or not
-	 */
-
-	public function onSave($data)
-	{
-		$params = json_decode($data['params']);
-		if (!$this->canEncrypt() && !empty($params->encrypt))
-		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
-			return false;
-		}
-		$element = $this->getElement();
-		$table_join = $this->getDbName();
-		if (!$table_join)
-		{
-			return false;
-		}
-		$table_join_key = str_replace($table_join . '___', '', $params->cascadingdropdown_id);
-		$join_label = str_replace($table_join . '___', '', $params->cascadingdropdown_label);
-
-		// Load join based on this element id
-		$join = FabTable::getInstance('Join', 'FabrikTable');
-		$join->load(array('element_id' => $this->id));
-		$join->table_join = $table_join;
-		$join->join_type = 'left';
-		$join->group_id = $data['group_id'];
-		$join->element_id = $element->id;
-		$join->table_key = str_replace('`', '', $element->name);
-		$join->table_join_key = $table_join_key;
-		$join->join_from_table = '';
-		$o = new stdClass;
-		$l = 'join-label';
-		$o->$l = $join_label;
-		$o->type = 'element';
-		$join->params = json_encode($o);
-		$join->store();
-		return true;
 	}
 
 	/**
@@ -1099,58 +1021,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	public function getFixedChildParameters()
 	{
 		return array('cascadingdropdown_observe');
-	}
-
-	/**
-	 * Build the filter query for the given element.
-	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
-	 *
-	 * @param   string  $key            element name in format `tablename`.`elementname`
-	 * @param   string  $condition      =/like etc
-	 * @param   string  $value          search string - already quoted if specified in filter array options
-	 * @param   string  $originalValue  original filter value without quotes or %'s applied
-	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
-	 *
-	 * @return  string	sql query part e,g, "key = value"
-	 */
-
-	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
-	{
-		/* $$$ rob $this->_rawFilter set in tableModel::getFilterArray()
-		 used in prefilter dropdown in admin to allow users to prefilter on raw db join value*/
-		$db = $this->getDb();
-		$params = $this->getParams();
-		if ($type == 'querystring')
-		{
-			$key2 = FabrikString::safeColNameToArrayKey($key);
-
-			/* $$$ rob no matter whether you use elementname_raw or elementname in the querystring filter
-			 * by the time it gets here we have normalized to elementname. So we check if the original qs filter was looking at the raw
-			 * value if it was then we want to filter on the key and not the label
-			 */
-			$filter = JFilterInput::getInstance();
-			$get = $filter->clean($_GET, 'array');
-			if (!array_key_exists($key2, $get))
-			{
-				if (!$this->_rawFilter)
-				{
-					$k = $db->quoteName($params->get('join_db_name')) . '.' . $db->quoteName($params->get('join_key_column'));
-				}
-				else
-				{
-					$k = $key;
-				}
-				$this->encryptFieldName($k);
-				return "$k $condition $value";
-			}
-		}
-		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
-		{
-			$key = FabrikString::safeColName($params->get($this->labelParam));
-		}
-		$this->encryptFieldName($key);
-		$str = "$key $condition $value";
-		return $str;
 	}
 
 	/**

@@ -1209,7 +1209,7 @@ var FbForm = new Class({
 			var add = sge.getElement('.addGroup');
 			var lastth = sge.getParent('table').getElements('thead th').getLast();
 			if (typeOf(add) !== 'null') {
-			add.inject(lastth);
+				add.inject(lastth);
 			}
 		}
 		sge.setStyle('display', 'none');

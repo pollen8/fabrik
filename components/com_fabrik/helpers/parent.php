@@ -1300,7 +1300,6 @@ class FabrikWorker
 
 	public static function JSONtoData($data, $toArray = false)
 	{
-
 		if (is_string($data))
 		{
 			if (!strstr($data, '{'))

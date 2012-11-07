@@ -1164,7 +1164,6 @@ var fabrikCalendar = new Class({
 	},
 	
 	deleteEntry: function () {
-		debugger;
 		var key = this.activeHoverEvent.id.replace('fabrikEvent_', '');
 		var i = key.split('_');
 		var listid = i[0];

@@ -32,13 +32,10 @@ class FabrikViewElement extends JViewLegacy
 	{
 		echo "display";exit;
 	/* 	FabrikHelperHTML::framework();
-	 	$app = JFactory::getApplication();
-	 	$input = $app->input;
-		$element = $input->get('element');
-		$elementid =  $input->get('elid');
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className =  $input->get('plugin');
-		print_r($className);exit;
+		$element = JRequest::getVar('element');
+		$elementid = JRequest::getVar('elid');
+		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$className = JRequest::getVar('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {
 			JError::handleMessage($plugin);
@@ -50,7 +47,6 @@ class FabrikViewElement extends JViewLegacy
 		$groupModel = $plugin->getGroup();
 		$srcs = array();
 		$plugin->formJavascriptClass($srcs);
-		echo "srcs = ";print_r($srcs);
 		FabrikHelperHTML::script($srcs);
 		$html = '<script>';
 		$html .= $plugin->elementJavascript($repeatCounter);

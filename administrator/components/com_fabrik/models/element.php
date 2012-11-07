@@ -683,7 +683,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$this->updateJavascript($data);
 			$elementModel->setId($this->getState($this->getName() . '.id'));
 			$row->id = $elementModel->getId();
-			$data->id = $row->id;
+			$data['id'] = $row->id;
 			$this->createRepeatElement($elementModel, $row);
 
 			// If new, check if the element's db table is used by other tables and if so add the element  to each of those tables' groups
@@ -1245,6 +1245,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		$dispatcher = JDispatcher::getInstance();
 		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
+
+		// $$$ rob - $usedPlugins was not defined at all - not sure what should be happening here but assinged empty array to stop notices
+		$usedPlugins = array();
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')

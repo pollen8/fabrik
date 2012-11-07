@@ -1654,6 +1654,7 @@ class FabrikFEModelForm extends FabModelForm
 				// Set join groups repeat to that of the elements options
 				if ($elementModel->isJoin())
 				{
+					// Set the group to be repeating
 					$joinGroup->getParams()->set('repeat_group_button', 1);
 
 					// Set repeat count
