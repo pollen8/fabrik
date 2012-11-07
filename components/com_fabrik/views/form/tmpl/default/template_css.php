@@ -160,6 +160,43 @@ echo "
 	width:50%;
 }
 
+#{$view}_$c table.repeatGroupTable {
+	width: 100%;
+}
+
+/** Repeat group rendered as a table **/
+#{$view}_$c .repeatGroupTable .fabrikElementContainer {
+	display:table-cell;
+	width: auto;
+	padding: 5px;
+	margin: 0;
+}
+
+#{$view}_$c .repeatGroupTable .fabrikElement {
+    margin: 0;
+}
+
+#details_$c .fabrikErrorMessage {
+    display: none;
+}
+
+#{$view}_$c ul.fabrikRepeatData {
+	margin: 0;
+}
+
+#details_$c .oddRow0 {
+	background-color: #FAFAFA;
+}
+
+#details_$c .oddRow1,
+	background-color: #Efefef;
+}
+
+
+#details_$c .fabrikSubGroup {
+    margin-top: 10px;
+}
+
 /*This controls the styling of the buttons area at the bottom of your form*/
 #{$view}_$c .fabrikActions{
 	padding:10px;
@@ -232,11 +269,10 @@ section for dropdowns radio buttons etc**/
 
 #{$view}_$c .fabrikSubGroupElements{
 	width:80%;
-	border: 1px dotted #666;
-	/* float:left; */
+	border: 1px dotted #ccc;
 }
 
-#{$view}_$c .fabrikGroupRepeater{
+#{$view}_$c div.fabrikGroupRepeater{
 	position: absolute;
 	right: 10px;
 	top: 0;
