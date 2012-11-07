@@ -223,17 +223,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			switch ($displayType)
 			{
 				case 'checkbox':
-					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
 					break;
 				case 'radio':
 					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 					break;
 				case 'multilist':
-					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
+					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $default);
 					$defaultLabel = implode("\n", $html);
 					break;
 				case 'auto-complete':
-					$this->renderAutoComplete($data, $repeatCounter, $html, $defaults);
+					$this->renderAutoComplete($data, $repeatCounter, $html, $default);
 					break;
 				default:
 				case 'dropdown':

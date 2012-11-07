@@ -929,15 +929,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 						$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 						break;
 					case 'checkbox':
-						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $defaults);
+						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'multilist':
-						$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $defaults);
+						$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $default);
 						$defaultLabel = implode("\n", $html);
 						break;
 					case 'auto-complete':
-						$this->renderAutoComplete($data, $repeatCounter, $html, $defaults);
+						$this->renderAutoComplete($data, $repeatCounter, $html, $default);
 						break;
 				}
 
@@ -1013,14 +1013,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param   array  $data           Form data
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   array  &$html          HTML to assign output to
-	 * @param   array  $defaults       Default values
+	 * @param   array  $default        Default values
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  void
 	 */
 
-	protected function renderAutoComplete($data, $repeatCounter, &$html, $defaults)
+	protected function renderAutoComplete($data, $repeatCounter, &$html, $default)
 	{
 		$formModel = $this->getFormModel();
 		$thisElName = $this->getHTMLName($repeatCounter);
@@ -1055,14 +1055,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   array  &$html          HTML to assign output to
 	 * @param   array  $tmp            List of value/label objects
-	 * @param   array  $defaults       Default values
+	 * @param   array  $default        Default values
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  void
 	 */
 
-	protected function renderMultiSelectList($data, $repeatCounter, &$html, $tmp, $defaults)
+	protected function renderMultiSelectList($data, $repeatCounter, &$html, $tmp, $default)
 	{
 		$formModel = $this->getFormModel();
 		$thisElName = $this->getHTMLName($repeatCounter);
@@ -1091,14 +1091,14 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   array  &$html          HTML to assign output to
 	 * @param   array  $tmp            List of value/label objects
-	 * @param   array  $defaults       Default values
+	 * @param   array  $default       Default values
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  void
 	 */
 
-	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $defaults)
+	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $default)
 	{
 		$formModel = $this->getFormModel();
 		$groupModel = $this->getGroupModel();
@@ -1107,7 +1107,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$thisElName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$options_per_row = intval($params->get('dbjoin_options_per_row', 0));
-
 		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$rawname = $this->getFullName(false, true, false) . '_raw';
