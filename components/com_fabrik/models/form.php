@@ -1035,7 +1035,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
 		{
-			return;
+			return false;
 		}
 		$this->removeEmptyNoneJoinedGroupData($this->_formData);
 
