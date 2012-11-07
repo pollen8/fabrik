@@ -1397,7 +1397,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$data = JArrayHelper::getValue($row, $col, $data);
 
 			// Rendered as checkbox/mutliselect
-			if (strstr($data, GROUPSPLITTER))
+			if (is_string($data) && strstr($data, GROUPSPLITTER))
 			{
 				$labeldata = explode(GROUPSPLITTER, $data);
 			}
