@@ -2638,4 +2638,23 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		return $params->get($this->concatLabelParam, '') == '';
 	}
 
+	public function includeInSearchAll($advancedMode = false)
+	{
+		if ($advancedMode)
+		{
+			$join = $this->getJoinModel();
+			$fields = $join->getJoin()->getFields();
+			$field = JArrayHelper::fromObject(JArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
+			$type = JArrayHelper::getValue($field, 'Type', '');
+			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
+			foreach ($notAllowed as $test)
+			{
+				if (stristr($type, $test)) {
+					return false;
+				}
+			}
+		}
+		return parent::includeInSearchAll($advancedMode);
+	}
+
 }
