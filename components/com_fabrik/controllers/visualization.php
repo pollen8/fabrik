@@ -72,7 +72,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		// F3 cache with raw view gives error
 		if (in_array($input->get('format'), array('raw', 'csv')))

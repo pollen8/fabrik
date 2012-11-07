@@ -77,7 +77,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$view->isMambot = $this->isMambot;
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		$user = JFactory::getUser();
 
 		// Only allow cached pages for users not logged in.

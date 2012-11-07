@@ -162,7 +162,7 @@ class FabrikAdminViewList extends JViewLegacy
 			}
 			$lists[] = $row;
 		}
-		$this->assign('lists', $lists);
+		$this->lists = $lists;
 		$this->addConfirmCopyToolbar();
 		parent::display($tpl);
 	}

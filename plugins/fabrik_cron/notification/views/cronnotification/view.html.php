@@ -10,7 +10,7 @@ class fabrikViewCronnotification extends JViewLegacy
 
 	function display( $tmpl = 'default')
 	{
-		$this->assignRef('rows', $this->get('UserNotifications'));
+		$this->rows = $this->get('UserNotifications');
 
 		$viewName = $this->getName();
 

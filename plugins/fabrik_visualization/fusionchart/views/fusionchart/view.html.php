@@ -47,24 +47,24 @@ class fabrikViewFusionchart extends JViewLegacy
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
+		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		if ($this->requiredFiltersFound)
 		{
-			$this->assign('chart', $this->get('Fusionchart'));
+			$this->chart = $this->get('Fusionchart');
 		}
 		else
 		{
-			$this->assign('chart', '');
+			$this->chart = '';
 		}
 		$params = $model->getParams();
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assign('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->containerId = $this->get('ContainerId');
+		$this->filters = $this->get('Filters');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filterFormURL = $this->get('FilterFormURL');
 		$tpl = $params->get('fusionchart_layout', $tpl);
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/' . $tpl);
 

@@ -49,15 +49,15 @@ class FabrikAdminViewImport extends JViewLegacy
 		$input->set('hidemainmenu', true);
 		$this->chooseElementTypesToolBar();
 		$session = JFactory::getSession();
-		$this->assign('data', $session->get('com_fabrik.csvdata'));
-		$this->assign('matchedHeadings', $session->get('com_fabrik.matchedHeadings'));
-		$this->assign('newHeadings', $this->get('NewHeadings'));
-		$this->assign('headings', $this->get('Headings'));
+		$this->data = $session->get('com_fabrik.csvdata');
+		$this->matchedHeadings = $session->get('com_fabrik.matchedHeadings');
+		$this->newHeadings = $this->get('NewHeadings');
+		$this->headings = $this->get('Headings');
 		$pluginManager = $this->getModel('pluginmanager');
-		$this->assign('table', $this->get('ListModel')->getTable());
-		$this->assign('elementTypes', $pluginManager->getElementTypeDd('field', 'plugin[]'));
-		$this->assign('sample', $this->get('Sample'));
-		$this->assign('selectPKField', $this->get('SelectKey'));
+		$this->table = $this->get('ListModel')->getTable();
+		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]'));
+		$this->sample = $this->get('Sample');
+		$this->selectPKField', $this->get('SelectKey'));
 		parent::display('chooseElementTypes');
 	}
 

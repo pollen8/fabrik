@@ -45,7 +45,7 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 			$view->setModel( $model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		return $view->display();
 	}
 

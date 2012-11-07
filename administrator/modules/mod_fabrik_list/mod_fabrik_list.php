@@ -112,7 +112,7 @@ if (!JError::isError($model))
 $view->isMambot = true;
 
 // Display the view
-$view->assign('error', $controller->getError());
+$view->error = $controller->getError();
 
 // Build unique cache id on url, post and user id
 $user = JFactory::getUser();

@@ -46,7 +46,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		$js = $model->getJs();
 		$this->txt = $model->getText();
 		$params = $model->getParams();
-		$this->assign('params', $params);
+		$this->params = $params;
 		$tpl = $params->get('fb_gm_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
@@ -64,7 +64,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		{
 			// Pdabot
 			$template = 'static';
-			$this->assign('staticmap', $this->get('StaticMap'));
+			$this->staticmap = $this->get('StaticMap');
 		}
 		else
 		{
@@ -109,23 +109,23 @@ class fabrikViewGooglemap extends JViewLegacy
 
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$this->assign('sidebarPosition', $params->get('fb_gm_use_overlays_sidebar'));
+		$this->filters = $this->get('Filters');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filterFormURL = $this->get('FilterFormURL');
+		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
 		if ($this->get('ShowSideBar'))
 		{
-			$this->assign('showSidebar', 1);
-			$this->assign('overlayUrls', (array) $params->get('fb_gm_overlay_urls'));
-			$this->assign('overlayLabels', (array) $params->get('fb_gm_overlay_labels'));
+			$this->showSidebar = 1;
+			$this->overlayUrls = (array) $params->get('fb_gm_overlay_urls');
+			$this->overlayLabels = (array) $params->get('fb_gm_overlay_labels');
 		}
 		else
 		{
-			$this->assign('showSidebar', 0);
+			$this->showSidebar = 0;
 		}
 		$this->_setPath('template', $tmplpath);
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('groupTemplates', $this->get('GroupTemplates'));
+		$this->containerId = $this->get('ContainerId');
+		$this->groupTemplates = $this->get('GroupTemplates');
 		echo parent::display($template);
 	}
 

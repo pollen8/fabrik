@@ -48,14 +48,14 @@ class fabrikViewTimeline extends JViewLegacy
 		$row = $model->getVisualization();
 
 		$js = $model->render();
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('row', $row);
-		$this->assign('showFilters', $input->getInt('showfilters', 1) === 1 ? 1 : 0);
-		$this->assignRef('filters', $this->get('Filters'));
+		$this->containerId = $this->get('ContainerId');
+		$this->row = $row;
+		$this->showFilters = $input->getInt('showfilters', 1) === 1 ? 1 : 0;
+		$this->filters = $this->get('Filters');
 		$this->advancedSearch = $this->get('AdvancedSearchLink');
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->filterFormURL = $this->get('FilterFormURL');
 		$params = $model->getParams();
-		$this->assignRef('params', $params);
+		$this->params = $params;
 		$this->width = $params->get('timeline_width', '700');
 		$this->height = $params->get('timeline_height', '300');
 		$tpl = $params->get('timeline_layout', $tpl);

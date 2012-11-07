@@ -44,17 +44,17 @@ class FabrikViewSlideshow extends JViewLegacy
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$this->assign('js', $this->get('JS'));
+		$this->js = $this->get('JS');
 		$viewName = $this->getName();
 		$params = $model->getParams();
-		$this->assign('params', $params);
+		$this->params = $params;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('filters', $this->get('Filters'));
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
-		$this->assign('params', $model->getParams());
-		$this->assign('containerId', $this->get('ContainerId'));
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filters = $this->get('Filters');
+		$this->filterFormURL = $this->get('FilterFormURL');
+		$this->params = $model->getParams();
+		$this->containerId = $this->get('ContainerId');
 		$tpl = $pluginParams->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);

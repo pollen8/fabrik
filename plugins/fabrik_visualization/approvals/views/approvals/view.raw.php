@@ -30,7 +30,7 @@ class fabrikViewApprovals extends JViewLegacy
 		$id = $input->get('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 
-		$this->assign('plugin', $this->get('Plugin'));
+		$this->plugin = $this->get('Plugin');
 		$model->runPluginTask();
 	}
 

@@ -46,19 +46,19 @@ class fabrikViewFusion_gantt_chart extends JViewLegacy
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
+		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		if ($this->requiredFiltersFound)
 		{
-			$this->assign('chart', $this->get('Chart'));
+			$this->chart = $this->get('Chart');
 		}
 		$params = $model->getParams();
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->containerId = $this->get('ContainerId');
+		$this->filters = $this->get('Filters');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
 		$tpl = $pluginParams->get('fusion_gantt_chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);

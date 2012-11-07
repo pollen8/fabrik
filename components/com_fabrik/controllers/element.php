@@ -69,7 +69,7 @@ class FabrikControllerElement extends JControllerLegacy
 		$view->editable = ($this->mode == 'readonly') ? false : true;
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		return $view->display();
 	}

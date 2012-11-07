@@ -81,7 +81,7 @@ class FabrikController extends JControllerLegacy
 		}
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		if (($viewName = 'form' || $viewName = 'details'))
 		{
 			$cachable = true;

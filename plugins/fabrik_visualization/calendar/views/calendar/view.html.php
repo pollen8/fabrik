@@ -45,12 +45,12 @@ class fabrikViewCalendar extends JViewLegacy
 		$model->setId($id);
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
-		$this->assign('params', $params);
-		$this->assign('containerId', $model->getJSRenderContext());
+		$this->params = $params;
+		$this->containerId = $model->getJSRenderContext();
 		$this->filters = $this->get('Filters');
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('showTitle', $input->getInt('show-title', 1));
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showTitle = $input->getInt('show-title', 1);
+		$this->filterFormURL = $this->get('FilterFormURL');
 
 		$calendar = $this->row;
 
@@ -58,14 +58,13 @@ class fabrikViewCalendar extends JViewLegacy
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 		$params = $model->getParams();
 
-		$canAdd = $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
+		$this->canAdd = $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
 
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
-		if ($canAdd && $this->requiredFiltersFound)
+		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+		if ($this->canAdd && $this->requiredFiltersFound)
 		{
 			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
 		}
-		$this->assign('canAdd', $canAdd);
 
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
@@ -99,7 +98,7 @@ class fabrikViewCalendar extends JViewLegacy
 		$options->calendarId = $calendar->id;
 		$options->popwiny = $params->get('yoffset', 0);
 		$options->urlfilters = $urlfilters;
-		$options->canAdd = $canAdd;
+		$options->canAdd = $this->canAdd;
 
 		$options->restFilterStart = FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$options->tmpl = $tpl;

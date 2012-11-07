@@ -75,8 +75,8 @@ class FabrikViewFormBase extends JViewLegacy
 				return false;
 			}
 		}
-		$this->assign('rowid', $model->getRowId());
-		$this->assign('access', $model->checkAccessFromListSettings());
+		$this->rowid = $model->getRowId();
+		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -112,17 +112,17 @@ class FabrikViewFormBase extends JViewLegacy
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
 		$tmpl = $this->get('tmpl');
-		$this->assign('tmpl', $tmpl);
+		$this->tmpl = $tmpl;
 
 		$this->_addButtons();
 		JDEBUG ? $profiler->mark('form view before group view got') : null;
 
 		$this->groups = $model->getGroupView($tmpl);
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
-		$this->assignRef('data', $model->data);
-		$this->assignRef('modeldata', $model->data);
-		$this->assignRef('params', $params);
-		$this->assign('tipLocation', $params->get('tiplocation'));
+		$this->data = $model->data;
+		$this->modeldata = $model->data;
+		$this->params = $params;
+		$this->tipLocation = $params->get('tiplocation');
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 
 		// Cck in admin?
@@ -152,11 +152,11 @@ class FabrikViewFormBase extends JViewLegacy
 			$form->fieldsetTag = 'div';
 			$form->legendTag = 'h3';
 		}
-		$this->assignRef('form', $form);
+		$this->form = $form;
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass;
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
-		$this->assignRef('list', $list);
+		$this->list = $list;
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
 		$this->linkedTables = $this->get('RelatedTables');
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
@@ -211,7 +211,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$model = $this->getModel();
 		if (!$model->isMultiPage())
 		{
-			$this->assign('message', '');
+			$this->message = '';
 			return;
 		}
 		$message = '';
@@ -226,7 +226,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$message .= ' <a href="#" class="clearSession">' . JText::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
-		$this->assign('message', $message);
+		$this->message = $message;
 	}
 
 	/**
