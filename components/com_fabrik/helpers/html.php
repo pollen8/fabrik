@@ -1106,7 +1106,7 @@ EOD;
 			}
 			else
 			{
-				if (FabrikWorker::js())
+				if (FabrikWorker::j3())
 				{
 					JHTML::stylesheet('components/com_fabrik/libs/slimbox2/css/slimbox2.css');
 					self::script('components/com_fabrik/libs/slimbox2/js/slimbox2.js');
