@@ -436,7 +436,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->clearFliterLink = $this->get('clearButton');
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode = (int) $params->get('show-table-filters');
-		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4);
+		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4;
 		$this->showFilters = $this->get('showFilters');
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 

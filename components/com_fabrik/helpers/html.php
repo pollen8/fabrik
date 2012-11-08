@@ -1106,8 +1106,16 @@ EOD;
 			}
 			else
 			{
-				JHTML::stylesheet('components/com_fabrik/libs/slimbox1.64/css/slimbox.css');
-				self::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
+				if (FabrikWorker::js())
+				{
+					JHTML::stylesheet('components/com_fabrik/libs/slimbox2/css/slimbox2.css');
+					self::script('components/com_fabrik/libs/slimbox2/js/slimbox2.js');
+				}
+				else
+				{
+					JHTML::stylesheet('components/com_fabrik/libs/slimbox1.64/css/slimbox.css');
+					self::script('components/com_fabrik/libs/slimbox1.64/js/slimbox.js');
+				}
 			}
 			self::$modal = true;
 		}
