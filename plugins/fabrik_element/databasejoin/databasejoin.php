@@ -1477,6 +1477,10 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinVal = $this->getJoinLabelColumn();
 			$incJoin = (trim($params->get($this->concatLabelParam)) == '' && trim($params->get('database_join_where_sql') == '')) ? false : true;
 			$rows = $this->filterValueList($normal, null, $joinVal, '', $incJoin);
+			foreach ($rows as &$r)
+			{
+				$r->text = strip_tags($r->text);
+			}
 			if (!$rows)
 			{
 				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
