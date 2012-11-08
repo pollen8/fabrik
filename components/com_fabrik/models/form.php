@@ -425,12 +425,13 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 
 		// Finally see if the options are overridden by a querystring var
+		$baseTmpl = $tmpl;
 		$tmpl = JRequest::getVar('layout', $tmpl);
 
-		// Test it exists - otherwise revert to default tmpl
+		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
 		{
-			$tmpl = 'default';
+			$tmpl = $baseTmpl;
 		}
 		$item->form_template = $tmpl;
 		return $tmpl;
