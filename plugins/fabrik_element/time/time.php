@@ -248,7 +248,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	/**
 	 * get the value to store the value in the db
 	 *
-	 * @param   mixed  $val  (array normally but string on csv import)
+	 * @param   mixed  $val  (array normally but string on csv import or copy rows)
 	 *
 	 * @return  string  yyyy-mm-dd
 	 */
@@ -259,6 +259,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 		{
 			return str_replace('', '00', $val[0]) . ':' . str_replace('', '00', $val[1]) . ':' . str_replace('', '00', $val[2]);
 		}
+		return $val;
 	}
 
 	/**
