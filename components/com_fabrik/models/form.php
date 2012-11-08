@@ -1575,7 +1575,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!isset($oJoin->params->pk) || empty($oJoin->params->pk))
 			{
-				$cols = $joinDb->getTableColumns($oJoin->table_join, false);
+				$cols =  $listModel->getDb()->getTableColumns($oJoin->table_join, false);
 				$oJoinPk = $oJoin->table_join . '___';
 				foreach ($cols as $col)
 				{
