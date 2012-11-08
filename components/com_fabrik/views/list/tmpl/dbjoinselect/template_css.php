@@ -117,7 +117,7 @@ div.calendar{
 	padding:0;
 }
 
-.auto-complete-container li{
+/* .auto-complete-container li{
 	text-align:left;
 	padding:6px 10px !important;
 	background-color:#999999;
@@ -128,7 +128,7 @@ div.calendar{
 	font-size:0.9em;
 	color: #eee;
 	text-shadow: 0 1px 0 #666;
-}
+} */
 
 .auto-complete-container li:hover{
 	background-color:#777 !important;
