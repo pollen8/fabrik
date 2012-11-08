@@ -5960,8 +5960,11 @@ class FabrikFEModelList extends JModelForm
 										$val = stripslashes($val);
 									}
 								}
-								$oRecord->$key = $val;
-								$aBindData[$key] = $val;
+								if (!$elementModel->dataIsNull($data, $val))
+								{
+									$oRecord->$key = $val;
+									$aBindData[$key] = $val;
+								}
 
 								if ($elementModel->isJoin() && $isJoin && array_key_exists('params', $data))
 								{
