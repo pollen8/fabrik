@@ -185,7 +185,7 @@ class FabrikControllerList extends JControllerLegacy
 		// $$$ hugh - for some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 		if (empty($ref))
 		{
-			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'string');
+			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid, '', 'string');
 		}
 		if ($total >= $limitstart)
 		{
@@ -274,7 +274,7 @@ class FabrikControllerList extends JControllerLegacy
 			// For some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 			if (empty($ref))
 			{
-				$ref = $input->server->get('HTTP_REFERER', $defaultRef. 'string');
+				$ref = $input->server->get('HTTP_REFERER', $defaultRef, 'string');
 			}
 		}
 		else

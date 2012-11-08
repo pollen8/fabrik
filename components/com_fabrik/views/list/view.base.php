@@ -739,7 +739,7 @@ class FabrikViewListBase extends JViewLegacy
 		$model = $this->getModel();
 		$item = $model->getTable();
 
-		$reffer = str_replace('&', '&amp;', $input->server->get('REQUEST_URI', ''));
+		$reffer = str_replace('&', '&amp;', $input->server->get('REQUEST_URI', '', 'string'));
 		$reffer = FabrikString::removeQSVar($reffer, 'fabrik_incsessionfilters');
 		$this->hiddenFields = array();
 
@@ -814,7 +814,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
 		$this->rows = $this->get('advancedSearchRows');
-		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik');
+		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik', 'string');
 		$this->action = $action;
 		$this->listid = $id;
 	}

@@ -417,12 +417,13 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 
 		// Finally see if the options are overridden by a querystring var
-		$tmpl = $input->get('layout', $tmpl);
+		$baseTmpl = $tmpl;
+		$tmpl = JRequest::getVar('layout', $tmpl);
 
-		// Test it exists - otherwise revert to default tmpl
+		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
 		{
-			$tmpl = $default;
+			$tmpl = $baseTmpl;
 		}
 		$item->form_template = $tmpl;
 		return $tmpl;
@@ -4617,7 +4618,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				// 28/01/2011 $$$rob and if it is published
 				$showGroup = (int) $groupParams->get('repeat_group_show_first');
-				if ($showGroup != -1)
+				if ($showGroup !== 0)
 				{
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					// Jaanus: if not form view with "details only" option and not details view with "form only" option

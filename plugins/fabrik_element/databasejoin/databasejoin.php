@@ -1013,8 +1013,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$defaultValue = $tmp[0]->value;
 		}
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value',
-				'text', $options_per_row);
+		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attribs . ' id="' . $id . '"', $defaultValue, 'value', 'text',
+			$options_per_row);
 	}
 
 	/**
@@ -1042,20 +1042,19 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		/*
 		 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
-		* 02/11/2012 if new form then labels not present either.
-		*/
+		 * 02/11/2012 if new form then labels not present either.
+		 */
 		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 		{
 			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
 		}
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
-		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName
-		. '" id="' . $id . '-auto-complete" value="' . JArrayHelper::getValue($label, 0)
-		. '" class="fabrikinput inputbox autocomplete-trigger"/>';
+		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
+			. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
 		$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
-				. JArrayHelper::getValue($default, 0, '') . '"/>';
+			. JArrayHelper::getValue($default, 0, '') . '"/>';
 	}
 
 	/**
@@ -1089,8 +1088,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		else
 		{
 			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $thisElName, $attribs, $defaults, 'value', 'text',
-					$options_per_row, $this->isEditable());
+			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $options_per_row,
+				$this->isEditable());
 		}
 	}
 
@@ -1121,8 +1120,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$rawname = $this->getFullName(false, true, false) . '_raw';
 
-		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, 'class="fabrikinput inputbox" id="' . $id . '"', $defaults, 'value',
-				'text', $options_per_row, $this->isEditable());
+		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, 'class="fabrikinput inputbox" id="' . $id . '"', $defaults, 'value', 'text',
+			$options_per_row, $this->isEditable());
 		if ($this->isJoin() && $this->isEditable())
 		{
 			$join = $this->getJoin();
@@ -1155,8 +1154,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			$html[] = '<div class="fabrikHide">';
 			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text',
-					$options_per_row, $this->isEditable());
+			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $options_per_row,
+				$this->isEditable());
 			$html[] = '</div>';
 		}
 	}
@@ -1277,7 +1276,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$fields = $db->loadObjectList();
 		if (!$fields)
 		{
-			 $db->getErrorMsg();
+			$db->getErrorMsg();
 		}
 		if (is_array($fields))
 		{
@@ -1415,7 +1414,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
 				if (!FabrikWorker::isJSON($data))
 				{
-					 $labeldata = (array) $data;
+					$labeldata = (array) $data;
 				}
 				else
 				{
@@ -1484,6 +1483,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinVal = $this->getJoinLabelColumn();
 			$incJoin = (trim($params->get($this->concatLabelParam)) == '' && trim($params->get('database_join_where_sql') == '')) ? false : true;
 			$rows = $this->filterValueList($normal, null, $joinVal, '', $incJoin);
+			foreach ($rows as &$r)
+			{
+				$r->text = strip_tags($r->text);
+			}
 			if (!$rows)
 			{
 				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
@@ -2418,7 +2421,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			else
 			{
-				$opts['label'] =  $c;
+				$opts['label'] = $c;
 			}
 			return parent::cacheAutoCompleteOptions($elementModel, $search, $opts);
 		}
@@ -2531,8 +2534,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable
-		LEFT JOIN " . $dbName . " ON " . $dbName . "." . $this->getJoinValueFieldName() . " = $jointable."
-			. $this->getElement()->name . " WHERE " . $jointable . ".parent_id = " . $item->db_primary_key . ")";
+		LEFT JOIN " . $dbName . " ON " . $dbName . "." . $this->getJoinValueFieldName() . " = $jointable." . $this->getElement()->name . " WHERE "
+			. $jointable . ".parent_id = " . $item->db_primary_key . ")";
 		if ($addAs)
 		{
 			$sql .= ' AS ' . $fullElName;
@@ -2653,12 +2656,36 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
 			foreach ($notAllowed as $test)
 			{
-				if (stristr($type, $test)) {
+				if (stristr($type, $test))
+				{
 					return false;
 				}
 			}
 		}
 		return parent::includeInSearchAll($advancedMode);
+	}
+
+	/**
+	 * Use in list model storeRow() to determine if data should be stored.
+	 * Currently only supported for db join elements whose values are default values
+	 * avoids casing '' into 0 for int fields
+	 *
+	 * @param   array  $data  Data being inserted
+	 * @param   mixed  $val   Element value to insert into table
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function dataIsNull($data, $val)
+	{
+		$default = $this->getDefaultValue($data);
+		if (is_array($default) && count($default) == 1 && $default[0] == $val)
+		{
+			return true;
+		}
+		return false;
 	}
 
 }

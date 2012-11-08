@@ -9,109 +9,119 @@
  * @since       3.0
  */
  ?>
- <?php if ($this->params->get('show_page_title', 1)) { ?>
+ <?php
+ if ($this->params->get('show_page_title', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
-<?php } ?>
-<?php $form = $this->form;
-//echo $form->startTag;
+<?php
+endif;
+$form = $this->form;
 if ($this->params->get('show-title', 1)) {?>
-<h1><?php echo $form->label;?></h1>
+	<h1>
+		<?php echo $form->label;?>
+	</h1>
 <?php }
 echo $form->intro;
 echo $form->startTag;
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
-echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
+echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
 
-
-	<?php
-	if ($this->showEmail) {
-		echo $this->emailLink;
-	}
-	if ($this->showPDF) {
-		echo $this->pdfLink;
-	}
-	if ($this->showPrint) {
-		echo $this->printLink;
-	}
-	echo $this->loadTemplate('relateddata');?>
+if ($this->showEmail) :
+	echo $this->emailLink;
+endif;
+if ($this->showPDF) :
+	echo $this->pdfLink;
+endif;
+if ($this->showPrint) :
+	echo $this->printLink;
+endif;
+echo $this->loadTemplate('relateddata');
+?>
 <br />
-	<dl class="tabs">
+<dl class="tabs">
+<?php
+$display = 0;
+$c = 0;
+foreach ($this->groups as $group) :
+	$errorstyle = '';
+	foreach ($group->elements as $element) :
+		if ($element->error !== '') :
+			if ($display === 0) :
+				$display = $c;
+			endif;
+			$errorstyle = 'style="background:#EFE7B8 url('.COM_FABRIK_LIVESITE.'/media/com_fabrik/images/alert.png) no-repeat scroll left 7px !important;padding-left:40px;"';
+			break;
+		endif;
+	endforeach;
+	$c ++;
+	?>
+	<dt <?php echo $errorstyle?>>
+		<?php echo $group->title;?>
+	</dt>
+	<dd class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+	<?php if (trim($group->title) !== '') :
+	?>
+		<legend><span><?php echo $group->title;?></span></legend>
 	<?php
-	$display = 0;
-	$c = 0;
-	foreach ($this->groups as $group) {
-		$errorstyle = '';
-		foreach ($group->elements as $element) {
-			if ($element->error !== '') {
-				if ($display === 0) {
-					$display = $c;
-				}
-				$errorstyle = 'style="background:#EFE7B8 url('.COM_FABRIK_LIVESITE.'/media/com_fabrik/images/alert.png) no-repeat scroll left 7px !important;padding-left:40px;"';
-				break;
-			}
-		}
-		$c ++;
+	endif;
+	?>
+	<div style="<?php echo $group->css?>">
+	<?php if ($group->canRepeat) :
+		foreach ($group->subgroups as $subgroup) :
 		?>
-		<dt <?php echo $errorstyle?>>
-			<?php echo $group->title;?>
-		</dt>
-		<dd class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-		<?php if (trim($group->title) !== '') {?>
-			<legend><span><?php echo $group->title;?></span></legend>
-		<?php }?>
-		<?php if ($group->canRepeat) {
-			foreach ($group->subgroups as $subgroup) {
-			?>
-				<div class="fabrikSubGroup">
-					<div class="fabrikSubGroupElements">
-						<?php
-						$this->elements = $subgroup;
-						echo $this->loadTemplate('group');
-						?>
-					</div>
-					<?php if ($group->editable) { ?>
-						<div class="fabrikGroupRepeater">
-							<?php if ($group->canAddRepeat) {?>
+			<div class="fabrikSubGroup">
+				<div class="fabrikSubGroupElements">
+					<?php
+					$this->elements = $subgroup;
+					echo $this->loadTemplate('group');
+					?>
+				</div>
+				<?php if ($group->editable) : ?>
+					<div class="fabrikGroupRepeater">
+						<?php if ($group->canAddRepeat) :?>
 							<a class="addGroup" href="#">
 								<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_ADD_GROUP'));?>
 							</a>
-							<?php }?>
-							<?php if ($group->canDeleteRepeat) {?>
+						<?php
+						endif;
+						if ($group->canDeleteRepeat) : ?>
 							<a class="deleteGroup" href="#">
-							<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
+								<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, JText::_('COM_FABRIK_DELETE_GROUP'));?>
 							</a>
-							<?php }?>
-						</div>
-					<?php } ?>
-				</div>
-				<div style="clear:both"></div>
+						<?php
+						endif;
+						?>
+					</div>
 				<?php
-			}
-		} else {
-			$this->elements = $group->elements;
-			echo $this->loadTemplate('group');
-		}?>
-		<div style="clear:left;"></div>
-</dd>
-
-<?php
-	}
+				endif;
+				?>
+			</div>
+			<div style="clear:both"></div>
+			<?php
+		endforeach;
+	else:
+		$this->elements = $group->elements;
+		echo $this->loadTemplate('group');
+	endif;
 	?>
-	</dl>
-	<?php
-	echo $this->hiddenFields;
-	?>
-	<?php echo $this->pluginbottom; ?>
-	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-	<?php echo $form->nextButton?> <?php echo $form->prevButton?>
-	 <?php echo $form->applyButton;?>
-	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>
+	<div style="clear:left;"></div>
+	</dd>
+<?php
+endforeach;
+?>
+</dl>
+<?php
+echo $this->hiddenFields;
+ echo $this->pluginbottom; ?>
+<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
+<?php echo $form->nextButton?> <?php echo $form->prevButton?>
+ <?php echo $form->applyButton;?>
+<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
+</div>
 
 <?php
 $document = JFactory::getDocument();
-
 
 echo $form->endTag;
 echo $form->outro;

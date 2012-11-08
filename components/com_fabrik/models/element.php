@@ -1152,6 +1152,23 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Use in list model storeRow() to determine if data should be stored.
+	 * Currently only supported for db join elements whose values are default values
+	 * avoids casing '' into 0 for int fields
+	 *
+	 * @param   array  $data  Data being inserted
+	 * @param   mixed  $val   Element value to insert into table
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function dataIsNull($data, $val)
+	{
+		return false;
+	}
+	/**
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           form data
