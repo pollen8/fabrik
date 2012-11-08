@@ -2586,7 +2586,8 @@ class FabrikFEModelList extends JModelForm
 						$ingroup = false;
 					}
 				}
-				$sql[] = empty($sql) ? $gstart : $filters['join'][$i] . ' ' . $gstart;
+				$glue = JArrayHelper::getValue($filters['join'], $i, 'AND');
+				$sql[] = empty($sql) ? $gstart : $glue . ' ' . $gstart;
 				$sql[] = $filters['sqlCond'][$i] . $gend;
 			}
 			$last_i = $i;
