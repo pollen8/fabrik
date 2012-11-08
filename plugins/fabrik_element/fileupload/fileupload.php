@@ -2512,7 +2512,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
-		$url = $input->server->get('HTTP_REFERER', '');
+		$url = $input->server->get('HTTP_REFERER', '', 'string');
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.fabrikfileupload', JPATH_ADMINISTRATOR);
 		if (!$this->canView())
@@ -2649,7 +2649,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$msg->userid = $user->get('id');
 			$msg->username = $user->get('username');
 			$msg->email = $user->get('email');
-			$log->referring_url = $input->server->get('REMOTE_ADDR', '');
+			$log->referring_url = $input->server->get('REMOTE_ADDR', '', 'string');
 			$log->message = json_encode($msg);
 			$log->store();
 		}
