@@ -733,7 +733,7 @@ class FabrikFEModelGroup extends FabModel
 		 * changed to remove (or change) paging, but user still has session state set.  So it was throwing
 		 * a PHP 'undefined index' notice.
 		 */
-		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == 0)
+		if (array_key_exists($startpage, $pages) && is_array($pages[$startpage]) && !in_array($groupTable->id, $pages[$startpage]) || $showGroup == -1 || $showGroup == 0)
 		{
 			$groupTable->css .= ";display:none;";
 		}

@@ -4594,7 +4594,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				// 28/01/2011 $$$rob and if it is published
 				$showGroup = (int) $groupParams->get('repeat_group_show_first');
-				if ($showGroup != -1)
+				if ($showGroup !== 0)
 				{
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					// Jaanus: if not form view with "details only" option and not details view with "form only" option
