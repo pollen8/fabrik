@@ -45,7 +45,7 @@
 			</field>
 		
 			<field name="list_elements" 
-					type="fabrikmodalrepeat" 
+					type="fabrikmodalrepeat"
 					label="COM_FABRIK_LIST_ELEMENTS_LABEL"
 					description="COM_FABRIK_LIST_ELEMENTS_DESC">
 				
@@ -61,6 +61,7 @@
 				</field>
 				
 				<field name="prefilters" 
+					class="prefilters-modal"
 					type="fabrikmodalrepeat" 
 					label="COM_FABRIK_LIST_PREFILTERS_LABEL"
 					description="COM_FABRIK_LIST_PREFILTERS_DESC">
@@ -78,6 +79,7 @@
 							
 							<field name="filter-fields" 
 								type="listfields"
+								raw="true"
 								valueformat="tableelement"
 								label="COM_FABRIK_LIST_ELEMENTS_HEADING"/>
 						
