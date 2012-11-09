@@ -84,7 +84,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$document->addStyleDeclaration($css);
 
 		$str[] = '<div id="' . $modalid . '" style="display:none">';
-		$str[] = '<table class="adminlist">';
+		$str[] = '<table class="adminlist ' . $this->element['class'] . '">';
 		$str[] = '<thead><tr class="row0">';
 		$names = array();
 		foreach ($subForm->getFieldset($this->element->getAttribute('name') . '_modal') as $field)

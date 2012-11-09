@@ -82,11 +82,28 @@
 					</fields>
 				</field>
 				
-				<field description="MOD_FABRIK_LIST_PREFILTERS_DESC" label="MOD_FABRIK_LIST_PREFILTERS_LABEL" name="prefilters" type="fabrikmodalrepeat">
+				<field name="prefilters"
+					class="modal-prefilter" 
+					description="MOD_FABRIK_LIST_PREFILTERS_DESC"
+					label="MOD_FABRIK_LIST_PREFILTERS_LABEL"
+					type="fabrikmodalrepeat">
 				
 					<fields name="params">
 						<fieldset modal="true" name="prefilters_modal" repeat="true">
-							<field label="MOD_FABRIK_LIST_ELEMENTS_HEADING" name="filter-fields" type="listfields" valueformat="tableelement"/>
+							
+							<field name="filter-join"
+								type="list"
+								default="OR"
+								label="">
+									<option value="AND">AND</option>
+									<option value="OR">OR</option>
+							</field>
+							
+							<field name="filter-fields"
+								type="listfields"
+								raw="true"
+								valueformat="tableelement"
+								label="MOD_FABRIK_LIST_ELEMENTS_HEADING" />
 						
 							<field label="MOD_FABRIK_LIST_CONDITION_LABEL" name="filter-conditions" type="list">
 									<option value="equals">EQUALS</option>
@@ -103,6 +120,12 @@
 									<option value="not_in">NOT IN</option>
 									<option value="earlierthisyear">MOD_FABRIK_LIST_EARLIER_THIS_YEAR</option>
 									<option value="laterthisyear">MOD_FABRIK_LIST_LATER_THIS_YEAR</option>
+									<option value="yesterday">COM_FABRIK_YESTERDAY</option>
+									<option value="today">COM_FABRIK_TODAY</option>
+									<option value="tomorrow">COM_FABRIK_TOMORROW</option>
+									<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
+									<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
+									<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
 							</field>
 							
 							<field label="MOD_FABRIK_LIST_FILTER_VALUE_HEADING" name="filter-value" type="field"/>
