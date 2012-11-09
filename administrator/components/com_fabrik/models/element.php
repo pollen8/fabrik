@@ -1226,7 +1226,8 @@ class FabrikModelElement extends JModelAdmin
 		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
 
 		// $$$ rob - $usedPlugins was not defined at all - not sure what should be happening here but assinged empty array to stop notices
-		$usedPlugins = array();
+		// $usedPlugins = array();
+		// $$$ hugh - yes it is defined ... it's the second argument!
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')
