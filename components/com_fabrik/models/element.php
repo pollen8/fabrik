@@ -796,6 +796,12 @@ class plgFabrik_Element extends FabrikPlugin
 	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$element = $this->getElement();
+
+		// Odd! even though defined in initialize() for confirmation plugin _access was not set.
+		if (!isset($this->_access))
+		{
+			$this->_access = new stdClass;
+		}
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access))
 		{
 			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
