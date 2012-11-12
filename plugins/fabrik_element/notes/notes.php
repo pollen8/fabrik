@@ -160,16 +160,16 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array            $data            Current row data to use in placeholder replacements
-	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string           $thisTableAlias  Db table alais
-	 * @param   array            $opts            Options
-	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   array           $data            Current row data to use in placeholder replacements
+	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string          $thisTableAlias  Db table alais
+	 * @param   array           $opts            Options
+	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
 
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
+	protected function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		$params = $this->getParams();
 		$db = $this->getDb();
