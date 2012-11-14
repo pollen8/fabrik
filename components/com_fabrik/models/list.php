@@ -4043,7 +4043,9 @@ class FabrikFEModelList extends JModelForm
 				$condition = 'REGEXP';
 
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
-				$value = $db->quote($value, false);
+				
+				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
+				$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			elseif ($condition == 'like')
 			{
