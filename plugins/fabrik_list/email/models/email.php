@@ -1,10 +1,10 @@
 <?php
 /**
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.email
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,12 +12,12 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
-* Email list plugin model
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.email
-* @since       3.0
-*/
+ * Email list plugin model
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @since       3.0
+ */
 
 class plgFabrik_ListEmail extends plgFabrik_List
 {
@@ -108,7 +108,13 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		return true;
 	}
 
-	function getToField()
+	/**
+	 * Get the html to create the <to> list
+	 *
+	 * @return string
+	 */
+
+	public function getToField()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -129,6 +135,12 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		}
 	}
 
+	/**
+	 * Are attachements allowed?
+	 *
+	 * @return bool
+	 */
+
 	public function getAllowAttachment()
 	{
 		$app = JFactory::getApplication();
@@ -139,6 +151,12 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		return $allow[$renderOrder];
 	}
 
+	/**
+	 * Get the subject line
+	 *
+	 * @return  string
+	 */
+
 	public function getSubject()
 	{
 		$app = JFactory::getApplication();
@@ -148,6 +166,12 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$var = $params->get('email_subject');
 		return is_array($var) ? $var[$renderOrder] : $var;
 	}
+
+	/**
+	 * Get the email message
+	 *
+	 * @return  string
+	 */
 
 	public function getMessage()
 	{
@@ -228,33 +252,35 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		JClientHelper::setCredentialsFromRequest('ftp');
-		$files = JRequest::getVar('attachement', array(), 'files');
+		$files = $input->files->get('attachement', array());
 		$folder = JPATH_ROOT . '/images/stories';
 		$this->filepath = array();
-		$c = 0;
-		if (array_key_exists('name', $files))
+		foreach ($files as $file)
 		{
-			foreach ($files['name'] as $name)
+			$name = $file['name'];
+			if ($name == '')
 			{
-				if ($name == '')
-				{
-					continue;
-				}
-				$path = $folder . DS . strtolower($name);
-				if (!JFile::upload($files['tmp_name'][$c], $path))
-				{
-					JError::raiseWarning(100, JText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
-					return false;
-				}
-				else
-				{
-					$this->filepath[] = $path;
-				}
-				$c++;
+				continue;
+			}
+			$path = $folder . '/' . strtolower($name);
+			if (!JFile::upload($file['tmp_name'], $path))
+			{
+				JError::raiseWarning(100, JText::_('PLG_LIST_EMAIL_ERR_CANT_UPLOAD_FILE'));
+				return false;
+			}
+			else
+			{
+				$this->filepath[] = $path;
 			}
 		}
 		return true;
 	}
+
+	/**
+	 * Send the email
+	 *
+	 * @return boolean
+	 */
 
 	public function doEmail()
 	{
@@ -333,7 +359,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 						{
 							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 							$thismessage = $w->parseMessageForPlaceholder($message, $row);
-							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
+							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, true, $cc, $bcc, $this->filepath);
 							if ($res)
 							{
 								$sent++;
