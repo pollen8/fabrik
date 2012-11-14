@@ -285,7 +285,6 @@ class plgFabrik_ListEmail extends plgFabrik_List
 	public function doEmail()
 	{
 		$listModel = $this->listModel;
-		$mail = JFactory::getMailer();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		jimport('joomla.mail.helper');
@@ -359,6 +358,9 @@ class plgFabrik_ListEmail extends plgFabrik_List
 						{
 							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 							$thismessage = $w->parseMessageForPlaceholder($message, $row);
+
+							// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
+							$mail = JFactory::getMailer();
 							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, true, $cc, $bcc, $this->filepath);
 							if ($res)
 							{
