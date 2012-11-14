@@ -4043,7 +4043,7 @@ class FabrikFEModelList extends JModelForm
 				$condition = 'REGEXP';
 
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
-				
+
 				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
 				$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
@@ -5577,6 +5577,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Can the user select the specified row
 	 *
+	 * Needs to return true to insert a checkbox in the row.
+	 *
 	 * @param   object  $row  row of list data
 	 *
 	 * @return  bool
@@ -5595,7 +5597,8 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		if (($this->canEdit($row) || $this->canViewDetails($row)))
+		$actionMethod = $this->actionMethod();
+		if ($actionMethod == 'floating' && ($this->canEdit($row) || $this->canViewDetails($row)))
 		{
 			return true;
 		}
@@ -5616,6 +5619,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Can the user select ANY row?
+	 *
+	 * Should the checkbox be shown in the list
 	 * If you can delete then true returned, if not then check
 	 * available list plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
@@ -5629,13 +5634,14 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->canSelectRows;
 		}
-		if ($this->canDelete() || $this->canEditARow() || $this->deletePossible())
+		$actionMethod = $this->actionMethod();
+		if ($this->canDelete() || ($this->canEditARow() && $actonMethod === 'floating') || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($this->actionMethod() == 'floating' && ($this->canEdit() || $this->canViewDetails()))
+		if ($actionMethod == 'floating' && ($this->canEdit() || $this->canViewDetails()))
 		{
 			$this->canSelectRows = true;
 			return true;

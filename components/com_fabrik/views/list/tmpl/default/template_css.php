@@ -2,7 +2,7 @@
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int) $_REQUEST['buttoncount'];
-$buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
+$buttonTotal = $buttonCount === 0 ? 'auto' : 30 * $buttonCount ."px";
 echo "
 #listform_$c table.fabrikList {
 	clear: right;
