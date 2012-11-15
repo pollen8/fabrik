@@ -42,10 +42,13 @@ class FabrikControllerDetails extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
@@ -69,7 +72,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		}
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
