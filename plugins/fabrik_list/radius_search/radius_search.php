@@ -109,6 +109,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 			. "<input type=\"radio\" $nosel name=\"radius_search_active[]\" value=\"0\" /></label>
 		<div class=\"radius_search_options\">
 		<table class=\"radius_table\" style=\"width:100%\">
+			<tbody>
 			<tr>
 				<td>" . JText::_('PLG_VIEW_RADIUS_DISTANCE') . "</td>
 				<td>$strSlider</td>
@@ -117,10 +118,12 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 			. ":<br />$options</td>
 				<td style=\"text-align:left\">$strPlace $strLatLon
 			</tr>
+			</tbody>
 		</table>
 		</div>
 		";
-
+		//this.listform.adopt(new Element('input', {'type': 'hidden', 'name': 'radius_prefilter', 'value': 1}));
+		$str .= '<input type="hidden" name="radius_prefilter" value="1" />';
 		$str .= "</div>";
 		$f->element = $str;
 		$f->required = '';
@@ -474,10 +477,16 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		{
 			return false;
 		}
+		$params = $this->getParams();
+		$app = JFactory::getApplication();
 		$opts = $this->getElementJSOptions($model);
 		$opts->steps = (int) $params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();
+		$prefilterDistance = $params->get('prefilter_distance', '');
+		$opts->prefilter = $prefilterDistance === '' ? false : true;
+		$opts->prefilterDone = (bool) $app->input->getBool('radius_prefilter', false);
+		$opts->prefilterDistance = $prefilterDistance;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 		return true;

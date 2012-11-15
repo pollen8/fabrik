@@ -83,10 +83,10 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$url = $this->getListModel()->linkHref($this, $thisRow);
 		if ($url === '')
 		{
-			if (!static::$warned)
+			if (!self::$warned)
 			{
 				JError::raiseNotice(500, 'Your list needs to have viewable details records for the FB Like button to work');
-				static::$warned = true;
+				self::$warned = true;
 			}
 
 			return '';

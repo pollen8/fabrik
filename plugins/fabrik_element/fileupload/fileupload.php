@@ -1920,6 +1920,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$str[] = '</div>';
 			return implode("\n", $str);
 		}
+		$allRenders = implode('<br/>', $allRenders);
 		$allRenders .= ($allRenders == '') ? '' : '<br/>';
 		$str[] = $allRenders . '<input class="fabrikinput" name="' . $name . '" type="file" id="' . $id . '" />' . "\n";
 		if ($params->get('upload_allow_folderselect') == '1')

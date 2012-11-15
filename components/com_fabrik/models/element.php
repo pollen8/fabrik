@@ -791,6 +791,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function canUse(&$model = null, $location = null, $event = null)
 	{
 		$element = $this->getElement();
+
+		// Odd! even though defined in initialize() for confirmation plugin _access was not set.
+		if (!isset($this->access))
+		{
+			$this->access = new stdClass;
+		}
 		if (!is_object($this->access) || !array_key_exists('use', $this->access))
 		{
 			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
@@ -2024,7 +2030,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $repData);
-			$v = '<a href="' . $customLink . '">' . $v . '</a>';
+			if (trim($customLink) !== '')
+			{
+				$v = '<a href="' . $customLink . '">' . $v . '</a>';
+			}
 		}
 		return $v;
 	}
@@ -2425,15 +2434,14 @@ class PlgFabrik_Element extends FabrikPlugin
 					}
 
 
-					// $$$ need to use ciorrected triggerid here as well
-					// $js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
+					// Need to use corrected triggerid here as well
 					if (preg_match('#^fabrik_trigger#', $triggerid))
 					{
-						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event')";
+						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
 					}
 					else
 					{
-						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event')";
+						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
 					}
 					$js .= "}";
 					$js = addslashes($js);
@@ -2549,20 +2557,27 @@ class PlgFabrik_Element extends FabrikPlugin
 			$default = (is_array($default) && array_key_exists('value', $default)) ? $default['value'] : $default;
 			if (is_array($default))
 			{
-				// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
-				$default = '';
+				// Hidden querystring filters can be using ranged valued though
+				if ($this->getElement()->filter_type !== 'hidden')
+				{
+					// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
+					$default = '';
+				}
 			}
-			$default = stripslashes($default);
+			else
+			{
+				$default = stripslashes($default);
+			}
 		}
 		return $default;
 	}
 
 	/**
-	 * if the search value isnt what is stored in the database, but rather what the user
+	 * If the search value isn't what is stored in the database, but rather what the user
 	 * sees then switch from the search string to the db value here
 	 * overwritten in things like checkbox and radio plugins
 	 *
-	 * @param   string  $value  filterVal
+	 * @param   string  $value  FilterVal
 	 *
 	 * @return  string
 	 */
@@ -2575,8 +2590,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get the filter name
 	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
 	 *
 	 * @return  string
 	 */
@@ -2592,11 +2607,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get the list filter for the element
 	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
-	 * @return  string	filter html
+	 * @return  string	Filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -2628,13 +2643,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		switch ($element->filter_type)
 		{
 			case "range":
-				$attribs = 'class="inputbox fabrik_filter" size="1" ';
-				$default1 = is_array($default) ? $default['value'][0] : '';
-				$return[] = JText::_('COM_FABRIK_BETWEEN')
-					. JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
-				$default1 = is_array($default) ? $default['value'][1] : '';
-				$return[] = '<br /> ' . JText::_('COM_FABRIK_AND') . ' '
-					. JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
+				$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				break;
 
 			case "dropdown":
@@ -2651,9 +2660,16 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 
 			case "hidden":
-				$default = stripslashes($default);
-				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $id . '" />';
+				if (is_array($default))
+				{
+					$this->rangedFilterFields($default, $return, $rows, $v, 'hidden');
+				}
+				else
+				{
+					$default = stripslashes($default);
+					$default = htmlspecialchars($default);
+					$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $id . '" />';
+				}
 				break;
 
 			case "auto-complete":
@@ -2666,15 +2682,52 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Build ranged filter fields either as two dropdowns or two hidden fields
+	 *
+	 * @param   array   $default  Filter values
+	 * @param   array   &$return  HTML to return
+	 * @param   array   $rows     Filter list options
+	 * @param   string  $v        Filter name
+	 * @param   string  $type     Show ranged values as a list or hidden
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return void
+	 */
+
+	protected function rangedFilterFields($default, &$return, $rows, $v, $type = 'list')
+	{
+		$element = $this->getElement();
+		$attribs = 'class="inputbox fabrik_filter" size="1" ';
+		$default = (array) $default;
+		$default0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
+		$default1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
+
+		if ($type === 'list')
+		{
+			$return[] = JText::_('COM_FABRIK_BETWEEN');
+			$return[] = JHTML::_('select.genericlist', $rows, $v . '[0]', $attribs, 'value', 'text', $default0, $element->name . '_filter_range_0');
+
+			$return[] = '<br /> ' . JText::_('COM_FABRIK_AND') . ' ';
+			$return[] = JHTML::_('select.genericlist', $rows, $v . '[1]', $attribs, 'value', 'text', $default1, $element->name . '_filter_range_1');
+		}
+		else
+		{
+			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
+			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
+		}
+	}
+
+	/**
 	 * Build the HTML for the auto-complete filter
 	 *
-	 * @param   string  $default     label
-	 * @param   string  $v           field name
-	 * @param   string  $labelValue  label value
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   string  $default     Label
+	 * @param   string  $v           Field name
+	 * @param   string  $labelValue  Label value
+	 * @param   bool    $normal      Do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
-	 * @return  array  html bits
+	 * @return  array  HTML bits
 	 */
 
 	protected function autoCompleteFilter($default, $v, $labelValue = null, $normal = true)
@@ -2730,7 +2783,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Checks if filter option values are in json format
 	 * if so explode those values into new options
 	 *
-	 * @param   array  &$rows  filter options
+	 * @param   array  &$rows  Filter options
 	 *
 	 * @return null
 	 */
@@ -6082,7 +6135,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @return string|JDatabaseQuery
 	 */
 
-	function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
+	protected function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		return '';
 	}

@@ -4048,7 +4048,9 @@ class FabrikFEModelList extends JModelForm
 				$condition = 'REGEXP';
 
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
-				$value = $db->quote($value, false);
+
+				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
+				//$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			elseif ($condition == 'like')
 			{
@@ -4082,6 +4084,11 @@ class FabrikFEModelList extends JModelForm
 				{
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
 				}
+			}
+			if ($condtion === 'REGEXP')
+			{
+				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+				$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
@@ -4696,7 +4703,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * have all the required filters been met?
+	 * Have all the required filters been met?
 	 *
 	 * @return  bool  true if they have if false we shouldnt show the table data
 	 */
@@ -4802,12 +4809,12 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get filters
+	 * Get filters for display in html view
 	 *
-	 * @param   string  $container  list container
-	 * @param   string  $type       type
-	 * @param   string  $id         html id, only used if called from viz plugin
-	 * @param   string   $ref  js ref used when filters set for visualizations
+	 * @param   string  $container  List container
+	 * @param   string  $type       Type
+	 * @param   string  $id         Html id, only used if called from viz plugin
+	 * @param   string  $ref        Js ref used when filters set for visualizations
 	 *
 	 * @return array filters
 	 */
@@ -4836,7 +4843,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Creates an array of html code for each filter
+	 * Creates an array of HTML code for each filter
 	 * Also adds in JS code to manage filters
 	 *
 	 * @param   string  $container  container
@@ -5588,6 +5595,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Can the user select the specified row
 	 *
+	 * Needs to return true to insert a checkbox in the row.
+	 *
 	 * @param   object  $row  row of list data
 	 *
 	 * @return  bool
@@ -5606,7 +5615,8 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		if (($this->canEdit($row) || $this->canViewDetails($row)))
+		$actionMethod = $this->actionMethod();
+		if ($actionMethod == 'floating' && ($this->canEdit($row) || $this->canViewDetails($row)))
 		{
 			return true;
 		}
@@ -5627,6 +5637,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Can the user select ANY row?
+	 *
+	 * Should the checkbox be shown in the list
 	 * If you can delete then true returned, if not then check
 	 * available list plugins to see if they allow for row selection
 	 * if so a checkbox column appears in the table
@@ -5640,13 +5652,14 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->canSelectRows;
 		}
-		if ($this->canDelete() || $this->canEditARow() || $this->deletePossible())
+		$actionMethod = $this->actionMethod();
+		if ($this->canDelete() || ($this->canEditARow() && $actonMethod === 'floating') || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($this->actionMethod() == 'floating' && ($this->canEdit() || $this->canViewDetails()))
+		if ($actionMethod == 'floating' && ($this->canEdit() || $this->canViewDetails()))
 		{
 			$this->canSelectRows = true;
 			return true;

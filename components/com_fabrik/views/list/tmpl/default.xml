@@ -33,7 +33,10 @@
 					<option value="1">JYES</option>
 			</field>
 		
-			<field description="COM_FABRIK_LIST_ELEMENTS_DESC" label="COM_FABRIK_LIST_ELEMENTS_LABEL" name="list_elements" type="fabrikmodalrepeat">
+			<field name="list_elements" 
+					type="fabrikmodalrepeat"
+					label="COM_FABRIK_LIST_ELEMENTS_LABEL"
+					description="COM_FABRIK_LIST_ELEMENTS_DESC">
 				
 					<fields name="params">
 						<fieldset modal="true" name="list_elements_modal" repeat="true">
@@ -43,7 +46,11 @@
 					</fields>
 				</field>
 				
-				<field description="COM_FABRIK_LIST_PREFILTERS_DESC" label="COM_FABRIK_LIST_PREFILTERS_LABEL" name="prefilters" type="fabrikmodalrepeat">
+				<field name="prefilters" 
+					class="prefilters-modal"
+					type="fabrikmodalrepeat" 
+					label="COM_FABRIK_LIST_PREFILTERS_LABEL"
+					description="COM_FABRIK_LIST_PREFILTERS_DESC">
 				
 					<fields name="params">
 						<fieldset modal="true" name="prefilters_modal" repeat="true">
@@ -53,7 +60,11 @@
 									<option value="OR">OR</option>
 							</field>
 							
-							<field label="COM_FABRIK_LIST_ELEMENTS_HEADING" name="filter-fields" type="listfields" valueformat="tableelement"/>
+							<field name="filter-fields" 
+								type="listfields"
+								raw="true"
+								valueformat="tableelement"
+								label="COM_FABRIK_LIST_ELEMENTS_HEADING"/>
 						
 							<field label="COM_FABRIK_LIST_CONDITION_LABEL" name="filter-conditions" type="list">
 									<option value="equals">EQUALS</option>

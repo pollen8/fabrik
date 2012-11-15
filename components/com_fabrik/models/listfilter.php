@@ -553,6 +553,9 @@ class FabrikFEModelListfilter extends FabModel
 			$searchable = true;
 			$k = $elementModel->getFullName(false, false, false);
 			$k = FabrikString::safeColName($k);
+			
+			// Lower case for search on accented characters e.g. Ö
+			$k = 'LOWER(' . $k . ')';
 
 			$key = array_key_exists('key', $filters) ? array_search($k, $filters['key']) : false;
 
@@ -585,6 +588,7 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					$k2 = $elementModel->getJoinLabelColumn();
 				}
+				$k = 'LOWER(' . $k2 . ')';
 			}
 			$element = $elementModel->getElement();
 			$elparams = $elementModel->getParams();

@@ -770,7 +770,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			else
 			{
 				// Deafult date should always be entered as gmt date e.g. eval'd default of:
-				$w = new FabrikWorker();
+				$w = new FabrikWorker;
 				$default = $w->parseMessageForPlaceHolder($element->default, $data);
 
 				if ($element->eval == "1")

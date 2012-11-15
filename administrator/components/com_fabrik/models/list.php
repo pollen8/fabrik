@@ -554,8 +554,12 @@ class FabrikAdminModelList extends FabModelAdmin
 		$config = JFactory::getConfig();
 		$date = JFactory::getDate();
 		$row = $this->getTable();
+
 		$id = $data['id'];
 		$row->load($id);
+
+		$params = new JRegistry($row->params);
+		$origCollation = $params->get('collation', 'none');
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
@@ -566,6 +570,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			$this->setError($row->getError());
 			return false;
 		}
+		$filter = new JFilterInput(null, null, 1, 1);
+		$introduction = JArrayHelper::getValue($input->get('jform', array(), 'array'), 'introduction');
+		$row->introduction = $filter->clean($introduction);
 
 		$row->order_by = json_encode($input->get('order_by', array(), 'array'));
 		$row->order_dir = json_encode($input->get('order_dir', array(), 'array'));
@@ -575,6 +582,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			$this->setError($row->getError());
 			return false;
 		}
+
+		$this->collation($feModel, $origCollation, $row);
+
 		$isNew = true;
 		if ($id == 0)
 		{
@@ -723,6 +733,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
+
 		$this->updateElements($row);
 		/* $$$rob - joomfish not available for j1.7
 		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
@@ -743,6 +754,35 @@ class FabrikAdminModelList extends FabModelAdmin
 		$this->setState($this->getName() . '.new', $isNew);
 
 		parent::cleanCache('com_fabrik');
+		return true;
+	}
+
+	/**
+	 * Alter the db table's collation
+	 *
+	 * @param   object  $feModel        Front end list model
+	 * @param   string  $origCollation  Original collection name
+	 * @param   string  $row            New collation
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return boolean
+	 */
+	protected function collation($feModel, $origCollation, $row)
+	{
+		$params = new JRegistry($row->params);
+		$newCollation = $params->get('collation');
+		if ($newCollation !== $origCollation)
+		{
+			$db = $feModel->getDb();
+			$item = $feModel->getTable();
+			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
+			if (!$db->query())
+			{
+				JError::raiseNotice(500, $db->getErrorMsg());
+				return false;
+			}
+		}
 		return true;
 	}
 

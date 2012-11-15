@@ -13,8 +13,21 @@
 				
 			<field default="Radius search" label="PLG_LIST_RADIUS_SEARCH_SEARCH_LABEL_LABEL" name="radius_label" repeat="true" type="text"/>
 				
-			<field description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC" label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL" name="radius_placeelement" repeat="true" type="listfields"/>
+			<field name="radius_placeelement"
+				type="listfields"
+				description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL"
+				repeat="true"/>
 
+			<field name="prefilter_distance"
+				type="field"
+				default=""
+				size="7"
+				 repeat="true"
+				description="PLG_LIST_RADIUS_SEARCH_START_FILTER_DISTANCE_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_START_FILTER_DISTANCE_LABEL" />
+			
 		</fieldset>
+		
 	</fields>
 </form>

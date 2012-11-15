@@ -1,10 +1,10 @@
 <?php
 /**
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.email
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,12 +12,12 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
-* Email list plugin model
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.email
-* @since       3.0
-*/
+ * Email list plugin model
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @since       3.0
+ */
 
 class PlgFabrik_ListEmail extends PlgFabrik_List
 {
@@ -108,7 +108,13 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		return true;
 	}
 
-	function getToField()
+	/**
+	 * Get the html to create the <to> list
+	 *
+	 * @return string
+	 */
+
+	public function getToField()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -129,6 +135,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 	}
 
+	/**
+	 * Are attachements allowed?
+	 *
+	 * @return bool
+	 */
+
 	public function getAllowAttachment()
 	{
 		$app = JFactory::getApplication();
@@ -139,6 +151,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		return $allow[$renderOrder];
 	}
 
+	/**
+	 * Get the subject line
+	 *
+	 * @return  string
+	 */
+
 	public function getSubject()
 	{
 		$app = JFactory::getApplication();
@@ -148,6 +166,12 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		$var = $params->get('email_subject');
 		return is_array($var) ? $var[$renderOrder] : $var;
 	}
+
+	/**
+	 * Get the email message
+	 *
+	 * @return  string
+	 */
 
 	public function getMessage()
 	{
@@ -252,10 +276,15 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		return true;
 	}
 
+	/**
+	 * Send the email
+	 *
+	 * @return boolean
+	 */
+
 	public function doEmail()
 	{
 		$listModel = $this->listModel;
-		$mail = JFactory::getMailer();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		jimport('joomla.mail.helper');
@@ -329,7 +358,10 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 						{
 							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 							$thismessage = $w->parseMessageForPlaceholder($message, $row);
-							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, 1, $cc, $bcc, $this->filepath);
+
+							// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
+							$mail = JFactory::getMailer();
+							$res = $mail->sendMail($email_from, $email_from, $thisMailto, $thissubject, $thismessage, true, $cc, $bcc, $this->filepath);
 							if ($res)
 							{
 								$sent++;
