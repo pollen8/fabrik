@@ -460,7 +460,7 @@ var FbList = new Class({
 			onError: function (text, error) {
 				fconsole(text, error);
 			},
-			onSuccess: function (res) {
+			onComplete: function (res) {
 				if (res.err) {
 					alert(res.err);
 					Fabrik.Windows.exportcsv.close();

@@ -2452,15 +2452,14 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 
 
-					// $$$ need to use ciorrected triggerid here as well
-					// $js .= $jsControllerKey . ".doElementFX('$jsAct->js_e_trigger', '$jsAct->js_e_event')";
+					// Need to use corrected triggerid here as well
 					if (preg_match('#^fabrik_trigger#', $triggerid))
 					{
-						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event')";
+						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
 					}
 					else
 					{
-						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event')";
+						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
 					}
 					$js .= "}";
 					$js = addslashes($js);
