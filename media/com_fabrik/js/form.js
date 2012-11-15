@@ -189,7 +189,7 @@ var FbForm = new Class({
 
 	// id is the element or group to apply the fx TO, triggered from another
 	// element
-	addElementFX : function (id, method) {
+	addElementFX: function (id, method) {
 		var c, k, fxdiv;
 		id = id.replace('fabrik_trigger_', '');
 		if (id.slice(0, 6) === 'group_') {
@@ -210,7 +210,8 @@ var FbForm = new Class({
 			// multi column rows, so get the li's content and put it inside a div which
 			// is injected into c
 			// apply fx to div rather than li - damn im good
-			if ((c).get('tag') === 'li') {
+			var tag = (c).get('tag');
+			if (tag === 'li' || tag === 'td') {
 				fxdiv = new Element('div', {'style': 'width:100%'}).adopt(c.getChildren());
 				c.empty();
 				fxdiv.inject(c);
@@ -254,6 +255,11 @@ var FbForm = new Class({
 			return;
 		}
 		fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
+		
+		// For repeat groups rendered as tables we cant apply fx on td so get child
+		if (fxElement.get('tag') == 'td') {
+			fxElement = fxElement.getChildren()[0];
+		}
 		switch (method) {
 		case 'show':
 			fxElement.fade('show').removeClass('fabrikHide');
