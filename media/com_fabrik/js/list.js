@@ -1216,6 +1216,7 @@ var FbListActions = new Class({
 
 	Implements: [Options],
 	options: {
+		'selector': 'ul.fabrik_action, .btn-group.fabrik_action',
 		'method': 'floating',
 		'floatPos': 'bottom'
 	},
@@ -1243,7 +1244,7 @@ var FbListActions = new Class({
 		if (!this.list.form) {
 			return;
 		}
-		this.actions = this.list.form.getElements('ul.fabrik_action');
+		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
 			// sub menus ie group by options
 			if (ul.getElement('ul')) {
@@ -1266,7 +1267,7 @@ var FbListActions = new Class({
 	},
 
 	setUpDefault: function () {
-		this.actions = this.list.form.getElements('ul.fabrik_action');
+		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
 			if (ul.getParent().hasClass('fabrik_buttons')) {
 				return;
@@ -1289,7 +1290,7 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
-		this.list.form.getElements('ul.fabrik_action').each(function (ul) {
+		this.list.form.getElements(this.options.selector).each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
 					var hideFn = function (e, elem, leaving) {
@@ -1313,6 +1314,7 @@ var FbListActions = new Class({
 							showOn: 'click',
 							hideOn: 'click',
 							content: c,
+							'heading': 'Edit: ',
 							hideFn: function (e) {
 								return !e.target.checked;
 							},
@@ -1329,11 +1331,15 @@ var FbListActions = new Class({
 			}
 		}.bind(this));
 
+		this.list.form.getElements('.fabrik_select input[type=checkbox]').addEvent('click', function (e) {
+			Fabrik.activeRow = e.target.getParent('.fabrik_row');
+		});
 		// watch the top/master chxbox
 		var chxall = this.list.form.getElement('input[name=checkAll]');
+		chxall.store('listid', this.list.id);
 		var c = function (el) {
-			return el.getParent('.fabrik___heading').getElement('ul.fabrik_action');
-		};
+			return el.getParent('.fabrik___heading').getElement(this.options.selector);
+		}.bind(this);
 
 		var tipChxAllOpts = Object.merge(Object.clone(Fabrik.tips.options), {
 			position: this.options.floatPos,
@@ -1341,6 +1347,7 @@ var FbListActions = new Class({
 			showOn: 'click',
 			hideOn: 'click',
 			content: c,
+			'heading': 'Edit all: ',
 			hideFn: function (e) {
 				return !e.target.checked;
 			},

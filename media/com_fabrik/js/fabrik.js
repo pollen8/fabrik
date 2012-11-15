@@ -187,6 +187,12 @@ var Loader = new Class({
 (function () {
 	if (typeof(Fabrik) === "undefined") {
 		
+		if (jQuery) {
+			document.addEvent('click:relay(.popover button.close)', function (event, target) {
+				var popover = '#' + target.get('data-popover');
+				jQuery(popover).popover('hide');
+			});
+		}
 		Fabrik = {};
 		Fabrik.events = {};
 		Fabrik.Windows = {};
@@ -196,7 +202,7 @@ var Loader = new Class({
 			Fabrik.blocks[blockid] = block;
 			Fabrik.fireEvent('fabrik.block.added', block);
 		};
-		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
+		document.addEvent('click:relay(.fabrik_delete a, .fabrik_action a.delete, .btn.delete)', function (e, target) {
 			if (e.rightClick) {
 				return;
 			}
@@ -282,6 +288,7 @@ var Loader = new Class({
 				ref = ref.splice(0, ref.length - 2).join('_');
 				l = Fabrik.blocks[ref];
 			} else {
+				debugger;
 				// CheckAll
 				ref = e.target.getParent('.fabrikList');
 				if (typeOf(ref) !== 'null') {
@@ -290,7 +297,14 @@ var Loader = new Class({
 					l = Fabrik.blocks[ref];
 				} else {
 					// Floating
-					ref = target.getParent('.floating-tip-wrapper').retrieve('list').id;
+					var wrapper = target.getParent('.floating-tip-wrapper');
+					if (wrapper) {
+						var refList = wrapper.retrieve('list');
+						ref = refList.id;
+					} else {
+						ref = target.get('data-listRef');
+					}
+					
 					l = Fabrik.blocks[ref];
 					if (l.options.actionMethod === 'floating') { // should only check all for floating tips
 						l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
