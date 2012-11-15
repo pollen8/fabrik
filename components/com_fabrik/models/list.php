@@ -3908,7 +3908,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * creates filter array (return existing if exists)
+	 * Creates filter array (return existing if exists)
 	 *
 	 * @return  array	filters
 	 */
@@ -4045,7 +4045,7 @@ class FabrikFEModelList extends JModelForm
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
 
 				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
-				$value = 'LOWER(' . $db->quote($value, false) . ')';
+				//$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			elseif ($condition == 'like')
 			{
@@ -4079,6 +4079,11 @@ class FabrikFEModelList extends JModelForm
 				{
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
 				}
+			}
+			if ($condtion === 'REGEXP')
+			{
+				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
+				$value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			if (!array_key_exists($i, $sqlCond) || $sqlCond[$i] == '')
 			{
@@ -4690,7 +4695,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * have all the required filters been met?
+	 * Have all the required filters been met?
 	 *
 	 * @return  bool  true if they have if false we shouldnt show the table data
 	 */
@@ -4796,12 +4801,12 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Get filters
+	 * Get filters for display in html view
 	 *
-	 * @param   string  $container  list container
-	 * @param   string  $type       type
-	 * @param   string  $id         html id, only used if called from viz plugin
-	 * @param   string   $ref  js ref used when filters set for visualizations
+	 * @param   string  $container  List container
+	 * @param   string  $type       Type
+	 * @param   string  $id         Html id, only used if called from viz plugin
+	 * @param   string  $ref        Js ref used when filters set for visualizations
 	 *
 	 * @return array filters
 	 */
@@ -4830,7 +4835,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Creates an array of html code for each filter
+	 * Creates an array of HTML code for each filter
 	 * Also adds in JS code to manage filters
 	 *
 	 * @param   string  $container  container
