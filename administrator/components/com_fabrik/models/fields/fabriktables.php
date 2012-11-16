@@ -117,12 +117,10 @@ class JFormFieldFabrikTables extends JFormFieldList
 			$script[] = "var p = new fabriktablesElement('$this->id', $opts);";
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = p;";
 
-			// $script[] = "Fabrik.adminElements['$this->id'] = p;";
-			$script = implode("\n", $script);
-
 			$fabriktables[$this->id] = true;
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabriktables.js', $script);
 		}
+		$script = implode("\n", $script);
 
 		$html = parent::getInput();
 		$html .= '<img style="margin-left:10px;display:none" id="' . $this->id . '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="'

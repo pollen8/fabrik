@@ -72,7 +72,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected $outPutFormat = 'html';
 
-	protected $isMambot = false;
+	public $isMambot = false;
 
 	/** @var object to contain access rights **/
 	protected $_access = null;
@@ -427,7 +427,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+			$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
 			$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
 			if (!$this->randomRecords)
 			{
@@ -4158,7 +4158,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$params = $this->getParams();
 			$showInList = array();
-			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
+			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 			if (isset($listels->show_in_list))
 			{
 				$showInList = $listels->show_in_list;
@@ -4206,7 +4206,7 @@ class FabrikFEModelList extends JModelForm
 			 */
 			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
 			{
-				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '');
+				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot);
 			}
 			if (isset($properties))
 			{
@@ -4383,7 +4383,7 @@ class FabrikFEModelList extends JModelForm
 			$this->nav->setId($this->getId());
 			$this->nav->showTotal = $params->get('show-total', false);
 			$item = $this->getTable();
-			$this->nav->startLimit = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
+			$this->nav->startLimit = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
 			$this->nav->showDisplayNum = $params->get('show_displaynum', true);
 		}
 		return $this->nav;
@@ -5295,7 +5295,7 @@ class FabrikFEModelList extends JModelForm
 		$listels = json_decode($params->get('list_elements'));
 
 		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', ''));
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
 		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
