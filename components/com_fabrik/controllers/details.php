@@ -42,10 +42,13 @@ class FabrikControllerDetails extends JControllerLegacy
 	/**
 	 * Display the view
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
@@ -69,7 +72,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		}
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
@@ -86,6 +89,9 @@ class FabrikControllerDetails extends JControllerLegacy
 			$view->setModel($model, true);
 		}
 		$view->isMambot = $this->isMambot;
+
+		// Get data as it will be needed for ACL when testing if current row is editable.
+		$model->getData();
 
 		// Display the view
 		$view->error = $this->getError();
@@ -130,7 +136,7 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		$this->isMambot = $input->get('isMambot', 0);
 		$model->getForm();
-		$model->rowId = $input->get('rowid', '', 'string');
+		$model->setRowId($input->get('rowid', '', 'string'));
 
 		// Check for request forgeries
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -363,7 +369,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$model->setId($input->getInt('formid', 0));
 		$model->getForm();
-		$model->rowId = $input->get('rowid', '', 'string');
+		$model->setRowId($input->get('rowid', '', 'string'));
 		$model->validate();
 		$data = array('modified' => $model->modifiedValidationData);
 

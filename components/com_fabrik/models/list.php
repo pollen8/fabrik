@@ -4085,7 +4085,7 @@ class FabrikFEModelList extends JModelForm
 					$value = "\"[[:<:]]" . $value . "[[:>:]]\"";
 				}
 			}
-			if ($condtion === 'REGEXP')
+			if ($condition === 'REGEXP')
 			{
 				// $$$ 15/11/2012 - moved from before getFilterValue() to after as otherwise date filters in querystrings created wonky query
 				$value = 'LOWER(' . $db->quote($value, false) . ')';
@@ -5653,7 +5653,7 @@ class FabrikFEModelList extends JModelForm
 			return $this->canSelectRows;
 		}
 		$actionMethod = $this->actionMethod();
-		if ($this->canDelete() || ($this->canEditARow() && $actonMethod === 'floating') || $this->deletePossible())
+		if ($this->canDelete() || ($this->canEditARow() && $actionMethod === 'floating') || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;

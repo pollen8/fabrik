@@ -278,6 +278,21 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Set row id
+	 *
+	 * @param   string  $id  primary key value
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+
+	public function setRowId($id)
+	{
+		$this->_rowId = $id;
+	}
+
+	/**
 	 * Method to get the form id
 	 *
 	 * @return  int

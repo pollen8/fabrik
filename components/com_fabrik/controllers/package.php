@@ -39,6 +39,7 @@ class FabrikControllerPackage extends JControllerLegacy
 	 * @return  JController  A JController object to support chaining.
 	 *
 	 */
+
 	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();

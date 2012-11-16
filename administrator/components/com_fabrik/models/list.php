@@ -636,7 +636,11 @@ class FabrikAdminModelList extends FabModelAdmin
 			{
 				$row->db_table_name = $newtable;
 				$row->auto_inc = 1;
-				$res = $this->createDBTable($newtable, $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array'));
+
+				$dbOpts = array();
+				$params = new JRegistry($row->params);
+				$dbOpts['COLLATE'] = $params->get('collation', '');
+				$res = $this->createDBTable($newtable, $input->get('defaultfields', array('id' => 'internalid', 'date_time' => 'date'), 'array'), $dbOpts);
 				if (is_array($res))
 				{
 					$row->db_primary_key = $newtable . '.' . $res[0];
@@ -770,6 +774,11 @@ class FabrikAdminModelList extends FabModelAdmin
 	 */
 	protected function collation($feModel, $origCollation, $row)
 	{
+		// Don't attempt to alter new table
+		if ($row->id == 0)
+		{
+			return;
+		}
 		$params = new JRegistry($row->params);
 		$newCollation = $params->get('collation');
 		if ($newCollation !== $origCollation)
@@ -2120,13 +2129,14 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
 	 *
-	 * @param   string  $dbTableName  taken from the table oject linked to the form
-	 * @param   array   $fields       list of default elements to add. (key = element name, value = plugin
+	 * @param   string  $dbTableName  Taken from the table oject linked to the form
+	 * @param   array   $fields       List of default elements to add. (key = element name, value = plugin
+	 * @param   array   $opts         Additional options, e.g. collation
 	 *
 	 * @return mixed false if fail otherwise array of primary keys
 	 */
 
-	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'))
+	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'), $opts = array())
 	{
 		$db = FabrikWorker::getDbo(true);
 		$fabrikDb = $this->getDb();
@@ -2188,7 +2198,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$element = $elementModel->getElement();
 
 			// Replace all non alphanumeric characters with _
-			$objname = FabrikString::dbFieldName($element->name);//preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
+			$objname = FabrikString::dbFieldName($element->name);
 			if ($element->primary_key)
 			{
 				$keys[] = $objname;
@@ -2222,6 +2232,13 @@ class FabrikAdminModelList extends FabModelAdmin
 		{
 			$sql .= ')';
 		}
+		foreach ($opts as $k => $v)
+		{
+			if ($v != '')
+			{
+				$sql .= ' ' . $k . ' ' . $v;
+			}
+		}
 		$sql .= ' ENGINE = MYISAM ';
 		$fabrikDb->setQuery($sql);
 		if (!$fabrikDb->query())
@@ -2235,8 +2252,8 @@ class FabrikAdminModelList extends FabModelAdmin
 	/**
 	 * Create an element
 	 *
-	 * @param   string  $name  element name
-	 * @param   array   $data  properties
+	 * @param   string  $name  Element name
+	 * @param   array   $data  Properties
 	 *
 	 * @return mixed false if failed, otherwise element plugin
 	 */
