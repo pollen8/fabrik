@@ -993,11 +993,6 @@ var fabrikCalendar = new Class({
 			this.viewEntry();
 		}.bind(this));
 		
-		document.addEvent('click:relay(.popover button.close)', function (event, target) {
-			var popover = '#' + target.get('data-popover');
-			jQuery(popover).popover('hide');
-		}.bind(this));
-		
 		document.addEvent('click:relay(a.fabrikEvent)', function (e, target) {
 			this.activeHoverEvent = e.target.hasClass('fabrikEvent') ? e.target : e.target.getParent('.fabrikEvent');
 		}.bind(this));

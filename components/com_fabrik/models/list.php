@@ -893,6 +893,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected function addSelectBoxAndLinks(&$data)
 	{
+		$j3 = FabrikWorker::j3();
 		$item = $this->getTable();
 		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
@@ -977,15 +978,17 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
-				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-				$editLink = '<a class="fabrik__rowlink" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+				$editLabel = $j3 ? '' : '<span>' . $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) . '</span>';
+				$class = $j3 ? 'fabrik_edit btn fabrik__rowlink' : 'btn fabrik__rowlink';
+				$editLink = '<a class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 					. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
 					. '<span>' . $editLabel . '</span></a>';
 
-				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-				$viewLink = '<a class="fabrik___rowlink" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
-					. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('view.png', 'list', '', array('alt' => $viewLabel))
-					. '<span>' . $viewLabel . '</span></a>';
+				$viewLabel = $j3 ? '' : '<span>' . $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) . '</span>';
+				$class = $j3 ? 'fabrik_view btn fabrik__rowlink' : 'btn fabrik__rowlink';
+				$viewLink = '<a class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
+					. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
+					. $viewLabel . '</a>';
 
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
@@ -997,13 +1000,13 @@ class FabrikFEModelList extends JModelForm
 						if ($params->get('editlink') || $actionMethod == 'floating')
 						{
 							$row->fabrik_edit = $editLink;
-							$row->fabrik_actions['fabrik_edit'] = '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
+							$row->fabrik_actions['fabrik_edit'] = $j3 ? $row->fabrik_edit : '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
 						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $actionMethod == 'floating'))
 						{
 							$row->fabrik_view = $viewLink;
-							$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
+							$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 						}
 					}
 					else
@@ -1014,7 +1017,7 @@ class FabrikFEModelList extends JModelForm
 							{
 								$viewLinkAdded = true;
 								$row->fabrik_view = $viewLink;
-								$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
+								$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 							}
 						}
 						else
@@ -1028,7 +1031,7 @@ class FabrikFEModelList extends JModelForm
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
 					$row->fabrik_view = $viewLink;
-					$row->fabrik_actions['fabrik_view'] = '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
+					$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
 				}
 				if ($this->canDelete($row))
 				{
@@ -1120,7 +1123,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if (trim($b) !== '')
 					{
-						$row->fabrik_actions[] = '<li>' . $b . '</li>';
+						$row->fabrik_actions[] = $js ? $b : '<li>' . $b . '</li>';
 					}
 				}
 				if (!empty($row->fabrik_actions))
@@ -1129,7 +1132,14 @@ class FabrikFEModelList extends JModelForm
 					{
 						$this->rowActionCount = count($row->fabrik_actions);
 					}
-					$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
+					if ($j3)
+					{
+						$row->fabrik_actions = '<div class="btn-group fabrik_action">' . implode("\n", $row->fabrik_actions) . '</btn>';
+					}
+					else
+					{
+						$row->fabrik_actions = '<ul class="fabrik_action">' . implode("\n", $row->fabrik_actions) . '</ul>';
+					}
 				}
 				else
 				{
@@ -1166,19 +1176,22 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get delete button
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl      Template
+	 * @param   bool    $heading  Is this the check all delete button
 	 *
 	 * @since 3.0
 	 *
 	 * @return	string	delete button wrapped in <li>
 	 */
 
-	protected function deleteButton($tpl = '')
+	protected function deleteButton($tpl = '', $heading = false)
 	{
 		$tpl = $this->getTmpl();
-		return '<li class="fabrik_delete"><a href="#" class="delete" title="' . JText::_('COM_FABRIK_DELETE') . '">'
-			. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . '<span>'
-			. JText::_('COM_FABRIK_DELETE') . '</span></a></li>';
+		$j3 = FabrikWorker::j3();
+		$label = $j3 ? '' : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
+		$btn = '<a href="#" class="btn delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
+			. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . $label . '</a>';
+		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
 	}
 
 	/**
@@ -5514,7 +5527,7 @@ class FabrikFEModelList extends JModelForm
 			$headingButtons = array();
 			if ($this->deletePossible())
 			{
-				$headingButtons[] = $this->deleteButton();
+				$headingButtons[] = $this->deleteButton('', true);
 			}
 			$return = $pluginManager->runPlugins('button', $this, 'list');
 			$res = $pluginManager->data;
@@ -5545,7 +5558,8 @@ class FabrikFEModelList extends JModelForm
 
 	protected function addCheckBox(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		$select = '<input type="checkbox" name="checkAll" class="list_' . $this->getId() . '_checkAll" />';
+		$id = 'list_' . $this->getId() . '_checkAll';
+		$select = '<input type="checkbox" name="checkAll" class="' . $id . '" id="' . $id . '" />';
 		$aTableHeadings['fabrik_select'] = $select;
 		$headingClass['fabrik_select'] = array('class' => 'fabrik_ordercell fabrik_select', 'style' => '');
 

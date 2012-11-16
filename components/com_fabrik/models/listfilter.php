@@ -1188,10 +1188,12 @@ class FabrikFEModelListfilter extends FabModel
 				{
 					if ($i == 0)
 					{
-						$joinMode = array_pop(JArrayHelper::getValue($filters, 'join', array('AND')));
+						$joinModes = JArrayHelper::getValue($filters, 'join', array('AND'));
+						$joinMode = array_pop($joinModes);
 
 						// $$$ rob - If search all made, then the post filters should filter further the results
-						$lastSearchType = array_pop(JArrayHelper::getValue($filters, 'search_type', array('normal')));
+						$tmpSearchTypes = JArrayHelper::getValue($filters, 'search_type', array('normal'));
+						$lastSearchType = array_pop($tmpSearchTypes);
 						if ($lastSearchType == 'searchall')
 						{
 							$joinMode = 'AND';
