@@ -288,7 +288,6 @@ var Loader = new Class({
 				ref = ref.splice(0, ref.length - 2).join('_');
 				l = Fabrik.blocks[ref];
 			} else {
-				debugger;
 				// CheckAll
 				ref = e.target.getParent('.fabrikList');
 				if (typeOf(ref) !== 'null') {

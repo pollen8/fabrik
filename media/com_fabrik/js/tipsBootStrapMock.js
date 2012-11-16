@@ -27,7 +27,6 @@ var FloatingTips = new Class({
 	},
 	
 	initialize: function (elements, options) {
-		debugger;
 		this.setOptions(options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
 		//any tip (not necessarily in this instance has asked for all other tips to be hidden.
@@ -53,7 +52,7 @@ var FloatingTips = new Class({
 			opts.placement = opts.position;
 			opts.title = opts.heading;
 			
-			opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>'
+			opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
 			jQuery(trigger).popover(opts);
 		}.bind(this));
 	
