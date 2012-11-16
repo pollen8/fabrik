@@ -56,7 +56,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		$xmlParent = $params->get('xml_parent', 'ticket');
 		$xmlParent = $w->parseMessageForPlaceholder($xmlParent);
 
-		//Request headers
+		// Request headers
 		$headers = array();
 
 		// Set up CURL object
@@ -78,13 +78,57 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		}
 		$endpoint = $w->parseMessageForPlaceHolder($endpoint, $fkData);
 
+
+		$output = $this->buildOutput($formModel, $include, $xmlParent, $headers);
+		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $params, $output);
+
+		foreach ($curlOpts as $key => $value)
+		{
+			curl_setopt($chandle, $key, $value);
+		}
+		$output = curl_exec($chandle);
+		$jsonOutPut = FabrikWorker::isJSON($output) ? true : false;
+
+		if (!$this->handleError($output, $formModel, $chandle))
+		{
+			return false;
+		}
+
+		curl_close($chandle);
+
+		// Set FK value in Fabrik form data
+		if ($method === 'POST')
+		{
+			if ($jsonOutPut)
+			{
+				$fkVal = json_encode($output);
+			}
+			else
+			{
+				$fkVal = $output;
+			}
+			$formModel->updateFormData($fkElementKey , $fkVal, true, true);
+		}
+	}
+
+	/**
+	 * Create the data structure containing the data to send
+	 *
+	 * @param   object  $formModel  Form Model
+	 * @param   string  $include    list of fields to include
+	 * @param   xml     $xmlParent  Parent node if rendering as xml
+	 * @param   array   &$headers   Headeres
+	 *
+	 * @return mixed
+	 */
+	private function buildOutput($formModel, $include, $xmlParent, &$headers)
+	{
 		$postData = [];
 		if (FabrikWorker::isJSON($include))
 		{
 			$include = json_decode($include);
 
 			$include = JArrayHelper::fromObject($include[0]);
-			//$include = array_merge($include, $fkData);
 			if ($xmlParent != '')
 			{
 				$postData[$xmlParent] = $include;
@@ -125,71 +169,45 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		{
 			$output = http_build_query($postData);
 		}
+		return $output;
+	}
 
-
-
+	/**
+	 * Create the CURL options when sending
+	 *
+	 * @param   string  $method  POST/PUT
+	 * @param   array   &$headers  Headers
+	 *
+	 * @return  array
+	 */
+	private function buildCurlOpts($method, &$headers, $endpoint, $params, $output)
+	{
+		// The username/password
+		$config_userpass = $params->get('username') . ':' . $params->get('password');
+		$curlOpts = array();
 		if ($method === 'POST')
 		{
-			curl_setopt($chandle, CURLOPT_POST, 1);
+			$curlOpts[CURLOPT_POST] = 1;
 		}
 		else
 		{
-			/*  $fh = fopen('php://memory', 'rw');
-			fwrite($fh, $output);
-			rewind($fh);
-			curl_setopt($chandle, CURLOPT_INFILE, $fh);
-			curl_setopt($chandle, CURLOPT_INFILESIZE, strlen($output));
-			$headers[] = 'Content-Length: '.strlen($output); */
+			$curlOpts[CURLOPT_PUT] = 1;
 
-			// $headers[] = 'X-HTTP-Method-Override: PUT';
-			curl_setopt($chandle, CURLOPT_CUSTOMREQUEST, 'PUT');
-			curl_setopt($chandle, CURLOPT_PUT, 1);
+			/**
+			 * // Not working for apparty:
+			 *
+			 * CURLOPT_CUSTOMREQUEST => $method,
+			 */
 		}
 
-		$curl_options = array(CURLOPT_URL => $endpoint,
-				CURLOPT_SSL_VERIFYPEER => 0,
-				CURLOPT_POSTFIELDS => $output,
-				CURLOPT_SSL_VERIFYPEER => 0,
-				CURLOPT_SSL_VERIFYPEER => 0,
-				CURLOPT_HTTPHEADER => $headers,
-				CURLOPT_RETURNTRANSFER => 1,
-				CURLOPT_HTTPAUTH => CURLAUTH_ANY,
-				CURLOPT_USERPWD => $config_userpass);
-
-		/**
-		 * // Not working for apparty:
-		 *
-		 * CURLOPT_CUSTOMREQUEST => $method,
-		 */
-
-		foreach ($curl_options as $key => $value)
-		{
-			curl_setopt($chandle, $key, $value);
-		}
-		$output = curl_exec($chandle);
-		//echo $output;exit;
-		$jsonOutPut = FabrikWorker::isJSON($output) ? true : false;
-
-
-		if (!$this->handleError($output, $formModel, $chandle))
-		{
-			return false;
-		}
-
-		curl_close($chandle);
-
-		// Set FK value in Fabrik form data
-		if ($method === 'POST')
-		{
-			if ($jsonOutPut) {
-				$fkVal = json_encode($output);
-			}
-			else
-			{
-				$fkVal = $output;
-			}
-			$formModel->updateFormData($fkElementKey , $fkVal, true, true);
-		}
+		$curlOpts[CURLOPT_URL] = $endpoint;
+		$curlOpts[CURLOPT_SSL_VERIFYPEER] = 0;
+		$curlOpts[CURLOPT_POSTFIELDS] = $output;
+		$curlOpts[CURLOPT_HTTPHEADER] = $headers;
+		$curlOpts[CURLOPT_RETURNTRANSFER] = 1;
+		$curlOpts[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
+		$curlOpts[CURLOPT_USERPWD] = $config_userpass;
+		return $curlOpts;
 	}
 
 	/**
@@ -204,7 +222,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			$output = json_decode($output);
 
 			// @TODO make this more generic - currently only for apparty
-			if ($output->errors)
+			if (isset($output->errors))
 			{
 				// Have to set something in the errors array otherwise form validates
 				$formModel->_arErrors['dummy___elementname'][] = 'woops!';
@@ -213,6 +231,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			}
 		}
 		$httpCode = curl_getinfo($chandle, CURLINFO_HTTP_CODE);
+		echo $httpCode;exit;
 		switch ($httpCode)
 		{
 			case '400':
