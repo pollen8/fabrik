@@ -420,6 +420,7 @@ class FabrikFEModelList extends JModelForm
 		if ($app->scope == 'com_content')
 		{
 			$limitLength = JRequest::getInt('limit' . $id, $item->rows_per_page);
+
 			if (!$this->randomRecords)
 			{
 				$limitStart = JRequest::getInt('limitstart' . $id, $limitStart);
@@ -542,6 +543,8 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
+		// Ajax call needs to recall this - not sure why
+		$this->setLimits();
 		$results = $cache
 			->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
