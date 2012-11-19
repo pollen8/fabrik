@@ -716,7 +716,7 @@
 	      <format property="year" pattern="yyyy" locale="en,UK"/>
 	  </tstamp>
 	  
-		<!-- <xmltask todir="${cfg.destdir}">
+		<xmltask todir="${cfg.destdir}">
 			<fileset dir="${cfg.destdir}">
 				<include name="**/*.xml"/>
 			</fileset>
