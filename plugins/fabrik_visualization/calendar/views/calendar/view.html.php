@@ -45,12 +45,12 @@ class fabrikViewCalendar extends JView
 		$model->setId($id);
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
-		$this->assign('params', $params);
-		$this->assign('containerId', $model->getJSRenderContext());
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assign('showTitle', $input->getInt('show-title', 1));
-		$this->assign('filterFormURL', $this->get('FilterFormURL'));
+		$this->params = $params;
+		$this->containerId = $model->getJSRenderContext();
+		$this->filters = $this->get('Filters');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showTitle = $input->getInt('show-title', 1);
+		$this->filterFormURL = $this->get('FilterFormURL');
 
 		$calendar = $model->_row;
 
@@ -160,7 +160,10 @@ class fabrikViewCalendar extends JView
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 
 		$ref = $model->getJSRenderContext();
-		$js = " $ref = new fabrikCalendar('$ref');\n";
+
+		// hack until we replace head.js with require.js
+		$js = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+		$js .= " $ref = new fabrikCalendar('$ref');\n";
 		$js .= " $ref.render($json);\n";
 		$js .= "  Fabrik.addBlock('" . $ref . "', $ref);\n";
 		$js .= $legend . "\n";
@@ -172,10 +175,8 @@ class fabrikViewCalendar extends JView
 		FabrikHelperHTML::script($srcs, $js);
 
 		$viewName = $this->getName();
-
-		$pluginParams = $model->getPluginParams();
-		$this->assignRef('params', $model->getParams());
-		$tpl = $pluginParams->get('calendar_layout', $tpl);
+		$this->params = $model->getParams();
+		$tpl = $params->get('calendar_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 
