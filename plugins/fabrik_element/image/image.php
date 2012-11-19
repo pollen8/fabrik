@@ -41,6 +41,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			$element = $this->getElement();
 			$w = new FabrikWorker;
 			$this->default = $params->get('imagepath');
+
 			// $$$ hugh - this gets us the default image, with the root folder prepended.
 			// But ... if the root folder option is set, we need to strip it.
 			$rootFolder = $params->get('selectImage_root_folder', '/');
@@ -52,7 +53,6 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$this->default = @eval(stripslashes($this->default));
 				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
-			echo "<br>$this->default  <br>";
 		}
 		return $this->default;
 	}
@@ -66,8 +66,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	 *
 	 * Overrides element model as in edit/view details the image should be loaded regardless of $this->isEditable() #GH-527
 	 *
-	 * @param   array  $data   form data
-	 * @param   array  $opts   options
+	 * @param   array  $data  Form data
+	 * @param   array  $opts  Options
 	 *
 	 * @since  3.0.7
 	 *
@@ -456,112 +456,9 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$opts->canSelect = (bool) $params->get('image_front_end_select', false);
 		$opts->id = $element->id;
 		$opts->ds = DS;
-		$opts->dir = JPATH_SITE . DS . str_replace('/', DS, $opts->rootPath);
+		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
 		$opts = json_encode($opts);
 		return "new FbImage('$id', $opts)";
-	}
-
-	/**
-	 * Get admin lists
-	 *
-	 *@deprecated
-	 */
-
-	function getAdminLists(&$lists)
-	{
-
-		/**
-		 * IMPORTANT NOTE FOR HACKERS!
-		 * 	if your images folder contains massive sub directories which you dont want fabrik
-		 * accessing (and hance slowing down to a crawl the loading of this page)
-		 * then put the folders in the $ignoreFolders array
-		 */
-		$params = $this->getParams();
-		$images = array();
-		$folders = array();
-		$path = $params->get('imagepath', '/');
-		$file = $params->get('imagefile');
-		$folders[] = JHTML::_('select.option', '/', '/');
-		FabrikWorker::readImages(JPATH_SITE, "/", $folders, $images, $this->ignoreFolders);
-		$lists['folders'] = JHTML::_('select.genericlist', $folders, 'params[imagepath]', 'class="inputbox" size="1" ', 'value', 'text', $path);
-		$javascript = "onchange=\"previewImage()\" onfocus=\"previewImage()\"";
-		$is = JArrayHelper::getValue($images, $path, array());
-		$lists['imagefiles'] = JHTML::_('select.genericlist', $is, 'params[imagefile]',
-			'class="inputbox" size="10" multiple="multiple" ' . $javascript, 'value', 'text', $file);
-		$defRootFolder = $params->get('selectImage_root_folder', '');
-		$lists['selectImage_root_folder'] = JHTML::_('select.genericlist', $folders, 'params[selectImage_root_folder]',
-			"class=\"inputbox\"  size=\"1\" ", 'value', 'text', $defRootFolder);
-	}
-
-	/**
-	 * @deprecated
-	 */
-
-	function renderAdminSettings(&$lists)
-	{
-		return;
-		$params = $this->getParams();
-		$this->getAdminLists($lists);
-?>
-<script language="javascript" type="text/javascript">
-			/* <![CDATA[ */
-			function setImageName() {
-				var image = document.adminForm.imagefiles;
-				var linkurl = document.getElementsByName('params[image_path]')[0];
-				linkurl.value =  (image).get('value');
-			}
-
-			function previewImage() {
-				var root = '<?php echo COM_FABRIK_LIVESITE; ?>';
-				var file = $('paramsimagefile').get('value');
-				var folder = $('paramsimagepath').get('value');
-				$('view_imagefiles').src = root + file;
-			}
-
-			head.ready(function() {
-			$('paramsimagepath').addEvent('change', function(e) {
-				var event = new Event(e);
-				event.stop;
-				var folder = '<?php echo $params->get('selectImage_root_folder', ''); ?>' + $(event.target).get(\'value\');
-				var url = '<?php echo COM_FABRIK_LIVESITE; ?>index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=image&method=ajax_files';
-				var myAjax = new Request({url:url, method:'post',
-			'data':{'folder':folder},
-			onComplete: function(r) {
-				var opts = eval(r);
-				var folder = '<?php echo $params->get('selectImage_root_folder', ''); ?>' + $(event.target).get(\'value\');
-				$('paramsimagefile').empty()
-				opts.each( function(opt) {
-					$('paramsimagefile').adopt(
-						new Element('option', {'value':folder + opt.value}).appendText(opt.text)
-					);
-				}.bind(this));
-				previewImage();
-			}.bind(this)
-		}).request();
-
-			});
-			 previewImage();
-			});
-			/* ]]> */
-		</script>
-<div id="page-<?php echo $this->_name; ?>" class="elementSettings"
-	style="display: none">
-<table class="admintable">
-	<tr>
-		<td class="paramlist_key"><?php echo JText::_('Default image'); ?></td>
-		<td><?php echo $lists['folders'];
-		echo "<br />\n" . $lists['imagefiles'];
-			?>
-		<img name="view_imagefiles" id="view_imagefiles" src="<?php echo COM_FABRIK_LIVESITE . $params->get('image_path'); ?>" width="100" alt="view imagefiles"/> <br />
-		</td>
-	</tr>
-	<tr>
-		<td class="paramlist_key"><?php echo JText::_('Root folder'); ?>:</td>
-		<td><?php echo $lists['selectImage_root_folder']; ?></td>
-	</tr>
-</table>
-		<?php echo $pluginParams->render(); ?></div>
-		<?php
 	}
 
 	/**
