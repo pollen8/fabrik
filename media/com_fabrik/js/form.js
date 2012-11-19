@@ -1188,7 +1188,7 @@ var FbForm = new Class({
 		this.subGroups.set(i, subGroup.clone());
 		if (subgroups.length <= 1) {
 			this.hideLastGroup(i, subGroup);
-
+			Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 		} else {
 			var toel = subGroup.getPrevious();
 			var myFx = new Fx.Tween(subGroup, {'property': 'opacity',
@@ -1223,6 +1223,7 @@ var FbForm = new Class({
 							delete this.formElements[oldKey];
 						}
 					}.bind(this));
+					Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 				}.bind(this)
 			}).start(1, 0);
 			if (toel) {
@@ -1242,8 +1243,6 @@ var FbForm = new Class({
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
-		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
-
 	},
 
 	hideLastGroup : function (groupid, subGroup) {
