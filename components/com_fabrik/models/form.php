@@ -2228,7 +2228,7 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								$elementModel->_group = $groupModel;
 								$elementModel->setValuesFromEncryt($post, $key, $v);
-								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doenst
+								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
 								 * pick up decrypted value
 								 */
 								$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
