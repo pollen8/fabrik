@@ -980,6 +980,10 @@ EOD;
 		{
 			return;
 		}
+		if (is_array($onLoad))
+		{
+			$onLoad = implode("\n", $onLoad);
+		}
 		$document = JFactory::getDocument();
 		/*
 		$config = JFactory::getConfig();
