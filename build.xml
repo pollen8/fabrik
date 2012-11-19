@@ -689,7 +689,7 @@
 	
 	<target name="refresh.updatexml">
 	
-		<tstamp>
+		<!-- <tstamp>
 	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
 	  </tstamp>
 	  <tstamp>
@@ -703,7 +703,7 @@
 			 <replace path="/extension/version/text()" withText="${version}"/> 
 			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
 			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-		</xmltask>
+		</xmltask> -->
 		
 		<antcall target="xml.update.repoistory" />
 	</target>
