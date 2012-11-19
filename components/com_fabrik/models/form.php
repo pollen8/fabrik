@@ -357,6 +357,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return 2;
 		}
+		$data = $this->getData();
 		$ret = 0;
 		if ($listModel->canViewDetails())
 		{
@@ -373,7 +374,7 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			elseif ($pRowid == '-1' && $listModel->canEdit($this->_data))
+			elseif ($pRowid == '-1' && $listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
@@ -381,7 +382,7 @@ class FabrikFEModelForm extends FabModelForm
 		else
 		{
 			// Editing from - can we edit
-			if ($listModel->canEdit($this->_data))
+			if ($listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
