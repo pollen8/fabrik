@@ -709,7 +709,7 @@
 	
 	<target name="refresh.updatexml">
 	
-		<tstamp>
+		<!-- <tstamp>
 	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
 	  </tstamp>
 	  <tstamp>

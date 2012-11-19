@@ -380,7 +380,7 @@ class plgContentFabrik extends JPlugin
 			return;
 		}
 
-		$origid = $input->get('id');
+		$origid = $input->get('id', '', 'string');
 		$origView = $input->get('view');
 
 		// For fabble
@@ -464,6 +464,10 @@ class plgContentFabrik extends JPlugin
 					return;
 				}
 				$model->setId($id);
+				$model->isMambot = true;
+
+				// Reset this otherwise embedding a list in a list menu page, the embedded list takes the show in list fields from the menu list
+				$input->set('fabrik_show_in_list', array());
 				$model->ajax = 1;
 				$task = $input->get('task');
 				if (method_exists($controller, $task) && $input->getInt('activetableid') == $id)
@@ -542,7 +546,7 @@ class plgContentFabrik extends JPlugin
 		$this->origRequestVars = array();
 		foreach ($qs_arr as $k => $v)
 		{
-			$origVar = $input->get($k);
+			$origVar = $input->get($k. '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$input->set($k, $v);
 		}

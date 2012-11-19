@@ -2,8 +2,8 @@
 <extension group="fabrik_cron" method="upgrade" type="plugin" version="30">
 	<name>plg_fabrik_cron_notification</name>
 	<author>Rob Clayburn</author>
-	<creationDate>November 2012</creationDate>
-	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<creationDate>${createdate}</creationDate>
+	<copyright>(C) 2005-${year} fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>

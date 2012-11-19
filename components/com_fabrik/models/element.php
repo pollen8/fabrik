@@ -3079,12 +3079,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (strstr($joinStr, 'JOIN ' . $fabrikDb->quoteName($fromTable)))
 		{
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
-				. ' FROM ' . $fabrikDb->quoteName($origTable) . $joinStr . "\n";
+				. ' FROM ' . $fabrikDb->quoteName($origTable) . ' ' . $joinStr . "\n";
 		}
 		else
 		{
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
-				. ' FROM ' . $fabrikDb->quoteName($fromTable) . $joinStr . "\n";
+				. ' FROM ' . $fabrikDb->quoteName($fromTable) . ' ' . $joinStr . "\n";
 		}
 		if (!$this->isJoin())
 		{

@@ -2,9 +2,9 @@
 <extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 
 	<name>Fabrik</name>
-	<creationDate>November 2012</creationDate>
+	<creationDate>${createdate}</creationDate>
 	<author>Fabrik</author>
-	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<copyright>(C) 2005-${year} fabrikar.com</copyright>
 	<license>GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>

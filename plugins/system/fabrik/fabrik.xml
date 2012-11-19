@@ -2,8 +2,8 @@
 <extension group="system" method="upgrade" type="plugin" version="30">
 	<name>plg_fabrik_system</name>
 	<author>Fabrikar.com</author>
-	<creationDate>November 2012</creationDate>
-	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<creationDate>${createdate}</creationDate>
+	<copyright>(C) 2005-${year} fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>

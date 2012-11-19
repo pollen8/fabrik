@@ -1051,4 +1051,23 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		return $params->get('cascadingdropdown_label_concat', '') == '';
 	}
 
+	/**
+	* If filterValueList_Exact incjoin value = false, then this method is called
+	* to ensure that the query produced in filterValueList_Exact contains at least the database join element's
+	* join
+	*
+	* @return  string  required join text to ensure exact filter list code produces a valid query.
+	*/
+
+	protected function _buildFilterJoin()
+	{
+		$params = $this->getParams();
+		$joinTable = FabrikString::safeColName($this->getDbName());
+		$join = $this->getJoin();
+		$joinTableName = FabrikString::safeColName($join->table_join_alias);
+		$joinKey = $this->getJoinValueColumn();
+		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
+		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
+	}
+
 }
