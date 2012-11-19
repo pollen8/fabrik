@@ -14,19 +14,38 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of elements.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 class FabrikAdminViewElements extends JViewLegacy
 {
+	/**
+	 * Element items
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination object
+	 * @var  object
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 * @var  object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		if ($this->getLayout() == 'confirmdelete')
@@ -57,19 +76,22 @@ class FabrikAdminViewElements extends JViewLegacy
 		}
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		parent::display($tpl);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		$this->sidebar = JHtmlSidebar::render();
+		parent::display($tpl);
+
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
-		require_once JPATH_COMPONENT.'/helpers/fabrik.php';
-		$canDo	= FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
+		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
+		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENTS'), 'elements.png');
 		if ($canDo->get('core.create'))
@@ -113,12 +135,63 @@ class FabrikAdminViewElements extends JViewLegacy
 		}
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS', false, JText::_('JHELP_COMPONENTS_FABRIK_ELEMENTS'));
+
+		if (FabrikWorker::j3())
+		{
+			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=elements');
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+			JText::_('JOPTION_SELECT_PUBLISHED'),
+			'filter_published',
+			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
+			);
+
+			if (!empty($this->packageOptions))
+			{
+				array_unshift($this->packageOptions, JHtml::_('select.option', 'fabrik', JText::_('COM_FABRIK_SELECT_PACKAGE')));
+				JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'),
+				'package',
+				JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true)
+				);
+			}
+
+			JHtmlSidebar::addFilter(
+			JText::_('COM_FABRIK_SELECT_FORM'),
+			'filter_form',
+			JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true)
+			);
+
+			JHtmlSidebar::addFilter(
+			JText::_('COM_FABRIK_SELECT_PLUGIN'),
+			'filter_plugin',
+			JHtml::_('select.options', $this->pluginOptions, 'value', 'text', $this->state->get('filter.plugin'), true)
+			);
+
+			JHtmlSidebar::addFilter(
+			JText::_('COM_FABRIK_SELECT_GROUP'),
+			'filter_group',
+			JHtml::_('select.options', $this->groupOptions, 'value', 'text', $this->state->get('filter.group'), true)
+			);
+
+			JHtmlSidebar::addFilter(
+			JText::_('COM_FABRIK_SELECT_SHOW_IN_LIST'),
+			'filter_showinlist',
+			JHtml::_('select.options', $this->showInListOptions, 'value', 'text', $this->state->get('filter.showinlist'), true)
+			);
+
+		}
+
 	}
 
 	/**
-	 * show a screen asking if the user wants to delete the lists forms/groups/elements
+	 * Show a screen asking if the user wants to delete the lists forms/groups/elements
 	 * and if they want to drop the underlying database table
-	 * @param string $tpl
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	protected function confirmdelete($tpl = null)
@@ -135,7 +208,7 @@ class FabrikAdminViewElements extends JViewLegacy
 	/**
 	 * Add the page title and toolbar for confirming list deletion
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
 
 	protected function addConfirmDeleteToolbar()
@@ -149,6 +222,14 @@ class FabrikAdminViewElements extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT', true, 'http://fabrikar.com/wiki/index.php/Element_delete_confirmation');
 	}
+
+	/**
+	 * Show a view for selecting which group the element should be copied to
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
+	 */
 
 	public function copySelectGroup($tpl = null)
 	{
@@ -166,6 +247,12 @@ class FabrikAdminViewElements extends JViewLegacy
 		$this->addConfirmCopyToolbar();
 		parent::display($tpl);
 	}
+
+	/**
+	 * Add confirm copy elements toolbar
+	 *
+	 * @return  void
+	 */
 
 	protected function addConfirmCopyToolbar()
 	{

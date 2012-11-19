@@ -44,39 +44,17 @@ $states	= array(
 
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=elements'); ?>" method="post" name="adminForm" id="adminForm">
+<?php if(!empty( $this->sidebar)): ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
 	<div id="filter-bar" class="btn-toolbar">
 		<div class="row-fluid">
-			<div class="span2 offset2">
-				<?php if (!empty($this->packageOptions)) :
-				?>
-				<select name="package" class="inputbox" onchange="this.form.submit()">
-					<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
-					<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
-				</select>
-				<?php
-				endif;
-				?>
-				<select name="filter_form" class="inputbox span10" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM');?></option>
-					<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true);?>
-				</select>
-			</div>
-			<div class="span2">
-				<select name="filter_published" class="inputbox span10" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-					<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text', $this->state->get('filter.published'), true);?>
-				</select>
-			</div>
-
-			<div class="span2">
-				<select name="filter_plugin" class="inputbox span6" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('COM_FABRIK_SELECT_PLUGIN')?></option>
-					<?php echo JHtml::_('select.options', $this->pluginOptions, 'value', 'text', $this->state->get('filter.plugin'), true)?>
-				</select>
-
-			</div>
-
-			<div class="span4 offset2">
+			<div class="span12">
 				<div class="filter-search btn-group pull-left">
 					<label class="element-invisible" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
 					<input type="text" name="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>"
@@ -86,24 +64,6 @@ $states	= array(
 					<button class="btn tip" type="submit" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
 					<button class="btn tip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
 				</div>
-			</div>
-		</div>
-
-
-		<div clas="row-fluid">
-			<div class="span2 offset2">
-			<select name="filter_group" class="inputbox span10" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('COM_FABRIK_SELECT_GROUP');?></option>
-					<?php echo JHtml::_('select.options', $this->groupOptions, 'value', 'text', $this->state->get('filter.group'), true);?>
-				</select>
-			</div>
-			<div class="span2">
-			<select name="filter_showinlist" class="inputbox span10" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('COM_FABRIK_SELECT_SHOW_IN_LIST');?></option>
-				<?php echo JHtml::_('select.options', $this->showInListOptions, 'value', 'text', $this->state->get('filter.showinlist'), true);?>
-			</select>
-
-
 			</div>
 		</div>
 	</div>
@@ -243,4 +203,5 @@ $states	= array(
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

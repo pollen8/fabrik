@@ -14,19 +14,38 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of visualizations.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 class FabrikAdminViewVisualizations extends JViewLegacy
 {
+	/**
+	 * Visualizations
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 * @var object
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		// Initialise variables.
@@ -43,15 +62,18 @@ class FabrikAdminViewVisualizations extends JViewLegacy
 		}
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		parent::display($tpl);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		$this->sidebar = JHtmlSidebar::render();
+		parent::display($tpl);
+
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
@@ -93,5 +115,27 @@ class FabrikAdminViewVisualizations extends JViewLegacy
 		}
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS', false, JText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS'));
+
+		if (FabrikWorker::j3())
+		{
+			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=visualizations');
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+			JText::_('JOPTION_SELECT_PUBLISHED'),
+			'filter_published',
+			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
+			);
+
+			if (!empty($this->packageOptions))
+			{
+				array_unshift($this->packageOptions, JHtml::_('select.option', 'fabrik', JText::_('COM_FABRIK_SELECT_PACKAGE')));
+				JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'),
+				'package',
+				JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true)
+				);
+			}
+		}
 	}
 }

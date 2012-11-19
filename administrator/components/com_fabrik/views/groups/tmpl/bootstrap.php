@@ -21,32 +21,17 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=groups'); ?>" method="post" name="adminForm" id="adminForm">
+<?php if(!empty( $this->sidebar)): ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
 
 <div id="filter-bar" class="btn-toolbar">
 		<div class="row-fluid">
-			<div class="span2 offset4">
-
-				<select name="filter_form" class="inputbox" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('COM_FABRIK_SELECT_FORM'); ?></option>
-					<?php echo JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true); ?>
-				</select>
-
-			</div>
-			<div class="span2">
-				<?php if (!empty($this->packageOptions)) {?>
-				<select name="package" class="inputbox" onchange="this.form.submit()">
-					<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
-					<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
-				</select>
-				<?php }?>
-
-
-				<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-					<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text', $this->state->get('filter.published'), true);?>
-				</select>
-			</div>
-
 			<div class="span4">
 				<div class="filter-search btn-group pull-left">
 					<label class="element-invisible" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
@@ -59,7 +44,6 @@ $listDirn = $this->state->get('list.direction');
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 
@@ -151,4 +135,5 @@ $listDirn = $this->state->get('list.direction');
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

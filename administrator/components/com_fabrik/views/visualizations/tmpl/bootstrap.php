@@ -21,23 +21,17 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_fabrik&view=visualizations'); ?>" method="post" name="adminForm" id="adminForm">
+<?php if(!empty( $this->sidebar)): ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
 	<div id="filter-bar" class="btn-toolbar">
 		<div class="row-fluid">
-			<div class="span2 offset6">
-				<?php if (!empty($this->packageOptions)) {?>
-				<select name="package" class="inputbox" onchange="this.form.submit()">
-					<option value="fabrik"><?php echo JText::_('COM_FABRIK_SELECT_PACKAGE');?></option>
-					<?php echo JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true);?>
-				</select>
-				<?php }?>
-
-				<select name="filter_published" class="inputbox" onchange="this.form.submit()">
-					<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-					<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
-				</select>
-			</div>
-
-			<div class="span4">
+			<div class="span12">
 				<div class="filter-search btn-group pull-left">
 					<label class="element-invisible" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
 					<input type="text" name="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER_LABEL'); ?>" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>"
@@ -54,7 +48,7 @@ $listDirn = $this->state->get('list.direction');
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th width="2%"><?php echo JHTML::_( 'grid.sort',  'JGRID_HEADING_ID', 'v.id', $listDirn, $listOrder); ?></th>
+				<th width="2%"><?php echo JHTML::_('grid.sort',  'JGRID_HEADING_ID', 'v.id', $listDirn, $listOrder); ?></th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /> </th>
 				<th width="35%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LABEL', 'v.label', $listDirn, $listOrder); ?>
@@ -78,7 +72,7 @@ $listDirn = $this->state->get('list.direction');
 		<?php foreach ($this->items as $i => $item) :
 			$ordering = ($listOrder == 'ordering');
 			$link = JRoute::_('index.php?option=com_fabrik&task=visualization.edit&id=' . (int) $item->id);
-			$canChange	= true;
+			$canChange = true;
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
@@ -90,20 +84,20 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
-							echo  $item->label;
-						} else {
+						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) :
+							echo $item->label;
+						else:
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->label; ?>
 						</a>
-					<?php } ?>
+					<?php endif; ?>
 					</td>
 					<td>
 						<?php echo $item->plugin; ?>
 					</td>
 					<td>
-						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'visualizations.', $canChange);?>
+						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'visualizations.', $canChange); ?>
 					</td>
 				</tr>
 
@@ -115,4 +109,5 @@ $listDirn = $this->state->get('list.direction');
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 	<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

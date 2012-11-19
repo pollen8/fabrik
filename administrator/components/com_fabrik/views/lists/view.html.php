@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -14,20 +14,38 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of lists.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 class FabrikAdminViewLists extends JViewLegacy
 {
-	protected $categories;
+	/**
+	 * List items
+	 * @var array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 * @var  object
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 * @var  object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   strin  $tpl  Template name
+	 *
+	 * @return void
 	 */
+
 	public function display($tpl = null)
 	{
 		switch ($this->getLayout())
@@ -46,6 +64,7 @@ class FabrikAdminViewLists extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->packageOptions = $this->get('PackageOptions');
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -55,15 +74,18 @@ class FabrikAdminViewLists extends JViewLegacy
 		$this->table_groups = $this->get('TableGroups');
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		parent::display($tpl);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		$this->sidebar = JHtmlSidebar::render();
+		parent::display($tpl);
+
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
@@ -109,12 +131,32 @@ class FabrikAdminViewLists extends JViewLegacy
 		}
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS', false, JText::_('JHELP_COMPONENTS_FABRIK_LISTS'));
+
+		if (FabrikWorker::j3())
+		{
+			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=lists');
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'), 'filter_published',
+				JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
+			);
+
+			if (!empty($this->packageOptions))
+			{
+				array_unshift($this->packageOptions, JHtml::_('select.option', 'fabrik', JText::_('COM_FABRIK_SELECT_PACKAGE')));
+				JHtmlSidebar::addFilter(
+					JText::_('JOPTION_SELECT_PUBLISHED'), 'package',
+					JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true)
+				);
+			}
+		}
 	}
 
 	/**
 	 * Add the page title and toolbar for confirming list deletion
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
 
 	protected function addConfirmDeleteToolbar()
@@ -128,6 +170,12 @@ class FabrikAdminViewLists extends JViewLegacy
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT', true, 'http://fabrikar.com/wiki/index.php/List_delete_confirmation');
 	}
 
+	/**
+	 * Add the import list toolbar
+	 *
+	 * @return  void
+	 */
+
 	protected function addImportToolBar()
 	{
 		$app = JFactory::getApplication();
@@ -138,9 +186,12 @@ class FabrikAdminViewLists extends JViewLegacy
 	}
 
 	/**
-	 * show a screen asking if the user wants to delete the lists forms/groups/elements
+	 * Show a screen asking if the user wants to delete the lists forms/groups/elements
 	 * and if they want to drop the underlying database table
-* @param string $tpl
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	protected function confirmdelete($tpl = null)
@@ -152,8 +203,11 @@ class FabrikAdminViewLists extends JViewLegacy
 	}
 
 	/**
-	 * show a screen allowing the user to import a csv file to create a fabrikt table.
-* @param unknown_type $tpl
+	 * Show a screen allowing the user to import a csv file to create a fabrikt table.
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	protected function import($tpl = null)

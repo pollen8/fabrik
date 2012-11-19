@@ -14,14 +14,28 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of connections.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 class FabrikAdminViewConnections extends JViewLegacy
 {
+	/**
+	 * Connections
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 * @var  object
+	 */
 	protected $state;
 
 	/**
@@ -47,8 +61,9 @@ class FabrikAdminViewConnections extends JViewLegacy
 		}
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		parent::display($tpl);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		$this->sidebar = JHtmlSidebar::render();
+		parent::display($tpl);
 	}
 
 	/**
@@ -101,5 +116,27 @@ class FabrikAdminViewConnections extends JViewLegacy
 		}
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CONNECTIONS', false, JText::_('JHELP_COMPONENTS_FABRIK_CONNECTIONS'));
+
+		if (FabrikWorker::j3())
+		{
+			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=connections');
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+			JText::_('JOPTION_SELECT_PUBLISHED'),
+			'filter_published',
+			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
+			);
+
+			if (!empty($this->packageOptions))
+			{
+				array_unshift($this->packageOptions, JHtml::_('select.option', 'fabrik', JText::_('COM_FABRIK_SELECT_PACKAGE')));
+				JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'),
+				'package',
+				JHtml::_('select.options', $this->packageOptions, 'value', 'text', $this->state->get('com_fabrik.package'), true)
+				);
+			}
+		}
 	}
 }

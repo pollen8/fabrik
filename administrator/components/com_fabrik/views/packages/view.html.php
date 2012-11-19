@@ -42,8 +42,9 @@ class FabrikAdminViewPackages extends JViewLegacy
 		}
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		parent::display($tpl);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		$this->sidebar = JHtmlSidebar::render();
+		parent::display($tpl);
 	}
 
 	/**
@@ -95,5 +96,18 @@ class FabrikAdminViewPackages extends JViewLegacy
 		}
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_PACKAGES', false, JText::_('JHELP_COMPONENTS_FABRIK_PACKAGES'));
+
+		if (FabrikWorker::j3())
+		{
+			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=packages');
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+			JText::_('JOPTION_SELECT_PUBLISHED'),
+			'filter_published',
+			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
+			);
+		}
+
 	}
 }
