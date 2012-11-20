@@ -155,7 +155,7 @@ var FbElement =  new Class({
 		this.element.addEvent(action, function (e) {
 			e.stop();
 			typeOf(js) === 'function' ? js.delay(0) : eval(js);
-		});
+		}.bind(this));
 	},
 	
 	addNewEvent: function (action, js) {
