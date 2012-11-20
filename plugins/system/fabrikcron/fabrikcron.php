@@ -125,13 +125,14 @@ class plgSystemFabrikcron extends JPlugin
 
 		foreach ($rows as $row)
 		{
+			// Load in the plugin
+			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
+
 			$params = $plugin->getParams();
 			$log->message = '';
 			$log->id = null;
 			$log->referring_url = '';
 
-			// Load in the plugin
-			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
 			$log->message_type = 'plg.cron.' . $row->plugin;
 			if (!$plugin->queryStringActivated())
 			{

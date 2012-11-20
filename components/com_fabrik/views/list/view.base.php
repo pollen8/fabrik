@@ -789,7 +789,7 @@ class FabrikViewListBase extends JViewLegacy
 		// $$$ hugh - testing social profile hash stuff
 		if ($input->get('fabrik_social_profile_hash', '') != '')
 		{
-			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash')
+			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash', '', 'string')
 				. '" />';
 		}
 		$this->hiddenFields = implode("\n", $this->hiddenFields);

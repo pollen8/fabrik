@@ -725,7 +725,7 @@ var FbDateTime = new Class({
 		
 	},
 
-	cloned : function (c) {
+	cloned: function (c) {
 		this.setUpDone = false;
 		this.hour = 0;
 		delete this.cal;
@@ -741,6 +741,7 @@ var FbDateTime = new Class({
 		this.makeCalendar();
 		this.cal.hide();
 		this.setUp();
+		this.parent(c);
 	}
 });
 

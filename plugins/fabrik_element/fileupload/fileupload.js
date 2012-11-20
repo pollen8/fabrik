@@ -49,7 +49,7 @@ var FbFileUpload = new Class({
 		Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
 	},
 	
-	cloned : function () {
+	cloned: function (c) {
 		// replaced cloned image with default image
 		if (typeOf(this.element.getParent('.fabrikElement')) === 'null') {
 			return;
@@ -58,9 +58,10 @@ var FbFileUpload = new Class({
 		if (i) {
 			i.src = Fabrik.liveSite + this.options.defaultImage;
 		}
+		this.parent(c);
 	},
 
-	decloned : function (groupid) {
+	decloned: function (groupid) {
 		var f = document.id('form_' + this.form.id);
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
 		if (typeOf(i) === 'null') {

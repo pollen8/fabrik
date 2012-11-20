@@ -558,7 +558,7 @@ var FbGoogleMap = new Class({
 		return [ 'form', 'marker', 'map', 'maptype' ];
 	},
 
-	cloned : function (c) {
+	cloned: function (c) {
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
 			var bits = field.split('_');
@@ -572,6 +572,7 @@ var FbGoogleMap = new Class({
 		});
 		this.options.geocode_fields = f;
 		this.makeMap();
+		this.parent(c);
 	},
 
 	update : function (v) {

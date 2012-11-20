@@ -1104,7 +1104,8 @@ class FabrikFEModelList extends JModelForm
 								// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 								$linkKey = @$join->db_table_name . '___' . @$join->name;
 								$gkey = $linkKey . '_form_heading';
-								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], JArrayHelper::fromObject($row));
+								$row2 = JArrayHelper::fromObject($row);
+								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], $row2);
 								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 							}
 						}
@@ -1323,7 +1324,9 @@ class FabrikFEModelList extends JModelForm
 		$linkedFormText = $params->get('linkedformtext');
 		$factedlinks = $params->get('factedlinks');
 		$linkedFormText = JArrayHelper::fromObject($factedlinks->linkedformtext);
-		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $elKey), JArrayHelper::fromObject($row));
+		$msg = JArrayHelper::getValue($linkedFormText, $elKey);
+		$row2 = JArrayHelper::fromObject($row);
+		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$app = JFactory::getApplication();
 		if (!$app->isAdmin())
 		{
@@ -1451,7 +1454,8 @@ class FabrikFEModelList extends JModelForm
 		 * why though!  I just needed to make this error go away NAO!
 		 */
 		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
-		$label = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
+		$row2 = JArrayHelper::fromObject($row);
+		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
 		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
 
