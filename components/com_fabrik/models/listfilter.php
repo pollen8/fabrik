@@ -986,8 +986,9 @@ class FabrikFEModelListfilter extends FabModel
 		 * Treat these as prefilters so we dont unset them
 		 * when we clear the filters
 		 */
-		$filterType = in_array($k2 . '_raw', $input->get('fabrik_sticky_filters', array()))
-			|| in_array($k2, $input->get('fabrik_sticky_filters', array())) ? 'jpluginfilters' : 'querystring';
+		$stickyFilters = $input->get('fabrik_sticky_filters', array(), 'array');
+		$filterType = in_array($k2 . '_raw', $stickyFilters)
+			|| in_array($k2, $stickyFilters) ? 'jpluginfilters' : 'querystring';
 		$filters['value'][] = $value;
 		$filters['condition'][] = urldecode($condition);
 		$filters['join'][] = $join;
