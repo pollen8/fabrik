@@ -3027,7 +3027,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$errorsFound = !empty($this->_arErrors);
 
-		if ($this->saveMultiPage())
+		if ($this->saveMultiPage(false))
 		{
 			$srow = $this->getSessionData();
 			/*
@@ -3295,16 +3295,20 @@ class FabrikFEModelForm extends FabModelForm
 	 * Checks if user is logged in and form multipage settings to determine
 	 * if the form saves to the session table on multipage navigation
 	 *
+	 * @param   bool  $useSessionOn  Return true if JSession contains session.on - used in confirmation
+	 * plugin to re-show the previously entered form data. Not used in $this->hasErrors() otherwise logged in users
+	 * can not get the confirmation plugin to work
+	 *
 	 * @return  bool
 	 */
 
-	public function saveMultiPage()
+	public function saveMultiPage($useSessionOn = true)
 	{
 		$params = $this->getParams();
 		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
-		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true)
+		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true && $useSessionOn)
 		{
 			return true;
 		}
