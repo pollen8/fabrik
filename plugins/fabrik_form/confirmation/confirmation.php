@@ -98,6 +98,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 			$input->set('fabrik_confirmation', 1);
 			return true;
 		}
+
 		// $$$ set flag to stop subsequent onBeforeStore plug-ins from running
 		$this->runAway = true;
 
@@ -107,7 +108,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 		// Save the posted form data to the form session, for retrival later
 		$sessionModel = JModelLegacy::getInstance('Formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($formModel->getId());
-		$rowid = $input->set('rowid', 0);
+		$rowid = $input->get('rowid', 0);
 		$sessionModel->setRowId($rowid);
 		$sessionModel->savePage($formModel);
 

@@ -1003,6 +1003,10 @@ EOD;
 		{
 			return;
 		}
+		if (is_array($onLoad))
+		{
+			$onLoad = implode("\n", $onLoad);
+		}
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;

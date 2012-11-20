@@ -44,7 +44,10 @@ class FabrikAdminViewForms extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
-		$this->sidebar = JHtmlSidebar::render();
+		if (FabrikWorker::j3())
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
 		parent::display($tpl);
 
 	}

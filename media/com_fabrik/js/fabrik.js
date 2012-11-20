@@ -185,9 +185,9 @@ var Loader = new Class({
  * Create the Fabrik name space
  */
 (function () {
-	if (typeof(Fabrik) === "undefined") {
+	if (typeof(Fabrik) === 'undefined') {
 		
-		if (jQuery) {
+		if (typeof(jQuery) !== 'undefined') {
 			document.addEvent('click:relay(.popover button.close)', function (event, target) {
 				var popover = '#' + target.get('data-popover');
 				jQuery(popover).popover('hide');

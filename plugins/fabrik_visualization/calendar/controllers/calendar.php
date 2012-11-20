@@ -25,9 +25,15 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 {
 	/**
 	 * Display the view
+	 *
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
+	 *
+	 * @since   11.1
 	 */
-
-	function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
 		$viewName = 'calendar';
@@ -43,6 +49,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		//$view$elementModel->getFormModel()View->setModel($formModel, true);
 
 		parent::display();
+		return $this;
 	}
 
 	function deleteEvent()
@@ -72,13 +79,13 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
-		$view = &$this->getView($viewName, $viewType);
+		$view = $this->getView($viewName, $viewType);
 
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$view->setModel($formModel);
 
 		// Push a model into the view
-		$model = &$this->getModel($viewName);
+		$model = $this->getModel($viewName);
 
 		$view->setModel($model, true);
 		$view->chooseaddevent();

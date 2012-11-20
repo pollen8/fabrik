@@ -5970,13 +5970,6 @@ class FabrikFEModelList extends JModelForm
 						// For radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key . '_raw', $data) ? $key . '_raw' : $key;
 
-						/* If the user cant use or view dont update this element's value
-						 * read only data should be added in addDefaultDataFromRO
-						 */
-						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey))
-						{
-							continue;
-						}
 						// @TODO similar check (but not quiet the same performed in formModel _removeIgnoredData() - should merge into one place
 						if ($elementModel->recordInDatabase($data))
 						{
@@ -6024,8 +6017,6 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		// Testing using ONLY form model addEncrytedVarsToArray() - this seems redundant/duplicate
-		// $this->addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
 		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)

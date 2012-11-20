@@ -172,7 +172,10 @@ class fabrikViewCalendar extends JViewLegacy
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 
 		$ref = $model->getJSRenderContext();
-		$js = " $ref = new fabrikCalendar('$ref');\n";
+
+		// hack until we replace head.js with require.js
+		$js = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+		$js .= " $ref = new fabrikCalendar('$ref');\n";
 		$js .= " $ref.render($json);\n";
 		$js .= "  Fabrik.addBlock('" . $ref . "', $ref);\n";
 		$js .= $legend . "\n";
