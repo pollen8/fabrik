@@ -58,7 +58,7 @@ class FabrikViewListBase extends JView
 		$src[] = 'media/com_fabrik/js/encoder.js';
 
 		$tmpl = $this->get('tmpl');
-		$this->assign('tmpl', $tmpl);
+		$this->tmpl = $tmpl;
 
 		$this->get('ListCss');
 
@@ -333,8 +333,8 @@ class FabrikViewListBase extends JView
 
 		// Cant use numeric key '0' as group by uses groupd name as key
 		$firstRow = current($this->rows);
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
-		$this->assign('advancedSearch', $this->get('AdvancedSearchLink'));
+		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+		$this->advancedSearch = $this->get('AdvancedSearchLink');
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
@@ -366,18 +366,18 @@ class FabrikViewListBase extends JView
 		$this->table->renderid = $this->get('RenderContext');
 		$this->table->db_table_name = $item->db_table_name;
 		/** end **/
-		$this->assign('list', $this->table);
+		$this->list = $this->table;
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
-		$this->assign('renderContext', $this->get('RenderContext'));
+		$this->renderContext = $this->get('RenderContext');
 		$this->formid = 'listform_' . $this->renderContext;
 		$form = $model->getFormModel();
 		$this->table->action = $this->get('TableAction');
 		$this->showCSV = $model->canCSVExport();
 		$this->showCSVImport = $model->canCSVImport();
 		$this->canGroupBy = $model->canGroupBy();
-		$this->assignRef('navigation', $nav);
+		$this->navigation = $nav;
 		$this->nav = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
 			? $nav->getListFooter($this->renderContext, $this->get('tmpl')) : '';
 		$this->nav = '<div class="fabrikNav">' . $this->nav . '</div>';
@@ -399,14 +399,14 @@ class FabrikViewListBase extends JView
 		{
 			if ($params->get('show-table-add', 1))
 			{
-				$this->assign('addRecordLink', $this->get('AddRecordLink'));
+				$this->addRecordLink = $this->get('AddRecordLink');
 			}
 			else
 			{
 				$this->showAdd = false;
 			}
 		}
-		$this->assign('addLabel', $params->get('addlabel', JText::_('COM_FABRIK_ADD')));
+		$this->addLabel = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$this->showRSS = $params->get('rss', 0) == 0 ? 0 : 1;
 		if ($this->showRSS)
 		{
@@ -427,27 +427,27 @@ class FabrikViewListBase extends JView
 		}
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
-		$this->assign('groupByHeadings', $this->get('GroupByHeadings'));
+		$this->groupByHeadings = $this->get('GroupByHeadings');
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_' . $this->renderContext);
-		$this->assign('clearFliterLink', $this->get('clearButton'));
+		$this->clearFliterLink = $this->get('clearButton');
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
-		$this->assign('filterMode', (int) $params->get('show-table-filters'));
-		$this->assign('toggleFilters', ($this->filterMode == 2 || $this->filterMode == 4));
-		$this->assign('showFilters', $this->get('showFilters'));
+		$this->filterMode = (int) $params->get('show-table-filters');
+		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4;
+		$this->showFilters = $this->get('showFilters');
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 
-		$this->assign('emptyDataMessage', $this->get('EmptyDataMsg'));
-		$this->assignRef('groupheadings', $groupHeadings);
+		$this->emptyDataMessage = $this->get('EmptyDataMsg');
+		$this->groupheadings = $groupHeadings;
 		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
-		$this->assign('isGrouped', !($this->get('groupBy') == ''));
-		$this->assign('colCount', count($this->headings));
+		$this->isGrouped = !($this->get('groupBy') == '');
+		$this->colCount = count($this->headings);
 
-		$this->assign('hasButtons', $this->get('hasButtons'));
-		$this->assignRef('grouptemplates', $model->groupTemplates);
+		$this->hasButtons = $this->get('hasButtons');
+		$this->grouptemplates = $model->groupTemplates;
 
-		$this->assignRef('params', $params);
+		$this->params = $params;
 
 		$this->loadTemplateBottom();
 
@@ -458,7 +458,7 @@ class FabrikViewListBase extends JView
 
 		$this->buttons();
 
-		$this->assign('pluginTopButtons', $this->get('PluginTopButtons'));
+		$this->pluginTopButtons = $this->get('PluginTopButtons');
 	}
 
 	/**
@@ -718,7 +718,7 @@ class FabrikViewListBase extends JView
 			$oCalcs->calc = $calc;
 			$aData[$key] = $oCalcs;
 		}
-		$this->assign('hasCalculations', $found);
+		$this->hasCalculations = $found;
 		return $aData;
 	}
 
@@ -787,7 +787,7 @@ class FabrikViewListBase extends JView
 		// $$$ hugh - testing social profile hash stuff
 		if ($input->get('fabrik_social_profile_hash', '') != '')
 		{
-			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . JRequest::getVar('fabrik_social_profile_hash')
+			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash', '', 'string')
 				. '" />';
 		}
 		$this->hiddenFields = implode("\n", $this->hiddenFields);
@@ -806,14 +806,14 @@ class FabrikViewListBase extends JView
 		$input = $app->input;
 		$model = $this->getModel();
 		$id = $model->getState('list.id');
-		$this->assign('tmpl', $this->get('tmpl'));
+		$this->tmpl = $this->get('tmpl');
 		$model->setRenderContext($id);
 		$this->listref = $model->getRenderContext();
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
-		$this->assignRef('rows', $this->get('advancedSearchRows'));
+		$this->rows = $this->get('advancedSearchRows');
 		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik', 'string');
-		$this->assign('action', $action);
-		$this->assign('listid', $id);
+		$this->action = $action;
+		$this->listid = $id;
 	}
 }
