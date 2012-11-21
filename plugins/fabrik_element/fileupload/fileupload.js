@@ -38,6 +38,40 @@ var FbFileUpload = new Class({
 				c.getParent('.fabrikElement').getElement('input[type=file]').getParent().setStyle('top', diff);
 			}
 		}
+		
+		this.watchDeleteButton();
+	},
+	
+	/**
+	 * Single file uploads can allow the user to delee the reference and/or file
+	 */
+	watchDeleteButton: function () {
+		var b = this.getContainer().getElement('[data-file]');
+		if (typeOf(b) !== 'null') {
+			b.addEvent('click', function (e) {
+				e.stop();
+				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
+					new Request({
+						url: '',
+						data: {
+							'option': 'com_fabrik',
+							'format': 'raw',
+							'task': 'plugin.pluginAjax',
+							'plugin': 'fileupload',
+							'method': 'ajax_clearFileReference',
+							'element_id': this.options.id,
+							'formid': this.form.id,
+							'rowid': this.form.options.rowid
+						}
+					}).send();
+					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
+					}
+					b.getNext().destroy();
+					b.destroy();
+				}
+			}.bind(this));
+		}
 	},
 
 	/**
@@ -63,14 +97,28 @@ var FbFileUpload = new Class({
 
 	decloned: function (groupid) {
 		var f = document.id('form_' + this.form.id);
+		
+		// erm fabrik_deletedimages is never created why test?
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
 		if (typeOf(i) === 'null') {
-			new Element('input', {
-				'type' : 'hidden',
-				'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
-				'value' : this.options.value
-			}).inject(f);
+			this.makeDeletedImageField(groupid, this.options.value).inject(f);
 		}
+	},
+	
+	/**
+	 * Create a hidden input which will tell fabrik, upon form submission, to delete the file
+	 * 
+	 *  @param  int     groupid  group id
+	 *  @param  string  value    file to delete
+	 *  
+	 *  @return  DOM Node - hidden input
+	 */
+	makeDeletedImageField: function (groupid, value) {
+		return new Element('input', {
+			'type' : 'hidden',
+			'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
+			'value' : value
+		});
 	},
 
 	update : function (val) {
