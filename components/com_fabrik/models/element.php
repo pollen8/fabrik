@@ -5948,10 +5948,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$this->form = JModelLegacy::getInstance('form', 'FabrikFEModel');
-		$this->form->setId($input->getInt('formid'));
+		$this->form = JModel::getInstance('form', 'FabrikFEModel');
+		$formId = $input->getInt('formid');
+		$this->form->setId($formId);
 		$this->setId($input->getInt('element_id'));
-		$this->getElement();
+		$this->list = JModel::getInstance('list', 'FabrikFEModel');
+		$this->list->loadFromFormId($formId);
+		$table = $this->list->getTable(true);
+		$element = $this->getElement(true);
 	}
 
 	/**

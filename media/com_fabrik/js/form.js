@@ -34,7 +34,7 @@ var FbForm = new Class({
 	
 	initialize: function (id, options) {
 		// $$$ hugh - seems options.rowid can be null in certain corner cases, so defend against that
-		if (typeOf(options.rowid === 'null')) {
+		if (typeOf(options.rowid) === 'null') {
 			options.rowid = '';
 		}
 		this.id = id;
