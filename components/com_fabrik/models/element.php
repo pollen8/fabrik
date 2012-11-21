@@ -5993,10 +5993,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function loadMeForAjax()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
-		$this->_form->setId(JRequest::getVar('formid'));
-		$this->setId(JRequest::getInt('element_id'));
-		$this->getElement();
+		$formId = $input->getInt('formid');
+		$this->_form->setId($formId);
+		$this->setId($input->getInt('element_id'));
+		$this->_list = JModel::getInstance('list', 'FabrikFEModel');
+		$this->_list->loadFromFormId($formId);
+		$table = $this->_list->getTable(true);
+		$element = $this->getElement(true);
 	}
 
 	/**
