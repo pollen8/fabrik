@@ -74,7 +74,7 @@ class plgContentFabrik extends JPlugin
 		// $$$ which is passed by reference to us!
 		$fparams = new JRegistry($plugin->params);
 
-		// Simple performance check to determine whether bot should process further
+		// Simple performance check to determine whether bot should process further.
 		$botRegex = $fparams->get('botRegex') != '' ? $fparams->get('botRegex') : 'fabrik';
 
 		if (JString::strpos($row->text, $botRegex) === false)
