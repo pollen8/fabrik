@@ -390,7 +390,7 @@ var FbDateTime = new Class({
 			if (date === null) {
 				
 				// Yes, but we still need to clear the fields! (e.g. from reset())
-				this.subElements.each(function (subEl) {
+				this._getSubElements().each(function (subEl) {
 					subEl.value = '';
 				});
 				this.cal.date = '';
@@ -706,7 +706,7 @@ var FbDateTime = new Class({
 		
 	},
 
-	cloned : function (c) {
+	cloned: function (c) {
 		this.setUpDone = false;
 		this.hour = 0;
 		delete this.cal;
@@ -722,6 +722,7 @@ var FbDateTime = new Class({
 		this.makeCalendar();
 		this.cal.hide();
 		this.setUp();
+		this.parent(c);
 	}
 });
 

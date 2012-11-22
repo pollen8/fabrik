@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="fabrik3-package" default="fabrik.all">
+
 <!--  fabrik.all -->
 	<property file="build_config.ini" />
 	<property file="build_config_private.ini" />
@@ -242,7 +243,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -265,7 +266,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -288,7 +289,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -311,7 +312,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>
 		]]>
 	   		</insert> 
@@ -351,7 +352,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
@@ -373,7 +374,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
@@ -435,7 +436,7 @@
 			</downloads>
 			<maintainer>${update.maintainer}</maintainer>
 			<maintainerurl>${update.url}</maintainerurl>
-			<targetplatform name="${update.target_platform}" version="${update.target_platform_version.dotted}"/>
+			<targetplatform name="${update.target_platform}" version="${jversion}"/>
 		</update>]]>
 	   		</insert> 
 		</xmltask>
@@ -688,7 +689,7 @@
 	
 	<target name="refresh.updatexml">
 	
-		<tstamp>
+		<!-- <tstamp>
 	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
 	  </tstamp>
 	  <tstamp>
@@ -702,7 +703,7 @@
 			 <replace path="/extension/version/text()" withText="${version}"/> 
 			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
 			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-		</xmltask>
+		</xmltask> -->
 		
 		<antcall target="xml.update.repoistory" />
 	</target>
@@ -712,15 +713,82 @@
 			<if>
 	 			<equals arg1="${repository.xml.update}" arg2="y" />
 				<then>
+
+				<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
+				
+				<!-- Update version -->
+				<replaceregexp flags="gs">
+					<regexp pattern="\&lt;version\&gt;(.*)\&lt;/version\&gt;"/>
+					<substitution expression="\&lt;version\&gt;${version}\&lt;/version\&gt;"/>
+			  		<fileset dir="${basedir}">
+			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
+						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						<include name="**/plugins/fabrik**/**/*.xml"/>
+						<exclude name="**/FusionCharts/**" />
+						<exclude name="**/FusionChartsFree/**" />
+						<include name="**/plugins/**/fabrik/*.xml"/>
+						<include name="**/plugins/system/fabrikcron/*.xml"/>
+					</fileset>
+				</replaceregexp>
+				
+				<!-- Update create date -->
+				<replaceregexp flags="gs">
+					<regexp pattern="\&lt;creationDate\&gt;(.*)\&lt;/creationDate\&gt;"/>
+					<substitution expression="\&lt;creationDate\&gt;${createdate}\&lt;/creationDate\&gt;"/>
+			  		<fileset dir="${basedir}">
+			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
+						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						<include name="**/plugins/fabrik**/**/*.xml"/>
+						<exclude name="**/FusionCharts/**" />
+						<exclude name="**/FusionChartsFree/**" />
+						<include name="**/plugins/**/fabrik/*.xml"/>
+						<include name="**/plugins/system/fabrikcron/*.xml"/>
+					</fileset>
+				</replaceregexp>
+				
+				<!-- Update copyright -->
+				<replaceregexp flags="gs">
+					<regexp pattern="\&lt;copyright\&gt;(.*)\&lt;/copyright\&gt;"/>
+					<substitution expression="\&lt;copyright\&gt;(C) 2005-${year} fabrikar.com\&lt;/copyright\&gt;"/>
+			  		<fileset dir="${basedir}">
+			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
+						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						<include name="**/plugins/fabrik**/**/*.xml"/>
+						<exclude name="**/FusionCharts/**" />
+						<exclude name="**/FusionChartsFree/**" />
+						<include name="**/plugins/**/fabrik/*.xml"/>
+						<include name="**/plugins/system/fabrikcron/*.xml"/>
+					</fileset>
+				</replaceregexp>
+				
+				<!-- Update target Joomla platform -->
+				<replaceregexp flags="sg">
+					<regexp pattern="(&lt;extension.*version=&quot;)(\d\.\d)(&quot;\s*&gt;)" />
+					<substitution expression="\1${jversion}\3"/>
+			  		<fileset dir="${basedir}">
+						<include name="**/administrator/components/com_fabrik/*.xml"/>
+						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
+						<include name="**/plugins/fabrik**/**/*.xml"/>
+						<exclude name="**/FusionCharts/**" />
+						<exclude name="**/FusionChartsFree/**" />
+						<include name="**/plugins/**/fabrik/*.xml"/>
+						<include name="**/plugins/system/fabrikcron/*.xml"/>
+					</fileset>
+				</replaceregexp>
+				
+					
 					<!--  need to do /:node/:node as fabrik.xml sets a namespace (xmlns) -->
-				 	<xmltask todir="${basedir}">
+				 	<!-- <xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/administrator/components/com_fabrik/fabrik.xml"/>
 						</fileset>
 						<replace path="/:extension/:version/text()" withText="${version}"/> 
 						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
 						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/:extension" attr="version" value="${update.target_platform_version.dotted}" />
+						<attr path="/:extension" attr="version" value="${jversion}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
@@ -730,17 +798,17 @@
 						<replace path="/install/version/text()" withText="${version}"/> 
 						<replace path="/install/creationDate/text()" withText="${createdate}" />
 						<replace path="/install/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/install" attr="version" value="${update.target_platform_version.dotted}" />
+						<attr path="/install" attr="version" value="${jversion}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
 						<fileset dir="${basedir}">
 							<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
 						</fileset>
-						<replace path="/:extension/:version/text()" withText="${version}"/> 
-						<replace path="/:extension/:creationDate/text()" withText="${createdate}" />
-						<replace path="/:extension/:copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/:extension" attr="version" value="${update.target_platform_version.dotted}" />
+						<replace path="/extension/version/text()" withText="${version}"/> 
+						<replace path="/extension/creationDate/text()" withText="${createdate}" />
+						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
+						<attr path="/extension" attr="version" value="${jversion}" />
 					</xmltask>
 					
 					
@@ -753,7 +821,7 @@
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
 						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/extension" attr="version" value="${update.target_platform_version.dotted}" />
+						<attr path="/extension" attr="version" value="${jversion}" />
 					</xmltask>
 					
 					<xmltask todir="${basedir}">
@@ -764,8 +832,8 @@
 						<replace path="/extension/version/text()" withText="${version}"/> 
 						<replace path="/extension/creationDate/text()" withText="${createdate}" />
 						<replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-						<attr path="/extension" attr="version" value="${update.target_platform_version.dotted}" />
-					</xmltask>
+						<attr path="/extension" attr="version" value="${jversion}" />
+					</xmltask> -->
 				</then>
 			</if>
 	</target>

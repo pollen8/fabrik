@@ -124,12 +124,13 @@ var FbDropdown = new Class({
 		this.watchAdd();
 	},
 	
-	cloned : function ()
+	cloned: function (c)
 	{
 		if (this.options.allowadd === true && this.options.editable !== false) {
 			this.watchAddToggle();
 			this.watchAdd();
 		}
+		this.parent(c);
 	}
 	
 });

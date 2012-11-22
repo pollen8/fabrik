@@ -222,12 +222,14 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	/**
 	 * Turn form value into email formatted value
 	 *
-	 * @param   mixed  $value  element value
+	 * @param   mixed  $value          Element value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Group repeat counter
 	 *
 	 * @return  string  email formatted value
 	 */
 
-	protected function _getEmailValue($value)
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		if (is_string($value))
 		{

@@ -289,7 +289,14 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		}
 		if ($split_str == '')
 		{
-			$val = '<ul><li>' . implode('</li><li>', $aLabels) . '</li></ul>';
+			if (count($aLabels) === 1)
+			{
+				$val = $aLabels[0];
+			}
+			else
+			{
+				$val = '<ul><li>' . implode('</li><li>', $aLabels) . '</li></ul>';
+			}
 		}
 		else
 		{

@@ -124,13 +124,14 @@ class plgSystemFabrikcron extends JPlugin
 
 		foreach ($rows as $row)
 		{
+			// Load in the plugin
+			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
+
 			$params = $plugin->getParams();
 			$log->message = '';
 			$log->id = null;
 			$log->referring_url = '';
 
-			// Load in the plugin
-			$plugin = $pluginManager->getPluginFromId($row->id, 'Cron');
 			$log->message_type = 'plg.cron.' . $row->plugin;
 			if (!$plugin->queryStringActivated())
 			{
@@ -209,7 +210,6 @@ class plgSystemFabrikcron extends JPlugin
 
 			// Email log message
 			$recipient = explode(',', $params->get('log_email', ''));
-			print_r($recipient);exit;
 			if (!empty($recipient))
 			{
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';

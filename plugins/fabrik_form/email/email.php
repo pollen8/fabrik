@@ -239,7 +239,11 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
-				// $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message, may need to add a generic "there was an error sending the email" message
+
+				/*
+				 * $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message,
+				 * may need to add a generic "there was an error sending the email" message
+				 */
 				if ($res !== true)
 				{
 					JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
@@ -260,7 +264,7 @@ class plgFabrik_FormEmail extends plgFabrik_Form
 	/**
 	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-	 * @param   string  $tmpl  path to template
+	 * @param   string  $tmpl       path to template
 	 * @param   object  $formModel  form model for this plugin
 	 *
 	 * @return string email message

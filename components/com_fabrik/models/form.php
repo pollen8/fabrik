@@ -285,6 +285,21 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Set row id
+	 *
+	 * @param   string  $id  primary key value
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  void
+	 */
+
+	public function setRowId($id)
+	{
+		$this->_rowId = $id;
+	}
+
+	/**
 	 * Method to get the form id
 	 *
 	 * @return  int
@@ -342,6 +357,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return 2;
 		}
+		$data = $this->getData();
 		$ret = 0;
 		if ($listModel->canViewDetails())
 		{
@@ -358,7 +374,7 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			elseif ($pRowid == '-1' && $listModel->canEdit($this->_data))
+			elseif ($pRowid == '-1' && $listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
@@ -366,7 +382,7 @@ class FabrikFEModelForm extends FabModelForm
 		else
 		{
 			// Editing from - can we edit
-			if ($listModel->canEdit($this->_data))
+			if ($listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
@@ -425,12 +441,13 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $tmpl, $this->isMambot);
 
 		// Finally see if the options are overridden by a querystring var
+		$baseTmpl = $tmpl;
 		$tmpl = JRequest::getVar('layout', $tmpl);
 
-		// Test it exists - otherwise revert to default tmpl
+		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
 		{
-			$tmpl = 'default';
+			$tmpl = $baseTmpl;
 		}
 		$item->form_template = $tmpl;
 		return $tmpl;
@@ -1035,7 +1052,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		if (in_array(false, $pluginManager->runPlugins('onBeforeProcess', $this)))
 		{
-			return;
+			return false;
 		}
 		$this->removeEmptyNoneJoinedGroupData($this->_formData);
 
@@ -1651,6 +1668,7 @@ class FabrikFEModelForm extends FabModelForm
 				// Set join groups repeat to that of the elements options
 				if ($elementModel->isJoin())
 				{
+					// Set the group to be repeating
 					$joinGroup->getParams()->set('repeat_group_button', 1);
 
 					// Set repeat count
@@ -2210,7 +2228,7 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								$elementModel->_group = $groupModel;
 								$elementModel->setValuesFromEncryt($post, $key, $v);
-								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doenst
+								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
 								 * pick up decrypted value
 								 */
 								$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
@@ -3009,7 +3027,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$errorsFound = !empty($this->_arErrors);
 
-		if ($this->saveMultiPage())
+		if ($this->saveMultiPage(false))
 		{
 			$srow = $this->getSessionData();
 			/*
@@ -3277,16 +3295,20 @@ class FabrikFEModelForm extends FabModelForm
 	 * Checks if user is logged in and form multipage settings to determine
 	 * if the form saves to the session table on multipage navigation
 	 *
+	 * @param   bool  $useSessionOn  Return true if JSession contains session.on - used in confirmation
+	 * plugin to re-show the previously entered form data. Not used in $this->hasErrors() otherwise logged in users
+	 * can not get the confirmation plugin to work
+	 *
 	 * @return  bool
 	 */
 
-	public function saveMultiPage()
+	public function saveMultiPage($useSessionOn = true)
 	{
 		$params = $this->getParams();
 		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
-		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true)
+		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true && $useSessionOn)
 		{
 			return true;
 		}
@@ -4114,8 +4136,9 @@ class FabrikFEModelForm extends FabModelForm
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 
 				// $$$ tom - 2012-09-14 - This should be from the linkedlistheader:
+				// Jaanus: or listlabel
 				// $label = $factedLinks->linkedformheader->$key;
-				$label = $factedLinks->linkedlistheader->$key;
+				$label = $factedLinks->linkedlistheader->$key == '' ? $element->listlabel : $factedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
 			$f++;
@@ -4592,7 +4615,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				// 28/01/2011 $$$rob and if it is published
 				$showGroup = (int) $groupParams->get('repeat_group_show_first');
-				if ($showGroup != -1)
+				if ($showGroup !== 0)
 				{
 					// $$$ - hugh - testing new 'hide if no usable elements' option (4)
 					// Jaanus: if not form view with "details only" option and not details view with "form only" option

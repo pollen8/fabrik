@@ -38,15 +38,10 @@ class FabrikHelperElement
 		$groupModel = $baseElement->getGroupModel();
 		$elementModel = $pluginManager->getPlugIn('internalid', 'element');
 		$elementModel->getElement()->name = 'id';
-
 		$elementModel->getParams()->set('repeat', $baseElement->isJoin());
-
 		$elementModel->getElement()->group_id = $groupModel->getId();
 		$elementModel->setGroupModel($baseElement->getGroupModel());
-
-		// @TODO wrong when element in repeat group
-		$oJoin = $groupModel->getJoinModel()->getJoin();
-		$elementModel->_aFullNames['id1_1__1_'] = $oJoin->table_join . '___id';
+		$elementModel->_joinModel = $groupModel->getJoinModel();
 		return $elementModel;
 	}
 
@@ -68,10 +63,8 @@ class FabrikHelperElement
 		$elementModel->getParams()->set('repeat', $baseElement->isJoin());
 		$elementModel->getElement()->group_id = $groupModel->getId();
 		$elementModel->setGroupModel($baseElement->getGroupModel());
+		$elementModel->_joinModel = $groupModel->getJoinModel();
 
-		// @TODO wrong when element in repeat group
-		$oJoin = $groupModel->getJoinModel()->getJoin();
-		$elementModel->_aFullNames['parent_id1_1__1_'] = $oJoin->table_join . '___parent_id';
 		return $elementModel;
 	}
 }

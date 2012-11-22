@@ -1,62 +1,87 @@
 <?php
+
 /**
-* Plugin element to render fileuploads of file type
-* @package fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Plugin element to render fileuploads of file type
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+*/
+
 class fileRender{
 
-	var $output = '';
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+	 * Render output
+	 * @var  string
+	 */
+	public $output = '';
+
+	/**
+	 * Render a file in list view, stored data in $this->output
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All row's data
+	 *
+	 * @return  void
 	 */
 
-	function renderListData(&$model, &$params, $file, $thisRow)
+	public function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->render($model, $params, $file);
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+	 * Render a file in form/details view, stored data in $this->output
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 *
+	 * @return  void
 	 */
 
-	function render(&$model, &$params, $file)
+	public function render(&$model, &$params, $file)
 	{
 		jimport('joomla.filesystem.file');
 		$filename = basename($file);
 		$filename = strip_tags($filename);
 		$ext = JFile::getExt($filename);
-		//$file = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
-		if (!strstr($file, 'http://') && !strstr($file, 'https://')) {
+		if (!strstr($file, 'http://') && !strstr($file, 'https://'))
+		{
 			// $$$rob only add in livesite if we dont already have a full url (eg from amazons3)
-			// $$$ hugh trim / or \ off the start of $file
+
+			// Trim / or \ off the start of $file
 			$file = JString::ltrim($file, '/\\');
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
 		$file = str_replace("\\", "/", $file);
 		$file = $model->storage->preRenderPath($file);
 		$thumb_path = COM_FABRIK_BASE . 'media/com_fabrik/images/' . $ext . '.png';
+
 		// $$$ hugh - using 'make_thumbnail' to mean 'use default $ext.png as an icon
 		// instead of just putting the filename.
-		if ($params->get('make_thumbnail', false) && JFile::exists($thumb_path)) {
+		if ($params->get('make_thumbnail', false) && JFile::exists($thumb_path))
+		{
 			$thumb_file = COM_FABRIK_LIVESITE . "/media/com_fabrik/images/" . $ext . ".png";
-			$this->output = "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\"><img src=\"$thumb_file\" alt=\"$filename\"></a>";
+			$this->output .= "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\"><img src=\"$thumb_file\" alt=\"$filename\"></a>";
 		}
-		else {
-			$this->output = "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\">" . $filename . "</a>";
+		else
+		{
+			$this->output .= "<a class=\"download-archive fabrik-filetype-$ext\" title=\"$file\" href=\"$file\">" . $filename . "</a>";
 		}
-	}
-}
 
-?>
+	}
+
+}

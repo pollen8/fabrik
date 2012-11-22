@@ -551,8 +551,12 @@ class FabrikModelList extends FabModelAdmin
 		$config = JFactory::getConfig();
 		$date = JFactory::getDate();
 		$row = $this->getTable();
+
 		$id = $data['id'];
 		$row->load($id);
+
+		$params = new JRegistry($row->params);
+		$origCollation = $params->get('collation', 'none');
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
@@ -563,7 +567,6 @@ class FabrikModelList extends FabModelAdmin
 			$this->setError($row->getError());
 			return false;
 		}
-
 		$filter = new JFilterInput(null, null, 1, 1);
 		$introduction = JArrayHelper::getValue(JRequest::getVar('jform', array(), 'post', 'array', JREQUEST_ALLOWRAW), 'introduction');
 
@@ -577,6 +580,9 @@ class FabrikModelList extends FabModelAdmin
 			$this->setError($row->getError());
 			return false;
 		}
+
+		$this->collation($feModel, $origCollation, $row);
+
 		$isNew = true;
 		if ($id == 0)
 		{
@@ -628,7 +634,11 @@ class FabrikModelList extends FabModelAdmin
 			{
 				$row->db_table_name = $newtable;
 				$row->auto_inc = 1;
-				$res = $this->createDBTable($newtable, JRequest::getVar('defaultfields', array('id' => 'internalid', 'date_time' => 'date')));
+
+				$dbOpts = array();
+				$params = new JRegistry($row->params);
+				$dbOpts['COLLATE'] = $params->get('collation', '');
+				$res = $this->createDBTable($newtable, JRequest::getVar('defaultfields', array('id' => 'internalid', 'date_time' => 'date')), $dbOpts);
 				if (is_array($res))
 				{
 					$row->db_primary_key = $newtable . '.' . $res[0];
@@ -725,6 +735,7 @@ class FabrikModelList extends FabModelAdmin
 				$feModel->addIndex($field, 'prefilter', 'INDEX', $map[$field]);
 			}
 		}
+
 		$this->updateElements($row);
 		/* $$$rob - joomfish not available for j1.7
 		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
@@ -745,6 +756,40 @@ class FabrikModelList extends FabModelAdmin
 		$this->setState($this->getName() . '.new', $isNew);
 
 		parent::cleanCache('com_fabrik');
+		return true;
+	}
+
+	/**
+	 * Alter the db table's collation
+	 *
+	 * @param   object  $feModel        Front end list model
+	 * @param   string  $origCollation  Original collection name
+	 * @param   string  $row            New collation
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return boolean
+	 */
+	protected function collation($feModel, $origCollation, $row)
+	{
+		// Don't attempt to alter new table
+		if ($row->id == 0)
+		{
+			return;
+		}
+		$params = new JRegistry($row->params);
+		$newCollation = $params->get('collation');
+		if ($newCollation !== $origCollation)
+		{
+			$db = $feModel->getDb();
+			$item = $feModel->getTable();
+			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
+			if (!$db->query())
+			{
+				JError::raiseNotice(500, $db->getErrorMsg());
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -2060,13 +2105,14 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * Create a table to store the forms' data depending upon what groups are assigned to the form
 	 *
-	 * @param   string  $dbTableName  taken from the table oject linked to the form
-	 * @param   array   $fields       list of default elements to add. (key = element name, value = plugin
+	 * @param   string  $dbTableName  Taken from the table oject linked to the form
+	 * @param   array   $fields       List of default elements to add. (key = element name, value = plugin
+	 * @param   array   $opts         Additional options, e.g. collation
 	 *
 	 * @return mixed false if fail otherwise array of primary keys
 	 */
 
-	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'))
+	public function createDBTable($dbTableName = null, $fields = array('id' => 'internalid', 'date_time' => 'date'), $opts = array())
 	{
 		$db = FabrikWorker::getDbo(true);
 		$fabrikDb = $this->getDb();
@@ -2126,7 +2172,7 @@ class FabrikModelList extends FabModelAdmin
 			$element = $elementModel->getElement();
 
 			// Replace all non alphanumeric characters with _
-			$objname = FabrikString::dbFieldName($element->name);//preg_replace("/[^A-Za-z0-9]/", "_", $element->name);
+			$objname = FabrikString::dbFieldName($element->name);
 			if ($element->primary_key)
 			{
 				$keys[] = $objname;
@@ -2160,6 +2206,13 @@ class FabrikModelList extends FabModelAdmin
 		{
 			$sql .= ')';
 		}
+		foreach ($opts as $k => $v)
+		{
+			if ($v != '')
+			{
+				$sql .= ' ' . $k . ' ' . $v;
+			}
+		}
 		$sql .= ' ENGINE = MYISAM ';
 		$fabrikDb->setQuery($sql);
 		if (!$fabrikDb->query())
@@ -2173,8 +2226,8 @@ class FabrikModelList extends FabModelAdmin
 	/**
 	 * Create an element
 	 *
-	 * @param   string  $name  element name
-	 * @param   array   $data  properties
+	 * @param   string  $name  Element name
+	 * @param   array   $data  Properties
 	 *
 	 * @return mixed false if failed, otherwise element plugin
 	 */

@@ -36,11 +36,12 @@ class FabrikControllerCrons extends FabControllerAdmin
 	 *
 	 * @param   string  $name    model name
 	 * @param   string  $prefix  model prefix
+	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  J model
 	 */
 
-	public function &getModel($name = 'Cron', $prefix = 'FabrikModel')
+	public function getModel($name = 'Cron', $prefix = 'FabrikModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
@@ -110,9 +111,10 @@ class FabrikControllerCrons extends FabControllerAdmin
 			}
 
 			// Email log message
-			$recipient = explode(',', $plugin->getParams()->get('log_email', ''));
-			if (!empty($recipient))
+			$recipient = $plugin->getParams()->get('log_email', '');
+			if ($recipient != '')
 			{
+				$recipient = explode(',', $recipient);
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
 			}

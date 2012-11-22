@@ -34,7 +34,7 @@ var FbForm = new Class({
 	
 	initialize: function (id, options) {
 		// $$$ hugh - seems options.rowid can be null in certain corner cases, so defend against that
-		if (typeOf(options.rowid === 'null')) {
+		if (typeOf(options.rowid) === 'null') {
 			options.rowid = '';
 		}
 		this.id = id;
@@ -187,9 +187,15 @@ var FbForm = new Class({
 		return this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
 	},
 
-	// id is the element or group to apply the fx TO, triggered from another
-	// element
-	addElementFX : function (id, method) {
+	/**
+	 * Attach an effect to an elements
+	 * 
+	 * @param   string  id      Element or group to apply the fx TO, triggered from another element
+	 * @param   string  method  JS event which triggers the effect (click,change etc)
+	 * 
+	 * @return false if no element found or element fx
+	 */ 
+	addElementFX: function (id, method) {
 		var c, k, fxdiv;
 		id = id.replace('fabrik_trigger_', '');
 		if (id.slice(0, 6) === 'group_') {
@@ -200,7 +206,7 @@ var FbForm = new Class({
 			id = id.slice(8, id.length);
 			k = 'element' + id;
 			if (!document.id(id)) {
-				return;
+				return false;
 			}
 			c = document.id(id).getParent('.fabrikElementContainer');
 		}
@@ -210,7 +216,8 @@ var FbForm = new Class({
 			// multi column rows, so get the li's content and put it inside a div which
 			// is injected into c
 			// apply fx to div rather than li - damn im good
-			if ((c).get('tag') === 'li') {
+			var tag = (c).get('tag');
+			if (tag === 'li' || tag === 'td') {
 				fxdiv = new Element('div', {'style': 'width:100%'}).adopt(c.getChildren());
 				c.empty();
 				fxdiv.inject(c);
@@ -230,11 +237,31 @@ var FbForm = new Class({
 			} else {
 				this.fx.elements[k].slide = null;
 			}
+			return this.fx.elements[k];
 		}
+		return false;
 	},
 
-	doElementFX : function (id, method) {
+	/**
+	 * An element state has changed, so lets run any associated effects
+	 * 
+	 * @param   string  id            Element id to run the effect on
+	 * @param   string  method        Method to run
+	 * @param   object  elementModel  The element JS object which is calling the fx, this is used to work ok which repeat group the fx is applied on
+	 */
+
+	doElementFX : function (id, method, elementModel) {
 		var k, groupfx, fx, fxElement;
+		
+		// Update the element id that we will apply the fx to to be that of the calling elementModels group (if in a repeat group)
+		if (elementModel) {
+			if (elementModel.options.inRepeatGroup) {
+				var bits = id.split('_');
+				bits[bits.length - 1] = elementModel.options.repeatCounter;
+				id = bits.join('_');
+			}
+		}
+		// Create the fx key
 		id = id.replace('fabrik_trigger_', '');
 		if (id.slice(0, 6) === 'group_') {
 			id = id.slice(6, id.length);
@@ -249,11 +276,24 @@ var FbForm = new Class({
 			id = id.slice(8, id.length);
 			k = 'element' + id;
 		}
+		
+		// Get the stored fx
 		fx = this.fx.elements[k];
 		if (!fx) {
-			return;
+			// A group was duplicated but no element FX added, lets try to add it now
+			fx = this.addElementFX('element_' + id, method);
+			
+			// If it wasn't added then lets get out of here
+			if (!fx) {
+				return;
+			}
 		}
 		fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
+		
+		// For repeat groups rendered as tables we cant apply fx on td so get child
+		if (fxElement.get('tag') === 'td') {
+			fxElement = fxElement.getChildren()[0];
+		}
 		switch (method) {
 		case 'show':
 			fxElement.fade('show').removeClass('fabrikHide');
@@ -467,7 +507,7 @@ var FbForm = new Class({
 	},
 
 	/**
-	 * hide all groups except those in the active page
+	 * Hide all groups except those in the active page
 	 */
 	hideOtherPages : function () {
 		this.options.pages.each(function (gids, i) {
@@ -531,7 +571,7 @@ var FbForm = new Class({
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
-	addElement : function (oEl, elId, gid) {
+	addElement: function (oEl, elId, gid) {
 		elId = elId.replace('[]', '');
 		var ro = elId.substring(elId.length - 3, elId.length) === '_ro';
 		oEl.form = this;
@@ -1148,7 +1188,7 @@ var FbForm = new Class({
 		this.subGroups.set(i, subGroup.clone());
 		if (subgroups.length <= 1) {
 			this.hideLastGroup(i, subGroup);
-
+			Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 		} else {
 			var toel = subGroup.getPrevious();
 			var myFx = new Fx.Tween(subGroup, {'property': 'opacity',
@@ -1183,6 +1223,7 @@ var FbForm = new Class({
 							delete this.formElements[oldKey];
 						}
 					}.bind(this));
+					Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 				}.bind(this)
 			}).start(1, 0);
 			if (toel) {
@@ -1202,8 +1243,6 @@ var FbForm = new Class({
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
-		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
-
 	},
 
 	hideLastGroup : function (groupid, subGroup) {
@@ -1214,7 +1253,7 @@ var FbForm = new Class({
 			var add = sge.getElement('.addGroup');
 			var lastth = sge.getParent('table').getElements('thead th').getLast();
 			if (typeOf(add) !== 'null') {
-			add.inject(lastth);
+				add.inject(lastth);
 			}
 		}
 		sge.setStyle('display', 'none');
@@ -1407,6 +1446,7 @@ var FbForm = new Class({
 				
 				if (hasSubElements && typeOf(subElementContainer) !== 'null') {
 					newEl.element = document.id(subElementContainer);
+					newEl.cloneUpdateIds(subElementContainer.id);
 					newEl.options.element = subElementContainer.id;
 					newEl._getSubElements();
 				} else {

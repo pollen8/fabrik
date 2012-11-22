@@ -466,8 +466,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 			// $$$ rob in csv import keytable not set
 			$k = isset($join->keytable) ? $join->keytable : $join->join_from_table;
-			$k = FabrikString::safeColName("`$k`.`$element->name`");
+			$k = FabrikString::safeColName($k . '.' . $element->name);
 			$k2 = FabrikString::safeColName($this->getJoinLabelColumn());
+
 			if (JArrayHelper::getValue($opts, 'inc_raw', true))
 			{
 				$aFields[] = $k . ' AS ' . $db->quoteName($fullElName . '_raw');

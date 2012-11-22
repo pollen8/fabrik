@@ -26,7 +26,7 @@ var FbElementList =  new Class({
 	_getSubElements: function () {
 		var element = this.getElement();
 		if (!element) {
-			this.subElements = $A();
+			this.subElements = [];
 		} else {
 			this.subElements = element.getElements('input');
 		}
@@ -46,12 +46,23 @@ var FbElementList =  new Class({
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
 		} else {
-			var subElsName = this.element.id;
 			c = this.form.form;
 			var delegate = action + ':relay(input[type=' + this.type + '])';
 			c.addEvent(delegate, function (event, target) {
-				var subEls = this._getSubElements();
+				/*var subEls = this._getSubElements();
 				if (subEls.contains(target)) {
+					typeOf(js) === 'function' ? js.delay(0) : eval(js);
+				}*/
+				
+				// As we are delegating the event, and reference to 'this' in the js will refer to the first element
+				// When in a repeat group we want to replace that with a reference to the current element.
+				var elid = target.getParent('.fabrikSubElementContainer').id;
+				var that = this.form.formElements[elid];
+				var subEls = that._getSubElements();
+				if (subEls.contains(target)) {
+					
+					// Replace this with that so that the js code runs on the correct element
+					js = js.replace(/this/g, 'that');
 					typeOf(js) === 'function' ? js.delay(0) : eval(js);
 				}
 			}.bind(this));

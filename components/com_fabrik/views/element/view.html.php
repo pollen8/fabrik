@@ -36,7 +36,6 @@ class FabrikViewElement extends JView
 		$elementid = JRequest::getVar('elid');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
-		print_r($className);exit;
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {
 			JError::handleMessage($plugin);
@@ -48,7 +47,6 @@ class FabrikViewElement extends JView
 		$groupModel = $plugin->getGroup();
 		$srcs = array();
 		$plugin->formJavascriptClass($srcs);
-		echo "srcs = ";print_r($srcs);
 		FabrikHelperHTML::script($srcs);
 		$html = '<script>';
 		$html .= $plugin->elementJavascript($repeatCounter);

@@ -1,10 +1,10 @@
 <?php
 /**
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 /* MOS Intruder Alerts */
 defined('_JEXEC') or die();
@@ -14,7 +14,14 @@ could well be that we don't use this now???????????
  */
 jimport('joomla.html.parameter');
 
-class fabrikParams extends JParameter
+/**
+ * Extend J Params
+ *
+ * @package  Fabrik
+ * @since    3.0
+ */
+
+class fabrikParams extends JForm
 {
 
 	/** @var bool duplicatable param (if true add []" to end of element name)*/
@@ -24,9 +31,12 @@ class fabrikParams extends JParameter
 	var $_counter_override = null;
 	/**
 	 * constructor
+	 *
+	 * @param   array   $data  data
+	 * @param   string  $path  path
 	 */
 
-	function __construct($data, $path = '')
+	public function __construct($data, $path = '')
 	{
 		$this->_identifier = str_replace("\\", "-", str_replace(".xml", "", str_replace(JPATH_SITE, '', $path)));
 		$this->_identifier = str_replace('/', '-', $this->_identifier);
@@ -35,14 +45,14 @@ class fabrikParams extends JParameter
 
 	/**
 	 * Get the names of all the parameters in the object
-	 * @access private
+	 *
 	 * @return array parameter names
 	 */
 
-	function _getParamNames()
+	private function _getParamNames()
 	{
 		$p = array();
-		$default = (object)$this->_xml['_default'];
+		$default = (object) $this->_xml['_default'];
 		if (empty($default))
 		{
 			return $p;
@@ -56,30 +66,38 @@ class fabrikParams extends JParameter
 
 	/**
 	 * overwrite core get function so we can force setting to array if needed
-	 * @param string key
-	 * @param string default
-	 * @param string group
-	 * @param string output format (string or array)
-	 * @param int counter - not used i think
+	 *
+	 * @param   string  $key           key
+	 * @param   string  $default       default
+	 * @param   string  $group         group
+	 * @param   string  $outputFormat  (string or array)
+	 * @param   int     $counter       not used i think
+	 *
 	 * @return mixed - string or array
 	 */
 
-	function get($key, $default='', $group = '_default', $outputFormat = 'string', $counter = null )
+	public function get($key, $default = '', $group = '_default', $outputFormat = 'string', $counter = null)
 	{
 		$return = parent::get($key, $default);
 		if ($outputFormat == 'array')
 		{
-			$return = $return == '' ? array() : (array)$return;
+			$return = $return == '' ? array() : (array) $return;
 		}
 		return $return;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see libraries/joomla/html/JParameter#getParams($name, $group)
+	 * get a groups parameters
+	 *
+	 * @param   string  $name         name
+	 * @param   string  $group        name
+	 * @param   string  $ouputformat  output format
+	 * @param   int     $counter      repeat counter
+	 *
+	 * @return string|multitype:
 	 */
 
-	function getParams($name = 'params', $group = '_default', $ouputformat = 'string', $counter = null)
+	public function getParams($name = 'params', $group = '_default', $ouputformat = 'string', $counter = null)
 	{
 		if (!isset($this->_xml[$group]))
 		{
@@ -95,11 +113,14 @@ class fabrikParams extends JParameter
 
 	/**
 	 * get a groups parameters names
-	 * @param unknown_type $name
-	 * @param unknown_type $group
+	 *
+	 * @param   string  $name   name
+	 * @param   string  $group  name
+	 *
 	 * @return string|multitype:
 	 */
-	function getParamsNames($name = 'params', $group = '_default')
+
+	public function getParamsNames($name = 'params', $group = '_default')
 	{
 		if (!isset($this->_xml[$group]))
 		{
@@ -116,47 +137,44 @@ class fabrikParams extends JParameter
 	/**
 	 * Render a parameter type
 	 *
-	 * @param	object A param tag node
-	 * @param	string The control name
-	 * @param string parameter group
-	 * @param string output format
-	 * @param mixed repeat group counter??? /how about repeating plugins is this the same??
-	 * @return	array Any array of the label, the form element and the tooltip
-	 * @since	1.5
+	 * @param   object  &$node         A param tag node
+	 * @param   string  $control_name  The control name
+	 * @param   string  $group         parameter group
+	 * @param   string  $outPutFormat  output format
+	 * @param   mixed   $counter       repeat group counter??? /how about repeating plugins is this the same??
+	 *
+	 * @return  array Any array of the label, the form element and the tooltip
 	 */
 
-	function getParam(&$node, $control_name = 'params', $group = '_default', $outPutFormat ='string', $counter = null)
+	public function getParam(&$node, $control_name = 'params', $group = '_default', $outPutFormat = 'string', $counter = null)
 	{
-		//get the type of the parameter
+		// Get the type of the parameter
 		$type = $node->attributes('type');
 
-		//remove any occurance of a mos_ prefix
+		// Remove any occurance of a mos_ prefix
 		$type = str_replace('mos_', '', $type);
 
 		$element = $this->loadElement($type);
 
-		// error happened
+		// Error happened
 		if ($element === false)
 		{
 			$result = array();
 			$result[0] = $node->attributes('name');
-			$result[1] = JText::_('COM_FABRIK_ELEMENT_NOT_DEFINED_FOR_TYPE').' = '.$type;
+			$result[1] = JText::_('COM_FABRIK_ELEMENT_NOT_DEFINED_FOR_TYPE') . ' = ' . $type;
 			$result[5] = $result[0];
 			return $result;
 		}
 
-		//get value
-
-
+		// Get value
 		if ($outPutFormat == 'array' && !is_null($counter))
 		{
-			$nodeName = str_replace("[]", "",$node->attributes('name'));
+			$nodeName = str_replace("[]", "", $node->attributes('name'));
 		}
 		else
 		{
 			$nodeName = $node->attributes('name');
 		}
-		//end test
 
 		$value = $this->get($nodeName, $node->attributes('default'), $group, $outPutFormat, $counter);
 
@@ -164,7 +182,8 @@ class fabrikParams extends JParameter
 		{
 			$value = JArrayHelper::getValue($value, $counter, '');
 		}
-		//value must be a string
+
+		// Value must be a string
 		$element->_array_counter = $counter;
 
 		$result = $element->render($node, $value, $control_name);
@@ -175,7 +194,7 @@ class fabrikParams extends JParameter
 		{
 			if ($type == 'radio')
 			{
-				//otherwise only a single entry is recorded no matter how many duplicates we make
+				// Otherwise only a single entry is recorded no matter how many duplicates we make
 				if ($counter == 0 && isset($this->_counter_override))
 				{
 					$counter = $this->_counter_override;
@@ -192,30 +211,32 @@ class fabrikParams extends JParameter
 	}
 
 	/**
-	 * Render
+	 * Render (NOTE when rendering admin settings I *think* the repeat group is set with $this->counter_override)
 	 *
-	 * @access	public
-	 * @param	string	The name of the control, or the default text area if a setup file is not found
-	 * @param string group
-	 * @param bool write out or return
-	 * @param int if set and group is repeat only return int row from rendered params
+	 * @param   string  $name             The name of the control, or the default text area if a setup file is not found
+	 * @param   string  $group            group
+	 * @param   bool    $write            write out or return
+	 * @param   int     $repeatSingleVal  if set and group is repeat only return int row from rendered params
 	 * used for form plugin admin pages.
 	 * @return	string	HTML
 	 *
-	 * NOTE when rendering admin settings I *think* the repeat group is set with $this->_counter_override
-
+	 * @return  string	HTML
+	 *
 	 * @since	1.5
 	 */
-	function render($name = 'params', $group = '_default', $write = true, $repeatSingleVal = null)
+
+	public function render($name = 'params', $group = '_default', $write = true, $repeatSingleVal = null)
 	{
 		$return = '';
 		$this->_group = $group;
-		//$$$rob experimental again
-		//problem - when rendering plugin params - e.g. calendar vis - params like the table drop down
-		// are repeated n times. I think the best way to deal with this is to get the data recorded for
-		// the viz and udpate this objects _xml array duplicate the relavent JSimpleXMLElement Objects
-		// for the required number of table drop downs
-		//echo " $name : $group <br>";
+
+		// $$$rob experimental again
+		/**
+		 * Problem - when rendering plugin params - e.g. calendar vis - params like the table drop down
+		 * are repeated n times. I think the best way to deal with this is to get the data recorded for
+		 * the viz and udpate this objects _xml array duplicate the relavent JSimpleXMLElement Objects
+		 * for the required number of table drop downs
+		 */
 
 		$repeat = false;
 		$repeatControls = true;
@@ -231,7 +252,7 @@ class fabrikParams extends JParameter
 		}
 		if ($repeat)
 		{
-			//get the name of the first element in the group
+			// Get the name of the first element in the group
 			$children = $this->_xml[$group]->children();
 			if (empty($children))
 			{
@@ -248,7 +269,7 @@ class fabrikParams extends JParameter
 
 			$c = 0;
 
-			//limit the number of groups of repeated params written out
+			// Limit the number of groups of repeated params written out
 			if (!is_null($repeatSingleVal) && is_int($repeatSingleVal))
 			{
 				$total = $repeatSingleVal + 1;
@@ -259,21 +280,19 @@ class fabrikParams extends JParameter
 				$total = count($value);
 				$start = 0;
 			}
-			$return .= '<div id="container'.$this->_identifier.'">';
-				//add in the 'add' button to duplicate the group
-			//only show for first added group
+			$return .= '<div id="container' . $this->_identifier . '">';
+
+			// Add in the 'add' button to duplicate the group
+			// Only show for first added group
 			if ($repeatControls && $repeatSingleVal == 0)
 			{
 				$return .= "<a href='#' class='addButton'>" . JText::_('COM_FABRIK_ADD') . "</a>";
 			}
-			for ($x = $start; $x<$total; $x++)
+			for ($x = $start; $x < $total; $x++)
 			{
-				//call render for the number of time the group is repeated
-				//echo parent::render($name, $group);
+				// Call render for the number of time the group is repeated
 
-				$return .= '<div class="repeatGroup" id="'.$this->_identifier . 'group-'.$x.'">';
-				////new
-				//$this->_counter_override = $x;
+				$return .= '<div class="repeatGroup" id="' . $this->_identifier . 'group-' . $x . '">';
 				$params = $this->getParams($name, $group, 'array', $x);
 
 				$html = array();
@@ -281,9 +300,9 @@ class fabrikParams extends JParameter
 
 				if ($description = $this->_xml[$group]->attributes('description'))
 				{
-					// add the params description to the display
-					$desc	= JText::_($description);
-					$html[]	= '<tr><td class="paramlist_description" colspan="2">'.$desc.'</td></tr>';
+					// Add the params description to the display
+					$desc = JText::_($description);
+					$html[] = '<tr><td class="paramlist_description" colspan="2">' . $desc . '</td></tr>';
 				}
 				foreach ($params as $param)
 				{
@@ -301,17 +320,17 @@ class fabrikParams extends JParameter
 					$html[] = '</tr>';
 				}
 
-				if (count($params ) < 1)
+				if (count($params) < 1)
 				{
-					$html[] = "<tr><td colspan=\"2\"><i>".JText::_('COM_FABRIK_THERE_ARE_NO_PARAMETERS_FOR_THIS_ITEM')."</i></td></tr>";
+					$html[] = "<tr><td colspan=\"2\"><i>" . JText::_('COM_FABRIK_THERE_ARE_NO_PARAMETERS_FOR_THIS_ITEM') . "</i></td></tr>";
 				}
 				$html[] = '</table>';
-				if ($repeatControls) {
-					$html[]= "<a href='#' class=\"removeButton delete\">" . JText::_('COM_FABRIK_DELETE') . "</a>";
+				if ($repeatControls)
+				{
+					$html[] = "<a href='#' class=\"removeButton delete\">" . JText::_('COM_FABRIK_DELETE') . "</a>";
 				}
 				$return .= implode("\n", $html);
-				///end new
-				$c ++;
+				$c++;
 				$return .= "</div>";
 			}
 			$return .= "</div>";
@@ -324,7 +343,8 @@ class fabrikParams extends JParameter
 		if ($repeat && $repeatControls && ($repeatSingleVal == null || $repeatSingleVal == 0))
 		{
 			FabrikHelperHTML::script('components/com_fabrik/libs/params.js');
-			// watch add and remove buttons
+
+			// Watch add and remove buttons
 			$document = JFactory::getDocument();
 			$script = "window.addEvent('fabrik.loaded', function() {
 			 new RepeatParams('container{$this->_identifier}', {repeatMin:$repeatMin});
@@ -342,9 +362,13 @@ class fabrikParams extends JParameter
 	}
 
 	/**
-	 * @since fabrik 3.0
 	 * get the child nodes
-	 * @param $namespace
+	 *
+	 * @param   string  $namespace  namespace
+	 *
+	 * @return  xml nodes
+	 *
+	 * @since 3.0
 	 */
 
 	public function getChildren($namespace = '_default')
@@ -353,4 +377,3 @@ class fabrikParams extends JParameter
 	}
 
 }
-?>

@@ -278,7 +278,6 @@ div.calendar{
 	list-style:none;
 	min-height:25px;
 	border-radius: 6px;
-	float:right;
 	margin:5px;
 	padding:0;
 	border:1px solid #999;

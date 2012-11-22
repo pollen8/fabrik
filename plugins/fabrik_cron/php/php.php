@@ -53,7 +53,8 @@ class plgFabrik_Cronphp extends plgFabrik_Cron
 	public function process(&$data, &$listModel)
 	{
 		$params = $this->getParams();
-		$file = JFilterInput::clean($params->get('cronphp_file'), 'CMD');
+		$filter = JFilterInput::getInstance();
+		$file = $filter->clean($params->get('cronphp_file'), 'CMD');
 		eval($params->get('cronphp_params'));
 		$file = JPATH_ROOT . '/plugins/fabrik_cron/php/scripts/' . $file;
 		if (JFile::exists($file))

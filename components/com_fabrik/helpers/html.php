@@ -1034,6 +1034,14 @@ EOD;
 
 	public static function script($file, $onLoad = '')
 	{
+		if (empty($file))
+		{
+			return;
+		}
+		if (is_array($onLoad))
+		{
+			$onLoad = implode("\n", $onLoad);
+		}
 		$document = JFactory::getDocument();
 		$ext = self::isDebug() ? '.js' : '-min.js';
 
@@ -1312,9 +1320,10 @@ EOD;
 		self::autoCompleteScript();
 		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
 		$str = json_encode($json);
+		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
 		self::addScriptDeclaration("
 				requirejs(['fab/autocomplete', 'fab/encoder', 'fab/lib/Event.mock'], function () {
-					new FbAutocomplete('$htmlid', $str);
+					new $class('$htmlid', $str);
 				});");
 	}
 
@@ -1340,6 +1349,10 @@ EOD;
 		if ($c != '')
 		{
 			$json->onSelections = $c;
+		}
+		foreach ($opts as $k => $v)
+		{
+			$json->$k = $v;
 		}
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');

@@ -68,7 +68,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	protected $blockfield = '';
 
 	/**
-	 * element mode
+	 * element model
 	 *
 	 * @var	object
 	 */
@@ -307,8 +307,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	public function onBeforeStore($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
+		$mail = JFactory::getMailer();
 
 		// Load up com_users lang - used in email text
 		$lang->load('com_users');
@@ -343,10 +345,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$data = $formModel->_formData;
 
 		// Check for request forgeries
-		JRequest::checkToken() or jexit('Invalid Token');
-
-		$option = JRequest::getCmd('option');
-
+		JSession::checkToken() or jexit('Invalid Token');
+		$option = $input->get('option');
 		$original_id = 0;
 		if ($params->get('juser_field_userid') != '')
 		{
@@ -450,7 +450,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			if (($useractivation == '1' || $useractivation == '2') && !$bypassActivation)
 			{
 				jimport('joomla.user.helper');
-				$data['activation'] = JUtility::getHash(JUserHelper::genRandomPassword());
+				$data['activation'] = JApplication::getHash(JUserHelper::genRandomPassword());
 				$data['block'] = 1;
 			}
 			// If Auto login is activated, we need to set activation and block to 0
@@ -492,11 +492,11 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			return false;
 		}
 		$session = JFactory::getSession();
-		JRequest::setVar('newuserid', $user->id);
-		JRequest::setVar('newuserid', $user->id, 'cookie');
+		$input->set('newuserid', $user->id);
+		$input->cookie->set('newuserid', $user->id);
 		$session->set('newuserid', $user->id);
-		JRequest::setVar('newuserid_element', $this->useridfield);
-		JRequest::setVar('newuserid_element', $this->useridfield, 'cookie');
+		$input->set('newuserid_element', $this->useridfield);
+		$input->cookie->set('newuserid_element', $this->useridfield);
 		$session->set('newuserid_element', $this->useridfield);
 		/*
 		 * Time for the email magic so get ready to sprinkle the magic dust...
@@ -558,7 +558,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			// Send the registration email.
 			if ($emailSubject !== '')
 			{
-				$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+				$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
 				$db = JFactory::getDBO();
 				/*

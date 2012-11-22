@@ -1,5 +1,12 @@
 var FbListRadiusSearch = new Class({
 	Extends : FbListPlugin,
+	
+	options: {
+		prefilter: true,
+		prefilterDistance: 1000,
+		prefilterDone: false
+	},
+	
 	initialize : function (options) {
 		this.parent(options);
 
@@ -45,18 +52,42 @@ var FbListRadiusSearch = new Class({
 			output.value = this.options.value;
 			output2.set('text', this.options.value);
 
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.setGeoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy : true
-				});
+			if (!this.options.prefilterDone) {
+				if (geo_position_js.init()) {
+					geo_position_js.getCurrentPosition(function (p) {
+						this.setGeoCenter(p);
+					}.bind(this), 
+					function (e) {
+						this.geoCenterErr(e);
+					}.bind(this), {
+						enableHighAccuracy : true
+					});
+				}
 			}
-
 		}.bind(this));
 	},
 
-	setGeoCenter : function (p) {
+	setGeoCenter: function (p) {
 		this.geocenterpoint = p;
 		this.geoCenter(p);
+		this.prefilter();
+	},
+	
+	/**
+	 * The list is set to prefilter
+	 */
+	prefilter: function () {
+		if (this.options.prefilter) {
+			this.fx.slideIn();
+			this.mySlide.set(this.options.prefilterDistance);
+			
+			this.listform.getElements('input[name^=radius_search_active]').filter(function (f) {
+				return f.get('value') === '1';
+			}).getLast().checked = true;
+			
+			this.listform.getElements('input[value=mylocation]').checked = true;
+			this.list.submit('filter');
+		}
 	},
 
 	geoCenter : function (p) {

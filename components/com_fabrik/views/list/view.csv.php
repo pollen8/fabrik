@@ -24,32 +24,38 @@ class FabrikViewList extends JView
 
 	public function display($tpl = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$session = JFactory::getSession();
 		$exporter = JModel::getInstance('Csvexport', 'FabrikFEModel');
 		$model = JModel::getInstance('list', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid'));
+		$model->setId($input->getInt('listid'));
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
-		JRequest::setVar('limitstart' . $model->getId(), JRequest::getInt('start', 0));
+		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
 		JRequest::setVar('limit' . $model->getId(), $exporter->_getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the list total
-		$selectedFields = JRequest::getVar('fields', array(), 'default', 'array');
+		$selectedFields = $input->get('fields', array(), 'array');
 		$model->setHeadingsForCSV($selectedFields);
 
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
 
-		$total = $model->getTotalRecords();
-
-		$key = 'fabrik.table.' . $model->getId() . 'csv.total';
-		if (is_null($session->get($key)))
+		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+		if (!$session->has($key))
 		{
+			// Only get the total if not set - otherwise causes memory issues when we donwload
+			$total = $model->getTotalRecords();
 			$session->set($key, $total);
 		}
+		else
+		{
+			$total = $session->get($key);
+		}
 
-		$start = JRequest::getInt('start', 0);
+		$start = $input->getInt('start', 0);
 		if ($start <= $total)
 		{
 			if ((int) $total === 0)
@@ -63,7 +69,9 @@ class FabrikViewList extends JView
 		}
 		else
 		{
-			JRequest::setVar('limitstart' . $model->getId(), 0);
+			$input->set('limitstart' . $model->getId(), 0);
+
+			// Remove the total from the session
 			$session->clear($key);
 			$exporter->downloadFile();
 		}
