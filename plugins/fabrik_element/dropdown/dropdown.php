@@ -296,39 +296,38 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		}
 		$this->encryptFieldName($key);
 		$params = $this->getParams();
-		if ($params->get('multiple'))
-		{
-			$originalValue = trim($value, "'");
-			/*
-			 * JSON stored values will back slash "/". So wwe need to add "\\\\"
-			 * before it to escape it for the query.
-			 */
-			$originalValue = str_replace("/", "\\\\/", $originalValue);
 
-			switch ($condition)
-			{
-				case '=':
-					$condition2 = 'LIKE';
-					$glue = 'OR';
-					break;
-				case '<>':
-					$condition2 = 'NOT LIKE';
-					$glue = 'AND';
-					break;
-				default:
-					$condition2 = 'LIKE';
-					$glue = 'OR';
-					break;
-			}
-			$db = FabrikWorker::getDbo();
-			$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
-			. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";
-			return $str;
-		}
-		else
+		/*
+		 * Was using a test for multiple but this can be changed, so data may be recorded in both ways
+		 * as a json array or single value, so regardless of multiple option we should always check for both
+		 */
+
+		$originalValue = trim($value, "'");
+		/*
+		 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+		 * before it to escape it for the query.
+		 */
+		$originalValue = str_replace("/", "\\\\/", $originalValue);
+
+		switch ($condition)
 		{
-			return parent::getFilterQuery($key, $condition, $value, $originalValue, $type);
+			case '=':
+				$condition2 = 'LIKE';
+				$glue = 'OR';
+				break;
+			case '<>':
+				$condition2 = 'NOT LIKE';
+				$glue = 'AND';
+				break;
+			default:
+				$condition2 = 'LIKE';
+				$glue = 'OR';
+				break;
 		}
+		$db = FabrikWorker::getDbo();
+		$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
+		. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";
+		return $str;
 	}
 
 	/**
