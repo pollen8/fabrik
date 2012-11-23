@@ -125,16 +125,16 @@
 li.plupload_uploading {background: #ECF3DC url('../img/backgrounds.gif') repeat-x 0 -238px;}
 li.plupload_done {color:#AAA}
 
-li.plupload_delete a {
+li.plupload_delete .plupload_file_action a {
 	background: url('../img/delete.gif');
 }
 
-li.plupload_failed a {
+li.plupload_failed .plupload_file_action a {
 	background: url('../img/error.gif');
 	cursor: default;
 }
 
-li.plupload_done a {
+li.plupload_done .plupload_file_action a {
 	background: url('../img/done.gif');
 	cursor: default;
 }

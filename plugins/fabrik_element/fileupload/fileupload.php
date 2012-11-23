@@ -287,6 +287,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($tkey);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode($value[$x]['crop'][$tkey]);
@@ -312,6 +313,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]->file);
 							$o->recordid = 0;
 							$o->params = json_decode($value[$x]->params);
@@ -333,6 +335,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
