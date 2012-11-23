@@ -8,7 +8,7 @@
 		$document->addHeadLink('components/com_fabrik/views/form/tmpl/iwebkit/startup.png', 'apple-touch-startup-image');
 ?>
 <script>
-head.ready(function() {
+window.addEvent('fabrik.loaded', function() {
 
 	document.getElements('legend').each(function(f){
 		var s = new Element('span', {'class':'graytitle'}).set('text', f.get('text'));

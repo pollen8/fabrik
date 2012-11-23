@@ -64,15 +64,16 @@ class FabrikViewCron
 	{
 		$app = JFactory::getApplication();
 		$app->input->set('hidemainmenu', true);
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
+		// FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		// FabrikHelperHTML::script('administrator/components/com_fabrik/views/admincron.js');
 		FabrikHelperHTML::tips();
 		$document = JFactory::getDocument();
 		FabrikHelperHTML::addScriptDeclaration(
 			"
-			head.ready(function() {
-				new adminCron({'sel':'" . $row->plugin
-				. "'});
+				requirejs(['administrator/components/com_fabrik/views/namespace',
+				'administrator/components/com_fabrik/views/admincron'],
+			function() {
+				new adminCron({'sel':'" . $row->plugin . "'});
 			});
 
 			function submitbutton(pressbutton) {

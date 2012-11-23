@@ -15,9 +15,7 @@ var fabrikFusiongraph = new Class({
 		this.el = el;
 		this.setOptions(options);
 		this.json = d;
-		head.ready(function () {
-			this.render();
-		}.bind(this));
+		this.render();
 	},
 	
 	render: function () {

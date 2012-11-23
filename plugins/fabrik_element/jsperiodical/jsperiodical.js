@@ -13,9 +13,7 @@ FbJSPeriodical = new Class({
 		this.fx = function () {
 			eval(this.options.code);
 		}.bind(this);
-		head.ready(function () {
-			this.fx();
-			periodical = this.fx.periodical(this.options.period, this);
-		}.bind(this));
+		this.fx();
+		periodical = this.fx.periodical(this.options.period, this);
 	}
 });

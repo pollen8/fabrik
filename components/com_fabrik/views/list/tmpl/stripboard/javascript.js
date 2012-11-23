@@ -222,6 +222,6 @@ var FabrikGrid = new Class({
 
 var col = null;
 
-head.ready(function() {
+window.addEvent('fabrik.loaded', function() {
 	new FabrikGrid();
 });

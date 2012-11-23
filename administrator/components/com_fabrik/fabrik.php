@@ -30,7 +30,7 @@ $app = JFactory::getApplication();
 $input = $app->input;
 
 jimport('joomla.filesystem.file');
-JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+FabrikHelperHTML::framework();
 
 // Raw test for submitting forms via dbjoin add form.
 if (!in_array($input->get('task'), array('plugin.pluginAjax', 'form.process')) && $input->get('format') !== 'raw')

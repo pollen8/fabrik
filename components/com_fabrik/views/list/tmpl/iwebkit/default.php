@@ -7,7 +7,7 @@
 		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/homescreen.png', 'apple-touch-icon');
 		$document->addHeadLink('components/com_fabrik/views/list/tmpl/iwebkit/startup.png', 'apple-touch-startup-image');
 
-		$script = "head.ready(function() {
+		$script = "window.addEvent('fabrik.loaded', function() {
 			document.getElement('body').addClass('list');
 		});";
 		$document->addScriptDeclaration($script);
@@ -61,7 +61,7 @@ if ($this->showFilters) {
 <?php $doc = JFactory::getDocument();
 //$style = $this->params->get('mobile_image') == '' ? 'musiclist' : 'list';
 $style = 'list';
-$doc->addScriptDeclaration("head.ready(function(){
+$doc->addScriptDeclaration("window.addEvent('fabrik.loaded', function() {
 document.body.addClass('$style');
 })");
 

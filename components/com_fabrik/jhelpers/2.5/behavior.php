@@ -640,19 +640,36 @@ abstract class JHtmlBehavior
 		{
 			return;
 		}
-
+		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => JText::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
+		$translation = JHtmlBehavior::_calendartranslation();
 		$document = JFactory::getDocument();
 		$tag = JFactory::getLanguage()->getTag();
 
-		JHtml::_('stylesheet', 'system/calendar-jos.css', array(' title' => JText::_('JLIB_HTML_BEHAVIOR_GREEN'), ' media' => 'all'), true);
-		JHtml::_('script', $tag . '/calendar.js', false, true);
-		JHtml::_('script', $tag . '/calendar-setup.js', false, true);
-
-		$translation = JHtmlBehavior::_calendartranslation();
-		if ($translation)
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
 		{
-			$document->addScriptDeclaration($translation);
+			$tag = JFactory::getLanguage()->getTag();
+			JHtml::_('script', $tag . '/calendar.js', false, true);
+			JHtml::_('script', $tag . '/calendar-setup.js', false, true);
+			if ($translation)
+			{
+				$document->addScriptDeclaration($translation);
+			}
 		}
+		else
+		{
+
+			$f = array();
+			$f[] = JHtml::_('script', $tag . '/calendar.js', false, true, true);
+			$f[] = JHtml::_('script', $tag . '/calendar-setup.js', false, true, true);
+			if ($translation)
+			{
+				$translation = "requirejs(" . json_encode($f) . ", function () { $translation });\n";
+				$document->addScriptDeclaration($translation);
+			}
+		}
+
+
 		self::$loaded[__METHOD__] = true;
 	}
 

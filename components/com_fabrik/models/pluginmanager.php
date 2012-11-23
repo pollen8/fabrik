@@ -164,7 +164,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 	public function loadJS()
 	{
-		JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
+		// JHtml::_('script', 'media/com_fabrik/js/head/head.min.js');
 		$plugins = JFolder::folders(JPATH_SITE . '/plugins/fabrik_element', '.', false, false);
 		$files = array();
 		foreach ($plugins as $plugin)

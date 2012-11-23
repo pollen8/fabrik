@@ -349,7 +349,6 @@ class FabrikAdminModelList extends FabModelAdmin
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true);
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 		$js = "
-  head.ready(function() {
 
 		oAdminTable = new ListForm($opts);
 	oAdminTable.watchJoins();\n";
@@ -365,7 +364,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
+		$js .= "window.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
 
 		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
 		$form = $this->getForm();
@@ -406,8 +405,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 			}
 		}
-		$js .= "
-});";
+
 		return $js;
 	}
 

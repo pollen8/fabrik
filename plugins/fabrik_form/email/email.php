@@ -321,7 +321,15 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 						}
 						if (is_array($val))
 						{
-							$val = implode(',', $val);
+							if (is_array(current($val)))
+							{
+								// Can't implode multi dimensional arrays
+								$val = json_encode($val);
+							}
+							else
+							{
+								$val = implode(',', $val);
+							}
 						}
 						$aVals = FabrikWorker::JSONtoData($val, true);
 						foreach ($aVals as $v)

@@ -128,6 +128,6 @@ echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
 $options = "{display:$display}";
-$js = '		head.ready(function() { $$(\'dl.tabs\').each(function(tabs) { new JTabs(tabs, '.$options.'); }); });';
+$js = '		window.addEvent("fabrik.load", function() { $$(\'dl.tabs\').each(function(tabs) { new JTabs(tabs, '.$options.'); }); });';
 FabrikHelperHTML::addScriptDeclaration($js);
 $document->addScript(JURI::root(true). '/media/system/js/tabs.js');?>

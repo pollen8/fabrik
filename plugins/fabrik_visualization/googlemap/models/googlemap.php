@@ -73,7 +73,6 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
-		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
 
 		$opts = new stdClass;
@@ -119,7 +118,6 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$ref = $this->getJSRenderContext();
 		$str .= "$ref = new FbGoogleMapViz('table_map', $opts)";
 		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
-		$str .= "});\n";
 		return $str;
 	}
 

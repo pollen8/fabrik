@@ -67,8 +67,8 @@ print_r($this->hiddenFields);
 
 <?php
 FabrikHelperHTML::script('components/com_fabrik/views/list/tmpl/dbjoinselect/javascript.js');
-$script = "head.ready(function() {
-var trs = new TableRowSelect('" . $input->get('triggerElement') . "', " . (int) $this->form->id.");
+$script = "window.addEvent('fabrik.loaded', function() {
+var trs = new TableRowSelect('" . $input->get('triggerElement') . "', ".(int) $this->form->id.");
 });
 ";
 FabrikHelperHTML::addScriptDeclaration($script);

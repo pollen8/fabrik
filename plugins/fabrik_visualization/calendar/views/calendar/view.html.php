@@ -241,7 +241,7 @@ class fabrikViewCalendar extends JViewLegacy
 		 */
 		$ref = $model->getJSRenderContext();
 		$script = array();
-		$script[] = "head.ready(function() {";
+		$script[] = "window.addEvent('fabrik.loaded', function() {";
 		$script[] = "document.id('fabrik_event_type').addEvent('change', function(e) {";
 		$script[] = "var fid = e.target.get('value');";
 		$script[] = "var o = ({'d':'','listid':fid,'rowid':0});";

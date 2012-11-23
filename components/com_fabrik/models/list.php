@@ -316,6 +316,10 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list', $src);
 		foreach ($pluginManager->data as $f)
 		{
+			if (is_null($f) || $f == '')
+			{
+				continue;
+			}
 			if (is_array($f))
 			{
 				$r = array_merge($r, $f);
@@ -8244,7 +8248,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if ($script !== '')
 		{
-			$script = "head.ready(function() {\n" . $script . "});\n";
+			$script = "window.addEvent('fabrik.loaded', function() {\n" . $script . "});\n";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 	}

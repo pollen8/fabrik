@@ -233,7 +233,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 
 			// Unset the task otherwise we will submit the form to be processed.
 			FabrikHelperHTML::addScriptDeclaration(
-				"head.ready(function() {" . "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n" . "  this.form.task.value = '';\n"
+				"window.addEvent('fabrik.loaded', function() {" . "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n" . "  this.form.task.value = '';\n"
 					. "  this.form.submit.click();\n" . "	});\n" . "});");
 			$this->html = implode("\n", $fields);
 		}

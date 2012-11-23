@@ -17,47 +17,46 @@ var FbOpenStreetMap = new Class({
 		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 		OpenLayers.Util.onImageLoadErrorColor = "transparent";
 	
-		head.ready(function () {
 	
-			var opts = {};
-			this.map = new OpenLayers.Map(this.element_map, opts);
-	
-			switch (this.options.defaultLayer) {
-			case 'openlayers':
-				this.openLayers();
-				break;
-			case 'yahoo':
-				this.yahoo();
-				break;
-			case 'google':
-				this.google();
-				break;
-			case 'virtualearth':
-				this.virtualEarth();
-				break;
-			}
-			
-			if (this.options.defaultLayer !== 'openlayers') {
-				this.openLayers();
-			}
-			
-			/** create Google layers*/
-			if (this.options.layers.google === 1 && this.options.defaultLayer !== 'google') {
-				this.google();
-			}
+		var opts = {};
+		this.map = new OpenLayers.Map(this.element_map, opts);
 
-			/** create Virtual Earth layers */
-			if (this.options.layers.virtualEarth === 1 && this.options.defaultLayer !== 'virtualearth') {
-				this.virtualEarth();
-			}
+		switch (this.options.defaultLayer) {
+		case 'openlayers':
+			this.openLayers();
+			break;
+		case 'yahoo':
+			this.yahoo();
+			break;
+		case 'google':
+			this.google();
+			break;
+		case 'virtualearth':
+			this.virtualEarth();
+			break;
+		}
+		
+		if (this.options.defaultLayer !== 'openlayers') {
+			this.openLayers();
+		}
+		
+		/** create Google layers*/
+		if (this.options.layers.google === 1 && this.options.defaultLayer !== 'google') {
+			this.google();
+		}
 
-			/** create Yahoo layer */
-			if (this.options.layers.yahoo === 1 && this.options.defaultLayer !== 'yahoo') {
-				this.yahoo();
-			}
-			
-			var lonLat = this.getLonLat(this.options.lon, this.options.lat);
-			this.map.setCenter(lonLat, this.options.zoomlevel.toInt());
+		/** create Virtual Earth layers */
+		if (this.options.layers.virtualEarth === 1 && this.options.defaultLayer !== 'virtualearth') {
+			this.virtualEarth();
+		}
+
+		/** create Yahoo layer */
+		if (this.options.layers.yahoo === 1 && this.options.defaultLayer !== 'yahoo') {
+			this.yahoo();
+		}
+		
+		var lonLat = this.getLonLat(this.options.lon, this.options.lat);
+		this.map.setCenter(lonLat, this.options.zoomlevel.toInt());
 
 			this.addMarker();
 			this.map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -66,14 +65,13 @@ var FbOpenStreetMap = new Class({
 					drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
 				};
 
-			for (var key in controls) {
-				this.map.addControl(controls[key]);
-			}
-			if (this.options.editable === true) {
-				controls.drag.activate();
-				this.map.addControl(new OpenLayers.Control.MousePosition());
-			}
-		}.bind(this));
+		for (var key in controls) {
+			this.map.addControl(controls[key]);
+		}
+		if (this.options.editable === true) {
+			controls.drag.activate();
+			this.map.addControl(new OpenLayers.Control.MousePosition());
+		}
 	},
 	
 	dragComplete: function (marker) {

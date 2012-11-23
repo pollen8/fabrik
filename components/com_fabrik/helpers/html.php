@@ -120,6 +120,7 @@ class FabrikHelperHTML
 	 */
 	protected static $printURL = null;
 
+	protected static $requireJS = array();
 	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
@@ -164,7 +165,7 @@ class FabrikHelperHTML
 			return;
 		}
 
-		$script .= "head.ready(function() {";
+		$script .= "window.addEvent('fabrik.loadeded', function() {";
 		if ($selector == '')
 		{
 			return;
@@ -547,9 +548,10 @@ EOD;
 			{
 				if (!strstr($file, 'fabrik.css'))
 				{
-					echo "<script type=\"text/javascript\">var v = new Asset.css('" . $file . "', {});
-				</script>\n";
-
+					$opts = new stdClass;
+					echo "<script type=\"text/javascript\">
+					var v = new Asset.css('" . $file . "', " . json_encode($opts) . ");
+					</script>\n";
 					self::$ajaxCssFiles[] = $file;
 				}
 			}
@@ -755,7 +757,8 @@ EOD;
 		{
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
 				'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
-				'media/com_fabrik/js/lib/mcl/Thread.js', 'media/com_fabrik/js/lib/canvas-extra.js');
+				'media/com_fabrik/js/lib/mcl/Thread.js');
+			// , 'media/com_fabrik/js/canvas-extra.js'
 			self::script($src);
 			self::$mcl = true;
 		}
@@ -771,6 +774,9 @@ EOD;
 	{
 		if (!self::$framework)
 		{
+			self::iniRequireJS();
+
+			$document = JFactory::getDocument();
 			$src = array();
 			if (self::inAjaxLoadedPage())
 			{
@@ -780,6 +786,9 @@ EOD;
 				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
 				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
 				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
+
+				// require js test - list with no cal loading ajax form with cal
+				JHTML::_('behavior.calendar');
 			}
 
 			if (!self::inAjaxLoadedPage())
@@ -787,19 +796,22 @@ EOD;
 				$version = new JVersion;
 				$app = JFactory::getApplication();
 
+
 				/*
-				 * required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
+				 * Required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
 				 * only load in main/first window - otherwise reloading it causes js errors related to calendar translations
 				 */
 				JHTML::_('behavior.calendar');
 
-				/*loading framework, if in ajax loaded page:
+				/*
+				 * Loading framework, if in ajax loaded page:
 				 * makes document.body not found for gmap element when
 				 * removes previously added window.events (17/10/2011 we're now using Fabrik.events - so this may no longer be an issue)
 				 */
 				JHtml::_('behavior.framework', true);
 
-				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
+
 
 				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
@@ -829,29 +841,75 @@ EOD;
 				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
 				 * in some browsers it's not available when other things (like map viz) are loading
 				 */
-				self::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';});");
 
-				$script = array();
-				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
+				self::addScriptDeclaration("
+					requirejs(['fab/icons', 'fab/icongen', 'fab/fabrik'], function () {
+						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
+					});
+				");
 
 				$tipOpts = self::tipOpts();
-				self::addScriptDeclaration(
-					"head.ready(function () {
-	Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
+				$tipJs = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
 						. ");
 	Fabrik.addEvent('fabrik.list.updaterows', function () {
-		//reattach new tips after list redraw,
+
+		// Reattach new tips after list redraw,
 		Fabrik.tips.attach('.fabrikTip');
 	});
 	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
 		Fabrik.tips.hideAll();
-	});
-});
-				");
+	});";
+
+			self::addScriptDeclaration("requirejs(['fab/fabrik', 'fab/icons', 'fab/icongen', 'fab/tips', 'fab/encoder'], function () {
+						" . $tipJs . "
+					});");
 			}
 			self::$framework = $src;
 		}
 		return self::$framework;
+	}
+
+	/**
+	 * Ini the require JS conifguration
+	 *
+	 * @since   3.1
+	 *
+	 * @return  void
+	 */
+	protected static function iniRequireJs()
+	{
+		$document = JFactory::getDocument();
+		$requirePaths = self::requirePaths();
+		$pathBits = array();
+		foreach ($requirePaths as $reqK => $repPath)
+		{
+			$pathBits[] = "\n$reqK : '$repPath'";
+		}
+		$pathString = '{' . implode(',', $pathBits) . '}';
+		$document->addScriptDeclaration("require.config({
+				baseUrl: '" . COM_FABRIK_LIVESITE . "',
+				paths: " . $pathString . "
+		});");
+	}
+
+	/**
+	 * Get the js file path map that requireJS uses
+	 *
+	 * @since  3.1
+	 *
+	 * @return stdClass
+	 */
+
+	protected static function requirePaths()
+	{
+		$r = new stdClass;
+		$r->fab = 'media/com_fabrik/js';
+		$r->element = 'plugins/fabrik_element';
+		$r->list = 'plugins/fabrik_list';
+		$r->form = 'plugins/fabrik_form';
+		$r->cron = 'plugins/fabrik_cron';
+		$r->viz = 'plugins/fabrik_visualization';
+		return $r;
 	}
 
 	/**
@@ -989,7 +1047,7 @@ EOD;
 	}
 
 	/**
-	 * Wrapper for JHTML::Script()
+	 * Wrapper for JHTML::Script() loading with require.js
 	 *
 	 * @param   mixed   $file    string or array of files to load
 	 * @param   string  $onLoad  optional js to run if format=raw (as we first load the $file via Asset.Javascript()
@@ -1012,9 +1070,17 @@ EOD;
 		$input = $app->input;
 		$ext = self::isDebug() ? '.js' : '-min.js';
 
-		$file = (array) $file;
-		$src = array();
-		foreach ($file as $f)
+		$paths = array(
+				'fab' => 'media/com_fabrik/js/',
+				'element' => 'plugins/fabrik_element/'
+				);
+
+		$paths = self::requirePaths();
+		$files = (array) $file;
+
+		// @TODO test this!
+		// Replace with minified files if found
+		foreach ($files as &$f)
 		{
 			if (!(JString::stristr($f, 'http://') || JString::stristr($f, 'https://')))
 			{
@@ -1034,57 +1100,62 @@ EOD;
 				{
 					$f = $compressedFile;
 				}
-				$f = COM_FABRIK_LIVESITE . $f;
-			}
-
-			/*
-			 * Check if already loaded? Have to do this as multiple head.js calls with identical
-			 * scripts in them stops the $onLoad method from being run see:
-			 * https://github.com/Fabrik/fabrik/issues/412
-			 */
-			if (in_array($f, self::$scripts) && $input->get('format') !== 'raw')
-			{
-				continue;
-			}
-			else
-			{
-				self::$scripts[] = $f;
-			}
-
-			if ($input->get('format') == 'raw')
-			{
-				$opts = trim($onLoad) !== '' ? '\'onLoad\':function(){' . $onLoad . '}' : '';
-				echo '<script type="text/javascript">Asset.javascript(\'' . $f . '\', {' . $opts . '});</script>';
-			}
-			else
-			{
-				$src[] = "'" . $f . "'";
 			}
 		}
-		if ($onLoad !== '' && $input->get('format') != 'raw' && !empty($src))
+
+		// Set file name based on requirejs basePath
+		foreach ($files as &$file)
 		{
-			if (self::inAjaxLoadedPage())
+
+			$pathMatched = false;
+			foreach ($paths as $requireKey => $path)
 			{
-				$onLoad = "(function() {\n " . $onLoad . "\n //end load func \n})";
+				if (strstr($file, $path))
+				{
+					$file = str_replace($path, '', $file);
+					$file = str_replace('.js', '', $file);
+					$file = $requireKey . $file;
+					$pathMatched = true;
+				}
 			}
-			else
+			if (!$pathMatched)
 			{
-				$onLoad = "(function() { head.ready(function() {\n" . $onLoad . "\n})\n})";
+				if (!(JString::stristr($file, 'http://') || JString::stristr($file, 'https://')))
+				{
+					$file = COM_FABRIK_LIVESITE . $file;
+				}
 			}
-			$src[] = $onLoad;
 		}
-		if (!empty($src))
+		// Need to load element for ajax popup forms in IE.
+		$needed = array('fab/element', 'fab/fabrik', 'fab/icongen', 'fab/icons');
+		foreach ($needed as $need)
 		{
-			$document->addScriptDeclaration('head.js(' . implode(",\n", array_unique($src)) . ');' . "\n");
+			if (!in_array($need, $files))
+			{
+				array_unshift($files, $need);
+			}
+		}
+		$files = array_unique($files);
+		$files = "['" . implode("', '", $files) . "']";
+		$require = 'require(' . ($files) . ', function () {
+		' . $onLoad . '
+		});';
+
+		if (JRequest::getCmd('format') == 'raw')
+		{
+			echo '<script type="text/javascript">' . $require . '</script>';
 		}
 		else
 		{
-			// Ppreviously loaded $file but with js code in $onLoad which should still be added
-			if (!empty($onLoad))
-			{
-				$document->addScriptDeclaration('head.ready(function () {' . $onLoad . '});' . "\n");
-			}
+			$document->addScriptDeclaration($require);
 		}
+		self::$requireJS[] = $require;
+	}
+
+	public static function getAllJS()
+	{
+		$js = implode("\n", self::$requireJS);
+		return $js;
 	}
 
 	/**
@@ -1158,7 +1229,7 @@ EOD;
 
 		// Attach tooltips to document
 		// Force the zindex to 9999 so that it appears above the popup window.
-		$tooltipInit = 'head.ready(function() {if(typeOf(' . $selectorPrefix . ') !== \'null\' && ' . $selectorPrefix . '.getElements(\'' . $selector
+		$tooltipInit = 'window.addEvent("fabrik.load", function() {if(typeOf(' . $selectorPrefix . ') !== \'null\' && ' . $selectorPrefix . '.getElements(\'' . $selector
 			. '\').length !== 0) {window.JTooltips = new Tips(' . $selectorPrefix . '.getElements(\'' . $selector . '\'), ' . $options
 			. ');$$(".tool-tip").setStyle("z-index", 999999);}});';
 		/* self::addScriptDeclaration($tooltipInit); */
@@ -1213,7 +1284,7 @@ EOD;
 			$style .= ".fabrikDebugOutput pre{padding:5px;background:#efefef;color:#999;}";
 			$style .= ".fabrikDebugHidden{display:none}";
 			self::addStyleDeclaration($style);
-			$script = "head.ready(function() {
+			$script = "window.addEvent('fabrik.loadeded', function() {
 			$$('.fabrikDebugOutputTitle').each(function(title) {
 				title.addEvent('click', function(e) {
 					title.getNext().toggleClass('fabrikDebugHidden');
@@ -1285,7 +1356,10 @@ EOD;
 		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
 		$str = json_encode($json);
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
-		self::addScriptDeclaration("head.ready(function() { new $class('$htmlid', $str); });");
+		self::addScriptDeclaration("
+				requirejs(['fab/autocomplete', 'fab/encoder', 'fab/lib/Event.mock'], function () {
+					new $class('$htmlid', $str);
+				});");
 	}
 
 	/**
