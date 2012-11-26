@@ -351,8 +351,8 @@ class FabrikAdminModelForm extends FabModelAdmin
 		// Use this in case there is not table view linked to the form
 		if ($form->record_in_database == 1)
 		{
-			// There is a table view linked to the form so lets load it
-			$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
+			// There is a list view linked to the form so lets load it
+			$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 			$listModel->loadFromFormId($formId);
 			$listModel->setFormModel($model);
 			$dbExisits = $listModel->databaseTableExists();
