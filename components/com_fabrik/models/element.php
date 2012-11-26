@@ -3778,13 +3778,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			$custom_query = sprintf($custom_query, $name);
+			// $custom_query = sprintf($custom_query, $name);
+			$custom_query = str_replace('%s', $name, $custom_query);
 			return "SELECT $custom_query AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
-			$custom_query = sprintf($custom_query, 'value');
+			// $custom_query = sprintf($custom_query, 'value');
+			$custom_query = str_replace('%s', 'value', $custom_query);
 			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT " . FabrikString::safeColName($item->db_table_name)
 				. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
 		}

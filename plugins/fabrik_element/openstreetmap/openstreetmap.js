@@ -58,12 +58,12 @@ var FbOpenStreetMap = new Class({
 		var lonLat = this.getLonLat(this.options.lon, this.options.lat);
 		this.map.setCenter(lonLat, this.options.zoomlevel.toInt());
 
-			this.addMarker();
-			this.map.addControl(new OpenLayers.Control.LayerSwitcher());
+		this.addMarker();
+		this.map.addControl(new OpenLayers.Control.LayerSwitcher());
 
-			var controls = {
-					drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
-				};
+		var controls = {
+			drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
+		};
 
 		for (var key in controls) {
 			this.map.addControl(controls[key]);

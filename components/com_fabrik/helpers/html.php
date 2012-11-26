@@ -842,8 +842,14 @@ EOD;
 				 * in some browsers it's not available when other things (like map viz) are loading
 				 */
 
-				self::addScriptDeclaration("
+				/* self::addScriptDeclaration("
 					requirejs(['fab/icons', 'fab/icongen', 'fab/fabrik'], function () {
+						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
+					});
+				"); */
+
+				self::addScriptDeclaration("
+					window.addEvent('fabrik.loaded', function () {
 						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
 					});
 				");
@@ -1070,11 +1076,11 @@ EOD;
 		$input = $app->input;
 		$ext = self::isDebug() ? '.js' : '-min.js';
 
-		$paths = array(
+		/* $paths = array(
 				'fab' => 'media/com_fabrik/js/',
 				'element' => 'plugins/fabrik_element/'
 				);
-
+ */
 		$paths = self::requirePaths();
 		$files = (array) $file;
 

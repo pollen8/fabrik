@@ -469,5 +469,5 @@ function () {
 		
 		window.fireEvent('fabrik.loaded');
 	}
-}()
+}
 );

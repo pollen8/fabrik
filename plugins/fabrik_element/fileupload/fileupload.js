@@ -46,7 +46,11 @@ var FbFileUpload = new Class({
 	 * Single file uploads can allow the user to delee the reference and/or file
 	 */
 	watchDeleteButton: function () {
-		var b = this.getContainer().getElement('[data-file]');
+		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
+		var b = c.getElement('[data-file]');
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
 				e.stop();
@@ -134,6 +138,7 @@ var FbFileUpload = new Class({
 		if (this.options.editable === false) {
 			return;
 		}
+		var a, title;
 		var c = this.getElement().getParent('.fabrikSubElementContainer');
 		this.container = c;
 		var canvas = c.getElement('canvas');
@@ -176,7 +181,6 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		this.uploader.bind('FilesRemoved', function (up, files) {
-			console.log('filesremvoed', up, files, this);
 		});
 
 		// (2) ON FILES ADDED ACTION
@@ -203,23 +207,30 @@ var FbFileUpload = new Class({
 							}.bind(this)
 						}
 					}));
-					var a = new Element('a', {
-						'href' : '#',
-						alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
-						events : {
-							'click': function (e) {
-								this.pluploadResize(e);
-							}.bind(this)
+					if (file.type === 'image') {
+						a = new Element('a', {
+							'href' : '#',
+							alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
+							events : {
+								'click': function (e) {
+									this.pluploadResize(e);
+								}.bind(this)
+							}
+						});
+						if (this.options.crop) {
+							a.set('html', this.options.resizeButton);
+						} else {
+							a.set('html', this.options.previewButton);
 						}
-					});
-					if (this.options.crop) {
-						a.set('html', this.options.resizeButton);
+						title = new Element('span').set('text', file.name);
 					} else {
-						a.set('html', this.options.previewButton);
+						a = new Element('span');
+						title = new Element('a', {'href': file.url}).set('text', file.name);
 					}
+					
 					var filename = new Element('div', {
 						'class' : 'plupload_file_name'
-					}).adopt([ new Element('span').set('text', file.name), new Element('div', {
+					}).adopt([ title, new Element('div', {
 						'class' : 'plupload_resize',
 						style : 'display:none'
 					}).adopt(a) ]);
@@ -273,9 +284,11 @@ var FbFileUpload = new Class({
 			}
 			document.id(file.id).getElement('.plupload_resize').show();
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
-			resizebutton.href = response.uri;
-			resizebutton.id = 'resizebutton_' + file.id;
-			resizebutton.store('filepath', response.filepath);
+			if (resizebutton) {
+				resizebutton.href = response.uri;
+				resizebutton.id = 'resizebutton_' + file.id;
+				resizebutton.store('filepath', response.filepath);
+			}
 			this.widget.setImage(response.uri, response.filepath, file.params);
 			new Element('input', {
 				'type' : 'hidden',

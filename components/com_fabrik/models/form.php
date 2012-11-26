@@ -434,7 +434,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Finally see if the options are overridden by a querystring var
 		$baseTmpl = $tmpl;
-		$tmpl = JRequest::getVar('layout', $tmpl);
+		$tmpl = $input->get('layout', '$tmpl');
 
 		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
