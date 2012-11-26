@@ -296,7 +296,10 @@ var FbElement =  new Class({
 		var a;
 		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
 		var container = this.getContainer();
-		
+		if (container === false) {
+			console.log('Notice: couldn not set error msg for ' + msg + ' no container class found');
+			return;
+		}
 		classes.each(function (c) {
 			var r = classname === c ? container.addClass(c) : container.removeClass(c);
 		});

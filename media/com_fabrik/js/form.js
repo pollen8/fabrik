@@ -499,8 +499,11 @@ var FbForm = new Class({
 	pageGroupsVisible: function () {
 		var visible = false;
 		this.options.pages.get(this.currentPage).each(function (gid) {
-			if (document.id('group' + gid).getStyle('display') !== 'none') {
-				visible = true;
+			var group = document.id('group' + gid);
+			if (typeOf(group) !== 'null') {
+				if (group.getStyle('display') !== 'none') {
+					visible = true;
+				}
 			}
 		});
 		return visible;

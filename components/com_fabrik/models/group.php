@@ -164,7 +164,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Set the group row
 	 *
-	 * @param   FabTableGroup  $group  fabrik table
+	 * @param   FabTableGroup  $group  Fabrik table
 	 *
 	 * @since   3.0.5
 	 *
@@ -200,14 +200,42 @@ class FabrikFEModelGroup extends FabModel
 			}
 			$this->canView = true;
 		}
+
+		/*
+		 * Sigh - seems that the repeat group 'repeat_group_show_first' property has been bastardized to be a setting
+		 * that is applicable to a group even when not in a repeat group, and has basically become a standard group setting.
+		 * My bad for labelling it poorly to start with.
+		 * So, now if this is set to 'no' the group is not shown but canView was returning true - doh! Caused issues in
+		 * multi page forms where we were trying to set/check errors in groups which were not attached to the form.
+		 */
+		$formModel = $this->getFormModel();
+		$params = $this->getParams();
+		$showGroup = $params->get('repeat_group_show_first', '');
+		if ($showGroup == 0)
+		{
+			$this->canView = false;
+		}
+
+		// If editable but only show group in details view:
+		if ($formModel->isEditable() && $showGroup == 2)
+		{
+			$this->canView = false;
+		}
+
+		// If form not editable and show group in form view:
+		if (!$formModel->isEditable() && $showGroup == 3)
+		{
+			$this->canView = false;
+		}
+
 		return $this->canView;
 	}
 
 	/**
-	 * set the context in which the element occurs
+	 * Set the context in which the element occurs
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   object  $listModel  list model
+	 * @param   object  $formModel  Form model
+	 * @param   object  $listModel  List model
 	 *
 	 * @return void
 	 */
