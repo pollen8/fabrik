@@ -285,7 +285,6 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$group = $this->getGroup();
 			$this->elements = array();
-			$form = $this->getFormModel();
 			$pluginManager = FabrikWorker::getPluginManager();
 			$formModel = $this->getFormModel();
 			$allGroups = $pluginManager->getFormPlugins($formModel);

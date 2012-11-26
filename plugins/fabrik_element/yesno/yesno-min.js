@@ -1,1 +1,1 @@
-var FbYesno=new Class({Extends:FbRadio,initialize:function(b,a){this.plugin="fabrikyesno";this.parent(b,a)}});
+requirejs(["element/radiobutton/radiobutton","fab/elementlist"],function(){FbYesno=new Class({Extends:FbRadio,initialize:function(b,a){this.plugin="fabrikyesno";this.parent(b,a)}})});

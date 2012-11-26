@@ -99,9 +99,10 @@ Fabrik.Window = new Class({
 					color: ['#999', '#666']
 				}
 			});
+			resizeIcon.inject(dragger);
+			draggerC.adopt(dragger);
 		}
-		resizeIcon.inject(dragger);
-		draggerC.adopt(dragger);
+		
 		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
 		handleParts.push(label);
 		if (this.options.bootstrap) {

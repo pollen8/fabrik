@@ -1,4 +1,4 @@
-require(['element/databasejoin'], function () {
+require(['element/databasejoin/databasejoin'], function () {
 	FbUser = new Class({
 		Extends: FbDatabasejoin
 	});	

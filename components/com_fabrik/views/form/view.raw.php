@@ -153,7 +153,7 @@ class fabrikViewForm extends JViewLegacy
 			}
 		}
 
-		$this->access =, $model->checkAccessFromListSettings();
+		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));

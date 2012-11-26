@@ -23,7 +23,7 @@ var FbDatabasejoin = new Class({
 		this.parent(element, options);
 		this.changeEvents = []; // workaround for change events getting zapped on clone
 		this.init();
-		this.start();
+		// this.start();
 	},
 	
 	watchAdd: function () {
