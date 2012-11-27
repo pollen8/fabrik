@@ -578,18 +578,24 @@ var ImageWidget = new Class({
 			// as imagedim is changed when the image is scaled, but we still want to store the original
 			// image dimensions for when we come to re-edit it.
 			// not sure we actually need it - but seems a good idea to have a reference to the original image size
-			params.mainimagedim = params.imagedim;
-			params.mainimagedim.w = imagew;
-			params.mainimagedim.h = imageh;
-			imagex = params.imagedim.x;
-			imagey = params.imagedim.y;
+			if (params.imagedim) {
+				params.mainimagedim = params.imagedim;
+				params.mainimagedim.w = imagew;
+				params.mainimagedim.h = imageh;
+				imagex = params.imagedim.x;
+				imagey = params.imagedim.y;
+			} else {
+				params.mainimagedim = {w:0, h:0, x:0, y:0};
+				imagex = 0;
+				imagey = 0;
+			}
 		} else {
 			show = true;
 			i = this.images.get(filepath);
 			imagew = 400;
 			imageh = 400;
-			imagex = i.imagedim.x;
-			imagey = i.imagedim.y;
+			imagex = typeOf(i.imagedim) !== 'null' ? i.imagedim.x : 0;
+			imagey = typeOf(i.imagedim) !== 'null' ? i.imagedim.y : 0;
 		}
 
 		i = this.images.get(filepath);
@@ -599,7 +605,7 @@ var ImageWidget = new Class({
 		if (this.rotateSlide) {
 			this.rotateSlide.set(i.rotation);
 		}
-		if (this.cropperCanvas) {
+		if (this.cropperCanvas && i.cropdim) {
 			this.cropperCanvas.x = i.cropdim.x;
 			this.cropperCanvas.y = i.cropdim.y;
 			this.cropperCanvas.w = i.cropdim.w;
