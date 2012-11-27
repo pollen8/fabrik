@@ -1324,7 +1324,7 @@ var FbListActions = new Class({
 							}.bind(this.list)
 						};
 					
-					var tipOpts = Object.merge(Object.clone(Fabrik.tips.options), opts);
+					var tipOpts = Fabrik.tips ? Object.merge(Object.clone(Fabrik.tips.options), opts) : opts;
 					var tip = new FloatingTips(i, tipOpts);
 				}
 			}

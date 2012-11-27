@@ -838,37 +838,26 @@ EOD;
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
-				 * in some browsers it's not available when other things (like map viz) are loading
-				 */
 
-				/* self::addScriptDeclaration("
-					requirejs(['fab/icons', 'fab/icongen', 'fab/fabrik'], function () {
-						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
-					});
-				"); */
+				$tipOpts = self::tipOpts();
+				$tipJs = array();
+				$tipJs[] = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");";
+				$tipJs[] = "Fabrik.addEvent('fabrik.list.updaterows', function () {";
+				$tipJs[] = "\t// Reattach new tips after list redraw,";
+				$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
+				$tipJs[] = "});";
+				$tipJs[] = "Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
+				$tipJs[] = "\tFabrik.tips.hideAll();";
+				$tipJs[] = "});";
 
 				self::addScriptDeclaration("
 					window.addEvent('fabrik.loaded', function () {
 						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
+						requirejs(['fab/tips', 'fab/encoder'], function () {
+						" . implode("\n", $tipJs) . "
+						});
 					});
 				");
-
-				$tipOpts = self::tipOpts();
-				$tipJs = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
-						. ");
-	Fabrik.addEvent('fabrik.list.updaterows', function () {
-
-		// Reattach new tips after list redraw,
-		Fabrik.tips.attach('.fabrikTip');
-	});
-	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
-		Fabrik.tips.hideAll();
-	});";
-
-			self::addScriptDeclaration("requirejs(['fab/fabrik', 'fab/icons', 'fab/icongen', 'fab/tips', 'fab/encoder'], function () {
-						" . $tipJs . "
-					});");
 			}
 			self::$framework = $src;
 		}
@@ -915,6 +904,7 @@ EOD;
 		$r->form = 'plugins/fabrik_form';
 		$r->cron = 'plugins/fabrik_cron';
 		$r->viz = 'plugins/fabrik_visualization';
+		$r->admin = 'administrator/components/com_fabrik/views';
 		return $r;
 	}
 
