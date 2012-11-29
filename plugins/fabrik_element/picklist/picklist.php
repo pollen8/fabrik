@@ -65,14 +65,16 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		FabrikHelperHTML::addStyleDeclaration($style);
 		$i = 0;
 		$aRoValues = array();
-		$fromlist = "from:<ul id=\"$id" . "_fromlist\" class=\"frompicklist\">\n";
-		$tolist = "to:<ul id=\"$id" . "_tolist\" class=\"topicklist\">\n";
+		$fromlist = array();
+		$tolist = array();
+		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="frompicklist">';
+		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="topicklist">';
 		foreach ($arVals as $v)
 		{
 			//$tmptxt = addslashes(htmlspecialchars($arTxt[$i]));
 			if (!in_array($v, $arSelected))
 			{
-				$fromlist .= "<li id=\"{$id}_value_$v\" class=\"picklist\">" . $arTxt[$i] . "</li>\n";
+				$fromlist[] = '<li id="' . $id . '_value_' . $v . '" class="picklist">' . $arTxt[$i] . '</li>';
 			}
 			$i++;
 		}
@@ -86,23 +88,24 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 			}
 			$k = JArrayHelper::getValue($lookup, $v);
 			$tmptxt = addslashes(htmlspecialchars(JArrayHelper::getValue($arTxt, $k)));
-			$tolist .= "<li id=\"{$id}_value_$v\" class=\"$v\">" . $tmptxt . "</li>\n";
+			$tolist[] = '<li id="' . $id . '_value_' . $v . '" class="' . $v . '">' . $tmptxt . '</li>';
 			$aRoValues[] = $tmptxt;
 			$i++;
 		}
 		if (empty($arSelected))
 		{
-			$fromlist .= "<li class=\"emptyplicklist\">" . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
+			$fromlist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 		}
 		if (empty($aRoValues))
 		{
-			$tolist .= "<li class=\"emptyplicklist\">" . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . "</li>\n";
+			$tolist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 		}
 
-		$fromlist .= "</ul>\n";
-		$tolist .= "</ul>\n";
+		$fromlist[] = '</ul>';
+		$tolist[] = '</ul>';
 
-		$str = "<div $attribs>$fromlist</div><div class='picklistcontainer'>$tolist</div>";
+		$str = '<div ' . $attribs . '>' . implode("\n", $fromlist) . '</div>';
+		$str .= '<div class="picklistcontainer">' . implode("\n", $tolist) . '</div>';
 		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
 		if (!$this->isEditable())
 		{
