@@ -585,7 +585,7 @@ var ImageWidget = new Class({
 				imagex = params.imagedim.x;
 				imagey = params.imagedim.y;
 			} else {
-				params.mainimagedim = {w:0, h:0, x:0, y:0};
+				params.mainimagedim = {w: 0, h: 0, x: 0, y: 0};
 				imagex = 0;
 				imagey = 0;
 			}

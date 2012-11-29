@@ -385,7 +385,7 @@ file_filter = plugins/fabrik_element/yesno/language/<lang>/<lang>.plg_fabrik_ele
 source_file = plugins/fabrik_element/yesno/language/en-GB/en-GB.plg_fabrik_element_yesno.ini
 source_lang = en_GB
 
-[fabrik.plg_element_yesno]
+[fabrik.plg_element_youtube]
 file_filter = plugins/fabrik_element/youtube/language/<lang>/<lang>.plg_fabrik_element_youtube.ini
 source_file = plugins/fabrik_element/youtube/language/en-GB/en-GB.plg_fabrik_element_youtube.ini
 source_lang = en_GB
@@ -432,7 +432,7 @@ trans.nl-NL = plugins/fabrik_form/confirmation/language/nl-NL/nl-NL.plg_fabrik_f
 file_filter = plugins/fabrik_form/email/language/<lang>/<lang>.plg_fabrik_form_email.ini
 source_file = plugins/fabrik_form/email/language/en-GB/en-GB.plg_fabrik_form_email.ini
 source_lang = en_GB
-trans.da-DK = plugins/fabrik_form/email/language/da-DK/da-DK.plg_fabrik_form_email.ini
+trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
 trans.el-GR = plugins/fabrik_form/email/language/el-GR/el-GR.plg_fabrik_form_email.ini
 trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
 trans.es-ES = plugins/fabrik_form/email/language/es-ES/es-ES.plg_fabrik_form_email.ini
@@ -549,9 +549,6 @@ trans.it-IT = plugins/fabrik_form/sms/language/it-IT/it-IT.plg_fabrik_form_sms.i
 file_filter = plugins/fabrik_form/subscriptions/language/<lang>/<lang>.plg_fabrik_form_subscriptions.ini
 source_file = plugins/fabrik_form/subscriptions/language/en-GB/en-GB.plg_fabrik_form_subscriptions.ini
 source_lang = en_GB
-trans.de-DE= plugins/fabrik_form/subscriptions/language/de-DE/de-DE.plg_fabrik_form_subscriptions.ini
-trans.es-ES = plugins/fabrik_form/subscriptions/language/es-ES/es-ES.plg_fabrik_form_subscriptions.ini
-trans.it-IT = plugins/fabrik_form/subscriptions/language/it-IT/it-IT.plg_fabrik_form_subscriptions.ini
 
 [fabrik.plg_form_twitter]
 file_filter = plugins/fabrik_form/twitter/language/<lang>/<lang>.plg_fabrik_form_twitter.ini
@@ -586,7 +583,7 @@ source_file = plugins/fabrik_list/download/language/en-GB/en-GB.plg_fabrik_list_
 source_lang = en_GB
 trans.de-DE = plugins/fabrik_list/download/language/de-DE/de-DE.plg_fabrik_list_download.ini
 trans.fr-FR = plugins/fabrik_list/download/language/fr-FR/fr-FR.plg_fabrik_list_download.ini
-trans.it-IT = plugins/fabrik_list/download/language/it-IT/it-IT.plg_fabrik_list_copy.ini
+trans.it-IT = plugins/fabrik_list/download/language/it-IT/it-IT.plg_fabrik_list_download.ini
 
 [fabrik.plg_list_email]
 file_filter = plugins/fabrik_list/email/language/<lang>/<lang>.plg_fabrik_list_email.ini
