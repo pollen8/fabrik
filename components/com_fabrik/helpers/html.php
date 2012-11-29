@@ -839,15 +839,6 @@ EOD;
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
-				 * in some browsers it's not available when other things (like map viz) are loading
-				 */
-
-				/* self::addScriptDeclaration("
-					requirejs(['fab/icons', 'fab/icongen', 'fab/fabrik'], function () {
-						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
-					});
-				"); */
 
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "window.addEvent('fabrik.loaded', function () {";
@@ -855,12 +846,6 @@ EOD;
 				$liveSiteSrc[] = "});";
 				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
-				;
-			/* self::addScriptDeclaration("requirejs(['fab/fabrik', 'fab/icons', 'fab/icongen', 'fab/tips', 'fab/encoder'], function () {
-						" . $tipJs . "
-					});"); */
-
-				//self::addScriptDeclaration(implode("\n", $tipJs));
 			}
 			self::$framework = $src;
 		}

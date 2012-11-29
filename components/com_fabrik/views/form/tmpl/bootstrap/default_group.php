@@ -2,9 +2,10 @@
 <?php foreach ($this->elements as $element) :
 	$class = 'fabrikErrorMessage';
 	if (trim($element->error) !== '') :
-		$element->error = '<i class=" icon-exclamation-sign"></i> ' . $element->error;
+		$element->error = '<i class=" icon-warning"></i> ' . $element->error;
 		//$class .= ' alert alert-error';
 		$element->containerClass .= ' error';
+		$class .= ' help-inline';
 	endif;
 ?>
 
@@ -19,13 +20,12 @@
 
 
 		<div class="fabrikElement">
-
 			<?php echo $element->element;?>
-			<span class="<?php echo $class?>">
-				<?php echo $element->error ?>
-			</span>
 		</div>
 
+		<div class="<?php echo $class?>">
+			<?php echo $element->error ?>
+		</div>
 
 		<?php if ($this->tipLocation == 'side') : ?>
 			<p clas="help-block"><?php echo $element->tipAbove ?></p>

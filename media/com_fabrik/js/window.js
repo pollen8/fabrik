@@ -1,3 +1,4 @@
+require(['fab/fabrik'], function () {
 Fabrik.getWindow = function (opts) {
 	if (Fabrik.Windows[opts.id]) {
 		if (opts.visible !== false) {
@@ -23,6 +24,7 @@ Fabrik.getWindow = function (opts) {
 	}
 	return Fabrik.Windows[opts.id];
 };
+});
 
 Fabrik.Window = new Class({
 

@@ -226,6 +226,12 @@ var Loader = new Class({
 	}
 });
 
+require(['fab/icons', 'fab/icongen'], function () {
+	// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
+	// build its window.
+	Fabrik.iconGen = new IconGenerator({scale: 0.5});
+});
+
 /**
  * Create the Fabrik name space
  */
@@ -235,7 +241,12 @@ if (typeof(Fabrik) === "undefined") {
 	if (typeof(jQuery) !== 'undefined') {
 		document.addEvent('click:relay(.popover button.close)', function (event, target) {
 			var popover = '#' + target.get('data-popover');
+			var pEl = document.getElement(popover);
 			jQuery(popover).popover('hide');
+			
+			if (pEl.get('tag') === 'input') {
+				pEl.checked = false;
+			}
 		});
 	}
 	Fabrik = {};
@@ -265,10 +276,6 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		Fabrik.watchView(e, target);
 	});
-	
-	// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
-	// build its window.
-	Fabrik.iconGen = new IconGenerator({scale: 0.5});
 	
 	Fabrik.removeEvent = function (type, fn) {
 		if (Fabrik.events[type]) {
