@@ -34,7 +34,7 @@ var FbForm = new Class({
 	
 	initialize: function (id, options) {
 		// $$$ hugh - seems options.rowid can be null in certain corner cases, so defend against that
-		if (typeOf(options.rowid === 'null')) {
+		if (typeOf(options.rowid) === 'null') {
 			options.rowid = '';
 		}
 		this.id = id;
@@ -499,8 +499,11 @@ var FbForm = new Class({
 	pageGroupsVisible: function () {
 		var visible = false;
 		this.options.pages.get(this.currentPage).each(function (gid) {
-			if (document.id('group' + gid).getStyle('display') !== 'none') {
-				visible = true;
+			var group = document.id('group' + gid);
+			if (typeOf(group) !== 'null') {
+				if (group.getStyle('display') !== 'none') {
+					visible = true;
+				}
 			}
 		});
 		return visible;
@@ -1183,7 +1186,7 @@ var FbForm = new Class({
 		this.subGroups.set(i, subGroup.clone());
 		if (subgroups.length <= 1) {
 			this.hideLastGroup(i, subGroup);
-
+			Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 		} else {
 			var toel = subGroup.getPrevious();
 			var myFx = new Fx.Tween(subGroup, {'property': 'opacity',
@@ -1218,6 +1221,7 @@ var FbForm = new Class({
 							delete this.formElements[oldKey];
 						}
 					}.bind(this));
+					Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
 				}.bind(this)
 			}).start(1, 0);
 			if (toel) {
@@ -1237,8 +1241,6 @@ var FbForm = new Class({
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
-		Fabrik.fireEvent('fabrik.form.group.delete.end', [this, e, i, delIndex]);
-
 	},
 
 	hideLastGroup : function (groupid, subGroup) {

@@ -151,7 +151,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->autostart = $params->get('timer_autostart', false);
+		$opts->autostart = (bool)$params->get('timer_autostart', false);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_TIMER_START');
 		JText::script('PLG_ELEMENT_TIMER_STOP');

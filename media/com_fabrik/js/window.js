@@ -191,6 +191,7 @@ Fabrik.Window = new Class({
 	
 	loadContent: function () {
 		var u;
+		window.fireEvent('tips.hideall');
 		switch (this.options.loadMethod) {
 		
 		case 'html':
@@ -216,6 +217,9 @@ Fabrik.Window = new Class({
 				onSuccess: function () {
 					Fabrik.loader.stop(u);
 					this.fireEvent('onContentLoaded', [this]);
+					
+					// Ini any Fabrik JS code that was loaded with the ajax request
+					// window.fireEvent('fabrik.loaded');
 				}.bind(this)
 			}).post();
 			break;
@@ -286,6 +290,8 @@ Fabrik.Window = new Class({
 		if (e) {
 			e.stop();
 		}
+		// this.options.destroy = true;
+		
 		// By default cant destroy as we want to be able to reuse them (see crop in fileupload element)
 		if (this.options.destroy) {
 	

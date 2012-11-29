@@ -1,29 +1,25 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
-	window.addEvent('domready', function () {
-		if (typeOf(Fabrik.googleMapRadius) === 'null') {
-			var script2 = document.createElement("script");
-			script2.type = "text/javascript";
-			script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
-			document.body.appendChild(script2);
-			Fabrik.googleMapRadius = true;
-		}
-		if (document.body) {
-			window.fireEvent('google.map.loaded');
-		} else {
-			console.log('no body');
-		}	
-	});
+	if (typeOf(Fabrik.googleMapRadius) === 'null') {
+		var script2 = document.createElement("script");
+		script2.type = "text/javascript";
+		script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
+		document.body.appendChild(script2);
+		Fabrik.googleMapRadius = true;
+	}
+	if (document.body) {
+		window.fireEvent('google.map.loaded');
+	} else {
+		console.log('no body');
+	}	
 }
 
 function googleradiusloaded() {
-	window.addEvent('domready', function () {
-		if (document.body) {
-			window.fireEvent('google.radius.loaded');
-		} else {
-			console.log('no body');
-		}	
-	});	
+	if (document.body) {
+		window.fireEvent('google.radius.loaded');
+	} else {
+		console.log('no body');
+	}	
 }
 
 var FbGoogleMap = new Class({
@@ -558,7 +554,7 @@ var FbGoogleMap = new Class({
 		return [ 'form', 'marker', 'map', 'maptype' ];
 	},
 
-	cloned : function (c) {
+	cloned: function (c) {
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
 			var bits = field.split('_');
@@ -572,12 +568,16 @@ var FbGoogleMap = new Class({
 		});
 		this.options.geocode_fields = f;
 		this.makeMap();
+		this.parent(c);
 	},
 
 	update : function (v) {
 		v = v.split(':');
 		if (v.length < 2) {
 			v[1] = this.options.zoomlevel;
+		}
+		if (!this.ma) {
+			return;
 		}
 		var zoom = v[1].toInt();
 		this.map.setZoom(zoom);

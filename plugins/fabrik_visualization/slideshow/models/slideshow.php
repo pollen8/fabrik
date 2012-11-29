@@ -290,7 +290,6 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 	public function getJS()
 	{
 		$params = $this->getParams();
-		$str = "head.ready(function() {\n";
 		$viz = $this->getVisualization();
 
 		$use_thumbs = $params->get('slideshow_viz_thumbnails', 0);
@@ -315,7 +314,6 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		$str .= "$ref = new FbSlideshowViz('slideshow_viz', $opts)\n";
 		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$str .= $this->getFilterJs();
-		$str .= "});\n";
 		return $str;
 	}
 

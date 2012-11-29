@@ -45,6 +45,6 @@ var Labels = new Class({
        
 });
 
-head.ready(function () {
+window.addEvent('fabrik.loaded', function () {
 	new Labels();
 });

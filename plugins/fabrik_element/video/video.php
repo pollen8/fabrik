@@ -102,7 +102,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 		$enablejs = ($params->get('fbVideoEnableJS', 0) == 1) ? 'true' : 'false';
 		$playallframes = ($params->get('fbVideoPlayEveryFrame', 0) == 1) ? 'true' : 'false';
 		$f = str_replace("\\", "/", $element->default);
-		$str = "head.ready(function() {\n";
+		$str = "window.addEvent('fabrik.loaded', function() {\n";
 		$str .= "var el = new fabrikvideo('video', " . "{'file':'$value'
 		, 'width':" . $params->get('fbVideoWidth', 300) . ", 'height':" . $params->get('fbVideoHeight', '300')
 			. "

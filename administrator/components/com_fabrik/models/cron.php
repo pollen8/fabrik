@@ -112,7 +112,8 @@ class FabrikAdminModelCron extends FabModelAdmin
 		else
 		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Cron');
-			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, 'nav-tabs');
+			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
 		return $str;
 	}

@@ -63,15 +63,18 @@ class FabrikViewVisualization
 		$app = JFactory::getApplication();
 		$app->input->set('hidemainmenu', true);
 		FabrikViewVisualization::setVisualizationToolbar();
-		$document = &JFactory::getDocument();
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminvisualization.js');
+		$document = JFactory::getDocument();
+		//FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		//FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminvisualization.js');
 		FabrikHelperHTML::tips();
 		JFilterOutput::objectHTMLSafe($row);
 		jimport('joomla.html.pane');
 		$pane = JPane::getInstance();
 		$editor = JFactory::getEditor();
-		$js = "head.ready(function() {
+		$js =
+	"requirejs(['administrator/components/com_fabrik/views/namespace',
+	'administrator/components/com_fabrik/views/adminvisualization'],
+	function() {
 		new adminVisualization({'sel':'" . $row->plugin . "'});
 	});";
 		$js .= "

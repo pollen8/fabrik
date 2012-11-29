@@ -15,9 +15,7 @@ var fabrikGraph = new Class({
 		//todo doesnt seem to work with 1 record of data
 		this.el = el;
 		this.json = d;
-		head.ready(function () {
-			this.render();
-		}.bind(this));
+		this.render();
 	},
 	
 	render: function () {

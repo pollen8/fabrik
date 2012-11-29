@@ -7,7 +7,6 @@
  * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true,
  * $H:true,unescape:true,head:true,FbListActions:true,FbGroupedToggler:true,FbListKeys:true
  */
-
 var FbListPlugin = new Class({
 	Implements: [Events, Options],
 	options: {
@@ -19,16 +18,14 @@ var FbListPlugin = new Class({
 		this.result = true; // set this to false in window.fireEvents to stop
 												// current action (eg stop ordering when
 												// fabrik.list.order run)
-		head.ready(function () {
-			this.listform = this.getList().getForm();
-			var l = this.listform.getElement('input[name=listid]');
-			// in case its in a viz
-			if (typeOf(l) === 'null') {
-				return;
-			}
-			this.listid = l.value;
-			this.watchButton();
-		}.bind(this));
+		this.listform = this.getList().getForm();
+		var l = this.listform.getElement('input[name=listid]');
+		// in case its in a viz
+		if (typeOf(l) === 'null') {
+			return;
+		}
+		this.listid = l.value;
+		this.watchButton();
 	},
 
 	/**
@@ -622,7 +619,7 @@ var FbList = new Class({
 			// not sure why but on ajax first load of xhr content the form object does not ini
 			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
 			// find out what the problem is here but for now this band aid is a help
-			var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
+			/*var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
 			var winOpts = {
 				'id': 'add.' + this.id,
 				'title': this.options.popup_edit_label,
@@ -633,6 +630,7 @@ var FbList = new Class({
 				'height': this.options.popup_height,
 				'onContentLoaded': function () {}
 			};
+			var w = Fabrik.getWindow(winOpts);*/
 			if (typeOf(this.options.popup_offset_x) !== 'null') {
 				winOpts.offset_x = this.options.popup_offset_x;
 			}
@@ -806,6 +804,7 @@ var FbList = new Class({
 	},
 
 	_updateRows: function (data) {
+		var tbody;
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);
@@ -839,7 +838,7 @@ var FbList = new Class({
 			var gcounter = 0;
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
-				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
+				tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
 				if (typeOf(tbody) !== 'null') {
 					gcounter++;
 					for (i = 0; i < groupData.length; i++) {

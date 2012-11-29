@@ -96,11 +96,12 @@ class fabrikViewGooglemap extends JViewLegacy
 				// FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
 
-			FabrikHelperHTML::addScriptDeclaration($js);
+			//FabrikHelperHTML::addScriptDeclaration($js);
 			$template = null;
 		}
-		$js = $this->get('PluginJsObjects');
+		$js .= $this->get('PluginJsObjects');
 		$js .= $model->getFilterJs();
+
 		FabrikHelperHTML::script($srcs, $js);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 

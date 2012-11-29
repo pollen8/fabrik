@@ -112,6 +112,7 @@ var FbTextarea = new Class({
 		}
 		this.getTextContainer();
 		this.watchTextContainer();
+		this.parent(c);
 	},
 	
 	/**

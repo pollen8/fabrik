@@ -38,6 +38,44 @@ var FbFileUpload = new Class({
 				c.getParent('.fabrikElement').getElement('input[type=file]').getParent().setStyle('top', diff);
 			}
 		}
+		
+		this.watchDeleteButton();
+	},
+	
+	/**
+	 * Single file uploads can allow the user to delee the reference and/or file
+	 */
+	watchDeleteButton: function () {
+		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
+		var b = c.getElement('[data-file]');
+		if (typeOf(b) !== 'null') {
+			b.addEvent('click', function (e) {
+				e.stop();
+				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
+					new Request({
+						url: '',
+						data: {
+							'option': 'com_fabrik',
+							'format': 'raw',
+							'task': 'plugin.pluginAjax',
+							'plugin': 'fileupload',
+							'method': 'ajax_clearFileReference',
+							'element_id': this.options.id,
+							'formid': this.form.id,
+							'rowid': this.form.options.rowid
+						}
+					}).send();
+					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
+					}
+					b.getNext().destroy();
+					b.destroy();
+				}
+			}.bind(this));
+		}
 	},
 
 	/**
@@ -49,7 +87,7 @@ var FbFileUpload = new Class({
 		Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
 	},
 	
-	cloned : function () {
+	cloned: function (c) {
 		// replaced cloned image with default image
 		if (typeOf(this.element.getParent('.fabrikElement')) === 'null') {
 			return;
@@ -58,18 +96,33 @@ var FbFileUpload = new Class({
 		if (i) {
 			i.src = Fabrik.liveSite + this.options.defaultImage;
 		}
+		this.parent(c);
 	},
 
-	decloned : function (groupid) {
+	decloned: function (groupid) {
 		var f = document.id('form_' + this.form.id);
+		
+		// erm fabrik_deletedimages is never created why test?
 		var i = f.getElement('input[name=fabrik_deletedimages[' + groupid + ']');
 		if (typeOf(i) === 'null') {
-			new Element('input', {
-				'type' : 'hidden',
-				'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
-				'value' : this.options.value
-			}).inject(f);
+			this.makeDeletedImageField(groupid, this.options.value).inject(f);
 		}
+	},
+	
+	/**
+	 * Create a hidden input which will tell fabrik, upon form submission, to delete the file
+	 * 
+	 *  @param  int     groupid  group id
+	 *  @param  string  value    file to delete
+	 *  
+	 *  @return  DOM Node - hidden input
+	 */
+	makeDeletedImageField: function (groupid, value) {
+		return new Element('input', {
+			'type' : 'hidden',
+			'name' : 'fabrik_fileupload_deletedfile[' + groupid + '][]',
+			'value' : value
+		});
 	},
 
 	update : function (val) {
@@ -85,6 +138,7 @@ var FbFileUpload = new Class({
 		if (this.options.editable === false) {
 			return;
 		}
+		var a, title;
 		var c = this.getElement().getParent('.fabrikSubElementContainer');
 		this.container = c;
 		var canvas = c.getElement('canvas');
@@ -127,7 +181,6 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		this.uploader.bind('FilesRemoved', function (up, files) {
-			console.log('filesremvoed', up, files, this);
 		});
 
 		// (2) ON FILES ADDED ACTION
@@ -154,23 +207,30 @@ var FbFileUpload = new Class({
 							}.bind(this)
 						}
 					}));
-					var a = new Element('a', {
-						'href' : '#',
-						alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
-						events : {
-							'click': function (e) {
-								this.pluploadResize(e);
-							}.bind(this)
+					if (file.type === 'image') {
+						a = new Element('a', {
+							'href' : '#',
+							alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
+							events : {
+								'click': function (e) {
+									this.pluploadResize(e);
+								}.bind(this)
+							}
+						});
+						if (this.options.crop) {
+							a.set('html', this.options.resizeButton);
+						} else {
+							a.set('html', this.options.previewButton);
 						}
-					});
-					if (this.options.crop) {
-						a.set('html', this.options.resizeButton);
+						title = new Element('span').set('text', file.name);
 					} else {
-						a.set('html', this.options.previewButton);
+						a = new Element('span');
+						title = new Element('a', {'href': file.url}).set('text', file.name);
 					}
+					
 					var filename = new Element('div', {
 						'class' : 'plupload_file_name'
-					}).adopt([ new Element('span').set('text', file.name), new Element('div', {
+					}).adopt([ title, new Element('div', {
 						'class' : 'plupload_resize',
 						style : 'display:none'
 					}).adopt(a) ]);
@@ -224,9 +284,11 @@ var FbFileUpload = new Class({
 			}
 			document.id(file.id).getElement('.plupload_resize').show();
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
-			resizebutton.href = response.uri;
-			resizebutton.id = 'resizebutton_' + file.id;
-			resizebutton.store('filepath', response.filepath);
+			if (resizebutton) {
+				resizebutton.href = response.uri;
+				resizebutton.id = 'resizebutton_' + file.id;
+				resizebutton.store('filepath', response.filepath);
+			}
 			this.widget.setImage(response.uri, response.filepath, file.params);
 			new Element('input', {
 				'type' : 'hidden',

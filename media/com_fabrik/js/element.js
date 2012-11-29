@@ -3,8 +3,7 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Asset:true */
-
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true */
 var FbElement =  new Class({
 	
 	Implements: [Events, Options],
@@ -155,7 +154,7 @@ var FbElement =  new Class({
 		this.element.addEvent(action, function (e) {
 			e.stop();
 			typeOf(js) === 'function' ? js.delay(0) : eval(js);
-		});
+		}.bind(this));
 	},
 	
 	addNewEvent: function (action, js) {
@@ -296,7 +295,10 @@ var FbElement =  new Class({
 		var a;
 		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
 		var container = this.getContainer();
-		
+		if (container === false) {
+			console.log('Notice: couldn not set error msg for ' + msg + ' no container class found');
+			return;
+		}
 		classes.each(function (c) {
 			var r = classname === c ? container.addClass(c) : container.removeClass(c);
 		});

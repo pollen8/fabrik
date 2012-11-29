@@ -199,7 +199,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 			exit;
 		}
 		echo "<li>Groups added to 'Contact Us' form</li>";
-		$listModel = JModelLegacy::getInstance('List', 'FabrikModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 		$list = $this->getTable('List');
 		$list->label = "Contact Us Data";
 		$list->introduction = "This table stores the data submitted in the contact us form";

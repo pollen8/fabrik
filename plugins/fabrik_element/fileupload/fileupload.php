@@ -130,6 +130,24 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	}
 
 	/**
+	 * Remove the reference to the file from the db table - leaves the file on the server
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return  void
+	 */
+
+	public function onAjax_clearFileReference()
+	{
+		$app = JFactory::getApplication();
+		$rowId = (array) $app->input->get('rowid');
+		$this->loadMeForAjax();
+		$col = $this->getFullName(false, false, false);
+		$listModel = $this->getListModel();
+		$listModel->updateRows($rowId, $col, '');
+	}
+
+	/**
 	 * Get the class to manage the form element
 	 *
 	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
@@ -269,6 +287,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($tkey);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode($value[$x]['crop'][$tkey]);
@@ -294,6 +313,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]->file);
 							$o->recordid = 0;
 							$o->params = json_decode($value[$x]->params);
@@ -315,6 +335,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 							{
 								$o->size = 'unknown';
 							}
+							$o->type = strstr($fileinfo['mime_type'], 'image/') ? 'image' : 'file';
 							$o->url = $this->getStorage()->pathToURL($value[$x]);
 							$o->recordid = $rawvalues[$x];
 							$o->params = json_decode(JArrayHelper::getValue($imgParams, $x, '{}'));
@@ -358,6 +379,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_RESIZE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
+		JTExt::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
+		JTExt::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
 		return "new FbFileUpload('$id', $opts)";
 	}
 
@@ -1523,7 +1546,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			if (!is_null($olddaata))
 			{
 				$name = $this->getFullName(false, true, false);
-				$r = JArrayHelper::getValue(JArrayHelper::fromObject($olddaata), $name, '') === '' ? true : false;
+				$aoldData = JArrayHelper::fromObject($olddaata);
+				$r = JArrayHelper::getValue($aoldData, $name, '') === '' ? true : false;
 				if (!$r)
 				{
 					/* If an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
@@ -1905,6 +1929,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 				if ($render->output != '')
 				{
+					if ($this->isEditable())
+					{
+						$render->output = $this->deleteButton($value) . $render->output;
+					}
 					$allRenders[] = $render->output;
 				}
 			}
@@ -1949,6 +1977,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		array_unshift($str, '<div class="fabrikSubElementContainer">');
 		$str[] = '</div>';
 		return implode("\n", $str);
+	}
+
+	protected function deleteButton($value)
+	{
+		return '<button class="btn button" data-file="' . $value . '">' . JText::_('COM_FABRIK_DELETE') . '</button> ';
 	}
 
 	/**
@@ -2522,7 +2555,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$app->redirect($url);
 			exit;
 		}
-		$rowid = $input->getInt('rowid', 0);
+		$rowid = $input->get('rowid', '', 'string');
 		if (empty($rowid))
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_SUCH_FILE'));

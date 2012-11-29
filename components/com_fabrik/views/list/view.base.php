@@ -53,7 +53,6 @@ class FabrikViewListBase extends JViewLegacy
 		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
-
 		$model->getCustomJsAction($src);
 		$src[] = 'media/com_fabrik/js/encoder.js';
 
@@ -76,8 +75,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->_row = new stdClass;
 		$script = array();
-		$script[] = "head.ready(function() {";
-
 		$params = $model->getParams();
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
@@ -236,11 +233,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->pluginBeforeList = $pluginManager->data;
 
 		$script[] = $model->filterJs;
-		$script[] = "});";
 		$script = implode("\n", $script);
-
-		FabrikHelperHTML::script($src);
-		FabrikHelperHTML::addScriptDeclaration($script);
+		FabrikHelperHTML::script($src, $script);
 		$this->getElementJs();
 
 		// Reset data back to original settings
@@ -461,6 +455,9 @@ class FabrikViewListBase extends JViewLegacy
 		$this->buttons();
 
 		$this->pluginTopButtons = $this->get('PluginTopButtons');
+
+		$js = FabrikHelperHTML::getAllJS();
+		$document->addScriptDeclaration($js);
 	}
 
 	/**
@@ -789,7 +786,7 @@ class FabrikViewListBase extends JViewLegacy
 		// $$$ hugh - testing social profile hash stuff
 		if ($input->get('fabrik_social_profile_hash', '') != '')
 		{
-			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash')
+			$this->hiddenFields[] = '<input type="hidden" name="fabrik_social_profile_hash" value="' . $input->get('fabrik_social_profile_hash', '', 'string')
 				. '" />';
 		}
 		$this->hiddenFields = implode("\n", $this->hiddenFields);

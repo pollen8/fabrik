@@ -36,11 +36,12 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	 *
 	 * @param   string  $name    model name
 	 * @param   string  $prefix  model prefix
+	 * @param   array   $config  Configuration array for model. Optional.
 	 *
 	 * @return  J model
 	 */
 
-	public function &getModel($name = 'Cron', $prefix = 'FabrikAdminModel')
+	public function getModel($name = 'Cron', $prefix = 'FabrikModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
@@ -66,7 +67,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 		$query->select('*')->from('#__{package}_cron')->where('id IN (' . $cid . ')');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		$adminListModel = JModelLegacy::getInstance('List', 'FabrikModel');
+		$adminListModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$c = 0;
@@ -112,9 +113,10 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 			}
 
 			// Email log message
-			$recipient = explode(',', $plugin->getParams()->get('log_email', ''));
-			if (!empty($recipient))
+			$recipient = $plugin->getParams()->get('log_email', '');
+			if ($recipient != '')
 			{
+				$recipient = explode(',', $recipient);
 				$subject = $config->get('sitename') . ': ' . $row->plugin . ' scheduled task';
 				$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $recipient, $subject, $log->message, true);
 			}

@@ -91,7 +91,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$view->isMambot = $this->isMambot;
 
 		// Get data as it will be needed for ACL when testing if current row is editable.
-		$model->getData();
+		// $model->getData();
 
 		// Display the view
 		$view->error = $this->getError();

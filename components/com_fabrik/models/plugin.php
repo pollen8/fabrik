@@ -164,6 +164,7 @@ class FabrikPlugin extends JPlugin
 		{
 			return;
 		}
+
 		$output[] = '<div class="row-fluid">';
 		$output[] = '<ul class="nav nav-tabs">';
 		$i = 0;
@@ -295,6 +296,10 @@ class FabrikPlugin extends JPlugin
 			$style = isset($fieldset->modal) && $fieldset->modal ? 'style="display:none"' : '';
 			$str[] = '<fieldset class="' . $class . '"' . $id . ' ' . $style . '>';
 
+			if ($mode == '')
+			{
+				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
+			}
 			$form->repeat = $repeat;
 			$j3 = FabrikWorker::j3();
 			if ($repeat)

@@ -43,12 +43,16 @@ class FabrikViewList extends JViewLegacy
 		$request = $model->getRequestData();
 		$model->storeRequestData($request);
 
-		$total = $model->getTotalRecords();
-
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
-		if (is_null($session->get($key)))
+		if (!$session->has($key))
 		{
+			// Only get the total if not set - otherwise causes memory issues when we donwload
+			$total = $model->getTotalRecords();
 			$session->set($key, $total);
+		}
+		else
+		{
+			$total = $session->get($key);
 		}
 
 		$start = $input->getInt('start', 0);
@@ -66,6 +70,8 @@ class FabrikViewList extends JViewLegacy
 		else
 		{
 			$input->set('limitstart' . $model->getId(), 0);
+
+			// Remove the total from the session
 			$session->clear($key);
 			$exporter->downloadFile();
 		}

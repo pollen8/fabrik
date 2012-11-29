@@ -68,10 +68,53 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
+	
 	success: function (text) {
-		
+		var options = this.options, response = this.response;
+
+		response.html = text.stripScripts(function (script) {
+			response.javascript = script;
+		});
+
+		var match = response.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+		if (match) {
+			response.html = match[1];
+		}
+		var temp = new Element('div').set('html', response.html);
+
+		response.tree = temp.childNodes;
+		response.elements = temp.getElements(options.filter || '*');
+
+		if (options.filter) {
+			response.tree = response.elements;
+		}
+		if (options.update) {
+			var update = document.id(options.update).empty();
+			if (options.filter) {
+				update.adopt(response.elements);
+			} else {
+				
+				update.set('html', response.html);
+			}
+		} else if (options.append) {
+			var append = document.id(options.append);
+			if (options.filter) {
+				response.elements.reverse().inject(append);
+			} else {
+				append.adopt(temp.getChildren());
+			}
+		}
+		if (options.evalScripts) {
+			Browser.exec(response.javascript);
+		}
+
+		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
+	}
+	
+	/*success: function (text) {
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+		console.log(srcs);
 		var urls = [];
 		if (typeOf(srcs) !== 'null') {
 			for (var x = 0; x < srcs.length; x++) {
@@ -82,7 +125,7 @@ Request.HTML = new Class({
 					}
 				}
 			}
-			var scriptadd = "head.js('" + urls.join("','") + "');\n";
+			var scriptadd = "requirejs(['" + urls.join("','") + "'], function () {})";
 			Browser.exec(scriptadd);
 		}
 		response.html = text.stripScripts(function (script) {
@@ -109,11 +152,13 @@ Request.HTML = new Class({
 		}
 		if (options.evalScripts) {
 			// response.javascript = "(function () {"+response.javascript+"}).delay(6000)";
-			Browser.exec(response.javascript);
+			console.log(response.javascript);
+			//Browser.exec(response.javascript);
+			eval(response.javascript);
 		}
 
 		this.onSuccess(response.tree, response.elements, response.html, response.javascript);
-	}
+	}*/
 });
 
 /**
@@ -184,10 +229,12 @@ var Loader = new Class({
 /**
  * Create the Fabrik name space
  */
-(function () {
+
+requirejs(['fab/icons', 'fab/icongen'],
+function () {
 	if (typeof(Fabrik) === "undefined") {
 		
-		if (jQuery) {
+		if (typeof(jQuery) !== 'undefined') {
 			document.addEvent('click:relay(.popover button.close)', function (event, target) {
 				var popover = '#' + target.get('data-popover');
 				jQuery(popover).popover('hide');
@@ -422,4 +469,5 @@ var Loader = new Class({
 		
 		window.fireEvent('fabrik.loaded');
 	}
-}());
+}
+);

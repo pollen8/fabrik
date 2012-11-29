@@ -316,6 +316,10 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager->runPlugins('loadJavascriptClass', $this, 'list', $src);
 		foreach ($pluginManager->data as $f)
 		{
+			if (is_null($f) || $f == '')
+			{
+				continue;
+			}
 			if (is_array($f))
 			{
 				$r = array_merge($r, $f);
@@ -1104,7 +1108,8 @@ class FabrikFEModelList extends JModelForm
 								// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
 								$linkKey = @$join->db_table_name . '___' . @$join->name;
 								$gkey = $linkKey . '_form_heading';
-								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], JArrayHelper::fromObject($row));
+								$row2 = JArrayHelper::fromObject($row);
+								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], $row2);
 								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 							}
 						}
@@ -1323,7 +1328,9 @@ class FabrikFEModelList extends JModelForm
 		$linkedFormText = $params->get('linkedformtext');
 		$factedlinks = $params->get('factedlinks');
 		$linkedFormText = JArrayHelper::fromObject($factedlinks->linkedformtext);
-		$label = $this->parseMessageForRowHolder(JArrayHelper::getValue($linkedFormText, $elKey), JArrayHelper::fromObject($row));
+		$msg = JArrayHelper::getValue($linkedFormText, $elKey);
+		$row2 = JArrayHelper::fromObject($row);
+		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$app = JFactory::getApplication();
 		if (!$app->isAdmin())
 		{
@@ -1451,7 +1458,8 @@ class FabrikFEModelList extends JModelForm
 		 * why though!  I just needed to make this error go away NAO!
 		 */
 		$linkedListText = isset($factedLinks->linkedlisttext->$elKey) ? $factedLinks->linkedlisttext->$elKey : '';
-		$label = $this->parseMessageForRowHolder($linkedListText, JArrayHelper::fromObject($row));
+		$row2 = JArrayHelper::fromObject($row);
+		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
 		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
 
@@ -5970,13 +5978,6 @@ class FabrikFEModelList extends JModelForm
 						// For radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key . '_raw', $data) ? $key . '_raw' : $key;
 
-						/* If the user cant use or view dont update this element's value
-						 * read only data should be added in addDefaultDataFromRO
-						 */
-						if (!$elementModel->canUse() && !$elementModel->canView() && !$formModel->updatedByPlugin($fullkey))
-						{
-							continue;
-						}
 						// @TODO similar check (but not quiet the same performed in formModel _removeIgnoredData() - should merge into one place
 						if ($elementModel->recordInDatabase($data))
 						{
@@ -6024,8 +6025,6 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		// Testing using ONLY form model addEncrytedVarsToArray() - this seems redundant/duplicate
-		// $this->addDefaultDataFromRO($aBindData, $oRecord, $isJoin, $rowId, $joinGroupTable);
 		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
 
 		if ($rowId != '' && $c == 1 && $lastKey == $primaryKey)
@@ -8249,7 +8248,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if ($script !== '')
 		{
-			$script = "head.ready(function() {\n" . $script . "});\n";
+			$script = "window.addEvent('fabrik.loaded', function() {\n" . $script . "});\n";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 	}
@@ -8833,7 +8832,7 @@ class FabrikFEModelList extends JModelForm
 	 * Update a series of rows with a key = val , works across joined tables
 	 *
 	 * @param   array   $ids  pk values to update
-	 * @param   string  $col  key to update
+	 * @param   string  $col  key to update should be in format 'table.element'
 	 * @param   string  $val  val to set to
 	 *
 	 * @return  void
@@ -8858,7 +8857,8 @@ class FabrikFEModelList extends JModelForm
 		$table = $this->getTable();
 
 		$update = $col . ' = ' . $db->quote($val);
-		$tbl = array_shift(explode('.', $col));
+		$colbits = explode('.', $col);
+		$tbl = array_shift($colbits);
 
 		$joinFound = false;
 		JArrayHelper::toInteger($ids);

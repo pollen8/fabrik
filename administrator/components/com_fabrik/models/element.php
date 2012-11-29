@@ -298,7 +298,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$js = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "\tcontroller = new fabrikAdminElement($plugins, opts," . (int) $this->getItem()->id . ");\n";
+		$js .= "\t\nwindow.controller = new fabrikAdminElement($plugins, opts," . (int) $this->getItem()->id . ");\n";
 
 		return $js;
 	}
@@ -338,7 +338,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			}
 			else
 			{
-				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, 'nav-tabs');
+				$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 			}
 		}
 		return $str;
@@ -591,7 +592,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$plugin_form = $plugin->getJForm();
 			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->_pluginName);
-			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->_pluginName . '/forms/fields.xml';
+			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->get('pluginName') . '/forms/fields.xml';
 			$xml = $plugin->jform->loadFile($xmlFile, false);
 			foreach ($plugin_form->getFieldsets() as $fieldset)
 			{

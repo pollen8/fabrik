@@ -38,8 +38,8 @@ class fabrikViewPackage extends JViewLegacy
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));
-		$id = $this->get('State')->get('package.id');
-		$script = "head.ready(function() {
+		$id =$this->get('State')->get('package.id');
+		$script = "window.addEvent('fabrik.loaded', function() {
 			new FrontPackage({
 		tabs : $tabs,
 		tabelement : 'packagemenu',

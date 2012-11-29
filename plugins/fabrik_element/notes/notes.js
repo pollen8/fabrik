@@ -76,5 +76,6 @@ var FbNotes = new Class({
 	
 	cloned: function (c) {
 		Fabrik.fireEvent('fabrik.notes.update', this);
+		this.parent(c);
 	}
 });

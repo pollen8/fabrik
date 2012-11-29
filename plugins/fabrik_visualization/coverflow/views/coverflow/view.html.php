@@ -59,7 +59,7 @@ class fabrikViewCoverflow extends JViewLegacy
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
-		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js);
 		echo parent::display();
 	}
 }

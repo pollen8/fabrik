@@ -82,11 +82,23 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 				<li>
 					<?php echo $this->form->getLabel('css'). $this->form->getInput('css'); ?>
 				</li>
-				<?php foreach ($this->form->getFieldset('details') as $field) :?>
+
+				<li>
+					<?php echo $this->form->getLabel('name'). $this->form->getInput('name'); ?>
+				</li>
+				<li>
+					<?php echo $this->form->getLabel('label'). $this->form->getInput('label'); ?>
+				</li>
+
+				<?php foreach ($this->form->getFieldset('details2') as $field) :?>
 				<li>
 					<?php echo $field->label; ?><?php echo $field->input; ?>
 				</li>
-				<?php endforeach; ?>
+				<?php endforeach;?>
+
+				<li>
+					<?php echo $this->form->getLabel('plugin'). $this->form->getInput('plugin'); ?>
+				</li>
 			</ul>
 			<div class="clr"> </div>
 		</fieldset>

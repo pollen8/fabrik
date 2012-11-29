@@ -43,9 +43,10 @@ var FbImage = new Class({
 		// this.hiddenField is set in FbFileElement
 	},
 
-	cloned : function (c) {
+	cloned: function (c) {
 		this.getMyElements();
 		this.ajaxFolder();
+		this.parent(c);
 	},
 
 	hasSubElements : function () {

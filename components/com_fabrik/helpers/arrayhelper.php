@@ -64,7 +64,7 @@ class FArrayHelper extends JArrayHelper
 	 * @return  null
 	 */
 
-	public function setValue(&$array, $key, $val)
+	public static function setValue(&$array, $key, $val)
 	{
 
 		if (strstr($key, '.'))
