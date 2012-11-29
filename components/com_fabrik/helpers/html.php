@@ -824,6 +824,7 @@ EOD;
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
+				$src[] = 'media/com_fabrik/js/tips.js';
 
 				// Only use template test for testing in 2.5 with my temp J bootstrap template.
 				if (in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5)
@@ -848,31 +849,39 @@ EOD;
 					});
 				"); */
 
-				self::addScriptDeclaration("
-					window.addEvent('fabrik.loaded', function () {
-						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
-					});
-				");
+				$liveSiteSrc = array();
+				$liveSiteSrc[] = "window.addEvent('fabrik.loaded', function () {";
+				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+				$liveSiteSrc[] = "});";
+				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
-				$tipOpts = self::tipOpts();
-				$tipJs = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
-						. ");
-	Fabrik.addEvent('fabrik.list.updaterows', function () {
-
-		// Reattach new tips after list redraw,
-		Fabrik.tips.attach('.fabrikTip');
-	});
-	Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {
-		Fabrik.tips.hideAll();
-	});";
-
-			self::addScriptDeclaration("requirejs(['fab/fabrik', 'fab/icons', 'fab/icongen', 'fab/tips', 'fab/encoder'], function () {
+				;
+			/* self::addScriptDeclaration("requirejs(['fab/fabrik', 'fab/icons', 'fab/icongen', 'fab/tips', 'fab/encoder'], function () {
 						" . $tipJs . "
-					});");
+					});"); */
+
+				//self::addScriptDeclaration(implode("\n", $tipJs));
 			}
 			self::$framework = $src;
 		}
 		return self::$framework;
+	}
+
+	public static function tipInt()
+	{
+		$tipOpts = self::tipOpts();
+		$tipJs = array();
+		//$tipJs[] = "window.addEvent('fabrik.loaded', function () {";
+		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts). ");";
+		$tipJs[] = "\tFabrik.addEvent('fabrik.list.updaterows', function () {";
+		$tipJs[] = "\t\t// Reattach new tips after list redraw";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+		$tipJs[] = "\tFabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
+		$tipJs[] = "\t\tFabrik.tips.hideAll();";
+		$tipJs[] = "\t});";
+		//$tipJs[] = "});";
+		return implode("\n", $tipJs);
 	}
 
 	/**
@@ -1143,9 +1152,11 @@ EOD;
 		}
 		$files = array_unique($files);
 		$files = "['" . implode("', '", $files) . "']";
-		$require = 'require(' . ($files) . ', function () {
-		' . $onLoad . '
-		});';
+		$require = array();
+		$require[] = 'require(' . ($files) . ', function () {';
+		$require[] = $onLoad;
+		$require[] = '});';
+		$require = implode("\n", $require);
 
 		if (JRequest::getCmd('format') == 'raw')
 		{

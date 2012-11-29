@@ -47,11 +47,11 @@ var FloatingTips = new Class({
 				trigger.erase('title');
 			}
 			if (typeOf(opts.content) === 'function') {
-				opts.content = opts.content(trigger).innerHTML;
+				var c = opts.content(trigger);
+				opts.content = typeOf(c) === 'null' ? '' : c.innerHTML;
 			}
 			opts.placement = opts.position;
 			opts.title = opts.heading;
-			
 			opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
 			jQuery(trigger).popover(opts);
 		}.bind(this));

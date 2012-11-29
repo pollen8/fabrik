@@ -527,18 +527,18 @@ class FabrikViewFormBase extends JViewLegacy
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
-
-		$script[] = "window.$bkey = new FbForm(" . $model->getId() . ", $opts);";
-		$script[] = "if(typeOf(Fabrik) !== 'null') {";
-		$script[] = "\tFabrik.addBlock('$bkey', $bkey);";
-		$script[] = "}";
+		$script[] = FabrikHelperHTML::tipInt();
+		$script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
+		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
+		$script[] = "\t\tFabrik.addBlock('$bkey', $bkey);";
+		$script[] = "\t}";
 
 		// Instantaite js objects for each element
 		$vstr = "\n";
 
 		$groups = $model->getGroupsHiarachy();
 
-		$script[] = "{$bkey}.addElements({";
+		$script[] = "\t{$bkey}.addElements({";
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
@@ -582,23 +582,23 @@ class FabrikViewFormBase extends JViewLegacy
 							$watchElements = $elementModel->getValidationWatchElements($c);
 							foreach ($watchElements as $watchElement)
 							{
-								$vstr .= "$bkey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
+								$vstr .= "\t$bkey.watchValidation('" . $watchElement['id'] . "', '" . $watchElement['triggerEvent'] . "');\n";
 							}
 						}
 					}
 				}
 			}
-			$gs[] = $groupModel->getGroup()->id . ':[' . implode(",\n", $aObjs) . ']';
+			$gs[] = "\t" . $groupModel->getGroup()->id . ":[\t" . implode(",\n\t\t", $aObjs) . ']';
 		}
-		$script[] = implode(", ", $gs);
-		$script[] = '});';
+		$script[] = implode(",\n\t", $gs);
+		$script[] = "\t});";
 		$script[] = $actions;
 		$script[] = $vstr;
 
 		// Placholder test
-		$script[] = "new Form.Placeholder('.fabrikForm input');";
+		$script[] = "\tnew Form.Placeholder('.fabrikForm input');";
 
-		$script[] = "function submit_form() {";
+		$script[] = "\tfunction submit_form() {";
 		if (!empty($aWYSIWYGNames))
 		{
 			jimport('joomla.html.editor');
@@ -609,17 +609,17 @@ class FabrikViewFormBase extends JViewLegacy
 				$script[] = $editor->save($parsedName);
 			}
 		}
-		$script[] = "\treturn false;";
-		$script[] = "}";
-
-		$script[] = "function submitbutton(button) {";
-		$script[] = "\tif (button==\"cancel\") {";
-		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_fabrik&task=viewTable&cid=' . $tableId) . "';";
-		$script[] = "\t}";
-		$script[] = "\tif (button == \"cancelShowForm\") {";
 		$script[] = "\t\treturn false;";
 		$script[] = "\t}";
-		$script[] = "}";
+
+		$script[] = "\tfunction submitbutton(button) {";
+		$script[] = "\t\tif (button==\"cancel\") {";
+		$script[] = "\t\t\tdocument.location = '" . JRoute::_('index.php?option=com_fabrik&task=viewTable&cid=' . $tableId) . "';";
+		$script[] = "\t\t}";
+		$script[] = "\t\tif (button == \"cancelShowForm\") {";
+		$script[] = "\t\t\treturn false;";
+		$script[] = "\t\t}";
+		$script[] = "\t}";
 
 		if (FabrikHelperHTML::inAjaxLoadedPage())
 		{

@@ -4467,16 +4467,18 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * load js file for element when in list view
 	 *
+	 * @param   array  &$srcs  JS scripts to load
+	 *
 	 * @return  null
 	 */
 
-	public function tableJavascriptClass()
+	public function tableJavascriptClass(&$srcs)
 	{
 		$p = $this->getElement()->plugin;
 		$src = 'plugins/fabrik_element/' . $p . '/list-' . $p . '.js';
 		if (JFile::exists($src))
 		{
-			FabrikHelperHTML::script($src);
+			$srcs[] = $src;
 		}
 	}
 

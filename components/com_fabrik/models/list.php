@@ -4889,8 +4889,7 @@ class FabrikFEModelList extends JModelForm
 		$opts->advancedSearch = $this->getAdvancedSearchOpts();
 		$opts->advancedSearch->controller = $type;
 		$opts = json_encode($opts);
-		$fscript = "
-		Fabrik.filter_{$container} = new FbListFilter($opts);\n";
+		$fscript = "\tFabrik.filter_{$container} = new FbListFilter($opts);\n";
 
 		$app = JFactory::getApplication();
 		$filters = $this->getFilterArray();
@@ -4964,7 +4963,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		$fscript .= "Fabrik.filter_{$container}.update();\n";
+		$fscript .= "\tFabrik.filter_{$container}.update();\n";
 		$this->filterJs = $fscript;
 
 		// Check for search form filters - if they exists create hidden elements for them
@@ -8221,12 +8220,14 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Insert into the head a series of JS to load element list JS
+	 * Create the JS to load element list JS
 	 *
-	 * @return  void
+	 * @param   array  &$srcs  JS scripts to load
+	 *
+	 * @return  string  script
 	 */
 
-	public function getElementJs()
+	public function getElementJs(&$srcs)
 	{
 		$form = $this->getFormModel();
 		$script = '';
@@ -8241,16 +8242,17 @@ class FabrikFEModelList extends JModelForm
 				if (!in_array($element->plugin, $run))
 				{
 					$run[] = $element->plugin;
-					$elementModel->tableJavascriptClass();
+					$elementModel->tableJavascriptClass($srcs);
 				}
 				$script .= $elementModel->elementListJavascript();
 			}
 		}
 		if ($script !== '')
 		{
-			$script = "window.addEvent('fabrik.loaded', function() {\n" . $script . "});\n";
-			FabrikHelperHTML::addScriptDeclaration($script);
+			//$script = "window.addEvent('fabrik.loaded', function() {\n" . $script . "});\n";
+			//FabrikHelperHTML::addScriptDeclaration($script);
 		}
+		return $script;
 	}
 
 	/**
