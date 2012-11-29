@@ -25,6 +25,8 @@ class FabrikAdminViewImport extends JViewLegacy
 	/**
 	 * Display the view
 	 *
+	 * @param   string  $tpl  Template
+	 *
 	 * @return  void
 	 */
 
@@ -55,9 +57,9 @@ class FabrikAdminViewImport extends JViewLegacy
 		$this->headings = $this->get('Headings');
 		$pluginManager = $this->getModel('pluginmanager');
 		$this->table = $this->get('ListModel')->getTable();
-		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]'));
+		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]');
 		$this->sample = $this->get('Sample');
-		$this->selectPKField', $this->get('SelectKey'));
+		$this->selectPKField = $this->get('SelectKey');
 		parent::display('chooseElementTypes');
 	}
 

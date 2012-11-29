@@ -173,13 +173,13 @@ class fabrikViewCalendar extends JViewLegacy
 
 		$ref = $model->getJSRenderContext();
 
-		// hack until we replace head.js with require.js
-		$js = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
-		$js .= " $ref = new fabrikCalendar('$ref');\n";
-		$js .= " $ref.render($json);\n";
-		$js .= "  Fabrik.addBlock('" . $ref . "', $ref);\n";
-		$js .= $legend . "\n";
-		$js .= $model->getFilterJs();
+		$js = array();
+		$js[] = "\t$ref = new fabrikCalendar('$ref');";
+		$js[] = "\t$ref.render($json);";
+		$js[] = "\tFabrik.addBlock('" . $ref . "', $ref);";
+		$js[] = "\t" . $legend . "";
+		$js[] = "" . $model->getFilterJs();
+		$js = implode("\n", $js);
 
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';

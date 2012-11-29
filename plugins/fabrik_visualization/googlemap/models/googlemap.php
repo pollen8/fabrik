@@ -116,9 +116,10 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->zoom = $params->get('fb_gm_zoom', 1);
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
-		$str .= "$ref = new FbGoogleMapViz('table_map', $opts)";
-		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
-		return $str;
+		$js = array();
+		$js[] = "\t$ref = new FbGoogleMapViz('table_map', $opts)";
+		$js[] = "\t" . "Fabrik.addBlock('$ref', $ref);";
+		return implode("\n", $js);
 	}
 
 	/**

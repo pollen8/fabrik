@@ -11,14 +11,17 @@ var FbTextarea = new Class({
 		this.periodFn = function () {
 			
 			// Seems that tinyMCE isn't created if FbLike element published in form
+			this.getTextContainer();
 			if (typeof tinyMCE !== 'undefined') {
-				if (this.getTextContainer() !== false) {
+				if (this.container !== false) {
 					this.watchTextContainer();
 					clearInterval(this.periodFn);
 				}
+			} else {
+				this.watchTextContainer();
+				clearInterval(this.periodFn);
 			}
 		};
-		
 		this.periodFn.periodical(200, this);
 	},
 	
@@ -135,7 +138,7 @@ var FbTextarea = new Class({
 			if (instance) {
 				this.container = instance.getDoc();
 			} else {
-				return false;
+				this.contaner = false;
 			}
 		} else {
 			// Regrab the element for inline editing (otherwise 2nd col you edit doesnt pickup the textarea.

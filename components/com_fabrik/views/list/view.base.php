@@ -75,6 +75,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->_row = new stdClass;
 		$script = array();
+		$script[] = FabrikHelperHTML::tipInt();
 		$params = $model->getParams();
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();
@@ -209,10 +210,10 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
-		$script[] = "var list = new FbList('$listid',";
-		$script[] = $opts;
-		$script[] = ");";
-		$script[] = "Fabrik.addBlock('list_{$listref}', list);";
+		$script[] = "\tvar list = new FbList('$listid',";
+		$script[] = "\t" . $opts;
+		$script[] = "\t);";
+		$script[] = "\tFabrik.addBlock('list_{$listref}', list);";
 
 		// Add in plugin objects
 		$params = $model->getParams();
@@ -225,32 +226,22 @@ class FabrikViewListBase extends JViewLegacy
 		if (!empty($aObjs))
 		{
 			$script[] = "list.addPlugins([\n";
-			$script[] = "  " . implode(",\n  ", $aObjs);
+			$script[] = "\t" . implode(",\n  ", $aObjs);
 			$script[] = "]);";
 		}
 		// @since 3.0 inserts content before the start of the list render (currently on f3 tmpl only)
 		$pluginManager->runPlugins('onGetContentBeforeList', $model, 'list');
 		$this->pluginBeforeList = $pluginManager->data;
-
 		$script[] = $model->filterJs;
+
+		// Was seperate but should now load in with the rest of the require js code
+		$model = $this->getModel();
+		$script[] = $model->getElementJs($src);
 		$script = implode("\n", $script);
 		FabrikHelperHTML::script($src, $script);
-		$this->getElementJs();
 
 		// Reset data back to original settings
 		$this->rows = $origRows;
-	}
-
-	/**
-	 * Get element js
-	 *
-	 * @return  void
-	 */
-
-	protected function getElementJs()
-	{
-		$model = $this->getModel();
-		$model->getElementJs();
 	}
 
 	/**

@@ -824,6 +824,7 @@ EOD;
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
+				$src[] = 'media/com_fabrik/js/tips.js';
 
 				// Only use template test for testing in 2.5 with my temp J bootstrap template.
 				if (in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5)
@@ -839,29 +840,33 @@ EOD;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
-				$tipOpts = self::tipOpts();
-				$tipJs = array();
-				$tipJs[] = "Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");";
-				$tipJs[] = "Fabrik.addEvent('fabrik.list.updaterows', function () {";
-				$tipJs[] = "\t// Reattach new tips after list redraw,";
-				$tipJs[] = "\tFabrik.tips.attach('.fabrikTip');";
-				$tipJs[] = "});";
-				$tipJs[] = "Fabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
-				$tipJs[] = "\tFabrik.tips.hideAll();";
-				$tipJs[] = "});";
+				$liveSiteSrc = array();
+				$liveSiteSrc[] = "window.addEvent('fabrik.loaded', function () {";
+				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+				$liveSiteSrc[] = "});";
+				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
-				self::addScriptDeclaration("
-					window.addEvent('fabrik.loaded', function () {
-						Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
-						requirejs(['fab/tips', 'fab/encoder'], function () {
-						" . implode("\n", $tipJs) . "
-						});
-					});
-				");
 			}
 			self::$framework = $src;
 		}
 		return self::$framework;
+	}
+
+	public static function tipInt()
+	{
+		$tipOpts = self::tipOpts();
+		$tipJs = array();
+		//$tipJs[] = "window.addEvent('fabrik.loaded', function () {";
+		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts). ");";
+		$tipJs[] = "\tFabrik.addEvent('fabrik.list.updaterows', function () {";
+		$tipJs[] = "\t\t// Reattach new tips after list redraw";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
+		$tipJs[] = "\t});";
+		$tipJs[] = "\tFabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
+		$tipJs[] = "\t\tFabrik.tips.hideAll();";
+		$tipJs[] = "\t});";
+		//$tipJs[] = "});";
+		return implode("\n", $tipJs);
 	}
 
 	/**
@@ -1133,9 +1138,11 @@ EOD;
 		}
 		$files = array_unique($files);
 		$files = "['" . implode("', '", $files) . "']";
-		$require = 'require(' . ($files) . ', function () {
-		' . $onLoad . '
-		});';
+		$require = array();
+		$require[] = 'require(' . ($files) . ', function () {';
+		$require[] = $onLoad;
+		$require[] = '});';
+		$require = implode("\n", $require);
 
 		if (JRequest::getCmd('format') == 'raw')
 		{

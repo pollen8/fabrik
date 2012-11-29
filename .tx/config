@@ -1,0 +1,836 @@
+[main]
+host = https://www.transifex.net
+lang_map = af_ZA: af-ZA, am_ET: am-ET, ar_AA: ar-AA, ar_AE: ar-AE, ar_BH: ar-BH, ar_DZ: ar-DZ, ar_EG: ar-EG, ar_IQ: ar-IQ, ar_JO: ar-JO, ar_KW: ar-KW, ar_LB: ar-LB, ar_LY: ar-LY, ar_MA: ar-MA, ar_OM: ar-OM, ar_QA: ar-QA, ar_SA: ar-SA, ar_SY: ar-SY, ar_TN: ar-TN, ar_YE: ar-YE, arn_CL: arn-CL, as_IN: as-IN, az_AZ: az-AZ, ba_RU: ba-RU, be_BY: be-BY, bg_BG: bg-BG, bn_BD: bn-BD, bn_IN: bn-IN, bo_CN: bo-CN, br_FR: br-FR, bs_BA: bs-BA, ca_ES: ca-ES, co_FR: co-FR, cs_CZ: cs-CZ, cy_GB: cy-GB, da_DK: da-DK, de_AT: de-AT, de_CH: de-CH, de_DE: de-DE, de_LI: de-LI, de_LU: de-LU, dsb_DE: dsb-DE, dv_MV: dv-MV, el_GR: el-GR, en_AU: en-AU, en_BZ: en-BZ, en_CA: en-CA, en_GB: en-GB, en_IE: en-IE, en_IN: en-IN, en_JM: en-JM, en_MY: en-MY, en_NZ: en-NZ, en_PH: en-PH, en_SG: en-SG, en_TT: en-TT, en_US: en-US, en_ZA: en-ZA, en_ZW: en-ZW, es_AR: es-AR, es_BO: es-BO, es_CL: es-CL, es_CO: es-CO, es_CR: es-CR, es_DO: es-DO, es_EC: es-EC, es_ES: es-ES, es_GT: es-GT, es_HN: es-HN, es_MX: es-MX, es_NI: es-NI, es_PA: es-PA, es_PE: es-PE, es_PR: es-PR, es_PY: es-PY, es_SV: es-SV, es_US: es-US, es_UY: es-UY, es_VE: es-VE, et_EE: et-EE, eu_ES: eu-ES, fa_IR: fa-IR, fi_FI: fi-FI, fil_PH: fil-PH, fo_FO: fo-FO, fr_BE: fr-BE, fr_CA: fr-CA, fr_CH: fr-CH, fr_FR: fr-FR, fr_LU: fr-LU, fr_MC: fr-MC, fy_NL: fy-NL, ga_IE: ga-IE, gd_GB: gd-GB, gl_ES: gl-ES, gsw_FR: gsw-FR, gu_IN: gu-IN, ha_NG: ha-NG, he_IL: he-IL, hi_IN: hi-IN, hr_BA: hr-BA, hr_HR: hr-HR, hsb_DE: hsb-DE, hu_HU: hu-HU, hy_AM: hy-AM, id_ID: id-ID, ig_NG: ig-NG, ii_CN: ii-CN, is_IS: is-IS, it_CH: it-CH, it_IT: it-IT, iu_CA: iu-CA, ja_JP: ja-JP, ka_GE: ka-GE, kk_KZ: kk-KZ, kl_GL: kl-GL, km_KH: km-KH, kn_IN: kn-IN, ko_KR: ko-KR, kok_IN: kok-IN, ky_KG: ky-KG, lb_LU: lb-LU, lo_LA: lo-LA, lt_LT: lt-LT, lv_LV: lv-LV, mi_NZ: mi-NZ, mk_MK: mk-MK, ml_IN: ml-IN, mn_CN: mn-CN, mn_MN: mn-MN, moh_CA: moh-CA, mr_IN: mr-IN, ms_BN: ms-BN, ms_MY: ms-MY, mt_MT: mt-MT, nb_NO: nb-NO, ne_NP: ne-NP, nl_BE: nl-BE, nl_NL: nl-NL, nn_NO: nn-NO, nso_ZA: nso-ZA, oc_FR: oc-FR, or_IN: or-IN, pa_IN: pa-IN, pl_PL: pl-PL, prs_AF: prs-AF, ps_AF: ps-AF, pt_BR: pt-BR, pt_PT: pt-PT, qut_GT: qut-GT, quz_BO: quz-BO, quz_EC: quz-EC, quz_PE: quz-PE, rm_CH: rm-CH, ro_RO: ro-RO, ru_RU: ru-RU, rw_RW: rw-RW, sa_IN: sa-IN, sah_RU: sah-RU, se_FI: se-FI, se_NO: se-NO, se_SE: se-SE, si_LK: si-LK, sk_SK: sk-SK, sl_SI: sl-SI, sma_NO: sma-NO, sma_SE: sma-SE, smj_NO: smj-NO, smj_SE: smj-SE, smn_FI: smn-FI, sms_FI: sms-FI, sq_AL: sq-AL, sr_BA: sr-BA, sr_CS: sr-CS, sr_ME: sr-ME, sr_RS: sr-RS, sv_FI: sv-FI, sv_SE: sv-SE, sw_KE: sw-KE, syr_SY: syr-SY, ta_IN: ta-IN, te_IN: te-IN, tg_TJ: tg-TJ, th_TH: th-TH, tk_TM: tk-TM, tn_ZA: tn-ZA, tr_TR: tr-TR, tt_RU: tt-RU, tzm_DZ: tzm-DZ, ug_CN: ug-CN, uk_UA: uk-UA, ur_PK: ur-PK, uz_UZ: uz-UZ, vi_VN: vi-VN, wo_SN: wo-SN, xh_ZA: xh-ZA, yo_NG: yo-NG, zh_CN: zh-CN, zh_HK: zh-HK, zh_MO: zh-MO, zh_SG: zh-SG, zh_TW: zh-TW, zu_ZA: zu-ZA
+minimum_perc = 50
+type = INI
+
+[fabrik.com_fabrik_admin]
+file_filter = administrator\components\com_fabrik\language\<lang>\<lang>.com_fabrik.ini
+source_file = administrator\components\com_fabrik\language\en-GB\en-GB.com_fabrik.ini
+source_lang = en_GB
+trans.de-DE = administrator\components\com_fabrik\language\de-DE\de-DE.com_fabrik.ini
+trans.el-GR = administrator\components\com_fabrik\language\el-GR\el-GR.com_fabrik.ini
+trans.es-ES = administrator\components\com_fabrik\language\es-ES\es-ES.com_fabrik.ini
+trans.fr-FR = administrator\components\com_fabrik\language\fr-FR\fr-FR.com_fabrik.ini
+trans.it-IT = administrator\components\com_fabrik\language\it-IT\it-IT.com_fabrik.ini
+trans.pt-BR = administrator\components\com_fabrik\language\pt-BR\pt-BR.com_fabrik.ini
+trans.ru-RU = administrator\components\com_fabrik\language\ru-RU\ru-RU.com_fabrik.ini
+
+[fabrik.com_fabrik]
+file_filter = components/com_fabrik/language/<lang>/<lang>.com_fabrik.ini
+source_file = components/com_fabrik/language/en-GB/en-GB.com_fabrik.ini
+source_lang = en_GB
+trans.ar-AA = components\com_fabrik\language\ar-AA\ar-AA.com_fabrik.ini
+trans.da-DK = components\com_fabrik\language\da-DK\da-DK.com_fabrik.ini
+trans.de-DE = components\com_fabrik\language\de-DE\de-DE.com_fabrik.ini
+trans.el-GR = components\com_fabrik\language\el-GR\el-GR.com_fabrik.ini
+trans.es-ES = components\com_fabrik\language\es-ES\es-ES.com_fabrik.ini
+trans.fr-FR = components\com_fabrik\language\fr-FR\fr-FR.com_fabrik.ini
+trans.it-IT = components\com_fabrik\language\it-IT\it-IT.com_fabrik.ini
+trans.ja-JP = components\com_fabrik\language\ja-JP\ja-JP.com_fabrik.ini
+trans.nl-NL = components\com_fabrik\language\nl-NL\nl-NL.com_fabrik.ini
+trans.pt-BR = components\com_fabrik\language\pt-BR\pt-BR.com_fabrik.ini
+trans.ru-RU = components\com_fabrik\language\ru-RU\ru-RU.com_fabrik.ini
+
+[fabrik.plg_content]
+file_filter = plugins/content/fabrik/language/<lang>/<lang>.plg_content_fabrik.sys.ini
+source_file = plugins/content/fabrik/language/en-GB/en-GB.plg_content_fabrik.sys.ini
+source_lang = en_GB
+trans.pt-BR = plugins/content/fabrik/language/pt-BR/pt-BR.plg_content_fabrik.sys.ini
+trans.ru-RU = plugins/content/fabrik/language/ru-RU/ru-RU.plg_content_fabrik.sys.ini
+
+[fabrik.plg_cron_email]
+file_filter = plugins/fabrik_cron/email/language/<lang>/<lang>.plg_fabrik_cron_email.ini
+source_file = plugins/fabrik_cron/email/language/en-GB/en-GB.plg_fabrik_cron_email.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_cron/email/language/fr-FR/fr-FR.plg_fabrik_cron_email.ini
+trans.pt-BR = plugins/fabrik_cron/email/language/pt-BR/pt-BR.plg_fabrik_cron_email.ini
+
+[fabrik.plg_cron_gcalsync]
+file_filter = plugins/fabrik_cron/gcalsync/language/<lang>/<lang>.plg_fabrik_cron_gcalsync.ini
+source_file = plugins/fabrik_cron/gcalsync/language/en-GB/en-GB.plg_fabrik_cron_gcalsync.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_cron/gcalsync/language/fr-FR/fr-FR.plg_fabrik_cron_gcalsync.ini
+trans.it-IT = plugins/fabrik_cron/gcalsync/language/it-IT/it-IT.plg_fabrik_cron_gcalsync.ini
+
+[fabrik.plg_cron_geocode]
+file_filter = plugins/fabrik_cron/geocode/language/<lang>/<lang>.plg_fabrik_cron_geocode.ini
+source_file = plugins/fabrik_cron/geocode/language/en-GB/en-GB.plg_fabrik_cron_geocode.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_cron/geocode/language/fr-FR/fr-FR.plg_fabrik_cron_geocode.ini
+trans.it-IT = plugins/fabrik_cron/geocode/language/it-IT/it-IT.plg_fabrik_cron_geocode.ini
+
+[fabrik.plg_cron_gmail]
+file_filter = plugins/fabrik_cron/gmail/language/<lang>/<lang>.plg_fabrik_cron_gmail.ini
+source_file = plugins/fabrik_cron/gmail/language/en-GB/en-GB.plg_fabrik_cron_gmail.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_cron/gmail/language/fr-FR/fr-FR.plg_fabrik_cron_gmail.ini
+
+[fabrik.plg_cron_importcsv]
+file_filter = plugins/fabrik_cron/importcsv/language/<lang>/<lang>.plg_fabrik_cron_importcsv.ini
+source_file = plugins/fabrik_cron/importcsv/language/en-GB/en-GB.plg_fabrik_cron_importcsv.ini
+source_lang = en_GB
+
+[fabrik.plg_cron_notification]
+file_filter = plugins/fabrik_cron/notification/language/<lang>/<lang>.plg_fabrik_cron_notification.ini
+source_file = plugins/fabrik_cron/notification/language/en-GB/en-GB.plg_fabrik_cron_notification.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_cron/notification/language/fr-FR/fr-FR.plg_fabrik_cron_notification.ini
+trans.it-IT = plugins/fabrik_cron/notification/language/it-IT/it-IT.plg_fabrik_cron_notification.ini
+
+[fabrik.plg_cron_php]
+file_filter = plugins/fabrik_cron/php/language/<lang>/<lang>.plg_fabrik_cron_php.ini
+source_file = plugins/fabrik_cron/php/language/en-GB/en-GB.plg_fabrik_cron_php.ini
+source_lang = en_GB
+trans.es-ES = plugins/fabrik_cron/php/language/es-ES/es-ES.plg_fabrik_cron_php.ini
+trans.fr-FR = plugins/fabrik_cron/php/language/fr-FR/fr-FR.plg_fabrik_cron_php.ini
+trans.it-IT = plugins/fabrik_cron/php/language/it-IT/it-IT.plg_fabrik_cron_php.ini
+trans.pt-BR = plugins/fabrik_cron/php/language/pt-BR/pt-BR.plg_fabrik_cron_php.ini
+
+[fabrik.plg_cron_rest]
+file_filter = plugins/fabrik_cron/rest/language/<lang>/<lang>.plg_fabrik_cron_rest.ini
+source_file = plugins/fabrik_cron/rest/language/en-GB/en-GB.plg_fabrik_cron_rest.ini
+source_lang = en_GB
+
+[fabrik.plg_element_access_sys]
+file_filter = plugins/fabrik_element/access/language/<lang>/<lang>.plg_fabrik_element_access.sys.ini
+source_file = plugins/fabrik_element/access/language/en-GB/en-GB.plg_fabrik_element_access.sys.ini
+source_lang = en_GB
+
+[fabrik.plg_element_birthday]
+file_filter = plugins/fabrik_element/birthday/language/<lang>/<lang>.plg_fabrik_element_birthday.ini
+source_file = plugins/fabrik_element/birthday/language/en-GB/en-GB.plg_fabrik_element_birthday.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/birthday/language/de-DE/de-DE.plg_fabrik_element_birthday.ini
+trans.et-EE = plugins/fabrik_element/birthday/language/et-EE/et-EE.plg_fabrik_element_birthday.ini
+trans.fr-FR = plugins/fabrik_element/birthday/language/fr-FR/fr-FR.plg_fabrik_element_birthday.ini
+
+[fabrik.plg_element_button_sys]
+file_filter = plugins/fabrik_element/button/language/<lang>/<lang>.plg_fabrik_element_button.sys.ini
+source_file = plugins/fabrik_element/button/language/en-GB/en-GB.plg_fabrik_element_button.sys.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/button/language/fr-FR/fr-FR.plg_fabrik_element_button.sys.ini
+trans.pt-BR = plugins/fabrik_element/button/language/pt-BR/pt-BR.plg_fabrik_element_button.sys.ini
+
+[fabrik.plg_element_calc]
+file_filter = plugins/fabrik_element/calc/language/<lang>/<lang>.plg_fabrik_element_calc.ini
+source_file = plugins/fabrik_element/calc/language/en-GB/en-GB.plg_fabrik_element_calc.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/calc/language/de-DE/de-DE.plg_fabrik_element_calc.ini
+trans.fr-FR = plugins/fabrik_element/calc/language/fr-FR/fr-FR.plg_fabrik_element_calc.ini
+trans.it-IT = plugins/fabrik_element/calc/language/it-IT/it-IT.plg_fabrik_element_calc.ini
+
+[fabrik.plg_element_captcha]
+file_filter = plugins/fabrik_element/captcha/language/<lang>/<lang>.plg_fabrik_element_captcha.ini
+source_file = plugins/fabrik_element/captcha/language/en-GB/en-GB.plg_fabrik_element_captcha.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/captcha/language/de-DE/de-DE.plg_fabrik_element_captcha.ini
+trans.es-ES = plugins/fabrik_element/captcha/language/es-ES/es-ES.plg_fabrik_element_captcha.ini
+trans.fr-FR = plugins/fabrik_element/captcha/language/fr-FR/fr-FR.plg_fabrik_element_captcha.ini
+trans.it-IT = plugins/fabrik_element/captcha/language/it-IT/it-IT.plg_fabrik_element_captcha.ini
+trans.nl-NL = plugins/fabrik_element/captcha/language/nl-NL/nl-NL.plg_fabrik_element_captcha.ini
+trans.pt-BR = plugins/fabrik_element/captcha/language/pt-BR/pt-BR.plg_fabrik_element_captcha.ini
+trans.ru-RU = plugins/fabrik_element/captcha/language/ru-RU/ru-RU.plg_fabrik_element_captcha.ini
+
+[fabrik.plg_element_cascadingdropdown]
+file_filter = plugins/fabrik_element/cascadingdropdown/language/<lang>/<lang>.plg_fabrik_element_cascadingdropdown.ini
+source_file = plugins/fabrik_element/cascadingdropdown/language/en-GB/en-GB.plg_fabrik_element_cascadingdropdown.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/cascadingdropdown/language/de-DE/de-DE.plg_fabrik_element_cascadingdropdown.ini
+trans.es-ES = plugins/fabrik_element/cascadingdropdown/language/es-ES/es-ES.plg_fabrik_element_cascadingdropdown.ini
+trans.fr-FR = plugins/fabrik_element/cascadingdropdown/language/fr-FR/fr-FR.plg_fabrik_element_cascadingdropdown.ini
+trans.it-IT = plugins/fabrik_element/cascadingdropdown/language/it-IT/it-IT.plg_fabrik_element_cascadingdropdown.ini
+
+[fabrik.plg_element_checkbox]
+file_filter = plugins/fabrik_element/checkbox/language/<lang>/<lang>.plg_fabrik_element_checkbox.ini
+source_file = plugins/fabrik_element/checkbox/language/en-GB/en-GB.plg_fabrik_element_checkbox.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/checkbox/language/fr-FR/fr-FR.plg_fabrik_element_checkbox.ini
+trans.pt-BR = plugins/fabrik_element/checkbox/language/pt-BR/pt-BR.plg_fabrik_element_checkbox.ini
+
+[fabrik.plg_element_colourpicker]
+file_filter = plugins/fabrik_element/colourpicker/language/<lang>/<lang>.plg_fabrik_element_colourpicker.ini
+source_file = plugins/fabrik_element/colourpicker/language/en-GB/en-GB.plg_fabrik_element_colourpicker.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/colourpicker/language/fr-FR/fr-FR.plg_fabrik_element_colourpicker.ini
+
+[fabrik.plg_element_count]
+file_filter = plugins/fabrik_element/count/language/<lang>/<lang>.plg_fabrik_element_count.ini
+source_file = plugins/fabrik_element/count/language/en-GB/en-GB.plg_fabrik_element_count.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/count/language/fr-FR/fr-FR.plg_fabrik_element_count.ini
+
+[fabrik.plg_element_databasejoin]
+file_filter = plugins/fabrik_element/databasejoin/language/<lang>/<lang>.plg_fabrik_element_databasejoin.ini
+source_file = plugins/fabrik_element/databasejoin/language/en-GB/en-GB.plg_fabrik_element_databasejoin.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/databasejoin/language/fr-FR/fr-FR.plg_fabrik_element_databasejoin.ini
+trans.pt-BR = plugins/fabrik_element/databasejoin/language/pt-BR/pt-BR.plg_fabrik_element_databasejoin.ini
+trans.ru-RU = plugins/fabrik_element/databasejoin/language/ru-RU/ru-RU.plg_fabrik_element_databasejoin.ini
+
+[fabrik.plg_element_date]
+file_filter = plugins/fabrik_element/date/language/<lang>/<lang>.plg_fabrik_element_date.ini
+source_file = plugins/fabrik_element/date/language/en-GB/en-GB.plg_fabrik_element_date.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/date/language/fr-FR/fr-FR.plg_fabrik_element_date.ini
+trans.pt-BR = plugins/fabrik_element/date/language/pt-BR/pt-BR.plg_fabrik_element_date.ini
+
+[fabrik.plg_element_display]
+file_filter = plugins/fabrik_element/display/language/<lang>/<lang>.plg_fabrik_element_display.ini
+source_file = plugins/fabrik_element/display/language/en-GB/en-GB.plg_fabrik_element_display.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/display/language/fr-FR/fr-FR.plg_fabrik_element_display.ini
+trans.pt-BR = plugins/fabrik_element/display/language/pt-BR/pt-BR.plg_fabrik_element_display.ini
+
+[fabrik.plg_element_dropdown]
+file_filter = plugins/fabrik_element/dropdown/language/<lang>/<lang>.plg_fabrik_element_dropdown.ini
+source_file = plugins/fabrik_element/dropdown/language/en-GB/en-GB.plg_fabrik_element_dropdown.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/dropdown/language/fr-FR/fr-FR.plg_fabrik_element_dropdown.ini
+trans.pt-BR = plugins/fabrik_element/dropdown/language/pt-BR/pt-BR.plg_fabrik_element_dropdown.ini
+
+[fabrik.plg_element_fbactivityfeed]
+file_filter = plugins/fabrik_element/fbactivityfeed/language/<lang>/<lang>.plg_fabrik_element_fbactivityfeed.ini
+source_file = plugins/fabrik_element/fbactivityfeed/language/en-GB/en-GB.plg_fabrik_element_fbactivityfeed.ini
+source_lang = en_GB
+
+[fabrik.plg_element_fbcomment]
+file_filter = plugins/fabrik_element/fbcomment/language/<lang>/<lang>.plg_fabrik_element_fbcomment.ini
+source_file = plugins/fabrik_element/fbcomment/language/en-GB/en-GB.plg_fabrik_element_fbcomment.ini
+source_lang = en_GB
+trans.ru-RU = plugins/fabrik_element/fbcomment/language/ru-RU/ru-RU.plg_fabrik_element_fbcomment.ini
+
+[fabrik.plg_element_fblike]
+file_filter = plugins/fabrik_element/fblike/language/<lang>/<lang>.plg_fabrik_element_fblike.ini
+source_file = plugins/fabrik_element/fblike/language/en-GB/en-GB.plg_fabrik_element_fblike.ini
+source_lang = en_GB
+
+[fabrik.plg_element_fblikebox]
+file_filter = plugins/fabrik_element/fblikebox/language/<lang>/<lang>.plg_fabrik_element_fblikebox.ini
+source_file = plugins/fabrik_element/fblikebox/language/en-GB/en-GB.plg_fabrik_element_fblikebox.ini
+source_lang = en_GB
+
+[fabrik.plg_element_fbrecommendations]
+file_filter = plugins/fabrik_element/fbrecommendations/language/<lang>/<lang>.plg_fabrik_element_fbrecommendations.ini
+source_file = plugins/fabrik_element/fbrecommendations/language/en-GB/en-GB.plg_fabrik_element_fbrecommendations.ini
+source_lang = en_GB
+
+[fabrik.plg_element_field]
+file_filter = plugins/fabrik_element/field/language/<lang>/<lang>.plg_fabrik_element_field.ini
+source_file = plugins/fabrik_element/field/language/en-GB/en-GB.plg_fabrik_element_field.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/field/language/de-DE/de-DE.plg_fabrik_element_field.ini
+trans.fr-FR = plugins/fabrik_element/field/language/fr-FR/fr-FR.plg_fabrik_element_field.ini
+trans.ru-RU = plugins/fabrik_element/field/language/ru-RU/ru-RU.plg_fabrik_element_field.ini
+
+[fabrik.plg_element_fileupload]
+file_filter = plugins/fabrik_element/fileupload/language/<lang>/<lang>.plg_fabrik_element_fileupload.ini
+source_file = plugins/fabrik_element/fileupload/language/en-GB/en-GB.plg_fabrik_element_fileupload.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/fileupload/language/fr-FR/fr-FR.plg_fabrik_element_fileupload.ini
+
+[fabrik.plg_element_folder]
+file_filter = plugins/fabrik_element/folder/language/<lang>/<lang>.plg_fabrik_element_folder.ini
+source_file = plugins/fabrik_element/folder/language/en-GB/en-GB.plg_fabrik_element_folder.ini
+source_lang = en_GB
+
+[fabrik.plg_element_googlemap]
+file_filter = plugins/fabrik_element/googlemap/language/<lang>/<lang>.plg_fabrik_element_googlemap.ini
+source_file = plugins/fabrik_element/googlemap/language/en-GB/en-GB.plg_fabrik_element_googlemap.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/googlemap/language/de-DE/de-DE.plg_fabrik_element_googlemap.ini
+trans.es-ES = plugins/fabrik_element/googlemap/language/es-ES/es-ES.plg_fabrik_element_googlemap.ini
+trans.fr-FR = plugins/fabrik_element/googlemap/language/fr-FR/fr-FR.plg_fabrik_element_googlemap.ini
+trans.it-IT = plugins/fabrik_element/googlemap/language/it-IT/it-IT.plg_fabrik_element_googlemap.ini
+
+[fabrik.plg_element_googleometer]
+file_filter = plugins/fabrik_element/googleometer/language/<lang>/<lang>.plg_fabrik_element_googleometer.ini
+source_file = plugins/fabrik_element/googleometer/language/en-GB/en-GB.plg_fabrik_element_googleometer.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/googleometer/language/de-DE/de-DE.plg_fabrik_element_googleometer.ini
+trans.es-ES = plugins/fabrik_element/googleometer/language/es-ES/es-ES.plg_fabrik_element_googleometer.ini
+trans.fr-FR = plugins/fabrik_element/googleometer/language/fr-FR/fr-FR.plg_fabrik_element_googleometer.ini
+trans.it-IT = plugins/fabrik_element/googleometer/language/it-IT/it-IT.plg_fabrik_element_googleometer.ini
+
+[fabrik.plg_element_image]
+file_filter = plugins/fabrik_element/image/language/<lang>/<lang>.plg_fabrik_element_image.ini
+source_file = plugins/fabrik_element/image/language/en-GB/en-GB.plg_fabrik_element_image.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/image/language/fr-FR/fr-FR.plg_fabrik_element_image.ini
+
+[fabrik.plg_element_ip]
+file_filter = plugins/fabrik_element/ip/language/<lang>/<lang>.plg_fabrik_element_ip.ini
+source_file = plugins/fabrik_element/ip/language/en-GB/en-GB.plg_fabrik_element_ip.ini
+source_lang = en_GB
+
+[fabrik.plg_element_jsperiodical]
+file_filter = plugins/fabrik_element/jsperiodical/language/<lang>/<lang>.plg_fabrik_element_jsperiodical.ini
+source_file = plugins/fabrik_element/jsperiodical/language/en-GB/en-GB.plg_fabrik_element_jsperiodical.ini
+source_lang = en_GB
+
+[fabrik.plg_element_kaltura]
+file_filter = plugins/fabrik_element/kaltura/language/<lang>/<lang>.plg_fabrik_element_kaltura.ini
+source_file = plugins/fabrik_element/kaltura/language/en-GB/en-GB.plg_fabrik_element_kaltura.ini
+source_lang = en_GB
+
+[fabrik.plg_element_link]
+file_filter = plugins/fabrik_element/link/language/<lang>/<lang>.plg_fabrik_element_link.ini
+source_file = plugins/fabrik_element/link/language/en-GB/en-GB.plg_fabrik_element_link.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/link/language/fr-FR/fr-FR.plg_fabrik_element_link.ini
+
+[fabrik.plg_element_notes]
+file_filter = plugins/fabrik_element/notes/language/<lang>/<lang>.plg_fabrik_element_notes.ini
+source_file = plugins/fabrik_element/notes/language/en-GB/en-GB.plg_fabrik_element_notes.ini
+source_lang = en_GB
+
+[fabrik.plg_element_openstreetmap]
+file_filter = plugins/fabrik_element/openstreetmap/language/<lang>/<lang>.plg_fabrik_element_openstreetmap.ini
+source_file = plugins/fabrik_element/openstreetmap/language/en-GB/en-GB.plg_fabrik_element_openstreetmap.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/openstreetmap/language/de-DE/de-DE.plg_fabrik_element_openstreetmap.ini
+trans.it-IT = plugins/fabrik_element/openstreetmap/language/it-IT/it-IT.plg_fabrik_element_openstreetmap.ini
+
+[fabrik.plg_element_password]
+file_filter = plugins/fabrik_element/password/language/<lang>/<lang>.plg_fabrik_element_password.ini
+source_file = plugins/fabrik_element/password/language/en-GB/en-GB.plg_fabrik_element_password.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/password/language/de-DE/de-DE.plg_fabrik_element_password.ini
+trans.es-ES = plugins/fabrik_element/password/language/es-ES/es-ES.plg_fabrik_element_password.ini
+trans.fr-FR = plugins/fabrik_element/password/language/fr-FR/fr-FR.plg_fabrik_element_password.ini
+trans.it-IT = plugins/fabrik_element/password/language/it-IT/it-IT.plg_fabrik_element_password.ini
+trans.nl-NL = plugins/fabrik_element/password/language/nl-NL/nl-NL.plg_fabrik_element_password.ini
+
+[fabrik.plg_element_picklist]
+file_filter = plugins/fabrik_element/picklist/language/<lang>/<lang>.plg_fabrik_element_picklist.ini
+source_file = plugins/fabrik_element/picklist/language/en-GB/en-GB.plg_fabrik_element_picklist.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/picklist/language/de-DE/de-DE.plg_fabrik_element_picklist.ini
+trans.es-ES = plugins/fabrik_element/picklist/language/es-ES/es-ES.plg_fabrik_element_picklist.ini
+trans.it-IT = plugins/fabrik_element/picklist/language/it-IT/it-IT.plg_fabrik_element_picklist.ini
+
+[fabrik.plg_element_radiobutton]
+file_filter = plugins/fabrik_element/radiobutton/language/<lang>/<lang>.plg_fabrik_element_radiobutton.ini
+source_file = plugins/fabrik_element/radiobutton/language/en-GB/en-GB.plg_fabrik_element_radiobutton.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/radiobutton/language/fr-FR/fr-FR.plg_fabrik_element_radiobutton.ini
+
+[fabrik.plg_element_rating]
+file_filter = plugins/fabrik_element/rating/language/<lang>/<lang>.plg_fabrik_element_rating.ini
+source_file = plugins/fabrik_element/rating/language/en-GB/en-GB.plg_fabrik_element_rating.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/rating/language/de-DE/de-DE.plg_fabrik_element_rating.ini
+trans.it-IT = plugins/fabrik_element/rating/language/it-IT/it-IT.plg_fabrik_element_rating.ini
+trans.nl-NL = plugins/fabrik_element/rating/language/nl-NL/nl-NL.plg_fabrik_element_rating.ini
+
+[fabrik.plg_element_slider]
+file_filter = plugins/fabrik_element/slider/language/<lang>/<lang>.plg_fabrik_element_slider.ini
+source_file = plugins/fabrik_element/slider/language/en-GB/en-GB.plg_fabrik_element_slider.ini
+source_lang = en_GB
+
+
+[fabrik.plg_element_textarea]
+file_filter = plugins/fabrik_element/textarea/language/<lang>/<lang>.plg_fabrik_element_textarea.ini
+source_file = plugins/fabrik_element/textarea/language/en-GB/en-GB.plg_fabrik_element_textarea.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/textarea/language/de-DE/de-DE.plg_fabrik_element_textarea.ini
+trans.es-ES = plugins/fabrik_element/textarea/language/es-ES/es-ES.plg_fabrik_element_textarea.ini
+trans.it-IT = plugins/fabrik_element/textarea/language/it-IT/it-IT.plg_fabrik_element_textarea.ini
+
+[fabrik.plg_element_thumbs]
+file_filter = plugins/fabrik_element/thumbs/language/<lang>/<lang>.plg_fabrik_element_thumbs.ini
+source_file = plugins/fabrik_element/thumbs/language/en-GB/en-GB.plg_fabrik_element_thumbs.ini
+source_lang = en_GB
+
+[fabrik.plg_element_time]
+file_filter = plugins/fabrik_element/time/language/<lang>/<lang>.plg_fabrik_element_time.ini
+source_file = plugins/fabrik_element/time/language/en-GB/en-GB.plg_fabrik_element_time.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/time/language/de-DE/de-DE.plg_fabrik_element_time.ini
+trans.et-EE = plugins/fabrik_element/time/language/et-EE/et-EE.plg_fabrik_element_time.ini
+trans.fr-FR = plugins/fabrik_element/time/language/fr-FR/fr-FR.plg_fabrik_element_time.ini
+
+[fabrik.plg_element_timer]
+file_filter = plugins/fabrik_element/timer/language/<lang>/<lang>.plg_fabrik_element_timer.ini
+source_file = plugins/fabrik_element/timer/language/en-GB/en-GB.plg_fabrik_element_timer.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/timer/language/de-DE/de-DE.plg_fabrik_element_timer.ini
+trans.es-ES = plugins/fabrik_element/timer/language/es-ES/es-ES.plg_fabrik_element_timer.ini
+trans.fr-FR = plugins/fabrik_element/timer/language/fr-FR/fr-FR.plg_fabrik_element_timer.ini
+trans.it-IT = plugins/fabrik_element/timer/language/it-IT/it-IT.plg_fabrik_element_timer.ini
+
+[fabrik.plg_element_timestamp]
+file_filter = plugins/fabrik_element/timestamp/language/<lang>/<lang>.plg_fabrik_element_timestamp.ini
+source_file = plugins/fabrik_element/timestamp/language/en-GB/en-GB.plg_fabrik_element_timestamp.ini
+source_lang = en_GB
+
+[fabrik.plg_element_user]
+file_filter = plugins/fabrik_element/user/language/<lang>/<lang>.plg_fabrik_element_user.ini
+source_file = plugins/fabrik_element/user/language/en-GB/en-GB.plg_fabrik_element_user.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_element/user/language/fr-FR/fr-FR.plg_fabrik_element_user.ini
+
+[fabrik.plg_element_usergroup]
+file_filter = plugins/fabrik_element/usergroup/language/<lang>/<lang>.plg_fabrik_element_usergroup.ini
+source_file = plugins/fabrik_element/usergroup/language/en-GB/en-GB.plg_fabrik_element_usergroup.ini
+source_lang = en_GB
+
+[fabrik.plg_element_viewlevel]
+file_filter = plugins/fabrik_element/viewlevel/language/<lang>/<lang>.plg_fabrik_element_viewlevel.ini
+source_file = plugins/fabrik_element/viewlevel/language/en-GB/en-GB.plg_fabrik_element_viewlevel.ini
+source_lang = en_GB
+
+[fabrik.plg_element_yesno]
+file_filter = plugins/fabrik_element/yesno/language/<lang>/<lang>.plg_fabrik_element_yesno.ini
+source_file = plugins/fabrik_element/yesno/language/en-GB/en-GB.plg_fabrik_element_yesno.ini
+source_lang = en_GB
+
+[fabrik.plg_element_youtube]
+file_filter = plugins/fabrik_element/youtube/language/<lang>/<lang>.plg_fabrik_element_youtube.ini
+source_file = plugins/fabrik_element/youtube/language/en-GB/en-GB.plg_fabrik_element_youtube.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_element/youtube/language/de-DE/de-DE.plg_fabrik_element_youtube.ini
+trans.es-ES = plugins/fabrik_element/youtube/language/es-ES/es-ES.plg_fabrik_element_youtube.ini
+trans.fr-FR = plugins/fabrik_element/youtube/language/fr-FR/fr-FR.plg_fabrik_element_youtube.ini
+trans.it-IT = plugins/fabrik_element/youtube/language/it-IT/it-IT.plg_fabrik_element_youtube.ini
+
+[fabrik.plg_form_autofill]
+file_filter = plugins/fabrik_form/autofill/language/<lang>/<lang>.plg_fabrik_form_autofill.ini
+source_file = plugins/fabrik_form/autofill/language/en-GB/en-GB.plg_fabrik_form_autofill.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/autofill/language/de-DE/de-DE.plg_fabrik_form_autofill.ini
+trans.es-ES = plugins/fabrik_form/autofill/language/es-ES/es-ES.plg_fabrik_form_autofill.ini
+trans.fr-FR = plugins/fabrik_form/autofill/language/fr-FR/fr-FR.plg_fabrik_form_autofill.ini
+trans.it-IT = plugins/fabrik_form/autofill/language/it-IT/it-IT.plg_fabrik_form_autofill.ini
+trans.nl-NL = plugins/fabrik_form/autofill/language/nl-NL/nl-NL.plg_fabrik_form_autofill.ini
+
+[fabrik.plg_form_clone]
+file_filter = plugins/fabrik_form/clone/language/<lang>/<lang>.plg_fabrik_form_clone.ini
+source_file = plugins/fabrik_form/clone/language/en-GB/en-GB.plg_fabrik_form_clone.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/clone/language/de-DE/de-DE.plg_fabrik_form_clone.ini
+trans.es-ES = plugins/fabrik_form/clone/language/es-ES/es-ES.plg_fabrik_form_clone.ini
+trans.it-IT = plugins/fabrik_form/clone/language/it-IT/it-IT.plg_fabrik_form_clone.ini
+
+[fabrik.plg_form_comment]
+file_filter = plugins/fabrik_form/comment/language/<lang>/<lang>.plg_fabrik_form_comment.ini
+source_file = plugins/fabrik_form/comment/language/en-GB/en-GB.plg_fabrik_form_comment.ini
+source_lang = en_GB
+
+[fabrik.plg_form_confirmation]
+file_filter = plugins/fabrik_form/confirmation/language/<lang>/<lang>.plg_fabrik_form_confirmation.ini
+source_file = plugins/fabrik_form/confirmation/language/en-GB/en-GB.plg_fabrik_form_confirmation.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_form/confirmation/language/da-DK/da-DK.plg_fabrik_form_confirmation.ini
+trans.de-DE = plugins/fabrik_form/confirmation/language/de-DE/de-DE.plg_fabrik_form_confirmation.ini
+trans.es-ES = plugins/fabrik_form/confirmation/language/es-ES/es-ES.plg_fabrik_form_confirmation.ini
+trans.fr-FR = plugins/fabrik_form/confirmation/language/fr-FR/fr-FR.plg_fabrik_form_confirmation.ini
+trans.it-IT = plugins/fabrik_form/confirmation/language/it-IT/it-IT.plg_fabrik_form_confirmation.ini
+trans.nl-NL = plugins/fabrik_form/confirmation/language/nl-NL/nl-NL.plg_fabrik_form_confirmation.ini
+
+[fabrik.plg_form_email]
+file_filter = plugins/fabrik_form/email/language/<lang>/<lang>.plg_fabrik_form_email.ini
+source_file = plugins/fabrik_form/email/language/en-GB/en-GB.plg_fabrik_form_email.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
+trans.el-GR = plugins/fabrik_form/email/language/el-GR/el-GR.plg_fabrik_form_email.ini
+trans.de-DE = plugins/fabrik_form/email/language/de-DE/de-DE.plg_fabrik_form_email.ini
+trans.es-ES = plugins/fabrik_form/email/language/es-ES/es-ES.plg_fabrik_form_email.ini
+trans.fr-FR = plugins/fabrik_form/email/language/fr-FR/fr-FR.plg_fabrik_form_email.ini
+trans.it-IT = plugins/fabrik_form/email/language/it-IT/it-IT.plg_fabrik_form_email.ini
+trans.pt-BR = plugins/fabrik_form/email/language/pt-BR/pt-BR.plg_fabrik_form_email.ini
+trans.ru-RU = plugins/fabrik_form/email/language/ru-RU/ru-RU.plg_fabrik_form_email.ini
+
+[fabrik.plg_form_exif]
+file_filter = plugins/fabrik_form/exif/language/<lang>/<lang>.plg_fabrik_form_exif.ini
+source_file = plugins/fabrik_form/exif/language/en-GB/en-GB.plg_fabrik_form_exif.ini
+source_lang = en_GB
+
+[fabrik.plg_form_juser]
+file_filter = plugins/fabrik_form/juser/language/<lang>/<lang>.plg_fabrik_form_juser.ini
+source_file = plugins/fabrik_form/juser/language/en-GB/en-GB.plg_fabrik_form_juser.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/juser/language/de-DE/de-DE.plg_fabrik_form_juser.ini
+trans.es-ES = plugins/fabrik_form/juser/language/es-ES/es-ES.plg_fabrik_form_juser.ini
+trans.it-IT = plugins/fabrik_form/juser/language/it-IT/it-IT.plg_fabrik_form_juser.ini
+
+[fabrik.plg_form_kunena]
+file_filter = plugins/fabrik_form/kunena/language/<lang>/<lang>.plg_fabrik_form_kunena.ini
+source_file = plugins/fabrik_form/kunena/language/en-GB/en-GB.plg_fabrik_form_kunena.ini
+source_lang = en_GB
+
+[fabrik.plg_form_limit]
+file_filter = plugins/fabrik_form/limit/language/<lang>/<lang>.plg_fabrik_form_limit.ini
+source_file = plugins/fabrik_form/limit/language/en-GB/en-GB.plg_fabrik_form_limit.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/limit/language/de-DE/de-DE.plg_fabrik_form_limit.ini
+trans.es-ES = plugins/fabrik_form/limit/language/es-ES/es-ES.plg_fabrik_form_limit.ini
+trans.it-IT = plugins/fabrik_form/limit/language/it-IT/it-IT.plg_fabrik_form_limit.ini
+
+[fabrik.plg_form_logs]
+file_filter = plugins/fabrik_form/logs/language/<lang>/<lang>.plg_fabrik_form_logs.ini
+source_file = plugins/fabrik_form/logs/language/en-GB/en-GB.plg_fabrik_form_logs.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/logs/language/de-DE/de-DE.plg_fabrik_form_logs.ini
+trans.es-ES = plugins/fabrik_form/logs/language/es-ES/es-ES.plg_fabrik_form_logs.ini
+trans.fr-FR= plugins/fabrik_form/logs/language/fr-FR/fr-FR.plg_fabrik_form_logs.ini
+trans.it-IT = plugins/fabrik_form/logs/language/it-IT/it-IT.plg_fabrik_form_logs.ini
+trans.pt-BR = plugins/fabrik_form/logs/language/pt-BR/pt-BR.plg_fabrik_form_logs.ini
+
+[fabrik.plg_form_mailchimp]
+file_filter = plugins/fabrik_form/mailchimp/language/<lang>/<lang>.plg_fabrik_form_mailchimp.ini
+source_file = plugins/fabrik_form/mailchimp/language/en-GB/en-GB.plg_fabrik_form_mailchimp.ini
+source_lang = en_GB
+
+[fabrik.plg_form_notification]
+file_filter = plugins/fabrik_form/notification/language/<lang>/<lang>.plg_fabrik_form_notification.ini
+source_file = plugins/fabrik_form/notification/language/en-GB/en-GB.plg_fabrik_form_notification.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/notification/language/de-DE/de-DE.plg_fabrik_form_notification.ini
+trans.it-IT = plugins/fabrik_form/notification/language/it-IT/it-IT.plg_fabrik_form_notification.ini
+
+[fabrik.plg_form_paginate]
+file_filter = plugins/fabrik_form/paginate/language/<lang>/<lang>.plg_fabrik_form_paginate.ini
+source_file = plugins/fabrik_form/paginate/language/en-GB/en-GB.plg_fabrik_form_paginate.ini
+source_lang = en_GB
+
+[fabrik.plg_form_paypal]
+file_filter = plugins/fabrik_form/paypal/language/<lang>/<lang>.plg_fabrik_form_paypal.ini
+source_file = plugins/fabrik_form/paypal/language/en-GB/en-GB.plg_fabrik_form_paypal.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/paypal/language/de-DE/de-DE.plg_fabrik_form_paypal.ini
+trans.es-ES = plugins/fabrik_form/paypal/language/es-ES/es-ES.plg_fabrik_form_paypal.ini
+trans.it-IT = plugins/fabrik_form/paypal/language/it-IT/it-IT.plg_fabrik_form_paypal.ini
+
+[fabrik.plg_form_php]
+file_filter = plugins/fabrik_form/php/language/<lang>/<lang>.plg_fabrik_form_php.ini
+source_file = plugins/fabrik_form/php/language/en-GB/en-GB.plg_fabrik_form_php.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_form/php/language/de-DE/de-DE.plg_fabrik_form_php.ini
+trans.el-GR = plugins/fabrik_form/php/language/el-GR/el-GR.plg_fabrik_form_php.ini
+trans.es-ES = plugins/fabrik_form/php/language/es-ES/es-ES.plg_fabrik_form_php.ini
+trans.fr-FR = plugins/fabrik_form/php/language/fr-FR/fr-FR.plg_fabrik_form_php.ini
+trans.it-IT = plugins/fabrik_form/php/language/it-IT/it-IT.plg_fabrik_form_php.ini
+trans.pt-BR = plugins/fabrik_form/php/language/pt-BR/pt-BR.plg_fabrik_form_php.ini
+
+[fabrik.plg_form_receipt]
+file_filter = plugins/fabrik_form/receipt/language/<lang>/<lang>.plg_fabrik_form_receipt.ini
+source_file = plugins/fabrik_form/receipt/language/en-GB/en-GB.plg_fabrik_form_receipt.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_form/receipt/language/fr-FR/fr-FR.plg_fabrik_form_receipt.ini
+trans.pt-BR = plugins/fabrik_form/receipt/language/pt-BR/pt-BR.plg_fabrik_form_receipt.ini
+
+[fabrik.plg_form_redirect]
+file_filter = plugins/fabrik_form/redirect/language/<lang>/<lang>.plg_fabrik_form_redirect.ini
+source_file = plugins/fabrik_form/redirect/language/en-GB/en-GB.plg_fabrik_form_redirect.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_form/redirect/language/fr-FR/fr-FR.plg_fabrik_form_redirect.ini
+trans.pt-BR = plugins/fabrik_form/redirect/language/pt-BR/pt-BR.plg_fabrik_form_redirect.ini
+
+[fabrik.plg_form_rest]
+file_filter = plugins/fabrik_form/rest/language/<lang>/<lang>.plg_fabrik_form_rest.ini
+source_file = plugins/fabrik_form/rest/language/en-GB/en-GB.plg_fabrik_form_rest.ini
+source_lang = en_GB
+
+[fabrik.plg_form_salesforce]
+file_filter = plugins/fabrik_form/salesforce/language/<lang>/<lang>.plg_fabrik_form_salesforce.ini
+source_file = plugins/fabrik_form/salesforce/language/en-GB/en-GB.plg_fabrik_form_salesforce.ini
+source_lang = en_GB
+
+[fabrik.plg_form_sms]
+file_filter = plugins/fabrik_form/sms/language/<lang>/<lang>.plg_fabrik_form_sms.ini
+source_file = plugins/fabrik_form/sms/language/en-GB/en-GB.plg_fabrik_form_sms.ini
+source_lang = en_GB
+trans.de-DE= plugins/fabrik_form/sms/language/de-DE/de-DE.plg_fabrik_form_sms.ini
+trans.es-ES = plugins/fabrik_form/sms/language/es-ES/es-ES.plg_fabrik_form_sms.ini
+trans.it-IT = plugins/fabrik_form/sms/language/it-IT/it-IT.plg_fabrik_form_sms.ini
+
+[fabrik.plg_form_subscriptions]
+file_filter = plugins/fabrik_form/subscriptions/language/<lang>/<lang>.plg_fabrik_form_subscriptions.ini
+source_file = plugins/fabrik_form/subscriptions/language/en-GB/en-GB.plg_fabrik_form_subscriptions.ini
+source_lang = en_GB
+
+[fabrik.plg_form_twitter]
+file_filter = plugins/fabrik_form/twitter/language/<lang>/<lang>.plg_fabrik_form_twitter.ini
+source_file = plugins/fabrik_form/twitter/language/en-GB/en-GB.plg_fabrik_form_twitter.ini
+source_lang = en_GB
+trans.de-DE= plugins/fabrik_form/twitter/language/de-DE/de-DE.plg_fabrik_form_twitter.ini
+trans.es-ES = plugins/fabrik_form/twitter/language/es-ES/es-ES.plg_fabrik_form_twitter.ini
+trans.it-IT = plugins/fabrik_form/twitter/language/it-IT/it-IT.plg_fabrik_form_twitter.ini
+
+[fabrik.plg_form_vbforum]
+file_filter = plugins/fabrik_form/vbforum/language/<lang>/<lang>.plg_fabrik_form_vbforum.ini
+source_file = plugins/fabrik_form/vbforum/language/en-GB/en-GB.plg_fabrik_form_vbforum.ini
+source_lang = en_GB
+
+[fabrik.plg_list_caneditrow]
+file_filter = plugins/fabrik_list/caneditrow/language/<lang>/<lang>.plg_fabrik_list_caneditrow.ini
+source_file = plugins/fabrik_list/caneditrow/language/en-GB/en-GB.plg_fabrik_list_caneditrow.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_list/caneditrow/language/fr-FR/fr-FR.plg_fabrik_list_caneditrow.ini
+
+[fabrik.plg_list_copy]
+file_filter = plugins/fabrik_list/copy/language/<lang>/<lang>.plg_fabrik_list_copy.ini
+source_file = plugins/fabrik_list/copy/language/en-GB/en-GB.plg_fabrik_list_copy.ini
+source_lang = en_GB
+trans.es-ES = plugins/fabrik_list/copy/language/es-ES/es-ES.plg_fabrik_list_copy.ini
+trans.fr-FR = plugins/fabrik_list/copy/language/fr-FR/fr-FR.plg_fabrik_list_copy.ini
+trans.pt-BR = plugins/fabrik_list/copy/language/pt-BR/pt-BR.plg_fabrik_list_copy.ini
+
+[fabrik.plg_list_download]
+file_filter = plugins/fabrik_list/download/language/<lang>/<lang>.plg_fabrik_list_download.ini
+source_file = plugins/fabrik_list/download/language/en-GB/en-GB.plg_fabrik_list_download.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_list/download/language/de-DE/de-DE.plg_fabrik_list_download.ini
+trans.fr-FR = plugins/fabrik_list/download/language/fr-FR/fr-FR.plg_fabrik_list_download.ini
+trans.it-IT = plugins/fabrik_list/download/language/it-IT/it-IT.plg_fabrik_list_download.ini
+
+[fabrik.plg_list_email]
+file_filter = plugins/fabrik_list/email/language/<lang>/<lang>.plg_fabrik_list_email.ini
+source_file = plugins/fabrik_list/email/language/en-GB/en-GB.plg_fabrik_list_email.ini
+source_lang = en_GB
+trans.ru-RU = plugins/fabrik_list/email/language/ru-RU/ru-RU.plg_fabrik_list_email.ini
+
+[fabrik.plg_list_inlineedit]
+file_filter = plugins/fabrik_list/inlineedit/language/<lang>/<lang>.plg_fabrik_list_inlineedit.ini
+source_file = plugins/fabrik_list/inlineedit/language/en-GB/en-GB.plg_fabrik_list_inlineedit.ini
+source_lang = en_GB
+
+[fabrik.plg_list_listcsv]
+file_filter = plugins/fabrik_list/listcsv/language/<lang>/<lang>.plg_fabrik_list_listcsv.ini
+source_file = plugins/fabrik_list/listcsv/language/en-GB/en-GB.plg_fabrik_list_listcsv.ini
+source_lang = en_GB
+
+[fabrik.plg_list_order]
+file_filter = plugins/fabrik_list/order/language/<lang>/<lang>.plg_fabrik_list_order.ini
+source_file = plugins/fabrik_list/order/language/en-GB/en-GB.plg_fabrik_list_order.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_list/order/language/de-DE/de-DE.plg_fabrik_list_order.ini
+
+[fabrik.plg_list_php]
+file_filter = plugins/fabrik_list/php/language/<lang>/<lang>.plg_fabrik_list_php.ini
+source_file = plugins/fabrik_list/php/language/en-GB/en-GB.plg_fabrik_list_php.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_list/php/language/fr-FR/fr-FR.plg_fabrik_list_php.ini
+trans.pt-BR = plugins/fabrik_list/php/language/pt-BR/pt-BR.plg_fabrik_list_php.ini
+
+[fabrik.plg_list_php_events]
+file_filter = plugins/fabrik_list/php_events/language/<lang>/<lang>.plg_fabrik_list_php_events.ini
+source_file = plugins/fabrik_list/php_events/language/en-GB/en-GB.plg_fabrik_list_php_events.ini
+source_lang = en_GB
+trans.es-ES = plugins/fabrik_list/php_events/language/es-ES/es-ES.plg_fabrik_list_php_events.ini
+
+[fabrik.plg_list_radius_search]
+file_filter = plugins/fabrik_list/radius_search/language/<lang>/<lang>.plg_fabrik_list_radius_search.ini
+source_file = plugins/fabrik_list/radius_search/language/en-GB/en-GB.plg_fabrik_list_radius_search.ini
+source_lang = en_GB
+
+[fabrik.plg_list_update_col]
+file_filter = plugins/fabrik_list/update_col/language/<lang>/<lang>.plg_fabrik_list_update_col.ini
+source_file = plugins/fabrik_list/update_col/language/en-GB/en-GB.plg_fabrik_list_update_col.ini
+source_lang = en_GB
+
+[fabrik.plg_list_webservice]
+file_filter = plugins/fabrik_list/webservice/language/<lang>/<lang>.plg_fabrik_list_webservice.ini
+source_file = plugins/fabrik_list/webservice/language/en-GB/en-GB.plg_fabrik_list_webservice.ini
+source_lang = en_GB
+
+[fabrik.plg_validationrule_akismet]
+file_filter = plugins/fabrik_validationrule/akismet/language/<lang>/<lang>.plg_fabrik_validationrule_akismet.ini
+source_file = plugins/fabrik_validationrule/akismet/language/en-GB/en-GB.plg_fabrik_validationrule_akismet.ini
+source_lang = en_GB
+trans.es-ES = plugins/fabrik_validationrule/akismet/language/es-ES/es-ES.plg_fabrik_validationrule_akismet.ini
+trans.fr-FR = plugins/fabrik_validationrule/akismet/language/fr-FR/fr-FR.plg_fabrik_validationrule_akismet.ini
+
+[fabrik.plg_validationrule_areuniquevalues]
+file_filter = plugins/fabrik_validationrule/areuniquevalues/language/<lang>/<lang>.plg_fabrik_validationrule_areuniquevalues.ini
+source_file = plugins/fabrik_validationrule/areuniquevalues/language/en-GB/en-GB.plg_fabrik_validationrule_areuniquevalues.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/areuniquevalues/language/de-DE/de-DE.plg_fabrik_validationrule_areuniquevalues.ini
+trans.es-ES = plugins/fabrik_validationrule/areuniquevalues/language/es-ES/es-ES.plg_fabrik_validationrule_areuniquevalues.ini
+trans.fr-FR = plugins/fabrik_validationrule/areuniquevalues/language/fr-FR/fr-FR.plg_fabrik_validationrule_areuniquevalues.ini
+
+[fabrik.plg_validationrule_emailexists]
+file_filter = plugins/fabrik_validationrule/emailexists/language/<lang>/<lang>.plg_fabrik_validationrule_emailexists.ini
+source_file = plugins/fabrik_validationrule/emailexists/language/en-GB/en-GB.plg_fabrik_validationrule_emailexists.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/emailexists/language/de-DE/de-DE.plg_fabrik_validationrule_emailexists.ini
+trans.es-ES = plugins/fabrik_validationrule/emailexists/language/es-ES/es-ES.plg_fabrik_validationrule_emailexists.ini
+trans.fr-FR = plugins/fabrik_validationrule/emailexists/language/fr-FR/fr-FR.plg_fabrik_validationrule_emailexists.ini
+trans.it-IT = plugins/fabrik_validationrule/emailexists/language/it-IT/it-IT.plg_fabrik_validationrule_emailexists.ini
+
+[fabrik.plg_validationrule_isalphanumeric]
+file_filter = plugins/fabrik_validationrule/isalphanumeric/language/<lang>/<lang>.plg_fabrik_validationrule_isalphanumeric.ini
+source_file = plugins/fabrik_validationrule/isalphanumeric/language/en-GB/en-GB.plg_fabrik_validationrule_isalphanumeric.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isalphanumeric/language/de-DE/de-DE.plg_fabrik_validationrule_isalphanumeric.ini
+trans.es-ES = plugins/fabrik_validationrule/isalphanumeric/language/es-ES/es-ES.plg_fabrik_validationrule_isalphanumeric.ini
+trans.fr-FR = plugins/fabrik_validationrule/isalphanumeric/language/fr-FR/fr-FR.plg_fabrik_validationrule_isalphanumeric.ini
+
+[fabrik.plg_validationrule_isemail]
+file_filter = plugins/fabrik_validationrule/isemail/language/<lang>/<lang>.plg_fabrik_validationrule_isemail.ini
+source_file = plugins/fabrik_validationrule/isemail/language/en-GB/en-GB.plg_fabrik_validationrule_isemail.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isemail/language/de-DE/de-DE.plg_fabrik_validationrule_isemail.ini
+trans.es-ES = plugins/fabrik_validationrule/isemail/language/es-ES/es-ES.plg_fabrik_validationrule_isemail.ini
+trans.fr-FR = plugins/fabrik_validationrule/isemail/language/fr-FR/fr-FR.plg_fabrik_validationrule_isemail.ini
+
+[fabrik.plg_validationrule_isgreaterorlessthan]
+file_filter = plugins/fabrik_validationrule/isgreaterorlessthan/language/<lang>/<lang>.plg_fabrik_validationrule_isgreaterorlessthan.ini
+source_file = plugins/fabrik_validationrule/isgreaterorlessthan/language/en-GB/en-GB.plg_fabrik_validationrule_isgreaterorlessthan.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isgreaterorlessthan/language/de-DE/de-DE.plg_fabrik_validationrule_isgreaterorlessthan.ini
+trans.es-ES = plugins/fabrik_validationrule/isgreaterorlessthan/language/es-ES/es-ES.plg_fabrik_validationrule_isgreaterorlessthan.ini
+trans.fr-FR = plugins/fabrik_validationrule/isgreaterorlessthan/language/fr-FR/fr-FR.plg_fabrik_validationrule_isgreaterorlessthan.ini
+trans.pt-BR = plugins/fabrik_validationrule/isgreaterorlessthan/language/pt-BR/pt-BR.plg_fabrik_validationrule_isgreaterorlessthan.ini
+
+[fabrik.plg_validationrule_isnot]
+file_filter = plugins/fabrik_validationrule/isnot/language/<lang>/<lang>.plg_fabrik_validationrule_isnot.ini
+source_file = plugins/fabrik_validationrule/isnot/language/en-GB/en-GB.plg_fabrik_validationrule_isnot.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isnot/language/de-DE/de-DE.plg_fabrik_validationrule_isnot.ini
+trans.es-ES = plugins/fabrik_validationrule/isnot/language/es-ES/es-ES.plg_fabrik_validationrule_isnot.ini
+trans.fr-FR = plugins/fabrik_validationrule/isnot/language/fr-FR/fr-FR.plg_fabrik_validationrule_isnot.ini
+trans.it-IT = plugins/fabrik_validationrule/isnot/language/it-IT/it-IT.plg_fabrik_validationrule_isnot.ini
+
+[fabrik.plg_validationrule_isnumeric]
+file_filter = plugins/fabrik_validationrule/isnumeric/language/<lang>/<lang>.plg_fabrik_validationrule_isnumeric.ini
+source_file = plugins/fabrik_validationrule/isnumeric/language/en-GB/en-GB.plg_fabrik_validationrule_isnumeric.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isnumeric/language/de-DE/de-DE.plg_fabrik_validationrule_isnumeric.ini
+trans.es-ES = plugins/fabrik_validationrule/isnumeric/language/es-ES/es-ES.plg_fabrik_validationrule_isnumeric.ini
+trans.fr-FR = plugins/fabrik_validationrule/isnumeric/language/fr-FR/fr-FR.plg_fabrik_validationrule_isnumeric.ini
+
+[fabrik.plg_validationrule_isuniquevalue]
+file_filter = plugins/fabrik_validationrule/isuniquevalue/language/<lang>/<lang>.plg_fabrik_validationrule_isuniquevalue.ini
+source_file = plugins/fabrik_validationrule/isuniquevalue/language/en-GB/en-GB.plg_fabrik_validationrule_isuniquevalue.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/isuniquevalue/language/de-DE/de-DE.plg_fabrik_validationrule_isuniquevalue.ini
+trans.es-ES = plugins/fabrik_validationrule/isuniquevalue/language/es-ES/es-ES.plg_fabrik_validationrule_isuniquevalue.ini
+trans.fr-FR = plugins/fabrik_validationrule/isuniquevalue/language/fr-FR/fr-FR.plg_fabrik_validationrule_isuniquevalue.ini
+
+[fabrik.plg_validationrule_notempty]
+file_filter = plugins/fabrik_validationrule/notempty/language/<lang>/<lang>.plg_fabrik_validationrule_notempty.ini
+source_file = plugins/fabrik_validationrule/notempty/language/en-GB/en-GB.plg_fabrik_validationrule_notempty.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/notempty/language/de-DE/de-DE.plg_fabrik_validationrule_notempty.ini
+trans.es-ES = plugins/fabrik_validationrule/notempty/language/es-ES/es-ES.plg_fabrik_validationrule_notempty.ini
+trans.fr-FR = plugins/fabrik_validationrule/notempty/language/fr-FR/fr-FR.plg_fabrik_validationrule_notempty.ini
+trans.pt-BR = plugins/fabrik_validationrule/notempty/language/pt-BR/pt-BR.plg_fabrik_validationrule_notempty.ini
+
+[fabrik.plg_validationrule_php]
+file_filter = plugins/fabrik_validationrule/php/language/<lang>/<lang>.plg_fabrik_validationrule_php.ini
+source_file = plugins/fabrik_validationrule/php/language/en-GB/en-GB.plg_fabrik_validationrule_php.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/php/language/de-DE/de-DE.plg_fabrik_validationrule_php.ini
+trans.es-ES = plugins/fabrik_validationrule/php/language/es-ES/es-ES.plg_fabrik_validationrule_php.ini
+trans.fr-FR = plugins/fabrik_validationrule/php/language/fr-FR/fr-FR.plg_fabrik_validationrule_php.ini
+trans.it-IT = plugins/fabrik_validationrule/php/language/it-IT/it-IT.plg_fabrik_validationrule_php.ini
+trans.pt-BR = plugins/fabrik_validationrule/php/language/pt-BR/pt-BR.plg_fabrik_validationrule_php.ini
+
+[fabrik.plg_validationrule_regex]
+file_filter = plugins/fabrik_validationrule/regex/language/<lang>/<lang>.plg_fabrik_validationrule_regex.ini
+source_file = plugins/fabrik_validationrule/regex/language/en-GB/en-GB.plg_fabrik_validationrule_regex.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/regex/language/de-DE/de-DE.plg_fabrik_validationrule_regex.ini
+trans.es-ES = plugins/fabrik_validationrule/regex/language/es-ES/es-ES.plg_fabrik_validationrule_regex.ini
+trans.fr-FR = plugins/fabrik_validationrule/regex/language/fr-FR/fr-FR.plg_fabrik_validationrule_regex.ini
+trans.it-IT = plugins/fabrik_validationrule/regex/language/it-IT/it-IT.plg_fabrik_validationrule_regex.ini
+trans.pt-BR = plugins/fabrik_validationrule/regex/language/pt-BR/pt-BR.plg_fabrik_validationrule_regex.ini
+
+[fabrik.plg_validationrule_specialchars]
+file_filter = plugins/fabrik_validationrule/specialchars/language/<lang>/<lang>.plg_fabrik_validationrule_specialchars.ini
+source_file = plugins/fabrik_validationrule/specialchars/language/en-GB/en-GB.plg_fabrik_validationrule_specialchars.ini
+source_lang = en_GB
+trans.es-ES = plugins/fabrik_validationrule/specialchars/language/es-ES/es-ES.plg_fabrik_validationrule_specialchars.ini
+trans.fr-FR = plugins/fabrik_validationrule/specialchars/language/fr-FR/fr-FR.plg_fabrik_validationrule_specialchars.ini
+
+[fabrik.plg_validationrule_userexists]
+file_filter = plugins/fabrik_validationrule/userexists/language/<lang>/<lang>.plg_fabrik_validationrule_userexists.ini
+source_file = plugins/fabrik_validationrule/userexists/language/en-GB/en-GB.plg_fabrik_validationrule_userexists.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_validationrule/userexists/language/de-DE/de-DE.plg_fabrik_validationrule_userexists.ini
+trans.es-ES = plugins/fabrik_validationrule/userexists/language/es-ES/es-ES.plg_fabrik_validationrule_userexists.ini
+trans.fr-FR = plugins/fabrik_validationrule/userexists/language/fr-FR/fr-FR.plg_fabrik_validationrule_userexists.ini
+trans.it-IT = plugins/fabrik_validationrule/userexists/language/it-IT/it-IT.plg_fabrik_validationrule_userexists.ini
+
+[fabrik.plg_visualization_approvals]
+file_filter = plugins/fabrik_visualization/approvals/language/<lang>/<lang>.plg_fabrik_visualization_approvals.ini
+source_file = plugins/fabrik_visualization/approvals/language/en-GB/en-GB.plg_fabrik_visualization_approvals.ini
+source_lang = en_GB
+
+[fabrik.plg_visualization_calendar]
+file_filter = plugins/fabrik_visualization/calendar/language/<lang>/<lang>.plg_fabrik_visualization_calendar.ini
+source_file = plugins/fabrik_visualization/calendar/language/en-GB/en-GB.plg_fabrik_visualization_calendar.ini
+source_lang = en_GB
+trans.da-DK = plugins/fabrik_visualization/calendar/language/da-DK/da-DK.plg_fabrik_visualization_calendar.ini
+trans.de-DE = plugins/fabrik_visualization/calendar/language/de-DE/de-DE.plg_fabrik_visualization_calendar.ini
+trans.el-GR = plugins/fabrik_visualization/calendar/language/el-GR/el-GR.plg_fabrik_visualization_calendar.ini
+trans.es-ES = plugins/fabrik_visualization/calendar/language/es-ES/es-ES.plg_fabrik_visualization_calendar.ini
+trans.fr-FR = plugins/fabrik_visualization/calendar/language/fr-FR/fr-FR.plg_fabrik_visualization_calendar.ini
+trans.it-IT = plugins/fabrik_visualization/calendar/language/it-IT/it-IT.plg_fabrik_visualization_calendar.ini
+trans.ja-JP = plugins/fabrik_visualization/calendar/language/ja-JP/ja-JP.plg_fabrik_visualization_calendar.ini
+trans.nl-NL = plugins/fabrik_visualization/calendar/language/nl-NL/nl-NL.plg_fabrik_visualization_calendar.ini
+trans.pt-BR = plugins/fabrik_visualization/calendar/language/pt-BR/pt-BR.plg_fabrik_visualization_calendar.ini
+
+[fabrik.plg_visualization_chart]
+file_filter = plugins/fabrik_visualization/chart/language/<lang>/<lang>.plg_fabrik_visualization_chart.ini
+source_file = plugins/fabrik_visualization/chart/language/en-GB/en-GB.plg_fabrik_visualization_chart.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_visualization/chart/language/de-DE/de-DE.plg_fabrik_visualization_chart.ini
+trans.el-GR = plugins/fabrik_visualization/chart/language/el-GR/el-GR.plg_fabrik_visualization_chart.ini
+trans.es-ES = plugins/fabrik_visualization/chart/language/es-ES/es-ES.plg_fabrik_visualization_chart.ini
+trans.fr-FR = plugins/fabrik_visualization/chart/language/fr-FR/fr-FR.plg_fabrik_visualization_chart.ini
+trans.it-IT = plugins/fabrik_visualization/chart/language/it-IT/it-IT.plg_fabrik_visualization_chart.ini
+trans.pt-BR = plugins/fabrik_visualization/chart/language/pt-BR/pt-BR.plg_fabrik_visualization_chart.ini
+
+[fabrik.plg_visualization_coverflow]
+file_filter = plugins/fabrik_visualization/coverflow/language/<lang>/<lang>.plg_fabrik_visualization_coverflow.ini
+source_file = plugins/fabrik_visualization/coverflow/language/en-GB/en-GB.plg_fabrik_visualization_coverflow.ini
+source_lang = en_GB
+
+[fabrik.plg_visualization_fusion_gantt_chart]
+file_filter = plugins/fabrik_visualization/fusion_gantt_chart/language/<lang>/<lang>.plg_fabrik_visualization_fusion_gantt_chart.ini
+source_file = plugins/fabrik_visualization/fusion_gantt_chart/language/en-GB/en-GB.plg_fabrik_visualization_fusion_gantt_chart.ini
+source_lang = en_GB
+
+[fabrik.plg_visualization_fusionchart]
+file_filter = plugins/fabrik_visualization/fusionchart/language/<lang>/<lang>.plg_fabrik_visualization_fusionchart.ini
+source_file = plugins/fabrik_visualization/fusionchart/language/en-GB/en-GB.plg_fabrik_visualization_fusionchart.ini
+source_lang = en_GB
+trans.it-IT = plugins/fabrik_visualization/fusionchart/language/it-IT/it-IT.plg_fabrik_visualization_fusionchart.ini
+
+[fabrik.plg_visualization_googlemap]
+file_filter = plugins/fabrik_visualization/googlemap/language/<lang>/<lang>.plg_fabrik_visualization_googlemap.ini
+source_file = plugins/fabrik_visualization/googlemap/language/en-GB/en-GB.plg_fabrik_visualization_googlemap.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_visualization/googlemap/language/de-DE/de-DE.plg_fabrik_visualization_googlemap.ini
+trans.fr-FR = plugins/fabrik_visualization/googlemap/language/fr-FR/fr-FR.plg_fabrik_visualization_googlemap.ini
+trans.it-IT = plugins/fabrik_visualization/googlemap/language/it-IT/it-IT.plg_fabrik_visualization_googlemap.ini
+trans.pt-BR = plugins/fabrik_visualization/googlemap/language/pt-BR/pt-BR.plg_fabrik_visualization_googlemap.ini
+
+[fabrik.plg_visualization_kaltura]
+file_filter = plugins/fabrik_visualization/kaltura/language/<lang>/<lang>.plg_fabrik_visualization_kaltura.ini
+source_file = plugins/fabrik_visualization/kaltura/language/en-GB/en-GB.plg_fabrik_visualization_kaltura.ini
+source_lang = en_GB
+
+[fabrik.plg_visualization_media]
+file_filter = plugins/fabrik_visualization/media/language/<lang>/<lang>.plg_fabrik_visualization_media.ini
+source_file = plugins/fabrik_visualization/media/language/en-GB/en-GB.plg_fabrik_visualization_media.ini
+source_lang = en_GB
+trans.fr-FR = plugins/fabrik_visualization/media/language/fr-FR/fr-FR.plg_fabrik_visualization_media.ini
+trans.pt-BR = plugins/fabrik_visualization/media/language/pt-BR/pt-BR.plg_fabrik_visualization_media.ini
+
+[fabrik.plg_visualization_slideshow]
+file_filter = plugins/fabrik_visualization/slideshow/language/<lang>/<lang>.plg_fabrik_visualization_slideshow.ini
+source_file = plugins/fabrik_visualization/slideshow/language/en-GB/en-GB.plg_fabrik_visualization_slideshow.ini
+source_lang = en_GB
+trans.de-DE = plugins/fabrik_visualization/slideshow/language/de-DE/de-DE.plg_fabrik_visualization_slideshow.ini
+trans.fr-FR = plugins/fabrik_visualization/slideshow/language/fr-FR/fr-FR.plg_fabrik_visualization_slideshow.ini
+trans.it-IT = plugins/fabrik_visualization/slideshow/language/it-IT/it-IT.plg_fabrik_visualization_slideshow.ini
+trans.pt-BR = plugins/fabrik_visualization/slideshow/language/pt-BR/pt-BR.plg_fabrik_visualization_slideshow.ini
+
+[fabrik.plg_visualization_timeline]
+file_filter = plugins/fabrik_visualization/timeline/language/<lang>/<lang>.plg_fabrik_visualization_timeline.ini
+source_file = plugins/fabrik_visualization/timeline/language/en-GB/en-GB.plg_fabrik_visualization_timeline.ini
+source_lang = en_GB
