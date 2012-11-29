@@ -173,7 +173,7 @@ class FabrikControllerForm extends JController
 			return;
 		}
 
-		$msg = $model->->showSuccessMsg() ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
+		$msg = $model->showSuccessMsg() ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 
 		if (JRequest::getInt('elid') !== 0)
 		{

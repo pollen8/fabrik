@@ -60,6 +60,9 @@ class FabrikControllerForm extends JControllerForm
 
 	public function process()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$model = JModel::getInstance('Form', 'FabrikFEModel');
@@ -81,7 +84,9 @@ class FabrikControllerForm extends JControllerForm
 		{
 			JRequest::checkToken() or die('Invalid Token');
 		}
-		if (!$model->validate())
+
+		$validated = $model->validate();
+		if (!$validated)
 		{
 			// If its in a module with ajax or in a package or inline edit
 			if (JRequest::getCmd('fabrik_ajax'))
@@ -91,38 +96,54 @@ class FabrikControllerForm extends JControllerForm
 					// Inline edit
 					$eMsgs = array();
 					$errs = $model->getErrors();
-					foreach ($errs as $e)
+
+					// Only raise errors for fields that are present in the inline edit plugin
+					$toValidate = array_keys($input->get('toValidate', array(), 'array'));
+					foreach ($errs as $errorKey => $e)
 					{
-						if (count($e[0]) > 0)
+						if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
 						{
 							array_walk_recursive($e, array('FabrikString', 'forHtml'));
 							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 						}
 					}
-					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-					JError::raiseError(500, JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
-					jexit();
+					if (!empty($eMsgs))
+					{
+						$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+						header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+						jexit();
+					}
+					else
+					{
+						$validated = true;
+					}
 				}
 				else
 				{
 					echo $model->getJsonErrors();
+				}
+				if (!$validated)
+				{
 					return;
 				}
 			}
-			if ($this->isMambot)
+			if (!$validated)
 			{
-				JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
+				if ($this->isMambot)
+				{
+					JRequest::setVar('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
 
-				// $$$ hugh - testing way of preserving form values after validation fails with form plugin
-				// might as well use the 'savepage' mechanism, as it's already there!
-				$this->savepage();
-				$this->makeRedirect($model, '');
+					// $$$ hugh - testing way of preserving form values after validation fails with form plugin
+					// might as well use the 'savepage' mechanism, as it's already there!
+					$this->savepage();
+					$this->makeRedirect($model, '');
+				}
+				else
+				{
+					$view->display();
+				}
+				return;
 			}
-			else
-			{
-				$view->display();
-			}
-			return;
 		}
 
 		// Reset errors as validate() now returns ok validations as empty arrays
