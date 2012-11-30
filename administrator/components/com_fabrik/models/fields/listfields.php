@@ -53,6 +53,7 @@ class JFormFieldListfields extends JFormFieldList
 		{
 			$this->results = array();
 		}
+		$formModel = false;
 		$controller = JRequest::getVar('view', JRequest::getVar('task'));
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
