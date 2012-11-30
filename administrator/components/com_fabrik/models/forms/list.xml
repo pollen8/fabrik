@@ -75,7 +75,7 @@
 		
 		<field name="group_by"
 			type="listfields"
-			valueformat="tableelement"
+			valueformat="id"
 			label="COM_FABRIK_FIELD_GROUP_BY_LABEL"
 			description="COM_FABRIK_FIELD_GROUP_BY_DESC" />
 			

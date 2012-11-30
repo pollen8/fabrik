@@ -56,6 +56,7 @@ class FabrikViewList extends JView
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
+		$model = $this->getModel();
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$formModel = $this->get('FormModel');
@@ -79,14 +80,16 @@ class FabrikViewList extends JView
 		else
 		{
 			$this->order_by = array();
-			$orderbys = FabrikWorker::JSONtoData($this->item->order_by, true);
+			$feListModel = $formModel->getListModel();
+			$orderbys = $feListModel->getOrderBys();
 			foreach ($orderbys as $orderby)
 			{
-				$this->order_by[] = $formModel->getElementList('order_by[]', $orderby, true, false, false);
+				// $name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true, $key = 'name'
+				$this->order_by[] = $formModel->getElementList('order_by[]', $orderby, true, false, false, 'id');
 			}
 			if (empty($this->order_by))
 			{
-				$this->order_by[] = $formModel->getElementList('order_by[]', '', true, false, false);
+				$this->order_by[] = $formModel->getElementList('order_by[]', '', true, false, false, 'id');
 			}
 			$orderDir[] = JHTML::_('select.option', 'ASC', JText::_('COM_FABRIK_ASCENDING'));
 			$orderDir[] = JHTML::_('select.option', 'DESC', JText::_('COM_FABRIK_DESCENDING'));

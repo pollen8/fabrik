@@ -20,7 +20,6 @@ var ListForm = new Class({
 	initialize: function (options) {
 		var rows;
 		this.setOptions(options);
-		this.watchTableDd();
 		this.addAJoinClick = this.addAJoin.bindWithEvent(this);
 		if (document.id('addAJoin')) {
 			document.id('addAJoin').addEvent('click', this.addAJoinClick);
@@ -108,23 +107,6 @@ var ListForm = new Class({
 		e.stop();
 	},
 	
-	watchTableDd: function () {
-		if (document.id('tablename')) {
-			document.id('tablename').addEvent('change', function (e) {
-				var cid = document.getElement('input[name*=connection_id]').get('value');
-				var table = document.id('tablename').get('value');
-				var url = 'index.php?option=com_fabrik&format=raw&task=list.ajax_updateColumDropDowns&cid=' + cid + '&table=' + table;
-				var myAjax = new Request({
-					url: url,
-					method: 'post', 
-					onComplete: function (r) {
-						eval(r);
-					}
-				}).send();
-			});
-		}
-	},
-		
 	watchFieldList: function (name) {
 		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(select[name*=' + name + '])', function (e, target) {
 			this.updateJoinStatement(target.getParent('table').id.replace('join', ''));

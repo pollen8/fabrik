@@ -69,6 +69,20 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$feModel = JModel::getInstance($view, 'FabrikFEModel');
 		$feModel->setId($id);
 		$subForm->model = $feModel;
+
+		// Hack for order by elements which we now want to store as ids
+		$v = json_decode($this->value);
+		if (isset($v->order_by))
+		{
+			$formModel = $feModel->getFormModel();
+			foreach ($v->order_by as &$orderBy)
+			{
+				$elementModel = $formModel->getElement($orderBy, true);
+				$orderBy = $elementModel ? $elementModel->getId() : $orderBy;
+			}
+		}
+		$this->value = json_encode($v);
+
 		/*
 		 * end
 		 */

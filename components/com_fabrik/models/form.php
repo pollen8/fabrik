@@ -2733,19 +2733,20 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create a drop down list of all the elements in the form
 	 *
-	 * @param   string  $name                drop down name
-	 * @param   string  $default             current value
-	 * @param   bool    $excludeUnpublished  add elements that are unpublished
-	 * @param   bool    $useStep             concat table name and el name with '___' (true) or "." (false)
-	 * @param   bool    $incRaw              include raw labels default = true
+	 * @param   string  $name                Drop down name
+	 * @param   string  $default             Current value
+	 * @param   bool    $excludeUnpublished  Add elements that are unpublished
+	 * @param   bool    $useStep             Concat table name and el name with '___' (true) or "." (false)
+	 * @param   bool    $incRaw              Include raw labels default = true
+	 * @param   string  $key                 What value should be used for the option value 'name' (default) or 'id' @since 3.0.7
 	 *
 	 * @return	string	html list
 	 */
 
-	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true)
+	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true, $key = 'name')
 	{
 		$aEls = array();
-		$aEls = $this->getElementOptions($useStep, 'name', false, $incRaw);
+		$aEls = $this->getElementOptions($useStep, $key, false, $incRaw);
 		$aEls[] = JHTML::_('select.option', '', '-');
 		asort($aEls);
 		return JHTML::_('select.genericlist', $aEls, $name, 'class="inputbox" size="1" ', 'value', 'text', $default);
@@ -2754,8 +2755,8 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get an array of the form's element's ids
 	 *
-	 * @param   array  $ignore  classNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array  $opts    'includePublised' can be set to 0; @since 3.0.7
+	 * @param   array  $ignore  ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array  $opts    Propery 'includePublised' can be set to 0; @since 3.0.7
 	 *
 	 * @return  array  ints ids
 	 */

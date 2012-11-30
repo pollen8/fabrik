@@ -1,11 +1,11 @@
 <?php
 /**
-* @version
-* @package Joomla
-* @subpackage Fabrik
-* @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * @version
+ * @package Joomla
+ * @subpackage Fabrik
+ * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
@@ -14,7 +14,7 @@ jimport('joomla.application.component.controlleradmin');
 /**
  * @package		Joomla
  * @subpackage	Fabrik
- */
+*/
 
 class FabrikControllerHome extends JControllerAdmin
 {
@@ -39,7 +39,7 @@ class FabrikControllerHome extends JControllerAdmin
 		$model->reset();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
 	}
-	
+
 	function dropData()
 	{
 		$model = $this->getModel('Home');
@@ -49,36 +49,14 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 	/**
- * install sample form
- */
+	 * Install sample form
+	 */
 
 	function installSampleData()
 	{
 		$model = $this->getModel('Home');
 		$model->installSampleData();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
-	}
-
-	/**
-	 * ajax function to update any drop down that contains records relating to the selected table
-	 * called each time the selected table is changed
-	 */
-
-	function ajax_updateColumDropDowns()
-	{
-		$cnnId = JRequest::getInt('cid', 1);
-		$tbl = JRequest::getVar('table', '');
-		$model = JModel::getInstance('List', 'FabrikFEModel');
-		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
-		$fieldDropDown2 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'group_by');
-		$fieldDropDown3 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'params[group_by_order]');
-		echo "$('orderByTd').innerHTML = '$fieldDropDown';";
-		echo "if($('groupByTd')){
-			$('groupByTd').innerHTML = '$fieldDropDown2';
-		}";
-		echo "if($('groupByOrderTd')){
-			$('groupByOrderTd').innerHTML = '$fieldDropDown3';
-		}";
 	}
 
 	function getRSSFeed()

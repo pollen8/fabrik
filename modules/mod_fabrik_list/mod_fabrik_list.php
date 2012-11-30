@@ -102,8 +102,8 @@ if ($showTitle !== '')
 }
 
 $ordering = JArrayHelper::fromObject(json_decode($params->get('ordering')));
-$orderBy = (array)$ordering['order_by'];
-$orderDir = (array)$ordering['order_dir'];
+$orderBy = (array) $ordering['order_by'];
+$orderDir = (array) $ordering['order_dir'];
 if (!empty($orderBy))
 {
 	$model->getTable()->order_by = json_encode($orderBy);
@@ -134,4 +134,3 @@ $view->assign('error', $controller->getError());
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);
-?>
