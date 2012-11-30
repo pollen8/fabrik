@@ -199,7 +199,11 @@ class JFormFieldListfields extends JFormFieldList
 			// Some elements were stored as names but subsequently changed to ids (need to check for old values an substitute with correct ones)
 			if ($valueformat == 'id' && !is_numeric($this->value) && $this->value != '')
 			{
-				$elementModel = $formModel->getElement($this->value);
+				if ($formModel)
+				{
+					$elementModel = $formModel->getElement($this->value);
+					$this->value = $elementModel ? $elementModel->getId() : $this->value;
+				}
 			}
 			$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
 			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
