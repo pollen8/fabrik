@@ -1157,6 +1157,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$rawname = $this->getFullName(false, true, false) . '_raw';
 		$editable = $this->isEditable();
 		$attribs = 'class="fabrikinput inputbox" id="' . $id . '"';
+
+		$thisElName = FabrikString::rtrimword($thisElName, '[]');
+
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $optsPerRow, $editable);
 		if ($this->isJoin() && $editable)
 		{
@@ -1164,12 +1167,13 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
 			if ($groupModel->canRepeat())
 			{
-				$joinidsName .= '[' . $repeatCounter . '][]';
+				// $joinidsName .= '[' . $repeatCounter . '][]';
+				$joinidsName .= '[' . $repeatCounter . ']';
 				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $joinId . '.' . $rawname . '.' . $repeatCounter, 'not found');
 			}
 			else
 			{
-				$joinidsName .= '[]';
+				// $joinidsName .= '[]';
 				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 			}
 			$tmpids = array();
