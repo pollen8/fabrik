@@ -9235,7 +9235,7 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$csvFields = array();
-		if ($params->get('csv_elements') == '')
+		if ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
 		{
 			$csvIds = array();
 		}
