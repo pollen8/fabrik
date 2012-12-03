@@ -1875,9 +1875,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			else
 			{
 				$dbName = $this->getDbName();
+				$fType = $this->getElement()->filter_type;
 				if ($this->isJoin())
 				{
-					$fType = $this->getElement()->filter_type;
 					if ($fType == 'field')
 					{
 						$where = $db->quoteName($dbName . '.' . $this->getLabelParamVal());
@@ -1896,6 +1896,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 				else
 				{
+					if ($fType === 'auto-complete')
+					{
+						// If autocomplete then we should search on the element's column, not the joined label column http://fabrikar.com/forums/showthread.php?t=29977
+						$key = $db->quoteName($this->getFullName(false, false, false));
+					}
 					$str = "$key $condition $value";
 				}
 			}
