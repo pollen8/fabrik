@@ -3132,6 +3132,32 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get a readonly value for a filter, uses _getROElement() to asscertain value, adds between x & y if ranged values
+	 *
+	 * @param    mixed  $data  String or array of filter value(s)
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	public function getFilterRO($data)
+	{
+		if (in_array($this->getFilterType(), array('range', 'range-hidden')))
+		{
+			$return = array();
+			foreach ($data as $d)
+			{
+				$return[] = $this->_getROElement($d);
+
+			}
+			return JText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . JText::_('COM_FABRIK_AND') . "<br />", $return);
+
+		}
+		return $this->_getROElement($data);
+	}
+
+	/**
 	 * Get options order by
 	 *
 	 * @param   string         $view   Ciew mode '' or 'filter'
@@ -3252,6 +3278,28 @@ class plgFabrik_Element extends FabrikPlugin
 			$cond = ($match == 1) ? '=' : 'contains';
 		}
 		return $cond;
+	}
+
+	/**
+	 * Get the filter type: the element filter_type property unless a ranged querystring is used
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return string
+	 */
+	protected function getFilterType()
+	{
+		$element = $this->getElement();
+		$type = $element->filter_type;
+		$name = $this->getFullName(false, true, false);
+		$app = JFactory::getApplication();
+		$qsFilter = $app->input->get($name, array(), 'array');
+		$qsValues = JArrayHelper::getValue($qsFilter, 'value', array());
+		if (count($qsValues) > 1)
+		{
+			$type = $type === 'hidden' ? 'range-hidden' : 'range';
+		}
+		return $type;
 	}
 
 	/**

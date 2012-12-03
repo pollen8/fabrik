@@ -4177,11 +4177,11 @@ class FabrikFEModelList extends JModelForm
 				$elementModel->defaults = null;
 				if (array_key_exists($key, $readOnlyValues))
 				{
-					$readOnlyValues[$key][] = $elementModel->_getROElement($tmpData);
+					$readOnlyValues[$key][] = $elementModel->getFilterRO($tmpData);
 				}
 				else
 				{
-					$readOnlyValues[$key] = array($elementModel->_getROElement($tmpData));
+					$readOnlyValues[$key] = array($elementModel->getFilterRO($tmpData));
 				}
 				// Set it back to null again so that in form view we dont return this value.
 				$elementModel->defaults = null;
@@ -5002,7 +5002,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		$fscript .= "Fabrik.filter_{$container}.update();\n";
+		$fscript .= 'Fabrik.filter_' . $container . ".update();\n";
 		$this->filterJs = $fscript;
 
 		// Check for search form filters - if they exists create hidden elements for them
