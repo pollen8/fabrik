@@ -2147,7 +2147,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->popwiny = $params->get('yoffset', 0);
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $this->getDisplayType();
-		$opts->show_please_select = $params->get('database_join_show_please_select');
+		$opts->show_please_select = $params->get('database_join_show_please_select') === "1";
 		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
 			? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
