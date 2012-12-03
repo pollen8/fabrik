@@ -172,7 +172,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		@list($email_from, $email_from_name) = explode(":", $w->parseMessageForPlaceholder($params->get('email_from'), $this->data, false), 2);
 		if (empty($email_from))
 		{
-			$email_from = $config->getvalue('mailfrom');
+			$email_from = $config->get('mailfrom');
 		}
 		if (empty($email_from_name))
 		{
