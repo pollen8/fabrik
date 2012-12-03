@@ -68,18 +68,18 @@ defined('_JEXEC') or die;
 					<?php echo JText::_('COM_FABRIK_GROUP_BY'); ?>
 			</legend>
 			<ul class="adminformlist">
-				<?php foreach ($this->form->getFieldset('grouping') as $field): ?>
-					<?php if (!$field->hidden): ?>
+				<?php foreach ($this->form->getFieldset('grouping') as $field):
+					if (!$field->hidden): ?>
 						<li><?php echo $field->label; ?></li>
 					<?php endif; ?>
-					<li><?php echo $field->input; ?></li>
-				<?php endforeach; ?>
-
-				<?php foreach ($this->form->getFieldset('grouping2') as $field): ?>
-					<?php if (!$field->hidden): ?>
+					<li id="li_<?php echo str_replace(array('[', ']', 'jformparams'), '', $field->name) ?>"><?php echo $field->input; ?></li>
+				<?php
+				endforeach;
+				foreach ($this->form->getFieldset('grouping2') as $field):
+					if (!$field->hidden): ?>
 						<li><?php echo $field->label; ?></li>
 					<?php endif; ?>
-					<li><?php echo $field->input; ?></li>
+					<li id="li_<?php echo str_replace(array('[', ']', 'jformparams'), '', $field->name) ?>"><?php echo $field->input; ?></li>
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>

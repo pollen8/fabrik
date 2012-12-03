@@ -69,7 +69,8 @@ class JFormFieldTables extends JFormFieldList
 		{
 			$connId = $this->form->getValue('connection_id');
 			$query = $db->getQuery(true);
-			$query->select('id AS value, db_table_name AS ' . $db->quote('text'))->from('#__{package}_lists')
+			$key = JArrayHelper::getValue($this->element, 'key', 'id') == 'name' ? 'db_table_name' : 'id';
+			$query->select($key . ' AS value, db_table_name AS ' . $db->quote('text'))->from('#__{package}_lists')
 				->where('connection_id = ' . (int) $connId);
 			$db->setQuery($query);
 			$items = $db->loadObjectList();

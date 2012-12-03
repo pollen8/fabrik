@@ -1162,6 +1162,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$rawname = $this->getFullName(false, true, false) . '_raw';
 		$editable = $this->isEditable();
 		$attribs = 'class="fabrikinput inputbox" id="' . $id . '"';
+
+		$thisElName = FabrikString::rtrimword($thisElName, '[]');
+
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $optsPerRow, $editable);
 		if ($this->isJoin() && $editable)
 		{
@@ -1169,12 +1172,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
 			if ($groupModel->canRepeat())
 			{
-				$joinidsName .= '[' . $repeatCounter . '][]';
+				// $joinidsName .= '[' . $repeatCounter . '][]';
+				$joinidsName .= '[' . $repeatCounter . ']';
 				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $joinId . '.' . $rawname . '.' . $repeatCounter, 'not found');
 			}
 			else
 			{
-				$joinidsName .= '[]';
+				// $joinidsName .= '[]';
 				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 			}
 			$tmpids = array();
@@ -1876,9 +1880,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			else
 			{
 				$dbName = $this->getDbName();
+				$fType = $this->getElement()->filter_type;
 				if ($this->isJoin())
 				{
-					$fType = $this->getElement()->filter_type;
 					if ($fType == 'field')
 					{
 						$where = $db->quoteName($dbName . '.' . $this->getLabelParamVal());
@@ -1897,6 +1901,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 				else
 				{
+					if ($fType === 'auto-complete')
+					{
+						// If autocomplete then we should search on the element's column, not the joined label column http://fabrikar.com/forums/showthread.php?t=29977
+						$key = $db->quoteName($this->getFullName(false, false, false));
+					}
 					$str = "$key $condition $value";
 				}
 			}

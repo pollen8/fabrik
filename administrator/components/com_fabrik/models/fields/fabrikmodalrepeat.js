@@ -6,7 +6,8 @@ var FabrikModalRepeat = new Class({
 		this.content = false;
 		this.setup = false;
 		this.elid = el;
-		//if the parent field is inserted via js then we delay the loading untill the html is present
+		
+		// If the parent field is inserted via js then we delay the loading untill the html is present
 		if (!this.ready()) {
 			this.timer = this.testReady.periodical(500, this);
 		} else {
@@ -28,42 +29,50 @@ var FabrikModalRepeat = new Class({
 		}
 		this.setUp();
 	},
-
+	
 	setUp: function () {
 		this.button = document.id(this.elid + '_button');
 		this.el = document.id(this.elid).getElement('table');
 		this.el.id = this.elid + '-table';
 		this.field = document.id(this.field);
 		this.button.addEvent('click', function (e) {
-			if (!this.setup) {
-				//seems that trying to inject a <form> as a string causes issues
-				SqueezeBox.open(this.el, {handler: 'adopt', 
-					onClose: function (c) {
-						this.onClose(c);
-					}.bind(this),
-					onOpen: function () {
-						this.content = this.el;
-						this.build();
-						this.watchButtons();
-						this.setup = true;
-					}.bind(this)
-				});
-			} else {
-				var c = this.content;
-				SqueezeBox.open(null, {handler: 'string', content: c,
-					onClose: function (c) {
-						this.onClose(c);
-					}.bind(this),
-					onOpen: function () {
-						this.content = c;
-						this.watchButtons();
-						this.resizeModal();
-					}.bind(this)
-				});
+			if (!this.win) {
+				this.win = new Element('div', {'styles': {'padding': '5px', 'background-color': '#fff', 'display': 'none', 'z-index': 9999}}).inject(document.body);
+				this.win.adopt(this.el);
+				var close = new Element('button.btn.button').set('text', 'close');
+				close.addEvent('click', function (e) {
+					e.stop();
+					this.store();
+					this.close();
+				}.bind(this));
+				var controls = new Element('div.controls', {'styles': {'text-align': 'right'}}).adopt(close);
+				this.win.adopt(controls);
+				this.win.position();
+				this.mask = new Mask(document.body, {style: {'background-color': '#000', 'opacity': 0.4, 'z-index': 9998}});
+				this.content = this.el;
+				this.build();
+				this.watchButtons();
 			}
+			this.win.show();
+			this.win.position();
+			this.resizeWin(true);
+			this.mask.show();
 		}.bind(this));
 	},
 	
+	resizeWin: function (setup) {
+		var size = this.el.getDimensions(true);
+		var wsize = this.win.getDimensions(true);
+		console.log(size, wsize);
+		var y = setup ? wsize.y : size.y + 30;
+		this.win.setStyles({'width': size.x + 'px', 'height': (y) + 'px'});
+	},
+	
+	close: function () {
+		this.win.hide();
+		this.mask.hide();
+	},
+
 	_getRadioValues: function () {
 		var radiovals = [];
 		this.getTrs().each(function (tr) {
@@ -74,7 +83,7 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	_setRadioValues: function (radiovals) {
-		//reapply radio button selections
+		// Reapply radio button selections
 		this.getTrs().each(function (tr, i) {
 			if (r = tr.getElement('input[type=radio][value=' + radiovals[i] + ']')) {
 				r.checked = 'checked';
@@ -83,38 +92,42 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	watchButtons: function () {
+		if (this.buttonsWatched) {
+			return;
+		}
+		this.buttonsWatched = true;
 		this.content.addEvent('click:relay(a.add)', function (e) {
 			if (tr = this.findTr(e)) {
-				//store radio button selections
+				
+				// Store radio button selections
 				var radiovals = this._getRadioValues(); 
 				tr.clone().inject(tr, 'after');
 				this.stripe();
-				//reapply values as renaming radio buttons 
+				
+				// Reapply values as renaming radio buttons 
 				this._setRadioValues(radiovals);
-				this.resizeModal();
+				this.resizeWin();
 			}
 			e.stop();
 		}.bind(this));
 		this.content.addEvent('click:relay(a.remove)', function (e) {
+			
+			// If only one row -don't remove
+			var rows = this.content.getElements('tbody tr');
+			if (rows.length <= 1) {
+				return;
+			}
+			
 			if (tr = this.findTr(e)) {
 				tr.dispose();
-				this.resizeModal();
 			}
+			this.resizeWin();
 			e.stop();
 		}.bind(this));
 	},
 	
 	getTrs: function () {
 		return this.content.getElement('tbody').getElements('tr');
-	},
-	
-	resizeModal: function () {
-		var s = this.content.getSize();
-		s.x = s.x + 20;
-		if (s.y + 50 > document.window.getSize().y) {
-			s.y = document.window.getSize().y - 50;
-		}
-		SqueezeBox.resize(s, false);
 	},
 	
 	stripe: function () {
@@ -141,13 +154,15 @@ var FabrikModalRepeat = new Class({
 		var tr = this.content.getElement('tbody').getElement('tr');
 		var keys = Object.keys(a);
 		var rowcount = keys.length === 0 ? 1 : a[keys[0]].length;
-		//build the rows from the json object
+		
+		// Build the rows from the json object
 		for (var i = 1; i < rowcount; i ++) {
 			tr.clone().inject(tr, 'after');
 		}
 		this.stripe();
 		var trs = this.getTrs();
-		//populate the cloned fields with the json values
+		
+		// Populate the cloned fields with the json values
 		for (i = 0; i < rowcount; i++) {
 			keys.each(function (k) {
 				trs[i].getElements('*[name*=' + k + ']').each(function (f) {
@@ -156,12 +171,12 @@ var FabrikModalRepeat = new Class({
 							f.checked = true;
 						}
 					} else {
-						f.value = a[k][i]; //works for input,select and textareas
+						// Works for input,select and textareas
+						f.value = a[k][i];
 					}	
 				});
 			});
 		}
-		this.resizeModal();
 	},
 	
 	findTr: function (e) {
@@ -171,9 +186,9 @@ var FabrikModalRepeat = new Class({
 		return (tr.length === 0) ? false : tr[0];
 	},
 	
-	onClose: function (c) {
-		this.content = c.getElement('table').clone();
-		//get the current values 
+	store: function () {
+		
+		// Get the current values 
 		var json = {};
 		for (var i = 0; i < this.names.length; i++) {
 			var n = this.names[i];
@@ -189,7 +204,7 @@ var FabrikModalRepeat = new Class({
 				}
 			}.bind(this));		
 		}
-		//store them in the parent field.
+		// Store them in the parent field.
 		this.field.value = JSON.encode(json);
 		return true;
 	}

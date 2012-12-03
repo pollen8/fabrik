@@ -72,12 +72,19 @@
 				
 					<fields name="params">
 						<fieldset modal="true" name="ordering_modal" repeat="true">
-							<field label="MOD_FABRIK_LIST_ELEMENTS_HEADING" name="order_by" size="30" type="listfields" valueformat="tableelement"/>
 						
-							<field label="MOD_FABRIK_LIST_ORDER_DIR_LABEL" name="order_dir" type="list">
+							<field name="order_by"
+								type="listfields"
+								label="MOD_FABRIK_LIST_ELEMENTS_HEADING"
+								valueformat="id"/>
+						
+							<field name="order_dir"
+								type="list"
+								label="MOD_FABRIK_LIST_ORDER_DIR_LABEL">
 									<option value="ASC">MOD_FABRIK_LIST_ASCENDING</option>
 									<option value="DESC">MOD_FABRIK_LIST_DECENDING</option>
 							</field>
+							
 						</fieldset>
 					</fields>
 				</field>

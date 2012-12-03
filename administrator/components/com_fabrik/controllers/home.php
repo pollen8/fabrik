@@ -72,42 +72,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
 	}
 
-	/**
-	 * Ajax function to update any drop down that contains records relating to the selected table
-	 * called each time the selected table is changed
-	 *
-	 * @deprecated
-	 *
-	 * @return void
-	 */
-
-	public function ajax_updateColumDropDowns()
-	{
-		JError::raiseNotice(500, 'ajax_updateColumDropDowns deprecated');
-		/*
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$cnnId = $input->getInt('cid', 1);
-		$tbl = $input->get('table', '', 'string');
-		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$fieldDropDown 	= $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'order_by');
-		$fieldDropDown2 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'group_by');
-		$fieldDropDown3 = $model->getFieldsDropDown($cnnId, $tbl, '-', false, 'params[group_by_order]');
-		echo "$('orderByTd').innerHTML = '$fieldDropDown';";
-		echo "if($('groupByTd')){
-			$('groupByTd').innerHTML = '$fieldDropDown2';
-		}";
-		echo "if($('groupByOrderTd')){
-			$('groupByOrderTd').innerHTML = '$fieldDropDown3';
-		}"; */
-	}
-
-	/**
-	 * get RSS feed
-	 *
-	 * @return  string  html table of Fabrik news items
-	 */
-	public function getRSSFeed()
+	function getRSSFeed()
 	{
 		// Get RSS parsed object
 		$rssDoc = JSimplepieFactory::getFeedParser('http://feeds.feedburner.com/fabrik', 86400);

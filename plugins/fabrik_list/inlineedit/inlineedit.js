@@ -642,6 +642,7 @@ var FbListInlineEdit = new Class({
 		//data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
+		data.toValidate = this.options.elements[data.element].plugins;
 		this.saveRequest = new Request({url: '',
 			'data': data,
 			'evalScripts': true,

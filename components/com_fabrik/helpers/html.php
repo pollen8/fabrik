@@ -712,8 +712,9 @@ EOD;
 
 			if ($editable)
 			{
+				$tmpName = $type === 'checkbox' ? $tag_name . '[' . $i . ']' : $tag_name;
 				$html .= '<label>';
-				$html .= '<input type="' . $type . '" value="' . $k . '" name="' . $tag_name . '" class="fabrikinput" ' . $extra . '/>';
+				$html .= '<input type="' . $type . '" value="' . $k . '" name="' . $tmpName . '" class="fabrikinput" ' . $extra . '/>';
 			}
 			if ($editable || $found)
 			{

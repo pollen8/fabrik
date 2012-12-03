@@ -49,7 +49,11 @@
 	
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping">
 		
-		<field description="COM_FABRIK_FIELD_GROUP_BY_DESC" label="COM_FABRIK_FIELD_GROUP_BY_LABEL" name="group_by" type="listfields" valueformat="tableelement"/>
+		<field name="group_by"
+			type="listfields"
+			valueformat="id"
+			label="COM_FABRIK_FIELD_GROUP_BY_LABEL"
+			description="COM_FABRIK_FIELD_GROUP_BY_DESC" />
 			
 		</fieldset>
 	

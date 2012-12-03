@@ -33,9 +33,19 @@
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 		</field>
 		
-		<field label="PLG_ELEMENT_DBJOIN_CONNECTION" name="join_conn_id" type="connections"/> 
+	</fieldset>
+	
+	<fieldset label="Data" name="plg-databasejoin-simple">
+		
+		<field name="join_conn_id"
+			label="PLG_ELEMENT_DBJOIN_CONNECTION"
+			type="connections"/> 
 			
-		<field label="PLG_ELEMENT_DBJOIN_TABLE_LABEL" name="join_db_name" observe="params_join_conn_id" type="tables"/>
+		<field name="join_db_name"
+			label="PLG_ELEMENT_DBJOIN_TABLE_LABEL"
+			observe="params_join_conn_id"
+			key="name"
+			type="tables"/>
 			
 		<field connection="params_join_conn_id" description="PLG_ELEMENT_DBJOIN_JOIN_KEY_DESC" label="PLG_ELEMENT_DBJOIN_JOIN_KEY_LABEL" name="join_key_column" table="params_join_db_name" type="listfields"/>
 			

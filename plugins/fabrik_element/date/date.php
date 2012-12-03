@@ -996,7 +996,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$exactTime = $this->formatContainsTime($params->get('date_table_format'));
 
 		// $$$ rob if filtering in querystring and ranged value set then force filter type to range
-		$filterType = is_array($value) ? 'range' : $this->getElement()->filter_type;
+
+		$filterType = is_array($value) ? 'range' : $this->getFilterType();
 		switch ($filterType)
 		{
 			case 'range':
@@ -1243,17 +1244,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			}
 		}
 		$htmlid = $this->getHTMLId();
-
+		$fType = $this->getFilterType();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		if (in_array($element->filter_type, array('dropdown')))
+		if (in_array($fType, array('dropdown')))
 		{
 			$rows = $this->filterValueList($normal);
 		}
 		$calOpts = $this->filterCalendarOpts();
 		$return = array();
-		switch ($element->filter_type)
+		switch ($fType)
 		{
-			case "range":
+			case 'range':
+			case 'range-hidden':
 				FabrikHelperHTML::loadcalendar();
 				if (empty($default))
 				{
@@ -1268,11 +1270,20 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				// Add wrapper div for list filter toggeling
 				$return[] = '<div class="fabrik_filter_container">';
-				$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN')
-					. $this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
-				$return[] = '<br />' . JText::_('COM_FABRIK_DATE_RANGE_AND')
-					. $this->calendar($default[1], $v . '[1]', $this->getFilterHtmlId(1), $format, $calOpts);
-				$return[] = '</div>';
+				if ($fType === 'range-hidden')
+				{
+					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '</div>';
+				}
+				else
+				{
+					$return[] = JText::_('COM_FABRIK_DATE_RANGE_BETWEEN')
+						. $this->calendar($default[0], $v . '[0]', $this->getFilterHtmlId(0), $format, $calOpts);
+					$return[] = '<br />' . JText::_('COM_FABRIK_DATE_RANGE_AND')
+						. $this->calendar($default[1], $v . '[1]', $this->getFilterHtmlId(1), $format, $calOpts);
+					$return[] = '</div>';
+				}
 				break;
 
 			case "dropdown": /**
@@ -1305,7 +1316,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					$default, $htmlid . '0');
 				break;
 			default:
-			case "field":
+			case 'field':
 				FabrikHelperHTML::loadcalendar();
 				if (is_array($default))
 				{
@@ -2118,7 +2129,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function filterJS($normal, $container)
 	{
 		$element = $this->getElement();
-		if ($normal && ($element->filter_type !== 'field' && $element->filter_type !== 'range'))
+		$type = $this->getFilterType();
+		if ($normal && ($type !== 'field' && $type !== 'range'))
 		{
 			return;
 		}
@@ -2130,9 +2142,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
-		$opts->type = $element->filter_type;
-		$opts->ids = $element->filter_type == 'field' ? array($id) : array($id, $id2);
-		$opts->buttons = $element->filter_type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
+		$opts->type = $type;
+		$opts->ids = $type == 'field' ? array($id) : array($id, $id2);
+		$opts->buttons = $type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');
 		$opts = json_encode($opts);
 
 		$script = 'Fabrik.filter_' . $container . '.addFilter(\'' . $element->plugin . '\', new DateFilter(' . $opts . '));' . "\n";
