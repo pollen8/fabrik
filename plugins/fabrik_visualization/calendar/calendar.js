@@ -301,7 +301,6 @@ var fabrikCalendar = new Class({
 	
 	_makePopUpWin: function () {
 		if (typeOf(this.popup) === 'null') {
-			//var popLabel = new Element('div', {'id' : 'popLabel'});
 			var popLabel = new Element('div', {'class': 'popLabel'});
 			var del = new Element('div', {'class': 'popupDelete'}).adopt(
 			new Element('a', {

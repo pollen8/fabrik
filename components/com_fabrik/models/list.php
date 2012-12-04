@@ -6535,7 +6535,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  void
 	 */
 
-	function setConnectionId($id)
+	public function setConnectionId($id)
 	{
 		$this->getTable()->connection_id = $id;
 	}
@@ -6686,8 +6686,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					// $$$ hugh - if we never find a PRI, it may be a view, and we'll need this
-					// info in the Hail Mary.
+					// $$$ hugh - if we never find a PRI, it may be a view, and we'll need this info in the Hail Mary.
 					$origColnamesByName[$colName] = $origColName;
 				}
 			}
@@ -6779,12 +6778,13 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			// Parse for default values only
-			// $$$ hugh - this pattern is being greedy, so for example ...
-			// foo {$my->id} bar {$my->id} gaprly
-			// ... matches everyting from first to last brace, like ...
-			// {$my->id} bar {$my->id}
-			//$pattern = "/({[^}]+}).*}?/s";
+			/* Parse for default values only
+			 * $$$ hugh - this pattern is being greedy, so for example ...
+			 * foo {$my->id} bar {$my->id} gaprly
+			 * ... matches everyting from first to last brace, like ...
+			 * {$my->id} bar {$my->id}
+			 *$pattern = "/({[^}]+}).*}?/s";
+			 */
 			$pattern = "/({[^}]+})/";
 			for ($i = 0; $i < count($selValue); $i++)
 			{
@@ -7905,18 +7905,19 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get a single column of data from the table, test for element filters
 	 *
-	 * @param   string  $col  column to get
+	 * @param   mixed   $col       Column to grab. Element full name or id
+	 * @param   bool    $distinct  Select distinct values only
 	 *
-	 * @return  array  values for the column - empty array if no results found
+	 * @return  array  Values for the column - empty array if no results found
 	 */
 
-	public function getColumnData($col)
+	public function getColumnData($col, $distinct = true)
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$cache = FabrikWorker::getCache();
-			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col);
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct);
 			if (is_null($res))
 			{
 				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
@@ -7938,28 +7939,31 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Cached method to grab a colums' data, called from getColumnData()
 	 *
-	 * @param   int     $listId  list id
-	 * @param   string  $col     column to grab
+	 * @param   int     $listId    List id
+	 * @param   mixed   $col       Column to grab. Element full name or id
+	 * @param   bool    $distinct  Select distinct values only
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  array  column's values
 	 */
 
-	public static function columnData($listId, $col)
+	public static function columnData($listId, $col, $distinct = true)
 	{
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$table = $listModel->getTable();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$db = $listModel->getDb();
-		$el = $listModel->getFormModel()->getElement($col);
+		$el = $listModel->getFormModel()->getElement($col, true);
+		$col = $el->getElement()->name;
 		$col = $db->quoteName($col);
 		$el->encryptFieldName($col);
 		$tablename = $table->db_table_name;
 		$tablename = FabrikString::safeColName($tablename);
 		$query = $db->getQuery(true);
-		$query->select('DISTINCT(' . $col . ')')->from($tablename);
+		$col = $distinct ? 'DISTINCT(' . $col . ')' : $col;
+		$query->select($col)->from($tablename);
 		$query = $listModel->_buildQueryJoin($query);
 		$query = $listModel->_buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);

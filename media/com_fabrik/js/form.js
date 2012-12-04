@@ -986,7 +986,7 @@ var FbForm = new Class({
 						if (errfound === false) {
 							var clear_form = btn.name !== 'apply';
 							Fabrik.loader.stop('form_' + this.id);
-							var saved_msg = json.msg !== undefined ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
+							var savedMsg = (json.msg !== undefined && json.msg !== '') ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								clear_form = json.reset_form;
 								if (json.url !== undefined) {
@@ -1007,26 +1007,26 @@ var FbForm = new Class({
 										}
 									}
 								} else {
-									alert(saved_msg);
+									alert(savedMsg);
 								}
 							} else {
 								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-								alert(saved_msg);
+								alert(savedMsg);
 							}
-							//query the list to get the updated data
+							// Query the list to get the updated data
 							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
 							if (btn.name !== 'apply') {
 								if (clear_form) {
 									this.clearForm();
 								}
-								//if the form was loaded in a Fabrik.Window close the window.
+								// If the form was loaded in a Fabrik.Window close the window.
 								if (Fabrik.Windows[this.options.fabrik_window_id]) {
 									Fabrik.Windows[this.options.fabrik_window_id].close();
 								}
 							}
 						} else {
 							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
-							// stop spinner
+							// Stop spinner
 							Fabrik.loader.stop('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 						}
 					}.bind(this)
@@ -1037,12 +1037,10 @@ var FbForm = new Class({
 		if (this.result === false) {
 			this.result = true;
 			e.stop();
-			// update global status error
+			// Update global status error
 			this.updateMainError();
 		} else {
-			/**
-			 * enables the list to clean up the form and custom events
-			 */
+			// Enables the list to clean up the form and custom events
 			if (this.options.ajax) {
 				Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
 			}

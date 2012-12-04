@@ -516,7 +516,6 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
-		$user = JFactory::getUser();
 		$id = $this->getHTMLId();
 		$list = $this->getlistModel()->getTable();
 		$ext = $params->get('rating-pngorgif', '.png');

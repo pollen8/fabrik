@@ -642,7 +642,7 @@ var FbListInlineEdit = new Class({
 				td.removeClass(this.options.focusClass);
 				td.empty();
 				td.empty().set('html', r);
-				// need to load on parent otherwise in table td size gets monged
+				// Need to load on parent otherwise in table td size gets monged
 				Fabrik.loader.stop(td.getParent());
 				Fabrik.fireEvent('fabrik.list.updaterows');
 				this.stopEditing();

@@ -158,10 +158,11 @@ class fabrikViewCalendar extends JView
 		JText::script('PLG_VISUALIZATION_CALENDAR_VIEW');
 		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
+		JText::script('COM_FABRIK_FORM_SAVED');
 
 		$ref = $model->getJSRenderContext();
 
-		// hack until we replace head.js with require.js
+		// Hack until we replace head.js with require.js
 		$js = "Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
 		$js .= " $ref = new fabrikCalendar('$ref');\n";
 		$js .= " $ref.render($json);\n";
@@ -187,7 +188,7 @@ class fabrikViewCalendar extends JView
 			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
 		}
 
-		/* Adding custom.css, just for the heck of it */
+		// Adding custom.css, just for the heck of it
 		$ab_css_file = $tmplpath . '/custom.css';
 		if (JFile::exists($ab_css_file))
 		{
@@ -200,7 +201,6 @@ class fabrikViewCalendar extends JView
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		//$view->_layout = 'chooseaddevent';
 		$this->setLayout('chooseaddevent');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');

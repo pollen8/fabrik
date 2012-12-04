@@ -735,6 +735,23 @@ var FbList = new Class({
 		this.submit('list.view');
 		return false;
 	},
+	
+	/**
+	 * Get the primary keys for the visible rows
+	 * 
+	 * @since   3.0.7
+	 * 
+	 * @return  array 
+	 */
+	getRowIds: function () {
+		var keys = [];
+		this.options.data.each(function (group) {
+			group.each(function (row) {
+				keys.push(row.data.__pk_val);
+			});
+		});
+		return keys;
+	},
 
 	fabrikNavOrder: function (orderby, orderdir) {
 		this.form.orderby.value = orderby;
