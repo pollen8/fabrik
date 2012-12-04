@@ -7956,8 +7956,7 @@ class FabrikFEModelList extends JModelForm
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$db = $listModel->getDb();
 		$el = $listModel->getFormModel()->getElement($col, true);
-		$col = $el->getElement()->name;
-		$col = $db->quoteName($col);
+		$col = FabrikString::safeColName($el->getFullName(false, false, false));
 		$el->encryptFieldName($col);
 		$tablename = $table->db_table_name;
 		$tablename = FabrikString::safeColName($tablename);
