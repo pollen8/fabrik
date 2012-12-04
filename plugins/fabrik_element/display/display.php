@@ -100,6 +100,24 @@ class plgFabrik_ElementDisplay extends plgFabrik_Element
 	}
 
 	/**
+	 * Helper method to get the default value used in getValue()
+	 * Unlike other elements where readonly effects what is displayed, the display element is always
+	 * read only, so get the default value.
+	 *
+	 * @param   array  $data   form data
+	 * @param   array  $opts   options
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return  mixed	value
+	 */
+	protected function getDefaultOnACL($data, $opts)
+	{
+
+		return JArrayHelper::getValue($opts, 'use_default', true) == false ? '' : $this->getDefaultValue($data);
+	}
+
+	/**
 	 * Determines the value for the element in the form view
 	 *
 	 * @param   array  $data           form data
