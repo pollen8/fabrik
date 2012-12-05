@@ -150,6 +150,27 @@ class FabrikModelPackage extends FabModelAdmin
 	}
 
 	/**
+	 * All front end view folders have a default.xml file in them to set up the menu item
+	 * properties. We have to replace {component_name} placeholders with $row->component_name
+	 * So that form/list dropdowns load the package lists/forms and not the main Fabrik lists/forms
+	 *
+	 * @param   JTable  $row  Package info
+	 */
+	protected function alterViewXML($row)
+	{
+
+		$views = array();
+		$views[] = $this->outputPath . 'site/views/form/tmpl/default.xml';
+		$views[] = $this->outputPath . 'site/views/list/tmpl/default.xml';
+		foreach ($views as $view)
+		{
+			$str = JFile::read($view);
+			$str = str_replace('{component_name}', $row->component_name, $str);
+			JFile::write($view, $str);
+		}
+	}
+
+	/**
 	 * Export the package
 	 *
 	 * @param   array  $ids  package ids to export
@@ -163,6 +184,7 @@ class FabrikModelPackage extends FabModelAdmin
 		foreach ($ids as $id)
 		{
 			$row = $this->getTable();
+
 
 			$row->load($id);
 			$this->outputPath = JPATH_ROOT . '/tmp/' . $this->getComponentName($row) . '/';
@@ -186,6 +208,8 @@ class FabrikModelPackage extends FabModelAdmin
 			$filenames[] = $this->makeComponentManifestClass($row2);
 
 			$this->copySkeleton($row, $filenames);
+
+			$this->alterViewXML($row);
 			$archive = JArchive::getAdapter('zip');
 
 			$files = array();
@@ -351,47 +375,60 @@ class FabrikModelPackage extends FabModelAdmin
 			{
 				$groupids[] = $formgroup->group_id;
 			}
-			// Groups
-			$query->clear();
-			$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
-			$db->setQuery($query);
-			$groups = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
 
-			// Elements
-			$query->clear();
-			$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
-			$db->setQuery($query);
-			$elements = $db->loadObjectList();
 			$elementids = array();
-			foreach ($elements as $element)
+
+			// Groups
+			if (!empty($groupids))
 			{
-				$elementids[] = $element->id;
+				$query->clear();
+				$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
+				$db->setQuery($query);
+				$groups = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
+
+				// Elements
+				$query->clear();
+				$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
+				$db->setQuery($query);
+				$elements = $db->loadObjectList();
+				foreach ($elements as $element)
+				{
+					$elementids[] = $element->id;
+				}
+				$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 			}
-			$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 
 			// Joins
 			$query->clear();
 			$query->select('*')->from('#__{package}_joins')
-				->where('list_id IN (' . implode(',', $lists) . ') OR element_id IN (' . implode(',', $elementids) . ')');
+				->where('list_id IN (' . implode(',', $lists) . ')');
+			if (!empty($elementids))
+			{
+				$query->where('element_id IN (' . implode(',', $elementids) . ')', 'OR');
+			}
 			$db->setQuery($query);
 			$joins = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
-
+			if (!empty($joins))
+			{
+				$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
+			}
 			// JS actions
-			$query->clear();
-			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
-			$db->setQuery($query);
-			$jsactions = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
+			if (!empty($elementids))
+			{
+				$query->clear();
+				$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
+				$db->setQuery($query);
+				$jsactions = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
 
-			// JS actions
-			$query->clear();
-			$query->select('*')->from('#__{package}_validations')->where('element_id IN (' . implode(',', $elementids) . ')');
-			$db->setQuery($query);
-			$validations = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
-
+				// JS actions
+				$query->clear();
+				$query->select('*')->from('#__{package}_validations')->where('element_id IN (' . implode(',', $elementids) . ')');
+				$db->setQuery($query);
+				$validations = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
+			}
 		}
 		/**
 		 * ok write the code to update components/componentname/componentname.php

@@ -48,6 +48,11 @@ class JFormFieldFormList extends JFormFieldList
 
 	protected function getOptions()
 	{
+		$app = JFactory::getApplication();
+		if ($this->element['package'])
+		{
+			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
+		}
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS ' . $db->quote('text') . ', published');

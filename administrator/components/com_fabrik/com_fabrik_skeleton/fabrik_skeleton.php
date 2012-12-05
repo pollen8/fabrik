@@ -5,11 +5,12 @@
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
-// no direct access
+// No direct access
 defined('_JEXEC') or die;
 
 $db = JFactory::getDbo();
-//get the package id from #__fabrik_packages for this opton
+
+// Get the package id from #__fabrik_packages for this opton
 $query = $db->getQuery(true);
 $option = JRequest::getCmd('option');
 $shortName = JString::substr($option, 4);
@@ -27,11 +28,11 @@ jimport('joomla.application.component.controller');
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
-//set the user state to load the package db tables
+// Set the user state to load the package db tables
 $app = JFactory::getApplication();
+$option = FabrikString::ltrimiword($option, 'com_');
 $app->setUserState('com_fabrik.package', $option);
 
-//echo $app->getUserState('com_fabrik.package');exit;
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModel::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 JRequest::setVar('task', 'package.view');
