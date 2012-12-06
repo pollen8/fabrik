@@ -840,7 +840,7 @@ var FbList = new Class({
 			var counter = 0;
 			var rowcounter = 0;
 			trs = [];
-			this.options.data = data.data;
+			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;;
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
