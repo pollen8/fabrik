@@ -191,7 +191,7 @@ class FabrikModelPackage extends FabModelAdmin
 			$row->params = json_decode($row->params);
 			$row->blocks = $row->params->canvas->blocks;
 			$componentZipPath = $this->outputPath . 'packages/com_' . $this->getComponentName($row) . '.zip';
-			$pkgName = 'pkg_' . $this->getComponentName($row) . '.zip';
+			$pkgName = 'pkg_' . $this->getComponentName($row, true) . '.zip';
 			$packageZipPath = $this->outputPath . $pkgName;
 			if (JFile::exists($componentZipPath))
 			{
@@ -579,7 +579,12 @@ class FabrikModelPackage extends FabModelAdmin
 
 	protected function getComponentName($row, $version = false)
 	{
-		return $row->component_name;// . '_' . $row->version;
+		$name = $row->component_name;
+		if ($version)
+		{
+			$name .= '_' . $row->version;
+		}
+		return $name;
 	}
 
 	/**
