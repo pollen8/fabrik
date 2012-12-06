@@ -313,7 +313,8 @@ class plgFabrik_ListEmail extends plgFabrik_List
 			exit;
 		}
 		$subject = $input->get('subject', '', 'string');
-		$message = $input->get('message', '', 'string');
+		$message = $input->get('message', '', 'html');
+		$message = nl2br($message);
 		$data = $this->getRecords('recordids', true);
 		if ($fromUser)
 		{
