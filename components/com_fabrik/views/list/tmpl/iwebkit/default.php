@@ -41,7 +41,7 @@ if ($this->showFilters) {
 <?php
 	foreach ($this->rows as $groupedby => $group) {
 		if ($this->isGrouped) {
-			echo "<li class=\"title\">".$this->grouptemplates[$groupedby]."</li>";
+			echo "<li class=\"title\">". '<span class="groupTitle">' .$this->grouptemplates[$groupedby]."</span></li>";
 		}
 
 		foreach ($group as $this->_row) {

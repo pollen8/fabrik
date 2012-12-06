@@ -1533,8 +1533,10 @@ class FabrikWorker
 
 	public static function getCache()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$cache = JCache::getInstance('callback',
-				array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
+				array('defaultgroup' => 'com_' . $package, 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
 						'storage' => 'file'));
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;

@@ -293,6 +293,7 @@ class FabrikViewFormBase extends JView
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$model = $this->getModel();
 		$params = $model->getParams();
@@ -335,8 +336,8 @@ class FabrikViewFormBase extends JView
 			}
 			else
 			{
-				$this->pdfURL = JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
-				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_fabrik&view=details&format=pdf&formid=' . $model->getId())
+				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
+				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId())
 				. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}
 		}
@@ -353,6 +354,7 @@ class FabrikViewFormBase extends JView
 	protected function _addJavascript($tableId)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
@@ -611,7 +613,7 @@ class FabrikViewFormBase extends JView
 
 		$script[] = "function submitbutton(button) {";
 		$script[] = "\tif (button==\"cancel\") {";
-		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_fabrik&task=viewTable&cid=' . $tableId) . "';";
+		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_' . $package . '&task=viewTable&cid=' . $tableId) . "';";
 		$script[] = "\t}";
 		$script[] = "\tif (button == \"cancelShowForm\") {";
 		$script[] = "\t\treturn false;";
@@ -648,6 +650,7 @@ class FabrikViewFormBase extends JView
 	protected function _loadTmplBottom(&$form)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = $menuItem ? $menuItem->id : 0;
@@ -665,13 +668,14 @@ class FabrikViewFormBase extends JView
 		$fields = array('<input type="hidden" name="listid" value="' . $listModel->getId() . '" />',
 			'<input type="hidden" name="listref" value="' . $listModel->getId() . '" />',
 			'<input type="hidden" name="rowid" value="' . $this_rowid . '" />', '<input type="hidden" name="Itemid" value="' . $Itemid . '" />',
-			'<input type="hidden" name="option" value="com_fabrik" />', '<input type="hidden" name="task" value="' . $task . '" />',
+			'<input type="hidden" name="option" value="com_' . $package . '" />', '<input type="hidden" name="task" value="' . $task . '" />',
 			'<input type="hidden" name="isMambot" value="' . $this->isMambot . '" />',
 			'<input type="hidden" name="formid" value="' . $model->get('id') . '" />', '<input type="hidden" name="returntoform" value="0" />',
 			'<input type="hidden" name="fabrik_referrer" value="' . $reffer . '" />',
 			'<input type="hidden" name="fabrik_ajax" value="' . (int) $model->isAjax() . '" />');
 
-		$fields[] = '<input type="hidden" name="_packageId" value="' . $model->packageId . '" />';
+		$fields[] = '<input type="hidden" name="package" value="' . $app->getUserState('com_fabrik.package', 'fabrik') . '" />';
+		$fields[] = '<input type="hidden" name="packageId" value="' . $model->packageId . '" />';
 
 		if ($usekey = FabrikWorker::getMenuOrRequestVar('usekey', ''))
 		{

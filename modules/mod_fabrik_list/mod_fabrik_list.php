@@ -1,13 +1,14 @@
 <?php
 /**
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Fabrik List Module
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 if (!defined('COM_FABRIK_FRONTEND'))
@@ -22,22 +23,27 @@ JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_fabrik/tables');
 
-require_once(COM_FABRIK_FRONTEND . '/controller.php');
-require_once(COM_FABRIK_FRONTEND . '/controllers/list.php');
-require_once(COM_FABRIK_FRONTEND . '/views/list/view.html.php');
-require_once(COM_FABRIK_FRONTEND . '/views/package/view.html.php');
-require_once(COM_FABRIK_FRONTEND . '/controllers/package.php');
-require_once(COM_FABRIK_FRONTEND . '/views/form/view.html.php');
+require_once COM_FABRIK_FRONTEND . '/controller.php';
+require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
+require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
+require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
+require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
+require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 
-//load front end language file as well
+// Load front end language file as well
 $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 $app = JFactory::getApplication();
 $document = JFactory::getDocument();
 
+// Ensure the package is set to fabrik
+$prevUserState = $app->getUserState('com_fabrik.package');
+$app->setUserState('com_fabrik.package', 'fabrik');
+
 FabrikHelperHTML::framework();
-//$$$rob looks like including the view does something to the layout variable
+
+// $$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
 
 $listId = (int) $params->get('list_id', 1);
@@ -110,7 +116,7 @@ if (!empty($orderBy))
 	$model->getTable()->order_dir = json_encode($orderDir);
 }
 
-//set up prefilters - will overwrite ones defined in the list!
+// Set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array)$prefilters['filter-conditions'];
@@ -129,8 +135,12 @@ if (!JError::isError($model))
 	$view->setModel($model, true);
 }
 $view->isMambot = true;
+
 // Display the view
-$view->assign('error', $controller->getError());
+$view->error = $controller->getError();
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);
+
+// Set the package back to what it was before rendering the module
+$app->setUserState('com_fabrik.package', $prevUserState);

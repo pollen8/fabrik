@@ -840,7 +840,7 @@ var FbList = new Class({
 			var counter = 0;
 			var rowcounter = 0;
 			trs = [];
-			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;;
+			this.options.data = this.options.isGrouped ? $H(data.data) : data.data;
 			if (data.calculations) {
 				this.updateCals(data.calculations);
 			}
@@ -855,6 +855,12 @@ var FbList = new Class({
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
 				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
+				
+				// Set the group by heading
+				if (this.options.isGrouped && tbody) {
+					groupHeading = tbody.getPrevious();
+					groupHeading.getElement('.groupTitle').set('text', groupData[0].groupHeading);
+				}
 				if (typeOf(tbody) !== 'null') {
 					gcounter++;
 					for (i = 0; i < groupData.length; i++) {
@@ -899,6 +905,19 @@ var FbList = new Class({
 				}
 			}.bind(this));
 
+			// Grouped data - show all tbodys, then hide empty tbodys (not going to work for none <table> tpls)
+			var tbodys = this.list.getElements('tbody');
+			tbodys.setStyle('display', '');
+			tbodys.each(function (tbody) {
+				if (!tbody.hasClass('fabrik_groupdata')) {
+					var groupTbody = tbody.getNext();
+					if (groupTbody.getElements('.fabrik_row').length === 0) {
+						tbody.hide();
+						groupTbody.hide();
+					}
+				}
+			});
+			
 			var fabrikDataContainer = this.list.getParent('.fabrikDataContainer');
 			var emptyDataMessage = this.list.getParent('.fabrikForm').getElement('.emptyDataMessage');
 			if (rowcounter === 0) {

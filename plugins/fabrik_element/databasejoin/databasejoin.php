@@ -861,6 +861,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	public function render($data, $repeatCounter = 0)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// For repetaing groups we need to unset this where each time the element is rendered
 		unset($this->_autocomplete_where);
@@ -938,7 +939,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
 					$db->setQuery($query);
 					$listid = $db->loadResult();
-					$url = 'index.php?option=com_fabrik&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
+					$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
 					$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
 				}
 			}
@@ -987,7 +988,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 					}
 					else
 					{
-						$chooseUrl = 'index.php?option=com_fabrik&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
 					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';

@@ -51,7 +51,7 @@ var FrontPackage = new Class({
 			'option': 'com_fabrik',
 			'view': type,
 			'tmpl': 'component',
-			'packageid': this.options.packageid,
+			'packageId': this.options.packageId,
 			'ajax': 1,
 			'ajaxlinks': 1
 		};

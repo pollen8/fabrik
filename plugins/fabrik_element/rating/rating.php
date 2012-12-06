@@ -50,6 +50,8 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 
 	public function renderListData($data, &$thisRow)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$user = JFactory::getUser();
 		$params = $this->getParams();
 		$ext = $params->get('rating-pngorgif', '.png');
@@ -57,7 +59,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 
 		$url = COM_FABRIK_LIVESITE
-			. 'index.php?option=com_fabrik&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
+			. 'index.php?option=com_' . $package . '&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
 			. $this->getElement()->id;
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
 		$insrc = FabrikHelperHTML::image("star_in$ext", 'list', @$this->tmpl, array(), true);

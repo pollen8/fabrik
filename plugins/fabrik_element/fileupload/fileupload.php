@@ -539,6 +539,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	protected function _renderListData($data, &$thisRow, $i = 0)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->_repeatGroupCounter = $i;
 		$element = $this->getElement();
 		$params = $this->getParams();
@@ -648,7 +650,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 			}
 			$link = COM_FABRIK_LIVESITE
-				. 'index.php?option=com_fabrik&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='
+				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='
 				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
 			$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 			return $url;
@@ -2025,6 +2027,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	protected function downloadLink($value, $data, $repeatCounter = 0)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$params = $this->getParams();
 		$storage = $this->getStorage();
@@ -2076,7 +2079,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_access_image') . '" alt="' . $title
 				. '" />';
 		}
-		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id='
+		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id='
 			. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
 		$url = '<a href="' . $link . '">' . $title . '</a>';
 		return $url;

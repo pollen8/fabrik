@@ -33,6 +33,7 @@ class fabrikViewCalendar extends JView
 	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -86,9 +87,9 @@ class fabrikViewCalendar extends JView
 		$urls = new stdClass;
 
 		// Don't JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
+		$urls->del = 'index.php?option=com_' . $package . '&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
 			. '&id=' . $id;
-		$urls->add = 'index.php?option=com_fabrik&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
+		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
 		$tpl = $params->get('calendar_layout', 'default');

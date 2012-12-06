@@ -19,10 +19,12 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require_once JPATH_BASE . '/includes/defines.php';
 require_once JPATH_BASE . '/includes/framework.php';
-$app 				=& JFactory::getApplication('site');
+$app = JFactory::getApplication('site');
 $app->initialise();
+$package = $app->getUserState('com_fabrik.package', 'fabrik');
 $session = JFactory::getSession();
-$code = $session->get('com_fabrik.element.captach.security_code', false);
+
+$code = $session->get('com_' . $package . '.element.captach.security_code', false);
 
 if (!($code))
 {
@@ -32,18 +34,18 @@ if (!($code))
 // ***** e-kinst
 // Felixkat - Removed width and height.  Now specified by font size.
 
-// $width = $session->get('com_fabrik.element.captach.width', 100);
-// $height = $session->get('com_fabrik.element.captach.height', 50);
+// $width = $session->get('com_' . $package . '.element.captach.width', 100);
+// $height = $session->get('com_' . $package . '.element.captach.height', 50);
 
-$fontsize = $session->get('com_fabrik.element.captach.fontsize', 30);
-$angle = $session->get('com_fabrik.element.captach.angle', 0);
-$padding  = $session->get('com_fabrik.element.captach.padding', 10);
-$font = $session->get('com_fabrik.element.captach.font', 'monofont.ttf');
-$b_color = $session->get('com_fabrik.element.captach.bg_color', '255+255+255');
+$fontsize = $session->get('com_' . $package . '.element.captach.fontsize', 30);
+$angle = $session->get('com_' . $package . '.element.captach.angle', 0);
+$padding  = $session->get('com_' . $package . '.element.captach.padding', 10);
+$font = $session->get('com_' . $package . '.element.captach.font', 'monofont.ttf');
+$b_color = $session->get('com_' . $package . '.element.captach.bg_color', '255+255+255');
 $bc = explode('+', $b_color);
-$n_color = $session->get('com_fabrik.element.captach.noise_color', '0+0+255');
+$n_color = $session->get('com_' . $package . '.element.captach.noise_color', '0+0+255');
 $nc = explode('+', $n_color);
-$t_color = $session->get('com_fabrik.element.captach.text_color', '0+0+255');
+$t_color = $session->get('com_' . $package . '.element.captach.text_color', '0+0+255');
 $tc = explode('+', $t_color);
 
 /* create textbox and add text */

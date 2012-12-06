@@ -252,7 +252,7 @@ class FabrikFEModelList extends JModelForm
 		parent::__construct();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$id = JRequest::getInt('listid', $usersConfig->get('listid'));
-		$this->packageId = (int) JRequest::getInt('packageid', $usersConfig->get('packageid'));
+		$this->packageId = (int) JRequest::getInt('packageId', $usersConfig->get('packageId'));
 		$this->setId($id);
 		$this->_access = new stdClass;
 	}
@@ -403,15 +403,17 @@ class FabrikFEModelList extends JModelForm
 	public function setLimits()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
 		$params = $this->getParams();
 		$id = $this->getId();
 		$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
 
 		// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
-		$context = 'com_fabrik.list' . $this->getRenderContext() . '.';
+		$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
 		$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
-		// deal with the fact that you can have more than one table on a page so limitstart has to be
+
+		// Deal with the fact that you can have more than one table on a page so limitstart has to be
 		// specfic per table
 
 		// Deal with the fact that you can have more than one table on a page so limitstart has to be  specfic per table
@@ -1202,6 +1204,8 @@ class FabrikFEModelList extends JModelForm
 
 	protected function getTableLinks()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if (isset($this->tableLinks))
 		{
 			return $this->tableLinks;
@@ -1218,7 +1222,7 @@ class FabrikFEModelList extends JModelForm
 			$query->select('*')->from('#__menu');
 			foreach ($joinsToThisKey as $element)
 			{
-				$linkWhere[] = "link LIKE 'index.php?option=com_fabrik&view=list&listid=" . (int) $element->list_id . "%'";
+				$linkWhere[] = "link LIKE 'index.php?option=com_' . $package . '&view=list&listid=" . (int) $element->list_id . "%'";
 			}
 			$where = 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
 			$query->where($where);
@@ -1325,6 +1329,7 @@ class FabrikFEModelList extends JModelForm
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if (!$app->isAdmin())
 		{
 			$Itemid = (int) @$app->getMenu('site')->getActive()->id;
@@ -1378,7 +1383,7 @@ class FabrikFEModelList extends JModelForm
 			$bits[] = 'rowid=0';
 		}
 
-		$url = 'index.php?option=com_fabrik&' . implode('&', $bits);
+		$url = 'index.php?option=com_' . $package . '&' . implode('&', $bits);
 		$url = JRoute::_($url);
 		if (is_null($label) || $label == '')
 		{
@@ -1444,8 +1449,10 @@ class FabrikFEModelList extends JModelForm
 		$elKey = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 		$listid = $element->list_id;
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$factedLinks = $params->get('factedlinks');
+
 		/* $$$ hugh - we are getting element keys that aren't in the linkedlisttext.
 		 * not sure why, so added this defensive code.  Should probably find out
 		* why though!  I just needed to make this error go away NAO!
@@ -1457,7 +1464,7 @@ class FabrikFEModelList extends JModelForm
 		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
 
 		$action = $app->isAdmin() ? 'task' : 'view';
-		$url = 'index.php?option=com_fabrik&';
+		$url = 'index.php?option=com_' . $package . '&';
 
 		if (is_null($listid))
 		{
@@ -1499,7 +1506,7 @@ class FabrikFEModelList extends JModelForm
 			// $$$ rob 01/03/2011 find at matching itemid in another menu item for the related data link
 			foreach ($listLinks as $listLink)
 			{
-				if (strstr($listLink->link, 'index.php?option=com_fabrik&view=list&listid=' . $listid))
+				if (strstr($listLink->link, 'index.php?option=com_' . $package . '&view=list&listid=' . $listid))
 				{
 					$bits[] = 'Itemid=' . $listLink->id;
 					$Itemid = $listLink->id;
@@ -1998,6 +2005,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function _buildQueryOrder($query = false)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$table = $this->getTable();
@@ -2045,7 +2054,7 @@ class FabrikFEModelList extends JModelForm
 		$id = $this->getId();
 		foreach ($elements as $element)
 		{
-			$context = 'com_fabrik.list' . $this->getRenderContext() . '.order.' . $element->getElement()->id;
+			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->getElement()->id;
 			if ($clearOrdering)
 			{
 				$session->set($context, '');
@@ -2198,6 +2207,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function setOrderByAndDir()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$postOrderBy = JRequest::getInt('orderby', '');
 		$postOrderDir = JRequest::getVar('orderdir', '');
@@ -2205,7 +2216,7 @@ class FabrikFEModelList extends JModelForm
 		$id = $this->getRenderContext();
 		if (in_array($postOrderDir, $arOrderVals))
 		{
-			$context = 'com_fabrik.list' . $id . '.order.' . $postOrderBy;
+			$context = 'com_' . $package. '.list' . $id . '.order.' . $postOrderBy;
 			$session->set($context, $postOrderDir);
 		}
 	}
@@ -3258,16 +3269,17 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * like getJoins() but exclude cascading dropdown joins
+	 * Like getJoins() but exclude cascading dropdown joins
 	 * seems to be needed when calculating related table's record counts.
 	 * This is called from within _buildQueryJoin()
 	 * and fired if this is done:
 	 * $listModel->set('includeCddInJoin', false);
 	 * as in tableModel::getRecordCounts()
-	 * @return array join objects (table rows - not table objects or models)
+	 *
+	 * @return  array  join objects (table rows - not table objects or models)
 	 */
 
-	function getJoinsNoCdd()
+	protected function getJoinsNoCdd()
 	{
 		if (!isset($this->_joinsNoCdd))
 		{
@@ -3946,24 +3958,25 @@ class FabrikFEModelList extends JModelForm
 	public function storeRequestData($request)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
-
+		$option = 'com_' . $package;
 		// $tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
 		$tid = 'list' . $this->getRenderContext();
 
 		// Make sure that we only store data thats been entered from this page first test we aren't in a plugin
-		if (JRequest::getCmd('option') == 'com_fabrik' && is_object($registry))
+		if (JRequest::getCmd('option') == $option && is_object($registry))
 		{
 			// Don't do this when you are viewing a form or details page as it wipes out the table filters
 			$reg = $registry->get('_registry');
-			if (isset($reg['com_fabrik']) && !in_array(JRequest::getCmd('view'), array('form', 'details')))
+			if (isset($reg[$option]) && !in_array(JRequest::getCmd('view'), array('form', 'details')))
 			{
-				unset($reg['com_fabrik']['data']->$tid->filter);
+				unset($reg[$option]['data']->$tid->filter);
 			}
 		}
 
-		$context = 'com_fabrik.' . $tid . '.filter';
+		$context = $option . '.' . $tid . '.filter';
 
 		// @TODO test for _clear_ in values and if so delete session data
 		foreach ($request as $key => $val)
@@ -4114,7 +4127,8 @@ class FabrikFEModelList extends JModelForm
 				// $$$ 30/06/2011 rob dont escape the search as it may contain \\\ from preg_escape (e.g. search all on 'c+b)
 
 				// $$$ 14/11/2012 - Lower case search value - as accented characters e.g. Ö are case sensetive in regex. Key already lower cased in filter model
-				//$value = 'LOWER(' . $db->quote($value, false) . ')';
+
+				// $value = 'LOWER(' . $db->quote($value, false) . ')';
 			}
 			elseif ($condition == 'like')
 			{
@@ -4225,6 +4239,8 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->prefilters))
 		{
+			$app = JFactory::getApplication();
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			$params = $this->getParams();
 			$showInList = array();
 			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
@@ -4237,7 +4253,7 @@ class FabrikFEModelList extends JModelForm
 			// Are we coming from a post request via a module?
 			$moduleid = 0;
 			$requestRef = JRequest::getVar('listref', '');
-			if ($requestRef !== '' && !strstr($requestRef, 'com_fabrik'))
+			if ($requestRef !== '' && !strstr($requestRef, 'com_' . $package))
 			{
 				// If so we need to load in the modules parameters
 				$ref = explode('_', $requestRef);
@@ -4367,10 +4383,13 @@ class FabrikFEModelList extends JModelForm
 
 	public function getTotalRecords()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		// $$$ rob ensure that the limits are set - otherwise can create monster query
 		$this->setLimits();
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.list' . $this->getRenderContext() . '.total';
+		$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.total';
 		if (isset($this->totalRecords))
 		{
 			$session->set($context, $this->totalRecords);
@@ -4931,6 +4950,7 @@ class FabrikFEModelList extends JModelForm
 		Fabrik.filter_{$container} = new FbListFilter($opts);\n";
 
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$filters = $this->getFilterArray();
 
 		$params = $this->getParams();
@@ -4949,7 +4969,7 @@ class FabrikFEModelList extends JModelForm
 				$opts[] = JHTML::_('select.option', 'any', JText::_('COM_FABRIK_ANY_OF_THESE_TERMS'));
 				$opts[] = JHTML::_('select.option', 'exact', JText::_('COM_FABRIK_EXACT_TERMS'));
 				$opts[] = JHTML::_('select.option', 'none', JText::_('COM_FABRIK_NONE_OF_THESE_TERMS'));
-				$mode = $app->getUserStateFromRequest('com_fabrik.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
+				$mode = $app->getUserStateFromRequest('com_' . $package . '.list' . $this->getRenderContext() . '.searchallmode', 'search-mode-advanced');
 				$o->filter .= '&nbsp;'
 						. JHTML::_('select.genericList', $opts, 'search-mode-advanced', "class='fabrik_filter'", 'value', 'text', $mode);
 			}
@@ -5041,11 +5061,13 @@ class FabrikFEModelList extends JModelForm
 	public function getAdvancedSearchLink()
 	{
 		$params = $this->getParams();
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($params->get('advanced-filter', '0'))
 		{
 			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 					. $table->id . '&amp;nextview=' . JRequest::getVar('view', 'list');
 
 			$url .= '&amp;tkn=' . JSession::getFormToken();
@@ -5346,6 +5368,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function getHeadings()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
 		$item->order_dir = JString::strtolower($item->order_dir);
 		$aTableHeadings = array();
@@ -5416,7 +5440,7 @@ class FabrikFEModelList extends JModelForm
 				$label = $w->parseMessageForPlaceHolder($label, array());
 				if ($elementParams->get('can_order') == '1' && $this->outPutFormat != 'csv')
 				{
-					$context = 'com_fabrik.list' . $this->getRenderContext() . '.order.' . $element->id;
+					$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.order.' . $element->id;
 					$orderDir = $session->get($context);
 					$class = "";
 					$currentOrderDir = $orderDir;
@@ -5963,6 +5987,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$origRowId = $rowId;
 
 		// Don't save a record if no data collected
@@ -6108,7 +6134,7 @@ class FabrikFEModelList extends JModelForm
 		else
 		{
 			// Clean the cache.
-			JFactory::getCache('com_fabrik')->clean();
+			JFactory::getCache('com_' . $package)->clean();
 
 			// $$$ rob new as if you update a record the insertid() returns 0
 			$this->lastInsertId = ($rowId == '' || $rowId == 0) ? $fabrikDb->insertid() : $rowId;
@@ -6343,7 +6369,7 @@ class FabrikFEModelList extends JModelForm
 		// Check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
-			$crypt = new JSimpleCrypt();
+			$crypt = new JSimpleCrypt;
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
 
@@ -6455,6 +6481,14 @@ class FabrikFEModelList extends JModelForm
 		$cache = FabrikWorker::getCache();
 		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
 	}
+
+	/**
+	 * Cache do calculations
+	 *
+	 * @param   int  $listId  List id
+	 *
+	 * @return  void
+	 */
 
 	public static function cacheDoCalculations($listId)
 	{
@@ -7271,7 +7305,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 
 	public function getFieldsDropDown($cnnId, $tbl, $incSelect, $incTableName = false, $selectListName = 'order_by', $selected = null,
-			$className = "inputbox")
+		$className = "inputbox")
 	{
 		$this->setConnectionId($cnnId);
 		$aFields = $this->getDBFields($tbl);
@@ -7309,11 +7343,13 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$link = '';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($this->getParams()->get('rss') == '1')
 		{
 			// $$$ rob test fabriks own feed renderer
-			// $link = 'index.php?option=com_fabrik&view=table&listid=' . $this->getState('list.id'); . "&format=feed";
-			$link = 'index.php?option=com_fabrik&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
+			$link = 'index.php?option=com_' . $package . '&view=list&listid=' . $this->getId() . "&format=fabrikfeed";
 			if (!$app->isAdmin())
 			{
 				$link = JRoute::_($link);
@@ -7533,18 +7569,15 @@ class FabrikFEModelList extends JModelForm
 		$customLink = $this->getCustomLink('url', 'edit');
 		if ($customLink == '')
 		{
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			if ($app->isAdmin())
 			{
-				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . $table->form_id . $keyIdentifier;
+				$url = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $table->form_id . $keyIdentifier;
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid='
+				$url = 'index.php?option=com_' . $package . '&view=form&Itemid=' . $Itemid . '&formid=' . $table->form_id . $keyIdentifier . '&listid='
 						. $this->getId();
-			}
-			if ($this->packageId !== 0)
-			{
-				$url .= '&tmpl=component';
 			}
 			$link = JRoute::_($url);
 		}
@@ -7939,9 +7972,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Cached method to grab a colums' data, called from getColumnData()
 	 *
-	 * @param   int     $listId    List id
-	 * @param   mixed   $col       Column to grab. Element full name or id
-	 * @param   bool    $distinct  Select distinct values only
+	 * @param   int    $listId    List id
+	 * @param   mixed  $col       Column to grab. Element full name or id
+	 * @param   bool   $distinct  Select distinct values only
 	 *
 	 * @since   3.0.7
 	 *

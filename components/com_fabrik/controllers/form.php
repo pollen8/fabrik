@@ -91,6 +91,8 @@ class FabrikControllerForm extends JController
 
 	public function display($cachable = false, $urlparams = false)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
@@ -107,6 +109,8 @@ class FabrikControllerForm extends JController
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
+
+		$model->packageId = $app->input->getInt('packageId');
 
 		// Test for failed validation then page refresh
 		$model->getErrors();
@@ -130,7 +134,7 @@ class FabrikControllerForm extends JController
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
+				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
 			$msg = $model->aclMessage();
 			$this->setRedirect(JRoute::_($url), $msg, 'notice');
@@ -148,7 +152,7 @@ class FabrikControllerForm extends JController
 			$user = JFactory::getUser();
 			$post = JRequest::get('post');
 			$cacheid = serialize(array(JRequest::getURI(), $post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-			$cache = JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_' . $package, 'view');
 			ob_start();
 			$cache->get($view, 'display', $cacheid);
 			$contents = ob_get_contents();
@@ -172,6 +176,7 @@ class FabrikControllerForm extends JController
 	public function process()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 
 		if (JRequest::getCmd('format', '') == 'raw')
@@ -187,9 +192,9 @@ class FabrikControllerForm extends JController
 			$view->setModel($model, true);
 		}
 		$model->setId(JRequest::getInt('formid', 0));
-
+		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = JRequest::getVar('isMambot', 0);
-		$model->getForm();
+		$form = $model->getForm();
 		$model->_rowId = JRequest::getVar('rowid', '');
 
 		/**
@@ -454,6 +459,7 @@ class FabrikControllerForm extends JController
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array(JRequest::getVar('rowid', 0));
 
@@ -467,7 +473,7 @@ class FabrikControllerForm extends JController
 
 		$total = $oldtotal - count($ids);
 
-		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_fabrik&view=table&listid=$listid", 'post');
+		$ref = JRequest::getVar('fabrik_referrer', "index.php?option=com_' . $package . '&view=list&id=$listid", 'post');
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
@@ -477,7 +483,7 @@ class FabrikControllerForm extends JController
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
-			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
+			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
 		if (JRequest::getVar('format') == 'raw')

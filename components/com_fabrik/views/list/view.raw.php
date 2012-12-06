@@ -19,6 +19,8 @@ class FabrikViewList extends JView{
 
 	function display()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$model = $this->getModel();
 		$model->setId(JRequest::getInt('listid'));
 		$table = $model->getTable();
@@ -44,6 +46,7 @@ class FabrikViewList extends JView{
 				{
 					$o->data = $data[$groupk][$i];
 				}
+				$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;
@@ -70,7 +73,6 @@ class FabrikViewList extends JView{
 				$elementModel->setRowClass($data);
 			}
 		}
-		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
 		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model'=>'list', 'data' => $data,
 		'headings' => $this->headings,
 			'formid'=> $model->getTable()->form_id,
@@ -78,8 +80,9 @@ class FabrikViewList extends JView{
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
+
 		// $$$ hugh - see if we have a message to include, set by a list plugin
-		$context = 'com_fabrik.list' . $model->getRenderContext() . '.msg';
+		$context = 'com_' . $package . '.list' . $model->getRenderContext() . '.msg';
 		$session = JFactory::getSession();
 		if ($session->has($context))
 		{
@@ -100,15 +103,18 @@ class FabrikViewList extends JView{
 		$model = $this->getModel();
 		$table = $model->getTable();
 		$params = $model->getParams();
-		if ($app->isAdmin()) {
+		if ($app->isAdmin())
+		{
 			$tmpl = $params->get('admin_template');
-			if ($tmpl == -1 || $tmpl == '') {
+			if ($tmpl == -1 || $tmpl == '')
+			{
 				$tmpl = JRequest::getVar('layout', $table->template);
 			}
-		} else {
+		}
+		else
+		{
 			$tmpl = JRequest::getVar('layout', $table->template);
 		}
 		return $tmpl;
 	}
 }
-?>

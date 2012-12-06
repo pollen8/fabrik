@@ -17,6 +17,7 @@ class FabrikViewList extends JView{
 	function display()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$Itemid	= $app->getMenu('site')->getActive()->id;
 		$config	= JFactory::getConfig();
 		$user = JFactory::getUser();
@@ -86,7 +87,7 @@ class FabrikViewList extends JView{
 		$rows = $model->getData();
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
-		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
+		$document->link = JRoute::_('index.php?option=com_' . $package . '&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
 		/* check for a custom css file and include it if it exists*/
 		$tmpl = JRequest::getVar('layout', $table->template);
@@ -157,7 +158,7 @@ class FabrikViewList extends JView{
 				$str = $str2 . $str . "</table>";
 
 				// url link to article
-				$link = JRoute::_('index.php?option=com_fabrik&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->__pk_val);
+				$link = JRoute::_('index.php?option=com_' . $package . '&view='.$view.'&listid='.$table->id.'&formid='.$form->id.'&rowid='. $row->__pk_val);
 
 				// strip html from feed item description text
 				$author	= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;

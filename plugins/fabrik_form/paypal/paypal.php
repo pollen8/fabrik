@@ -36,6 +36,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 	public function onAfterProcess($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$data = $formModel->_fullFormData;
 		$this->data = $data;
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
@@ -296,12 +297,12 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$paypal_test_site = rtrim($paypal_test_site, '/');
 		if ($paypal_testmode == 1 && !empty($paypal_test_site))
 		{
-			$ppurl = $paypal_test_site . '/index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+			$ppurl = $paypal_test_site . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 				. '&g=form&plugin=paypal&method=ipn';
 		}
 		else
 		{
-			$ppurl = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+			$ppurl = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 				. '&g=form&plugin=paypal&method=ipn';
 		}
 		$paypal_test_site_qs = $params->get('paypal_test_site_qs', '');
@@ -355,13 +356,13 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			// Using default thanks() method so don't forget to add renderOrder
 			if ($paypal_testmode == '1' && !empty($paypal_test_site))
 			{
-				$opts['return'] = $paypal_test_site . '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+				$opts['return'] = $paypal_test_site . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
 
 			}
 			else
 			{
-				$opts['return'] = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+				$opts['return'] = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
 			}
 		}

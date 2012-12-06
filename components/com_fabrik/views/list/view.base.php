@@ -1,9 +1,9 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
 // Check to ensure this file is included in Joomla!
@@ -356,6 +356,7 @@ class FabrikViewListBase extends JView
 			require_once JPATH_ROOT . '/includes/application.php';
 		}
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->setTitle($w, $params, $model);
 		/** depreciated (keep incase ppl use them in old tmpls**/
 		$this->table = new stdClass;
@@ -383,6 +384,7 @@ class FabrikViewListBase extends JView
 		$this->nav = '<div class="fabrikNav">' . $this->nav . '</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
+		$this->limitLength = $model->limitLength;
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
@@ -393,7 +395,7 @@ class FabrikViewListBase extends JView
 			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
 		}
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
-		$this->csvImportLink = $this->showCSVImport ? JRoute::_("index.php?option=com_fabrik&view=import&filetype=csv&listid=" . $item->id) : '';
+		$this->csvImportLink = $this->showCSVImport ? JRoute::_('index.php?option=com_' . $package . '&view=import&filetype=csv&listid=' . $item->id) : '';
 		$this->showAdd = $model->canAdd();
 		if ($this->showAdd)
 		{
@@ -419,11 +421,12 @@ class FabrikViewListBase extends JView
 		}
 		if ($app->isAdmin())
 		{
+			// Admin always uses com_fabrik option
 			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id .'&format=pdf&tmpl=component');
 		}
 		else
 		{
-			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&view=list&format=pdf&listid=' . $item->id);
+			$this->pdfLink = JRoute::_('index.php?option=com_' . $package . '&view=list&format=pdf&listid=' . $item->id);
 		}
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
@@ -764,10 +767,10 @@ class FabrikViewListBase extends JView
 
 		$this->hiddenFields[] = '<input type="hidden" name="format" value="html" />';
 
-		// $packageId = $input->getInt('_packageId', 0);
+		// $packageId = $input->getInt('packageId', 0);
 		// $$$ rob testing for ajax table in module
 		$packageId = $model->packageId;
-		$this->hiddenFields[] = '<input type="hidden" name="_packageId" value="' . $packageId . '" />';
+		$this->hiddenFields[] = '<input type="hidden" name="packageId" value="' . $packageId . '" />';
 		if ($app->isAdmin())
 		{
 			$this->hiddenFields[] = '<input type="hidden" name="task" value="list.view" />';
@@ -803,6 +806,7 @@ class FabrikViewListBase extends JView
 	protected function advancedSearch($tpl)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$model = $this->getModel();
 		$id = $model->getState('list.id');
@@ -812,7 +816,7 @@ class FabrikViewListBase extends JView
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
 		$this->rows = $this->get('advancedSearchRows');
-		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik', 'string');
+		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package, 'string');
 		$this->action = $action;
 		$this->listid = $id;
 	}

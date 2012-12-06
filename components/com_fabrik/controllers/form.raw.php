@@ -42,6 +42,8 @@ class FabrikControllerForm extends JController
 
 	public function display()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$modelName = $viewName;
@@ -64,7 +66,7 @@ class FabrikControllerForm extends JController
 		 */
 		if (!$model->hasErrors())
 		{
-			$context = 'com_fabrik.form.' . JRequest::getInt('formid');
+			$context = 'com_' . $package . '.form.' . JRequest::getInt('formid');
 			$model->_arErrors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
@@ -82,7 +84,7 @@ class FabrikControllerForm extends JController
 		return $view->display();
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
 		{
-			$cache = JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_' . $package, 'view');
 			return $cache->get($view, 'display');
 		}
 		else
@@ -99,6 +101,8 @@ class FabrikControllerForm extends JController
 
 	public function process()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$viewName = JRequest::getVar('view', 'form', 'default', 'cmd');
 		$viewType = $document->getType();
@@ -124,7 +128,7 @@ class FabrikControllerForm extends JController
 			if (!$model->validate())
 			{
 				// If its in a module with ajax or in a package
-				if (JRequest::getInt('_packageId') !== 0)
+				if (JRequest::getInt('packageId') !== 0)
 				{
 					$data = array('modified' => $model->_modifiedValidationData);
 
@@ -136,7 +140,7 @@ class FabrikControllerForm extends JController
 				if ($this->isMambot)
 				{
 					// Store errors in session
-					$context = 'com_fabrik.form.' . $model->get('id') . '.';
+					$context = 'com_' . $package . '.form.' . $model->get('id') . '.';
 					$session->set($context . 'errors', $model->_arErrors);
 					/**
 					 * $$$ hugh - testing way of preserving form values after validation fails with form plugin
@@ -182,7 +186,7 @@ class FabrikControllerForm extends JController
 			return;
 		}
 
-		if (JRequest::getInt('_packageId') !== 0)
+		if (JRequest::getInt('packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
 			return;
@@ -203,12 +207,14 @@ class FabrikControllerForm extends JController
 	protected function makeRedirect(&$model, $msg = null)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
 		if ($app->isAdmin())
 		{
+			// Admin option is always com_fabrik
 			if (array_key_exists('apply', $model->_formData))
 			{
 				$url = "index.php?option=com_fabrik&c=form&task=form&formid=" . JRequest::getInt('formid') . "&listid=" . JRequest::getInt('listid')
@@ -224,7 +230,7 @@ class FabrikControllerForm extends JController
 		{
 			if (array_key_exists('apply', $model->_formData))
 			{
-				$url = "index.php?option=com_fabrik&c=form&view=form&formid=" . JRequest::getInt('formid') . "&rowid=" . JRequest::getInt('rowid')
+				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . JRequest::getInt('formid') . "&rowid=" . JRequest::getInt('rowid')
 					. "&listid=" . JRequest::getInt('listid');
 			}
 			else
@@ -243,7 +249,7 @@ class FabrikControllerForm extends JController
 				$Itemid = $app->getMenu('site')->getActive()->id;
 				if ($url == '')
 				{
-					$url = "index.php?option=com_fabrik&Itemid=$Itemid";
+					$url = 'index.php?option=com_' . $option . '&Itemid=' . $Itemid;
 				}
 			}
 			$config = JFactory::getConfig();

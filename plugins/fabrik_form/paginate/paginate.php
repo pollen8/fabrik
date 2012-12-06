@@ -52,7 +52,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 			return;
 		}
 		$app = JFactory::getApplication();
-
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formId = $formModel->getForm()->id;
 		$mode = JString::strtolower(JRequest::getCmd('view'));
 		$this->ids = $this->getNavIds($formModel);
@@ -64,7 +64,7 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 		}
 		else
 		{
-			$url = 'index.php?option=com_fabrik&view=' . $mode . '&formid=' . $formId . '&rowid=';
+			$url = 'index.php?option=com_' . $package . '&view=' . $mode . '&formid=' . $formId . '&rowid=';
 		}
 		$ajax = (bool) $params->get('paginate_ajax', true);
 		$firstLink = ($linkStartPrev) ? '<span>&lt;&lt;</span>' . JText::_('COM_FABRIK_START')
@@ -201,6 +201,8 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 
 	public function onXRecord()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formid = JRequest::getInt('formid');
 		$rowid = JRequest::getVar('rowid');
 		$mode = JRequest::getVar('mode', 'details');
@@ -209,9 +211,9 @@ class plgFabrik_FormPaginate extends plgFabrik_Form
 		$model->_rowId = $rowid;
 		$ids = $this->getNavIds($model);
 		$url = COM_FABRIK_LIVESITE
-			. 'index.php?option=com_fabrik&format=raw&controller=plugin&g=form&task=pluginAjax&plugin=paginate&method=xRecord&formid=' . $formid
+			. 'index.php?option=com_' . $package . '&format=raw&controller=plugin&g=form&task=pluginAjax&plugin=paginate&method=xRecord&formid=' . $formid
 			. '&rowid=' . $rowid;
-		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&c=form&view=' . $mode . '&fabrik=' . $formid . '&rowid=' . $rowid . '&format=raw';
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&c=form&view=' . $mode . '&fabrik=' . $formid . '&rowid=' . $rowid . '&format=raw';
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_URL, $url);

@@ -595,7 +595,7 @@ var FbListInlineEdit = new Class({
 			'option': 'com_fabrik',
 			'task': 'form.process',
 			'format': 'raw',
-			'_packageId': 1,
+			'packageId': 1,
 			'fabrik_ajax': 1,
 			'element': element,
 			'listref': this.options.ref,

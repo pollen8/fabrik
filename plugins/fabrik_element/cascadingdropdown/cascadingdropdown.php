@@ -879,7 +879,7 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$opts->observerid = $observerid;
 			$app = JFactory::getApplication();
 			$package = $app->getUserState('com_fabrik.package', 'com_fabrik');
-			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id='
+			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id='
 				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options&package=' . $package;
 			$opts = json_encode($opts);
 

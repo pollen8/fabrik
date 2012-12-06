@@ -151,29 +151,6 @@ $app = JFactory::getApplication();
 $package = JRequest::getVar('package', 'fabrik');
 $app->setUserState('com_fabrik.package', $package);
 
-// Web service testing
-JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
-if (JRequest::getVar('soap') == 1)
-{
-	$opts = array('driver' => 'soap', 'endpoint' => 'http://webservices.activetickets.com/members/ActiveTicketsMembersServices.asmx?WSDL',
-		'credentials' => array('Clientname' => "SPLFenix", 'LanguageCode' => "nl"));
-
-	$service = FabrikWebService::getInstance($opts);
-
-	$params = $opts['credentials'];
-	$params['From'] = JFactory::getDate()->toISO8601();
-	$params['To'] = JFactory::getDate('next year')->toISO8601();
-	$params['IncludePrices'] = true;
-	$params['MemberId'] = 14;
-	$method = JRequest::getVar($method, 'GetProgramList');
-	$program = $service->get($method, $params, '//ProgramList/Program', null);
-
-	$listModel = JModel::getInstance('List', 'FabrikFEModel');
-	$listModel->setId(7);
-	$service->storeLocally($listModel, $program);
-
-}
-
 if (JRequest::getVar('yql') == 1)
 {
 	$opts = array('driver' => 'yql', 'endpoint' => 'https://query.yahooapis.com/v1/public/yql');

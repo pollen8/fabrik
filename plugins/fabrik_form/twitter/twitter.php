@@ -131,10 +131,13 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 
 	protected function sendTweet($params, $connection)
 	{
-		$session = JFactory::getSession();
-		$formdata = $session->get('com_fabrik.form.data');
 		$app = JFactory::getApplication();
-		/* If method is set change API call made. Test is called by default. */
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
+		$session = JFactory::getSession();
+		$formdata = $session->get('com_' . $package . '.form.data');
+
+		// If method is set change API call made. Test is called by default.
 		$content = $connection->get('account/rate_limit_status');
 
 		if ($content->remaining_hits <= 0)
@@ -148,7 +151,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 
 		$parameters = array('status' => $msg);
 		$status = $connection->post('statuses/update', $parameters);
-		$show_success = (int) $session->get('com_fabrik.form.twitter.showmessage', 0);
+		$show_success = (int) $session->get('com_' . $package . '.form.twitter.showmessage', 0);
 
 		switch ($connection->http_code)
 		{
@@ -180,10 +183,12 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	private function _process($params, &$formModel)
 	{
 		global $_SESSION;
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->formModel = $formModel;
 		$session = JFactory::getSession();
 
-		$session->set('com_fabrik.form.twitter.showmessage', $params->get('twitter-show-success-msg', 0));
+		$session->set('com_' . $package . '.form.twitter.showmessage', $params->get('twitter-show-success-msg', 0));
 		$_SESSION['msg'] = $this->getMessage($params);
 
 		// If the admin has specified an account use that
@@ -214,7 +219,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		// Otherwise get authorization url from user to use ther own account
 
 		// $this->row not set ?! so this callback url was giving notices
-		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid='
+		$callback = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=twitter&g=form&method=tweet&formid='
 			. $formModel->getId();
 		$callback .= '&renderOrder=' . $this->renderOrder;
 
@@ -250,13 +255,15 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 
 	public function getEmailData()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$data = parent::getEmailData();
 		$id = JRequest::getVar('rowid');
 		$formId = $this->formModel->getId();
 		$data['fabrik_editurl'] = COM_FABRIK_LIVESITE
-			. JRoute::_("index.php?option=com_fabrik&amp;view=form&amp;formid=" . $formId . "&amp;rowid=" . $id);
+			. JRoute::_("index.php?option=com_" . $package . "&amp;view=form&amp;formid=" . $formId . "&amp;rowid=" . $id);
 		$data['fabrik_viewurl'] = COM_FABRIK_LIVESITE
-			. JRoute::_("index.php?option=com_fabrik&amp;view=details&amp;formid=" . $formId . "&amp;rowid=" . $id);
+			. JRoute::_("index.php?option=com_" . $package . "&amp;view=details&amp;formid=" . $formId . "&amp;rowid=" . $id);
 
 		// $$$ rob fabrik_viewurl/fabrik_editurl desribed in help text as fabrik_edit_url/fabrik_view_url.
 		// $$$ hugh - so let's add edit_link and view_link as well, just for consistency
@@ -368,6 +375,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 	public function onAuthenticateAdmin()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$formModel = $this->buildModel(JRequest::getInt('formid'));
 		$params = $formModel->getParams();
 		$consumer_key = JRequest::getVar('twitter_consumer_key');
@@ -380,7 +388,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		$consumer_secret = $consumer_secret[$counter];
 
 		$callback = COM_FABRIK_LIVESITE
-			. 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='
+			. 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=twitter&tmpl=component&g=form&method=updateAdmin&formid='
 			. $formModel->getId();
 		$callback .= "&repeatCounter=" . JRequest::getInt('repeatCounter');
 

@@ -185,7 +185,6 @@ class FabrikModelPackage extends FabModelAdmin
 		{
 			$row = $this->getTable();
 
-
 			$row->load($id);
 			$this->outputPath = JPATH_ROOT . '/tmp/' . $this->getComponentName($row) . '/';
 			$json = $row->params;
@@ -218,8 +217,21 @@ class FabrikModelPackage extends FabModelAdmin
 			$ok = $archive->create($componentZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $componentZipPath);
+				JError::raiseError(500, 'Unable to create component zip in ' . $componentZipPath);
 			}
+
+			// Make form module
+			$archive = JArchive::getAdapter('zip');
+			$formModuleFiles = $this->formModuleFiles($row);
+			$formModuleZipPath = $this->outputPath . 'packages/mod_' . $this->getComponentName($row) . '_form.zip';
+
+			$ok = $archive->create($formModuleZipPath, $formModuleFiles);
+			if (!$ok)
+			{
+				exit;
+				JError::raiseError(500, 'Unable to form module zip in ' . $componentZipPath);
+			}
+			//echo "create zip @" . $formModuleZipPath;exit;
 			// Copy that to root
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
 
@@ -530,17 +542,44 @@ class FabrikModelPackage extends FabModelAdmin
 		return $files;
 	}
 
+	protected function formModuleFiles($row, $root = '')
+	{
+		$root = JPath::clean($root);
+		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/com_fabrik_skeleton/mod_fabrik_skeleton_form';
+		$to = $this->outputPath . 'mod_' . $row->component_name . '_form';
+		JFolder::delete($to);
+		JFolder::create($to);
+		//JFolder::copy($from, $to, '', true);
+
+		$files = JFolder::files($from);
+
+		$return = array();
+		foreach ($files as $file)
+		{
+			$str = JFile::read($from . '/' . $file);
+			$str = str_replace('{component_name}', $row->component_name, $str);
+
+			$file = str_replace('_fabrik_', '_' . $row->component_name . '_', $file);
+			JFile::write($to . '/' . $file, $str);
+
+			$zippath = str_replace($root, '', $to . '/' . $file);
+			$return[] = array('name' => $zippath, 'data' => $str);
+		}
+		return $return;
+	}
+
 	/**
 	 * Get component name
 	 *
-	 * @param   object  $row  package
+	 * @param   object  $row      Package
+	 * @param   bool    $version  Include version in name
 	 *
 	 * @return string
 	 */
 
-	protected function getComponentName($row)
+	protected function getComponentName($row, $version = false)
 	{
-		return $row->component_name . '_' . $row->version;
+		return $row->component_name;// . '_' . $row->version;
 	}
 
 	/**

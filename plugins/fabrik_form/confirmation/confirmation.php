@@ -56,9 +56,11 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form
 
 	protected function clearSession($id)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
-		$session->clear('com_fabrik.form.' . $id . '.session.on');
-		$session->clear('com_fabrik.form.' . $id . '.session.hash');
+		$session->clear('com_' . $package . '.form.' . $id . '.session.on');
+		$session->clear('com_' . $package . '.form.' . $id . '.session.hash');
 	}
 
 	/**
@@ -75,6 +77,7 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($input->getInt('fabrik_ignorevalidation') === 1 || $input->getInt('fabrik_ajax') === 1)
 		{
 			// Saving via inline edit - dont want to confirm
@@ -114,8 +117,8 @@ class plgFabrik_FormConfirmation extends plgFabrik_Form
 
 		// Tell the form model that it's data is loaded from the session
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.' . $formModel->getId() . '.session.on', true);
-		$session->set('com_fabrik.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
+		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.on', true);
+		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
 		$formModel->_arErrors['confirmation_required'] = true;

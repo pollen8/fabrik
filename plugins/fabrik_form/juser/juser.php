@@ -770,6 +770,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	protected function autoLogin($formModel)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		/* $$$ rob 04/02/2011 no longer used - instead a session var is set
 		 * com_fabrik.form.X.juser.created with values true/false.
@@ -799,7 +800,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$error = $app->login($credentials, $options);
 
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $formModel->getId() . '.juser.';
+		$context = 'com_' . $package . '.form.' . $formModel->getId() . '.juser.';
 		$w = new FabrikWorker;
 		if (!JError::isError($error))
 		{

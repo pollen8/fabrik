@@ -12,6 +12,8 @@ defined('_JEXEC') or die();
 //@TODO if we ever get calendars inside packages then the ids will need to be
 // Replaced with classes contained within a distinct id
 
+$app = JFactory::getApplication();
+$package = $app->getUserState('com_fabrik.package', 'fabrik');
 $row = $this->row;
 ?>
 
@@ -53,13 +55,13 @@ foreach ($this->rows as $row)
 						<div class="floating-tip" style="display:none">
 						<ul class="view approvals">
 							<li>
-								<a class="approve" href="index.php?option=com_fabrik&format=raw&task=visualization.display&visualizationid=<?php echo $this
+								<a class="approve" href="index.php?option=com_<?php echo $package?>&format=raw&task=visualization.display&visualizationid=<?php echo $this
 		->id ?>&plugintask=approve&listid=<?php echo $row->listid ?>&rowid=<?php echo $row->rowid ?>">
 									<?php echo FabrikHelperHTML::image('approve.png', 'visualization', ''); ?><span>approve</span>
 								</a>
 							</li>
 							<li>
-								<a class="disapprove"  href="index.php?option=com_fabrik&format=raw&task=visualization.display&visualizationid=<?php echo $this
+								<a class="disapprove"  href="index.php?option=com_<?php echo $package?>&format=raw&task=visualization.display&visualizationid=<?php echo $this
 		->id ?>&plugintask=disapprove&listid=<?php echo $row->listid ?>&rowid=<?php echo $row->rowid ?>">
 									<?php echo FabrikHelperHTML::image('disapprove.png', 'visualization', ''); ?><span>disapprove</span>
 									</a>

@@ -229,6 +229,7 @@ class FabrikFEModelVisualization extends JModel
 	public function getAdvancedSearchLink()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$links = array();
 		$listModels = $this->getlistModels();
 		$js = array();
@@ -240,7 +241,7 @@ class FabrikFEModelVisualization extends JModel
 			{
 				$table = $listModel->getTable();
 				$tmpl = $listModel->getTmpl();
-				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+				$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list')
 					. '&scope&amp;=' . $app->scope;
 
@@ -308,6 +309,7 @@ class FabrikFEModelVisualization extends JModel
 			return $this->getFilterFormURL;
 		}
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$option = $input->get('option');
 
@@ -321,7 +323,7 @@ class FabrikFEModelVisualization extends JModel
 		 * rest filters is set to 1 again
 		 */
 		$router->setVar('resetfilters', 0);
-		if ($option !== 'com_fabrik')
+		if ($option !== 'com_' . $package)
 		{
 			// $$$ rob these can't be set by the menu item, but can be set in {fabrik....}
 			$router->setVar('clearordering', 0);

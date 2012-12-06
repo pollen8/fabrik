@@ -92,6 +92,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	function addEvForm()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$listid = $input->getInt('listid');
 		$viewName = 'calendar';
@@ -118,7 +119,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$input->set('formid', $table->form_id);
 		$input->set('tmpl', 'component');
 		$input->set('ajax', '1');
-		$link = 'index.php?option=com_fabrik&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
+		$link = 'index.php?option=com_' . $package . '&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
 		$link .= '&jos_fabrik_calendar_events___visualization_id=' . JRequest::getInt('jos_fabrik_calendar_events___visualization_id');
 		$start_date = JRequest::getVar('start_date', '');
 		if (!empty($start_date))
