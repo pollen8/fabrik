@@ -126,7 +126,7 @@
 			</field>
 	 	</fieldset>
  			
-		<fieldset label="Table settings" name="plg-element-googlemap-table">
+		<fieldset label="List settings" name="plg-element-googlemap-table">
 			<field default="0" description="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_DESC" label="PLG_ELEMENT_GOOGLE_MAP_STATIC_MAP_TABLE_VIEW_LABEL" name="fb_gm_staticmap_tableview" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
