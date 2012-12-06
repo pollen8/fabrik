@@ -9032,16 +9032,19 @@ class FabrikFEModelList extends JModelForm
 		if (!isset($this->tmpl))
 		{
 			$app = JFactory::getApplication();
+			$input = $app->input;
 			$item = $this->getTable();
 			$params = $this->getParams();
 			$document = JFactory::getDocument();
 			if ($app->isAdmin())
 			{
-				$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
+				//$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
+				$this->tmpl = $input->get('layout', $params->get('admin_template'));
 			}
 			else
 			{
-				$this->tmpl = JRequest::getVar('layout', $item->template);
+				//$this->tmpl = JRequest::getVar('layout', $item->template);
+				$this->tmpl = $input->get('layout', $item->template);
 			}
 			if ($this->tmpl == '')
 			{

@@ -855,6 +855,10 @@ class FabrikPlugin extends JPlugin
 
 	protected function getUsersInGroups($sendTo, $field = 'id')
 	{
+		if (empty($sendTo))
+		{
+			return array();
+		}
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')

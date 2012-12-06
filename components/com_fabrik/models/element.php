@@ -2026,7 +2026,7 @@ class plgFabrik_Element extends FabrikPlugin
 			 */
 			foreach ($data as $k => $val)
 			{
-				if ($k == 'join')
+				if ($k === 'join')
 				{
 					foreach ($val as $joindata)
 					{
