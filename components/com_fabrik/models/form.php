@@ -2227,7 +2227,10 @@ class FabrikFEModelForm extends FabModelForm
 									 * their JSON data for encrypted read only vals, need to decode.
 									 */
 									$v = FabrikWorker::JSONtoData($v);
-									$v = $w->parseMessageForPlaceHolder($v, $post);
+									foreach ($v as $tmpV)
+									{
+										$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
+									}
 								}
 								$elementModel->_group = $groupModel;
 								$elementModel->setValuesFromEncryt($post, $key, $v);
@@ -2929,7 +2932,7 @@ class FabrikFEModelForm extends FabModelForm
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
-		// the request rowid for the mambot as that value is destinded for the component
+		// the request rowid for the mambot as that value is destined for the component
 		if ($this->isMambot && JRequest::getCmd('option') == 'com_' . $package)
 		{
 			$this->_rowId = $usersConfig->get('rowid');
@@ -3520,14 +3523,6 @@ class FabrikFEModelForm extends FabModelForm
 				for ($k = 0; $k < count($usekey); $k++)
 				{
 					// Ensure that the key value is not quoted as we Quote() afterwards
-					/*
-					 * $$$ rob 29/10/2012
-					 * commenting out as if key value = "ile d'ax" then this is set to "ile dax" which then returns no rows.
-					 * quote() shoudl deal with backslashing "'" so not sure why this line was here.
-					if (strstr($aRowIds[$k], "'"))
-					{
-						$aRowIds[$k] = str_replace("'", '', $aRowIds[$k]);
-					} */
 					if ($comparison == '=')
 					{
 						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);

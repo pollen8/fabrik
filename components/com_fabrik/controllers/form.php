@@ -109,7 +109,7 @@ class FabrikControllerForm extends JController
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
-
+		$model->isMambot = $this->isMambot;
 		$model->packageId = $app->input->getInt('packageId');
 
 		// Test for failed validation then page refresh
