@@ -745,7 +745,7 @@ var FbList = new Class({
 	 */
 	getRowIds: function () {
 		var keys = [];
-		this.options.data.each(function (group) {
+		$H(this.options.data).each(function (group) {
 			group.each(function (row) {
 				keys.push(row.data.__pk_val);
 			});
@@ -860,7 +860,7 @@ var FbList = new Class({
 				// Set the group by heading
 				if (this.options.isGrouped && tbody) {
 					groupHeading = tbody.getPrevious();
-					groupHeading.getElement('.groupTitle').set('text', groupData[0].groupHeading);
+					groupHeading.getElement('.groupTitle').set('html', groupData[0].groupHeading);
 				}
 				if (typeOf(tbody) !== 'null') {
 					gcounter++;

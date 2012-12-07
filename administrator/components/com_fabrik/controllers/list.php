@@ -121,11 +121,15 @@ class FabrikAdminControllerList extends FabControllerForm
 			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setState('list.id', $cid);
 		}
+
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$viewType = JFactory::getDocument()->getType();
 
 		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout = $input->get('layout', 'default');
+		$viewLayout = $input->getWord('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, 'FabrikView');
 		$view->setModel($model, true);
 
@@ -166,7 +170,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$model->setState('list.id', $cid[0]);
 		$formModel = $model->getFormModel();
 		$viewType = $document->getType();
-		$viewLayout = $input->get('layout', 'linked_elements');
+		$viewLayout = $input->getWord('layout', 'linked_elements');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		$view->setModel($formModel);
