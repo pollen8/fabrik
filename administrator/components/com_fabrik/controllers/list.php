@@ -118,11 +118,16 @@ class FabrikControllerList extends FabControllerForm
 			$model = JModel::getInstance('List', 'FabrikFEModel');
 			$model->setState('list.id', $cid);
 		}
+
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		$viewType = JFactory::getDocument()->getType();
 
 		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
-		$viewLayout = JRequest::getCmd('layout', 'default');
+		// $viewLayout = JRequest::getCmd('layout', 'default');
+		$viewLayout = $input->getWord('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 
@@ -156,12 +161,15 @@ class FabrikControllerList extends FabControllerForm
 	public function showLinkedElements()
 	{
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid[0]);
 		$formModel = $model->getFormModel();
 		$viewType = $document->getType();
-		$viewLayout = JRequest::getCmd('layout', 'linked_elements');
+		// $viewLayout = JRequest::getCmd('layout', 'linked_elements');
+		$viewLayout = $input->getWord('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		$view->setModel($formModel);
