@@ -28,8 +28,8 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return void
 	 */
@@ -56,7 +56,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -70,8 +70,8 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  $params      Plugin params
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return	bool
 	 */
@@ -137,6 +137,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 		{
 			$fromname = $rawconfig->fromname;
 		}
-		$res = JUTility::sendMail($from, $fromname, $to, $subject, $message, true);
+		$mail = JFactory::getMailer();
+		$res = $mail->sendMail($from, $fromname, $to, $subject, $message, true);
 	}
 }
