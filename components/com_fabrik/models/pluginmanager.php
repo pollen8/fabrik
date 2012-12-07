@@ -316,12 +316,16 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 	public function getFormPlugins(&$form)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		if (!isset($this->formPlugins))
 		{
 			$this->formPlugins = array();
 		}
-		$sig = $form->get('id');
+
+		// Ensure packages load their own form
+		$sig = $package . '.' . $form->get('id');
 		JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:start - ' . $sig) : null;
 		if (!array_key_exists($sig, $this->formPlugins))
 		{

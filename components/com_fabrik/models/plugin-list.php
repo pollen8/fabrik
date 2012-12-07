@@ -270,7 +270,9 @@ class plgFabrik_List extends FabrikPlugin
 
 	protected function getSessionContext()
 	{
-		return 'com_fabrik.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		return 'com_' . $package . '.list' . $this->model->getRenderContext() . '.plugins.' . $this->onGetFilterKey() . '.';
 	}
 
 	/**

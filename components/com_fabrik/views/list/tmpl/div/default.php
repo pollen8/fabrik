@@ -32,7 +32,9 @@ if ($this->showFilters) {
 			<div class="fabrik_groupheading">
 				<a href="#" class="toggle">
 					<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
-					<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+					<span class="groupTitle">
+						<?php echo $this->grouptemplates[$groupedby]; ?> ( <?php echo count($group)?> )
+					</span>
 				</a>
 			</div>
 			<?php }?>

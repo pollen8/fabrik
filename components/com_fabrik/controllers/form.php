@@ -93,6 +93,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function display($cachable = false, $urlparams = false)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
@@ -111,6 +113,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = !isset($this->_model) ? $this->getModel($modelName, 'FabrikFEModel') : $this->_model;
+		$model->isMambot = $this->isMambot;
+		$model->packageId = $app->input->getInt('packageId');
 
 		// Test for failed validation then page refresh
 		$model->getErrors();
@@ -134,7 +138,7 @@ class FabrikControllerForm extends JControllerLegacy
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
+				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
 			$msg = $model->aclMessage();
 			$this->setRedirect(JRoute::_($url), $msg, 'notice');
@@ -153,7 +157,7 @@ class FabrikControllerForm extends JControllerLegacy
 			$uri = JFactory::getURI();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-			$cache = JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_' . $package, 'view');
 			ob_start();
 			$cache->get($view, 'display', $cacheid);
 			$contents = ob_get_contents();
@@ -177,6 +181,7 @@ class FabrikControllerForm extends JControllerLegacy
 	public function process()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		if ($input->get('format', '') == 'raw')
 		{
@@ -191,9 +196,9 @@ class FabrikControllerForm extends JControllerLegacy
 			$view->setModel($model, true);
 		}
 		$model->setId($input->getInt('formid', 0));
-
+		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = $input->get('isMambot', 0);
-		$model->getForm();
+		$form = $model->getForm();
 		$model->rowId = $input->get('rowid', '');
 
 		/**
@@ -467,6 +472,7 @@ class FabrikControllerForm extends JControllerLegacy
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = array($input->get('rowid', 0));
 
@@ -480,7 +486,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 		$total = $oldtotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=table&listid=' . $listid, 'string');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, 'string');
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
@@ -490,7 +496,7 @@ class FabrikControllerForm extends JControllerLegacy
 			}
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
-			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
+			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
 		if ($input->get('format') == 'raw')

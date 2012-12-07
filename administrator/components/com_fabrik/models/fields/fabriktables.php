@@ -53,6 +53,7 @@ class JFormFieldFabrikTables extends JFormFieldList
 
 	protected function getOptions()
 	{
+		$app = JFactory::getApplication();
 		if (!isset($fabriktables))
 		{
 			$fabriktables = array();
@@ -60,6 +61,11 @@ class JFormFieldFabrikTables extends JFormFieldList
 		$connectionDd = $this->element['observe'];
 		$db = FabrikWorker::getDbo(true);
 		$id = $this->id;
+
+		if ($this->element['package'])
+		{
+			$package = $app->setUserState('com_fabrik.package', $this->element['package']);
+		}
 		$fullName = $this->name;
 		if ($connectionDd == '')
 		{

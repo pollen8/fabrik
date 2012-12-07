@@ -392,6 +392,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	{
 		$w = new FabrikWorker;
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$customLink = (array) $params->get('timeline_customlink');
 		$customLink = JArrayHelper::getValue($customLink, $c, '');
@@ -410,7 +411,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 			}
 			else
 			{
-				$url = 'index.php?option=com_fabrik&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val
+				$url = 'index.php?option=com_' . $package . '&view=' . $nextview . '&formid=' . $table->form_id . '&rowid=' . $row->__pk_val
 				. '&listid=' . $listModel->getId();
 			}
 		}

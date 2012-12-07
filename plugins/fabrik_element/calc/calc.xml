@@ -15,6 +15,8 @@
 		<filename>calc.js</filename>
 		<filename>calc-min.js</filename>
 		<filename>index.html</filename>
+		<filename>list-calc.js</filename>
+		<filename>list-calc-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>

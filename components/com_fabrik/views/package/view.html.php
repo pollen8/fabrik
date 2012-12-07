@@ -45,7 +45,7 @@ class fabrikViewPackage extends JViewLegacy
 		tabelement : 'packagemenu',
 		pagecontainer : 'packagepages',
 		layout: $layout,
-		'packageid':$id,
+		'packageId': $id,
 		'package':'$item->component_name'
 	});
 		});";

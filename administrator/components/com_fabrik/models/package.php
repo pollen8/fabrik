@@ -150,6 +150,27 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
+	 * All front end view folders have a default.xml file in them to set up the menu item
+	 * properties. We have to replace {component_name} placeholders with $row->component_name
+	 * So that form/list dropdowns load the package lists/forms and not the main Fabrik lists/forms
+	 *
+	 * @param   JTable  $row  Package info
+	 */
+	protected function alterViewXML($row)
+	{
+
+		$views = array();
+		$views[] = $this->outputPath . 'site/views/form/tmpl/default.xml';
+		$views[] = $this->outputPath . 'site/views/list/tmpl/default.xml';
+		foreach ($views as $view)
+		{
+			$str = JFile::read($view);
+			$str = str_replace('{component_name}', $row->component_name, $str);
+			JFile::write($view, $str);
+		}
+	}
+
+	/**
 	 * Export the package
 	 *
 	 * @param   array  $ids  package ids to export
@@ -170,7 +191,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$row->params = json_decode($row->params);
 			$row->blocks = $row->params->canvas->blocks;
 			$componentZipPath = $this->outputPath . 'packages/com_' . $this->getComponentName($row) . '.zip';
-			$pkgName = 'pkg_' . $this->getComponentName($row) . '.zip';
+			$pkgName = 'pkg_' . $this->getComponentName($row, true) . '.zip';
 			$packageZipPath = $this->outputPath . $pkgName;
 			if (JFile::exists($componentZipPath))
 			{
@@ -186,6 +207,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$filenames[] = $this->makeComponentManifestClass($row2);
 
 			$this->copySkeleton($row, $filenames);
+
+			$this->alterViewXML($row);
 			$archive = JArchive::getAdapter('zip');
 
 			$files = array();
@@ -194,8 +217,21 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($componentZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $componentZipPath);
+				JError::raiseError(500, 'Unable to create component zip in ' . $componentZipPath);
 			}
+
+			// Make form module
+			$archive = JArchive::getAdapter('zip');
+			$formModuleFiles = $this->formModuleFiles($row);
+			$formModuleZipPath = $this->outputPath . 'packages/mod_' . $this->getComponentName($row) . '_form.zip';
+
+			$ok = $archive->create($formModuleZipPath, $formModuleFiles);
+			if (!$ok)
+			{
+				exit;
+				JError::raiseError(500, 'Unable to form module zip in ' . $componentZipPath);
+			}
+			//echo "create zip @" . $formModuleZipPath;exit;
 			// Copy that to root
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
 
@@ -351,47 +387,60 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			{
 				$groupids[] = $formgroup->group_id;
 			}
-			// Groups
-			$query->clear();
-			$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
-			$db->setQuery($query);
-			$groups = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
 
-			// Elements
-			$query->clear();
-			$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
-			$db->setQuery($query);
-			$elements = $db->loadObjectList();
 			$elementids = array();
-			foreach ($elements as $element)
+
+			// Groups
+			if (!empty($groupids))
 			{
-				$elementids[] = $element->id;
+				$query->clear();
+				$query->select('*')->from('#__{package}_groups')->where('id IN (' . implode(',', $groupids) . ')');
+				$db->setQuery($query);
+				$groups = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_groups', $groups, $return);
+
+				// Elements
+				$query->clear();
+				$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
+				$db->setQuery($query);
+				$elements = $db->loadObjectList();
+				foreach ($elements as $element)
+				{
+					$elementids[] = $element->id;
+				}
+				$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 			}
-			$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 
 			// Joins
 			$query->clear();
 			$query->select('*')->from('#__{package}_joins')
-				->where('list_id IN (' . implode(',', $lists) . ') OR element_id IN (' . implode(',', $elementids) . ')');
+				->where('list_id IN (' . implode(',', $lists) . ')');
+			if (!empty($elementids))
+			{
+				$query->where('element_id IN (' . implode(',', $elementids) . ')', 'OR');
+			}
 			$db->setQuery($query);
 			$joins = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
-
+			if (!empty($joins))
+			{
+				$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
+			}
 			// JS actions
-			$query->clear();
-			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
-			$db->setQuery($query);
-			$jsactions = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
+			if (!empty($elementids))
+			{
+				$query->clear();
+				$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $elementids) . ')');
+				$db->setQuery($query);
+				$jsactions = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_jsactions', $jsactions, $return);
 
-			// JS actions
-			$query->clear();
-			$query->select('*')->from('#__{package}_validations')->where('element_id IN (' . implode(',', $elementids) . ')');
-			$db->setQuery($query);
-			$validations = $db->loadObjectList();
-			$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
-
+				// JS actions
+				$query->clear();
+				$query->select('*')->from('#__{package}_validations')->where('element_id IN (' . implode(',', $elementids) . ')');
+				$db->setQuery($query);
+				$validations = $db->loadObjectList();
+				$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
+			}
 		}
 		/**
 		 * ok write the code to update components/componentname/componentname.php
@@ -493,17 +542,49 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		return $files;
 	}
 
+	protected function formModuleFiles($row, $root = '')
+	{
+		$root = JPath::clean($root);
+		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/com_fabrik_skeleton/mod_fabrik_skeleton_form';
+		$to = $this->outputPath . 'mod_' . $row->component_name . '_form';
+		JFolder::delete($to);
+		JFolder::create($to);
+		//JFolder::copy($from, $to, '', true);
+
+		$files = JFolder::files($from);
+
+		$return = array();
+		foreach ($files as $file)
+		{
+			$str = JFile::read($from . '/' . $file);
+			$str = str_replace('{component_name}', $row->component_name, $str);
+
+			$file = str_replace('_fabrik_', '_' . $row->component_name . '_', $file);
+			JFile::write($to . '/' . $file, $str);
+
+			$zippath = str_replace($root, '', $to . '/' . $file);
+			$return[] = array('name' => $zippath, 'data' => $str);
+		}
+		return $return;
+	}
+
 	/**
 	 * Get component name
 	 *
-	 * @param   object  $row  package
+	 * @param   object  $row      Package
+	 * @param   bool    $version  Include version in name
 	 *
 	 * @return string
 	 */
 
-	protected function getComponentName($row)
+	protected function getComponentName($row, $version = false)
 	{
-		return $row->component_name . '_' . $row->version;
+		$name = $row->component_name;
+		if ($version)
+		{
+			$name .= '_' . $row->version;
+		}
+		return $name;
 	}
 
 	/**

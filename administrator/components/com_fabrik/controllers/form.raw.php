@@ -181,7 +181,7 @@ class FabrikAdminControllerForm extends JControllerForm
 			echo $model->inLineEditResult();
 			return;
 		}
-		if ($input->getInt('_packageId') !== 0)
+		if ($input->getInt('packageId') !== 0)
 		{
 			$rowid = $input->getInt('rowid');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));

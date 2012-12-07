@@ -96,6 +96,9 @@ class PlgSystemFabrik extends JPlugin
 
 	public function onDoContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if (defined('COM_FABRIK_SEARCH_RUN'))
 		{
 			return;
@@ -173,7 +176,7 @@ class PlgSystemFabrik extends JPlugin
 			$listModel->reset();
 
 			// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
-			$key = 'com_fabrik.list' . $id . '.filter.searchall';
+			$key = 'com_' . $package . '.list' . $id . '.filter.searchall';
 			$app->setUserState($key, null);
 
 			unset($table);

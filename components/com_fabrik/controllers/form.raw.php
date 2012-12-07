@@ -42,6 +42,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function display()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -66,7 +68,7 @@ class FabrikControllerForm extends JControllerLegacy
 		 */
 		if (!$model->hasErrors())
 		{
-			$context = 'com_fabrik.form.' . $input->getInt('formid');
+			$context = 'com_' . $package . '.form.' . $input->getInt('formid');
 			$model->errors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
@@ -84,7 +86,7 @@ class FabrikControllerForm extends JControllerLegacy
 		return $view->display();
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
 		{
-			$cache = JFactory::getCache('com_fabrik', 'view');
+			$cache = JFactory::getCache('com_' . $package, 'view');
 			return $cache->get($view, 'display');
 		}
 		else
@@ -101,6 +103,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function process()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -128,7 +132,7 @@ class FabrikControllerForm extends JControllerLegacy
 			if (!$model->validate())
 			{
 				// If its in a module with ajax or in a package
-				if ($input->getInt('_packageId') !== 0)
+				if ($input->getInt('packageId') !== 0)
 				{
 					$data = array('modified' => $model->modifiedValidationData);
 
@@ -140,8 +144,9 @@ class FabrikControllerForm extends JControllerLegacy
 				if ($this->isMambot)
 				{
 					// Store errors in session
-					$context = 'com_fabrik.form.' . $model->get('id') . '.';
+					$context = 'com_' . $package . '.form.' . $model->get('id') . '.';
 					$session->set($context . 'errors', $model->errors);
+
 					/**
 					 * $$$ hugh - testing way of preserving form values after validation fails with form plugin
 					 * might as well use the 'savepage' mechanism, as it's already there!
@@ -186,7 +191,7 @@ class FabrikControllerForm extends JControllerLegacy
 			return;
 		}
 
-		if ($input->getInt('_packageId') !== 0)
+		if ($input->getInt('packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
 			return;
@@ -214,6 +219,7 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		if ($app->isAdmin())
 		{
+			// Admin option is always com_fabrik
 			if (array_key_exists('apply', $model->formData))
 			{
 				$url = "index.php?option=com_fabrik&c=form&task=form&formid=" . $input->getInt('formid') . "&listid=" . $input->getInt('listid')
@@ -229,7 +235,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = "index.php?option=com_fabrik&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getInt('rowid')
+				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getInt('rowid')
 					. "&listid=" . $input->getInt('listid');
 			}
 			else
@@ -248,7 +254,7 @@ class FabrikControllerForm extends JControllerLegacy
 				$Itemid = $app->getMenu('site')->getActive()->id;
 				if ($url == '')
 				{
-					$url = "index.php?option=com_fabrik&Itemid=$Itemid";
+					$url = 'index.php?option=com_' . $option . '&Itemid=' . $Itemid;
 				}
 			}
 			$config = JFactory::getConfig();

@@ -29,6 +29,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 	function getMedia()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$Itemid = @$app->getMenu('site')->getActive()->id;
 		$params = $this->getParams();
 		$w = $params->get('media_width');
@@ -38,7 +39,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		{
 			$player_type = "Extended";
 			$player_url = COM_FABRIK_LIVESITE . $this->srcBase . "media/libs/xspf/$player_type/xspf_player.swf";
-			$playlist_url = 'index.php?option=com_fabrik&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&Itemid='
+			$playlist_url = 'index.php?option=com_' . $package . '&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&Itemid='
 				. $Itemid . '&visualizationid=' . $this->getId();
 			$playlist_url = urlencode($playlist_url);
 			$return = '<object type="application/x-shockwave-flash" width="400" height="170" data="' . $player_url . '?playlist_url=' . $playlist_url
@@ -56,6 +57,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 	function getPlaylist()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 
 		$mediaElement = $params->get('media_media_elementList');
@@ -87,7 +89,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		// values (so we don't mess with any instances of the list user may load).  This code
 		// seems to kinda work.  Once I've tested it further, will probably move it into to
 		// a generic viz model method, so all viz's can call it.
-		$context = 'com_fabrik.list' . $listModel->getRenderContext() . '.';
+		$context = 'com_' . $package . '.list' . $listModel->getRenderContext() . '.';
 		$item = $listModel->getTable();
 		$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page);
 		$orig_limitstart = $app->getUserState('limitstart', 0);
@@ -154,7 +156,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 					}
 					else
 					{
-						$link = JRoute::_('index.php?option=com_fabrik&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
+						$link = JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
 						$retstr .= "			<info>" . $link . "</info>\n";
 					}
 					$retstr .= "		</track>\n";
@@ -216,7 +218,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 					}
 					else
 					{
-						$link = JRoute::_('index.php?option=com_fabrik&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
+						$link = JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
 						$retstr .= "			<link>" . $link . "</link>\n";
 					}
 					if (!empty($dateElement))
@@ -261,6 +263,8 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 
 	public function getJs()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$viz = $this->getVisualization();
 		$opts = new stdClass;
@@ -269,7 +273,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		{
 			$opts->jw_swf_url = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/media/libs/jw/player.swf';
 			$opts->jw_playlist_url = COM_FABRIK_LIVESITE
-				. 'index.php?option=com_fabrik&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&visualizationid='
+				. 'index.php?option=com_' . $package . '&controller=visualization.media&view=visualization&task=getPlaylist&format=raw&visualizationid='
 				. $this->getId();
 			$opts->jw_skin = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/media/libs/jw/skins/' . $params->get('media_jw_skin', 'snel.zip');
 		}

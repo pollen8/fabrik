@@ -317,11 +317,13 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	protected function getNotifyUrl()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$testSite = $this->params->get('subscriptions_test_site', '');
 		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
 		$testMode = $this->params->get('subscriptions_testmode', false);
 		$ppurl = ($testMode == 1 && !empty($testSite)) ? $testSite : COM_FABRIK_LIVESITE;
-		$ppurl .= '/index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
+		$ppurl .= '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
 			. '&g=form&plugin=subscriptions&method=ipn';
 		if ($testMode == 1 && !empty($testSiteQs))
 		{
@@ -339,12 +341,14 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	protected function getReturnUrl()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$url = '';
 		$testSite = $this->params->get('subscriptions_test_site', '');
 		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
 		$testMode = (bool) $this->params->get('subscriptions_testmode', false);
 
-		$qs = 'index.php?option=com_fabrik&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
+		$qs = 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
 			. '&g=form&plugin=subscriptions&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 
 		if ($testMode)

@@ -2,11 +2,10 @@
 /**
  * Fabrik List Module
  *
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -24,12 +23,12 @@ JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_fabrik/tables');
 
-require_once(COM_FABRIK_FRONTEND . '/controller.php');
-require_once(COM_FABRIK_FRONTEND . '/controllers/list.php');
-require_once(COM_FABRIK_FRONTEND . '/views/list/view.html.php');
-require_once(COM_FABRIK_FRONTEND . '/views/package/view.html.php');
-require_once(COM_FABRIK_FRONTEND . '/controllers/package.php');
-require_once(COM_FABRIK_FRONTEND . '/views/form/view.html.php');
+require_once COM_FABRIK_FRONTEND . '/controller.php';
+require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
+require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
+require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
+require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
+require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 
 // Load front end language file as well
 $lang = JFactory::getLanguage();
@@ -38,7 +37,12 @@ $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 $app = JFactory::getApplication();
 $document = JFactory::getDocument();
 
+// Ensure the package is set to fabrik
+$prevUserState = $app->getUserState('com_fabrik.package');
+$app->setUserState('com_fabrik.package', 'fabrik');
+
 FabrikHelperHTML::framework();
+
 // $$$rob looks like including the view does something to the layout variable
 $origLayout = JRequest::getVar('layout');
 
@@ -137,3 +141,6 @@ $view->error = $controller->getError();
 echo $view->display();
 
 JRequest::setVar('layout', $origLayout);
+
+// Set the package back to what it was before rendering the module
+$app->setUserState('com_fabrik.package', $prevUserState);

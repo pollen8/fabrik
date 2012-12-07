@@ -78,6 +78,8 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($params->get('ask-receipt'))
 		{
 			if (!array_key_exists('fabrik_email_copy', $_POST))
@@ -97,9 +99,9 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 		$aData = array_merge($this->getEmailData(), $formModel->formData);
 
 		$message = $params->get('receipt_message');
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
 			. $rowid;
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
 			. $rowid;
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";

@@ -215,7 +215,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		$msg = $model->getRedirectMessage($model);
 
-		if ($input->getInt('_packageId') !== 0)
+		if ($input->getInt('packageId') !== 0)
 		{
 			$rowid = $input->get('rowid', '', 'string');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));

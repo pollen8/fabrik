@@ -75,7 +75,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		 */
 		$default = '';
 		/**
-		 *  if viewing form or details view and calc set to always run then return the $default
+		 *  If viewing form or details view and calc set to always run then return the $default
 		 *  which has had the calculation run on it.
 		 */
 		if (!$params->get('calc_on_save_only', true))
@@ -324,7 +324,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Swap values for labels
 	 *
-	 * @param   array  &$d  data
+	 * @param   array  &$d  Data
 	 *
 	 * @return  void
 	 */
@@ -362,12 +362,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	 * Allows the element to pre-process a rows data before and join mergeing of rows
 	 * occurs. Used in calc element to do cals on actual row rather than merged row
 	 *
-	 * @param   string  $data  elements data for the current row
-	 * @param   object  $row   current row's data
+	 * @param   string  $data  Elements data for the current row
+	 * @param   object  $row   Current row's data
 	 *
 	 * @since	3.0.5
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function preFormatFormJoins($data, $row)
@@ -418,10 +418,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Prepares the element data for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -465,12 +465,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			else
 			{
-				/*
-				$str[] = '<input class="fabrikinput inputbox" disabled="disabled" name="'.$name.'" id="'.$id.'" value="'.$value.'" size="'.$element->width.'" />';
-				 */
-				if ($element->height<=1) {
+				if ($element->height <= 1)
+				{
 					$str[] = '<span class="fabrikinput" name="' . $name . '" id="' . $id . '">' . $value . '</span>';
-				} else {
+				}
+				else
+				{
 					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>\n';
 				}
 			}
@@ -532,7 +532,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	public function onAjax_calc()
 	{
 		$app = JFactory::getApplication();
-		$this->setId($app->input->getInt('element_id'));
+		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
 		$w = new FabrikWorker;
@@ -655,5 +656,58 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		return $params->get('calc_format_string');
+	}
+
+
+	/**
+	 * Get JS code for ini element list js
+	 * Overwritten in plugin classes
+	 *
+	 * @return string
+	 */
+
+	public function elementListJavascript()
+	{
+		$params = $this->getParams();
+		$id = $this->getHTMLId();
+		$list = $this->getlistModel()->getTable();
+		$opts = new stdClass;
+		$opts->listid = $list->id;
+		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
+		$opts->elid = $this->getElement()->id;
+		$opts = json_encode($opts);
+		return "new FbCalcList('$id', $opts);\n";
+	}
+
+	public function onAjax_listUpdate()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$ids = $input->get('rows', array(), 'array');
+		$listId = $input->getInt('listid');
+		$elId = $input->getInt('element_id');
+		$this->setId($elId);
+		$this->getElement();
+		$params = $this->getParams();
+
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listId);
+		$data = $listModel->getData();
+		$return = new stdClass;
+		$w = new FabrikWorker;
+
+		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
+		foreach ($data as $group)
+		{
+			foreach ($group as $row)
+			{
+				$key = $listRef . $row->__pk_val;
+				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
+				$return->$key =  @eval($default);
+			}
+		}
+
+
+		echo json_encode($return);
 	}
 }

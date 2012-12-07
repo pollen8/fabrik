@@ -302,6 +302,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	function getEvents()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$Itemid = @(int) $app->getMenu('site')->getActive()->id;
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
@@ -357,7 +358,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
-							$row->link = ("index.php?option=com_fabrik&Itemid=$Itemid&view=form&formid=$table->form_id&rowid=$row->id&tmpl=component");
+							$row->link = ("index.php?option=com_" . $package . "&Itemid=$Itemid&view=form&formid=$table->form_id&rowid=$row->id&tmpl=component");
 							$row->_listid = $table->id;
 							$row->_canDelete = (bool) $listModel->canDelete();
 							$row->_canEdit = (bool) $listModel->canEdit($row);

@@ -1362,6 +1362,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->formData;
 		}
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
 
 		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
@@ -1372,7 +1373,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->formData = $aData;
 		$this->_fullFormData = $this->formData;
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.data', $this->formData);
+		$session->set('com_' . $package . '.form.data', $this->formData);
 		return $this->formData;
 	}
 
@@ -2228,7 +2229,10 @@ class FabrikFEModelForm extends FabModelForm
 									 * their JSON data for encrypted read only vals, need to decode.
 									 */
 									$v = FabrikWorker::JSONtoData($v);
-									$v = $w->parseMessageForPlaceHolder($v, $post);
+									foreach ($v as $tmpV)
+									{
+										$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
+									}
 								}
 								$elementModel->setGroupModel($groupModel);
 								$elementModel->setValuesFromEncryt($post, $key, $v);
@@ -2551,7 +2555,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getErrors()
 	{
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session = JFactory::getSession();
 
 		// Store errors in local array as clearErrors() removes $this->errors
@@ -2581,7 +2587,9 @@ class FabrikFEModelForm extends FabModelForm
 	public function clearErrors()
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$this->errors = array();
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
@@ -2602,7 +2610,9 @@ class FabrikFEModelForm extends FabModelForm
 	public function setErrors($errors)
 	{
 		$session = JFactory::getSession();
-		$context = 'com_fabrik.form.' . $this->getId() . '.';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session->set($context . 'errors', $errors);
 		$session->set($context . 'session.on', true);
 	}
@@ -2933,9 +2943,12 @@ class FabrikFEModelForm extends FabModelForm
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$user = JFactory::getUser();
 
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
-		// the request rowid for the mambot as that value is destinded for the component
-		if ($this->isMambot && $input->get('option') == 'com_fabrik')
+		// the request rowid for the mambot as that value is destined for the component
+		if ($this->isMambot && $input->get('option') == 'com_' . $package)
 		{
 			$this->rowId = $usersConfig->get('rowid');
 		}
@@ -2982,6 +2995,8 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function render()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel render: start') : null;
 
@@ -3010,7 +3025,7 @@ class FabrikFEModelForm extends FabModelForm
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.' . $this->getId() . '.data', $this->data);
+		$session->set('com_' . $package . '.form.' . $this->getId() . '.data', $this->data);
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
@@ -3325,11 +3340,13 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function saveMultiPage($useSessionOn = true)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
-		if ($session->get('com_fabrik.form.' . $this->getId() . '.session.on') == true && $useSessionOn)
+		if ($session->get('com_' . $package . '.form.' . $this->getId() . '.session.on') == true && $useSessionOn)
 		{
 			return true;
 		}
@@ -3539,14 +3556,6 @@ class FabrikFEModelForm extends FabModelForm
 				for ($k = 0; $k < count($usekey); $k++)
 				{
 					// Ensure that the key value is not quoted as we Quote() afterwards
-					/*
-					 * $$$ rob 29/10/2012
-					 * commenting out as if key value = "ile d'ax" then this is set to "ile dax" which then returns no rows.
-					 * quote() shoudl deal with backslashing "'" so not sure why this line was here.
-					if (strstr($aRowIds[$k], "'"))
-					{
-						$aRowIds[$k] = str_replace("'", '', $aRowIds[$k]);
-					} */
 					if ($comparison == '=')
 					{
 						$parts[] = ' ' . $usekey[$k] . ' = ' . $db->quote($aRowIds[$k]);
@@ -4223,7 +4232,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getAction()
 	{
 		$app = JFactory::getApplication();
-
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		// Get the router
 		$router = $app->getRouter();
 		if ($app->isAdmin())
@@ -4235,13 +4244,13 @@ class FabrikFEModelForm extends FabModelForm
 			// return "index.php";
 			return $action;
 		}
-		if ((int) $this->packageId !== 0)
+		/* if ((int) $this->packageId !== 0)
 		{
 			$action = 'index.php?option=com_fabrik&view=form&formid=' . $this->getId();
 			return $action;
-		}
+		} */
 		$option = $app->input->get('option');
-		if ($option === 'com_fabrik')
+		if ($option === 'com_' . $package)
 		{
 			$page = 'index.php?';
 
@@ -4815,7 +4824,9 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getRedirectContext()
 	{
-		return 'com_fabrik.form.' . $this->getId() . '.redirect.';
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		return 'com_' . $package . '.form.' . $this->getId() . '.redirect.';
 	}
 
 	/**
@@ -4882,8 +4893,11 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($app->isAdmin())
 		{
+			// Admin always uses option com_fabrik
 			if (array_key_exists('apply', $this->formData))
 			{
 				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid');
@@ -4897,7 +4911,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if (array_key_exists('apply', $this->formData))
 			{
-				$url = 'index.php?option=com_fabrik&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid')
+				$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid')
 					. '&listid=' . $input->getInt('listid');
 			}
 			else
@@ -4922,7 +4936,7 @@ class FabrikFEModelForm extends FabModelForm
 					else
 					{
 						// No menu link so redirect back to list view
-						$url = 'index.php?option=com_fabrik&view=list&listid=' . $input->getInt('listid');
+						$url = 'index.php?option=com_' . $package . '&view=list&listid=' . $input->getInt('listid');
 					}
 				}
 			}
@@ -4939,7 +4953,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $url;
 		}
 		$session = JFactory::getSession();
-		$formdata = $session->get('com_fabrik.form.data');
+		$formdata = $session->get('com_' . $package . '.form.data');
 		$context = $this->getRedirectContext();
 
 		// If the redirect plug-in has set a url use that in preference to the default url
@@ -4956,9 +4970,11 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$surl[] = $url;
 		}
-		// $$$ hugh - hmmm, array_shift re-orders array keys, which will screw up plugin ordering?
 		$url = array_shift($surl);
 		$session->set($context . 'url', $surl);
+
+		// Redirect URL which set prefilters of < were converted to &lt; which then gave mySQL error
+		$url = htmlspecialchars_decode($url);
 		return array('url' => $url, 'baseRedirect' => $baseRedirect);
 	}
 
@@ -5019,12 +5035,14 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getRedirectMessage()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
-		$formdata = $session->get('com_fabrik.form.data');
+		$formdata = $session->get('com_' . $package . '.form.data');
 
 		// $$$ rob 30/03/2011 if using as a search form don't show record added message
-		if ($registry && $registry->get('com_fabrik.searchform.fromForm') != $this->get('id'))
+		if ($registry && $registry->get('com_' . $package . '.searchform.fromForm') != $this->get('id'))
 		{
 			$msg = $this->showSuccessMsg() ? $this->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
 		}

@@ -64,6 +64,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		jimport('joomla.mail.helper');
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
@@ -112,9 +113,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
+		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
 			. $input->get('rowid');
 		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
 		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
@@ -172,7 +173,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		@list($email_from, $email_from_name) = explode(":", $w->parseMessageForPlaceholder($params->get('email_from'), $this->data, false), 2);
 		if (empty($email_from))
 		{
-			$email_from = $config->getvalue('mailfrom');
+			$email_from = $config->get('mailfrom');
 		}
 		if (empty($email_from_name))
 		{

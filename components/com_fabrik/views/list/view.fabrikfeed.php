@@ -18,6 +18,7 @@ class FabrikViewList extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$Itemid = $app->getMenu('site')->getActive()->id;
 		$config = JFactory::getConfig();
 		$user = JFactory::getUser();
@@ -133,7 +134,7 @@ class FabrikViewList extends JViewLegacy
 
 		$document->title = htmlentities($w->parseMessageForPlaceHolder($table->label, $_REQUEST), ENT_COMPAT, 'UTF-8');
 		$document->description = htmlspecialchars(trim(strip_tags($w->parseMessageForPlaceHolder($table->introduction, $_REQUEST))));
-		$document->link = JRoute::_('index.php?option=com_fabrik&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
+		$document->link = JRoute::_('index.php?option=com_' . $package . '&view=list&listid=' . $table->id . '&Itemid=' . $Itemid);
 
 		// Check for a custom css file and include it if it exists
 		$tmpl = $input->get('layout', $table->template);
@@ -147,7 +148,9 @@ class FabrikViewList extends JViewLegacy
 
 		//list of tags to look for in the row data
 		//- if they are there don't put them in the desc but put them in as a seperate item param
-		$rsstags = array('<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"');
+		$rsstags = array(
+				'<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"'
+		);
 		foreach ($rows as $group)
 		{
 			foreach ($group as $row)
@@ -202,7 +205,11 @@ class FabrikViewList extends JViewLegacy
 								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file))
 								{
 									$enclosure_size = $this->get_filesize($enclosure_file, $remote_file);
-									$enclosures[] = array('url' => $enclosure_url, 'length' => $enclosure_size, 'type' => $enclosure_type);
+									$enclosures[] = array(
+											'url' => $enclosure_url,
+											'length' => $enclosure_size,
+											'type' => $enclosure_type
+									);
 									// no need to insert the URL in the description, as feed readers should
 									// automagically show 'media' when they see an 'enclosure', so just move on ..
 									continue;
@@ -265,8 +272,8 @@ class FabrikViewList extends JViewLegacy
 
 				// url link to article
 				$link = JRoute::_(
-					'index.php?option=com_fabrik&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
-				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id
+					'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
+				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id
 					. '&rowid=' . $row->slug;
 
 				// strip html from feed item description text

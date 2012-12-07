@@ -865,6 +865,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function render($data, $repeatCounter = 0)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// For repetaing groups we need to unset this where each time the element is rendered
 		unset($this->_autocomplete_where);
@@ -943,7 +944,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
 					$db->setQuery($query);
 					$listid = $db->loadResult();
-					$url = 'index.php?option=com_fabrik&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
+					$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
 					$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
 				}
 			}
@@ -992,7 +993,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 					else
 					{
-						$chooseUrl = 'index.php?option=com_fabrik&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
 					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
@@ -1125,7 +1126,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
 			$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
-			$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $defaults, $id);
+			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $defaults, $id);
 		}
 		else
 		{
@@ -2152,7 +2153,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->popwiny = $params->get('yoffset', 0);
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $this->getDisplayType();
-		$opts->show_please_select = $params->get('database_join_show_please_select');
+		$opts->show_please_select = $params->get('database_join_show_please_select') === "1";
 		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
 			? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'databasejoin') : null;
@@ -2763,7 +2764,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function dataIsNull($data, $val)
 	{
 		$default = $this->getDefaultValue();
-		if (is_array($default) && count($default) == 1 && $default[0] == $val && $val == '')
+		$keys = array_keys($default);
+		if (is_array($default) && count($default) == 1 && $default[$keys[0]] == $val && $val == '')
 		{
 			return true;
 		}

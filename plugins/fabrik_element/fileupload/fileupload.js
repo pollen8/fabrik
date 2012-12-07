@@ -207,7 +207,7 @@ var FbFileUpload = new Class({
 							}.bind(this)
 						}
 					}));
-					if (file.type === 'image') {
+					if (this.isImage(file)) {
 						a = new Element('a', {
 							'href' : '#',
 							alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
@@ -314,6 +314,14 @@ var FbFileUpload = new Class({
 		}.bind(this));
 		// (5) KICK-START PLUPLOAD
 		this.uploader.init();
+	},
+	
+	isImage: function (file) {
+		if (typeOf(file.type) !== 'null') {
+			return file.type === 'image';
+		}
+		var ext = file.name.split('.').getLast().toLowerCase();
+		return ['jpg', 'jpeg', 'png', 'gif'].contains(ext);
 	},
 
 	pluploadRemoveFile : function (e, file) {

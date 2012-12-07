@@ -33,6 +33,7 @@ class fabrikViewCalendar extends JViewLegacy
 	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -85,9 +86,9 @@ class fabrikViewCalendar extends JViewLegacy
 		$urls = new stdClass;
 
 		// Don't JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
+		$urls->del = 'index.php?option=com_' . $package . '&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
 			. '&id=' . $id;
-		$urls->add = 'index.php?option=com_fabrik&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
+		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
 		$tpl = $params->get('calendar_layout', 'default');
@@ -170,6 +171,7 @@ class fabrikViewCalendar extends JViewLegacy
 		JText::script('PLG_VISUALIZATION_CALENDAR_VIEW');
 		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
+		JText::script('COM_FABRIK_FORM_SAVED');
 
 		$ref = $model->getJSRenderContext();
 
@@ -200,7 +202,7 @@ class fabrikViewCalendar extends JViewLegacy
 			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
 		}
 
-		/* Adding custom.css, just for the heck of it */
+		// Adding custom.css, just for the heck of it
 		$ab_css_file = $tmplpath . '/custom.css';
 		if (JFile::exists($ab_css_file))
 		{
@@ -213,7 +215,6 @@ class fabrikViewCalendar extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		//$view->_layout = 'chooseaddevent';
 		$this->setLayout('chooseaddevent');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');

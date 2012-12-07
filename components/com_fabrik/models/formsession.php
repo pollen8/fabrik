@@ -64,6 +64,9 @@ class FabrikFEModelFormsession extends FabModel
 
 	public function savePage(&$formModel)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		// Need to check for encrypted vars, unencrypt them and place them back in the array
 		$post = $formModel->setFormData();
 		$app = JFactory::getApplication();
@@ -97,7 +100,7 @@ class FabrikFEModelFormsession extends FabModel
 		// $$$ hugh - if we're saving the formdata in the session, we should set 'session.on'
 		// as per The New Way we're doing redirects, etc.
 		$session = JFactory::getSession();
-		$session->set('com_fabrik.form.' . $this->getFormId() . '.session.on', true);
+		$session->set('com_' . $package . '.form.' . $this->getFormId() . '.session.on', true);
 	}
 
 	/**
@@ -242,9 +245,11 @@ class FabrikFEModelFormsession extends FabModel
 
 	public function canUseCookie()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$formid = $this->getFormId();
-		if ($session->get('com_fabrik.form.' . $formid . '.session.on'))
+		if ($session->get('com_' . $package . '.form.' . $formid . '.session.on'))
 		{
 			return true;
 		}
@@ -261,7 +266,9 @@ class FabrikFEModelFormsession extends FabModel
 		// $$$ hugh - need to clear the 'session.on'.  If we're zapping the stored
 		// session form data, doesn't matter who or what set 'session.on' ... it ain't there any more.
 		$session = JFactory::getSession();
-		$session->clear('com_fabrik.form.' . $this->getFormId() . '.session.on');
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$session->clear('com_' . $package . '.form.' . $this->getFormId() . '.session.on');
 		$user = JFactory::getUser();
 		$row = $this->getTable('Formsession', 'FabrikTable');
 		$hash = '';

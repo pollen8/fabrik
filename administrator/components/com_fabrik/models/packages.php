@@ -158,8 +158,8 @@ class FabrikAdminModelPackages extends FabModelList
 		foreach ($items as &$i)
 		{
 			$n = $i->component_name . '_' . $i->version;
-			$file = JPATH_ROOT . '/tmp/' . $n . '/pkg_' . $n . '.zip';
-			$url = COM_FABRIK_LIVESITE . 'tmp/' . $n . '/pkg_' . $n . '.zip';
+			$file = JPATH_ROOT . '/tmp/' . $i->component_name . '/pkg_' . $n . '.zip';
+			$url = COM_FABRIK_LIVESITE . 'tmp/' . $i->component_name . '/pkg_' . $n . '.zip';
 			if (JFile::exists($file))
 			{
 				$i->file = '<a href="' . $url . '">pkg_' . $n . '.zip</a>';

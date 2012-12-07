@@ -568,12 +568,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// form with joined data - make record with on repeated group (containing this element)
 		// edit record and the commented out if statement below meant the user dd reverted
 		// to the current logged in user and not the previously selected one
-		//if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
-		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && $data[$key] == ''))
+		if (empty($data) || !array_key_exists($key, $data) )
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty valdiation failed on user element
-			if (JArrayHelper::getValue($opts, 'use_default', true) == false && !in_array($input->get('task'), array('processForm', 'view')))
+			if (!in_array($input->get('task'), array('processForm', 'view', '', 'form.process')))
 			{
 				return '';
 			}
@@ -926,5 +925,22 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		return $displayParam;
+	}
+
+	/**
+	 * Get an array of element html ids and their corresponding
+	 * js events which trigger a validation.
+	 * Examples of where this would be overwritten include timedate element with time field enabled
+	 *
+	 * @param   int  $repeatCounter  repeat group counter
+	 *
+	 * @return  array  html ids to watch for validation
+	 */
+
+	public function getValidationWatchElements($repeatCounter)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$ar = array('id' => $id, 'triggerEvent' => 'change');
+		return array($ar);
 	}
 }

@@ -34,6 +34,8 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 	public function onLastProcess($params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$context = $formModel->getRedirectContext();
 
@@ -43,7 +45,6 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$smsg = (array) $session->get($context . 'msg', array());
 		$sshowsystemmsg = (array) $session->get($context . 'showsystemmsg', array());
 
-		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
 		$w = new FabrikWorker;
 		$this->data = new stdClass;
@@ -100,7 +101,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			$stitle[$this->renderOrder] = $form->label;
 			$session->set($context . 'title', $stitle);
 
-			$surl[$this->renderOrder] = 'index.php?option=com_fabrik&view=plugin&g=form&plugin=redirect&method=displayThanks&task=pluginAjax';
+			$surl[$this->renderOrder] = 'index.php?option=com_' . $package . '&view=plugin&g=form&plugin=redirect&method=displayThanks&task=pluginAjax';
 			$session->set($context . 'url', $surl);
 		}
 
@@ -135,9 +136,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	{
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$formdata = $session->get('com_fabrik.form.data');
-		$context = 'com_fabrik.form.' . $formdata['formid'] . '.redirect.';
+		$formdata = $session->get('com_' . $package . '.form.data');
+		$context = 'com_' . $package . '.form.' . $formdata['formid'] . '.redirect.';
 		$title = (array) $session->get($context . 'title', $title);
 		$title = array_shift($title);
 		$message = $session->get($context . 'msg', $message);
@@ -317,6 +319,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
 		if ($this->data->save_in_session == '1')
 		{
@@ -387,18 +390,18 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			}
 
 			// Clear registry search form entries
-			$key = 'com_fabrik.searchform';
+			$key = 'com_' . $package . '.searchform';
 
 			$listModel = $formModel->getlistModel();
 
 			// Check for special fabrik_list_filter_all element!
 			$searchAll = $input->get($listModel->getTable()->db_table_name . '___fabrik_list_filter_all');
 
-			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
+			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.searchall', $searchAll);
 			$app->setUserState($key, $id);
 
-			$app->setUserState('com_fabrik.searchform.form' . $formModel->get('id') . '.filters', $store);
-			$app->setUserState('com_fabrik.searchform.fromForm', $formModel->get('id'));
+			$app->setUserState('com_' . $package . '.searchform.form' . $formModel->get('id') . '.filters', $store);
+			$app->setUserState('com_' . $package . '.searchform.fromForm', $formModel->get('id'));
 
 		}
 	}

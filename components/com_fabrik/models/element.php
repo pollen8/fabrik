@@ -2013,7 +2013,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 */
 			foreach ($data as $k => $val)
 			{
-				if ($k == 'join')
+				if ($k === 'join')
 				{
 					foreach ($val as $joindata)
 					{
@@ -2465,6 +2465,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getDefaultFilterVal($normal = true, $counter = 0)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listModel = $this->getListModel();
 		$filters = $listModel->getFilterArray();
 
@@ -2492,7 +2493,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$default = @$data[$elName]['value'];
 			}
 		}
-		$context = 'com_fabrik.list' . $listModel->getRenderContext() . '.filter.' . $elid;
+		$context = 'com_' . $package . '.list' . $listModel->getRenderContext() . '.filter.' . $elid;
 		$context .= $normal ? '.normal' : '.advanced';
 
 		// We didnt find anything - lets check the filters

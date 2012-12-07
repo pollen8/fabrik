@@ -22,6 +22,7 @@ class FabrikViewList extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$model = $this->getModel();
 		$model->setId($input->getInt('listid'));
 		$table = $model->getTable();
@@ -46,6 +47,7 @@ class FabrikViewList extends JViewLegacy
 				{
 					$o->data = $data[$groupk][$i];
 				}
+				$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;
@@ -79,8 +81,9 @@ class FabrikViewList extends JViewLegacy
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
+
 		// $$$ hugh - see if we have a message to include, set by a list plugin
-		$context = 'com_fabrik.list' . $model->getRenderContext() . '.msg';
+		$context = 'com_' . $package . '.list' . $model->getRenderContext() . '.msg';
 		$session = JFactory::getSession();
 		if ($session->has($context))
 		{

@@ -59,6 +59,8 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 
 	function _renderListData($data, $thisRow)
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$params = $this->getParams();
 		$str = $data;
@@ -67,7 +69,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 			if ($data != '')
 			{
 				$data = COM_FABRIK_LIVESITE . str_replace("\\", "/", $data);
-				$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=plugin&task=pluginAjax&plugin=" . $this->_name
+				$url = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&tmpl=component&view=plugin&task=pluginAjax&plugin=" . $this->_name
 					. "&method=renderPopup&element_id=" . $this->id . "&data=$data";
 				$w = $params->get('fbVideoWidth', 300) + 20;
 				$h = $params->get('fbVideoHeight', '300') + 50;

@@ -167,6 +167,7 @@ class FabrikControllerList extends JControllerLegacy
 		// Check for request forgeries
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$model = $this->getModel('list', 'FabrikFEModel');
 		$ids = $input->get('ids', array(), 'array');
@@ -180,12 +181,12 @@ class FabrikControllerList extends JControllerLegacy
 
 		$total = $oldtotal - count($ids);
 
-		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&listid=' . $listid, 'string');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, 'string');
 
 		// $$$ hugh - for some reason fabrik_referrer is sometimes empty, so a little defensive coding ...
 		if (empty($ref))
 		{
-			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_fabrik&view=list&listid=' . $listid, '', 'string');
+			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, '', 'string');
 		}
 		if ($total >= $limitstart)
 		{
@@ -195,7 +196,7 @@ class FabrikControllerList extends JControllerLegacy
 				$newlimitstart = 0;
 			}
 			$ref = str_replace('limitstart' . $listid . '=  . $limitstart', 'limitstart' . $listid . '=' . $newlimitstart, $ref);
-			$context = 'com_fabrik.list.' . $model->getRenderContext() . '.';
+			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
 		if ($input->get('format') == 'raw')
@@ -232,6 +233,7 @@ class FabrikControllerList extends JControllerLegacy
 	public function doPlugin()
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
@@ -252,7 +254,7 @@ class FabrikControllerList extends JControllerLegacy
 			{
 				$input->set('view', 'list');
 				$model->setRenderContext($model->getId());
-				$context = 'com_fabrik.list' . $model->getRenderContext() . '.msg';
+				$context = 'com_' . $package . '.list' . $model->getRenderContext() . '.msg';
 				$session = JFactory::getSession();
 				$session->set($context, implode("\n", $msgs));
 			}
@@ -266,7 +268,7 @@ class FabrikControllerList extends JControllerLegacy
 		}
 		// 3.0 use redirect rather than calling view() as that gave an sql error (joins seemed not to be loaded for the list)
 		$format = $input->get('format', 'html');
-		$defaultRef = 'index.php?option=com_fabrik&view=list&listid=' . $model->getId() . '&format=' . $format;
+		$defaultRef = 'index.php?option=com_' . $package . '&view=list&listid=' . $model->getId() . '&format=' . $format;
 		if ($format !== 'raw')
 		{
 			$ref = $input->post->get('fabrik_referrer', $defaultRef, 'string');

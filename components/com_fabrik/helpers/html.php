@@ -242,6 +242,8 @@ EOD;
 
 	public static function emailForm($formModel, $template = '')
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -281,7 +283,7 @@ EOD;
 		</tr>
 	</table>
 	<input name="referrer" value="<?php echo $input->get('referrer', '', 'string'); ?>" type="hidden" />
-	<input type="hidden" name="option" value="com_fabrik" />
+	<input type="hidden" name="option" value="com_<?php echo $package; ?>" />
 	<input type="hidden" name="view" value="emailform" />
 	<input type="hidden" name="tmpl" value="component" />
 
@@ -376,13 +378,15 @@ EOD;
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $formModel->getForm();
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$table = $formModel->getTable();
 		if (isset(self::$printURL))
 		{
 			return self::$printURL;
 		}
-		$url = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-			. "&rowid=" . $formModel->getRowId() . '&iframe=1&print=1';
+		$url = COM_FABRIK_LIVESITE . "index.php?option=com_' . $package . '&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
+		. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
 		 */
@@ -446,6 +450,7 @@ EOD;
 		}
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&task=emailform.display&tmpl=component&formid=' . $formModel->get('id') . '&rowid='
@@ -453,7 +458,7 @@ EOD;
 		}
 		else
 		{
-			$url = 'index.php?option=com_fabrik&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->getRowId();
+			$url = 'index.php?option=com_' . $package . '&view=emailform&tmpl=component&formid=' . $formModel->get('id') . '&rowid=' . $formModel->getRowId();
 		}
 
 		if ($input->get('usekey') !== null)
@@ -999,11 +1004,14 @@ EOD;
 
 	public static function inAjaxLoadedPage()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		// Are we in fabrik or a content view, if not return false (things like com_config need to load in mootools)
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$option = $input->get('option');
-		if ($option !== 'com_fabrik' && $option !== 'com_content')
+		if ($option !== 'com_' . $package && $option !== 'com_content')
 		{
 			return false;
 		}
@@ -1381,8 +1389,8 @@ EOD;
 	{
 		$json = new stdClass;
 		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'com_fabrik');
-		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
 			. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
