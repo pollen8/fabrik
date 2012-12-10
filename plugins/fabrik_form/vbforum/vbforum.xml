@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="30">
-	<name>Fabrik Form - vBulletin forum</name>
+	<name>PLG_FABRIK_FORM_VBFORUM</name>
 	<author>Hugh Messenger</author>
 	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>
@@ -8,7 +8,8 @@
 	<authorEmail>hugh.messenger@gmail.com</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.1a</version>
-	<description>Create a new vBulletin forum</description>
+	<help url="PLG_FORM_VBFORUM_HELP_SERVER"/>
+	<description>PLG_FORM_VBFORUM_DESCRIPTION</description>
 	<files>
 		<filename plugin="vbforum">vbforum.php</filename>
 		<filename>index.html</filename>
