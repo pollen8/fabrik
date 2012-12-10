@@ -516,8 +516,10 @@ class FabrikFEModelList extends JModelForm
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
-			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
+			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->query();
+
 		}
 	}
 
