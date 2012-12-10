@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_cron" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik Cron - rest</name>
+	<name>PLG_FABRIK_CRON_REST</name>
 	<author>Rob Clayburn</author>
 	<creationDate>${createdate}</creationDate>
 	<copyright>(C) 2005-${year} fabrikar.com</copyright>
@@ -8,7 +8,8 @@
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
 	<version>3.0.7</version>
-	<description>Calls a rest service and inserts data into a fabrik list</description>
+	<help url="PLG_FABRIK_CRON_REST_HELP_SERVER"/>
+	<description>PLG_FABRIK_CRON_REST_DESCRIPTION</description>
 	<files>
 		<filename plugin="rest">rest.php</filename>
 		<folder>forms</folder>
