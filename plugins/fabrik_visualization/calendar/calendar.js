@@ -40,7 +40,7 @@ var fabrikCalendar = new Class({
 			this.fx.showMsg = new Fx.Morph(this.el.getElement('.calendar-message'), {'duration': 700});
 			this.fx.showMsg.set({'opacity': 0});
 		}
-		this.colwidth = [];
+		this.colwidth = {};
 		this.windowopts = {
 			'id': 'addeventwin',
 			title: 'add/edit event',
@@ -206,7 +206,7 @@ var fabrikCalendar = new Class({
 	},
 	
 	showMonth: function () {
-		//set the date to the first day of the month
+		// Set the date to the first day of the month
 		var firstDate = new Date();
 		firstDate.setTime(this.date.valueOf());
 		firstDate.setDate(1);
@@ -233,14 +233,24 @@ var fabrikCalendar = new Class({
 				td.adopt(
 					new Element('div', {'class': 'date', 'styles': {'background-color': this._getColor('#E8EEF7', firstDate)}}).appendText(firstDate.getDate())
 				);
-				
+				var gridSize = 0;
+				this.entries.each(function (entry) {
+					// Between (end date present) or same (no end date)
+					if ((entry.enddate !== '' && firstDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
+						gridSize ++;
+					}
+				}.bind(this));
+		
 				var j = 0;
 				this.entries.each(function (entry) {
 					// between (end date present) or same (no end date)
 					if ((entry.enddate !== '' && firstDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 						var existingEvents = td.getElements('.fabrikEvent').length;
 						var height = 20;
-						var top = (td.getSize().y * (i - 1)) + this.el.getElement('.monthView .dayHeading').getSize().y + td.getElement('.date').getSize().y;
+						
+						var dayHeadingSize = td.getElement('.date').getSize().y;
+						height = Math.floor((td.getSize().y - gridSize - dayHeadingSize) / (gridSize));
+						var top = (td.getSize().y * (i - 1)) + this.el.getElement('.monthView .dayHeading').getSize().y + dayHeadingSize;
 						this.colwidth['.monthView'] = this.colwidth['.monthView'] ? this.colwidth['.monthView'] : td.getSize().x;
 						var width = td.getSize().x;
 						
@@ -267,7 +277,7 @@ var fabrikCalendar = new Class({
 			}.bind(this));
 		}
 		
-		//watch the mouse to see if it leaves the activeArea - if it does hide the event popup
+		// Watch the mouse to see if it leaves the activeArea - if it does hide the event popup
 		document.addEvent('mousemove', function (e) {
 			var el = e.target;
 			var x = e.client.x;
@@ -275,7 +285,6 @@ var fabrikCalendar = new Class({
 			var z = this.activeArea;
 			if (typeOf(z) !== 'null' && typeOf(this.activeDay) !== 'null') {
 				if ((x <= z.left || x >= z.right) || (y <= z.top || y >= z.bottom)) {
-					//var loc = document.id('popWin').getCoodocument.id(inates();
 					if (!this.inFadeOut) {
 						var loc = this.activeHoverEvent.getCoordinates();
 						var fxopts = {
@@ -358,7 +367,7 @@ var fabrikCalendar = new Class({
 			del.addEvent('mousewithin', function () {
 				//@todo
 			});
-			this.popup = new Element('div', {'class': 'popWin', 'styles': {'position': 'absolute'}}).adopt([popLabel, del, edit]);
+			this.popup = new Element('div', {'class': 'popWin', 'styles': {'position': 'absolute', 'z-index': 9999}}).adopt([popLabel, del, edit]);
 			this.popup.inject(document.body);
 			/********** FX EVETNT *************/
 			this.activeArea = null;
@@ -392,9 +401,58 @@ var fabrikCalendar = new Class({
 	makeDragMonthEntry: function (item) {
 	},
 
+	/**
+	 * Clear all day event divs and reset td classes
+	 * 
+	 * @since  3.0.7
+	 */
+	removeWeekEvents: function () {
+		var wday = this.date.getDay();
+		wday = wday - this.options.first_week_day.toInt();
+		var firstDate = new Date();
+		firstDate.setTime(this.date.getTime() - (wday * this.DAY));
+		var WeekTds = {};
+		var trs = this.el.getElements('.weekView tr');
+		for (var i = 1; i < trs.length; i++) {
+			firstDate.setHours(i - 1, 0, 0);
+			if (i !== 1) {
+				firstDate.setTime(firstDate.getTime() -  (6 * this.DAY));
+			}
+			var tds = trs[i].getElements('td');
+			for (j = 1; j < tds.length; j++) {
+				if (typeOf(WeekTds[j - 1]) === 'null') {
+					WeekTds[j - 1] = [];
+				}
+				var td = tds[j];
+				WeekTds[j - 1].push(td);
+				if (j !== 1) {
+					firstDate.setTime(firstDate.getTime() + this.DAY);
+				}
+				
+				td.addClass('day');
+				if (typeOf(td.retrieve('calevents')) !== 'null') {
+					td.retrieve('calevents').each(function (evnt) {
+						evnt.destroy();
+					});
+				}
+				td.eliminate('calevents');
+				td.className = '';
+				td.addClass('day');
+				td.addClass(firstDate.getTime() - this.HOUR);
+				if (this.selectedDate.isSameWeek(firstDate) && this.selectedDate.isSameDay(firstDate)) {
+					td.addClass('selectedDay');
+				} else {
+					td.removeClass('selectedDay');
+				}
+			}
+		}
+		return WeekTds;
+		
+	},
+	
 	showWeek: function ()
 	{
-		var j;
+		var j, h;
 		var wday = this.date.getDay();
 		// Barbara : offset
 		wday = wday - this.options.first_week_day.toInt();
@@ -406,56 +464,85 @@ var fabrikCalendar = new Class({
 		counterDate.setTime(this.date.getTime() - (wday * this.DAY));
 		
 		var lastDate = new Date();
-		lastDate.setTime(this.date.getTime()  +  ((6 - wday) * this.DAY));
+		lastDate.setTime(this.date.getTime() + ((6 - wday) * this.DAY));
 		
 		this.el.getElement('.monthDisplay').innerHTML = (firstDate.getDate()) + "  " + this.options.months[firstDate.getMonth()] + " " + firstDate.getFullYear() + " - ";	
 		this.el.getElement('.monthDisplay').innerHTML += (lastDate.getDate()) + "  " + this.options.months[lastDate.getMonth()] + " " + lastDate.getFullYear();
 		
 		var trs = this.el.getElements('.weekView tr');
-		//put dates in top row
+
+		// Put dates in top row
 		var ths = trs[0].getElements('th');
-		for (var i = 1; i < trs.length; i++) {//clear out old data
-			firstDate.setHours(i - 1, 0, 0);
-			if (i !== 1) {
-				firstDate.setTime(firstDate.getTime() -  (6 * this.DAY));
-			}
-			var tds = trs[i].getElements('td');
-			for (j = 1; j < tds.length; j++) {
-				if (j !== 1) {
-					firstDate.setTime(firstDate.getTime() + this.DAY);
-				}
-				var td = tds[j];
-				td.empty();
-				td.className = '';
-				td.addClass('day');
-				td.addClass(firstDate.getTime() - this.HOUR);
-				if (this.selectedDate.isSameWeek(firstDate) && this.selectedDate.isSameDay(firstDate)) {
-					td.addClass('selectedDay');
-				} else {
-					td.removeClass('selectedDay');
-				}
-			}
-		}
 		
-		counterDate = new Date();
-		counterDate.setTime(this.date.getTime() - (wday * this.DAY));
+		var WeekTds = this.removeWeekEvents();
+
 		for (i = 0; i < ths.length; i++) {
 			ths[i].className = 'dayHeading';
 			ths[i].addClass(counterDate.getTime());
 			ths[i].innerHTML = this.options.shortDays[counterDate.getDay()] + ' ' + counterDate.getDate() + '/' + this.options.shortMonths[counterDate.getMonth()];
-		
-			//check events
-			j = 0;
+			
+			var eventWidth = 10;
+			var maxoffsets = {};
+			var offsets = {};
+			var hourTds = WeekTds[i];
+			
+			// Build max offsets first
 			this.entries.each(function (entry) {
-				// between (end date present) or same (no end date)
+				
+				// Between (end date present) or same (no end date)
 				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
-					td.adopt(this._makeEventRelDiv(entry, opts));
-					j ++;
+					// Work out the left offset for the event - stops concurrent events overlapping each other
+					for (var h = opts.startHour; h <= opts.endHour; h ++) {
+						maxoffsets[h] = typeOf(maxoffsets[h]) === 'null' ? 0 : maxoffsets[h] + 1;
+					}
 				}
 			}.bind(this));
-			counterDate.setTime(counterDate.getTime() + this.DAY);			
+			
+			var gridSize = 1;
+			Object.each(maxoffsets, function (o) {
+				if (o > gridSize) {
+					gridSize = o;
+				}
+			});
+			
+			// Add event divs
+			this.entries.each(function (entry) {
+				
+				// Between (end date present) or same (no end date)
+				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
+					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
+					
+					
+					// Work out the left offset for the event - stops concurrent events overlapping each other
+					for (var h = opts.startHour; h <= opts.endHour; h ++) {
+						offsets[h] = typeOf(offsets[h]) === 'null' ? 0 : offsets[h] + 1;
+					}
+					var thisOffset = 0;
+					for (h = opts.startHour; h <= opts.endHour; h ++) {
+						if (offsets[h] > thisOffset) {
+							thisOffset = offsets[h];
+						}
+					}
+					td = hourTds[opts.startHour];
+					
+					// Work out event div width - taking into account 1px margin between each event
+					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+					opts.width = eventWidth + 'px';
+					opts['margin-left'] = thisOffset * (eventWidth + 1);
+					var div = this._makeEventRelDiv(entry, opts);
+					div.inject(document.body);
+					div.store('opts', opts);
+					
+					var calEvents = td.retrieve('calevents', []);
+					calEvents.push(div);
+					td.store('calevents', calEvents);
+					div.position({'relativeTo': td, 'position': 'upperLeft'});
+				}
+			}.bind(this));
+			counterDate.setTime(counterDate.getTime() + this.DAY);
 		}
+		
 	},
 
 	_buildEventOpts: function (opts)
@@ -470,9 +557,8 @@ var fabrikCalendar = new Class({
 		entry.label = entry.label ? entry.label : '';
 		var td = trs[hour + 1].getElements('td')[i + 1]; 
 		var orighours = entry.startdate.getHours();
-	
 		var rowheight = td.getSize().y;
-		//as we buildevent opts twice the sencod parse in IE gives a dif witdth! so store once and always use that value
+		//as we buildevent opts twice the sencod parse in IE gives a dif width! so store once and always use that value
 		this.colwidth[opts.divclass] = this.colwidth[opts.divclass] ? this.colwidth[opts.divclass] : td.getSize().x;
 		var top = this.el.getElement(opts.divclass).getElement('tr').getSize().y;
 		
@@ -526,35 +612,102 @@ var fabrikCalendar = new Class({
 		return opts;
 	},
 	
-	
-	showDay: function () {
-		var startmin;
+	/**
+	 * Clear all day event divs and reset td classes
+	 * 
+	 * @since  3.0.7
+	 */
+	removeDayEvents: function () {
 		var firstDate = new Date();
+		var hourTds = [];
 		firstDate.setTime(this.date.valueOf());
 		firstDate.setHours(0, 0);
 		var trs = this.el.getElements('.dayView tr');
-		//put date in top row
-		trs[0].childNodes[1].innerHTML = this.options.days[this.date.getDay()];
-		//clear out old data
 		for (var i = 1; i < trs.length; i++) {
 			firstDate.setHours(i - 1, 0);
 			var td = trs[i].getElements('td')[1];
 			if (typeOf(td) !== 'null') {
-				td.empty();
+				hourTds.push(td);
 				td.className = '';
 				td.addClass('day');
+				if (typeOf(td.retrieve('calevents')) !== 'null') {
+					td.retrieve('calevents').each(function (evnt) {
+						evnt.destroy();
+					});
+				}
+				td.eliminate('calevents');
 				td.addClass(firstDate.getTime() - this.HOUR);
 			}
 		}
+		return hourTds;
+	},
+	
+	/**
+	 * Show the days events
+	 */
+	showDay: function () {
+		var trs = this.el.getElements('.dayView tr'), h;
+		// Put date in top row
+		trs[0].childNodes[1].innerHTML = this.options.days[this.date.getDay()];
 
-		//check events
+		// Clear out old data
+		var hourTds = this.removeDayEvents();
+		
+		var eventWidth = 100;
+		var offsets = {};
+		var maxoffsets = {};
 		this.entries.each(function (entry) {
-			// between (end date present) or same (no end date)
+			// Between (end date present) or same (no end date)
 			if ((entry.enddate !== '' && this.date.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 				var opts = this._buildEventOpts({entry: entry, curdate: this.date, divclass: '.dayView', 'tdOffset': 0});
-				td.adopt(this._makeEventRelDiv(entry, opts));
+				// Work out the left offset for the event - stops concurrent events overlapping each other
+				for (var h = opts.startHour; h <= opts.endHour; h ++) {
+					maxoffsets[h] = typeOf(maxoffsets[h]) === 'null' ? 0 : maxoffsets[h] + 1;
+				}
 			}
 		}.bind(this));
+		
+		var gridSize = 1;
+		Object.each(maxoffsets, function (o) {
+			if (o > gridSize) {
+				gridSize = o;
+			}
+		});
+		// Add events
+		this.entries.each(function (entry) {
+			
+			// Between (end date present) or same (no end date)
+			if ((entry.enddate !== '' && this.date.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
+				var opts = this._buildEventOpts({entry: entry, curdate: this.date, divclass: '.dayView', 'tdOffset': 0});
+				td = hourTds[opts.startHour];
+				
+				// Work out event div width - taking into account 1px margin between each event
+				eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
+				opts.width = eventWidth + 'px';
+				
+				// Work out the left offset for the event - stops concurrent events overlapping each other
+				for (var h = opts.startHour; h <= opts.endHour; h ++) {
+					offsets[h] = typeOf(offsets[h]) === 'null' ? 0 : offsets[h] + 1;
+				}
+				var maxOffset = 0;
+				for (h = opts.startHour; h <= opts.endHour; h ++) {
+					if (offsets[h] > maxOffset) {
+						maxOffset = offsets[h];
+					}
+				}
+				opts['margin-left'] = maxOffset * (eventWidth + 1);
+				var div = this._makeEventRelDiv(entry, opts);
+				div.inject(document.body);
+				div.store('opts', opts);
+				
+				var calEvents = td.retrieve('calevents', []);
+				calEvents.push(div);
+				td.store('calevents', calEvents);
+				div.position({'relativeTo': td, 'position': 'upperLeft'});
+			}
+		}.bind(this));
+		
+	
 		this.el.getElement('.monthDisplay').innerHTML = (this.date.getDate()) + "  " + this.options.months[this.date.getMonth()] + " " + this.date.getFullYear();
 	},
 	
@@ -849,21 +1002,30 @@ var fabrikCalendar = new Class({
 			);
 			this.el.getElement('.viewContainer').appendChild(this.dayView);
 		}
-		this.showDay();
+		//this.showDay();
 		this.showView('dayView');
 	},
 	
-	showView: function (view) {
+	hideDayView: function () {
 		if (this.el.getElement('.dayView')) {
-			this.el.getElement('.dayView').style.display = 'none';
+			this.el.getElement('.dayView').hide();
+			this.removeDayEvents();
 		}
+	},
+	
+	hideWeekView: function () {
 		if (this.el.getElement('.weekView')) {
-			this.el.getElement('.weekView').style.display = 'none';
+			this.el.getElement('.weekView').hide();
+			this.removeWeekEvents();
 		}
+	},
+	
+	showView: function (view) {
+		this.hideDayView();
+		this.hideWeekView();
 		if (this.el.getElement('.monthView')) {
-			this.el.getElement('.monthView').style.display = 'none';
+			this.el.getElement('.monthView').hide();
 		}
-		
 		this.el.getElement('.' + this.options.viewType).style.display = 'block';
 		switch (this.options.viewType) {
 		case 'dayView':
@@ -1073,7 +1235,7 @@ var fabrikCalendar = new Class({
 			break;
 		}
 		
-		this.showView();
+		//this.showView();
 	
 		this.el.getElement('.nextPage').addEvent('click',  this.nextPage.bindWithEvent(this));
 		this.el.getElement('.previousPage').addEvent('click',  this.previousPage.bindWithEvent(this));
