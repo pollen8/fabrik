@@ -4,7 +4,12 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
 	<fieldset name="details">
 	
-		<field class="readonly" default="0" description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL" name="id" readonly="true" required="true" type="text"/>
+		<field name="id"
+			type="text"
+			class="readonly"
+			default="0"
+			description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL"
+			readonly="true"/>
 			
 		<field description="COM_FABRIK_FIELD_NAME_DESC" label="COM_FABRIK_FIELD_NAME_LABEL" name="name" required="true" size="40" type="text"/>
 			
