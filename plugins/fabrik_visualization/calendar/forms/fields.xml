@@ -14,7 +14,12 @@
 				
 			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_DESC" label="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_LABEL" name="calendar_label_element" table="params_calendar_table" type="element"/>
 				
-			<field description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC" label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" name="colour" type="text"/>
+			<field name="colour"
+				type="color"
+				class="input-mini"
+				description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" />
+				
 			<field description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC" label="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_LABEL" name="legendtext" type="text"/>
 		</fieldset>
 		
@@ -50,7 +55,12 @@
 						
 			<field class="input-mini" default="0" description="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_DESC" label="PLG_VISUALIZATION_CALENDAR_Y_OFFSET_LABEL" name="yoffset" size="3" type="text"/>
 				
-			<field default="0" description="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_DESC" label="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_LABEL" name="first_week_day" size="1" type="text"/>
+			<field name="first_week_day"
+				type="text"
+				class="input-mini"
+				default="0"
+				description="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_FIRST_WEEK_DAY_LABEL" />
 			
 			<field default="0"
 				class="btn-group"

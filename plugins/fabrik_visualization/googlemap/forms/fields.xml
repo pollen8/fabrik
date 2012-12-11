@@ -24,7 +24,12 @@
 				
 			<field class="input-mini" default="10" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_WIDTH_LABEL" name="fb_gm_polyline_width" size="3" type="text"/>
 				
-			<field default="#CCFFFF" description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_LABEL" name="fb_gm_polyline_colour" size="7" type="text"/>
+			<field name="fb_gm_polyline_colour"
+				type="color"
+				class="input-mini"
+				default="#CCFFFF"
+				description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_LABEL" />
 			
 			<field default="0"
 				class="btn-group"
@@ -34,7 +39,13 @@
 			</field>
 			
 			<field class="input-mini" default="0.35" description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLOPACITY_LABEL" name="fb_gm_polygon_fillOpacity" size="3" type="text"/>
-			<field default="#CCFFFF" description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_LABEL" name="fb_gm_polygon_fillColor" size="8" type="text"/>		
+			
+			<field name="fb_gm_polygon_fillColor"
+				type="color"
+				class="input-mini"
+				default="#CCFFFF"
+				description="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_LABEL" />		
 	
 			<field connection="params_googlemap_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_LABEL" name="fb_gm_title_element" table="params_googlemap_table" type="element"/>
 		</fieldset>
@@ -47,7 +58,12 @@
 					<option value="G_HYBRID_MAP">Hybrid</option>
 			</field>
 			
-			<field default="4" description="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_LABEL" name="fb_gm_zoomlevel" size="2" type="text"/>
+			<field name="fb_gm_zoomlevel"
+				type="text"
+				class="input-mini"
+				default="4"
+				description="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_ZOOMLEVEL_LABEL" />
 				
 			<field default="middle" description="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_CENTER_ON_LABEL" name="fb_gm_center" type="list">
 					<option value="middle">PLG_VISUALIZATION_GOOGLEMAP_MIDDLE</option>
@@ -139,7 +155,10 @@
 
 		<fieldset label="PLG_VISUALIZATION_GOOGLEMAP_ADVANCED_HEADING" name="advanced">
 		
-			<field description="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_LABEL" name="fb_gm_markermax" type="text"/>
+			<field name="fb_gm_markermax"
+				type="text"
+				class="input-mini"
+				description="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_MARKER_MAX_LABEL" />
 				
 			<field default="1"
 				class="btn-group"

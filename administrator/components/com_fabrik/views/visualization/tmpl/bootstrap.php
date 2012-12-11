@@ -47,15 +47,9 @@ FabrikHelperHTML::script($srcs, $js);
 				?>
 			</fieldset>
 
-			<fieldset class="form-horizontal">
-		    	<legend>
-		    		<?php echo JText::_('COM_FABRIK_OPTIONS');?>
-		    	</legend>
-			</fieldset>
-
 		</div>
 
-		<div clas="span5">
+		<div clas="span5 offset2">
 
 			<fieldset class="form-horizontal">
 		    	<legend>
@@ -77,8 +71,15 @@ FabrikHelperHTML::script($srcs, $js);
 				?>
 			</fieldset>
 		</div>
+	</div>
+	<div class="row-fluid">
 
 		<div class="span12">
+		<fieldset class="form-horizontal">
+		    	<legend>
+		    		<?php echo JText::_('COM_FABRIK_OPTIONS');?>
+		    	</legend>
+			</fieldset>
 			<div id="plugin-container">
 				<?php echo $this->pluginFields;?>
 			</div>

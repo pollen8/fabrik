@@ -63,7 +63,6 @@ var FabrikModalRepeat = new Class({
 	resizeWin: function (setup) {
 		var size = this.el.getDimensions(true);
 		var wsize = this.win.getDimensions(true);
-		console.log(size, wsize);
 		var y = setup ? wsize.y : size.y + 30;
 		this.win.setStyles({'width': size.x + 'px', 'height': (y) + 'px'});
 	},

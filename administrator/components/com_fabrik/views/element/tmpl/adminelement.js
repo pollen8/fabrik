@@ -151,7 +151,6 @@ var fabrikAdminElement = new Class({
 	},
 	
 	watchPluginDd: function () {
-		console.log('watch plugin ddd - mootools');
 		document.id('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var opt = e.target.get('value');

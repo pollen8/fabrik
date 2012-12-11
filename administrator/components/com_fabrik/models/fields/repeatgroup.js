@@ -20,7 +20,6 @@ var FbRepeatGroup = new Class({
 
 	watchAdd : function () {
 		var newid;
-		console.log(this.element);
 		this.element.getElement('a[data-button=addButton]').addEvent('click', function (e) {
 			e.stop();
 			var div = this.element.getElements('div.repeatGroup').getLast();
@@ -71,12 +70,11 @@ var FbRepeatGroup = new Class({
 					i.id = newid;
 				}.bind(this));
 			}
-			this.watchDelete();
 		}.bind(this));
 	},
 	
 	getCounter : function () {
-		return this.element.getElements('ul').length;
+		return this.element.getElements('.repeatGroup').length;
 	},
 	
 	watchDelete : function () {
@@ -86,7 +84,7 @@ var FbRepeatGroup = new Class({
 				e.stop();
 				var count = this.getCounter();
 				if (count > this.options.repeatmin) {
-					var u = e.target.getParent('.repeatGroup');
+					var u = this.element.getElements('.repeatGroup').getLast();
 					u.destroy();
 				}
 				this.rename(x);
