@@ -81,7 +81,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	{
 		$access = $this->getParams()->get('updatecol_access');
 		$name = $this->_getButtonName();
-		return in_array($access, JFactory::getUser()->authorisedLevels());
+		return in_array($access, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
 	/**
@@ -97,27 +97,27 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	public function process($params, &$model, $opts = array())
 	{
 		$db = $model->getDb();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$update = json_decode($params->get('update_col_updates'));
 		if (!$update)
 		{
 			return false;
 		}
-
 		// $$$ rob moved here from bottom of func see http://fabrikar.com/forums/showthread.php?t=15920&page=7
-
 		$dateCol = $params->get('update_date_element');
 		$userCol = $params->get('update_user_element');
 
 		$item = $model->getTable();
 
 		// Array_unique for left joined table data
-		$ids = array_unique(JRequest::getVar('ids', array(), 'method', 'array'));
+		$ids = array_unique($input->get('ids', array(), 'array'));
 		JArrayHelper::toInteger($ids);
 		$this->_row_count = count($ids);
 		$ids = implode(',', $ids);
 		$model->reset();
-		$model->_pluginQueryWhere[] = $item->db_primary_key . ' IN ( ' . $ids . ')';
+		$model->setPluginQueryWhere('update_col', $item->db_primary_key . ' IN ( ' . $ids . ')');
 		$data = $model->getData();
 
 		// $$$servantek reordered the update process in case the email routine wants to kill the updates
@@ -130,8 +130,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			$subject = $params->get('update_email_subject');
 			$eval = $params->get('eval', 0);
 			$config = JFactory::getConfig();
-			$from = $config->getValue('mailfrom');
-			$fromname = $config->getValue('fromname');
+			$from = $config->get('mailfrom');
+			$fromname = $config->get('fromname');
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 			$emailElement = $elementModel->getElement(true);
 			$emailField = $elementModel->getFullName(false, true, false);
@@ -170,7 +170,6 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 				{
 					$to = $row->$emailField;
 				}
-
 				if (JMailHelper::cleanAddress($to) && JMailHelper::isEmailAddress($to))
 				{
 					// $tofull = '"' . JMailHelper::cleanLine($toname) . '" <' . $to . '>';
@@ -225,7 +224,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache(JRequest::getCmd('option'));
+		$cache = JFactory::getCache($input->get('option'));
 		$cache->clean();
 
 		return true;
@@ -256,7 +255,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	private function _process(&$model, $col, $val)
 	{
-		$ids = JRequest::getVar('ids', array(), 'method', 'array');
+		$app = JFactory::getApplication();
+		$ids = $app->input->get('ids', array(), 'array');
 		$model->updateRows($ids, $col, $val);
 	}
 
