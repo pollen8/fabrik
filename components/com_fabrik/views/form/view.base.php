@@ -622,6 +622,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$script[] = "\tif (button == \"cancelShowForm\") {";
 		$script[] = "\t\treturn false;";
 		$script[] = "\t}";
+		$script[] = "}";
 
 		if (FabrikHelperHTML::inAjaxLoadedPage())
 		{
