@@ -40,6 +40,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 	protected function getInput()
 	{
 		// Initialize variables.
+		$app = JFactory::getApplication();
 		$document = JFactory::getDocument();
 		$options = array();
 		JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
@@ -97,6 +98,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$css = '#' . $fieldSetId . ' { display: none; }';
 		$document->addStyleDeclaration($css);
 
+		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
 		$str[] = '<div id="' . $modalid . '" style="display:none">';
 		$str[] = '<table class="adminlist ' . $this->element['class'] . '">';
 		$str[] = '<thead><tr class="row0">';
@@ -106,7 +108,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$names[] = $field->element->getAttribute('name');
 			$str[] = '<th>' . $field->getLabel($field->name) . '</th>';
 		}
-		$str[] = '<th></th>';
+		$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a></th>';
 		$str[] = '</tr></thead>';
 
 		$str[] = '<tbody><tr>';
@@ -114,8 +116,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<td>' . $field->getInput() . '</td>';
 		}
-		$app = JFactory::getApplication();
-		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
+
+
 		$str[] = '<td><div style="width:35px"><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
 		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
 		$str[] = '</td>';
