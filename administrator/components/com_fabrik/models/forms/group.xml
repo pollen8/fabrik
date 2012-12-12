@@ -6,7 +6,7 @@
 	
 		<field name="id"
 			type="text"
-			class="readonly"
+			class="readonly input-mini"
 			default="0"
 			description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL"
 			readonly="true"/>
@@ -17,10 +17,17 @@
 		
 		<field description="COM_FABRIK_FIELD_GROUP_FORM_DESC" label="COM_FABRIK_FIELD_GROUP_FORM_LABEL" name="form" showtrashed="true" type="formlist"/>
 		
-		<field class="inputbox" default="1" description="JFIELD_PUBLISHED_DESC" filter="intval" label="JSTATUS" name="published" size="1" type="list">
-			<option value="1">JPUBLISHED</option>
-			<option value="0">JUNPUBLISHED</option>
-			<option value="-2">JTRASHED</option>
+		<field name="published"
+			class="inputbox input-small"
+			default="1"
+			description="JFIELD_PUBLISHED_DESC"
+			filter="intval"
+			label="JSTATUS"
+			size="1"
+			type="list">
+				<option value="1">JPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
 		</field>
 			
 		<field default="0" label="" name="is_join" type="hidden"/>
@@ -93,7 +100,13 @@
 	
 	<fieldset name="layout">
 	
-			<field default="1" description="COM_FABRIK_COLUMNS_DESC" label="COM_FABRIK_COLUMNS_LABEL" name="group_columns" size="2" type="text"/>
+			<field name="group_columns"
+				type="text"
+				class="input-mini"
+				default="1"
+				description="COM_FABRIK_COLUMNS_DESC"
+				label="COM_FABRIK_COLUMNS_LABEL"
+				size="2"/>
 		
 			<field default="44%,44%" description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" name="group_column_widths" type="text"/>
 			

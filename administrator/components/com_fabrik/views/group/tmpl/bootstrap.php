@@ -57,6 +57,9 @@ FabrikHelperHTML::script($srcs);
 				<?php foreach ($this->form->getFieldset('details') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
+				foreach ($this->form->getFieldset('details2') as $this->field) :
+					echo $this->loadTemplate('control_group');
+				endforeach;
 				?>
 			</fieldset>
 		</div>
