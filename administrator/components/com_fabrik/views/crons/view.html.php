@@ -108,7 +108,7 @@ class FabrikAdminViewCrons extends JViewLegacy
 		{
 			JToolBarHelper::custom('crons.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 		}
-		if ($this->state->get('filter.state') == -2 && $canDo->get('core.delete'))
+		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
 			JToolBarHelper::deleteList('', 'cron.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}

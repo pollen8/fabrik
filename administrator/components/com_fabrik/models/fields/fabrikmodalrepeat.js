@@ -56,6 +56,7 @@ var FabrikModalRepeat = new Class({
 			this.win.show();
 			this.win.position();
 			this.resizeWin(true);
+			this.win.position();
 			this.mask.show();
 		}.bind(this));
 	},
@@ -63,7 +64,6 @@ var FabrikModalRepeat = new Class({
 	resizeWin: function (setup) {
 		var size = this.el.getDimensions(true);
 		var wsize = this.win.getDimensions(true);
-		console.log(size, wsize);
 		var y = setup ? wsize.y : size.y + 30;
 		this.win.setStyles({'width': size.x + 'px', 'height': (y) + 'px'});
 	},
@@ -101,13 +101,19 @@ var FabrikModalRepeat = new Class({
 				
 				// Store radio button selections
 				var radiovals = this._getRadioValues(); 
-				tr.clone().inject(tr, 'after');
+				
+				if (tr.getChildren('th')) {
+					this.tmpl.clone().inject(tr, 'after');
+				} else {
+					tr.clone().inject(tr, 'after');
+				}
 				this.stripe();
 				
 				// Reapply values as renaming radio buttons 
 				this._setRadioValues(radiovals);
 				this.resizeWin();
 			}
+			this.win.position();
 			e.stop();
 		}.bind(this));
 		this.content.addEvent('click:relay(a.remove)', function (e) {
@@ -115,13 +121,14 @@ var FabrikModalRepeat = new Class({
 			// If only one row -don't remove
 			var rows = this.content.getElements('tbody tr');
 			if (rows.length <= 1) {
-				return;
+				// return;
 			}
 			
 			if (tr = this.findTr(e)) {
 				tr.dispose();
 			}
 			this.resizeWin();
+			this.win.position();
 			e.stop();
 		}.bind(this));
 	},
@@ -176,6 +183,10 @@ var FabrikModalRepeat = new Class({
 					}	
 				});
 			});
+		}
+		if (rowcount === 0) {
+			this.tmpl = tr;
+			tr.dispose();
 		}
 	},
 	

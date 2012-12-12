@@ -183,7 +183,9 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 			else
 			{
-				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error);
+				$browser = JBrowser::getInstance();
+				$ssl = $browser->isSSLConnection();
+				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error, $ssl);
 			}
 		}
 		else
