@@ -89,8 +89,9 @@ var Suboptions = new Class({
 							])
 						])
 					]);
-		if (document.id('sub_subElementBody').getElement('li').innerHTML === '') {
-			li.replaces(document.id('sub_subElementBody').getElement('li'));
+		var oldLi = document.id('sub_subElementBody').getElement('li'); 
+		if (typeOf(oldLi) !== 'null' && oldLi.innerHTML === '') {
+			li.replaces(oldLi);
 		} else {
 			li.inject(document.id('sub_subElementBody'));
 		}

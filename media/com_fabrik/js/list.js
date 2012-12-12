@@ -1064,19 +1064,21 @@ var FbList = new Class({
 				window.location = 'index.php?option=com_fabrik&task=list.view&cid=' + e.target.get('value');
 			}.bind(this));
 		}
-		if (this.options.ajax) {
-			if (typeOf(this.form.getElement('.pagination')) !== 'null') {
-				this.form.getElement('.pagination').getElements('.pagenav').each(function (a) {
-					a.addEvent('click', function (e) {
-						e.stop();
-						if (a.get('tag') === 'a') {
-							var o = a.href.toObject();
-							this.fabrikNav(o['limitstart' + this.id]);
-						}
-					}.bind(this));
+		// All nav links should submit the form, if we dont then filters are not taken into account when building the list cache id
+		// Can result in 2nd pages of cached data being shown, but without filters applied
+		// if (this.options.ajax) {
+		if (typeOf(this.form.getElement('.pagination')) !== 'null') {
+			this.form.getElement('.pagination').getElements('.pagenav').each(function (a) {
+				a.addEvent('click', function (e) {
+					e.stop();
+					if (a.get('tag') === 'a') {
+						var o = a.href.toObject();
+						this.fabrikNav(o['limitstart' + this.id]);
+					}
 				}.bind(this));
-			}
+			}.bind(this));
 		}
+		// }
 		
 		if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {

@@ -1575,4 +1575,21 @@ class FabrikWorker
 		}
 		return $json;
 	}
+
+	/**
+	 * Are we in J3 or using a bootstrap tmpl
+	 *
+	 * @since   3.1
+	 *
+	 * @return  bool
+	 */
+
+	public static function j3()
+	{
+		$app = JFactory::getApplication();
+		$version = new JVersion;
+
+		// Only use template test for testing in 2.5 with my temp J bootstrap template.
+		return ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5);
+	}
 }

@@ -147,7 +147,7 @@
 				description="COM_FABRIK_COLUMNS_DESC" />
 		
 			<field name="group_column_widths" 
-				type="text" default="44%,44%" 
+				type="text" default="" 
 				label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" 
 				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
 			

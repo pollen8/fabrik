@@ -1114,6 +1114,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$formModel = $this->getFormModel();
 		$elName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
+		$id = $this->getHTMLId($repeatCounter);
 		$idname = $this->getFullName(false, true, false) . '_id';
 		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
 		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
