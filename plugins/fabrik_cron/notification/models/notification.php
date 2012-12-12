@@ -37,7 +37,7 @@ class fabrikModelNotification extends JModel
 			$rows = $this->getRows();
 		}
 
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		foreach ($rows as &$row)
 		{
 			/*

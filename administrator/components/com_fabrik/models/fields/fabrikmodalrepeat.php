@@ -106,14 +106,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$path = 'templates/' . $app->getTemplate() . '/images/menu/';
 		$str[] = '<div id="' . $modalid . '" style="display:none">';
-		$str[] = '<table class="adminlist ' . $this->element['class'] . '">';
+		$str[] = '<table class="adminlist ' . $this->element['class'] . ' table table-striped">';
 		$str[] = '<thead><tr class="row0">';
 		$names = array();
 		$attributes = $this->element->attributes();
 		foreach ($subForm->getFieldset($attributes->name . '_modal') as $field)
 		{
 			$names[] = (string)$field->element->attributes()->name;
-			$str[] = '<th>' . $field->getLabel($field->name) . '</th>';
+			$str[] = '<th>' . strip_tags($field->getLabel($field->name)) . '</th>';
 		}
 		if (FabrikWorker::j3())
 		{
@@ -135,8 +135,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		if (FabrikWorker::j3())
 		{
-			$str[] = '<a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
-			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a>';
+			$str[] = '<div class="btn-group"><a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
+			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a></div>';
 		}
 		else
 		{
@@ -167,6 +167,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			// If loaded as js template then we don't want to repeat this again. (fabrik)
 			$names = json_encode($names);
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
+
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
 
@@ -176,17 +177,34 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 			else
 			{
-				// Wont work when rendering in admin module page
-				// @TODO test this now that the list and form pages are loading plugins via ajax (18/08/2012)
-				JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
-				$document
-					->addScriptDeclaration(
-						"window.addEvent('domready', function() {
+				if (FabrikWorker::j3())
+				{
+					$j3pane = 'COM_MENUS_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
+
+					$script = "window.addEvent('domready', function() {
+				var a = jQuery(\"a:contains('$j3pane')\");
+						a = a[0];
+						var href= a.get('href');
+						jQuery(href)[0].destroy();
+						a.getParent('.accordion-group').destroy();
+						" . $script . "
+						});";
+				}
+				else
+				{
+					$script = "window.addEvent('domready', function() {
 			" . $script . "
 			if (typeOf($('$pane')) !== 'null') {
 			  $('$pane').getParent().hide();
 			}
-			});");
+			});";
+				}
+
+				// Wont work when rendering in admin module page
+				// @TODO test this now that the list and form pages are loading plugins via ajax (18/08/2012)
+				JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
+				$document
+					->addScriptDeclaration($script);
 			}
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";

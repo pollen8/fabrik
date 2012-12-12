@@ -41,7 +41,9 @@ class FabrikAdminModelPlugin extends JModelLegacy
 
 		$data = $this->getData();
 		$input->set('view', $this->getState('type'));
-		$str = $plugin->onRenderAdminSettings($data, $this->getState('c'));
+
+		$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+		$str = $plugin->onRenderAdminSettings($data, $this->getState('c'), $mode);
 		$input->set('view', 'plugin');
 
 		return $str;

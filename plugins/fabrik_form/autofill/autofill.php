@@ -60,6 +60,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
 		$opts->fillOnLoad = (bool) $params->get('autofill_onload', false);
+		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
@@ -77,6 +78,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$params = $this->getParams();
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
@@ -93,12 +95,25 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		}
 		else
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 			$listModel->setId($input->getInt('table'));
 		}
 		if ($value !== '')
 		{
 			// Don't get the row if its empty
+			if ($input->get('autofill_lookup_field', '') !== '')
+			{
+				// Load on a fk
+				$fkid = $input->get('autofill_lookup_field', '');
+				$db = $listModel->getDb();
+				$fk = $listModel->getFormModel()->getElement($fkid, true);
+				$elname = $fk->getElement()->name;
+				$table = $listModel->getTable();
+				$query = $db->getQuery(true);
+				$query->select($table->db_primary_key)->from($table->db_table_name)->where($elname . ' = ' . $db->quote($value));
+				$db->setQuery($query);
+				$value = $db->loadResult();
+			}
 			$data = $listModel->getRow($value, true, true);
 			if (!is_null($data))
 			{
@@ -111,7 +126,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		}
 		else
 		{
-			$map = $input->get('map');
+			$map = $input->get('map', '', 'string');
 			$map = json_decode($map);
 			if (!empty($map))
 			{

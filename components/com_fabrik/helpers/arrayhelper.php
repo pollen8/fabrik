@@ -250,7 +250,7 @@ class FArrayHelper extends JArrayHelper
 	 * @return  string  the first array key.
 	 */
 
-	public function firstKey($array)
+	public static function firstKey($array)
 	{
 		reset($array);
 		return key($array);

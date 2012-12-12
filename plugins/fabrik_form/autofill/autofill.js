@@ -14,7 +14,8 @@ var Autofill = new Class({
 		map: '',
 		editOrig: false,
 		fillOnLoad: false,
-		confirm: true
+		confirm: true,
+		autofill_lookup_field: 0
 	},
 	
 	initialize: function (options) {
@@ -148,7 +149,8 @@ var Autofill = new Class({
 				'observe': observe,
 				'cnn': this.options.cnn,
 				'table': this.options.table,
-				'map': this.options.map
+				'map': this.options.map,
+				'autofill_lookup_field': this.options.autofill_lookup_field
 			},
 			onCancel: function () {
 				Fabrik.loader.stop('form_' + this.options.formid);

@@ -690,7 +690,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$this->getElement();
 		$params = $this->getParams();
 
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 		$data = $listModel->getData();
 		$return = new stdClass;
