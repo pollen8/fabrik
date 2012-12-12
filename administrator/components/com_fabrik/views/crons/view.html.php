@@ -63,7 +63,6 @@ class FabrikViewCrons extends JView
 		}
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
