@@ -36,11 +36,6 @@ var fabrikAdminElement = new Class({
 			this.addJavascript(opt);
 		}.bind(this));
 		
-		if (typeof(jQuery) !== 'undefined') {
-			jQuery('#jform_plugin').bind('change', function (e) {
-				this.changePlugin(e);
-			}.bind(this));
-		}
 		document.id('jform_plugin').addEvent('change', function (e) {
 			this.changePlugin(e);
 		}.bind(this));
@@ -98,10 +93,10 @@ var fabrikAdminElement = new Class({
 			'name': 'jform[js_code][]',
 			'class': 'inputbox'
 		}).set('text', opt.code);
-		action = this._makeSel(this.jsCounter, 'jform[js_action][]', this.jsactions, opt.action);
-		var evs = this._makeSel(this.jsCounter, 'js_e_event[]', this.eEvents, opt.params.js_e_event, Joomla.JText._('COM_FABRIK_SELECT_DO'));
+		action = this._makeSel(this.jsCounter + ' input-small', 'jform[js_action][]', this.jsactions, opt.action, ' - On - ');
+		var evs = this._makeSel(this.jsCounter + ' input-mini', 'js_e_event[]', this.eEvents, opt.params.js_e_event, Joomla.JText._('COM_FABRIK_SELECT_DO'));
 		var triggers = this._makeSel(this.jsCounter, 'js_e_trigger[]', this.eTrigger, opt.params.js_e_trigger, Joomla.JText._('COM_FABRIK_SELECT_ON'));
-		var condition = this._makeSel(this.jsCounter, 'js_e_condition[]', this.eConditions, opt.params.js_e_condition, Joomla.JText._('COM_FABRIK_IS'));
+		var condition = this._makeSel(this.jsCounter + ' input-mini', 'js_e_condition[]', this.eConditions, opt.params.js_e_condition, Joomla.JText._('COM_FABRIK_IS'));
 		
 		var td = new Element('td', {'colspan': 2});
 		td.set('html', this.options.deleteButton);
@@ -125,7 +120,7 @@ var fabrikAdminElement = new Class({
 					evs, triggers,
 					new Element('input', {
 						'value': Joomla.JText._('COM_FABRIK_WHERE_THIS'),
-						'class': 'readonly',
+						'class': 'readonly input-mini',
 						'disabled': 'disabled',
 						'size': Joomla.JText._('COM_FABRIK_WHERE_THIS').length
 					}),
@@ -151,7 +146,7 @@ var fabrikAdminElement = new Class({
 	},
 	
 	watchPluginDd: function () {
-		document.id('jform_plugin').addEvent('change', function (e) {
+		/*document.id('jform_plugin').addEvent('change', function (e) {
 			e.stop();
 			var opt = e.target.get('value');
 			$$('.elementSettings').each(function (tab) {
@@ -164,7 +159,7 @@ var fabrikAdminElement = new Class({
 		});
 		if (document.id('page-' + this.options.plugin)) {
 			document.id('page-' + this.options.plugin).setStyles({display: 'block'});
-		}
+		}*/
 	},
 	
 	setParentViz: function () {

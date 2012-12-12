@@ -29,11 +29,20 @@
 			
 		<field description="JFIELD_ACCESS_DESC" label="JFIELD_ACCESS_LABEL" name="access" type="accesslevel"/>
 
-		<field label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" name="created" type="calendar"/>
+		<field name="created"
+			type="calendar"
+			class="input-medium"
+			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" />
 			
-		<field label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" name="publish_up" type="calendar"/>
+		<field name="publish_up"
+			type="calendar"
+			class="input-medium"
+			label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" />
 			
-		<field label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" name="publish_down" type="calendar"/>
+		<field name="publish_down"
+			type="calendar"
+			class="input-medium"
+			label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" />
 			
 	</fieldset>
 	

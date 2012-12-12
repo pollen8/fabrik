@@ -49,9 +49,18 @@ class JFormFieldSuboptions extends JFormField
 		$default->sub_values = array();
 		$default->sub_labels = array();
 		$default->sub_initial_selection = array();
-		$opts = $this->value == '' ? $default : $this->value;
+		$opts = $this->value == '' ? $default : JArrayHelper::toObject($this->value);
+		$j3 = FabrikWorker::j3();
 		$delClass = FabrikWorker::j3() ? 'btn btn-danger' : 'removeButton';
-		$delButton = '<a class="' . $delClass . '" href="#"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a>';
+		if ($j3)
+		{
+			$delButton = '<div class="btn-group"><a class="btn btn-success" href="#" data-button="addSuboption"><i class="icon-plus"></i> </a>';
+			$delButton .= '<a class="' . $delClass . '" href="#" data-button="deleteSuboption"><i class="icon-minus"></i> </a></div>';
+		}
+		else
+		{
+			$delButton = '<a class="' . $delClass . '" href="#"><i class="icon-minus"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a>';
+		}
 		if (is_array($opts))
 		{
 			$opts['delButton'] = $delButton;
@@ -60,25 +69,41 @@ class JFormFieldSuboptions extends JFormField
 		{
 			$opts->delButton = $delButton;
 		}
+		$opts->id = $this->id;
+		$opts->j3 = $j3;
 		$opts = json_encode($opts);
 		$script = "new Suboptions('$this->name', $opts);";
 		$addClass = FabrikWorker::j3() ? 'btn btn-success' : 'addButton';
 		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/suboptions.js', $script);
-		$html = '<div style="float:left;width:100%">
+		$html = array();
+		if (!$j3)
+		{
+			$html[] = '<div style="float:left;width:100%">';
+		}
+		$html[] = '<table class="table table-striped" style="width: 100%" id="' . $this->id . '">';
+		$html[] = '<thead>';
+		$html[] = '<tr style="text-align:left">';
+		$html[] = '<th style="width: 5%"></th>';
+		$html[] = '<th style="width: 30%">' . JText::_('COM_FABRIK_VALUE') . '</th>';
+		$html[] = '<th style="width: 30%">' . JText::_('COM_FABRIK_LABEL') . '</th>';
+		$html[] = '<th style="width: 10%">' . JText::_('COM_FABRIK_DEFAULT') . '</th>';
+		if ($j3)
+		{
+			$html[] = '<th style="width: 20%"><a class="' . $addClass. '" href="#" data-button="addSuboption"><i class="icon-plus"></i> </a></th>';
+		}
+		$html[] = '</tr>';
+		$html[] = '</thead>';
+		$html[] = '<tbody></tbody>';
+		$html[] = '</table>';
 
-<table style="width: 100%">
-	<tr style="text-align:left">
-		<th style="width: 5%"></th>
-		<th style="width: 30%">' . JText::_('COM_FABRIK_VALUE') . '</th>
-		<th style="width: 30%">' . JText::_('COM_FABRIK_LABEL') . '</th>
-		<th style="width: 30%">' . JText::_('COM_FABRIK_DEFAULT')
-			. '</th>
-	</tr>
-</table>
-<ul id="sub_subElementBody" class="subelements">
-	<li></li>
-</ul><a class="' . $addClass. '" href="#" id="addSuboption"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a></div>';
-		return $html;
+		if (!$j3)
+		{
+			$html[] = '<ul id="sub_subElementBody" class="subelements">';
+			$html[] = '<li></li>';
+			$html[] = '</ul>';
+			$html[] = '<a class="' . $addClass. '" href="#" id="addSuboption"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a></div>';
+		}
+		return implode("\n", $html);
 	}
 
 }

@@ -53,11 +53,12 @@ var PluginManager = new Class({
 	 * @TODO - now only used by element js code - would be nice to remove and use the same code as form/list/validation rule plugins
 	 */
 	
-	_makeSel: function (c, name, pairs, sel) {
+	_makeSel: function (c, name, pairs, sel, selectTxt) {
 		var v, l;
+		selectTxt = selectTxt ? selectTxt : Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
 		var opts = [];
 		this.sel = sel;
-		opts.push(new Element('option', {'value': ''}).appendText(Joomla.JText._('COM_FABRIK_PLEASE_SELECT')));
+		opts.push(new Element('option', {'value': ''}).appendText(selectTxt));
 		if (typeOf(pairs) === 'object') {
 			$H(pairs).each(function (group, key) {
 				opts.push(new Element('optgroup', {'label': key}));

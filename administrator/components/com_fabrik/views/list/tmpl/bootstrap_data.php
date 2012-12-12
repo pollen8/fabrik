@@ -56,8 +56,10 @@
 				echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
 				if ((int) $this->item->id !== 0) :
 					echo JArrayHelper::getValue($this->order_dir, $o)?>
-					<a class="btn btn-success addOrder" href="#"><i class="icon-plus"></i> </a>
-					<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus"></i> </a>
+					<div class="btn-group pull-right">
+						<a class="btn btn-success addOrder" href="#"><i class="icon-plus"></i> </a>
+						<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus"></i> </a>
+					</div>
 				<?php endif; ?>
 			</div>
 			<?php endfor; ?>

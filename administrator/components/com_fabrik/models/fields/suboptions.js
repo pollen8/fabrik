@@ -3,18 +3,18 @@ var Suboptions = new Class({
 	Implements: [Options],
 	
 	options: {
-		sub_initial_selection: []
+		sub_initial_selection: [],
+		j3: false
 	},
 	
 	initialize: function (name, options) {
 		this.setOptions(options);
+		this.element = document.id(this.options.id);
 		this.counter = 0;
 		this.name = name;
-		document.id('addSuboption').addEvent('click', function (e) {
-			this.addOption(e);
-		}.bind(this));
-		this.options.sub_values.each(function (v, x) {
-			var chx = this.options.sub_initial_selection.indexOf(v) === -1 ? '' : "checked='checked'";
+		this.watchButtons();
+		Object.each(this.options.sub_values, function (v, x) {
+			var chx = Object.contains(this.options.sub_initial_selection, v) ? "checked='checked'" : '';
 			this.addSubElement(v, this.options.sub_labels[x], chx);
 		}.bind(this));
 		
@@ -28,6 +28,29 @@ var Suboptions = new Class({
 			}
 			Joomla.submitform(pressbutton);
 		}.bind(this);
+		
+	},
+	
+	watchButtons: function () {
+		if (this.options.j3) {
+			this.element.addEvent('click:relay(a[data-button="addSuboption"])', function (e) {
+				e.preventDefault();
+				this.addSubElement();
+			}.bind(this));
+			
+			this.element.addEvent('click:relay(a[data-button="deleteSuboption"])', function (e, target) {
+				e.preventDefault();
+				var trs = this.element.getElements('tbody tr');
+				if (trs.length > 1) {
+					target.getParent('tr').dispose();
+				}
+			}.bind(this));
+			var x = this.element.getElements('a[data-button="addSuboption"]');
+		} else {
+			document.id('addSuboption').addEvent('click', function (e) {
+				this.addOption(e);
+			}.bind(this));
+		}
 	},
 	
 	addOption: function (e) {
@@ -43,49 +66,88 @@ var Suboptions = new Class({
 		e.stop();
 	},
 	
+	addJ3SubElement: function (sValue, sText, sCurChecked) {
+		var chx = this._chx(sValue, sCurChecked);
+		var delButton = this._deleteButton();
+		var tr = new Element('tr').adopt([
+			new Element('td', {'class': 'handle subhandle'}),
+			new Element('td', {width: '30%'}).adopt(this._valueField(sValue)),
+
+			new Element('td', {width: '30%'}).adopt(this._labelField(sText)),
+			new Element('td', {width: '10%'}).set('html',
+				chx
+			),
+			delButton
+		]);
+		var tbody = this.element.getElement('tbody'); 
+		tbody.adopt(tr);
+		
+		if (!this.sortable) {
+			this.sortable = new Sortables(tbody, {'handle': '.subhandle'});
+		} else {
+			this.sortable.addItems(tr);
+		}
+		this.counter++;
+		
+	},
+	
+	_valueField: function (sValue) {
+		return new Element('input', {
+			'class': 'inputbox sub_values', 
+			type: 'text',
+			name: this.name + '[sub_values][]',
+			id: 'sub_value_' + this.counter, 
+			size: 20,
+			value: sValue,
+			events: {
+				'change': function (e) {
+						fconsole('need to set this chb boxes value to the value field if selected, or set to blank');
+					}
+			}
+		});
+	},
+	
+	_labelField: function (sText) {
+		return new Element('input', {
+			'class': 'inputbox sub_labels',
+			type: 'text',
+			name: this.name + '[sub_labels][]',
+			id: 'sub_text_' + this.counter,
+			size : 20,
+			value : sText
+		});
+	},
+	
+	_chx: function (sValue, sCurChecked) {
+		return "<input class=\"inputbox sub_initial_selection\" type=\"checkbox\" value=\"" + sValue + "\" name='" + this.name + "[sub_initial_selection][]' id=\"sub_checked_" + this.counter + "\" " + sCurChecked + " />";
+	},
+	
+	_deleteButton: function () {
+		return new Element('td', {width: '20%'}).set('html', this.options.delButton);
+	},
+	
 	addSubElement: function (sValue, sText, sCurChecked) {
+		if (this.options.j3) {
+			return this.addJ3SubElement(sValue, sText, sCurChecked);
+		}
 		sValue = sValue ? sValue : '';
 		sText = sText ? sText : '';
-		var chx = "<input class=\"inputbox sub_initial_selection\" type=\"checkbox\" value=\"" + sValue + "\" name='" + this.name + "[sub_initial_selection][]' id=\"sub_checked_" + this.counter + "\" " + sCurChecked + " />";
-		var delButton = new Element('td', {width: '20%'}).set('html', this.options.delButton);
+		var chx = this._chx(sValue, sCurChecked);
+		var delButton = this._deleteButton();
 		delButton.getElement('a').id = 'sub_delete_' + this.counter;
 		var li = new Element('li', {id: 'sub_content_' + this.counter}).adopt([
 			new Element('table',  {width: '100%'}).adopt([
 				new Element('tbody').adopt([
 					new Element('tr').adopt([
 						new Element('td', {'rowspan': 2, 'class': 'handle subhandle'}),
-						new Element('td', {width: '30%'}).adopt(
-							new Element('input', {
-								'class': 'inputbox sub_values', 
-								type: 'text',
-								name: this.name + '[sub_values][]',
-								id: 'sub_value_' + this.counter, 
-								size: 20,
-								value: sValue,
-								events: {
-									'change': function (e) {
-											fconsole('need to set this chb boxes value to the value field if selected, or set to blank');
-										}
-								}
-							})),
-
-							new Element('td', {width: '30%'}).adopt(
-								new Element('input', {
-									'class': 'inputbox sub_labels',
-									type: 'text',
-									name: this.name + '[sub_labels][]',
-									id: 'sub_text_' + this.counter,
-									size : 20,
-									value : sText
-								})),
-								new Element('td', {width: '10%'}).set('html',
-									chx
-								),
-								delButton
-							])
-						])
+						new Element('td', {width: '30%'}).adopt(this._valueField(sValue)),
+						new Element('td', {width: '30%'}).adopt(this._labelField(sText)),
+						new Element('td', {width: '10%'}).set('html', chx),
+						delButton
 					])
-				]);
+				])
+			])
+		]);
 		var oldLi = document.id('sub_subElementBody').getElement('li'); 
 		if (typeOf(oldLi) !== 'null' && oldLi.innerHTML === '') {
 			li.replaces(oldLi);
