@@ -13,7 +13,11 @@
 				
 			<field description="PLG_VISUALIZATION_CHART_LABEL_DESC" label="PLG_VISUALIZATION_CHART_LABEL_LABEL" name="chart_axis_labels" type="text"/>
 				
-			<field description="PLG_VISUALIZATION_CHART_COLOUR_DESC" label="PLG_VISUALIZATION_CHART_COLOUR_LABEL" name="chart_colours" type="text"/>
+			<field name="chart_colours"
+				type="color"
+				class="input-mini"
+				description="PLG_VISUALIZATION_CHART_COLOUR_DESC"
+				label="PLG_VISUALIZATION_CHART_COLOUR_LABEL" />
 				
 			<field connection="params_chart_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CHART_AXIS_LABEL_DESC" label="PLG_VISUALIZATION_CHART_AXIS_LABEL_LABEL" name="x_axis_label" table="params_chart_table" type="element"/>
 				

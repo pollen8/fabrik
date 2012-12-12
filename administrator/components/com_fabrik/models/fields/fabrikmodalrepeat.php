@@ -115,7 +115,14 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$names[] = (string)$field->element->attributes()->name;
 			$str[] = '<th>' . $field->getLabel($field->name) . '</th>';
 		}
-		$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a></th>';
+		if (FabrikWorker::j3())
+		{
+			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus"></i> </a></th>';
+		}
+		else
+		{
+			$str[] = '<th><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a></th>';
+		}
 		$str[] = '</tr></thead>';
 
 		$str[] = '<tbody><tr>';
@@ -124,10 +131,18 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		{
 			$str[] = '<td>' . $field->getInput() . '</td>';
 		}
+		$str[] = '<td>';
 
-
-		$str[] = '<td><div style="width:35px"><a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
-		$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
+		if (FabrikWorker::j3())
+		{
+			$str[] = '<a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
+			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a>';
+		}
+		else
+		{
+			$str[] = '<a href="#" class="add"><img src="' . $path . '/icon-16-new.png" alt="' . JText::_('ADD') . '" /></a>';
+			$str[] = '<a href="#" class="remove"><img src="' . $path . '/icon-16-delete.png" alt="' . JText::_('REMOVE') . '" /></a>';
+		}
 		$str[] = '</td>';
 		$str[] = '</tr></tbody>';
 		$str[] = '</table>';
@@ -176,11 +191,20 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";
 
-		$str[] = '<div class="button2-left">';
-		$str[] = '	<div class="blank">';
-		$str[] = '<a id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
-		$html[] = '	</div>';
-		$html[] = '</div>';
+
+		if (FabrikWorker::j3())
+		{
+			$str[] = '<button class="btn" id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
+		}
+		else
+		{
+			$str[] = '<div class="button2-left">';
+			$str[] = '	<div class="blank">';
+			$str[] = '<a id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '	</div>';
+			$str[] = '</div>';
+		}
+
 		if (is_array($this->value))
 		{
 			$this->value = array_shift($this->value);

@@ -35,7 +35,12 @@
 	
 	<fieldset name="main_nav">
 		
-		<field default="10" description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL" name="rows_per_page" size="3" type="text"/>
+		<field name="rows_per_page"
+			default="10"
+			type="text"
+			class="input-mini"
+			size="3" 
+			description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL"/>
 	
 	</fieldset>
 	

@@ -2761,17 +2761,18 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $useStep             Concat table name and el name with '___' (true) or "." (false)
 	 * @param   bool    $incRaw              Include raw labels default = true
 	 * @param   string  $key                 What value should be used for the option value 'name' (default) or 'id' @since 3.0.7
+	 * @param   string  $attribs             Select list attributs @since 3.1b
 	 *
 	 * @return	string	html list
 	 */
 
-	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true, $key = 'name')
+	public function getElementList($name = 'order_by', $default = '', $excludeUnpublished = false, $useStep = false, $incRaw = true, $key = 'name', $attribs = 'class="inputbox" size="1"')
 	{
 		$aEls = array();
 		$aEls = $this->getElementOptions($useStep, $key, false, $incRaw);
 		$aEls[] = JHTML::_('select.option', '', '-');
 		asort($aEls);
-		return JHTML::_('select.genericlist', $aEls, $name, 'class="inputbox" size="1" ', 'value', 'text', $default);
+		return JHTML::_('select.genericlist', $aEls, $name, $attribs, 'value', 'text', $default);
 	}
 
 	/**

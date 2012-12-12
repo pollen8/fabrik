@@ -15,7 +15,7 @@
 	<div class="controls">
 
 		<?php if ($this->tipLocation == 'above') : ?>
-			<p clas="help-block"><?php echo $element->tipAbove ?></p>
+			<p class="help-block"><?php echo $element->tipAbove ?></p>
 		<?php endif ?>
 
 
@@ -28,12 +28,12 @@
 		</div>
 
 		<?php if ($this->tipLocation == 'side') : ?>
-			<p clas="help-block"><?php echo $element->tipAbove ?></p>
+			<p class="help-block"><?php echo $element->tipAbove ?></p>
 		<?php endif ?>
 		</div>
 
 	<?php if ($this->tipLocation == 'below') :?>
-		<p clas="help-block"><?php echo $element->tipAbove ?></p>
+		<p class="help-block"><?php echo $element->tipAbove ?></p>
 	<?php endif ?>
 
 	</div>

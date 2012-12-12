@@ -10,7 +10,10 @@
 		
 		<field description="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_DESC" label="COM_FABRIK_FIELD_VIZUALIZATION_LABEL_LABEL" name="label" required="true" size="35" type="text"/>
 			
-		<field cols="30" description="COM_FABRIK_FIELD_INTRODUCTION_DESC" label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" name="intro_text" rows="3" buttons="false" type="editor"/>
+		<field name="intro_text"
+			type="editor"
+			description="COM_FABRIK_FIELD_INTRODUCTION_DESC"
+			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL" rows="3" buttons="false" />
 			
 		<field description="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_DESC" label="COM_FABRIK_FIELD_VISUALIZATION_PLUGIN_LABEL" name="plugin" plugin="fabrik_visualization" required="true" type="pluginlist"/>
 			

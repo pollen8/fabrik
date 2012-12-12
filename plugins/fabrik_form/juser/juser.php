@@ -318,7 +318,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		// Load up com_users lang - used in email text
 		$lang->load('com_users');
 		/*
-		 * if the fabrik table is set to be #__users and the this plugin is used
+		 * If the fabrik table is set to be #__users and the this plugin is used
 		 * we need to alter the form model to tell it not to store the main row
 		 * but to still store any joined rows
 		 */
@@ -340,10 +340,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$bypassActivation = $params->get('juser_bypass_activation', false);
 		$bypassRegistration = $params->get('juser_bypass_registration', true);
 		$autoLogin = $params->get('juser_auto_login', false);
-
-		// Load in the com_user language file
-		$lang = JFactory::getLanguage();
-		$lang->load('com_user');
 
 		$data = $formModel->formData;
 

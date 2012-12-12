@@ -64,6 +64,7 @@
 						<fieldset name="prefilters_modal" repeat="true" modal="true">
 						
 							<field name="filter-join"
+								class="input-small"
 								type="list"
 								default="OR"
 								label="">
@@ -107,6 +108,7 @@
 							
 							<field name="filter-eval"
 								type="list"
+								class="input-small"
 								label="COM_FABRIK_TYPE">
 									<option value="0">COM_FABRIK_TEXT</option>
 									<option value="1">COM_FABRIK_EVAL</option>
@@ -114,7 +116,8 @@
 									<option value="3">COM_FABRIK_NO_QUOTES</option>
 							</field>
 							
-							<field name="filter-access" 
+							<field name="filter-access"
+								class="input-small"
 								type="accesslevel"
 								label="COM_FABRIK_LIST_FILTER_ACCESS_HEADING"/>
 								

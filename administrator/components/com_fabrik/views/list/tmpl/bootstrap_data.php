@@ -56,8 +56,8 @@
 				echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
 				if ((int) $this->item->id !== 0) :
 					echo JArrayHelper::getValue($this->order_dir, $o)?>
-					<a class="addOrder" href="#"><img src="components/com_fabrik/images/plus-sign.png" label="<?php echo JText::_('COM_FABRIK_ADD')?>" alt="<?php echo JText::_('COM_FABRIK_ADD')?>" /></a>
-					<a class="deleteOrder" href="#"><img src="components/com_fabrik/images/remove.png" label="<?php echo JText::_('REMOVE')?>" alt="<?php echo JText::_('REMOVE')?>" /></a>
+					<a class="btn btn-success addOrder" href="#"><i class="icon-plus"></i> </a>
+					<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus"></i> </a>
 				<?php endif; ?>
 			</div>
 			<?php endfor; ?>
@@ -81,17 +81,18 @@
 		<div class="tab-pane" id="data-prefilter">
 			<fieldset class="form-horizontal">
 			<legend><?php echo JText::_('COM_FABRIK_PREFILTERS')?></legend>
-			<a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
+
+			 <a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
 				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
-			<?php foreach ($this->form->getFieldset('prefilter') as $this->field):
-				echo $this->loadTemplate('control_group');
-			 endforeach;
-			 ?>
 			<table class="table table-striped" width="100%">
 				<tbody id="filterContainer">
 				</tbody>
 			</table>
+			<?php foreach ($this->form->getFieldset('prefilter') as $this->field):
+				echo $this->loadTemplate('control_group');
+			 endforeach;
+			 ?>
 			</fieldset>
 		</div>
 
@@ -104,7 +105,7 @@
 			<a href="#" id="addAJoin" class="btn">
 				<i class="icon-plus"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
-			<div id="joindtd"></div>
+			<div id="joindtd" style="margin-top:20px"></div>
 			<?php
 			foreach ($this->form->getFieldset('joins') as $this->field):
 				echo $this->loadTemplate('control_group');
