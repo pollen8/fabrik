@@ -283,9 +283,7 @@ Fabrik.Window = new Class({
 		
 		var titleHeight = this.window.getElement('.' + this.handleClass());
 		titleHeight = titleHeight ? titleHeight.getSize().y : 25;
-		
 		var footer = this.window.getElement('.bottomBar').getSize().y;
-		console.log(this.window.getDimensions().height, this.window.getSize().y, titleHeight + footer);
 		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - (titleHeight + footer));
 		this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
 		// Resize iframe when window is resized

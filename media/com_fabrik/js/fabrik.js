@@ -244,7 +244,7 @@ if (typeof(Fabrik) === "undefined") {
 			var pEl = document.getElement(popover);
 			jQuery(popover).popover('hide');
 			
-			if (pEl.get('tag') === 'input') {
+			if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
 				pEl.checked = false;
 			}
 		});
