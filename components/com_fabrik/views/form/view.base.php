@@ -541,10 +541,14 @@ class FabrikViewFormBase extends JView
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
-			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
+			/* $showGroup = $groupModel->getParams()->get('repeat_group_show_first');
 			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
 			{
 				// $$$ rob unpublished group so dont include the element js
+				continue;
+			} */
+			if (!$groupModel->canView())
+			{
 				continue;
 			}
 			$aObjs = array();

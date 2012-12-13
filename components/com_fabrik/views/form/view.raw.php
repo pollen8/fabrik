@@ -211,7 +211,7 @@ class fabrikViewForm extends JView
 						else
 						{
 							//$$$ rob test!!!
-							if (!$groupParams->get('repeat_group_show_first'))
+							if (!$groupModel->canView())
 							{
 								continue;
 							}

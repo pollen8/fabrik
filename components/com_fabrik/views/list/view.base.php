@@ -331,7 +331,7 @@ class FabrikViewListBase extends JView
 		$this->rows = $data;
 		reset($this->rows);
 
-		// Cant use numeric key '0' as group by uses groupd name as key
+		// Cant use numeric key '0' as group by uses grouped name as key
 		$firstRow = current($this->rows);
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		$this->advancedSearch = $this->get('AdvancedSearchLink');
@@ -358,7 +358,8 @@ class FabrikViewListBase extends JView
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->setTitle($w, $params, $model);
-		/** depreciated (keep incase ppl use them in old tmpls**/
+
+		// Depreciated (keep in case ppl use them in old tmpls)
 		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
@@ -366,7 +367,8 @@ class FabrikViewListBase extends JView
 		$this->table->id = $item->id;
 		$this->table->renderid = $this->get('RenderContext');
 		$this->table->db_table_name = $item->db_table_name;
-		/** end **/
+
+		// End deprecated
 		$this->list = $this->table;
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;

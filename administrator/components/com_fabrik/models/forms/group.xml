@@ -61,13 +61,19 @@
 		
 		<fieldset name="details2" >
 		
-		<field name="intro"
-			type="editor"
-			filter="FabrikAdminHelper::filterText"
-			rows="6"
-			cols="20"
-			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
-			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
+			<field name="access" 
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_GROUP_ACCESS_LABEL" 
+				description="COM_FABRIK_FIELD_GROUP_ACCESS_DESC" />
+				
+			<field name="intro"
+				type="editor"
+				filter="FabrikAdminHelper::filterText"
+				rows="6"
+				cols="20"
+				label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
 			
 		</fieldset>
 	
