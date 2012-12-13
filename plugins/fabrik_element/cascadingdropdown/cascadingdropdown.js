@@ -140,7 +140,7 @@ var FbCascadingdropdown = new Class({
 			this.ignoreAjax = false;
 			// $$$ hugh - need to remove/add 'readonly' class ???  Probably need to add/remove the readonly="readonly" attribute as well
 			//this.element.disabled = (this.element.options.length === 1 ? true : false);
-			if (this.options.editable && this.displayType === 'dropdown') {
+			if (this.options.editable && this.options.displayType === 'dropdown') {
 				if (this.element.options.length === 1) {
 					this.element.readonly = true;
 					this.element.addClass('readonly');
@@ -189,7 +189,7 @@ var FbCascadingdropdown = new Class({
 		// c is the repeat group count
 		this.myAjax = null;
 		
-		// Ccloned seems to be called correctly 
+		// Cloned seems to be called correctly 
 		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {
 				// $$$ hugh - nope, 'cos watch already has the _X appended to it!
@@ -204,7 +204,7 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 			if (document.id(this.options.watch)) {
-				//old events removed in database join element clone() method
+				// Old events removed in database join element clone() method
 				// $$$ hugh - oh no they aren't!  join element cloned() method doesn't fire for this!
 				//this.element.removeEvents('change');
 				this.element.removeEvents('change', function (e) {
