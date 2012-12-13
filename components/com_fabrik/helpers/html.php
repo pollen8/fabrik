@@ -802,6 +802,8 @@ EOD;
 				$version = new JVersion;
 				$app = JFactory::getApplication();
 
+				// Only use template test for testing in 2.5 with my temp J bootstrap template.
+				$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
 				/*
 				 * Required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
@@ -826,20 +828,18 @@ EOD;
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
-				$src[] = 'media/com_fabrik/js/lib/art.js';
-				$src[] = 'media/com_fabrik/js/icons.js';
-				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
-				$src[] = 'media/com_fabrik/js/tips.js';
 
-				// Only use template test for testing in 2.5 with my temp J bootstrap template.
-				if (in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5)
+				if ($bootstrapped)
 				{
 					$src[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
 				}
 				else
 				{
+					$src[] = 'media/com_fabrik/js/lib/art.js';
 					$src[] = 'media/com_fabrik/js/tips.js';
+					$src[] = 'media/com_fabrik/js/icons.js';
+					$src[] = 'media/com_fabrik/js/icongen.js';
 				}
 				$src[] = 'media/com_fabrik/js/window.js';
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
@@ -849,6 +849,15 @@ EOD;
 				$liveSiteSrc = array();
 				$liveSiteSrc[] = "window.addEvent('fabrik.loaded', function () {";
 				$liveSiteSrc[] = "\tFabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';";
+				if ($bootstrapped)
+				{
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = true;";
+				}
+				else
+				{
+					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
+					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
+				}
 				$liveSiteSrc[] = "});";
 				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
@@ -1137,7 +1146,12 @@ EOD;
 			}
 		}
 		// Need to load element for ajax popup forms in IE.
-		$needed = array('fab/element', 'fab/fabrik', 'fab/icongen', 'fab/icons');
+		$needed = array('fab/element', 'fab/fabrik');
+		if (!FabrikWorker::j3())
+		{
+			$needed[] = 'fab/icongen';
+			$needed[] = 'fab/icons';
+		}
 		foreach ($needed as $need)
 		{
 			if (!in_array($need, $files))

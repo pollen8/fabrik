@@ -615,6 +615,9 @@ var FbList = new Class({
 		
 		if (this.options.ajax_links) {
 			
+			// 3.1 - dont need to do this now
+			return;
+			
 			// $$$rob - HACKKKKK!!!!!! 
 			// not sure why but on ajax first load of xhr content the form object does not ini
 			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
@@ -630,14 +633,14 @@ var FbList = new Class({
 				'height': this.options.popup_height,
 				'onContentLoaded': function () {}
 			};
-			var w = Fabrik.getWindow(winOpts);*/
+			var w = Fabrik.getWindow(winOpts);
 			if (typeOf(this.options.popup_offset_x) !== 'null') {
 				winOpts.offset_x = this.options.popup_offset_x;
 			}
 			if (typeOf(this.options.popup_offset_y) !== 'null') {
 				winOpts.offset_y = this.options.popup_offset_y;
 			}
-			var w = Fabrik.getWindow(winOpts);
+			var w = Fabrik.getWindow(winOpts);*/
 		}
 	},
 	

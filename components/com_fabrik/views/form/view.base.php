@@ -102,6 +102,10 @@ class FabrikViewFormBase extends JViewLegacy
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
+		if ($this->rowid != '')
+		{
+			$form->formid .= '_' . $this->rowid;
+		}
 		if ($form->error === '')
 		{
 			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
@@ -428,7 +432,10 @@ class FabrikViewFormBase extends JViewLegacy
 		FabrikHelperHTML::mocha();
 
 		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-
+		if ($this->rowid != '')
+		{
+			$bkey .= '_' . $this->rowid;
+		}
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 
@@ -568,7 +575,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$elementModel->setEditable($model->isEditable());
 
 				// If the view is a form then we should always add the js as long as the element is editable or viewable
-				// if the view is details then we should only add hte js if the element is viewable.
+				// if the view is details then we should only add the js if the element is viewable.
 				if (($elementModel->canUse() && $model->isEditable()) || $elementModel->canView())
 				{
 					for ($c = 0; $c < $max; $c++)

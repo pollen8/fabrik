@@ -5,7 +5,7 @@ require(['fab/fabrik'], function () {
 				Fabrik.Windows[opts.id].open();
 			}
 			Fabrik.Windows[opts.id].setOptions(opts);
-			Fabrik.Windows[opts.id].loadContent();
+			// Fabrik.Windows[opts.id].loadContent();
 		} else {
 			var type = opts.type ? opts.type : '';
 			switch (type) {
@@ -47,8 +47,7 @@ Fabrik.Window = new Class({
 		onContentLoaded: function () {
 			this.fitToContent();
 		},
-		destroy: false,
-		bootstrap: false
+		destroy: false
 	},
 	
 	modal: false,
@@ -63,57 +62,71 @@ Fabrik.Window = new Class({
 		this.makeWindow();
 	},
 	
+	deleteButton: function () {
+		var delClick = function (e) {
+			this.close(e);
+		}.bind(this);
+		var del;
+		if (Fabrik.bootstrapped) {
+			del = new Element('a', {'href': '#', 'class': 'closeFabWin', 'events': {'click': delClick}});
+			del.adopt(new Element('i.icon-cancel'));
+		} else {
+			del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
+			var art = Fabrik.iconGen.create(icon.cross);
+			art.inject(del);
+		}
+		return del;
+	},
+	
 	makeWindow: function ()
 	{
-		var draggerC, dragger, expandButton, expandIcon, resizeIcon;
+		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label;
 		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
 		d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
 		d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
-		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix}).setStyles(d);
+		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'}).setStyles(d);
 		this.contentWrapperEl = this.window;
-		var art = Fabrik.iconGen.create(icon.cross);
 		
-		var delClick = function (e) {
-			this.close(e);
-		}.bind(this);
-		var del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
-		if (this.options.bootstrap) {
-			del.adopt(new Element('i.icon-cancel.small'));
-		} else {
-			art.inject(del);
-		}
-		
+		del = this.deleteButton();
 		
 		var hclass = 'handlelabel';
 		if (!this.modal) {
 			hclass += ' draggable';
-			draggerC = new Element('div', {'class': 'bottomBar'});
+			var bClss = Fabrik.bootstrapped ? 'bottomBar BootStrapped' : 'bottomBar';
+			draggerC = new Element('div', {'class': 'bottomBar modal-footer'});
 			dragger = new Element('div', {'class': 'dragger'});
-			resizeIcon = Fabrik.iconGen.create(icon.resize, {
-				scale: 0.8, 
-				rotate: 0,
-				shadow: {
-					color: '#fff',
-					translate: {x: 0, y: 1}
-				},
-				fill: {
-					color: ['#999', '#666']
-				}
-			});
+			if (Fabrik.bootstrapped) {
+				resizeIcon = new Element('i.icon-expand');
+			} else {
+				resizeIcon = Fabrik.iconGen.create(icon.resize, {
+					scale: 0.8, 
+					rotate: 0,
+					shadow: {
+						color: '#fff',
+						translate: {x: 0, y: 1}
+					},
+					fill: {
+						color: ['#999', '#666']
+					}
+				});
+			}
 			resizeIcon.inject(dragger);
 			draggerC.adopt(dragger);
 		}
 		
-		var label = new Element('span', {'class': hclass}).set('text', this.options.title);
-		handleParts.push(label);
-		if (this.options.bootstrap) {
-			expandIcon = new Element('i.icon-out-2.small'); 
+		if (Fabrik.bootstrapped) {
+			expandIcon = new Element('i.icon-out-2');
+			label = new Element('h3', {'class': hclass}).set('text', this.options.title);
+			
 		} else {
 			expandIcon = Fabrik.iconGen.create(icon.expand, {scale: 0.4, fill: {
 				color: ['#666666', '#999999']
 			}});
+			label = new Element('span', {'class': hclass}).set('text', this.options.title);
 		}
+		
+		handleParts.push(label);
 		if (this.options.expandable && this.modal === false) {
 			expandButton = new Element('a', {'href': '#', 'class': 'expand', 'events': {
 				'click': function (e) {
@@ -180,7 +193,8 @@ Fabrik.Window = new Class({
 			this.expanded = true;
 			var w = window.getSize();
 			this.unexpanded = this.window.getCoordinates();
-			this.window.setPosition({'x': 0, 'y': 0}).setStyles({'width': w.x, 'height': w.y});
+			var scroll = window.getScroll();
+			this.window.setPosition({'x': scroll.x, 'y': scroll.y}).setStyles({'width': w.x, 'height': w.y});
 		} else {
 			this.window.setPosition({'x': this.unexpanded.left, 'y': this.unexpanded.top}).setStyles({'width': this.unexpanded.width, 'height': this.unexpanded.height});
 			this.expanded = false;
@@ -189,7 +203,12 @@ Fabrik.Window = new Class({
 	},
 	
 	getHandle: function () {
-		return new Element('div', {'class': 'handle draggable'});
+		var c = this.handleClass();
+		return new Element('div', {'class': 'draggable ' + c});
+	},
+	
+	handleClass: function () {
+		return Fabrik.bootstrapped ? 'modal-header' : 'handle';
 	},
 	
 	loadContent: function () {
@@ -212,6 +231,7 @@ Fabrik.Window = new Class({
 			break;
 		case 'xhr':
 			u = this.window.getElement('.itemContent');
+			u = this.contentEl;
 			Fabrik.loader.start(u);
 			new Request.HTML({
 				'url': this.options.contentURL,
@@ -260,7 +280,13 @@ Fabrik.Window = new Class({
 	},
 	
 	drawWindow: function () {
-		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - this.handle.getDimensions().height - 25);
+		
+		var titleHeight = this.window.getElement('.' + this.handleClass());
+		titleHeight = titleHeight ? titleHeight.getSize().y : 25;
+		
+		var footer = this.window.getElement('.bottomBar').getSize().y;
+		console.log(this.window.getDimensions().height, this.window.getSize().y, titleHeight + footer);
+		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - (titleHeight + footer));
 		this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
 		// Resize iframe when window is resized
 		if (this.options.loadMethod === 'iframe') {
@@ -323,7 +349,8 @@ Fabrik.Modal = new Class({
 	classSuffix: 'fabrikWindow-modal',
 	
 	getHandle: function () {
-		return new Element('div', {'class': 'handle'});
+		var c = this.handleClass();
+		return new Element('div', {'class': c});
 	}
 });
 

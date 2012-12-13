@@ -388,7 +388,7 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			if ($params->get('show-table-add', 1))
 			{
-				$this->addRecordLink = $this->get('AddRecordLink');
+				$this->addRecordLink = $model->getAddRecordLink();
 			}
 			else
 			{

@@ -108,7 +108,11 @@
 				label="COM_FABRIK_COLUMNS_LABEL"
 				size="2"/>
 		
-			<field default="44%,44%" description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" name="group_column_widths" type="text"/>
+			<field name="group_column_widths" 
+				type="text"
+				default="" 
+				label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" 
+				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
 			
 			<field default="1" description="COM_FABRIK_SHOW_GROUP_DESC" label="COM_FABRIK_SHOW_GROUP_LABEL" name="repeat_group_show_first" type="list">
 					<option value="0">JNO</option>

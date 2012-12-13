@@ -166,7 +166,7 @@ function fabrikParseRoute($segments)
 		case 'details':
 			$vars['view'] = $segments[0];
 			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
 			break;
 		case 'table':
 		case 'list':

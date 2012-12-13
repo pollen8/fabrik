@@ -128,6 +128,9 @@ var FbRating = new Class({
 	},
 
 	setStars : function () {
+		if (typeOf(this.stars) === 'null') {
+			return;
+		}
 		this.stars.each(function (ii) {
 			var starScore = this._getRating(ii);
 			ii.src = starScore <= this.rating ? this.options.insrc : this.options.outsrc;
@@ -141,7 +144,10 @@ var FbRating = new Class({
 	update : function (val) {
 		this.rating = val.toInt().round();
 		this.field.value = this.rating;
-		this.element.getElement('.ratingScore').setText(val);
+		var s = this.element.getElement('.ratingScore');
+		if (typeOf(s) !== 'null') {
+			s.set('text', val);
+		}
 		this.setStars();
 	}
 });

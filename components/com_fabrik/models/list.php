@@ -518,8 +518,10 @@ class FabrikFEModelList extends JModelForm
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
-			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
+			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->query();
+
 		}
 	}
 
@@ -8295,7 +8297,7 @@ class FabrikFEModelList extends JModelForm
 				$qs['view'] = 'form';
 			}
 			$qs['formid'] = $this->getTable()->form_id;
-			$qs['rowid'] = '0';
+			$qs['rowid'] = '';
 
 			/* $$$ hugh - testing social profile session hash, which may get set by things like
 			 * the CB or JomSocial plugin.  Needed so things like the 'user' element can derive the

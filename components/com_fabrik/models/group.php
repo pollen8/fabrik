@@ -494,7 +494,7 @@ class FabrikFEModelGroup extends FabModel
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) $input->get('fabrik_show_in_list', array());
+		$showInList = $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->listQueryElements))
 		{

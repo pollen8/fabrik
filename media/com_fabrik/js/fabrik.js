@@ -226,11 +226,11 @@ var Loader = new Class({
 	}
 });
 
-require(['fab/icons', 'fab/icongen'], function () {
+/*require(['fab/icons', 'fab/icongen'], function () {
 	// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
 	// build its window.
 	Fabrik.iconGen = new IconGenerator({scale: 0.5});
-});
+});*/
 
 /**
  * Create the Fabrik name space
@@ -405,7 +405,7 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		// Make id the same as the add button so we reuse the same form.
 		var winOpts = {
-			'id': 'add.' + listRef,
+			'id': 'add.' + listRef + '.' + rowid,
 			'title': list.options.popup_edit_label,
 			'loadMethod': loadMethod,
 			'contentURL': url,
