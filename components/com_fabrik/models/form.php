@@ -4512,7 +4512,8 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						else
 						{
-							if (!$groupParams->get('repeat_group_show_first'))
+							//if (!$groupParams->get('repeat_group_show_first'))
+							if ($groupModel->canView() === false)
 							{
 								continue;
 							}
@@ -4645,7 +4646,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group->startHidden = $startHidden;
 
 			// Only create the group if there are some element inside it
-			if (count($aElements) != 0)
+			if (count($aElements) != 0 && $groupModel->canView() !== false)
 			{
 				// 28/01/2011 $$$rob and if it is published
 				$showGroup = (int) $groupParams->get('repeat_group_show_first');

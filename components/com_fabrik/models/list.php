@@ -1233,7 +1233,7 @@ class FabrikFEModelList extends JModelForm
 			$query->select('*')->from('#__menu');
 			foreach ($joinsToThisKey as $element)
 			{
-				$linkWhere[] = "link LIKE 'index.php?option=com_' . $package . '&view=list&listid=" . (int) $element->list_id . "%'";
+				$linkWhere[] = 'link LIKE "index.php?option=com_' . $package . '&view=list&listid=' . (int) $element->list_id . '%"';
 			}
 			$where = 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
 			$query->where($where);
@@ -2774,15 +2774,18 @@ class FabrikFEModelList extends JModelForm
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
-			$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel)
+			if ($groupModel->canView() !== false)
 			{
-				$method = 'getAsField_' . $this->outPutFormat;
-				if (!method_exists($elementModel, $method))
+				$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
 				{
-					$method = 'getAsField_html';
+					$method = 'getAsField_' . $this->outPutFormat;
+					if (!method_exists($elementModel, $method))
+					{
+						$method = 'getAsField_html';
+					}
+					$elementModel->$method($this->asfields, $this->fields);
 				}
-				$elementModel->$method($this->asfields, $this->fields);
 			}
 		}
 		/*temporaraily add in the db key so that the edit links work, must remove it before final return
@@ -5424,6 +5427,11 @@ class FabrikFEModelList extends JModelForm
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
+
+			if ($groupModel->canView() === false)
+			{
+				continue;
+			}
 			foreach ($elementModels as $key => $elementModel)
 			{
 				$element = $elementModel->getElement();

@@ -4845,6 +4845,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$s = '<ul>';
 			foreach ($o as $k => $v)
 			{
+				if (!is_string($v))
+				{
+					$v = json_encode($v);
+				}
 				$s .= '<li>' . $v . '</li>';
 			}
 			$s .= '</ul>';

@@ -89,7 +89,29 @@ class plgFabrik_ListCaneditrow extends plgFabrik_List
 				$field .= '_raw';
 			}
 			$value = $params->get('caneditrow_value');
-			return $data->$field == $value;
+			$operator = $params->get('operator', '=');
+			switch ($operator)
+			{
+				case '=':
+				default:
+					return $data->$field == $value;
+					break;
+				case "!=":
+					return $data->$field != $value;
+					break;
+			}
+
 		}
+	}
+
+	/**
+	 * Get the parameter name that defines the plugins acl access
+	 *
+	 * @return  string
+	 */
+
+	protected function getAclParam()
+	{
+		return 'caneditrow_access';
 	}
 }

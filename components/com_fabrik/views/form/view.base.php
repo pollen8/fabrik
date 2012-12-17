@@ -552,10 +552,14 @@ class FabrikViewFormBase extends JViewLegacy
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
-			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
+			/* $showGroup = $groupModel->getParams()->get('repeat_group_show_first');
 			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
 			{
 				// $$$ rob unpublished group so dont include the element js
+				continue;
+			} */
+			if (!$groupModel->canView())
+			{
 				continue;
 			}
 			$aObjs = array();
@@ -729,8 +733,9 @@ class FabrikViewFormBase extends JViewLegacy
 			? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
 			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button" name="delete" />' : '';
+		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
-			? '<input type="button" class="btn button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
+			? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{

@@ -151,9 +151,28 @@ var FbForm = new Class({
 				}.bind(this));
 			}
 		}.bind(this));
+		
+		this.watchGoBackButton();
 	},
 
-	watchAddOptions : function () {
+	// Go back button in ajax pop up window should close the window
+	
+	watchGoBackButton: function () {
+		if (this.options.ajax) {
+			var goback = this.getForm().getElement('input[name=Goback]');
+			if (typeOf(goback) === 'null') {
+				return;
+			}
+			goback.addEvent('click', function (e) {
+				e.stop();
+				if (Fabrik.Windows[this.options.fabrik_window_id]) {
+					Fabrik.Windows[this.options.fabrik_window_id].close();
+				}
+			}.bind(this));
+		}
+	},
+	
+	watchAddOptions: function () {
 		this.fx.addOptions = [];
 		this.getForm().getElements('.addoption').each(function (d) {
 			var a = d.getParent('.fabrikElementContainer').getElement('.toggle-addoption');
