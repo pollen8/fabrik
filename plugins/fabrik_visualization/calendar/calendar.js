@@ -147,6 +147,9 @@ var fabrikCalendar = new Class({
 	doPopupEvent: function (e, entry, label) {
 		var loc;
 		var oldactive = this.activeHoverEvent;
+		if (!this.popWin) {
+			return;
+		}
 		this.activeHoverEvent = e.target.hasClass('fabrikEvent') ? e.target : e.target.getParent('.fabrikEvent');
 		if (!entry._canDelete) {
 			this.popWin.getElement('.popupDelete').hide();
@@ -309,6 +312,9 @@ var fabrikCalendar = new Class({
 	},
 	
 	_makePopUpWin: function () {
+		if (this.options.readonly) {
+			return;
+		}
 		if (typeOf(this.popup) === 'null') {
 			var popLabel = new Element('div', {'class': 'popLabel'});
 			var del = new Element('div', {'class': 'popupDelete'}).adopt(
@@ -713,7 +719,9 @@ var fabrikCalendar = new Class({
 	
 	renderMonthView: function () {
 		var d, tr;
-		this.popWin.setStyle('opacity', 0);
+		if (this.popWin) {
+			this.popWin.setStyle('opacity', 0);
+		}
 		var firstDate = this._getFirstDayInMonthCalendar(new Date());
 		
 		// Barbara : reorganize days labels according to first day of week
