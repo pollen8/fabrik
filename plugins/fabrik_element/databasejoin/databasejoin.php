@@ -1194,10 +1194,27 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				}
 				$tmpids[] = $o;
 			}
+
 			$html[] = '<div class="fabrikHide">';
 			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
 			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $optsPerRow, $editable);
+
+
+
 			$html[] = '</div>';
+
+			if (empty($tmp))
+			{
+				$tmpids= array();
+				$o = new stdClass;
+				$o->text = 'dummy';
+				$o->value = 'dummy';
+				$tmpids[] = $o;
+				$tmp = $tmpids;
+				$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', 1, true);
+				$dummyId = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', 1, true);
+				$html[] = '<div class="chxTmplNode">' . $dummy . '</div><div class="chxTmplIDNode">' . $dummyId . '</div>';
+			}
 		}
 	}
 
