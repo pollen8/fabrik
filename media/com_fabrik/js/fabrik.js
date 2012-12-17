@@ -252,12 +252,14 @@ var Loader = new Class({
 				return this;
 			}
 			args = Array.from(args);
-	
+			
+			// An array of returned values from all events.
+			this.eventResults = [];
 			events[type].each(function (fn) {
 				if (delay) {
-					fn.delay(delay, this, args);
+					this.eventResults.push(fn.delay(delay, this, args));
 				} else {
-					fn.apply(this, args);
+					this.eventResults.push(fn.apply(this, args));
 				}
 			}, this);
 			return this;
