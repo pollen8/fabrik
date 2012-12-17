@@ -2085,8 +2085,15 @@ class FabrikModelList extends FabModelAdmin
 	public function loadFromFormId($formId)
 	{
 		$item = $this->getTable();
-		$item->load(array('form_id' => $formId));
+
+		/**
+		 * Not sure why but we need to populate and manually __state_set
+		 * Otherwise list.id reverts to the form's id and not the list id
+		 */
+		$this->populateState();
+		$this->__state_set = true;
 		$this->_table = $item;
+		$item->load(array('form_id' => $formId));
 		$this->setState('list.id', $item->id);
 		return $item;
 	}
@@ -2101,7 +2108,9 @@ class FabrikModelList extends FabModelAdmin
 
 	public function &getDb()
 	{
-		return FabrikWorker::getConnection($this->getItem())->getDb();
+		$listId = $this->getState('list.id');
+		$item = $this->getItem($listId);
+		return FabrikWorker::getConnection($item)->getDb();
 	}
 
 	/**
