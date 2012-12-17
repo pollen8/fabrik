@@ -310,14 +310,13 @@ if (typeof(Fabrik) === "undefined") {
 			return this;
 		}
 		args = Array.from(args);
-
+		this.eventResults = [];
 		events[type].each(function (fn) {
 			if (delay) {
-				fn.delay(delay, this, args);
+				this.eventResults.push(fn.delay(delay, this, args));
 			} else {
-				fn.apply(this, args);
+				this.eventResults.push(fn.apply(this, args));
 			}
-<<<<<<< HEAD
 		}, this);
 		return this;
 	};
@@ -336,31 +335,6 @@ if (typeof(Fabrik) === "undefined") {
 			var chx = r.getElement('input[type=checkbox][name*=id]');
 			if (typeOf(chx) !== 'null') {
 				chx.checked = true;
-=======
-			args = Array.from(args);
-			
-			// An array of returned values from all events.
-			this.eventResults = [];
-			events[type].each(function (fn) {
-				if (delay) {
-					this.eventResults.push(fn.delay(delay, this, args));
-				} else {
-					this.eventResults.push(fn.apply(this, args));
-				}
-			}, this);
-			return this;
-		};
-		
-		Fabrik.requestQueue = new RequestQueue();
-		
-		/** Globally observe delete links **/
-		
-		Fabrik.watchDelete = function (e, target) {
-			var l, ref, r;
-			r = e.target.getParent('.fabrik_row');
-			if (!r) {
-				r = Fabrik.activeRow;
->>>>>>> 10ae648ee91011a6688bc8cff20a0478ad03fd5b
 			}
 			ref = r.id.split('_');
 			ref = ref.splice(0, ref.length - 2).join('_');
