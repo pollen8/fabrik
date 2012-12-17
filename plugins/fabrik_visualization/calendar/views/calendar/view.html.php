@@ -49,7 +49,7 @@ class fabrikViewCalendar extends JView
 		$this->params = $params;
 		$this->containerId = $model->getJSRenderContext();
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $input->getInt('showfilters', (int) $params->get('show_filters')) === 1 ? 1 : 0;
 		$this->showTitle = $input->getInt('show-title', 1);
 		$this->filterFormURL = $this->get('FilterFormURL');
 
