@@ -272,6 +272,10 @@ section for dropdowns radio buttons etc**/
 	border: 1px dotted #ccc;
 }
 
+#{$view}_$c tr.fabrikSubGroup .fabrikErrorMessage {
+	padding: 0;
+}
+
 #{$view}_$c div.fabrikGroupRepeater{
 	position: absolute;
 	right: 10px;

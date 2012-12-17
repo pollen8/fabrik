@@ -88,7 +88,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			else
 			{
 				$userid = (int) $this->getValue($data, $repeatCounter);
-				$user = $userid === 0 ? JFactory::getUser() : JFactory::getUser($userid);
+
+				// On failed validtion value is 1 - user ids are always more than that so dont load userid=1 otherwise an error is generated
+				$user = $userid <= 1 ? JFactory::getUser() : JFactory::getUser($userid);
 			}
 		}
 		else
@@ -840,7 +842,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		static $displayMessage;
 		$params = $this->getParams();
 		$displayParam = $this->getValColumn();
-		return $user->get($displayParam);
+		return is_a($user, 'JUser') ? $user->get($displayParam) : false;
 	}
 
 	/**
