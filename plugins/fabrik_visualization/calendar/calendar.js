@@ -875,15 +875,17 @@ var fabrikCalendar = new Class({
 	
 	addEvForm: function (o)
 	{
+		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
 		url += '&visualizationid=' + this.options.calendarId;
+		url += '&fabrik_window_id=' + this.windowopts.id;
+		
 		if (typeof(this.doubleclickdate) !== 'undefined') {
 			url += '&start_date=' + this.doubleclickdate;
 		}
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
-		this.windowopts.id = 'addeventwin';
 		var f = this.options.filters;
 		this.windowopts.onContentLoaded = function (win)
 		{
@@ -1346,6 +1348,7 @@ var fabrikCalendar = new Class({
 		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
 		o.rowid = i[1];
 		o.listid = i[0];
+		e.stop();
 		this.addEvForm(o);
 	},
 	

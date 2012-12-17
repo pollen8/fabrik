@@ -121,6 +121,8 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$input->set('ajax', '1');
 		$link = 'index.php?option=com_' . $package . '&view=form&formid=' . $table->form_id . '&rowid=' . $rowid . '&tmpl=component&ajax=1';
 		$link .= '&jos_fabrik_calendar_events___visualization_id=' . JRequest::getInt('jos_fabrik_calendar_events___visualization_id');
+		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
+
 		$start_date = JRequest::getVar('start_date', '');
 		if (!empty($start_date))
 		{
