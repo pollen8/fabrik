@@ -3423,7 +3423,9 @@ class FabrikFEModelList extends JModelForm
 					* our connection details, or vice versa, which is not uncommon for 'locahost' setups,
 					* so at least I'll know what the problem is when they post in the forums!
 					*/
-					JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
+
+					// $$$rob - Unfortunaly the user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
+					//JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
 					$join->canUse = false;
 				}
 			}
