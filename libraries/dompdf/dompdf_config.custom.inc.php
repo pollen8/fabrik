@@ -27,4 +27,3 @@
 // DOMPDF authentication
 //define("DOMPDF_ADMIN_USERNAME", "user");
 //define("DOMPDF_ADMIN_PASSWORD", "password");
-
