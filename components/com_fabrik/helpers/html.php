@@ -782,44 +782,34 @@ EOD;
 		{
 			self::iniRequireJS();
 
+			$app = JFactory::getApplication();
 			$document = JFactory::getDocument();
+			$version = new JVersion;
+
+			// Only use template test for testing in 2.5 with my temp J bootstrap template.
+			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
+
 			$src = array();
+			JHtml::_('behavior.framework', true);
+
+			// Require js test - list with no cal loading ajax form with cal
+			JHTML::_('behavior.calendar');
+
 			if (self::inAjaxLoadedPage())
 			{
-				// 17/10/2011 (firefox) retesting loading this in ajax page as without it Class is not available? so form class doesnt load
-				JHtml::_('behavior.framework', true);
 
-				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
-				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
-				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
-
-				// require js test - list with no cal loading ajax form with cal
-				JHTML::_('behavior.calendar');
+				if (!$bootstrapped)
+				{
+					// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
+					JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
+					JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
+				}
 			}
 
 			if (!self::inAjaxLoadedPage())
 			{
-				$version = new JVersion;
-				$app = JFactory::getApplication();
-
-				// Only use template test for testing in 2.5 with my temp J bootstrap template.
-				$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
-
-				/*
-				 * Required so that any ajax loaded form can make use of it later on (otherwise stops js from working)
-				 * only load in main/first window - otherwise reloading it causes js errors related to calendar translations
-				 */
-				JHTML::_('behavior.calendar');
-
-				/*
-				 * Loading framework, if in ajax loaded page:
-				 * makes document.body not found for gmap element when
-				 * removes previously added window.events (17/10/2011 we're now using Fabrik.events - so this may no longer be an issue)
-				 */
-				JHtml::_('behavior.framework', true);
 
 				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
-
 
 				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
@@ -901,7 +891,8 @@ EOD;
 			$pathBits[] = "\n$reqK : '$repPath'";
 		}
 		$pathString = '{' . implode(',', $pathBits) . '}';
-		$document->addScriptDeclaration("require.config({
+		$document->addScriptDeclaration("console.log(require.config);
+				require.config({
 				baseUrl: '" . COM_FABRIK_LIVESITE . "',
 				paths: " . $pathString . "
 		});");

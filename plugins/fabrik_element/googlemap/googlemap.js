@@ -58,22 +58,18 @@ var FbGoogleMap = new Class({
 			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
 			document.body.appendChild(script);
 			Fabrik.googleMap = true;
+		} else {
+			window.fireEvent('google.map.loaded');
 		}
 	},
 	
 	initialize: function (element, options) {
+		this.mapMade = false;
 		this.parent(element, options);
-		this.loadScript();
-		// @TODO test google object when offline $type(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
+		
+		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
+		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
+		
 		window.addEvent('google.map.loaded', function () {
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
@@ -96,6 +92,18 @@ var FbGoogleMap = new Class({
 		window.addEvent('google.radius.loaded', function () {
 			this.makeRadius();
 		}.bind(this));
+		
+		this.loadScript();
+		// @TODO test google object when offline $type(google) isnt working
+		if (this.options.center === 1 && this.options.rowid === 0) {
+			if (geo_position_js.init()) {
+				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
+					enableHighAccuracy: true
+				});
+			} else {
+				fconsole('Geo locaiton functionality not available');
+			}
+		}
 	},
 
 	getValue: function () {
@@ -106,6 +114,10 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap: function () {
+		if (this.mapMade === true) {
+			return;
+		}
+		this.mapMade = true;
 		if (typeOf(this.element) === 'null') {
 			return;
 		}

@@ -51,9 +51,15 @@ var FbElement =  new Class({
 	attachedToForm: function ()
 	{
 		this.setElement();
-		this.alertImage = new Asset.image(this.form.options.images.alert);
-		this.alertImage.setStyle('cursor', 'pointer');
-		this.successImage = new Asset.image(this.form.options.images.action_check);
+		if (Fabrik.bootstrapped) {
+			this.alertImage = new Element('i.icon-warning');
+			this.successImage = new Element('i.icon-checkmark', {'styles': {'color': 'green'}});			
+		} else {
+			this.alertImage = new Asset.image(this.form.options.images.alert);
+			this.alertImage.setStyle('cursor', 'pointer');
+			this.successImage = new Asset.image(this.form.options.images.action_check);
+		}
+		
 		this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
 		//put ini code in here that can't be put in initialize()
 		// generally any code that needs to refer to  this.form, which
@@ -292,7 +298,7 @@ var FbElement =  new Class({
 	},
 	
 	setErrorMessage: function (msg, classname) {
-		var a;
+		var a, m;
 		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
 		var container = this.getContainer();
 		if (container === false) {
@@ -308,13 +314,20 @@ var FbElement =  new Class({
 		});
 		switch (classname) {
 		case 'fabrikError':
-			a = new Element('a', {'href': '#', 'title': msg, 'events': {
-				'click': function (e) {
-					e.stop();
-				}
-			}}).adopt(this.alertImage);
+			if (Fabrik.bootstrapped) {
+				m = new Element('div').set('html', msg).getChildren()[0];
+				a = new Element('div').adopt([this.alertImage, m]);
+			} else {
+				a = new Element('a', {'href': '#', 'title': msg, 'events': {
+					'click': function (e) {
+						e.stop();
+					}
+				}}).adopt(this.alertImage);
+				
+				Fabrik.tips.attach(a);
+			}
 			errorElements[0].adopt(a);
-			Fabrik.tips.attach(a);
+			container.removeClass('success').addClass('error');
 			break;
 		case 'fabrikSuccess':
 			errorElements[0].adopt(this.successImage);
@@ -342,12 +355,13 @@ var FbElement =  new Class({
 			fx.start({
 				'opacity': 1
 			}).chain(function () {
-				//only fade out if its still the success message
+				// Only fade out if its still the success message
 				if (container.hasClass('fabrikSuccess')) {
 					container.removeClass('fabrikSuccess');
 					this.start.delay(700, this, {
 						'opacity': 0,
 						'onComplete': function () {
+							container.addClass('success').removeClass('error');
 							parent.updateMainError();
 							classes.each(function (c) {
 								container.removeClass(c);

@@ -132,7 +132,8 @@ var ListForm = new Class({
 		
 	watchFieldList: function (name) {
 		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(select[name*=' + name + '])', function (e, target) {
-			this.updateJoinStatement(target.getParent('table').id.replace('join', ''));
+			var rowContainer = this.options.j3 ? 'tr' : 'table';
+			this.updateJoinStatement(target.getParent(rowContainer).id.replace('join', ''));
 		}.bind(this));
 	},
 	
@@ -226,8 +227,8 @@ var ListForm = new Class({
 				new Element('td').adopt([groupId, joinType]),
 				new Element('td').adopt(joinFrom),
 				new Element('td').adopt(tableJoin),
-				new Element('td').adopt(tableKey),
-				new Element('td').adopt(joinKey),
+				new Element('td.table_key').adopt(tableKey),
+				new Element('td.table_join_key').adopt(joinKey),
 				new Element('td').set('html', repeatRadio),
 				new Element('td').adopt(delButton)
 			]);
@@ -345,32 +346,36 @@ var ListForm = new Class({
 	},
 	
 	watchJoins: function () {
-		
+		var rowContainer = this.options.j3 ? 'tr' : 'table';
 		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_from)', function (e, target) {
-			var activeJoinCounter = target.getParent('table').id.replace('join', '');
+			var row = target.getParent(rowContainer);
+			var activeJoinCounter = row.id.replace('join', '');
 			this.updateJoinStatement(activeJoinCounter);
 			var table = target.get('value');
 			var conn = document.getElement('input[name*=connection_id]').get('value');
 	
+			var update = this.options.j3 ? row.getElement('td.table_key') : document.id('joinThisTableId' + activeJoinCounter);
 			var url = 'index.php?option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
 			var myAjax = new Request.HTML({
 				url: url,
 				method: 'post', 
-				update: document.id('joinThisTableId' + activeJoinCounter)
+				update: update
 			}).send();
 		}.bind(this));
 		
 		document.getElement('div[id^=table-sliders-data]').addEvent('change:relay(.join_to)', function (e, target) {
-			var activeJoinCounter = target.getParent('table').id.replace('join', '');
+			var row = target.getParent(rowContainer);
+			var activeJoinCounter = row.id.replace('join', '');
 			this.updateJoinStatement(activeJoinCounter);
 			var table = target.get('value');
 			var conn = document.getElement('input[name*=connection_id]').get('value');
 			var url = 'index.php?name=jform[params][table_join_key][]&option=com_fabrik&format=raw&task=list.ajax_loadTableDropDown&table=' + table + '&conn=' + conn;
-							
+						
+			var update = this.options.j3 ? row.getElement('td.table_join_key') : document.id('joinJoinTableId' + activeJoinCounter);
 			var myAjax = new Request.HTML({
 				url: url,
 				method: 'post', 
-				update: document.id('joinJoinTableId' + activeJoinCounter)
+				update: update
 			}).send();
 		}.bind(this));
 		this.watchFieldList('join_type');
@@ -380,13 +385,18 @@ var ListForm = new Class({
 	
 	updateJoinStatement: function (activeJoinCounter) {
 		var fields = document.getElements('#join' + activeJoinCounter + ' .inputbox');
+		fields = Array.from(fields);
 		var type = fields[0].get('value');
 		var fromTable = fields[1].get('value');
 		var toTable = fields[2].get('value');
 		var fromKey = fields[3].get('value');
 		var toKey = fields[4].get('value');
 		var str = type + " JOIN " + toTable + " ON " + fromTable + "." + fromKey + " = " + toTable + "." + toKey;
-		document.id('join-desc-' + activeJoinCounter).set('html', str);				
+		var desc = document.id('join-desc-' + activeJoinCounter);
+		if (typeOf(desc) !== 'null') {
+			desc.set('html', str);
+		}
+						
 	}
 
 });
