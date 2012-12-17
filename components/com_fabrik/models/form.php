@@ -1689,6 +1689,14 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
+					// $$$ hugh - need to re-index data
+					foreach ($data as &$d)
+					{
+						if (is_array($d))
+						{
+							$d = array_values($d);
+						}
+					}
 				}
 				else
 				{
