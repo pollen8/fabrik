@@ -1080,11 +1080,6 @@ EOD;
 		$input = $app->input;
 		$ext = self::isDebug() ? '.js' : '-min.js';
 
-		/* $paths = array(
-				'fab' => 'media/com_fabrik/js/',
-				'element' => 'plugins/fabrik_element/'
-				);
- */
 		$paths = self::requirePaths();
 		$files = (array) $file;
 
