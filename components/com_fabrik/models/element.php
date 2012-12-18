@@ -2446,6 +2446,14 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
 					}
+					elseif ($jsAct->js_e_condition == 'CONTAINS')
+					{
+						$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+					}
+					elseif ($jsAct->js_e_condition == '!CONTAINS')
+					{
+						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+					}
 					else
 					{
 						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";

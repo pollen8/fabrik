@@ -23,7 +23,7 @@ var fabrikAdminElement = new Class({
 		this.jsactions = ['focus', 'blur', 'abort', 'click', 'change', 'dblclick', 'keydown', 'keypress', 'keyup', 'mouseup', 'mousedown', 'mouseover', 'select', 'load', 'unload'];
 		this.eEvents = ['hide', 'show', 'fadeout', 'fadein', 'slide in', 'slide out', 'slide toggle', 'clear'];
 		this.eTrigger = this.options.elements;
-		this.eConditions = ['<', '<=', '==', '>=', '>', '!=', 'hidden', 'shown'];
+		this.eConditions = ['<', '<=', '==', '>=', '>', '!=', 'hidden', 'shown', 'CONTAINS', '!CONTAINS'];
 		if (typeOf(document.id('addJavascript')) === false) {
 			fconsole('add js button not found');
 		} else {
