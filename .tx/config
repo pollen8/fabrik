@@ -25,6 +25,7 @@ source_lang = en_GB
 trans.de-DE = administrator\components\com_fabrik\language\de-DE\de-DE.com_fabrik.sys.ini
 trans.el-GR = administrator\components\com_fabrik\language\el-GR\el-GR.com_fabrik.sys.ini
 trans.es-ES = administrator\components\com_fabrik\language\es-ES\es-ES.com_fabrik.sys.ini
+trans.et-EE = administrator\components\com_fabrik\language\et-EE\et-EE.com_fabrik.sys.ini
 trans.fr-FR = administrator\components\com_fabrik\language\fr-FR\fr-FR.com_fabrik.sys.ini
 trans.it-IT = administrator\components\com_fabrik\language\it-IT\it-IT.com_fabrik.sys.ini
 trans.pt-BR = administrator\components\com_fabrik\language\pt-BR\pt-BR.com_fabrik.sys.ini
