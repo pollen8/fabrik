@@ -84,8 +84,8 @@ var FbListFilter = new Class({
 					loadMethod: 'xhr',
 					evalScripts: true,
 					contentURL: url,
-					width: 690,
-					height: 300,
+					width: 710,
+					height: 340,
 					y: this.options.popwiny,
 					onContentLoaded: function (win) {
 						var list = Fabrik.blocks['list_' + this.options.ref];

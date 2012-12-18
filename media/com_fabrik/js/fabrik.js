@@ -11,6 +11,7 @@
  *  fabriktables.js
  *  
  */
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
@@ -226,11 +227,11 @@ var Loader = new Class({
 	}
 });
 
-require(['fab/icons', 'fab/icongen'], function () {
+/*require(['fab/icons', 'fab/icongen'], function () {
 	// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
 	// build its window.
 	Fabrik.iconGen = new IconGenerator({scale: 0.5});
-});
+});*/
 
 /**
  * Create the Fabrik name space
@@ -244,7 +245,7 @@ if (typeof(Fabrik) === "undefined") {
 			var pEl = document.getElement(popover);
 			jQuery(popover).popover('hide');
 			
-			if (pEl.get('tag') === 'input') {
+			if (typeOf(pEl) !== 'null' && pEl.get('tag') === 'input') {
 				pEl.checked = false;
 			}
 		});
@@ -306,16 +307,16 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.fireEvent = function (type, args, delay) {
 		var events = Fabrik.events;
+		this.eventResults = [];
 		if (!events || !events[type]) {
 			return this;
 		}
 		args = Array.from(args);
-
 		events[type].each(function (fn) {
 			if (delay) {
-				fn.delay(delay, this, args);
+				this.eventResults.push(fn.delay(delay, this, args));
 			} else {
-				fn.apply(this, args);
+				this.eventResults.push(fn.apply(this, args));
 			}
 		}, this);
 		return this;
@@ -405,7 +406,7 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		// Make id the same as the add button so we reuse the same form.
 		var winOpts = {
-			'id': 'add.' + listRef,
+			'id': 'add.' + listRef + '.' + rowid,
 			'title': list.options.popup_edit_label,
 			'loadMethod': loadMethod,
 			'contentURL': url,

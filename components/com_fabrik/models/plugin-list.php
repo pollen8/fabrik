@@ -116,13 +116,26 @@ class plgFabrik_List extends FabrikPlugin
 			FabrikHelperHTML::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
-			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
+			$imageName = $this->getImageName();
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
-			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' listplugin" title="' . $label . '">' . $img . '<span>' . $label . '</span></a>';
+			$label = FabrikWorker::j3() ? $label : '<span>' . $label . '</span>';
+			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' btn listplugin" title="' . $label . '">' . $img . $label . '</a>';
 		}
 		return '';
 	}
 
+	/**
+	 * Get button image
+	 *
+	 * @since   3.1b
+	 *
+	 * @return   string  image
+	 */
+
+	protected function getImageName()
+	{
+		return $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
+	}
 	/**
 	 * Build an array of properties to ini the plugins JS objects
 	 *
@@ -242,7 +255,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function onGetFilterKey()
 	{
-		$this->filterKey = JString::strtolower(str_replace('plgFabrik_List', '', get_class($this)));
+		$this->filterKey = JString::strtolower(str_replace('PlgFabrik_List', '', get_class($this)));
 		return true;
 	}
 
@@ -328,6 +341,32 @@ class plgFabrik_List extends FabrikPlugin
 		$p = $this->onGetFilterKey_result();
 		$file = 'plugins/fabrik_list/' . $p . '/' . $p . '.js';
 		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;
+	}
+
+	/**
+	 * Shouldnt do anything here - but needed for the result return
+	 *
+	 * @since   3.0b
+	 *
+	 * @return  void
+	 */
+
+	public function requireJSShim(){}
+
+	/**
+	 * Get the shim require.js logic for loading the list class
+	 *
+	 * @since   3.0b
+	 *
+	 * @return  object  shim
+	 */
+
+	public function requireJSShim_result()
+	{
+		$deps = new stdClass;
+		$deps->deps = array('fab/list-plugin');
+		$shim['list/' . $this->filterKey . '/' . $this->filterKey] = $deps;
+		return $shim;
 	}
 
 }

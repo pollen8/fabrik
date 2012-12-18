@@ -43,6 +43,11 @@ class FabrikAdminViewGroup extends JViewLegacy
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
+		FabrikHelperHTML::script($srcs);
+
 		parent::display($tpl);
 	}
 

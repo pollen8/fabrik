@@ -29,7 +29,12 @@ class FabrikAdminViewForm extends JViewLegacy
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
@@ -46,6 +51,18 @@ class FabrikAdminViewForm extends JViewLegacy
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('fab/fabrik');
+		$shim['admin/pluginmanager'] = $dep;
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 

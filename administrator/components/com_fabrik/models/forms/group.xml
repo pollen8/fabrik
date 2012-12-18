@@ -46,13 +46,19 @@
 		
 		<fieldset name="details2">
 		
-		<field name="intro"
-			type="editor"
-			filter="FabrikAdminHelper::filterText"
-			rows="6"
-			cols="20"
-			label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
-			description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
+			<field name="access" 
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_GROUP_ACCESS_LABEL" 
+				description="COM_FABRIK_FIELD_GROUP_ACCESS_DESC" />
+				
+			<field name="intro"
+				type="editor"
+				filter="FabrikAdminHelper::filterText"
+				rows="6"
+				cols="20"
+				label="COM_FABRIK_FIELD_GROUP_INTRO_LABEL"
+				description="COM_FABRIK_FIELD_GROUP_INTRO_DESC" />
 			
 		</fieldset>
 	
@@ -108,7 +114,11 @@
 				label="COM_FABRIK_COLUMNS_LABEL"
 				size="2"/>
 		
-			<field default="44%,44%" description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" name="group_column_widths" type="text"/>
+			<field name="group_column_widths" 
+				type="text"
+				default="" 
+				label="COM_FABRIK_FIELD_COLUMN_WIDTHS_LABEL" 
+				description="COM_FABRIK_FIELD_COLUMN_WIDTHS_DESC" />
 			
 			<field default="1" description="COM_FABRIK_SHOW_GROUP_DESC" label="COM_FABRIK_SHOW_GROUP_LABEL" name="repeat_group_show_first" type="list">
 					<option value="0">JNO</option>

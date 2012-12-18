@@ -303,12 +303,13 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get an array of plugin js classes to load
 	 *
-	 * @param   array  &$r  previously loaded classes
+	 * @param   array  &$r    Previously loaded classes
+	 * @param   array  $shim  Shim object to ini require.js
 	 *
 	 * @return  array
 	 */
 
-	public function getPluginJsClasses(&$r = array())
+	public function getPluginJsClasses(&$r = array(), &$shim = array())
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
@@ -328,6 +329,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				$r[] = $f;
 			}
+		}
+		$pluginManager->runPlugins('requireJSShim', $this, 'list');
+		 foreach ($pluginManager->data as $ashim)
+		{
+			$shim = array_merge($shim, $ashim);
 		}
 		return $r;
 	}
@@ -518,8 +524,10 @@ class FabrikFEModelList extends JModelForm
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
-			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
+			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
+			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->query();
+
 		}
 	}
 
@@ -1131,7 +1139,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if (trim($b) !== '')
 					{
-						$row->fabrik_actions[] = $js ? $b : '<li>' . $b . '</li>';
+						$row->fabrik_actions[] = $j3 ? $b : '<li>' . $b . '</li>';
 					}
 				}
 				if (!empty($row->fabrik_actions))
@@ -1231,7 +1239,7 @@ class FabrikFEModelList extends JModelForm
 			$query->select('*')->from('#__menu');
 			foreach ($joinsToThisKey as $element)
 			{
-				$linkWhere[] = "link LIKE 'index.php?option=com_' . $package . '&view=list&listid=" . (int) $element->list_id . "%'";
+				$linkWhere[] = 'link LIKE "index.php?option=com_' . $package . '&view=list&listid=' . (int) $element->list_id . '%"';
 			}
 			$where = 'type = "component" AND (' . implode(' OR ', $linkWhere) . ')';
 			$query->where($where);
@@ -2772,15 +2780,18 @@ class FabrikFEModelList extends JModelForm
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
-			$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel)
+			if ($groupModel->canView() !== false)
 			{
-				$method = 'getAsField_' . $this->outPutFormat;
-				if (!method_exists($elementModel, $method))
+				$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
 				{
-					$method = 'getAsField_html';
+					$method = 'getAsField_' . $this->outPutFormat;
+					if (!method_exists($elementModel, $method))
+					{
+						$method = 'getAsField_html';
+					}
+					$elementModel->$method($this->asfields, $this->fields);
 				}
-				$elementModel->$method($this->asfields, $this->fields);
 			}
 		}
 		/*temporaraily add in the db key so that the edit links work, must remove it before final return
@@ -3418,7 +3429,9 @@ class FabrikFEModelList extends JModelForm
 					* our connection details, or vice versa, which is not uncommon for 'locahost' setups,
 					* so at least I'll know what the problem is when they post in the forums!
 					*/
-					JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
+
+					// $$$rob - Unfortunaly the user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
+					//JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
 					$join->canUse = false;
 				}
 			}
@@ -5063,16 +5076,10 @@ class FabrikFEModelList extends JModelForm
 	public function getAdvancedSearchLink()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($params->get('advanced-filter', '0'))
 		{
-			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
-
-			$url .= '&amp;tkn=' . JSession::getFormToken();
+			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
@@ -5082,6 +5089,18 @@ class FabrikFEModelList extends JModelForm
 		{
 			return '';
 		}
+	}
+
+	public function getAdvancedSearchURL()
+	{
+		$app = JFactory::getApplication();
+		$table = $this->getTable();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+				. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
+
+		$url .= '&amp;tkn=' . JSession::getFormToken();
+		return $url;
 	}
 
 	/**
@@ -5107,9 +5126,9 @@ class FabrikFEModelList extends JModelForm
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
-				'class="inputbox key" size="1" ', 'value', 'text');
+				'class="inputbox key input-small" size="1" ', 'value', 'text');
 		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_' . $listRef . '][condition][]',
-				'class="inputbox" size="1" ', 'value', 'text');
+				'class="inputbox input-small" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->listref = $listRef;
 		$opts->ajax = $this->isAjax();
@@ -5296,8 +5315,8 @@ class FabrikFEModelList extends JModelForm
 				$input->set($lineElname, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
 				$input->set($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ', 'value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key input-small" size="1" ', 'value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox input-small" size="1" ', 'value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type,
 						'grouped' => $grouped);
 				$counter++;
@@ -5422,6 +5441,11 @@ class FabrikFEModelList extends JModelForm
 			$groupHeadingKey = $w->parseMessageForPlaceHolder($groupModel->getGroup()->label, array(), false);
 			$groupHeadings[$groupHeadingKey] = 0;
 			$elementModels = $groupModel->getPublishedListElements();
+
+			if ($groupModel->canView() === false)
+			{
+				continue;
+			}
 			foreach ($elementModels as $key => $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -8295,7 +8319,7 @@ class FabrikFEModelList extends JModelForm
 				$qs['view'] = 'form';
 			}
 			$qs['formid'] = $this->getTable()->form_id;
-			$qs['rowid'] = '0';
+			$qs['rowid'] = '';
 
 			/* $$$ hugh - testing social profile session hash, which may get set by things like
 			 * the CB or JomSocial plugin.  Needed so things like the 'user' element can derive the

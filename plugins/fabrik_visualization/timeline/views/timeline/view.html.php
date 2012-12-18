@@ -71,6 +71,7 @@ class fabrikViewTimeline extends JViewLegacy
 		$srcs[] = 'media/com_fabrik/js/encoder.js';
 
 		$js .= $model->getFilterJs();
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs, $js);
 
 		JText::script('COM_FABRIK_ADVANCED_SEARCH');

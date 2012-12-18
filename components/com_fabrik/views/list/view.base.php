@@ -49,12 +49,19 @@ class FabrikViewListBase extends JViewLegacy
 			FabrikHelperHTML::slimbox();
 		}
 		$frameworkJsFiles = FabrikHelperHTML::framework();
-		$src = $model->getPluginJsClasses($frameworkJsFiles);
-		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
+		$shim = array();
+
+		$dep = new stdClass;
+		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
+		$shim['fab/list'] = $dep;
+
+
+		$src = $model->getPluginJsClasses($frameworkJsFiles, $shim);
+		//array_unshift($src, 'media/com_fabrik/js/listfilter.js');
 		array_unshift($src, 'media/com_fabrik/js/list.js');
-		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
+		array_unshift($src, 'media/com_fabrik/js/window.js');
+		//array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 		$model->getCustomJsAction($src);
-		$src[] = 'media/com_fabrik/js/encoder.js';
 
 		$tmpl = $this->get('tmpl');
 		$this->tmpl = $tmpl;
@@ -112,7 +119,7 @@ class FabrikViewListBase extends JViewLegacy
 			$formEls[] = $oo;
 
 		}
-		$opts->formels = $formEls;//$elementsNotInTable;
+		$opts->formels = $formEls;
 		$opts->actionMethod = $model->actionMethod();
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
@@ -238,6 +245,10 @@ class FabrikViewListBase extends JViewLegacy
 		$model = $this->getModel();
 		$script[] = $model->getElementJs($src);
 		$script = implode("\n", $script);
+
+		FabrikHelperHTML::iniRequireJS($shim);
+
+		//FabrikHelperHTML::script($src, $script);
 		FabrikHelperHTML::script($src, $script);
 
 		// Reset data back to original settings
@@ -318,10 +329,11 @@ class FabrikViewListBase extends JViewLegacy
 		$this->rows = $data;
 		reset($this->rows);
 
-		// Cant use numeric key '0' as group by uses groupd name as key
+		// Cant use numeric key '0' as group by uses grouped name as key
 		$firstRow = current($this->rows);
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		$this->advancedSearch = $this->get('AdvancedSearchLink');
+		$this->advancedSearchURL = $model->getAdvancedSearchURL();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
@@ -345,7 +357,8 @@ class FabrikViewListBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->setTitle($w, $params, $model);
-		/** depreciated (keep incase ppl use them in old tmpls**/
+
+		// Depreciated (keep in case ppl use them in old tmpls)
 		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
 		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
@@ -353,7 +366,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->table->id = $item->id;
 		$this->table->renderid = $this->get('RenderContext');
 		$this->table->db_table_name = $item->db_table_name;
-		/** end **/
+
+		// End deprecated
 		$this->list = $this->table;
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
@@ -388,7 +402,7 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			if ($params->get('show-table-add', 1))
 			{
-				$this->addRecordLink = $this->get('AddRecordLink');
+				$this->addRecordLink = $model->getAddRecordLink();
 			}
 			else
 			{
@@ -800,12 +814,12 @@ class FabrikViewListBase extends JViewLegacy
 		$input = $app->input;
 		$model = $this->getModel();
 		$id = $model->getState('list.id');
-		$this->tmpl = $this->get('tmpl');
+		$this->tmpl = $model->getTmpl();
 		$model->setRenderContext($id);
 		$this->listref = $model->getRenderContext();
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
-		$this->rows = $this->get('advancedSearchRows');
+		$this->rows = $model->getAdvancedSearchRows();
 		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package, 'string');
 		$this->action = $action;
 		$this->listid = $id;

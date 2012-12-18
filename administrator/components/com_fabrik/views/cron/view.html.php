@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -27,6 +27,10 @@ class FabrikAdminViewCron extends JViewLegacy
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -46,6 +50,28 @@ class FabrikAdminViewCron extends JViewLegacy
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/cron/admincron.js';
+
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('admin/pluginmanager');
+		$shim['admin/cron/admincron'] = $dep;
+
+
+		$opts = new stdClass;
+		$opts->plugin = $this->item->plugin;
+
+		$js = "\tvar options = ".json_encode($opts).";\n";
+		$js .= "\tvar controller = new CronAdmin(options);";
+
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($srcs, $js);
+
 		parent::display($tpl);
 	}
 

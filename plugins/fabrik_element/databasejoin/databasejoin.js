@@ -128,6 +128,9 @@ var FbDatabasejoin = new Class({
 			chxed = (v === this.options.value) ? true : false;
 			subOpts = this.element.getElements('> .fabrik_subelement');
 			opt = this.getCheckboxTmplNode().clone();
+			var i = opt.getElement('input');
+			i.name = i.name.replace(/\[\d+\]$/, '[' + subOpts.length + ']');
+			
 			opt.getElement('span').set('text', l);
 			opt.getElement('input').set('value', v);
 			last = subOpts.length === 0 ? this.element : subOpts.getLast();
@@ -141,6 +144,10 @@ var FbDatabasejoin = new Class({
 			newid.getElement('input').set('value', 0); // to add a new join record set to 0
 			last = ids.length === 0 ? this.element.getElement('.fabrikHide') : ids.getLast();
 			newid.inject(last, injectWhere);
+			
+			i = newid.getElement('input');
+			// Update end [n]
+			i.name = i.name.replace(/\[\d+\]$/, '[' + ids.length + ']');
 			newid.getElement('input').checked = chxed;
 			
 			break;
@@ -176,7 +183,12 @@ var FbDatabasejoin = new Class({
 		if (!this.chxTmplIDNode && this.options.displayType === 'checkbox')
 		{
 			var chxs = this.element.getElements('.fabrikHide > .fabrik_subelement');
-			this.chxTmplIDNode = chxs.getLast().clone();
+			if (chxs.length === 0) {
+				this.chxTmplIDNode = this.element.getElement('.chxTmplIDNode').getChildren()[0].clone();
+				this.element.getElement('.chxTmplIDNode').destroy();
+			} else {
+				this.chxTmplIDNode = chxs.getLast().clone();
+			}
 		}
 		return this.chxTmplIDNode;
 	},
@@ -192,8 +204,13 @@ var FbDatabasejoin = new Class({
 		if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 		{
 			var chxs = this.element.getElements('> .fabrik_subelement');
+			if (chxs.length === 0) {
+				this.chxTmplNode = this.element.getElement('.chxTmplNode').getChildren()[0].clone();
+				this.element.getElement('.chxTmplNode').destroy();
+			} else {
+				this.chxTmplNode = chxs.getLast().clone();
+			}
 			
-			this.chxTmplNode = chxs.getLast().clone();
 		}
 		return this.chxTmplNode;
 	},

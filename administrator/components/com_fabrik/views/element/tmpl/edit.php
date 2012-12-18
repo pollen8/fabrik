@@ -19,14 +19,6 @@ JHtml::_('behavior.framework', true);
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-$srcs = FabrikHelperHTML::framework();
-$srcs[] = 'media/com_fabrik/js/mootools-ext.js';
-$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-$srcs[] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
-
-FabrikHelperHTML::script($srcs, $this->js);
-
 JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 ?>
 

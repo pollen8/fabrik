@@ -3116,7 +3116,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Get a readonly value for a filter, uses _getROElement() to asscertain value, adds between x & y if ranged values
+	 * Get a readonly value for a filter, uses getROElement() to asscertain value, adds between x & y if ranged values
 	 *
 	 * @param    mixed  $data  String or array of filter value(s)
 	 *
@@ -3132,13 +3132,13 @@ class PlgFabrik_Element extends FabrikPlugin
 			$return = array();
 			foreach ($data as $d)
 			{
-				$return[] = $this->_getROElement($d);
+				$return[] = $this->getROElement($d);
 
 			}
 			return JText::_('COM_FABRIK_BETWEEN') . '<br />' . implode('<br />' . JText::_('COM_FABRIK_AND') . "<br />", $return);
 
 		}
-		return $this->_getROElement($data);
+		return $this->getROElement($data);
 	}
 
 	/**
@@ -4480,20 +4480,29 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * Get the class to manage the form element
-	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
 	 *
 	 * @return void
 	 */
 
-	public function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
+		$name = $this->getElement()->plugin;
+
+
+		$shimKey = 'element/' . $name . '/' . $name;
+
+		if (!array_key_exists($shimKey, $shim))
+		{
+			$s = new stdClass;
+			$s->deps = array('fab/element');
+			$shim['element/' . $name . '/' . $name] = $s;
+		}
+
 		static $elementclasses;
 		if (!isset($elementclasses))
 		{
@@ -4502,15 +4511,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		// Load up the default scipt
 		if ($script == '')
 		{
-			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
-			///$name = $this->getElement()->plugin;
-			//$script = 'element/' . $name . '/' . $name . '.js';
+			$script = 'plugins/fabrik_element/' . $name . '/' . $name . '.js';
 		}
 		if (empty($elementclasses[$script]))
 		{
 			$srcs[] = $script;
 			$elementclasses[$script] = 1;
 		}
+
 	}
 
 	/**
@@ -4845,6 +4853,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$s = '<ul>';
 			foreach ($o as $k => $v)
 			{
+				if (!is_string($v))
+				{
+					$v = json_encode($v);
+				}
 				$s .= '<li>' . $v . '</li>';
 			}
 			$s .= '</ul>';

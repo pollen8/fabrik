@@ -15,10 +15,14 @@ class FabrikViewList extends JViewLegacy
 {
 
 	/**
-	 * display a json object representing the table data.
+	 * Display the template
+	 *
+	 * @param   sting  $tpl  template
+	 *
+	 * @return void
 	 */
 
-	function display()
+	function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -47,7 +51,10 @@ class FabrikViewList extends JViewLegacy
 				{
 					$o->data = $data[$groupk][$i];
 				}
-				$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
+				if (array_key_exists($groupk, $model->groupTemplates))
+				{
+					$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
+				}
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;
@@ -78,7 +85,8 @@ class FabrikViewList extends JViewLegacy
 		$d = array('id' => $table->id, 'listRef' => $input->get('listref'), 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
 			'headings' => $this->headings, 'formid' => $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
-		$d['nav'] = $nav->getProperties();
+
+		$d['nav'] = get_object_vars($nav);
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
 

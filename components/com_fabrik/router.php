@@ -155,7 +155,8 @@ function fabrikParseRoute($segments)
 	$view = $segments[0];
 	if (strstr($view, '.'))
 	{
-		$view = array_shift(explode('.', $view));
+		$bits = explode('.', $view);
+		$view = array_shift($bits);
 	}
 
 	// View (controller not passed into segments)
@@ -165,7 +166,7 @@ function fabrikParseRoute($segments)
 		case 'details':
 			$vars['view'] = $segments[0];
 			$vars['formid'] = JArrayHelper::getValue($segments, 1, 0);
-			$vars['rowid'] = JArrayHelper::getValue($segments, 2, 0);
+			$vars['rowid'] = JArrayHelper::getValue($segments, 2, '');
 			break;
 		case 'table':
 		case 'list':

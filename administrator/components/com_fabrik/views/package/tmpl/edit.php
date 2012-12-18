@@ -16,24 +16,6 @@ JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
-
-$fbConfig = JComponentHelper::getParams('com_fabrik');
-$srcs = FabrikHelperHTML::framework();
-FabrikHelperHTML::mocha();
-$srcs[] = 'media/com_fabrik/js/lib/art.js';
-$srcs[] = 'media/com_fabrik/js/icons.js';
-$srcs[] = 'media/com_fabrik/js/icongen.js';
-$srcs[] = 'media/com_fabrik/js/history.js';
-$srcs[] = 'media/com_fabrik/js/keynav.js';
-$srcs[] = 'media/com_fabrik/js/tabs.js';
-$srcs[] = 'media/com_fabrik/js/pages.js';
-$srcs[] = 'media/com_fabrik/js/inline.js';
-$srcs[] = 'media/com_fabrik/js/canvas.js';
-$srcs[] = 'administrator/components/com_fabrik/views/package/adminpackage.js';
-
-
-FabrikHelperHTML::script($srcs, $this->js);
-
 JHTML::stylesheet('media/com_fabrik/css/package.css');
 ?>
 

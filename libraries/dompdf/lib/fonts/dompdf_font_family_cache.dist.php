@@ -108,8 +108,8 @@
     'italic' => DOMPDF_FONT_DIR . 'DejaVuSerifCondensed-Italic',
     'normal' => DOMPDF_FONT_DIR . 'DejaVuSerifCondensed',
   ),
-  'titillium maps' => 
+  'icomoon' => 
   array (
-    'normal' => DOMPDF_FONT_DIR . '9d28e5bd805b98bf68f9b2636f5753df',
+    'normal' => DOMPDF_FONT_DIR . '2518bbf6f6d48ffd8091d75e66e6bc7e',
   ),
 ) ?>

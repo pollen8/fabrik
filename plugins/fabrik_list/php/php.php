@@ -44,6 +44,23 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	}
 
 	/**
+	 * Get button image
+	 *
+	 * @since   3.1b
+	 *
+	 * @return   string  image
+	 */
+
+	protected function getImageName()
+	{
+		$img = parent::getImageName();
+		if (FabrikWorker::j3() && $img === 'php.png') {
+			$img = 'lightning.png';
+		}
+		return $img;
+	}
+
+	/**
 	 * Get the button label
 	 *
 	 * @return  string

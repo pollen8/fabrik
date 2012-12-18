@@ -17,19 +17,6 @@ JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
-$fbConfig = JComponentHelper::getParams('com_fabrik');
-$srcs = FabrikHelperHTML::framework();
-$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-$srcs[] = 'administrator/components/com_fabrik/views/cron/admincron.js';
-
-$opts = new stdClass;
-$opts->plugin = $this->item->plugin;
-
-$js = "\tvar options = ".json_encode($opts).";\n";
-$js .= "\tvar controller = new CronAdmin(options);";
-
-FabrikHelperHTML::script($srcs, $js);
 
 ?>
 

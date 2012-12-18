@@ -17,9 +17,6 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-$fbConfig = JComponentHelper::getParams('com_fabrik');
-$srcs = FabrikHelperHTML::framework();
-FabrikHelperHTML::script($srcs);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

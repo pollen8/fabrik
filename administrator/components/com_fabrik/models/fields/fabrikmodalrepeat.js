@@ -36,16 +36,17 @@ var FabrikModalRepeat = new Class({
 		this.el.id = this.elid + '-table';
 		this.field = document.id(this.field);
 		this.button.addEvent('click', function (e) {
+			e.stop();
 			if (!this.win) {
 				this.win = new Element('div', {'styles': {'padding': '5px', 'background-color': '#fff', 'display': 'none', 'z-index': 9999}}).inject(document.body);
 				this.win.adopt(this.el);
-				var close = new Element('button.btn.button').set('text', 'close');
+				var close = new Element('button.btn.button.btn-primary').set('text', 'close');
 				close.addEvent('click', function (e) {
 					e.stop();
 					this.store();
 					this.close();
 				}.bind(this));
-				var controls = new Element('div.controls', {'styles': {'text-align': 'right'}}).adopt(close);
+				var controls = new Element('div.controls.form-actions', {'styles': {'text-align': 'right', 'margin-bottom': 0}}).adopt(close);
 				this.win.adopt(controls);
 				this.win.position();
 				this.mask = new Mask(document.body, {style: {'background-color': '#000', 'opacity': 0.4, 'z-index': 9998}});
@@ -65,7 +66,7 @@ var FabrikModalRepeat = new Class({
 		var size = this.el.getDimensions(true);
 		var wsize = this.win.getDimensions(true);
 		var y = setup ? wsize.y : size.y + 30;
-		this.win.setStyles({'width': size.x + 'px', 'height': (y) + 'px'});
+		//this.win.setStyles({'width': size.x + 'px', 'height': (y) + 'px'});
 	},
 	
 	close: function () {
@@ -184,10 +185,11 @@ var FabrikModalRepeat = new Class({
 				});
 			});
 		}
+		this.tmpl = this.content.getElement('tbody').getElements('tr').getLast();
 		if (rowcount === 0) {
-			this.tmpl = tr;
 			tr.dispose();
 		}
+		
 	},
 	
 	findTr: function (e) {

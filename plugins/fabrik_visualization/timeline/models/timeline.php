@@ -177,7 +177,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$className = JArrayHelper::getValue($classNames, $c);
 		$eval = JArrayHelper::getValue($evals, $c);
 
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
 
 		$eventdata = array();
@@ -279,7 +279,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$totals = array();
 		foreach ($lists as $listid)
 		{
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
+			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$totals[$listid] = $listModel->getTotalRecords();
 		}

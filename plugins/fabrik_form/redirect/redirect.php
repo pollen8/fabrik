@@ -47,20 +47,15 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 		$this->formModel = $formModel;
 		$w = new FabrikWorker;
-		$this->data = new stdClass;
 
-		$this->data->append_jump_url = $params->get('append_jump_url');
-		$this->data->save_in_session = $params->get('save_insession');
 		$form = $formModel->getForm();
 
-		/* $$$ hugh - think we need to switcheroonie the order, otherwise _formData takes
-		 * precedence over getEmailData(), which I think kind of defeats the object of
-		 * the exercisee?
-		 */
-		$this->data = array_merge($this->getEmailData(), $formModel->formData);
 		$this->data = array_merge($formModel->formData, $this->getEmailData());
-		$this->data->jump_page = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
-		$this->data->thanks_message = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
+
+		$this->data['append_jump_url'] = $params->get('append_jump_url');
+		$this->data['save_in_session'] = $params->get('save_insession');
+		$this->data['jump_page'] = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
+		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params))
 		{
 			// Clear any sessoin redirects
@@ -78,12 +73,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$this->_storeInSession($formModel);
 		$sshowsystemmsg[$this->renderOrder] = true;
 		$session->set($context . 'showsystemmsg', $sshowsystemmsg);
-		if ($this->data->jump_page != '')
+		if ($this->data['jump_page'] != '')
 		{
-			$this->data->jump_page = $this->buildJumpPage($formModel);
+			$this->data['jump_page'] = $this->buildJumpPage($formModel);
 
 			// 3.0 ajax/module redirect logic handled in form controller not in plugin
-			$surl[$this->renderOrder] = $this->data->jump_page;
+			$surl[$this->renderOrder] = $this->data['jump_page'];
 			$session->set($context . 'url', $surl);
 			$session->set($context . 'redirect_content_how', $params->get('redirect_content_how', 'popup'));
 			$session->set($context . 'redirect_content_popup_width', $params->get('redirect_content_popup_width', '300'));
@@ -105,7 +100,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			$session->set($context . 'url', $surl);
 		}
 
-		$smsg[$this->renderOrder] = $this->data->thanks_message;
+		$smsg[$this->renderOrder] = $this->data['thanks_message'];
 		$session->set($context . 'msg', $smsg);
 		return true;
 	}
@@ -178,6 +173,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		// If we are applying the form don't run redirect
 		if (is_array($formModel->formData) && array_key_exists('apply', $formModel->formData))
 		{
@@ -194,16 +190,16 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		}
 		else
 		{
-			if (!empty($this->data->jump_page))
+			if (!empty($this->data['jump_page']))
 			{
 				// Ajax form submit load redirect page in mocha window
-				if (strstr($this->data->jump_page, "?"))
+				if (strstr($this->data['jump_page'], "?"))
 				{
-					$this->data->jump_page .= "&tmpl=component";
+					$this->data['jump_page'] .= "&tmpl=component";
 				}
 				else
 				{
-					$this->data->jump_page .= "?tmpl=component";
+					$this->data['jump_page'] .= "?tmpl=component";
 				}
 				return false;
 			}
@@ -230,10 +226,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		 *  if there is still an issue it would make a lot more sense to manually set the element's table model rather than calling
 		 * force in the getFullName() code - as doing so increases the table query count by a magnitude of 2
 		 */
-		$jumpPage = $this->data->jump_page;
+		$jumpPage = $this->data['jump_page'];
 		$reserved = array('format', 'view', 'layout', 'task');
 		$queryvars = array();
-		if ($this->data->append_jump_url == '1')
+		if ($this->data['append_jump_url'] == '1')
 		{
 			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $group)
@@ -321,7 +317,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
-		if ($this->data->save_in_session == '1')
+		if ($this->data['save_in_session'] == '1')
 		{
 			$groups = $formModel->getGroupsHiarachy();
 			foreach ($groups as $group)

@@ -47,6 +47,7 @@ class FabrikAdminViewPackages extends JViewLegacy
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
 

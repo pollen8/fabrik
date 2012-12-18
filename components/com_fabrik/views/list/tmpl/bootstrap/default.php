@@ -1,19 +1,28 @@
-<?php if ($this->tablePicker != '') { ?>
+<?php
+$this->bootShowFilters = true;
+$fKeys = array_keys($this->filters);
+if (count($fKeys) === 1 && $fKeys[0] === 'all')
+{
+	$this->bootShowFilters = false;
+}
+if ($this->tablePicker != '') { ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
-<?php } ?>
-<?php if ($this->params->get('show-title', 1)) {?>
+<?php }
+
+if ($this->params->get('show-title', 1)) {?>
 	<div class="page-header">
 		<h1><?php echo $this->table->label;?></h1>
 	</div>
-<?php }?>
-
-<?php echo $this->table->intro;?>
+<?php }
+echo $this->table->intro;
+?>
 <form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
-<?php echo $this->loadTemplate('buttons');
-if ($this->showFilters) {
+<?php
+echo $this->loadTemplate('buttons');
+if ($this->showFilters && $this->bootShowFilters) :
 	echo $this->loadTemplate('filter');
-}
+endif;
 //for some really ODD reason loading the headings template inside the group
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
@@ -22,9 +31,10 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 
 <div class="fabrikDataContainer">
 
-<?php foreach ($this->pluginBeforeList as $c) {
+<?php foreach ($this->pluginBeforeList as $c) :
 	echo $c;
-}?>
+endforeach;
+?>
 	<div class="boxflex">
 		<table class="table table-striped" id="list_<?php echo $this->table->renderid;?>" >
 		 <tfoot>
@@ -35,7 +45,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 			</tr>
 		 </tfoot>
 			<?php
-			echo '<thead>'.$this->headingstmpl.'</thead>';
+			echo '<thead>' . $this->headingstmpl . '</thead>';
 			if ($this->isGrouped && empty($this->rows)) {
 				?>
 				<tbody style="<?php echo $this->emptyStyle?>">

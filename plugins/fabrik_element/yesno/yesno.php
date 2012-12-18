@@ -61,13 +61,16 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
+		$j3 = FabrikWorker::j3();
 		if ($data == '1')
 		{
-			return FabrikHelperHTML::image("1.png", 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
+			$icon = $j3 ? 'checkmark.png' : '1.png';
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
 		}
 		else
 		{
-			return FabrikHelperHTML::image("0.png", 'list', @$this->tmpl, array('alt' => JText::_('JNO')));
+			$icon = $j3 ? 'remove.png' : '0.png';
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
 
@@ -84,13 +87,16 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	public function renderListData_pdf($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		$j3 = FabrikWorker::j3();
 		if ($data == '1')
 		{
-			return FabrikHelperHTML::image("1_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JYES')));
+			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
+			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => JText::_('JYES')));
 		}
 		else
 		{
-			return FabrikHelperHTML::image("0_8bit.png", 'list', $this->tmpl, array('alt' => JText::_('JNO')));
+			$icon = $j3 ? 'checkmark.png' : '0_8bit.png';
+			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
 
@@ -165,32 +171,27 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * get the class to manage the form element
-	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * Get the class to manage the form element
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
 	 *
 	 * @return void
 	 */
 
-	public function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$elementList = 'media/com_fabrik/js/elementlist.js';
-		if (!in_array($elementList, $srcs))
-		{
-			$srcs[] = $elementList;
-		}
-		$elementList = 'plugins/fabrik_element/radiobutton/radiobutton.js';
-		if (!in_array($elementList, $srcs))
-		{
-			$srcs[] = $elementList;
-		}
-		parent::formJavascriptClass($srcs, $script);
+		$s = new stdClass;
+		$s->deps = array('fab/elementlist');
+		$shim['element/radiobutton/radiobutton'] = $s;
+
+		$s = new stdClass;
+		$s->deps = array('element/radiobutton/radiobutton');
+		$shim['element/yesno/yesno'] = $s;
+
+		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
 	/**

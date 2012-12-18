@@ -1690,6 +1690,14 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
 					}
+					// $$$ hugh - need to re-index data
+					foreach ($data as &$d)
+					{
+						if (is_array($d))
+						{
+							$d = array_values($d);
+						}
+					}
 				}
 				else
 				{
@@ -2944,7 +2952,6 @@ class FabrikFEModelForm extends FabModelForm
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$user = JFactory::getUser();
 
-		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		// $$$rob if we show a form module when in a fabrik form component view - we shouldn't use
@@ -3202,7 +3209,8 @@ class FabrikFEModelForm extends FabModelForm
 							}
 						}
 						//$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
-						$data = array(FArrayHelper::toObject(array_merge($tmp_data, JArrayHelper::fromObject($data[0]))));
+						$data = array_merge($tmp_data, JArrayHelper::fromObject($data[0]));
+						$data = array(FArrayHelper::toObject($data));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
@@ -4513,7 +4521,8 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						else
 						{
-							if (!$groupParams->get('repeat_group_show_first'))
+							//if (!$groupParams->get('repeat_group_show_first'))
+							if ($groupModel->canView() === false)
 							{
 								continue;
 							}
@@ -4646,7 +4655,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group->startHidden = $startHidden;
 
 			// Only create the group if there are some element inside it
-			if (count($aElements) != 0)
+			if (count($aElements) != 0 && $groupModel->canView() !== false)
 			{
 				// 28/01/2011 $$$rob and if it is published
 				$showGroup = (int) $groupParams->get('repeat_group_show_first');
@@ -5066,7 +5075,8 @@ class FabrikFEModelForm extends FabModelForm
 		 * without the array_shift the custom message is never attached to the redirect page.
 		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
 		 */
-		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
+		$msgKeys = array_keys($smsg);
+		$custommsg = JArrayHelper::getValue($smsg, array_shift($msgKeys));
 		if ($custommsg != '')
 		{
 			$msg = $custommsg;
@@ -5088,7 +5098,8 @@ class FabrikFEModelForm extends FabModelForm
 			$msg = null;
 		}
 		$session->set($context . 'msg', $smsg);
-		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
+		$shosmsg = $session->get($context . 'showsystemmsg', array(true));
+		$showmsg = array_shift($showmsg);
 		$msg = $showmsg == 1 ? $msg : null;
 		return $msg;
 	}

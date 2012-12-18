@@ -28,13 +28,14 @@
 
 <?php endif ?>
 
-<?php if ($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))) :?>
-	<li><a class="clearFilters" href="#">
+<?php if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode === 4))  || $this->bootShowFilters == false)) :?>
+	<li>
+		<a class="clearFilters" href="#">
 			<i class="icon-refresh"></i>
 			<?php echo JText::_('COM_FABRIK_CLEAR')?>
-		</a></li>
+		</a>
+	</li>
 <?php endif ?>
-
 
 
 <?php if ($this->advancedSearch !== '') : ?>
@@ -43,7 +44,6 @@
 			<?php echo JText::_('COM_FABRIK_ADVANCED_SEARCH');?>
 		</a></li>
 	<?php endif?>
-
 
 
 <?php if ($this->showCSVImport || $this->showCSV) :?>
@@ -70,7 +70,6 @@
 	</ul>
 </li>
 <?php endif?>
-
 
 
 <?php if ($this->showRSS) {?>

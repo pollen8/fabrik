@@ -136,7 +136,7 @@ var FbForm = new Class({
 					method : this.options.ajaxmethod,
 					data : editopts,
 					onComplete : function (r) {
-						Fabrik.loader.stop('form_' + this.id);
+						Fabrik.loader.stop(this.getBlock());
 						r = JSON.decode(r);
 						this.update(r);
 						this.form.getElement('input[name=rowid]').value = r.post.rowid;
@@ -146,14 +146,33 @@ var FbForm = new Class({
 				this.form.getElement(b).addEvent('click', function (e) {
 					myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
 					e.stop();
-					Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
+					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
 					myAjax.send();
 				}.bind(this));
 			}
 		}.bind(this));
+		
+		this.watchGoBackButton();
 	},
 
-	watchAddOptions : function () {
+	// Go back button in ajax pop up window should close the window
+	
+	watchGoBackButton: function () {
+		if (this.options.ajax) {
+			var goback = this.getForm().getElement('input[name=Goback]');
+			if (typeOf(goback) === 'null') {
+				return;
+			}
+			goback.addEvent('click', function (e) {
+				e.stop();
+				if (Fabrik.Windows[this.options.fabrik_window_id]) {
+					Fabrik.Windows[this.options.fabrik_window_id].close();
+				}
+			}.bind(this));
+		}
+	},
+	
+	watchAddOptions: function () {
 		this.fx.addOptions = [];
 		this.getForm().getElements('.addoption').each(function (d) {
 			var a = d.getParent('.fabrikElementContainer').getElement('.toggle-addoption');
@@ -184,7 +203,11 @@ var FbForm = new Class({
 	},
 
 	getBlock : function () {
-		return this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
+		var block = this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
+		if (this.options.rowid !== '') {
+			block += '_' + this.options.rowid;
+		}
+		return block;
 	},
 
 	/**
@@ -396,7 +419,7 @@ var FbForm = new Class({
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
 			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
-			Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATING'));
+			Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
 	
 			// Only validate the current groups elements, otherwise validations on
 			// other pages cause the form to show an error.
@@ -415,7 +438,7 @@ var FbForm = new Class({
 				method: this.options.ajaxmethod,
 				data: d,
 				onComplete: function (r) {
-					Fabrik.loader.stop('form_' + this.id);
+					Fabrik.loader.stop(this.getBlock());
 					r = JSON.decode(r);
 					// Don't show validation errors if we are going back a page
 					if (dir === -1 || this._showGroupError(r, d) === false) {
@@ -447,7 +470,7 @@ var FbForm = new Class({
 		this.form.getElement('input[name=task]').value = 'form.savepage';
 
 		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
-		Fabrik.loader.start('form_' + this.id, 'saving page');
+		Fabrik.loader.start(this.getBlock(), 'saving page');
 		var data = this.getFormData();
 		data.fabrik_ajax = 1;
 		new Request({
@@ -465,7 +488,7 @@ var FbForm = new Class({
 				if (this.options.ajax) {
 					Fabrik.fireEvent('fabrik.form.groups.save.end', [this, r]);
 				}
-				Fabrik.loader.stop('form_' + this.id);
+				Fabrik.loader.stop(this.getBlock());
 			}.bind(this)
 		}).send();
 	},
@@ -910,17 +933,17 @@ var FbForm = new Class({
 		if (this.result === false) {
 			this.result = true;
 			e.stop();
-			// update global status error
+			// Update global status error
 			this.updateMainError();
 		}
-		//insert a hidden element so we can reload the last page if validation vails
+		// Insert a hidden element so we can reload the last page if validation vails
 		if (this.options.pages.getKeys().length > 1) {
 			this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
 		}
 		if (this.options.ajax) {
-			//do ajax val only if onSubmit val ok
+			// Do ajax val only if onSubmit val ok
 			if (this.form) {
-				Fabrik.loader.start('form_' + this.id, Joomla.JText._('COM_FABRIK_LOADING'));
+				Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
 				// $$$ hugh - we already did elementsBeforeSubmit() this at the start of this func?
 				// (and we're going to call it again in getFormData()!)
 				//this.elementsBeforeSubmit(e);
@@ -940,24 +963,25 @@ var FbForm = new Class({
 					onError: function (text, error) {
 						fconsole(text + ": " + error);
 						this.showMainError(error);
-						Fabrik.loader.stop('form_' + this.id, 'Error in returned JSON');
+						Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
 					}.bind(this),
 					
 					onFailure: function (xhr) {
 						fconsole(xhr);
-						Fabrik.loader.stop('form_' + this.id, 'Ajax failure');
+						Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
 					}.bind(this),
 					onComplete : function (json, txt) {
 						if (typeOf(json) === 'null') {
-							// stop spinner
-							Fabrik.loader.stop('form_' + this.id, 'Error in returned JSON');
+							// Stop spinner
+							Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
 							fconsole('error in returned json', json, txt);
 							return;
 						}
-						// process errors if there are some
+						// Process errors if there are some
 						var errfound = false;
 						if (json.errors !== undefined) {
-							// for every element of the form update error message
+							
+							// For every element of the form update error message
 							$H(json.errors).each(function (errors, key) {
 								// $$$ hugh - nasty hackery alert!
 								// validate() now returns errors for joins in join___id___label format,
@@ -980,13 +1004,17 @@ var FbForm = new Class({
 								}
 							}.bind(this));
 						}
-						// update global status error
+						// Update global status error
 						this.updateMainError();
 
 						if (errfound === false) {
-							var clear_form = btn.name !== 'apply';
-							Fabrik.loader.stop('form_' + this.id);
-							var savedMsg = (json.msg !== undefined && json.msg !== '') ? json.msg :Joomla.JText._('COM_FABRIK_FORM_SAVED');
+							var clear_form = false;
+							if (this.options.rowid === '' && btn.name !== 'apply') {
+								// We're submitting a new form - so always clear
+								clear_form = true;
+							}
+							Fabrik.loader.stop(this.getBlock());
+							var savedMsg = (json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								clear_form = json.reset_form;
 								if (json.url !== undefined) {
@@ -1006,12 +1034,9 @@ var FbForm = new Class({
 											window.open(json.url, '_blank');
 										}
 									}
-								} else {
-									alert(savedMsg);
 								}
 							} else {
 								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-								alert(savedMsg);
 							}
 							// Query the list to get the updated data
 							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
@@ -1027,7 +1052,7 @@ var FbForm = new Class({
 						} else {
 							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
 							// Stop spinner
-							Fabrik.loader.stop('form_' + this.id, Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
+							Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 						}
 					}.bind(this)
 				}).send();
@@ -1139,7 +1164,6 @@ var FbForm = new Class({
 			this.deleteGroup(e);
 		}.bind(this));
 		
-		
 		this.form.addEvent('click:relay(.addGroup)', function (e, target) {
 			e.preventDefault();
 			this.duplicateGroup(e);
@@ -1166,7 +1190,8 @@ var FbForm = new Class({
 		}
 		e.stop();
 		var group = e.target.getParent('.fabrikGroup');
-		// find which repeat group was deleted
+		
+		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
 			if (b.getElement('img') === e.target) {
@@ -1202,7 +1227,8 @@ var FbForm = new Class({
 							}
 						}
 					}.bind(this));
-					// minus the removed group
+					
+					// Minus the removed group
 					subgroups = group.getElements('.fabrikSubGroup');
 					var nameMap = {};
 					this.formElements.each(function (e, k) {
@@ -1235,7 +1261,7 @@ var FbForm = new Class({
 				}
 			}
 		}
-		// update the hidden field containing number of repeat groups
+		// Update the hidden field containing number of repeat groups
 		document.id('fabrik_repeat_group_' + i + '_counter').value = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt() - 1;
 		// $$$ hugh - no, musn't decrement this!  See comment in setupAll
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) - 1);
@@ -1363,7 +1389,7 @@ var FbForm = new Class({
 		tocheck.each(function (i) {
 			i.setProperty('checked', true);
 		});
-		// remove values and increment ids
+		// Remove values and increment ids
 		var newElementControllers = [];
 		this.subelementCounter = 0;
 		var hasSubElements = false;

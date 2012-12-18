@@ -46,6 +46,30 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
+
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('admin/pluginmanager');
+		$shim['admin/visualization/adminvisualization'] = $dep;
+
+		FabrikHelperHTML::iniRequireJS($shim);
+
+		$opts = new stdClass;
+		$opts->plugin = $this->item->plugin;
+
+		$js = "
+	var options = " . json_encode($opts) . ";
+	var controller = new AdminVisualization(options);
+";
+
+		FabrikHelperHTML::script($srcs, $js);
+
 		parent::display($tpl);
 	}
 

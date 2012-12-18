@@ -102,6 +102,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		$js .= $this->get('PluginJsObjects');
 		$js .= $model->getFilterJs();
 
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs, $js);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 

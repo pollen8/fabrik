@@ -102,6 +102,10 @@ class FabrikViewFormBase extends JViewLegacy
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
+		if ($this->rowid != '')
+		{
+			$form->formid .= '_' . $this->rowid;
+		}
 		if ($form->error === '')
 		{
 			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
@@ -367,13 +371,23 @@ class FabrikViewFormBase extends JViewLegacy
 		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 
 		$srcs = FabrikHelperHTML::framework();
+		$shim = array();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
+
+			$dep = new stdClass;
+			$dep->deps = array('fab/element', 'lib/form_placeholder/Form.Placeholder', 'fab/encoder');
+			$shim['fabrik/form'] = $dep;
+
+			$deps = new stdClass;
+			$deps->deps = array('fab/fabrik', 'fab/element');
+			$framework['fab/elementlist'] = $deps;
+
 			$srcs[] = 'media/com_fabrik/js/form.js';
-			$srcs[] = 'media/com_fabrik/js/element.js';
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
+			$srcs[] = 'media/com_fabrik/js/element.js';
 		}
 
 		$aWYSIWYGNames = array();
@@ -406,7 +420,7 @@ class FabrikViewFormBase extends JViewLegacy
 					 * and test for that here, so as to not add it to aLoadedElementPlugins[].  The existing 'static' tests in
 					 * formJavascriptClass() should still prevent scripts being added twice.
 					 */
-					if ($elementModel->formJavascriptClass($srcs) !== false)
+					if ($elementModel->formJavascriptClass($srcs, '', $shim) !== false)
 					{
 						$aLoadedElementPlugins[] = $element->plugin;
 					}
@@ -420,6 +434,7 @@ class FabrikViewFormBase extends JViewLegacy
 			}
 		}
 
+		FabrikHelperHTML::iniRequireJS($shim);
 		$actions = trim(implode("\n", $jsActions));
 		$params = $model->getParams();
 		$listModel = $model->getlistModel();
@@ -428,7 +443,10 @@ class FabrikViewFormBase extends JViewLegacy
 		FabrikHelperHTML::mocha();
 
 		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-
+		if ($this->rowid != '')
+		{
+			$bkey .= '_' . $this->rowid;
+		}
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 
@@ -545,10 +563,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
-			$showGroup = $groupModel->getParams()->get('repeat_group_show_first');
-			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
+			if (!$groupModel->canView())
 			{
-				// $$$ rob unpublished group so dont include the element js
 				continue;
 			}
 			$aObjs = array();
@@ -568,7 +584,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$elementModel->setEditable($model->isEditable());
 
 				// If the view is a form then we should always add the js as long as the element is editable or viewable
-				// if the view is details then we should only add hte js if the element is viewable.
+				// if the view is details then we should only add the js if the element is viewable.
 				if (($elementModel->canUse() && $model->isEditable()) || $elementModel->canView())
 				{
 					for ($c = 0; $c < $max; $c++)
@@ -638,7 +654,6 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
-		$srcs[] = 'media/com_fabrik/js/encoder.js';
 		FabrikHelperHTML::script($srcs, $str, 'fn' . $bkey);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
@@ -722,8 +737,9 @@ class FabrikViewFormBase extends JViewLegacy
 			? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
 			? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button" name="delete" />' : '';
+		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
-			? '<input type="button" class="btn button" name="Goback" ' . FabrikWorker::goBackAction() . ' value="' . $params->get('goback_button_label')
+			? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $params->get('goback_button_label')
 				. '" />' : '';
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{

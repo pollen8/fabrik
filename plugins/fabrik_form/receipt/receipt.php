@@ -96,7 +96,7 @@ class plgFabrik_FormReceipt extends plgFabrik_Form
 		$this->formModel = $formModel;
 		$form = $formModel->getForm();
 
-		$aData = array_merge($this->getEmailData(), $formModel->formData);
+		$aData = array_merge($formModel->formData, $this->getEmailData());
 
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="

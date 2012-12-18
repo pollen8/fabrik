@@ -78,6 +78,24 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$opts = json_encode($opts);
 		$this->js = "PackageCanvas = new AdminPackage($opts);
 		new inline('#packagemenu li span');";
+
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::mocha();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'media/com_fabrik/js/window.js';
+		$srcs[] = 'media/com_fabrik/js/lib/art.js';
+		$srcs[] = 'media/com_fabrik/js/icons.js';
+		$srcs[] = 'media/com_fabrik/js/icongen.js';
+		$srcs[] = 'media/com_fabrik/js/history.js';
+		$srcs[] = 'media/com_fabrik/js/keynav.js';
+		$srcs[] = 'media/com_fabrik/js/tabs.js';
+		$srcs[] = 'media/com_fabrik/js/pages.js';
+		$srcs[] = 'media/com_fabrik/js/inline.js';
+		$srcs[] = 'media/com_fabrik/js/canvas.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/package/adminpackage.js';
+
+		FabrikHelperHTML::iniRequireJS();
+		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 

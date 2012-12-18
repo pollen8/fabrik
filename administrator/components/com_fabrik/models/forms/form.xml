@@ -7,7 +7,7 @@
 			type="text" 
 			default="0" 
 			readonly="true" 
-			class="readonly"
+			class="readonly input-mini"
 			label="JGLOBAL_FIELD_ID_LABEL" 
 			description ="JGLOBAL_FIELD_ID_DESC" />
 			

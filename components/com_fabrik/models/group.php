@@ -187,6 +187,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return $this->canView;
 		}
+		$params = $this->getParams();
 		$elementModels = $this->getPublishedElements();
 		$this->canView = false;
 		foreach ($elementModels as $elementModel)
@@ -200,6 +201,21 @@ class FabrikFEModelGroup extends FabModel
 			$this->canView = true;
 		}
 
+		// Get the group access level
+		$user = JFactory::getUser();
+		$groups = $user->getAuthorisedViewLevels();
+		$groupAccess = $params->get('access', '');
+		if ($groupAccess !== '')
+		{
+			$this->canView = in_array($groupAccess, $groups);
+
+			// If the user can't access the group return that and ingore repeat_group_show_first option
+			if (!$this->canView)
+			{
+				return $this->canView;
+			}
+		}
+
 		/*
 		 * Sigh - seems that the repeat group 'repeat_group_show_first' property has been bastardized to be a setting
 		 * that is applicable to a group even when not in a repeat group, and has basically become a standard group setting.
@@ -208,7 +224,6 @@ class FabrikFEModelGroup extends FabModel
 		 * multi page forms where we were trying to set/check errors in groups which were not attached to the form.
 		 */
 		$formModel = $this->getFormModel();
-		$params = $this->getParams();
 		$showGroup = $params->get('repeat_group_show_first', '');
 		if ($showGroup == 0)
 		{
@@ -494,7 +509,7 @@ class FabrikFEModelGroup extends FabModel
 
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) $input->get('fabrik_show_in_list', array());
+		$showInList = $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->listQueryElements))
 		{

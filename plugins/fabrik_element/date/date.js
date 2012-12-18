@@ -116,11 +116,11 @@ var FbDateTime = new Class({
 			return result;
 		}
 		// 2.0 fall back 
-		try {
+		/*try {
 			return disallowDate(this.cal, date);
 		} catch (err) {
 			//fconsole(err);
-		}
+		}*/
 	},
 	
 	calSelect: function (calendar, date) {
