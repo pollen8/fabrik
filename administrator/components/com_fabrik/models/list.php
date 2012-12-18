@@ -549,6 +549,7 @@ class FabrikModelList extends FabModelAdmin
 	{
 		$this->populateState();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$date = JFactory::getDate();
@@ -558,11 +559,17 @@ class FabrikModelList extends FabModelAdmin
 		$row->load($id);
 
 		$params = new JRegistry($row->params);
-		$origCollation = $params->get('collation', 'none');
+
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
 		$formModel = $this->getFormModel();
+
+		// Get original collation
+		$db = $feModel->getDb();
+		$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
+		$info = $db->loadObject();
+		$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
 
 		if (!$row->bind($data))
 		{
@@ -783,8 +790,10 @@ class FabrikModelList extends FabModelAdmin
 		$newCollation = $params->get('collation');
 		if ($newCollation !== $origCollation)
 		{
+			echo "$newCollation !== $origCollation<br>";
 			$db = $feModel->getDb();
 			$item = $feModel->getTable();
+			echo "Here";exit;
 			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
 			if (!$db->query())
 			{
