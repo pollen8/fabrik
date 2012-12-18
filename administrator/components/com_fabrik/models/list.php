@@ -790,10 +790,8 @@ class FabrikModelList extends FabModelAdmin
 		$newCollation = $params->get('collation');
 		if ($newCollation !== $origCollation)
 		{
-			echo "$newCollation !== $origCollation<br>";
 			$db = $feModel->getDb();
 			$item = $feModel->getTable();
-			echo "Here";exit;
 			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
 			if (!$db->query())
 			{
