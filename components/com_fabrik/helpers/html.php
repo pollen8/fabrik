@@ -485,7 +485,7 @@ EOD;
 		$conditions[] = JHTML::_('select.option', 'AND', JText::_('COM_FABRIK_AND'));
 		$conditions[] = JHTML::_('select.option', 'OR', JText::_('COM_FABRIK_OR'));
 		$name = 'fabrik___filter[list_' . $listid . '][join][]';
-		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox" size="1" ', 'value', 'text', $sel);
+		return JHTML::_('select.genericlist', $conditions, $name, 'class="inputbox input-mini" size="1" ', 'value', 'text', $sel);
 	}
 
 	/**
@@ -873,28 +873,38 @@ EOD;
 		$deps = new stdClass;
 		$deps->deps = array();
 		$j3 = FabrikWorker::j3();
-
+		$ext = self::isDebug() ? '' : '-min';
+		foreach ($shim as $k => &$s)
+		{
+			if (isset($s->deps))
+			{
+				foreach ($s->deps as &$f)
+				{
+					$f .= $ext;
+				}
+			}
+			//echo "<pre>$k ";print_r($s);echo "</pre>";
+		}
 		$navigator = JBrowser::getInstance();
 		if ($navigator->getBrowser() == 'msie')
 		{
-			$deps->deps[] = 'fab/lib/flexiejs/flexie';
+			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
-		$deps->deps[] = 'fab/mootools-ext';
-		$deps->deps[] = 'fab/lib/Event.mock';
+		$deps->deps[] = 'fab/mootools-ext' . $ext;
+		$deps->deps[] = 'fab/lib/Event.mock' . $ext;
 
 
 		if ($j3)
 		{
-			$deps->deps[] = 'fab/tipsBootStrapMock';
+			$deps->deps[] = 'fab/tipsBootStrapMock' . $ext;
 		}
 		else
 		{
-			$deps->deps[] = 'fab/lib/art';
-			$deps->deps[] = 'fab/tips';
-			$deps->deps[] = 'fab/icons';
-			$deps->deps[] = 'fab/icongen';
+			$deps->deps[] = 'fab/lib/art' . $ext;
+			$deps->deps[] = 'fab/tips' . $ext;
+			$deps->deps[] = 'fab/icons' . $ext;
+			$deps->deps[] = 'fab/icongen' . $ext;
 		}
-		//$deps->deps[] = 'fab/window';
 
 		$framework['fab/fabrik'] = $deps;
 
@@ -903,7 +913,7 @@ EOD;
 		$framework['fab/window'] = $deps;
 
 		$deps = new stdClass;
-		$deps->deps = array('fab/fabrik', 'fab/element');
+		$deps->deps = array('fab/fabrik' . $ext, 'fab/element' . $ext);
 		$framework['fab/elementlist'] = $deps;
 
 
@@ -917,8 +927,7 @@ EOD;
 		}
 
 		$pathString = '{' . implode(',', $pathBits) . '}';
-		$document->addScriptDeclaration("
-				require.config({
+		$document->addScriptDeclaration("require.config({
 				baseUrl: '" . COM_FABRIK_LIVESITE . "',
 				paths: " . $pathString . ",
 				shim: " . $shim . "

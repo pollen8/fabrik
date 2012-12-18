@@ -303,12 +303,13 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get an array of plugin js classes to load
 	 *
-	 * @param   array  &$r  previously loaded classes
+	 * @param   array  &$r    Previously loaded classes
+	 * @param   array  $shim  Shim object to ini require.js
 	 *
 	 * @return  array
 	 */
 
-	public function getPluginJsClasses(&$r = array())
+	public function getPluginJsClasses(&$r = array(), &$shim = array())
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
@@ -328,6 +329,11 @@ class FabrikFEModelList extends JModelForm
 			{
 				$r[] = $f;
 			}
+		}
+		$pluginManager->runPlugins('requireJSShim', $this, 'list');
+		 foreach ($pluginManager->data as $ashim)
+		{
+			$shim = array_merge($shim, $ashim);
 		}
 		return $r;
 	}
@@ -1133,7 +1139,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if (trim($b) !== '')
 					{
-						$row->fabrik_actions[] = $js ? $b : '<li>' . $b . '</li>';
+						$row->fabrik_actions[] = $j3 ? $b : '<li>' . $b . '</li>';
 					}
 				}
 				if (!empty($row->fabrik_actions))
@@ -5070,16 +5076,10 @@ class FabrikFEModelList extends JModelForm
 	public function getAdvancedSearchLink()
 	{
 		$params = $this->getParams();
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($params->get('advanced-filter', '0'))
 		{
-			$table = $this->getTable();
 			$tmpl = $this->getTmpl();
-			$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
-					. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
-
-			$url .= '&amp;tkn=' . JSession::getFormToken();
+			$url = $this->getAdvancedSearchURL();
 			$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 			$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
 			$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
@@ -5089,6 +5089,18 @@ class FabrikFEModelList extends JModelForm
 		{
 			return '';
 		}
+	}
+
+	public function getAdvancedSearchURL()
+	{
+		$app = JFactory::getApplication();
+		$table = $this->getTable();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
+				. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
+
+		$url .= '&amp;tkn=' . JSession::getFormToken();
+		return $url;
 	}
 
 	/**
@@ -5114,9 +5126,9 @@ class FabrikFEModelList extends JModelForm
 		list($fieldNames, $firstFilter) = $this->getAdvancedSearchElementList();
 		$statements = $this->getStatementsOpts();
 		$opts->elementList = JHTML::_('select.genericlist', $fieldNames, 'fabrik___filter[list_' . $listRef . '][key][]',
-				'class="inputbox key" size="1" ', 'value', 'text');
+				'class="inputbox key input-small" size="1" ', 'value', 'text');
 		$opts->statementList = JHTML::_('select.genericlist', $statements, 'fabrik___filter[list_' . $listRef . '][condition][]',
-				'class="inputbox" size="1" ', 'value', 'text');
+				'class="inputbox input-small" size="1" ', 'value', 'text');
 		$opts->listid = $list->id;
 		$opts->listref = $listRef;
 		$opts->ajax = $this->isAjax();
@@ -5303,8 +5315,8 @@ class FabrikFEModelList extends JModelForm
 				$input->set($lineElname, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
 				$input->set($lineElname, $orig);
-				$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key" size="1" ', 'value', 'text', $key);
-				$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox" size="1" ', 'value', 'text', $jsSel);
+				$key = JHTML::_('select.genericlist', $fieldNames, $prefix . 'key][]', 'class="inputbox key input-small" size="1" ', 'value', 'text', $key);
+				$jsSel = JHTML::_('select.genericlist', $statements, $prefix . 'condition][]', 'class="inputbox input-small" size="1" ', 'value', 'text', $jsSel);
 				$rows[] = array('join' => $join, 'element' => $key, 'condition' => $jsSel, 'filter' => $filter, 'type' => $type,
 						'grouped' => $grouped);
 				$counter++;

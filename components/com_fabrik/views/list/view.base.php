@@ -58,11 +58,11 @@ class FabrikViewListBase extends JViewLegacy
 
 		$src = $model->getPluginJsClasses($frameworkJsFiles, $shim);
 		//array_unshift($src, 'media/com_fabrik/js/listfilter.js');
-		//array_unshift($src, 'media/com_fabrik/js/list.js');
+		array_unshift($src, 'media/com_fabrik/js/list.js');
+		array_unshift($src, 'media/com_fabrik/js/window.js');
 		//array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 		$model->getCustomJsAction($src);
 
-		$src = array('media/com_fabrik/js/list.js', 'media/com_fabrik/js/window.js');
 		$tmpl = $this->get('tmpl');
 		$this->tmpl = $tmpl;
 
@@ -333,6 +333,7 @@ class FabrikViewListBase extends JViewLegacy
 		$firstRow = current($this->rows);
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		$this->advancedSearch = $this->get('AdvancedSearchLink');
+		$this->advancedSearchURL = $model->getAdvancedSearchURL();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
@@ -813,12 +814,12 @@ class FabrikViewListBase extends JViewLegacy
 		$input = $app->input;
 		$model = $this->getModel();
 		$id = $model->getState('list.id');
-		$this->tmpl = $this->get('tmpl');
+		$this->tmpl = $model->getTmpl();
 		$model->setRenderContext($id);
 		$this->listref = $model->getRenderContext();
 
 		// Advanced search script loaded in list view - avoids timing issues with ie loading the ajax content and script
-		$this->rows = $this->get('advancedSearchRows');
+		$this->rows = $model->getAdvancedSearchRows();
 		$action = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package, 'string');
 		$this->action = $action;
 		$this->listid = $id;
