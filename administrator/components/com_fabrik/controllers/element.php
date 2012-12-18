@@ -76,7 +76,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
-		$gid = $input->getInt('filter_groupId');
+		$gid = $input->getInt('filter_groupId', 0);
 		if ($gid !== 0)
 		{
 			$append .= '&filter_groupId=' . $gid;

@@ -183,7 +183,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			else
 			{
-				// When called from getFilterArray via _getROElement, $data doesn't exist
+				// When called from getFilterArray via getROElement, $data doesn't exist
 				// (i.e. when specified as a table___name=foo in a content plugin)
 				if (is_array($data))
 				{

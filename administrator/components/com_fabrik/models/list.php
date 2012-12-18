@@ -2107,10 +2107,6 @@ class FabrikAdminModelList extends FabModelAdmin
 	public function loadFromFormId($formId)
 	{
 		$item = $this->getTable();
-<<<<<<< HEAD
-		$item->load(array('form_id' => $formId));
-		$this->table = $item;
-=======
 
 		/**
 		 * Not sure why but we need to populate and manually __state_set
@@ -2118,9 +2114,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		 */
 		$this->populateState();
 		$this->__state_set = true;
-		$this->_table = $item;
 		$item->load(array('form_id' => $formId));
->>>>>>> 10ae648ee91011a6688bc8cff20a0478ad03fd5b
+		$this->table = $item;
 		$this->setState('list.id', $item->id);
 		return $item;
 	}

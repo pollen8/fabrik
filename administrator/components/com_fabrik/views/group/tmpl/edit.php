@@ -17,9 +17,6 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
-$fbConfig = JComponentHelper::getParams('com_fabrik');
-$srcs = FabrikHelperHTML::framework();
-FabrikHelperHTML::script($srcs);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
@@ -45,9 +42,9 @@ FabrikHelperHTML::script($srcs);
 
 		</fieldset>
 	</div>
-	
+
 	<div class="width-40 fltlft">
-	
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_REPEAT');?></legend>
 			<ul class="adminformlist">
@@ -58,7 +55,7 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_LAYOUT');?></legend>
 			<ul class="adminformlist">
@@ -69,7 +66,7 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
+
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FABRIK_GROUP_MULTIPAGE');?></legend>
 			<ul class="adminformlist">
@@ -80,8 +77,8 @@ FabrikHelperHTML::script($srcs);
 				<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
-		
+
+
 	</div>
 	<div class="clr"></div>
 

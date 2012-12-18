@@ -69,6 +69,7 @@ class fabrikViewFusion_gantt_chart extends JViewLegacy
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
 
 		echo parent::display();

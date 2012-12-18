@@ -1,4 +1,5 @@
-FbRadio = new Class({
+console.log('radio btton');
+window.FbRadio = new Class({
 	Extends: FbElementList,
 	
 	type: 'radio', // sub element type

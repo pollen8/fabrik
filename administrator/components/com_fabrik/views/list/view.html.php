@@ -108,6 +108,20 @@ class FabrikAdminViewList extends JViewLegacy
 			$this->group_by = $formModel->getElementList('group_by', $this->item->group_by, true, false, false);
 		}
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/list/tmpl/adminlist.js';
+
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('admin/pluginmanager');
+		$shim['admin/list/tmpl/adminlist'] = $dep;
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($srcs, $this->js);
+
 		parent::display($tpl);
 	}
 

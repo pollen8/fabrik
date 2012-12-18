@@ -81,6 +81,7 @@ class FabrikAdminViewElements extends JViewLegacy
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 
 	}
@@ -248,6 +249,7 @@ class FabrikAdminViewElements extends JViewLegacy
 		$db->setQuery($query);
 		$this->groups = $db->loadObjectList();
 		$this->addConfirmCopyToolbar();
+		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
 

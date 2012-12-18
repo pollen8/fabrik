@@ -149,16 +149,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	/**
 	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
 	 *
 	 * @return void
 	 */
 
-	public function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		/**
 		 * $$$ hugh - adding js.new folder to make it easier to test new plupload git releases
@@ -202,7 +202,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $prefix . '.js');
 			}
 		}
-		parent::formJavascriptClass($srcs, $script);
+		parent::formJavascriptClass($srcs, $script, $shim);
 		static $elementclasses;
 
 		if (!isset($elementclasses))

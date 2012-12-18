@@ -76,6 +76,21 @@ class FabrikAdminViewElement extends JViewLegacy
 		$this->parent = $this->get('Parent');
 		FabrikAdminHelper::setViewLayout($this);
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
+		$srcs[] = 'administrator/components/com_fabrik/views/element/tmpl/adminelement.js';
+
+		$shim = array();
+		$dep = new stdClass;
+		$dep->deps = array('admin/pluginmanager');
+		$shim['admin/element/tmpl/adminelement'] = $dep;
+
+		FabrikHelperHTML::iniRequireJS($shim);
+		FabrikHelperHTML::script($srcs, $this->js);
+
 		parent::display($tpl);
 	}
 

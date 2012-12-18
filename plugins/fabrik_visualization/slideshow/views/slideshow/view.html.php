@@ -83,6 +83,7 @@ class FabrikViewSlideshow extends JViewLegacy
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
 			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs, $this->js);
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl;

@@ -11,6 +11,7 @@
  *  fabriktables.js
  *  
  */
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
@@ -306,11 +307,11 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.fireEvent = function (type, args, delay) {
 		var events = Fabrik.events;
+		this.eventResults = [];
 		if (!events || !events[type]) {
 			return this;
 		}
 		args = Array.from(args);
-		this.eventResults = [];
 		events[type].each(function (fn) {
 			if (delay) {
 				this.eventResults.push(fn.delay(delay, this, args));

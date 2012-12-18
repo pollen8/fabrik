@@ -1,4 +1,3 @@
-
 var ListPluginManager = new Class({
 	
 	Extends: PluginManager,

@@ -36,6 +36,7 @@ var FabrikModalRepeat = new Class({
 		this.el.id = this.elid + '-table';
 		this.field = document.id(this.field);
 		this.button.addEvent('click', function (e) {
+			e.stop();
 			if (!this.win) {
 				this.win = new Element('div', {'styles': {'padding': '5px', 'background-color': '#fff', 'display': 'none', 'z-index': 9999}}).inject(document.body);
 				this.win.adopt(this.el);

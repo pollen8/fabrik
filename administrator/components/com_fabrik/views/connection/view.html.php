@@ -70,6 +70,12 @@ class FabrikAdminViewConnection extends JViewLegacy
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
+
+		$srcs = FabrikHelperHTML::framework();
+		$srcs[] = 'media/com_fabrik/js/fabrik.js';
+
+		FabrikHelperHTML::iniRequireJS();
+		FabrikHelperHTML::script($srcs);
 		parent::display($tpl);
 	}
 

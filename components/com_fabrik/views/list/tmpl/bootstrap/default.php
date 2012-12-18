@@ -1,4 +1,11 @@
-<?php if ($this->tablePicker != '') { ?>
+<?php
+$this->bootShowFilters = true;
+$fKeys = array_keys($this->filters);
+if (count($fKeys) === 1 && $fKeys[0] === 'all')
+{
+	$this->bootShowFilters = false;
+}
+if ($this->tablePicker != '') { ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php }
 
@@ -13,7 +20,7 @@ echo $this->table->intro;
 
 <?php
 echo $this->loadTemplate('buttons');
-if ($this->showFilters) :
+if ($this->showFilters && $this->bootShowFilters) :
 	echo $this->loadTemplate('filter');
 endif;
 //for some really ODD reason loading the headings template inside the group

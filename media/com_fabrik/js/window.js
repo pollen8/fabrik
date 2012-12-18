@@ -1,30 +1,29 @@
-require(['fab/fabrik'], function () {
-	Fabrik.getWindow = function (opts) {
-		if (Fabrik.Windows[opts.id]) {
-			if (opts.visible !== false) {
-				Fabrik.Windows[opts.id].open();
-			}
-			Fabrik.Windows[opts.id].setOptions(opts);
-			// Fabrik.Windows[opts.id].loadContent();
-		} else {
-			var type = opts.type ? opts.type : '';
-			switch (type) {
-			case 'redirect':
-				Fabrik.Windows[opts.id] = new Fabrik.RedirectWindow(opts);
-				break;
-			case 'modal':
-				Fabrik.Windows[opts.id] = new Fabrik.Modal(opts);
-				break;
-			case '':
-				/* falls through */
-			default:
-				Fabrik.Windows[opts.id] = new Fabrik.Window(opts);
-				break;
-			}
+Fabrik.getWindow = function (opts) {
+	if (Fabrik.Windows[opts.id]) {
+		if (opts.visible !== false) {
+			Fabrik.Windows[opts.id].open();
 		}
-		return Fabrik.Windows[opts.id];
-	};
-});
+		Fabrik.Windows[opts.id].setOptions(opts);
+		// Fabrik.Windows[opts.id].loadContent();
+	} else {
+		var type = opts.type ? opts.type : '';
+		switch (type) {
+		case 'redirect':
+			Fabrik.Windows[opts.id] = new Fabrik.RedirectWindow(opts);
+			break;
+		case 'modal':
+			Fabrik.Windows[opts.id] = new Fabrik.Modal(opts);
+			break;
+		case '':
+			/* falls through */
+		default:
+			Fabrik.Windows[opts.id] = new Fabrik.Window(opts);
+			break;
+		}
+	}
+	return Fabrik.Windows[opts.id];
+};
+
 
 Fabrik.Window = new Class({
 

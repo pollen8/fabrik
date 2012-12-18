@@ -780,7 +780,7 @@ EOD;
 	{
 		if (!self::$framework)
 		{
-			self::iniRequireJS();
+			//self::iniRequireJS();
 
 			$app = JFactory::getApplication();
 			$document = JFactory::getDocument();
@@ -812,27 +812,8 @@ EOD;
 				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
 
 				JText::script('COM_FABRIK_LOADING');
-				$navigator = JBrowser::getInstance();
-				if ($navigator->getBrowser() == 'msie')
-				{
-					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
-				}
-				$src[] = 'media/com_fabrik/js/mootools-ext.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
-
-				if ($bootstrapped)
-				{
-					$src[] = 'media/com_fabrik/js/tipsBootStrapMock.js';
-				}
-				else
-				{
-					$src[] = 'media/com_fabrik/js/lib/art.js';
-					$src[] = 'media/com_fabrik/js/tips.js';
-					$src[] = 'media/com_fabrik/js/icons.js';
-					$src[] = 'media/com_fabrik/js/icongen.js';
-				}
 				$src[] = 'media/com_fabrik/js/window.js';
-				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
@@ -871,6 +852,7 @@ EOD;
 		$tipJs[] = "\t\tFabrik.tips.hideAll();";
 		$tipJs[] = "\t});";
 		//$tipJs[] = "});";
+		//$tipJs = array();
 		return implode("\n", $tipJs);
 	}
 
@@ -881,21 +863,67 @@ EOD;
 	 *
 	 * @return  void
 	 */
-	protected static function iniRequireJs()
+	public static function iniRequireJs($shim = array())
 	{
 		$document = JFactory::getDocument();
 		$requirePaths = self::requirePaths();
 		$pathBits = array();
+
+		$framework = array();
+		$deps = new stdClass;
+		$deps->deps = array();
+		$j3 = FabrikWorker::j3();
+
+		$navigator = JBrowser::getInstance();
+		if ($navigator->getBrowser() == 'msie')
+		{
+			$deps->deps[] = 'fab/lib/flexiejs/flexie';
+		}
+		$deps->deps[] = 'fab/mootools-ext';
+		$deps->deps[] = 'fab/lib/Event.mock';
+
+
+		if ($j3)
+		{
+			$deps->deps[] = 'fab/tipsBootStrapMock';
+		}
+		else
+		{
+			$deps->deps[] = 'fab/lib/art';
+			$deps->deps[] = 'fab/tips';
+			$deps->deps[] = 'fab/icons';
+			$deps->deps[] = 'fab/icongen';
+		}
+		//$deps->deps[] = 'fab/window';
+
+		$framework['fab/fabrik'] = $deps;
+
+		$deps = new stdClass;
+		$deps->deps = array('fab/fabrik');
+		$framework['fab/window'] = $deps;
+
+		$deps = new stdClass;
+		$deps->deps = array('fab/fabrik', 'fab/element');
+		$framework['fab/elementlist'] = $deps;
+
+
+		$shim = array_merge($framework, $shim);
+
+		//echo "<pre>";print_r($shim);;echo "</pre>";
+		$shim = json_encode($shim);
 		foreach ($requirePaths as $reqK => $repPath)
 		{
 			$pathBits[] = "\n$reqK : '$repPath'";
 		}
+
 		$pathString = '{' . implode(',', $pathBits) . '}';
-		$document->addScriptDeclaration("console.log(require.config);
+		$document->addScriptDeclaration("
 				require.config({
 				baseUrl: '" . COM_FABRIK_LIVESITE . "',
-				paths: " . $pathString . "
+				paths: " . $pathString . ",
+				shim: " . $shim . "
 		});");
+
 	}
 
 	/**
@@ -1132,7 +1160,8 @@ EOD;
 			}
 		}
 		// Need to load element for ajax popup forms in IE.
-		$needed = array('fab/element', 'fab/fabrik');
+		$needed = array('fab/element', 'fab/fabrik'); //trying to put these in shim?
+		$needed = array();
 		if (!FabrikWorker::j3())
 		{
 			$needed[] = 'fab/icongen';
@@ -1147,7 +1176,7 @@ EOD;
 		}
 		$files = array_unique($files);
 		$files = "['" . implode("', '", $files) . "']";
-		$require = array();
+		//$require = array();
 		$require[] = 'require(' . ($files) . ', function () {';
 		$require[] = $onLoad;
 		$require[] = '});';
@@ -1636,8 +1665,9 @@ EOD;
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $type . '" name="' . $thisname . '" value="' . $value . '" ';
-			$chx .= in_array($values[$i], $selected) ? ' checked="checked" />' : ' />';
-			$item[] = '<label class="fabrikgrid_' . $value . '">';
+			$sel = in_array($values[$i], $selected);
+			$chx .= $sel ? ' checked="checked" />' : ' />';
+			$item[] = '<label class="fabrikgrid_' . $value .  '">';
 			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
@@ -1647,13 +1677,25 @@ EOD;
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
 		$w = floor(100 / $optionsPerRow);
 		$widthConstraint = '';
-		$grid[] = '<ul>';
-		foreach ($items as $i => $s)
+		if (($optionsPerRow === 1 || $optionsPerRow > count($items)) && FabrikWorker::j3())
 		{
-			$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
-			$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
+			$grid[] = '<fieldset class="' . $type . ' btn-group">';
+			foreach ($items as $i => $s)
+			{
+				$grid[] = $s;
+			}
+			$grid[] = '</fieldset>';
 		}
-		$grid[] = '</ul>';
+		else
+		{
+			$grid[] = '<ul>';
+			foreach ($items as $i => $s)
+			{
+				$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
+				$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
+			}
+			$grid[] = '</ul>';
+		}
 		return $grid;
 	}
 

@@ -49,13 +49,20 @@ class FabrikViewListBase extends JViewLegacy
 			FabrikHelperHTML::slimbox();
 		}
 		$frameworkJsFiles = FabrikHelperHTML::framework();
-		$src = $model->getPluginJsClasses($frameworkJsFiles);
-		array_unshift($src, 'media/com_fabrik/js/listfilter.js');
-		array_unshift($src, 'media/com_fabrik/js/list.js');
-		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
-		$model->getCustomJsAction($src);
-		$src[] = 'media/com_fabrik/js/encoder.js';
+		$shim = array();
 
+		$dep = new stdClass;
+		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
+		$shim['fab/list'] = $dep;
+
+
+		$src = $model->getPluginJsClasses($frameworkJsFiles, $shim);
+		//array_unshift($src, 'media/com_fabrik/js/listfilter.js');
+		//array_unshift($src, 'media/com_fabrik/js/list.js');
+		//array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
+		$model->getCustomJsAction($src);
+
+		$src = array('media/com_fabrik/js/list.js', 'media/com_fabrik/js/window.js');
 		$tmpl = $this->get('tmpl');
 		$this->tmpl = $tmpl;
 
@@ -112,7 +119,7 @@ class FabrikViewListBase extends JViewLegacy
 			$formEls[] = $oo;
 
 		}
-		$opts->formels = $formEls;//$elementsNotInTable;
+		$opts->formels = $formEls;
 		$opts->actionMethod = $model->actionMethod();
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
@@ -238,6 +245,10 @@ class FabrikViewListBase extends JViewLegacy
 		$model = $this->getModel();
 		$script[] = $model->getElementJs($src);
 		$script = implode("\n", $script);
+
+		FabrikHelperHTML::iniRequireJS($shim);
+
+		//FabrikHelperHTML::script($src, $script);
 		FabrikHelperHTML::script($src, $script);
 
 		// Reset data back to original settings

@@ -2177,41 +2177,32 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * get the class to manage the form element
-	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * Get the class to manage the form element
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
 	 *
 	 * @return void
 	 */
 
-	public function formJavascriptClass(&$srcs, $script = '')
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
+		$s = new stdClass;
+		$s->deps = array('fab/element');
 		$prefix = JDEBUG ? '' : '-min';
 		$params = $this->getParams();
 		if ($params->get('date_advanced', '0') == '1')
 		{
-			if (empty($prefix))
-			{
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date' . $prefix . '.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/core' . $prefix . '.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/parser' . $prefix . '.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras' . $prefix . '.js');
-			}
-			else
-			{
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/date.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/core.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/parser.js');
-				parent::formJavascriptClass($srcs, 'media/com_fabrik/js/lib/datejs/extras.js');
-			}
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/date' . $prefix . '.js';
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/core' . $prefix . '.js';
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/parser' . $prefix . '.js';
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/extras' . $prefix . '.js';
 		}
-		parent::formJavascriptClass($srcs);
+		$shim['element/date/date'] = $s;
+
+		parent::formJavascriptClass($srcs, $script, $shim);
 
 		// Return false, as we need to be called on per-element (not per-plugin) basis
 		return false;

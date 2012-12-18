@@ -108,4 +108,8 @@
     'italic' => DOMPDF_FONT_DIR . 'DejaVuSerifCondensed-Italic',
     'normal' => DOMPDF_FONT_DIR . 'DejaVuSerifCondensed',
   ),
+  'icomoon' => 
+  array (
+    'normal' => DOMPDF_FONT_DIR . '2518bbf6f6d48ffd8091d75e66e6bc7e',
+  ),
 ) ?>

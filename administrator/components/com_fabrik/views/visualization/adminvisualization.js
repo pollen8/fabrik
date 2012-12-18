@@ -41,7 +41,6 @@ var AdminVisualization = new Class({
 			'onComplete': function (r) {
 				document.id('plugin-container').set('html', r);
 				Browser.exec(this.script);
-				console.log(this.script);
 				this.updateBootStrap();
 			}.bind(this)
 		}).send();

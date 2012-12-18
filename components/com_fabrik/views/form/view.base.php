@@ -371,13 +371,23 @@ class FabrikViewFormBase extends JViewLegacy
 		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 
 		$srcs = FabrikHelperHTML::framework();
+		$shim = array();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
 		{
 			define('_JOS_FABRIK_FORMJS_INCLUDED', 1);
 			FabrikHelperHTML::slimbox();
+
+			$dep = new stdClass;
+			$dep->deps = array('fab/element', 'lib/form_placeholder/Form.Placeholder', 'fab/encoder');
+			$shim['fabrik/form'] = $dep;
+
+			$deps = new stdClass;
+			$deps->deps = array('fab/fabrik', 'fab/element');
+			$framework['fab/elementlist'] = $deps;
+
 			$srcs[] = 'media/com_fabrik/js/form.js';
-			$srcs[] = 'media/com_fabrik/js/element.js';
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
+			$srcs[] = 'media/com_fabrik/js/element.js';
 		}
 
 		$aWYSIWYGNames = array();
@@ -410,7 +420,7 @@ class FabrikViewFormBase extends JViewLegacy
 					 * and test for that here, so as to not add it to aLoadedElementPlugins[].  The existing 'static' tests in
 					 * formJavascriptClass() should still prevent scripts being added twice.
 					 */
-					if ($elementModel->formJavascriptClass($srcs) !== false)
+					if ($elementModel->formJavascriptClass($srcs, '', $shim) !== false)
 					{
 						$aLoadedElementPlugins[] = $element->plugin;
 					}
@@ -424,6 +434,7 @@ class FabrikViewFormBase extends JViewLegacy
 			}
 		}
 
+		FabrikHelperHTML::iniRequireJS($shim);
 		$actions = trim(implode("\n", $jsActions));
 		$params = $model->getParams();
 		$listModel = $model->getlistModel();
@@ -552,12 +563,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
-			/* $showGroup = $groupModel->getParams()->get('repeat_group_show_first');
-			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
-			{
-				// $$$ rob unpublished group so dont include the element js
-				continue;
-			} */
 			if (!$groupModel->canView())
 			{
 				continue;
@@ -649,7 +654,6 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
-		$srcs[] = 'media/com_fabrik/js/encoder.js';
 		FabrikHelperHTML::script($srcs, $str, 'fn' . $bkey);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}

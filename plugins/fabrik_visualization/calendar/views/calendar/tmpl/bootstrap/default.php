@@ -71,9 +71,6 @@ $row = $this->row;
 		</div>
 	</div>
 
-
-
-
 	<?php if ($row->intro_text != '')
 	{?>
 	<div><?php echo $row->intro_text;?></div>

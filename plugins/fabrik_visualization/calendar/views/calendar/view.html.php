@@ -55,7 +55,6 @@ class fabrikViewCalendar extends JViewLegacy
 
 		$calendar = $this->row;
 
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 		$params = $model->getParams();
 
@@ -67,7 +66,6 @@ class fabrikViewCalendar extends JViewLegacy
 			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
 		}
 
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 
 		// Get the active menu item
@@ -186,6 +184,8 @@ class fabrikViewCalendar extends JViewLegacy
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/calendar/calendar.js';
+
+		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs, $js);
 
 		$viewName = $this->getName();

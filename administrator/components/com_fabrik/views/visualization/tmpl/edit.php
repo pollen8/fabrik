@@ -17,22 +17,6 @@ JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
-
-$fbConfig = JComponentHelper::getParams('com_fabrik');
-$srcs = FabrikHelperHTML::framework();
-$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-$srcs[] = 'administrator/components/com_fabrik/views/visualization/adminvisualization.js';
-
-$opts = new stdClass;
-$opts->plugin = $this->item->plugin;
-
-$js = "
-	var options = " . json_encode($opts) . ";
-	var controller = new AdminVisualization(options);
-";
-
-FabrikHelperHTML::script($srcs, $js);
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
