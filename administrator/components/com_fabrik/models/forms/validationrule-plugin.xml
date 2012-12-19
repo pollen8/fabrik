@@ -11,6 +11,17 @@
 				repeat="true"
 				class="inputbox elementtype"
 				label="COM_FABRIK_ACTION" />
+				
+			<field name="plugin_published"
+				type="radio"
+				default="1"
+				repeat="true"
+				class="inputbox"
+				label="COM_FABRIK_PUBLISHED">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	</fields>
 	

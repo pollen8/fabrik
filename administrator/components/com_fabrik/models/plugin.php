@@ -72,6 +72,7 @@ class FabrikModelPlugin extends JModel
 		$data['params']['plugins'] = $this->getState('plugin');
 
 		$data['validationrule']['plugin'] = $this->getState('plugin');
+		$data['validationrule']['plugin_published'] = $this->getState('plugin_published');
 
 		$c = $this->getState('c') + 1;
 
