@@ -75,6 +75,9 @@ class FabrikViewElement extends JView
 		}
 		$this->assign('parent', $this->get('Parent'));
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
+		JText::script('JNO');
+		JText::script('JYES');
+		JText::script('COM_FABRIK_PUBLISHED');
 		parent::display($tpl);
 	}
 

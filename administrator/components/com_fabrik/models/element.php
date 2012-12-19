@@ -929,6 +929,7 @@ class FabrikModelElement extends JModelAdmin
 				$params->js_e_trigger = $post['js_e_trigger'][$c];
 				$params->js_e_condition = $post['js_e_condition'][$c];
 				$params->js_e_value = $post['js_e_value'][$c];
+				$params->js_published = $post['jform']['js_publised'][$c];
 				$params = json_encode($params);
 				if ($jsAction != '')
 				{
