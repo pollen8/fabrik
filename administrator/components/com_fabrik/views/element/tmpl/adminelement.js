@@ -82,7 +82,7 @@ var fabrikAdminElement = new Class({
 				js_e_condition: '',
 				js_e_value: '',
 				code: '',
-				js_published: true
+				js_published: 1
 			}};
 		}
 		opt.code = opt.code ? opt.code : '';
