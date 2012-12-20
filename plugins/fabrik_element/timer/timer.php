@@ -28,7 +28,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	public $hasSubElements = false;
 
 	/** @var  string  db table field type */
-	protected $fieldDesc = 'DATETIME';
+	protected $fieldDesc = 'TIME';
 
 	/**
 	 * Manupulates posted form data for insertion into database
@@ -38,13 +38,14 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	 *
 	 * @return  mixed
 	 */
+	 // Jaanus: works better when using datatype 'TIME' as above and forgetting any date part of data :)
 
 	public function storeDatabaseFormat($val, $data)
 	{
-		$return = "0000-00-00 " . $val;
-		$format = '%Y-%m-%d %H:%i:%s';
+		$return = $val;
+		$format = '%H:%i:%s';
 		$timebits = FabrikWorker::strToDateTime($return, $format);
-		$return = date('Y-m-d H:i:s', $timebits['timestamp']);
+		$return = date('H:i:s', $timebits['timestamp']);
 		return $return;
 	}
 
@@ -61,7 +62,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	{
 		if ($data != '')
 		{
-			$format = '%Y-%m-%d %H:%i:%s';
+			$format = '%H:%i:%s';
 			$timebits = FabrikWorker::strToDateTime($data, $format);
 			$data = date('H:i:s', $timebits['timestamp']);
 		}
