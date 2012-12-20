@@ -1195,7 +1195,7 @@ EOD;
 		$require[] = '});';
 		$require = implode("\n", $require);
 
-		if (JRequest::getCmd('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			echo '<script type="text/javascript">' . $require . '</script>';
 		}

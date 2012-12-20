@@ -60,6 +60,8 @@ class FabrikAdminViewLists extends JViewLegacy
 				break;
 		}
 		// Initialise variables.
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
@@ -74,7 +76,7 @@ class FabrikAdminViewLists extends JViewLegacy
 		$this->table_groups = $this->get('TableGroups');
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();

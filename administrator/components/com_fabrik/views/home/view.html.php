@@ -43,6 +43,8 @@ class FabrikAdminViewHome extends JViewLegacy
 
 	public function display($tpl = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
 		$db = FabrikWorker::getDbo(true);
@@ -54,7 +56,7 @@ class FabrikAdminViewHome extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
 
 	/**

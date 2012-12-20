@@ -30,10 +30,13 @@ class FabrikAdminViewForms extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialise variables.
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->packageOptions = $this->get('PackageOptions');
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -43,7 +46,7 @@ class FabrikAdminViewForms extends JViewLegacy
 
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
-		FabrikAdminHelper::addSubmenu(JRequest::getWord('view', 'lists'));
+		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();

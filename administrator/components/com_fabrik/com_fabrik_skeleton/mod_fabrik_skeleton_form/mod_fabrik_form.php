@@ -10,10 +10,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 $app = JFactory::getApplication();
-$option = JRequest::getCmd('option');
+$input = $app->input;
+$option = $input->getCmd('option');
 
 // Set option and package to {package}
-JRequest::setVar('option', 'com_{component_name}');
+$input->set('option', 'com_{component_name}');
 $prevUserState = $app->getUserState('com_fabrik.package', 'fabrik');
 $app->setUserState('com_fabrik.package', '{component_name}');
 
@@ -21,4 +22,4 @@ require_once  JPATH_SITE . '/modules/mod_fabrik_form/mod_fabrik_form_boot.php';
 
 // Revert option and package back to component name
 $app->setUserState('com_fabrik.package', $prevUserState);
-JRequest::setVar('option', $option);
+$input->set('option', $option);

@@ -32,7 +32,7 @@ if ($id == '')
 	JError::raiseError(500, 'Could not load package');
 }
 // Not 100% sure we need to set packageId now - most urls are now converted to com_{packagename}
-JRequest::setVar('packageId', $id);
+$input->set('packageId', $id);
 
 // Include dependancies
 jimport('joomla.application.component.controller');
@@ -47,7 +47,7 @@ $app->setUserState('com_fabrik.package', $option);
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 
-$controller = JRequest::getCmd('view');
+$controller = $input->getCmd('view');
 $path = JPATH_SITE . '/components/com_fabrik/controllers/' . $controller . '.php';
 if (JFile::exists($path))
 {
@@ -60,7 +60,6 @@ else
 
 $classname = 'FabrikController' . JString::ucfirst($controller);
 
-//JRequest::setVar('task', 'package.view');
 $config = array();
 $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
 
@@ -69,9 +68,9 @@ $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
  * the specific controller for that class - otherwse use $controller to load
  * required controller class
  */
-if (strpos(JRequest::getCmd('task'), '.') !== false)
+if (strpos($input->getCmd('task'), '.') !== false)
 {
-	$controller = explode('.', JRequest::getCmd('task'));
+	$controller = explode('.', $input->getCmd('task'));
 	$controller = array_shift($controller);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_SITE . '/components/com_fabrik/controllers/' . $controller . '.php';
@@ -80,8 +79,8 @@ if (strpos(JRequest::getCmd('task'), '.') !== false)
 		require_once $path;
 
 		// Needed to process J content plugin (form)
-		JRequest::setVar('view', $controller);
-		$task = explode('.', JRequest::getCmd('task'));
+		$input->set('view', $controller);
+		$task = explode('.', $input->getCmd('task'));
 		$task = array_pop($task);
 		$controller = new $classname($config);
 	}
@@ -94,7 +93,7 @@ else
 {
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$controller = new $classname($config);
-	$task = JRequest::getCmd('task');
+	$task = $input->getCmd('task');
 }
 $controller->execute($task);
 $controller->redirect();

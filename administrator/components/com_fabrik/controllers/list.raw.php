@@ -162,16 +162,18 @@ class FabrikAdminControllerList extends JControllerForm
 	public function order()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = JModel::getInstance('List', 'FabrikFEModel');
-		$id = JRequest::getInt('listid');
+		$id = $input->getInt('listid');
 		$model->setId($id);
-		JRequest::setvar('cid', $id);
+		$input->set('cid', $id);
 		$model->setOrderByAndDir();
 
 		// $$$ hugh - unset 'resetfilters' in case it was set on QS of original table load.
-		JRequest::setVar('resetfilters', 0);
-		JRequest::setVar('clearfilters', 0);
+		$input->set('resetfilters', 0);
+		$input->set('clearfilters', 0);
 		$this->view();
 	}
 }

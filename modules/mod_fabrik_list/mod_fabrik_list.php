@@ -35,6 +35,7 @@ $lang = JFactory::getLanguage();
 $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 $app = JFactory::getApplication();
+$input = $app->input;
 $document = JFactory::getDocument();
 
 // Ensure the package is set to fabrik
@@ -44,7 +45,7 @@ $app->setUserState('com_fabrik.package', 'fabrik');
 FabrikHelperHTML::framework();
 
 // $$$rob looks like including the view does something to the layout variable
-$origLayout = JRequest::getVar('layout');
+$origLayout = $input->get('layout');
 
 $listId = (int) $params->get('list_id', 1);
 $useajax = (int) $params->get('useajax', 0);
@@ -52,7 +53,7 @@ $random	= (int) $params->get('radomizerecords', 0);
 $limit = (int) $params->get('limit', 0);
 $showTitle = $params->get('show-title', '');
 $layout	= $params->get('fabriklayout', '');
-JRequest::setVar('layout', $layout);
+$input->set('layout', $layout);
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
@@ -65,7 +66,7 @@ if ($listId === 0)
 $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list))
 {
-	JRequest::setVar('fabrik_show_in_list', $listels->show_in_list);
+	$input->set('fabrik_show_in_list', $listels->show_in_list);
 }
 
 $viewName = 'list';
@@ -83,7 +84,7 @@ $model->setRenderContext($module->id);
 if ($limit !== 0)
 {
 	$app->setUserState('com_fabrik.list' . $model->getRenderContext() . '.limitlength', $limit);
-	JRequest::setVar('limit' . $listId, $limit);
+	$input->set('limit' . $listId, $limit);
 }
 
 if ($useajax !== '')
@@ -140,7 +141,7 @@ $view->isMambot = true;
 $view->error = $controller->getError();
 echo $view->display();
 
-JRequest::setVar('layout', $origLayout);
+$input->set('layout', $origLayout);
 
 // Set the package back to what it was before rendering the module
 $app->setUserState('com_fabrik.package', $prevUserState);

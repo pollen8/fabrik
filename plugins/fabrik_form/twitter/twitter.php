@@ -380,7 +380,7 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$formModel = $this->buildModel(JRequest::getInt('formid'));
+		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
 		$consumer_key = $input->get('twitter_consumer_key');
 		$consumer_secret = $input->get('twitter_consumer_secret');

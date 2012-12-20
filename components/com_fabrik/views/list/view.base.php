@@ -485,13 +485,15 @@ class FabrikViewListBase extends JViewLegacy
 		$document = JFactory::getDocument();
 		$menus = $app->getMenu();
 		$menu = $menus->getActive();
-		/** Because the application sets a default page title, we need to get it
+
+		/**
+		 * Because the application sets a default page title, we need to get it
 		 * right from the menu item itself
-		 *if there is a menu item available AND the form is not rendered in a content plugin or module
+		 * if there is a menu item available AND the form is not rendered in a content plugin or module
 		 */
 		if (is_object($menu) && !$this->isMambot)
 		{
-			$menu_params = new JRegistry( (string) $menu->params);
+			$menu_params = new JRegistry((string) $menu->params);
 			$params->set('page_title', $menu_params->get('page_title', $menu->title));
 			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
 		}
@@ -500,7 +502,7 @@ class FabrikViewListBase extends JViewLegacy
 			$params->set('show_page_title', $input->getInt('show_page_title', 0));
 			$params->set('page_title', $input->get('title', '', 'string'));
 		}
-		$params->set('show-title', JRequest::getInt('show-title', $params->get('show-title')));
+		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 
 		$title = $params->get('page_title');
 		if (empty($title))

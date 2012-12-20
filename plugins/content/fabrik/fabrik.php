@@ -263,7 +263,7 @@ class plgContentFabrik extends JPlugin
 				default:
 					if (array_key_exists(1, $m))
 					{
-						// $unused[trim($m[0])] = $m[1];//these are later set as jrequest vars if present in list view
+						// $unused[trim($m[0])] = $m[1];//these are later set as app->input vars if present in list view
 						$unused[] = trim($m[0]) . '=' . $m[1];
 					}
 			}

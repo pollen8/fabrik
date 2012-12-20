@@ -1286,7 +1286,7 @@ class FabrikFEModelList extends JModelForm
 		$origIncSesssionFilters = $input->get('fabrik_incsessionfilters', true);
 		$input->set('fabrik_incsessionfilters', false);
 		$query = $db->getQuery(true);
-		$query = $listModel->buildQueryWhere(JRequest::getVar('incfilters', 0), $query);
+		$query = $listModel->buildQueryWhere($input->getInt('incfilters', 0), $query);
 		if (!empty($pks))
 		{
 			// Only load the current record sets record counts
@@ -6339,11 +6339,10 @@ class FabrikFEModelList extends JModelForm
 		but it certainly breaks things like onCopyRow(), where (for instance) user
 		elements will get reset to 0 by this code.
 		*/
-		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
+		$repeatGroupCounts = $input->get('fabrik_repeat_group', array(), 'array');
 		if (!empty($origdata))
 		{
 			$gcounter = 0;
-			$repeatGroupCounts = $input->get('fabrik_repeat_group', array(), 'array');
 			foreach ($groups as $groupModel)
 			{
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
@@ -9232,7 +9231,7 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		// $$$ rob if admin filter task = filter and not list.filter
-		if ($task == 'filter' || ($app->isAdmin() && JRequest::getVar('task') == 'filter'))
+		if ($task == 'filter' || ($app->isAdmin() && $input->get('task') == 'filter'))
 		{
 			$this->setRenderContextFromRequest();
 		}

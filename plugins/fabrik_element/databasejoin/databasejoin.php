@@ -203,7 +203,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
-				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $app->input->get('value', '', 'string') . '%');
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
 			else

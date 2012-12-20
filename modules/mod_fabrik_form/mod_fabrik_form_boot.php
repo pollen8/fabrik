@@ -17,17 +17,18 @@ if (!defined('COM_FABRIK_FRONTEND'))
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
 $app = JFactory::getApplication();
+$input = $app->input;
 
 FabrikHelperHTML::framework();
 require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
 
 // $$$rob looks like including the view does something to the layout variable
-$origLayout = JRequest::getVar('layout');
+$origLayout = $input->get('layout');
 require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 require_once COM_FABRIK_FRONTEND . '/views/package/view.html.php';
 require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
 
-JRequest::setVar('layout', $origLayout);
+$input->set('layout', $origLayout);
 
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
@@ -41,34 +42,34 @@ $usersConfig->set('rowid', $rowid);
 $usekey = $params->get('usekey', '');
 if (!empty($usekey))
 {
-	JRequest::setVar('usekey', $usekey);
+	$input->set('usekey', $usekey);
 }
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
 $moduleAjax = $params->get('formmodule_useajax', true);
 
-$origView = JRequest::getVar('view');
+$origView = $input->get('view');
 
-JRequest::setVar('view', 'form');
+$input->set('view', 'form');
 $controller = new FabrikControllerForm;
 
 /* $$$rob for table views in category blog layouts when no layout specified in {} the blog layout
  * was being used to render the table - which was not found which gave a 500 error
 */
-JRequest::setVar('layout', $layout);
+$input->set('layout', $layout);
 
 // Display the view
 $controller->isMambot = true;
-$origFormid = JRequest::getInt('formid');
-$ajax = JRequest::getVar('ajax');
-JRequest::setVar('formid', $params->get('formid'));
+$origFormid = $input->getInt('formid');
+$ajax = $input->get('ajax');
+$input->set('formid', $params->get('formid'));
 
-JRequest::setVar('ajax', $moduleAjax);
+$input->set('ajax', $moduleAjax);
 echo $controller->display();
 
 // Reset the layout and view etc for when the component needs them
-JRequest::setVar('formid', $origFormid);
-JRequest::setVar('ajax', $ajax);
-JRequest::setVar('layout', $origLayout);
-JRequest::setVar('view', $origView);
+$input->set('formid', $origFormid);
+$input->set('ajax', $ajax);
+$input->set('layout', $origLayout);
+$input->set('view', $origView);
