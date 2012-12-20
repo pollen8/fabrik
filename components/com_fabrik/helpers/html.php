@@ -792,23 +792,24 @@ EOD;
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
+			// If custom list link - it loads via iframe (so must included &iframe=1 if loading fabrik page) - ensure bootstrap is loaded
+			if ($app->input->getInt('iframe') === 1 && $bootstrapped)
+			{
+				JHtml::_('bootstrap.framework');
+			}
+
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
 
-			if (self::inAjaxLoadedPage())
+			if (self::inAjaxLoadedPage() && !$bootstrapped)
 			{
-
-				if (!$bootstrapped)
-				{
-					// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
-					JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
-					JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
-				}
+				// $$$ rob 06/02/2012 recall ant so that Color.detach is available (needed for opening a window from within a window)
+				JHtml::_('script', 'media/com_fabrik/js/lib/art.js');
+				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
 			if (!self::inAjaxLoadedPage())
 			{
-
 				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
 
 				JText::script('COM_FABRIK_LOADING');
@@ -842,7 +843,6 @@ EOD;
 	{
 		$tipOpts = self::tipOpts();
 		$tipJs = array();
-		//$tipJs[] = "window.addEvent('fabrik.loaded', function () {";
 		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts). ");";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.list.updaterows', function () {";
 		$tipJs[] = "\t\t// Reattach new tips after list redraw";
@@ -851,8 +851,6 @@ EOD;
 		$tipJs[] = "\tFabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
 		$tipJs[] = "\t\tFabrik.tips.hideAll();";
 		$tipJs[] = "\t});";
-		//$tipJs[] = "});";
-		//$tipJs = array();
 		return implode("\n", $tipJs);
 	}
 
@@ -863,6 +861,7 @@ EOD;
 	 *
 	 * @return  void
 	 */
+
 	public static function iniRequireJs($shim = array())
 	{
 		$document = JFactory::getDocument();
@@ -874,8 +873,10 @@ EOD;
 		$deps->deps = array();
 		$j3 = FabrikWorker::j3();
 		$ext = self::isDebug() ? '' : '-min';
+		$newShim = array();
 		foreach ($shim as $k => &$s)
 		{
+			$k .= $ext;
 			if (isset($s->deps))
 			{
 				foreach ($s->deps as &$f)
@@ -883,15 +884,17 @@ EOD;
 					$f .= $ext;
 				}
 			}
+			$newShim[$k] = $s;
 			//echo "<pre>$k ";print_r($s);echo "</pre>";
 		}
+
 		$navigator = JBrowser::getInstance();
 		if ($navigator->getBrowser() == 'msie')
 		{
 			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
 		$deps->deps[] = 'fab/mootools-ext' . $ext;
-		$deps->deps[] = 'fab/lib/Event.mock' . $ext;
+		$deps->deps[] = 'fab/lib/Event.mock';
 
 
 		if ($j3)
@@ -906,33 +909,34 @@ EOD;
 			$deps->deps[] = 'fab/icongen' . $ext;
 		}
 
-		$framework['fab/fabrik'] = $deps;
+		$framework['fab/fabrik' . $ext] = $deps;
 
 		$deps = new stdClass;
 		$deps->deps = array('fab/fabrik');
-		$framework['fab/window'] = $deps;
+		$framework['fab/window' . $ext] = $deps;
 
 		$deps = new stdClass;
 		$deps->deps = array('fab/fabrik' . $ext, 'fab/element' . $ext);
-		$framework['fab/elementlist'] = $deps;
+		$framework['fab/elementlist' . $ext] = $deps;
 
 
-		$shim = array_merge($framework, $shim);
+		$newShim = array_merge($framework, $newShim);
 
-		//echo "<pre>";print_r($shim);;echo "</pre>";
-		$shim = json_encode($shim);
+		//echo "<pre>";print_r($newShim);;echo "</pre>";
+		$shim = json_encode($newShim);
 		foreach ($requirePaths as $reqK => $repPath)
 		{
-			$pathBits[] = "\n$reqK : '$repPath'";
+			$pathBits[] = "\n\t\t$reqK : '$repPath'";
 		}
 
 		$pathString = '{' . implode(',', $pathBits) . '}';
-		$document->addScriptDeclaration("require.config({
-				baseUrl: '" . COM_FABRIK_LIVESITE . "',
-				paths: " . $pathString . ",
-				shim: " . $shim . "
-		});");
-
+		$config = array();
+		$config[] = "require.config({";
+		$config[] = "\tbaseUrl: '" . COM_FABRIK_LIVESITE . "',";
+		$config[] = "\tpaths: " . $pathString . ",";
+		$config[] = "\tshim: " . $shim;
+		$config[] = "});";
+		$document->addScriptDeclaration(implode("\n", $config));
 	}
 
 	/**
