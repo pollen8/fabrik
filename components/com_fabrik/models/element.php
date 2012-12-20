@@ -2321,6 +2321,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$validations = (array) $params->get('validations', 'array');
 		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
+		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
@@ -2328,20 +2329,26 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$dispatcher = JDispatcher::getInstance();
 		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
+		$i = 0;
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')
 			{
-				$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
-				$conf = array();
-				$conf['name'] = JString::strtolower($usedPlugin);
-				$conf['type'] = JString::strtolower('fabrik_Validationrule');
-				$plugIn = new $class($dispatcher, $conf);
-				$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
-				$plugIn->elementModel = $this;
-				$this->validations[] = $plugIn;
-				$c++;
+				$isPublished = JArrayHelper::getValue($published, $i, true);
+				if ($isPublished)
+				{
+					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
+					$conf = array();
+					$conf['name'] = JString::strtolower($usedPlugin);
+					$conf['type'] = JString::strtolower('fabrik_Validationrule');
+					$plugIn = new $class($dispatcher, $conf);
+					$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
+					$plugIn->elementModel = $this;
+					$this->validations[] = $plugIn;
+					$c++;
+				}
 			}
+			$i ++;
 		}
 		return $this->validations;
 	}
@@ -2427,6 +2434,14 @@ class PlgFabrik_Element extends FabrikPlugin
 					elseif ($jsAct->js_e_condition == 'shown')
 					{
 						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+					}
+					elseif ($jsAct->js_e_condition == 'CONTAINS')
+					{
+						$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+					}
+					elseif ($jsAct->js_e_condition == '!CONTAINS')
+					{
+						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
 					}
 					else
 					{

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -58,6 +58,7 @@ class fabrikAdminViewPlugin extends JViewLegacy
 		$model->setState('plugin', $input->get('plugin'));
 		$model->setState('c', $input->getInt('c'));
 		$model->setState('id', $input->getInt('id', 0));
+		$model->setState('plugin_published', $input->get('plugin_published'));
 	}
 
 }

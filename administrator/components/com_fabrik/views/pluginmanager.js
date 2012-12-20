@@ -114,7 +114,14 @@ var PluginManager = new Class({
 	},
 	
 	addTop: function (plugin) {
-		plugin = plugin ? plugin : '';
+		if (typeOf(plugin) === 'string') {
+			published = 1;
+			plugin = plugin ? plugin : '';
+		} else {
+			// Validation plugins 
+			published = plugin ? plugin.published : 1;
+			plugin = plugin ? plugin.plugin : '';
+		}
 		var div = new Element('div.actionContainer.panel.accordion-group');
 		var a = new Element('a.accordion-toggle', {'href': '#'}).adopt(new Element('span.pluginTitle').set('text', plugin));
 		var toggler = new Element('div.title.pane-toggler.accordion-heading').adopt(
@@ -135,6 +142,7 @@ var PluginManager = new Class({
 				'format': 'raw',
 				'type': this.type,
 				'plugin': plugin,
+				'plugin_published': published,
 				'c': this.topTotal,
 				'id': this.id
 			},

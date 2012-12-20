@@ -1716,6 +1716,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$where .= $prefilterWhere;
 
 		$sql .= $where;
+
 		if (!JString::stristr($where, 'order by'))
 		{
 			$sql .= $this->getOrderBy('filter');
@@ -1743,14 +1744,40 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$params = $this->getParams();
 			$joinKey = $this->getJoinValueColumn();
 			$joinLabel = $this->getJoinLabelColumn();
-			$order = $params->get('filter_groupby', 'text') == 'text' ? $joinLabel : $joinKey;
+			$order = '';
+			switch ($params->get('filter_groupby', 'text'))
+			{
+				case 'text':
+					$oder = $joinLabel . 'ASC ';
+					break;
+				case 'value':
+					$order = $joinKey . 'ASC ';
+					break;
+				case '-1':
+				default:
+					// Check if the 'Joins where and/or order by statement' has an order by
+					$joinWhere = $params->get('database_join_where_sql');
+					if (JString::stristr($joinWhere, 'ORDER BY'))
+					{
+						$joinWhere = str_replace('order by', 'ORDER BY', $joinWhere);
+						$joinWhere = explode('ORDER BY', $joinWhere);
+						if (count($joinWhere) > 1)
+						{
+							$order = $joinWhere[count($joinWhere) - 1];
+						}
+					}
+					break;
+			}
 			if (!$query)
 			{
-				return " ORDER BY $order ASC ";
+				return $order === '' ? '' : ' ORDER BY ' . $order;
 			}
 			else
 			{
-				$query->order($order . ' ASC');
+				if ($order !== '')
+				{
+					$query->order($order);
+				}
 				return $query;
 			}
 		}

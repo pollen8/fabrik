@@ -472,6 +472,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 			if (array_key_exists($this->c, $chartWheres) && !empty($chartWheres[$this->c]))
 			{
 				$chartWhere = $this->_replaceRequest($chartWheres[$this->c]);
+				$chartWhere = $worker->replaceWithUserData($chartWhere);
 				$listModel->setPluginQueryWhere('fusionchart', $chartWhere);
 			}
 			else

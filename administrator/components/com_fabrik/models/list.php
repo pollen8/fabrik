@@ -559,11 +559,17 @@ class FabrikAdminModelList extends FabModelAdmin
 		$row->load($id);
 
 		$params = new JRegistry($row->params);
-		$origCollation = $params->get('collation', 'none');
+
 		$this->setState('list.id', $id);
 		$this->setState('list.form_id', $row->form_id);
 		$feModel = $this->getFEModel();
 		$formModel = $this->getFormModel();
+
+		// Get original collation
+		$db = $feModel->getDb();
+		$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
+		$info = $db->loadObject();
+		$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
 
 		if (!$row->bind($data))
 		{

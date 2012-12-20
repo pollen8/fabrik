@@ -307,6 +307,8 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.fireEvent = function (type, args, delay) {
 		var events = Fabrik.events;
+		
+		// An array of returned values from all events.
 		this.eventResults = [];
 		if (!events || !events[type]) {
 			return this;

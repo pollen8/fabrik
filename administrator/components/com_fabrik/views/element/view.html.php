@@ -90,7 +90,9 @@ class FabrikAdminViewElement extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
-
+		JText::script('JNO');
+		JText::script('JYES');
+		JText::script('COM_FABRIK_PUBLISHED');
 		parent::display($tpl);
 	}
 

@@ -262,7 +262,16 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$item = $this->getItem();
 		$plugins = FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
-		return $plugins;
+		$published = FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
+		$return = array();
+		for ($i = 0; $i < count($plugins); $i ++)
+		{
+			$o = new stdClass;
+			$o->plugin = $plugins[$i];
+			$o->published = JArrayHelper::getValue($published, $i, 1);
+			$return[] = $o;
+		}
+		return $return;
 	}
 
 	/**
@@ -928,6 +937,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$eTrigger = $input->get('js_e_trigger', array(), 'array');
 		$eCond = $input->get('js_e_condition', array(), 'array');
 		$eVal = $input->get('js_e_value', array(), 'array');
+		$ePublished = JArrayHelper::getValue($jform, 'js_publised');
 		if (array_key_exists('js_action', $jform) && is_array($jform['js_action']))
 		{
 			for ($c = 0; $c < count($jform['js_action']); $c++)
@@ -938,6 +948,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$params->js_e_trigger = $eTrigger[$c];
 				$params->js_e_condition = $eCond[$c];
 				$params->js_e_value = $eVal[$c];
+				$params->js_published = $ePublished[$c];
 				$params = json_encode($params);
 				if ($jsAction != '')
 				{
