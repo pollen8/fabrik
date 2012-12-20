@@ -418,7 +418,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s = new stdClass;
-		$s->deps = array('fab/element','element/databasejoin/databasejoin');
+		$s->deps = array('fab/element');
+		$shim['element/databasejoin/databasejoin'] = $s;
+
+		$s = new stdClass;
+		$s->deps = array('element/databasejoin/databasejoin');
 		$shim['element/user/user'] = $s;
 
 		parent::formJavascriptClass($srcs, $script, $shim);
