@@ -80,16 +80,27 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 		$strSlider = $this->slider();
 
-		$checked = $type[0] == 'mylocation' ? 'checked="checked"' : '';
-		$options = "<label>" . JText::_('PLG_VIEW_RADIUS_MY_LOCATION')
+		if ($params->get('myloc', 1) == 1)
+		{
+			$checked = $type[0] == 'mylocation' ? 'checked="checked"' : '';
+			$options = "<label>" . JText::_('PLG_VIEW_RADIUS_MY_LOCATION')
 			. "<input type=\"radio\" name=\"radius_search_type[]\" value=\"mylocation\" $checked /></label><br />";
-		$checked = $type[0] == 'place' ? 'checked="checked"' : '';
-		$options .= "<label>" . strip_tags($placeElement->label)
-			. "<input type=\"radio\" name=\"radius_search_type[]\" value=\"place\" $checked /></label><br />";
-		$checked = $type[0] == 'latlon' ? 'checked="checked"' : '';
-		$options .= "<label>" . JText::_('PLG_VIEW_RADIUS_COORDINATES')
-			. "<input type=\"radio\" name=\"radius_search_type[]\" value=\"latlon\" $checked /></label><br />";
+		}
 
+		if ($params->get('place', 1) == 1)
+		{
+			$checked = $type[0] == 'place' ? 'checked="checked"' : '';
+			$options .= "<label>" . strip_tags($placeElement->label)
+			. "<input type=\"radio\" name=\"radius_search_type[]\" value=\"place\" $checked /></label><br />";
+		}
+
+
+		if ($params->get('coords', 1) == 1)
+		{
+			$checked = $type[0] == 'latlon' ? 'checked="checked"' : '';
+			$options .= "<label>" . JText::_('PLG_VIEW_RADIUS_COORDINATES')
+			. "<input type=\"radio\" name=\"radius_search_type[]\" value=\"latlon\" $checked /></label><br />";
+		}
 		$active = $app->getUserStateFromRequest($baseContext . 'radius_serach_active', 'radius_search_active');
 		if ($active[0] == 1)
 		{
@@ -129,6 +140,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$f->required = '';
 		FabrikHelperHTML::addStyleDeclaration("table.radius_table{border-collapse:collapse;border:0;}
 		table.radius_table td{border:0;}");
+		JText::script('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE');
 		$model->viewfilters[] = $f;
 	}
 
