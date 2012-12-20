@@ -30,7 +30,7 @@ require_once COM_FABRIK_FRONTEND . '/views/list/view.html.php';
 JRequest::setVar('layout', $origLayout);
 
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
-JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $formId = (int) $params->get('form_id', 1);
 $rowid = (int) $params->get('row_id', 0);

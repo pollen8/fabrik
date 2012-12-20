@@ -19,9 +19,9 @@ if (!defined('COM_FABRIK_FRONTEND'))
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
-JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
-JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
-JTable::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_fabrik/tables');
+JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+JModelLegacy::addIncludePath(COM_FABRIK_BASE . '/administrator/components/com_fabrik/tables');
 
 require_once COM_FABRIK_FRONTEND . '/controller.php';
 require_once COM_FABRIK_FRONTEND . '/controllers/list.php';

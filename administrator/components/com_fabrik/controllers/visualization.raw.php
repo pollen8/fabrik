@@ -76,8 +76,8 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 
 			// Add the model path
-			$modelpaths = JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
-			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
+			$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/models');
+			$modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 
 			$origId = $input->getInt('visualizationid');
 			$input->set('visualizationid', $id);

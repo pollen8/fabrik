@@ -5,8 +5,8 @@
  *
  * @package     Joomla
  * @subpackage  Form
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 defined('JPATH_BASE') or die;
@@ -170,8 +170,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
-
-			if ($input->get('option') === 'com_fabrik')
+			$option = $input->get('option');
+			if ($option === 'com_fabrik')
 			{
 				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
@@ -179,16 +179,24 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			{
 				if (FabrikWorker::j3())
 				{
-					$j3pane = 'COM_MENUS_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
+					$j3pane = strtoupper($option) . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
 
 					$script = "window.addEvent('domready', function() {
 				var a = jQuery(\"a:contains('$j3pane')\");
-						a = a[0];
-						var href= a.get('href');
-						jQuery(href)[0].destroy();
-						a.getParent('.accordion-group').destroy();
-						" . $script . "
-						});";
+						if (a.length > 0) {
+							a = a[0];
+							var href= a.get('href');
+							jQuery(href)[0].destroy();
+
+							var accord = a.getParent('.accordion-group');
+							if (typeOf(accord) !== 'null') {
+								accord.destroy();
+							} else {
+								a.destroy();
+							}
+							" . $script . "
+						}
+					});";
 				}
 				else
 				{
@@ -212,7 +220,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		if (FabrikWorker::j3())
 		{
-			$str[] = '<button class="btn" id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
+			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
+			$str[] = '<button class="btn" id="' . $modalid . '_button">' . $icon . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
 		}
 		else
 		{

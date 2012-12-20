@@ -103,7 +103,7 @@ class FabrikControllerCron extends JController
 			$this->viewName = $item->plugin;
 			$this->addViewPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/views');
 			$this->addModelPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
-			JModel::addIncludePath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
+			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
 		}
 		return $this->viewName;
 	}

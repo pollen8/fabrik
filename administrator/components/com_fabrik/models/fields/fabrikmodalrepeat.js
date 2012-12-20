@@ -102,17 +102,31 @@ var FabrikModalRepeat = new Class({
 				
 				// Store radio button selections
 				var radiovals = this._getRadioValues(); 
-				
+				var clone;
 				if (tr.getChildren('th')) {
-					this.tmpl.clone().inject(tr, 'after');
+					clone = this.tmpl.clone();
+					clone.inject(tr, 'after');
 				} else {
-					tr.clone().inject(tr, 'after');
+					clone = tr.clone();
+					clone.inject(tr, 'after');
 				}
 				this.stripe();
 				
 				// Reapply values as renaming radio buttons 
 				this._setRadioValues(radiovals);
 				this.resizeWin();
+				
+				if (jQuery) {
+					
+					// Chosen reset 
+					clone.getElements('select').removeClass('chzn-done');
+					clone.getElements('.chzn-container').destroy();
+					
+					jQuery('select').chosen({
+						disable_search_threshold : 10,
+						allow_single_deselect : true
+					});
+				}
 			}
 			this.win.position();
 			e.stop();
