@@ -46,7 +46,7 @@ class FabrikViewList extends JView{
 				{
 					$o->data = $data[$groupk][$i];
 				}
-				$o->groupHeading = $model->groupTemplates[$groupk] . ' ( ' . count($group) . ' )';
+				$o->groupHeading = JArrayHelper::getValue($model->groupTemplates, $groupk, '') . ' ( ' . count($group) . ' )';
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
 				$o->id = 'list_' . $model->getRenderContext() . '_row_' . @$o->data->__pk_val;

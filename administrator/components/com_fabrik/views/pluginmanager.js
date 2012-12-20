@@ -107,7 +107,14 @@ var PluginManager = new Class({
 	},
 	
 	addTop: function (plugin) {
-		plugin = plugin ? plugin : '';
+		if (typeOf(plugin) === 'string') {
+			published = 1;
+			plugin = plugin ? plugin : '';
+		} else {
+			// Validation plugins 
+			published = plugin ? plugin.published : 1;
+			plugin = plugin ? plugin.plugin : '';
+		}
 		var div = new Element('div.actionContainer.panel');
 		var toggler = new Element('h3.title.pane-toggler').adopt(new Element('a', {'href': '#'}).adopt(new Element('span').set('text', plugin)));
 			
@@ -125,6 +132,7 @@ var PluginManager = new Class({
 				'format': 'raw',
 				'type': this.type,
 				'plugin': plugin,
+				'plugin_published': published,
 				'c': this.topTotal,
 				'id': this.id
 			},

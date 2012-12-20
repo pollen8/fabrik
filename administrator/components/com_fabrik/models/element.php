@@ -260,7 +260,16 @@ class FabrikModelElement extends JModelAdmin
 	{
 		$item = $this->getItem();
 		$plugins = FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
-		return $plugins;
+		$published = FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
+		$return = array();
+		for ($i = 0; $i < count($plugins); $i ++)
+		{
+			$o = new stdClass;
+			$o->plugin = $plugins[$i];
+			$o->published = JArrayHelper::getValue($published, $i, 1);
+			$return[] = $o;
+		}
+		return $return;
 	}
 
 	/**
@@ -920,6 +929,7 @@ class FabrikModelElement extends JModelAdmin
 				$params->js_e_trigger = $post['js_e_trigger'][$c];
 				$params->js_e_condition = $post['js_e_condition'][$c];
 				$params->js_e_value = $post['js_e_value'][$c];
+				$params->js_published = $post['jform']['js_publised'][$c];
 				$params = json_encode($params);
 				if ($jsAction != '')
 				{

@@ -649,7 +649,10 @@ class FabrikFEModelForm extends FabModelForm
 					$r->$k = $v;
 				}
 				unset($r->params);
-				$this->jsActions[$r->element_id][] = $r;
+				if (!isset($r->js_published) || (int) $r->js_published === 1)
+				{
+					$this->jsActions[$r->element_id][] = $r;
+				}
 			}
 		}
 		return $this->jsActions;

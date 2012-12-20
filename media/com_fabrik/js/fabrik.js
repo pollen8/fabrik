@@ -248,13 +248,13 @@ var Loader = new Class({
 		
 		Fabrik.fireEvent = function (type, args, delay) {
 			var events = Fabrik.events;
+			
+			// An array of returned values from all events.
+			this.eventResults = [];
 			if (!events || !events[type]) {
 				return this;
 			}
 			args = Array.from(args);
-			
-			// An array of returned values from all events.
-			this.eventResults = [];
 			events[type].each(function (fn) {
 				if (delay) {
 					this.eventResults.push(fn.delay(delay, this, args));
