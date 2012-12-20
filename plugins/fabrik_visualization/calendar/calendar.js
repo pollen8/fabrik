@@ -719,9 +719,7 @@ var fabrikCalendar = new Class({
 	
 	renderMonthView: function () {
 		var d, tr;
-		if (this.popWin) {
-			this.popWin.setStyle('opacity', 0);
-		}
+		this.fadePopWin(0);
 		var firstDate = this._getFirstDayInMonthCalendar(new Date());
 		
 		// Barbara : reorganize days labels according to first day of week
@@ -869,8 +867,11 @@ var fabrikCalendar = new Class({
 	
 	openChooseEventTypeForm: function (d, rawd)
 	{
-	//rowid is the record to load if editing 
+		// rowid is the record to load if editing 
 		var url = 'index.php?option=com_fabrik&tmpl=component&view=visualization&controller=visualization.calendar&task=chooseaddevent&id=' + this.options.calendarId + '&d=' + d + '&rawd=' + rawd;
+		
+		// Fix for renderContext when rendered in content plugin
+		url += '&renderContext=' + this.el.id.replace(/visualization_/, '');
 		this.windowopts.contentURL = url;
 		this.windowopts.id = 'chooseeventwin';
 		this.windowopts.onContentLoaded = function ()
@@ -936,7 +937,7 @@ var fabrikCalendar = new Class({
 
 	renderDayView: function () {
 		var tr, d;
-		this.popWin.setStyle('opacity', 0);
+		this.fadePopWin(0);
 		this.options.viewType = 'dayView';
 		if (!this.dayView) {
 			tbody = new Element('tbody');
@@ -1054,7 +1055,7 @@ var fabrikCalendar = new Class({
 	
 	renderWeekView: function () {
 		var i, d, tr, tbody, we;
-		this.popWin.setStyle('opacity', 0);
+		this.fadePopWin(0);
 		// For some reason, using '===' does not work, so une '==' instead ! 
 		// $$$ rob : Javascript MUST be strongly typed to pass JSLint in our build scripts
 		// As show weekends is a boolean I have specically cased it to such in the php code 
@@ -1171,11 +1172,13 @@ var fabrikCalendar = new Class({
 		this.ajax.updateEvents = new Request({url: this.options.url.add,
 		'data': d,
 		'evalScripts': true,
-		'onComplete': function (r) {
-			var text = r.stripScripts(true);
-			var json = JSON.decode(text);
-			this.addEntries(json);
-			this.showView();
+		'onSuccess': function (r) {
+			if (typeOf(r) !== 'null') {
+				var text = r.stripScripts(true);
+				var json = JSON.decode(text);
+				this.addEntries(json);
+				this.showView();
+			}
 		}.bind(this)
 		});
 		
@@ -1374,7 +1377,7 @@ var fabrikCalendar = new Class({
 	},
 	
 	nextPage: function () {
-		this.popWin.setStyle('opacity', 0);
+		this.fadePopWin(0);
 		switch (this.options.viewType) {
 		case 'dayView':
 			this.date.setTime(this.date.getTime() + this.DAY);
@@ -1393,8 +1396,14 @@ var fabrikCalendar = new Class({
 		Cookie.write('fabrik.viz.calendar.date', this.date);
 	},
 	
+	fadePopWin: function (o) {
+		if (this.popWin) {
+			this.popWin.setStyle('opacity', o);
+		}
+	},
+	
 	previousPage: function () {
-		this.popWin.setStyle('opacity', 0);
+		this.fadePopWin(0);
 		switch (this.options.viewType) {
 		case 'dayView':
 			this.date.setTime(this.date.getTime() - this.DAY);
