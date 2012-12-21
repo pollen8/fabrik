@@ -1575,7 +1575,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// $file = (array) $joindata['name'][$joinid][$name];
 			// return JArrayHelper::getValue($file, $repeatCounter, '') == '' ? true : false;
 
-			$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+			if ($groupModel->canRepeat())
+			{
+				$file = $joindata[$joinid][$name][$repeatCounter]['name'];
+			}
+			else
+			{
+				$file = $joindata[$joinid][$name]['name'];
+			}
 			return $file == '' ? true : false;
 		}
 		else
