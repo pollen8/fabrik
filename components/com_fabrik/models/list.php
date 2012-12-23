@@ -2090,7 +2090,10 @@ class FabrikFEModelList extends JModelForm
 			{
 				$orderbys = json_decode($table->order_by, true);
 			}
-
+			// $$$ not sure why, but sometimes $orderbys is NULL at this point.
+			if (!isset($orderbys)) {
+				$orderbys = array();
+			}
 			// Covert ids to names (were stored as names but then stored as ids)
 			foreach ($orderbys as &$orderby)
 			{
