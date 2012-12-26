@@ -170,7 +170,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
-			$prefix = JDEBUG ? '' : '.min';
+			$prefix = FabrikHelperHTML::isDebug() ? '' : '.min';
 			$runtimes = $params->get('ajax_runtime', 'html5');
 			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
 			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $prefix . '.js');
@@ -361,6 +361,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->dir = JPATH_SITE . '/' . $params->get('ul_directory');
 		$opts->ajax_upload = (bool) $params->get('ajax_upload', false);
 		$opts->ajax_runtime = $params->get('ajax_runtime', 'html5');
+		$opts->ajax_silverlight_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
+		$opts->ajax_flash_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->max_file_size = $params->get('ul_max_file_size');
 		$opts->ajax_chunk_size = (int) $params->get('ajax_chunk_size', 0);
 		$opts->crop = (int) $params->get('fileupload_crop', 0);
