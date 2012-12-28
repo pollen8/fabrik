@@ -384,10 +384,7 @@ class FabrikModelElement extends JModelAdmin
 			return false;
 		}
 		$db = FabrikWorker::getDbo(true);
-		if (FabrikWorker::isReserved($data['name']))
-		{
-			$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
-		}
+
 		$elementModel = $this->getElementPluginModel($data);
 		$nameChanged = $data['name'] !== $elementModel->getElement()->name;
 		$elementModel->getElement()->bind($data);
@@ -402,12 +399,20 @@ class FabrikModelElement extends JModelAdmin
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
+			if (FabrikWorker::isReserved($data['name']))
+			{
+				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
+			}
 		}
 		else
 		{
 			if ($listModel->canAlterFields() === false && $nameChanged && $listModel->noTable() === false)
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
+			}
+			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
+			{
+				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 			}
 		}
 		$listModel = $elementModel->getListModel();

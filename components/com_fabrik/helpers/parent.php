@@ -508,14 +508,24 @@ class FabrikWorker
 	 * Check a string is not reserved by Fabrik
 	 *
 	 * @param   string  $str  to check
+	 * @param   bool  $strict  incude things like rowid, listid in the reserved words, defaults to true
 	 *
 	 * @return bool
 	 */
 
-	public static function isReserved($str)
+	public static function isReserved($str, $strict = true)
 	{
-		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size", "ul_file_types", "ul_directory",
-			"listid", 'rowid', 'itemid', 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
+		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size", "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
+		/*
+		 * $$$ hugh - a little arbitrary, but need to be able to exlude these so people can create lists from things like
+		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
+		 * to false if it's not a new element.
+		 */
+		$_strictWords = array("listid", 'rowid', 'itemid');
+		if ($strict)
+		{
+			$_reservedWords = array_merge($_reservedWords, $_strictWords);
+		}
 		if (in_array(JString::strtolower($str), $_reservedWords))
 		{
 			return true;
