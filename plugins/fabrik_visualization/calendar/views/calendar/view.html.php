@@ -135,7 +135,7 @@ class fabrikViewCalendar extends JView
 		$options->monthday = new stdClass;
 		$options->monthday->width = (int) $params->get('calendar-monthday-width', 90);
 		$options->monthday->height = (int) $params->get('calendar-monthday-height', 80);
-		$options->greyscaledweekend = $params->get('greyscaled-week-end', 0);
+		$options->greyscaledweekend = $params->get('greyscaled-week-end', 0) === '1';
 		$options->viewType = $params->get('calendar_default_view', 'monthView');
 
 		$options->weekday = new stdClass;

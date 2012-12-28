@@ -1459,7 +1459,7 @@ var fabrikCalendar = new Class({
      * Returns : #RRGGBB param or greyscale converted color string.
      */
     _getColor: function (aColor, aDate) {
-        if (this.options.greyscaledweekend === 0) {
+        if (!this.options.greyscaledweekend) {
             return aColor;
         }
         var c = new Color(aColor);
