@@ -227,6 +227,20 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
+	 * Should the grid be rendered as a Bootstrap button-group
+	 *
+	 * @since 3.1
+	 *
+	 * @return  bool
+	 */
+
+	protected function buttonGroup()
+	{
+		$params = $this->getParams();
+		return FabrikWorker::j3() && $params->get('btnGroup', true);
+	}
+
+	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter

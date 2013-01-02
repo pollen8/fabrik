@@ -1655,32 +1655,41 @@ EOD;
 	/**
 	 * Make a grid of items
 	 *
-	 * @param   array   $values              option values
-	 * @param   array   $labels              option labels
-	 * @param   array   $selected            selected options
-	 * @param   string  $name                input name
-	 * @param   string  $type                *checkbox/radio etc
-	 * @param   bool    $elementBeforeLabel  element before or after the label
-	 * @param   int     $optionsPerRow       number of suboptions to show per row
+	 * @param   array   $values              Option values
+	 * @param   array   $labels              Option labels
+	 * @param   array   $selected            Selected options
+	 * @param   string  $name                Input name
+	 * @param   string  $type                Checkbox/radio etc
+	 * @param   bool    $elementBeforeLabel  Element before or after the label - deprecated - not used in Joomla 3
+	 * @param   int     $optionsPerRow       Number of suboptions to show per row
+	 * @param   array   $classes             Label classes
+	 * @param   bool    $buttonGroup         Should it be rendered as a bootstrap button group (radio only)
 	 *
 	 * @return  string  grid
 	 */
 
-	public static function grid($values, $labels, $selected, $name, $type = "checkbox", $elementBeforeLabel = true, $optionsPerRow = 4)
+	public static function grid($values, $labels, $selected, $name, $type = "checkbox", $elementBeforeLabel = true, $optionsPerRow = 4, $classes = array(), $buttonGroup = false)
 	{
 		$items = array();
+
+		if (FabrikWorker::j3())
+		{
+			$elementBeforeLabel = true;
+		}
 		for ($i = 0; $i < count($values); $i++)
 		{
 			$item = array();
 			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label = '<span>' . $labels[$i] . '</span>';
+			$label = FabrikWorker::j3() ? $labels[$i] : '<span>' . $labels[$i] . '</span>';
 
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
-			$chx = '<input type="' . $type . '" class="fabrikinput ' . $type . '" name="' . $thisname . '" value="' . $value . '" ';
+			$inputClass = FabrikWorker::j3() ? '' : $type;
+			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
-			$item[] = '<label class="fabrikgrid_' . $value .  '">';
+			$labelClass = FabrikWorker::j3() ? $type : '';
+			$item[] = '<label class="fabrikgrid_' . $value .  ' ' . $labelClass . '">';
 			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
@@ -1690,7 +1699,7 @@ EOD;
 		$optionsPerRow = empty($optionsPerRow) ? 4 : $optionsPerRow;
 		$w = floor(100 / $optionsPerRow);
 		$widthConstraint = '';
-		if (($optionsPerRow === 1 || $optionsPerRow > count($items)) && FabrikWorker::j3())
+		if ($buttonGroup && $type == 'radio')
 		{
 			$grid[] = '<fieldset class="' . $type . ' btn-group">';
 			foreach ($items as $i => $s)
@@ -1701,13 +1710,36 @@ EOD;
 		}
 		else
 		{
-			$grid[] = '<ul>';
-			foreach ($items as $i => $s)
+			if (FabrikWorker::j3())
 			{
-				$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
-				$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
+				$span = floor(12 / $optionsPerRow);
+				foreach ($items as $i => $s)
+				{
+					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
+					if ($endLine)
+					{
+						$grid[] = '</div>';
+					}
+
+					$newLine = ($i % $optionsPerRow == 0);
+					if ($newLine)
+					{
+						$grid[] = '<div class="row-fluid">';
+					}
+
+					$grid[] = '<div class="span' . $span . '">' . $s . '</div>';
+				}
 			}
-			$grid[] = '</ul>';
+			else
+			{
+				$grid[] = '<ul>';
+				foreach ($items as $i => $s)
+				{
+					$clear = ($i % $optionsPerRow == 0) ? 'clear:left;' : '';
+					$grid[] = '<li style="' . $clear . 'float:left;width:' . $w . '%;padding:0;margin:0;">' . $s . '</li>';
+				}
+				$grid[] = '</ul>';
+			}
 		}
 		return $grid;
 	}

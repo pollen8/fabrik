@@ -535,7 +535,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$optionsPerRow = 1;
 		}
 		$classes = $this->labelClasses();
-		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes);
+		$buttonGroup = $this->buttonGroup();
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
 
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
 
@@ -546,6 +547,20 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$grid[] = $this->getAddOptionFields($repeatCounter, $onlylabel);
 		}
 		return implode("\n", $grid);
+	}
+
+	/**
+	 * Should the grid be rendered as a Bootstrap button-group
+	 *
+	 * @since 3.1
+	 *
+	 * @return  bool
+	 */
+
+	protected function buttonGroup()
+	{
+		$params = $this->getParams();
+		return FabrikWorker::j3() && $params->get('btnGroup', false);
 	}
 
 	protected function labelClasses()

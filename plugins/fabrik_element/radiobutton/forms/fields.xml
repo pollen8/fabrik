@@ -5,35 +5,53 @@
 		
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
-			<field default="0"
+			<field name="options_per_row"
+				default="4"
+				class="input-mini"
+				label="PLG_ELEMENT_RADIO_OPTIONS_PER_ROW_LABEL"
+				size="2"
+				type="width"/>
+				
+			<field name="btnGroup"
+				type="radio"
 				class="btn-group"
-				description="PLG_ELEMENT_RADIO_ELEMENT_BEFORE_LABEL_DESC" label="PLG_ELEMENT_RADIO_ELEMENT_BEFORE_LABEL_LABEL" name="radio_element_before_label" type="radio">
+				default="0"
+				label="PLG_ELEMENT_RADIO_BTN_GROUP_LABEL"
+				description="PLG_ELEMENT_RADIO_BTN_GROUP_DESC">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="4" label="PLG_ELEMENT_RADIO_OPTIONS_PER_ROW_LABEL" name="options_per_row" size="2" type="width"/>
-				
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_RADIO_FRONT_END_ADDITIONS" name="plg-radiobutton-add">
-			<field default="0"
+		
+			<field name="allow_frontend_addtoradio"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_RADIO_ADD_OPTION_DESC" label="PLG_ELEMENT_RADIO_ADD_OPTION_LABEL" name="allow_frontend_addtoradio" type="radio">
+				description="PLG_ELEMENT_RADIO_ADD_OPTION_DESC"
+				label="PLG_ELEMENT_RADIO_ADD_OPTION_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="rad-allowadd-onlylabel"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_LABEL" name="rad-allowadd-onlylabel" type="radio">
+				description="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_DESC"
+				label="PLG_ELEMENT_RADIO_ONLY_ADD_LABEL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="rad-savenewadditions"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_LABEL" name="rad-savenewadditions" type="radio">
+				description="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_DESC"
+				label="PLG_ELEMENT_RADIO_SAVE_NEW_ADDITIONS_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
