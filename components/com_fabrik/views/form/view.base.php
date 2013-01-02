@@ -401,7 +401,7 @@ class FabrikViewFormBase extends JViewLegacy
 			foreach ($elementModels as $elementModel)
 			{
 				$res = $elementModel->useEditor();
-				if ($res !== false)
+				if ($res !== false && $elementModel->canUse() && $model->isEditable())
 				{
 					$aWYSIWYGNames[] = $res;
 				}
@@ -433,7 +433,6 @@ class FabrikViewFormBase extends JViewLegacy
 				}
 			}
 		}
-
 		FabrikHelperHTML::iniRequireJS($shim);
 		$actions = trim(implode("\n", $jsActions));
 		$params = $model->getParams();
