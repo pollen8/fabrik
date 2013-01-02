@@ -204,6 +204,9 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 	public function onGetPostFilter($params, &$model, &$args)
 	{
+		// Returning here as was creating odd results with empty filters for other elements - seems to work without this anyway???
+		return;
+
 		$this->model = $model;
 		$filters = $model->tmpFilters;
 		$v = JRequest::getVar('radius_search_distance');
@@ -260,7 +263,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
-		$values = JArrayHelper::getValue($filters, 'value', array());
+		$values = JArrayHelper::getValue($this->filters, 'value', array());
 		$type = JRequest::getVar('radius_search_type');
 		if ($type[0] == 'place')
 		{

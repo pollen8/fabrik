@@ -241,7 +241,7 @@ class plgFabrik_List extends FabrikPlugin
 	public function onGetFilterKey()
 	{
 		$this->filterKey = JString::strtolower(str_replace('plgFabrik_List', '', get_class($this)));
-		return true;
+		return $this->filterKey;
 	}
 
 	/**
