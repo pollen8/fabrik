@@ -128,17 +128,31 @@ var fabrikCalendar = new Class({
 			x = new Element('a', {'href': entry.link, 'class': 'fabrikEditEvent', 
 				'events': {
 				'click': function (e) {
-						e.stop();
-						var o = {};
-						var i = e.target.getParent('.fabrikEvent').id.replace('fabrikEvent_', '').split('_');
-						o.rowid = i[1];
-						o.listid = i[0];
-						this.addEvForm(o);					
+						Fabrik.fireEvent('fabrik.viz.calendar.event', [e]);
+						if (!entry.custom) {
+							e.stop();
+							var o = {};
+							var i = e.target.getParent('.fabrikEvent').id.replace('fabrikEvent_', '').split('_');
+							o.rowid = i[1];
+							o.listid = i[0];
+							this.addEvForm(o);
+						}
 					}.bind(this)
 			}
 			}).appendText(label);
 		} else {
-			x = new Element('span').appendText(label);
+			if (entry.custom) {
+				label = label === '' ? 'click' : label;
+				x = new Element('a', {'href': entry.link,
+					'events': {
+						'click': function (e) {
+								Fabrik.fireEvent('fabrik.viz.calendar.event', [e]);
+							}
+					}
+				}).appendText(label);
+			} else {
+				x = new Element('span').appendText(label);
+			}
 		}
 		eventCont.adopt(x);
 		return eventCont;
@@ -223,7 +237,7 @@ var fabrikCalendar = new Class({
 				td.setProperties({'class': ''});
 				td.addClass(firstDate.getTime());
 				
-				//no need to unset as this is done in setProperties above
+				// No need to unset as this is done in setProperties above
 				if (firstDate.getMonth() !== this.date.getMonth()) {
 					td.addClass('otherMonth');
 				}
@@ -246,7 +260,7 @@ var fabrikCalendar = new Class({
 		
 				var j = 0;
 				this.entries.each(function (entry) {
-					// between (end date present) or same (no end date)
+					// Between (end date present) or same (no end date)
 					if ((entry.enddate !== '' && firstDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 						var existingEvents = td.getElements('.fabrikEvent').length;
 						var height = 20;
