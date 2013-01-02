@@ -54,9 +54,13 @@ class FabrikAdminViewHome extends JViewLegacy
 		$this->logs = $db->loadObjectList();
 		$this->feed = $this->get('RSSFeed');
 		$this->addToolbar();
+		FabrikAdminHelper::addSubmenu('home');
 		FabrikAdminHelper::setViewLayout($this);
+		if (FabrikWorker::j3())
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
 		parent::display($tpl);
-		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
 
 	/**

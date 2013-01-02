@@ -97,6 +97,7 @@ class FabrikAdminHelper
 	{
 		if (FabrikWorker::j3())
 		{
+			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_HOME'), 'index.php?option=com_fabrik', $vName == 'home');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_LISTS'), 'index.php?option=com_fabrik&view=lists', $vName == 'lists');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_FORMS'), 'index.php?option=com_fabrik&view=forms', $vName == 'forms');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_GROUPS'), 'index.php?option=com_fabrik&view=groups', $vName == 'groups');

@@ -57,17 +57,17 @@ window.addEvent('domready', function () {
 	?>
 		<input type="hidden" name="listid" value="<?php echo $id ;?>" />
 
-<?php foreach ($fieldsets as $n => $fieldset) :?>
+	<?php
+	foreach ($fieldsets as $n => $fieldset) :?>
 	<fieldset class="form-horizontal">
-		<?php if ($n == 0) :
-		echo '<legend>' . JText::_('COM_FABRIK_IMPORT_CSV') . '</legend>';
+		<?php
+		if ($n == 0) :
+			echo '<legend>' . JText::_('COM_FABRIK_IMPORT_CSV') . '</legend>';
 		endif;
-		?>
-		<?php foreach ($this->form->getFieldset($fieldset) as $this->field) :
+		foreach ($this->form->getFieldset($fieldset) as $this->field) :
 			echo $this->loadTemplate('control_group');
 		endforeach;
 		?>
-
 	</fieldset>
 	<?php endforeach;?>
 
