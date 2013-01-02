@@ -804,7 +804,6 @@ EOD;
 
 				if ($navigator->getBrowser() == 'msie' && $config->get('flexie', true))
 				{
-					echo "flex!";
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
