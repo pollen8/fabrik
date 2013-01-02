@@ -800,8 +800,11 @@ EOD;
 
 				JText::script('COM_FABRIK_LOADING');
 				$navigator = JBrowser::getInstance();
-				if ($navigator->getBrowser() == 'msie')
+				$config = JComponentHelper::getParams('com_fabrik');
+
+				if ($navigator->getBrowser() == 'msie' && $config->get('flexie', true))
 				{
+					echo "flex!";
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';

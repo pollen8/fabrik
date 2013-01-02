@@ -153,6 +153,15 @@
 				<option value="2">JYES</option>
 		</field>
 		
+		<field name="flexie"
+			type="radio"
+			default="1"
+			label="COM_FABRIK_FLEXIE_LABEL"
+			description="COM_FABRIK_FLEXIE_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
 		<field name="tipfx"
 			description="COM_FABRIK_TIP_FX_DESC"
 			label="COM_FABRIK_TIP_FX_LABEL"
