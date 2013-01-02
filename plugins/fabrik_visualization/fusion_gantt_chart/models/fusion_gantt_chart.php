@@ -65,7 +65,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 		$formModel = $listModel->getFormModel();
 		$db = $listModel->getDB();
 		$table = $listModel->getTable()->db_table_name;
-		$process = $params->get('fusion_gantt_chart_process');
+		$process = (string) $params->get('fusion_gantt_chart_process');
 		$processraw = $process . '_raw';
 		$start = $params->get('fusion_gantt_chart_startdate');
 		$startraw = $start . '_raw';
@@ -82,7 +82,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 		$uses = array($process, $start, $end, $label, $hover, $milestone, $connector);
 		foreach ($uses as $use)
 		{
-			if ($use !== '')
+			if ($use != '')
 			{
 				$formModel->getElement($use)->getAsField_html($fields, $names);
 			}
@@ -114,36 +114,20 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 			foreach ($groupedData as $d)
 			{
 				$hovertext = $hover == '' ? '' : $this->prepData($d->$hover);
-				$processid = $process == '' ? 0 : $this->prepData($d->$processraw);
+				$processid = $process == '' ? $c : $this->prepData($d->$processraw);
 				if ($d->$startraw == $db->getNullDate())
 				{
 					continue;
 				}
 				$startdate = JFactory::getDate($d->$startraw);
-				if (isset($d->$endraw))
-				{
-					$enddate = JFactory::getDate($d->$endraw);
-				}
-				else
-				{
-					$enddate = $startdate;
-				}
+				$enddate = isset($d->$endraw) ? JFactory::getDate($d->$endraw) : $startdate;
+
 				$strParam = "start=" . $startdate->toFormat('%Y/%m/%d') . ";end=" . $enddate->toFormat('%Y/%m/%d') . ";";
-				if ($process !== '')
-				{
-					$strParam .= "processId={$processid};";
-				}
+				$strParam .= "processId={$processid};";
 				$strParam .= "id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
 				$strParam .= "link={$d->fabrik_view_url};";
 
-				if (isset($d->$label))
-				{
-					$l = $this->prepData($d->$label);
-				}
-				else
-				{
-					$l = '';
-				}
+				$l =  isset($d->$label) ? $this->prepData($d->$label) : '';
 				$this->fc->addGanttTask($l, $strParam);
 
 				if ($milestone !== '' && $d->$milestoneraw == 1)
@@ -158,10 +142,11 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 					$this->fc->addGanttConnector($d->$connectorraw, $d->__pk_val, "color=99cc00;thickness=2;");
 				}
 				// Apply processes
-				if (!in_array($processid, $usedProcesses) && $process !== '')
+				if (!in_array($processid, $usedProcesses))
 				{
 					$usedProcesses[] = $processid;
-					$this->fc->addGanttProcess($this->prepData($d->$process), "id={$processid};");
+					$processLabel = $process == '' ? '' : $this->prepData($d->$process);
+					$this->fc->addGanttProcess($processLabel, "id={$processid};");
 				}
 				// Increaes max/min date range
 				if (is_null($mindate))
