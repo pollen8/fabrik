@@ -80,6 +80,16 @@
 					<option value="1">JYES</option>	
 			</field>
 			
+			<field name="geocode"
+				type="radio"
+				default="1"
+				repeat="true"
+				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_GEOCODE_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
 		</fieldset>
 		
 	</fields>

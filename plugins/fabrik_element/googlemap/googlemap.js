@@ -55,14 +55,15 @@ var FbGoogleMap = new Class({
 	},
 	
 	loadScript: function () {
-		if (typeOf(Fabrik.googleMap) === 'null') {
+		var s = this.options.sensor === false ? 'false' : 'true';
+		Fabrik.loadGoogleMap(s, 'googlemapload');
+		/*if (typeOf(Fabrik.googleMap) === 'null') {
 			var script = document.createElement("script");
 			script.type = "text/javascript";
-			var s = this.options.sensor === false ? 'false' : 'true';
 			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
 			document.body.appendChild(script);
 			Fabrik.googleMap = true;
-		}
+		}*/
 	},
 	
 	initialize: function (element, options) {

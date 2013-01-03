@@ -267,6 +267,16 @@ var Loader = new Class({
 		
 		Fabrik.requestQueue = new RequestQueue();
 		
+		Fabrik.loadGoogleMap = function (s, cb) {
+			if (typeOf(Fabrik.googleMap) === 'null') {
+				var script = document.createElement("script");
+				script.type = "text/javascript";
+				script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=' + cb;
+				document.body.appendChild(script);
+				Fabrik.googleMap = true;
+			}
+		};
+		
 		/** Globally observe delete links **/
 		
 		Fabrik.watchDelete = function (e, target) {
