@@ -1869,7 +1869,7 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		if ($model->isEditable())
 		{
-			echo "editable";
+		//	echo "editable";
 		}
 		switch ($model->getParams()->get('tiplocation'))
 		{
