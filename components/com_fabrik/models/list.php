@@ -841,11 +841,15 @@ class FabrikFEModelList extends JModelForm
 		{
 			$w = new FabrikWorker;
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
-			$requestGroupBy = JRequest::getCmd('group_by');
+			$requestGroupBy = JRequest::getCmd('group_by', '');
 			if ($requestGroupBy == '')
 			{
 
 				$groupTemplate = $tableParams->get('group_by_template');
+				if ($groupTemplate == '')
+				{
+					$groupTemplate = '{' . $groupBy . '}';
+				}
 			}
 			else
 			{
@@ -869,7 +873,15 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					$sdata = strip_tags($data[$i]->$groupBy);
+					$sdata = $data[$i]->$groupBy;
+
+					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
+					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
+					if (!($xml->count() === 1 && $xml->children()[0]->getName() == 'a'))
+					{
+						$sdata = strip_tags($sdata);
+					}
+
 					if (!in_array($sdata, $aGroupTitles))
 					{
 						$aGroupTitles[] = $sdata;
