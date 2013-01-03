@@ -877,7 +877,8 @@ class FabrikFEModelList extends JModelForm
 
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
-					if (!($xml->count() === 1 && $xml->children()[0]->getName() == 'a'))
+					$children = $xml->children();
+					if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
 					{
 						$sdata = strip_tags($sdata);
 					}
