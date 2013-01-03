@@ -11,7 +11,7 @@
  ?>
 <ul>
 <?php foreach ($this->elements as $element) :
-	if ($this->tipLocation == 'above') :?>
+	if ($this->tipLocation == 'above' && $element->tipAbove != '') :?>
 		<li><?php echo $element->tipAbove?></li>
 	<?php
 	endif;
@@ -32,7 +32,7 @@
 		?>
 		</div>
 	</li>
-	<?php if ($this->tipLocation == 'below') :?>
+	<?php if ($this->tipLocation == 'below' && $element->tipBelow != '') :?>
 		<li><?php echo $element->tipBelow?></li>
 	<?php endif;
 	endforeach;

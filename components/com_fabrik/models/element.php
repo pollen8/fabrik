@@ -1524,7 +1524,12 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$data = $this->getFormModel()->_data;
 		}
+		$model = $this->getFormModel();
 		$params = $this->getParams();
+		if (!$model->isEditable() && !$params->get('labelindetails'))
+		{
+			return '';
+		}
 		$w = new FabrikWorker;
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
 		if ($params->get('tipseval'))
@@ -1861,6 +1866,10 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($tip !== '')
 		{
 			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('questionmark.png', 'form', $tmpl) . $tip . '</div>';
+		}
+		if ($model->isEditable())
+		{
+			echo "editable";
 		}
 		switch ($model->getParams()->get('tiplocation'))
 		{
