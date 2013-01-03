@@ -1269,7 +1269,7 @@ var FbForm = new Class({
 
 	hideLastGroup : function (groupid, subGroup) {
 		var sge = subGroup.getElement('.fabrikSubGroupElements');
-		var notice = new Element('div', {'class': 'fabrikNotice'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
+		var notice = new Element('div', {'class': 'fabrikNotice alert'}).appendText(Joomla.JText._('COM_FABRIK_NO_REPEAT_GROUP_DATA'));
 		if (typeOf(sge) === 'null') {
 			sge = subGroup;
 			var add = sge.getElement('.addGroup');

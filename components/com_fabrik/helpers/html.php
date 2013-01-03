@@ -1188,7 +1188,6 @@ EOD;
 		}
 		$files = array_unique($files);
 		$files = "['" . implode("', '", $files) . "']";
-		//$require = array();
 		$require[] = 'require(' . ($files) . ', function () {';
 		$require[] = $onLoad;
 		$require[] = '});';
@@ -1200,7 +1199,8 @@ EOD;
 		}
 		else
 		{
-			$document->addScriptDeclaration($require);
+			// Caused doubling up of script in page
+			//$document->addScriptDeclaration($require);
 		}
 		self::$requireJS[] = $require;
 	}

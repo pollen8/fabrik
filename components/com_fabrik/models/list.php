@@ -8449,10 +8449,10 @@ class FabrikFEModelList extends JModelForm
 				* Instead they are aded to the filter sessions and reapplied that way
 				* otherwise we ended up with elementname=Array in the query string
 				*/
-				if ($el === false)
+				/* if ($el === false)
 				{
 					$qs[] = $k . '=' . $v;
-				}
+				} */
 			}
 			else
 			{

@@ -77,27 +77,28 @@ foreach ($this->groups as $group) :
 			foreach ($group->subgroups as $subgroup) :
 			?>
 				<div class="fabrikSubGroup">
+
+					<?php if ($group->editable) : ?>
+						<div class="fabrikGroupRepeater pull-right">
+							<?php if ($group->canAddRepeat) :?>
+							<a class="addGroup" href="#">
+								<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
+							</a>
+							<?php
+							endif;
+							if ($group->canDeleteRepeat) :?>
+							<a class="deleteGroup" href="#">
+								<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
+							</a>
+							<?php endif;?>
+						</div>
+					<?php endif; ?>
 					<div class="fabrikSubGroupElements">
 						<?php
 						$this->elements = $subgroup;
 						echo $this->loadTemplate($groupTmpl);
 						?>
 					</div>
-					<?php if ($group->editable) : ?>
-						<div class="fabrikGroupRepeater">
-							<?php if ($group->canAddRepeat) :?>
-							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('plus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
-							</a>
-							<?php
-							endif;
-							if ($group->canDeleteRepeat) :?>
-							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('minus-sign.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
-							</a>
-							<?php endif;?>
-						</div>
-					<?php endif; ?>
 				</div>
 				<?php
 			endforeach;

@@ -653,7 +653,7 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
-		FabrikHelperHTML::script($srcs, $str, 'fn' . $bkey);
+		FabrikHelperHTML::script($srcs, $str);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}
 
