@@ -1867,10 +1867,6 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('questionmark.png', 'form', $tmpl) . $tip . '</div>';
 		}
-		if ($model->isEditable())
-		{
-			echo "editable";
-		}
 		switch ($model->getParams()->get('tiplocation'))
 		{
 			default:
