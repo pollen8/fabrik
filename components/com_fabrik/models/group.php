@@ -200,6 +200,7 @@ class FabrikFEModelGroup extends FabModel
 				continue;
 			}
 			$this->canView = true;
+			break;
 		}
 
 		// Get the group access level
@@ -225,7 +226,7 @@ class FabrikFEModelGroup extends FabModel
 		 * multi page forms where we were trying to set/check errors in groups which were not attached to the form.
 		 */
 		$formModel = $this->getFormModel();
-		$showGroup = $params->get('repeat_group_show_first', '');
+		$showGroup = $params->get('repeat_group_show_first', '1');
 		if ($showGroup == 0)
 		{
 			$this->canView = false;
