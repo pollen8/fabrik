@@ -182,11 +182,12 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 
 		// Add link to record
 		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&view=details&fabrik=" . $formModel->getId();
-		if (JRequest::getVar('usekey'))
+		$useKey = $app->input->get('usekey');
+		if ($useKey)
 		{
-			$viewURL .= "&usekey=" . JRequest::getVar('usekey');
+			$viewURL .= "&usekey=" . $useKey;
 		}
-		$viewURL .= "&rowid=" . JRequest::getVar('rowid');
+		$viewURL .= "&rowid=" . $app->input->get('rowid');
 
 		$msg = JString::str_ireplace('{LINK}', $viewURL, $msg);
 

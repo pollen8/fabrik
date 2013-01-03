@@ -1,19 +1,18 @@
-function geoCode () {
+function geoCode() {
 	window.addEvent('domready', function () {
 		var latlng = new google.maps.LatLng(-34.397, 150.644);
-	    var mapOptions = {
-	      zoom: 8,
-	      mapTypeId: google.maps.MapTypeId.ROADMAP
-	    }
-	    Fabrik.radiusSearch = {};
+		var mapOptions = {
+			zoom: 8,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		Fabrik.radiusSearch = {};
 		Fabrik.radiusSearch.map = new google.maps.Map(document.id('radius_search_geocode_map'), mapOptions);
-
 		geocoder = new google.maps.Geocoder();
 		document.id('radius_search_button').addEvent('click', function (e) {
 			e.stop();
 			var address = document.id('radius_search_geocode_field').value;
-			geocoder.geocode( { 'address': address}, function(results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
+			geocoder.geocode({'address': address}, function (results, status) {
+				if (status === google.maps.GeocoderStatus.OK) {
 					var loc = results[0].geometry.location;
 					document.getElement('input[name=radius_search_geocode_lat]').value = loc.lat();
 					document.getElement('input[name=radius_search_geocode_lon]').value = loc.lng();
@@ -26,8 +25,8 @@ function geoCode () {
 			}); 
 		});
 		Fabrik.fireEvent('google.radiusmap.loaded');
-	})
-};
+	});
+}
 
 	
 var FbListRadiusSearch = new Class({

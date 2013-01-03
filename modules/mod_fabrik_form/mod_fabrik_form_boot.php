@@ -41,7 +41,7 @@ $usersConfig->set('rowid', $rowid);
 $usekey = $params->get('usekey', '');
 if (!empty($usekey))
 {
-	JRequest::setVar('usekey', $usekey);
+	$app->input->set('usekey', $usekey);
 }
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');

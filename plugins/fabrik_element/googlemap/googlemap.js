@@ -57,18 +57,12 @@ var FbGoogleMap = new Class({
 	loadScript: function () {
 		var s = this.options.sensor === false ? 'false' : 'true';
 		Fabrik.loadGoogleMap(s, 'googlemapload');
-		/*if (typeOf(Fabrik.googleMap) === 'null') {
-			var script = document.createElement("script");
-			script.type = "text/javascript";
-			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
-			document.body.appendChild(script);
-			Fabrik.googleMap = true;
-		}*/
 	},
 	
 	initialize: function (element, options) {
 		this.parent(element, options);
 		this.loadScript();
+		
 		// @TODO test google object when offline $type(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {

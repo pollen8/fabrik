@@ -7855,13 +7855,15 @@ class FabrikFEModelList extends JModelForm
 
 	public function findRow($key, $val, $format = false)
 	{
-		$usekey = JRequest::getVar('usekey');
-		$usekey_comparison = JRequest::getVar('usekey_comparison');
-		JRequest::setVar('usekey', $key);
-		JRequest::setVar('usekey_comparison', 'like');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$usekey = $input->get('usekey');
+		$usekey_comparison = $input->get('usekey_comparison');
+		$input->set('usekey', $key);
+		$input->set('usekey_comparison', 'like');
 		$row = $this->getRow($val, $format);
-		JRequest::setVar('usekey', $usekey);
-		JRequest::setVar('usekey_comparison', $usekey_comparison);
+		$input->set('usekey', $usekey);
+		$input->set('usekey_comparison', $usekey_comparison);
 		return $row;
 	}
 

@@ -270,7 +270,7 @@ class FabrikControllerForm extends JController
 					 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
 					 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
 					 */
-					if (JRequest::getCmd('usekey') !== '')
+					if ($input->get('usekey') !== '')
 					{
 						JRequest::setVar('rowid', -1);
 					}

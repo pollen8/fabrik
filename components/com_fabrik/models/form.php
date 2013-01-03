@@ -1494,6 +1494,8 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function processToDB()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$listModel = $this->getListModel();
 		$listModel->setBigSelects();
 		$item = $listModel->getTable();
@@ -1564,7 +1566,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$ hugh - pretty sure we need to unset 'usekey' now, as it is not relavent to joined data,
 		// and it messing with storeRow of joins
-		JRequest::setVar('usekey', '');
+		$input->set('usekey', '');
 		$_POST['usekey'] = '';
 		$_REQUEST['usekey'] = '';
 
@@ -2063,6 +2065,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	protected function submitToDatabase($rowId = '0')
 	{
+		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
 		$pluginManager = FabrikWorker::getPluginManager();
 		/*
@@ -2127,7 +2130,7 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$listModel->storeRow($this->_formData, $rowId);
 
-		$usekey = JRequest::getVar('usekey', '');
+		$usekey = $app->input->get('usekey', '');
 		if (!empty($usekey))
 		{
 			return $listModel->lastInsertId;
