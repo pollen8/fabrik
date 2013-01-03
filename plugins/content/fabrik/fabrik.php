@@ -183,7 +183,9 @@ class plgContentFabrik extends JPlugin
 		// Special case if we are wanting to write in an element's data
 		$element = false;
 		$repeatcounter = 0;
-		$showfilters = $input->get('showfilters', 1);
+
+		// Was defaulting to 1 but that forced filters to show in cal viz even with showfilter=no option turned on
+		$showfilters = $input->get('showfilters', null);
 		$clearfilters = $input->get('clearfilters', 0);
 		$resetfilters = $input->get('resetfilters', 0);
 		$this->origRequestVars = array();

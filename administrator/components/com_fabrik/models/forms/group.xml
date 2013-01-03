@@ -78,13 +78,30 @@
 					<option value="repeatgroup_table">COM_FABRIK_REPEAT_GROUP_TMPL_TABLE</option>
 			</field>
 
-			<field description="COM_FABRIK_REPEAT_GROUP_MAX_DESC" label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL" name="repeat_max" size="2" type="text"/>
+			<field name="repeat_max"
+				type="text"
+				class="input-mini"
+				size="2"
+				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
+				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL" />
 			
-			<field default="1" description="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_DESC" label="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_LABEL" name="repeat_add_access" type="accesslevel"/>
+			<field name="repeat_add_access"	
+				type="accesslevel"
+				default="1"
+				description="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_DESC"
+				label="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_LABEL" />
 			
-			<field default="1" description="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_DESC" label="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_LABEL" name="repeat_delete_access" type="accesslevel"/>	
+			<field name="repeat_delete_access"
+				type="accesslevel"
+				default="1"
+				description="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_DESC"
+				label="COM_FABRIK_ACCESS_DELETE_REPEAT_GROUP_LABEL" />	
 			
-			<field description="COM_FABRIK_FIELD_OR_USE_FIELD_DELETE_LABEL" label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL" name="repeat_delete_access_user" type="listfields" valueformat="tableelement"/>
+			<field name="repeat_delete_access_user"
+				type="listfields"
+				description="COM_FABRIK_FIELD_OR_USE_FIELD_DELETE_LABEL"
+				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
+				valueformat="tableelement"/>
 				
 			<!--  not yet implemented but used in calc element huh!? (copied over from f2)
 			<field name="show_repeat_max" 

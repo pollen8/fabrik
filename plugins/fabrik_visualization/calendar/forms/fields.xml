@@ -4,15 +4,41 @@
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" label="COM_FABRIK_DATA" name="plg-visualization-calendar-params" repeat="1" repeatcontrols="1" repeatmin="1">
 			
-			<field description="PLG_VISUALIZATION_CALENDAR_CONNECTION_DESC" label="PLG_VISUALIZATION_CALENDAR_CONNECTION_LABEL" name="calendar_connection" type="connections"/>
+			<field name="calendar_connection"
+				description="PLG_VISUALIZATION_CALENDAR_CONNECTION_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_CONNECTION_LABEL"
+				type="connections"/>
 				
-			<field connection_in_repeat="true" description="PLG_VISUALIZATION_CALENDAR_TABLE_DESC" label="PLG_VISUALIZATION_CALENDAR_TABLE_LABEL" name="calendar_table" observe="params_calendar_connection" type="fabriktables"/>
+			<field name="calendar_table"
+				type="fabriktables"
+				connection_in_repeat="true"
+				description="PLG_VISUALIZATION_CALENDAR_TABLE_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_TABLE_LABEL"
+				observe="params_calendar_connection" />
 				
-			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL" label="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL" name="calendar_startdate_element" table="params_calendar_table" type="element"/>
+			<field name="calendar_startdate_element"
+				type="element"
+				table="params_calendar_table" 
+				connection="params_calendar_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL"
+				label="PLG_VISUALIZATION_CALENDAR_START_DATE_ELEMENT_LABEL" />
 				
-			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_DESC" label="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_LABEL" name="calendar_enddate_element" table="params_calendar_table" type="element"/>
+			<field name="calendar_enddate_element"
+				type="element"
+				table="params_calendar_table"
+				connection="params_calendar_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_END_DATE_ELEMENT_LABEL" />
 				
-			<field connection="params_calendar_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_DESC" label="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_LABEL" name="calendar_label_element" table="params_calendar_table" type="element"/>
+			<field name="calendar_label_element"
+				type="element"
+				table="params_calendar_table"
+				connection="params_calendar_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_LABEL_ELEMENT_LABEL" />
 				
 			<field name="colour"
 				type="color"
@@ -20,7 +46,16 @@
 				description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC"
 				label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" />
 				
-			<field description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC" label="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_LABEL" name="legendtext" type="text"/>
+			<field name="legendtext"
+				type="text"
+				description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_LABEL" />
+			
+			<field name="custom_url"
+				type="field"
+				size="40"
+				label="PLG_VISUALIZATION_CALENDAR_CUSTOM_URL_LABEL"
+				description="PLG_VISUALIZATION_CALENDAR_CUSTOM_URL_DESC" />
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar" label="COM_FABRIK_OPTIONS">

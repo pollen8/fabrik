@@ -336,22 +336,37 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	public function onAjax_getOptions()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$this->loadMeForAjax();
 		$params = $this->getParams();
 
-		// $$$ rob commented out for http://fabrikar.com/forums/showthread.php?t=11224
-		// must have been a reason why it was there though?
+		if ($this->getFilterBuildMethod() == 1)
+		{
+			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
+			$listModel = $this->getListModel();
+			$db = $listModel->getDb();
+			$query = $db->getQuery(true);
+			$obs = $this->getWatchElement();
+			$obsName = $obs->getElement()->name;
+			$obsValue = $input->get($obs->getFullName(false, true, false) . '_raw');
+			$element = $this->getElement();
+			$tblName = $listModel->getTable()->db_table_name;
+			$query->select('DISTINCT ' . $element->name)->from($tblName)->where($obsName . ' = ' . $db->quote($obsValue));
+			$db->setQuery($query);
+			$ids = $db->loadColumn();
+			$key = $this->queryKey();
+			array_walk($ids, create_function('&$val', '$db = JFactory::getDbo();$val = $db->quote($val);'));
+			$this->_autocomplete_where = empty($ids) ? '1 = -1' : $key . ' IN (' . implode(',', $ids) . ')';
+		}
+		$filter = JFilterInput::getInstance();
+		$data = $filter->clean($_POST, 'array');
+		$opts = $this->_getOptionVals($data);
 
-		// OK its due to table filters so lets test if we are in the table view (posted from filter.js)
+		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
 		if ($app->input->get('filterview') == 'table')
 		{
 			$params->set('cascadingdropdown_showpleaseselect', true);
 		}
-		// $$$ rob testing commenting this out?
-		// $this->table = $this->getFormModel()->getlistModel();
-		$filter = JFilterInput::getInstance();
-		$data = $filter->clean($_POST, 'array');
-		$opts = $this->_getOptionVals($data);
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
 		echo json_encode($opts);
 	}
@@ -713,8 +728,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		$table = $this->getDbName();
 
-		$key = FabrikString::safeColName($params->get('cascadingdropdown_id'));
-		$key = str_replace($db->quoteName($table), $db->quoteName($join->table_join_alias), $key);
+		$key = $this->queryKey();
 		$orderby = 'text';
 		$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
@@ -779,6 +793,24 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		return $this->_sql[$sig];
 	}
 
+	/**
+	 * Get the the field name used for the foo AS value part of the query
+	 *
+	 * @since   3.0.8
+	 *
+	 * @return  string
+	 */
+
+	protected function queryKey()
+	{
+		$db = FabrikWorker::getDbo();
+		$join = $this->getJoin();
+		$table = $this->getDbName();
+		$params = $this->getParams();
+		$key = FabrikString::safeColName($params->get('cascadingdropdown_id'));
+		$key = str_replace($db->quoteName($table), $db->quoteName($join->table_join_alias), $key);
+		return $key;
+	}
 	/**
 	 * Get the element name or concat statement used to build the dropdown labels or
 	 * table data field

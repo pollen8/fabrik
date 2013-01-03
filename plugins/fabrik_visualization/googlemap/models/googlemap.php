@@ -103,7 +103,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->container = $this->getContainerId();
 		$opts->polylinewidth = (array) $params->get('fb_gm_polyline_width');
 		$opts->polylinecolour = (array) $params->get('fb_gm_polyline_colour');
-		$opts->use_polygon = (bool) $params->get('fb_gm_use_polygon');
+		$usePolygon = (array) $params->get('fb_gm_use_polygon');
+		$opts->use_polygon = (bool) JArrayHelper::getValue($usePolygon, 0, true);
 		$opts->polygonopacity = $params->get('fb_gm_polygon_fillOpacity', 0.35);
 		$opts->polygonfillcolour = (array) $params->get('fb_gm_polygon_fillColor');
 		$opts->overlay_urls = (array) $params->get('fb_gm_overlay_urls');
@@ -172,7 +173,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			$db = $listModel->getDb();
 			$query = $db->getQuery(true);
 			$query->select($coordColumn . ' AS coords')->from($table->db_table_name)->order($k);
-			$query = $listModel->_buildQueryWhere($query);
+			$query = $listModel->_buildQueryWhere(true, $query);
 			$query = $listModel->_buildQueryJoin($query);
 			$db->setQuery($query);
 			$data = $db->loadObjectList();

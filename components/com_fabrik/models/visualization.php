@@ -279,8 +279,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 	public function getRenderContext()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$id = $this->getId();
-		return $id . '_' . JFactory::getApplication()->scope . '_' . $id;
+
+		// Calendar in content plugin - choose event form needs to know its from a content plugin.
+		return $input->get('renderContext', $id . '_' . JFactory::getApplication()->scope . '_' . $id);
 	}
 
 	/**

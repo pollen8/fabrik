@@ -378,7 +378,6 @@ EOD;
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $formModel->getForm();
-		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$table = $formModel->getTable();
 		if (isset(self::$printURL))

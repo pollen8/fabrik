@@ -31,9 +31,12 @@
 				description="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_DESC"
 				label="PLG_VISUALIZATION_GOOGLEMAP_POLYLINE_COLOUR_LABEL" />
 			
-			<field default="0"
+			<field name="fb_gm_use_polygon"
+				type="radio"
 				class="btn-group"
-				description="PLG_VISUALIZATION_GOOGLEMAP_USE_POLYGON_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_USE_POLYGON_LABEL" name="fb_gm_use_polygon" type="radio">
+				default="0"
+				description="PLG_VISUALIZATION_GOOGLEMAP_USE_POLYGON_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_USE_POLYGON_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

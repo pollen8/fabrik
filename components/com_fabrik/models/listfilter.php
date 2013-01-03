@@ -1335,8 +1335,8 @@ class FabrikFEModelListfilter extends FabModel
 			}
 			else
 			{
-				$elementModel = $elements[$elid];
-				if (!is_a($elementModel, 'PlgFabrik_Element') && !in_array($elid, $pluginKeys))
+				$elementModel = JArrayHelper::getValue($elements, $elid);
+				if (!is_a($elementModel, 'plgFabrik_Element') && !in_array($elid, $pluginKeys))
 				{
 					continue;
 				}

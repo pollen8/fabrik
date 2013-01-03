@@ -51,16 +51,8 @@ var FbGoogleMap = new Class({
 	},
 	
 	loadScript: function () {
-		if (typeOf(Fabrik.googleMap) === 'null') {
-			var script = document.createElement("script");
-			script.type = "text/javascript";
-			var s = this.options.sensor === false ? 'false' : 'true';
-			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=googlemapload';
-			document.body.appendChild(script);
-			Fabrik.googleMap = true;
-		} else {
-			window.fireEvent('google.map.loaded');
-		}
+		var s = this.options.sensor === false ? 'false' : 'true';
+		Fabrik.loadGoogleMap(s, 'googlemapload');
 	},
 	
 	initialize: function (element, options) {
@@ -70,6 +62,18 @@ var FbGoogleMap = new Class({
 		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
 		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
 		
+		this.loadScript();
+		
+		// @TODO test google object when offline $type(google) isnt working
+		if (this.options.center === 1 && this.options.rowid === 0) {
+			if (geo_position_js.init()) {
+				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
+					enableHighAccuracy: true
+				});
+			} else {
+				fconsole('Geo locaiton functionality not available');
+			}
+		}
 		window.addEvent('google.map.loaded', function () {
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
@@ -649,13 +653,19 @@ var FbGoogleMap = new Class({
 	},
     
 	watchTab: function () {
-		var tab_dl = this.element.getParent('.tabs');
-		if (tab_dl) {
-			this.options.tab_dt = this.element.getParent('.fabrikGroup').getPrevious();
-			if (!this.options.tab_dt.hasClass('open')) {
-				this.options.tab_dt.addEvent('click', function (e) {
-					this.doTab(e);
-				}.bind(this));
+		var tab_div = this.element.getParent('.current');
+		if (tab_div) {
+			var tab_dl = tab_div.getPrevious('.tabs');
+			if (tab_dl) {
+				this.options.tab_dd = this.element.getParent('.fabrikGroup');
+				if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
+					this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
+					if (this.options.tab_dt) {
+						this.options.tab_dt.addEvent('click', function (e) {
+							this.doTab(e);
+						}.bind(this));
+					}
+				}
 			}
 		}
 	}

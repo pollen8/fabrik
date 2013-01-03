@@ -95,7 +95,11 @@
 				<option value="2">JYES</option>
 		</field>
 		
-		<field default="linear" description="COM_FABRIK_TIP_FX_DESC" label="COM_FABRIK_TIP_FX_LABEL" name="tipfx" type="list">
+		<field name="tipfx"
+			description="COM_FABRIK_TIP_FX_DESC"
+			label="COM_FABRIK_TIP_FX_LABEL"
+			default="linear"
+			type="list" >
 				<option value="linear">linear</option>
 				<option value="Quad">Quad</option>
 				<option value="Cubic">Cubic</option>

@@ -40,7 +40,7 @@ class JDocumentpdf extends JDocumentHTML
 		parent::__construct($options);
 
 		$config = JComponentHelper::getParams('com_fabrik');
-		if ($config->get('pdf_debug', true))
+		if ($config->get('pdf_debug', false))
 		{
 			$this->setMimeEncoding('text/html');
 			$this->_type = 'html';

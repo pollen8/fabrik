@@ -171,7 +171,6 @@ var FbGoogleMapViz = new Class({
 			var colour = this.options.polylinecolour[c];
 			var opacity = this.options.polygonopacity[c];
 			var fillColor = this.options.polygonfillcolour[c];
-			
 			if (!this.options.use_polygon) {
 				var polyline = new google.maps.Polyline({path: glatlng, 'strokeColor': colour, 'strokeWeight': width});
 				polyline.setMap(this.map);

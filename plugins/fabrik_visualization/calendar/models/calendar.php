@@ -142,6 +142,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		return $this->id;
 	}
 
+	/**
+	 * Set up calendar events
+	 *
+	 * @return  array
+	 */
+
 	function setupEvents()
 	{
 		if (is_null($this->_events))
@@ -151,6 +157,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 			$table_label = (array) $params->get('calendar_label_element');
 			$table_startdate = (array) $params->get('calendar_startdate_element');
 			$table_enddate = (array) $params->get('calendar_enddate_element');
+			$customUrls = (array) $params->get('custom_url');
 			$colour = (array) $params->get('colour');
 			$legend = (array) $params->get('legendtext');
 			$this->_events = array();
@@ -191,9 +198,10 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						$table_label[$i] = '';
 					}
+					$customUrl = JArrayHelper::getValue($customUrls, $i, '');
 					$this->_events[$tables[$i]][] = array('startdate' => $startDate, 'enddate' => $endDate, 'startShowTime' => $startShowTime,
 						'endShowTime' => $endShowTime, 'label' => $table_label[$i], 'colour' => $colour[$i], 'legendtext' => $legend[$i],
-						'formid' => $table->form_id, 'listid' => $tables[$i]);
+						'formid' => $table->form_id, 'listid' => $tables[$i], 'customUrl' => $customUrl);
 				}
 			}
 		}
@@ -215,10 +223,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * go over all the tables whose data is displayed in the calendar
+	 * Go over all the tables whose data is displayed in the calendar
 	 * if any element is found in the request data, assign it to the session
 	 * This will then be used by the table to filter its data.
 	 * nice :)
+	 *
+	 * @return  void
 	 */
 
 	function setRequestFilters()
@@ -247,7 +257,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * can the user add a record into the calendar
+	 * Can the user add a record into the calendar
+	 *
 	 * @return  bool
 	 */
 
@@ -273,7 +284,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * get an arry of list ids for which the current user has delete records rights
+	 * Get an arry of list ids for which the current user has delete records rights
+	 *
 	 * @return  array	list ids.
 	 */
 
@@ -295,7 +307,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * query all tables linked to the calendar and return them
+	 * Query all tables linked to the calendar and return them
+	 *
 	 * @return  string	javascript array containg json objects
 	 */
 
@@ -307,6 +320,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
 		$tz = new DateTimeZone($tzoffset);
+		$w = new FabrikWorker;
 		$this->setupEvents();
 		$calendar = $this->getRow();
 		$aLegend = "$this->calName.addLegend([";
@@ -327,6 +341,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : "''";
 				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
 				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
+				$customUrl = $data['customUrl'];
 				$qlabel = FabrikString::safeColName($label);
 				if (array_key_exists($qlabel, $els))
 				{
@@ -358,7 +373,9 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 					{
 						if ($row->startdate != '')
 						{
-							$row->link = ("index.php?option=com_" . $package . "&Itemid=$Itemid&view=form&formid=$table->form_id&rowid=$row->id&tmpl=component");
+							$thisCustomUrl = $w->parseMessageForPlaceHolder($customUrl, $row);
+							$row->link = $thisCustomUrl !== '' ? $thisCustomUrl : 'index.php?option=com_' . $package . '&Itemid=' . $Itemid . '&view=form&formid=' . $table->form_id . '&rowid=' . $row->id . '&tmpl=component';
+							$row->custom = $customUrl != '';
 							$row->_listid = $table->id;
 							$row->_canDelete = (bool) $listModel->canDelete();
 							$row->_canEdit = (bool) $listModel->canEdit($row);
