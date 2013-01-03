@@ -623,12 +623,18 @@ var FbGoogleMap = new Class({
 	},
     
 	watchTab: function () {
-		var tab_dl = this.element.getParent('.tabs');
-		if (tab_dl) {
-			this.options.tab_dt = this.element.getParent('.fabrikGroup').getPrevious();
-			if (!this.options.tab_dt.hasClass('open')) {
-				this.doTabBound = this.doTab.bindWithEvent(this);
-				this.options.tab_dt.addEvent('click', this.doTabBound);
+		var tab_div = this.element.getParent('.current');
+		if (tab_div) {
+			var tab_dl = tab_div.getPrevious('.tabs');
+			if (tab_dl) {
+				this.options.tab_dd = this.element.getParent('.fabrikGroup');
+				if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
+					this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
+					if (this.options.tab_dt) {
+						this.doTabBound = this.doTab.bindWithEvent(this);
+						this.options.tab_dt.addEvent('click', this.doTabBound);
+					}
+				}
 			}
 		}
 	}

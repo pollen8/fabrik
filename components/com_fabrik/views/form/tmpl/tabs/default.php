@@ -55,7 +55,8 @@ foreach ($this->groups as $group) :
 	endforeach;
 	$c ++;
 	?>
-	<dt <?php echo $errorstyle?>>
+	<dt id="group<?php echo $group->id; ?>_tab"
+		<?php echo $errorstyle?>>
 		<?php echo $group->title;?>
 	</dt>
 	<dd class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
