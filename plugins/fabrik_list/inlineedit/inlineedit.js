@@ -8,7 +8,8 @@ var FbListInlineEdit = new Class({
 		this.inedit = false;
 		this.saving = false;
 		head.ready(function () {
-			//assigned in list.js fabrik3
+			
+			// Assigned in list.js fabrik3
 			if (typeOf(this.getList().getForm()) === 'null') {
 				return false;
 			}
@@ -52,7 +53,7 @@ var FbListInlineEdit = new Class({
 			}).send(); 
 		}.bind(this));
 		
-		//check for a single element whose click value should trigger the save (ie radio buttons)
+		// Check for a single element whose click value should trigger the save (ie radio buttons)
 		Fabrik.addEvent('fabrik.element.click', function () {
 			if (Object.getLength(this.options.elements) === 1 && this.options.showSave === false) {
 				this.save(null, this.editing);
@@ -82,7 +83,9 @@ var FbListInlineEdit = new Class({
 			'wait': false
 		});
 		this.watchCells();
-		document.addEvent('keydown', this.checkKey.bindWithEvent(this));
+		document.addEvent('keydown', function (e) {
+			this.checkKey(e);
+		}.bind(this));
 	},
 
 	watchCells: function () {
@@ -100,8 +103,12 @@ var FbListInlineEdit = new Class({
 				}
 				this.setCursor(td);
 				td.removeEvents();
-				td.addEvent(this.options.editEvent, this.edit.bindWithEvent(this, [td]));
-				td.addEvent('click', this.select.bindWithEvent(this, [td]));
+				td.addEvent(this.options.editEvent, function (e) {
+					this.edit(e, td);
+				}.bind(this));
+				td.addEvent('click', function (e) {
+					this.select(e, td);
+				}.bind(this));
 			
 				td.addEvent('mouseenter', function (e) {
 					if (!this.isEditable(td)) {
@@ -336,9 +343,9 @@ var FbListInlineEdit = new Class({
 		}
 		Fabrik.fireEvent('fabrik.plugin.inlineedit.editing');
 		
-		//only one field can be edited at a time
+		// Only one field can be edited at a time
 		if (this.inedit) {
-			// if active event is mouse over - close the current editor
+			// If active event is mouse over - close the current editor
 			if (this.options.editEvent === 'mouseover') {
 				if (td === this.editing) {
 					return;
@@ -369,7 +376,7 @@ var FbListInlineEdit = new Class({
 		var data = this.getDataFromTable(td);
 		
 		if (typeOf(this.editors[opts.elid]) === 'null' || typeOf(Fabrik['inlineedit_' + opts.elid]) === 'null') {
-			// need to load on parent otherwise in table td size gets monged
+			// Need to load on parent otherwise in table td size gets monged
 			Fabrik.loader.start(td.getParent());
 			var inline = this.options.showSave ? 1 : 0;
 			
@@ -395,7 +402,7 @@ var FbListInlineEdit = new Class({
 				},
 
 				'onSuccess': function (r) {
-					// need to load on parent otherwise in table td size gets monged
+					// Need to load on parent otherwise in table td size gets monged
 					Fabrik.loader.stop(td.getParent());
 					
 					//don't use evalScripts = true as we reuse the js when tabbing to the next element. 
@@ -405,7 +412,7 @@ var FbListInlineEdit = new Class({
 	
 					//delay the script to allow time for the dom to be updated
 					(function () {
-						$exec(this.javascript);
+						Browser.exec(this.javascript);
 					}.bind(this)).delay(1000);
 					td.empty().set('html', r);
 					this._animate(td, 'in');
@@ -555,10 +562,14 @@ var FbListInlineEdit = new Class({
 	
 	watchControls : function (td) {
 		if (typeOf(td.getElement('.inline-save')) !== 'null') {
-			td.getElement('.inline-save').removeEvents('click').addEvent('click', this.save.bindWithEvent(this, [td]));
+			td.getElement('.inline-save').removeEvents('click').addEvent('click', function (e) {
+				this.save(e, td);
+			}.bind(this));
 		}
 		if (typeOf(td.getElement('.inline-cancel')) !== 'null') {
-			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', this.cancel.bindWithEvent(this, [td]));
+			td.getElement('.inline-cancel').removeEvents('click').addEvent('click', function (e) {
+				this.cancel(e, td);
+			}.bind(this));
 		}
 	},
 	
@@ -588,9 +599,10 @@ var FbListInlineEdit = new Class({
 			return false;
 		}
 		
-		// need to load on parent otherwise in table td size gets monged
+		// Need to load on parent otherwise in table td size gets monged
 		Fabrik.loader.start(td.getParent());
-		//set package id to return js string
+		
+		// Set package id to return js string
 		data = {
 			'option': 'com_fabrik',
 			'task': 'form.process',
@@ -623,15 +635,13 @@ var FbListInlineEdit = new Class({
 			}
 			
 		}.bind(this));
-		
 		$H(this.currentRow.data).each(function (v, k) {
 			if (k.substr(k.length - 4, 4) === '_raw') {
 				currentRow[k.substr(0, k.length - 4)] = v;
 			}
 		});
-		//post all the rows data to form.process
+		// Post all the rows data to form.process
 		data = Object.append(currentRow, data);
-		//data = Object.append(this.currentRow.data, data);
 		data[eObj.token] = 1;
 
 		data.toValidate = this.options.elements[data.element].plugins;
@@ -642,6 +652,7 @@ var FbListInlineEdit = new Class({
 				td.removeClass(this.options.focusClass);
 				td.empty();
 				td.empty().set('html', r);
+				
 				// Need to load on parent otherwise in table td size gets monged
 				Fabrik.loader.stop(td.getParent());
 				Fabrik.fireEvent('fabrik.list.updaterows');
@@ -650,7 +661,7 @@ var FbListInlineEdit = new Class({
 			}.bind(this),
 			
 			'onFailure': function (xhr) {
-				//inject error message from header (created by JError::raiseError()...)
+				// Inject error message from header (created by JError::raiseError()...)
 				var err = td.getElement('.inlineedit .fabrikMainError');
 				if (typeOf(err) === 'null') {
 					err = new Element('div.fabrikMainError.fabrikError');

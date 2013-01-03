@@ -299,8 +299,10 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 
 	public function elementJavascript($repeatCounter)
 	{
+		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->separator = $params->get('time_separatorlabel', ':');
 		$opts = json_encode($opts);
 		return "new FbTime('$id', $opts)";
 	}
