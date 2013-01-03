@@ -195,7 +195,8 @@ div.calendar{
 	float: right;
 }
 
-#listform_$c .fabrikHover {
+#listform_$c .fabrikHover,
+#advancedSearchContainer tr:hover {
 	background-color: #ffffff;
 }
 

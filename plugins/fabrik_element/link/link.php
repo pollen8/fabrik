@@ -125,7 +125,8 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				$link = $_lnk;
 			}
 			$w = new FabrikWorker;
-			$link = $listModel->parseMessageForRowHolder($link, JArrayHelper::fromObject($thisRow));
+			$aRow = JArrayHelper::fromObject($thisRow);
+			$link = $listModel->parseMessageForRowHolder($link, $aRow);
 			return $link;
 		}
 		return $data;

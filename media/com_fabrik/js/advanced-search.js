@@ -24,6 +24,11 @@ AdvancedSearch = new Class({
 				tr.inject(this.form.getElement('.advanced-search-list').getElements('tr').getLast(), 'after');
 			}.bind(this));
 		}
+		
+		this.form.addEvent('click:relay(tr)', function (e, target) {
+			this.form.getElements('tr').removeClass('fabrikRowClick');
+			target.addClass('fabrikRowClick');
+		}.bind(this));
 		this.watchDelete();
 		this.watchApply();
 		this.watchElementList();
@@ -100,6 +105,7 @@ AdvancedSearch = new Class({
 		e.stop();
 		var tr = this.form.getElement('.advanced-search-list').getElement('tbody').getElements('tr').getLast();
 		var clone = tr.clone();
+		clone.removeClass('oddRow1').removeClass('oddRow0').addClass('oddRow' + this.options.counter % 2);
 		clone.inject(tr, 'after');
 		clone.getElement('td').empty().set('html', this.options.conditionList);
 		var tds = clone.getElements('td');
