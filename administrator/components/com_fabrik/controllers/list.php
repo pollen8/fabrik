@@ -169,7 +169,7 @@ class FabrikControllerList extends FabControllerForm
 		$formModel = $model->getFormModel();
 		$viewType = $document->getType();
 		// $viewLayout = JRequest::getCmd('layout', 'linked_elements');
-		$viewLayout = $input->getWord('layout', 'default');
+		$viewLayout = $input->getWord('layout', 'linked_elements');
 		$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 		$view->setModel($formModel);
