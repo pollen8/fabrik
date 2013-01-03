@@ -397,58 +397,75 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Set the navigation limit and limitstart
 	 *
+	 * @param   int  $limitstart_override  specific limitstart to use, if both start and length are specified
+	 * @param   int  $limitlength_override  specific limitlength to use, if both start and length are specified
+	 *
 	 * @return  void
 	 */
 
-	public function setLimits()
+	public function setLimits($limitstart_override = null, $limitlength_override = null)
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$item = $this->getTable();
-		$params = $this->getParams();
-		$id = $this->getId();
-		$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
-
-		// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
-		$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
-		$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
-
-		// Deal with the fact that you can have more than one table on a page so limitstart has to be
-		// specfic per table
-
-		// Deal with the fact that you can have more than one table on a page so limitstart has to be  specfic per table
-
-		// If table is rendered as a content plugin dont set the limits in the session
-		if ($app->scope == 'com_content')
+		/*
+		 * $$$ hugh - added the overrides, so things like visualizations can just turn
+		 * limits off, by passing 0's, without having to go round the houses setting
+		 * the request array before calling this method.
+		 */
+		if (!is_null($limitstart_override) && !is_null($limitlength_override))
 		{
-			$limitLength = JRequest::getInt('limit' . $id, $item->rows_per_page);
-
-			if (!$this->randomRecords)
-			{
-				$limitStart = JRequest::getInt('limitstart' . $id, $limitStart);
-			}
+			// might want to set the request vars here?
+			$limitStart = $limitstart_override;
+			$limitLength = $limitlength_override;
 		}
 		else
 		{
-			$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
-			$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
-			if (!$this->randomRecords)
+			$app = JFactory::getApplication();
+			$package = $app->getUserState('com_fabrik.package', 'fabrik');
+			$item = $this->getTable();
+			$params = $this->getParams();
+			$id = $this->getId();
+			$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
+
+			// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
+			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
+			$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
+
+			// Deal with the fact that you can have more than one table on a page so limitstart has to be
+			// specfic per table
+
+			// Deal with the fact that you can have more than one table on a page so limitstart has to be  specfic per table
+
+			// If table is rendered as a content plugin dont set the limits in the session
+			if ($app->scope == 'com_content')
 			{
-				$limitStart = $app->getUserStateFromRequest($context . 'limitstart', 'limitstart' . $id, $limitStart, 'int');
+				$limitLength = JRequest::getInt('limit' . $id, $item->rows_per_page);
+
+				if (!$this->randomRecords)
+				{
+					$limitStart = JRequest::getInt('limitstart' . $id, $limitStart);
+				}
 			}
-		}
-		if ($this->outPutFormat == 'feed')
-		{
-			$limitLength = JRequest::getVar('limit', $params->get('rsslimit', 150));
-			$maxLimit = $params->get('rsslimitmax', 2500);
-			if ($limitLength > $maxLimit)
+			else
 			{
-				$limitLength = $maxLimit;
+				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
+				$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
+				if (!$this->randomRecords)
+				{
+					$limitStart = $app->getUserStateFromRequest($context . 'limitstart', 'limitstart' . $id, $limitStart, 'int');
+				}
 			}
-		}
-		if ($limitStart < 0)
-		{
-			$limitStart = 0;
+			if ($this->outPutFormat == 'feed')
+			{
+				$limitLength = JRequest::getVar('limit', $params->get('rsslimit', 150));
+				$maxLimit = $params->get('rsslimitmax', 2500);
+				if ($limitLength > $maxLimit)
+				{
+					$limitLength = $maxLimit;
+				}
+			}
+			if ($limitStart < 0)
+			{
+				$limitStart = 0;
+			}
 		}
 		$this->limitLength = $limitLength;
 		$this->limitStart = $limitStart;
@@ -2729,10 +2746,12 @@ class FabrikFEModelList extends JModelForm
 		$db = FabrikWorker::getDbo();
 
 		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
-		$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
+		//$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
+		$longGroupBy = $db->quoteName($this->getGroupBy());
+
 		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '')
 		{
-			$this->searchAllAsFields[] = FabrikString::safeColName($table->group_by) . ' AS ' . $longGroupBy;
+			$this->searchAllAsFields[] = FabrikString::safeColName($this->getGroupBy()) . ' AS ' . $longGroupBy;
 			$searchAllFields[] = $longGroupBy;
 		}
 
