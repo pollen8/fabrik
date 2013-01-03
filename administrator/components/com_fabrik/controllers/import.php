@@ -113,14 +113,19 @@ class FabrikAdminControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * Cancel import
+	 * Method to cancel an edit.
 	 *
-	 * @return  null
+	 * @param   string  $key  The name of the primary key of the URL variable.
+	 *
+	 * @return  boolean  True if access level checks pass, false otherwise.
+	 *
+	 * @since   11.1
 	 */
 
-	public function cancel()
+	public function cancel($key = null)
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=lists');
+		return true;
 	}
 
 	/**
@@ -188,10 +193,13 @@ class FabrikAdminControllerImport extends FabControllerForm
 	/**
 	 * Display the import CSV file form
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = array())
 	{
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView('import', $viewType);
@@ -202,6 +210,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$view->setModel($model, true);
 		}
 		$view->display();
+		return $this;
 	}
 
 	/**
