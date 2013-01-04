@@ -72,8 +72,9 @@ class FabrikFEModelListfilter extends FabModel
 	{
 		unset($this->request);
 	}
+
 	/**
-	 * this merges session data for the fromForm with any request data
+	 * This merges session data for the fromForm with any request data
 	 * allowing us to filter data results from both search forms and filters
 	 *
 	 * @return array

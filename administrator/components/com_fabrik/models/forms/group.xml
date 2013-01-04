@@ -85,7 +85,17 @@
 				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
 				label="COM_FABRIK_REPEAT_GROUP_MAX_LABEL" />
 			
+<<<<<<< HEAD
 			<field name="repeat_add_access"	
+=======
+			<field name="repeat_min"
+				type="text"
+				label="COM_FABRIK_REPEAT_GROUP_MIN_LABEL"
+				description="COM_FABRIK_REPEAT_GROUP_MIN_DESC"
+				size="2" />
+			
+			<field name="repeat_add_access" 
+>>>>>>> 5d2fb5d28ced43d42c4a87ea4a024a350d33a8e7
 				type="accesslevel"
 				default="1"
 				description="COM_FABRIK_ACCESS_ADD_REPEAT_GROUP_DESC"
