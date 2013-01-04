@@ -524,7 +524,7 @@ class FabrikViewFormBase extends JView
 			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
 			JText::script('COM_FABRIK_VALIDATION_ERROR');
 			JText::script('COM_FABRIK_FORM_SAVED');
-			Jtext::script('COM_FABRIK_CONFIRM_DELETE');
+			Jtext::script('COM_FABRIK_CONFIRM_DELETE_1');
 		}
 
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
