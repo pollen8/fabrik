@@ -45,7 +45,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userid = $data[$userEl->getFullName(false, true, false) . '_raw'];
+			$userid = JArrayHelper::getValue($data, $userEl->getFullName(false, true, false) . '_raw', 0);
 			$thisUser = JFactory::getUser($userid);
 		}
 		$selected = $this->getValue($data, $repeatCounter);

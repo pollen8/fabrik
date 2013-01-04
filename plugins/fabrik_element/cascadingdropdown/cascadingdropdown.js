@@ -188,7 +188,7 @@ var FbCascadingdropdown = new Class({
 	cloned: function (c) {
 		// c is the repeat group count
 		this.myAjax = null;
-		
+		this.parent(c);
 		// Cloned seems to be called correctly 
 		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {
@@ -204,12 +204,12 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 			if (document.id(this.options.watch)) {
-				// Old events removed in database join element clone() method
-				// $$$ hugh - oh no they aren't!  join element cloned() method doesn't fire for this!
-				//this.element.removeEvents('change');
-				this.element.removeEvents('change', function (e) {
+
+				// Remove and re-attach watch event
+				document.id(this.options.watch).removeEvents('change', function (e) {
 					this.dowatch(e);
 				}.bind(this)); 
+				
 				document.id(this.options.watch).addEvent('change', function (e) {
 					this.dowatch(e);
 				}.bind(this));

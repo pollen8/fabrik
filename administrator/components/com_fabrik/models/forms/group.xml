@@ -103,6 +103,12 @@
 				description="COM_FABRIK_REPEAT_GROUP_MAX_DESC"
 				size="2" />
 			
+			<field name="repeat_min"
+				type="text"
+				label="COM_FABRIK_REPEAT_GROUP_MIN_LABEL"
+				description="COM_FABRIK_REPEAT_GROUP_MIN_DESC"
+				size="2" />
+			
 			<field name="repeat_add_access" 
 				type="accesslevel"
 				default="1"

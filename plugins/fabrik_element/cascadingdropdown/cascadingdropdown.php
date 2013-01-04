@@ -356,8 +356,11 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			$db->setQuery($query);
 			$ids = $db->loadColumn();
 			$key = $this->queryKey();
-			array_walk($ids, create_function('&$val', '$db = JFactory::getDbo();$val = $db->quote($val);'));
-			$this->_autocomplete_where = empty($ids) ? '1 = -1' : $key . ' IN (' . implode(',', $ids) . ')';
+			if (is_array($ids))
+			{
+				array_walk($ids, create_function('&$val', '$db = JFactory::getDbo();$val = $db->quote($val);'));
+				$this->_autocomplete_where = empty($ids) ? '1 = -1' : $key . ' IN (' . implode(',', $ids) . ')';
+			}
 		}
 		$filter = JFilterInput::getInstance();
 		$data = $filter->clean($_POST, 'array');

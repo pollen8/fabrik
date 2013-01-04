@@ -367,13 +367,13 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				$values[$name]['data']['label'] = array();
 				$values[$name]['data']['link'] = array();
 			}
-			$values[$name]['data']['label'][$c] = $data['label'];
-			$values[$name]['data']['link'][$c] = $data['link'];
+			$values[$name]['data']['label'][$c] =  JArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'][$c] = JArrayHelper::getValue($data, 'link');
 		}
 		else
 		{
-			$values[$name]['data']['label'] = $data['label'];
-			$values[$name]['data']['link'] = $data['link'];
+			$values[$name]['data']['label'] = JArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['link'] = JArrayHelper::getValue($data, 'link');
 		}
 	}
 
