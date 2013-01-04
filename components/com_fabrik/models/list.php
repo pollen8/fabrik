@@ -852,10 +852,21 @@ class FabrikFEModelList extends JModelForm
 		if ($groupBy != '' && $this->outPutFormat != 'csv')
 		{
 			$w = new FabrikWorker;
+			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
+			$requestGroupBy =  $input->get('group_by', '');
+			if ($requestGroupBy == '')
+			{
 
-			// 3.0 if not group by template spec'd but group by assigned in qs then use that as the group by tmpl
-			$requestGroupBy = $input->get('group_by');
-			$groupTemplate = $requestGroupBy == '' ? $tableParams->get('group_by_template') : '{' . $requestGroupBy . '}';
+				$groupTemplate = $tableParams->get('group_by_template');
+				if ($groupTemplate == '')
+				{
+					$groupTemplate = '{' . $groupBy . '}';
+				}
+			}
+			else
+			{
+				$groupTemplate = '{' . $requestGroupBy . '}';
+			}
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
@@ -870,7 +881,16 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					$sdata = strip_tags($data[$i]->$groupBy);
+					$sdata = $data[$i]->$groupBy;
+
+					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
+					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
+					$children = $xml->children();
+					if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+					{
+						$sdata = strip_tags($sdata);
+					}
+
 					if (!in_array($sdata, $aGroupTitles))
 					{
 						$aGroupTitles[] = $sdata;

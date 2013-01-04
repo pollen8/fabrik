@@ -374,7 +374,7 @@ var FbDateTime = new Class({
 		}.bind(this));	
 	},
 	
-	addNewEvent : function (action, js) {
+	/*addNewEvent : function (action, js) {
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
@@ -387,7 +387,7 @@ var FbDateTime = new Class({
 			}
 			this.addNewEventAux(action, js);
 		}
-	},
+	},*/
 
 	/**
 	 * takes a date object or string

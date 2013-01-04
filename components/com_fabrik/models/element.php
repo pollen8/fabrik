@@ -1540,7 +1540,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = $this->getFormModel()->data;
 		}
+		$model = $this->getFormModel();
 		$params = $this->getParams();
+		if (!$model->isEditable() && !$params->get('labelindetails'))
+		{
+			return '';
+		}
 		$w = new FabrikWorker;
 		$tip = $w->parseMessageForPlaceHolder($params->get('rollover'), $data);
 		if ($params->get('tipseval'))

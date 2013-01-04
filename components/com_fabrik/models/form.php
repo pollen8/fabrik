@@ -3929,7 +3929,8 @@ class FabrikFEModelForm extends FabModelForm
 					else
 					{
 						// $$$ hugh - if it's a one-to-one, it should be a single value
-						$jdata[$key] = JArrayHelper::getValue(array_values($array), 0, '');
+						$aVals = array_values($array);
+						$jdata[$key] = JArrayHelper::getValue($aVals, 0, '');
 					}
 				}
 			}

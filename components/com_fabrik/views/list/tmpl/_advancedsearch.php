@@ -11,7 +11,7 @@ $input = $app->input;
 		<?php echo JText::_('COM_FABRIK_ADD')?>
 	</a>
 	<div id="advancedSearchContainer">
-	<table class="advanced-search-list table table-striped">
+	<table class="advanced-search-list fabrikList table table-striped">
 		<tbody>
 			<?php foreach ($this->rows as $row) {?>
 			<tr>

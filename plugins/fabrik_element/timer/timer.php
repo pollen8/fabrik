@@ -61,7 +61,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	{
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = &$this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		$size = $params->get('timer_width', 9);
 		$value = $this->getValue($data, $repeatCounter);

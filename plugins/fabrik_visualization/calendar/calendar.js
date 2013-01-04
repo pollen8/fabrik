@@ -483,10 +483,16 @@ var fabrikCalendar = new Class({
 		
 		var WeekTds = this.removeWeekEvents();
 
+		var hdiv, ht, thbg;
 		for (i = 0; i < ths.length; i++) {
 			ths[i].className = 'dayHeading';
 			ths[i].addClass(counterDate.getTime());
-			ths[i].innerHTML = this.options.shortDays[counterDate.getDay()] + ' ' + counterDate.getDate() + '/' + this.options.shortMonths[counterDate.getMonth()];
+			
+			thbg = ths[i].getStyle('background-color');
+			ht = this.options.shortDays[counterDate.getDay()] + ' ' + counterDate.getDate() + '/' + this.options.shortMonths[counterDate.getMonth()];
+			hdiv = new Element('div', {'styles': {'background-color': this._getColor(thbg, counterDate)}}).set('text', ht);
+			
+			ths[i].empty().adopt(h);
 			
 			var eventWidth = 10;
 			var maxoffsets = {};
@@ -519,7 +525,6 @@ var fabrikCalendar = new Class({
 				// Between (end date present) or same (no end date)
 				if ((entry.enddate !== '' && counterDate.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(counterDate))) {
 					var opts = this._buildEventOpts({entry: entry, curdate: counterDate, divclass: '.weekView', 'tdOffset': i});
-					
 					
 					// Work out the left offset for the event - stops concurrent events overlapping each other
 					for (var h = opts.startHour; h <= opts.endHour; h ++) {
@@ -656,7 +661,11 @@ var fabrikCalendar = new Class({
 	showDay: function () {
 		var trs = this.el.getElements('.dayView tr'), h;
 		// Put date in top row
-		trs[0].childNodes[1].innerHTML = this.options.days[this.date.getDay()];
+		
+		thbg = trs[0].childNodes[1].getStyle('background-color');
+		ht = this.options.days[this.date.getDay()];
+		h = new Element('div', {'styles': {'background-color': this._getColor(thbg, this.date)}}).set('text', ht);
+		trs[0].childNodes[1].empty().adopt(h);
 
 		// Clear out old data
 		var hourTds = this.removeDayEvents();
@@ -665,9 +674,11 @@ var fabrikCalendar = new Class({
 		var offsets = {};
 		var maxoffsets = {};
 		this.entries.each(function (entry) {
+			
 			// Between (end date present) or same (no end date)
 			if ((entry.enddate !== '' && this.date.isDateBetween(entry.startdate, entry.enddate)) || (entry.enddate === '' && entry.startdate.isSameDay(firstDate))) {
 				var opts = this._buildEventOpts({entry: entry, curdate: this.date, divclass: '.dayView', 'tdOffset': 0});
+				
 				// Work out the left offset for the event - stops concurrent events overlapping each other
 				for (var h = opts.startHour; h <= opts.endHour; h ++) {
 					maxoffsets[h] = typeOf(maxoffsets[h]) === 'null' ? 0 : maxoffsets[h] + 1;

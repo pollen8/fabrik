@@ -48,10 +48,6 @@ FbElementList =  new Class({
 			c = this.form.form;
 			var delegate = action + ':relay(input[type=' + this.type + '])';
 			c.addEvent(delegate, function (event, target) {
-				/*var subEls = this._getSubElements();
-				if (subEls.contains(target)) {
-					typeOf(js) === 'function' ? js.delay(0) : eval(js);
-				}*/
 				
 				// As we are delegating the event, and reference to 'this' in the js will refer to the first element
 				// When in a repeat group we want to replace that with a reference to the current element.
