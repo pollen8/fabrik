@@ -407,7 +407,6 @@ class FabrikAdminModelList extends FabModelAdmin
 				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 			}
 		}
-
 		return $js;
 	}
 

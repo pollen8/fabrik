@@ -888,7 +888,7 @@ EOD;
 		}
 
 		$navigator = JBrowser::getInstance();
-		if ($navigator->getBrowser() == 'msie')
+		if ($navigator->getBrowser() == 'msie' && !$j3)
 		{
 			$deps->deps[] = 'fab/lib/flexiejs/flexie' . $ext;
 		}
@@ -1199,16 +1199,8 @@ EOD;
 		}
 		else
 		{
-			// Caused doubling up of script in page
-			//$document->addScriptDeclaration($require);
+			$document->addScriptDeclaration($require);
 		}
-		self::$requireJS[] = $require;
-	}
-
-	public static function getAllJS()
-	{
-		$js = implode("\n", self::$requireJS);
-		return $js;
 	}
 
 	/**

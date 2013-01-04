@@ -119,8 +119,8 @@ class FabrikAdminViewList extends JViewLegacy
 		$dep = new stdClass;
 		$dep->deps = array('admin/pluginmanager');
 		$shim['admin/list/tmpl/adminlist'] = $dep;
-		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
+		FabrikHelperHTML::iniRequireJS($shim);
 
 		parent::display($tpl);
 	}

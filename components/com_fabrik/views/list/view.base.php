@@ -248,7 +248,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJS($shim);
 
-		//FabrikHelperHTML::script($src, $script);
 		FabrikHelperHTML::script($src, $script);
 
 		// Reset data back to original settings
@@ -463,9 +462,6 @@ class FabrikViewListBase extends JViewLegacy
 		$this->buttons();
 
 		$this->pluginTopButtons = $this->get('PluginTopButtons');
-
-		$js = FabrikHelperHTML::getAllJS();
-		$document->addScriptDeclaration($js);
 	}
 
 	/**
