@@ -478,15 +478,18 @@ class FabrikViewFormBase extends JView
 		// For editing groups with joined data and an empty joined record (ie no joined records)
 		$hidden = array();
 		$maxRepeat = array();
+		$minRepeat = array();
 		$showMaxRepeats = array();
 		foreach ($this->groups as $g)
 		{
 			$hidden[$g->id] = $g->startHidden;
 			$maxRepeat[$g->id] = $g->maxRepeat;
+			$minRepeat[$g->id] = $g->minRepeat;
 			$showMaxRepeats[$g->id] = $g->showMaxRepeats;
 		}
 		$opts->hiddenGroup = $hidden;
 		$opts->maxRepeat = $maxRepeat;
+		$opts->minRepeat = $minRepeat;
 		$opts->showMaxRepeats = $showMaxRepeats;
 
 		// $$$ rob 26/04/2011 joomfish translations of password validation error messages

@@ -53,6 +53,9 @@ var FbForm = new Class({
 		this.fx.validations = {};
 		this.setUpAll();
 		this._setMozBoxWidths();
+		(function () {
+			this.duplicateGroupsToMin();
+		}.bind(this)).delay(1000);
 	},
 	
 	_setMozBoxWidths: function () {
@@ -1181,6 +1184,30 @@ var FbForm = new Class({
 			}
 		}.bind(this));
 	},
+	
+	/**
+	 * When editing a new form and when min groups set we need to duplicate each group
+	 * by the min repeat value.
+	 */
+	duplicateGroupsToMin: function () {
+		// Check for new form
+		if (this.options.rowid.toInt() === 0) {
+			Object.each(this.options.minRepeat, function (min, groupId) {
+				
+				// Create mock event
+				var btn = this.form.getElement('#group' + groupId + ' .addGroup');
+				if (typeOf(btn) !== 'null') {
+					var e = new Event.Mock(btn, 'click');
+					console.log(e);
+					
+					// Duplicate group
+					for (var i = 0; i < min - 1; i ++) {
+						this.duplicateGroup(e);
+					}
+				}
+			}.bind(this));
+		}
+	},
 
 	deleteGroup: function (e) {
 		Fabrik.fireEvent('fabrik.form.group.delete', [this, e]);
@@ -1189,8 +1216,10 @@ var FbForm = new Class({
 			return;
 		}
 		e.stop();
+		
 		var group = e.target.getParent('.fabrikGroup');
-		// find which repeat group was deleted
+		
+		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
 			if (b.getElement('img') === e.target) {
@@ -1198,6 +1227,12 @@ var FbForm = new Class({
 			}
 		}.bind(this));
 		var i = group.id.replace('group', '');
+		
+		var repeats = document.id('fabrik_repeat_group_' + i + '_counter').get('value').toInt();
+		if (repeats <= this.options.minRepeat[i] && this.options.minRepeat[i] !== 0) {
+			return;
+		}
+		
 		delete this.duplicatedGroups.i;
 		if (document.id('fabrik_repeat_group_' + i + '_counter').value === '0') {
 			return;
