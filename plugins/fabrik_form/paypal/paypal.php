@@ -705,6 +705,11 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 									$err_msg = 'sql query error: ' . $db->getErrorMsg();
 								}
 							}
+							else
+							{
+								$status = 'form.paypal.ipnfailure.set_list_empty';
+								$err_msg = 'no IPN status fields found on form for rowid: ' . $rowid;
+							}
 						}
 					}
 					elseif (JString::strcmp($res, "INVALID") == 0)
