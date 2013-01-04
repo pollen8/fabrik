@@ -67,4 +67,28 @@ class FabrikHelperElement
 
 		return $elementModel;
 	}
+
+	/**
+	 * Short cut for getting the element's filter value
+	 *
+	 * @param   int  $elementId  Element id
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string
+	 */
+
+	public static function filterValue($elementId)
+	{
+		$app = JFactory::getApplication();
+		$pluginManager = FabrikWorker::getPluginManager();
+		$model = $pluginManager->getElementPlugin($elementId);
+		$listModel = $model->getListModel();
+		$listid = $listModel->getId();
+		$key = 'com_fabrik.list' . $listid . '_com_fabrik_' . $listid . '.filter';
+		$filters = JArrayHelper::fromObject($app->getUserState($key));
+		$index = array_search($elementId, $filters['elementid']);
+		$value = $filters['value'][$index];
+		return $value;
+	}
 }
