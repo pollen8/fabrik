@@ -507,6 +507,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 
+		$paypal_testmode = $params->get('paypal_testmode', false);
+
 		/* $$$ hugh
 		 * @TODO shortColName won't handle joined data, need to fix this to use safeColName
 		 * (don't forget to change quoteName stuff later on as well)
@@ -703,6 +705,15 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 								{
 									$status = 'form.paypal.ipnfailure.query_error';
 									$err_msg = 'sql query error: ' . $db->getErrorMsg();
+								}
+								else
+								{
+									if ($paypal_testmode == 1)
+									{
+										$log->message_type = 'form.paypal.ipndebug.ipn_query';
+										$log->message = "IPN query: " . $query;
+										$log->store();
+									}
 								}
 							}
 							else
