@@ -184,7 +184,7 @@ var FabrikModalRepeat = new Class({
 				});
 			});
 		}
-		if (rowcount === 0) {
+		if (keys.length === 0) {
 			this.tmpl = tr;
 			tr.dispose();
 		}
