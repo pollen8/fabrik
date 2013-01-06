@@ -28,9 +28,23 @@ JHtml::_('behavior.keepalive');
 		    	<legend>
 		    		<?php echo JText::_('COM_FABRIK_DETAILS');?>
 		    	</legend>
-				<?php foreach ($this->form->getFieldset('details') as $this->field) :
+				<?php
+				foreach ($this->form->getFieldset('details') as $key => $this->field) :
+					if ($key !== 'jform_plugin')
+					{
+						echo $this->loadTemplate('control_group');
+					}
+					else
+					{
+						// Defer the plug-in field to the end
+						$pluginField = $this->field;
+					}
+				endforeach;
+				foreach ($this->form->getFieldset('connection') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
+				$this->field = $pluginField;
+				echo $this->loadTemplate('control_group');
 				?>
 			</fieldset>
 
