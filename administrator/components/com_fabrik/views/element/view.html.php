@@ -47,11 +47,12 @@ class FabrikAdminViewElement extends JViewLegacy
 
 		// Initialiase variables.
 		$this->form = $this->get('Form');
+		$model = $this->getModel();
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
 		$this->pluginFields = $this->get('PluginHTML');
 
-		$this->js = $this->get('Js');
+		$this->js = $model->getJs();
 
 		$this->jsevents = $this->get('JsEvents');
 
