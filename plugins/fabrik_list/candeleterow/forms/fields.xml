@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-candeleterow">
+		
+			<field name="candeleterow_access"
+				type="accesslevel"
+				default="1"
+				label="PLG_LIST_CANDELETEROW_ACCESS_LABEL"
+				repeat="true"/>
+			
+			
+			<field description="PLG_LIST_CANDELETEROW_ELEMENT_DESC" label="PLG_LIST_CANDELETEROW_ELEMENT_LABEL" name="candeleterow_field" repeat="true" type="listfields" valueformat="tableelement"/>
+			
+			<field default="0" description="PLG_LIST_CANDELETEROW_USERAW_DESC" label="PLG_LIST_CANDELETEROW_USERAW_LABEL" name="candeleterow_useraw" repeat="true" type="radio">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+			</field>
+			
+			<field name="operator"
+				type="list"
+				default="="
+				repeat="true"
+				description="PLG_LIST_CANDELETEROW_OPERATOR_DESC"
+				label="PLG_LIST_CANDELETEROW_OPERATOR_LABEL">
+					<option value="=">COM_FABRIK_EQUALS</option>
+					<option value="!=">COM_FABRIK_NOT_EQUALS</option>
+			</field>
+			
+			<field description="PLG_LIST_CANDELETEROW_VALUE_DESC" label="PLG_LIST_CANDELETEROW_VALUE_LABEL" name="candeleterow_value" repeat="true" size="20" type="text"/>
+				
+			<field cols="30" description="PLG_LIST_CANDELETEROW_EVAL_DESC" label="PLG_LIST_CANDELETEROW_EVAL_LABEL" name="candeleterow_eval" repeat="true" rows="5" type="textarea"/>
+		</fieldset>
+	</fields>
+</form>
