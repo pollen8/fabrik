@@ -18,6 +18,7 @@ includes/*
 language/*
 libraries/*
 !libraries/dompdf/
+libraries/dompdf/lib/fonts/log.htm
 modules/*
 !modules/mod_fabrik_form
 !modules/mod_fabrik_list

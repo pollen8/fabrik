@@ -63,6 +63,19 @@
 		
 		<fieldset label="PLG_ELEMENT_FIELD_FORMATTING" name="plg-field-formatting">
 
+			<field name="bootstrap_class"
+				type="list"
+				default="input-medium"
+				label="PLG_ELEMENT_BOOTSTRAP_CLASS_LABEL"
+				description="PLG_ELEMENT_BOOTSTRAP_CLASS_DESC">
+					<option value="input-mini">input-mini</option>
+					<option value="input-small">input-small</option>
+					<option value="input-medium">input-medium</option>
+					<opton value="input-large">input-large</opton>
+					<option value="input-xlarge">input-xlarge</option>
+					<option value="input-xxlarge">input-xxlarge</option>	
+			</field>
+			
 			<field default="text" description="PLG_ELEMENT_FIELD_FORMAT_DESC" label="PLG_ELEMENT_FIELD_FORMAT_LABEL" name="text_format" type="list">
 					<option value="text">PLG_ELEMENT_FIELD_TEXT</option>
 					<option value="integer">PLG_ELEMENT_FIELD_INTEGER</option>

@@ -35,6 +35,14 @@ if (($this->showClearFilters && (($this->filterMode === 3 || $this->filterMode =
 		</a>
 	</li>
 <?php endif;
+if ($this->showFilters && $this->toggleFilters) :?>
+	<li>
+		<a href="#" class="toggleFilters">
+			<?php echo $this->buttons->filter;?>
+			<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
+		</a>
+	</li>
+<?php endif;
 if ($this->advancedSearch !== '') : ?>
 	<li>
 		<a href="<?php echo $this->advancedSearchURL?>" class="advanced-search-link">

@@ -1212,6 +1212,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$elName = $this->getFullName(false, true, false);
 		$elName2 = $this->getFullName(false, false, false);
 		$v = $this->filterName($counter, $normal);
+		$class = $this->filterClass();
 
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
@@ -1272,8 +1273,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				$return[] = '<div class="fabrik_filter_container">';
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="' . $class . '" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="' . $class . '" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else
@@ -1312,7 +1313,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text',
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" size="1" maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
 				break;
 			default:
@@ -1343,7 +1344,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case 'auto-complete':
@@ -1352,8 +1353,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
-				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="inputbox fabrik_filter autocomplete-trigger" value="'
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="text" name="' . $v . '-auto-complete" class="' . $class . ' autocomplete-trigger" value="'
 					. $default . '" id="' . $htmlid . '-auto-complete" />';
 
 				$autoId = '#' . $htmlid . '-auto-complete';
@@ -2168,7 +2169,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	protected function filterCalendarOpts()
 	{
 		$params = $this->getParams();
-		$calOpts = array('class' => 'inputbox fabrik_filter', 'maxlength' => '19', 'size' => 16);
+		$class = $this->filterClass();
+		$calOpts = array('class' => $class, 'maxlength' => '19', 'size' => 16);
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{
 			$calopts['readonly'] = 'readonly';

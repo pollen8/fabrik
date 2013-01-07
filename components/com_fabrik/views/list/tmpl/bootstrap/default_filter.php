@@ -45,6 +45,10 @@ else:
 <?php
 endif;
 ?>
+<?php
+if (!($this->filterMode === 3 || $this->filterMode === 4)) :
+?>
 </div>
 </div>
+<?php endif; ?>
 </div>

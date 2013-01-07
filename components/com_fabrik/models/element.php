@@ -2149,14 +2149,19 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$maxlength = $size;
 		}
-		$class = '';
+		$class = array();
+		$bootstrapClass = $params->get('bootstrap_class', '');
+		if ($bootstrapClass !== '')
+		{
+			$class[] = $bootstrapClass;
+		}
 		if ($this->elementError != '')
 		{
-			$class .= ' elementErrorHighlight';
+			$class[] = ' elementErrorHighlight';
 		}
 		if ($element->hidden == '1')
 		{
-			$class .= ' hidden';
+			$class[] = ' hidden';
 			$type = 'hidden';
 		}
 		$bits['type'] = $type;
@@ -2164,7 +2169,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bits['name'] = $this->getHTMLName($repeatCounter);
 		$bits['size'] = $size;
 		$bits['maxlength'] = $maxlength;
-		$bits['class'] = "fabrikinput inputbox $class";
+		$class[] = 'fabrikinput inputbox';
+		$bits['class'] = implode(' ', $class);
 		if ($params->get('placeholder', '') !== '')
 		{
 			$bits['placeholder'] = $params->get('placeholder');
@@ -2661,6 +2667,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 		}
 		$size = (int) $this->getParams()->get('filter_length', 20);
+		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
 			case "range":
@@ -2668,7 +2675,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 
 			case "dropdown":
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $id);
 				break;
 
 			case "field":
@@ -2676,7 +2683,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" size="' . $size . '" value="' . $default . '" id="'
+				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
 					. $id . '" />';
 				break;
 
@@ -2689,7 +2696,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$default = stripslashes($default);
 					$default = htmlspecialchars($default);
-					$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $id . '" />';
+					$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $id . '" />';
 				}
 				break;
 
@@ -2700,6 +2707,23 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
 		return implode("\n", $return);
+	}
+
+	/**
+	 * Get filter classes
+	 *
+	 * @since 3.1b
+	 *
+	 * @return  string
+	 */
+
+	protected function filterClass()
+	{
+		$params = $this->getParams();
+		$classes = array('inputbox fabrik_filter');
+		$bootstrapClass = $params->get('filter_class', 'input-small');
+		$classes[] = $bootstrapClass;
+		return implode(' ', $classes);
 	}
 
 	/**
@@ -2719,7 +2743,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function rangedFilterFields($default, &$return, $rows, $v, $type = 'list')
 	{
 		$element = $this->getElement();
-		$attribs = 'class="inputbox fabrik_filter" size="1" ';
+		$class = $this->filterClass();
+		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
 		$default0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
 		$default1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
@@ -2734,8 +2759,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
-			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
 		}
 	}
 
@@ -2761,14 +2786,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$default = stripslashes($default);
 		$default = htmlspecialchars($default);
 		$id = $this->getHTMLId() . 'value';
+		$class = $this->filterClass();
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		/**
 		 * $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters
 		 * showing and not produce invald html & duplicate js calls
 		 */
 		$return = array();
-		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger '
+		$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
 			. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 
 		$opts = array();
@@ -3223,6 +3249,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+		$class = $this->filterClass();
 
 		// $$$ needs to apply to CDD's as well, so just making this an overideable method.
 		if ($this->quoteLabel())
@@ -3250,7 +3277,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$condition = $this->getFilterCondition();
 
 		// Need to include class other wise csv export produces incorrect results when exporting
-		$prefix = '<input type="hidden" class="fabrik_filter" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
+		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
 		$return[] = $prefix . '[condition][' . $counter . ']" value="' . $condition . '" />';
 		$return[] = $prefix . '[join][' . $counter . ']" value="AND" />';
 		$return[] = $prefix . '[key][' . $counter . ']" value="' . $elName . '" />';
@@ -4644,7 +4671,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @return  string	formatted value
 	 */
 
-	public function getEmailValue($value, $data, $repeatCounter)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		if ($this->inRepeatGroup)
 		{

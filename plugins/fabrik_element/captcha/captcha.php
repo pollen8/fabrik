@@ -361,7 +361,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	 * @return  string	formatted value
 	 */
 
-	public function getEmailValue($value, $data, $repeatCounter)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		return "";
 	}

@@ -6,7 +6,7 @@ $buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
 echo "
 
 .fabrikDataContainer {
-clear:both;padding-top:30px;
+clear:both;
 }
 
 .fabrikDataContainer .pagination a{

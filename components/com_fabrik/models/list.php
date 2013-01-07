@@ -1188,7 +1188,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					if ($j3)
 					{
-						$row->fabrik_actions = '<div class="btn-group fabrik_action">' . implode("\n", $row->fabrik_actions) . '</btn>';
+						$row->fabrik_actions = '<div class="btn-group fabrik_action">' . implode("\n", $row->fabrik_actions) . '</div>';
 					}
 					else
 					{

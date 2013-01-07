@@ -618,13 +618,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$table = $join->table_join;
 			$key = $join->table_join_key;
-			$val = $db->quoteName($join->params->get('join-label', $val));
+			$val = $join->params->get('join-label', $val);
+
+			// Don't quote concat labels
+			if ($params->get($this->concatLabelParam) == '')
+			{
+				$val = $db->quoteName($val);
+			}
 		}
 		if ($key == '' || $val == '')
 		{
 			return false;
 		}
-
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
@@ -1366,7 +1371,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @return  string	formatted value
 	 */
 
-	public function getEmailValue($value, $data, $repeatCounter)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		if ($this->isJoin())
@@ -1540,6 +1545,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$htmlid = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 		$return = array();
+		$class = $this->filterClass();
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		if (in_array($element->filter_type, array('range', 'dropdown', '')))
 		{
@@ -1560,7 +1566,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				 */
 				$rows = array();
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', "value", 'text', $default, $htmlid);
 				return implode("\n", $return);
 			}
 			$this->unmergeFilterSplits($rows);
@@ -1575,17 +1581,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			default:
 			case '':
 				$this->addSpaceToEmptyLabels($rows, 'text');
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', "value", 'text', $default, $htmlid);
 				break;
 
 			case "field":
-				$return[] = '<input type="text" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
+				$return[] = '<input type="text" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
 					. $htmlid . '" />';
 				$return[] = $this->filterHiddenFields();
 				break;
 
 			case "hidden":
-				$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size
+				$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size
 					. '" id="' . $htmlid . '" />';
 				$return[] = $this->filterHiddenFields();
 				break;

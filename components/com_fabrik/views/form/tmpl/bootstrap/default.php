@@ -58,6 +58,7 @@ endif;
 
 echo $this->loadTemplate('relateddata');
 foreach ($this->groups as $group) :
+	$this->group = $group;
 	?>
 
 		<<?php echo $form->fieldsetTag ?> class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
@@ -73,7 +74,16 @@ foreach ($this->groups as $group) :
 			<div class="groupintro"><?php echo $group->intro ?></div>
 		<?php
 		endif;
-		if ($group->canRepeat) :
+
+		// Load the group template - this can be :
+		//  * default_group.php - standard group non-repeating rendered as an unordered list
+		//  * default_repeatgroup.php - repeat group rendered as an unordered list
+		//  * default_repeatgroup.table.php - repeat group rendered in a table.
+
+		$this->elements = $group->elements;
+		echo $this->loadTemplate($group->tmpl);
+
+		/*if ($group->canRepeat) :
 			foreach ($group->subgroups as $subgroup) :
 			?>
 				<div class="fabrikSubGroup">
@@ -105,7 +115,7 @@ foreach ($this->groups as $group) :
 		else:
 			$this->elements = $group->elements;
 			echo $this->loadTemplate($groupTmpl);
-		endif; ?>
+		endif;*/ ?>
 	</<?php echo $form->fieldsetTag ?>>
 <?php
 endforeach;

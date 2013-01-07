@@ -1707,18 +1707,23 @@ EOD;
 				foreach ($items as $i => $s)
 				{
 					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
-					if ($endLine)
+					if ($endLine && $optionsPerRow != 1)
 					{
 						$grid[] = '</div>';
 					}
 
 					$newLine = ($i % $optionsPerRow == 0);
-					if ($newLine)
+					if ($newLine && $optionsPerRow != 1)
 					{
 						$grid[] = '<div class="row-fluid">';
 					}
 
-					$grid[] = '<div class="span' . $span . '">' . $s . '</div>';
+					$grid[] =  $optionsPerRow != 1 ? '<div class="span' . $span . '">' . $s . '</div>' : $s;
+				}
+				if ($i + 1 % $optionsPerRow !== 0)
+				{
+					// Close opened and unfinished row.
+					$grid[] = '</div>';
 				}
 			}
 			else

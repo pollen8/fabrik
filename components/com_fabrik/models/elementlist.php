@@ -174,6 +174,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$htmlid = $this->getHTMLId() . 'value';
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
+		$class = $this->filterClass();
 		$v = $this->filterName($counter, $normal);
 		if (in_array($element->filter_type, array('range', 'dropdown', '')))
 		{
@@ -188,7 +189,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 
-		$attribs = 'class="inputbox fabrik_filter" size="1" ';
+		$attribs = 'class="' . $class . '" size="1" ';
 		$size = $params->get('filter_length', 20);
 		$return = array();
 		switch ($element->filter_type)
@@ -214,7 +215,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" size="' . $size . '" value="' . $default . '" id="'
+				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
 					. $htmlid . '" />';
 				break;
 
@@ -224,7 +225,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case 'auto-complete':

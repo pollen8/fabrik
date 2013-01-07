@@ -2,8 +2,8 @@
 /**
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -26,10 +26,15 @@ class FabrikAdminViewGroup extends JViewLegacy
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
 	{
+
 		// Initialiase variables.
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
@@ -53,7 +58,10 @@ class FabrikAdminViewGroup extends JViewLegacy
 
 	/**
 	 * Add the page title and toolbar.
+	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()

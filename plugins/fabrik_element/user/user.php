@@ -804,7 +804,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * @return  string	formatted value
 	 */
 
-	public function getEmailValue($value, $data, $repeatCounter)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$key = $this->getFullName(false, true, false);
 		$rawkey = $key . '_raw';

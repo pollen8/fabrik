@@ -16,7 +16,7 @@ var FbListFilter = new Class({
 		this.setOptions(options);
 		this.advancedSearch = false;
 		this.container = document.id(this.options.container);
-		this.filterContainer = this.container.getElement('.fabrikFilterContainer');
+		this.filterContainer = this.container.getElements('.fabrikFilterContainer');
 		var b = this.container.getElement('.toggleFilters');
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {

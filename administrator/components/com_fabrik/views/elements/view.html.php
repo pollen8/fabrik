@@ -146,13 +146,6 @@ class FabrikAdminViewElements extends JViewLegacy
 		{
 			JHtmlSidebar::setAction('index.php?option=com_fabrik&view=elements');
 
-			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
-			JHtmlSidebar::addFilter(
-			JText::_('JOPTION_SELECT_PUBLISHED'),
-			'filter_published',
-			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
-			);
-
 			if (!empty($this->packageOptions))
 			{
 				array_unshift($this->packageOptions, JHtml::_('select.option', 'fabrik', JText::_('COM_FABRIK_SELECT_PACKAGE')));
@@ -164,21 +157,28 @@ class FabrikAdminViewElements extends JViewLegacy
 			}
 
 			JHtmlSidebar::addFilter(
-			JText::_('COM_FABRIK_SELECT_FORM'),
-			'filter_form',
-			JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true)
-			);
-
-			JHtmlSidebar::addFilter(
 			JText::_('COM_FABRIK_SELECT_PLUGIN'),
 			'filter_plugin',
 			JHtml::_('select.options', $this->pluginOptions, 'value', 'text', $this->state->get('filter.plugin'), true)
 			);
 
 			JHtmlSidebar::addFilter(
+			JText::_('COM_FABRIK_SELECT_FORM'),
+			'filter_form',
+			JHtml::_('select.options', $this->formOptions, 'value', 'text', $this->state->get('filter.form'), true)
+			);
+
+			JHtmlSidebar::addFilter(
 			JText::_('COM_FABRIK_SELECT_GROUP'),
 			'filter_group',
 			JHtml::_('select.options', $this->groupOptions, 'value', 'text', $this->state->get('filter.group'), true)
+			);
+
+			$publishOpts = JHtml::_('jgrid.publishedOptions', array('archived' => false));
+			JHtmlSidebar::addFilter(
+			JText::_('JOPTION_SELECT_PUBLISHED'),
+			'filter_published',
+			JHtml::_('select.options', $publishOpts, 'value', 'text', $this->state->get('filter.published'), true)
 			);
 
 			JHtmlSidebar::addFilter(

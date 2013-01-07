@@ -1074,7 +1074,6 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$this->formDataWithTableName = $this->formData;
-
 		if ($form->record_in_database == '1')
 		{
 			$this->processToDB();
@@ -1369,7 +1368,9 @@ class FabrikFEModelForm extends FabModelForm
 		list($this->dofilter, $this->filter) = FabrikWorker::getContentFilter();
 
 		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
-		$aData = $_POST;
+
+		// Was POST but needs to be request for qs inserts to work
+		$aData = $_REQUEST;
 		array_walk_recursive($aData, array($this, '_clean'));
 
 		// Set here so element can call formModel::updateFormData()
@@ -4467,7 +4468,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
-
+			$group->columns = $groupParams->get('group_columns', 1);
 			if ($groupModel->canRepeat())
 			{
 				$group->tmpl =  $groupParams->get('repeat_template', 'repeatgroup');

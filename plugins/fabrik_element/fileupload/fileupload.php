@@ -2502,7 +2502,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 * @return  string  email formatted value
 	 */
 
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		$storage = $this->getStorage();

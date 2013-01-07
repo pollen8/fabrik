@@ -358,7 +358,10 @@ class FabrikFEModelGroup extends FabModel
 		$colcount = (int) $params->get('group_columns');
 
 		// Bootstrap grid formatting
-		$element->span = $colcount == 0 ? 12 : floor(12 / $colcount);
+		$spans = $this->columnSpans();
+		$spanKey = ($elCount -1) % $colcount;
+
+		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
 		$element->offset = $params->get('group_offset', 0);
 
 		$element->startRow = false;
@@ -408,6 +411,40 @@ class FabrikFEModelGroup extends FabModel
 			$elCount++;
 		}
 		return $elCount;
+	}
+
+	/**
+	 * Work out the bootstrap column spans for the group
+	 * Assigned to each element in setColumnCss()
+	 * Looks at the property group_column_widths which accepts either % or 1-12 as values
+	 *
+	 * @since 3.0b
+	 *
+	 * @return  array
+	 */
+
+	public function columnSpans()
+	{
+		$params = $this->getParams();
+		$widths = $params->get('group_column_widths', '');
+		$widths = explode(',', $widths);
+		if (FabrikWorker::j3())
+		{
+			foreach ($widths as &$w)
+			{
+				if ($w == '')
+				{
+					$w = 6;
+				}
+				if (strstr($w, '%'))
+				{
+					$w = (int) str_replace('%', '', $w);
+					$w = floor(($w / 100) * 12);
+				}
+				$w = ' span' . $w;
+			}
+		}
+		return $widths;
 	}
 
 	/**
