@@ -69,7 +69,7 @@ class FabrikControllerList extends JController
 			$view->setModel($model, true);
 		}
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 
 		// Build unique cache id on url, post and user id
 		$user = JFactory::getUser();

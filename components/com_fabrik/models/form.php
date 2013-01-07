@@ -5060,7 +5060,9 @@ class FabrikFEModelForm extends FabModelForm
 		 * without the array_shift the custom message is never attached to the redirect page.
 		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
 		 */
-		$custommsg = JArrayHelper::getValue($smsg, array_shift(array_keys($smsg)));
+		$custommsg = array_keys($smsg);
+		$custommsg = array_shift($custommsg);
+		$custommsg = JArrayHelper::getValue($smsg, $custommsg);
 		if ($custommsg != '')
 		{
 			$msg = $custommsg;
@@ -5082,7 +5084,8 @@ class FabrikFEModelForm extends FabModelForm
 			$msg = null;
 		}
 		$session->set($context . 'msg', $smsg);
-		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
+		$showmsg = $session->get($context . 'showsystemmsg', array(true));
+		$showmsg = array_shift($showmsg);
 		$msg = $showmsg == 1 ? $msg : null;
 		return $msg;
 	}

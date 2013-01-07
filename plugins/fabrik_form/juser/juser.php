@@ -454,7 +454,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 				$data['block'] = 1;
 			}
 			// If Auto login is activated, we need to set activation and block to 0
-			if( $autoLogin ) {
+			if ($autoLogin )
+			{
 				$data['activation'] = 0;
 				$data['block'] = 0;
 			}
@@ -539,7 +540,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 					$data['username'], $data['password_clear']
 				);
 			}
-			elseif ( $autoLogin )
+			elseif ($autoLogin)
 			{
 				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
 

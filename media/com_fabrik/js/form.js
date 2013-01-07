@@ -1198,7 +1198,6 @@ var FbForm = new Class({
 				var btn = this.form.getElement('#group' + groupId + ' .addGroup');
 				if (typeOf(btn) !== 'null') {
 					var e = new Event.Mock(btn, 'click');
-					console.log(e);
 					
 					// Duplicate group
 					for (var i = 0; i < min - 1; i ++) {
