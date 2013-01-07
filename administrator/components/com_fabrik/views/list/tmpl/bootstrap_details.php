@@ -89,7 +89,14 @@
 				foreach ($this->form->getFieldset('layout') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
-
+				?>
+			</fieldset>
+			<fieldset class="form-horizontal">
+				<legend><?php echo JText::_('COM_FABRIK_BOOTSTRAP_LIST_OPTIONS')?></legend>
+				<?php
+				foreach ($this->form->getFieldset('layout-bootstrap') as $this->field) :
+				echo $this->loadTemplate('control_group');
+				endforeach;
 				?>
 			</fieldset>
 		</div>

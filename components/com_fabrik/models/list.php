@@ -9101,6 +9101,29 @@ class FabrikFEModelList extends JModelForm
 		unset($this->data);
 	}
 
+	public function htmlClass()
+	{
+		$params = $this->getParams();
+		$class = array('table');
+		if ($params->get('bootstrap_stripped_class', true))
+		{
+			$class[] = 'table-striped';
+		}
+		if ($params->get('bootstrap_bordered_class'))
+		{
+			$class[] = 'table-bordered';
+		}
+		if ($params->get('bootstrap_condensed_class'))
+		{
+			$class[] = 'table-condensed';
+		}
+		if ($params->get('bootstrap_hover_class', true))
+		{
+			$class[] = 'table-hover';
+		}
+		return implode(' ', $class);
+	}
+
 	/**
 	 * Get the table template
 	 *

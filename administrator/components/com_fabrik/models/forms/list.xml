@@ -370,7 +370,7 @@
 				directory="/components/com_fabrik/views/list/tmpl/"
 				description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC"
 				label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL"  type="folderlist"/>
-				
+			
 			<field description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" name="empty_data_msg" size="70" type="text"/>
 				
 		 	<field description="COM_FABRIK_FIELD_PDF_ICON_DESC" label="COM_FABRIK_FIELD_PDF_ICON_LABEL" name="pdf" type="list">
@@ -388,6 +388,50 @@
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL"/>
 			
 			<field class="btn-group" default="1" description="COM_FABRIK_SHOW_TITLE_DESC" label="COM_FABRIK_SHOW_TITLE_LABEL" name="show-title" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+		</fieldset>
+		
+		<fieldset name="layout-bootstrap">
+			
+			<field name="bootstrap_stripped_class"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_BOOSTRAP_LIST_STRIPPED_CLASS_DESC"
+				label="COM_FABRIK_FIELD_BOOSTRAP_LIST_STRIPPED_CLASS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="bootstrap_bordered_class"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_BOOSTRAP_LIST_BORDERED_CLASS_DESC"
+				label="COM_FABRIK_FIELD_BOOSTRAP_LIST_BORDERED_CLASS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="bootstrap_condensed_class"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_BOOSTRAP_LIST_CONDENSED_CLASS_DESC"
+				label="COM_FABRIK_FIELD_BOOSTRAP_LIST_CONDENSED_CLASS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="bootstrap_hover_class"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_BOOSTRAP_LIST_HOVER_CLASS_DESC"
+				label="COM_FABRIK_FIELD_BOOSTRAP_LIST_HOVER_CLASS_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
