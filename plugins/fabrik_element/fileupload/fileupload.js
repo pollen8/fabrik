@@ -75,8 +75,14 @@ var FbFileUpload = new Class({
 					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 					}
+					/*
 					b.getNext().destroy();
 					b.destroy();
+					*/
+					var delete_span = document.id(this.element.id + '_delete_span');
+					if (delete_span) {
+						delete_span.destroy();
+					}
 				}
 			}.bind(this));
 		}
