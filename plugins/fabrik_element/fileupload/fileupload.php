@@ -2506,6 +2506,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$params = $this->getParams();
 		$storage = $this->getStorage();
+		$this->_repeatGroupCounter = $repeatCounter;
 		if ($params->get('fu_show_image_in_email', false))
 		{
 			$render = $this->loadElement($value);
