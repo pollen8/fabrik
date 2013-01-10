@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload

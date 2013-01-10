@@ -1,14 +1,21 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Fileupload adaptor to render uploaded images
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
 
 class imageRender
 {
@@ -30,6 +37,8 @@ class imageRender
 	}
 
 	/**
+	 * Render uploaded image
+	 *
 	 * @param   object  &$model   Element model
 	 * @param   object  &$parmas  Element params
 	 * @param   string  $file     Row data for this element

@@ -1,16 +1,21 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-
+/**
+ * Fileupload adaptor to render allvideos
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
 
 class allVideosRender
 {
@@ -20,43 +25,54 @@ class allVideosRender
 	var $inTableView = false;
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+	 * Shows the data formatted for the list view
+	 *
+	 * @param   string  $data      elements data
+	 * @param   object  &$thisRow  all the data in the lists current row
+	 *
+	 * @return  string	formatted value
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
 	{
-		$this->inTableView  = true;
+		$this->inTableView = true;
 		$this->render($model, $params, $file);
 	}
 
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
+	 * Draws the html form element
+	 *
+	 * @param   array  $data           to preopulate element with
+	 * @param   int    $repeatCounter  repeat group counter
+	 *
+	 * @return  string	elements html
 	 */
 
-	function render(&$model, &$params, $file)
+	public function render(&$model, &$params, $file)
 	{
-		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE  . $file);
+		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		$ext = JString::strtolower(JFile::getExt($file));
-		if (!JPluginHelper::isEnabled('content', 'jw_allvideos')) {
-			$this->output = JText::_('to display this media files types you need to install the all videos plugin - http://www.joomlaworks.gr/content/view/35/41/');
+		if (!JPluginHelper::isEnabled('content', 'jw_allvideos'))
+		{
+			$this->output = JText::_(
+				'to display this media files types you need to install the all videos plugin - http://www.joomlaworks.gr/content/view/35/41/');
 			return;
 		}
 		$extra = array();
 		$extra[] = $src;
-		if ($this->inTableView || $params->get('fu_show_image') < 2) {
+		if ($this->inTableView || $params->get('fu_show_image') < 2)
+		{
 			$extra[] = $params->get('thumb_max_width');
 			$extra[] = $params->get('thumb_max_height');
-		} else {
+		}
+		else
+		{
 			$extra[] = $params->get('fu_main_max_width');
 			$extra[] = $params->get('fu_main_max_height');
 		}
 		$src = implode('|', $extra);
-		switch($ext) {
+		switch ($ext)
+		{
 			case 'flv':
 				$this->output = "{flvremote}$src{/flvremote}";
 				break;
@@ -70,13 +86,11 @@ class allVideosRender
 		/*if (!JPluginHelper::isEnabled( 'content', 'fab_jwplayer')) {
 
 
-			} else {
+		    } else {
 
-			}
+		    }
 		} else {
-			$this->output = '{fabjwplayer file='.$src.'}';
+		    $this->output = '{fabjwplayer file='.$src.'}';
 		}*/
 	}
 }
-
-?>

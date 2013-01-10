@@ -149,7 +149,11 @@ var FbFileUpload = new Class({
 			return;
 		}
 		var a, title;
-		var c = this.getElement().getParent('.fabrikSubElementContainer');
+		var el = this.getElement();
+		if (typeOf(el) === 'null') {
+			return;
+		}
+		var c = el.getParent('.fabrikSubElementContainer');
 		this.container = c;
 		var canvas = c.getElement('canvas');
 		if (typeOf(canvas) === 'null') {
