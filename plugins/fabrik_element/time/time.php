@@ -257,7 +257,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 	{
 		if (is_array($val) && implode($val) != '')
 		{
-			return str_replace('', '00', $val[0]) . ':' . str_replace('', '00', $val[1]) . ':' . str_replace('', '00', $val[2]);
+			return rtrim(str_replace('', '00', $val[0]) . ':' . str_replace('', '00', $val[1]) . ':' . str_replace('', '00', $val[2]), ':');
 		}
 		return $val;
 	}
