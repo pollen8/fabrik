@@ -359,6 +359,10 @@ class FabrikFEModelGroup extends FabModel
 
 		// Bootstrap grid formatting
 		$spans = $this->columnSpans();
+		if ($colcount === 0)
+		{
+			$colcount = 1;
+		}
 		$spanKey = ($elCount -1) % $colcount;
 
 		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));

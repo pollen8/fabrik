@@ -369,7 +369,7 @@ class FabrikViewListBase extends JViewLegacy
 		// End deprecated
 		$this->list = $this->table;
 		$this->list->class = $model->htmlClass();
-		$this->group_by = $item->group_by;
+ 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
 		$this->renderContext = $this->get('RenderContext');
