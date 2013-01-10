@@ -1027,6 +1027,7 @@ class plgFabrik_Element extends FabrikPlugin
 
 	public function getDefaultValue($data = array())
 	{
+
 		if (!isset($this->_default))
 		{
 			$w = new FabrikWorker;
@@ -1034,9 +1035,25 @@ class plgFabrik_Element extends FabrikPlugin
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
 			if ($element->eval == "1")
 			{
-				FabrikHelperHTML::debug($default, 'element eval default:' . $element->label);
-				$default = @eval(stripslashes($default));
-				FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
+				/**
+				 * Inline edit with a default eval'd "return FabrikHelperElement::filterValue(290);"
+				 * was causing the default to be eval'd twice (no idea y) - add in check for 'return' into eval string
+				 * see http://fabrikar.com/forums/showthread.php?t=30859
+				 */
+				if (!stristr($default, 'return'))
+				{
+					$this->_default = $default;
+				}
+				else
+				{
+					FabrikHelperHTML::debug($default, 'element eval default:' . $element->label);
+					$default = stripslashes($default);
+					$default = @eval($default);
+					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
+
+					// test this does stop error
+					$this->_default = $default === false ? '' : $default;
+				}
 			}
 			$this->_default = $default;
 		}
