@@ -95,7 +95,7 @@ var FbListRadiusSearch = new Class({
 			output.value = this.options.value;
 			output2.set('text', this.options.value);
 
-			if (!this.options.prefilterDone) {
+			if (this.options.myloc && !this.options.prefilterDone) {
 				if (geo_position_js.init()) {
 					geo_position_js.getCurrentPosition(function (p) {
 						this.setGeoCenter(p);
