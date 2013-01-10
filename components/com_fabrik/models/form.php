@@ -3113,6 +3113,8 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return $this->_data;
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->_data = array();
@@ -3229,7 +3231,8 @@ class FabrikFEModelForm extends FabModelForm
 						$listModel->setBigSelects();
 
 						// Otherwise lets get the table record
-						$sql = $this->_buildQuery();
+						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+						$sql = $this->_buildQuery($opts);
 
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug($fabrikDb->getQuery(), 'form:render');
@@ -3500,10 +3503,12 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
+	 * @param   array  $opts - key: ignoreOrder ingores order by part of query - needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
+	 *
 	 * @return  string  query
 	 */
 
-	public function _buildQuery()
+	public function _buildQuery($opts = array())
 	{
 		if (isset($this->query))
 		{
@@ -3605,7 +3610,7 @@ class FabrikFEModelForm extends FabModelForm
 			$word = array_shift($where);
 			$sql .= $word . ' (' . implode(' ', $where) . ')';
 		}
-		if (!$random)
+		if (!$random && JArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
 		{
 			// $$$ rob if showing joined repeat groups we want to be able to order them as defined in the table
 			$sql .= $listModel->_buildQueryOrder();

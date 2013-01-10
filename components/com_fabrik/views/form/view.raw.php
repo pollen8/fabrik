@@ -39,6 +39,8 @@ class fabrikViewForm extends JView
 	{
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		$form = $model->getForm();
 		if ($model->render() === false)
@@ -48,7 +50,7 @@ class fabrikViewForm extends JView
 		$this->groups = $this->get('GroupView');
 
 		// Main trigger element's id
-		$elementid = JRequest::getInt('elid');
+		$elementid = $input->getInt('elid');
 
 		$html = array();
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
@@ -66,10 +68,10 @@ class fabrikViewForm extends JView
 		}
 		$html[] = '</ul>';
 
-		if (JRequest::getBool('inlinesave') || JRequest::getBool('inlinecancel'))
+		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
 		{
 			$html[] = '<ul class="">';
-			if (JRequest::getBool('inlinecancel') == true)
+			if ($input->getBool('inlinecancel') == true)
 			{
 				$html[] = '<li class="ajax-controls inline-cancel">';
 				$html[] = '<a href="#" class="">';
@@ -78,7 +80,7 @@ class fabrikViewForm extends JView
 				$html[] = '</li>';
 			}
 
-			if (JRequest::getBool('inlinesave') == true)
+			if ($input->getBool('inlinesave') == true)
 			{
 				$html[] = '<li class="ajax-controls inline-save">';
 				$html[] = '<a href="#" class="">';
@@ -94,7 +96,7 @@ class fabrikViewForm extends JView
 
 		$srcs = array();
 		$repeatCounter = 0;
-		$elementids = (array) JRequest::getVar('elementid');
+		$elementids = (array) $input->get('elementid', array(), 'array');
 		$eCounter = 0;
 		$onLoad = array();
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
@@ -110,7 +112,7 @@ class fabrikViewForm extends JView
 			{
 				$onLoad[] = "o.select();";
 				$onLoad[] = "o.focus();";
-				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JUtility::getToken() . "';";
+				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
 			}
 			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
@@ -129,6 +131,7 @@ class fabrikViewForm extends JView
 	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$w = new FabrikWorker;
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
@@ -149,7 +152,7 @@ class fabrikViewForm extends JView
 			}
 		}
 
-		$this->assign('access', $model->checkAccessFromListSettings());
+		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -162,10 +165,10 @@ class fabrikViewForm extends JView
 
 		$params = $model->getParams();
 		$params->def('icons', $app->getCfg('icons'));
-		$pop = (JRequest::getVar('tmpl') == 'component') ? 1 : 0;
+		$pop = ($input->get('tmpl') == 'component') ? 1 : 0;
 		$params->set('popup', $pop);
 
-		$view = JRequest::getVar('view', 'form');
+		$view = $input->get('view', 'form');
 		if ($view == 'details')
 		{
 			$model->setEditable(false);

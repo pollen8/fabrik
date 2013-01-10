@@ -2122,7 +2122,8 @@ class FabrikFEModelList extends JModelForm
 				$orderbys = json_decode($table->order_by, true);
 			}
 			// $$$ not sure why, but sometimes $orderbys is NULL at this point.
-			if (!isset($orderbys)) {
+			if (!isset($orderbys))
+			{
 				$orderbys = array();
 			}
 			// Covert ids to names (were stored as names but then stored as ids)
@@ -2139,20 +2140,20 @@ class FabrikFEModelList extends JModelForm
 			{
 				$orderdirs = json_decode($table->order_dir, true);
 			}
+			$els = $this->getElements('filtername');
 			if (!empty($orderbys))
 			{
 				$bits = array();
-				for ($o = 0; $o < count($orderbys); $o++)
+				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
-					if ($orderbys[$o] !== '')
+					if ($orderbyRaw !== '')
 					{
-						$orderby = FabrikString::safeColName($orderbys[$o]);
-						$els = $this->getElements('filtername');
-						if (array_key_exists($orderby, $els))
+						$orderbyRaw = FabrikString::safeColName($orderbyRaw);
+						if (array_key_exists($orderbyRaw, $els))
 						{
 							// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
-							$field = $els[$orderby]->getOrderByName();
+							$field = $els[$orderbyRaw]->getOrderByName();
 							if (!JString::stristr($field, 'CONCAT('))
 							{
 								$field = FabrikString::safeColName($field);
@@ -2163,12 +2164,12 @@ class FabrikFEModelList extends JModelForm
 						}
 						else
 						{
-							if (strstr($orderby, '_raw`'))
+							if (strstr($orderbyRaw, '_raw`'))
 							{
-								$orderby = FabrikString::safeColNameToArrayKey($orderby);
+								$orderbyRaw = FabrikString::safeColNameToArrayKey($orderbyRaw);
 							}
-							$bits[] = " $orderby $dir";
-							$this->orderEls[] = $orderby;
+							$bits[] = " $orderbyRaw $dir";
+							$this->orderEls[] = $orderbyRaw;
 							$this->orderDirs[] = $dir;
 						}
 					}
