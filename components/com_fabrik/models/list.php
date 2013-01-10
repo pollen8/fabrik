@@ -3163,7 +3163,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Checks user access for deleting records
+	 * Checks user access for deleting records.
 	 *
 	 * @param   object  $row  of data currently active
 	 *
@@ -3172,17 +3172,24 @@ class FabrikFEModelList extends JModelForm
 
 	public function canDelete($row = null)
 	{
+		// Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
+		// if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
+		// deny access.
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
+		$pluginCanEdit = !in_array(false, $pluginCanEdit);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
-			return $canUserDo;
+			// if userDo allows delete, let plugin override
+			return $canUserDo ? $pluginCanEdit : $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
 		{
 			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
-		return $this->_access->delete;
+		// if group access allows delete, then let plugin override
+		return $this->_access->delete ? $pluginCanEdit : $this->_access->delete;
 	}
 
 	/**
