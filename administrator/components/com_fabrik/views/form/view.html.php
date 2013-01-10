@@ -20,8 +20,22 @@ jimport('joomla.application.component.view');
  */
 class FabrikAdminViewForm extends JViewLegacy
 {
+	/**
+	 * Form's form
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Item
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 * @var object
+	 */
 	protected $state;
 	protected $plugins;
 	protected $js;
@@ -52,17 +66,12 @@ class FabrikAdminViewForm extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
-		$srcs = FabrikHelperHTML::framework();
-		$srcs[] = 'media/com_fabrik/js/fabrik.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/namespace.js';
-		$srcs[] = 'administrator/components/com_fabrik/views/pluginmanager.js';
-
+		// Set up the script shim
 		$shim = array();
 		$dep = new stdClass;
 		$dep->deps = array('fab/fabrik');
 		$shim['admin/pluginmanager'] = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
-		FabrikHelperHTML::script($srcs, $this->js);
 		parent::display($tpl);
 	}
 
@@ -117,7 +126,7 @@ class FabrikAdminViewForm extends JViewLegacy
 					}
 				}
 			}
-			// $$$ rob no save as copy as this gets complicated due to renaming lists, groups etc. Users should copy from list view.
+			// $$$ No 'save as copy' as this gets complicated due to renaming lists, groups etc. Users should copy from list view.
 			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CLOSE');
 		}
 
