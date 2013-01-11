@@ -33,10 +33,10 @@ jimport('joomla.filesystem.file');
 FabrikHelperHTML::framework();
 
 // Raw test for submitting forms via dbjoin add form.
-if (!in_array($input->get('task'), array('plugin.pluginAjax', 'form.process')) && $input->get('format') !== 'raw')
+/* if (!in_array($input->get('task'), array('plugin.pluginAjax', 'form.process')) && $input->get('format') !== 'raw')
 {
 	FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-}
+} */
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
 // Include dependancies

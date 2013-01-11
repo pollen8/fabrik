@@ -251,7 +251,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		}
 		$title = '<span>' . JText::_('COM_FABRIK_ADVANCED_SEARCH') . '</span>';
 		$opts = array('alt' => JText::_('COM_FABRIK_ADVANCED_SEARCH'), 'class' => 'fabrikTip', 'opts' => "{notice:true}", 'title' => $title);
-		$img = FabrikHelperHTML::image('find.png', 'list', $tmpl, $opts);
+		$img = FabrikHelperHTML::image('find.png', 'list', '', $opts);
 
 		if (count($links) === 1)
 		{

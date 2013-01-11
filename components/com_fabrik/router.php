@@ -155,8 +155,8 @@ function fabrikParseRoute($segments)
 	$view = $segments[0];
 	if (strstr($view, '.'))
 	{
-		$bits = explode('.', $view);
-		$view = array_shift($bits);
+		$view = explode('.', $view);
+		$view = array_shift($view);
 	}
 
 	// View (controller not passed into segments)

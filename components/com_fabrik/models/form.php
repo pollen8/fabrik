@@ -3129,6 +3129,8 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->data;
 		}
 		$this->getRowId();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
@@ -3247,7 +3249,8 @@ class FabrikFEModelForm extends FabModelForm
 						$listModel->setBigSelects();
 
 						// Otherwise lets get the table record
-						$sql = $this->buildQuery();
+						$opts = $input->get('task') == 'form.inlineedit' ? array('ignoreOrder' => true) : array();
+						$sql = $this->_buildQuery($opts);
 
 						$fabrikDb->setQuery($sql);
 						FabrikHelperHTML::debug($fabrikDb->getQuery(), 'form:render');
@@ -3517,23 +3520,27 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
+	 * @param   array  $opts - key: ignoreOrder ingores order by part of query - needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
+	 *
 	 * @deprecated	use buildQuery() instead
 	 *
 	 * @return  string	sql query to get row
 	 */
 
-	public function _buildQuery()
+	public function _buildQuery($opts = array())
 	{
-		return $this->buildQuery();
+		return $this->buildQuery($opts = array());
 	}
 
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
+	 * @param   array  $opts - key: ignoreOrder ingores order by part of query - needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
+	 *
 	 * @return  string  query
 	 */
 
-	public function buildQuery()
+	public function buildQuery($opts = array())
 	{
 		if (isset($this->query))
 		{
@@ -3637,7 +3644,7 @@ class FabrikFEModelForm extends FabModelForm
 			$word = array_shift($where);
 			$sql .= $word . ' (' . implode(' ', $where) . ')';
 		}
-		if (!$random)
+		if (!$random && JArrayHelper::getValue($opts, 'ignoreOrder', false) === false)
 		{
 			// $$$ rob if showing joined repeat groups we want to be able to order them as defined in the table
 			$sql .= $listModel->buildQueryOrder();
@@ -5094,8 +5101,9 @@ class FabrikFEModelForm extends FabModelForm
 		 * without the array_shift the custom message is never attached to the redirect page.
 		 * use case 'redirct plugin with jump page pointing to a J page and thanks message selected.
 		 */
-		$msgKeys = array_keys($smsg);
-		$custommsg = JArrayHelper::getValue($smsg, array_shift($msgKeys));
+		$custommsg = array_keys($smsg);
+		$custommsg = array_shift($custommsg);
+		$custommsg = JArrayHelper::getValue($smsg, $custommsg);
 		if ($custommsg != '')
 		{
 			$msg = $custommsg;

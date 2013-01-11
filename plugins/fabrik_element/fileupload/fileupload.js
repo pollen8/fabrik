@@ -75,8 +75,14 @@ var FbFileUpload = new Class({
 					if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 						this.makeDeletedImageField(this.groupid, b.get('data-file')).inject(this.getContainer(), 'inside');
 					}
+					/*
 					b.getNext().destroy();
 					b.destroy();
+					*/
+					var delete_span = document.id(this.element.id + '_delete_span');
+					if (delete_span) {
+						delete_span.destroy();
+					}
 				}
 			}.bind(this));
 		}
@@ -143,7 +149,11 @@ var FbFileUpload = new Class({
 			return;
 		}
 		var a, title;
-		var c = this.getElement().getParent('.fabrikSubElementContainer');
+		var el = this.getElement();
+		if (typeOf(el) === 'null') {
+			return;
+		}
+		var c = el.getParent('.fabrikSubElementContainer');
 		this.container = c;
 		var canvas = c.getElement('canvas');
 		if (typeOf(canvas) === 'null') {

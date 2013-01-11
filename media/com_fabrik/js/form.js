@@ -906,7 +906,7 @@ var FbForm = new Class({
 		var apply = this._getButton('apply');
 		if (this.form.getElement('input[name=delete]')) {
 			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
-				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
+				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
 				} else {
 					return false;
@@ -1198,7 +1198,6 @@ var FbForm = new Class({
 				var btn = this.form.getElement('#group' + groupId + ' .addGroup');
 				if (typeOf(btn) !== 'null') {
 					var e = new Event.Mock(btn, 'click');
-					console.log(e);
 					
 					// Duplicate group
 					for (var i = 0; i < min - 1; i ++) {

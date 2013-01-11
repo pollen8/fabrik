@@ -307,7 +307,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$js = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "\t\nwindow.controller = new fabrikAdminElement($plugins, opts," . (int) $this->getItem()->id . ");\n";
+		$js .= "\t\ncontroller = new fabrikAdminElement($plugins, opts," . (int) $this->getItem()->id . ");\n";
 
 		return $js;
 	}

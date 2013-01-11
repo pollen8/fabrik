@@ -16,7 +16,7 @@ if ($this->params->get('show-title', 1)) {?>
 <?php }
 echo $this->table->intro;
 ?>
-<form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
+<form class="fabrikForm form-search" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
 
 <?php
 echo $this->loadTemplate('buttons');

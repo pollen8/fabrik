@@ -41,6 +41,9 @@ else:
 	$c ++;
 	endforeach;
 	?>
+	<tr><td colspan="2">
+	<input type="button" class="pull-right  btn-info btn fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>" name="filter" >
+	</td></tr>
 </table>
 <?php
 endif;

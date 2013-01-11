@@ -1,25 +1,40 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Fileupload adaptor to render uploaded videos
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
+
 class videoRender
 {
 
-	var $output = '';
+	/**
+	 * Plugin's HTML output
+	 * @var  string
+	 */
+	public $output = '';
 
 	/**
-	 * @param   object	element model
-	 * @param   object	element params
-	 * @param   string	row data for this element
-	 * @param   object	all row's data
+	 * Render Video in the list view
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All row's data
+	 *
+	 * @return  void
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -28,9 +43,13 @@ class videoRender
 	}
 
 	/**
-	 * @param   object	element model
-	 * @param   object	element params
-	 * @param   string	row data for this element
+	 * Render Video in the form view
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 *
+	 * @reutrn  void
 	 */
 
 	function render(&$model, &$params, $file)
@@ -87,8 +106,7 @@ class videoRender
 
 <embed type="application/x-mplayer2" src="' . $src . '" name="MediaPlayer" width=' . $w . ' height=' . $h . '></embed>
 
-</object>
-				';
+</object>';
 				break;
 			default:
 				$this->output = "<object width=\"$w\" height=\"$h\"
@@ -101,12 +119,10 @@ class videoRender
 			autoplay=\"false\" controller=\"true\"
 			pluginspage=\"http://www.apple.com/quicktime/download/\">
 			</embed>
-			
+
 			</object>";
 				break;
 		}
 
 	}
 }
-
-?>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-form-alphauserpoints">
+			
+			<field name="aup_plugin"
+				type="sql"
+				query="SELECT plugin_function AS value, rule_name AS aup_plugin from #__alpha_userpoints_rules"
+				description="PLG_FABRIK_FORM_AUP_PLUGIN_DESC"
+				label="PLG_FABRIK_FORM_AUP_PLUGIN_LABEL"
+				repeat="true"/>
+				
+			<field name="user_id"
+				type="text"
+				label="PLG_FABRIK_FORM_AUP_USER_LABEL"
+				description="PLG_FABRIK_FORM_AUP_USER_DESC"
+				repeat="true"/>
+			
+			<field name="random_points"
+				type="text"
+				label="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_LABEL"
+				description="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_DESC"
+				repeat="true"/>
+				
+			<!-- <field name="referral_user_points"
+				type="text"
+				label="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_LABEL"		
+				description="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_DESC" /> -->
+				
+			<field name="data_reference"
+				type="text"
+				label="PLG_FABRIK_FORM_AUP_REF_LABEL"
+				description="PLG_FABRIK_FORM_AUP_REF_DESC"
+				repeat="true"/>	
+		</fieldset>
+	</fields>
+</form>

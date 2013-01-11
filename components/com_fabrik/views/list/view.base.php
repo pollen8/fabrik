@@ -201,7 +201,7 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_RECORDS');
 		JText::script('COM_FABRIK_SAVING_TO');
 		JText::script('COM_FABRIK_CONFIRM_DROP');
-		JText::script('COM_FABRIK_CONFIRM_DELETE');
+		JText::script('COM_FABRIK_CONFIRM_DELETE_1');
 		JText::script('COM_FABRIK_NO_RECORDS');
 		JText::script('COM_FABRIK_CSV_COMPLETE');
 		JText::script('COM_FABRIK_CSV_DOWNLOAD_HERE');

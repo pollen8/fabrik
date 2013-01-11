@@ -1,25 +1,35 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Fileupload adaptor to render audio play
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
 
 class audioRender
 {
 	var $output = '';
-	
+
 	/**
-* @param object element model
-* @param object element params
-* @param string row data for this element
-* @param object all row's data
+	 * Render audio in the list view
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All row's data
+	 *
+	 * @return  void
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -28,9 +38,13 @@ class audioRender
 	}
 
 	/**
-* @param object element model
-* @param object element params
-* @param string row data for this element
+	 * Render audio in the form view
+	 *
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 *
+	 * @reutrn  void
 	 */
 
 	function render(&$model, &$params, $file)
@@ -39,5 +53,3 @@ class audioRender
 		$this->output = "<embed src=\"$file\" autostart=\"false\" playcount=\"true\" loop=\"false\" height=\"50\" width=\"200\">";
 	}
 }
-
-?>

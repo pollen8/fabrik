@@ -886,7 +886,8 @@ class FabrikFEModelList extends JModelForm
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
 					$children = $xml->children();
-					if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+				//not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+					if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
 					{
 						$sdata = strip_tags($sdata);
 					}
@@ -2145,7 +2146,8 @@ class FabrikFEModelList extends JModelForm
 				$orderbys = json_decode($table->order_by, true);
 			}
 			// $$$ not sure why, but sometimes $orderbys is NULL at this point.
-			if (!isset($orderbys)) {
+			if (!isset($orderbys))
+			{
 				$orderbys = array();
 			}
 			// Covert ids to names (were stored as names but then stored as ids)
@@ -2162,20 +2164,21 @@ class FabrikFEModelList extends JModelForm
 			{
 				$orderdirs = json_decode($table->order_dir, true);
 			}
+			$els = $this->getElements('filtername');
 			if (!empty($orderbys))
 			{
 				$bits = array();
-				for ($o = 0; $o < count($orderbys); $o++)
+				$o = 0;
+				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
-					if ($orderbys[$o] !== '')
+					if ($orderbyRaw !== '')
 					{
-						$orderby = FabrikString::safeColName($orderbys[$o]);
-						$els = $this->getElements('filtername');
-						if (array_key_exists($orderby, $els))
+						$orderbyRaw = FabrikString::safeColName($orderbyRaw);
+						if (array_key_exists($orderbyRaw, $els))
 						{
 							// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
-							$field = $els[$orderby]->getOrderByName();
+							$field = $els[$orderbyRaw]->getOrderByName();
 							if (!JString::stristr($field, 'CONCAT('))
 							{
 								$field = FabrikString::safeColName($field);
@@ -2186,15 +2189,16 @@ class FabrikFEModelList extends JModelForm
 						}
 						else
 						{
-							if (strstr($orderby, '_raw`'))
+							if (strstr($orderbyRaw, '_raw`'))
 							{
-								$orderby = FabrikString::safeColNameToArrayKey($orderby);
+								$orderbyRaw = FabrikString::safeColNameToArrayKey($orderbyRaw);
 							}
-							$bits[] = " $orderby $dir";
-							$this->orderEls[] = $orderby;
+							$bits[] = " $orderbyRaw $dir";
+							$this->orderEls[] = $orderbyRaw;
 							$this->orderDirs[] = $dir;
 						}
 					}
+					$o ++;
 				}
 				if (!empty($bits))
 				{
@@ -3178,7 +3182,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Checks user access for deleting records
+	 * Checks user access for deleting records.
 	 *
 	 * @param   object  $row  of data currently active
 	 *
@@ -3187,17 +3191,26 @@ class FabrikFEModelList extends JModelForm
 
 	public function canDelete($row = null)
 	{
+		/**
+		 * Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
+		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
+		 * deny access.
+		 */
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
+		$pluginCanEdit = !in_array(false, $pluginCanEdit);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
-			return $canUserDo;
+			// If userDo allows delete, let plugin override
+			return $canUserDo ? $pluginCanEdit : $canUserDo;
 		}
 		if (!array_key_exists('delete', $this->access))
 		{
 			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
-		return $this->access->delete;
+		// If group access allows delete, then let plugin override
+		return $this->access->delete ? $pluginCanEdit : $this->access->delete;
 	}
 
 	/**
@@ -5018,8 +5031,9 @@ class FabrikFEModelList extends JModelForm
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
+			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
-			. '" class="fabrik_filter" name="' . $requestKey . '" />';
+			. '" class="' . $class . '" name="' . $requestKey . '" />';
 			if ($params->get('search-mode-advanced') == 1)
 			{
 				$opts = array();

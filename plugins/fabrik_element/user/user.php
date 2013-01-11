@@ -630,11 +630,11 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$rows = (array) $rows;
 			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 		}
-
+		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
 			case "range":
-				$attribs = 'class="inputbox fabrik_filter" size="1" ';
+				$attribs = 'class="' . $class . '" size="1" ';
 				$default1 = is_array($default) ? $default[0] : '';
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_0");
 				$default1 = is_array($default) ? $default[1] : '';
@@ -642,7 +642,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				break;
 			case "dropdown":
 			default:
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $htmlid);
 				break;
 
 			case "field":
@@ -651,7 +651,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case "hidden":
@@ -660,7 +660,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case "auto-complete":

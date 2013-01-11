@@ -517,6 +517,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 	public function loadJavascriptClass()
 	{
+		$params = $this->getParams();
 		$el = $this->getPlaceElement();
 		$mapelement = $this->getMapElement();
 		if (!is_object($mapelement))
@@ -535,7 +536,9 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		}
 		$mapfullkey = $mapelement->getFullName(false, true, false);
 		//FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->getElement()->plugin, $opts);
-		FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
+		if ($params->get('myloc', 1) == 1) {
+			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
+		}
 		parent::loadJavascriptClass();
 	}
 
@@ -569,6 +572,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$opts->prefilter = $prefilterDistance === '' ? false : true;
 		$opts->prefilterDone = (bool) $app->input->getBool('radius_prefilter', false);
 		$opts->prefilterDistance = $prefilterDistance;
+		$opts->myloc = $params->get('myloc', 1) == 1 ? true : false;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListRadiusSearch($opts)";
 		return true;

@@ -573,8 +573,10 @@ var FbList = new Class({
 		this.getForm();
 		if (task === 'list.delete') {
 			var ok = false;
+			var delCount = 0;
 			this.form.getElements('input[name^=ids]').each(function (c) {
 				if (c.checked) {
+					delCount ++;
 					ok = true;
 				}
 			});
@@ -583,7 +585,8 @@ var FbList = new Class({
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}
-			if (!confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE'))) {
+			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount); 
+			if (!confirm(delMsg)) {
 				Fabrik.loader.stop('listform_' + this.options.listRef);
 				return false;
 			}

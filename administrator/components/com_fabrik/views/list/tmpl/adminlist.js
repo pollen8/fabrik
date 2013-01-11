@@ -20,28 +20,31 @@ var ListForm = new Class({
 	
 	initialize: function (options) {
 		var rows;
-		this.setOptions(options);
-		this.watchTableDd();
-		if (document.id('addAJoin')) {
-			document.id('addAJoin').addEvent('click', function (e) {
-				e.stop();
-				this.addJoin();
-			}.bind(this));
-		}
-		if (document.getElement('table.linkedLists')) {
-			rows = document.getElement('table.linkedLists').getElement('tbody');
-			new Sortables(rows, {'handle': '.handle'});
-		}
+		window.addEvent('domready', function () {
+			this.setOptions(options);
+			this.watchTableDd();
+			if (document.id('addAJoin')) {
+				document.id('addAJoin').addEvent('click', function (e) {
+					e.stop();
+					this.addJoin();
+				}.bind(this));
+			}
+			if (document.getElement('table.linkedLists')) {
+				rows = document.getElement('table.linkedLists').getElement('tbody');
+				new Sortables(rows, {'handle': '.handle'});
+			}
 
-		if (document.getElement('table.linkedForms')) {
-			rows = document.getElement('table.linkedForms').getElement('tbody');
-			new Sortables(rows, {'handle': '.handle'});
-		}
+			if (document.getElement('table.linkedForms')) {
+				rows = document.getElement('table.linkedForms').getElement('tbody');
+				new Sortables(rows, {'handle': '.handle'});
+			}
+			
+			this.joinCounter = 0;
+			this.watchOrderButtons();
+			this.watchDbName();
+			this.watchJoins();
+		}.bind(this));
 		
-		this.joinCounter = 0;
-		this.watchOrderButtons();
-		this.watchDbName();
-		this.watchJoins();
 	},
 	
 	watchOrderButtons: function () {

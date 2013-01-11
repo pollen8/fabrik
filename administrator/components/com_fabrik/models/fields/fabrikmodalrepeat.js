@@ -102,10 +102,9 @@ var FabrikModalRepeat = new Class({
 				
 				// Store radio button selections
 				var radiovals = this._getRadioValues(); 
-				var clone;
-				if (tr.getChildren('th')) {
-					clone = this.tmpl.clone();
-					clone.inject(tr, 'after');
+				
+				if (tr.getChildren('th').length !== 0) {
+					this.tmpl.clone().inject(tr, 'after');
 				} else {
 					clone = tr.clone();
 					clone.inject(tr, 'after');
@@ -175,7 +174,9 @@ var FabrikModalRepeat = new Class({
 		}
 		var tr = this.content.getElement('tbody').getElement('tr');
 		var keys = Object.keys(a);
-		var rowcount = keys.length === 0 ? 1 : a[keys[0]].length;
+		var newrow = keys.length === 0 || a[keys[0]].length === 0 ? true : false;
+		//var rowcount = keys.length === 0 ? 1 : a[keys[0]].length;
+		var rowcount = newrow ? 1 : a[keys[0]].length;
 		
 		// Build the rows from the json object
 		for (var i = 1; i < rowcount; i ++) {
@@ -199,8 +200,8 @@ var FabrikModalRepeat = new Class({
 				});
 			});
 		}
-		this.tmpl = this.content.getElement('tbody').getElements('tr').getLast();
-		if (rowcount === 0) {
+		if (newrow) {
+			this.tmpl = tr;
 			tr.dispose();
 		}
 		

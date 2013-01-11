@@ -31,7 +31,7 @@ class FabrikHelperElement
 	 * @return  plgFabrik_ElementInternalid
 	 */
 
-	public function makeIdElement($baseElement)
+	public static function makeIdElement($baseElement)
 	{
 
 		$pluginManager = FabrikWorker::getPluginManager();
@@ -54,7 +54,7 @@ class FabrikHelperElement
 	 * @return  plgFabrik_ElementField
 	 */
 
-	public function makeParentElement($baseElement)
+	public static function makeParentElement($baseElement)
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 		$groupModel = $baseElement->getGroupModel();

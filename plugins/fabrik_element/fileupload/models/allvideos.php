@@ -1,14 +1,21 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+
+/**
+ * Fileupload adaptor to render allvideos
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
+ * @since       3.0
+ */
 
 class allVideosRender
 {
@@ -19,10 +26,10 @@ class allVideosRender
 
 	/**
 	 * Shows the data formatted for the list view
-	 * 
+	 *
 	 * @param   string  $data      elements data
 	 * @param   object  &$thisRow  all the data in the lists current row
-	 * 
+	 *
 	 * @return  string	formatted value
 	 */
 
@@ -34,10 +41,10 @@ class allVideosRender
 
 	/**
 	 * Draws the html form element
-	 * 
+	 *
 	 * @param   array  $data           to preopulate element with
 	 * @param   int    $repeatCounter  repeat group counter
-	 * 
+	 *
 	 * @return  string	elements html
 	 */
 
@@ -77,15 +84,13 @@ class allVideosRender
 				break;
 		}
 		/*if (!JPluginHelper::isEnabled( 'content', 'fab_jwplayer')) {
-		
-		
+
+
 		    } else {
-		
+
 		    }
 		} else {
 		    $this->output = '{fabjwplayer file='.$src.'}';
 		}*/
 	}
 }
-
-?>
