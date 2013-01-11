@@ -23,7 +23,8 @@ var FbGoogleMapViz = new Class({
 		'overlay_labels': [],
 		'overlay_events': [],
 		'zoom' : 1,
-		'zoomStyle': 0
+		'zoomStyle': 0,
+		'radius_fill_colors': []
 	},
 	
 	initialize: function (element, options) {
@@ -33,6 +34,7 @@ var FbGoogleMapViz = new Class({
 		this.clusterMarkerCursor = 0;
 		this.clusterMarkers = [];
 		this.markers = [];
+		this.distanceWidgets = [];
 		this.icons = [];
 		this.setOptions(options);
 		
@@ -211,7 +213,7 @@ var FbGoogleMapViz = new Class({
 		this.clusterMarkers = [];
 		this.options.icons.each(function (i) {
 			this.bounds.extend(new google.maps.LatLng(i[0], i[1]));
-			this.markers.push(this.addIcon(i[0], i[1], i[2], i[3], i[4], i[5], i.groupkey, i.title));
+			this.markers.push(this.addIcon(i[0], i[1], i[2], i[3], i[4], i[5], i.groupkey, i.title, i.radius, i.c));
 		}.bind(this));
 		this.renderGroupedSideBar();
 		if (this.options.clustering) {
@@ -301,7 +303,7 @@ var FbGoogleMapViz = new Class({
 		fconsole('geo location error=' + p.message);
 	},
 	
-	addIcon: function (lat, lon, html, img, w, h, groupkey, title) {
+	addIcon: function (lat, lon, html, img, w, h, groupkey, title, radius, c) {
 		var point = new google.maps.LatLng(lat, lon);
 		var markerOptions = {position: point, 'map': this.map};
 		if (img !== '') {
@@ -329,8 +331,22 @@ var FbGoogleMapViz = new Class({
 			this.clusterMarkers.push(marker);
 			this.clusterMarkerCursor ++;
 		}
+		if (this.options.show_radius) {
+			this.addRadius(marker, radius, c);
+		}
 		this.periodCounter ++;
 		return marker;
+	},
+	
+	addRadius: function (marker, radius, c) {
+		if (this.options.show_radius && radius > 0) {
+			var circle = new google.maps.Circle({
+				map: this.map,
+				radius: radius,
+				fillColor: this.options.radius_fill_colors[c]
+			});
+			circle.bindTo('center', marker, 'position');
+		}
 	},
 
 	slimboxFunc:  function () {
