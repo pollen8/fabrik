@@ -1032,17 +1032,20 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
-				$editLabel = $j3 ? '' : '<span>' . $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) . '</span>';
-				$class = $j3 ? 'fabrik_edit btn fabrik__rowlink' : 'btn fabrik__rowlink';
+				$editLabel = $j3 ? $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) : '<span>' . $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) . '</span>';
+				$class = $j3 ? 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
 				$editLink = '<a class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
-						. '<span>' . $editLabel . '</span></a>';
+						. ' ' . $editLabel . '</a>';
 
-				$viewLabel = $j3 ? '' : '<span>' . $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) . '</span>';
-				$class = $j3 ? 'fabrik_view btn fabrik__rowlink' : 'btn fabrik__rowlink';
+				$viewLabel = $j3 ? $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) : '<span>' . $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) . '</span>';
+				$class = $j3 ? 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
+
+
 				$viewLink = '<a class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
-						. $viewLabel . '</a>';
+						. ' ' . $viewLabel . '</a>';
+
 
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
@@ -1051,13 +1054,13 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($canEdit == 1)
 					{
-						if ($params->get('editlink') || $actionMethod == 'floating')
+						if ($params->get('editlink') || ($actionMethod == 'floating' || $j3))
 						{
 							$row->fabrik_edit = $editLink;
 							$row->fabrik_actions['fabrik_edit'] = $j3 ? $row->fabrik_edit : '<li class="fabrik_edit">' . $row->fabrik_edit . '</li>';
 						}
 						$row->fabrik_edit_url = $edit_link;
-						if ($this->canViewDetails() && ($params->get('detaillink') == 1 || $actionMethod == 'floating'))
+						if ($this->canViewDetails() && $this->floatingDetailLink())
 						{
 							$row->fabrik_view = $viewLink;
 							$row->fabrik_actions['fabrik_view'] = $j3 ? $row->fabrik_view : '<li class="fabrik_view">' . $row->fabrik_view . '</li>';
@@ -1065,7 +1068,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					else
 					{
-						if ($this->canViewDetails() && ($params->get('detaillink') == '1' || $actionMethod == 'floating'))
+						if ($this->canViewDetails() && $this->floatingDetailLink())
 						{
 							if (empty($this->_aLinkElements))
 							{
@@ -1080,7 +1083,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 				}
-				if ($this->canViewDetails() && !$viewLinkAdded && ($params->get('detaillink') == '1' || $actionMethod == 'floating'))
+				if ($this->canViewDetails() && !$viewLinkAdded && $this->floatingDetailLink())
 				{
 					$link = $this->viewDetailsLink($row, 'details');
 					$row->fabrik_view_url = $link;
@@ -1089,6 +1092,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				if ($this->canDelete($row))
 				{
+					$row->fabrik_actions['delete_divider'] = '<li class="divider"></li>';
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
 				// Create columns containing links which point to tables associated with this table
@@ -1137,7 +1141,7 @@ class FabrikFEModelList extends JModelForm
 
 				$f = 0;
 
-				// Create columns containing links which point to forms assosciated with this table
+				// Create columns containing links which point to forms assosciated with this list
 				foreach ($linksToForms as $join)
 				{
 					if (array_key_exists($f, $keys))
@@ -1174,6 +1178,10 @@ class FabrikFEModelList extends JModelForm
 			for ($i = 0; $i < $cg; $i++)
 			{
 				$row = $data[$groupKey][$i];
+				if (!empty($pluginButtons))
+				{
+					$row->fabrik_actions[] = '<li class="divider"></li>';
+				}
 				foreach ($pluginButtons as $b)
 				{
 					if (trim($b) !== '')
@@ -1189,7 +1197,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					if ($j3)
 					{
-						$row->fabrik_actions = '<div class="btn-group fabrik_action">' . implode("\n", $row->fabrik_actions) . '</div>';
+						$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions);
 					}
 					else
 					{
@@ -1205,8 +1213,30 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Helper method to decide if a detail link should be added to the row.
+	 *
+	 * If in Fabrik 3.1 return true (just use the default acl to control the link)
+	 *
+	 * If in Fabrik 3.0 return true if detail link option on and action method is floating
+	 *
+	 * @return boolean
+	 */
+	protected function floatingDetailLink()
+	{
+		if (FabrikWorker::j3())
+		{
+			return true;
+		}
+		$params = $this->getParams();
+		$actionMethod = $this->actionMethod();
+		return $params->get('detaillink') == '1' || $actionMethod == 'floating';
+	}
+
+	/**
 	 * Get the way row buttons are rendered floating/inline
 	 * Can be set either by global config or list options
+	 *
+	 * In Fabrik 3.1 we've deprecated the floating action code - should always return inline
 	 *
 	 * @since   3.0.7
 	 *
@@ -1215,6 +1245,10 @@ class FabrikFEModelList extends JModelForm
 
 	public function actionMethod()
 	{
+		if (FabrikWorker::j3())
+		{
+			return 'inline';
+		}
 		$params = $this->getParams();
 		if ($params->get('actionMethod', 'default') == 'default')
 		{
@@ -1243,8 +1277,8 @@ class FabrikFEModelList extends JModelForm
 	{
 		$tpl = $this->getTmpl();
 		$j3 = FabrikWorker::j3();
-		$label = $j3 ? '' : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
-		$btn = '<a href="#" class="btn delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
+		$label = $j3 ? ' ' . JText::_('COM_FABRIK_DELETE') : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
+		$btn = '<a href="#" class="delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
 				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . $label . '</a>';
 		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
 	}
@@ -5691,7 +5725,14 @@ class FabrikFEModelList extends JModelForm
 
 			$headingButtons = array_merge($headingButtons, $res);
 
-			$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
+			if (FabrikWorker::j3())
+			{
+				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : FabrikHelperHTML::bootStrapDropDown($headingButtons);
+			}
+			else
+			{
+				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : '<ul class="fabrik_action">' . implode("\n", $headingButtons) . '</ul>';
+			}
 			$headingClass['fabrik_actions'] = array('class' => 'fabrik_ordercell fabrik_actions', 'style' => '');
 
 			// Needed for ajax filter/nav
@@ -5782,11 +5823,10 @@ class FabrikFEModelList extends JModelForm
 			return true;
 		}
 		$params = $this->getParams();
-		$actionMethod = $this->actionMethod();
-		if ($actionMethod == 'floating' && ($this->canEdit($row) || $this->canViewDetails($row)))
+		/* if ($this->canEdit($row) || $this->canViewDetails($row))
 		{
 			return true;
-		}
+		} */
 		$usedPlugins = (array) $params->get('plugins');
 		if (empty($usedPlugins))
 		{
@@ -5819,18 +5859,17 @@ class FabrikFEModelList extends JModelForm
 		{
 			return $this->canSelectRows;
 		}
-		$actionMethod = $this->actionMethod();
-		if ($this->canDelete() || ($this->canEditARow() && $actionMethod === 'floating') || $this->deletePossible())
+		if ($this->canDelete() || $this->deletePossible())
 		{
 			$this->canSelectRows = true;
 			return $this->canSelectRows;
 		}
 		$params = $this->getParams();
-		if ($actionMethod == 'floating' && ($this->canEdit() || $this->canViewDetails()))
+		/* if ($this->canEdit() || $this->canViewDetails())
 		{
 			$this->canSelectRows = true;
 			return true;
-		}
+		} */
 		$usedPlugins = (array) $params->get('plugins');
 		if (empty($usedPlugins))
 		{

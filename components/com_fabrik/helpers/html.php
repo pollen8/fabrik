@@ -139,6 +139,22 @@ class FabrikHelperHTML
 	}
 
 	/**
+	 * Build a datatoggling dropdown
+	 *
+	 * @param   array  $lis  Array of links to create dropdown from
+	 *
+	 * @return  string
+	 */
+
+	public static function bootStrapDropDown($lis)
+	{
+		return '<div class="btn-group fabrik_action"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
+								<span class="caret"></span>
+							</a>
+								<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
+	}
+
+	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
@@ -884,7 +900,6 @@ EOD;
 				}
 			}
 			$newShim[$k] = $s;
-			//echo "<pre>$k ";print_r($s);echo "</pre>";
 		}
 
 		$navigator = JBrowser::getInstance();
@@ -921,7 +936,6 @@ EOD;
 
 		$newShim = array_merge($framework, $newShim);
 
-		//echo "<pre>";print_r($newShim);;echo "</pre>";
 		$shim = json_encode($newShim);
 		foreach ($requirePaths as $reqK => $repPath)
 		{

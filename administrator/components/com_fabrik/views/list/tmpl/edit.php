@@ -53,7 +53,7 @@ $panels = array(
 		'fieldset'=>array('main_template', 'layout')),
 
 	array('heading'=>JText::_('COM_FABRIK_LINKS'),
-		'fieldset' => array('links', 'links2')),
+		'fieldset' => array('links', 'links2', 'links-fabrik30x')),
 
 	array('heading'=>JText::_('COM_FABRIK_NOTES'),
 		'fieldset'=>array('notes')),

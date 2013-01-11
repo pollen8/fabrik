@@ -28,11 +28,11 @@ var FbList = new Class({
 		'canEdit': true,
 		'canView': true,
 		'page': 'index.php',
-		'actionMethod': 'floating',
+		'actionMethod': 'floating', // deprecated in 3.1
 		'formels': [], // elements that only appear in the form
 		'data': [], // [{col:val, col:val},...] (depreciated)
 		'rowtemplate': '',
-		'floatPos': 'left',
+		'floatPos': 'left', // deprecated in 3.1
 		'csvChoose': false,
 		'csvOpts': {},
 		'popup_width': 300,
@@ -50,10 +50,12 @@ var FbList = new Class({
 		this.result = true; //used with plugins to determine if list actions should be performed
 		this.plugins = [];
 		this.list = document.id('list_' + this.options.listRef);
-		this.actionManager = new FbListActions(this, {
-			'method': this.options.actionMethod,
-			'floatPos': this.options.floatPos
-		});
+		if (this.options.j3 === false) {
+			this.actionManager = new FbListActions(this, {
+				'method': this.options.actionMethod,
+				'floatPos': this.options.floatPos
+			});
+		}
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
@@ -1172,6 +1174,7 @@ var FbGroupedToggler = new Class({
 
 /**
  * set up and show/hide list actions for each row
+ * Deprecated in 3.1
  */
 var FbListActions = new Class({
 

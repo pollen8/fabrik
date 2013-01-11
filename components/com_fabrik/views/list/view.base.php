@@ -48,7 +48,7 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			FabrikHelperHTML::slimbox();
 		}
-		$frameworkJsFiles = FabrikHelperHTML::framework();
+		$src = FabrikHelperHTML::framework();
 		$shim = array();
 
 		$dep = new stdClass;
@@ -56,11 +56,8 @@ class FabrikViewListBase extends JViewLegacy
 		$shim['fab/list'] = $dep;
 
 
-		$src = $model->getPluginJsClasses($frameworkJsFiles, $shim);
-		//array_unshift($src, 'media/com_fabrik/js/listfilter.js');
+		$src = $model->getPluginJsClasses($src, $shim);
 		array_unshift($src, 'media/com_fabrik/js/list.js');
-		array_unshift($src, 'media/com_fabrik/js/window.js');
-		//array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 		$model->getCustomJsAction($src);
 
 		$tmpl = $this->get('tmpl');
@@ -120,8 +117,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		}
 		$opts->formels = $formEls;
-		$opts->actionMethod = $model->actionMethod();
-		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
 		$popUpWidth = $params->get('popup_width', '');
 		if ($popUpWidth !== '')
@@ -444,7 +439,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$this->groupheadings = $groupHeadings;
-		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
+		$this->calculations = $this->_getCalculations($this->headings);
 		$this->isGrouped = !($this->get('groupBy') == '');
 		$this->colCount = count($this->headings);
 
@@ -589,12 +584,11 @@ class FabrikViewListBase extends JViewLegacy
 	 * Get the list calculations
 	 *
 	 * @param   array   $aCols   columns
-	 * @param   string  $method  tip style?
 	 *
 	 * @return  array
 	 */
 
-	protected function _getCalculations($aCols, $method)
+	protected function _getCalculations($aCols)
 	{
 		$aData = array();
 		$found = false;
@@ -602,10 +596,10 @@ class FabrikViewListBase extends JViewLegacy
 		$modelCals = $model->getCalculations();
 		foreach ($aCols as $key => $val)
 		{
-			if ($key == 'fabrik_actions' && $method == 'floating')
+			/* if ($key == 'fabrik_actions' && $method == 'floating')
 			{
 				continue;
-			}
+			} */
 			$calc = '';
 			$res = '';
 			$oCalcs = new stdClass;

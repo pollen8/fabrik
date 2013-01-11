@@ -119,7 +119,7 @@ class plgFabrik_List extends FabrikPlugin
 			$imageName = $this->getImageName();
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
 			$label = FabrikWorker::j3() ? $label : '<span>' . $label . '</span>';
-			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' btn listplugin" title="' . $label . '">' . $img . $label . '</a>';
+			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' listplugin" title="' . $label . '">' . $img . ' ' . $label . '</a>';
 		}
 		return '';
 	}
@@ -255,7 +255,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function onGetFilterKey()
 	{
-		$this->filterKey = JString::strtolower(str_replace('PlgFabrik_List', '', get_class($this)));
+		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
 		return $this->filterKey;
 	}
 
@@ -346,7 +346,7 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * Shouldnt do anything here - but needed for the result return
 	 *
-	 * @since   3.0b
+	 * @since   3.1b
 	 *
 	 * @return  void
 	 */
@@ -356,7 +356,7 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * Get the shim require.js logic for loading the list class
 	 *
-	 * @since   3.0b
+	 * @since   3.1b
 	 *
 	 * @return  object  shim
 	 */

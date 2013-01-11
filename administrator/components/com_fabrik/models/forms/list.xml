@@ -266,9 +266,21 @@
 				
 			<field label="COM_FABRIK_FIELD_FEED_DATE_LABEL" name="feed_date" type="listfields"/>
 				
-			<field default="150" description="COM_FABRIK_FIELD_RSS_LIMIT_DESC" label="COM_FABRIK_FIELD_RSS_LIMIT_LABEL" name="rsslimit" size="5" type="text"/>
+			<field name="rsslimit"
+				type="text"
+				class="input-mini"
+				default="150"
+				size="5"
+				description="COM_FABRIK_FIELD_RSS_LIMIT_DESC"
+				label="COM_FABRIK_FIELD_RSS_LIMIT_LABEL" />
 				
-			<field default="2500" description="COM_FABRIK_FIELD_RSS_LIMIT_MAX_DESC" label="COM_FABRIK_FIELD_RSS_LIMIT_MAX_LABEL" name="rsslimitmax" size="6" type="text"/>
+			<field name="rsslimitmax"
+				type="text"
+				class="input-mini"
+				default="2500"
+				description="COM_FABRIK_FIELD_RSS_LIMIT_MAX_DESC"
+				label="COM_FABRIK_FIELD_RSS_LIMIT_MAX_LABEL"
+				size="6"/>
 				
 		</fieldset>
 		
@@ -278,13 +290,24 @@
 				
 			<field default="2" description="COM_FABRIK_FIELD_CSV_EXPORT_DESC" label="COM_FABRIK_FIELD_CSV_EXPORT_LABEL" name="csv_export_frontend" type="accesslevel"/>
 	
-			<field default="0" description="COM_FABRIK_FIELD_CSV_KEY_DESC" label="COM_FABRIK_FIELD_CSV_KEY_LABEL" name="csvfullname" type="list">
+			<field name="csvfullname"
+				type="list"
+				class="input-xlarge"
+				default="0"
+				description="COM_FABRIK_FIELD_CSV_KEY_DESC"
+				label="COM_FABRIK_FIELD_CSV_KEY_LABEL" >
 					<option value="0">COM_FABRIK_SHORT_NAME</option>
 					<option value="1">COM_FABRIK_ELEMENT_FULL_NAME</option>
 					<option value="2">COM_FABRIK_ELEMENT_LABEL</option>
 			</field>
 			
-			<field default="100" description="COM_FABRIK_FIELD_CSV_EXPORT_STEP_DESC" label="COM_FABRIK_FIELD_CSV_EXPORT_STEP_LABEL" name="csv_export_step" size="3" type="text"/>
+			<field name="csv_export_step"
+				class="input-mini"
+				default="100"
+				description="COM_FABRIK_FIELD_CSV_EXPORT_STEP_DESC"
+				label="COM_FABRIK_FIELD_CSV_EXPORT_STEP_LABEL"
+				size="3"
+				type="text"/>
 	
 			<field default="nl2br" description="COM_FABRIK_TABLE_CSV_EXPORT_LINE_BREAK_DESC" label="COM_FABRIK_TABLE_CSV_EXPORT_LINE_BREAK_LABEL" name="newline_csv_export" type="list">
 					<option value="nl2br">COM_FABRIK_REPLACE_WITH_BR</option>
@@ -292,7 +315,13 @@
 					<option value="remove">COM_FABRIK_REMOVE</option>
 				</field>
 				
-			<field default="" description="COM_FABRIK_FIELD_CSV_CUSTOM_QS_DESC" label="COM_FABRIK_FIELD_CSV_CUSTOM_QS_LABEL" name="csv_custom_qs" size="20" type="text"/>
+			<field name="csv_custom_qs"
+				type="text"
+				class="input-xxlarge"
+				default=""
+				description="COM_FABRIK_FIELD_CSV_CUSTOM_QS_DESC"
+				label="COM_FABRIK_FIELD_CSV_CUSTOM_QS_LABEL"
+				size="20"/>
 		</fieldset>
 		
 		<fieldset name="csvauto">
@@ -445,29 +474,63 @@
 					<option value="1">JYES</option>
 			</field>
 				
-			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_DETAIL_LINK_DESC" label="COM_FABRIK_FIELD_DETAIL_LINK_LABEL" name="detaillink" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
 			<field description="COM_FABRIK_FIELD_DETAIL_URL_DESC" label="COM_FABRIK_FIELD_DETAIL_URL_LABEL" name="detailurl" size="50" type="text"/>
-		
-			<field description="COM_FABRIK_DETAIL_DESC" label="COM_FABRIK_DETAIL_LABEL" name="detaillabel" size="30" type="text"/>
-		
-			<field class="btn-group" default="1" description="COM_FABRIK_EDIT_LINK_DESC" label="COM_FABRIK_EDIT_LINK_LABEL" name="editlink" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
 		
 			<field name="editurl" 
 				type="text" size="50"
 				label="COM_FABRIK_EDIT_URL_LABEL" 
 				description="COM_FABRIK_EDIT_URL_DESC" />
 			
+			<field class="btn-group" default="end" description="COM_FABRIK_FIELD_CHECKBOX_LOCATION_DESC" label="COM_FABRIK_FIELD_CHECKBOX_LOCATION_LABEL" name="checkboxLocation" type="radio">
+					<option value="beginning">COM_FABRIK_BEGINNING</option>	
+					<option value="end">COM_FABRIK_END</option>
+			</field>
+			
+			<field description="COM_FABRIK_FIELD_ADD_URL_DESC" label="COM_FABRIK_FIELD_ADD_URL_LABEL" name="addurl" size="100" type="text"/>
+				
+			
+				
+
+		</fieldset>
+		
+		<fieldset name="links-fabrik30x">
+		
+			<field name="detaillink"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_DETAIL_LINK_DESC"
+				label="COM_FABRIK_FIELD_DETAIL_LINK_LABEL"
+				type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="detaillabel"
+				description="COM_FABRIK_DETAIL_DESC"
+				label="COM_FABRIK_DETAIL_LABEL"
+				size="30"
+				type="text"/>
+			
+			<field name="editlink"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_EDIT_LINK_DESC"
+				label="COM_FABRIK_EDIT_LINK_LABEL"
+				type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 			<field name="editlabel"
 				type="text" size="30"
 				label="COM_FABRIK_EDIT_LABEL" 
 				description="COM_FABRIK_EDIT_DESC" />
+			
+			<field name="addlabel"
+				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
+				size="20"
+				type="text"/>
 			
 			<field name="actionMethod"
 				default="default"
@@ -479,11 +542,6 @@
 					<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
 			</field>
 			
-			<field class="btn-group" default="end" description="COM_FABRIK_FIELD_CHECKBOX_LOCATION_DESC" label="COM_FABRIK_FIELD_CHECKBOX_LOCATION_LABEL" name="checkboxLocation" type="radio">
-					<option value="beginning">COM_FABRIK_BEGINNING</option>	
-					<option value="end">COM_FABRIK_END</option>
-			</field>
-			
 			<field default="left" description="COM_FABRIK_FIELD_FLOAT_POS_DESC" label="COM_FABRIK_FIELD_FLOAT_POS_LABEL" name="floatPos" type="list">
 					<option value="top">top</option>
 					<option value="right">right</option>
@@ -491,11 +549,6 @@
 					<option value="left">left</option>
 			</field>
 			
-			<field description="COM_FABRIK_FIELD_ADD_URL_DESC" label="COM_FABRIK_FIELD_ADD_URL_LABEL" name="addurl" size="100" type="text"/>
-				
-			<field description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL" name="addlabel" size="20" type="text"/>
-				
-
 		</fieldset>
 		
 		<fieldset name="links2">
