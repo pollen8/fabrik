@@ -2174,7 +2174,7 @@ class FabrikFEModelList extends JModelForm
 							$this->orderDirs[] = $dir;
 						}
 					}
-					$o ++:
+					$o ++;
 				}
 				if (!empty($bits))
 				{
@@ -5013,8 +5013,9 @@ class FabrikFEModelList extends JModelForm
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
 			$v = $this->getFilterModel()->getSearchAllValue('html');
 			$o = new stdClass;
+			$class = FabrikWorker::j3() ? 'fabrik_filter search-query input-medium' : 'fabrik_filter';
 			$o->filter = '<input type="search" size="20" placeholder="' . JText::_('COM_FABRIK_SEARCH') . '" value="' . $v
-			. '" class="fabrik_filter" name="' . $requestKey . '" />';
+			. '" class="' . $class . '" name="' . $requestKey . '" />';
 			if ($params->get('search-mode-advanced') == 1)
 			{
 				$opts = array();
