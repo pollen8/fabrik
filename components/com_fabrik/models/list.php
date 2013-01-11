@@ -2144,6 +2144,7 @@ class FabrikFEModelList extends JModelForm
 			if (!empty($orderbys))
 			{
 				$bits = array();
+				$o = 0;
 				foreach ($orderbys as $orderbyRaw)
 				{
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
@@ -2173,6 +2174,7 @@ class FabrikFEModelList extends JModelForm
 							$this->orderDirs[] = $dir;
 						}
 					}
+					$o ++:
 				}
 				if (!empty($bits))
 				{
