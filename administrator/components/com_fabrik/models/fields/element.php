@@ -59,8 +59,9 @@ class JFormFieldElement extends JFormFieldList
 		{
 			$fabrikelements = array();
 		}
-		JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
-		FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
+		//JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
+		$src[] = 'administrator/components/com_fabrik/views/namespace.js';
+		//FabrikHelperHTML::script();
 		$c = (int) @$this->form->repeatCounter;
 		$table = $this->element['table'];
 		if ($table == '')
@@ -102,7 +103,8 @@ class JFormFieldElement extends JFormFieldList
 		$script[] = "FabrikAdmin.model.fields.element['$this->id'] = p;";
 		$script = implode("\n", $script);
 		$fabrikelements[$this->id] = true;
-		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', $script);
+		$src[] = 'administrator/components/com_fabrik/models/fields/element.js';
+		FabrikHelperHTML::script($src, $script);
 		$return = parent::getInput();
 		$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
 			. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING') . '" />';
