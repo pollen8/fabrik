@@ -63,9 +63,19 @@
 	
 	<fieldset name="templates">
 	
-		<field description="COM_FABRIK_FIELD_FORM_TEMPLATE_DESC" directory="/components/com_fabrik/views/form/tmpl/" label="COM_FABRIK_FIELD_FORM_TEMPLATE_LABEL" name="form_template" type="folderlist"/>
+		<field name="form_template"
+			type="fabriktemplate"
+			view="form"
+			hide_default="0" hide_none="1"
+			description="COM_FABRIK_FIELD_FORM_TEMPLATE_DESC"
+			label="COM_FABRIK_FIELD_FORM_TEMPLATE_LABEL" />
 				
-		<field description="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_DESC" directory="/components/com_fabrik/views/form/tmpl/" label="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_LABEL" name="view_only_template" type="folderlist"/>
+		<field name="view_only_template"
+			type="fabriktemplate"
+			view="form"
+			hide_default="0" hide_none="1"
+			description="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_DESC"
+			label="COM_FABRIK_FIELD_DETAILED_VIEW_TEMPLATE_LABEL"/>
 			
 	</fieldset>
 	
@@ -135,7 +145,13 @@
 		
 		<fieldset name="templates2">
 		
-			<field default="admin" description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC" directory="/components/com_fabrik/views/form/tmpl/" hide_default="1" hide_none="0" label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" name="pdf_template" type="folderlist"/>
+			<field name="pdf_template" 
+				default="admin"
+				type="fabriktemplate"
+				view="form"
+				hide_default="0" hide_none="1"
+				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC"
+				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL" />
 				
 		</fieldset>
 		

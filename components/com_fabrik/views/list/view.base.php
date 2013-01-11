@@ -272,7 +272,8 @@ class FabrikViewListBase extends JViewLegacy
 		// Force front end templates
 		$tmpl = $this->get('tmpl');
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
-		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
+		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
 		$app = JFactory::getApplication();
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
