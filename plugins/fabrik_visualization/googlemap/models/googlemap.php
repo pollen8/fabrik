@@ -415,7 +415,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 							 * $icons[$v[0].$v[1]][2] = $icons[$v[0].$v[1]][2] . "<h6>$table->label</h6>" . $html;
 							 * Don't insert linebreaks in empty bubble 
 							 */
-							 if ($html!="") "<br />" . $html;
+							 if ($html!="") $html = "<br />" . $html;
 							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] .  $html;
 							if ($customimagefound)
 							{
