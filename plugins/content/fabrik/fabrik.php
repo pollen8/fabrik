@@ -195,6 +195,7 @@ class plgContentFabrik extends JPlugin
 		$layoutFound = false;
 		$rowid = 0;
 		$usekey = '';
+		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
 		$usersConfig->set('rowid', 0);
 
@@ -279,16 +280,11 @@ class plgContentFabrik extends JPlugin
 		}
 		// Moved out of switch as otherwise first plugin to use this will effect all subsequent plugins
 		$input->set('usekey', $usekey);
-		/* $$$rob for list views in category blog layouts when no layout specified in {} the blog layout
-		 * was being used to render the list - which was not found which gave a 500 error
-		 */
+
+		// If no layout defined - set it
 		if (!$layoutFound)
 		{
-			if ($input->get('option') === 'com_content' && $input->get('layout') === 'blog')
-			{
-				$layout = 'default';
-				$input->set('layout', $layout);
-			}
+			$input->set('layout', $defaultLayout);
 		}
 		/* $$$ hugh - added this so the fabrik2article plugin can arrange to have form CSS
 		 * included when the article is rendered by com_content, by inserting ...
