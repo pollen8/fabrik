@@ -53,6 +53,7 @@ class plgFabrik_Cronemail extends plgFabrik_Cron
 		jimport('joomla.mail.helper');
 		$params = $this->getParams();
 		$msg = $params->get('message');
+		FabrikHelperHTML::runConentPlugins($msg);
 		$to = $params->get('to');
 		$w = new FabrikWorker;
 		$MailFrom = $app->getCfg('mailfrom');
