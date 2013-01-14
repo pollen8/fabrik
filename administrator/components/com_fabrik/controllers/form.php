@@ -164,7 +164,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 			if (!$validated)
 			{
 				$this->savepage();
-
 				if ($this->isMambot)
 				{
 					$input->set('fabrik_referrer', JArrayHelper::getValue($_SERVER, 'HTTP_REFERER', ''), 'post');
@@ -191,7 +190,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 
 		$model->process();
 
-		if ($input->getInt('elid') !== 0)
+		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
 			echo $model->inLineEditResult();
