@@ -333,7 +333,10 @@ class FabrikPlugin extends JPlugin
 					{
 						if (is_array($field->value))
 						{
-							$field->setValue($field->value[$r]);
+							if (array_key_exists($r, $field->value))
+							{
+								$field->setValue($field->value[$r]);
+							}
 						}
 					}
 					if ($j3)

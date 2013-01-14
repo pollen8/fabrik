@@ -5,6 +5,7 @@ var FbGoogleMapViz = new Class({
 		'lon': 0,
 		'clustering': false,
 		'maptypecontrol': false,
+		'scrollwheel': false,
 		'overviewcontrol': false,
 		'scalecontrol': false,
 		'center': 'middle',

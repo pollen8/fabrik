@@ -59,9 +59,7 @@ class JFormFieldElement extends JFormFieldList
 		{
 			$fabrikelements = array();
 		}
-		//JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 		$src[] = 'administrator/components/com_fabrik/views/namespace.js';
-		//FabrikHelperHTML::script();
 		$c = (int) @$this->form->repeatCounter;
 		$table = $this->element['table'];
 		if ($table == '')
