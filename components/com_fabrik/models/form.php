@@ -4898,7 +4898,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			unset($this->groups);
 			$pluginManager = FabrikWorker::getPluginManager();
-			unset($pluginManager->formplugins);
+			$pluginManager->clearFormPlugins($this);
 		}
 	}
 

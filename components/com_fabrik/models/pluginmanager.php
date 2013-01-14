@@ -37,6 +37,13 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	public $data = array();
 
 	/**
+	 * Array of array of form plugins - keyed on group id
+	 *
+	 * @var  array
+	 */
+	protected $formPlugins = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
@@ -306,6 +313,24 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 		return $plugIn;
 	}
 
+	/**
+	 * Unset a form's element plugins
+	 *
+	 * @since   3.1b
+	 *
+	 * @param   JModel  $formModel  Form model
+	 *
+	 * @return  void
+	 */
+
+	public function clearFormPlugins($formModel)
+	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$sig = $package . '.' . $formModel->get('id');
+		unset($this->formPlugins[$sig]);
+
+	}
 	/**
 	 * Load all the forms element plugins
 	 *
