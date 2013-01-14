@@ -407,8 +407,12 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$w = $params->get('fusionchart_width');
 		$h = $params->get('fusionchart_height');
 
-		$chartType = $params->get('fusionchart_type');
+		$chartType = $params->get('fusionchart_type', '');
 
+		if ($chartType == '')
+		{
+			JError::raiseError(501, 'Not chart type selected');
+		}
 		// Create new chart
 		$this->FC = new FusionCharts($chartType, $w, $h);
 
