@@ -118,17 +118,17 @@ $listDirn	= $this->state->get('list.direction');
 				</td>
 				<td>
 					<a href="<?php echo $elementLink?>">
-						<?php echo JText::_('COM_FABRIK_ADD');?>
+						<i class="icon-plus-2"></i> <?php echo JText::_('COM_FABRIK_ADD');?>
 					</a>
 				</td>
 				<td>
 					<a href="<?php echo $formLink; ?>">
-						<?php echo JText::_('COM_FABRIK_EDIT'); ?>
+						<i class="icon-pencil"></i> <?php echo JText::_('COM_FABRIK_EDIT'); ?>
 					</a>
 				</td>
 				<td>
 					<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $item->id;?>">
-						<?php echo JText::_('COM_FABRIK_VIEW_DATA');?>
+						<i class="icon-list-view"></i> <?php echo JText::_('COM_FABRIK_VIEW_DATA');?>
 					</a>
 				</td>
 				<td>
