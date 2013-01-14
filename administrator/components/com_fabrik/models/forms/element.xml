@@ -165,7 +165,7 @@
 					<option value="value">COM_FABRIK_VALUE</option>
 					<option value="-1">COM_FABRIK_NONE</option>
 			</field>
-			
+		<!-- 	
 			<field name="inc_in_search_all"
 				type="list"
 				default="2"
@@ -175,7 +175,7 @@
 					<option value="1">JYES</option>
 					<option value="2">JDEFAULT</option>
 			</field>
-			
+			 -->
 			<field name="inc_in_adv_search"
 				type="radio"
 				default="1"
