@@ -5328,7 +5328,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			return false;
 		}
-		echo "here";exit;
 		$params = $this->getParams();
 		$inc = $params->get('inc_in_search_all', 1);
 		if ($inc == 2 && $advancedMode)
