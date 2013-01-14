@@ -2942,9 +2942,22 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function getSubOptionValues()
 	{
-		$params = $this->getParams();
-		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array) @$opts->sub_values;
+		$phpOpts = $this->getPhpOptions();
+		if (!$phpOpts)
+		{
+			$params = $this->getParams();
+			$opts = $params->get('sub_options', '');
+			$opts = $opts == '' ? array() : (array) @$opts->sub_values;
+		}
+		else
+		{
+			$opts = array();
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->value;
+			}
+		}
+		return $opts;
 	}
 
 	/**
@@ -2955,9 +2968,33 @@ class plgFabrik_Element extends FabrikPlugin
 
 	protected function getSubOptionLabels()
 	{
+		$phpOpts = $this->getPhpOptions();
+		if (!$phpOpts)
+		{
+			$params = $this->getParams();
+			$opts = $params->get('sub_options', '');
+			$opts = $opts == '' ? array() : (array) @$opts->sub_labels;
+		}
+		else
+		{
+			$opts = array();
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->text;
+			}
+		}
+		return $opts;
+	}
+
+	protected function getPhpOptions()
+	{
 		$params = $this->getParams();
-		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array) @$opts->sub_labels;
+		$pop = $params->get('dropdown_populate', '');
+		if ($pop !== '')
+		{
+			return eval($pop);
+		}
+		return false;
 	}
 
 	/**
