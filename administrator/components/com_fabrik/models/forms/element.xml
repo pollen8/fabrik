@@ -101,11 +101,11 @@
 					<option value="-1">COM_FABRIK_NONE</option>
 			</field>
 			
-			<field default="2" description="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_DESC" label="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_LABEL" name="inc_in_search_all" type="list">
+			<!-- <field default="2" description="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_DESC" label="COM_FABRIK_FIELD_INCLUDE_IN_SEARCH_ALL_LABEL" name="inc_in_search_all" type="list">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 					<option value="2">JDEFAULT</option>
-			</field>
+			</field> -->
 			
 			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_INCLUDE_IN_ADVANCED_SEARCH_DESC" label="COM_FABRIK_FIELD_INCLUDE_IN_ADVANCED_SEARCH_LABEL" name="inc_in_adv_search" type="radio">
 					<option value="0">JNO</option>

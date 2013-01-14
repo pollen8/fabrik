@@ -24,8 +24,8 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 {
 	/**
-	 * If the element 'Include in search all' option is set to 'default' then this states if the
-	 * element should be ignored from search all.
+	 * States the element should be ignored from advanced search all queryes.
+	 *
 	 * @var bool  True, ignore in advanced search all.
 	 */
 	protected $ignoreSearchAllDefault = true;
@@ -475,19 +475,6 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$opts->renderContext = $this->getListModel()->getRenderContext();
 		$opts = json_encode($opts);
 		return "new FbThumbsList('$id', $opts);\n";
-	}
-
-	/**
-	 * Should the element's data be returned in the search all?
-	 *
-	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
-	 *
-	 * @return  bool	true
-	 */
-
-	public function includeInSearchAll($advancedMode = false)
-	{
-		return false;
 	}
 
 	/**

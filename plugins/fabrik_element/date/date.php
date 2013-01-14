@@ -21,8 +21,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
 
 	/**
-	 * If the element 'Include in search all' option is set to 'default' then this states if the
-	 * element should be ignored from search all.
+	 * States the element should be ignored from advanced search all queryes.
 	 *
 	 * @var bool  True, ignore in advanced search all.
 	 */

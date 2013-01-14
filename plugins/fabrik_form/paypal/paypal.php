@@ -36,6 +36,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 	public function onAfterProcess($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$data = $formModel->_fullFormData;
 		$this->data = $data;
@@ -61,7 +62,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				$ipn->createInvoice();
 			}
 		}
-		$paypal_testmode = $params->get('paypal_testmode', false);
+		$paypal_testmode = $params->get('paypal_testmode', $input->get('paypal_testmode', false));
 		$url = $paypal_testmode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 
 		$opts = array();

@@ -2843,11 +2843,12 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $show_in_list_summary  only show those elements shown in table summary
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
+	 * @param   string  $labelMethod          An element method that if set can alter the option's label - used to only show elements that can be selected for search all
 	 *
 	 * @return	array	html options
 	 */
 
-	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array())
+	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array(), $labelMethod = '')
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
@@ -2865,13 +2866,16 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					continue;
 				}
-				// $$$ testing
 				if ($show_in_list_summary == true && $el->show_in_list_summary != 1)
 				{
 					continue;
 				}
 				$val = $el->$key;
 				$label = strip_tags($prefix . $el->label);
+				if ($labelMethod !== '')
+				{
+					$elementModel->$labelMethod($label);
+				}
 				if ($key != 'id')
 				{
 					$val = $elementModel->getFullName(false, $useStep, false);

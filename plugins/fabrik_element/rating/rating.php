@@ -40,6 +40,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	protected $creatorIds = null;
 
 	/**
+	 * States the element should be ignored from advanced search all queryes.
+	 *
+	 * @var bool  True, ignore in advanced search all.
+	 */
+	protected $ignoreSearchAllDefault = true;
+
+	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string  $data      elements data
@@ -548,19 +555,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
 		return "new FbRatingList('$id', $opts);\n";
-	}
-
-	/**
-	 * Should the element's data be returned in the search all?
-	 *
-	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
-	 *
-	 * @return  bool	true
-	 */
-
-	public function includeInSearchAll($advancedMode = false)
-	{
-		return false;
 	}
 
 	/**

@@ -371,7 +371,7 @@ if (typeof(Fabrik) === "undefined") {
 				
 				l = Fabrik.blocks[ref];
 				// Depreacted in 3.1
-				if (l.options.actionMethod === 'floating') { // should only check all for floating tips
+				if (l.options.actionMethod === 'floating' && !this.bootstrapped) { // should only check all for floating tips
 					l.form.getElements('input[type=checkbox][name*=id], input[type=checkbox][name=checkAll]').each(function (c) {
 						c.checked = true;
 					});

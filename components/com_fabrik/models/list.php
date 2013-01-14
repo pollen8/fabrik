@@ -9607,7 +9607,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function updateFromElement($elementModel)
 	{
-		$elParams = $elementModel->getParams();
+		/* $elParams = $elementModel->getParams();
 		$add = $elParams->get('inc_in_search_all');
 		$params = $this->getParams();
 		$p = json_decode($params->get('list_search_elements'));
@@ -9633,7 +9633,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		$item = $this->getTable();
 		$item->params = (string) $params;
-		$item->store();
+		$item->store(); */
 	}
 
 	/**

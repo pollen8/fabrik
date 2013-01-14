@@ -2779,7 +2779,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @return  bool	true
 	 */
 
-	public function includeInSearchAll($advancedMode = false)
+	/* public function includeInSearchAll($advancedMode = false)
 	{
 		if ($advancedMode)
 		{
@@ -2797,6 +2797,38 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 		return parent::includeInSearchAll($advancedMode);
+	} */
+
+	/**
+	 * Is it possible to include the element in the  Search all query?
+	 * true if basic search
+	 * true/false if advanced search
+	 *
+	 * @since  3.1b
+	 *
+	 * @param  bool  $advancedMode  Is the list using advanced search
+	 *
+	 * @return boolean
+	 */
+
+	public function canIncludeInSearchAll($advancedMode)
+	{
+		if ($advancedMode)
+		{
+			$join = $this->getJoinModel();
+			$fields = $join->getJoin()->getFields();
+			$field = JArrayHelper::fromObject(JArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
+			$type = JArrayHelper::getValue($field, 'Type', '');
+			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
+			foreach ($notAllowed as $test)
+			{
+				if (stristr($type, $test))
+				{
+					return false;
+				}
+			}
+		}
+		return parent::canIncludeInSearchAll($advancedMode);
 	}
 
 	/**

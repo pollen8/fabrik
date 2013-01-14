@@ -792,7 +792,7 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
-				if (!is_a($elementModel, 'PlgFabrik_Element') || $found === false)
+				if ($found === false || !is_a($elementModel, 'PlgFabrik_Element'))
 				{
 					// Could be looking for an element which exists in a join
 					continue;

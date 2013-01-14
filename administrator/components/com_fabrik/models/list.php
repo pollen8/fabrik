@@ -350,7 +350,11 @@ class FabrikAdminModelList extends FabModelAdmin
 		$formModel = $this->getFormModel();
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true, 'name', 'class="inputbox input-small" size="1"');
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
-		$js = "
+
+		$plugins = json_encode($this->getPlugins());
+		$js = "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
+
+		$js .= "
 
 		oAdminTable = new ListForm($opts);
 	oAdminTable.watchJoins();\n";
@@ -365,8 +369,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$js .= "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);\n";
 		}
 
-		$plugins = json_encode($this->getPlugins());
-		$js .= "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
+
 
 		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
 		$form = $this->getForm();
@@ -815,7 +818,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		{
 			return;
 		}
-		$searchElements = json_decode($params->list_search_elements)->search_elements;
+		/* $searchElements = json_decode($params->list_search_elements)->search_elements;
 		$elementModels = $this->getFEModel()->getElements(0, false, false);
 		foreach ($elementModels as $elementModel)
 		{
@@ -827,7 +830,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$elParams->set('inc_in_search_all', $s);
 			$element->params = (string) $elParams;
 			$element->store();
-		}
+		} */
 	}
 
 	/**

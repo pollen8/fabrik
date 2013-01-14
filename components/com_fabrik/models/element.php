@@ -5307,6 +5307,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	/**
 	 * Should the element's data be returned in the search all?
+	 * Looks at the lists selected options, if its there looks at what search mode the list is using
+	 * and determines if the selected element can be used.
 	 *
 	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
 	 *
@@ -5319,7 +5321,24 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			return false;
 		}
-		$params = $this->getParams();
+		$listModel = $this->getListModel();
+		$listParams = $listModel->getParams();
+		$searchElements = $listParams->get('list_search_elements', '');
+		if ($searchElements === '')
+		{
+			return false;
+		}
+		$searchElements = json_decode($searchElements);
+		if (!isset($searchElements->search_elements))
+		{
+			return false;
+		}
+		if (in_array($this->getId(), $searchElements->search_elements))
+		{
+			$advancedMode = $listParams->get('search-mode-advanced');
+			return $this->canIncludeInSearchAll($advancedMode);
+		}
+		/* $params = $this->getParams();
 		$inc = $params->get('inc_in_search_all', 1);
 		if ($inc == 2 && $advancedMode)
 		{
@@ -5336,7 +5355,51 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 				}
 			}
 		}
-		return ($inc == 1 || $inc == 2) ? true : false;
+		return ($inc == 1 || $inc == 2) ? true : false; */
+	}
+
+	/**
+	 * Is it possible to include the element in the  Search all query?
+	 * true if basic search
+	 * true/false if advanced search
+	 *
+	 * @since  3.1b
+	 *
+	 * @param  bool  $advancedMode  Is the list using advanced search
+	 *
+	 * @return boolean
+	 */
+	public function canIncludeInSearchAll($advancedMode)
+	{
+		$params = $this->getParams();
+		if (!$advancedMode)
+		{
+			return true;
+		}
+		if ($this->ignoreSearchAllDefault)
+		{
+			return false;
+		}
+		$format = $params->get('text_format');
+		if ($format == 'integer' || $format == 'decimal')
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Modify the label for admin list - filter elements.
+	 * Adds a '*' if the element is not available in advanced search
+	 *
+	 * @param   string  &$label  Element label
+	 *
+	 * @return  void
+	 */
+
+	public function availableInAdvancedSearchLabel(&$label)
+	{
+		$label = $this->canIncludeInSearchAll(true) ? $label : $label . '*';
 	}
 
 	/**

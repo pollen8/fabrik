@@ -207,6 +207,26 @@
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="list_search_elements"
+				type="fabrikmodalrepeat"
+				icon="list"
+				description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC"
+				label="COM_FABRIK_FIELD_SEARCH_ELEMENTS_LABEL">
+				
+					<fields name="params">
+						<fieldset modal="true" name="list_search_elements_modal" repeat="true">
+							<field name="search_elements"
+								label="COM_FABRIK_SEARCH_ELEMENTS_LABEL"
+								description="COM_FABRIK_SEARCH_ELEMENTS_LABEL_DESC"
+								size="30"
+								label_method="availableInAdvancedSearchLabel"
+								type="listfields"/>
+						
+						</fieldset>
+				</fields>
+				
+			</field>
+			
 	 		<field default="All" description="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_DESC" label="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_LABEL" name="search-all-label" size="20" type="text"/>
 		
 			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_REQUIRE_FILTER_DESC" label="COM_FABRIK_FIELD_REQUIRE_FILTER_LABEL" name="require-filter" type="radio">
@@ -383,16 +403,6 @@
 				
 			<field description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC" label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL" name="search_description" type="listfields"/>
 				
-			<field description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC" label="COM_FABRIK_FIELD_SEARCH_ELEMENTS_LABEL" name="list_search_elements" type="fabrikmodalrepeat">
-				
-					<fields name="params">
-						<fieldset modal="true" name="list_search_elements_modal" repeat="true">
-							<field label="COM_FABRIK_SEARCH_ELEMENTS_LABEL" name="search_elements" size="30" type="listfields"/>
-						
-						</fieldset>
-				</fields>
-				
-			</field>
 		</fieldset>
 	
 		<fieldset name="layout">
