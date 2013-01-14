@@ -533,8 +533,12 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 			return;
 		}
 		$mapfullkey = $mapelement->getFullName(false, true, false);
-		//FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->getElement()->plugin, $opts);
-		if ($params->get('myloc', 1) == 1) {
+		if ($params->get('place', 1) == 1)
+		{
+			FabrikHelperHTML::autoComplete("radius_search_place{$this->_counter}", $el->getElement()->id, $el->getElement()->plugin, $opts);
+		}
+		if ($params->get('myloc', 1) == 1)
+		{
 			FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 		}
 		parent::loadJavascriptClass();
