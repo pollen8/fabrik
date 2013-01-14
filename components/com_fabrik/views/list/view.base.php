@@ -525,13 +525,7 @@ class FabrikViewListBase extends JViewLegacy
 		$params = $model->getParams();
 		if ($params->get('process-jplugins'))
 		{
-			$opt = $input->get('option');
-			$input->set('option', 'com_content');
-			jimport('joomla.html.html.content');
-			$text .= '{emailcloak=off}';
-			$text = JHTML::_('content.prepare', $text);
-			$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-			$input->set('option', $opt);
+			FabrikHelperHTML::runConentPlugins($text);
 		}
 		JDEBUG ? $profiler->mark('end fabrik display') : null;
 

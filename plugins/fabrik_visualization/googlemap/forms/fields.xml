@@ -51,6 +51,37 @@
 				label="PLG_VISUALIZATION_GOOGLEMAP_POLYGON_FILLCOLOUR_LABEL" />		
 	
 			<field connection="params_googlemap_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_TITLE_ELEMENT_LABEL" name="fb_gm_title_element" table="params_googlemap_table" type="element"/>
+			
+			<field name="fb_gm_radius_element"
+				connection="params_googlemap_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_ELEMENT_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_ELEMENT_LABEL"
+				table="params_googlemap_table"
+				type="element"
+			/>
+			
+			<field name="fb_gm_radius_default"
+				type="field"
+				default="50"
+				size = "5"
+				label="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_DEFAULT_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_DEFAULT_DESC"
+			/>
+			
+			<field name="fb_gm_radius_fill_color"
+				type="field"
+				default="#CCFFFF"
+				size = "8"
+				label="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_FILL_COLOR_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_FILL_COLOR_DESC"
+			/>
+			
+			<field name="fb_gm_radius_unit" type="radio" default="k" label="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_UNIT_LABEL" description="PLG_VISUALIZATION_GOOGLEMAP_RADIUS_UNIT_DESC">
+				<option value="m">Miles</option>
+				<option value="k">Kilometers</option>
+			</field>
+			
 		</fieldset>
 
 		<fieldset name="rest" label="COM_FABRIK_OPTIONS" repeat="0">
@@ -169,6 +200,11 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field default="0" description="PLG_VISUALIZATION_GOOGLEMAP_USE_RADIUS_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_USE_RADIUS_LABEL" name="fb_gm_use_radius" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 		</fieldset>
 		
 		<fieldset label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAY_HEADING" name="overlay_settings">
@@ -191,7 +227,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-		
+
 			<!--  not yet working
 			<field name="fb_gm_group_class"
 				type="element" 

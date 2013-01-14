@@ -67,15 +67,7 @@ class fabrikViewApprovals extends JViewLegacy
 		FabrikHelperHTML::script($srcs, $js);
 
 		$text = $this->loadTemplate();
-		$opt = $input->get('option');
-		$view = $input->get('view');
-		$input->set('view', 'article');
-		$input->set('option', 'com_content');
-		jimport('joomla.html.html.content');
-		$text .= '{emailcloak=off}';
-		$text = JHTML::_('content.prepare', $text);
-		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-		$input->set('option', $opt);
+		FabrikHelperHTML::runConentPlugins($text);
 		echo $text;
 	}
 
