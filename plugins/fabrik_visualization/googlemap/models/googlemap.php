@@ -351,15 +351,17 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 					 */
 					if (empty($html) && (array_key_exists('fabrik_view', $rowdata) || array_key_exists('fabrik_edit', $rowdata)))
 					{
-						$html .= "<br />";
+						//Don't insert linebreak in empty bubble without links $html .= "<br />";
 
 						// Use edit link by preference
 						if (array_key_exists('fabrik_edit', $rowdata))
 						{
+							if ($rowdata['fabrik_edit']!="") $html .= "<br />";
 							$html .= $rowdata['fabrik_edit'];
 						}
 						else
 						{
+							if ($rowdata['fabrik_view']!="") $html .= "<br />";
 							$html .= $rowdata['fabrik_view'];
 						}
 					}
@@ -370,6 +372,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 						// two breaks.  So if we can't use nl2br ... I need fix this before using it again!
 						/*
 						$html = str_replace(array("\n\r"), "<br />", $html);
+						$html = str_replace(array("\r\n"), "<br />", $html);
 						$html = str_replace(array("\n", "\r"), "<br />", $html);
 						*/
 						$html = nl2br($html, true);
@@ -431,8 +434,10 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 							/* $$$ hugh - this inserts label between multiple record $html, but not at the top.
 							 * If they want to insert label, they can do it themselves in the template.
 							 * $icons[$v[0].$v[1]][2] = $icons[$v[0].$v[1]][2] . "<h6>$table->label</h6>" . $html;
+							 * Don't insert linebreaks in empty bubble
 							 */
-							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] . "<br />" . $html;
+							 if ($html!="") $html = "<br />" . $html;
+							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] .  $html;
 							if ($customimagefound)
 							{
 								$icons[$v[0] . $v[1]][3] = $iconImg;

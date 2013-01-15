@@ -1567,4 +1567,29 @@ EOD;
 		return $grid;
 	}
 
+	/**
+	 * Run Joomla content plugins over text
+	 *
+	 * @since   3.0.7
+	 *
+	 * @param   string  &$text  Content
+	 *
+	 * @return  void
+	 */
+
+	public static function runConentPlugins(&$text)
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$opt = $input->get('option');
+		$view = $input->get('view');
+		$input->set('option', 'com_content');
+		$input->set('view', 'article');
+		jimport('joomla.html.html.content');
+		$text .= '{emailcloak=off}';
+		$text = JHTML::_('content.prepare', $text);
+		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
+		$input->set('option', $opt);
+		$input->set('view', $view);
+	}
 }

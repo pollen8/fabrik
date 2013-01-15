@@ -36,6 +36,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$params->set('allow_frontend_addto', (bool) $params->get('allow_frontend_addtodropdown', false));
 		$params->set('allowadd-onlylabel', (bool) $params->get('dd-allowadd-onlylabel', true));
 		$params->set('savenewadditions', (bool) $params->get('dd-savenewadditions', false));
+		$params->set('options_populate', $params->get('dropdown_populate', ''));
 	}
 
 	/**

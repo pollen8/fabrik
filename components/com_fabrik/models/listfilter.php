@@ -354,7 +354,7 @@ class FabrikFEModelListfilter extends FabModel
 	}
 
 	/**
-	 * for advanced search all test if the search string is long enough
+	 * for extended search all test if the search string is long enough
 	 *
 	 * @param   string  $s  search string
 	 *
@@ -1328,7 +1328,7 @@ class FabrikFEModelListfilter extends FabModel
 				$grouped = 1;
 				$label = '';
 				/**
-				 * $$$ rob force the counter to always be the same for advanced search all
+				 * $$$ rob force the counter to always be the same for extended search all
 				 * stops issue of multiple search alls being applied
 				 */
 				$counter = 9999;

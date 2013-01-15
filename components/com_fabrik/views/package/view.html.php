@@ -53,15 +53,8 @@ class fabrikViewPackage extends JView
 		$tmpl = !isset($item->template) ? 'default' : $item->template;
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/tmpl/' . $tmpl);
 		$text = $this->loadTemplate();
-		$opt = JRequest::getVar('option');
-		JRequest::setVar('option', 'com_content');
-		jimport('joomla.html.html.content');
-		$text .= '{emailcloak=off}';
-		$text = JHTML::_('content.prepare', $text);
-		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
-		JRequest::setVar('option', $opt);
+		FabrikHelperHTML::runConentPlugins($text);
 		echo $text;
 	}
 
 }
-?>
