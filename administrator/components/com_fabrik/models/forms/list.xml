@@ -365,7 +365,11 @@
 					<option value="1">Excel CSV</option>
 			</field>
 			
-			<field description="COM_FABRIK_FIELD_CSV_ELEMENTS_DESC" label="COM_FABRIK_FIELD_CSV_ELEMENTS_LABEL" name="csv_elements" type="fabrikmodalrepeat">
+			<field name="csv_elements"
+				type="fabrikmodalrepeat"
+				icon="list"
+				description="COM_FABRIK_FIELD_CSV_ELEMENTS_DESC"
+				label="COM_FABRIK_FIELD_CSV_ELEMENTS_LABEL">
 			
 				<fields name="params">
 					<fieldset modal="true" name="csv_elements_modal" repeat="true">

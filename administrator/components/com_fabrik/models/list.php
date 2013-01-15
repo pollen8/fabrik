@@ -746,7 +746,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		$this->updateElements($row);
 		/* $$$rob - joomfish not available for j1.7
 		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
 		if ($params->get('allow-data-translation')) {
@@ -801,36 +800,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * The list view now enables us to alter en-mass some element properties
-	 *
-	 * @param   object  $row  list item
-	 *
-	 * @return  void
-	 */
-
-	protected function updateElements($row)
-	{
-		$params = json_decode($row->params);
-		if (!isset($params->list_search_elements) || $params->list_search_elements === '')
-		{
-			return;
-		}
-		/* $searchElements = json_decode($params->list_search_elements)->search_elements;
-		$elementModels = $this->getFEModel()->getElements(0, false, false);
-		foreach ($elementModels as $elementModel)
-		{
-			// True otherwise ordering set to 0!
-			$element = $elementModel->getElement(true);
-			$elParams = $elementModel->getParams();
-			$unselected = $elParams->get('inc_in_search_all') === 2 ? 2 : 0;
-			$s = (in_array($element->id, $searchElements)) ? 1 : $unselected;
-			$elParams->set('inc_in_search_all', $s);
-			$element->params = (string) $elParams;
-			$element->store();
-		} */
 	}
 
 	/**

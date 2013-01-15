@@ -690,7 +690,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		if ((int) $listModel->getTable()->id !== 0)
 		{
 			$this->updateIndexes($elementModel, $listModel, $row);
-			$listModel->updateFromElement($elementModel);
+			// $listModel->updateFromElement($elementModel);
 		}
 		$return = parent::save($data);
 		if ($return)

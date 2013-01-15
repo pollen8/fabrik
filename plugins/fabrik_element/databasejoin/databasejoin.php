@@ -2772,34 +2772,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Should the element's data be returned in the search all?
-	 *
-	 * @param   bool  $advancedMode  is the elements' list is advanced search all mode?
-	 *
-	 * @return  bool	true
-	 */
-
-	/* public function includeInSearchAll($advancedMode = false)
-	{
-		if ($advancedMode)
-		{
-			$join = $this->getJoinModel();
-			$fields = $join->getJoin()->getFields();
-			$field = JArrayHelper::fromObject(JArrayHelper::getValue($fields, $this->getLabelParamVal(), array()));
-			$type = JArrayHelper::getValue($field, 'Type', '');
-			$notAllowed = array('int', 'double', 'decimal', 'date', 'serial', 'bit', 'boolean', 'real');
-			foreach ($notAllowed as $test)
-			{
-				if (stristr($type, $test))
-				{
-					return false;
-				}
-			}
-		}
-		return parent::includeInSearchAll($advancedMode);
-	} */
-
-	/**
 	 * Is it possible to include the element in the  Search all query?
 	 * true if basic search
 	 * true/false if advanced search

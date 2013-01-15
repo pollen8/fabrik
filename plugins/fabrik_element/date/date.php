@@ -23,7 +23,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * States the element should be ignored from advanced search all queryes.
 	 *
-	 * @var bool  True, ignore in advanced search all.
+	 * @var bool  True, ignore in extended search all.
 	 */
 	protected $ignoreSearchAllDefault = true;
 
@@ -376,7 +376,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	protected function toMySQLGMT($date)
 	{
-		echo 'tomyslq';exit;
 		if ($this->resetToGMT)
 		{
 			// $$$ rob 3.0 offset is no longer an integer but a timezone string

@@ -9600,6 +9600,8 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   object  $elementModel  element model
 	 *
+	 * @deprecated since 3.0b
+	 *
 	 * @since 3.0.6
 	 *
 	 * @return  void
@@ -9607,33 +9609,6 @@ class FabrikFEModelList extends JModelForm
 
 	public function updateFromElement($elementModel)
 	{
-		/* $elParams = $elementModel->getParams();
-		$add = $elParams->get('inc_in_search_all');
-		$params = $this->getParams();
-		$p = json_decode($params->get('list_search_elements'));
-		$elementId = $elementModel->getId();
-		if (is_object($p) && is_array($p->search_elements))
-		{
-			if ($add)
-			{
-				if (!in_array($elementId, $p->search_elements))
-				{
-					$p->search_elements[] = (string) $elementId;
-				}
-			}
-			else
-			{
-				$k = array_search($elementId, $p->search_elements);
-				if ($k !== false)
-				{
-					unset($p->search_elements[$k]);
-				}
-			}
-			$params->set('list_search_elements', json_encode($p));
-		}
-		$item = $this->getTable();
-		$item->params = (string) $params;
-		$item->store(); */
 	}
 
 	/**
