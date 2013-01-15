@@ -251,6 +251,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$uri = JURI::getInstance();
 		$params = $this->getParams();
 		$templates = (array) $params->get('fb_gm_detailtemplate');
+		$templates_nl2br = (array) $params->get('fb_gm_detailtemplate_nl2br');
 		$listids = (array) $params->get('googlemap_table');
 
 		// Images for file system
@@ -280,8 +281,19 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 		$lc = 0;
 		foreach ($listids as $listid)
 		{
-			$template = JArrayHelper::getValue($templates, $c, '');
 			$listModel = $this->getlistModel($listid);
+
+			$template = JArrayHelper::getValue($templates, $c, '');
+			/**
+			* One day we should get smarter about how we decide which elements to render
+			* but for now all we can do is set formatAll(), in case they use an element
+			* which isn't set for list display, which then wouldn't get rendered unless we do this.
+			*/
+			if (FabrikString::usesElementPlaceholders($template)) {
+				$listModel->formatAll(true);
+			}
+			$template_nl2br = JArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
+
 			$table = $listModel->getTable();
 
 			try
@@ -351,8 +363,17 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 							$html .= $rowdata['fabrik_view'];
 						}
 					}
-					$html = str_replace(array("\n\r"), "<br />", $html);
-					$html = str_replace(array("\n", "\r"), "<br />", $html);
+					if ($template_nl2br)
+					{
+						// $$$ hugh - not sure why we were doing this rather than nl2br?
+						// If there was a reason, this is still broken, as it ends up inserting
+						// two breaks.  So if we can't use nl2br ... I need fix this before using it again!
+						/*
+						$html = str_replace(array("\n\r"), "<br />", $html);
+						$html = str_replace(array("\n", "\r"), "<br />", $html);
+						*/
+						$html = nl2br($html, true);
+					}
 					$html = str_replace("'", '"', $html);
 					$this->txt[] = $html;
 					if ($iconImg == '')
