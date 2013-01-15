@@ -1407,7 +1407,7 @@ class FabrikFEModelForm extends FabModelForm
 				}
 				if ($this->dofilter)
 				{
-					$item = $this->filter->clean($item);
+					@$item = $this->filter->clean($item);
 				}
 			}
 			else
@@ -4260,6 +4260,26 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 		return $links;
+	}
+
+	public function getFormClass()
+	{
+		$class = array('');
+		$horiz = true;
+		$groups = $this->getGroupsHiarachy();
+		foreach ($groups as $gkey => $groupModel)
+		{
+			$groupParams = $groupModel->getParams();
+			if ($groupParams->get('group_columns', 1) > 1)
+			{
+				$horiz = false;
+			}
+		}
+		if ($horiz)
+		{
+			$class[] = 'form-horizontal';
+		}
+		return implode(' ', $class);
 	}
 
 	/**

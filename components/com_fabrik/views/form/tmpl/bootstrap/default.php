@@ -21,7 +21,7 @@ endif;
 echo $form->intro;
 
 if ($model->editable) :
-echo '<form action="' . $form->action . '" class="fabrikForm form-horizontal" method="post" name="' . $form->name . '" id="' . $form->formid
+echo '<form action="' . $form->action . '" class="' . $form->class . '" method="post" name="' . $form->name . '" id="' . $form->formid
 				. '" enctype="' . $model->getFormEncType() . '">';
 else:
 	echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';

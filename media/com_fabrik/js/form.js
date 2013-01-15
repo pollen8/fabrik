@@ -849,7 +849,7 @@ var FbForm = new Class({
 		if (msg === '') {
 			msg = Joomla.JText._('COM_FABRIK_SUCCESS');
 		}
-		msg = '<span>' + msg + '</span>';
+		msg = '<span> ' + msg + '</span>';
 		this.formElements.get(id).setErrorMessage(msg, classname);
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
