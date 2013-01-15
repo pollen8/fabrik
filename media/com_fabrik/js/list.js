@@ -599,6 +599,9 @@ var FbList = new Class({
 	
 	doFilter: function () {
 		var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
+		if (typeOf(res) === 'null') {
+			this.submit('list.filter');
+		}
 		if (res.length === 0 || !res.contains(false)) {
 			this.submit('list.filter');
 		}
