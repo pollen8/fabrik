@@ -532,35 +532,10 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		
 		if (this.options.ajax_links) {
 			
 			// 3.1 - dont need to do this now
 			return;
-			
-			// $$$rob - HACKKKKK!!!!!! 
-			// not sure why but on ajax first load of xhr content the form object does not ini
-			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
-			// find out what the problem is here but for now this band aid is a help
-			/*var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
-			var winOpts = {
-				'id': 'add.' + this.id,
-				'title': this.options.popup_edit_label,
-				'loadMethod': 'xhr',
-				'contentURL': url,
-				'visible': false,
-				'width': this.options.popup_width,
-				'height': this.options.popup_height,
-				'onContentLoaded': function () {}
-			};
-			var w = Fabrik.getWindow(winOpts);
-			if (typeOf(this.options.popup_offset_x) !== 'null') {
-				winOpts.offset_x = this.options.popup_offset_x;
-			}
-			if (typeOf(this.options.popup_offset_y) !== 'null') {
-				winOpts.offset_y = this.options.popup_offset_y;
-			}
-			var w = Fabrik.getWindow(winOpts);*/
 		}
 	},
 	

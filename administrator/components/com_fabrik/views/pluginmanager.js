@@ -114,6 +114,7 @@ var PluginManager = new Class({
 	},
 	
 	addTop: function (plugin) {
+		var published;
 		if (typeOf(plugin) === 'string') {
 			published = 1;
 			plugin = plugin ? plugin : '';
@@ -130,9 +131,10 @@ var PluginManager = new Class({
 		div.adopt(toggler);
 		div.adopt(new Element('div.accordion-body'));
 		div.inject(document.id('plugins'));
-		var append = document.id('plugins').getElements('.actionContainer .accordion-body').getLast();
-		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		var append = document.id('plugins').getElements('.actionContainer').getLast();
+		var tt_temp = this.topTotal; //added temp variable
 		
+		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
 		var request = new Request.HTML({
 			url: 'index.php',
 			data: {
@@ -150,7 +152,8 @@ var PluginManager = new Class({
 			onSuccess: function (res) {
 				
 				if (plugin !== '') {
-					this.addPlugin(plugin);
+					// Sent temp variable as c to addPlugin, so they are aligned properly
+					this.addPlugin(plugin, tt_temp + 1);
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
 				this.updateBootStrap();

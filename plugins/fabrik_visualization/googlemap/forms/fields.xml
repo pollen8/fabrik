@@ -9,7 +9,16 @@
 			<field connection_in_repeat="false" label="COM_FABRIK_LIST" name="googlemap_table" observe="params_googlemap_connection" type="fabriktables"/>
 				
 			<field cols="40" description="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_LABEL" name="fb_gm_detailtemplate" rows="8" type="textarea"/>
-				
+
+			<field name="fb_gm_detailtemplate_nl2br"
+				type="radio"
+				default="1"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_NL2BR_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_NL2BR_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+							
 			<field description="PLG_VISUALIZATION_GOOGLEMAP_ICON_DESC" directory="media/com_fabrik/images" filter=".png|.jpg|.gif|.jpeg" hide_none="1" label="PLG_VISUALIZATION_GOOGLEMAP_ICON_LABEL" name="fb_gm_iconimage" type="filelist"/>
 			
 			<field description="PLG_VISUALIZATION_GOOGLEMAP_FIRST_ICON_DESC" directory="media/com_fabrik/images" filter=".png|.jpg|.gif|.jpeg" hide_none="1" label="PLG_VISUALIZATION_GOOGLEMAP_FIRST_ICON_LABEL" name="fb_gm_first_iconimage" type="filelist"/>

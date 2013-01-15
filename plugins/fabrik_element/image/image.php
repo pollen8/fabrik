@@ -475,4 +475,22 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	{
 		return $this->render($data);
 	}
+
+	/**
+	* Does the element conside the data to be empty
+	* Used in isempty validation rule
+	*
+	* $$$ hugh - right now this is the default code, here as a reminder we
+	* need to fix this so it makes sensible decisions about 'empty' image
+	*
+	* @param   array  $data           data to test against
+	* @param   int    $repeatCounter  repeat group #
+	*
+	* @return  bool
+	*/
+
+	public function dataConsideredEmpty($data, $repeatCounter)
+	{
+		return ($data == '') ? true : false;
+	}
 }

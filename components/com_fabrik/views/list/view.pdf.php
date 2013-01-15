@@ -34,6 +34,12 @@ class FabrikViewList extends FabrikViewListBase
 
 	public function display($tpl = null)
 	{
+		$document = JFactory::getDocument();
+		$model = $this->getModel();
+		$params = $model->getParams();
+		$size = $params->get('pdf_size', 'A4');
+		$orientation = $params->get('pdf_orientation', 'portrait');
+		$document->setPaper($size, $orientation);
 		parent::display($tpl);
 		$this->nav = '';
 		$this->showPDF = false;
@@ -68,6 +74,7 @@ class FabrikViewList extends FabrikViewListBase
 
 	protected function setTitle($w, &$params, $model)
 	{
+		echo "view<br>";
 		parent::setTitle($w, $params, $model);
 
 		// Set the download file name based on the document title

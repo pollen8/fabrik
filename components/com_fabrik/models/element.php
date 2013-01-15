@@ -2950,9 +2950,22 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getSubOptionValues()
 	{
-		$params = $this->getParams();
-		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array) @$opts->sub_values;
+		$phpOpts = $this->getPhpOptions();
+		if (!$phpOpts)
+		{
+			$params = $this->getParams();
+			$opts = $params->get('sub_options', '');
+			$opts = $opts == '' ? array() : (array) @$opts->sub_values;
+		}
+		else
+		{
+			$opts = array();
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->value;
+			}
+		}
+		return $opts;
 	}
 
 	/**
@@ -2963,9 +2976,33 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getSubOptionLabels()
 	{
+		$phpOpts = $this->getPhpOptions();
+		if (!$phpOpts)
+		{
+			$params = $this->getParams();
+			$opts = $params->get('sub_options', '');
+			$opts = $opts == '' ? array() : (array) @$opts->sub_labels;
+		}
+		else
+		{
+			$opts = array();
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->text;
+			}
+		}
+		return $opts;
+	}
+
+	protected function getPhpOptions()
+	{
 		$params = $this->getParams();
-		$opts = $params->get('sub_options', '');
-		return $opts == '' ? array() : (array) @$opts->sub_labels;
+		$pop = $params->get('dropdown_populate', '');
+		if ($pop !== '')
+		{
+			return eval($pop);
+		}
+		return false;
 	}
 
 	/**
@@ -6322,6 +6359,21 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	protected function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		return '';
+	}
+
+	/**
+	 *
+	 * Is the element set to always render in list contexts
+	 *
+	 * @param    bool  $not_shown_only
+	 *
+	 * @return   bool
+	 */
+	public function isAlwaysRender($not_shown_only = true)
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		return $not_shown_only ? $element->show_in_list_summary == 0 && $params->get('always_render', '0') == '1' : $params->get('always_render', '0') == '1';
 	}
 
 }

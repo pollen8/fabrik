@@ -244,7 +244,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 
 		$readonly = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
-		$calopts = array('class' => 'fabrikinput inputbox', 'size' => $element->width, 'maxlength' => '19');
+		$calopts = array('class' => 'fabrikinput inputbox  input-small', 'size' => $element->width, 'maxlength' => '19');
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{
 			$calopts['readonly'] = 'readonly';

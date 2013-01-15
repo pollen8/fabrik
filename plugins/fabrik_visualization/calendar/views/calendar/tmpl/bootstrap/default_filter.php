@@ -31,7 +31,9 @@
 	  </tbody>
 	  <thead><tr><th colspan='2'><?php echo $table ?></th></tr></thead>
 	  <tfoot><tr><th colspan='2' style="text-align:right;">
-	  <input type="submit" class="btn button" value="<?php echo JText::_('PLG_VISUALIZATION_CALENDAR_GO') ?>" />
+	  <button type="submit" class="btn btn-info">
+	  	<i class="icon-filter"></i> <?php echo JText::_('PLG_VISUALIZATION_CALENDAR_GO') ?>
+	  </button>
 	  </th></tr></tfoot></table>
 	  <?php
 		endif;
