@@ -6320,4 +6320,19 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		return '';
 	}
 
+	/**
+	 *
+	 * Is the element set to always render in list contexts
+	 *
+	 * @param    bool  $not_shown_only
+	 *
+	 * @return   bool
+	 */
+	public function isAlwaysRender($not_shown_only = true)
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		return $not_shown_only ? $element->show_in_list_summary == 0 && $params->get('always_render', '0') == '1' : $params->get('always_render', '0') == '1';
+	}
+
 }

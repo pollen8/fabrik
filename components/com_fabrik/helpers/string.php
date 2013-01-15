@@ -448,4 +448,21 @@ class FabrikString extends JString
 		// Show umlauts correctly in ajax error messages.
 		$string = mb_convert_encoding($string, 'HTML-ENTITIES', "UTF-8");
 	}
+
+	/**
+	 * See if it looks like a string uses {table___element} placeholders
+	 * Doesn't do any sanity testing to see if it's actually a valid element
+	 * name, just goes by pattern patching word___word
+	 *
+	 * @params   $str  string to test
+	 *
+	 * @return   bool
+	 *
+	 * @since   3.0.1
+	 */
+
+	public static function usesElementPlaceholders($str)
+	{
+		return preg_match("#\{\w+___\w+\}#", $str);
+	}
 }
