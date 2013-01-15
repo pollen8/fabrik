@@ -566,8 +566,7 @@ class FabrikFEModelList extends JModelForm
 		$cache = FabrikWorker::getCache();
 		// Ajax call needs to recall this - not sure why
 		$this->setLimits();
-		$results = $cache
-		->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
+		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
 		$this->groupTemplates = $results[2];
@@ -781,7 +780,14 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
+				// $$$ hugh - added 'always render' option to elements, and methods to grab those.
+				// Could probably do this in getPublishedListElements(), but for now just grab a list
+				// of elements with 'always render' set to Yes, and "show in list" set to No,
+				// then merge that with the getPublishedListElements.  This is to work around issues
+				// where things like plugin bubble templates use placeholders for elements not shown in the list.
+				$alwaysRenderElements = $this->getAlwaysRenderElements(true);
 				$elementModels = $groupModel->getPublishedListElements();
+				$elementModels = array_merge($elementModels, $alwaysRenderElements);
 			}
 			foreach ($elementModels as $elementModel)
 			{
@@ -9526,6 +9532,8 @@ class FabrikFEModelList extends JModelForm
 	 * and just format everything, needed by things like the table email plugin.
 	 * If called without an arg, just returns current setting.
 	 *
+	 * $$$ hugh - doesn't work, now that finesseData() is called via call_user_func().
+	 *
 	 * @param   bool  $format_all  optional arg to set format
 	 *
 	 * @return  bool
@@ -9572,4 +9580,41 @@ class FabrikFEModelList extends JModelForm
 		return $state;
 	}
 
+	/**
+	 * Return an array of elements which are set to always render
+	 *
+	 * @param   bool  only return elements which have 'always render' enabled, AND are not displayed in the list
+	 *
+	 * @return   bool  array of element models
+	 */
+
+	public function getAlwaysRenderElements($not_shown_only = true)
+	{
+		$form = $this->getFormModel();
+		$alwaysRender = array();
+		$groups = $form->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+			foreach ($elementModels as $elementModel)
+			{
+				if ($elementModel->isAlwaysRender($not_shown_only))
+				{
+					$alwaysRender[] = $elementModel;
+				}
+			}
+		}
+		return $alwaysRender;
+	}
+
+	/**
+	 * Does the list have any 'always render' elements?
+	 *
+	 * @return   bool
+	 */
+	public function hasAlwaysRenderElements()
+	{
+		$alwaysRender = $this->getAlwaysRenderElements();
+		return !empty($alwaysRender);
+	}
 }
