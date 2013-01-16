@@ -57,3 +57,5 @@ fabrik_build/output/
 /image
 /language
 libraries/dompdf/lib/fonts/log.htm
+/docs
+/uploads
