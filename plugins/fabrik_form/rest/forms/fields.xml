@@ -20,13 +20,14 @@
 				type="text"
 				repeat="true"
 				size="60"
-				description="PLG_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL"/>	
+				description="PLG_FORM_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL"/>	
 				
 			<field name="put"
 				type="text"
 				repeat="true"
 				size="60"
-				description="PLG_REST_PUT_ENDPOINT_DESC" label="PLG_FORM_REST_PUT_ENDPOINT_LABEL"/>	
+				description="PLG_REST_PUT_ENDPOINT_DESC"
+				label="PLG_REST_PUT_ENDPOINT_LABEL"/>	
 					
 			<field name="xml_parent"
 				type="field"
@@ -34,13 +35,38 @@
 				description="PLG_FORM_REST_XML_PARENT_DESC"
 				label="PLG_FORM_REST_XML_PARENT_LABEL" />
 				
-			<field name="include_list"
-				type="textarea"
+			<field name="put_include_list"	
+				type="fabrikmodalrepeat"
 				repeat="true"
-				rows="6"
-				cols="10"
-				description="PLG_FORM_REST_INCLUDE_LIST_DESC"
-				label="PLG_FORM_REST_INCLUDE_LIST_LABEL" />
+				description="PLG_FORM_REST_PUT_INCLUDE_LIST_DESC"
+				label="PLG_FORM_REST_PUT_INCLUDE_LIST_LABEL">
+				
+					<fields name="params">
+						<fieldset modal="true" name="put_include_list_modal" repeat="true">
+						
+							<field name="put_key"
+								type="text"
+								label="PLG_FORM_REST_KEY_LABEL" />
+								
+							<field name="put_value"
+								type="listfields"
+								 valueformat="tableelement"
+								label="PLG_FORM_REST_VALUE_LABEL"/>
+								
+							<field name="put_default"
+								type="text"
+								label="PLG_FORM_REST_DEFAULT_LABEL" />
+						
+							<field name="put_type"
+								type="list"
+								label="PLG_FORM_REST_FIELD_TYPE">
+									<option value="number">number</option>
+									<option value="string">string</option>
+							</field>
+								
+						</fieldset>
+					</fields>
+				</field>
 				
 			<field name="foreign_key"
 				type="listfields"
@@ -48,11 +74,12 @@
 				description="PLG_FORM_REST_FOREIGN_KEY_DESC"
 				label="PLG_FORM_REST_FOREIGN_KEY_LABEL" />
 			
-			<!-- <field name="response_fk"
-				type="field"
+			<field name="foreign_key_eval"
+				type="textarea"
 				repeat="true"
-				description="PLG_FORM_REST_RESPONSE_FK_DESC"
-				label="PLG_FORM_REST_RESPONSE_FK_LABEL" /> -->
+				description="PLG_FORM_REST_FOREIGN_KEY_EVAL_DESC"
+				label="PLG_FORM_REST_FOREIGN_KEY_EVAL_LABEL" />
+		
 		</fieldset>
 	</fields>
 </form>
