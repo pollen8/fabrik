@@ -59,3 +59,5 @@ fabrik_build/output/
 libraries/dompdf/lib/fonts/log.htm
 /docs
 /uploads
+libraries/dompdf/lib/fonts/dompdf_font_family_cache.dist.php
+

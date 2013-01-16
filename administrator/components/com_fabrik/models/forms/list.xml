@@ -380,7 +380,10 @@
 				
 			<field description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC" label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL" name="empty_data_msg" size="70" type="text"/>
 				
-		 	<field description="COM_FABRIK_FIELD_PDF_ICON_DESC" label="COM_FABRIK_FIELD_PDF_ICON_LABEL" name="pdf" type="list">
+		 	<field name="pdf"
+		 		type="list"
+		 		description="COM_FABRIK_FIELD_PDF_ICON_DESC"
+		 		label="COM_FABRIK_FIELD_PDF_ICON_LABEL">
 					<option value="">JGLOBAL_USE_GLOBAL</option>
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
@@ -393,6 +396,43 @@
 				description="COM_FABRIK_FIELD_PDF_TEMPLATE_DESC"
 				directory="/components/com_fabrik/views/list/tmpl"
 				label="COM_FABRIK_FIELD_PDF_TEMPLATE_LABEL"/>
+			
+			<field name="pdf_orientation"
+				type="list"
+				default="portrait"
+				description="COM_FABRIK_FIELD_PDF_ORIENTATION_DESC"
+				label="COM_FABRIK_FIELD_PDF_ORIENTATION_LABEL">
+					<option value="landscape">COM_FABRIK_FIELD_PDF_ORIENTATION_LANDSCAPE</option>
+					<option value="portrait">COM_FABRIK_FIELD_PDF_ORIENTATION_PORTRAIT</option>	
+			</field>
+			
+			<field name="pdf_size"
+				type="list"
+				default="letter"
+				description="COM_FABRIK_FIELD_PDF_SIZE_DESC"
+				label="COM_FABRIK_FIELD_PDF_SIZE_LABEL">
+					<option value="a0"></option>
+				    <option value="a1">a1</option>
+				    <option value="a2">a2</option>
+				    <option value="a3">a3</option>
+				    <option value="a4">a4</option>
+				    <option value="b0">b0</option>
+				    <option value="b1">b1</option>
+				    <option value="b2">b2</option>
+				    <option value="b3">b3</option>
+				    <option value="b4">b4</option>
+				    <option value="c0">c0</option>
+				    <option value="c1">c1</option>
+				    <option value="c2">c2</option>
+				    <option value="c3">c3</option>
+				    <option value="c4">c4</option>
+				    <option value="letter">letter</option>
+				    <option value="legal">legal</option>
+				    <option value="ledger">ledger</option>
+				    <option value="tabloid">tabloid</option>
+				    <option value="executive">executive</option>
+				    <option value="folio">folio</option>
+			</field>
 			
 			<field class="btn-group" default="1" description="COM_FABRIK_SHOW_TITLE_DESC" label="COM_FABRIK_SHOW_TITLE_LABEL" name="show-title" type="radio">
 					<option value="0">JNO</option>

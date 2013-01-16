@@ -162,7 +162,12 @@
 		</fieldset>
 			
 		<fieldset name="plg-fileupload-ajax-upload-opts">
-			<field default="html5" description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" name="ajax_runtime" type="text"/>
+		
+			<field name="ajax_runtime"
+				type="text"
+				default="html5,html4"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" />
 			
 			<field default="4" description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL" name="ajax_max" size="2" type="text"/>
 				

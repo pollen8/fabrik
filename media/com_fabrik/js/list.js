@@ -599,6 +599,9 @@ var FbList = new Class({
 	
 	doFilter: function () {
 		var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
+		if (typeOf(res) === 'null') {
+			this.submit('list.filter');
+		}
 		if (res.length === 0 || !res.contains(false)) {
 			this.submit('list.filter');
 		}
@@ -631,7 +634,10 @@ var FbList = new Class({
 			// not sure why but on ajax first load of xhr content the form object does not ini
 			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
 			// find out what the problem is here but for now this band aid is a help
-			var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
+			
+			// Didnt work in admin list view if list add acl was anything other than public
+			//var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
+			var url = 'index.php?option=com_fabrik&task=form.view&formid=' + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
 			var winOpts = {
 				'id': 'add.' + this.id,
 				'title': this.options.popup_edit_label,

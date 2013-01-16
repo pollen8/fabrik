@@ -2432,8 +2432,8 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 		if ($this->isJoin())
 		{
-			$rows = ($this->checkboxRows('id'));
-			if (array_key_exists($v, $rows))
+			$rows = $this->checkboxRows('id');
+			if (is_array($rows) && array_key_exists($v, $rows))
 			{
 				return $rows[$v]->text;
 			}
