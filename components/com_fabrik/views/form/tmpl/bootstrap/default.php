@@ -65,39 +65,7 @@ foreach ($this->groups as $group) :
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
 
-		/*if ($group->canRepeat) :
-			foreach ($group->subgroups as $subgroup) :
-			?>
-				<div class="fabrikSubGroup">
-
-					<?php if ($group->editable) : ?>
-						<div class="fabrikGroupRepeater pull-right">
-							<?php if ($group->canAddRepeat) :?>
-							<a class="addGroup" href="#">
-								<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
-							</a>
-							<?php
-							endif;
-							if ($group->canDeleteRepeat) :?>
-							<a class="deleteGroup" href="#">
-								<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
-							</a>
-							<?php endif;?>
-						</div>
-					<?php endif; ?>
-					<div class="fabrikSubGroupElements">
-						<?php
-						$this->elements = $subgroup;
-						echo $this->loadTemplate($groupTmpl);
-						?>
-					</div>
-				</div>
-				<?php
-			endforeach;
-		else:
-			$this->elements = $group->elements;
-			echo $this->loadTemplate($groupTmpl);
-		endif;*/ ?>
+		 ?>
 	</<?php echo $form->fieldsetTag ?>>
 <?php
 endforeach;
