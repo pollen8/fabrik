@@ -10,6 +10,7 @@
 defined('_JEXEC') or die();
 
 require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
+require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
 
 /**
  * Plugin element to render a Google map
@@ -204,66 +205,6 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	}
 
 	/**
-	 * Set the google map style
-	 *
-	 * @since   3.0.7
-	 *
-	 * @return  array  Styles
-	 */
-
-	protected function styleJs()
-	{
-		$params = $this->getParams();
-		$optStyles = array();
-		$styles = json_decode($params->get('gmap_styles'));
-
-		// Map Feature type to style
-		$features = $styles->style_feature;
-
-		// What exactly to style in the feature type (road, fill, border etc)
-		$elements = $styles->style_element;
-
-		$styleKeys = $styles->style_styler_key;
-		$styleValues = $styles->style_styler_value;
-
-		// First merge any identical feature styles
-		$stylers = array();
-		for ($i = 0; $i < count($features); $i ++)
-		{
-			$feature = JArrayHelper::getValue($features, $i);
-			$element = JArrayHelper::getValue($elements, $i);
-			$key = $feature . '|' . $element;
-			if (!array_key_exists($key, $stylers))
-			{
-
-				$stylers[$key] = array();
-			}
-			$aStyle = new stdClass();
-			$styleKey = JArrayHelper::getValue($styleKeys, $i);
-			$styleValue = JArrayHelper::getValue($styleValues, $i);
-			if ($styleKey && $styleValue)
-			{
-				$aStyle->$styleKey = $styleValue;
-				$stylers[$key][] = $aStyle;
-			}
-		}
-		$return = array();
-		foreach ($stylers as $styleKey => $styler)
-		{
-			$o = new stdClass;
-			$bits = explode('|', $styleKey);
-			if ( $bits[0] !== 'all')
-			{
-				$o->featureType = $bits[0];
-				$o->elementType = $bits[1];
-			}
-			$o->stylers = $styler;
-			$return[] = $o;
-		}
-		return $return;
-	}
-
-	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
@@ -308,7 +249,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		$opts->geocode_event = $params->get('fb_gm_geocode_event', 'button');
 		$opts->geocode_fields = array();
 		$opts->auto_center = (bool) $params->get('fb_gm_auto_center', false);
-		$opts->styles = $this->styleJs();
+		$opts->styles = FabGoogleMapHelper::styleJs($params);
 		if ($opts->geocode == '2')
 		{
 			foreach (array('addr1', 'addr2', 'city', 'state', 'zip', 'country') as $which_field)
