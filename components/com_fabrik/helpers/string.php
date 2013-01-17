@@ -465,4 +465,39 @@ class FabrikString extends JString
 	{
 		return preg_match("#\{\w+___\w+\}#", $str);
 	}
+
+	/**
+	 * Convert standard Fabrik coords string into lat, long, zoom object.
+	 * Copied from map element, as we end up needing this elsewhere.
+	 *
+	 * @param   string  $v          coordinates
+	 * @param   int     $zoomlevel  default zoom level
+	 *
+	 * @return  object  coords array and zoomlevel int
+	 */
+
+	public static function mapStrToCoords($v, $zoomlevel = 0)
+	{
+		$o = new stdClass;
+		$o->coords = array('', '');
+		$o->zoomlevel = (int) $zoomlevel;
+		if (strstr($v, ","))
+		{
+			$ar = explode(":", $v);
+			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
+			$v = FabrikString::ltrimword($ar[0], "(");
+			$v = rtrim($v, ")");
+			$o->coords = explode(",", $v);
+		}
+		else
+		{
+			$o->coords = array(0, 0);
+		}
+		// $$$ hugh - added these as I always think it's what they are!
+		$o->lat = $o->coords[0];
+		$o->long = $o->coords[1];
+		$o->zoom = $o->zoomlevel;
+		return $o;
+	}
+
 }
