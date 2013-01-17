@@ -16,10 +16,17 @@ foreach ($this->elements as $element) :
 		if ($element->span == 'span12') :
 			echo $this->loadTemplate('group_labels_side');
 		else :
+
+			// Multi columns - best to use simplified layout with labels above field
 			echo $this->loadTemplate('group_labels_above');
 		endif;
 		if ($element->endRow) :?>
-		</div>
+		</div><!-- end row-fluid -->
 	<?php endif;
 endforeach;
+
+// If the last element was not closing the row add an additional div
+if (!$element->endRow) :?>
+</div><!-- end row-fluid for open row -->
+<?php endif;?>
 

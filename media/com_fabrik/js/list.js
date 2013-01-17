@@ -40,7 +40,8 @@ var FbList = new Class({
 		'popup_offset_x': null,
 		'popup_offset_y': null,
 		'groupByOpts': {},
-		'listRef': '' // e.g. '1_com_fabrik_1'
+		'listRef': '', // e.g. '1_com_fabrik_1'
+		'fabrik_show_in_list': []
 	},
 
 	initialize: function (id, options) {
@@ -507,6 +508,9 @@ var FbList = new Class({
 	
 	doFilter: function () {
 		var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
+		if (typeOf(res) === 'null') {
+			this.submit('list.filter');
+		}
 		if (res.length === 0 || !res.contains(false)) {
 			this.submit('list.filter');
 		}
@@ -596,6 +600,10 @@ var FbList = new Class({
 					data += '&' + advSearchForm.toQueryString();
 					data += '&replacefilters=1';
 				}
+			}
+			// Pass the elements that are shown in the list - to ensure they are formatted
+			for (var i = 0; i < this.options.fabrik_show_in_list.length; i ++) {
+				data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i]; 
 			}
 			if (!this.request) {
 				this.request = new Request({

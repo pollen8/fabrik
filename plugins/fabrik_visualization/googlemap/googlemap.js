@@ -25,7 +25,8 @@ var FbGoogleMapViz = new Class({
 		'overlay_events': [],
 		'zoom' : 1,
 		'zoomStyle': 0,
-		'radius_fill_colors': []
+		'radius_fill_colors': [],
+		'styles': []
 	},
 	
 	initialize: function (element, options) {
@@ -95,6 +96,7 @@ var FbGoogleMapViz = new Class({
 			zoomControlOptions: {style: this.options.zoomStyle} 
 		};
 		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
+		this.map.setOptions({'styles': this.options.styles});
 
 		this.infoWindow = new google.maps.InfoWindow({
 			content: ''

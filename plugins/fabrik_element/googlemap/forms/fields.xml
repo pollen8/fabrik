@@ -12,9 +12,104 @@
 			
 			<field class="input-mini" default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_zoomlevel" size="3" type="text"/>
 				
-			<field class="input-mini" default="200" label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
+			<field name="fb_gm_mapwidth"
+				default="200"
+				class="input-mini"
+				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"
+				size="3"
+				type="text"/>
 				
-			<field class="input-mini" default="150" label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" type="text"/>
+			<field name="fb_gm_mapheight"
+				type="text"
+				class="input-mini"
+				default="150"
+				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"
+				size="3" />
+			
+			<field name="gmap_styles"	
+				type="fabrikmodalrepeat"
+				description="PLG_ELEMENT_GOOGLE_MAP_STYLE_DESC"
+				label="PLG_ELEMENT_GOOGLE_MAP_STYLE_LABEL">
+				
+				<fields name="params">
+					<fieldset modal="true" name="gmap_styles_modal">
+					
+					<field name="style_feature"
+							type="list"
+							repeat=""
+							label="PLG_ELEMENT_GOOGLE_MAP_STYLE_FEATURE_LABEL">
+								<option value="administrative">administrative</option>
+								<option value="administrative.country">administrative.country</option>
+								<option value="administrative.land_parcel">administrative.land_parcel</option>
+								<option value="administrative.locality">administrative.locality</option>
+								<option value="administrative.neighborhood">administrative.neighborhood</option>
+								<option value="administrative.province">administrative.province</option>
+								<option value="all">all</option>
+								<option value="landscape">landscape</option>
+								<option value="landscape.man_made">landscape.man_made</option>
+								<option value="landscape.natural">landscape.natural</option>
+								<option value="landscape.natural.landcover">landscape.natural.landcover</option>
+								<option value="landscape.natural.terrain">landscape.natural.terrain</option>
+								<option value="poi">poi</option>
+								<option value="poi.attraction">poi.attraction</option>
+								<option value="poi.business">poi.business</option>
+								<option value="poi.government">poi.government</option>
+								<option value="poi.medical">poi.medical</option>
+								<option value="poi.park">poi.park</option>
+								<option value="poi.place_of_worship">poi.place_of_worship</option>
+								<option value="poi.school">poi.school</option>
+								<option value="poi.sports_complex">poi.sports_complex</option>
+								<option value="road">road</option>
+								<option value="road.arterial">road.arterial</option>
+								<option value="road.highway">road.highway</option>
+								<option value="road.highway.controlled_access">road.highway.controlled_access</option>
+								<option value="road.local">road.local</option>
+								<option value="transit">transit</option>
+								<option value="transit.line">transit.line</option>
+								<option value="transit.station">transit.station</option>
+								<option value="transit.station.airport">transit.station.airport</option>
+								<option value="transit.station.bus">transit.station.bus</option>
+								<option value="transit.station.rail">transit.station.rail</option>
+								<option value="water">water</option>
+						</field>
+						
+						<field name="style_element"
+							type="list"
+							default="all"
+							label="PLG_ELEMENT_GOOGLE_MAP_STYLE_FEATURE_ELEMENT_LABEL">
+								<option value="all">all</option>
+								<option value="geometry">geometry</option>
+								<option value="geometry.fill">geometry.fill</option>
+								<option value="geometry.stroke">geometry.stroke</option>
+								<option value="labels">labels</option>
+								<option value="labels.icon">labels.icon</option>
+								<option value="labels.text">labels.text</option>
+								<option value="labels.text.fill">labels.text.fill</option>
+								<option value="labels.text.stroke">labels.text.stroke</option>
+						</field>
+						
+						<field name="style_styler_key"
+							type="list"
+							label="PLG_ELEMENT_GOOGLE_MAP_STYLE_STYLER_KEY_LABEL">
+								<option value="hue">hue (RGB Hex)</option>
+								<option value="lightness">lightness (a floating point value between -100 and 100)</option>
+								<option value="saturation">saturation (a floating point value between -100 and 100)</option>
+								<option value="gamma">gamma (a floating point value between 0.01 and 10.0, where 1.0 applies no correction) </option>
+								<option value="inverse_lightness">inverse_lightness (if true) simply inverts the existing lightness</option>
+								<option value="visibility">visibility  (on, off, or simplified)</option>
+								<option value="color">color (an RGB hex string)</option>
+								<option value="weight">weight (an integer value, greater than or equal to zero)</option>
+								
+						</field>
+						
+						<field name="style_styler_value"
+							type="text"
+							label="PLG_ELEMENT_GOOGLE_MAP_STYLE_STYLER_VALUE_LABEL"/>
+						
+							
+					</fieldset>
+				</fields>
+			</field>
 				
 			<field default="GSmallZoomControl" description="PLG_ELEMENT_GOOGLE_MAP_CONTROL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_CONTROL_LABEL" name="fb_gm_mapcontrol" type="list">
 					<option value="">None</option>
@@ -165,9 +260,21 @@
 			
 			<field class="input-mini" default="200" label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" name="fb_gm_table_mapwidth" size="3" type="text"/>
 				
-			<field class="input-mini" default="150" label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" name="fb_gm_table_mapheight" size="3" type="text"/>
+			<field name="fb_gm_table_mapheight"
+				type="text"
+				class="input-mini"
+				default="150"
+				size="3"
+				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL" />
 				
-			<field class="input-mini" default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_table_zoomlevel" size="3" type="text"/>
+			<field name="fb_gm_table_zoomlevel"
+				type="text"
+				class="input-mini"
+				default="4"
+				description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC"
+				label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL"
+				size="3"/>
+			
 		</fieldset>
 	</fields>
 </form>

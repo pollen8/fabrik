@@ -47,7 +47,8 @@ var FbGoogleMap = new Class({
 		'streetView': false,
 		'sensor': false,
 		'center': 0,
-		'reverse_geocode': false
+		'reverse_geocode': false,
+		'styles': []
 	},
 	
 	loadScript: function () {
@@ -159,7 +160,7 @@ var FbGoogleMap = new Class({
 					}
 				};
 			this.map = new google.maps.Map(document.id(this.element).getElement('.map'), mapOpts);
-			
+			this.map.setOptions({'styles': this.options.styles});
 			var point = new google.maps.LatLng(this.options.lat, this.options.lon);
 			var opts = {
 				map: this.map,

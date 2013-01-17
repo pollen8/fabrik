@@ -24,7 +24,72 @@ class plgFabrik_FormRest extends plgFabrik_Form
 {
 
 	/**
-	 * Run right at the end of the form processing
+	 * Are we using POST to create new records
+	 * or PUT to update existing records
+	 *
+	 * @return  string
+	 */
+	protected function requestMethod()
+	{
+		$method = $this->formModel->_formData['rowid'] == 0 ? 'POST' : 'PUT';
+		$fkData = $this->fkData();
+
+		// If existing record but no Fk value stored presume its a POST
+		if (empty($fkData))
+		{
+			$method = 'POST';
+		}
+		return $method;
+	}
+
+	/**
+	 * Get the foreign keys value.
+	 *
+	 * @return  mixed string|int
+	 */
+
+	protected function fkData()
+	{
+		if (!isset($this->fkData))
+		{
+			$this->fkData = array();
+
+			// Get the foreign key element
+			$fkElement = $this->fkElement();
+			if ($fkElement)
+			{
+				$fkElementKey = $fkElement->getFullName();
+				$this->fkData = json_decode(JArrayHelper::getValue($this->formModel->_formData, $fkElementKey));
+				$this->fkData = JArrayHelper::fromObject($this->fkData);
+
+				$fkEval = $this->params->get('foreign_key_eval', '');
+				if ($fkEval !== '')
+				{
+					$fkData = $this->fkData;
+					$eval = eval($fkEval);
+					if ($eval !== false)
+					{
+						$this->fkData = $eval;
+					}
+				}
+			}
+		}
+		return $this->fkData;
+	}
+
+	/**
+	 * Get the foreign key element
+	 *
+	 * @return  object  Fabrik element
+	 */
+
+	protected function fkElement()
+	{
+		return $this->formModel->getElement($this->params->get('foreign_key'), true);
+	}
+
+	/**
+	 * Run right before the form is processed
 	 * form needs to be set to record in database for this to hook to be called
 	 *
 	 * @param   object  $params      plugin params
@@ -33,8 +98,11 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	 * @return	bool
 	 */
 
-	public function onBeforeProcess($params, &$formModel)
+	public function onBeforeStore($params, &$formModel)
 	{
+		$this->formModel = $formModel;
+		$this->params = $params;
+
 		$w = new FabrikWorker;
 		if (!function_exists('curl_init'))
 		{
@@ -44,16 +112,19 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		// The username/password
 		$config_userpass = $params->get('username') . ':' . $params->get('password');
 
+		// POST new records, PUT exisiting records
+		$method = $this->requestMethod();
+
+		$fkData = $this->fkData();
+		$fkElement = $this->fkElement();
+
 		// Set where we should post the REST request to
-
-		// POST new records PUT exisiting records
-		$method = $formModel->_formData['rowid'] == 0 ? 'POST' : 'PUT';
-
 		$endpoint = $method === 'PUT' ? $params->get('put') : $params->get('endpoint');
 		$endpoint = $w->parseMessageForPlaceholder($endpoint);
+		$endpoint = str_replace('{fk}', $fkData, $endpoint);
 
 		// What is the root node for the xml data we are sending
-		$xmlParent = $params->get('xml_parent', 'ticket');
+		$xmlParent = $params->get('xml_parent', '');
 		$xmlParent = $w->parseMessageForPlaceholder($xmlParent);
 
 		// Request headers
@@ -62,25 +133,15 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		// Set up CURL object
 		$chandle = curl_init();
 
-		// Set which fields should be included in the data.
-		$dataMap = $params->get('include_list', 'milestone-id, status, summary');
-		$include = $w->parseMessageForPlaceholder($dataMap, null, false);
+		$dataMap = $params->get('put_include_list', '');
 
-		// Get the foreign key element
-		$fkElement = $formModel->getElement($params->get('foreign_key'), true);
-		$fkElementKey = $fkElement->getFullName();
-
-		$fkData = array();
-		if ($method === 'PUT')
-		{
-			$fkData = json_decode(JArrayHelper::getValue($formModel->_formData, $fkElementKey));
-			$fkData = JArrayHelper::fromObject($fkData);
-		}
+		$include = $w->parseMessageForPlaceholder($dataMap, $formModel->_formData, true);
 		$endpoint = $w->parseMessageForPlaceHolder($endpoint, $fkData);
 
-
 		$output = $this->buildOutput($formModel, $include, $xmlParent, $headers);
+
 		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $params, $output);
+
 
 		foreach ($curlOpts as $key => $value)
 		{
@@ -91,13 +152,14 @@ class plgFabrik_FormRest extends plgFabrik_Form
 
 		if (!$this->handleError($output, $formModel, $chandle))
 		{
+			curl_close($chandle);
 			return false;
 		}
 
 		curl_close($chandle);
 
 		// Set FK value in Fabrik form data
-		if ($method === 'POST')
+		if ($method === 'POST' && $fkElement)
 		{
 			if ($jsonOutPut)
 			{
@@ -107,8 +169,11 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			{
 				$fkVal = $output;
 			}
-			$formModel->updateFormData($fkElementKey , $fkVal, true, true);
+			$fkElementKey = $fkElement->getFullName();
+
+			$formModel->updateFormData($fkElementKey, $fkVal, true, true);
 		}
+
 	}
 
 	/**
@@ -116,31 +181,72 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	 *
 	 * @param   object  $formModel  Form Model
 	 * @param   string  $include    list of fields to include
-	 * @param   xml     $xmlParent  Parent node if rendering as xml
+	 * @param   xml     $xmlParent  Parent node if rendering as xml (ignored if include is json and prob something i want to deprecate)
 	 * @param   array   &$headers   Headeres
 	 *
 	 * @return mixed
 	 */
+
 	private function buildOutput($formModel, $include, $xmlParent, &$headers)
 	{
-		$postData = [];
+		$postData = array();
+		$w = new FabrikWorker;
+		$fkElement = $this->fkElement();
+		$fkData = $this->fkData();
+
 		if (FabrikWorker::isJSON($include))
 		{
 			$include = json_decode($include);
 
-			$include = JArrayHelper::fromObject($include[0]);
-			if ($xmlParent != '')
+			$keys = $include->put_key;
+			$values = $include->put_value;
+			$format = $include->put_type;
+			$i = 0;
+			$fkName = $fkElement->getFullName(true, false, true);
+			foreach ($values as &$v)
 			{
-				$postData[$xmlParent] = $include;
+				if ($v === $fkName)
+				{
+					$v = $fkData;
+				}
+				else
+				{
+					$v = FabrikString::safeColNameToArrayKey($v);
+
+					$v = $w->parseMessageForPlaceHolder('{' . $v . '}', $formModel->_formData, true);
+				}
+				if ($format[$i] == 'number')
+
+				{
+					$v = floatval(preg_replace('#^([-]*[0-9\.,\' ]+?)((\.|,){1}([0-9-]{1,2}))*$#e', "str_replace(array('.', ',', \"'\", ' '), '', '\\1') . '.\\4'", $v));
+				}
+				$i ++;
 			}
-			else
+			$i = 0;
+			foreach ($keys as $key)
 			{
-				$postData = $include;
+				// Can be in format "foo[bar]" in which case we want to map into nested array
+				preg_match('/\[(.*)\]/', $key, $matches);
+				if (count($matches) >= 2)
+				{
+					$bits = explode('[', $key);
+					if (!array_key_exists($bits[0], $postData))
+					{
+						$postData[$bits[0]] = array();
+					}
+					$postData[$bits[0]][$matches[1]] = $values[$i];
+				}
+				else
+				{
+					$postData[$key] = $values[$i];
+				}
+				$i ++;
 			}
 		}
 		else
 		{
 			$include = explode(',', $include);
+
 			foreach ($include as $i)
 			{
 				if (array_key_exists($i, $formModel->formData))
@@ -153,7 +259,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 				}
 			}
 		}
-
 		$postAsXML = false;
 		if ($postAsXML)
 		{
@@ -180,6 +285,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	 *
 	 * @return  array
 	 */
+
 	private function buildCurlOpts($method, &$headers, $endpoint, $params, $output)
 	{
 		// The username/password
@@ -191,13 +297,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		}
 		else
 		{
-			$curlOpts[CURLOPT_PUT] = 1;
-
-			/**
-			 * // Not working for apparty:
-			 *
-			 * CURLOPT_CUSTOMREQUEST => $method,
-			 */
+			$curlOpts[CURLOPT_CUSTOMREQUEST] = "PUT";
 		}
 
 		$curlOpts[CURLOPT_URL] = $endpoint;
@@ -207,6 +307,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		$curlOpts[CURLOPT_RETURNTRANSFER] = 1;
 		$curlOpts[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
 		$curlOpts[CURLOPT_USERPWD] = $config_userpass;
+		$curlOpts[CURLOPT_VERBOSE] = true;
 		return $curlOpts;
 	}
 
@@ -231,7 +332,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			}
 		}
 		$httpCode = curl_getinfo($chandle, CURLINFO_HTTP_CODE);
-		echo $httpCode;exit;
 		switch ($httpCode)
 		{
 			case '400':
@@ -265,25 +365,3 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	}
 
 }
-
-
-/* $e['name'] = 'robs test';
- $e['cancelled'] = null;
-$e['description'] = 'desc';
-$e['itunes_link'] = '';
-$e['keyword_list'] = 'keywords';
-$e['presale_price'] = '19.00';
-$e['published'] = null;
-$e['regular_price'] = '25.00';
-$e['sold_out'] = null;
-$e['soundcloud_link'] = null;
-$e['youtube_link'] = null;
-$e['open_at'] = 1342444076;
-$e['start_at'] = 1342451276;
-$e['end_at'] = 1342462076;
-$e['venue_id'] = 1;
-$e['status'] = 'draft';
-$e['cover_artwork'] = null;
-
-
-$postData['event'] = $e;*/

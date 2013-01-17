@@ -36,6 +36,14 @@
 				description="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_DESC"
 				label="PLG_LIST_RADIUS_SEARCH_PLACE_ELEMENT_LABEL"
 				repeat="true"/>
+				
+			<field name="geocode_default"
+				type="field"
+				default=""
+				size="40"
+				repeat="true"
+				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_DEFAULT_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_GEOCODE_DEFAULT_LABEL" />
 
 			<field name="prefilter_distance"
 				type="field"
@@ -89,7 +97,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-			
+						
 		</fieldset>
 		
 	</fields>

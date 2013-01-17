@@ -85,7 +85,7 @@ class userAjax
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$myUsername = $input->get('username', '');
-		$query->select('name')->from('#__users')->where('username = ' . $db->quote($myUsername))
+		$query->select('name')->from('#__users')->where('username = ' . $db->quote($myUsername));
 		$db->setQuery($query, 1, 0);
 		$result = $db->loadResult();
 		if ($thisName = $result)

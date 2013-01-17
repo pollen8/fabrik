@@ -71,8 +71,17 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				$id = $input->getInt('id');
 				break;
 		}
-		$feModel = JModelLegacy::getInstance($view, 'FabrikFEModel');
-		$feModel->setId($id);
+		if ($view === 'element')
+		{
+			$pluginManager = FabrikWorker::getPluginManager();
+			$feModel = $pluginManager->getPluginFromId($id);
+		}
+		else
+		{
+			$feModel = JModelLegacy::getInstance($view, 'FabrikFEModel');
+			$feModel->setId($id);
+		}
+
 		$subForm->model = $feModel;
 
 		// Hack for order by elements which we now want to store as ids
