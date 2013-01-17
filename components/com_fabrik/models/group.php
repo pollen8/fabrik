@@ -408,6 +408,9 @@ class FabrikFEModelGroup extends FabModel
 		}
 		else
 		{
+			$element->startRow = 0;
+			$element->endRow = 0;
+			$element->span = '';
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
 		// $$$ rob only advance in the column count if the element is not hidden

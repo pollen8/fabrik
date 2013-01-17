@@ -10,10 +10,10 @@ foreach ($this->elements as $element) :
 	endif;
 
 	if ($element->startRow) : ?>
-			<div class="row-fluid">
+			<div class="row-fluid"><!-- start element row -->
 		<?php
 		endif;
-		if ($element->span == 'span12') :
+		if ($element->span == 'span12' || $element->span == '') :
 			echo $this->loadTemplate('group_labels_side');
 		else :
 
@@ -25,8 +25,8 @@ foreach ($this->elements as $element) :
 	<?php endif;
 endforeach;
 
-// If the last element was not closing the row add an additional div
-if (!$element->endRow) :?>
+// If the last element was not closing the row add an additional div (only if elements are in columns
+if (!$element->endRow && !($element->span == 'span12' || $element->span == '')) :?>
 </div><!-- end row-fluid for open row -->
 <?php endif;?>
 

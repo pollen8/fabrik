@@ -567,3 +567,7 @@ table.fabrikList .oddRow1 {
 .fabrikElement .map label { 
   width: auto; display:inline; 
 }
+
+img[src*="gstatic.com/"], img[src*="googleapis.com/"]  {
+    max-width: 99999px;
+}
