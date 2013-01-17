@@ -72,11 +72,9 @@ endforeach;
 if ($model->editable) :
 	echo $this->hiddenFields;
 endif;
-?>
-<?php
+
 echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
 echo $form->endTag;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
-?>
