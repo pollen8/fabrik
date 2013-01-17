@@ -1,5 +1,8 @@
 <?php
 /**
+ * Required System plugin if using Fabrik
+ * Enbles Fabrik to override some J classes
+ *
  * @package     Joomla.Plugin
  * @subpackage  System
  * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
