@@ -1,5 +1,7 @@
 <?php
 /**
+ * Insert Fabrik Content into Joomla Articles
+ *
  * @package     Joomla.Plugin
  * @subpackage  Content
  * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.plugin.plugin');
 
 /**
- * Fabrik content plugin - renders forms and tables
+ * Fabrik content plugin - renders forms, lists and visualizations
  *
  * @package     Joomla.Plugin
  * @subpackage  Content
@@ -742,10 +744,14 @@ class plgContentFabrik extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-
 		require_once COM_FABRIK_FRONTEND . '/controller.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
-		require_once COM_FABRIK_FRONTEND . '/controllers/details.php';
+
+		// If in admin details view and embedding a list - this gave an error - if only needed for 3.0.x
+		if ($view !== 'list')
+		{
+			require_once COM_FABRIK_FRONTEND . '/controllers/details.php';
+		}
 		require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';

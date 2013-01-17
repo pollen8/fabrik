@@ -25,12 +25,12 @@ class allVideosRender
 	var $inTableView = false;
 
 	/**
-	 * Shows the data formatted for the list view
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All rows data
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
-	 *
-	 * @return  string	formatted value
+	 * @return  void
 	 */
 
 	function renderListData(&$model, &$params, $file, $thisRow)
@@ -40,15 +40,17 @@ class allVideosRender
 	}
 
 	/**
-	 * Draws the html form element
+	 * Render uploaded image
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   object  &$model   Element model
+	 * @param   object  &$parmas  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All row's data
 	 *
-	 * @return  string	elements html
+	 * @return  void
 	 */
 
-	public function render(&$model, &$params, $file)
+	public function render(&$model, &$params, $file, $thisRow = null)
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		$ext = JString::strtolower(JFile::getExt($file));

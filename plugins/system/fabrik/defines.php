@@ -1,14 +1,12 @@
 <?php
 /**
+ * Any of these defines can be overwritten by copying this file to
+ * components/com_fabrik/user_defines.php
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- */
-
-/**
- * Any of these defines can be overwritten by copying this file to
- * components/com_fabrik/user_defines.php
  */
 
 // No direct access

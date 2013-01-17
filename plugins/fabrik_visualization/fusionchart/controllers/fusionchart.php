@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fusion chart viz Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

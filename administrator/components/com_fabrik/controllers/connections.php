@@ -1,13 +1,18 @@
 <?php
 /**
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Connections controller class
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-require_once('fabcontrolleradmin.php');
+require_once 'fabcontrolleradmin.php';
 
 /**
  * Connections list controller class.
@@ -19,30 +24,44 @@ require_once('fabcontrolleradmin.php');
 class FabrikControllerConnections extends FabControllerAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 * @var		string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CONNECTIONS';
 
+	/**
+	 * View item name
+	 * @var string
+	 */
 	protected $view_item = 'connections';
 
 	/**
 	 * Constructor.
 	 *
-	 * @param	array An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @see		JController
+	 *
 	 * @since	1.6
 	 */
+
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$this->registerTask('unsetDefault',	'setDefault');
+		$this->registerTask('unsetDefault', 'setDefault');
 	}
 
 	/**
 	 * Proxy for getModel.
+	 *
+	 * @param   string  $name    model name
+	 * @param   string  $prefix  model prefix
+	 *
 	 * @since	1.6
+	 *
+	 * @return  J model
 	 */
+	
 	public function &getModel($name = 'Connection', $prefix = 'FabrikModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
@@ -53,14 +72,19 @@ class FabrikControllerConnections extends FabControllerAdmin
 	 * Method to set the home property for a list of items
 	 *
 	 * @since	1.6
+	 *
+	 * @return null
 	 */
-	function setDefault()
+
+	public function setDefault()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		JSesssion::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Get items to publish from the request.
-		$cid = JRequest::getVar('cid', array(), 'default', 'array');
+		$cid = $input->get('cid', array(), 'array');
 		$data = array('setDefault' => 1, 'unsetDefault' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
@@ -77,8 +101,10 @@ class FabrikControllerConnections extends FabControllerAdmin
 			if ($value != 0)
 			{
 				$cid = $cid[0];
+
 				// Get the model.
 				$model = $this->getModel();
+
 				// Publish the items.
 				if (!$model->setDefault($cid, $value))
 				{

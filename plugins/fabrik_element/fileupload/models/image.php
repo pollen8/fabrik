@@ -23,14 +23,17 @@ class imageRender
 	var $output = '';
 
 	var $inTableView = false;
+
 	/**
-	 * @param object element model
-	 * @param object element params
-	 * @param string row data for this element
-	 * @param object all row's data
+	 * @param   object  &$model   Element model
+	 * @param   object  &$params  Element params
+	 * @param   string  $file     Row data for this element
+	 * @param   object  $thisRow  All rows data
+	 *
+	 * @return  void
 	 */
 
-	function renderListData(&$model, &$params, $file, $thisRow)
+	public function renderListData(&$model, &$params, $file, $thisRow)
 	{
 		$this->inTableView = true;
 		$this->render($model, $params, $file, $thisRow);
@@ -47,7 +50,7 @@ class imageRender
 	 * @return  void
 	 */
 
-	function render(&$model, &$params, $file, $thisRow = null)
+	public function render(&$model, &$params, $file, $thisRow = null)
 	{
 		// $$$ hugh - added this hack to let people use elementname__title as a title element
 		// for the image, to show in the lightbox popup.
