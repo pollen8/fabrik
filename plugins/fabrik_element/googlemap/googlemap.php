@@ -252,7 +252,6 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			$o->stylers = $styler;
 			$return[] = $o;
 		}
-		echo "<pre>";print_r($return);echo "</pre>";
 		return $return;
 	}
 
@@ -706,7 +705,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 				{
 					$str .= '</div>';
 				}
-				$str .= '<div class="map" style="width:' . $w . 'px; height:' . $h . 'px"></div>';
+				// Allow for 100% width
+				if ($w !== '')
+				{
+					$w = 'width:' . $w . 'px;';
+				}
+				$str .= '<div class="map" style="' . $w . 'height:' . $h . 'px"></div>';
 				$str .= '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . htmlspecialchars($val, ENT_QUOTES) . '" />';
 				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng') == '1')
 				{

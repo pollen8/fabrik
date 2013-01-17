@@ -12,7 +12,11 @@
 			
 			<field default="4" description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC" label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL" name="fb_gm_zoomlevel" size="3" type="text"/>
 				
-			<field default="200" label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
+			<field name="fb_gm_mapwidth"
+				default="200"
+				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"
+				size="3"
+				type="text"/>
 				
 			<field name="fb_gm_mapheight"
 				type="text"
