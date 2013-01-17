@@ -2798,7 +2798,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 
 	public function dataIsNull($data, $val)
 	{
-		$default = $this->getDefaultValue();
+		$default = (array) $this->getDefaultValue();
 		$keys = array_keys($default);
 		if (is_array($default) && count($default) == 1 && $default[$keys[0]] == $val && $val == '')
 		{

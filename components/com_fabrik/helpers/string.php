@@ -202,7 +202,7 @@ class FabrikString extends JString
 	/**
 	 * Santize db fields names, can't just do regex on A-Z as languages like Chinese should be allowed
 	 *
-	 * @param   string  $name
+	 * @param   string  $str  Field name
 	 *
 	 * @since   3.0.7
 	 *

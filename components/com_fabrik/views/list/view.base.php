@@ -114,6 +114,7 @@ class FabrikViewListBase extends JView
 
 		}
 		$opts->formels = $formEls;//$elementsNotInTable;
+		$opts->fabrik_show_in_list = $input->get('fabrik_show_in_list', array(), 'array');
 		$opts->actionMethod = $model->actionMethod();
 		$opts->floatPos = $params->get('floatPos');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');

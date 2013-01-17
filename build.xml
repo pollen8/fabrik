@@ -856,11 +856,12 @@
 	</target>
 	
 	<target name="changelog.update">
-		<input message="Changelog: Current tag" addproperty="git.log.range.end" validargs="${git.tags}" defaultvalue="${project.current}" />
+		<input message="Changelog: Latest tag" addproperty="git.log.range.end" validargs="${git.tags}" defaultvalue="${project.current}" />
 		<input message="Changelog: Previous tag" addproperty="git.log.range.start" validargs="${git.tags}" defaultvalue="${project.previous}" />		
 		<exec executable="git" failonerror="true" outputproperty="git.changelog">
         	<arg line="log --pretty=format:'* %s (%an)' ${git.log.range.start}..${git.log.range.end}"/>
-    	</exec> 
+    	</exec>
+    	<echo message="save change log to : ${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt"></echo>
        <echo file="${cfg.destdir}/CHANGELOG-${git.log.range.end}.txt">${git.changelog}
      </echo>
 	</target>

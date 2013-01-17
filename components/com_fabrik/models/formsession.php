@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Joomla
  * @subpackage  Fabrik
@@ -12,23 +11,54 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
+/**
+ * Fabrik Form Session Model
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikFEModelFormsession extends FabModel
 {
 
+	/**
+	 * User id
+	 * @var int
+	 */
 	protected $userid = null;
 
+	/**
+	 * Unique reference for the form sesson
+	 * @var string
+	 */
 	protected $hash = null;
 
+	/**
+	 * Form id
+	 * @var int
+	 */
 	protected $formid = null;
 
+	/**
+	 * Row id
+	 * @var string
+	 */
 	protected $rowid = null;
 
 	/** @var string status message */
 	public $status = null;
 
-	/** @var int status id **/
+	/**
+	 * Status id
+	 * @var int
+	 */
 	protected $statusid = null;
 
+	/**
+	 * Formsession row
+	 * @var JTable
+	 */
 	public $row = null;
 
 	/**

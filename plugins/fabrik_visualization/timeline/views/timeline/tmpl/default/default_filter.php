@@ -1,20 +1,19 @@
 <?php
 /**
+ * Default timeline viz template: filters
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.timeline
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-if ($this->showFilters)
-{
+if ($this->showFilters) :
 ?>
 <form method="post" action="" name="filter" action="<?php echo $this->filterFormURL; ?>">
 <?php
-	foreach ($this->filters as $table => $filters)
-	{
-		if (!empty($filters))
-		{
+	foreach ($this->filters as $table => $filters) :
+		if (!empty($filters)) :
 			?>
 	  <table class="filtertable fabrikTable fabrikList">
 		  <thead>
@@ -40,8 +39,7 @@ if ($this->showFilters)
 			</tr>
 		  <?php
 			$c = 0;
-			foreach ($filters as $filter)
-			{
+			foreach ($filters as $filter) :
 			?>
 		    <tr class="fabrik_row oddRow<?php echo ($c % 2); ?>">
 		    	<td><?php echo $filter->label ?> </td>
@@ -49,14 +47,14 @@ if ($this->showFilters)
 		    </tr>
 		  <?php
 				$c++;
-			}
+			endforeach;
 			?>
 		  </tbody>
 	  </table>
 	  <?php
-		}
-	}
+		endif;
+	endforeach;
 	?>
 </form>
 <?php
-}
+endif;
