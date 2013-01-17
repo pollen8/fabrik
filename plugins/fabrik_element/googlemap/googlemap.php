@@ -203,6 +203,14 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		}
 	}
 
+	/**
+	 * Set the google map style
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  array  Styles
+	 */
+
 	protected function styleJs()
 	{
 		$params = $this->getParams();
