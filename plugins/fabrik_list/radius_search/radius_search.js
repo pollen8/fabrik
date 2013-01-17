@@ -1,11 +1,11 @@
 function geoCode() {
 	window.addEvent('domready', function () {
-		var latlng = new google.maps.LatLng(-34.397, 150.644);
+		var latlng = new google.maps.LatLng(Fabrik.radiusSearch.geocode_default_lat, Fabrik.radiusSearch.geocode_default_long);
 		var mapOptions = {
-			zoom: 8,
+			zoom: Fabrik.radiusSearch.geocode_default_zoom,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
-		Fabrik.radiusSearch = {};
+		// Fabrik.radiusSearch = {};
 		Fabrik.radiusSearch.map = new google.maps.Map(document.id('radius_search_geocode_map'), mapOptions);
 		geocoder = new google.maps.Geocoder();
 		document.id('radius_search_button').addEvent('click', function (e) {
@@ -33,6 +33,9 @@ var FbListRadiusSearch = new Class({
 	Extends : FbListPlugin,
 	
 	options: {
+		geocode_default_lat: '0',
+		geocode_default_long: '0',
+		geocode_default_zoom: 4,
 		prefilter: true,
 		prefilterDistance: 1000,
 		prefilterDone: false
@@ -44,11 +47,16 @@ var FbListRadiusSearch = new Class({
 
 	initialize : function (options) {
 		this.parent(options);
-
+		Fabrik.radiusSearch = {};
+		Fabrik.radiusSearch.geocode_default_lat = this.options.geocode_default_lat;
+		Fabrik.radiusSearch.geocode_default_long = this.options.geocode_default_long;
+		Fabrik.radiusSearch.geocode_default_zoom = this.options.geocode_default_zoom;
+		
 		head.ready(function () {
 			
 			Fabrik.addEvent('google.radiusmap.loaded', function () {
-				var latlng = new google.maps.LatLng(this.options.lat, this.options.lon);
+				var latlng = new google.maps.LatLng(Fabrik.radiusSearch.geocode_default_lat, Fabrik.radiusSearch.geocode_default_long);
+				// var latlng = new google.maps.LatLng(this.options.lat, this.options.lon);
 				Fabrik.radiusSearch.map.setCenter(latlng);
 				Fabrik.radiusSearch.marker = new google.maps.Marker({
 					map: Fabrik.radiusSearch.map,
