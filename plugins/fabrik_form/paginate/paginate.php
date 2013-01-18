@@ -190,9 +190,8 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$container = $formModel->isEditable() ? 'form' : 'details';
 		$container .= '_' . $form->id;
 
-		$scripts = array('plugins/fabrik_form/paginate/scroller.js', 'media/com_fabrik/js/encoder.js');
-		$code = "$container.addPlugin(new FabRecordSet($container, $opts));";
-		FabrikHelperHTML::script($scripts, $code);
+		$this->formJavascriptClass($params, $formModel);
+		$formModel->formPluginJS .= "\n" . "$container.addPlugin(new FabRecordSet($container, $opts));";
 	}
 
 	/**

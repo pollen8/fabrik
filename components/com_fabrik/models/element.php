@@ -4626,7 +4626,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$srcs[] = $script;
 			$elementclasses[$script] = 1;
 		}
-
 	}
 
 	/**

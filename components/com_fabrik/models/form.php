@@ -251,6 +251,24 @@ class FabrikFEModelForm extends FabModelForm
 	public $copyingRow = false;
 
 	/**
+	 * Container string for form plugin JS ini code
+	 *
+	 * @since 3.1b
+	 *
+	 * @var string
+	 */
+	public $formPluginJS = '';
+
+	/**
+	 * Form plugin files to load
+	 *
+	 * @since 3.1b
+	 *
+	 * @var array
+	 */
+	public $formPluginShim = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).

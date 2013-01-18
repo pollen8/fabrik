@@ -396,6 +396,36 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
+	 * Get the class to manage the plugin
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded (defaults to plugins/fabrik_form/{name}/{name}.js
+	 *
+	 * @since   3.1b
+	 *
+	 * @return void
+	 */
+
+	public function formJavascriptClass($params, $formModel)
+	{
+		$name = $this->get('_name');
+		static $jsClasses;
+		if (!isset($jsClasses))
+		{
+			$jsClasses = array();
+		}
+
+		// Load up the default script
+		$script = 'plugins/fabrik_form/' . $name . '/' . $name . '.js';
+		if (empty($jsClasses[$script]))
+		{
+			$formModel->formPluginShim[] = $script;
+			$jsClasses[$script] = 1;
+		}
+	}
+
+	/**
 	 * Get a list of admins which should receive emails
 	 *
 	 * @return  array  admin user objects

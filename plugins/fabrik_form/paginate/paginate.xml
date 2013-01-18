@@ -13,8 +13,8 @@
 	<files>
 		<filename plugin="paginate">paginate.php</filename>
 		<filename>index.html</filename>
-		<filename>scroller.js</filename>
-		<filename>scroller-min.js</filename>
+		<filename>paginate.js</filename>
+		<filename>paginate-min.js</filename>
 		<filename>paginate.css</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
