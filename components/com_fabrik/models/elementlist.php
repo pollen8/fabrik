@@ -541,7 +541,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
 
-		$grid[] = '</div>';
+		$grid[] = '</div><!-- close subElementContainer -->';
 		if ($params->get('allow_frontend_addto', false))
 		{
 			$onlylabel = $params->get('allowadd-onlylabel');

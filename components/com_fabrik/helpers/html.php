@@ -1721,23 +1721,23 @@ EOD;
 				foreach ($items as $i => $s)
 				{
 					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
-					if ($endLine && $optionsPerRow != 1)
+					if ($endLine && $optionsPerRow > 1)
 					{
-						$grid[] = '</div>';
+						$grid[] = '</div><!-- grid close row -->';
 					}
 
 					$newLine = ($i % $optionsPerRow == 0);
-					if ($newLine && $optionsPerRow != 1)
+					if ($newLine && $optionsPerRow > 1)
 					{
 						$grid[] = '<div class="row-fluid">';
 					}
 
 					$grid[] =  $optionsPerRow != 1 ? '<div class="span' . $span . '">' . $s . '</div>' : $s;
 				}
-				if ($i + 1 % $optionsPerRow !== 0)
+				if ($i + 1 % $optionsPerRow !== 0 && $optionsPerRow > 1)
 				{
 					// Close opened and unfinished row.
-					$grid[] = '</div>';
+					$grid[] = '</div><!-- grid close end row -->';
 				}
 			}
 			else
