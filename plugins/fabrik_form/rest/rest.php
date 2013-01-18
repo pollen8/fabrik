@@ -1,5 +1,7 @@
 <?php
 /**
+ * Submit or update data to a REST service
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.rest
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -280,8 +282,11 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	/**
 	 * Create the CURL options when sending
 	 *
-	 * @param   string  $method  POST/PUT
+	 * @param   string  $method    POST/PUT
 	 * @param   array   &$headers  Headers
+	 * @param   string  $endpoint  URL to post/put to
+	 * @param   object  $params    Plugin params
+	 * @param   string  $output    URL Encoded querystring
 	 *
 	 * @return  array
 	 */
@@ -314,8 +319,13 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	/**
 	 * Handle any error generated
 	 *
+	 * @param   mixed              $output     CURL request result - may be a json string
+	 * @param   FabrikFEModelForm  $formModel  Form Model
+	 * @param   object             $chandle    CURL object
+	 *
 	 * @return boolean
 	 */
+
 	private function handleError(&$output, $formModel, $chandle)
 	{
 		if (FabrikWorker::isJSON($output))

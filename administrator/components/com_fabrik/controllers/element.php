@@ -1,29 +1,32 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * Element controller class.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
 
-require_once('fabcontrollerform.php');
+require_once 'fabcontrollerform.php';
 
 /**
  * Element controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerElement extends FabControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_ELEMENT';
 
@@ -41,6 +44,7 @@ class FabrikControllerElement extends FabControllerForm
 	{
 		$app = JFactory::getApplication();
 		$confirmUpdate = $app->getUserState('com_fabrik.confirmUpdate');
+
 		// @TODO override the redirect url if confirm update is needed and task appropriate
 		if ($confirmUpdate == true)
 		{
@@ -50,16 +54,19 @@ class FabrikControllerElement extends FabControllerForm
 		$this->redirect = $url;
 		if ($msg !== null)
 		{
-			// controller may have set this directly
-			$this->message	= $msg;
+			// Controller may have set this directly
+			$this->message = $msg;
 		}
 		// Ensure the type is not overwritten by a previous call to setMessage.
-		$this->messageType	= ($type === null || empty($this->messageType)) ? 'message' : $type;
+		$this->messageType = ($type === null || empty($this->messageType)) ? 'message' : $type;
 		return $this;
 	}
 
 	/**
 	 * Gets the URL arguments to append to a list redirect.
+	 *
+	 * @param   int     $recordId  record id
+	 * @param   string  $urlVar    url var
 	 *
 	 * @return  string  The arguments to append to the redirect URL.
 	 *
@@ -79,9 +86,11 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * ask if the user really wants to update element field name/type
+	 *
+	 * @return  null
 	 */
 
-	function updatestructure()
+	public function updateStructure()
 	{
 		// Check for request forgeries
 		JRequest::checkToken() or die('Invalid Token');
@@ -117,9 +126,11 @@ class FabrikControllerElement extends FabControllerForm
 
 	/**
 	 * user decided to cancel update
+	 *
+	 * @return  null
 	 */
 
-	function cancelUpdatestructure()
+	public function cancelUpdateStructure()
 	{
 		JRequest::checkToken() or die('Invalid Token');
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -159,7 +170,11 @@ class FabrikControllerElement extends FabControllerForm
 	}
 
 	/**
-	 * when you go from a child to parent element, check in child before redirect
+	 * When you go from a child to parent element, check in child before redirect
+	 *
+	 * @deprecated - dont think its used?
+	 *
+	 * @return  void
 	 */
 
 	function parentredirect()

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Connection Fabrik Table
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

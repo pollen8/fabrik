@@ -1,5 +1,7 @@
 <?php
 /**
+ * Slideshow vizualization: view
+ *
 * @package		Joomla.Plugin
 * @subpackage	Fabrik.visualization.slideshow
 * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
@@ -10,6 +12,14 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
+
+/**
+ * Fabrik Slideshow Viz HTML View
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.timeline
+ * @since       3.0
+ */
 
 class fabrikViewSlideshow extends JView
 {

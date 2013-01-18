@@ -1,5 +1,7 @@
 <?php
 /**
+ * Media viz Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,11 +18,17 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
+ * @since       3.0
  */
 
 class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
 {
 
+	/**
+	 * Get Playlist
+	 *
+	 * @return  void
+	 */
 	function getPlaylist()
 	{
 		$model= $this->getModel('media');

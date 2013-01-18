@@ -16,7 +16,7 @@ jimport('joomla.application.component.model');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.notification
- * @since       3.0.7
+ * @since       3.0
  */
 
 class fabrikModelNotification extends JModel
@@ -94,7 +94,6 @@ class fabrikModelNotification extends JModel
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_notification')->where('user_id = ' . (int) $user->get('id'));
 		$db->setQuery($query);
-		//echo $db->replacePrefix($query);
 		return $db->loadObjectList();
 	}
 

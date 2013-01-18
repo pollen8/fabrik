@@ -1,6 +1,8 @@
 <?php
 /**
-* @package     Joomla
+ * Import view
+ *
+* @package     Joomla.Administrator
 * @subpackage  Fabrik
 * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
 * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -25,6 +27,8 @@ class FabrikViewImport extends JView
 	/**
 	 * Display the view
 	 *
+	 * @param   string  $tpl  Template
+	 *
 	 * @return  void
 	 */
 
@@ -43,18 +47,20 @@ class FabrikViewImport extends JView
 
 	public function chooseElementTypes()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		$this->chooseElementTypesToolBar();
 		$session = JFactory::getSession();
-		$this->assign('data', $session->get('com_fabrik.csvdata'));
-		$this->assign('matchedHeadings', $session->get('com_fabrik.matchedHeadings'));
-		$this->assign('newHeadings', $this->get('NewHeadings'));
-		$this->assign('headings', $this->get('Headings'));
+		$this->data = $session->get('com_fabrik.csvdata');
+		$this->matchedHeadings = $session->get('com_fabrik.matchedHeadings');
+		$this->newHeadings = $this->get('NewHeadings');
+		$this->headings = $this->get('Headings');
 		$pluginManager = $this->getModel('pluginmanager');
-		$this->assign('table', $this->get('ListModel')->getTable());
-		$this->assign('elementTypes', $pluginManager->getElementTypeDd('field', 'plugin[]'));
-		$this->assign('sample', $this->get('Sample'));
-		$this->assign('selectPKField', $this->get('SelectKey'));
+		$this->table = $this->get('ListModel')->getTable();
+		$this->elementTypes = $pluginManager->getElementTypeDd('field', 'plugin[]');
+		$this->sample = $this->get('Sample');
+		$this->selectPKField = $this->get('SelectKey');
 		parent::display('chooseElementTypes');
 	}
 
@@ -66,9 +72,13 @@ class FabrikViewImport extends JView
 
 	protected function chooseElementTypesToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::customX('import.makeTableFromCSV', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
+		$version = new JVersion;
+		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';
+		JToolBarHelper::custom('import.makeTableFromCSV', $icon, $icon, 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 
@@ -82,9 +92,13 @@ class FabrikViewImport extends JView
 
 	protected function addToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
-		JToolBarHelper::customX('import.doimport', 'forward.png', 'forward.png', 'COM_FABRIK_CONTINUE', false);
+		$version = new JVersion;
+		$icon = version_compare($version->RELEASE, '3.0') >= 0 ? 'arrow-right-2' : 'forward.png';
+		JToolBarHelper::custom('import.doimport', $icon, $icon, 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
 

@@ -1,18 +1,31 @@
 <?php
 /**
  * Send an SMS via the kapow sms gateway
- * @package Joomla
- * @subpackage Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+/**
+ * Kapow SMS gateway class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @since       3.0
+ */
+
 class Kapow extends JObject{
 
+	/**
+	 * URL To Post SMS to
+	 *
+	 * @var string
+	 */
 	var $_url = 'http://www.kapow.co.uk/scripts/sendsms.php?username=%s&password=%s&mobile=%s&sms=%s';
 
 	function process($message)
@@ -35,4 +48,3 @@ class Kapow extends JObject{
 	}
 
 }
-?>

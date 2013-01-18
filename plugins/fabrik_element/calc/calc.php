@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render field with PHP calculated value
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.calc
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

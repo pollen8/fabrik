@@ -25,12 +25,14 @@ class FabrikControllerConnections extends FabControllerAdmin
 {
 	/**
 	 * The prefix to use with controller messages.
-	 * @var		string
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CONNECTIONS';
 
 	/**
 	 * View item name
+	 *
 	 * @var string
 	 */
 	protected $view_item = 'connections';
@@ -61,7 +63,7 @@ class FabrikControllerConnections extends FabControllerAdmin
 	 *
 	 * @return  J model
 	 */
-	
+
 	public function &getModel($name = 'Connection', $prefix = 'FabrikModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));

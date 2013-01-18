@@ -8,8 +8,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// No direct access
-defined('_JEXEC') or die;
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int) $_REQUEST['buttoncount'];

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Media Viz HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -29,7 +31,7 @@ class fabrikViewMedia extends JView
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tmpl = 'default')
+	function display($tpl = 'default')
 	{
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');

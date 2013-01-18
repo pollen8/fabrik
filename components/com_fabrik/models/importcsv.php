@@ -1,5 +1,7 @@
 <?php
 /**
+ * Import CSV class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -15,8 +17,9 @@ jimport('joomla.application.component.modelform');
 /**
  * Import CSV class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikFEModelImportcsv extends JModelForm

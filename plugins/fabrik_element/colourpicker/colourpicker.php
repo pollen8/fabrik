@@ -20,10 +20,18 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementColourpicker extends plgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'CHAR(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var string
+	 */
 	protected $fieldSize = '10';
 
 	/**

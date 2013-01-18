@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render fields
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.field
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

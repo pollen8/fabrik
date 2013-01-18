@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Import Controller
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -14,7 +16,7 @@ require_once 'fabcontrollerform.php';
 /**
  * Fabrik Import Controller
  *
- * @package     Joomla
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
  */
@@ -34,10 +36,12 @@ class FabrikControllerImport extends FabControllerForm
 
 	protected function addElements($model, $headings)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$user = JFactory::getUser();
 		$c = 0;
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('list_id'));
+		$listModel->setId($input->getInt('list_id'));
 		$item = $listModel->getTable();
 		$adminListModel = $this->getModel('List', 'FabrikModel');
 		$adminListModel->loadFromFormId($item->form_id);
@@ -45,12 +49,12 @@ class FabrikControllerImport extends FabControllerForm
 		$formModel = $listModel->getFormModel();
 		$adminListModel->setFormModel($formModel);
 		$groupId = current(array_keys($formModel->getGroupsHiarachy()));
-		$plugins = JRequest::getVar('plugin');
+		$plugins = $input->get('plugin');
 		$pluginManager = FabrikWorker::getPluginManager();
 		$elementModel = $pluginManager->getPlugIn('field', 'element');
 		$element = FabTable::getInstance('Element', 'FabrikTable');
 		$elementsCreated = 0;
-		$newElements = JRequest::getVar('createElements', array());
+		$newElements = $input->get('createElements', array());
 		$dataRemoved = false;
 
 		// @TODO use actual element plugin getDefaultProperties()
@@ -112,14 +116,17 @@ class FabrikControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * Cancel import
+	 * Method to cancel an import.
 	 *
-	 * @return  null
+	 * @param   string  $key  The name of the primary key of the URL variable.
+	 *
+	 * @return  boolean  True if access level checks pass, false otherwise.
 	 */
 
-	public function cancel()
+	public function cancel($key = null)
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=lists');
+		return true;
 	}
 
 	/**
@@ -132,17 +139,19 @@ class FabrikControllerImport extends FabControllerForm
 	{
 		// Called when creating new elements from csv import into existing list
 		$session = JFactory::getSession();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$model->import();
-		$listid = JRequest::getInt('fabrik_list', JRequest::getVar('list_id'));
+		$listid = $input->getInt('fabrik_list', $input->get('list_id'));
 		if ($listid == 0)
 		{
-			$plugins = JRequest::getVar('plugin');
-			$createElements = JRequest::getVar('createElements', array());
+			$plugins = $input->get('plugin');
+			$createElements = $input->get('createElements', array(), 'array');
 			$dataRemoved = false;
 			$newElements = array();
 			$c = 0;
-			$dbname = JRequest::getVar('db_table_name');
+			$dbname = $input->get('db_table_name', '', 'string');
 			$model->matchedHeadings = array();
 			foreach ($createElements as $elname => $add)
 			{
@@ -185,20 +194,24 @@ class FabrikControllerImport extends FabControllerForm
 	/**
 	 * Display the import CSV file form
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
 		$model = $this->getModel();
-		if (!JError::isError($model))
+		if (!JError::isError($model) && $model !== false)
 		{
 			$view->setModel($model, true);
 		}
 		$view->display();
+		return $this;
 	}
 
 	/**
@@ -212,6 +225,8 @@ class FabrikControllerImport extends FabControllerForm
 	public function doimport()
 	{
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (!$model->checkUpload())
 		{
 			$this->display();

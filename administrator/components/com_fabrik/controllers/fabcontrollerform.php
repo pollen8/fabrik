@@ -1,11 +1,13 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * FabForm controller class.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -13,17 +15,27 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * List controller class.
+ * FabForm controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
+
 class FabControllerForm extends JControllerForm
 {
 
 	/**
-	 * copy items
+	 * Option
+	 *
+	 * @var string
+	 */
+	protected $option = 'com_fabrik';
+
+	/**
+	 * Copy items
+	 *
+	 * @return  null
 	 */
 
 	public function copy()
@@ -47,5 +59,3 @@ class FabControllerForm extends JControllerForm
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
 	}
 }
-
-?>

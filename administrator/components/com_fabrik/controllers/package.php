@@ -1,11 +1,13 @@
 <?php
-/*
+/**
+ * Package controller
+ *
  * @package Joomla.Administrator
  * @subpackage Fabrik
  * @since		1.6
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -18,17 +20,22 @@ jimport('joomla.application.component.controllerform');
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
  * @since		1.6
- */
+*/
 
 class FabrikControllerPackage extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_PACKAGE';
 
-
+	/**
+	 * Export the package
+	 *
+	 * @return  void
+	 */
 	public function export()
 	{
 		$cid = JRequest::getVar('cid', array(), 'post', 'array');
@@ -38,7 +45,12 @@ class FabrikControllerPackage extends JControllerForm
 		$this->setMessage(JText::plural($ntext, count($cid)));
 		$this->setRedirect('index.php?option=com_fabrik&view=packages');
 	}
-	
+
+	/**
+	 * View the package
+	 *
+	 * @return  void
+	 */
 	public function view()
 	{
 		$document = JFactory::getDocument();
@@ -57,12 +69,12 @@ class FabrikControllerPackage extends JControllerForm
 		$listModel = $this->getModel('list', 'FabrikFEModel');
 		$listView->setModel($listModel, true);
 		$view->_tableView = $listView;
-		
+
 		$view->_formView = $this->getView('Form', $viewType);
 		$formModel = $this->getModel('Form', 'FabrikFEModel');
 		$formModel->setDbo(FabrikWorker::getDbo());
 		$view->_formView->setModel($formModel, true);
-		
+
 		// Push a model into the view
 		$model = $this->getModel($viewName, 'FabrikFEModel');
 		$model->setDbo(FabrikWorker::getDbo());
@@ -70,12 +82,17 @@ class FabrikControllerPackage extends JControllerForm
 		{
 			$view->setModel($model, true);
 		}
-		
+
 		//todo check for cached version
 		//JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
 		$view->display();
 	}
-	
+
+	/**
+	 * List form
+	 *
+	 * @return  void
+	 */
 	public function listform()
 	{
 		$document = JFactory::getDocument();

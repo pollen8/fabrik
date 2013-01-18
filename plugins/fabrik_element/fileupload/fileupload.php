@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plug-in to render fileupload element
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -1989,6 +1991,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}
+
+	/**
+	 * Build the HTML to create the delete image button
+	 *
+	 * @param   string  $value  File to delete
+	 *
+	 * @return string
+	 */
 
 	protected function deleteButton($value)
 	{

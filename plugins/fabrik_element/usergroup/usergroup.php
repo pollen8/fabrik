@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render multi select user group list
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.usergroup
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,7 +22,11 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementUsergroup extends plgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TEXT';
 
 	/**
@@ -90,7 +96,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		return "new FbUsergroup('$id', $opts)";
 	}
 
-	/***
+	/**
 	 * Get the class to manage the form element
 	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);

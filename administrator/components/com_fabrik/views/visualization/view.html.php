@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * View to edit a visualization.
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -16,18 +18,44 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.5
- */
+ * @since		3.0
+*/
 
 class FabrikViewVisualization extends JView
 {
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Visualization item
+	 *
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
+
+	/**
+	 * Plugin HTML
+	 * @var string
+	 */
 	protected $pluginFields;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	public function display($tpl = null)
@@ -56,7 +84,8 @@ class FabrikViewVisualization extends JView
 
 	protected function addToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		$user = JFactory::getUser();
 		$isNew = ($this->item->id == 0);
 		$userId = $user->get('id');

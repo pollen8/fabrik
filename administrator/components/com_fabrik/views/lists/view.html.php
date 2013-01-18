@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ *  View class for a list of lists.
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -14,20 +16,41 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of lists.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 class FabrikViewLists extends JView
 {
-	protected $categories;
+	/**
+	 * List items
+	 *
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   strin  $tpl  Template name
+	 *
+	 * @return void
 	 */
+
 	public function display($tpl = null)
 	{
 		switch ($this->getLayout())
@@ -46,6 +69,7 @@ class FabrikViewLists extends JView
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->packageOptions = $this->get('PackageOptions');
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
@@ -56,13 +80,15 @@ class FabrikViewLists extends JView
 
 		$this->addToolbar();
 		parent::display($tpl);
+
 	}
 
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
@@ -113,12 +139,13 @@ class FabrikViewLists extends JView
 	/**
 	 * Add the page title and toolbar for confirming list deletion
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
 
 	protected function addConfirmDeleteToolbar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_CONFIRM_DELETE'), 'list.png');
 		JToolBarHelper::save('lists.dodelete', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
@@ -126,18 +153,28 @@ class FabrikViewLists extends JView
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS_EDIT', true, 'http://fabrikar.com/wiki/index.php/List_delete_confirmation');
 	}
 
+	/**
+	 * Add the page title and toolbar for List import
+	 *
+	 * @return  void
+	 */
+
 	protected function addImportToolBar()
 	{
-		JRequest::setVar('hidemainmenu', true);
+		$app = JFactory::getApplication();
+		$app->input->set('hidemainmenu', true);
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LIST_IMPORT'), 'list.png');
 		JToolBarHelper::save('lists.doimport', 'JTOOLBAR_APPLY');
 		JToolBarHelper::cancel('list.cancel', 'JTOOLBAR_CANCEL');
 	}
 
 	/**
-	 * show a screen asking if the user wants to delete the lists forms/groups/elements
+	 * Show a screen asking if the user wants to delete the lists forms/groups/elements
 	 * and if they want to drop the underlying database table
-	 * @param string $tpl
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	protected function confirmdelete($tpl = null)
@@ -149,8 +186,11 @@ class FabrikViewLists extends JView
 	}
 
 	/**
-	 * show a screen allowing the user to import a csv file to create a fabrikt table.
-	 * @param unknown_type $tpl
+	 * Show a screen allowing the user to import a csv file to create a fabrikt table.
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 
 	protected function import($tpl = null)

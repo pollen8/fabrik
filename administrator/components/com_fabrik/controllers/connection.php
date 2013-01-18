@@ -25,6 +25,7 @@ class FabrikControllerConnection extends JControllerForm
 {
 	/**
 	 * The prefix to use with controller messages.
+	 *
 	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CONNECTION';

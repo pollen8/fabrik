@@ -1,26 +1,33 @@
 <?php
 /**
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Fabrik Home Controller
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
-// no direct access
+
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * @package		Joomla
- * @subpackage	Fabrik
-*/
+ * Fabrik Home Controller
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikControllerHome extends JControllerAdmin
 {
 
 	/**
 	 * Constructor
+	 *
+	 * @param   array  $config  Configuration
 	 */
 
 	public function __construct($config = array())
@@ -29,10 +36,12 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * delete all data from fabrik
+	 * Delete all data from fabrik
+	 *
+	 * @return null
 	 */
 
-	function reset()
+	public function reset()
 	{
 		$model = $this->getModel('Home');
 		$model->dropData();
@@ -40,7 +49,13 @@ class FabrikControllerHome extends JControllerAdmin
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_FABRIK_RESET'));
 	}
 
-	function dropData()
+	/**
+	 * Reset fabrik !!!
+	 *
+	 * @return  null
+	 */
+
+	public function dropData()
 	{
 		$model = $this->getModel('Home');
 		$model->dropData();
@@ -50,14 +65,22 @@ class FabrikControllerHome extends JControllerAdmin
 
 	/**
 	 * Install sample form
+	 *
+	 * @return null
 	 */
 
-	function installSampleData()
+	public function installSampleData()
 	{
 		$model = $this->getModel('Home');
 		$model->installSampleData();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
 	}
+
+	/**
+	 * Get RSS News feed
+	 *
+	 * @return string
+	 */
 
 	function getRSSFeed()
 	{
@@ -72,7 +95,7 @@ class FabrikControllerHome extends JControllerAdmin
 		}
 		else
 		{
-			// channel header and link
+			// Channel header and link
 			$title = $rssDoc->get_title();
 			$link = $rssDoc->get_link();
 			$output = '<table class="adminlist">';
@@ -91,11 +114,11 @@ class FabrikControllerHome extends JControllerAdmin
 					$item = $items[$j];
 					$output .= '<tr><td class="row' . $k . '">';
 					$output .= '<a href="' . $item->get_link() . '" target="_blank">' . $item->get_title() . '</a>';
-					$output .= '<br />'.$item->get_date('Y-m-d') ;
-					if($item->get_description())
+					$output .= '<br />' . $item->get_date('Y-m-d');
+					if ($item->get_description())
 					{
 						$description = $this->_truncateText($item->get_description(), 50);
-						$output .= '<br />' .$description;
+						$output .= '<br />' . $description;
 					}
 					$output .= '</td></tr>';
 				}
@@ -107,4 +130,3 @@ class FabrikControllerHome extends JControllerAdmin
 	}
 
 }
-?>

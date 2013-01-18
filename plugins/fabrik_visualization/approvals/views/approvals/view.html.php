@@ -1,5 +1,7 @@
 <?php
 /**
+ * Approval HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.approvals
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,10 +14,11 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
-* Approval HTML View
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
+ * Approval HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.slideshow
+ * @since        3.0.6
 */
 
 class fabrikViewApprovals extends JView

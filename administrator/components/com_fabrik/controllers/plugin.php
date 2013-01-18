@@ -1,9 +1,12 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Fabrik Admin Plugin Controller
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,7 +15,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik Plugin Controller
+ * Fabrik Admin Plugin Controller
  *
  * @static
  * @package		Joomla
@@ -23,8 +26,12 @@ jimport('joomla.application.component.controller');
 class FabrikControllerPlugin extends JController
 {
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
-	var $cacheId = 0;
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered)
+	 *
+	 * @var int
+	 */
+	public $cacheId = 0;
 
 	/**
 	 * Ajax action called from element

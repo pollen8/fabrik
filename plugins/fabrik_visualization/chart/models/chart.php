@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Chart Viz Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,15 +20,27 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 *
 * @package		Joomla.Plugin
 * @subpackage	Fabrik.visualization.chart
+* @since        3.0
 */
 
 class fabrikModelChart extends FabrikFEModelVisualization
 {
 
-	/** @var string google charts api url **/
+	/**
+	 * Google charts api url
+	 *
+	 * @var string
+	 */
 
 	var $_url = 'http://chart.apis.google.com/chart';
 
+	/**
+	 * Get min and max values form totals
+	 *
+	 * @param   array  $totals  Totals
+	 *
+	 * @return  array
+	 */
 	private function _getMinMax(&$totals)
 	{
 		// $min will only go lower if data is negative!
@@ -46,6 +60,15 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		return array('min' => $min, 'max' => $max);
 	}
 
+	/**
+	 * Get min and max values form totals
+	 *
+	 * @param   array  $gdata  Grouped data
+	 * @param   array  $gsums  Sums
+	 *
+	 * @return  array
+	 */
+
 	protected function getMinMax($gdata, $gsums)
 	{
 		$calcfound = $this->getCalcFound();
@@ -55,6 +78,11 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		return $minmax;
 	}
 
+	/**
+	 * Get the chart
+	 *
+	 * @return string
+	 */
 	function getChart()
 	{
 		$params = $this->getParams();
@@ -233,7 +261,8 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * get the chart colours
+	 * Get the chart colours
+	 *
 	 * @return array(colours, fills)
 	 */
 
@@ -261,6 +290,15 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		return array($colours, $fills);
 	}
 
+	/**
+	 * Get code to form horizontal bar chart
+	 *
+	 * @param   int    $c        Total data sets
+	 * @param   array  $gdata    Grouped data
+	 * @param   array  $gsums    Summed data
+	 *
+	 * @return array
+	 */
 	protected function horizontalBarChart($c, $gdata, $gsums)
 	{
 		$params = $this->getParams();
@@ -294,10 +332,12 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * get some data for the default chart types
-	 * @param $c int total data sets
-	 * @param $gdata array data
-	 * @param $gsums array cals
+	 * Get some data for the default chart types
+	 *
+	 * @param   $c      int     Total data sets
+	 * @param   $gdata  array   Data
+	 * @param   $gsums  array   Calcs
+	 *
 	 * @return array
 	 */
 
@@ -340,7 +380,8 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * grab the tables and get their data, calculations etc
+	 * Grab the tables and get their data, calculations etc
+	 *
 	 * @return array table info and data.
 	 */
 
@@ -380,11 +421,11 @@ class fabrikModelChart extends FabrikFEModelVisualization
 				}
 				else
 				{
-					// if no where clause, explicitly clear any previously set clause
+					// If no where clause, explicitly clear any previously set clause
 					$listModel->unsetPluginQueryWhere('chart');
 				}
 
-				//remove filters?
+				// Remove filters?
 
 				// $$$ hugh - pagination must be done BEFORE calling render(), to avoid caching issues from session data.
 				$listModel->getPagination(0, 0, 0);
@@ -399,6 +440,9 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	}
 
 	/**
+	 * Get Axis Labels
+	 *
+	 * @param  int  $total  Total?
 	 *
 	 * @return array axis labels
 	 */
@@ -500,6 +544,11 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		return $axisLabels;
 	}
 
+	/**
+	 * Test if caclulations exist
+	 *
+	 * @return boolean
+	 */
 	private function getCalcFound()
 	{
 		if (!isset($this->calcfound))
@@ -524,8 +573,13 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * make a pie chart
-	 * @return unknown_type
+	 * Make a pie chart
+	 *
+	 * @param   $c      int     Total data sets
+	 * @param   $gdata  array   Data
+	 * @param   $gsums  array   Calcs
+	 *
+	 * @return  array
 	 */
 
 	protected function pieChart($c, $gdata, $gsums)
@@ -589,6 +643,12 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		$chds = '0,360';
 		return array($chd, $chxl, $chds, $fillGraphs);
 	}
+
+	/**
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
+	 */
 
 	protected function setListIds()
 	{

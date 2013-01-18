@@ -31,6 +31,12 @@ class JFormFieldAutoCreateGroup extends JFormFieldRadio
 	*/
 	var	$_name = 'AutoCreateGroup';
 
+	/**
+	 * Get the input
+	 *
+	 * @return  string
+	 */
+
 	function getInput()
 	{
 		$this->value = $this->form->getValue('id') == 0 ? 1 : 0;

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Raw Fabrik Plugin Controller
+ *
  * @package Joomla
  * @subpackage Fabrik
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 
 /**
- * Fabrik Plugin Controller
+ * Raw Fabrik Plugin Controller
  *
  * Used in admin
  * @package		Joomla

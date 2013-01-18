@@ -1,13 +1,12 @@
 <?php
-
 /**
-* A cron task to email records to a give set of users
-* @package Joomla
-* @subpackage Fabrik
-* @author Rob Clayburn
-* @copyright (C) Rob Clayburn
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
-*/
+ * A cron task to email records to a give set of users
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.importcsv
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -17,16 +16,27 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
 
 /**
-* Cron Import CSV class
-*
-* @package  Fabrik
-* @since    3.0
-*/
+ * Cron Import CSV class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.email
+ * @since       3.0
+ */
 
 class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 {
 
 	protected $db = null;
+
+	/**
+	 * Check if the user can use the active element
+	 *
+	 * @param   object  &$model    calling the plugin list/form
+	 * @param   string  $location  to trigger plugin on
+	 * @param   string  $event     to trigger plugin on
+	 *
+	 * @return  bool can use or not
+	 */
 
 	public function canUse(&$model = null, $location = null, $event = null)
 	{
@@ -35,59 +45,67 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 
 	public function requiresTableData()
 	{
-		/* we don't need cron to load $data for us */
+		/* We don't need cron to load $data for us */
 		return false;
 	}
 
-	/*
+	/**
+	 * Get the list id from the filename
+	 *
+	 * @param   string  $tableName  The name of the file to be loaded.  Should only be file name--not a path.
+	 *
 	 * @author Kyle
-	 * @param string $tableName   The name of the file to be loaded.  Should only be file name--not a path.
-	 * @return int tableid      The id frabrik gives the list that hold information about files named $tablename
+	 *
+	 * @return  int  listid  The id frabrik gives the list that hold information about files named $tablename
 	 * returns an empty() type if no table exists with the same name as $tablename.
 	 */
 
 	protected function getListIdFromFileName($tableName)
 	{
-		//get site's database
-		if (!isset($this->db)) {
-			 $this->db = FabrikWorker::getDbo(true);
+		// Get site's database
+		if (!isset($this->db))
+		{
+			$this->db = FabrikWorker::getDbo(true);
 		}
 		$query = $this->db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $this->db->Quote($tableName));
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $this->db->quote($tableName));
 		$this->db->setQuery($query);
 		$id = $this->db->loadResult();
 		return $id;
 	}
 
 	/**
-	 * do the plugin action
+	 * Do the plugin action
 	 *
-	 * @return number of records updated
+	 * @param   array   &$data  data
+	 * @param   object  $listModel  list model
+	 *
+	 * @return  int  number of records updated
 	 */
 
-	function process(&$data, &$listModel)
+	public function process(&$data, $listModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 
-		//Get plugin settings and save state of request array vars we might change
+		// Get plugin settings and save state of request array vars we might change
 		$maxFiles = (int) $params->get('cron_importcsv_maxfiles', 1);
 		$deleteFile = $params->get('cron_importcsv_deletefile', true);
 		$cronDir = $params->get('cron_importcsv_directory');
 		$useTableName = (int) $params->get('cron_importcsv_usetablename', false);
 
 		$dropdata = $params->get('cron_importcsv_dropdata', '0');
-		$orig_dropdata = JRequest::getVar('dropdata', -1);
+		$orig_dropdata = $input->get('dropdata', -1);
 
 		$overwrite = $params->get('cron_importcsv_overwrite', '0');
-		$orig_overwrite = JRequest::getVar('overwrite', -1);
+		$orig_overwrite = $input->get('overwrite', -1);
 
 		$field_delimiter = $params->get('cron_importcsv_field_delimiter', ',');
-		$orig_field_delimiter = JRequest::getVar('field_delimiter', -1);
+		$orig_field_delimiter = $input->get('field_delimiter', -1);
 
 		$text_delimiter = $params->get('cron_importcsv_text_delimiter', '0');
-		$orig_text_delimiter = JRequest::getVar('text_delimiter', -1);
-
+		$orig_text_delimiter = $input->get('text_delimiter', -1);
 
 		$jform = array();
 		$jform['drop_data'] = $dropdata;
@@ -99,34 +117,38 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 		}
 		$jform['text_delimiter'] = $text_delimiter;
 
-		JRequest::setVar('jform', $jform);
-		$orig_listid = JRequest::getInt('listid', -1);
+		$input->set('jform', $jform);
+		$orig_listid = $input->getInt('listid', -1);
 
-		//Fabrik use this as the base directory, so we need a new directory under 'media'
-		define("FABRIK_CSV_IMPORT_ROOT",JPATH_ROOT . '/media');
+		// Fabrik use this as the base directory, so we need a new directory under 'media'
+		define("FABRIK_CSV_IMPORT_ROOT", JPATH_ROOT . '/media');
 		$d = FABRIK_CSV_IMPORT_ROOT . '/' . $cronDir;
 
-		//TODO: Need to also have a FILTER for CSV files ONLY.
+		// TODO: Need to also have a FILTER for CSV files ONLY.
 		$filter = "\.CSV$|\.csv$";
-		$exclude = array('done','.svn','CVS');
+		$exclude = array('done', '.svn', 'CVS');
 		$arrfiles = JFolder::files($d, $filter, true, true, $exclude);
 
-		// the csv import class needs to know we are doing a cron import
-		JRequest::setVar('cron_csvimport', true);
+		// The csv import class needs to know we are doing a cron import
+		$input->set('cron_csvimport', true);
 		$xfiles = 0;
-		foreach ($arrfiles as $full_csvfile) {
-			if (++$xfiles > $maxFiles) {
+		foreach ($arrfiles as $full_csvfile)
+		{
+			if (++$xfiles > $maxFiles)
+			{
 				break;
 			}
 			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $full_csvfile:  ");
 
-			$clsImportCSV = JModel::getInstance('Importcsv', 'FabrikFEModel');
+			$clsImportCSV = JModelLegacy::getInstance('Importcsv', 'FabrikFEModel');
 
-			if ($useTableName) {
+			if ($useTableName)
+			{
 				$listid = $this->getListIdFromFileName(basename($full_csvfile));
 			}
-			else {
-				$table =& $listModel->getTable();
+			else
+			{
+				$table = &$listModel->getTable();
 				$listid = $table->id;
 			}
 
@@ -135,18 +157,19 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 				FabrikWorker::log('plg.cron.cronimportcsv.warning', "List with name $filename does not exist");
 				continue;
 			}
-			JRequest::setVar('listid', $listid);
+			$input->set('listid', $listid);
 
 			// grab the CSV file, need to strip import root off path first
 			$csvfile = str_replace(FABRIK_CSV_IMPORT_ROOT, '', $full_csvfile);
 			$clsImportCSV->setBaseDir(FABRIK_CSV_IMPORT_ROOT);
 			$clsImportCSV->readCSV($csvfile);
 
-			 //get this->matchedHeading
+			//get this->matchedHeading
 			$clsImportCSV->findExistingElements();
 
 			$msg = $clsImportCSV->makeTableFromCSV();
-			if ($app->isAdmin()) {
+			if ($app->isAdmin())
+			{
 				$app->enqueueMessage($msg);
 			}
 
@@ -169,7 +192,8 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 				}
 				else
 				{
-					if ($app->isAdmin()) {
+					if ($app->isAdmin())
+					{
 						$app->enqueueMessage("Move file requested, but can't find 'done' folder: $done_folder");
 					}
 				}
@@ -177,33 +201,38 @@ class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 			FabrikWorker::log('plg.cron.cronimportcsv.information', $msg);
 		}
 
-	 	// Leave the request array how we found it
-		if (!empty($orig_listid)) {
-			JRequest::setvar('listid', $orig_listid);
+		// Leave the request array how we found it
+		if (!empty($orig_listid))
+		{
+			$input->set('listid', $orig_listid);
 		}
 
-		if ($orig_dropdata != -1) {
-			JRequest::setVar('drop_data', $orig_dropdata);
+		if ($orig_dropdata != -1)
+		{
+			$input->set('drop_data', $orig_dropdata);
 		}
-		if ($orig_overwrite != -1) {
-			JRequest::setVar('overwite', $orig_overwrite);
+		if ($orig_overwrite != -1)
+		{
+			$input->set('overwite', $orig_overwrite);
 		}
-		if ($orig_field_delimiter != -1) {
-			JRequest::setVar('field_delimiter', $orig_field_delimiter);
+		if ($orig_field_delimiter != -1)
+		{
+			$input->set('field_delimiter', $orig_field_delimiter);
 		}
-		if ($orig_text_delimiter != -1) {
-			JRequest::setVar('text_delimiter', $orig_text_delimiter);
+		if ($orig_text_delimiter != -1)
+		{
+			$input->set('text_delimiter', $orig_text_delimiter);
 		}
 
-		if ($xfiles > 0) {
+		if ($xfiles > 0)
+		{
 			$updates = $clsImportCSV->addedCount + $clsImportCSV->updatedCount;
 		}
-		else {
+		else
+		{
 			$updates = 0;
 		}
-	    return $updates;
+		return $updates;
 	}
 
-
 }
-?>

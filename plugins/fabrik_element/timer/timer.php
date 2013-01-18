@@ -27,7 +27,11 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 
 	public $hasSubElements = false;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TIME';
 
 	 // Jaanus: works better when using datatype 'TIME' as above and forgetting any date part of data :)

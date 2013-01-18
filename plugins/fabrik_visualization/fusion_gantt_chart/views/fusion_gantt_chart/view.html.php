@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Fusion Gannt Chart HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionganntchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

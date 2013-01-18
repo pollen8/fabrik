@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fileupload adaptor to render audio play
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -19,7 +21,12 @@ defined('_JEXEC') or die();
 
 class audioRender
 {
-	var $output = '';
+	/**
+	 * Render output
+	 *
+	 * @var  string
+	 */
+	public $output = '';
 
 	/**
 	 * Render audio in the list view

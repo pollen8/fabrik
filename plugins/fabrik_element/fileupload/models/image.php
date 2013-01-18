@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fileupload adaptor to render uploaded images
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,7 +22,12 @@ defined('_JEXEC') or die();
 class imageRender
 {
 
-	var $output = '';
+	/**
+	 * Render output
+	 *
+	 * @var  string
+	 */
+	public $output = '';
 
 	var $inTableView = false;
 

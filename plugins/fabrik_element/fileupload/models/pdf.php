@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fileupload adaptor to render uploaded PDFs
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,7 +23,8 @@ class pdfRender
 {
 
 	/**
-	 * Plugin's HTML output
+	 * Render output
+	 *
 	 * @var  string
 	 */
 	public $output = '';

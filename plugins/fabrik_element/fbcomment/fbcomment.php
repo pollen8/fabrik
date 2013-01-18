@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render facebook open graph comment widget
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.facebookcomment
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

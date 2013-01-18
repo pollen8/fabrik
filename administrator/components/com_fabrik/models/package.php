@@ -25,14 +25,15 @@ require_once 'fabmodeladmin.php';
 class FabrikModelPackage extends FabModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
-
 	protected $text_prefix = 'COM_FABRIK_PACKAGE';
 
 	/**
-	 * @var   array  list of protected table names
+	 * List of protected table names
+	 * @var   array
 	 */
 	protected $tables = array('#__fabrik_connections', '#__{package}_cron', '#__{package}_elements', '#__{package}_formgroup', '#__{package}_forms',
 		'#__{package}_form_sessions', '#__{package}_groups', '#__{package}_joins', '#__{package}_jsactions', '#__{package}_lists',
@@ -542,6 +543,14 @@ class FabrikModelPackage extends FabModelAdmin
 		return $files;
 	}
 
+	/**
+	 * Form modules
+	 *
+	 * @param   JTable  $row  Package
+	 * @param   string  $root Root folder
+	 *
+	 * @return  array
+	 */
 	protected function formModuleFiles($row, $root = '')
 	{
 		$root = JPath::clean($root);

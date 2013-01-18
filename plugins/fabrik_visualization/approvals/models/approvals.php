@@ -1,5 +1,7 @@
 <?php
 /**
+ * Approval viz Model
+ *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.visualization.approvals
  * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
@@ -158,7 +160,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Set list ids
+	 * Set an array of list id's whose data is used inside the visualaziation
 	 *
 	 * @return  void
 	 */

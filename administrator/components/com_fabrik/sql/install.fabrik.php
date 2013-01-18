@@ -7,6 +7,8 @@
  * @subpackage Fabrik
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ *
+ * @deprecated
  */
 
 // no direct access
@@ -15,8 +17,9 @@ defined('_JEXEC') or die('Restricted access');
 // Try extending time, as unziping/ftping took already quite some... :
 @set_time_limit(240);
 
-$memMax =	trim(@ini_get('memory_limit'));
-if ($memMax) {
+$memMax = trim(@ini_get('memory_limit'));
+if ($memMax)
+{
 	$last =	strtolower($memMax{JString::strlen($memMax) - 1});
 	switch($last)
 	{
@@ -27,19 +30,30 @@ if ($memMax) {
 		case 'k':
 			$memMax	*= 1024;
 	}
-	if ($memMax < 16000000) {
+	if ($memMax < 16000000)
+	{
 		@ini_set('memory_limit', '16M');
 	}
-	if ($memMax < 32000000) {
+	if ($memMax < 32000000)
+	{
 		@ini_set('memory_limit', '32M');
 	}
-	if ($memMax < 48000000) {
+	if ($memMax < 48000000)
+	{
 		@ini_set('memory_limit', '48M');		// DOMIT XML parser can be very memory-hungry on PHP < 5.1.3
 	}
 }
 @ini_set('memory_limit', '64M');
 @ini_set('max_execution_time', 380);
 ignore_user_abort(true);
+
+/**
+ * Installer
+ *
+ * @deprecated
+ *
+ * @retrun void
+ */
 
 function com_install() {
 	//@TODO only run this when installing for the first time
@@ -123,8 +137,5 @@ function com_install() {
 			$row->params = json_encode($opts);
 			$ok = $db->updateObject('#__extension', $row, 'id', false);
 		}*/
-		?>
-
-
-<?php }
-}?>
+	}
+}

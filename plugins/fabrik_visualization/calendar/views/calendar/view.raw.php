@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Calendar Raw View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,14 +14,23 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
-* Fabrik Calendar Raw View
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.calendar
+ * Fabrik Calendar Raw View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.calendar
+ * @since       3.0
 */
 
 class fabrikViewCalendar extends JView
 {
+
+	/**
+	 * Display the view
+	 *
+	 * @param   string  $tmpl  Template
+	 *
+	 * @return  void
+	 */
 
 	function display($tmpl = 'default')
 	{

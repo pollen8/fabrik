@@ -1,10 +1,12 @@
 <?php
 /**
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.chart
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
-*/
+ * Fabrik Calendar HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.chart
+ * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -12,22 +14,22 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
-* Fabrik Calendar HTML View
-*
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.chart
+ * Fabrik Calendar HTML View
+ *
+ * @package		Joomla.Plugin
+ * @subpackage	Fabrik.visualization.chart
 */
 
 class fabrikViewChart extends JView
 {
 
 	/**
-	* Execute and display a template script.
-	*
-	* @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
-	*
-	* @return  mixed  A string if successful, otherwise a JError object.
-	*/
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 */
 
 	function display($tpl = 'default')
 	{
@@ -85,4 +87,3 @@ class fabrikViewChart extends JView
 	}
 
 }
-?>

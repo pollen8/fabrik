@@ -1,5 +1,7 @@
 <?php
 /**
+ *  Amazon s3 Storage adaptor for Fabrik file upload element
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

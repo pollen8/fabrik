@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Email From Controller
+ *
  * @package Joomla
  * @subpackage Fabrik
  * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -25,6 +27,8 @@ class FabrikControllerEmailform extends JController
 
 	/**
 	 * Display the view
+	 *
+	 * @return  void
 	 */
 
 	function display()
@@ -38,7 +42,7 @@ class FabrikControllerEmailform extends JController
 
 		// Push a model into the view (may have been set in content plugin already
 		$model = JModel::getInstance($modelName, 'FabrikFEModel');
-		
+
 		//test for failed validation then page refresh
 		$model->getErrors();
 		if (!JError::isError($model) && is_object($model))
@@ -51,4 +55,3 @@ class FabrikControllerEmailform extends JController
 	}
 
 }
-?>

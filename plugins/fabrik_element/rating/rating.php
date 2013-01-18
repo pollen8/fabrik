@@ -24,10 +24,18 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class plgFabrik_ElementRating extends plgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TINYINT(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var string
+	 */
 	protected $fieldSize = '1';
 
 	/** @var array average ratings */
