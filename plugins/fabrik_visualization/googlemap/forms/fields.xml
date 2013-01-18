@@ -183,7 +183,7 @@
 					<option value="querystring">PLG_VISUALIZATION_GOOGLEMAP_QUERY_STRING</option>
 			</field>
 			
-			<field default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
+			<field default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" description="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_DESC" name="fb_gm_mapwidth" size="3" type="text"/>
 				
 			<field default="300" label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" type="text"/>
 				
