@@ -21,7 +21,17 @@
 				label="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_LABEL"
 				description="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_DESC"
 				repeat="true"/>
-				
+
+			<field name="random_points_eval"
+				type="radio"
+				default="0"
+				repeat="true"
+				description="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_EVAL_DESC"
+				label="PLG_FABRIK_FORM_AUP_RANDOM_POINTS_EVAL_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+							
 			<!-- <field name="referral_user_points"
 				type="text"
 				label="PLG_FABRIK_FORM_AUP_REFERRAL_POINTS_LABEL"		

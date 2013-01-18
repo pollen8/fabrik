@@ -74,7 +74,6 @@ class FabrikViewList extends FabrikViewListBase
 
 	protected function setTitle($w, &$params, $model)
 	{
-		echo "view<br>";
 		parent::setTitle($w, $params, $model);
 
 		// Set the download file name based on the document title
