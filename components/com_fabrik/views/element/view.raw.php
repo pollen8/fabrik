@@ -40,7 +40,7 @@ class FabrikViewElement extends JViewLegacy
 			$plugin = $pluginManager->getElementPlugin($id);
 		}
 /* 		$elementid = $input->get('elid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);

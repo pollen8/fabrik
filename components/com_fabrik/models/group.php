@@ -277,7 +277,7 @@ class FabrikFEModelGroup extends FabModel
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
 			$this->formsIamIn = $db->loadColumn();
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				return JError::raiseError(500, $db->getErrorMsg());
 			}

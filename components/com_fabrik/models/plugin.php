@@ -1005,7 +1005,7 @@ class FabrikPlugin extends JPlugin
 					{
 						$db->setQuery($sql);
 
-						if (!$db->query())
+						if (!$db->execute())
 						{
 							JError::raiseError(500, $db->getErrorMsg());
 						}

@@ -114,7 +114,7 @@ class plgFabrik_Cronnotification extends plgFabrik_Cron
 		{
 			$sent = implode(';', $sent);
 			$db->setQuery($sent);
-			$db->query();
+			$db->execute();
 		}
 		$this->log = count($sent) . ' notifications sent.<br />';
 		$this->log .= 'Emailed users: <ul><li>' . implode('</li><li>', $successMails) . '</li></ul>';

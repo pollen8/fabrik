@@ -325,7 +325,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			// No existing repeat group table found so lets create it
 			$query = "CREATE TABLE IF NOT EXISTS " . $db->quoteName($newTableName) . " (" . implode(",", $names) . ")";
 			$db->setQuery($query);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				JError::raiseError(500, $db->getErrorMsg());
 			}
@@ -354,7 +354,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				{
 					$info = $names[$newField];
 					$db->setQuery("ALTER TABLE " . $db->quoteName($newTableName) . " ADD COLUMN $info AFTER $lastfield");
-					if (!$db->query())
+					if (!$db->execute())
 					{
 						JError::raiseError(500, $db->getErrorMsg());
 					}
@@ -400,13 +400,13 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('group_id = ' . $data['id']);
 		$db->setQuery($query);
-		$return = $db->query();
+		$return = $db->execute();
 
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('group_id  = ' . $data['id'] . ' AND name IN ("id", "parent_id")');
 		$db->setQuery($query);
 		$elids = $db->loadColumn();
-		$elementModel = JModel::getInstance('Element', 'FabrikModel');
+		$elementModel = JModelLegacy::getInstance('Element', 'FabrikModel');
 		$return = $elementModel->delete($elids);
 
 		// kinda meaningless return, but ...
@@ -480,7 +480,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_formgroup')->where('group_id IN (' . implode(',', $pks) . ')');
 		$db->setQuery($query);
-		return $db->query();
+		return $db->execute();
 	}
 
 }

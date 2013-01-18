@@ -177,12 +177,12 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 					}
 
 					$fabrikDb->setQuery($query);
-					if (!$fabrikDb->query())
+					if (!$fabrikDb->execute())
 					{
 						JError::raiseNotice(400, $fabrikDb->getErrorMsg());
 						$import = false;
 					}
-					// $import = $fabrikDb->query();
+					// $import = $fabrikDb->execute();
 					$count++;
 				}
 				// @TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
@@ -630,7 +630,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 						}
 						$q .= implode(',', $messages);
 						$db->setQuery($q);
-						$db->query();
+						$db->execute();
 					}
 				}
 			}

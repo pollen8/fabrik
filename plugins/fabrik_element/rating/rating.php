@@ -401,7 +401,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$query->update($list->db_table_name)
 			->set($element->name . '=' . $rating)->where($list->db_primary_key . ' = ' . $db->quote($row_id));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		$this->getRatingAverage('', $listid, $formid, $row_id);
 		echo $this->avg;
@@ -438,7 +438,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 			`user_id` , `listid` , `formid` , `row_id`, `element_id`
 	 		)
 		);");
-		$db->query();
+		$db->execute();
 	}
 
 	/**
@@ -470,7 +470,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				"INSERT INTO #__fabrik_ratings (user_id, listid, formid, row_id, rating, date_created, element_id)
 		values ($userid, $listid, $formid, $row_id, $rating, $strDate, $elementid)
 			ON DUPLICATE KEY UPDATE date_created = $strDate, rating = $rating");
-		$db->query();
+		$db->execute();
 	}
 
 	private function getStoreUserId($listid, $row_id)

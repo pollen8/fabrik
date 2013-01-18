@@ -625,7 +625,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 									$query = $db->getQuery(true);
 									$query->update('#__fabrik_subs_invoices')->set(implode(',', $set_array))->where('id = ' . $db->quote($invoiceId));
 									$db->setQuery($query);
-									if (!$db->query())
+									if (!$db->execute())
 									{
 										$status = 'form.subscriptions.ipnfailure.query_error';
 										$err_msg = 'sql query error: ' . $db->getErrorMsg();

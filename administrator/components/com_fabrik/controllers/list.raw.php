@@ -168,7 +168,7 @@ class FabrikAdminControllerList extends JControllerForm
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$id = $input->getInt('listid');
 		$model->setId($id);
 		$input->set('cid', $id);

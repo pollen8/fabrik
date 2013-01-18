@@ -344,7 +344,7 @@ class FabrikFEModelFormsession extends FabModel
 		$db->setQuery($query);
 		$this->removeCookie();
 		$this->row = $row;
-		if ($db->query())
+		if ($db->execute())
 		{
 			return true;
 		}

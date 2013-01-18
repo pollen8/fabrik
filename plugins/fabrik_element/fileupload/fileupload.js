@@ -310,7 +310,7 @@ var FbFileUpload = new Class({
 				'id' : 'coords_' + file.id,
 				'value' : JSON.encode(file.params)
 			}).inject(this.pluploadContainer, 'after');
-			var idvalue = $pick(file.recordid, '0');
+			var idvalue = [file.recordid, '0'].pick();
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[id][' + response.filepath + ']',

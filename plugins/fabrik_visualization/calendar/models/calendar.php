@@ -554,7 +554,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$query = $tableDb->getQuery(true);
 		$query->delete(FabrikString::safeColName($tablename))->where($list->db_primary_key . ' = ' . $id);
 		$tableDb->setQuery($query);
-		$tableDb->query();
+		$tableDb->execute();
 	}
 
 }

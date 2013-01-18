@@ -119,7 +119,7 @@ class plgSystemFabrikcron extends JPlugin
 		$query = $db->getQuery(true);
 		$query->update('#__{package}_cron')->set('published = 2')->where('id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 
 		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
@@ -142,7 +142,7 @@ class plgSystemFabrikcron extends JPlugin
 				$query->clear();
 				$query->update('#__{package}_cron')->set('published = 1')->where('id = ' . $row->id);
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 				continue;
 			}
 			$tid = (int) $params->get('table');
@@ -203,7 +203,7 @@ class plgSystemFabrikcron extends JPlugin
 			$query->clear();
 			$query->update('#__{package}_cron')->set('published = 1, lastrun = ' . $db->quote($nextrun->toSql()))->where('id = ' . $row->id);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 
 			// Log if asked for
 			if ($params->get('log', 0) == 1)

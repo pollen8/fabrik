@@ -78,7 +78,7 @@ class PlgSystemFabrik extends JPlugin
 		if ($bigSelects)
 		{
 			$db->setQuery("SET OPTION SQL_BIG_SELECTS=1");
-			$db->query();
+			$db->execute();
 		}
 	}
 

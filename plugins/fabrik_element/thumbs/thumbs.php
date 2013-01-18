@@ -353,7 +353,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 					date_created = " . $db->Quote($strDate) . ",
 					thumb = " . $db->quote($thumb)
 		);
-		$db->query();
+		$db->execute();
 		if ($db->getErrorNum())
 		{
 			$err = new stdClass;
@@ -379,7 +379,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 					. " AND thumb = 'down'))
                     WHERE " . $this->getlistModel()->getTable()->db_primary_key . " = " . (int) $row_id . "
                         LIMIT 1");
-		$db->query();
+		$db->execute();
 		if ($db->getErrorNum())
 		{
 			$err = new stdClass;
@@ -561,6 +561,6 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	 PRIMARY KEY ( `user_id` , `listid` , `formid` , `row_id`, `element_id` )
 );";
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 }

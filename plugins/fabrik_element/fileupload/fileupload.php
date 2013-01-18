@@ -238,6 +238,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
 		FabrikHelperHTML::mcl();
+		$j3 = FabrikWorker::j3();
 
 		$element = $this->getElement();
 		$paramsKey = $this->getFullName(false, true, false);
@@ -365,7 +366,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->ajax_runtime = $params->get('ajax_runtime', 'html5');
 		$opts->ajax_silverlight_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->ajax_flash_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
-		$opts->max_file_size = $params->get('ul_max_file_size');
+		$opts->max_file_size = (int) $params->get('ul_max_file_size');
 		$opts->ajax_chunk_size = (int) $params->get('ajax_chunk_size', 0);
 		$opts->crop = (int) $params->get('fileupload_crop', 0);
 		$opts->elementName = $this->getFullName(true, true, true);
@@ -373,8 +374,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->cropheight = (int) $params->get('fileupload_crop_height');
 		$opts->ajax_max = (int) $params->get('ajax_max', 4);
 		$opts->dragdrop = true;
-		$opts->previewButton = FabrikHelperHTML::image('image.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_VIEW')));
-		$opts->resizeButton = FabrikHelperHTML::image('resize.png', 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE')));
+		$icon = $j3 ? 'picture' : 'image.png';
+		$resize = $j3 ? 'expand-2' : 'resize.png';
+		$opts->previewButton = FabrikHelperHTML::image($icon, 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_VIEW')));
+		$opts->resizeButton = FabrikHelperHTML::image($resize, 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE')));
 		$opts->files = $oFiles;
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
@@ -2161,7 +2164,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$pstr[] = '</div>';
 		}
 		$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';
-		$pstr[] = '<input type="button" class="button" name="close-crop" value="' . JText::_('CLOSE') . '" />';
+		$pstr[] = '<input type="button" class="button btn btn-primary" name="close-crop" value="' . JText::_('CLOSE') . '" />';
 		$pstr[] = '</div>';
 		$pstr[] = '</div>';
 
@@ -2232,6 +2235,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$this->loadMeForAjax();
 
 		/*
 		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
@@ -2276,7 +2280,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		require_once COM_FABRIK_FRONTEND . '/helpers/uploader.php';
 
 		// @TODO test in join
-		if (array_key_exists('file', $_FILES) || array_keys_exists('join', $_FILES))
+		if (array_key_exists('file', $_FILES) || array_key_exists('join', $_FILES))
 		{
 			$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid] : $_FILES['file']['name'],
 				'type' => $isjoin ? $_FILES['join']['type'][$joinid] : $_FILES['file']['type'],
@@ -2441,7 +2445,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 								$query->delete($db->quoteName($join->table_join))
 									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
-								$db->query();
+								$db->execute();
 							}
 						}
 						else
@@ -2566,6 +2570,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$this->loadMeForAjax();
 		$this->setId($input->getInt('element_id'));
 		$this->getElement();
 		$params = $this->getParams();
@@ -2675,7 +2680,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			list($table_name, $element_name) = explode('.', $hit_counter);
 			$sql = "UPDATE $table_name SET $element_name = COALESCE($element_name,0) + 1 WHERE $pk = " . $fabrikDb->quote($rowid);
 			$fabrikDb->setQuery($sql);
-			$fabrikDb->query();
+			$fabrikDb->execute();
 		}
 	}
 
@@ -2764,6 +2769,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$this->loadMeForAjax();
 		$filename = $input->get('file');
 		$join = FabTable::getInstance('join', 'FabrikTable');
 		$join->load(array('element_id' => $input->getInt('element_id')));
@@ -2777,7 +2783,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$query = $db->getQuery(true);
 		$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . $input->getInt('recordid'));
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 	/**

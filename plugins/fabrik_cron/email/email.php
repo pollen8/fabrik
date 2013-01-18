@@ -133,7 +133,7 @@ class plgFabrik_Cronemail extends plgFabrik_Cron
 				->where($table->db_primary_key . ' IN (' . implode(',', $updates) . ')');
 			$this->log .= "\n update query: $query";
 			$fabrikDb->setQuery($query);
-			$fabrikDb->query();
+			$fabrikDb->execute();
 		}
 		$this->log .= "\n updates " . count($updates) . " records";
 		return count($updates);

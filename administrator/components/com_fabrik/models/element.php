@@ -936,7 +936,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_jsactions')->where('element_id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		$jform = $input->get('jform', array(), 'array');
 		$eEvent = $input->get('js_e_event', array(), 'array');
 		$eTrigger = $input->get('js_e_trigger', array(), 'array');
@@ -969,7 +969,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 						$query->set('code = ' . $db->quote($code));
 						$query->set('params = \'' . $params . "'");
 						$db->setQuery($query);
-						$db->query();
+						$db->execute();
 					}
 				}
 			}
@@ -1032,7 +1032,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 					$db = $listModel->getDb();
 					$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
 					$db->setQuery('DROP TABLE ' . $tableName);
-					if (!$db->query())
+					if (!$db->execute())
 					{
 						JError::raiseNotice(500, 'didnt drop joined db table ' . $tableName);
 					}
@@ -1045,7 +1045,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				{
 					$db = $listModel->getDb();
 					$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -1118,7 +1118,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			->setQuery(
 				'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), '
 					. $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
-		$db->query();
+		$db->execute();
 		if ($db->getErrorNum() != 0)
 		{
 			JError::raiseError(500, $db->getErrorMsg());

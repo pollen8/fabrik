@@ -53,10 +53,11 @@ var CanvasItem = new Class({
 		{
 			//attempt to find the values
 			var x,y,w,h;
-			if(!(x = $pick(this.x,this.left)))return false;
-			if(!(y = $pick(this.y,this.top)))return false;
-			if(!(w = $pick(this.w,this.width)))return false;
-			if(!(h = $pick(this.h,this.height)))return false;
+			if(!(x = [this.x,this.left].pick()))return false;
+			if(!(y = [this.y,this.top].pick()))return false;
+			if(!(w = [this.w,this.width].pick()))return false;
+			if(!(h = [this.h,this.height].pick()))return false;
+			
 			this.dims = [x,y,w,h];
 		}
 		

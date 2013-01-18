@@ -151,7 +151,7 @@ class fabrikModelApprovals extends FabrikFEModelVisualization
 					$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
 						->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 				catch (JException $e)
 				{

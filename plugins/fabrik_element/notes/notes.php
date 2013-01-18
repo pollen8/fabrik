@@ -353,7 +353,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			}
 			$db->setQuery($query);
 
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				JError::raiseError(500, 'db insert failed');
 			}

@@ -94,13 +94,13 @@ class FabrikModelUpgrade extends FabModelAdmin
 			}
 			// Create the bkup table (this method will also correctly copy table indexes
 			$cDb->setQuery("CREATE TABLE IF NOT EXISTS " . $qTable . " LIKE " . $qItemTable);
-			if (!$cDb->query())
+			if (!$cDb->execute())
 			{
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
 			}
 			$cDb->setQuery("INSERT INTO " . $qTable . " SELECT * FROM " . $qItemTable);
-			if (!$cDb->query())
+			if (!$cDb->execute())
 			{
 				JError::raiseError(500, $cDb->getErrorMsg());
 				return false;
@@ -187,7 +187,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$db->setQuery($q);
 			if (trim($q) !== '')
 			{
-				if (!$db->query())
+				if (!$db->execute())
 				{
 					JError::raiseNotice(500, $db->getErrorMsg());
 				}
@@ -207,7 +207,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 		else
 		{
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -223,19 +223,19 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$db->setQuery('select extension_id FROM 	#__extensions WHERE type = "component" and element = "com_fabrik"');
 		$cid = (int) $db->loadResult();
 		$db->setQuery('UPDATE #__menu SET component_id = ' . $cid . ' WHERE link LIKE \'%com_fabrik%\'');
-		$db->query();
+		$db->execute();
 
 		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'view=table', 'view=list') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
-		$db->query();
+		$db->execute();
 
 		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'tableid=', 'listid=') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
-		$db->query();
+		$db->execute();
 
 		$db->setQuery("UPDATE #__menu SET link = REPLACE(link, 'fabrik=', 'formid=') WHERE component_id = " . $cid);
 		echo $db->getQuery() . "<br>";
-		$db->query();
+		$db->execute();
 	}
 
 	/**

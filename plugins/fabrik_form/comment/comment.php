@@ -612,7 +612,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_comments')->where('id =' . $id);
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		echo $id;
 	}
 
@@ -632,7 +632,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query = $db->getQuery(true);
 		$query->update('UPDATE #__{package}_comments')->set('comment = ' . $comment)->where('id = ' . $id);
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 	/**
@@ -696,7 +696,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			// Attempt to create the db table?
 			$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
 			$db->setQuery($sql);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				JError::raiseError(500, $db->getErrorMsg());
 				exit;
@@ -771,7 +771,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query->insert('#__{package}_notification_event')
 			->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 	/**
@@ -799,7 +799,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query->insert('#__{package}_notification')
 			->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		$params = $formModel->getParams();
 		if ($params->get('comment-notify-admins') == 1)
 		{
@@ -812,7 +812,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 						'label = ' . $label);
 					$query->insert('#__{package}_notification')->set($fields);
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}

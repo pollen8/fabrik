@@ -746,7 +746,7 @@ class FabrikFEModelList extends JModelForm
 			$fabrikDb = $this->getDb();
 			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
-			$fabrikDb->query();
+			$fabrikDb->execute();
 
 		}
 	}
@@ -3689,7 +3689,7 @@ class FabrikFEModelList extends JModelForm
 			$join->params->set('pk', $fabrikDb->quoteName($pks));
 			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->params))->where('id = ' . (int) $join->id);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			$join->params = new JRegistry($join->params);
 		}
 	}
@@ -3921,7 +3921,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					$fabrikDb
 					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-					if (!$fabrikDb->query())
+					if (!$fabrikDb->execute())
 					{
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 					}
@@ -4000,7 +4000,7 @@ class FabrikFEModelList extends JModelForm
 			if (!$altered)
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-				if (!$fabrikDb->query())
+				if (!$fabrikDb->execute())
 				{
 					/* $$$ rob ok this is hacky but I had a whole series of elements wiped from the db,
 					 * but wanted to re-add them into the database.
@@ -4098,7 +4098,7 @@ class FabrikFEModelList extends JModelForm
 			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields))
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
-				if (!$fabrikDb->query())
+				if (!$fabrikDb->execute())
 				{
 					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 				}
@@ -4113,7 +4113,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					$origColName = FabrikString::safeColName($origColName);
 					$fabrikDb->setQuery("ALTER TABLE $tableName CHANGE $origColName $element->name $objtype");
-					if (!$fabrikDb->query())
+					if (!$fabrikDb->execute())
 					{
 						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
 					}
@@ -6529,7 +6529,7 @@ class FabrikFEModelList extends JModelForm
 			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
-		return $db->query();
+		return $db->execute();
 	}
 
 	/**
@@ -6570,7 +6570,7 @@ class FabrikFEModelList extends JModelForm
 			$values[] = $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields), implode(",", $values)));
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return false;
 		}
@@ -7246,7 +7246,7 @@ class FabrikFEModelList extends JModelForm
 		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
 				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 	/**
@@ -7279,7 +7279,7 @@ class FabrikFEModelList extends JModelForm
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
 					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
-					$db->query();
+					$db->execute();
 					break;
 				}
 			}
@@ -7310,7 +7310,7 @@ class FabrikFEModelList extends JModelForm
 		foreach ($dbIndexes as $index)
 		{
 			$db->setQuery(" ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName($index->Key_name));
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -7337,7 +7337,7 @@ class FabrikFEModelList extends JModelForm
 					$sql = "DELETE FROM " . $db->quoteName($join->table_join) . " WHERE " . $db->quoteName($join->table_join_key) . " IN (" . $val
 					. ")";
 					$db->setQuery($sql);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -7472,7 +7472,7 @@ class FabrikFEModelList extends JModelForm
 		$query = $db->getQuery(true);
 		$query->delete($table->db_table_name)->where($key . ' IN (' . $val . ')');
 		$db->setQuery($query);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return JError::raiseWarning($db->getErrorMsg());
 		}
@@ -7497,7 +7497,7 @@ class FabrikFEModelList extends JModelForm
 		$table = $this->getTable();
 		$query->delete($db->quoteName($table->db_table_name));
 		$db->setQuery($query);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return JError::raiseWarning(JText::_($db->getErrorMsg()));
 		}
@@ -7573,10 +7573,10 @@ class FabrikFEModelList extends JModelForm
 		foreach ($joinModels as $joinModel)
 		{
 			$db->setQuery("TRUNCATE " . $db->quoteName($joinModel->getJoin()->table_join));
-			$db->query();
+			$db->execute();
 		}
 		$db->setQuery("TRUNCATE " . $db->quoteName($item->db_table_name));
-		$db->query();
+		$db->execute();
 
 		// 3.0 clear filters (resets limitstart so that subsequently added records are shown)
 		$this->getFilterModel()->clearFilters();
@@ -9197,7 +9197,7 @@ class FabrikFEModelList extends JModelForm
 		$table = $this->getTable();
 		$query = "UPDATE $table->db_table_name SET $key = COALESCE($key, 0)  + $dir WHERE $table->db_primary_key = " . $db->quote($rowId);
 		$db->setQuery($query);
-		return $db->query();
+		return $db->execute();
 	}
 
 	/**
@@ -9320,7 +9320,7 @@ class FabrikFEModelList extends JModelForm
 					$ids = implode(',', $ids);
 					$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -9330,7 +9330,7 @@ class FabrikFEModelList extends JModelForm
 			$query = $db->getQuery(true);
 			$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -9778,7 +9778,7 @@ class FabrikFEModelList extends JModelForm
 			$query->clear();
 			$query->update($tbl)->set($field . ' = ' . (int) $orders[$i]->$kk)->where($k . ' = ' . $this->_db->quote($orders[$i]->$shortKey));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		return true;
 	}

@@ -56,7 +56,7 @@ class FabrikViewElement extends JViewLegacy
 	/* 	FabrikHelperHTML::framework();
 		$element = JRequest::getVar('element');
 		$elementid = JRequest::getVar('elid');
-		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
+		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$className = JRequest::getVar('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		if (JError::isError($plugin)) {

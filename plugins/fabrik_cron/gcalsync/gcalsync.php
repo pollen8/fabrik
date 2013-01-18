@@ -331,7 +331,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 					$query = $db->getQuery(true);
 					$query->update($table_name)->set($gcal_id_element . ' = ' . $db->quote($gcal_id))->where('id = ' . $db->quote($our_id));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}

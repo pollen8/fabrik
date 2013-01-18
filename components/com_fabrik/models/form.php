@@ -1889,7 +1889,7 @@ class FabrikFEModelForm extends FabModelForm
 						}
 					}
 					$joinDb->setQuery($query);
-					$joinDb->query();
+					$joinDb->execute();
 				}
 				else
 				{
@@ -2031,7 +2031,7 @@ class FabrikFEModelForm extends FabModelForm
 					$query = $joinDb->getQuery(true);
 					$query->delete($oJoin->table_join)->where($oJoin->table_join_key . ' = ' . $db->quote($delPkVal));
 					$joinDb->setQuery($query);
-					$joinDb->query();
+					$joinDb->execute();
 				}
 			}
 		}

@@ -200,7 +200,7 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 										SET $geocode_map_element = '$map_value'
 										WHERE $primary_key = '{$row->$primary_key_element}'
 									");
-									$db->query();
+									$db->execute();
 									$total_encoded++;
 								}
 							}

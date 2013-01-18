@@ -1231,7 +1231,7 @@ class FabrikWorker
 			{
 				$fabrikDb = self::$database[$sig];
 				$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1");
-				$fabrikDb->query();
+				$fabrikDb->execute();
 			}
 		}
 		return self::$database[$sig];

@@ -25,7 +25,7 @@ $userid = $user->get('id');
 foreach($rows as $r) {
 	$sql = "INSERT INTO eadtu_spam_report (`time_date`, `reporter_id`, `project_id`) VALUES ( '$now', '$userid', '$r->id')";
 	$db->setQuery($sql);
-	$db->query();
+	$db->execute();
 }
 
 // EMAIL

@@ -82,8 +82,12 @@ Fabrik.Window = new Class({
 		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label;
 		var handleParts = [];
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
-		d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
-		d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
+		
+		if (!(Fabrik.bootstrapped && this.modal)) {
+			console.log('positio');
+			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
+			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
+		}
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'}).setStyles(d);
 		this.contentWrapperEl = this.window;
 		
@@ -187,6 +191,7 @@ Fabrik.Window = new Class({
 	 * toggle the window full screen
 	 */
 	expand: function (e) {
+		debugger;
 		e.stop();
 		if (!this.expanded) {
 			this.expanded = true;
@@ -308,7 +313,9 @@ Fabrik.Window = new Class({
 	},
 	
 	center: function () {
-		this.window.makeCenter();
+		if (!(Fabrik.bootstrapped && this.modal)) {
+			this.window.makeCenter();
+		}
 	},
 	
 	close: function (e)

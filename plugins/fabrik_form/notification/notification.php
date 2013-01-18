@@ -151,7 +151,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 				$fields[] = 'reason = ' . $db->quote($why);
 				$query->insert('#__{package}_notification')->set($fields);
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 
 			}
 			else
@@ -159,7 +159,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 				$query->delete('#__{package}_notification')->where($fields);
 				echo JText::_('PLG_CRON_NOTIFICATION_REMOVED');
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 			}
 		}
 		else
@@ -173,7 +173,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 				$fields2 = array_merge($fields, array('user_id = ' . $userid));
 				$query->insert('#__{package}_notification')->set($fields2);
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 			}
 
 		}
@@ -251,7 +251,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 			$fields = array('user_id = ' . $userid);
 			$query->insert('#__{package}_notification_event')->set($fields);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		else
 		{
@@ -264,7 +264,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 				$fields2 = array_merge($fields, array('user_id = ' . $userid));
 				$query->insert('#__{package}_notification_event')->set($fields2);
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 			}
 		}
 	}

@@ -630,18 +630,18 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 					. $db->quoteName('message') . ") VALUES (" . $db->quote($http_referrer) . ", " . $db->quote($messageType) . ", "
 					. $db->quote($message) . ");";
 				$db->setQuery($in_db);
-				$db->query();
+				$db->execute();
 			}
 			else
 			{
 				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (" . $db->quoteName('id')
 					. " int(11) NOT NULL auto_increment PRIMARY KEY, $clabels_createdb);";
 				$db->setQuery($create_custom_table);
-				$db->query();
+				$db->execute();
 
 				$in_db = "INSERT INTO $rdb ($clabels_db) VALUES ($cdata_db);";
 				$db->setQuery($in_db);
-				if (!$db->query())
+				if (!$db->execute())
 				{
 					/* $$$ changed to always use db fields even if not selected
 					 * so logs already created may need optional fields added.
@@ -650,11 +650,11 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 					foreach ($clabelsCreateDb as $insert)
 					{
 						$db->setQuery("ALTER TABLE ADD $insert AFTER `id`");
-						$db->query();
+						$db->execute();
 					}
 					// ... and try the insert query again
 					$db->setQuery($in_db);
-					$db->query();
+					$db->execute();
 				}
 			}
 
