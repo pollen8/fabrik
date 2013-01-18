@@ -39,6 +39,7 @@ class FabrikAdminControllerDetails extends JControllerForm
 
 	public function view()
 	{
+
 		$document = JFactory::getDocument();
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
@@ -47,7 +48,8 @@ class FabrikAdminControllerDetails extends JControllerForm
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= $input->get('layout', 'default');
-		$view = $this->getView('form', $viewType, '');
+		$this->name = 'Fabrik';
+		$view = $this->getView('Form', $viewType, '');
 		$view->setModel($model, true);
 
 		// Set the layout
@@ -55,6 +57,7 @@ class FabrikAdminControllerDetails extends JControllerForm
 
 		// @TODO check for cached version
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_FORMS'), 'forms.png');
+
 		$view->display();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
