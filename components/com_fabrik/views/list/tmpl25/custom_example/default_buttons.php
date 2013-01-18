@@ -1,3 +1,16 @@
+<?php
+/**
+ * Fabrik List Template: Custom Example Buttons
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <?php if($this->showAdd) {?>
 	<span class="addbutton" id="<?php echo $this->addRecordId;?>">
 		<a href="<?php echo $this->addRecordLink;?>"><?php echo JText::_('ADD');?></a>

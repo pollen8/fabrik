@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render fileuploads of file type
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,6 +23,7 @@ class fileRender{
 
 	/**
 	 * Render output
+	 *
 	 * @var  string
 	 */
 	public $output = '';

@@ -2,10 +2,10 @@
 /**
  * Old package? export code
  *
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -17,10 +17,9 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 /**
  * Old package? export code
  *
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  * @deprecated
  */
 
@@ -65,11 +64,9 @@ class FabrikFEModelExport
 	}
 
 	/**
-	 * export table data
-	 * @param string export format xml/csv
-	 * @param bool export the table actual records
-	 * @param bool export the msoform records associated with the table (group.elements, forms etc)
-	 * @param bool save the exported file as a zip
+	 * Export table data
+	 *
+	 * @return void
 	 */
 
 	function export()
@@ -83,14 +80,15 @@ class FabrikFEModelExport
 			case 'xml':
 			default:
 				$xml = $this->_buildXML();
-				$this->_xmlExport($xml);
+				$this->_xmlExport();
 				break;
 		}
 	}
 
 	/**
-	 * collates the template files
-	 * @return string xml string
+	 * Collates the template files
+	 *
+	 * @return  string  xml string
 	 */
 
 	function getTemplateFiles()
@@ -161,8 +159,9 @@ class FabrikFEModelExport
 	}
 
 	/**
-	 * builds the xml installer file for a given table
-	 * @return string xml file
+	 * Builds the xml installer file for a given table
+	 *
+	 * @return  string  xml file
 	 */
 
 	function _buildXML()
@@ -299,7 +298,9 @@ class FabrikFEModelExport
 	}
 
 	/**
+	 * Create table xml file
 	 *
+	 * @return  void
 	 */
 
 	function _createTablesXML()
@@ -318,6 +319,12 @@ class FabrikFEModelExport
 		$this->writeExportBuffer("</queries>\n");
 	}
 
+	/**
+	 * Clear the export buffer
+	 *
+	 * @return  void
+	 */
+
 	function clearExportBuffer()
 	{
 		if (JFile::exists($this->_bufferFile))
@@ -325,6 +332,12 @@ class FabrikFEModelExport
 			unlink($this->_bufferFile);
 		}
 	}
+
+	/**
+	 * Set the bugger file
+	 *
+	 * @return  void
+	 */
 
 	function setBufferFile()
 	{
@@ -368,10 +381,12 @@ class FabrikFEModelExport
 	}
 
 	/**
+	 * Do xml export
 	 *
+	 * @return  void
 	 */
 
-	function _xmlExport($xml)
+	function _xmlExport()
 	{
 
 		$archiveName = 'fabrik_package-' . $this->label;
@@ -398,6 +413,11 @@ class FabrikFEModelExport
 		$this->_output_file($archivePath, $archiveName . '.tgz');
 	}
 
+	/**
+	 * Do csv export
+	 *
+	 * @retun  void
+	 */
 	function _csvExport()
 	{
 		$db = FabrikWorker::getDbo();
@@ -467,10 +487,11 @@ class FabrikFEModelExport
 		else
 			$UserBrowser = '';
 
-		/* important for download im most browser */
+		// Important for download im most browser
 		$mime_type = ($UserBrowser == 'IE' || $UserBrowser == 'Opera') ? 'application/octetstream' : 'application/octet-stream';
 		@ob_end_clean();
-		/* decrease cpu usage extreme */
+
+		// Decrease cpu usage extreme
 		header('Content-Type: ' . $mime_type);
 		header('Content-Disposition: attachment; filename="' . $name . '"');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -478,7 +499,7 @@ class FabrikFEModelExport
 		header("Cache-control: private");
 		header('Pragma: private');
 
-		/* multipart-download and resume-download */
+		// Multipart-download and resume-download
 		if (isset($_SERVER['HTTP_RANGE']))
 		{
 			list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
@@ -517,5 +538,3 @@ class FabrikFEModelExport
 			$size = $new_length;
 	}
 }
-
-?>

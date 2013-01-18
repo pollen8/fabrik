@@ -1,5 +1,7 @@
 <?php
 /**
+ * A cron task to email records to a give set of users
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.importcsv
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

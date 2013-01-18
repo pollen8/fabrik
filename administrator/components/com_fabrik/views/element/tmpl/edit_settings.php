@@ -11,8 +11,8 @@
 
 // No direct access
 defined('_JEXEC') or die;
-?>
-<?php echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_LIST_VIEW_SETTINGS'), 'settings');
+
+echo JHtml::_('tabs.panel', JText::_('COM_FABRIK_LIST_VIEW_SETTINGS'), 'settings');
 
 $panels = array(
 	array('heading' => JText::_('COM_FABRIK_ELEMENT_LABEL_LIST_SETTINGS_DETAILS'),

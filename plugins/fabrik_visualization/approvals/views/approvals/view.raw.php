@@ -1,5 +1,7 @@
 <?php
 /**
+ * Approval Raw View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.approvals
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,11 +18,19 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.slideshow
+ * @since       3.0.6
  */
 
 class fabrikViewApprovals extends JViewLegacy
 {
 
+	/**
+	 * Display view
+	 *
+	 * @param   string  $tmpl  Template
+	 *
+	 * @return  void
+	 */
 	function display($tmpl = 'default')
 	{
 		$app = JFactory::getApplication();

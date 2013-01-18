@@ -1,5 +1,7 @@
 <?php
 /**
+ * Raw Visualization controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,7 +15,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * Element controller class.
+ * Raw Visualization controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
@@ -25,7 +27,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 	/**
 	 * The prefix to use with controller messages.
 	 *
-	 * @var		string
+	 * @var	string
 	 */
 
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';

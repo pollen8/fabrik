@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Media Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,14 +20,24 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.media
+ * @since       3.0
  */
 
 class fabrikModelMedia extends FabrikFEModelVisualization
 {
 
-	/** js name for meidi **/
+	/**
+	 * js name for media
+	 *
+	 * @var string
+	 */
 	var $calName = null;
 
+	/**
+	 * Get Medda
+	 *
+	 * @return string
+	 */
 	function getMedia()
 	{
 		$app = JFactory::getApplication();
@@ -53,6 +65,12 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		}
 		return $return;
 	}
+
+	/**
+	 * Get Playlist
+	 *
+	 * @return string
+	 */
 
 	function getPlaylist()
 	{
@@ -236,6 +254,12 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 		return $retstr;
 	}
 
+	/**
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
+	 */
+
 	protected function setListIds()
 	{
 		if (!isset($this->listids))
@@ -244,6 +268,12 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 			$this->listids = (array) $params->get('media_table');
 		}
 	}
+
+	/**
+	 * Get the Media Name - used in js code
+	 *
+	 * @return string
+	 */
 
 	function getMediaName()
 	{

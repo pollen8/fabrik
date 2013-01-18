@@ -1,5 +1,7 @@
 <?php
 /**
+ * Cron Notification Fabrik Plug-in Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.notification
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

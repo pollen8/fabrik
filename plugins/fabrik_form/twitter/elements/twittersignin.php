@@ -1,18 +1,16 @@
 <?php
-defined('_JEXEC') or die('Restricted access');
-?>
-
-<?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Post content to twitter: JForm Element
  *
  * NOTE - as we can only have one addpath file specified for the params group, this file has to be located
  * in the main ./administrator/components/com_fabrik/models/fields folder.  So until we work out how to do the install
  * XML magic to relocate this file on install, we have simply made a copy of it in the admin location in SVN.
  * If you edit the copy in the plugin folder, please be sure to also modify the copy in the admin folder.
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.twiter
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
@@ -23,8 +21,9 @@ defined('JPATH_BASE') or die();
 /**
  * Renders a twitter sign in button
  *
- * @subpackage		Parameter
- * @since		1.5
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.twiter
+ * @since		3.0
  */
 
 class JFormFieldTwittersignin extends JFormField
@@ -37,7 +36,14 @@ class JFormFieldTwittersignin extends JFormField
 	 */
 	var	$_name = 'Twittersignin';
 
-	function getInput()
+
+	/**
+	 * Get the input
+	 *
+	 * @return string
+	 */
+
+	protected function getInput()
 	{
 		$iframeid = $this->id.'_iframe';
 		$app = JFactory::getApplication();
@@ -70,4 +76,3 @@ class JFormFieldTwittersignin extends JFormField
 		return $str;
 	}
 }
-?>

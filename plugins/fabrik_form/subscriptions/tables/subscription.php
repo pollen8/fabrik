@@ -1,9 +1,11 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ *  JTable For Subscriptions
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
@@ -12,11 +14,11 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
- * Fabsub subscription table
+ *  JTable For Subscriptions
  *
- * @package     Joomla
- * @subpackage  Fabrik
- * @since       3.1
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
+ * @since       3.0.7
  */
 
 class FabrikTableSubscription extends JTable

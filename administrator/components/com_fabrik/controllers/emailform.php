@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Email From Controller
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

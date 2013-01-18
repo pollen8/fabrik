@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render date picker
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.date
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -34,6 +36,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 */
 	protected $resetToGMT = true;
 
+	/**
+	 * Is the element a ranged filter (can depend on request data)
+	 *
+	 * @var bool
+	 */
 	protected $rangeFilterSet = false;
 
 	/**
@@ -2220,8 +2227,18 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 class FabDate extends JDate
 {
 
+	/**
+	 * GMT Date
+	 *
+	 * @var DateTimeZone
+	 */
 	protected static $gmt;
 
+	/**
+	 * Default tz date
+	 *
+	 * @var DateTimeZone
+	 */
 	protected static $stz;
 
 	/**

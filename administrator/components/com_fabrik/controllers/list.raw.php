@@ -1,5 +1,7 @@
 <?php
 /**
+ * Raw List controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,7 +15,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * List controller class.
+ * Raw List controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
@@ -23,13 +25,14 @@ jimport('joomla.application.component.controllerform');
 class FabrikAdminControllerList extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
 	/**
-	 * ajax load drop down of all columns in a given table
+	 * Ajax load drop down of all columns in a given table
 	 *
 	 * @return  null
 	 */

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Group Fabrik Table
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,10 +24,10 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 class FabrikTableGroup extends FabTable
 {
 
-	/*
-	 *
+	/**
+	 * Join ID - not sure its used?
+	 * @var int
 	 */
-
 	var $join_id = null;
 
 	/**
@@ -54,6 +56,17 @@ class FabrikTableGroup extends FabTable
 		}
 		return true;
 	}
+
+	/**
+	 * Method to load a row from the database by primary key and bind the fields
+	 * to the JTable instance properties.
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 * set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found or on error (internal error state set in that case).
+	 */
 
 	public function load($keys = null, $reset = true)
 	{
@@ -114,7 +127,19 @@ class FabrikTableGroup extends FabTable
 		return $this->bind($row);
 	}
 
-	function store($updateNulls = false)
+	/**
+	 * Method to store a row in the database from the JTable instance properties.
+	 * If a primary key value is set the row with that primary key value will be
+	 * updated with the instance property values.  If no primary key value is set
+	 * a new row will be inserted into the database with the properties from the
+	 * JTable instance.
+	 *
+	 * @param   boolean  $updateNulls  True to update fields even if they are null.
+	 *
+	 * @return  boolean  True on success.
+	 */
+
+	public function store($updateNulls = false)
 	{
 		unset($this->join_id);
 		return parent::store($updateNulls);

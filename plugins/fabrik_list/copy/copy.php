@@ -1,5 +1,7 @@
 <?php
 /**
+ * List Copy Row plugin
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.copy
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,7 +15,7 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
- * Add an action button to the table to copy rows
+ * Add an action button to the list to copy rows
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.copy
@@ -23,6 +25,11 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class plgFabrik_ListCopy extends plgFabrik_List
 {
 
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'copy';
 
 	/**

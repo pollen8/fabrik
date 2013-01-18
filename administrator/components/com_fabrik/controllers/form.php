@@ -1,5 +1,7 @@
 <?php
 /**
+ * Form controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -25,14 +27,24 @@ require_once 'fabcontrollerform.php';
 class FabrikAdminControllerForm extends FabControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
+	/**
+	 * Is in J content plugin
+	 *
+	 * @var bool
+	 */
 	public $isMambot = false;
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Used from content plugin when caching turned on to ensure correct element rendered)
+	 *
+	 * @var int
+	 */
 	protected $cacheId = 0;
 
 	/**

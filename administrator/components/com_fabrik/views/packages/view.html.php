@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of packages.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,13 +22,35 @@ jimport('joomla.application.component.view');
  */
 class FabrikAdminViewPackages extends JViewLegacy
 {
+	/**
+	 * Package items
+	 *
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		// Initialise variables.

@@ -1,9 +1,11 @@
 <?php
 /**
- * @package     Joomla
+ * View when emailing a form to a user
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,10 +13,26 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * View when emailing a form to a user
+ *
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
+ */
+
 class fabrikViewEmailform extends JViewLegacy
 {
 
-	function display()
+	/**
+	 * Display
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
+	 */
+
+	public function display($tpl)
 	{
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
@@ -32,6 +50,14 @@ class fabrikViewEmailform extends JViewLegacy
 			FabrikHelperHTML::emailSent($to, $ok);
 		}
 	}
+
+	/**
+	 * Send a mail
+	 *
+	 * @param   string  $email  Email address
+	 *
+	 * @return  void
+	 */
 
 	function sendMail(&$email)
 	{

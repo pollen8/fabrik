@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render user view levels
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.viewlevel
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,10 +22,18 @@ defined('_JEXEC') or die();
 class PlgFabrik_ElementViewlevel extends PlgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'INT(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var string
+	 */
 	protected $fieldSize = '3';
 
 	/**

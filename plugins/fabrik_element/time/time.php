@@ -23,7 +23,11 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 
 	public $hasSubElements = true;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TIME';
 
 	/**

@@ -1,5 +1,7 @@
 <?php
 /**
+ * * Calendar Viz: Default Tmpl
+ *
 * @package		Joomla.Plugin
 * @subpackage	Fabrik.visualization.calendar
 * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.

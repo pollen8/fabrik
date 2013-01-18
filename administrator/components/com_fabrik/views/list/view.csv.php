@@ -1,9 +1,11 @@
 <?php
 /**
- * @package     Joomla
+ * View to make ajax json object reporting csv file creation progress.
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -23,7 +25,12 @@ class FabrikAdminViewList extends JViewLegacy
 
 	/**
 	 * Display the list
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		$session = JFactory::getSession();

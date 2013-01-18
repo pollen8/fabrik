@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render multi select user group list
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.usergroup
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,7 +22,11 @@ defined('_JEXEC') or die();
 class plgFabrik_ElementUsergroup extends plgFabrik_Element
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TEXT';
 
 	/**

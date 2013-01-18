@@ -1,9 +1,22 @@
+<?php
+/**
+ * Fabrik List Template: Div Filter
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <div class="fabrikFilterContainer">
 <!--- no 'under headings' filter in div template, always 'above'-->
 <ul class="filtertable fabrikList">
-	
+
 	<li class="fabrik___heading">
-			<span ><?php echo JText::_('COM_FABRIK_SEARCH');?>:</span>	
+			<span ><?php echo JText::_('COM_FABRIK_SEARCH');?>:</span>
 	</li>
 
 	<?php

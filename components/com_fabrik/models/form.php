@@ -138,6 +138,11 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	protected $addDbQuote = false;
 
+	/**
+	 * Form Data
+	 *
+	 * @var array
+	 */
 	public $formData = null;
 
 	/**
@@ -175,6 +180,11 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public $modifiedValidationData = null;
 
+	/**
+	 * Group Models
+	 *
+	 * @var array
+	 */
 	public $groups = null;
 
 	/**

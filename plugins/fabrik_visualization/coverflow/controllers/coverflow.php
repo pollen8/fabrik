@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Coverflow Viz Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.coverflow
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,6 +18,7 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.coverflow
+ * @since       3.0
  */
 
 class FabrikControllerVisualizationcoverflow extends FabrikControllerVisualization

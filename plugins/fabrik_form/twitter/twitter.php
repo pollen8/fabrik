@@ -1,5 +1,7 @@
 <?php
 /**
+ * Post content to twitter
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.twiter
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -29,14 +31,16 @@ class plgFabrik_FormTwitter extends plgFabrik_Form
 {
 
 	/**
-	 * @var max length of message
+	 * Max length of message
+	 *
+	 * @var int
 	 */
 	protected $max_msg_length = 140;
 
 	/**
-	 *
 	 * Somewhere to put bitly object so bitlyCallback function can get at it
-	 * @var unknown_type
+	 *
+	 * @var mixed
 	 */
 	protected $bitly = false;
 

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Template: F3 Group Headings
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -8,6 +10,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
+?>
 
 echo $this->showGroup ? '<tbody>' : '<tbody style="display:none">';
 ?>

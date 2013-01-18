@@ -1,5 +1,7 @@
 <?php
 /**
+ * FabForm controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,7 +15,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * List controller class.
+ * FabForm controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
@@ -23,6 +25,11 @@ jimport('joomla.application.component.controllerform');
 class FabControllerForm extends JControllerForm
 {
 
+	/**
+	 * Option
+	 *
+	 * @var string
+	 */
 	protected $option = 'com_fabrik';
 
 	/**

@@ -1,10 +1,12 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Admin List PDF controller class.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -18,11 +20,13 @@ require_once 'fabcontrollerform.php';
  * @subpackage	Fabrik
  * @since		3.0.7
  */
+
 class FabrikAdminControllerList extends FabControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
@@ -39,7 +43,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
 		$cid = $input->getInt('listid', $cid);
-echo $cid;exit;
+
 		// Grab the model and set its id
 		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$model->setState('list.id', $cid);

@@ -30,7 +30,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Db table field type
 	 *
-	 * @var  string
+	 * @var string
 	 */
 	protected $fieldDesc = 'TIME';
 

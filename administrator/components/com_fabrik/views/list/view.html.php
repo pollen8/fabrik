@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * View to edit a list.
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -23,18 +25,21 @@ class FabrikAdminViewList extends JViewLegacy
 {
 	/**
 	 * List form
+	 *
 	 * @var JForm
 	 */
 	protected $form;
 
 	/**
-	 * Item
+	 * List item
+	 *
 	 * @var JTable
 	 */
 	protected $item;
 
 	/**
 	 * View state
+	 *
 	 * @var object
 	 */
 	protected $state;

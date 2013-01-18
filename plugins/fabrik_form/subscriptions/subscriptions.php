@@ -1,5 +1,7 @@
 <?php
 /**
+ *  Redirects the browser to subscriptions to perform payment
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.subscriptions
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -25,8 +27,18 @@ JTable::addIncludePath(JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables')
 class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 {
 
+	/**
+	 * Gateway
+	 *
+	 * @var object
+	 */
 	protected $gateway = null;
 
+	/**
+	 * Billing Cycle
+	 *
+	 * @var object
+	 */
 	protected $billingCycle = null;
 
 	/**

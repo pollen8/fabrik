@@ -1,5 +1,7 @@
 <?php
 /**
+ * Upgrade controller
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -17,9 +19,10 @@ require_once 'fabcontrollerform.php';
 /**
  * Upgrade controller
  *
- * @package  Fabrik
- * @since    3.0
- */
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+*/
 
 class FabrikAdminControllerUpgrade extends JControllerAdmin
 {
@@ -27,7 +30,7 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 	/**
 	 * Constructor
 	 *
-* @param   array  $config  options
+	 * @param   array  $config  options
 	 */
 
 	public function __construct($config = array())
@@ -36,7 +39,7 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 	}
 
 	/**
-	 * delete all data from fabrik
+	 * Delete all data from fabrik
 	 *
 	 * @return  null
 	 */

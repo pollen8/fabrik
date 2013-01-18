@@ -1,5 +1,7 @@
 <?php
 /**
+ * Access element
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.access
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

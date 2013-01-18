@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Converflow Viz - default tmpl
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.coverflow
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

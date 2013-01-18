@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of connections.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,30 +20,34 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       1.6
  */
+
 class FabrikAdminViewConnections extends JViewLegacy
 {
 	/**
-	 * Connections
+	 * Connection items
+	 *
 	 * @var  array
 	 */
 	protected $items;
 
 	/**
 	 * Pagination
+	 *
 	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
-	 * @var  object
+	 *
+	 * @var object
 	 */
 	protected $state;
 
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  template name
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */

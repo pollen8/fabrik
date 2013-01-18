@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render day/month/year dropdowns
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.birthday
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,12 +25,12 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	public $hasSubElements = true;
 
 	/** @var  string  db table field type */
-		
+
 		public function getFieldDescription()
 		{
 		return 'DATE';
 		}
-		
+
 		// protected $fieldDesc = 'DATE';
 
 	/**

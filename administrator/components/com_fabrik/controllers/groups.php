@@ -1,5 +1,7 @@
 <?php
 /**
+ * Groups list controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,12 +25,17 @@ require_once 'fabcontrolleradmin.php';
 class FabrikAdminControllerGroups extends FabControllerAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
-
 	protected $text_prefix = 'COM_FABRIK_GROUPS';
 
+	/**
+	 * View item name
+	 *
+	 * @var string
+	 */
 	protected $view_item = 'groups';
 
 	/**

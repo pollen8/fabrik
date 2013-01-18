@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * View to edit a group.
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -16,18 +18,35 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.5
- */
+ * @since		3.0
+*/
 class FabrikAdminViewGroup extends JViewLegacy
 {
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Group item
+	 *
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */
@@ -58,8 +77,6 @@ class FabrikAdminViewGroup extends JViewLegacy
 
 	/**
 	 * Add the page title and toolbar.
-	 *
-	 * @since	1.6
 	 *
 	 * @return  void
 	 */

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render plain text/HTML
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.display
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

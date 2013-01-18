@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Calendar Plug-in Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -19,6 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
+ * @since       3.0
  */
 
 class FabrikControllerVisualizationcalendar extends FabrikControllerVisualization
@@ -52,6 +55,12 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		return $this;
 	}
 
+	/**
+	 * Delete an event
+	 *
+	 * @return  void
+	 */
+
 	function deleteEvent()
 	{
 		$model = $this->getModel('calendar');
@@ -59,6 +68,11 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$this->getEvents();
 	}
 
+	/**
+	 * Get events
+	 *
+	 * @return  void
+	 */
 	function getEvents()
 	{
 		$viewName = 'calendar';
@@ -71,6 +85,11 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		echo $model->getEvents();
 	}
 
+	/**
+	 * Choose which list to add the event to
+	 *
+	 * @return  void
+	 */
 	function chooseaddevent()
 	{
 		$document = JFactory::getDocument();
@@ -90,6 +109,12 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$view->setModel($model, true);
 		$view->chooseaddevent();
 	}
+
+	/**
+	 * Show the add event form
+	 *
+	 * @return  void
+	 */
 
 	function addEvForm()
 	{

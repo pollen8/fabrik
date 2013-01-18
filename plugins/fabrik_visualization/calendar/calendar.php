@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Calendar Viz
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -11,6 +13,14 @@ defined('_JEXEC') or die();
 
 // Require the abstract plugin class (this is here to allow for the create of the plugin)
 require_once COM_FABRIK_FRONTEND . '/models/visualization.php';
+
+/**
+ * Fabrik Calendar Viz
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.chart
+ * @since       3.0
+ */
 
 class plgFabrik_VisualizationCalendar extends FabrikPlugin
 {

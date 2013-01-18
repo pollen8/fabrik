@@ -1,5 +1,7 @@
 <?php
 /**
+ * Email list plugin model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.email
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,8 +24,17 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListEmail extends PlgFabrik_List
 {
 
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'email';
 
+	/**
+	 * Plugin name
+	 * @var string
+	 */
 	var $name = "plgFabrik_ListEmail";
 
 	/**

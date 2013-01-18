@@ -1,5 +1,7 @@
 <?php
 /**
+ * CSV View Front End View
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
- * CSV View Front End Class
+ * CSV View Front End View
  *
  * @package     Joomla
  * @subpackage  Fabrik

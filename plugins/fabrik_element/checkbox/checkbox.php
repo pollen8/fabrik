@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render series of checkboxes
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.checkbox
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

@@ -1,10 +1,12 @@
 <?php
 /**
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.download
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Download list plugin
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.download
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
@@ -13,18 +15,28 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
-* Download list plugin
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.download
-* @since       3.0
-*/
+ * Download list plugin
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.download
+ * @since       3.0
+ */
 
 class plgFabrik_ListDownload extends plgFabrik_List
 {
 
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'download';
 
+	/**
+	 * Message
+	 *
+	 * @var string
+	 */
 	protected $msg = null;
 
 	/**

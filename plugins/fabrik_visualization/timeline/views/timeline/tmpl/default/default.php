@@ -1,5 +1,7 @@
 <?php
 /**
+ * Default timeline viz template
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.timeline
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

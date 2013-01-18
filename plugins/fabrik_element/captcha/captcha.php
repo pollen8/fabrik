@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to captcha
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.captcha
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -47,7 +49,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 	protected function _generateCode($characters)
 	{
-		/* list all possible characters, similar looking characters and vowels have been removed */
+		// List all possible characters, similar looking characters and vowels have been removed
 		$possible = '23456789bcdfghjkmnpqrstvwxyz';
 		$code = '';
 		$i = 0;

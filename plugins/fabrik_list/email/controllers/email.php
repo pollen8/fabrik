@@ -1,9 +1,11 @@
 <?php
 /**
+ * Email list plug-in Controller
+ *
  * @package     Joomla
  * @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,7 +17,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
- * Email table plug-in Controller
+ * Email list plug-in Controller
  *
  * @static
  * @package     Joomla
@@ -24,7 +26,11 @@ require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
  */
 class FabrikControllerListemail extends JControllerLegacy
 {
-	/** @var string path of uploaded file */
+	/**
+	 *  Path of uploaded file
+	 *
+	 *  @var string
+	 */
 	var $filepath = null;
 
 	/**

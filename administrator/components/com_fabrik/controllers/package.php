@@ -1,5 +1,7 @@
 <?php
 /**
+ * Package controller
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -25,17 +27,17 @@ require_once 'fabcontrollerform.php';
 class FabrikAdminControllerPackage extends FabControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_PACKAGE';
 
 	/**
-	 * Export package
+	 * Export the package
 	 *
-	 * @return  null
+	 * @return  void
 	 */
-
 	public function export()
 	{
 		$app = JFactory::getApplication();
@@ -49,11 +51,10 @@ class FabrikAdminControllerPackage extends FabControllerForm
 	}
 
 	/**
-	 * View the package editor
+	 * View the package
 	 *
-	 * @return  null
+	 * @return  void
 	 */
-
 	public function view()
 	{
 		$document = JFactory::getDocument();
@@ -92,11 +93,10 @@ class FabrikAdminControllerPackage extends FabControllerForm
 	}
 
 	/**
-	 * list forms
+	 * List form
 	 *
-	 * @return  null
+	 * @return  void
 	 */
-
 	public function listform()
 	{
 		$document = JFactory::getDocument();

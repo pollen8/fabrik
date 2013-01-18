@@ -1,7 +1,9 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
+ * View class for a list of forms.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -20,12 +22,33 @@ jimport('joomla.application.component.view');
  */
 class FabrikAdminViewForms extends JViewLegacy
 {
+	/**
+	 * Form items
+	 *
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
 	public function display($tpl = null)
 	{
@@ -58,8 +81,9 @@ class FabrikAdminViewForms extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';

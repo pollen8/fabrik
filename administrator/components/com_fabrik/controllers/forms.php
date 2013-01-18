@@ -1,10 +1,12 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Forms list controller class.
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access.
 defined('_JEXEC') or die;
@@ -21,19 +23,23 @@ require_once 'fabcontrolleradmin.php';
 class FabrikAdminControllerForms extends FabControllerAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
-
 	protected $text_prefix = 'COM_FABRIK_FORMS';
 
+	/**
+	 * View item name
+	 *
+	 * @var string
+	 */
 	protected $view_item = 'forms';
 
 	/**
 	 * Constructor.
 	 *
-* @param   array  $config  An optional associative array of configuration settings.
-	 *
+	 * @param	array  $config  An optional associative array of configuration settings.
 	 * @see		JController
 	 * @since	1.6
 	 */
@@ -46,8 +52,8 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	/**
 	 * Proxy for getModel.
 	 *
-* @param   string  $name    model name
-* @param   string  $prefix  model prefix
+	 * @param   string  $name    Model name
+	 * @param   string  $prefix  Model prefix
 	 *
 	 * @since	1.6
 	 *
@@ -61,7 +67,7 @@ class FabrikAdminControllerForms extends FabControllerAdmin
 	}
 
 	/**
-	 * attempt to alter teh db structure to match the form's current status
+	 * Attempt to alter the db structure to match the form's current status
 	 *
 	 * @return  null
 	 */

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Google Chart Viz Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,7 +18,8 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
- */
+ * @since       3.0
+*/
 class FabrikControllerVisualizationchart extends FabrikControllerVisualization
 {
 

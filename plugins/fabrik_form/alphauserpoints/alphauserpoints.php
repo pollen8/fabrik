@@ -60,7 +60,20 @@ class plgFabrik_FormAlphaUserPoints extends plgFabrik_Form
 
 			// Override the plugin default points
 			$randomPoints = $params->get('random_points', 0);
-			$randomPoints = (float) $w->parseMessageForPlaceholder($randomPoints, $this->data, false);
+			if ($params->get('random_points_eval', '0') == '1')
+			{
+				if (!empty($randomPoints))
+				{
+					$randomPoints = $w->parseMessageForPlaceholder($randomPoints, $this->data, false);
+					$randomPoints = @eval($randomPoints);
+					FabrikWorker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
+				}
+				$randomPoints = (float) $randomPoints;
+			}
+			else
+			{
+				$randomPoints = (float) $w->parseMessageForPlaceholder($randomPoints, $this->data, false);
+			}
 
 			// If set to be greater than $randompoints then this is the # of points assigned (not sure when this would be used - commenting out for now)
 			$referralUserPoints = 0;

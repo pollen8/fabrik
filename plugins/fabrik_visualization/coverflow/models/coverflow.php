@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Coverflow Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.coverflow
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,14 +20,17 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.coverflow
+ * @since       3.0
  */
 
 class fabrikModelCoverflow extends FabrikFEModelVisualization
 {
 
 	/**
-	 * internally render the plugin, and add required script declarations
+	 * Internally render the plugin, and add required script declarations
 	 * to the document
+	 *
+	 * @return  void
 	 */
 
 	function render()
@@ -107,6 +112,12 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization
 		FabrikHelperHTML::iniRequireJs();
 		FabrikHelperHTML::script($srcs, $str);
 	}
+
+	/**
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
+	 */
 
 	protected function setListIds()
 	{

@@ -59,6 +59,11 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 class PlgFabrik_ValidationruleExample extends PlgFabrik_Validationrule
 {
 
+	/**
+	 * Plugin name
+	 *
+	 * @var string
+	 */
 	protected $pluginName = 'example';
 
 	/**

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Admin Plugin Controller
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -15,7 +17,7 @@ jimport('joomla.application.component.controller');
 require_once 'fabcontrollerform.php';
 
 /**
- * Fabrik Plugin Controller
+ * Fabrik Admin Plugin Controller
  *
  * @package  Fabrik
  * @since    3.0
@@ -24,7 +26,11 @@ echo "plugin controller <br>";
 class FabrikAdminControllerPlugin extends FabControllerForm
 {
 
-	/* @var int  id used from content plugin when caching turned on to ensure correct element rendered)*/
+	/**
+	 * Id used from content plugin when caching turned on to ensure correct element rendered)
+	 *
+	 * @var int
+	 */
 	public $cacheId = 0;
 
 	/**

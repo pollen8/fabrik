@@ -23,11 +23,17 @@ require_once 'fabcontrolleradmin.php';
 class FabrikAdminControllerLists extends FabControllerAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_LISTS';
 
+	/**
+	 * View item name
+	 *
+	 * @var string
+	 */
 	protected $view_item = 'lists';
 
 	/**

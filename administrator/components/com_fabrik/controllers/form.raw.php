@@ -1,5 +1,7 @@
 <?php
 /**
+ * Raw Form controller class.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -13,7 +15,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * Form controller class.
+ * Raw Form controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
@@ -23,11 +25,17 @@ jimport('joomla.application.component.controllerform');
 class FabrikAdminControllerForm extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_FORM';
 
+	/**
+	 * Is in J content plugin
+	 *
+	 * @var bool
+	 */
 	public $isMambot = false;
 
 	/**

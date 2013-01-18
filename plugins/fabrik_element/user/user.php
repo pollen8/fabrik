@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render dropdown list to select user
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.user
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,10 +24,18 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 {
 
-	/** @var bol is a join element */
+	/**
+	 * Is a join element
+	 *
+	 * @var bool
+	 */
 	var $_isJoin = true;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'INT(11)';
 
 	/**
@@ -428,6 +438,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
+	/**
+	 * Get select option label
+	 *
+	 * @return  string
+	 */
+
 	protected function _getSelectLabel()
 	{
 		return $this->getParams()->get('user_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT'));
@@ -506,6 +522,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$this->updateFabrikJoins($data, '#__users', 'id', $label);
 		return true;
 	}
+
+	/**
+	 * Get the join label name
+	 *
+	 * @return  string
+	 */
 
 	protected function getJoinLabel()
 	{

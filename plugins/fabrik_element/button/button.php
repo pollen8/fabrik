@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render button
+ *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.element.button
  * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Raw Fabrik Plugin Controller
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -15,7 +17,7 @@ jimport('joomla.application.component.controller');
 require_once 'fabcontrollerform.php';
 
 /**
- * Fabrik Plugin Controller
+ * Raw Fabrik Plugin Controller
  *
  * @package  Fabrik
  * @since    3.0

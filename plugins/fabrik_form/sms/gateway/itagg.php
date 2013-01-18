@@ -1,5 +1,7 @@
 <?php
 /**
+ * Itagg SMS gateway class
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,6 +22,11 @@ defined('_JEXEC') or die();
 class Itagg extends JObject
 {
 
+	/**
+	 * URL To Post SMS to
+	 *
+	 * @var string
+	 */
 	protected $url = 'https://secure.itagg.com/smsg/sms.mes';
 
 	/**

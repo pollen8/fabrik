@@ -1,5 +1,7 @@
 <?php
 /**
+ *  View class for a list of lists.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,19 +24,22 @@ class FabrikAdminViewLists extends JViewLegacy
 {
 	/**
 	 * List items
-	 * @var array
+	 *
+	 * @var  array
 	 */
 	protected $items;
 
 	/**
 	 * Pagination
-	 * @var  object
+	 *
+	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
-	 * @var  object
+	 *
+	 * @var object
 	 */
 	protected $state;
 
@@ -177,7 +182,7 @@ class FabrikAdminViewLists extends JViewLegacy
 	}
 
 	/**
-	 * Add the import list toolbar
+	 * Add the page title and toolbar for List import
 	 *
 	 * @return  void
 	 */

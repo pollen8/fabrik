@@ -30,10 +30,18 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	*/
 	protected $ignoreSearchAllDefault = true;
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'INT(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var string
+	 */
 	protected $fieldSize = '6';
 
 	/**

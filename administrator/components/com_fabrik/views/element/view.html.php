@@ -1,5 +1,7 @@
 <?php
 /**
+ * View to edit an element.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -21,13 +23,38 @@ jimport('joomla.application.component.view');
 
 class FabrikAdminViewElement extends JViewLegacy
 {
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Element item
+	 *
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
+
+	/**
+	 * Plugin HTML
+	 * @var string
+	 */
 	protected $pluginFields;
-	protected $validations;
+
+	/**
+	 * JavaScript Events
+	 * @var array
+	 */
 	protected $jsevents;
-	protected $activeValidations;
 
 	/**
 	 * Display the view

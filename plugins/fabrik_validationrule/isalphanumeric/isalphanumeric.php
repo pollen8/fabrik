@@ -1,7 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * Is Alpha Numeric Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.isalphanumeric
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -12,8 +14,21 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
+/**
+ * Is Alpha Numeric Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.isalphanumeric
+ * @since       3.0
+ */
+
 class PlgFabrik_ValidationruleIsalphanumeric extends PlgFabrik_Validationrule
 {
+	/**
+	 * Plugin name
+	 *
+	 * @var string
+	 */
 	protected $pluginName = 'isalphanumeric';
 
 	/**

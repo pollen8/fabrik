@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to yes/no radio options - render as tick/cross in list view
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.yesno
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -23,10 +25,18 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
 class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 {
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TINYINT(%s)';
 
-	/** @var  string  db table field size */
+	/**
+	 * Db table field size
+	 *
+	 * @var string
+	 */
 	protected $fieldSize = '1';
 
 	/**

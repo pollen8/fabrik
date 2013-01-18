@@ -1,5 +1,7 @@
 <?php
 /**
+ * Join Fabrik Table
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.

@@ -1,9 +1,12 @@
 <?php
 /**
- * @package     Joomla
+ * View class for a list of elements.
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access
@@ -14,27 +17,30 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of elements.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
- * @since       1.6
- */
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
+*/
 class FabrikAdminViewElements extends JViewLegacy
 {
 	/**
-	 * Element items
+	 * Elements
+	 *
 	 * @var  array
 	 */
 	protected $items;
 
 	/**
-	 * Pagination object
-	 * @var  object
+	 * Pagination
+	 *
+	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
-	 * @var  object
+	 *
+	 * @var object
 	 */
 	protected $state;
 

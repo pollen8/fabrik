@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of groups.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -23,19 +25,22 @@ class FabrikAdminViewGroups extends JViewLegacy
 {
 	/**
 	 * Group items
+	 *
 	 * @var  array
 	 */
 	protected $items;
 
 	/**
-	 * Pagination object
-	 * @var  object
+	 * Pagination
+	 *
+	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
-	 * @var  object
+	 *
+	 * @var object
 	 */
 	protected $state;
 

@@ -1,7 +1,20 @@
 <?php
+/**
+ * Fabrik List Template: DB Join Select
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+
 $app = JFactory::getApplication();
 $input = $app->input;
-<?php if ($this->getModel()->getParams()->get('show-title', 1)) {?>
+
+if ($this->getModel()->getParams()->get('show-title', 1)) {?>
 	<h1><?php echo $this->table->label;?></h1>
 <?php }?>
 

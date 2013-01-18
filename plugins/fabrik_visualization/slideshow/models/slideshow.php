@@ -1,5 +1,7 @@
 <?php
 /**
+ * Slideshow viz Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.slideshow
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

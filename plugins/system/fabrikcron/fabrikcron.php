@@ -1,5 +1,7 @@
 <?php
 /**
+ * Joomla! Fabrik cron job plugin
+ *
  * @package     Joomla.Plugin
  * @subpackage  System
  * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.

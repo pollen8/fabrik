@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Fuson Chart HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

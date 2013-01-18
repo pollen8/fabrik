@@ -16,7 +16,7 @@ jimport('joomla.application.component.model');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.notification
- * @since       3.0.7
+ * @since       3.0
  */
 
 class fabrikModelNotification extends JModel

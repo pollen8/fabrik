@@ -1,7 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * Are Unique values Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.areuniquevalues
  * @author      Lieven Gryp <dont@know.com>
  * @copyright   Copyright (C) 2005 Fabrik & Lieven Gryp. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -13,9 +15,22 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
+/**
+ * Are Unique values Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.areuniquevalues
+ * @since       3.0
+ */
+
 class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 {
 
+	/**
+	 * Plugin name
+	 *
+	 * @var string
+	 */
 	protected $pluginName = 'areuniquevalues';
 
 	/**

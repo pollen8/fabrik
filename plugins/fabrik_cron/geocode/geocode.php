@@ -1,12 +1,12 @@
 <?php
-
 /**
  * A cron task to email records to a give set of users
- * @package Joomla
- * @subpackage Fabrik
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.geocode
+ * @author      Hugh Messenger
+ * @copyright   (C) Hugh Messenger
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,6 +16,14 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 require_once JPATH_SITE . '/plugins/fabrik_cron/geocode/libs/gmaps2.php';
+
+/**
+ * The cron notification plugin model.
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.geocode
+ * @since       3.0
+ */
 
 class plgFabrik_CronGeocode extends plgFabrik_Cron
 {
@@ -217,41 +225,4 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 		return $total_encoded;
 	}
 
-	/**
-	 * show a new for entering the form actions options
-	 */
-	/*
-	    function renderAdminSettings()
-	    {
-	        //JHTML::stylesheet('fabrikadmin.css', 'administrator/components/com_fabrik/views/');
-	        $this->getRow();
-	        $pluginParams = $this->getParams();
-
-	        $document = JFactory::getDocument();
-	        ?>
-	        <div id="page-<?php echo $this->_name;?>" class="pluginSettings" style="display:none">
-	        <b>NOTES</b>
-	        <ul>
-	            <li>
-	                You can either run this as a scheduled task, or use it as a one-off import script for new data (by simply not selecting a scheduled run time, and using the Run button by hand)
-	            </li>
-	            <li>
-	                You don't need to specify all the geocoding elements (addr1, addr2, city, etc), but whatever you do select should build a valid address, when concatenated (in order) into one comma separated string.  The simplest case would be a single element which has the entire address already comma separated.  Or you can match some or all of the address components to you form elements.
-	            </li>
-	            <li>
-	                The 'Empty Value' can be used where (for example) you have Fabrik map elements which have been submitted without the marker being placed, so they will have the default lat/long and zoom level, like "53.2224,-4.2007:4".  Setting the "Empty Value" to this will cause this script to treat both empty map elements AND ones which have that default string as being in need of encoding.
-	            </li>
-	        </ul>
-	        <?php
-	            // @TODO - work out why the language diddly doesn't work here, so we can make the above notes translateable?
-	            //echo JText::_('GCALNOTES');
-	            echo $pluginParams->render('params');
-	            echo $pluginParams->render('params', 'fields');
-	            ?>
-	        </div>
-	        <?php
-	        return ;
-	    }*/
-
 }
-?>

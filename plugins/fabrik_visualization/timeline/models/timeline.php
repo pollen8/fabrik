@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Timeline Viz Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.timeline
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -39,10 +41,11 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 
 	public function onAjax_getEvents()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$lists = $params->get('timeline_table', array());
 		$app = JFactory::getApplication();
-		$input = $app->input;
 		$session = JFactory::getSession();
 
 		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
@@ -286,9 +289,14 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		return $totals;
 	}
 
+	/**
+	 * Clear the session, ensures event loading starts from the beginning
+	 *
+	 * @return  void
+	 */
+
 	protected function clearSession()
 	{
-		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$session = JFactory::getSession();

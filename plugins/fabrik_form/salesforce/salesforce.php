@@ -1,5 +1,7 @@
 <?php
 /**
+ * Submit or update data to Salesforce.com
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.salesforce
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

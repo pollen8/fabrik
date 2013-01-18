@@ -1,10 +1,12 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Fabrik Admin Home Page View
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -12,12 +14,12 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.view');
 
 /**
- * View class for a list of lists.
+ * Fabrik Admin Home Page View
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @since       1.6
- */
+ * @since       3.0
+*/
 
 class FabrikAdminViewHome extends JViewLegacy
 {
@@ -64,10 +66,10 @@ class FabrikAdminViewHome extends JViewLegacy
 	}
 
 	/**
-	* Add the page title and toolbar.
-	*
-	* @return  void
-	*/
+	 * Add the page title and toolbar.
+	 *
+	 * @return  void
+	 */
 
 	protected function addToolbar()
 	{

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Calendar Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -18,22 +20,52 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
+ * @since       3.0
  */
 
 class fabrikModelCalendar extends FabrikFEModelVisualization
 {
+	/**
+	 * Array of Fabrik lists containing events
+	 *
+	 * @var array
+	 */
 	protected $eventLists = null;
 
-	/** js name for calendar **/
+	/**
+	 * JS name for calendar
+	 *
+	 * @var string
+	 */
 	protected $calName = null;
 
+	/**
+	 * Event info
+	 *
+	 * @var array
+	 */
 	var $_events = null;
 
-	/** @var array filters from url*/
+	/**
+	 * Filters from url
+	 *
+	 * @var array
+	 */
 	var $filters = array();
 
-	/** @var bool can add to tables **/
+	/**
+	 * Can add events to lists
+	 *
+	 * @var bool
+	 */
 	var $canAdd = null;
+
+
+	/**
+	 * Set an array of list id's whose data is used inside the visualaziation
+	 *
+	 * @return  void
+	 */
 
 	protected function setListIds()
 	{
@@ -43,6 +75,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 			JArrayHelper::toInteger($this->listids);
 		}
 	}
+
+	/**
+	 * Get the lists that contain events
+	 *
+	 * @return array
+	 */
 
 	function &getEventLists()
 	{
@@ -78,6 +116,11 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		return $this->eventLists;
 	}
 
+	/**
+	 * Get Standard Event Form Info
+	 *
+	 * @return mixed unknown|NULL
+	 */
 	function getAddStandardEventFormInfo()
 	{
 		$config = JFactory::getConfig();
@@ -88,12 +131,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$o = $db->loadObject();
 		if (is_object($o))
 		{
-			// there are standard events recorded
+			// There are standard events recorded
 			return $o;
 		}
 		else
 		{
-			// they aren't any standards events recorded
+			// They aren't any standards events recorded
 			return null;
 		}
 	}
@@ -207,6 +250,12 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		}
 		return $this->_events;
 	}
+
+	/**
+	 * Get the linked form IDs
+	 *
+	 * @return array
+	 */
 
 	function getLinkedFormIds()
 	{
@@ -471,6 +520,11 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		return $this->calName;
 	}
 
+	/**
+	 * Update an event - not working/used!
+	 *
+	 * @return  void
+	 */
 	function updateevent()
 	{
 		$oPluginManager = FabrikWorker::getPluginManager();

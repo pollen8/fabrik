@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of visualizations.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,26 +16,29 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of visualizations.
  *
- * @package     Joomla.Administrator
- * @subpackage  Fabrik
- * @since       3.0
+ * @package		Joomla.Administrator
+ * @subpackage	Fabrik
+ * @since		3.0
  */
 class FabrikAdminViewVisualizations extends JViewLegacy
 {
 	/**
-	 * Visualizations
+	 * Visualization items
+	 *
 	 * @var  array
 	 */
 	protected $items;
 
 	/**
 	 * Pagination
-	 * @var object
+	 *
+	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
+	 *
 	 * @var object
 	 */
 	protected $state;

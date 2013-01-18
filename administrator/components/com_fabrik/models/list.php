@@ -25,22 +25,39 @@ require_once 'fabmodeladmin.php';
 class FabrikAdminModelList extends FabModelAdmin
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var  string
 	 */
-
 	protected $text_prefix = 'COM_FABRIK_LIST';
 
-	/** @var object model - front end form model */
+	/**
+	 * Front end form model
+	 *
+	 * @var object model
+	 */
 	protected $formModel = null;
 
-	/** @var object model - front end table model */
+	/**
+	 * Front end list model
+	 *
+	 * @var object
+	 */
 	protected $feListModel = null;
 
-	/** @var object currently loaded list row */
+	/**
+	 * Currently loaded list row
+	 *
+	 * @var array
+	 */
 	protected $tables = array();
 
-	/** @var string */
+	/**
+	 * Plugin type
+	 *
+	 * @var string
+	 * @deprecated ?
+	 */
 	protected $pluginType = 'List';
 
 	/**

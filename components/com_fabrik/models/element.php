@@ -2994,6 +2994,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		return $opts;
 	}
 
+	/**
+	 * Should we get the elements sub options via the use of eval'd parameter setting
+	 *
+	 * @since  3.0.7
+	 *
+	 * @return mixed  false if no, otherwise needs to return array of JHTML::options
+	 */
+
 	protected function getPhpOptions()
 	{
 		$params = $this->getParams();

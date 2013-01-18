@@ -1,5 +1,7 @@
 <?php
 /**
+ * View to edit a form.
+ *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,25 +23,31 @@ jimport('joomla.application.component.view');
 class FabrikAdminViewForm extends JViewLegacy
 {
 	/**
-	 * Form's form
+	 * Form
+	 *
 	 * @var JForm
 	 */
 	protected $form;
 
 	/**
-	 * Item
+	 * Form item
+	 *
 	 * @var JTable
 	 */
 	protected $item;
 
 	/**
 	 * View state
+	 *
 	 * @var object
 	 */
 	protected $state;
-	protected $plugins;
+
+	/**
+	 * Js code for controlling plugins
+	 * @var string
+	 */
 	protected $js;
-	protected $currentGroupList;
 
 	/**
 	 * Display the view
@@ -74,6 +82,14 @@ class FabrikAdminViewForm extends JViewLegacy
 		FabrikHelperHTML::iniRequireJS($shim);
 		parent::display($tpl);
 	}
+
+	/**
+	 * Alias to display
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
+	 */
 
 	public function form($tpl = null)
 	{

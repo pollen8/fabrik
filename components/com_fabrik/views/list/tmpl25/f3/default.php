@@ -1,4 +1,15 @@
 <?php
+/**
+ * Fabrik List Template: F3
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
 FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');

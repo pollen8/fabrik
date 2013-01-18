@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fileupload - Plugin element to render Flash files
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,7 +22,12 @@ defined('_JEXEC') or die();
 class flashRender
 {
 
-	var $output = '';
+	/**
+	 * Render output
+	 *
+	 * @var  string
+	 */
+	public $output = '';
 
 	/**
 	 * Render flash in the list view

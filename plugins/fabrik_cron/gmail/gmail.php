@@ -1,12 +1,12 @@
 <?php
-
 /**
- * A cron task to import gmail emails into a specified table
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * A cron task to import gmail emails into a specified list
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.gmail
+ * @author      Rob Clayburn
+ * @copyright   (C) Rob Clayburn
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,14 +15,24 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
+/**
+ * A cron task to import gmail emails into a specified list
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.gmail
+ * @since       3.0.7
+ */
+
 class plgFabrik_Crongmail extends plgFabrik_Cron
 {
 
 	/**
 	 * Do the plugin action
-	 * @param array data
-	 * @param object list model
-	 * @return number of records updated
+	 *
+	 * @param   &$data       Data
+	 * @param   &$listModel  List model
+	 *
+	 * @return  int  number of records updated
 	 */
 
 	public function process(&$data, &$listModel)
@@ -68,8 +78,6 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 			$MC = imap_check($mbox);
 
 			$mailboxes = imap_list($mbox, $server, '*');
-			echo "<pre>";
-			print_r($mailboxes);
 			$lastid = $params->get('plugin-options.lastid', 0);
 
 			if ($lastid == 0)
@@ -90,8 +98,6 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 			// Fetch an overview for all messages in INBOX
 			//$result = imap_fetch_overview($mbox, "1:$lastid", $mode);
 
-			print_r($result);
-			exit;
 			$numProcessed += count($result);
 			foreach ($result as $overview)
 			{
@@ -245,9 +251,11 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 	}
 
 	/**
-	 * try to remove reply text from emails
-	 * @param string content
-	 * @return string content
+	 * Try to remove reply text from emails
+	 *
+	 * @param   string  $content  Mail content
+	 *
+	 * @return  string  content
 	 */
 
 	protected function removeReplyText($content)
@@ -277,9 +285,11 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 	}
 
 	/**
-	 * get subject of email
-	 * @param $overview
-	 * @return string email subject
+	 * Get subject of email
+	 *
+	 * @param   object $overview  Mail overview
+	 *
+	 * @return  string  email subject
 	 */
 
 	private function getTitle($overview)
@@ -294,6 +304,15 @@ class plgFabrik_Crongmail extends plgFabrik_Cron
 	}
 
 }
+
+/**
+ * Parse the email into its parts
+ *
+ * @param   object  $structure  Mail
+ * @param   string  $prefix     Prefix?
+ *
+ * @return  array
+ */
 
 function create_part_array($structure, $prefix = "")
 {
@@ -310,7 +329,17 @@ function create_part_array($structure, $prefix = "")
 	}
 	return $part_array;
 }
-// Sub function for create_part_array(). Only called by create_part_array() and itself.
+
+/**
+ * Sub function for create_part_array(). Only called by create_part_array() and itself.
+ *
+ * @param   object  $obj          Sub part of Mail object
+ * @param   int     $partno       Part Number
+ * @param   array   &$part_array  Array of parts
+ *
+ * @return  void
+ */
+
 function add_part_to_array($obj, $partno, &$part_array)
 {
 	$part_array[] = array('part_number' => $partno, 'part_object' => $obj);
@@ -353,4 +382,3 @@ function add_part_to_array($obj, $partno, &$part_array)
 		}
 	}
 }
-?>

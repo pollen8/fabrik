@@ -1,7 +1,9 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage  Fabrik
+ * Not Empty Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.notempty
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
@@ -12,9 +14,22 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
+/**
+ * Not Empty Validation Rule
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.validationrule.notempty
+ * @since       3.0
+ */
+
 class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 {
 
+	/**
+	 * Plugin name
+	 *
+	 * @var string
+	 */
 	protected $pluginName = 'notempty';
 
 	/**

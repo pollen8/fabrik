@@ -1,5 +1,7 @@
 <?php
 /**
+ * View to edit a cron.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -20,15 +22,37 @@ jimport('joomla.application.component.view');
  */
 class FabrikAdminViewCron extends JViewLegacy
 {
+	/**
+	 * Form
+	 *
+	 * @var JForm
+	 */
 	protected $form;
+
+	/**
+	 * Cron item
+	 *
+	 * @var JTable
+	 */
 	protected $item;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
+
+	/**
+	 * Plugin HTML
+	 * @var string
+	 */
 	protected $pluginFields;
 
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */
@@ -77,7 +101,8 @@ class FabrikAdminViewCron extends JViewLegacy
 
 	/**
 	 * Add the page title and toolbar.
-	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()

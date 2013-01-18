@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Google Map Viz Controller
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.googlemap
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,6 +23,14 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerVisualizationgooglemap extends FabrikControllerVisualization
 {
+	/**
+	 * Ajax markers
+	 *
+	 * @param   string  $tmpl  Template
+	 *
+	 * @return  void
+	 */
+
 	public function ajax_getMarkers($tmpl = 'default')
 	{
 		$viewName = 'googlemap';

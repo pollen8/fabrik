@@ -1,6 +1,8 @@
 <?php
 /**
- * @package     Joomla
+ * Fabrik Import Controller
+ *
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -13,7 +15,7 @@ require_once 'fabcontrollerform.php';
 /**
  * Fabrik Import Controller
  *
- * @package     Joomla
+ * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
  */
@@ -113,13 +115,11 @@ class FabrikAdminControllerImport extends FabControllerForm
 	}
 
 	/**
-	 * Method to cancel an edit.
+	 * Method to cancel an import.
 	 *
 	 * @param   string  $key  The name of the primary key of the URL variable.
 	 *
 	 * @return  boolean  True if access level checks pass, false otherwise.
-	 *
-	 * @since   11.1
 	 */
 
 	public function cancel($key = null)

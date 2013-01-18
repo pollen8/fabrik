@@ -1,20 +1,24 @@
 <?php
 /**
-* @package     Joomla
-* @subpackage  Fabrik
-* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
-* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+ * Fabrik Home Controller
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controlleradmin');
 
 /**
- * Main Fabrik Admin page controller
+ * Fabrik Home Controller
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerHome extends JControllerAdmin
@@ -23,7 +27,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	/**
 	 * Constructor
 	 *
-* @param   array  $config  state
+	 * @param   array  $config  Configuration
 	 */
 
 	public function __construct($config = array())
@@ -32,7 +36,7 @@ class FabrikAdminControllerHome extends JControllerAdmin
 	}
 
 	/**
-	 * delete all data from fabrik
+	 * Delete all data from fabrik
 	 *
 	 * @return null
 	 */
@@ -71,6 +75,12 @@ class FabrikAdminControllerHome extends JControllerAdmin
 		$model->installSampleData();
 		$this->setRedirect('index.php?option=com_fabrik', JText::_('COM_FABRIK_HOME_SAMPLE_DATA_INSTALLED'));
 	}
+
+	/**
+	 * Get RSS News feed
+	 *
+	 * @return string
+	 */
 
 	function getRSSFeed()
 	{
