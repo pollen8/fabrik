@@ -31,7 +31,7 @@ var Cmorph = new Class({
 		for(var prop in properties)
 		{
 			v = properties[prop];
-			if($type(v) != 'array') v = [this.item[prop], v];
+			if(typeOf(v) != 'array') v = [this.item[prop], v];
 			this.properties[prop] = [v[0],v[1],v[1] - v[0]];
 		}
 		

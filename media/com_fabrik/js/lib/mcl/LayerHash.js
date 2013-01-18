@@ -14,12 +14,12 @@ provides: [LayerHash]
 var LayerHash = new Class({
 	Implements : [Events,Options],
 	options : {
-		onAdd : $empty,
-		onRemove : $empty,
-		onSwap : $empty,
-		onPromote : $empty,
-		onDemote : $empty,
-		onDraw : $empty
+		onAdd : function () {},
+		onRemove : function () {},
+		onSwap : function () {},
+		onPromote : function () {},
+		onDemote : function () {},
+		onDraw : function () {}
 	},
 	tables : {
 		pos : [],
@@ -39,7 +39,7 @@ var LayerHash = new Class({
 	addAt : function(layer, pos)
 	{
 		layer = layer.options?layer:new Layer(layer);
-		if($type(this.tables.id[layer.options.id]) == 'number')
+		if(typeOf(this.tables.id[layer.options.id]) == 'number')
 		{
 			throw new Error('LayerHash.addAt: Layer-ID can only be used once: ``'+layer.options.id+'´´');
 		}

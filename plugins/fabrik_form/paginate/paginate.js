@@ -3,7 +3,7 @@ FabRecordSet = new Class({
 	initialize: function (form, options) {
 		this.form = form;
 		this.options = {};
-		$extend(this.options, options);
+		Object.extend(this.options, options);
 		var f = this.form.getForm();
 		var tableId = f.getElement('input[name=listid]').get('value');
 		this.pkfield = f.getElement('input[name=rowid]');

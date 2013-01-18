@@ -173,15 +173,14 @@
 
 		<fieldset name="plg-fileupload-ajax-upload" label="PLG_ELEMENT_FILEUPLOAD_AJAX_UPLOADS">
 	
-			<field default="0"
+			<field name="ajax_upload"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_LABEL" name="ajax_upload" type="radio">
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-		</fieldset>
-			
-		<fieldset name="plg-fileupload-ajax-upload-opts">
 		
 			<field name="ajax_runtime"
 				type="text"
@@ -189,7 +188,13 @@
 				description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" />
 			
-			<field default="4" class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL" name="ajax_max" size="2" type="text"/>
+			<field name="ajax_max"
+				type="text"
+				default="4"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL"
+				size="2"/>
 				
 			<field default="400" class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL" name="ajax_dropbox_width" type="text"/>
 			

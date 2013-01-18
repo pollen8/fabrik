@@ -776,6 +776,7 @@ EOD;
 	{
 		if (!self::$mcl)
 		{
+			// Cant used compressed version as its not up to date
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
 				'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
 				'media/com_fabrik/js/lib/mcl/Thread.js');

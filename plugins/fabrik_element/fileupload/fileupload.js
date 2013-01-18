@@ -448,7 +448,7 @@ var ImageWidget = new Class({
 			}
 		};
 
-		$extend(this.imageDefault, opts);
+		Object.append(this.imageDefault, opts);
 
 		this.windowopts = {
 			'id': this.canvas.id + '-mocha',

@@ -17,10 +17,10 @@ var Thread = new Class({
 	options : {
 		fps : (1000 / 31).round(), //31 = fps
 		expires : -1,
-		onExec : $empty,
-		onExpire : $empty,
-		onBeforeexpire : $empty,
-		onDestroy : $empty,
+		onExec : function () {},
+		onExpire : function () {},
+		onBeforeexpire : function () {},
+		onDestroy : function () {},
 		instant : true
 	},
 	timer : null,

@@ -15,8 +15,8 @@ var CanvasItem = new Class({
 	Implements : [Options,Events],
 	
 	options : {
-		onDraw : $empty,
-		onDestroy : $empty
+		onDraw :  function () {},
+		onDestroy : function () {}
 	},
 	
 	dims : null,
