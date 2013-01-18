@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of crons.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,18 +24,21 @@ class FabrikViewCrons extends JView
 {
 	/**
 	 * Cron jobs
+	 *
 	 * @var  array
 	 */
 	protected $items;
 
 	/**
 	 * Pagination
+	 *
 	 * @var  JPagination
 	 */
 	protected $pagination;
 
 	/**
 	 * View state
+	 *
 	 * @var  object
 	 */
 	protected $state;

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Gannt Chart Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionganntchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,7 +16,7 @@ jimport('joomla.application.component.model');
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 /**
- * Fabrik Coverflow Plug-in Model
+ * Fabrik Gannt Chart Plug-in Model
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionganntchart

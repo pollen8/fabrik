@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Kaltura Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.kaltura
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -21,6 +23,7 @@ jimport('kaltura.kaltura_client');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.kaltura
+ * @since       3.0
  */
 
 class fabrikModelKaltura extends FabrikFEModelVisualization
@@ -28,6 +31,11 @@ class fabrikModelKaltura extends FabrikFEModelVisualization
 
 	var $kalturaConfig = null;
 
+	/**
+	 * Get the configuration
+	 *
+	 * @return KalturaConfiguration
+	 */
 	function getKalturaConfig()
 	{
 		if (!isset($this->kalturaConfig))
@@ -45,6 +53,12 @@ class fabrikModelKaltura extends FabrikFEModelVisualization
 		}
 		return $this->kalturaConfig;
 	}
+
+	/**
+	 * Get data
+	 *
+	 * @return array
+	 */
 
 	function getData()
 	{
@@ -76,6 +90,11 @@ class fabrikModelKaltura extends FabrikFEModelVisualization
 		return $entries;
 	}
 
+	/**
+	 * Get which page we should show
+	 *
+	 * @return number
+	 */
 	private function getKalturaPage()
 	{
 		$page = JRequest::getInt('page'); // read the current page from the request.
@@ -85,6 +104,11 @@ class fabrikModelKaltura extends FabrikFEModelVisualization
 		return $page;
 	}
 
+	/**
+	 * Get a filter
+	 *
+	 * @return KalturaEntryFilter
+	 */
 	private function getKalturaFilter()
 	{
 		$filter = new KalturaEntryFilter();

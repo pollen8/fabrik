@@ -31,6 +31,10 @@ class FabrikModelImport extends FabModelAdmin
 	 */
 	protected $text_prefix = 'COM_FABRIK_IMPORT';
 
+	/**
+	 * JTables to import
+	 * @var JTables
+	 */
 	protected $tables = array();
 
 	/**

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Calendar HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -202,6 +204,12 @@ class fabrikViewCalendar extends JView
 		}
 		return parent::display();
 	}
+
+	/**
+	 * Choose which list to add an event to
+	 *
+	 * @return  void
+	 */
 
 	function chooseaddevent()
 	{

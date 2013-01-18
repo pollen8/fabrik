@@ -1,5 +1,7 @@
 <?php
 /**
+ * Validation Rulle Fabrik Table
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
- * Group Fabrik Table
+ * Validation Rulle Fabrik Table
  *
  * @package     Joomla
  * @subpackage  Fabrik

@@ -58,7 +58,7 @@
 			    <exec executable="${phpdoc.path}">
 			        <arg line="
 			            -d ${basedir}/components/com_fabrik,${basedir}/plugins/fabrik_element,${basedir}/plugins/fabrik_cron,${basedir}/plugins/fabrik_list,${basedir}/plugins/fabrik_form,${basedir}/plugins/fabrik_validationrule,${basedir}/plugins/fabrik_visualization,${basedir}/plugins/content/fabrik,${basedir}/plugins/system/fabrik,${basedir}/plugins/system/fabrikcron,${basedir}/administrator/components/com_fabrik
-			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*
+			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*,${basedir}/administrator/components/com_fabrik/classes,${basedir}/plugins/fabrik_cron/rest/oauth,${basedir}/components/com_fabrik/dbdriver/*
 			            -t ${basedir}/fabrik_build/docs" />
 			    </exec>
 			</then>
@@ -66,7 +66,7 @@
 			    <exec executable="cmd">
 			        <arg line="/c ${phpdoc.path}
 			            -d ${basedir}/components/com_fabrik,${basedir}/plugins/fabrik_element,${basedir}/plugins/fabrik_cron,${basedir}/plugins/fabrik_list,${basedir}/plugins/fabrik_form,${basedir}/plugins/fabrik_validationrule,${basedir}/plugins/fabrik_visualization,${basedir}/plugins/content/fabrik,${basedir}/plugins/system/fabrik,${basedir}/plugins/system/fabrikcron,${basedir}/administrator/components/com_fabrik
-			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*
+			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*,*/lib/*,${basedir}/administrator/components/com_fabrik/classes/,${basedir}/plugins/fabrik_cron/rest/oauth/,${basedir}/components/com_fabrik/dbdriver/
 			            -t ${basedir}/fabrik_build/docs" />
 			    </exec>
 		    </else>

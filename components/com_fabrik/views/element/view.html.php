@@ -1,10 +1,12 @@
 <?php
-
 /**
+ * Fabrik Front End Element View
+ *
  * @package		Joomla
  * @subpackage	Fabik
  * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
  * @license		GNU/GPL
+ * @deprecated
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,10 +14,30 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * Fabrik Front End Element View
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewElement extends JView
 {
 
+	/**
+	 * Element id
+	 * @var int
+	 */
 	var $_id = null;
+
+	/**
+	 * Set id
+	 *
+	 * @param   $int  $id  Element id
+	 *
+	 * @return  void
+	 */
 
 	function setId($id)
 	{
@@ -56,4 +78,3 @@ class FabrikViewElement extends JView
 	}
 
 }
-?>

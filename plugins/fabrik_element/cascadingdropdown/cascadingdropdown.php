@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render cascading dropdown
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.cascadingdropdown
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

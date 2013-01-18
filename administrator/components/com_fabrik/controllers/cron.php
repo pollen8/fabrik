@@ -14,6 +14,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controllerform');
 
+require_once 'fabcontrollerform.php';
+
 /**
  * Cron controller class.
  *
@@ -22,11 +24,12 @@ jimport('joomla.application.component.controllerform');
  * @since		1.6
  */
 
-class FabrikAdminControllerCron extends FabControllerForm
+class FabrikControllerCron extends FabControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CRON';
 

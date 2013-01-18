@@ -1,4 +1,13 @@
 <?php
+/**
+ * Fabrik List Template: Bluesky CSS
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int) $_REQUEST['buttoncount'];

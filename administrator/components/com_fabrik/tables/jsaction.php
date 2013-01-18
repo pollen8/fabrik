@@ -1,25 +1,31 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * JS Action Fabrik table
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-// no direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 /**
- * @package		Joomla
- * @subpackage	Fabrik
+ * JS Action Fabrik table
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
  */
 class FabrikTableJsaction extends FabTable
 {
 
-	/*
+	/**
+	 * Construct
 	 *
+	 * @param   object  &$db  database object
 	 */
 
 	function __construct(&$_db)
@@ -28,4 +34,3 @@ class FabrikTableJsaction extends FabTable
 	}
 
 }
-?>

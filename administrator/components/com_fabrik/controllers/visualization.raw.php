@@ -1,11 +1,13 @@
 <?php
-/*
- * @package Joomla.Administrator
- * @subpackage Fabrik
- * @since		1.6
- * @copyright Copyright (C) 2005 - 2010 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
-*/
+/**
+ * Raw Visualization controller class.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       1.6
+ */
 
 // No direct access
 defined('_JEXEC') or die;
@@ -13,22 +15,25 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
- * Element controller class.
+ * Raw Visualization controller class.
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikControllerVisualization extends JControllerForm
 {
 	/**
-	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * The prefix to use with controller messages.
+	 *
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_VISUALIZATION';
 
 	/**
-	 * called via ajax to perform viz ajax task (defined by plugintask method)
+	 * Called via ajax to perform viz ajax task (defined by plugintask method)
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
 	public function display()
@@ -74,7 +79,14 @@ class FabrikControllerVisualization extends JControllerForm
 			$controller->$task();
 
 		}
+		return $this;
 	}
+
+	/**
+	 * Get html for viz plugin
+	 *
+	 * @return  null
+	 */
 
 	public function getPluginHTML()
 	{

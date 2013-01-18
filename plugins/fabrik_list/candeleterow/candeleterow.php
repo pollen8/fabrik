@@ -1,5 +1,7 @@
 <?php
 /**
+ * Determines if a row is deleteable
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.candeleterow
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -14,12 +16,12 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 
 /**
-*  Determines if a row is deleteable
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.candeleterow
-* @since       3.0
-*/
+ *  Determines if a row is deleteable
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.candeleterow
+ * @since       3.0
+ */
 
 class plgFabrik_ListCandeleterow extends plgFabrik_List
 {

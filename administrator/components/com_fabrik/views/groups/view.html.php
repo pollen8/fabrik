@@ -1,5 +1,7 @@
 <?php
 /**
+ * View class for a list of groups.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
@@ -21,8 +23,25 @@ jimport('joomla.application.component.view');
 
 class FabrikViewGroups extends JView
 {
+	/**
+	 * Group items
+	 *
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**

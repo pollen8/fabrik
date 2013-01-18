@@ -1,12 +1,11 @@
 <?php
-
 /**
  * A cron task to grab data from a REST API and insert it into a list
- * @package     Joomla
- * @subpackage  Fabrik
- * @author Rob Clayburn
- * @copyright (C) Rob Clayburn
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.rest
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -15,14 +14,24 @@ defined('_JEXEC') or die();
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
+/**
+ *  Determines if a row is deleteable
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.rest
+ * @since       3.0
+ */
+
 class plgFabrik_CronRest extends plgFabrik_Cron {
 
 	/**
-	 * do the plugin action
-	 * @param array data
-	 * @param object list model
-	 * @param object admin list model
-	 * @return number of records updated
+	 * Do the plugin action
+	 *
+	 * @param   array  &$data           Data
+	 * @param   object $listModel       List model
+	 * @param   object $adminListModel  admin list model
+	 *
+	 * @return  number of records updated
 	 *
 	 */
 	public function process(&$data, &$listModel, &$adminListModel)
@@ -56,6 +65,11 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 
 	}
 
+	/**
+	 * OAth validation
+	 *
+	 * @return  void
+	 */
 	protected function oAuth()
 	{
 		require_once JPATH_SITE . '/plugins/fabrik_cron/rest/oauth/FabrikOAuth.php';
@@ -79,6 +93,15 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 		//print_r($client);
 		exit;
 	}
+
+	/**
+	 * Create a list
+	 *
+	 * @param   object  $listModel       List Model
+	 * @param   object  $adminListModel  Admin List Model
+	 *
+	 * @return  void
+	 */
 
 	protected function createList($listModel, $adminListModel)
 	{
@@ -115,4 +138,3 @@ class plgFabrik_CronRest extends plgFabrik_Cron {
 	}
 
 }
-?>

@@ -20,15 +20,22 @@ defined('_JEXEC') or die();
 class allVideosRender
 {
 
-	var $output = '';
+	/**
+	 * Render output
+	 *
+	 * @var  string
+	 */
+	public $output = '';
 
 	var $inTableView = false;
 
 	/**
+	 * Render audio in the list view
+	 *
 	 * @param   object  &$model   Element model
 	 * @param   object  &$params  Element params
 	 * @param   string  $file     Row data for this element
-	 * @param   object  $thisRow  All rows data
+	 * @param   object  $thisRow  All row's data
 	 *
 	 * @return  void
 	 */

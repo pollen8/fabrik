@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Kaltura Viz HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.kaltura
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -12,10 +14,11 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
- * Fabrik Google Map Viz HTML View
+ * Fabrik Kaltura Viz HTML View
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.kaltura
+ * @since       3.0
  */
 
 class fabrikViewKaltura extends JView

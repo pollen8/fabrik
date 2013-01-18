@@ -1,5 +1,7 @@
 <?php
 /**
+ * Google Chart default filter tmpl
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

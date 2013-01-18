@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * View class for a list of visualizations.
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
@@ -16,17 +18,39 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Administrator
  * @subpackage	Fabrik
- * @since		1.6
+ * @since		3.0
  */
 class FabrikViewVisualizations extends JView
 {
+	/**
+	 * Visualization items
+	 *
+	 * @var  array
+	 */
 	protected $items;
+
+	/**
+	 * Pagination
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
+
+	/**
+	 * View state
+	 *
+	 * @var object
+	 */
 	protected $state;
 
 	/**
 	 * Display the view
+	 *
+	 * @param   string  $tpl  Template
+	 *
+	 * @return  void
 	 */
+
 	public function display($tpl = null)
 	{
 		// Initialise variables.
@@ -50,7 +74,10 @@ class FabrikViewVisualizations extends JView
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
+
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';

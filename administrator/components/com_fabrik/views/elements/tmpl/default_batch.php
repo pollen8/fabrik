@@ -1,10 +1,12 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_content
+ * Admin Elements Batch processing tmpl
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
  */
 
 // No direct access

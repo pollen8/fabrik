@@ -1,3 +1,16 @@
+<?php
+/**
+ * Fabrik List Template: F3 Headings
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <?php $filter = JFilterInput::getInstance(array('p'), array(), 1);?>
 <div class="fabrik___headings">
 <ul class="fabrik___heading list">

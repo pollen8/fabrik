@@ -1,5 +1,7 @@
 <?php
 /**
+ * Post content to a VBulletin forum
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.vbulletin
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -22,12 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class plgFabrik_FormVbForum extends plgFabrik_Form
 {
-
-	protected  $vb_forum_field = '';
-
-	protected $vb_path = '';
-
-	protected $vb_globals = '';
 
 	/**
 	 * Before the record is stored, this plugin will see if it should process

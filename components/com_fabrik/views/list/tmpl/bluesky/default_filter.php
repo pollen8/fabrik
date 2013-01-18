@@ -1,8 +1,22 @@
+<?php
+/**
+ * Fabrik List Template: Bluesky Filter
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
+
 <div class="fabrikFilterContainer">
 <?php if ($this->filterMode === 3 || $this->filterMode === 4) {
 	?><div class="searchall">
 	<ul class="fabrik_action">
-		
+
 	<?php if (array_key_exists('all', $this->filters)) {
 		echo '<li>'.$this->filters['all']->element.'</li>';
 	}?>
@@ -15,10 +29,10 @@
 <!-- 	<input type="button" class="fabrik_filter_submit button" value="<?php echo JText::_('COM_FABRIK_GO');?>"
 				name="filter" /> -->
 	</li>
-	<?php } ?>	
+	<?php } ?>
 	</ul>
 	</div>
-<?php 
+<?php
 } else {?>
 
 <table class="filtertable fabrikList">

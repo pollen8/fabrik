@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Fusion Chart Plug-in Model
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -952,7 +954,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Set the list ids
+	 * Set an array of list id's whose data is used inside the visualaziation
 	 *
 	 * @return  void
 	 */

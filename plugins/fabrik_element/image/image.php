@@ -22,7 +22,11 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	var $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
 
-	/** @var  string  db table field type */
+	/**
+	 * Db table field type
+	 *
+	 * @var string
+	 */
 	protected $fieldDesc = 'TEXT';
 
 	/**

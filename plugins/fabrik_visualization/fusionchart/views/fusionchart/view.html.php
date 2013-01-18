@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik Fuson Chart HTML View
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -16,6 +18,7 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionchart
+ * @since       3.0
  */
 
 class fabrikViewFusionchart extends JView

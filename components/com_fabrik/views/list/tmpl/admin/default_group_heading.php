@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Template: Admin Group Headings
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

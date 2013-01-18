@@ -1,3 +1,16 @@
+<?php
+/**
+ * Fabrik List Template: F3 Buttons
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <ul class="fabrik_action"><?php if ($this->showAdd) {?>
 	<li class="addbutton">
 		<a class="addRecord" href="<?php echo $this->addRecordLink;?>">
@@ -16,7 +29,7 @@
 			<span><?php echo JText::_('COM_FABRIK_FILTER');?></span>
 		</a>
 	</li>
-<?php } 
+<?php }
 
 	if ($this->canGroupBy) {?>
 		<li>

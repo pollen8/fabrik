@@ -1,5 +1,7 @@
 <?php
 /**
+ * Textopoly SMS gateway class
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
@@ -10,25 +12,30 @@
 defined('_JEXEC') or die();
 
 /**
-* Textopoly SMS gateway class
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.form.sms
-* @since       3.0
+ * Textopoly SMS gateway class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @since       3.0
 */
 
 class Textopoly extends JObject
 {
 
+	/**
+	 * URL To Post SMS to
+	 *
+	 * @var string
+	 */
 	protected $url = 'http://sms.mxtelecom.com/SMSSend?user=%s&pass=%s&smsfrom=%s&smsto=%s&smsmsg=%s';
 
 	/**
-	* Send SMS
-	*
-	* @param   string  $message  sms message
-	*
-	* @return  void
-	*/
+	 * Send SMS
+	 *
+	 * @param   string  $message  sms message
+	 *
+	 * @return  void
+	 */
 
 	public function process($message = '')
 	{
@@ -46,10 +53,10 @@ class Textopoly extends JObject
 	}
 
 	/**
-	* Get plugin params
-	*
-	* @return  object  params
-	*/
+	 * Get plugin params
+	 *
+	 * @return  object  params
+	 */
 
 	private function getParams()
 	{

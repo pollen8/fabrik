@@ -1,5 +1,7 @@
 <?php
 /**
+ * Twilio SMS gateway class
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

@@ -27,7 +27,7 @@ class FabrikControllerCron extends JControllerForm
 	/**
 	 * The prefix to use with controller messages.
 	 *
-	 * @var		string
+	 * @var	string
 	 */
 	protected $text_prefix = 'COM_FABRIK_CRON';
 
