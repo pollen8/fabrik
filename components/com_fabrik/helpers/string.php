@@ -454,7 +454,7 @@ class FabrikString extends JString
 	 * Doesn't do any sanity testing to see if it's actually a valid element
 	 * name, just goes by pattern patching word___word
 	 *
-	 * @params   $str  string to test
+	 * @params   string  $str  String to test
 	 *
 	 * @return   bool
 	 *

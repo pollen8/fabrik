@@ -1,5 +1,7 @@
 <?php
 /**
+ * Fabrik List Template: Bluesky Group Headings
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

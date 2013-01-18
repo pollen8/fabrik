@@ -1,4 +1,15 @@
-<?php 
+<?php
+/**
+ * Fabrik List Template: Div Custom CSS Example
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
@@ -6,7 +17,7 @@ echo "
   Record style
 */
 #listform_$c div.fabrik_row {
-	#border:1px solid; 
+	#border:1px solid;
 	#width:200px;
 	#height:400px;
 	#overflow:hidden;

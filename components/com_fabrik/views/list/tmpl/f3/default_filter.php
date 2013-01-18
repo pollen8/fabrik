@@ -1,4 +1,17 @@
-	<?php if ($this->filter_action != 'onchange') {?>
+<?php
+/**
+ * Fabrik List Template: F3 Filters
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
+<?php if ($this->filter_action != 'onchange') {?>
 	<div class="submitfilter">
 	<a href="#" name="filter" class="fabrik_filter_submit"></a>
 			</div>

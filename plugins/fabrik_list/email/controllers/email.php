@@ -1,9 +1,11 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * Email list plug-in Controller
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -11,20 +13,24 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-require_once(COM_FABRIK_FRONTEND . '/helpers/params.php');
-require_once(COM_FABRIK_FRONTEND . '/helpers/string.php');
+require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
+require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
- * Email table plug-in Controller
+ * Email list plug-in Controller
  *
  * @static
- * @package		Joomla
+ * @package     Joomla
  * @subpackage	Contact
- * @since 1.5
+ * @since       1.5
  */
 class FabrikControllerListemail extends JController
 {
-	/** @var string path of uploaded file */
+	/**
+	 *  Path of uploaded file
+	 *
+	 *  @var string
+	 */
 	var $filepath = null;
 
 	/**
@@ -47,6 +53,8 @@ class FabrikControllerListemail extends JController
 
 	function popupwin()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$document = JFactory::getDocument();
 		$viewName = 'popupwin';
 		$viewType = $document->getType();
@@ -55,16 +63,16 @@ class FabrikControllerListemail extends JController
 		$view = $this->getView($viewName, $viewType);
 
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('id'));
+		$listModel->setId($input->getInt('id'));
 		$formModel = $listModel->getFormModel();
+
 		// Push a model into the view
-		
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
-		
+
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
-		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));
+		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
 		if (!JError::isError($model))
 		{
 			$view->setModel($model, true);
@@ -73,24 +81,27 @@ class FabrikControllerListemail extends JController
 		$view->setModel($formModel);
 
 		// Display the view
-		$view->assign('error', $this->getError());
+		$view->error = $this->getError();
 		return $view->display();
 	}
 
 	/**
-	 * send the emails
+	 * Send the emails
+	 *
+	 * @return  void
 	 */
 
 	function doemail()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$pluginManager = JModel::getInstance('Pluginmanager', 'FabrikFEModel');
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');
-		$listModel->setId(JRequest::getInt('id'));
-		$model->setParams($listModel->getParams(), JRequest::getInt('renderOrder'));
+		$listModel->setId($input->getInt('id'));
+		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
 		$model->listModel = $listModel;
 		$model->doEmail();
 	}
 
 }
-?>

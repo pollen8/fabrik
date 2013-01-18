@@ -1,11 +1,24 @@
+<?php
+/**
+ * Fabrik List Template: AdminModule Headings
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <tr class="fabrik___heading">
 <?php foreach ($this->headings as $key=>$heading) {
 	$filterFound = array_key_exists($key, $this->filters);
 	?>
 	<th class="<?php echo $this->headingClass[$key]['class']?>" style="<?php echo $this->headingClass[$key]['style']?>">
-		
-		<?php 
-	
+
+		<?php
+
 			echo '<span class="heading">' . $heading . '</span>';
 		?>
 		<?php if ($filterFound) {

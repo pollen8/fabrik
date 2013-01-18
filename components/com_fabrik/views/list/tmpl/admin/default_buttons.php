@@ -1,3 +1,16 @@
+<?php
+/**
+ * Fabrik List Template: Admin Buttons
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <div class="fabrik_buttons">
 
 	<?php if ($this->hasButtons) {?>
