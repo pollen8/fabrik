@@ -599,8 +599,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * the fieldsets!  Well, that's the only way I could come up with doing it.  Hopefully Rob can come up with
 		 * a quicker and simpler way of doing this!
 		 */
-		$num_validations = count($params['validations']['plugin']);
 		$validations = JArrayHelper::getValue($params['validations'], 'plugin', array());
+		$num_validations = count($validations);
 		$validation_plugins = $this->getValidations($elementModel, $validations);
 		foreach ($validation_plugins as $plugin)
 		{
@@ -1128,9 +1128,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$jdb = FabrikWorker::getDbo(true);
 			$query = $jdb->getQuery(true);
-			$query->delete('#__{fabrik}_joins')->where('element_id = ' . (int) $row->id);
+			$query->delete('#__{package}_joins')->where('element_id = ' . (int) $row->id);
 			$jdb->setQuery($query);
-			$jdb->query();
+			$jdb->execute();
 		}
 		// Create or update fabrik join
 		$data = array('list_id' => $listModel->getTable()->id, 'element_id' => $row->id, 'join_from_table' => $listModel->getTable()->db_table_name,
