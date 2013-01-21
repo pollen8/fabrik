@@ -1017,7 +1017,7 @@ var FbForm = new Class({
 								clear_form = true;
 							}
 							Fabrik.loader.stop(this.getBlock());
-							var savedMsg = (json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
+							var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
 							if (json.baseRedirect !== true) {
 								clear_form = json.reset_form;
 								if (json.url !== undefined) {
@@ -1037,9 +1037,12 @@ var FbForm = new Class({
 											window.open(json.url, '_blank');
 										}
 									}
+								} else {
+									alert(savedMsg);
 								}
 							} else {
 								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
+								alert(savedMsg);
 							}
 							// Query the list to get the updated data
 							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);

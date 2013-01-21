@@ -191,7 +191,6 @@ Fabrik.Window = new Class({
 	 * toggle the window full screen
 	 */
 	expand: function (e) {
-		debugger;
 		e.stop();
 		if (!this.expanded) {
 			this.expanded = true;
@@ -290,6 +289,7 @@ Fabrik.Window = new Class({
 		var footer = this.window.getElement('.bottomBar').getSize().y;
 		this.contentWrapperEl.setStyle('height', this.window.getDimensions().height - (titleHeight + footer));
 		this.contentWrapperEl.setStyle('width', this.window.getDimensions().width - 2);
+		
 		// Resize iframe when window is resized
 		if (this.options.loadMethod === 'iframe') {
 			this.iframeEl.setStyle('height', this.contentWrapperEl.offsetHeight - 40);
@@ -302,7 +302,8 @@ Fabrik.Window = new Class({
 			var myfx = new Fx.Scroll(window).toElement(this.window);
 		}
 		if (this.options.loadMethod !== 'iframe') {
-			//as iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
+			
+			// As iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
 			var contentEl = this.window.getElement('.itemContent');
 			var h = contentEl.getScrollSize().y < window.getHeight() ? contentEl.getScrollSize().y : window.getHeight();
 			var w = contentEl.getScrollSize().x + 17 < window.getWidth() ? contentEl.getScrollSize().x + 17 : window.getWidth();

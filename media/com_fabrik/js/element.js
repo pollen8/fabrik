@@ -297,7 +297,7 @@ var FbElement =  new Class({
 	},
 	
 	/**
-	 * get the fx to fade up/down element validation feedback text
+	 * Get the fx to fade up/down element validation feedback text
 	 */
 	getValidationFx: function () {
 		if (!this.validationFX) {
@@ -336,12 +336,20 @@ var FbElement =  new Class({
 				Fabrik.tips.attach(a);
 			}
 			errorElements[0].adopt(a);
-			container.removeClass('success').addClass('error');
+			
+			container.removeClass('alert-success').removeClass('alert-info').addClass('alert-error');
 			break;
 		case 'fabrikSuccess':
+			container.addClass('alert-success').removeClass('alert-info').removeClass('alert-error');
 			errorElements[0].adopt(this.successImage);
+			var delFn = function () {
+				errorElements[0].addClass('fabrikHide');
+				container.removeClass('alert-success');
+			};
+			delFn.delay(700);
 			break;
 		case 'fabrikValidating':
+			container.removeClass('alert-success').addClass('alert-info').removeClass('alert-error');
 			errorElements[0].adopt(this.loadingImage);
 			break;
 		}
