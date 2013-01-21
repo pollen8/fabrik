@@ -41,15 +41,15 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	{
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
-		$w = $params->get('fb_gm_table_mapwidth');
-		$h = $params->get('fb_gm_table_mapheight');
-		$z = $params->get('fb_gm_table_zoomlevel');
+		$w = $params->getInt('fb_gm_table_mapwidth');
+		$h = $params->getInt('fb_gm_table_mapheight');
+		$z = $params->getInt('fb_gm_table_zoomlevel');
 		$data = FabrikWorker::JSONtoData($data, true);
 		foreach ($data as $i => &$d)
 		{
 			if ($params->get('fb_gm_staticmap_tableview'))
 			{
-				$d = $this->_staticMap($d, $w, $h, null, $i, true, JArrayHelper::fromObject($thisRow));
+				$d = $this->_staticMap($d, $w, $h, $z, $i, true, JArrayHelper::fromObject($thisRow));
 			}
 			if ($params->get('icon_folder') == '1')
 			{
