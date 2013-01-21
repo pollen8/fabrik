@@ -330,9 +330,15 @@ class FabrikViewFormBase extends JView
 			}
 			else
 			{
-				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
-				$this->pdfLink = '<a href="' . JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId())
-				. '&rowid=' . $this->rowid . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+				if ($app->isAdmin())
+				{
+					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
+				}
+				else
+				{
+					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
+				}
+				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}
 		}
 	}

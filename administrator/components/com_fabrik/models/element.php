@@ -1105,7 +1105,7 @@ class FabrikModelElement extends JModelAdmin
 		{
 			$jdb = FabrikWorker::getDbo(true);
 			$query = $jdb->getQuery(true);
-			$query->delete('#__{fabrik}_joins')->where('element_id = ' . (int) $row->id);
+			$query->delete('#__{package}_joins')->where('element_id = ' . (int) $row->id);
 			$jdb->setQuery($query);
 			$jdb->query();
 		}
