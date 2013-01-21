@@ -200,6 +200,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$group->store();
 			$currentGroups[] = $db->insertid();
 		}
+
 		$this->_makeFormGroups($data, $currentGroups);
 		if ($record_in_database == '1')
 		{
@@ -282,24 +283,43 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$formid = $this->getState($this->getName() . '.id');
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
-		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
+		JArrayHelper::toInteger($currentGroups);
+		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid)
+		->where('group_id NOT IN (' . implode($currentGroups, ', ') . ')');
 		$db->setQuery($query);
+echo $query;
 
 		// Delete the old form groups
 		if (!$db->execute())
 		{
 			JError::raiseError(500, $db->stderr());
 		}
+
+		// Get previously saved form groups
+		$query->clear()->select('id, group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
+		$db->setQuery($query);
+		echo $query . "<br>";
+		$fgids = $db->loadObjectList('group_id');
 		$orderid = 1;
 		$currentGroups = array_unique($currentGroups);
+
 		foreach ($currentGroups as $group_id)
 		{
 			if ($group_id != '')
 			{
 				$group_id = (int) $group_id;
-				$query = $db->getQuery(true);
+				$query->clear();
+				if (array_key_exists($group_id, $fgids))
+				{
+					$query->update('#__{package}_formgroup')
+					->set('ordering = ' . $orderid)->where('id =' . $fgids[$group_id]->id);
+				}
+				else
+				{
 				$query->insert('#__{package}_formgroup')
 					->set(array('form_id =' . (int) $formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
+				}
+				echo $query . "<br>";
 				$db->setQuery($query);
 				if (!$db->execute())
 				{
