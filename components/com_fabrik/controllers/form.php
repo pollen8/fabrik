@@ -223,7 +223,7 @@ class FabrikControllerForm extends JControllerLegacy
 			// If its in a module with ajax or in a package or inline edit
 			if ($input->get('fabrik_ajax'))
 			{
-				if ($input->getInt('elid') !== 0)
+				if ($input->getInt('elid', 0) !== 0)
 				{
 					// Inline edit
 					$eMsgs = array();
