@@ -202,7 +202,7 @@ class FabrikControllerForm extends JController
 		 * as 'new' for purposes of running plugins.  Rob's comment in model process() seems to
 		 * indicate that origRowId was for this purposes, but it doesn't work, 'cos always has a value.
 		 */
-		if (JRequest::getVar('Copy', '') != '')
+		if ($input->get('Copy', '') != '')
 		{
 			$model->copyingRow(true);
 		}
@@ -210,16 +210,16 @@ class FabrikControllerForm extends JController
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JRequest::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
 
 		$validated = $model->validate();
 		if (!$validated)
 		{
 			// If its in a module with ajax or in a package or inline edit
-			if (JRequest::getCmd('fabrik_ajax'))
+			if ($input->get('fabrik_ajax'))
 			{
-				if (JRequest::getInt('elid') !== 0)
+				if ($input->getInt('elid', 0) !== 0)
 				{
 					// Inline edit
 					$eMsgs = array();
