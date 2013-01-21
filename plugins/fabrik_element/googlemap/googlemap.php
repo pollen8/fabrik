@@ -41,9 +41,9 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	{
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
-		$w = $params->getInt('fb_gm_table_mapwidth');
-		$h = $params->getInt('fb_gm_table_mapheight');
-		$z = $params->getInt('fb_gm_table_zoomlevel');
+		$w = (int) $params->get('fb_gm_table_mapwidth');
+		$h = (int) $params->get('fb_gm_table_mapheight');
+		$z = (int) $params->get('fb_gm_table_zoomlevel');
 		$data = FabrikWorker::JSONtoData($data, true);
 		foreach ($data as $i => &$d)
 		{
