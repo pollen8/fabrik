@@ -123,7 +123,8 @@ var FbList = new Class({
 			bootstrap: this.options.j3
 		};
 		if (this.options.view === 'csv') {
-			//for csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
+			
+			// For csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
 			this.openCSVWindow();
 		} else {
 			if (this.form.getElements('.csvExportButton')) {
@@ -169,7 +170,7 @@ var FbList = new Class({
 	},
 	
 	_csvExportForm: function () {
-		// cant build via dom as ie7 doesn't accept checked status
+		// Can't build via dom as ie7 doesn't accept checked status
 		var rad = "<input type='radio' value='1' name='incfilters' checked='checked' />" + Joomla.JText._('JYES');
 		var rad2 = "<input type='radio' value='1' name='incraw' checked='checked' />" + Joomla.JText._('JYES');
 		var rad3 = "<input type='radio' value='1' name='inccalcs' checked='checked' />" + Joomla.JText._('JYES');
@@ -1193,7 +1194,7 @@ var FbListActions = new Class({
 		}
 		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
-			// sub menus ie group by options
+			// Sub menus ie group by options
 			if (ul.getElement('ul')) {
 				var el = ul.getElement('ul');
 				var c = new Element('div').adopt(el.clone());
