@@ -11,9 +11,9 @@ $input = $app->input;
 		<?php echo JText::_('COM_FABRIK_ADD')?>
 	</a>
 	<div id="advancedSearchContainer">
-	<table class="advanced-search-list fabrikList table table-striped">
+	<table class="advanced-search-list table table-striped table-condensed">
 		<tbody>
-			<?php foreach ($this->rows as $row) {?>
+			<?php foreach ($this->rows as $row) :?>
 			<tr>
 				<td><span><?php echo $row['join'];?></span></td>
 				<td><?php echo $row['element'] . $row['type'] . $row['grouped'];?>
@@ -39,7 +39,7 @@ $input = $app->input;
 
 				</td>
 			</tr>
-			<?php }?>
+			<?php endforeach;?>
 
 		</tbody>
 		<thead>
