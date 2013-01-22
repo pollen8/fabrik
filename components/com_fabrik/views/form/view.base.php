@@ -292,8 +292,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _addButtons()
 	{
-		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$app = JFactory::getApplication();
+		if ($app->input->get('format') === 'pdf')
+		{
+			// if we're rendering as PDF, no point showing any buttons
+			$this->showEmail = false;
+			$this->showPrint = false;
+			$this->showPDF = false;
+			return;
+		}
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$model = $this->getModel();

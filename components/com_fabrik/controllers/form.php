@@ -94,11 +94,10 @@ class FabrikControllerForm extends JControllerLegacy
 	public function display($cachable = false, $urlparams = false)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
 		if ($viewName == 'emailform')

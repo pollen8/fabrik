@@ -200,9 +200,20 @@
 					<option value="querystring">PLG_VISUALIZATION_GOOGLEMAP_QUERY_STRING</option>
 			</field>
 			
-			<field class="input-mini" default="600" label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL" name="fb_gm_mapwidth" size="3" type="text"/>
+			<field name="fb_gm_mapwidth"
+				type="text"
+				size="3"
+				class="input-mini"
+				default="600"
+				label="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_LABEL"
+				description="PLG_VISUALIZATION_GOOGLEMAP_WIDTH_DESC"/>
 				
-			<field class="input-mini" default="300" label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL" name="fb_gm_mapheight" size="3" type="text"/>
+			<field name="fb_gm_mapheight"
+				size="3"
+				type="text"
+				class="input-mini"
+				default="300"
+				label="PLG_VISUALIZATION_GOOGLEMAP_HEIGHT_LABEL"/>
 				
 			<field directory="/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/" label="template" name="fb_gm_layout" type="folderlist"/>
 				

@@ -79,6 +79,7 @@ class JFormFieldListfields extends JFormFieldList
 				$element = $elementModel->getElement();
 				$res = $this->loadFromGroupId($element->group_id);
 				break;
+			case 'visualization':
 			case 'element':
 			// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
 				$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;

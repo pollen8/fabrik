@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
+	<fields>
+		<fieldset name="plg-element-time">
+			<field default="0" description="PLG_ELEMENT_TIME_EVAL_DESC" label="PLG_ELEMENT_TIME_EVAL_LABEL" name="eval" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+			<field cols="45" label="PLG_ELEMENT_TIME_DEFAULT_LABEL" description="PLG_ELEMENT_TIME_DEFAULT_DESC" name="default" rows="6" type="textarea"/>
+		</fieldset>
+	</fields>
 	<fields name="params">
-		<fieldset name="plg-time">
+		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-time-params">
 		
 			<field default=""
 				class="input-small"
