@@ -53,20 +53,32 @@ class FabrikTableComment extends FabTable
 class PlgFabrik_FormComment extends PlgFabrik_Form
 {
 
-	/**@var string html comment form */
+	/**
+	 * HTML comment form
+	 *
+	 * @var string
+	 */
 	protected $commentform = null;
 
-	/** @var bool comments locked */
+	/**
+	 * Comments locked
+	 *
+	 * @var bool
+	 */
 	protected $commentsLocked = null;
 
-	/** @var  array  data */
+	/**
+	 * Data
+	 *
+	 * @var array
+	 */
 	protected $data = array();
 
 	/**
 	 * Get any html that needs to be written after the form close tag
 	 *
 	 * @return	string	html
-	 */
+	*/
 
 	public function getEndContent_result()
 	{
@@ -76,8 +88,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Determine if you can add new comments
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Plugin params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  bool
 	 */
@@ -105,8 +117,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Sets up any end html (after form close tag)
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Plugin params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  void
 	 */
@@ -308,12 +320,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$data[] = '<label for="add-comment-name-' . $reply_to . '">' . JText::_('PLG_FORM_COMMENT_NAME') . '</label>';
 			$data[] = '<br />';
 			$data[] = '<input class="inputbox" type="text" size="20" id="add-comment-name-' . $reply_to . '" name="name" value="' . $name
-				. '" /></td>';
+			. '" /></td>';
 			$data[] = '<td>';
 			$data[] = '<label for="add-comment-email-' . $reply_to . '">' . JText::_('PLG_FORM_COMMENT_EMAIL') . '</label>';
 			$data[] = '<br />';
 			$data[] = '<input class="inputbox" type="text" size="20" id="add-comment-email-' . $reply_to . '" name="email" value="' . $email
-				. '" /></td>';
+			. '" /></td>';
 			$data[] = '</tr>';
 		}
 
@@ -325,7 +337,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				$data[] = '<td>';
 				$data[] = JText::_('PLG_FORM_COMMENT_NOTIFY_ME');
 				$data[] = '<label><input type="radio" name="comment-plugin-notify[]" checked="checked" class="inputbox" value="1">' . JText::_('JNO')
-					. '</label>';
+				. '</label>';
 				$data[] = '</td>';
 				$data[] = '<td>';
 				$data[] = '<label><input type="radio" name="comment-plugin-notify[]" class="inputbox" value="0">' . JText::_('JYES') . '</label>';
@@ -357,7 +369,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				$data[] = JText::_('Anonymous') . '<br />';
 				$data[] = '<label for="add-comment-anonymous-no-' . $reply_to . '">' . JText::_('JNO') . '</label>';
 				$data[] = '<input type="radio" id="add-comment-anonymous-no-' . $reply_to
-					. '" name="annonymous[]" checked="checked" class="inputbox" value="0" />';
+				. '" name="annonymous[]" checked="checked" class="inputbox" value="0" />';
 				$data[] = '<label for="add-comment-anonymous-yes-' . $reply_to . '">' . JText::_('JYES') . '</label>';
 				$data[] = '<input type="radio" id="add-comment-anonymous-yes-' . $reply_to . '" name="annonymous[]" class="inputbox" value="1" />';
 			}
@@ -692,21 +704,21 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
 		/* if ($res === false)
+		 {
+		// Attempt to create the db table?
+		$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
+		$db->setQuery($sql);
+		if (!$db->execute())
 		{
-			// Attempt to create the db table?
-			$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
-			$db->setQuery($sql);
-			if (!$db->execute())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-				exit;
-			}
-			$res = $row->store();
-			if ($res === false)
-			{
-				JError::raiseError(500, $row->getError());
-				exit;
-			}
+		JError::raiseError(500, $db->getErrorMsg());
+		exit;
+		}
+		$res = $row->store();
+		if ($res === false)
+		{
+		JError::raiseError(500, $row->getError());
+		exit;
+		}
 
 		} */
 
@@ -769,9 +781,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$date = $db->quote(JFactory::getDate()->toSql());
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification_event')
-			->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
+		->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
 		$db->setQuery($query);
-		$db->execute();
+		try {
+			$db->execute();
+		} catch (RuntimeException $e) {
+			JLog::add('Couldnt save fabrik comment notification event: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
+			return false;
+		}
 	}
 
 	/**
@@ -797,9 +814,16 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $input->get('rowid'));
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification')
-			->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
+		->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
 		$db->setQuery($query);
-		$db->execute();
+		try {
+			$db->execute();
+		}
+		catch (RuntimeException $e)
+		{
+			JLog::add('Couldnt save fabrik comment notification: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
+			return false;
+		}
 		$params = $formModel->getParams();
 		if ($params->get('comment-notify-admins') == 1)
 		{
@@ -809,10 +833,17 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 				if ($row->id != $user_id)
 				{
 					$fields = array('reason = ' . $db->quote('admin observing a comment'), 'user_id = ' . $row->id, 'reference = ' . $ref,
-						'label = ' . $label);
+							'label = ' . $label);
 					$query->insert('#__{package}_notification')->set($fields);
 					$db->setQuery($query);
-					$db->execute();
+					try
+					{
+						$db->execute();
+					}
+					catch (RuntimeException $e)
+					{
+						JLog::add('Couldnt save fabrik comment notification for admin: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
+					}
 				}
 			}
 		}
@@ -930,13 +961,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	protected function _intensedebate($params)
 	{
 		FabrikHelperHTML::addScriptDeclaration(
-			"
-var idcomments_acct = '" . $params->get('comment-intesedebate-code') . "';
-var idcomments_post_id;
-var idcomments_post_url;");
+		"
+				var idcomments_acct = '" . $params->get('comment-intesedebate-code') . "';
+						var idcomments_post_id;
+						var idcomments_post_url;");
 		$this->data = '
-<span id="IDCommentsPostTitle" style="display:none"></span>
-<script type=\'text/javascript\' src=\'http://www.intensedebate.com/js/genericCommentWrapperV2.js\'></script>';
+				<span id="IDCommentsPostTitle" style="display:none"></span>
+				<script type=\'text/javascript\' src=\'http://www.intensedebate.com/js/genericCommentWrapperV2.js\'></script>';
 	}
 
 	/**
@@ -957,22 +988,22 @@ var idcomments_post_url;");
 			return;
 		}
 		FabrikHelperHTML::addScriptDeclaration(
-			"
-(function() {
-		var links = document.getElementsByTagName('a');
-		var query = '?';
-		for (var i = 0; i < links.length; i++) {
-			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		"
+				(function() {
+				var links = document.getElementsByTagName('a');
+				var query = '?';
+				for (var i = 0; i < links.length; i++) {
+				if(links[i].href.indexOf('#disqus_thread') >= 0) {
 				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-			}
-		}
-		document.write('<script type=\"text/javascript\" src=\"http://disqus.com/forums/rotterdamvooruit/get_num_replies.js' + query + '\"></' + 'script>');
+	}
+	}
+				document.write('<script type=\"text/javascript\" src=\"http://disqus.com/forums/rotterdamvooruit/get_num_replies.js' + query + '\"></' + 'script>');
 	})();
-");
+				");
 		$this->data = '<div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/'
-			. $params->get('comment-disqus-subdomain') . '/embed.js"></script><noscript>'
-			. '<a href="http://rotterdamvooruit.disqus.com/?url=ref">View the discussion thread.</a>'
-			. '</noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>';
+				. $params->get('comment-disqus-subdomain') . '/embed.js"></script><noscript>'
+						. '<a href="http://rotterdamvooruit.disqus.com/?url=ref">View the discussion thread.</a>'
+								. '</noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>';
 	}
 
 	/**
@@ -993,8 +1024,8 @@ var idcomments_post_url;");
 		{
 			require_once $jcomments;
 			$this->data = '<div id="jcomments" style="clear: both;">
-                    ' . JComments::show($input->get('rowid'), "com_fabrik_{$formModel->getId()}") . '
-                    </div>';
+					' . JComments::show($input->get('rowid'), "com_fabrik_{$formModel->getId()}") . '
+							</div>';
 		}
 		else
 		{
