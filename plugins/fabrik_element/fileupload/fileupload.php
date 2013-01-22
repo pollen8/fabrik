@@ -169,39 +169,40 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$js_dir = 'js';
 
 		// $js_dir = 'js.new';
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
 			$prefix = FabrikHelperHTML::isDebug() ? '' : '.min';
 			$runtimes = $params->get('ajax_runtime', 'html5');
 			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
-			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $prefix . '.js');
+			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $ext);
 
 			if (strstr($runtimes, 'html5'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $ext);
 			}
 			if (strstr($runtimes, 'html4'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $ext);
 			}
 			if (strstr($runtimes, 'gears'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $ext);
 			}
 
 			if (strstr($runtimes, 'flash'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $ext);
 			}
 			if (strstr($runtimes, 'silverlight'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $ext);
 			}
 			if (strstr($runtimes, 'browserplus'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $prefix . '.js');
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $ext);
 			}
 		}
 		parent::formJavascriptClass($srcs, $script, $shim);
@@ -214,7 +215,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// Load up the default scipt
 		if ($script == '')
 		{
-			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . '.js';
+			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . $ext;
 		}
 		if (empty($elementclasses[$script]))
 		{

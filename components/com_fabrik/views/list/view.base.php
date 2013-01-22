@@ -55,9 +55,8 @@ class FabrikViewListBase extends JViewLegacy
 		$dep->deps = array('fab/fabrik', 'fab/listfilter', 'fab/advanced-search', 'fab/encoder');
 		$shim['fab/list'] = $dep;
 
-
 		$src = $model->getPluginJsClasses($src, $shim);
-		array_unshift($src, 'media/com_fabrik/js/list.js');
+		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
 		$model->getCustomJsAction($src);
 
 		$tmpl = $this->get('tmpl');
@@ -79,7 +78,6 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->_row = new stdClass;
 		$script = array();
-		$script[] = FabrikHelperHTML::tipInt();
 		$params = $model->getParams();
 		$opts = new stdClass;
 		$opts->admin = $app->isAdmin();

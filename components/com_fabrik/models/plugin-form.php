@@ -409,6 +409,7 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	public function formJavascriptClass($params, $formModel)
 	{
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$name = $this->get('_name');
 		static $jsClasses;
 		if (!isset($jsClasses))
@@ -417,7 +418,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		}
 
 		// Load up the default script
-		$script = 'plugins/fabrik_form/' . $name . '/' . $name . '.js';
+		$script = 'plugins/fabrik_form/' . $name . '/' . $name . $ext;
 		if (empty($jsClasses[$script]))
 		{
 			$formModel->formPluginShim[] = $script;

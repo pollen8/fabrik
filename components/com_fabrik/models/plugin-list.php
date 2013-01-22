@@ -332,14 +332,15 @@ class plgFabrik_List extends FabrikPlugin
 	/**
 	 * Get the src(s) for the list plugin js class
 	 *
-	 * @return  mixed  string or array
+	 * @return  mixed  string or array or null. If string then is relative path to either compressed or uncompress js file.
 	 */
 
 	public function loadJavascriptClass_result()
 	{
 		$this->onGetFilterKey();
 		$p = $this->onGetFilterKey_result();
-		$file = 'plugins/fabrik_list/' . $p . '/' . $p . '.js';
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$file = 'plugins/fabrik_list/' . $p . '/' . $p . $ext;
 		return JFile::exists(JPATH_SITE . '/' . $file) ? $file : null;
 	}
 
@@ -354,7 +355,8 @@ class plgFabrik_List extends FabrikPlugin
 	public function requireJSShim(){}
 
 	/**
-	 * Get the shim require.js logic for loading the list class
+	 * Get the shim require.js logic for loading the list class.
+	 * -min suffix added elsewhere.
 	 *
 	 * @since   3.1b
 	 *

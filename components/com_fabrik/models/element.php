@@ -4601,6 +4601,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$name = $this->getElement()->plugin;
 
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 
 		$shimKey = 'element/' . $name . '/' . $name;
 
@@ -4619,7 +4620,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		// Load up the default scipt
 		if ($script == '')
 		{
-			$script = 'plugins/fabrik_element/' . $name . '/' . $name . '.js';
+			$script = 'plugins/fabrik_element/' . $name . '/' . $name . $ext;
 		}
 		if (empty($elementclasses[$script]))
 		{

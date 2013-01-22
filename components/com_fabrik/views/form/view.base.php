@@ -393,9 +393,9 @@ class FabrikViewFormBase extends JViewLegacy
 			$deps->deps = array('fab/fabrik', 'fab/element');
 			$framework['fab/elementlist'] = $deps;
 
-			$srcs[] = 'media/com_fabrik/js/form.js';
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
-			$srcs[] = 'media/com_fabrik/js/element.js';
+			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
+			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');
 		}
 
 		$aWYSIWYGNames = array();

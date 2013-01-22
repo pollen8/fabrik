@@ -53,8 +53,9 @@ class plgFabrik_ListOrder extends plgFabrik_List
 
 	public function loadJavascriptClass_result()
 	{
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$src = parent::loadJavascriptClass_result();
-		return array($src, 'media/com_fabrik/js/element.js');
+		return array($src, 'media/com_fabrik/js/element' . $ext);
 	}
 
 	/**

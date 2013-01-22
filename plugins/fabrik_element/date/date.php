@@ -2198,14 +2198,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	{
 		$s = new stdClass;
 		$s->deps = array('fab/element');
-		$prefix = JDEBUG ? '' : '-min';
+		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$params = $this->getParams();
 		if ($params->get('date_advanced', '0') == '1')
 		{
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/date' . $prefix . '.js';
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/core' . $prefix . '.js';
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/parser' . $prefix . '.js';
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/extras' . $prefix . '.js';
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/date' . $ext;
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/core' . $ext;
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/parser' . $ext;
+			$s->deps[] = 'media/com_fabrik/js/lib/datejs/extras' . $ext;
 		}
 		$shim['element/date/date'] = $s;
 

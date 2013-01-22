@@ -312,7 +312,7 @@ var FbGoogleMap = new Class({
 		// as it'll keep firing as they drag.  We don't want to fire 'change' until the changing is finished
 		if (this.options.radius_write_element) {
 			if (!this.distanceWidget.get('active')) {
-				$(this.options.radius_write_element).fireEvent('change', new Event.Mock($(this.options.radius_write_element), 'change'));
+				document.id(this.options.radius_write_element).fireEvent('change', new Event.Mock(document.id(this.options.radius_write_element), 'change'));
 			}
 		}		
 	},

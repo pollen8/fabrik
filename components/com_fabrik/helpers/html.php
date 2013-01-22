@@ -787,17 +787,32 @@ EOD;
 	}
 
 	/**
+	 * Append a js file to the main require.js list of files to load
+	 *
+	 * @param   array   $srcs  Already loaded scripts from framework()
+	 * @param   string  $file  JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'
+	 *
+	 * @since   3.0b
+	 *
+	 * @return  void
+	 */
+
+	public static function addToFrameWork(&$srcs, $file)
+	{
+		$ext = self::isDebug() ? '.js' : '-min.js';
+		$srcs[] = $file . $ext;
+	}
+
+	/**
 	 * Load Fabrik's framework (js and base css file)
 	 *
-	 * @return  array  framework js files
+	 * @return  array  Framework js files
 	 */
 
 	public static function framework()
 	{
 		if (!self::$framework)
 		{
-			//self::iniRequireJS();
-
 			$app = JFactory::getApplication();
 			$document = JFactory::getDocument();
 			$version = new JVersion;
@@ -805,6 +820,7 @@ EOD;
 			// Only use template test for testing in 2.5 with my temp J bootstrap template.
 			$bootstrapped = in_array($app->getTemplate(), array('bootstrap', 'fabrik4')) || $version->RELEASE > 2.5;
 
+			$ext = self::isDebug() ? '.js' : '-min.js';
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
@@ -829,8 +845,8 @@ EOD;
 				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
 
 				JText::script('COM_FABRIK_LOADING');
-				$src[] = 'media/com_fabrik/js/fabrik.js';
-				$src[] = 'media/com_fabrik/js/window.js';
+				$src[] = 'media/com_fabrik/js/fabrik' . $ext;
+				$src[] = 'media/com_fabrik/js/window' . $ext;
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
 
@@ -897,7 +913,11 @@ EOD;
 			{
 				foreach ($s->deps as &$f)
 				{
-					$f .= $ext;
+					// Library files are not compressed by default.
+					if (substr($f, 0, 4) !== 'lib/')
+					{
+						$f .= $ext;
+					}
 				}
 			}
 			$newShim[$k] = $s;
@@ -927,7 +947,7 @@ EOD;
 		$framework['fab/fabrik' . $ext] = $deps;
 
 		$deps = new stdClass;
-		$deps->deps = array('fab/fabrik');
+		$deps->deps = array('fab/fabrik' . $ext);
 		$framework['fab/window' . $ext] = $deps;
 
 		$deps = new stdClass;
