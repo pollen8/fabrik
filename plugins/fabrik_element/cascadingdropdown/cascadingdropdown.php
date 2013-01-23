@@ -787,12 +787,14 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
 		$query = $this->buildQueryJoin($query);
-		$query->where(FabrikString::rtrimword($where));
-
+		$where = FabrikString::rtrimword($where);
+		if ($where !== '')
+		{
+			$query->where($where);
+		}
 		if (!JString::stristr($where, 'order by'))
 		{
 			$query->order($orderby . ' ASC');
-
 		}
 		$this->_sql[$sig] = $query;
 		FabrikHelperHTML::debug($this->_sql[$sig]);
