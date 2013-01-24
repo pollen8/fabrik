@@ -571,3 +571,9 @@ table.fabrikList .oddRow1 {
 img[src*="gstatic.com/"], img[src*="googleapis.com/"]  {
     max-width: 99999px;
 }
+
+/** Time Picker button group alignment **/
+
+.fbDateTime .btn-group + .btn-group {
+    margin-left: 0px;
+}

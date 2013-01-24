@@ -224,6 +224,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$this->offsetDate = '';
 		$aNullDates = $this->getNullDates();
@@ -257,7 +258,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$calopts['readonly'] = 'readonly';
 		}
 
-		$str[] = '<div class="fabrikSubElementContainer input-append" id="' . $id . '">';
+		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		if (!in_array($value, $aNullDates) && FabrikWorker::isDate($value))
 		{
 			$oDate = JFactory::getDate($value);
@@ -309,13 +310,21 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			$timelength = JString::strlen($timeformat);
 			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField span3" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+			if ($j3)
+			{
+				$str[] = '<div class="input-append">';
+			}
+			$str[] = '<input type="text" style="width:50px" class="inputbox fabrikinput timeField" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 
 			$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
 			$img = '<span class="add-on">' . FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts) . '</span>';
 			$str[] = $img;
+			if ($j3)
+			{
+				$str[] = '</div>';
+			}
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
@@ -624,8 +633,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * @param   string  $format         The date format (not used)
 	 * @param   array   $attribs        Additional html attributes
 	 * @param   int     $repeatCounter  repeat group counter (not used)
-	 *
-	 * @deprecated - don't think its used
 	 *
 	 * @return  string
 	 */

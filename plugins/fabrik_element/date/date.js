@@ -232,13 +232,6 @@ var FbDateTime = new Class({
 		this.cal.create();
 		this.cal.refresh();
 		this.cal.hide();
-		/*
-		if (!params.position) {
-			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
-		} else {
-			this.cal.showAt(params.position[0], params.position[1]);
-		}
-		*/
 	},
 
 	disableTyping : function () {
@@ -347,13 +340,14 @@ var FbDateTime = new Class({
 				if (!this.setUpDone) {
 					if (this.timeElement) {
 						this.dropdown = this.makeDropDown();
-						this.setAbsolutePos(this.timeElement);
+						this.dropdown.getElement('a.close-time').addEvent('click', function () {
+							this.hideTime();
+						}.bind(this));
 						this.setUpDone = true;
 					}
 				}
 			}
 		}
-		
 		var i = this.getContainer().getElement('i.icon-calendar');
 	},
 
@@ -373,21 +367,6 @@ var FbDateTime = new Class({
 			});
 		}.bind(this));	
 	},
-	
-	/*addNewEvent : function (action, js) {
-		if (action === 'load') {
-			this.loadEvents.push(js);
-			this.runLoadEvent(js);
-		} else {
-			if (!this.element) {
-				this.element = document.id(this.strElement);
-			}
-			if (action === 'change') {
-				this.changeEvents.push(js);
-			}
-			this.addNewEventAux(action, js);
-		}
-	},*/
 
 	/**
 	 * takes a date object or string
@@ -478,17 +457,8 @@ var FbDateTime = new Class({
 		return this.timeButton;
 	},
 
+	// Deprecated
 	showCalendar : function (format, e) {
-		/*if (window.ie) {
-			// when scrolled down the page the offset of the calendar is wrong - this
-			// fixes it
-			var calHeight = document.id(window.calendar.element).getStyle('height').toInt();
-			var u = ie ? event.clientY + document.documentElement.scrollTop : e.pageY;
-			u = u.toInt();
-			document.id(window.calendar.element).setStyles({
-				'top' : u - calHeight + 'px'
-			});
-		}*/
 	},
 
 	getAbsolutePos : function (el) {
@@ -504,95 +474,41 @@ var FbDateTime = new Class({
 		return r;
 	},
 
-	setAbsolutePos : function (el) {
-		var r = this.getAbsolutePos(el);
-		this.dropdown.setStyles({
-			position : 'absolute',
-			left : r.x,
-			top : r.y + 30
-		});
-	},
-
-	makeDropDown : function () {
+	makeDropDown: function () {
 		var h = null;
-		var handle = new Element('div', {
+		var handle = new Element('div.draggable.modal-header', {
 			styles : {
 				'height' : '20px',
 				'curor' : 'move',
-				'color' : '#dddddd',
-				'padding' : '2px;',
-				'background-color' : '#333333'
+				'padding' : '2px;'
 			},
 			'id' : this.startElement + '_handle'
-		}).appendText(this.options.timelabel);
-		var d = new Element('div', {
-			'className' : 'fbDateTime',
+		})
+		.set('html', '<i class="icon-clock"></i> ' + this.options.timelabel + '<a href="#" class="close-time" style="position:absolute;right:10px"><i class="icon-cancel"></i></a>');
+		var d = new Element('div.fbDateTime.fabrikWindow', {
 			'styles' : {
 				'z-index' : 999999,
 				display : 'none',
-				cursor : 'move',
-				width : '264px',
-				height : '125px',
-				border : '1px solid #999999',
-				backgroundColor : '#EEEEEE'
+				width : '300px',
+				height : '180px'
 			}
 		});
 
 		d.appendChild(handle);
-		for (var i = 0; i < 24; i++) {
-			h = new Element('div', {
-				styles: {
-					width: '20px',
-					'float': 'left',
-					'cursor': 'pointer',
-					'background-color': '#ffffff',
-					'margin': '1px',
-					'text-align': 'center'
-				}
-			});
-			h.innerHTML = i;
-			h.className = 'fbdateTime-hour';
-			d.appendChild(h);
-			document.id(h).addEvent('click', function (e) {
-				this.hour = e.target.innerHTML;
-				this.stateTime();
-				this.setActive();
-			}.bind(this));
-			document.id(h).addEvent('mouseover', function (e) {
-				if (this.hour !== e.target.innerHTML) {
-					e.target.setStyles({
-						background : '#cbeefb'
-					});
-				}
-			}.bind(this));
-			document.id(h).addEvent('mouseout', function (e) {
-				if (this.hour !== e.target.innerHTML) {
-					h.setStyles({
-						background : this.buttonBg
-					});
-				}
-			}.bind(this));
-		}
-		var d2 = new Element('div', {
+		var padder = new Element('div.itemContentPadder');
+		padder.adopt(new Element('p').set('text', 'Hours'));
+		padder.adopt(this.hourButtons(0, 12));
+		padder.adopt(this.hourButtons(12, 24));
+		padder.adopt(new Element('p').set('text', 'Minutes'));
+		var d2 = new Element('div.btn-group', {
 			styles : {
 				clear : 'both',
 				paddingTop : '5px'
 			}
 		});
 		for (i = 0; i < 12; i++) {
-			h = new Element('div', {
-				styles : {
-					width : '41px',
-					'float' : 'left',
-					'cursor' : 'pointer',
-					'background' : '#ffffff',
-					'margin' : '1px',
-					'text-align' : 'center'
-				}
-			});
-			h.setStyles();
-			h.innerHTML = ':' + (i * 5);
-			h.className = 'fbdateTime-minute';
+			h = new Element('a.btn.fbdateTime-minute.btn-mini', {styles: {'width': '10px'}});
+			h.innerHTML = (i * 5);
 			d2.appendChild(h);
 			document.id(h).addEvent('click', function (e) {
 				this.minute = this.formatMinute(e.target.innerHTML);
@@ -602,21 +518,19 @@ var FbDateTime = new Class({
 			h.addEvent('mouseover', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
-					e.target.setStyles({
-						background : '#cbeefb'
-					});
+					e.target.addClass('btn-info');
 				}
 			}.bind(this));
 			h.addEvent('mouseout', function (e) {
 				var h = e.target;
 				if (this.minute !== this.formatMinute(h.innerHTML)) {
-					e.target.setStyles({
-						background : this.buttonBg
-					});
+					e.target.removeClass('btn-info');
 				}
 			}.bind(this));
 		}
-		d.appendChild(d2);
+		padder.appendChild(d2);
+		d.appendChild(padder);
+		
 
 		document.addEvent('click', function (e) {
 			if (this.timeActive) {
@@ -632,6 +546,31 @@ var FbDateTime = new Class({
 		var mydrag = new Drag.Move(d);
 		return d;
 	},
+	
+	hourButtons: function (start, end) {
+		var hrGroup = new Element('div.btn-group');
+		for (var i = start; i < end; i++) {
+			h = new Element('a.btn.btn-mini.fbdateTime-hour', {styles: {'width': '10px'}}).set('html', i);
+			hrGroup.appendChild(h);
+			document.id(h).addEvent('click', function (e) {
+				this.hour = e.target.innerHTML;
+				this.stateTime();
+				this.setActive();
+				e.target.addClass('btn-successs').removeClass('badge-info');
+			}.bind(this));
+			document.id(h).addEvent('mouseover', function (e) {
+				if (this.hour !== e.target.innerHTML) {
+					e.target.addClass('btn-info');
+				}
+			}.bind(this));
+			document.id(h).addEvent('mouseout', function (e) {
+				if (this.hour !== e.target.innerHTML) {
+					e.target.removeClass('btn-info');
+				}
+			}.bind(this));
+		}
+		return hrGroup;
+	},
 
 	toggleTime : function () {
 		if (this.dropdown.style.display === 'none') {
@@ -642,9 +581,7 @@ var FbDateTime = new Class({
 	},
 
 	doShowTime : function () {
-		this.dropdown.setStyles({
-			'display' : 'block'
-		});
+		this.dropdown.show();
 		this.timeActive = true;
 		Fabrik.fireEvent('fabrik.date.showtime', this);
 	},
@@ -681,32 +618,22 @@ var FbDateTime = new Class({
 	},
 
 	showTime: function () {
-		this.setAbsolutePos(this.timeElement); // need to recall if using tabbed form
+		this.dropdown.position({relativeTo: this.timeElement, 'position': 'topRight'});
 		this.toggleTime();
 		this.setActive();
 	},
 
 	setActive: function () {
 		var hours = this.dropdown.getElements('.fbdateTime-hour');
-		hours.each(function (e) {
-			e.setStyles({
-				backgroundColor: this.buttonBg
-			});
-		}, this);
+		hours.removeClass('btn-success').removeClass('btn-info');
+		
 		var mins = this.dropdown.getElements('.fbdateTime-minute');
-		mins.each(function (e) {
-			e.setStyles({
-				backgroundColor: this.buttonBg
-			});
-		}, this);
-		hours[this.hour.toInt()].setStyles({
-			backgroundColor: this.buttonBgSelected
-		});
+		mins.removeClass('btn-success').removeClass('btn-info');
+		
 		if (typeOf(mins[this.minute / 5]) !== 'null') {
-			mins[this.minute / 5].setStyles({
-				backgroundColor: this.buttonBgSelected
-			});
+			mins[this.minute / 5].addClass('btn-success');
 		}
+		hours[this.hour.toInt()].addClass('btn-success');
 	},
 	
 	addEventToCalOpts: function () {
