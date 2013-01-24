@@ -777,7 +777,9 @@ class MIMETypes {
   */
   private function getExtension($file = NULL) {
     if(!is_null($file)) {
-      $ext = strtolower(array_pop(explode('.', $file)));
+    	$bits = explode('.', $file);
+    	$ext = array_pop($bits);
+      $ext = strtolower($ext);
       return $ext;
     } else return "##INVALID_FILE##FILE=".$file."##";
   }

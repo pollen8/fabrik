@@ -2,44 +2,74 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-fileupload" label="COM_FABRIK_OPTIONS">
-			<field description="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_LABEL" name="ul_max_file_size" size="30" type="uploadsize"/>
+			<field name="ul_max_file_size"
+				type="uploadsize"
+				size="30"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_MAX_FILESIZE_LABEL" />
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_DESC" label="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_LABEL" name="ul_file_types" size="30" type="text"/>
+			<field name="ul_file_types"
+				description="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_FILE_TYPES_LABEL"
+				size="30"
+				type="text"/>
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_UPLOAD_DIR_DESC" label="PLG_ELEMENT_FILEUPLOAD_UPLOAD_DIR_LABEL" name="ul_directory" required="true" size="30" type="text"/>
+			<field name="ul_directory"
+				type="text"
+				default="/images/stories/"
+				description="PLG_ELEMENT_FILEUPLOAD_UPLOAD_DIR_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_UPLOAD_DIR_LABEL"
+				required="true"
+				size="30"/>
 				
-			<field default="0"
+			<field name="ul_email_file"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_FILEUPLOAD_EMAIL_UPLOADED_FILE_LABEL" name="ul_email_file" type="radio">
+				label="PLG_ELEMENT_FILEUPLOAD_EMAIL_UPLOADED_FILE_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="random_filename"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_RANDOM_FILENAME_DESC" label="PLG_ELEMENT_FILEUPLOAD_RANDOM_FILENAME_LABEL" name="random_filename" type="radio">
+				description="PLG_ELEMENT_FILEUPLOAD_RANDOM_FILENAME_DESC" label="PLG_ELEMENT_FILEUPLOAD_RANDOM_FILENAME_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field label="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_LABEL" name="length_random_filename" size="10" type="text"/>
+			<field name="length_random_filename"
+				type="text"
+				label="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_LABEL"
+				size="10"/>
 				
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_DESC" label="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_LABEL" name="ul_file_increment" type="list">
+			<field name="ul_file_increment"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_LABEL">
 					<option value="0">PLG_ELEMENT_FILEUPLOAD_LEAVE_ORIGINAL</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_INCREMENT_NEW_FILENAME</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_DELETE_EXISTING_IMAGE</option>
 			</field>
 			
-			<field default="0"
+			<field name="upload_allow_folderselect"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_DESC" label="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_LABEL" name="upload_allow_folderselect" type="radio">
+				description="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_DESC" label="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_LABEL">
 					<option value="0">PLG_ELEMENT_FILEUPLOAD_HIDE</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_SHOW</option>
 			</field>
 			 
-			<field default="1"
+			<field name="upload_delete_image"
+				type="radio"
+				default="1"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_DESC" label="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_LABEL" name="upload_delete_image" type="radio">
+				description="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_DESC" label="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -92,30 +122,72 @@
 					<option value="1">JYES</option>
 			</field>
 		
-			<field default="" description="PLG_ELEMENT_FILEUPLOAD_THUMB_DIR_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_DIR_LABEL" name="thumb_dir" size="35" type="text"/>
+			<field name="thumb_dir"
+				type="text"
+				default="images/stories/thumbs"
+				description="PLG_ELEMENT_FILEUPLOAD_THUMB_DIR_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_THUMB_DIR_LABEL"
+				size="35" />
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_PREFIX_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_PREFIX_LABEL" name="thumb_prefix" size="10" type="text"/>
+			<field name="thumb_prefix"
+				type="text"
+				description="PLG_ELEMENT_FILEUPLOAD_THUMB_PREFIX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_THUMB_PREFIX_LABEL"
+				size="10"/>
 			
 			<field description="PLG_ELEMENT_FILEUPLOAD_THUMB_SUFFIX_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_SUFFIX_LABEL" name="thumb_suffix" size="10" type="text"/>
 			
-			<field class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_LABEL" name="thumb_max_width" size="3" type="text"/>
+			<field name="thumb_max_width"
+				type="text"
+				default="200"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_THUMB_WIDTH_LABEL"
+				size="3" />
 			
-			<field class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_LABEL" name="thumb_max_height" size="3" type="text"/>
+			<field name="thumb_max_height"
+				type="text"
+				default="100"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_THUMB_HEIGHT_LABEL"
+				size="3"/>
 		</fieldset>
 	
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_CROP" name="plg-fileupload-crop">
-			<field default="0"
+		
+			<field name="fileupload_crop"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_CROP_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_LABEL" name="fileupload_crop" type="radio">
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 		
-			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_LABEL" name="fileupload_crop_dir" size="35" type="text"/>
+			<field name="fileupload_crop_dir"
+				type="text"
+				default="images/stories/crop"
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_LABEL"
+				size="35"/>
 
-			<field class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL" name="fileupload_crop_width" size="3" type="text"/>
+			<field name="fileupload_crop_width"
+				type="text"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL"
+				default="200"
+				size="3" />
 
-			<field class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL" name="fileupload_crop_height" size="3" type="text"/>
+			<field name="fileupload_crop_height"
+				type="text"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL"
+				default="100"
+				size="3"/>
 			
 		</fieldset>
 		

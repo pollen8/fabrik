@@ -42,7 +42,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	 *
 	 * @var bool
 	 */
-	protected $_is_upload = true;
+	protected $is_upload = true;
 
 	/**
 	 * Does the element store its data in a join table (1:n)
@@ -326,7 +326,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 						}
 						else
 						{
-							$parts = explode(DS, $value[$x]);
+							$parts = explode('/', $value[$x]);
 							$o = new stdClass;
 							$o->id = 'alreadyuploaded_' . $element->id . '_' . $rawvalues[$x];
 							$o->name = array_pop($parts);
@@ -948,20 +948,21 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 				$name = $this->getFullName(false, true, false);
 
-				$this->_form->updateFormData("join.{$joinid}.{$name}", $files);
-				$this->_form->updateFormData("join.{$joinid}.{$name}_raw", $files);
+				$formModel = $this->getFormModel();
+				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
+				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
 
-				$this->_form->updateFormData("join.{$joinid}.{$joinsid}", $ids);
-				$this->_form->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
+				$formModel->updateFormData("join.{$joinid}.{$joinsid}", $ids);
+				$formModel->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
 
-				$this->_form->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
-				$this->_form->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
+				$formModel->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
+				$formModel->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
 			}
 			else
 			{
 				$strfiles = json_encode($files);
-				$this->_form->updateFormData($name . '_raw', $strfiles);
-				$this->_form->updateFormData($name, $strfiles);
+				$formModel->updateFormData($name . '_raw', $strfiles);
+				$formModel->updateFormData($name, $strfiles);
 			}
 			return true;
 		}
@@ -1089,14 +1090,15 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 				$name = $this->getFullName(false, true, false);
 
-				$this->_form->updateFormData("join.{$joinid}.{$name}", $files);
-				$this->_form->updateFormData("join.{$joinid}.{$name}_raw", $files);
+				$formModel = $this->getFormModel();
+				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
+				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
 
-				$this->_form->updateFormData("join.{$joinid}.{$joinsid}", $ids);
-				$this->_form->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
+				$formModel->updateFormData("join.{$joinid}.{$joinsid}", $ids);
+				$formModel->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
 
-				$this->_form->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
-				$this->_form->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
+				$formModel->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
+				$formModel->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
 			}
 			else
 			{
@@ -1110,8 +1112,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					$store[] = $o;
 				}
 				$store = json_encode($store);
-				$this->_form->updateFormData($name . '_raw', $store);
-				$this->_form->updateFormData($name, $store);
+				$formModel->updateFormData($name . '_raw', $store);
+				$formModel->updateFormData($name, $store);
 
 			}
 			return true;
@@ -1304,7 +1306,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$request = $filter->clean($_REQUEST, 'array');
 		$groupModel = $this->getGroup();
 		$isjoin = $groupModel->isJoin();
-		$origData = $this->_form->getOrigData();
+		$formModel = $this->getFormModel();
+		$origData = $formModel->getOrigData();
 		if ($isjoin)
 		{
 			$name = $this->getFullName(false, true, false);
@@ -1457,6 +1460,11 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 		}
 		$files = array_flip(array_flip($files));
+
+foreach ($files as &$f) {
+	$f = str_replace('\\', '/', $f);
+}
+
 		/* $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
 		 * so the double array_flip will have made 'holes' in the array, by removign duplicates.
 		 * So, we need to re-index, otherwise the _formData['join'] data
@@ -1479,14 +1487,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				$files = JArrayHelper::getValue($files, 0, '');
 			}
-			$this->_form->updateFormData("join.{$joinid}.{$name}", $files);
-			$this->_form->updateFormData("join.{$joinid}.{$name}_raw", $files);
+			$formModel->updateFormData("join.{$joinid}.{$name}", $files);
+			$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
 		}
 		else
 		{
 			$strfiles = implode(GROUPSPLITTER, $files);
-			$this->_form->updateFormData($name . '_raw', $strfiles);
-			$this->_form->updateFormData($name, $strfiles);
+			$formModel->updateFormData($name . '_raw', $strfiles);
+			$formModel->updateFormData($name, $strfiles);
 		}
 	}
 
@@ -2731,7 +2739,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		if (empty($val))
 		{
 			$isjoin = $groupModel->isJoin();
-			$origData = $this->_form->getOrigData();
+			$formModel = $this->getFormModel();
+			$origData = $formModel->getOrigData();
 			$groupModel = $this->getGroup();
 			if ($isjoin)
 			{

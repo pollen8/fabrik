@@ -61,7 +61,7 @@ class FabimageHelper
 	 * @return  object  image lib
 	 */
 
-	public function loadLib($lib)
+	public static function loadLib($lib)
 	{
 		$class = "Fabimage" . $lib;
 		if (class_exists($class))

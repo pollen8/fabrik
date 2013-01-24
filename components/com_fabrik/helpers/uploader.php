@@ -153,7 +153,7 @@ class FabrikUploader extends JObject
 	 * @return  bool
 	 */
 
-	function canUpload($file, &$err, &$params)
+	public static function canUpload($file, &$err, &$params)
 	{
 		if (empty($file['name']))
 		{
