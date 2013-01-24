@@ -155,8 +155,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		}
 		else
 		{
+			$rowId = $input->get('rowid', '');
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
-			if ($input->get('rowid') === 0 && $input->getInt($k, 0, 'post') === 0 && $data === '')
+			if (($rowId === '' || empty($rowId)) && $input->getInt($k, 0, 'post') === 0 && $data === '')
 			{
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;

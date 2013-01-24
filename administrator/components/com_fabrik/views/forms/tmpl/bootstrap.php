@@ -92,12 +92,12 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<td>
 						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.updateDatabase')">
-						<?php echo JText::_('COM_FABRIK_UPDATE_DATABASE')?>
+							<i class="icon-refresh"></i> <?php echo JText::_('COM_FABRIK_UPDATE_DATABASE')?>
 						</a>
 					</td>
 					<td>
 						<a href="index.php?option=com_fabrik&task=list.view&listid=<?php echo $item->list_id?>">
-						<?php echo JText::_('COM_FABRIK_VIEW_DATA')?>
+						<i class="icon-list-view"></i> <?php echo JText::_('COM_FABRIK_VIEW_DATA')?>
 						</a>
 					</td>
 				</tr>
