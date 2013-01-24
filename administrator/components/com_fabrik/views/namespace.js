@@ -5,6 +5,7 @@
 	FabrikAdmin = {};
 	// Various Joomla element plugins used to control JForm elements
 	FabrikAdmin.model = {'fields': {'fabriktable': {}, 'element': {}}};
+	window.fireEvent('fabrik.admin.namespace');
 }());
 
 if (typeof(jQuery) !== 'undefined') {
