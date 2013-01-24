@@ -49,21 +49,34 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			$url = $_SERVER['REQUEST_URI'];
 			$bits = explode('?', $url);
+			$root = JArrayHelper::getValue($bits, 0, '', 'string');
 			$bits = JArrayHelper::getValue($bits, 1, '', 'string');
 			$bits = explode("&", $bits);
-			foreach ($bits as $bit)
+			$fullName = $this->getFullName(false, true, false);
+			for($b = count($bits) -1; $b >= 0; $b --)
 			{
-				$parts = explode("=", $bit);
+				$parts = explode("=", $bits[$b]);
 				if (count($parts) > 1)
 				{
 					$key = FabrikString::ltrimword(FabrikString::safeColNameToArrayKey($parts[0]), '&');
-					if ($key == $this->getFullName(false, true, false))
+
+					if ($key == $fullName)
 					{
-						$url = str_replace($key . '=' . $parts[1], '', $url);
+						unset($bits[$b]);
+					}
+					if ($key == $fullName . '[value]')
+					{
+						unset($bits[$b]);
+					}
+					if ($key == $fullName . '[condition]')
+					{
+						unset($bits[$b]);
 					}
 				}
 			}
 		}
+		$url = $root . '?' . implode('&', $bits);
+
 		// $$$ rob 24/02/2011 remove duplicates from tags
 		$data = array_unique($data);
 		$img = FabrikWorker::j3() ? 'bookmark.png' : 'tag.png';
@@ -85,6 +98,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 						$thisurl = strstr($url, '?') ? $url . '&' . $name . '[value]=' . urlencode($d) : $url . '?' . $name . '[value]=' . urlencode($d);
 					}
 					$thisurl .= '&' . $name . '[condition]=CONTAINS';
+					$thisurl .= '&resetfilters=1';
 				}
 				else
 				{
