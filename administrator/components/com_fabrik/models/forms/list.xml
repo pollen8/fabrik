@@ -3,7 +3,10 @@
 
 	<fieldset name="main_filter">
 
-		<field description="COM_FABRIK_FILTER_ACTION_DESC" label="COM_FABRIK_FILTER_ACTION_LABEL" name="filter_action" type="list">
+		<field name="filter_action"
+				type="list"
+				label="COM_FABRIK_FILTER_ACTION_LABEL"
+				description="COM_FABRIK_FILTER_ACTION_DESC">
 					<option value="onchange">COM_FABRIK_ON_CHANGE</option>
 					<option value="submitform">COM_FABRIK_SUBMIT_FORM</option>
 			</field>
@@ -12,7 +15,11 @@
 
 	<fieldset name="access">
 
-			<field default="1" description="COM_FABRIK_FIELD_VIEW_LIST_DESC" label="COM_FABRIK_FIELD_VIEW_LIST_LABEL" name="access" type="accesslevel"/>
+			<field name="access"
+				type="accesslevel"
+				default="1"
+				label="COM_FABRIK_FIELD_VIEW_LIST_LABEL"
+				description="COM_FABRIK_FIELD_VIEW_LIST_DESC" />
 	
 		</fieldset>
 	
@@ -26,7 +33,12 @@
 			description="JGLOBAL_FIELD_ID_DESC"
 			label="JGLOBAL_FIELD_ID_LABEL" />
 		
-		<field description="COM_FABRIK_FIELD_LABEL_DESC" label="COM_FABRIK_FIELD_LABEL_LABEL" name="label" required="true" size="40" type="text"/>
+		<field name="label"
+			type="text"
+			size="40"
+			label="COM_FABRIK_FIELD_LABEL_LABEL"
+			description="COM_FABRIK_FIELD_LABEL_DESC"
+			required="true" />
 
 		<field name="introduction"
 			type="editor"
@@ -35,7 +47,7 @@
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
 	
-		<field filter="unset" name="asset_id" type="hidden"/>
+		<field name="asset_id" type="hidden" filter="unset" />
 		
 	</fieldset>
 	
@@ -74,11 +86,19 @@
 	
 	<fieldset name="main_data">
 		
-		<field description="COM_FABRIK_FIELD_CONNECTION_DESC" label="COM_FABRIK_FIELD_CONNECTION_LABEL" name="connection_id" readonlyonedit="true" required="true" type="connections"/>
+		<field name="connection_id"
+			type="connections"
+			required="true"
+			readonlyonedit="true"
+			label="COM_FABRIK_FIELD_CONNECTION_LABEL"
+			description="COM_FABRIK_FIELD_CONNECTION_DESC" />
 		
 		<field description="COM_FABRIK_FIELD_DATABASE_NAME_DESC" label="COM_FABRIK_FIELD_DATABASE_NAME_LABEL" name="_database_name" size="20" type="text"/>
 		
-		<field label="Or" name="or" size="20" type="spacer"/>
+		<field name="or"
+			type="spacer"
+			size="20"
+			label="Or"/>
 		 
 		 <field description="COM_FABRIK_FIELD_LINK_TO_TABLE_DESC" label="COM_FABRIK_FIELD_LINK_TO_TABLE_LABEL" name="db_table_name" observe="connection_id" readonlyonedit="true" type="tables"/>
 			
@@ -523,6 +543,35 @@
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="list_responsive_elements"
+				type="fabrikmodalrepeat"
+				icon="list"
+				description="COM_FABRIK_FIELD_RESPONSIVE_CSS_ELEMENTS_DESC"
+				label="COM_FABRIK_FIELD_RESPONSIVE_CSS_ELEMENTS_LABEL">
+				
+					<fields name="params">
+						<fieldset modal="true" name="list_responsive_elements_modal" repeat="true">
+							<field name="responsive_elements"
+								label="COM_FABRIK_ELEMENT"
+								type="listfields"/>
+							
+							<field name="responsive_class"
+								type="list"
+								label="COM_FABRIK_RESPONSIVE_CLASS_LABEL">
+									<option value="">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE</option>
+									<option value="hidden-tablet hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_PHONE</option>
+									<option value="hidden-phone hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_TABLET</option>
+									<option value="hidden-phone hidden-tablet">COM_FABRIK_RESPONSIVE_CLASS_VISIBLE_DESKTOP</option>
+									<option value="hidden-phone">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_PHONE</option>
+									<option value="hidden-tablet">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_TABLET</option>
+									<option value="hidden-desktop">COM_FABRIK_RESPONSIVE_CLASS_HIDDEN_DESKTOP</option>
+							</field>
+						
+						</fieldset>
+				</fields>
+				
+			</field>
+			
 		</fieldset>
 		
 		<fieldset name="links">
@@ -530,6 +579,16 @@
 			<field class="btn-group" default="0" description="COM_FABRIK_LIST_AJAX_LINKS_DESC" label="COM_FABRIK_LIST_AJAX_LINKS_LABEL" name="list_ajax_links" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
+			</field>
+			
+			<field name="actionMethod"
+				default="default"
+				type="list"
+				label="COM_FABRIK_FIELD_ACTION_METHOD_LABEL"
+				description="COM_FABRIK_FIELD_ACTION_METHOD_DESC">
+					<option value="default">JGLOBAL_USE_GLOBAL</option>
+					<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
+					<option value="dropdown">COM_FABRIK_FIELD_ACTION_METHOD_DROPDOWN</option>
 			</field>
 				
 			<field description="COM_FABRIK_FIELD_DETAIL_URL_DESC" label="COM_FABRIK_FIELD_DETAIL_URL_LABEL" name="detailurl" size="50" type="text"/>

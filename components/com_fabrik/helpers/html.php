@@ -154,6 +154,11 @@ class FabrikHelperHTML
 								<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
 	}
 
+	public static function bootStrapButtonGroup($items)
+	{
+		return '<div class="btn-group">' . implode(' ' , $items) . '</div>';
+	}
+
 	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check

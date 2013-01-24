@@ -284,10 +284,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		JArrayHelper::toInteger($currentGroups);
-		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid)
-		->where('group_id NOT IN (' . implode($currentGroups, ', ') . ')');
+		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
+		if (!empty($currentGroups))
+		{
+			$query->where('group_id NOT IN (' . implode($currentGroups, ', ') . ')');
+		}
 		$db->setQuery($query);
-echo $query;
 
 		// Delete the old form groups
 		if (!$db->execute())
@@ -298,7 +300,6 @@ echo $query;
 		// Get previously saved form groups
 		$query->clear()->select('id, group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
 		$db->setQuery($query);
-		echo $query . "<br>";
 		$fgids = $db->loadObjectList('group_id');
 		$orderid = 1;
 		$currentGroups = array_unique($currentGroups);
@@ -319,7 +320,6 @@ echo $query;
 				$query->insert('#__{package}_formgroup')
 					->set(array('form_id =' . (int) $formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
 				}
-				echo $query . "<br>";
 				$db->setQuery($query);
 				if (!$db->execute())
 				{

@@ -1160,6 +1160,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
+		$buttonAction = $params->get('actionMethod');
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
 		$factedlinks = $params->get('factedlinks');
@@ -1240,19 +1241,23 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
-				$editLabel = $j3 ? $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) : '<span>' . $params->get('editlabel', JText::_('COM_FABRIK_EDIT')) . '</span>';
-				$class = $j3 ? 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
+				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
+				$editText = $buttonAction == 'dropdown' ? $editLabel : '<span class="hidden">' . $editLabel . '</span>';
+
+				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
+				$class = $j3 ? $btnClass . 'fabrik_edit fabrik__rowlink' : 'btn fabrik__rowlink';
 				$editLink = '<a class="' . $class . '" ' . $editLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
-						. ' ' . $editLabel . '</a>';
+						. ' ' . $editText . '</a>';
 
-				$viewLabel = $j3 ? $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) : '<span>' . $params->get('detaillabel', JText::_('COM_FABRIK_VIEW')) . '</span>';
-				$class = $j3 ? 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
+				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
+				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
+				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
 
 				$viewLink = '<a class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
-						. ' ' . $viewLabel . '</a>';
+						. ' ' . $viewText . '</a>';
 
 
 				// 3.0 actions now in list in one cell
@@ -1300,7 +1305,10 @@ class FabrikFEModelList extends JModelForm
 				}
 				if ($this->canDelete($row))
 				{
-					$row->fabrik_actions['delete_divider'] = '<li class="divider"></li>';
+					if ($buttonAction == 'dropdown')
+					{
+						$row->fabrik_actions['delete_divider'] = '<li class="divider"></li>';
+					}
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
 				// Create columns containing links which point to tables associated with this table
@@ -1388,7 +1396,10 @@ class FabrikFEModelList extends JModelForm
 				$row = $data[$groupKey][$i];
 				if (!empty($pluginButtons))
 				{
-					$row->fabrik_actions[] = '<li class="divider"></li>';
+					if ($buttonAction == 'dropdown')
+					{
+						$row->fabrik_actions[] = '<li class="divider"></li>';
+					}
 				}
 				foreach ($pluginButtons as $b)
 				{
@@ -1405,7 +1416,14 @@ class FabrikFEModelList extends JModelForm
 					}
 					if ($j3)
 					{
-						$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions);
+						if ($params->get('actionMethod') == 'dropdown')
+						{
+							$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions);
+						}
+						else
+						{
+							$row->fabrik_actions = FabrikHelperHTML::bootStrapButtonGroup($row->fabrik_actions);
+						}
 					}
 					else
 					{
@@ -1483,11 +1501,16 @@ class FabrikFEModelList extends JModelForm
 
 	protected function deleteButton($tpl = '', $heading = false)
 	{
+		$params = $this->getParams();
+		$label = JText::_('COM_FABRIK_DELETE');
+		$buttonAction = $params->get('actionMethod');
 		$tpl = $this->getTmpl();
 		$j3 = FabrikWorker::j3();
+		$text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
+		$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 		$label = $j3 ? ' ' . JText::_('COM_FABRIK_DELETE') : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
-		$btn = '<a href="#" class="delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
-				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => JText::_('COM_FABRIK_DELETE'))) . $label . '</a>';
+		$btn = '<a href="#" class="' . $btnClass . 'delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
+				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => $label)) . $text . '</a>';
 		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
 	}
 
@@ -5713,6 +5736,9 @@ class FabrikFEModelList extends JModelForm
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 
+		//Responsive element classes
+		$listClasses = json_decode($params->get('list_responsive_elements'));
+
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
 		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
 		{
@@ -5773,11 +5799,12 @@ class FabrikFEModelList extends JModelForm
 					$class = "";
 					$currentOrderDir = $orderDir;
 					$tmpl = $this->getTmpl();
+
 					switch ($orderDir)
 					{
 						case "desc":
 							$orderDir = "-";
-							$class = 'class="fabrikorder-desc"';
+							$class = 'class="fabrikorder-desc' . $responsiveClass . '"';
 							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
@@ -5813,8 +5840,11 @@ class FabrikFEModelList extends JModelForm
 				}
 				$aTableHeadings[$compsitKey] = $heading;
 
-				$headingClass[$compsitKey] = array('class' => $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
-				$cellClass[$compsitKey] = array('class' => $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
+				// Check responsive class
+				$responsiveKey = array_search($element->id, $listClasses->responsive_elements);
+				$responsiveClass = $responsiveKey !== false ? JArrayHelper::getValue($listClasses->responsive_class, $responsiveKey, '') : '';
+				$headingClass[$compsitKey] = array('class' => $responsiveClass . ' ' . $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
+				$cellClass[$compsitKey] = array('class' => $responsiveClass . ' ' . $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0)
@@ -5919,6 +5949,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
+			$params = $this->getParams();
 			$headingButtons = array();
 			if ($this->deletePossible())
 			{
@@ -5928,14 +5959,29 @@ class FabrikFEModelList extends JModelForm
 			$res = $pluginManager->data;
 			foreach ($res as &$r)
 			{
-				$r = '<li>' . $r . '</li>';
+				$r = $params->get('actionMethod') == 'dropdown' ? '<li>' . $r . '</li>' : $r;
 			}
 
 			$headingButtons = array_merge($headingButtons, $res);
 
 			if (FabrikWorker::j3())
 			{
-				$aTableHeadings['fabrik_actions'] = empty($headingButtons) ? '' : FabrikHelperHTML::bootStrapDropDown($headingButtons);
+				if (empty($headingButtons))
+				{
+					$aTableHeadings['fabrik_actions'] = '';
+				}
+				else
+				{
+					if ($params->get('actionMethod') == 'dropdown')
+					{
+						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons);
+					}
+					else
+					{
+						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapButtonGroup($headingButtons);
+					}
+				}
+
 			}
 			else
 			{

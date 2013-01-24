@@ -98,6 +98,8 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function button($params, &$model, &$args)
 	{
+		$listParams = $model->getParams();
+		$this->buttonAction = $listParams->get('actionMethod');
 		$this->context = $model->getRenderContext();
 		return false;
 	}
@@ -113,13 +115,16 @@ class plgFabrik_List extends FabrikPlugin
 		if ($this->canUse())
 		{
 			$p = $this->onGetFilterKey_result();
+			$j3 = FabrikWorker::j3();
 			FabrikHelperHTML::addPath('plugins/fabrik_list/' . $p . '/images/', 'image', 'list');
 			$name = $this->_getButtonName();
 			$label = $this->buttonLabel();
 			$imageName = $this->getImageName();
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
-			$label = FabrikWorker::j3() ? $label : '<span>' . $label . '</span>';
-			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' listplugin" title="' . $label . '">' . $img . ' ' . $label . '</a>';
+			//$label = $j3 ? $label : '<span>' . $label . '</span>';
+			$text = $this->buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
+			$btnClass = ($j3 && $this->buttonAction != 'dropdown') ? 'btn ' : '';
+			return '<a href="#" data-list="' . $this->context . '"class="' . $btnClass . $name . ' listplugin" title="' . $label . '">' . $img . ' ' . $text . '</a>';
 		}
 		return '';
 	}
