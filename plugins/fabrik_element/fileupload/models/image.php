@@ -130,7 +130,6 @@ class imageRender
 		$height = $params->get('fu_main_max_height');
 		if (!$this->fullImageInRecord($params))
 		{
-			echo "crop = " . $params->get('fileupload_crop');
 			if ($params->get('fileupload_crop'))
 			{
 				$width = $params->get('fileupload_crop_width');

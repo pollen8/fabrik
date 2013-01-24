@@ -216,71 +216,10 @@ class FabrikControllerForm extends JControllerLegacy
 			JSession::checkToken() or die('Invalid Token');
 		}
 
-		$validated = $model->validate();
-		if (!$validated)
+		if (!$model->validate())
 		{
-			// If its in a module with ajax or in a package or inline edit
-			if ($input->get('fabrik_ajax'))
-			{
-				if ($input->getInt('elid', 0) !== 0)
-				{
-					// Inline edit
-					$eMsgs = array();
-					$errs = $model->getErrors();
-
-					// Only raise errors for fields that are present in the inline edit plugin
-					$toValidate = array_keys($input->get('toValidate', array(), 'array'));
-					foreach ($errs as $errorKey => $e)
-					{
-						if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
-						{
-							array_walk_recursive($e, array('FabrikString', 'forHtml'));
-							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
-						}
-					}
-					if (!empty($eMsgs))
-					{
-						$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
-						header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
-						jexit();
-					}
-					else
-					{
-						$validated = true;
-					}
-				}
-				else
-				{
-					// Package / model
-					echo $model->getJsonErrors();
-				}
-				if (!$validated)
-				{
-					return;
-				}
-			}
-			if (!$validated)
-			{
-				$this->savepage();
-				if ($this->isMambot)
-				{
-					$this->setRedirect($this->getRedirectURL($model, false));
-				}
-				else
-				{
-					/**
-					 * $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
-					 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
-					 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
-					 */
-					if ($input->get('usekey') !== '')
-					{
-						$input->set('rowid', -1);
-					}
-					$view->display();
-				}
-				return;
-			}
+			$this->handleError($model);
+			return;
 		}
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
@@ -347,6 +286,77 @@ class FabrikControllerForm extends JControllerLegacy
 		else
 		{
 			$this->setRedirect($url, $msg);
+		}
+	}
+
+	protected function handleError($model)
+	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$input = $app->input;
+		$validated = false;
+
+		// If its in a module with ajax or in a package or inline edit
+		if ($input->get('fabrik_ajax'))
+		{
+			if ($input->getInt('elid', 0) !== 0)
+			{
+				// Inline edit
+				$eMsgs = array();
+				$errs = $model->getErrors();
+
+				// Only raise errors for fields that are present in the inline edit plugin
+				$toValidate = array_keys($input->get('toValidate', array(), 'array'));
+				foreach ($errs as $errorKey => $e)
+				{
+					if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
+					{
+						array_walk_recursive($e, array('FabrikString', 'forHtml'));
+						$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
+					}
+				}
+				if (!empty($eMsgs))
+				{
+					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
+					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
+					jexit();
+				}
+				else
+				{
+					$validated = true;
+				}
+			}
+			else
+			{
+				// Package / model
+				echo $model->getJsonErrors();
+			}
+			if (!$validated)
+			{
+				return;
+			}
+		}
+		if (!$validated)
+		{
+			$this->savepage();
+			if ($this->isMambot)
+			{
+				$this->setRedirect($this->getRedirectURL($model, false));
+			}
+			else
+			{
+				/**
+				 * $$$ rob - http://fabrikar.com/forums/showthread.php?t=17962
+				 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
+				 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
+				 */
+				if ($input->get('usekey') !== '')
+				{
+					$input->set('rowid', -1);
+				}
+				$view->display();
+			}
+			return;
 		}
 	}
 

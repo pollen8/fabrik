@@ -84,7 +84,6 @@ Fabrik.Window = new Class({
 		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
 		
 		if (!(Fabrik.bootstrapped && this.modal)) {
-			console.log('positio');
 			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
 			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
 		}
