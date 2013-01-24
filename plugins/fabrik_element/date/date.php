@@ -621,9 +621,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * @param   string  $value          The date value (must be in the same format as supplied by $format)
 	 * @param   string  $name           The name of the text field
 	 * @param   string  $id             The id of the text field
-	 * @param   string  $format         The date format
+	 * @param   string  $format         The date format (not used)
 	 * @param   array   $attribs        Additional html attributes
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   int     $repeatCounter  repeat group counter (not used)
 	 *
 	 * @deprecated - don't think its used
 	 *
@@ -633,6 +633,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null, $repeatCounter = 0)
 	{
 		FabrikHelperHTML::loadcalendar();
+		$j3 = FabrikWorker::j3();
 		if (is_array($attribs))
 		{
 			$attribs = JArrayHelper::toString($attribs);
@@ -641,10 +642,19 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 
-		// $img = '<button class="btn">' . $img . '</button>';
-		$img = '<span class="add-on">' . $img . '</span>';
-		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-		return '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
+		$html = array();
+		if ($j3)
+		{
+			$img = '<span class="add-on">' . $img . '</span>';
+			$html[] = '<div class="input-append">';
+		}
+		$html[] = '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;
+		if ($j3)
+		{
+			$html[] = '</div>';
+		}
+
+		return implode("\n", $html);
 	}
 
 	/**
@@ -2148,6 +2158,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 
 		$opts->calendarSetup->ifFormat = $params->get('date_table_format', '%Y-%m-%d');
+		FabDate::dateFormatToStrftimeFormat($opts->calendarSetup->ifFormat);
 		$opts->type = $type;
 		$opts->ids = $type == 'field' ? array($id) : array($id, $id2);
 		$opts->buttons = $type == 'field' ? array($id . '_cal_img') : array($id . '_cal_img', $id2 . '_cal_img');

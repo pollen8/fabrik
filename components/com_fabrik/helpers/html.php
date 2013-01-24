@@ -1645,7 +1645,8 @@ EOD;
 		if (FabrikWorker::j3() && !$srcOnly)
 		{
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
-			return '<i class="icon-' . JFile::stripExt($file) . ' ' . $class .'"></i>';
+			$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
+			return '<i class="icon-' . JFile::stripExt($file) . ' ' . $class . '"' . $id . '></i>';
 		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);

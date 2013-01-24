@@ -8576,7 +8576,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$element = $input->get('element');
-		$elementid = $input->get('elid');
+		$elementid = $input->getId('elid');
 		$pluginManager = FabrikWorker::getPluginManager();
 		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
