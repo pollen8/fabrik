@@ -5738,7 +5738,11 @@ class FabrikFEModelList extends JModelForm
 
 		//Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
-
+		if (!isset($listClasses->responsive_elements))
+		{
+			$listClasses = new stdClass();
+			$listClasses->responsive_elements = array();
+		}
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
 		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
 		{
