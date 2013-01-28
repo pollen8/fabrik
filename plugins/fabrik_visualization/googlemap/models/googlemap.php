@@ -375,7 +375,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 						$html = str_replace(array("\r\n"), "<br />", $html);
 						$html = str_replace(array("\n", "\r"), "<br />", $html);
 						*/
-						$html = nl2br($html, true);
+						$html = nl2br($html);
 					}
 					$html = str_replace("'", '"', $html);
 					$this->txt[] = $html;

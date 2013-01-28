@@ -487,6 +487,7 @@ class FabrikString extends JString
 			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
 			$v = FabrikString::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
+			$v = str_replace(' ', '', $v);
 			$o->coords = explode(",", $v);
 		}
 		else

@@ -340,6 +340,13 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$this->loadMeForAjax();
 		$params = $this->getParams();
 
+		/**
+		 * $$$ hugh - I'm not convinced this is the right way to do this, as it
+		 * overloads the filter method option.  Building options lists is, IMHO,
+		 * entirely different to building filters, and this keeps catching me out,
+		 * where I don't see what I expect on the form, because the list filter
+		 * method is set to 'recorded data' rather than 'show all'.
+		 */
 		if ($this->getFilterBuildMethod() == 1)
 		{
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
@@ -784,12 +791,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		$query->from($db->quoteName($table) . ' AS ' . $db->quoteName($join->table_join_alias));
 		$query = $this->buildQueryJoin($query);
-		$query->where(FabrikString::rtrimword($where));
-
+		$where = FabrikString::rtrimword($where);
+		if ($where !== '')
+		{
+			$query->where($where);
+		}
 		if (!JString::stristr($where, 'order by'))
 		{
 			$query->order($orderby . ' ASC');
-
 		}
 		$this->_sql[$sig] = $query;
 		FabrikHelperHTML::debug($this->_sql[$sig]);
