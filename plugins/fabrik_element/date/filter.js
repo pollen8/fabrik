@@ -70,6 +70,7 @@ var DateFilter = new Class({
 		this.cals[id].refresh();
 		this.cals[id].hide();
 		button.addEvent('click', function (e) {
+			e.stop();
 			if (!this.cals[id].params.position) {
 				this.cals[id].showAtElement(this.cals[id].params.button || this.cals[id].params.displayArea || this.cals[id].params.inputField, this.cals[id].params.align);
 			} else {
