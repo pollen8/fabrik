@@ -74,11 +74,22 @@
 				</fields>
 			</field>
 			
-			<field directory="/plugins/fabrik_visualization/timeline/views/timeline/tmpl/" label="PLG_VIZ_TIMELINE_TEMPLATE_LABEL" name="timeline_layout" type="folderlist"/>
-			
-			<field default="%c" description="PLG_VIZ_TIMELINE_DATE_FORMAT_DESC" label="PLG_VIZ_TIMELINE_DATE_FORMAT_LABEL" name="timeline_date_format" type="field"/>
+			<field name="timeline_layout"
+				type="fabriktemplate"
+				directory="/plugins/fabrik_visualization/timeline/views/timeline/"
+				label="PLG_VIZ_TIMELINE_TEMPLATE_LABEL" />
 				
-			<field default="0" description="PLG_VIZ_TIMELINE_ORIENTATION_DESC" label="PLG_VIZ_TIMELINE_ORIENTATION_LABEL" name="timeline_orientation" type="list">
+			<field name="timeline_date_format"
+				type="field"
+				default="%c"
+				description="PLG_VIZ_TIMELINE_DATE_FORMAT_DESC"
+				label="PLG_VIZ_TIMELINE_DATE_FORMAT_LABEL" />
+				
+			<field name="timeline_orientation"
+				type="list"
+				default="0"
+				description="PLG_VIZ_TIMELINE_ORIENTATION_DESC"
+				label="PLG_VIZ_TIMELINE_ORIENTATION_LABEL">
 					<option value="1">PLG_VIZ_TIMELINE_VERTICAL</option>
 					<option value="0">PLG_VIZ_TIMELINE_HORIZONTAL</option>
 			</field>

@@ -9,55 +9,63 @@
 */
 
 defined('_JEXEC') or die('Restricted access');
+
+if ($this->showFilters) :
 ?>
-filters
-<?php if ($this->showFilters) :
-?>
-show
 <form method="post" name="filter" action="<?php echo $this->filterFormURL; ?>">
 <?php
 	foreach ($this->filters as $table => $filters) :
 		if (!empty($filters)) :
 		?>
-	  <table class="filtertable fabrikTable fabrikList">
-
-	   <thead>
-	  	<tr>
-	  		<th><?php echo $table ?></th>
-	  		<th style="text-align:right"><a href="#" class="clearFilters"><?php echo JText::_('CLEAR'); ?></a></th>
+		<table class="filtertable fabrikTable fabrikList">
+		<thead>
+		<tr>
+	  		<?php
+			foreach ($filters as $filter) :
+				$required = $filter->required == 1 ? ' class="notempty"' : '';
+				?>
+				<td<?php echo $required; ?>>
+					<?php echo $filter->label; ?>
+				</td>
+				<?php
+			endforeach;
+			?>
 	  	</tr>
 	  </thead>
 
 	  <tfoot>
-	  	<tr>
-	  		<th colspan="2" style="text-align:right;">
+	  	<tr class="fabrik_row1">
+	  		<th colspan="<?php echo count($filters) - 1; ?>" style="text-align:right">
+	  			<a href="#" class="clearFilters">
+	  				<?php echo JText::_('CLEAR'); ?>
+	  			</a>
+	  		</th>
+	  		<th style="text-align:right;">
 	  			<input type="submit" class="button" value="<?php echo JText::_('GO') ?>" />
 	  		</th>
 	  	</tr>
 	  </tfoot>
 
 	  <tbody>
-	  <?php
+	  	<tr class="fabrik_row0">
+			<?php
 			$c = 0;
 			foreach ($filters as $filter) :
-				$required = $filter->required == 1 ? ' class="notempty"' : '';
-			 ?>
-	    <tr class="fabrik_row oddRow<?php echo ($c % 2); ?>">
-	    	<td<?php echo $required ?>><?php echo $filter->label ?> </td>
-	    	<td><?php echo $filter->element ?></td>
-	    </tr>
-	  <?php
-				$c++;
+			?>
+	    	<td>
+	    		<?php echo $filter->element ?>
+	    	</td>
+			<?php
 			endforeach;
 			?>
+		</tr>
 	  </tbody>
 
-	  </table>
-	  <?php
-		endif;
-	endforeach;
-	?>
-
+	</table>
+	<?php
+	endif;
+endforeach;
+?>
 </form>
 <?php
 endif;

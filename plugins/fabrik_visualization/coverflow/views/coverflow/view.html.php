@@ -36,6 +36,7 @@ class fabrikViewCoverflow extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 		$srcs = FabrikHelperHTML::framework();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
@@ -50,9 +51,10 @@ class fabrikViewCoverflow extends JViewLegacy
 		$this->params = $params;
 		$this->containerId = $this->get('ContainerId');
 		$this->row = $row;
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->filterFormURL = $this->get('FilterFormURL');
+		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/coverflow/views/coverflow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';

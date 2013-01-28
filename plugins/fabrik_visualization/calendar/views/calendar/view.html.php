@@ -37,6 +37,7 @@ class fabrikViewCalendar extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
 		$pluginManager = FabrikWorker::getPluginManager();
 
@@ -51,7 +52,7 @@ class fabrikViewCalendar extends JViewLegacy
 		$this->params = $params;
 		$this->containerId = $model->getJSRenderContext();
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', (int) $params->get('show_filters', 1)) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->showTitle = $input->getInt('show-title', 1);
 		$this->filterFormURL = $this->get('FilterFormURL');
 
@@ -92,7 +93,8 @@ class fabrikViewCalendar extends JViewLegacy
 		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
-		$tpl = $params->get('calendar_layout', 'default');
+		$tpl = $j3 ? 'bootstrap' : 'default';
+		$tpl = $params->get('calendar_layout', $j3);
 		$options = new stdClass;
 		$options->url = $urls;
 		$options->deleteables = $this->get('DeleteAccess');
@@ -198,19 +200,8 @@ class fabrikViewCalendar extends JViewLegacy
 		$this->_setPath('template', $tmplpath);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
 
-		$ab_css_file = $tmplpath . '/template.css';
-
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/template.css');
-		}
-
 		// Adding custom.css, just for the heck of it
-		$ab_css_file = $tmplpath . '/custom.css';
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
-		}
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
 		return parent::display();
 	}
 

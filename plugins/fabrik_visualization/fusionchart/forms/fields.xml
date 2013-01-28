@@ -103,7 +103,10 @@
 				
 			<field default="200" description="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_DESC" class="input-mini" label="PLG_VISUALIZATION_FUSIONCHART_HEIGHT_LABEL" name="fusionchart_height" size="5" type="text"/>
 				
-			<field directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/tmpl/" label="PLG_VISUALIZATION_FUSIONCHART_TEMPLATE_LABEL" name="fusionchart_layout" type="folderlist"/>
+			<field name="fusionchart_layout"
+				type="fabriktemplate"
+				directory="/plugins/fabrik_visualization/fusionchart/views/fusionchart/"
+				label="PLG_VISUALIZATION_FUSIONCHART_TEMPLATE_LABEL" />
 				
 			<field default="Please Wait.The chart is loading..." label="PLG_VISUALIZATION_FUSIONCHART_MSG_LOADING_LABEL" name="fusionchart_message_loading" size="50" type="text"/>
 				

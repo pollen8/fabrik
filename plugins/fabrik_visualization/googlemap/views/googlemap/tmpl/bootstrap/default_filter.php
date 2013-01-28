@@ -1,6 +1,6 @@
 <?php
 /**
- * Default Google Map Viz Filter Template
+ * Bootstrap Google Map Viz Filter Template
  *
 * @package      Joomla.Plugin
 * @subpackage   Fabrik.visualization.googlemap
@@ -9,29 +9,33 @@
 */
 
 defined('_JEXEC') or die('Restricted access');
+
+if ($this->showFilters) :
 ?>
-filters
-<?php if ($this->showFilters) :
-?>
-show
 <form method="post" name="filter" action="<?php echo $this->filterFormURL; ?>">
 <?php
 	foreach ($this->filters as $table => $filters) :
 		if (!empty($filters)) :
 		?>
-	  <table class="filtertable fabrikTable fabrikList">
+	  <table class="filtertable table table-striped">
 
 	   <thead>
 	  	<tr>
 	  		<th><?php echo $table ?></th>
-	  		<th style="text-align:right"><a href="#" class="clearFilters"><?php echo JText::_('CLEAR'); ?></a></th>
+	  		<th style="text-align:right">
+	  			<a href="#" class="clearFilters">
+	  				<i class="icon-refresh"></i> <?php echo JText::_('COM_FABRIK_CLEAR'); ?>
+	  			</a>
+	  		</th>
 	  	</tr>
 	  </thead>
 
 	  <tfoot>
 	  	<tr>
 	  		<th colspan="2" style="text-align:right;">
-	  			<input type="submit" class="button" value="<?php echo JText::_('GO') ?>" />
+	  			<button type="submit" class="btn btn-primary">
+	  				<i class="icon-filter"></i> <?php echo JText::_('COM_FABRIK_GO') ?>
+	  			</button>
 	  		</th>
 	  	</tr>
 	  </tfoot>
@@ -51,13 +55,11 @@ show
 			endforeach;
 			?>
 	  </tbody>
-
 	  </table>
 	  <?php
 		endif;
 	endforeach;
 	?>
-
 </form>
 <?php
 endif;

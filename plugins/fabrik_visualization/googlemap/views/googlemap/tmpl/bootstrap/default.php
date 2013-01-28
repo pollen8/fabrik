@@ -1,6 +1,6 @@
 <?php
 /**
- * Default Google Map Viz Template
+ * Bootstrap Google Map Viz Template
  *
 * @package      Joomla.Plugin
 * @subpackage   Fabrik.visualization.googlemap
@@ -21,7 +21,7 @@ endif;
 	<?php if ($this->params->get('show-title', 1)) : ?>
 		<h1><?php echo $row->label;?></h1>
 	<?php endif;
-	echo $this->loadTemplate('filter_horiz'); ?>
+	echo $this->loadTemplate('filter'); ?>
 	<div><?php echo $row->intro_text;?></div>
 	<table style="width:100%">
 		<tr>

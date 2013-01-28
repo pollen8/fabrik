@@ -66,7 +66,7 @@ class FabrikViewChart extends JViewLegacy
 		$plugin = $pluginManager->getPlugIn('chart', 'visualization');
 		$this->containerId = $this->get('ContainerId');
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ?  1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $this->get('FilterFormURL');
 
 		$tpl = $params->get('chart_layout', $tpl);

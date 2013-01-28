@@ -1,9 +1,9 @@
 <?php
 /**
- * Fabrik Gannt Chart Viz: default tmpl
+ * Slideshow vizualization: bootstrap template
  *
  * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
+ * @subpackage	Fabrik.visualization.slideshow
  * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,12 +17,18 @@ $row = $this->row;
 	<h1>
 		<?php echo $row->label;?>
 	</h1>
-	<?php endif; ?>
-	<br />
-	<p>
-		<?php echo $row->intro_text;?>
-	</p>
+	<?php endif;?>
 	<?php echo $this->loadTemplate('filter'); ?>
-	<br />
-	<?php echo $this->chart; ?>
+	<div>
+		<?php echo $row->intro_text;?>
+	</div>
+	<div class="slideshow" id="slideshow_viz">
+		<div class="slideshow-images">
+			<a><img /> </a>
+			<div class="slideshow-loader"></div>
+		</div>
+		<div class="slideshow-captions"></div>
+		<div class="slideshow-controller"></div>
+		<div class="slideshow-thumbnails"></div>
+	</div>
 </div>

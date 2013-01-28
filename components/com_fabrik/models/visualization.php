@@ -69,6 +69,19 @@ class FabrikFEModelVisualization extends JModelLegacy
 		}
 	}
 
+	/**
+	 * Should the viz show the list filters
+	 *
+	 * @return boolean
+	 */
+	public function showFilters()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$params = $this->getParams();
+		return (int) $input->get('showfilters', $params->get('show_filters')) === 1 ? true : false;
+	}
+
 	function getPluginParams()
 	{
 		if (!isset($this->_pluginParams))

@@ -36,6 +36,7 @@ class fabrikViewGooglemap extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::slimbox();
 		$document = JFactory::getDocument();
@@ -47,6 +48,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		$this->txt = $model->getText();
 		$params = $model->getParams();
 		$this->params = $params;
+		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fb_gm_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
@@ -54,7 +56,6 @@ class fabrikViewGooglemap extends JViewLegacy
 		$uri = JURI::getInstance();
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
-			// $document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 			$srcs[] = 'components/com_fabrik/libs/geo-location/geo.js';
 		}
 
@@ -112,7 +113,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
 		if ($this->get('ShowSideBar'))

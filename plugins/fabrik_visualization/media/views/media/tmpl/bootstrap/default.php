@@ -1,9 +1,9 @@
 <?php
 /**
- * Fabrik Gannt Chart Viz: default tmpl
+ *  Fabrik Media Viz: Default Tmpl
  *
  * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
+ * @subpackage	Fabrik.visualization.media
  * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -17,12 +17,12 @@ $row = $this->row;
 	<h1>
 		<?php echo $row->label;?>
 	</h1>
-	<?php endif; ?>
+	<?php endif;?>
 	<br />
 	<p>
 		<?php echo $row->intro_text;?>
 	</p>
 	<?php echo $this->loadTemplate('filter'); ?>
 	<br />
-	<?php echo $this->chart; ?>
+	<?php echo $this->media; ?>
 </div>

@@ -47,15 +47,9 @@ class fabrikViewApprovals extends JViewLegacy
 		$this->calName = $this->get('VizName');
 		$this->params = $model->getParams();
 		$tpl = $this->params->get('approvals_layout', $tpl);
-		$tmplpath = JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl;
-		$this->_setPath('template', $tmplpath);
+		$this->_setPath('template', JPATH_SITE . '/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl);
 
-		$ab_css_file = $tmplpath . '/template.css';
-
-		if (file_exists($ab_css_file))
-		{
-			JHTML::stylesheet('/plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
-		}
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/approvals/views/approvals/tmpl/' . $tpl . '/template.css');
 
 		$ref = $model->getJSRenderContext();
 		$js = "var $ref = new fbVisApprovals('approvals_" . $id . "');\n";

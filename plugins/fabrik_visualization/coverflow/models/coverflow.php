@@ -96,8 +96,8 @@ class fabrikModelCoverflow extends FabrikFEModelVisualization
 							{
 								$event->image = $imageElement->getStorage()->pathToURL($row->{$image . '_raw'});
 							}
-							$event->title = (string) strip_tags($row->$title);
-							$event->subtitle = (string) strip_tags($row->$subtitle);
+							$event->title = $title === '' ? '' : (string) strip_tags($row->$title);
+							$event->subtitle = $subtitle === '' ? '' : (string) strip_tags($row->$subtitle);
 							$eventdata[] = $event;
 						}
 					}
