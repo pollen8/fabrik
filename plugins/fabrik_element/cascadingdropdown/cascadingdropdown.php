@@ -199,14 +199,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		$id = $this->getHTMLId($repeatCounter);
 		$class = "fabrikinput inputbox";
+		$disabled = '';
 		if (count($tmp) == 1)
 		{
 			$class .= " readonly";
-			$disabled = 'readonly="readonly"';
-		}
-		else
-		{
-			$disabled = '';
+			// Selects don't have readonly properties !
+			//$disabled = 'readonly="readonly"';
 		}
 
 		$w = new FabrikWorker;
@@ -909,7 +907,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$observerid .= 'value';
 		if ($element->filter_type == 'auto-complete')
 		{
-			FabrikHelperHTML::autoCompleteScript();
 			$htmlid = $this->getHTMLId() . 'value';
 			$opts = new stdClass;
 			$opts->observerid = $observerid;
