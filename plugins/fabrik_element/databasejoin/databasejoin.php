@@ -1325,7 +1325,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				 * defaulting to VARCHAR
 				 * return "VARCHAR(255)";
 				 */
-				$dbName = $params->get('join_db_name');
+				$dbName = $params->get('join_db_name', $this->getDbName());
 				$joinKey = $params->get('join_key_column');
 			}
 			else
@@ -1336,7 +1336,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$dbName = $params->get('join_db_name');
+			$dbName = $params->get('join_db_name', $this->getDbName());
 			$joinKey = $params->get('join_key_column');
 		}
 
