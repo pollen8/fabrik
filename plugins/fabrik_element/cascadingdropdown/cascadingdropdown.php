@@ -343,6 +343,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$this->loadMeForAjax();
 		$params = $this->getParams();
 
+		/**
+		 * $$$ hugh - I'm not convinced this is the right way to do this, as it
+		 * overloads the filter method option.  Building options lists is, IMHO,
+		 * entirely different to building filters, and this keeps catching me out,
+		 * where I don't see what I expect on the form, because the list filter
+		 * method is set to 'recorded data' rather than 'show all'.
+		 */
 		if ($this->getFilterBuildMethod() == 1)
 		{
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
