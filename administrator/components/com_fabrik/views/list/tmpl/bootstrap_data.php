@@ -1,3 +1,8 @@
+<?php
+$doc = JFactory::getDocument();
+$rtlDir = $doc->direction === 'rtl' ? 'left' : 'right';
+$rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
+ ?>
 <div class="tab-pane" id="data">
 
 	<ul class="nav nav-tabs">
@@ -48,15 +53,15 @@
 			 ?>
 
 			<label for="order_by"><?php echo JText::_('COM_FABRIK_FIELD_ORDER_BY_LABEL'); ?></label>
-			<div id="orderByTd" style="float:left;margin:4px 0 0 2px">
+			<div id="orderByTd" style="margin:4px 0 0 2px">
 			<?php
 			for ($o = 0; $o < count($this->order_by); $o++) : ?>
-			<div class="orderby_container" style="margin-bottom:3px">
+			<div class="orderby_container" style="margin-bottom:3px;float:<?php echo $rtlDirInv; ?>">
 			<?php
 				echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
 				if ((int) $this->item->id !== 0) :
 					echo JArrayHelper::getValue($this->order_dir, $o)?>
-					<div class="btn-group pull-right">
+					<div class="btn-group pull-<?php echo $rtlDir; ?>">
 						<a class="btn btn-success addOrder" href="#"><i class="icon-plus"></i> </a>
 						<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus"></i> </a>
 					</div>

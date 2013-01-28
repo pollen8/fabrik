@@ -319,7 +319,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 
 			$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
-			$img = '<span class="add-on">' . FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts) . '</span>';
+			$img = '<button class="btn timeButton">' . FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts) . '</button>';
 			$str[] = $img;
 			if ($j3)
 			{
@@ -646,13 +646,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$attribs = JArrayHelper::toString($attribs);
 		}
 		$paths = FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'media/system/images/', 'image', 'form', false);
-		$opts = array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
+		$opts = $j3 ? array('alt' => 'calendar') : array('alt' => 'calendar', 'class' => 'calendarbutton', 'id' => $id . '_cal_img');
 		$img = FabrikHelperHTML::image('calendar.png', 'form', @$this->tmpl, $opts);
 
 		$html = array();
 		if ($j3)
 		{
-			$img = '<span class="add-on">' . $img . '</span>';
+			$img = '<button id ="' . $id . '_cal_img" class="btn calendarbutton">' . $img . '</button>';
 			$html[] = '<div class="input-append">';
 		}
 		$html[] = '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" ' . $attribs . ' />' . $img;

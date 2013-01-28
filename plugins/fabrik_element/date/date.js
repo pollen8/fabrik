@@ -76,6 +76,7 @@ var FbDateTime = new Class({
 			};
 			h.delay(100, this);
 			this.getCalendarImg().addEvent('click', function (e) {
+				e.stop();
 				if (!this.cal.params.position) {
 					this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
 				} else {
@@ -97,10 +98,7 @@ var FbDateTime = new Class({
 	 */
 	
 	getCalendarImg: function () {
-		var i = this.element.getElement('img.calendarbutton');
-		if (typeOf(i) === 'null') {
-			i = this.getContainer().getElement('i.icon-calendar');
-		}
+		var i = this.element.getElement('.calendarbutton');
 		return i;
 	},
 	
@@ -182,7 +180,6 @@ var FbDateTime = new Class({
 		var params = this.options.calendarSetup;
 		var tmp = ["displayArea", "button"];
 		
-		// for (var i in tmp) {
 		for (i = 0; i < tmp.length; i++) {
 			if (typeof params[tmp[i]] === "string") {
 				params[tmp[i]] = document.getElementById(params[tmp[i]]);
@@ -192,7 +189,7 @@ var FbDateTime = new Class({
 		params.inputField = this.getDateField();
 		var dateEl = params.inputField || params.displayArea;
 		var dateFmt = params.inputField ? params.ifFormat : params.daFormat;
-		this.cal = null;//Fabrik.calendar;
+		this.cal = null;
 		if (dateEl) {
 			if (this.options.advanced) {
 				params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
@@ -200,7 +197,6 @@ var FbDateTime = new Class({
 			else {
 				params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 			}
-			//params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 		}
 		
 		this.cal = new Calendar(params.firstDay,
@@ -334,7 +330,8 @@ var FbDateTime = new Class({
 			this.getTimeButton();
 			if (this.timeButton) {
 				this.timeButton.removeEvents('click');
-				this.timeButton.addEvent('click', function () {
+				this.timeButton.addEvent('click', function (e) {
+					e.stop();
 					this.showTime();
 				}.bind(this));
 				if (!this.setUpDone) {
@@ -447,13 +444,12 @@ var FbDateTime = new Class({
 	},
 	
 	/**
-	 * get time time button img
+	 * Get time time button img
+	 * 
+	 * @return   DOM node
 	 */
 	getTimeButton: function () {
 		this.timeButton = this.getContainer().getElement('.timeButton');
-		if (typeOf(this.timeButton) === 'null') {
-			this.timeButton = this.getContainer().getElement('i.icon-clock');
-		}
 		return this.timeButton;
 	},
 
@@ -484,7 +480,7 @@ var FbDateTime = new Class({
 			},
 			'id' : this.startElement + '_handle'
 		})
-		.set('html', '<i class="icon-clock"></i> ' + this.options.timelabel + '<a href="#" class="close-time" style="position:absolute;right:10px"><i class="icon-cancel"></i></a>');
+		.set('html', '<i class="icon-clock"></i> ' + this.options.timelabel + '<a href="#" class="close-time pull-right" ><i class="icon-cancel"></i></a>');
 		var d = new Element('div.fbDateTime.fabrikWindow', {
 			'styles' : {
 				'z-index' : 999999,

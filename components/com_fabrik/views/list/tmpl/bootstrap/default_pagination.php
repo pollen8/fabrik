@@ -85,7 +85,7 @@ function fabrik_pagination_list_footer($list, $paginator)
 	$html = array();
 	$html[] = '<div class="list-footer">';
 	$limitLabel = $paginator->showDisplayNum ? JText::_('COM_FABRIK_DISPLAY_NUM') : '';
-	$html[] = '<div class="limit input-prepend"><span class="add-on">' . $limitLabel  . '</span>' . $list['limitfield'] . '</div>';
+	$html[] = '<div class="limit input-prepend"><button class="add-on">' . $limitLabel  . '</button>' . $list['limitfield'] . '</div>';
 	$html[] = $list['pageslinks'];
 	$html[] = '<div class="counter">' . $list['pagescounter'] . '</div>';
 	$html[] = '<input type="hidden" name="limitstart' . $paginator->_id . '" id="limitstart' . $paginator->_id . '" value="' . $list['limitstart'] . '" />';

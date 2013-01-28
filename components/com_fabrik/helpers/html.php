@@ -738,7 +738,7 @@ EOD;
 			if ($editable)
 			{
 				$tmpName = $type === 'checkbox' ? $tag_name . '[' . $i . ']' : $tag_name;
-				$html .= '<label>';
+				$html .= '<label class="' . $type . '">';
 				$html .= '<input type="' . $type . '" value="' . $k . '" name="' . $tmpName . '" class="fabrikinput" ' . $extra . '/>';
 			}
 			if ($editable || $found)
@@ -1437,12 +1437,13 @@ EOD;
 
 	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
 	{
-		self::autoCompleteScript();
 		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
 		$str = json_encode($json);
+		JText::script('COM_FABRIK_NO_RECORDS');
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
+		$jsFile = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
 		self::addScriptDeclaration("
-				requirejs(['fab/autocomplete', 'fab/encoder', 'fab/lib/Event.mock'], function () {
+				requirejs(['fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
 					new $class('$htmlid', $str);
 				});");
 	}
@@ -1482,16 +1483,14 @@ EOD;
 	/**
 	 * Load the autocomplete script once
 	 *
+	 * @deprecated since 3.1b
+	 *
 	 * @return  void
 	 */
 
 	public static function autoCompleteScript()
 	{
-		if (!isset(self::$autocomplete))
-		{
-			self::$autocomplete = true;
-			self::script('media/com_fabrik/js/autocomplete.js');
-		}
+
 	}
 
 	/**

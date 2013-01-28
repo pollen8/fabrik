@@ -64,7 +64,8 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 		}
-		this.element.getParent().getElement('.loader').setStyle('display', '');
+		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
+		//this.element.getParent().getElement('.loader').setStyle('display', '');
 		// $$$ hugh testing new getFormElementData() method to include current form element values in data
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
 		// it includes all QS from current page, including task=processForm, which screws up this AJAX call.
@@ -93,7 +94,8 @@ var FbCascadingdropdown = new Class({
 			var origvalue = this.options.def,
 			opts = {},
 			c;
-			this.element.getParent().getElement('.loader').hide();
+			this.spinner.hide();
+			//this.element.getParent().getElement('.loader').hide();
 			json = JSON.decode(json);
 			if (this.options.editable) {
 				this.destroyElement();
@@ -142,11 +144,12 @@ var FbCascadingdropdown = new Class({
 			//this.element.disabled = (this.element.options.length === 1 ? true : false);
 			if (this.options.editable && this.options.displayType === 'dropdown') {
 				if (this.element.options.length === 1) {
-					this.element.readonly = true;
+					// SELECTS DONT HAVE READONLY PROPERTIES 
+					//this.element.setProperty('readonly', true);
 					this.element.addClass('readonly');
-				}
-				else {
-					this.element.readonly = false;
+				} else {
+					//this.element.readonly = false;
+					//this.element.removeProperty('readonly');
 					this.element.removeClass('readonly');
 				}
 			}
