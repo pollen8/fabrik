@@ -145,7 +145,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
-		$element->name = $element->name . "_check";
+
+		$name = $this->getFullName(false, true, false);
+		$name = str_replace($element->name, $element->name . '_check', $name);
+		$this->setFullName($name, false, true, false);
 		$checkvalue = $this->getValue($post, $repeatCounter);
 		$element->name = $origname;
 		if ($checkvalue != $data)
