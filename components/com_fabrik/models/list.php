@@ -775,12 +775,13 @@ class FabrikFEModelList extends JModelForm
 		ini_set('mysql.trace_mode', 'off');
 		$fabrikDb = $this->getDb();
 		JDEBUG ? $profiler->mark('query build start') : null;
+
+		// Ajax call needs to recall this - not sure why
+		$this->setLimits();
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
-		// Ajax call needs to recall this - not sure why
-		$this->setLimits();
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
