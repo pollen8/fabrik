@@ -218,7 +218,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 		if (!$model->validate())
 		{
-			$this->handleError($model);
+			$this->handleError($view, $model);
 			return;
 		}
 		// Reset errors as validate() now returns ok validations as empty arrays
@@ -289,7 +289,17 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 	}
 
-	protected function handleError($model)
+	/**
+	 * Handle the view error
+	 *
+	 * @param   JView   $view   View
+	 * @param   JModel  $model  Form Model
+	 *
+	 * @since   3.1b
+	 *
+	 * @return  void
+	 */
+	protected function handleError($view, $model)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
