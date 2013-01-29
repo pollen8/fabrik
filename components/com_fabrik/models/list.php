@@ -612,8 +612,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Set the navigation limit and limitstart
 	 *
-	 * @param   int  $limitstart_override  specific limitstart to use, if both start and length are specified
-	 * @param   int  $limitlength_override  specific limitlength to use, if both start and length are specified
+	 * @param   int  $limitstart_override   Specific limitstart to use, if both start and length are specified
+	 * @param   int  $limitlength_override  Specific limitlength to use, if both start and length are specified
 	 *
 	 * @return  void
 	 */
@@ -627,7 +627,7 @@ class FabrikFEModelList extends JModelForm
 		 */
 		if (!is_null($limitstart_override) && !is_null($limitlength_override))
 		{
-			// might want to set the request vars here?
+			// Might want to set the request vars here?
 			$limitStart = $limitstart_override;
 			$limitLength = $limitlength_override;
 		}
@@ -748,6 +748,7 @@ class FabrikFEModelList extends JModelForm
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
+
 			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->query();
@@ -1062,6 +1063,7 @@ class FabrikFEModelList extends JModelForm
 		if ($groupBy != '' && $this->outPutFormat != 'csv')
 		{
 			$w = new FabrikWorker;
+
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
 			$requestGroupBy = JRequest::getCmd('group_by', '');
 			if ($requestGroupBy == '')
@@ -1100,7 +1102,8 @@ class FabrikFEModelList extends JModelForm
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
 					$children = $xml->children();
-				//not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+
+					// Not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
 					if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
 					{
 						$sdata = strip_tags($sdata);
@@ -1434,6 +1437,8 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get delete button
+	 *
+	 * @param   string  $tpl  Template
 	 *
 	 * @since 3.0
 	 *
@@ -2443,7 +2448,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  bool
 	 */
 
-	protected function singleOrdering()
+	public function singleOrdering()
 	{
 		$params = $this->getParams();
 		if ($params->get('enable_single_sorting', 'default') == 'default')
@@ -2477,7 +2482,7 @@ class FabrikFEModelList extends JModelForm
 		$id = $this->getRenderContext();
 		if (in_array($postOrderDir, $arOrderVals))
 		{
-			$context = 'com_' . $package. '.list' . $id . '.order.' . $postOrderBy;
+			$context = 'com_' . $package . '.list' . $id . '.order.' . $postOrderBy;
 			$session->set($context, $postOrderDir);
 		}
 	}
@@ -2985,7 +2990,6 @@ class FabrikFEModelList extends JModelForm
 		$db = FabrikWorker::getDbo();
 
 		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
-		//$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
 		$longGroupBy = $db->quoteName($this->getGroupBy());
 
 		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '')
@@ -3398,15 +3402,17 @@ class FabrikFEModelList extends JModelForm
 
 	public function canDelete($row = null)
 	{
-		// Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
-		// if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
-		// deny access.
+		/**
+		 * Find out if any plugins deny delete.  We then allow a plugin to override with 'false' if
+		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
+		 * deny access.
+		 */
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
 		$pluginCanEdit = !in_array(false, $pluginCanEdit);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
-			// if userDo allows delete, let plugin override
+			// If userDo allows delete, let plugin override
 			return $canUserDo ? $pluginCanEdit : $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
@@ -3414,7 +3420,7 @@ class FabrikFEModelList extends JModelForm
 			$groups = JFactory::getUser()->authorisedLevels();
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
-		// if group access allows delete, then let plugin override
+		// If group access allows delete, then let plugin override
 		return $this->_access->delete ? $pluginCanEdit : $this->_access->delete;
 	}
 
@@ -4237,7 +4243,6 @@ class FabrikFEModelList extends JModelForm
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
 		$option = 'com_' . $package;
-		// $tid = 'list'.JRequest::getVar('listref', $this->getRenderContext());
 		$tid = 'list' . $this->getRenderContext();
 
 		// Make sure that we only store data thats been entered from this page first test we aren't in a plugin
@@ -8221,8 +8226,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get a single column of data from the table, test for element filters
 	 *
-	 * @param   mixed   $col       Column to grab. Element full name or id
-	 * @param   bool    $distinct  Select distinct values only
+	 * @param   mixed  $col       Column to grab. Element full name or id
+	 * @param   bool   $distinct  Select distinct values only
 	 *
 	 * @return  array  Values for the column - empty array if no results found
 	 */

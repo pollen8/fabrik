@@ -137,7 +137,8 @@ var FbList = new Class({
 		'popup_offset_y': null,
 		'groupByOpts': {},
 		'listRef': '', // e.g. '1_com_fabrik_1'
-		'fabrik_show_in_list': []
+		'fabrik_show_in_list': [],
+		'singleOrdering' : false
 	},
 
 	initialize: function (id, options) {
@@ -557,10 +558,20 @@ var FbList = new Class({
 				var i = h.getElement('img');
 				
 				// Swap images - if list doing ajax nav then we need to do this
+				if (this.options.singleOrdering) {
+					document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc').each(function (otherH) {
+						var i = otherH.getElement('img');
+						if (i) {
+							i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
+							i.src += 'ordernone.png';
+						}
+					});
+				}
 				if (i) {
 					i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
 					i.src += img;
 				}
+				
 				this.fabrikNavOrder(elementId, orderdir);
 				e.stop();
 			}.bind(this));
