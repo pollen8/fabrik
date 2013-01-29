@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_list" method="upgrade" type="plugin" version="2.5">
-	<name>Fabrik list - Example</name>
+	<name>Fabrik List - Example</name>
 	<author>Rob Clayburn</author>
 	<creationDate>${createdate}</creationDate>
 	<copyright>(C) 2005-${year} fabrikar.com</copyright>

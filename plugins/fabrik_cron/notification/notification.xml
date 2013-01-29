@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_cron" method="upgrade" type="plugin" version="2.5">
-	<name>plg_fabrik_cron_notification</name>
+	<name>PLG_FABRIK_CRON_NOTIFICATIONS</name>
 	<author>Rob Clayburn</author>
 	<creationDate>${createdate}</creationDate>
 	<copyright>(C) 2005-${year} fabrikar.com</copyright>
