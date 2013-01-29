@@ -513,10 +513,12 @@ var FbList = new Class({
 
 	watchOrder: function () {
 		var elementId = false;
+		
 		var hs = document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
 		hs.removeEvents('click');
 		hs.each(function (h) {
 			h.addEvent('click', function (e) {
+				var img = 'ordernone.png';
 				var orderdir = '';
 				var newOrderClass = '';
 				// $$$ rob in pageadaycalendar.com h was null so reset to e.target
@@ -529,14 +531,17 @@ var FbList = new Class({
 				case 'fabrikorder-asc':
 					newOrderClass = 'fabrikorder-desc';
 					orderdir = 'desc';
+					img = 'orderdesc.png';
 					break;
 				case 'fabrikorder-desc':
 					newOrderClass = 'fabrikorder';
 					orderdir = "-";
+					img = 'ordernone.png';
 					break;
 				case 'fabrikorder':
 					newOrderClass = 'fabrikorder-asc';
 					orderdir = 'asc';
+					img = 'orderasc.png';
 					break;
 				}
 				td.className.split(' ').each(function (c) {
@@ -549,6 +554,13 @@ var FbList = new Class({
 					return;
 				}
 				h.className = newOrderClass;
+				var i = h.getElement('img');
+				
+				// Swap images - if list doing ajax nav then we need to do this
+				if (i) {
+					i.src = i.src.replace('ordernone.png', '').replace('orderasc.png', '').replace('orderdesc.png', '');
+					i.src += img;
+				}
 				this.fabrikNavOrder(elementId, orderdir);
 				e.stop();
 			}.bind(this));
