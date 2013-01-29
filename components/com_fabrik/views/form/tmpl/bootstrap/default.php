@@ -76,5 +76,6 @@ endif;
 echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
 echo $form->endTag;
+echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
