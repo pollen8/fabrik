@@ -103,6 +103,7 @@ class FabrikViewListBase extends JView
 		$opts->canView = $model->canView() ? "1" : "0";
 		$opts->page = JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
+		$opts->singleOrdering = (bool) $model->singleOrdering();
 
 		$formEls = array();
 		foreach ($elementsNotInTable as $tmpElement)
