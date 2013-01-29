@@ -104,6 +104,7 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->page = JRoute::_('index.php');
 		$opts->isGrouped = $this->isGrouped;
 		$opts->j3 = FabrikWorker::j3();
+		$opts->singleOrdering = (bool) $model->singleOrdering();
 
 		$formEls = array();
 		foreach ($elementsNotInTable as $tmpElement)

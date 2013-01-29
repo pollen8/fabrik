@@ -760,7 +760,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $err_msg;
 			if ($send_default_email == '1')
 			{
-				$payer_emailtext = "There was an error processing your PayPal payment.  The administrator of this site has been informed.";
+				$payer_emailtext = JText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
 				JUtility::sendMail($email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
 			}
 		}

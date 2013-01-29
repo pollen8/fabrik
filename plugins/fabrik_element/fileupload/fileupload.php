@@ -2738,8 +2738,8 @@ foreach ($files as &$f) {
 	{
 		if (empty($val))
 		{
-			$isjoin = $groupModel->isJoin();
 			$formModel = $this->getFormModel();
+			$isjoin = $groupModel->isJoin();
 			$origData = $formModel->getOrigData();
 			$groupModel = $this->getGroup();
 			if ($isjoin)

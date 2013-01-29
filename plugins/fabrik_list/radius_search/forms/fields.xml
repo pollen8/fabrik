@@ -53,6 +53,15 @@
 				description="PLG_LIST_RADIUS_SEARCH_START_FILTER_DISTANCE_DESC"
 				label="PLG_LIST_RADIUS_SEARCH_START_FILTER_DISTANCE_LABEL" />
 			
+			<field name="start_active"
+				type="radio"
+				default="0"
+				repeat="true"
+				description="PLG_LIST_RADIUS_SEARCH_START_ACTIVE_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_START_ACTIVE_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
 			
 		</fieldset>
 		
@@ -94,6 +103,16 @@
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_DESC"
 				label="PLG_LIST_RADIUS_SEARCH_GEOCODE_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+			
+			<field name="geocode_as_type"
+				type="radio"
+				default="0"
+				repeat="true"
+				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_AS_TYPE_DESC"
+				label="PLG_LIST_RADIUS_SEARCH_GEOCODE_AS_TYPE_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>

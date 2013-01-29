@@ -610,8 +610,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Set the navigation limit and limitstart
 	 *
-	 * @param   int  $limitstart_override  specific limitstart to use, if both start and length are specified
-	 * @param   int  $limitlength_override  specific limitlength to use, if both start and length are specified
+	 * @param   int  $limitstart_override   Specific limitstart to use, if both start and length are specified
+	 * @param   int  $limitlength_override  Specific limitlength to use, if both start and length are specified
 	 *
 	 * @return  void
 	 */
@@ -744,6 +744,7 @@ class FabrikFEModelList extends JModelForm
 		if ($bigSelects)
 		{
 			$fabrikDb = $this->getDb();
+
 			// $$$ hugh - added bumping up GROUP_CONCAT_MAX_LEN here, rather than adding YAFO for it
 			$fabrikDb->setQuery("SET OPTION SQL_BIG_SELECTS=1, GROUP_CONCAT_MAX_LEN=10240");
 			$fabrikDb->execute();
@@ -771,13 +772,13 @@ class FabrikFEModelList extends JModelForm
 		ini_set('mysql.trace_mode', 'off');
 		$fabrikDb = $this->getDb();
 		JDEBUG ? $profiler->mark('query build start') : null;
+
+		// Ajax call needs to recall this - not sure why
+		$this->setLimits();
 		$query = $this->buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
-
-		// Ajax call needs to recall this - not sure why
-		$this->setLimits();
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->data = $results[1];
@@ -1060,6 +1061,7 @@ class FabrikFEModelList extends JModelForm
 		if ($groupBy != '' && $this->outPutFormat != 'csv')
 		{
 			$w = new FabrikWorker;
+
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
 			$requestGroupBy =  $input->get('group_by', '');
 			if ($requestGroupBy == '')
@@ -1094,7 +1096,8 @@ class FabrikFEModelList extends JModelForm
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
 					$children = $xml->children();
-				//not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
+
+					// Not working in PHP5.2	if (!($xml->count() === 1 && $children[0]->getName() == 'a'))
 					if (!(count($xml->children()) === 1 && $children[0]->getName() == 'a'))
 					{
 						$sdata = strip_tags($sdata);
@@ -2510,7 +2513,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  bool
 	 */
 
-	protected function singleOrdering()
+	public function singleOrdering()
 	{
 		$params = $this->getParams();
 		if ($params->get('enable_single_sorting', 'default') == 'default')
@@ -3044,7 +3047,6 @@ class FabrikFEModelList extends JModelForm
 		$db = FabrikWorker::getDbo();
 
 		// If the group by element isnt in the fields (IE its not published) add it (otherwise group by wont work)
-		//$longGroupBy = $db->quoteName(FabrikString::safeColNameToArrayKey($table->group_by));
 		$longGroupBy = $db->quoteName($this->getGroupBy());
 
 		if (!in_array($longGroupBy, $searchAllFields) && trim($table->group_by) != '')
