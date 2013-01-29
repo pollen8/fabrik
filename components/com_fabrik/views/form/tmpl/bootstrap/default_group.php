@@ -5,7 +5,7 @@ foreach ($this->elements as $element) :
 	$this->class = 'fabrikErrorMessage';
 	if (trim($element->error) !== '') :
 		$element->error = '<i class=" icon-warning"></i> ' . $element->error;
-		$element->containerClass .= ' error';
+		$element->containerClass .= ' error alert-error';
 		$this->class .= ' help-inline';
 	endif;
 
