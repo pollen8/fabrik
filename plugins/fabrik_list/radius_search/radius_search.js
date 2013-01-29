@@ -30,7 +30,7 @@ function geoCode() {
 						alert("Geocode was not successful for the following reason: " + status);
 					}
 				});
-			} 
+			};
 			if (typeOf(btn) !== 'null') {
 				btn.addEvent('click', function (e) {
 					e.stop();

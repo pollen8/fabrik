@@ -1093,7 +1093,11 @@ var FbList = new Class({
 		// Can result in 2nd pages of cached data being shown, but without filters applied
 		// if (this.options.ajax) {
 		if (typeOf(this.form.getElement('.pagination')) !== 'null') {
-			this.form.getElement('.pagination').getElements('.pagenav').each(function (a) {
+			var as = this.form.getElement('.pagination').getElements('.pagenav');
+			if (as.length === 0) {
+				as = this.form.getElement('.pagination').getElements('a');
+			}
+			as.each(function (a) {
 				a.addEvent('click', function (e) {
 					e.stop();
 					if (a.get('tag') === 'a') {
