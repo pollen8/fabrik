@@ -70,8 +70,12 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$rowid = $input->getInt('rowid', 0);
 		$fullName = $this->getFullName(false, true, true);
 		$watchName = $this->getWatchFullName();
-		$qsValue = $input->get($fullName, '', 'string');
-		$qsWatchValue = $input->get($watchName, '', 'string');
+
+		// If returning from failed posted validation data can be in an array
+		$qsValue = $input->get($fullName, array(), 'array');
+		$qsValue = JArrayHelper::getValue($qsValue, 0, null);
+		$qsWatchValue = $input->get($watchName, array(), 'array');
+		$qsWatchValue = JArrayHelper::getValue($qsWatchValue, 0, null);
 		$opts->def = $this->getFormModel()->hasErrors() && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
 		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
