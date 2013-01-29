@@ -263,6 +263,9 @@ var FbGoogleMap = new Class({
 			}
 		}
 		this.watchTab();
+		Fabrik.addEvent('fabrik.form.page.chage.end', function (form) {
+			this.redraw();
+		}.bind(this));
 	},
 
 	radiusUpdatePosition: function () {
