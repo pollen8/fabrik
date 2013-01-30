@@ -4,7 +4,7 @@
 	version="1.7"
 	client="site"
 	method="upgrade">
-	<name>Tag Cloud</name>
+	<name>Fabrik Module - Tag Cloud</name>
 	<author>Rob Clayburn</author>
 	<creationDate>May 2006</creationDate>
 	<copyright>(C) 2006 Pollen 8 Design Ltd. All rights reserved.</copyright>

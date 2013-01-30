@@ -15,8 +15,7 @@
 		<filename>index.html</filename>
 		<filename>mod_fabrik_form.xml</filename>
 		<folder>language</folder>
-	</files>
-	
+	</files>	
 	<config>
 		<fields name="params">
 			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
