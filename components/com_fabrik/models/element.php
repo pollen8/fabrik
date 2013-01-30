@@ -546,10 +546,23 @@ class plgFabrik_Element extends FabrikPlugin
 				$opts->position = 'top';
 				$opts = json_encode($opts);
 				$data = '<span>' . $data . '</span>';
+
+				// See if data has an <a> tag
+				$html = new DOMDocument;
+				$html->loadXML($data);
+				$as = $html->getElementsBytagName('a');
+
 				if ($params->get('icon_hovertext', true))
 				{
+					$ahref = '#';
+					if ($as->length)
+					{
+						// Data already has an <a href="foo"> lets get that for use in hover text
+						$a = $as->item(0);
+						$ahref = $a->getAttribute('href');
+					}
 					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" href="#" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+					$img = '<a class="fabrikTip" href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 				}
 				elseif (!empty($iconfile))
 				{
@@ -558,9 +571,7 @@ class plgFabrik_Element extends FabrikPlugin
 					 * we'll need to replace the text in the link with the image
 					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
 					 */
-					$html = new DOMDocument;
-					$html->loadXML($data);
-					$as = $html->getElementsBytagName('a');
+
 					if ($as->length)
 					{
 						$img = $html->createElement('img');
