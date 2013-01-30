@@ -162,7 +162,8 @@ var FbElement =  new Class({
 	addNewEventAux: function (action, js) {
 		this.element.addEvent(action, function (e) {
 			e.stop();
-			typeOf(js) === 'function' ? js.delay(0) : eval(js);
+			console.log(typeOf(js));
+			typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 		}.bind(this));
 	},
 	

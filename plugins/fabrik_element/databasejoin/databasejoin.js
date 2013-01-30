@@ -632,7 +632,7 @@ var FbDatabasejoin = new Class({
 			if (this.element) {
 				this.element.addEvent(action, function (e) {
 					e.stop();
-					(typeOf(js) === 'function') ? js.delay(0) : eval(js);
+					(typeOf(js) === 'function') ? js.delay(0, this, this) : eval(js);
 				}.bind(this));
 			}
 			break;
@@ -640,7 +640,7 @@ var FbDatabasejoin = new Class({
 			this._getSubElements();
 			this.subElements.each(function (el) {
 				el.addEvent(action, function (e) {
-					(typeOf(js) === 'function') ? js.delay(0) : eval(js);
+					(typeOf(js) === 'function') ? js.delay(0, this, this) : eval(js);
 				}.bind(this));
 			}.bind(this));
 			break;
@@ -649,7 +649,7 @@ var FbDatabasejoin = new Class({
 			if (typeOf(f) !== 'null') {
 				f.addEvent(action, function (e) {
 					e.stop();
-					(typeOf(js) === 'function') ? js.delay(700) : eval(js);
+					(typeOf(js) === 'function') ? js.delay(700, this, this) : eval(js);
 				}.bind(this));
 			}
 			break;
