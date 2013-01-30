@@ -121,6 +121,12 @@ class FabrikHelperHTML
 	protected static $printURL = null;
 
 	/**
+	 * Array of browser request headers.  Starts as null.
+	 * @var array
+	 */
+	protected static $requestHeaders = null;
+
+	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
@@ -138,6 +144,33 @@ class FabrikHelperHTML
 	}
 
 	/**
+	 *
+	 * Build an array of the request headers by hand.  Replacement for using
+	 * apache_request_headers(), which only works in certain configurations.
+	 * This solution gets them from the $_SERVER array, and re-munges them back
+	 * from HTTP_FOO_BAR format to Foo-Bar format.  Stolen from:
+	 * http://stackoverflow.com/questions/541430/how-do-i-read-any-request-header-in-php
+	 *
+	 * @return   array  request headers assoc
+	 */
+
+	public static function parseRequestHeaders() {
+		if (isset(self::$requestHeaders))
+		{
+			return self::$requestHeaders;
+		}
+		self::$requestHeaders = array();
+		foreach($_SERVER as $key => $value) {
+			if (substr($key, 0, 5) <> 'HTTP_') {
+				continue;
+			}
+			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+			self::$requestHeaders[$header] = $value;
+		}
+		return self::$requestHeaders;
+	}
+
+	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
@@ -152,7 +185,9 @@ class FabrikHelperHTML
 		$script = '';
 
 		// Don't include in an Request.JSON call - for autofill form plugin
-		$headers = apache_request_headers();
+		// $$$ hugh - apache_request_headers() only works for certain server configurations
+		//$headers = apache_request_headers();
+		$headers = self::parseRequestHeaders();
 		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
 			return;
