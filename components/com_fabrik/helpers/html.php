@@ -150,6 +150,13 @@ class FabrikHelperHTML
 	public static function windows($selector = '', $params = array())
 	{
 		$script = '';
+
+		// Don't include in an Request.JSON call - for autofill form plugin
+		$headers = apache_request_headers();
+		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
+		{
+			return;
+		}
 		if (JRequest::getVar('format') == 'json')
 		{
 			return;
