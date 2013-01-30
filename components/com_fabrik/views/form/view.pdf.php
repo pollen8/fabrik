@@ -25,6 +25,12 @@ class fabrikViewForm extends FabrikViewFormBase
 	{
 		if (parent::display($tpl) !== false)
 		{
+			$document = JFactory::getDocument();
+			$model = $this->getModel();
+			$params = $model->getParams();
+			$size = $params->get('pdf_size', 'A4');
+			$orientation = $params->get('pdf_orientation', 'portrait');
+			$document->setPaper($size, $orientation);
 			$this->output();
 		}
 	}
