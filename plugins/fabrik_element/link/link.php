@@ -100,6 +100,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				// Treat some default values as empty
 				$_lnk = '';
 			}
+			// If used as a icon - the dom parser needs to use &amp; and not & in url querystrings
+			if (!strstr($_lnk, '&amp;'))
+			{
+				$_lnk = str_replace('&', '&amp;', $_lnk);
+			}
 			$target = $params->get('link_target', '');
 			if ($listModel->getOutPutFormat() != 'rss')
 			{
