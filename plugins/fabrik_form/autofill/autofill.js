@@ -107,7 +107,6 @@ var Autofill = new Class({
 				this.form.dispatchEvent('', this.element.options.element, elEvnt, function (e) {
 
 					// Fabrik element object that triggered the event 
-					Fabrik element object that triggered the event 
 					this.element = e; 
 					this.lookUp();
 				}.bind(this));
