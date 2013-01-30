@@ -99,16 +99,26 @@ var Autofill = new Class({
 			return false;
 		}
 		this.element = e;
-		var evnt = this.lookUp.bind(this);
 		if (this.options.trigger === '') {
 			if (!this.element) {
 				fconsole('autofill - couldnt find element to observe');
 			} else {
 				var elEvnt = this.element.getBlurEvent();
-				this.form.dispatchEvent('', this.element.options.element, elEvnt, evnt);
+				this.form.dispatchEvent('', this.element.options.element, elEvnt, function (e) {
+
+					// Fabrik element object that triggered the event 
+					Fabrik element object that triggered the event 
+					this.element = e; 
+					this.lookUp();
+				}.bind(this));
 			}
 		} else {
-			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
+			this.form.dispatchEvent('', this.options.trigger, 'click', function (e) {
+				
+				// Fabrik element object that triggered the event 
+				this.element = e;
+				this.lookUp();
+			}.bind(this));
 		}
 		if (this.options.fillOnLoad && form.options.rowid === '0') {
 			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
