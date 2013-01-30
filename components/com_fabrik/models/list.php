@@ -7298,6 +7298,11 @@ class FabrikFEModelList extends JModelForm
 		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
 				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
+		try {
+			$db->execute();
+		} catch (Exception $e) {
+			$this->setError($e->getMessage());
+		}
 		$db->execute();
 	}
 
@@ -7331,7 +7336,11 @@ class FabrikFEModelList extends JModelForm
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
 					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
-					$db->execute();
+					try {
+						$db->execute();
+					} catch (Exception $e) {
+						$this->setError($e->getMessage());
+					}
 					break;
 				}
 			}
