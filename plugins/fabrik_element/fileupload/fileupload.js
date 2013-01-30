@@ -160,6 +160,14 @@ var FbFileUpload = new Class({
 			return;
 		}
 		this.widget = new ImageWidget(canvas, {
+			
+			'imagedim': {
+				x: 200,
+				y: 200,
+				w: this.options.winWidth,
+				h: this.options.winHeight
+			},
+			
 			'cropdim' : {
 				w: this.options.cropwidth,
 				h: this.options.cropheight,
@@ -448,6 +456,7 @@ var ImageWidget = new Class({
 			}
 		};
 
+		
 		$extend(this.imageDefault, opts);
 
 		this.windowopts = {
@@ -455,8 +464,8 @@ var ImageWidget = new Class({
 			'type': 'modal',
 			content: this.canvas.getParent(),
 			loadMethod: 'html',
-			width: 420,
-			height: 540,
+			width: this.imageDefault.imagedim.w.toInt() + 20,
+			height: this.imageDefault.imagedim.h.toInt() + 140,
 			storeOnClose: true,
 			createShowOverLay: false,
 			crop: opts.crop,
@@ -501,7 +510,7 @@ var ImageWidget = new Class({
 						ctx = this.CANVAS.ctx;
 					}
 					ctx.fillStyle = "#DFDFDF";
-					ctx.fillRect(0, 0, 400 / this.scale, 400 / this.scale);
+					ctx.fillRect(0, 0, this.imageDefault.imagedim.w / this.scale, this.imageDefault.imagedim.h / this.scale);
 				}.bind(this)
 			}
 		});
@@ -522,8 +531,8 @@ var ImageWidget = new Class({
 								y: 0
 							};
 							var bottom = {
-								x: 400,
-								y: 400
+								x: this.imageDefault.imagedim.w,
+								y: this.imageDefault.imagedim.h
 							};
 							ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
 							var cropper = this.cropperCanvas;
@@ -614,8 +623,8 @@ var ImageWidget = new Class({
 		} else {
 			show = true;
 			i = this.images.get(filepath);
-			imagew = 400;
-			imageh = 400;
+			imagew = this.imageDefault.imagedim.w;
+			imageh = this.imageDefault.imagedim.h;
 			imagex = typeOf(i.imagedim) !== 'null' ? i.imagedim.x : 0;
 			imagey = typeOf(i.imagedim) !== 'null' ? i.imagedim.y : 0;
 		}
@@ -657,8 +666,8 @@ var ImageWidget = new Class({
 		var parent = this;
 		return new CanvasItem({
 			id: 'imgtocrop',
-			w: 400,
-			h: 400,
+			w: this.imageDefault.imagedim.w,
+			h: this.imageDefault.imagedim.h,
 			x: 200,
 			y: 200,
 			interactive: true,
