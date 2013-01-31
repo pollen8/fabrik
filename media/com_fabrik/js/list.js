@@ -1114,7 +1114,6 @@ var FbList = new Class({
 		}
 		// All nav links should submit the form, if we dont then filters are not taken into account when building the list cache id
 		// Can result in 2nd pages of cached data being shown, but without filters applied
-		// if (this.options.ajax) {
 		if (typeOf(this.form.getElement('.pagination')) !== 'null') {
 			var as = this.form.getElement('.pagination').getElements('.pagenav');
 			if (as.length === 0) {
@@ -1130,7 +1129,6 @@ var FbList = new Class({
 				}.bind(this));
 			}.bind(this));
 		}
-		// }
 		
 		if (this.options.admin) {
 			Fabrik.addEvent('fabrik.block.added', function (block) {
