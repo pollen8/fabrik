@@ -90,6 +90,8 @@ class JFormFieldTables extends JFormFieldList
 
 	protected function getInput()
 	{
+		$app = JFactory::getApplication();
+		$format = $app->input->get('format', 'html');
 		$connectionDd = $this->element['observe'];
 		if ((int) $this->form->getValue('id') != 0 && $this->element['readonlyonedit'])
 		{
@@ -105,9 +107,15 @@ class JFormFieldTables extends JFormFieldList
 			$opts->conn = 'jform_' . $connectionDd;
 			$opts->value = $this->value;
 			$opts = json_encode($opts);
-			$script[] = "window.addEvent('fabrik.admin.namespace', function () {";
+			if ($format !== 'raw')
+			{
+				$script[] = "window.addEvent('fabrik.admin.namespace', function () {";
+			}
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = new tablesElement('$this->id', $opts);\n";
-			$script[] = "});";
+			if ($format !== 'raw')
+			{
+				$script[] = "});";
+			}
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/tables.js', implode("\n", $script));
 		}
 		$html = parent::getInput();
