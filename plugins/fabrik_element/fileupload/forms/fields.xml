@@ -189,6 +189,18 @@
 				default="100"
 				size="3"/>
 			
+			<field name="win_width"
+				type="text"
+				default="400"
+				size="3"
+				label="PLG_ELEMENT_FILEUPLOAD_WIN_WIDTH_LABEL" />
+				
+			<field name="win_height"
+				type="text"
+				default="400"
+				size="3"
+				label="PLG_ELEMENT_FILEUPLOAD_WIN_HEIGHT_LABEL" />			
+
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_STORAGE" name="plg-fileupload-storage">

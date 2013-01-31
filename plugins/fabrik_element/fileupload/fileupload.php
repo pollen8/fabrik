@@ -380,6 +380,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->previewButton = FabrikHelperHTML::image($icon, 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_VIEW')));
 		$opts->resizeButton = FabrikHelperHTML::image($resize, 'form', @$this->tmpl, array('alt' => JText::_('PLG_ELEMENT_FILEUPLOAD_RESIZE')));
 		$opts->files = $oFiles;
+
+		$opts->winWidth = (int) $params->get('win_width', 400);
+		$opts->winHeight = (int) $params->get('win_height', 400);
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
@@ -1138,6 +1141,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	private function cropForSmaller($oImage, $filepath, $destCropFile, $coords)
 	{
 		$params = $this->getParams();
+		$winWidth = $params->get('win_width', 400);
+		$winHeight = $params->get('win_height', 400);
+
 		$bg = $params->get('fileupload_crop_bg', '#FFFFFF');
 		$log = array();
 		$log['coords'] = $coords;
@@ -1165,18 +1171,18 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$imagedim = $coords->imagedim;
 
 		// Has the image itself been dragged?
-		$deltaX = 400 / 2 - $imagedim->x;
-		$deltaY = 400 / 2 - $imagedim->y;
+		$deltaX = $winWidth / 2 - $imagedim->x;
+		$deltaY = $winWidth / 2 - $imagedim->y;
 
 		// Make an image the size of the crop interface
-		$canvas = imagecreatetruecolor(400, 400);
+		$canvas = imagecreatetruecolor($winWidth, $winHeight);
 
 		// X position to start placing the original image on the canvas
-		$destX = (int) (400 - ($origWidth * ($scale / 100))) / 2;
+		$destX = (int) ($winWidth - ($origWidth * ($scale / 100))) / 2;
 		$destX = $destX - $deltaX;
 
 		// Y position to start placing the original image on the canvas
-		$destY = (int) (400 - ($origHeight * ($scale / 100))) / 2;
+		$destY = (int) ($winHeight - ($origHeight * ($scale / 100))) / 2;
 		$destY = $destY - $deltaY;
 
 		// X point on source image to copy from
@@ -1201,9 +1207,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			list($rotatedImgObject, $rotateWidth, $rotateHeight) = $oImage->rotate($destCropFile, $destCropFile, $coords->rotation * -1);
 
 			// Scale it back to crop dims
-			$xx = $rotateWidth / 2 - 400 / 2;
-			$yy = $rotateHeight / 2 - 400 / 2;
-			$oImage->crop($destCropFile, $destCropFile, $xx, $yy, 400, 400);
+			$xx = $rotateWidth / 2 - $winWidth / 2;
+			$yy = $rotateHeight / 2 - $winHeight / 2;
+			$oImage->crop($destCropFile, $destCropFile, $xx, $yy, $winWidth, $winHeight);
 		}
 
 		// Crop it from the crop coordinates
@@ -1227,6 +1233,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	private function cropForLarger($oImage, $filepath, $destCropFile, $coords)
 	{
 		$params = $this->getParams();
+		$winWidth = $params->get('win_width', 400);
+		$winHeight = $params->get('win_height', 400);
 		$bg = $params->get('fileupload_crop_bg', '#FFFFFF');
 		$log = array();
 		$log['coords'] = $coords;
@@ -1252,8 +1260,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		 * $oImage->crop($destCropFile, $destCropFile, $xx , $yy , 400, 400);
 		 * check if image  size is smaller than canvas size first
 		 */
-		$destW = $imagedim->w < 400 ? $imagedim->w : 400;
-		$destH = $imagedim->h < 400 ? $imagedim->h : 400;
+		$destW = $imagedim->w < $winWidth ? $imagedim->w : $winWidth;
+		$destH = $imagedim->h < $winHeight ? $imagedim->h : $winHeight;
 
 		// @TODO test for smaller image - set offset so that they dont appear at top
 		$log['crop1'] = array($destCropFile, $destCropFile, $xx, $yy, $destW, $destH, 0, 0, $bg);
@@ -1277,8 +1285,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$oImage->imageToFile($destCropFile, $image_p);
 
 		// Finally take the cropper coordinates and crop the image
-		$offsetX = ($imagedim->w < 400) ? (400 - $imagedim->w) / 2 : 0;
-		$offsetY = ($imagedim->h < 400) ? (400 - $imagedim->h) / 2 : 0;
+		$offsetX = ($imagedim->w < $winWidth) ? ($winWidth - $imagedim->w) / 2 : 0;
+		$offsetY = ($imagedim->h < $winHeight) ? ($winHeight - $imagedim->h) / 2 : 0;
 
 		$srcX = ($coords->cropdim->x - ($coords->cropdim->w / 2)) - $offsetX;
 		$srcY = $coords->cropdim->y - ($coords->cropdim->h / 2) - $offsetY;
@@ -2146,6 +2154,8 @@ foreach ($files as &$f) {
 		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/slider.css');
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
+		$winWidth = $params->get('win_width', 400);
+		$winHeight = $params->get('win_height', 400);
 		$runtimes = $params->get('ajax_runtime', 'html5');
 		$w = (int) $params->get('ajax_dropbox_width', 300);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
@@ -2155,7 +2165,7 @@ foreach ($files as &$f) {
 		$pstr[] = '<span id="' . $id . '"></span>';
 		$pstr[] = '<div id="' . $id . '-widgetcontainer">';
 
-		$pstr[] = '<canvas id="' . $id . '-widget" width="400" height="400"></canvas>';
+		$pstr[] = '<canvas id="' . $id . '-widget" width="' . $winWidth . '" height="' . $winHeight . '"></canvas>';
 		if ($params->get('fileupload_crop', 0))
 		{
 			$pstr[] = '<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">';

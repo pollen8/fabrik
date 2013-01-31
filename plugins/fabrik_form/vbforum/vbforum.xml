@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="30">
-	<name>PLG_FABRIK_FORM_VBFORUM</name>
+	<name>plg_fabrik_form_vbforum</name>
 	<author>Hugh Messenger</author>
 	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

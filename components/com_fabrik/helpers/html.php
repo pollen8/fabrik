@@ -56,28 +56,28 @@ class FabrikHelperHTML
 	 * Array of loaded tip states
 	 *
 	 * @var  array
-	 */
+	*/
 	protected static $tips = array();
 
 	/**
 	 * Previously loaded js scripts
 	 *
 	 * @var  array
-	 */
+	*/
 	protected static $scripts = array();
 
 	/**
 	 * CSS files loaded via AJAX
 	 *
 	 * @var  array
-	 */
+	*/
 	protected static $ajaxCssFiles = array();
 
 	/**
 	 * Has the debug JavaScript been loaded
 	 *
 	 * @var  bool
-	 */
+	*/
 	protected static $debug = null;
 
 	/**
@@ -105,7 +105,7 @@ class FabrikHelperHTML
 	 * Load the modal JavaScript files once
 	 *
 	 * @var  bool
-	 */
+	*/
 	protected static $modal = null;
 
 	/**
@@ -121,6 +121,12 @@ class FabrikHelperHTML
 	protected static $printURL = null;
 
 	protected static $requireJS = array();
+	/**
+	 * Array of browser request headers.  Starts as null.
+	 * @var array
+	*/
+	protected static $requestHeaders = null;
+
 	/**
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
@@ -149,14 +155,41 @@ class FabrikHelperHTML
 	public static function bootStrapDropDown($lis)
 	{
 		return '<div class="btn-group fabrik_action"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
-								<span class="caret"></span>
-							</a>
-								<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
+				<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
 	}
 
 	public static function bootStrapButtonGroup($items)
 	{
 		return '<div class="btn-group">' . implode(' ' , $items) . '</div>';
+	}
+
+	/**
+	 *
+	 * Build an array of the request headers by hand.  Replacement for using
+	 * apache_request_headers(), which only works in certain configurations.
+	 * This solution gets them from the $_SERVER array, and re-munges them back
+	 * from HTTP_FOO_BAR format to Foo-Bar format.  Stolen from:
+	 * http://stackoverflow.com/questions/541430/how-do-i-read-any-request-header-in-php
+	 *
+	 * @return   array  request headers assoc
+	 */
+
+	public static function parseRequestHeaders() {
+		if (isset(self::$requestHeaders))
+		{
+			return self::$requestHeaders;
+		}
+		self::$requestHeaders = array();
+		foreach($_SERVER as $key => $value) {
+			if (substr($key, 0, 5) <> 'HTTP_') {
+				continue;
+			}
+			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+			self::$requestHeaders[$header] = $value;
+		}
+		return self::$requestHeaders;
 	}
 
 	/**
@@ -174,7 +207,16 @@ class FabrikHelperHTML
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$script = '';
-		if ($input->get('format') == 'json')
+
+		// Don't include in an Request.JSON call - for autofill form plugin
+		// $$$ hugh - apache_request_headers() only works for certain server configurations
+		//$headers = apache_request_headers();
+		$headers = self::parseRequestHeaders();
+		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
+		{
+			return;
+		}
+		if (JRequest::getVar('format') == 'json')
 		{
 			return;
 		}
@@ -271,7 +313,7 @@ EOD;
 		$form = $formModel->getForm();
 		$document->setTitle($form->label);
 		$document->addStyleSheet('templates/' . $template . '/css/template_css.css');
-?>
+		?>
 <form method="post" action="index.php" name="frontendForm">
 	<table>
 		<tr>
@@ -303,13 +345,16 @@ EOD;
 				onclick="window.close();" /></td>
 		</tr>
 	</table>
-	<input name="referrer" value="<?php echo $input->get('referrer', '', 'string'); ?>" type="hidden" />
-	<input type="hidden" name="option" value="com_<?php echo $package; ?>" />
-	<input type="hidden" name="view" value="emailform" />
-	<input type="hidden" name="tmpl" value="component" />
+	<input name="referrer"
+		value="<?php echo $input->get('referrer', '', 'string'); ?>"
+		type="hidden" /> <input type="hidden" name="option"
+		value="com_<?php echo $package; ?>" /> <input type="hidden"
+		name="view" value="emailform" /> <input type="hidden" name="tmpl"
+		value="component" />
 
-	 <?php echo JHTML::_('form.token'); ?></form>
-		<?php
+	<?php echo JHTML::_('form.token'); ?>
+</form>
+<?php
 	}
 
 	/**
@@ -329,17 +374,18 @@ EOD;
 
 		if ($ok)
 		{
-		?>
+			?>
 <span class="contentheading"><?php echo JText::_('COM_FABRIK_THIS_ITEM_HAS_BEEN_SENT_TO') . ' ' . $to; ?>
 </span>
 <?php
 		}
-?>
+		?>
 <br />
 <br />
 <br />
 <a href='javascript:window.close();'> <span class="small"><?php echo JText::_('COM_FABRIK_CLOSE_WINDOW'); ?>
-</span> </a>
+</span>
+</a>
 <?php
 	}
 
@@ -378,7 +424,7 @@ EOD;
 		else
 		{
 			$ahref = "<a href=\"#\" class=\"printlink\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\""
-				. JText::_('COM_FABRIK_PRINT') . "\">";
+			. JText::_('COM_FABRIK_PRINT') . "\">";
 		}
 		$return = $ahref . $image . "</a>";
 		return $return;
@@ -409,7 +455,7 @@ EOD;
 		. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
-		 */
+		*/
 		if ($input->get('usekey') !== null)
 		{
 			$url .= "&usekey=" . $input->get('usekey');
@@ -448,7 +494,7 @@ EOD;
 				$image = '&nbsp;' . JText::_('JGLOBAL_EMAIL');
 			}
 			return "<a href=\"#\" onclick=\"window.open('$link','win2','$status;');return false;\"  title=\"" . JText::_('JGLOBAL_EMAIL')
-				. "\">$image</a>\n";
+			. "\">$image</a>\n";
 		}
 	}
 
@@ -575,8 +621,8 @@ EOD;
 				{
 					$opts = new stdClass;
 					echo "<script type=\"text/javascript\">
-					var v = new Asset.css('" . $file . "', " . json_encode($opts) . ");
-					</script>\n";
+				var v = new Asset.css('" . $file . "', " . json_encode($opts) . ");
+    		</script>\n";
 					self::$ajaxCssFiles[] = $file;
 				}
 			}
@@ -586,7 +632,7 @@ EOD;
 			$document = JFactory::getDocument();
 			/* $$$ rob 27/04/2011 changed from JHTML::styleSheet as that doesn't work loading
 			 * php style sheets with querystrings in them
-			 */
+			*/
 			$document->addStylesheet($file);
 		}
 	}
@@ -673,7 +719,7 @@ EOD;
 	 */
 
 	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0,
-		$editable = true)
+			$editable = true)
 	{
 		reset($arr);
 		if ($options_per_row > 1)
@@ -783,8 +829,8 @@ EOD;
 		{
 			// Cant used compressed version as its not up to date
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
-				'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
-				'media/com_fabrik/js/lib/mcl/Thread.js');
+					'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
+					'media/com_fabrik/js/lib/mcl/Thread.js');
 			// , 'media/com_fabrik/js/canvas-extra.js'
 			self::script($src);
 			self::$mcl = true;
@@ -1106,7 +1152,7 @@ EOD;
 			}
 		}
 		return $input->get('format') == 'raw'
-			|| ($input->get('tmpl') == 'component' && $input->get('iframe') != 1 && $input->get('format') !== 'pdf');
+					|| ($input->get('tmpl') == 'component' && $input->get('iframe') != 1 && $input->get('format') !== 'pdf');
 	}
 
 	/**
@@ -1315,8 +1361,8 @@ EOD;
 		// Attach tooltips to document
 		// Force the zindex to 9999 so that it appears above the popup window.
 		$tooltipInit = 'window.addEvent("fabrik.load", function() {if(typeOf(' . $selectorPrefix . ') !== \'null\' && ' . $selectorPrefix . '.getElements(\'' . $selector
-			. '\').length !== 0) {window.JTooltips = new Tips(' . $selectorPrefix . '.getElements(\'' . $selector . '\'), ' . $options
-			. ');$$(".tool-tip").setStyle("z-index", 999999);}});';
+		. '\').length !== 0) {window.JTooltips = new Tips(' . $selectorPrefix . '.getElements(\'' . $selector . '\'), ' . $options
+		. ');$$(".tool-tip").setStyle("z-index", 999999);}});';
 		/* self::addScriptDeclaration($tooltipInit); */
 
 		self::$tips[$sig] = true;
@@ -1370,12 +1416,12 @@ EOD;
 			$style .= ".fabrikDebugHidden{display:none}";
 			self::addStyleDeclaration($style);
 			$script = "window.addEvent('fabrik.loadeded', function() {
-			$$('.fabrikDebugOutputTitle').each(function(title) {
+				$$('.fabrikDebugOutputTitle').each(function(title) {
 				title.addEvent('click', function(e) {
-					title.getNext().toggleClass('fabrikDebugHidden');
-				});
-			});
-			})";
+				title.getNext().toggleClass('fabrikDebugHidden');
+		});
+		});
+		})";
 			self::addScriptDeclaration($script);
 		}
 	}
@@ -1444,8 +1490,8 @@ EOD;
 		$jsFile = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
 		self::addScriptDeclaration("
 				requirejs(['fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
-					new $class('$htmlid', $str);
-				});");
+				new $class('$htmlid', $str);
+	});");
 	}
 
 	/**
@@ -1465,7 +1511,7 @@ EOD;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
-			. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+		. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{
@@ -1509,18 +1555,18 @@ EOD;
 		{
 			self::$facebookgraphapi = true;
 			return "<div id=\"fb-root\"></div>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({appId: '$appid', status: true, cookie: true,
-             xfbml: true});
-  };
-  (function() {
-    var e = document.createElement('script'); e.async = true;
-    e.src = document.location.protocol +
-      '//connect.facebook.net/$locale/all.js';
-    document.getElementById('fb-root').appendChild(e);
-  }());
-</script>";
+			<script>
+			window.fbAsyncInit = function() {
+			FB.init({appId: '$appid', status: true, cookie: true,
+			xfbml: true});
+		};
+		(function() {
+		var e = document.createElement('script'); e.async = true;
+		e.src = document.location.protocol +
+		'//connect.facebook.net/$locale/all.js';
+		document.getElementById('fb-root').appendChild(e);
+		}());
+		</script>";
 		}
 		$document = JFactory::getDocument();
 		$data = array('custom' => array());

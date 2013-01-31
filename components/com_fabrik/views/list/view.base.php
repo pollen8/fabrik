@@ -423,7 +423,13 @@ class FabrikViewListBase extends JViewLegacy
 		}
 		else
 		{
-			$this->pdfLink = JRoute::_('index.php?option=com_' . $package . '&view=list&format=pdf&listid=' . $item->id);
+			$pdfLink = 'index.php?option=com_' . $package . '&view=list&format=pdf&listid=' . $item->id;
+			if (!$this->nodata)
+			{
+				// If some data is shown then ensure that menu links reset filters (combined with require filters) doesnt produce an empty data set for the pdf
+				$pdfLink .= '&resetfilters=0';
+			}
+			$this->pdfLink = JRoute::_($pdfLink);
 		}
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');

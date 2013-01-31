@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <extension client="administrator" method="upgrade" type="module" version="1.7.0">
-	<name>Fabrik visualization</name>
+	<name>Fabrik Visualization</name>
 	<author>Rob Clayburn</author>
 	<creationDate>${createdate}</creationDate>
 	<copyright>(C) 2005-${year} fabrikar.com</copyright>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_element" method="upgrade" type="plugin" version="30">
-	<name>Fabrik Element - video</name>
+	<name>Fabrik Element - Video</name>
 	<author>Rob Clayburn</author>
 	<creationDate>November 2012</creationDate>
 	<copyright>(C) 2005-2012 fabrikar.com</copyright>

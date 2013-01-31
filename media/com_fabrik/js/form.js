@@ -1086,16 +1086,22 @@ var FbForm = new Class({
 		});
 	},
 
-	// used to get the querystring data and
-	// for any element overwrite with its own data definition
-	// required for empty select lists which return undefined as their value if no
-	// items
-	// available
+	/**
+	 * Used to get the querystring data and
+	 * for any element overwrite with its own data definition
+	 * required for empty select lists which return undefined as their value if no
+	 * items available
+	 * 
+	 * @param  bool  submit  Should we run the element onsubmit() methods - set to false in calc element
+	 */
 
-	getFormData : function () {
-		this.formElements.each(function (el, key) {
-			el.onsubmit();
-		});
+	getFormData : function (submit) {
+		submit = typeOf(submit) !== 'null' ? submit : true;
+		if (submit) {
+			this.formElements.each(function (el, key) {
+				el.onsubmit();
+			});
+		}
 		this.getForm();
 		var s = this.form.toQueryString();
 		var h = {};

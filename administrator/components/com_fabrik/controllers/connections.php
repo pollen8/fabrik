@@ -82,7 +82,7 @@ class FabrikAdminControllerConnections extends FabControllerAdmin
 	public function setDefault()
 	{
 		// Check for request forgeries
-		JSesssion::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 		$app = JFactory::getApplication();
 		$input = $app->input;
 

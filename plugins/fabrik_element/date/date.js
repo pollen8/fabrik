@@ -352,7 +352,7 @@ var FbDateTime = new Class({
 		if (action === 'change') {
 			Fabrik.addEvent('fabrik.date.select', function () {
 				var e = 'fabrik.date.select';
-				typeOf(js) === 'function' ? js.delay(0) : eval(js);
+				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 			});
 		}
 		this.element.getElements('input').each(function (i) {
@@ -360,7 +360,7 @@ var FbDateTime = new Class({
 				if (typeOf(e) === 'event') {
 					e.stop();
 				}
-				typeOf(js) === 'function' ? js.delay(0) : eval(js);
+				typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 			});
 		}.bind(this));	
 	},
