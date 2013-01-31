@@ -304,7 +304,15 @@ Fabrik.Window = new Class({
 			
 			// As iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
 			var contentEl = this.window.getElement('.itemContent');
-			var h = contentEl.getScrollSize().y < window.getHeight() ? contentEl.getScrollSize().y : window.getHeight();
+			var padderEl  = this.window.getElement('.itemContentPadder');
+			
+			// Add the top and bottom barrs to the content size
+			var titleHeight = this.window.getElement('.' + this.handleClass());
+			titleHeight = titleHeight ? titleHeight.getSize().y : 25;
+			var footer = this.window.getElement('.bottomBar').getSize().y;
+			var testH = contentEl.getScrollSize().y + titleHeight + footer;
+			
+			var h = testH < window.getHeight() ? testH : window.getHeight();
 			var w = contentEl.getScrollSize().x + 17 < window.getWidth() ? contentEl.getScrollSize().x + 17 : window.getWidth();
 			this.window.setStyle('height', h);
 			this.window.setStyle('width', w);
