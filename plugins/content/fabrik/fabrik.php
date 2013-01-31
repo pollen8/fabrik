@@ -206,7 +206,7 @@ class plgContentFabrik extends JPlugin
 			$m = explode("=", $m);
 
 			// $$$ hugh - deal with %20 as space in arguments
-			$m[1] = urldecode($m[1]);
+			$m[1] = urldecode(JArrayHelper::getValue($m, 1));
 			switch ($m[0])
 			{
 				case 'view':
@@ -549,6 +549,7 @@ class plgContentFabrik extends JPlugin
 			$origVar = $input->get($k. '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
+			echo "set $k = $v <br>";
 			$input->set($k, $v);
 		}
 		/*
