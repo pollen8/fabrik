@@ -66,7 +66,7 @@ class FabrikFEModelCSVExport
 		// F3 turn off error reporting as this is an ajax call
 		error_reporting(0);
 		jimport('joomla.filesystem.file');
-		$start = $input->get('start', 0);
+		$start = $input->getInt('start', 0);
 		$filename = $this->getFileName();
 		$filepath = $this->getFilePath();
 		$str = '';
@@ -100,6 +100,7 @@ class FabrikFEModelCSVExport
 		$this->removePkVal();
 		$this->outPutFormat = $input->get('excel') == 1 ? 'excel' : 'csv';
 		$this->delimiter = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
+
 		if ($start === 0)
 		{
 			$headings = $this->getHeadings();
