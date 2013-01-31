@@ -340,17 +340,16 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$filterview = $app->input->get('filterview', '');
 		$this->loadMeForAjax();
 		$params = $this->getParams();
 
 		/**
-		 * $$$ hugh - I'm not convinced this is the right way to do this, as it
-		 * overloads the filter method option.  Building options lists is, IMHO,
-		 * entirely different to building filters, and this keeps catching me out,
-		 * where I don't see what I expect on the form, because the list filter
-		 * method is set to 'recorded data' rather than 'show all'.
+		 * $$$ hugh -added test for $filterview, and only do filtery stuff if we are being
+		 * calledin a filter context, not in a regular form display context.
 		 */
-		if ($this->getFilterBuildMethod() == 1)
+
+		if (!empty($filterview) && $this->getFilterBuildMethod() == 1)
 		{
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
 			$listModel = $this->getListModel();
@@ -371,12 +370,13 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				$this->_autocomplete_where = empty($ids) ? '1 = -1' : $key . ' IN (' . implode(',', $ids) . ')';
 			}
 		}
+
 		$filter = JFilterInput::getInstance();
 		$data = $filter->clean($_POST, 'array');
 		$opts = $this->_getOptionVals($data);
 
 		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
-		if ($app->input->get('filterview') == 'table')
+		if ($filterview == 'table')
 		{
 			$params->set('cascadingdropdown_showpleaseselect', true);
 		}
@@ -608,14 +608,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 						// Allow for multiple values - e.g. when observing a db join rendered as a checkbox
 						$whereval = $input->get('v', array(), 'array');
-						if (count($whereval) === 1)
-						{
-							$whereval = $whereval[0];
-						}
-						elseif (empty($whereval))
-						{
-							$whereval = '';
-						}
 					}
 					else
 					{
@@ -685,18 +677,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			$whereBits = explode('___', $wherekey);
 			$wherekey = array_pop($whereBits);
-			$where = $wherekey;
 			if (is_array($whereval))
 			{
 				foreach ($whereval as &$v)
 				{
 					$v = $db->quote($v);
 				}
-				$where .=  ' IN (' . implode(',', $whereval) . ')';
+				$where .=  count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
 			}
 			else
 			{
-				$where .=  ' = ' .$db->quote($whereval);
+				$where .= $wherekey . ' = ' .$db->quote($whereval);
 			}
 
 		}
