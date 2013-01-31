@@ -213,7 +213,7 @@ class plgContentFabrik extends JPlugin
 					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
-					$id = $m[1];
+					$id = (int) $m[1];
 					break;
 				case 'layout':
 					$layoutFound = true;
