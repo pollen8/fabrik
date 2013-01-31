@@ -266,7 +266,9 @@ class FabrikAdminHelper
 		$v = new JVersion;
 		if ($v->RELEASE > 2.5)
 		{
-			$view->setLayout('bootstrap');
+			// If rendering a list inside a form and viewing in admin - there were layout name conflicts (so renamed boostrap to admin_bootstrap)
+			$layout = $view->getName() === 'list' ? 'admin_bootstrap' : 'bootstrap';
+			$view->setLayout($layout);
 		}
 	}
 }
