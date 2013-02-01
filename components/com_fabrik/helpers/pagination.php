@@ -174,14 +174,7 @@ class FPagination extends JPagination
 	protected function _item_active(&$item)
 	{
 		$app = JFactory::getApplication();
-		if ($app->isAdmin())
-		{
-			return '<a href="' . $item->base . '" title="' . $item->text . '">' . $item->text . '</a>';
-		}
-		else
-		{
-			return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
-		}
+		return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 	}
 
 	/**

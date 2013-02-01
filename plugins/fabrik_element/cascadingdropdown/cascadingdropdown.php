@@ -608,14 +608,6 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 						// Allow for multiple values - e.g. when observing a db join rendered as a checkbox
 						$whereval = $input->get('v', array(), 'array');
-						if (count($whereval) === 1)
-						{
-							$whereval = $whereval[0];
-						}
-						elseif (empty($whereval))
-						{
-							$whereval = '';
-						}
 					}
 					else
 					{
@@ -685,18 +677,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		{
 			$whereBits = explode('___', $wherekey);
 			$wherekey = array_pop($whereBits);
-			$where = $wherekey;
 			if (is_array($whereval))
 			{
 				foreach ($whereval as &$v)
 				{
 					$v = $db->quote($v);
 				}
-				$where .=  ' IN (' . implode(',', $whereval) . ')';
+				$where .=  count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
 			}
 			else
 			{
-				$where .=  ' = ' .$db->quote($whereval);
+				$where .= $wherekey . ' = ' .$db->quote($whereval);
 			}
 
 		}

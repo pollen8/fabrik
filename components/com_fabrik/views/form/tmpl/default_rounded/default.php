@@ -86,7 +86,7 @@ echo "$form->error</div>";?>
 
 <!-- This is where the buttons at the bottom of the form are set up -->
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-	<?php echo $form->nextButton?> <?php echo $form->prevButton?>
+	<?php echo $form->prevButton?> <?php echo $form->nextButton?> 
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>
