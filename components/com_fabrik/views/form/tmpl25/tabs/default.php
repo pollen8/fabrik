@@ -116,7 +116,7 @@ endforeach;
 echo $this->hiddenFields;
  echo $this->pluginbottom; ?>
 <div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-<?php echo $form->nextButton?> <?php echo $form->prevButton?>
+<?php echo $form->prevButton?><?php echo $form->nextButton?> 
  <?php echo $form->applyButton;?>
 <?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 </div>

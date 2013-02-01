@@ -768,6 +768,24 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
+	 * Element plugin specific method for setting unecrypted values baack into post data
+	 *
+	 * @param   array   &$post  data passed by ref
+	 * @param   string  $key    key
+	 * @param   string  $data   elements unencrypted data
+	 *
+	 * @return  void
+	 */
+
+	public function setValuesFromEncryt(&$post, $key, $data)
+	{
+		$date = $data[0];
+		list($date, $time) = explode(' ', $date);
+		$data = array('date' => $date, 'time' => $time);
+		parent::setValuesFromEncryt($post, $key, $data);
+	}
+
+	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
 	 * @param   array  $data  form data

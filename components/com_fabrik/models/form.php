@@ -2603,6 +2603,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	/**
 	 * Get form validation errors - if empty test session for errors
+	 * 31/01/13 - no longer restoring from session errors - see http://fabrikar.com/forums/showthread.php?t=31377
 	 *
 	 * @return  array  errors
 	 */
@@ -2618,10 +2619,10 @@ class FabrikFEModelForm extends FabModelForm
 		$errors = array();
 		if (empty($this->errors))
 		{
-			if (isset($_SERVER['HTTP_REFERER']))
+			/* if (isset($_SERVER['HTTP_REFERER']))
 			{
 				$errors = $session->get($context . 'errors', array());
-			}
+			} */
 		}
 		else
 		{
