@@ -186,8 +186,10 @@ var FabrikModalRepeat = new Class({
 				});
 			});
 		}
-		if (newrow) {
+		if (newrow || typeOf(this.tmpl) === 'null') {
 			this.tmpl = tr;
+		}
+		if (newrow) {
 			tr.dispose();
 		}
 	},
