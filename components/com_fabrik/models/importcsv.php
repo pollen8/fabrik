@@ -231,7 +231,7 @@ class FabrikFEModelImportcsv extends JModelForm
 
 	protected function getFormData()
 	{
-		$app = JFactory::getAppplication();
+		$app = JFactory::getApplication();
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
 		return $app->input->get('jform', $post, 'array');
