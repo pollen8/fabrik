@@ -26,7 +26,7 @@ FabrikHelperHTML::framework();
 		<li>
 			<label>
 				<?php echo JText::_('PLG_LIST_EMAIL_SUBJECT') ?><br />
-				<input class="inputbox fabrikinput" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="20" />
+				<input class="inputbox fabrikinput" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="50" />
 			</label>
 		</li>
 		<li>

@@ -2494,6 +2494,11 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
 					}
+					// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
+					// So let's assume if they use <, <=, > or >= they mean numbers.
+					elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
+						$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
+					}
 					else
 					{
 						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
