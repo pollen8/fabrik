@@ -184,7 +184,7 @@ var FbFileUpload = new Class({
 			runtimes: this.options.ajax_runtime,
 			browse_button: this.element.id + '_browseButton',
 			container: this.element.id + '_container',
-			drop_element: this.element.id + '_dropList',
+			drop_element: this.element.id + '_dropList_container',
 			url: 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
 			max_file_size: this.options.max_file_size + 'kb',
 			unique_names: false,
@@ -207,10 +207,6 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
-			var txt = this.droplist.getElement('.plupload_droptext');
-			if (typeOf(txt) !== 'null') {
-				txt.destroy();
-			}
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('plupload_disabled');
 			files.each(function (file, idx) {
@@ -386,12 +382,6 @@ var FbFileUpload = new Class({
 		if (document.id('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
 			document.id('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
-		/*
-		 * if (this.droplist.getChildren().length === 0) {
-		 * this.startbutton.addClass('plupload_disabled'); this.droplist.adopt(new
-		 * Element('li', { 'class' : 'plupload_droptext' }).set('text',
-		 * Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE'))); }
-		 */
 	},
 
 	pluploadResize : function (e) {
