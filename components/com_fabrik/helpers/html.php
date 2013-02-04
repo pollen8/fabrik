@@ -1042,6 +1042,7 @@ EOD;
 		$r->cron = 'plugins/fabrik_cron';
 		$r->viz = 'plugins/fabrik_visualization';
 		$r->admin = 'administrator/components/com_fabrik/views';
+		$r->adminfields = 'administrator/components/com_fabrik/models/fields';
 		return $r;
 	}
 
@@ -1185,7 +1186,7 @@ EOD;
 	/**
 	 * Wrapper for JHTML::Script() loading with require.js
 	 *
-	 * @param   mixed   $file    string or array of files to load
+	 * @param   mixed   $file    string or array of files to load (relative path to root for local files - e.g. 'administrator/components/com_fabrik/models/fields/tables.js')
 	 * @param   string  $onLoad  optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 *
 	 * @return  void
@@ -1209,7 +1210,6 @@ EOD;
 		$paths = self::requirePaths();
 		$files = (array) $file;
 
-		// @TODO test this!
 		// Replace with minified files if found
 		foreach ($files as &$f)
 		{

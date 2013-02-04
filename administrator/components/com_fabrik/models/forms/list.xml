@@ -100,7 +100,12 @@
 			size="20"
 			label="Or"/>
 		 
-		 <field description="COM_FABRIK_FIELD_LINK_TO_TABLE_DESC" label="COM_FABRIK_FIELD_LINK_TO_TABLE_LABEL" name="db_table_name" observe="connection_id" readonlyonedit="true" type="tables"/>
+		 <field name="db_table_name"
+		 	description="COM_FABRIK_FIELD_LINK_TO_TABLE_DESC"
+		 	label="COM_FABRIK_FIELD_LINK_TO_TABLE_LABEL"
+		 	observe="connection_id"
+		 	readonlyonedit="true"
+		 	type="tables"/>
 			
 		<field description="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" name="db_primary_key" type="listfields" valueformat="tableelement"/>
 					
