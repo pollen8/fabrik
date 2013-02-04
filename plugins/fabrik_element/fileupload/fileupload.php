@@ -1071,7 +1071,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 			$groupModel = $this->getGroup();
 			$isjoin = ($groupModel->isJoin() || $this->isJoin());
-
+			$formModel = $this->getFormModel();
 			if ($isjoin)
 			{
 				if (!$groupModel->canRepeat() && !$this->isJoin())
@@ -1089,7 +1089,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 				$name = $this->getFullName(false, true, false);
 
-				$formModel = $this->getFormModel();
 				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
 				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
 
