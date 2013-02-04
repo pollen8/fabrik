@@ -2188,7 +2188,7 @@ foreach ($files as &$f) {
 		$pstr[] = '</div>';
 
 		$pstr[] = '<div class="plupload_container fabrikHide" id="' . $id . '_container" style="width:' . $w . 'px;height:' . $h . 'px">';
-		$pstr[] = '<div class="plupload">';
+		$pstr[] = '<div class="plupload id="' . $id . '_dropList_container">';
 		$pstr[] = '	<div class="plupload_header">';
 		$pstr[] = '		<div class="plupload_header_content">';
 		$pstr[] = '			<div class="plupload_header_title">' . JText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_HEADING') . '</div>';

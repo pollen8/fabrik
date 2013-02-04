@@ -33,7 +33,7 @@ FabrikHelperHTML::script($srcs, $this->js);
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		if (task !== 'form.cancel'  && !controller.canSaveForm()) {
+		if (task !== 'form.cancel'  && !Fabrik.controller.canSaveForm()) {
 			alert('Please wait - still loading');
 			return false;
 		}

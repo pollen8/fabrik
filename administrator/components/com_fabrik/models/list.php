@@ -369,7 +369,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 
 		$plugins = json_encode($this->getPlugins());
-		$js = "controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
+		$js = "Fabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
 
 		$js .= "
 

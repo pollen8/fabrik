@@ -25,7 +25,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		if (task !== 'element.cancel'  && !controller.canSaveForm()) {
+		if (task !== 'element.cancel'  && !Fabrik.controller.canSaveForm()) {
 			alert('Please wait - still loading');
 			return false;
 		}

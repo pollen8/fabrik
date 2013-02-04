@@ -91,7 +91,7 @@ class FabrikAdminViewCron extends JViewLegacy
 		$opts->plugin = $this->item->plugin;
 
 		$js = "\tvar options = ".json_encode($opts).";\n";
-		$js .= "\tvar controller = new CronAdmin(options);";
+		$js .= "\tvar Fabrik.controller = new CronAdmin(options);";
 
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $js);

@@ -93,7 +93,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 
 		$js = "
 	var options = " . json_encode($opts) . ";
-	var controller = new AdminVisualization(options);
+		Fabrik.controller = new AdminVisualization(options);
 ";
 
 		FabrikHelperHTML::script($srcs, $js);

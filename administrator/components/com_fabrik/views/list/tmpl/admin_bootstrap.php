@@ -22,7 +22,7 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		if (task !== 'list.cancel'  && !controller.canSaveForm()) {
+		if (task !== 'list.cancel'  && !Fabrik.controller.canSaveForm()) {
 			alert('Please wait - still loading');
 			return false;
 		}
