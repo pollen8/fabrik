@@ -7,6 +7,7 @@ var tablesElement = new Class({
 	},
 	
 	initialize: function (el, options) {
+		console.log('tables,js ini');
 		this.el = el;
 		this.setOptions(options);
 		// If loading in a form plugin then the connect is not yet avaiable in the dom
