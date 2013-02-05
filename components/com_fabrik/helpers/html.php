@@ -1765,7 +1765,7 @@ EOD;
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
-			$labelClass = FabrikWorker::j3() ? $type : '';
+			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
 			$item[] = '<label class="fabrikgrid_' . $value .  ' ' . $labelClass . '">';
 			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
 			$item[] = '</label>';

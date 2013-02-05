@@ -210,8 +210,13 @@ var FbListInlineEdit = new Class({
 		case 27:
 			//escape
 			e.stop();
-			this.select(e, this.editing);
-			this.cancel(e);
+			if (!this.inedit) {
+				this.td.removeClass(this.options.focusClass);
+			} else {
+				this.select(e, this.editing);
+				this.cancel(e);	
+			}
+			
 			break;
 		case 13:
 			//enter
@@ -258,7 +263,7 @@ var FbListInlineEdit = new Class({
 	},
 	
 	getElementName: function (td) {
-		var c = td.className.split(' ').filter(function (item, index) {
+		var c = td.className.trim().split(' ').filter(function (item, index) {
 			return item !== 'fabrik_element' && item !== 'fabrik_row';
 		});
 		var element = c[0].replace('fabrik_row___', '');
@@ -411,9 +416,8 @@ var FbListInlineEdit = new Class({
 					//delay the script to allow time for the dom to be updated
 					(function () {
 						Browser.exec(this.javascript);
-					}.bind(this)).delay(1000);
+					}.bind(this)).delay(100);
 					td.empty().set('html', r);
-					this._animate(td, 'in');
 					r = r + '<script type="text/javascript">' + this.javascript + '</script>';
 					this.editors[opts.elid] = r;
 					this.watchControls(td);
@@ -452,54 +456,6 @@ var FbListInlineEdit = new Class({
 			this.editCell = td;
 		}
 		return true;
-	},
-	
-	_animate: function (cell, d) {
-		return;
-	/*	//needs more work!
-		var tip = cell.getChildren()[0];
-		this.options.showDelay  = 0;
-		this.options.hideDelay = 0;
-		this.options.motion = 6;
-		this.options.motionOnShow = true;
-		this.options.motionOnHide = true;
-		this.options.position = 'right';
-		tip.store('options', this.options);
-		
-		tip.store('position', tip.getPosition(cell));
-		
-		clearTimeout(tip.retrieve('timeout'));
-		tip.store('timeout', (function(t) { 
-			var o = tip.retrieve('options'), din = (d == 'in');
-			var m = { 'opacity': din ? 1 : 0 };
-			
-			if ((o.motionOnShow && din) || (o.motionOnHide && !din)) {
-				var pos =  t.retrieve('position');
-				if (!pos) return;
-				switch (o.position) {
-					case 'inside': 
-					case 'top':
-						m['top'] = din ? [pos.y - o.motion, pos.y] : pos.y - o.motion;
-						break;
-					case 'right':
-						m['left'] = din ? [pos.x + o.motion, pos.x] : pos.x + o.motion;
-						break;
-					case 'bottom':
-						m['top'] = din ? [pos.y + o.motion, pos.y] : pos.y + o.motion;
-						break;
-					case 'left':
-						m['left'] = din ? [pos.x - o.motion, pos.x] : pos.x - o.motion;
-						break;
-				}
-			}
-			
-			t.morph(m);
-			if (!din) t.get('morph').chain(function () { this.dispose(); }.bind(t)); 
-			
-		}).delay((d == 'in') ? this.options.showDelay : this.options.hideDelay, this, tip));
-		
-		return this;
-		*/
 	},
 	
 	getDataFromTable: function (td) {
@@ -647,7 +603,7 @@ var FbListInlineEdit = new Class({
 			'data': data,
 			'evalScripts': true,
 			'onSuccess': function (r) {
-				td.removeClass(this.options.focusClass);
+				//td.removeClass(this.options.focusClass);
 				td.empty();
 				td.empty().set('html', r);
 				
@@ -687,9 +643,8 @@ var FbListInlineEdit = new Class({
 	stopEditing: function (e) {
 		var td = this.editing;
 		if (td !== false) {
-			td.removeClass(this.options.focusClass);
+			//td.removeClass(this.options.focusClass);
 		}
-		//this._animate(td, 'out');
 		this.editing = null;
 		this.inedit = false;
 	},

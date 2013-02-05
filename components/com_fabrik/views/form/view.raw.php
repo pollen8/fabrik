@@ -41,6 +41,7 @@ class fabrikViewForm extends JViewLegacy
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$j3 = FabrikWorker::j3();
 
 		$form = $model->getForm();
 		if ($model->render() === false)
@@ -51,6 +52,102 @@ class fabrikViewForm extends JViewLegacy
 
 		// Main trigger element's id
 		$elementid = $input->getInt('elid');
+
+		$html = $j3 ? $this->inlineEditMarkUp() : $this->inlineEditMarkupJ25();
+		echo implode("\n", $html);
+
+		$srcs = array();
+		$repeatCounter = 0;
+		$elementids = (array) $input->get('elementid', array(), 'array');
+		$eCounter = 0;
+		$onLoad = array();
+		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
+		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
+		foreach ($elementids as $id)
+		{
+			$elementModel = $model->getElement($id, true);
+			$elementModel->getElement();
+			$elementModel->setEditable(true);
+			$elementModel->formJavascriptClass($srcs);
+			$onLoad[] = "var o = " . $elementModel->elementJavascript($repeatCounter) . ";";
+			if ($eCounter === 0)
+			{
+				$onLoad[] = "o.select();";
+				$onLoad[] = "o.focus();";
+				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
+			}
+			$eCounter++;
+			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
+		}
+		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
+	}
+
+	/**
+	 * Create markup for boostrap inline editor
+	 *
+	 * @since   3.1b
+	 *
+	 * @return  array
+	 */
+	protected function inlineEditMarkUp()
+	{
+
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$html = array();
+		$html[] = '<div class="modal">';
+		$html[] = ' <div class="modal-header"><h3>' . JText::_('COM_FABRIK_EDIT') . '</h3></div>';
+		$html[] = '<div class="modal-body">';
+		$html[] = '<form>';
+		foreach ($this->groups as $group)
+		{
+			foreach ($group->elements as $element)
+			{
+				$html[] = '<div class="control-group fabrikElementContainer ' . $element->id . '">';
+				$html[] = '<label>' . $element->label . '</label>';
+				$html[] = '<div class="fabrikElement">';
+				$html[] = $element->element;
+				$html[] = '</div>';
+				$html[] = '</div>';
+			}
+		}
+		$html[] = '</form>';
+		$html[] = '</div>';
+		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
+		{
+			$html[] = '<div class="modal-footer">';
+			if ($input->getBool('inlinecancel') == true)
+			{
+				$html[] = '<a href="#" class="btn inline-cancel">';
+				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
+				$html[] = '<span>' . JText::_('COM_FABRIK_CANCEL') . '</span></a>';
+			}
+
+			if ($input->getBool('inlinesave') == true)
+			{
+				$html[] = '<a href="#" class="btn btn-primary inline-save">';
+				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
+				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
+			}
+			$html[] = '</div>';
+		}
+
+		$html[] = '</div>';
+		return $html;
+	}
+
+	/**
+	 * Create markup for old skool 2.5 inline editor
+	 *
+	 * @since   3.1b
+	 *
+	 * @return  array
+	 */
+	protected function inlineEditMarkupJ25()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		$html = array();
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
@@ -92,33 +189,7 @@ class fabrikViewForm extends JViewLegacy
 		}
 		$html[] = '</div>';
 		$html[] = '</div>';
-		echo implode("\n", $html);
-
-		$srcs = array();
-		$repeatCounter = 0;
-		$elementids = (array) $input->get('elementid', array(), 'array');
-		$eCounter = 0;
-		$onLoad = array();
-		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
-		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
-		foreach ($elementids as $id)
-		{
-			$elementModel = $model->getElement($id, true);
-			$elementModel->getElement();
-			$elementModel->setEditable(true);
-			$elementModel->formJavascriptClass($srcs);
-			$onLoad[] = "var o = " . $elementModel->elementJavascript($repeatCounter) . ";";
-			if ($eCounter === 0)
-			{
-				$onLoad[] = "o.select();";
-				$onLoad[] = "o.focus();";
-				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
-			}
-			$eCounter++;
-			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
-		}
-		echo "<pre>";print_r($onLoad);echo "</pre>";
-		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
+		return $html;
 	}
 
 	/**

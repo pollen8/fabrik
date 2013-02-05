@@ -5849,8 +5849,12 @@ class FabrikFEModelList extends JModelForm
 				// Check responsive class
 				$responsiveKey = array_search($element->id, $listClasses->responsive_elements);
 				$responsiveClass = $responsiveKey !== false ? JArrayHelper::getValue($listClasses->responsive_class, $responsiveKey, '') : '';
-				$headingClass[$compsitKey] = array('class' => $responsiveClass . ' ' . $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
-				$cellClass[$compsitKey] = array('class' => $responsiveClass . ' ' . $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
+				if ($responsiveClass !== '')
+				{
+					$responsiveClass .= ' ';
+				}
+				$headingClass[$compsitKey] = array('class' => $responsiveClass . $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
+				$cellClass[$compsitKey] = array('class' => $responsiveClass . $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0)

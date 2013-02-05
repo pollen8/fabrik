@@ -24,6 +24,12 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 {
 
 	/**
+	 * Contains js file, elements to load and require js shim info
+	 * @var array
+	 */
+	var $elementJs = array();
+
+	/**
 	 * Get the parameter name that defines the plugins acl access
 	 *
 	 * @return  string
@@ -46,6 +52,38 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 	}
 
 	/**
+	 * Get the shim require.js logic for loading the list class.
+	 * -min suffix added elsewhere.
+	 *
+	 * @since   3.1b
+	 *
+	 * @return  object  shim
+	 */
+
+	public function requireJSShim_result()
+	{
+		$deps = new stdClass;
+		$deps->deps = array('fab/list-plugin');
+		$shim['list/' . $this->filterKey . '/' . $this->filterKey] = $deps;
+
+		$params = $this->getParams();
+		$shim = parent::requireJSShim_result();
+
+		list($srcs, $els, $addShim) = $this->loadElementJS($params);
+
+		foreach ($addShim as $key => $deps)
+		{
+			if (!array_key_exists($key, $shim))
+			{
+				$shim[$key] = $deps;
+			} else {
+				$shim[$key]['deps'] = array_merge($shim[$key]->deps, $shim->deps);
+			}
+		}
+		return $shim;
+	}
+
+	/**
 	 * Get the src(s) for the list plugin js class
 	 *
 	 * @return  mixed  string or array
@@ -59,24 +97,26 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 	}
 
 	/**
-	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 * Helper function to decide which js files and shim files should be used
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Params
 	 *
-	 * @return bool
+	 * @since   3.1b
+	 *
+	 * @return  array (element js files (not used), array of element names, require js shim setup files)
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	protected function loadElementJS($params)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
+		if (!empty($this->elementJs))
+		{
+			return $this->elementJs;
+		}
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		FabrikHelperHTML::script('media/com_fabrik/js/element.js');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($input->getInt('listid'));
-		$elements = $model->getElements('safecolname');
+		$elements = $listModel->getElements('safecolname');
 
 		$pels = $params->get('inline_editable_elements');
 		$use = json_decode($pels);
@@ -92,6 +132,7 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 		$els = array();
 		$srcs = array();
 		$test = (array) $use;
+		$shim = array();
 		if (!empty($test))
 		{
 			foreach ($use as $key => $fields)
@@ -107,7 +148,7 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 					// Load in all element js classes
 					if (is_object($val))
 					{
-						$val->formJavascriptClass($srcs);
+						$val->formJavascriptClass($srcs, '', $shim);
 						$els[$key]->plugins[$field] = $val->getElement()->id;
 					}
 				}
@@ -125,11 +166,29 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 				$els[$key]->plugins[$key] = $val->getElement()->id;
 
 				// Load in all element js classes
-				$val->formJavascriptClass($srcs);
+				$val->formJavascriptClass($srcs, '', $shim);
 
 			}
 		}
-		FabrikHelperHTML::script($srcs);
+		$this->elementJs = array($srcs, $els, $shim);
+		return $this->elementJs;
+	}
+
+	/**
+	 * Return the javascript to create an instance of the class defined in formJavascriptClass
+	 *
+	 * @param   object  $params  plugin parameters
+	 * @param   object  $model   list model
+	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 *
+	 * @return bool
+	 */
+
+	public function onLoadJavascriptInstance($params, $model, $args)
+	{
+		parent::onLoadJavascriptInstance($params, $model, $args);
+		$j3 = FabrikWorker::j3();
+		list($srcs, $els, $shim) = $this->loadElementJS($params);
 		$opts = $this->getElementJSOptions($model);
 		$opts->elements = $els;
 		$opts->formid = $model->getFormModel()->getId();
