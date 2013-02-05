@@ -1985,6 +1985,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$label = $db->quoteName($to . '.' . $this->getLabelParamVal());
 		$v = $jointable . '.' . $shortName;
 		$query->select($jointable . '.id AS id');
+
+		// If rendering as mulit/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
+		if ($this->isJoin())
+		{
+			$jkey = $this->getValColumn();
+			$jkey = !strstr($jkey, 'CONCAT') ? $label : $jkey;
+			$label = str_replace($join->table_join, $to, $jkey);
+		}
+
 		$query->select($jointable . '.parent_id, ' . $v . ' AS value, ' . $label . ' AS text')->from($jointable)
 			->join('LEFT', $to . ' ON ' . $key . ' = ' . $jointable . '.' . $shortName);
 		if (!is_null($condition) && !is_null($value))
@@ -2640,6 +2649,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$dbName = $this->getDbName();
 		$jkey = !strstr($jkey, 'CONCAT') ? $dbName . '.' . $jkey : $jkey;
 
+		// If rendering as mulit/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
+		if ($this->isJoin())
+		{
+			$jkey = str_replace($jointable, $dbName, $jkey);
+		}
 		$fullElName = $this->getFullName(false, true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable
 		LEFT JOIN " . $dbName . " ON " . $dbName . "." . $this->getJoinValueFieldName() . " = $jointable." . $this->getElement()->name . " WHERE "
