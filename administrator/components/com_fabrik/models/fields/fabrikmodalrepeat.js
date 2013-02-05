@@ -104,11 +104,11 @@ var FabrikModalRepeat = new Class({
 				var radiovals = this._getRadioValues(); 
 				
 				if (tr.getChildren('th').length !== 0) {
-					this.tmpl.clone().inject(tr, 'after');
+					clone = this.tmpl.clone(); 
 				} else {
 					clone = tr.clone();
-					clone.inject(tr, 'after');
 				}
+				clone.inject(tr, 'after');
 				this.stripe();
 				
 				// Reapply values as renaming radio buttons 
