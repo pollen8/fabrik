@@ -205,19 +205,6 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * draws the form element
-	 * @param int repeat group counter
-	 * @return string returns element html
-	 */
-
-	function render($data, $repeatCounter = 0)
-	{
-		$params = $this->getParams();
-		$params->set('options_per_row', 4);
-		return parent::render($data, $repeatCounter);
-	}
-
-	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
