@@ -105,7 +105,8 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 
 	public function process($params, &$model, $opts = array())
 	{
-		$file = JFilterInput::clean($params->get('table_php_file'), 'CMD');
+		$f = JFilterInput::getInstance();
+		$file = $f->clean($params->get('table_php_file'), 'CMD');
 		if ($file == -1 || $file == '')
 		{
 			$code = $params->get('table_php_code');
