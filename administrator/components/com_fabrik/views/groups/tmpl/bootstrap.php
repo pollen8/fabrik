@@ -113,13 +113,16 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					</td>
 					<td>
-						<?php echo "($item->form_id) " . $item->flabel; ?>
+						<a href="index.php?option=com_fabrik&task=form.edit&id=<?php echo $item->form_id?>">
+							<i class="icon-pencil"></i> <?php echo $item->flabel; ?>
+						</a>
 					</td>
 					<td>
-						<?php echo $item->_elementCount; ?>
 						<a href="index.php?option=com_fabrik&view=element&layout=edit&filter_groupId=<?php echo $item->id ?>">
-						<?php echo JText::_('COM_FABRIK_ADD')?>
+							<i class="icon-plus-2"></i>
+							<?php echo JText::_('COM_FABRIK_ADD')?>
 						</a>
+						<span class="badge badge-info"><?php echo $item->_elementCount; ?></span>
 					</td>
 					<td>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'groups.', $canChange); ?>
