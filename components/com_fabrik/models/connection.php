@@ -307,6 +307,14 @@ class FabrikFEModelConnection extends JModel
 		$user = $cn->user;
 		$password = $cn->password;
 		$database = $cn->database;
+		/**
+		 * $$$ hugh - new version of Koowa no longer uses the empty dbprefix
+		 * As used by new DOCman / EXTman
+		 * http://fabrikar.com/forums/showthread.php?t=26898
+		 * I've contacted the docman folk to see if they have any J! 2.5 product
+		 * out there that still requires this workaround, but for now I'm just commenting
+		 * it out, as we've had several folk htuting this while testing the new DOCman
+		/*
 		if (defined('KOOWA'))
 		{
 			$prefix = '';
@@ -315,6 +323,8 @@ class FabrikFEModelConnection extends JModel
 		{
 			$prefix = $conf->get('dbprefix');
 		}
+		*/
+		$prefix = $conf->get('dbprefix');
 		$driver = $conf->get('dbtype');
 
 		// Test for sawpping db table names
