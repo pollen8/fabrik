@@ -59,7 +59,9 @@ Event.Mock = function(target,type){
         	// Internet explorer 8?
         	e = document.createEventObject();
         }
-        e = new Event(e);
+        // No longer works in 1.4.5
+        //e = new Event(e);
+        e = new DOMEvent(e, self.getWindow())
         e.target = target;
         return e;
 }
