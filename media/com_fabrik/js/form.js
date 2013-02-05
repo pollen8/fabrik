@@ -190,7 +190,7 @@ var FbForm = new Class({
 		});
 	},
 
-	setUp : function () {
+	setUp: function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
 		//if (this.options.editable) { //submit can appear in confirmation plugin even when readonly
@@ -200,12 +200,12 @@ var FbForm = new Class({
 		this.watchClearSession();
 	},
 
-	getForm : function () {
+	getForm: function () {
 		this.form = document.id(this.getBlock());
 		return this.form;
 	},
 
-	getBlock : function () {
+	getBlock: function () {
 		var block = this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
 		if (this.options.rowid !== '') {
 			block += '_' + this.options.rowid;
