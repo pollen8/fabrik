@@ -1384,7 +1384,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
+
+				// Dont add id as caused issues with inline edit plugin and clashing ids.
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" />';
 				break;
 
 			case 'auto-complete':

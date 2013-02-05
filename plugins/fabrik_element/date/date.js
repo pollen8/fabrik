@@ -345,7 +345,6 @@ var FbDateTime = new Class({
 				}
 			}
 		}
-		var i = this.getContainer().getElement('i.icon-calendar');
 	},
 
 	addNewEventAux : function (action, js) {
