@@ -3091,7 +3091,6 @@ class FabrikFEModelForm extends FabModelForm
 
 		if ($this->saveMultiPage(false))
 		{
-			echo "multipage";
 			$srow = $this->getSessionData();
 			/*
 			 * Test if its a resumed paged form

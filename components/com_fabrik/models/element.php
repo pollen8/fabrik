@@ -555,14 +555,17 @@ class plgFabrik_Element extends FabrikPlugin
 				if ($params->get('icon_hovertext', true))
 				{
 					$ahref = '#';
+					$target = '';
 					if ($as->length)
 					{
 						// Data already has an <a href="foo"> lets get that for use in hover text
 						$a = $as->item(0);
 						$ahref = $a->getAttribute('href');
+						$target = $a->getAttribute('target');
+						$target = 'target="' . $target . '"';
 					}
 					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 				}
 				elseif (!empty($iconfile))
 				{

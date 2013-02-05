@@ -1220,7 +1220,7 @@ var FbGroupedToggler = new Class({
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
-		if (this.options.startCollapsed) {
+		if (this.options.startCollapsed && this.options.isGrouped) {
 			this.collapse();
 		}
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {
