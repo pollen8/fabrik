@@ -3030,6 +3030,10 @@ class FabrikFEModelForm extends FabModelForm
 		$this->_rowId = $this->getRowId();
 
 		// $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		// hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
+		// so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
+		// do something funky like change the rowid being loaded.  Not a huge problem, but caught me out
+		// when a custom PHP onBeforeLoad plugin I'd written for a client suddenly broke.
 		$this->checkAccessFromListSettings();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
