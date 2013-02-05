@@ -114,8 +114,7 @@ var Autofill = new Class({
 		} else {
 			this.form.dispatchEvent('', this.options.trigger, 'click', function (e) {
 				
-				// Fabrik element object that triggered the event 
-				this.element = e;
+				// Fabrik Trigger element object so don't use as this.element or lookup value will be wrong
 				this.lookUp();
 			}.bind(this));
 		}
