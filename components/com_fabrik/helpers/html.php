@@ -965,7 +965,7 @@ EOD;
 				foreach ($s->deps as &$f)
 				{
 					// Library files are not compressed by default.
-					if (substr($f, 0, 4) !== 'lib/')
+					if (substr($f, 0, 4) !== 'lib/' && substr($f, -4) !== '-min')
 					{
 						$f .= $ext;
 					}
@@ -973,7 +973,6 @@ EOD;
 			}
 			$newShim[$k] = $s;
 		}
-
 		$navigator = JBrowser::getInstance();
 		if ($navigator->getBrowser() == 'msie' && !$j3)
 		{
@@ -1185,6 +1184,7 @@ EOD;
 
 	/**
 	 * Wrapper for JHTML::Script() loading with require.js
+	 * If not debugging will replace file names .js => -min.js
 	 *
 	 * @param   mixed   $file    string or array of files to load (relative path to root for local files - e.g. 'administrator/components/com_fabrik/models/fields/tables.js')
 	 * @param   string  $onLoad  optional js to run if format=raw (as we first load the $file via Asset.Javascript()
@@ -1227,7 +1227,7 @@ EOD;
 			else
 			{
 				$compressedFile = str_replace('.js', $ext, $f);
-				if (JFile::exists($compressedFile))
+				if (JFile::exists(JPATH_SITE . '/' . $compressedFile) || JFile::exists($compressedFile))
 				{
 					$f = $compressedFile;
 				}
@@ -1237,7 +1237,6 @@ EOD;
 		// Set file name based on requirejs basePath
 		foreach ($files as &$file)
 		{
-
 			$pathMatched = false;
 			foreach ($paths as $requireKey => $path)
 			{
