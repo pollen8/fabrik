@@ -107,10 +107,10 @@ class JFormFieldTables extends JFormFieldList
 			$opts->conn = 'jform_' . $connectionDd;
 			$opts->value = $this->value;
 			$opts = json_encode($opts);
-			$script[] ="console.log('load');";
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = new tablesElement('$this->id', $opts);\n";
-			$f = 'administrator/components/com_fabrik/models/fields/tables.js';
-			FabrikHelperHTML::script($f, implode("\n", $script));
+			$src[] = 'administrator/components/com_fabrik/views/namespace.js';
+			$src[] = 'administrator/components/com_fabrik/models/fields/tables.js';
+			FabrikHelperHTML::script($src, implode("\n", $script));
 		}
 		$html = parent::getInput();
 		$html .= "<img style='margin-left:10px;display:none' id='" . $this->id . "_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='"

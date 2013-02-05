@@ -115,7 +115,11 @@ class FabrikAdminViewElement extends JViewLegacy
 		$dep = new stdClass;
 		$dep->deps = array('admin/pluginmanager');
 		$shim['admin/element/tmpl/adminelement'] = $dep;
+		$shim['adminfields/tables'] = $dep;
 
+		$plugManagerDeps = new stdClass;
+		$plugManagerDeps->deps = array('admin/namespace');
+		$shim['admin/pluginmanager'] = $plugManagerDeps;
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
 		JText::script('JNO');
