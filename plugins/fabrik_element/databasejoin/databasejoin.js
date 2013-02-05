@@ -66,7 +66,8 @@ var FbDatabasejoin = new Class({
 			return;
 		}
 		this.activePopUp = true;
-		var url = "index.php?option=com_fabrik&task=form.view&tmpl=component&ajax=1&formid=" + this.options.popupform;
+		c = this.getContainer();
+		var url  = c.getElement('.toggle-addoption').get('href');
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
@@ -251,7 +252,7 @@ var FbDatabasejoin = new Class({
 					return;
 				}
 				json.each(function (o) {
-					if (!existingValues.contains(o.value)) {
+					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
 						if (this.activePopUp) {
 							this.options.value = o.value;
 						}
