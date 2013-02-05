@@ -991,7 +991,7 @@ class FabrikFEModelList extends JModelForm
 			* $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
 			*/
 			if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-					|| $this->outPutFormat == 'feed')
+				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
@@ -1082,13 +1082,7 @@ class FabrikFEModelList extends JModelForm
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-			// $$$ rob commenting this out as if you group on a date then the group by value doesnt correspond
-			// to the keys found in the calculation array
 
-			// See if we can use a raw value instead
-			/*if (!empty($data) && array_key_exists($groupBy . "_raw", $data[0])) {
-			$groupBy = $groupBy . "_raw";
-			}*/
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
@@ -1539,10 +1533,11 @@ class FabrikFEModelList extends JModelForm
 		// Trigger load of joins without cdd elements - seems to mess up count otherwise
 		$listModel->set('includeCddInJoin', false);
 
-		//see http://fabrikar.com/forums/showthread.php?t=12860
+		// See http://fabrikar.com/forums/showthread.php?t=12860
 		// $totalSql  = "SELECT $linkKey AS id, COUNT($linkKey) AS total FROM " . $element->db_table_name . " " . $tableModel->_buildQueryJoin();
 
 		$k2 = $db->quote(FabrikString::safeColNameToArrayKey($key));
+
 		// $totalSql  = "SELECT $k2 AS linkKey, $linkKey AS id, COUNT($linkKey) AS total FROM " . $listModel->getTable()->db_table_name . " " . $listModel->_buildQueryJoin();
 
 		// $$$ Jannus - see http://fabrikar.com/forums/showthread.php?t=20751
@@ -2854,26 +2849,9 @@ class FabrikFEModelList extends JModelForm
 					{
 						if (!$ingroup)
 						{
-							// Commenting out if statement see - https://github.com/Fabrik/fabrik/issues/404
-
 							// Search all filter after a prefilter - alter 'join' value to 'AND'
-							/* if ($last_i && JArrayHelper::getValue($filters['search_type'], $last_i) == 'prefilter'
-									&& JArrayHelper::getValue($filters['search_type'], $i) !== 'prefilter')
-							{
-							$filters['join'][$i] = 'AND';
-
-							// $$$ hugh - if using a search form, with a multiselect object (like checkbox) and prefilters, the gstart is never getting set, so have unbalanced )
-							if ($filters['search_type'][$i] == 'search')
-							{
-							$gstart = '(';
-									$groupedCount++;
-									}
-									}
-									else
-							{ */
 							$gstart = '(';
 							$groupedCount++;
-							// }
 						}
 						$ingroup = true;
 					}
@@ -3323,7 +3301,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  bool	access allowed
 	 */
 
-	function canEdit($row = null)
+	public function canEdit($row = null)
 	{
 		$params = $this->getParams();
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
@@ -3697,8 +3675,8 @@ class FabrikFEModelList extends JModelForm
 					* so at least I'll know what the problem is when they post in the forums!
 					*/
 
-					// $$$rob - Unfortunaly the user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
-					//JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
+					// The user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
+					// JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
 					$join->canUse = false;
 				}
 			}
@@ -5627,7 +5605,7 @@ class FabrikFEModelList extends JModelForm
 					foreach ($asfields as $f)
 					{
 						if ((strstr($f, $db->quoteName($name)) || strstr($f, $db->quoteName($name . '_raw'))
-								|| ($elModel->isJoin() && strstr($f, $pName))))
+							|| ($elModel->isJoin() && strstr($f, $pName))))
 						{
 							$newfields[] = $f;
 						}
@@ -5862,18 +5840,31 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * put the actions in the headings array - separated to here to enable it to be added at the end or beginning
+	 * Put the actions in the headings array - separated to here to enable it to be added at the end or beginning
 	 *
-	 * @param   array  &$aTableHeadings  table headings
-	 * @param   array  &$headingClass    heading classes
-	 * @param   array  &$cellClass       cell classes
+	 * @param   array  &$aTableHeadings  Table headings
+	 * @param   array  &$headingClass    Heading classes
+	 * @param   array  &$cellClass       Cell classes
 	 *
 	 * @return  void
 	 */
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		if ($this->canSelectRows() || $this->canViewDetails() || $this->canEdit())
+		$params = $this->getParams();
+
+		// Check for conditions in https://github.com/Fabrik/fabrik/issues/621
+		$details = $this->canViewDetails();
+		if ($params->get('detaillink') == 0)
+		{
+			$details = false;
+		}
+		$edit = $this->canEdit();
+		if ($params->get('editlink') == 0)
+		{
+			$edit = false;
+		}
+		if ($this->canSelectRows() || $details || $edit)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -7370,7 +7361,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		// see if we have any rows left to delete after checking perms
+		// See if we have any rows left to delete after checking perms
 		if (empty($ids))
 		{
 			return;
@@ -8181,7 +8172,7 @@ class FabrikFEModelList extends JModelForm
 	 * @return  string json  object representing record/row
 	 */
 
-	function previousRecord()
+	public function previousRecord()
 	{
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
@@ -9804,7 +9795,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Return an array of elements which are set to always render
 	 *
-	 * @param   bool  only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
 	 *
 	 * @return   bool  array of element models
 	 */
