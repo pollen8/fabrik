@@ -798,8 +798,8 @@ class FabrikModelList extends FabModelAdmin
 	 */
 	protected function collation($feModel, $origCollation, $row)
 	{
-		// Don't attempt to alter new table
-		if ($row->id == 0)
+		// Don't attempt to alter new table, or a view
+		if ($row->id == 0 || $feModel->isView())
 		{
 			return;
 		}
