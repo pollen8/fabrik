@@ -5,34 +5,212 @@
 				
 			<field default="1" label="PLG_FABRIK_LIST_EMAIL_ACCESS_LABEL" name="emailtable_access" repeat="true" type="accesslevel"/>
 		
-			<field default="0" description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC" label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL" name="emailtable_from_user" repeat="true" type="radio">
+			<field default="0"
+				description="PLG_LIST_EMAIL_SEND_FROM_USER_DESC"
+				label="PLG_LIST_EMAIL_SEND_FROM_USER_LABEL"
+				name="emailtable_from_user"
+				repeat="true"
+				type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
-			<field default="list" description="PLG_LIST_EMAIL_TO_TYPE_DESC" label="PLG_LIST_EMAIL_TO_TYPE_LABEL" name="emailtable_to_type" repeat="true" type="list">
-					<option value="list">Select from elements</option>
-					<option value="field">Defined in 'email to' field</option>	
+
+			<field name="emailtable_to_how"
+				type="list"
+				default="multi"
+				label="PLG_LIST_EMAIL_TO_HOW_LABEL"
+				repeat="true"
+				description="PLG_LIST_EMAIL_TO_HOW_DESC">
+					<option value="multi">PLG_LIST_EMAIL_TO_HOW_MULTI</option>
+					<option value="single">PLG_LIST_EMAIL_TO_HOW_SINGLE</option>
+			</field>
+					
+			<field name="emailtable_to_type"
+				default="list"
+				description="PLG_LIST_EMAIL_TO_TYPE_DESC"
+				label="PLG_LIST_EMAIL_TO_TYPE_LABEL"
+				repeat="true"
+				type="list">
+					<option value="list">PLG_LIST_EMAIL_TO_TYPE_LIST</option>
+					<option value="field">PLG_LIST_EMAIL_TO_TYPE_FIELD</option>
+					<option value="table">PLG_LIST_EMAIL_TO_TYPE_TABLE</option>
+					<option value="table_picklist">PLG_LIST_EMAIL_TO_TYPE_TABLE_PICKLIST</option>
 			</field>
 			
-			<field description="PLG_LIST_EMAIL_TO_DESC" label="PLG_LIST_EMAIL_TO_LABEL" name="emailtable_to" repeat="true" size="40" type="text"/>
-				
-			<field description="PLG_LIST_EMAIL_BUTTON_LABEL_DESC" label="PLG_LIST_EMAIL_BUTTON_LABEL_LABEL" name="email_button_label" repeat="true" size="30" type="text"/>
-				
-			<field description="PLG_LIST_EMAIL_SUBJECT_DESC" label="PLG_LIST_EMAIL_SUBJECT_LABEL" name="email_subject" repeat="true" size="30" type="text"/>
+			<field
+				description="PLG_LIST_EMAIL_TO_DESC"
+				label="PLG_LIST_EMAIL_TO_LABEL"
+				name="emailtable_to"
+				repeat="true"
+				size="40"
+				type="text"
+			/>
+
+			<field name="emailtable_to_table_connection"
+				type="connections"
+				repeat="true"
+				label="PLG_LIST_EMAIL_TO_TABLE_CONNECTION_LABEL"
+				description="PLG_LIST_EMAIL_TO_TABLE_CONNECTION_DESC"
+			/>
 			
-			<field cols="60" description="PLG_LIST_MESSAGE_DESC" label="PLG_LIST_MESSAGE_LABEL" name="email_message" repeat="true" rows="4" type="textarea"/>
+			<field name="emailtable_to_table_table"
+				observe="params_emailtable_to_table_connection"
+				repeat="true"
+				type="fabriktables"
+				label="PLG_LIST_EMAIL_TO_TABLE_TABLE_LABEL"
+				description="PLG_LIST_EMAIL_TO_TABLE_TABLE_DESC"
+			/>
+			
+			<field name="emailtable_to_table_email"
+				type="element"
+				repeat="true"
+				connection="params_emailtable_to_table_connection"
+				table="params_emailtable_to_table_table"
+				label="PLG_LIST_EMAIL_TO_TABLE_EMAIL_LABEL"
+				description="PLG_LIST_EMAIL_TO_TABLE_EMAIL_DESC"
+			/>
+			
+			<field name="emailtable_to_table_name"
+				type="element"
+				repeat="true"
+				connection="params_emailtable_to_table_connection"
+				table="params_emailtable_to_table_table"
+				label="PLG_LIST_EMAIL_TO_TABLE_NAME_LABEL"
+				description="PLG_LIST_EMAIL_TO_TABLE_NAME_DESC"
+			/>
 				
-			<field default="1" description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC" label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL" name="emailtable_allow_attachment" repeat="true" type="radio">
+			<field name="email_button_label"
+				description="PLG_LIST_EMAIL_BUTTON_LABEL_DESC"
+				label="PLG_LIST_EMAIL_BUTTON_LABEL_LABEL"
+				repeat="true"
+				size="30"
+				type="text"
+			/>
+				
+			<field name="email_subject"
+				description="PLG_LIST_EMAIL_SUBJECT_DESC"
+				label="PLG_LIST_EMAIL_SUBJECT_LABEL"
+				repeat="true"
+				size="30"
+				type="text"
+			/>
+			
+			<field name="emailtable_hide_subject"
+				type="radio"
+				default="0" 
+				repeat="true"
+				label="PLG_LIST_EMAIL_HIDE_SUBJECT_LABEL" 
+				description="PLG_LIST_EMAIL_HIDE_SUBJECT_DESC">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+			</field>	
+			
+			<field name="email_message"
+				cols="60"
+				description="PLG_LIST_MESSAGE_DESC"
+				label="PLG_LIST_MESSAGE_LABEL"
+				repeat="true"
+				rows="4"
+				type="textarea"
+			/>
+
+			<field name="emailtable_template"
+				type="filelist"
+				repeat="true"
+				directory="plugins/fabrik_list/email/tmpl/"
+				hide_default="1"
+				label="PLG_LIST_EMAIL_TEMPLATE_LABEL"
+				description="PLG_LIST_EMAIL_TEMPLATE_DESC"
+			/>
+			
+			<field name="emailtable_template_content"
+				add_select="true"
+				default=""
+				type="sql2"
+				repeat="true"
+				query="SELECT id AS value, title AS text FROM #__content WHERE state != -2 "
+				label="PLG_LIST_EMAIL_CONTENT_TEMPLATE_LABEL"
+				description="PLG_LIST_EMAIL_CONTENT_TEMPLATE_DESC"
+			/>
+							
+			<field name="emailtable_allow_attachment"
+				default="1"
+				description="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_DESC"
+				label="PLG_LIST_EMAIL_ALLOW_ATTACHMENT_LABEL"
+				repeat="true"
+				type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field cols="60" description="PLG_LIST_EMAIL_CONDITION_DESC" label="PLG_LIST_EMAIL_CONDITION_LABEL" name="emailtable_condition" repeat="true" rows="4" type="textarea"/>
-				
-			<field description="PLG_LIST_EMAIL_UPDATE_FIELD_DESC" label="PLG_LIST_EMAIL_UPDATE_FIELD_LABEL" name="emailtable_update_field" repeat="true" type="listfields" valueformat="tableelement"/>
+			<field name="emailtable_condition"
+				cols="60"
+				description="PLG_LIST_EMAIL_CONDITION_DESC"
+				label="PLG_LIST_EMAIL_CONDITION_LABEL"
+				repeat="true"
+				rows="4"
+				type="textarea"
+			/>
+
+			<field name="emailtable_mergemessages" 
+				type="radio"
+				default="0"
+				repeat="true"
+				label="PLG_LIST_EMAIL_MERGE_MESSAGES_LABEL"
+				description="PLG_LIST_EMAIL_MERGE_MESSAGES_DESC">
+					<option value="0">NO</option>
+					<option value="1">YES</option>
+			</field>
+		
+			<field name="emailtable_message_preamble"
+				type="textarea"
+				default=""
+				rows="3"
+				cols="60"
+				repeat="true"
+				label="PLG_LIST_EMAIL_MESSAGE_PREAMBLE_LABEL"
+				description="PLG_LIST_EMAIL_MESSAGE_PREAMBLE_DESC"
+			/>
 			
-			<field description="PLG_LIST_EMAIL_UPDATE_VALUE_DESC" label="PLG_LIST_EMAIL_UPDATE_VALUE_LABEL" name="emailtable_update_value" repeat="true" type="text"/>
+			<field name="emailtable_message_postamble"
+				type="textarea"
+				default=""
+				rows="3"
+				cols="60"
+				repeat="true"
+				label="PLG_LIST_EMAIL_MESSAGE_POSTAMBLE_LABEL"
+				description="PLG_LIST_EMAIL_MESSAGE_POSTAMBLE_DESC"
+			/>
+							
+			<field name="emailtable_update_field"
+				description="PLG_LIST_EMAIL_UPDATE_FIELD_DESC"
+				label="PLG_LIST_EMAIL_UPDATE_FIELD_LABEL"
+				repeat="true"
+				type="listfields"
+				valueformat="tableelement"
+			/>
+			
+			<field name="emailtable_update_value"
+				description="PLG_LIST_EMAIL_UPDATE_VALUE_DESC"
+				label="PLG_LIST_EMAIL_UPDATE_VALUE_LABEL"
+				repeat="true"
+				type="text"
+			/>
+			
+			<field name="emailtable_update_field2"
+				description="PLG_LIST_EMAIL_UPDATE_FIELD_DESC"
+				label="PLG_LIST_EMAIL_UPDATE_FIELD_LABEL"
+				repeat="true"
+				type="listfields"
+				valueformat="tableelement"
+			/>
+			
+			<field name="emailtable_update_value2"
+				description="PLG_LIST_EMAIL_UPDATE_VALUE_DESC"
+				label="PLG_LIST_EMAIL_UPDATE_VALUE_LABEL"
+				repeat="true"
+				type="text"
+			/>
 		</fieldset>
 	</fields>
 </form>
