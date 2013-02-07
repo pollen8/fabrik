@@ -42,6 +42,7 @@ Fabrik.Window = new Class({
 		offset_x: null,
 		offset_y: null,
 		visible: true,
+		onClose: function () {},
 		onContentLoaded: function () {
 			this.fitToContent();
 		},
@@ -282,6 +283,7 @@ Fabrik.Window = new Class({
 		} else {
 			this.window.fade('hide');
 		}
+		this.fireEvent('onClose', [this]);
 	},
 	
 	open: function (e) {
