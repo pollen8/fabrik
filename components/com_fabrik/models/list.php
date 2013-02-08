@@ -437,6 +437,14 @@ class FabrikFEModelList extends JModelForm
 	public $orderEls = array();
 
 	/**
+	 * Cached order by statement
+	 *
+	 * @since 3.0.7
+	 *
+	 * @var mixed - string or JQueryBuilder section
+	 */
+	public $orderBy = null;
+	/**
 	 * Load form
 	 *
 	 * @param   array  $data      form data
@@ -2252,6 +2260,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the part of the sql statement that orders the table data
+	 * Since 3.0.7 caches the results as calling orderBy twice when using single ordering in admin module anules the user selected order by
 	 *
 	 * @param   mixed  $query  false or a query object
 	 *
@@ -2260,6 +2269,10 @@ class FabrikFEModelList extends JModelForm
 
 	public function _buildQueryOrder($query = false)
 	{
+		if (isset($this->orderBy))
+		{
+			return $this->orderBy;
+		}
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
@@ -2432,7 +2445,8 @@ class FabrikFEModelList extends JModelForm
 			$this->orderEls[] = $orderby;
 			$this->orderDirs[] = $groupOrderDir;
 		}
-		return $query === false ? $strOrder : $query;
+		$this->orderBy = $query === false ? $strOrder : $query;
+		return $this->orderBy;
 	}
 
 	/**
@@ -6264,6 +6278,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
+		//echo "<pre>list store row";print_r($data);exit;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$origRowId = $rowId;

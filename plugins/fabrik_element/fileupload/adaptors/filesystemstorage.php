@@ -189,12 +189,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * @param   string  $file    file name
 	 * @param   string  $buffer  the buffer to write
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 
 	public function write($file, $buffer)
 	{
-		JFile::write($file, $buffer);
+		return JFile::write($file, $buffer);
 	}
 
 	/**
