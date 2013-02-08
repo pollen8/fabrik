@@ -1218,7 +1218,17 @@ class FabrikFEModelListfilter extends FabModel
 				$filters['join'][] = $joinMode;
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
 				$filters['hidden'][] = ($element->filter_type == '') ? 1 : 0;
-				$filters['key'][] = urldecode($key);
+				// $$$ hugh - need to check for magic quotes, otherwise filter keys for
+				// CONCAT's get munged into things like CONCAT(last_name,\', \',first_name)
+				// which then blows up the WHERE query.
+				if (get_magic_quotes_gpc())
+				{
+					$filters['key'][] = stripslashes(urldecode($key));
+				}
+				else
+				{
+					$filters['key'][] = urldecode($key);
+				}
 				$filters['search_type'][] = JArrayHelper::getValue($request['search_type'], $i, 'normal');
 				$filters['match'][] = $element->filter_exact_match;
 				$filters['full_words_only'][] = $elparams->get('full_words_only');
