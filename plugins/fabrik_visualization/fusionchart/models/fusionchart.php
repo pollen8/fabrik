@@ -430,7 +430,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$label_step_ratios = (array) $params->get('fusion_label_step_ratio');
 		$x_axis_label = (array) $params->get('fusion_x_axis_label');
 		$chartElements = (array) $params->get('fusionchart_elementList');
-		$chartColours = (array) $params->get('fusionchart_colours');
+		$chartColours = (array) $params->get('fusionchart_elcolour');
 		$listid = (array) $params->get('fusionchart_table');
 		$chartCumulatives = (array) $params->get('fusionchart_cumulative');
 		$elTypes = (array) $params->get('fusionchart_element_type');
@@ -772,6 +772,11 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 						$cdata = JArrayHelper::getValue($chartCumulatives, $key, '0') == '0' ? explode(',', $gdata[$key]) : $this->gcumulatives[$key];
 						$dataset = $this->axisLabels[$key];
 						$extras = 'parentYAxis=' . $dual_y_parents[$key];
+						$color = JArrayHelper::getValue($gcolours, $key, '');
+						if (!empty($color))
+						{
+							$extras .= ";color=" . $color;
+						}
 						$this->FC->addDataset($dataset, $extras);
 						if ($elTypes[$key] == 'trendonly')
 						{
