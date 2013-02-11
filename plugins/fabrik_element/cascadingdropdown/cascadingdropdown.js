@@ -65,7 +65,7 @@ var FbCascadingdropdown = new Class({
 			}
 		}
 		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
-		//this.element.getParent().getElement('.loader').setStyle('display', '');
+		this.spinner.show();
 		// $$$ hugh testing new getFormElementData() method to include current form element values in data
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
 		// it includes all QS from current page, including task=processForm, which screws up this AJAX call.
