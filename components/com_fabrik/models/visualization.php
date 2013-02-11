@@ -103,19 +103,6 @@ class FabrikFEModelVisualization extends JModelLegacy
 	{
 		return $this->getVisualization();
 	}
-	
-	/**
-	 * alais to getVisualization()
-	 *
-	 * @since	3.0.6
-	 *
-	 * @return  FabTable viz
-	 */
-	
-	public function getRow()
-	{
-		return $this->getVisualization();
-	}
 
 	/**
 	 * get the item
