@@ -183,13 +183,15 @@ class FabrikAdminControllerForm extends JControllerForm
 
 		$msg = $model->getRedirectMessage($model);
 
-		if ($input->getInt('elid') !== 0)
+		if ($input->getInt('elid', 0) !== 0)
 		{
+			echo $input->getInt('elid', 0);
+
 			// Inline edit show the edited element
 			echo $model->inLineEditResult();
 			return;
 		}
-		if ($input->getInt('packageId') !== 0)
+		if ($input->getInt('packageId', 0) !== 0)
 		{
 			$rowid = $input->getInt('rowid');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
@@ -197,7 +199,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		}
 		if ($input->get('format') == 'raw')
 		{
-			$url = 'index.php?option=com_fabrik&view=list&format=raw&listid=' . $tid;
+			$url = 'index.php?option=com_fabrik&task=list.view&format=raw&listid=' . $tid;
 			$this->setRedirect($url, $msg);
 		}
 		else

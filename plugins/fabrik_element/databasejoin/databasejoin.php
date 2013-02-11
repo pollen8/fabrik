@@ -1008,7 +1008,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$popupform = (int) $params->get('databasejoin_popupform');
-					$addURL = 'index.php?option=com_fabrik&view=form&tmpl=component&ajax=1&formid=' . $popupform;
+					$addURL = 'index.php?option=com_fabrik';
+					$addURL .= $app->isAdmin() ? '&task=form.view' : '&view=form';
+					$addURL .= '&tmpl=component&ajax=1&formid=' . $popupform;
 					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
 					$html[] = FabrikHelperHTML::image('new.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}

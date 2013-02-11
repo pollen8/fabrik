@@ -146,14 +146,12 @@ class FabrikAdminControllerList extends JControllerForm
 		// Use the front end renderer to show the table
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout = $input->get('layout', 'default');
-		$view = $this->getView($this->view_item, $viewType, '');
+		$view = $this->getView($this->view_item, $viewType, 'FabrikView');
 		$view->setModel($model, true);
 
 		// Set the layout
 		$view->setLayout($viewLayout);
-		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
 		$view->display();
-		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
 	}
 
 	/**

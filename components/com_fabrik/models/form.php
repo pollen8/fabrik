@@ -5182,10 +5182,13 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$msg = null;
 		}
+		$showmsg = null;
 		$session->set($context . 'msg', $smsg);
-		$shosmsg = $session->get($context . 'showsystemmsg', array(true));
-		$showmsg = array_shift($showmsg);
-		$msg = $showmsg == 1 ? $msg : null;
+		$shosmsg = (array) $session->get($context . 'showsystemmsg', array(true));
+		if (is_array($showmsg)) {
+			$showmsg = array_shift($showmsg);
+		}
+		$msg = $showmsg == 1 ? $msg : '';
 		return $msg;
 	}
 
