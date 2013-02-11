@@ -184,7 +184,7 @@ var FbFileUpload = new Class({
 			runtimes: this.options.ajax_runtime,
 			browse_button: this.element.id + '_browseButton',
 			container: this.element.id + '_container',
-			drop_element: this.element.id + '_dropList',
+			drop_element: this.element.id + '_dropList_container',
 			url: 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&plugin=fileupload&method=ajax_upload&element_id=' + this.options.elid,
 			max_file_size: this.options.max_file_size + 'kb',
 			unique_names: false,
@@ -207,10 +207,6 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
-			var txt = this.droplist.getElement('.plupload_droptext');
-			if (typeOf(txt) !== 'null') {
-				txt.destroy();
-			}
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('plupload_disabled');
 			files.each(function (file, idx) {
@@ -312,12 +308,23 @@ var FbFileUpload = new Class({
 				resizebutton.store('filepath', response.filepath);
 			}
 			this.widget.setImage(response.uri, response.filepath, file.params);
+			
+			// Stores the cropparams which we need to reload the crop widget in the correct state (rotation, zoom, loc etc)
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[crop][' + response.filepath + ']',
 				'id' : 'coords_' + file.id,
 				'value' : JSON.encode(file.params)
 			}).inject(this.pluploadContainer, 'after');
+			
+			// Stores the actual crop image data retrieved from the canvas
+			new Element('input', {
+				type: 'hidden',
+				name : this.options.elementName + '[cropdata][' + response.filepath + ']',
+				'id' : 'data_' + file.id
+			}).inject(this.pluploadContainer, 'after');
+			
+			// Stores the image id if > 1 fileupload
 			var idvalue = [file.recordid, '0'].pick();
 			new Element('input', {
 				'type' : 'hidden',
@@ -386,12 +393,6 @@ var FbFileUpload = new Class({
 		if (document.id('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
 			document.id('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
 		}
-		/*
-		 * if (this.droplist.getChildren().length === 0) {
-		 * this.startbutton.addClass('plupload_disabled'); this.droplist.adopt(new
-		 * Element('li', { 'class' : 'plupload_droptext' }).set('text',
-		 * Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE'))); }
-		 */
 	},
 
 	pluploadResize : function (e) {
@@ -409,8 +410,11 @@ var FbFileUpload = new Class({
 		if (typeOf(this.widget) !== 'null') {
 			this.widget.images.each(function (image, key) {
 				key = key.split('\\').getLast();
-				var f = document.getElements('input[name*=' + key + ']');
-				f = f[1];
+				var f = document.getElements('input[name*=' + key + ']').filter(function (fld) {
+					return fld.name.contains('[crop]');
+				});
+				f  = f.getLast();
+				
 				// $$$ rob - seems reloading ajax fileupload element in ajax form (e.g. from db join add record)
 				// is producing odd effects where old fileupload object constains info to previously uploaded image?
 				if (typeOf(f) !== 'null') {
@@ -469,8 +473,8 @@ var ImageWidget = new Class({
 			createShowOverLay: false,
 			crop: opts.crop,
 			onClose : function () {
-				document.id('modalOverlay').hide();
-			},
+				this.storeActiveImageData();
+			}.bind(this),
 			onContentLoaded : function () {
 				this.center();
 			}
@@ -563,102 +567,76 @@ var ImageWidget = new Class({
 		this.win.close();
 	},
 	
-	setImage : function (uri, filepath, params) {
+	/**
+	 * Add or make active an image in the editor
+	 * 
+	 * @param  string  uri  Image URI
+	 * @param  string  filepath  Path to file
+	 * @param  object  params    Initial parameters
+	 */
+	
+	setImage: function (uri, filepath, params) {
 		this.activeFilePath = filepath;
-		if (this.img && this.img.src === uri) {
-			this.showWin();
-			return;
-		}
-		this.img = Asset.image(uri);
-		var el = new Element('img', {
-			src : uri
-		});
-		if (filepath) {
-			el.store('filepath', filepath);
+		if (!this.images.has(filepath)) {
+			// New image
+			var img = Asset.image(uri, {
+				onLoad: function () {
+					this.storeImageDimensions(filepath, img, params);
+				}.bind(this)
+			});
 		} else {
-			filepath = el.retrieve('filepath');
+			// Previously set up image
+			params = this.images.get(filepath);
+			this.img = params.img;
+			this.setInterfaceDimensions(params);
+			this.showWin();
+			console.log('already loaded', params);
 		}
-		el.inject(document.body).hide();
-
-		var opts = [filepath, params, el];
-		this.periodSetUpFn = this.setUpFn.periodical(500, this, opts);
 	},
 	
 	/**
-	 * Need to periodically run this as on page load timing of loading seems to effect if the Asset is loaded
-	 * If its not loaded then the s.width and height are 0, so use tearDown to control if the function is repeated
+	 * Set rotate, scale, image and crop values for a given image
 	 * 
-	 *  @since 3.0.7
+	 * @param   object  params  Image parameters
 	 */
-
-	setUpFn: function (filepath, params, el) {
-		var show, imagew, imageh, imagex, imagey, i;
-		var tearDown = true;
-		if (!this.images.has(filepath)) {
-			show = false;
-			params = params ? params : new CloneObject(this.imageDefault, true, []);
-			this.images.set(filepath, params);
-			var s = el.getDimensions(true);
-			imagew = s.width;
-			imageh = s.height;
-			if (s.width === 0 && s.height === 0) {
-				tearDown = false;
-			}
-			
-			// as imagedim is changed when the image is scaled, but we still want to store the original
-			// image dimensions for when we come to re-edit it.
-			// not sure we actually need it - but seems a good idea to have a reference to the original image size
-			if (params.imagedim) {
-				params.mainimagedim = params.imagedim;
-				params.mainimagedim.w = imagew;
-				params.mainimagedim.h = imageh;
-				imagex = params.imagedim.x;
-				imagey = params.imagedim.y;
-			} else {
-				params.mainimagedim = {w: 0, h: 0, x: 0, y: 0};
-				imagex = 0;
-				imagey = 0;
-			}
-		} else {
-			show = true;
-			i = this.images.get(filepath);
-			imagew = this.imageDefault.imagedim.w;
-			imageh = this.imageDefault.imagedim.h;
-			imagex = typeOf(i.imagedim) !== 'null' ? i.imagedim.x : 0;
-			imagey = typeOf(i.imagedim) !== 'null' ? i.imagedim.y : 0;
-		}
-
-		i = this.images.get(filepath);
+	setInterfaceDimensions: function (params) {
 		if (this.scaleSlide) {
-			this.scaleSlide.set(i.scale);
+			this.scaleSlide.set(params.scale);
 		}
 		if (this.rotateSlide) {
-			this.rotateSlide.set(i.rotation);
+			this.rotateSlide.set(params.rotation);
 		}
-		if (this.cropperCanvas && i.cropdim) {
-			this.cropperCanvas.x = i.cropdim.x;
-			this.cropperCanvas.y = i.cropdim.y;
-			this.cropperCanvas.w = i.cropdim.w;
-			this.cropperCanvas.h = i.cropdim.h;
+		
+		if (this.cropperCanvas && params.cropdim) {
+			this.cropperCanvas.x = params.cropdim.x;
+			this.cropperCanvas.y = params.cropdim.y;
+			this.cropperCanvas.w = params.cropdim.w;
+			this.cropperCanvas.h = params.cropdim.h;
 		}
-		this.imgCanvas.w = imagew;
-		this.imgCanvas.h = imageh;
-		this.imgCanvas.x = imagex;
-		this.imgCanvas.y = imagey;
-		this.imgCanvas.rotation = i.rotation;
-		this.imgCanvas.scale = i.scale / 100;
-		if (show) {
-			this.showWin();
-		}
-		if (tearDown) {
-			el.destroy();
-			
-			// Incase ctr + f5 loading of page meant that win was opened
-			if (this.win) {
-				this.win.close();
-			}
-			clearInterval(this.periodSetUpFn);
-		}
+		this.imgCanvas.w = params.mainimagedim.w;
+		this.imgCanvas.h = params.mainimagedim.h;
+		this.imgCanvas.x = typeOf(params.imagedim) !== 'null' ? params.imagedim.x : 0;
+		this.imgCanvas.y = typeOf(params.imagedim) !== 'null' ? params.imagedim.y : 0;
+	},
+	
+	/**
+	 * One time call to store initial image crop info in this.images
+	 * 
+	 * @param   string   filepath  Path to image
+	 * @param   DOMnode  img       Image - just created 
+	 * @param   params   object    Image parameters  
+	 */
+	
+	storeImageDimensions: function (filepath, img, params) {
+		img.inject(document.body).hide();
+		params = params ? params : new CloneObject(this.imageDefault, true, []);
+		var s = img.getDimensions(true);
+		params.mainimagedim = params.imagedim;
+		params.mainimagedim.w = s.width;
+		params.mainimagedim.h = s.height;
+		console.log(params);
+		params.img = img;
+		this.images.set(filepath, params);
 	},
 	
 	makeImgCanvas: function () {
@@ -859,8 +837,37 @@ var ImageWidget = new Class({
 	watchClose: function () {
 		var w = document.id(this.windowopts.id);
 		w.getElement('input[name=close-crop]').addEvent('click', function (e) {
+			this.storeActiveImageData();
 			this.win.close();
 		}.bind(this));
+	},
+	
+	storeActiveImageData: function () {
+		if (typeOf(this.activeFilePath) === 'null') {
+			return;
+		}
+		var x = this.cropperCanvas.x;
+		var y = this.cropperCanvas.y;
+		var w = this.cropperCanvas.w;
+		var h = this.cropperCanvas.h;
+		x = x - (w / 2);
+		y = y - (h / 2);
+		
+		var win = document.id(this.windowopts.id);
+		var canvas = win.getElement('canvas');
+		
+		var target = new Element('canvas', {'width': w + 'px', 'height': h + 'px' }).inject(document.body);
+		var ctx = target.getContext('2d');
+		
+		var file = this.activeFilePath.split('\\').getLast();
+		var f = document.getElements('input[name*=' + file + ']').filter(function (fld) {
+			return fld.name.contains('cropdata');
+		});
+		
+		
+		ctx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+		f.set('value', target.toDataURL());
+		target.destroy();
 	},
 	
 	/**

@@ -67,6 +67,12 @@
 			
 			<field description="PLG_ELEMENT_CDD_NO_SELECTION_LABEL_DESC" label="PLG_ELEMENT_CDD_NO_SELECTION_LABEL_LABEL" name="cascadingdropdown_noselectionlabel" size="35" type="text"/>
 			
+			<field name="cdd_join_label_eval"
+			 	type="textarea"
+				cols="40" rows="8"
+				description="PLG_ELEMENT_CDD_OPTIONS_EVAL_DESC"
+				label="PLG_ELEMENT_CDD_OPTIONS_EVAL_LABEL" />
+				
 		</fieldset>
 		
 		<fieldset name="plg-cascadingdropdown-frontend" label="COM_FABRIK_FRONT_END">

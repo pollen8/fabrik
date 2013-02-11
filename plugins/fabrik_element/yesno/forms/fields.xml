@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields name="params">
+		
 		<fieldset name="plg-element-yesno">
-			<field default="0" label="PLG_ELEMENT_YESNO_DEAFULT_LABEL" name="yesno_default" type="list">
+		
+			<field name="yesno_default"
+				type="list"
+				default="0"
+				label="PLG_ELEMENT_YESNO_DEAFULT_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
+			<field name="options_per_row"
+				type="field"
+				default="4"
+				size="1"
+				class="input-mini"
+				label="PLG_ELEMENT_YESNO_OPTIONS_PER_ROW"/>
+				
 		</fieldset>
+		
 	</fields>
 </form>

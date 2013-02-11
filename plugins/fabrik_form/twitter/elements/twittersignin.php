@@ -48,21 +48,14 @@ class JFormFieldTwittersignin extends JFormField
 		$iframeid = $this->id.'_iframe';
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$cid = $input->get('id', array(), 'array');
+		$cid = $input->get('id', array(0), 'array');
 
 		// $$$ hugh - when creating a new form, no 'cid' ... not sure what to do, so just set it to 0.  Should
 		// prolly just return something like 'available after save' ?
-		if (!empty($cid))
-		{
-			$cid = (int) $cid[0];
-		}
-		else
-		{
-			$cid = 0;
-		}
+
 		$c = isset($this->form->repeatCounter) ? (int) $this->form->repeatCounter : 0;
 
-		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=authenticateAdmin&tmpl=component&formid='.$cid.'&repeatCounter='.$c;
+		$href = COM_FABRIK_LIVESITE . 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=twitter&g=form&method=authenticateAdmin&tmpl=component&formid=' . $cid . '&repeatCounter=' . $c;
 
 		$clearjs = '$(\'jform_params_twitter_oauth_token-'.$c.'\').value = \'\';';
 		$clearjs .= '$(\'jform_params_twitter_oauth_token_secret-'.$c.'\').value = \'\';';

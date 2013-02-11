@@ -85,10 +85,58 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 	}
 
 	/**
+	 * Get the values to update the list with.
+	 * If user select the get them from the app's input else take from plug-in parameters
+	 *
+	 * @param   JParameters  $params  Plugin parameters
+	 * @param   object       $model   List model
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  object|false
+	 */
+
+	protected function getUpdateCols($params, $model)
+	{
+		if ($params->get('update_user_select', 0))
+		{
+			$formModel = $model->getFormModel();
+			$app = JFactory::getApplication();
+			$qs = $app->input->get('fabrik_update_col', '', 'string');
+			parse_str($qs, $output);
+			$key = 'list_' . $model->getRenderContext();
+
+			$values = JArrayHelper::getValue($output, 'fabrik___filter', array());
+			$values = JArrayHelper::getValue($values, $key, array());
+
+			$update = new stdClass;
+			$update->coltoupdate = array();
+			$update->update_value = array();
+			for ($i = 0; $i < count($values['elementid']); $i ++)
+			{
+				$id = $values['elementid'][$i];
+				$elementModel = $formModel->getElement($id, true);
+				$update->coltoupdate[] = $elementModel->getFullName(false, false, false);
+				$update->update_value[] = $values['value'][$i];
+			}
+
+			// If no update input found return false to stop processing
+			if (empty($update->coltoupdate) && empty($update->update_value))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			$update = json_decode($params->get('update_col_updates'));
+		}
+		return $update;
+	}
+	/**
 	 * Do the plug-in action
 	 *
 	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  list model
+	 * @param   object  &$model  List model
 	 * @param   array   $opts    custom options
 	 *
 	 * @return  bool
@@ -100,7 +148,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
-		$update = json_decode($params->get('update_col_updates'));
+		$update = $this->getUpdateCols($params, $model);
+
 		if (!$update)
 		{
 			return false;
@@ -272,10 +321,55 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 	public function onLoadJavascriptInstance($params, $model, $args)
 	{
+		$params = $this->getParams();
 		$opts = $this->getElementJSOptions($model);
+		$opts->userSelect = (bool) $params->get('update_user_select', 0);
+		$opts->form = $this->userSelectForm($model);
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListUpdateCol($opts)";
 		return true;
+	}
+
+	protected function userSelectForm($model)
+	{
+		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
+		$html = array();
+		$fieldNames = array();
+		$options[] = '<option value="">' . JText::_('COM_FABRIK_PLEASE_SELECT') . '</option>';
+		$form = $model->getFormModel();
+		$groups = $form->getGroupsHiarachy();
+		$gkeys = array_keys($groups);
+		$elementModels = $model->getElements(0, false, true);
+		foreach ($elementModels as $elementModel)
+		{
+			$element = $elementModel->getElement();
+			if ($elementModel->canUse() && $element->plugin !== 'internalid')
+			{
+				$elName = $elementModel->getFilterFullName();
+				$options[] = '<option value="' . $elName. '" data-id="' . $element->id . '" data-plugin="' . $element->plugin . '">' . strip_tags($element->label) . '</option>';
+			}
+		}
+
+		$listRef = $model->getRenderContext();
+		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
+		$elements = '<select class="inputbox key" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
+		$add = '<a class="add button button-primary" href="#">
+		' . FabrikHelperHTML::image('add.png', 'list', $model->getTmpl()) . '</a>';
+		$del = '<a class="button delete" href="#">' . FabrikHelperHTML::image('del.png', 'list', $this->tmpl) . '</a>';
+		$html[] = '<form id="update_col' . $listRef . '">';
+
+		$html[] = '<table class="fabrikList table table-striped" style="width:100%">';
+		$html[] = '<thead>';
+		$html[] = '<tr><th>' . JText::_('COM_FABRIK_ELEMENT') . '</th><th>' . JText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
+		$html[] = '</thead>';
+
+		$html[] = '<tbody>';
+		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td>' . $add . $del . '</td></tr>';
+		$html[] = '</tbody>';
+		$html[] = '</table>';
+		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';
+		$html[] = '</form>';
+		return implode("\n", $html);
 	}
 
 	/**

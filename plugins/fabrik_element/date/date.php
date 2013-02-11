@@ -780,6 +780,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function setValuesFromEncryt(&$post, $key, $data)
 	{
 		$date = $data[0];
+
+		// Seems that if sumbitting encrytped values we need to re-offset the timezone http://fabrikar.com/forums/showthread.php?t=31517
+		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+		$date = JFactory::getDate($date);
+		$hours = $timeZone->getOffset($date) / (60 * 60);
+		$date->modify('+' . $hours . ' hour');
+		$date = $date->toSql();
+
+		// Put in the correct format
 		list($date, $time) = explode(' ', $date);
 		$data = array('date' => $date, 'time' => $time);
 		parent::setValuesFromEncryt($post, $key, $data);

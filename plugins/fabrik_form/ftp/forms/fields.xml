@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-form-ftp">
+			<field name="ftp_host"
+				type="text"
+				size="60"
+				repeat="true"
+				default=""
+				label="PLG_FORM_FTP_HOST_LABEL"
+				description="PLG_FORM_FTP_HOST_DESC"
+			/>
+			<field name="ftp_port"
+				type="text"
+				size="3"
+				repeat="true"
+				default=""
+				label="PLG_FORM_FTP_PORT_LABEL"
+				description="PLG_FORM_FTP_PORT_DESC"
+			/>
+			<field name="ftp_chdir"
+				type="text"
+				size="60"
+				repeat="true"
+				default=""
+				label="PLG_FORM_FTP_CHDIR_LABEL"
+				description="PLG_FORM_FTP_CHDIR_DESC"
+			/>
+			<field name="ftp_user"
+				type="text"
+				size="20"
+				repeat="true"
+				default=""
+				label="PLG_FORM_FTP_USER_LABEL"
+				description="PLG_FORM_FTP_USER_DESC"
+			/>
+			<field name="ftp_password"
+				type="text"
+				size="20"
+				repeat="true"
+				default=""
+				label="PLG_FORM_FTP_PASSWORD_LABEL"
+				description="PLG_FORM_FTP_PASSWORD_DESC"
+			/>
+			<field name="ftp_template"
+				type="filelist"
+				repeat="true"
+				directory="components/com_fabrik/plugins/form/fabrikftp/tmpl/"
+				hide_default="1"
+				label="PLG_FORM_FTP_TEMPLATE_LABEL"
+				description="PLG_FORM_FTP_TEMPLATE_DESC"
+			/>
+			<field name="ftp_template_content"
+				add_select="true"
+				repeat="true"
+				default=""
+				type="sql2"
+				query="SELECT id AS value, title AS text FROM #__content WHERE state != -2 "
+				label="PLG_FORM_FTP_TEMPLATE_CONTENT_LABEL"
+				description="PLG_FORM_FTP_TEMPLATE_CONTENT_DESC"
+			/>
+			<field name="ftp_eval_filename"
+				type="radio"
+				repeat="true"
+				default="0"
+				label="PLG_FORM_FTP_EVAL_FILENAME_LABEL"
+				description="PLG_FORM_FTP_EVAL_FILENAME_DESC"
+			>
+				<option value="0">No</option>
+				<option value="1">Yes</option>
+			</field>
+			<field name="ftp_filename"
+				type="textarea"
+				repeat="true"
+				cols="55"
+				rows="5"
+				label="PLG_FORM_FTP_FILENAME_LABEL"
+				description="PLG_FORM_FTP_FILENAME_DESC"
+			/>
+			<field name="ftp_conditon"
+				type="textarea"
+				repeat="true"
+				cols="55"
+				rows="5"
+				label="PLG_FORM_FTP_CONDITION_LABEL"
+				description="PLG_FORM_FTP_CONDITION_DESC"
+			/>
+		</fieldset>
+	</fields>
+</form>

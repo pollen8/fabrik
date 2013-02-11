@@ -444,6 +444,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 	protected function _getOptionVals($data = array(), $repeatCounter = 0, $incWhere = true, $opts = array())
 	{
+		$params = $this->getParams();
 		if (!isset($this->_optionVals))
 		{
 			$this->_optionVals = array();
@@ -465,6 +466,20 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			JError::raiseError(501, $db->getErrorMsg());
 		}
+
+		$eval = $params->get('cdd_join_label_eval', '');
+		if (trim($eval) !== '')
+		{
+			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
+			{
+				// Allow removing an option by returning false
+				if (eval($eval) === false)
+				{
+					unset($this->_optionVals[$sqlKey][$key]);
+				}
+			}
+		}
+
 		if ($this->showPleaseSelect())
 		{
 			array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));

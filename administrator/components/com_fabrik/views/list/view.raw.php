@@ -101,6 +101,7 @@ class FabrikAdminViewList extends JViewLegacy
 	private function getTmpl()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$input->set('hidemainmenu', true);
 		$model = $this->getModel();
 		$item = $model->getTable();

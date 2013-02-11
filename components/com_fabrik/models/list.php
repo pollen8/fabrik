@@ -423,6 +423,14 @@ class FabrikFEModelList extends JModelForm
 	public $orderEls = array();
 
 	/**
+	 * Cached order by statement
+	 *
+	 * @since 3.0.7
+	 *
+	 * @var mixed - string or JQueryBuilder section
+	 */
+	public $orderBy = null;
+	/**
 	 * Load form
 	 *
 	 * @param   array  $data      form data
@@ -1080,9 +1088,6 @@ class FabrikFEModelList extends JModelForm
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-			/* $$$ rob commenting this out as if you group on a date then the group by value doesnt correspond
-			 * to the keys found in the calculation array
-			*/
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
@@ -2320,6 +2325,7 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Get the part of the sql statement that orders the table data
+	 * Since 3.0.7 caches the results as calling orderBy twice when using single ordering in admin module anules the user selected order by
 	 *
 	 * @param   mixed  $query  false or a query object
 	 *
@@ -2328,6 +2334,10 @@ class FabrikFEModelList extends JModelForm
 
 	public function buildQueryOrder($query = false)
 	{
+		if (isset($this->orderBy))
+		{
+			return $this->orderBy;
+		}
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
@@ -2502,7 +2512,8 @@ class FabrikFEModelList extends JModelForm
 			$this->orderEls[] = $orderby;
 			$this->orderDirs[] = $groupOrderDir;
 		}
-		return $query === false ? $strOrder : $query;
+		$this->orderBy = $query === false ? $strOrder : $query;
+		return $this->orderBy;
 	}
 
 	/**
@@ -2929,6 +2940,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						if (!$ingroup)
 						{
+							// Search all filter after a prefilter - alter 'join' value to 'AND'
 							$gstart = '(';
 							$groupedCount++;
 						}
@@ -3753,8 +3765,8 @@ class FabrikFEModelList extends JModelForm
 					* so at least I'll know what the problem is when they post in the forums!
 					*/
 
-					// $$$rob - Unfortunaly the user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
-					//JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
+					// The user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
+					// JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
 					$join->canUse = false;
 				}
 			}
@@ -5944,18 +5956,31 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * put the actions in the headings array - separated to here to enable it to be added at the end or beginning
+	 * Put the actions in the headings array - separated to here to enable it to be added at the end or beginning
 	 *
-	 * @param   array  &$aTableHeadings  table headings
-	 * @param   array  &$headingClass    heading classes
-	 * @param   array  &$cellClass       cell classes
+	 * @param   array  &$aTableHeadings  Table headings
+	 * @param   array  &$headingClass    Heading classes
+	 * @param   array  &$cellClass       Cell classes
 	 *
 	 * @return  void
 	 */
 
 	protected function actionHeading(&$aTableHeadings, &$headingClass, &$cellClass)
 	{
-		if ($this->canSelectRows() || $this->canViewDetails() || $this->canEdit())
+		$params = $this->getParams();
+
+		// Check for conditions in https://github.com/Fabrik/fabrik/issues/621
+		$details = $this->canViewDetails();
+		if ($params->get('detaillink') == 0)
+		{
+			$details = false;
+		}
+		$edit = $this->canEdit();
+		if ($params->get('editlink') == 0)
+		{
+			$edit = false;
+		}
+		if ($this->canSelectRows() || $details || $edit)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
@@ -9243,6 +9268,14 @@ class FabrikFEModelList extends JModelForm
 	public function storeCell($rowId, $key, $value)
 	{
 		$data[$key] = $value;
+
+		// Ensure the primary key is set in $data
+		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
+		$primaryKey = str_replace("`", "", $primaryKey);
+		if (!isset($data[$primaryKey]))
+		{
+			$data[$primaryKey] = $rowId;
+		}
 		$this->storeRow($data, $rowId);
 	}
 
@@ -9940,7 +9973,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Return an array of elements which are set to always render
 	 *
-	 * @param   bool  only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
 	 *
 	 * @return   bool  array of element models
 	 */

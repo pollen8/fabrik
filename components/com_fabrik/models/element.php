@@ -550,14 +550,17 @@ class PlgFabrik_Element extends FabrikPlugin
 				if ($params->get('icon_hovertext', true))
 				{
 					$ahref = '#';
+					$target = '';
 					if ($as->length)
 					{
 						// Data already has an <a href="foo"> lets get that for use in hover text
 						$a = $as->item(0);
 						$ahref = $a->getAttribute('href');
+						$target = $a->getAttribute('target');
+						$target = 'target="' . $target . '"';
 					}
 					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 				}
 				elseif (!empty($iconfile))
 				{
@@ -2502,6 +2505,11 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
 					}
+					// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
+					// So let's assume if they use <, <=, > or >= they mean numbers.
+					elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
+						$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
+					}
 					else
 					{
 						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
@@ -2539,6 +2547,12 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getDefaultFilterVal($normal = true, $counter = 0)
 	{
 		$app = JFactory::getApplication();
+
+		// Used for update col list plugin - we dont want a default value filled
+		if ($app->input->get('fabrikIngoreDefaultFilterVal', false))
+		{
+			return '';
+		}
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listModel = $this->getListModel();
 		$filters = $listModel->getFilterArray();

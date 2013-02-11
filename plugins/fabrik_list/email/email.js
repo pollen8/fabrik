@@ -7,7 +7,7 @@ var FbListEmail = new Class({
 	},
 
 	buttonAction: function () {
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&iframe=1&id=' + this.listid + 'renderOrder=' + this.options.renderOrder;
+		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&iframe=1&id=' + this.listid + '&renderOrder=' + this.options.renderOrder;
 		this.listform.getElements('input[name^=ids]').each(function (id) {
 			if (id.get('value') !== false && id.checked !== false) {
 				url += "&ids[]=" + id.get('value');

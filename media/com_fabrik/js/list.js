@@ -573,6 +573,12 @@ var FbList = new Class({
 		}
 		return this.form;
 	},
+	
+	uncheckAll: function () {
+		this.form.getElements('input[name^=ids]').each(function (c) {
+			c.checked = '';
+		});
+	},
 
 	submit: function (task) {
 		this.getForm();
@@ -593,6 +599,7 @@ var FbList = new Class({
 			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount); 
 			if (!confirm(delMsg)) {
 				Fabrik.loader.stop('listform_' + this.options.listRef);
+				this.uncheckAll();
 				return false;
 			}
 		}
@@ -1107,7 +1114,7 @@ var FbGroupedToggler = new Class({
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
-		if (this.options.startCollapsed) {
+		if (this.options.startCollapsed && this.options.isGrouped) {
 			this.collapse();
 		}
 		container.addEvent('click:relay(.fabrik_groupheading a.toggle)', function (e) {

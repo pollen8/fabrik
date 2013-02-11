@@ -90,6 +90,15 @@ if ($this->showPDF) :?>
 				<?php echo JText::_('COM_FABRIK_PDF');?>
 			</a></li>
 <?php endif;
+if ($this->emptyLink) :?>
+		<li>
+			<a href="<?php echo $this->emptyLink?>" class="doempty">
+			<?php echo $this->buttons->empty;?>
+			<?php echo JText::_('COM_FABRIK_EMPTY')?>
+			</a>
+		</li>
+<?php
+endif;
 ?>
 </ul>
 <?php if (array_key_exists('all', $this->filters) || $this->filter_action != 'onchange') :
