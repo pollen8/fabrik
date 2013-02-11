@@ -61,7 +61,6 @@ class fabrikViewForm extends JViewLegacy
 		$elementids = (array) $input->get('elementid', array(), 'array');
 		$eCounter = 0;
 		$onLoad = array();
-		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
 		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
 		foreach ($elementids as $id)
 		{
@@ -79,6 +78,7 @@ class fabrikViewForm extends JViewLegacy
 			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
 		}
+		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
 		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
 

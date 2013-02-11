@@ -5,4 +5,3 @@ FbYesno = new Class({
 		this.parent(element, options);
 	}
 });
-	
