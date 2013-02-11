@@ -9177,7 +9177,11 @@ class FabrikFEModelList extends JModelForm
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
 								$rawkey = $key . '_raw';
-								$rawval = $data[$i]->$rawkey;
+								if (!isset($data[$i]->$rawkey))
+								{
+									$rawkey = $key;
+								}
+								$rawval =  $data[$i]->$rawkey;
 								$data[$last_i]->$rawkey = (array) $data[$last_i]->$rawkey;
 								array_push($data[$last_i]->$rawkey, $rawval);
 							}
