@@ -1522,6 +1522,7 @@ class FabrikFEModelForm extends FabModelForm
 		$input = $app->input;
 		$listModel = $this->getListModel();
 		$listModel->setBigSelects();
+		$listDb = $listModel->getDb();
 		$item = $listModel->getTable();
 		$origTableName = $item->db_table_name;
 		$origTableKey = $item->db_primary_key;
@@ -1624,7 +1625,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (!isset($oJoin->params->pk) || empty($oJoin->params->pk))
 			{
-				$cols =  $listModel->getDb()->getTableColumns($oJoin->table_join, false);
+				$cols =  $listDb->getTableColumns($oJoin->table_join, false);
 				$oJoinPk = $oJoin->table_join . '___';
 				foreach ($cols as $col)
 				{
@@ -2029,7 +2030,7 @@ class FabrikFEModelForm extends FabModelForm
 				if ($delPkVal !== '')
 				{
 					$query = $joinDb->getQuery(true);
-					$query->delete($oJoin->table_join)->where($oJoin->table_join_key . ' = ' . $db->quote($delPkVal));
+					$query->delete($oJoin->table_join)->where($oJoin->table_join_key . ' = ' . $listDb->quote($delPkVal));
 					$joinDb->setQuery($query);
 					$joinDb->execute();
 				}
