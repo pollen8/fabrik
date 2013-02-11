@@ -2,12 +2,12 @@
 <extension group="fabrik_form" method="upgrade" type="plugin" version="30">
 	<name>Fabrik Form - Firefox Contacts</name>
 	<author>Rob Clayburn</author>
-	<creationDate>November 2012</creationDate>
-	<copyright>(C) 2005-2012 fabrikar.com</copyright>
+	<creationDate>${createdate}</creationDate>
+	<copyright>(C) 2005-${year} fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-	<version>3.1a</version>
+	<version>3.1b</version>
 	<description>Activates Firefox Contacts extension (if installed) http://mozillalabs.com/conceptseries/identity/contacts/</description>
 	<files>
 		<filename plugin="firefox_contacts">firefox_contacts.php</filename>

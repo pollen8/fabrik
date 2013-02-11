@@ -517,37 +517,47 @@
 			</fileset>
 		</copy>
 		
-		<!-- explicitly include list templates -->
+		<!-- explicitly include list 2.5 templates -->
 		
-		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/default.xml" todir="${cfg.destdir}/site/views/list/tmpl/" />
-		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/_advancedsearch.php" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl25/default.xml" todir="${cfg.destdir}/site/views/list/tmpl25/" />
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl25/_advancedsearch.php" todir="${cfg.destdir}/site/views/list/tmpl25/" />
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/admin" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/admin">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/admin" />
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/admin" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/admin" />
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/adminmodule" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/adminmodule">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/adminmodule" />
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/adminmodule" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/adminmodule">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/adminmodule" />
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/bluesky" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/bluesky">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/bluesky" />
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/bluesky" />
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/dbjoinselect">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/dbjoinselect" />
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/dbjoinselect" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/dbjoinselect">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/dbjoinselect" />
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/default" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/default">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/default">
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/default" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/default">
 				<exclude name="**/custom_css.php" />
 			</fileset>
 		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/div" />
+		<copy todir="${cfg.destdir}/site/views/list/tmpl25/div">
+			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/div" />
+		</copy>
+		
+		<!-- explicitly include 3.0 list templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/default.xml" todir="${cfg.destdir}/site/views/list/tmpl/" />
+		<copy file="${basedir}/components/com_fabrik/views/list/tmpl/_advancedsearch.php" todir="${cfg.destdir}/site/views/list/tmpl/" />
 		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/bootstrap" />
 		<copy todir="${cfg.destdir}/site/views/list/tmpl/bootstrap">
@@ -556,54 +566,75 @@
 			</fileset>
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl/div" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl/div">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl/div" />
-		</copy>
+		<!-- explicitly include 2.5 form templates -->
 		
-		<!-- explicitly include form templates -->
+		<copy file="${basedir}/components/com_fabrik/views/form/tmpl25/default.xml" todir="${cfg.destdir}/site/views/form/tmpl25/" />
 		
-		<copy file="${basedir}/components/com_fabrik/views/form/tmpl/default.xml" todir="${cfg.destdir}/site/views/form/tmpl/" />
-		
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/admin" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/admin">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/admin" />
-		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bluesky" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/bluesky">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bluesky" />
-		</copy>
-		
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bootstrap" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/bootstrap">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bootstrap" />
-		</copy>
-		
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/contacts_custom" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/contacts_custom">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/contacts_custom" />
-		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/default">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default">
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/admin" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/admin">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/admin">
 				<exclude name="**/custom_css.php" />
 			</fileset>
 		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/default_rtl" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/default_rtl">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/default_rtl" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/bluesky" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/bluesky">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/bluesky">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/mint" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/mint">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/mint" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/contacts_custom" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/contacts_custom">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/contacts_custom">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/no-labels" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/no-labels">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/no-labels" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/default" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/default">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/default">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
-		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/tabs" />
-		<copy todir="${cfg.destdir}/site/views/form/tmpl/tabs">
-			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/tabs" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/default_rtl" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/default_rtl">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/default_rtl">
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/mint" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/mint">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/mint" >
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/no-labels" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/no-labels">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/no-labels">
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl25/tabs" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl25/tabs">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl25/tabs">
+				<exclude name="**/custom_css.php" />
+			</fileset>
+		</copy>
+		
+		<!-- explicitly include 3.0 form templates -->
+		
+		<copy file="${basedir}/components/com_fabrik/views/form/tmpl/default.xml" todir="${cfg.destdir}/site/views/form/tmpl/" />
+		
+		<mkdir dir="${cfg.destdir}/site/views/form/tmpl/bootstrap" />
+		<copy todir="${cfg.destdir}/site/views/form/tmpl/bootstrap">
+			<fileset dir="${basedir}/components/com_fabrik/views/form/tmpl/bootstrap">
+				<exclude name="**/custom_css.php" />
+			</fileset>
 		</copy>
 
 		<mkdir dir="${cfg.destdir}/media/com_fabrik" />
