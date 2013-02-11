@@ -6278,7 +6278,6 @@ class FabrikFEModelList extends JModelForm
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
 	{
-		//echo "<pre>list store row";print_r($data);exit;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$origRowId = $rowId;
@@ -9131,6 +9130,14 @@ class FabrikFEModelList extends JModelForm
 	public function storeCell($rowId, $key, $value)
 	{
 		$data[$key] = $value;
+
+		// Ensure the primary key is set in $data
+		$primaryKey = FabrikString::shortColName($this->getTable()->db_primary_key);
+		$primaryKey = str_replace("`", "", $primaryKey);
+		if (!isset($data[$primaryKey]))
+		{
+			$data[$primaryKey] = $rowId;
+		}
 		$this->storeRow($data, $rowId);
 	}
 
