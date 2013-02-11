@@ -90,6 +90,19 @@ class FabrikFEModelVisualization extends JModel
 		$pluginParams = new JRegistry($this->getVisualization()->params);
 		return $pluginParams;
 	}
+	
+	/**
+	 * alais to getVisualization()
+	 *
+	 * @since	3.0.6
+	 *
+	 * @return  FabTable viz
+	 */
+	
+	public function getRow()
+	{
+		return $this->getVisualization();
+	}
 
 	/**
 	 * get the item

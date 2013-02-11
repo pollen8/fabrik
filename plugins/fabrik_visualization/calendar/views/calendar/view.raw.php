@@ -35,8 +35,10 @@ class fabrikViewCalendar extends JView
 	function display($tmpl = 'default')
 	{
 		$model = $this->getModel();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		echo $model->getEvents();
 	}
 

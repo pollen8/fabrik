@@ -18,10 +18,11 @@ class FabrikViewVisualization extends JView
 	{
 		$srcs = FabrikHelperHTML::framework();
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		FabrikHelperHTML::script($srcs);
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$visualization = $model->getVisualization();
 		$pluginParams = $model->getPluginParams();
 
@@ -34,7 +35,7 @@ class FabrikViewVisualization extends JView
 		}
 
 		// Plugin is basically a model
-		$pluginTask = JRequest::getVar('plugintask', 'render', 'request');
+		$pluginTask = $input->get('plugintask', 'render', 'request');
 
 		// @FIXME cant set params directly like this, but I think plugin model setParams() is not right
 		$plugin->_params = $pluginParams;
@@ -46,7 +47,6 @@ class FabrikViewVisualization extends JView
 
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/visualization/' . $plugin->_name . '/' . $tmpl);
-
 
 		$ab_css_file = JPATH_SITE . '/plugins/fabrik_visualization/' . $plugin->_name . '/tmpl/' . $tmpl . '/template.css';
 		if (JFile::exists($ab_css_file))

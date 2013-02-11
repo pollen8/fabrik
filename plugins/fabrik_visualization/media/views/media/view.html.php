@@ -33,9 +33,11 @@ class fabrikViewMedia extends JView
 
 	function display($tpl = 'default')
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-		$model->setId(JRequest::getVar('id', $usersConfig->get('visualizationid', JRequest::getInt('visualizationid', 0))));
+		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
 
@@ -53,19 +55,18 @@ class fabrikViewMedia extends JView
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$media = $model->_row;
+		$media = $model->getRow();
 		$this->media = $model->getMedia();
 
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
-		$this->assign('containerId', $this->get('ContainerId'));
-		$this->assign('showFilters', JRequest::getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
-		$this->assignRef('filters', $this->get('Filters'));
-		$this->assign('params', $model->getParams());
-		$pluginParams = $model->getPluginParams();
-		$tmpl = $pluginParams->get('media_layout', $tmpl);
+		$this->containerId = $this->get('ContainerId');
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->filters = $this->get('Filters');
+		$this->params = $model->getParams();
+		$tmpl = $params->get('media_layout', $tmpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/media/views/media/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tmpl . '/template.css');
