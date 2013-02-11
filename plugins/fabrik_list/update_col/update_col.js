@@ -109,7 +109,8 @@ var FbListUpdateCol = new Class({
 						'update': update, 
 						'data': {'element': v, 'id': this.options.listid, 'elid': id, 'plugin': plugin, 'counter': counter,
 							'listref':  this.options.ref, 'context': 'visualization', 
-							'parentView': 'update_col' + this.options.ref},
+							'parentView': 'update_col' + this.options.ref,
+							'fabrikIngoreDefaultFilterVal': 1},
 						'onComplete': function () {
 							Fabrik.loader.stop(row);
 						}

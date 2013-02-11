@@ -2539,6 +2539,12 @@ class plgFabrik_Element extends FabrikPlugin
 	protected function getDefaultFilterVal($normal = true, $counter = 0)
 	{
 		$app = JFactory::getApplication();
+
+		// Used for update col list plugin - we dont want a default value filled
+		if ($app->input->get('fabrikIngoreDefaultFilterVal', false))
+		{
+			return '';
+		}
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listModel = $this->getListModel();
 		$filters = $listModel->getFilterArray();

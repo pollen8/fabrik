@@ -339,20 +339,17 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$form = $model->getFormModel();
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
-		foreach ($gkeys as $x)
+		$elementModels = $model->getElements(0, false, true);
+		foreach ($elementModels as $elementModel)
 		{
-			$groupModel = $groups[$x];
-			if ($groupModel->canView() !== false)
+			$element = $elementModel->getElement();
+			if ($elementModel->canUse() && $element->plugin !== 'internalid')
 			{
-				$elementModels = $groupModel->getListQueryElements();
-				foreach ($elementModels as $elementModel)
-				{
-					$element = $elementModel->getElement();
-					$elName = $elementModel->getFilterFullName();
-					$options[] = '<option value="' . $elName. '" data-id="' . $element->id . '" data-plugin="' . $element->plugin . '">' . strip_tags($element->label) . '</option>';
-				}
+				$elName = $elementModel->getFilterFullName();
+				$options[] = '<option value="' . $elName. '" data-id="' . $element->id . '" data-plugin="' . $element->plugin . '">' . strip_tags($element->label) . '</option>';
 			}
 		}
+
 		$listRef = $model->getRenderContext();
 		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
 		$elements = '<select class="inputbox key" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
