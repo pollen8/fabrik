@@ -4,7 +4,6 @@
 	<target name="js" description="lints and builds js project files for production use"
 		depends="load.properties">
 		<antcall target="js.lint"></antcall>
-		<antcall target="js.minify"></antcall>
 	</target>
 
 	<target name="load.properties" description="Set properties for this build">
@@ -85,7 +84,7 @@
 		<echo>${dir} JSHint Passed</echo>
 	</target>
 	
-	<target name="js.minify">
+	<target name="js.minify" depends="load.properties">
 		<antcall target="js.minify.do">
 			<param name="dir" value="${basedir}/administrator/components/com_fabrik/" />
 		</antcall>
@@ -115,6 +114,12 @@
 	
 		<!--Minify JS files -->
 	<target name="js.minify.do" description="Minifies JavaScript files">
+	
+	<!--  delete min files first - seems that sometimes they arent updated after a merge with master -->
+	
+		<delete>
+			<fileset dir="${dir}" includes="**/*-min.js"/>
+		</delete>
 		<echo>${dir}</echo>
 		<apply executable="java" parallel="false" dest="${dir}" failonerror="true" >
 			<fileset dir="${dir}">
