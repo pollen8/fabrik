@@ -697,7 +697,7 @@ class fabrikSubscriptionsIPN
 			$sub->userid = $subUser->get('id');
 			$sub->type = 1; //paypal payment - no recurring
 			$sub->status = 'Active';
-			$sub->signup_date = JFactory::getDate()->toMySQL();
+			$sub->signup_date = JFactory::getDate()->toSQL();
 			$sub->plan = $newPlan->id;
 			$sub->recurring = 0;
 			$sub->lifetime = 0;
