@@ -258,6 +258,9 @@ class Filesystemstorage extends FabrikStorageAdaptor
 		$ulDir = JPath::clean($params->get('ul_directory'));
 		$ulDir = str_replace("\\", "/", $ulDir);
 
+		// If we're deleting a file, See http://fabrikar.com/forums/showthread.php?t=31715
+		$file = str_replace("\\", "/", $file);
+
 		// Replace things like $my->id may barf on other stuff
 		$afile = str_replace(JURI::root(), '', $file);
 		$afile = JString::ltrim($afile, "/");
