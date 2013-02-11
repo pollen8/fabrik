@@ -693,8 +693,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$data = $listModel->getData();
 		$return = new stdClass;
 		$w = new FabrikWorker;
-
+		$store = (bool) $params->get('calc_on_save_only', 0);
 		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
+		$storeKey = $this->getElement()->name;
 		foreach ($data as $group)
 		{
 			foreach ($group as $row)
@@ -702,9 +703,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				$key = $listRef . $row->__pk_val;
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
 				$return->$key =  @eval($default);
+				if ($store)
+				{
+					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
+				}
 			}
 		}
-
 
 		echo json_encode($return);
 	}
