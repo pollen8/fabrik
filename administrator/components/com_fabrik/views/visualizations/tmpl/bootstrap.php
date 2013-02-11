@@ -41,6 +41,10 @@ $listDirn = $this->state->get('list.direction');
 					<button class="btn tip" type="submit" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
 					<button class="btn tip" type="button" onclick="document.id('filter_search').value='';this.form.submit();" rel="tooltip" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
 				</div>
+				<div class="btn-group pull-right hidden-phone">
+					<label for="limit" class="element-invisible"><?php echo JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC');?></label>
+					<?php echo $this->pagination->getLimitBox(); ?>
+				</div>
 			</div>
 		</div>
 	</div>
