@@ -516,7 +516,7 @@ class FabrikFEModelGroup extends FabModel
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
 					 * and thus visible in the page source
 					 */
-					if (JRequest::getVar('view') == 'list' && !$elementModel->canView())
+					if (JRequest::getVar('view') == 'list' && !$elementModel->canView('list'))
 					{
 						continue;
 					}
@@ -564,7 +564,7 @@ class FabrikFEModelGroup extends FabModel
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
-				if ($element->published == 1 && $elementModel->canView())
+				if ($element->published == 1 && $elementModel->canView('list'))
 				{
 					if (empty($showInList))
 					{

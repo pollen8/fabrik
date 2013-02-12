@@ -586,6 +586,12 @@
 							default="1" 
 							label="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT" 
 							description="COM_FABRIK_ACCESS_VIEWABLE_ELEMENT_DESC" />
+							
+					<field name="list_view_access"
+						type="accesslevel"
+						default="1"
+						label="COM_FABRIK_ACCESS_LISTVIEW_LABEL"
+						description="COM_FABRIK_ACCESS_LISTVIEW_DESC"/>
 					
 					<field name="encrypt" 
 						type="radio" default="0"
