@@ -108,8 +108,11 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 	public function getJs()
 	{
+		$js[] = "\twindow.addEvent('domready', function () {";
 		$plugins = json_encode($this->getPlugins());
-		return "Fabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'form');\n";
+		$js[] = "\t\tFabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'form');";
+		$js[] = "\t})";
+		return implode("\n", $js);
 	}
 
 	/**

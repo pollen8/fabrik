@@ -379,7 +379,7 @@ class FabrikPlugin extends JPlugin
 
 		if (!empty($repeatScript))
 		{
-			$repeatScript = implode("\n", $repeatScript);
+			$repeatScript = "window.addEvent('domready', function () {\n" . implode("\n", $repeatScript) . "\n})\n";
 			FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/repeatgroup.js', $repeatScript);
 		}
 		return implode("\n", $str);

@@ -11,7 +11,6 @@ var elementElement = new Class({
 	initialize : function (el, options) {
 		this.el = el;
 		this.setOptions(options);
-		// this.updateMeEvent = this.updateMe.bindAsEventListener(this);
 		// if loading in a form plugin then the connect is not yet avaiable in the
 		// dom
 		if (!this.ready()) {

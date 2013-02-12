@@ -11,27 +11,30 @@ var PluginManager = new Class({
 		this.id = id;
 		this.plugins = plugins;
 		this.type = type;
-		this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
-		for (var i = 0; i < plugins.length; i ++) {
-			this.addTop(plugins[i]);
-		}
-		this.periodical = this.iniAccordian.periodical(500, this);
-		
-		this.watchPluginSelect();
-		this.watchDelete();
-		this.watchAdd();
-		
-		var pluginArea = document.id('plugins');
-		if (typeOf(pluginArea) !== 'null') {
-			pluginArea.addEvent('click:relay(h3.title)', function (e, target) {
-				document.id('plugins').getElements('h3.title').each(function (h) {
-					if (h !== target) {
-						h.removeClass('pane-toggler-down');
-					}
+		window.addEvent('domready', function () {
+			this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
+			for (var i = 0; i < plugins.length; i ++) {
+				this.addTop(plugins[i]);
+			}
+			this.periodical = this.iniAccordian.periodical(500, this);
+			
+			this.watchPluginSelect();
+			this.watchDelete();
+			this.watchAdd();
+			
+			var pluginArea = document.id('plugins');
+			if (typeOf(pluginArea) !== 'null') {
+				pluginArea.addEvent('click:relay(h3.title)', function (e, target) {
+					document.id('plugins').getElements('h3.title').each(function (h) {
+						if (h !== target) {
+							h.removeClass('pane-toggler-down');
+						}
+					});
+					target.toggleClass('pane-toggler-down');
 				});
-				target.toggleClass('pane-toggler-down');
-			});
-		}
+			}	
+		}.bind(this));
+		
 	},
 	
 	iniAccordian: function () {

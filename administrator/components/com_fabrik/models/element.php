@@ -304,12 +304,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 		JText::script('COM_FABRIK_SELECT_DO');
 		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
-		$js = "\tvar opts = $opts;";
+		$js[] = "window.addEvent('domready', function () {";
+		$js[] = "console.log('domready, set fabrik controller', Fabrik);";
+		$js[] = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
-		$js .= "\t\nFabrik.controller = new fabrikAdminElement($plugins, opts, " . (int) $this->getItem()->id . ");\n";
-
-		return $js;
+		$js[] = "\tFabrik.controller = new fabrikAdminElement($plugins, opts, " . (int) $this->getItem()->id . ");";
+		$js[] = "})";
+		return implode("\n", $js);
 	}
 
 	/**

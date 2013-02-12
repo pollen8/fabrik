@@ -56,7 +56,7 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 			<div id="orderByTd" style="margin:4px 0 0 2px">
 			<?php
 			for ($o = 0; $o < count($this->order_by); $o++) : ?>
-			<div class="orderby_container" style="margin-bottom:3px;float:<?php echo $rtlDirInv; ?>">
+			<div class="orderby_container" style="margin-bottom:3px;clear:left;float:<?php echo $rtlDirInv; ?>">
 			<?php
 				echo JArrayHelper::getValue($this->order_by, $o, $this->order_by[0]);
 				if ((int) $this->item->id !== 0) :

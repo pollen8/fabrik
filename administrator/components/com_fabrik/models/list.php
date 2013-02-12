@@ -369,12 +369,13 @@ class FabrikAdminModelList extends FabModelAdmin
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 
 		$plugins = json_encode($this->getPlugins());
-		$js = "Fabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');\n";
 
-		$js .= "
+		$js = array();
+		$js[] = "window.addEvent('domready', function () {";
+		$js[] = "Fabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'list');";
 
-		oAdminTable = new ListForm($opts);
-	oAdminTable.watchJoins();\n";
+		$js[] = "oAdminTable = new ListForm($opts);";
+		$js[] = "oAdminTable.watchJoins();";
 		for ($i = 0; $i < count($joins); $i++)
 		{
 			$joinGroupParams = json_decode($joins[$i]->params);
@@ -382,13 +383,11 @@ class FabrikAdminModelList extends FabModelAdmin
 			$joinFormFields = json_encode($j->joinFormFields);
 			$joinToFields = json_encode($j->joinToFields);
 			$repeat = $joinGroupParams->repeat_group_button == 1 ? 1 : 0;
-			$js .= "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',";
-			$js .= "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);\n";
+			$js[] = "	oAdminTable.addJoin('{$j->group_id}','{$j->id}','{$j->join_type}','{$j->table_join}',"
+			. "'{$j->table_key}','{$j->table_join_key}','{$j->join_from_table}', $joinFormFields, $joinToFields, $repeat);";
 		}
 
-
-
-		$js .= "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);\n";
+		$js[] = "oAdminFilters = new adminFilters('filterContainer', '$filterfields', $filterOpts);";
 		$form = $this->getForm();
 		$afilterJoins = $form->getValue('params.filter-join');
 
@@ -424,10 +423,11 @@ class FabrikAdminModelList extends FabModelAdmin
 			$selValue = json_encode($selValue);
 			if ($selFilter != '')
 			{
-				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
+				$js[] = "\toAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 			}
 		}
-		return $js;
+		$js[] = "});";
+		return implode("\n", $js);
 	}
 
 	/**
