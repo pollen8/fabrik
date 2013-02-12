@@ -359,7 +359,7 @@ var FbDatabasejoin = new Class({
 					this.selectRecord(e);
 				}.bind(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
-					if (this.options.popupform === json.formid && this.activeSelect) {
+					if (this.options.listid.toInt() === json.listid.toInt() && this.activeSelect) {
 						this.update(json.rowid);
 						var winid = this.element.id + '-popupwin-select';
 						if (Fabrik.Windows[winid]) {
@@ -369,7 +369,7 @@ var FbDatabasejoin = new Class({
 					}
 				}.bind(this));
 				
-				//used for auto-completes in repeating groups to stop all fields updating when a record
+				// Used for auto-completes in repeating groups to stop all fields updating when a record
 				// is selcted
 				window.addEvent('fabrik.dbjoin.unactivate', function () {
 					this.activeSelect = false;
@@ -385,7 +385,6 @@ var FbDatabasejoin = new Class({
 		e.stop();
 		var id = this.element.id + '-popupwin-select';
 		var url = this.getContainer().getElement('a.toggle-selectoption').href;
-		url += '&layout=dbjoinselect';
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
 		url += '&c=' + this.options.listRef;

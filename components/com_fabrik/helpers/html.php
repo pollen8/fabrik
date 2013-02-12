@@ -988,7 +988,8 @@ EOD;
 		}
 		else
 		{
-			$deps->deps[] = 'fab/lib/art' . $ext;
+			$deps->deps[] = 'fab/lib/art';
+			$deps->deps[] = 'fab/encoder' . $ext;
 			$deps->deps[] = 'fab/tips' . $ext;
 			$deps->deps[] = 'fab/icons' . $ext;
 			$deps->deps[] = 'fab/icongen' . $ext;
@@ -1257,12 +1258,11 @@ EOD;
 			}
 		}
 		// Need to load element for ajax popup forms in IE.
-		$needed = array('fab/element', 'fab/fabrik'); //trying to put these in shim?
 		$needed = array();
 		if (!FabrikWorker::j3())
 		{
-			$needed[] = 'fab/icongen';
-			$needed[] = 'fab/icons';
+			$needed[] = self::isDebug() ? 'fab/icongen' : 'fab/icongen-min';
+			$needed[] = self::isDebug() ? 'fab/icons' : 'fab/icons-min';
 		}
 		foreach ($needed as $need)
 		{

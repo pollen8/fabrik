@@ -16,15 +16,14 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
 ?>
-
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
 	<div class="row-fluid">
-	<?php if ($this->item->host != ""){?>
-				<li>
-					<label><?php echo JText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
-				</li>
-			<?php } ?>
+		<?php if ($this->item->host != "") :?>
+			<li>
+				<label><?php echo JText::_('COM_FABRIK_ENTER_PASSWORD_OR_LEAVE_AS_IS'); ?></label>
+			</li>
+		<?php endif; ?>
 		<fieldset class="form-horizontal">
 	    	<legend>
 	    		<?php echo JText::_('COM_FABRIK_DETAILS');?>
@@ -35,7 +34,6 @@ JHtml::_('behavior.keepalive');
 			?>
 		</fieldset>
 	</div>
-
 
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>

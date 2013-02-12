@@ -99,6 +99,24 @@ var FbList = new Class({
 			}
 		}
 	},
+	
+	/**
+	 * Used for db join select states.
+	 */
+	rowClicks: function () {
+		this.list.addEvent('click:relay(.fabrik_row)', function (e, r) {
+			var d = Array.from(r.id.split('_')),
+			data = {};
+			data.rowid = d.getLast();
+			var json = {
+					'errors' : {},
+					'data' : data,
+					'rowid': d.getLast(),
+					listid: this.id
+				};
+			Fabrik.fireEvent('fabrik.list.row.selected', json);
+		}.bind(this));
+	},
 
 	watchAll: function (ajaxUpdate) {
 		ajaxUpdate = ajaxUpdate ? ajaxUpdate : false;
@@ -560,11 +578,7 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		if (this.options.ajax_links) {
-			
-			// 3.1 - dont need to do this now
-			return;
-		}
+		this.rowClicks();
 	},
 	
 	getForm: function () {

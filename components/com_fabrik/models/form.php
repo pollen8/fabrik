@@ -484,6 +484,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$tmpl = $this->getTmpl();
 		$v = $this->isEditable() ? 'form' : 'details';
 
@@ -499,7 +500,7 @@ class FabrikFEModelForm extends FabModelForm
 			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs;
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/template_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
@@ -507,11 +508,11 @@ class FabrikFEModelForm extends FabModelForm
 			 */
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom.css' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
 			}
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/custom_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/tmpl/' . $tmpl . '/custom_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
 			}
 		}
 		if ($app->isAdmin() && $input->get('tmpl') === 'components')

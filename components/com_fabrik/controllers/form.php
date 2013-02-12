@@ -91,7 +91,7 @@ class FabrikControllerForm extends JControllerLegacy
 	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display($cachable = false, $urlparams = false)
+	public function display($cachable = false, $urlparams = array())
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;

@@ -42,7 +42,7 @@ window.FbRadio = new Class({
 		var c = this.getContainer();
 		c.getElements('.radio.btn-group label').addClass('btn');
 		c.addEvent('mouseup:relay(.btn-group label)', function (e, label) {
-			var id = label.get('for', ''), input;
+			var id = label.get('for'), input;
 			if (id !== '') {
 				input = document.id(id);
 			}

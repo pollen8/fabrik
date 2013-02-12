@@ -2125,7 +2125,7 @@ class FabrikFEModelList extends JModelForm
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
-			$this->selectedOrderFields = array_merge($lookUps, $this->selectedOrderFields);
+			$this->selectedOrderFields = array_unique(array_merge($lookUps, $this->selectedOrderFields));
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->buildQueryJoin();
@@ -9177,13 +9177,22 @@ class FabrikFEModelList extends JModelForm
 								$data[$last_i]->$key = (array) $data[$last_i]->$key;
 								array_push($data[$last_i]->$key, $val);
 								$rawkey = $key . '_raw';
-								if (!isset($data[$i]->$rawkey))
+								/* if (!isset($data[$i]->$rawkey))
 								{
 									$rawkey = $key;
 								}
-								$rawval =  $data[$i]->$rawkey;
+								$rawval = $data[$i]->$rawkey;
 								$data[$last_i]->$rawkey = (array) $data[$last_i]->$rawkey;
-								array_push($data[$last_i]->$rawkey, $rawval);
+								array_push($data[$last_i]->$rawkey, $rawval); */
+
+
+								if (isset($data[$i]->$rawkey))
+								{
+									$rawval = $data[$i]->$rawkey;
+									$data[$last_i]->$rawkey = (array) $data[$last_i]->$rawkey;
+									array_push($data[$last_i]->$rawkey, $rawval);
+								}
+
 							}
 						}
 						else
@@ -9597,6 +9606,8 @@ class FabrikFEModelList extends JModelForm
 	{
 		$tmpl = $this->getTmpl();
 		$app = JFactory::getApplication();
+		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
+
 		/* check for a form template file (code moved from view) */
 		if ($tmpl != '')
 		{
@@ -9607,7 +9618,7 @@ class FabrikFEModelList extends JModelForm
 			$overRide = 'templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/template_css.php' . $qs;
 			if (!FabrikHelperHTML::stylesheetFromPath($overRide))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/template_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
@@ -9615,11 +9626,11 @@ class FabrikFEModelList extends JModelForm
 			*/
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom.css');
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/custom.css');
 			}
 			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl . '/custom_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/tmpl/' . $tmpl . '/custom_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/list/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
 			}
 		}
 	}

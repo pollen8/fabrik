@@ -984,8 +984,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$this->renderAutoComplete($data, $repeatCounter, $html, $default);
 						break;
 				}
+				$frontEndSelect = $params->get('fabrikdatabasejoin_frontend_select');
+				$frontEndAdd = $params->get('fabrikdatabasejoin_frontend_add');
 
-				if ($params->get('fabrikdatabasejoin_frontend_select') && $this->isEditable())
+				// If add and select put them in a button group.
+				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
+				{
+					$html[] = '<div class="btn-group">';
+				}
+				if ($frontEndSelect && $this->isEditable())
 				{
 					$forms = $this->getLinkedForms();
 					$popupform = (int) $params->get('databasejoin_popupform');
@@ -1000,11 +1007,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					{
 						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
-					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
+					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
-				if ($params->get('fabrikdatabasejoin_frontend_add') && $this->isEditable())
+				if ($frontEndAdd && $this->isEditable())
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$popupform = (int) $params->get('databasejoin_popupform');
@@ -1013,6 +1020,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$addURL .= '&tmpl=component&ajax=1&formid=' . $popupform;
 					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
 					$html[] = FabrikHelperHTML::image('new.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+				}
+				// If add and select put them in a button group.
+				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
+				{
+					$html[] = '</div>';
 				}
 
 				$html[] = ($displayType == 'radio') ? '</div>' : '';

@@ -537,11 +537,6 @@
 			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/bluesky" />
 		</copy>
 		
-		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/dbjoinselect" />
-		<copy todir="${cfg.destdir}/site/views/list/tmpl25/dbjoinselect">
-			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/dbjoinselect" />
-		</copy>
-		
 		<mkdir dir="${cfg.destdir}/site/views/list/tmpl25/default" />
 		<copy todir="${cfg.destdir}/site/views/list/tmpl25/default">
 			<fileset dir="${basedir}/components/com_fabrik/views/list/tmpl25/default">

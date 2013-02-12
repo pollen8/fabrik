@@ -15,12 +15,21 @@
 				<option value="1">JYES</option>
 			</field>
 		
-		<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL" name="overwrite" type="radio">
+		<field name="overwrite"
+			type="radio"
+			class="btn-group"
+			default="0"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_OVERWRITE_LABEL" >
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
 		
-		<field class="btn-group" default="csv" description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL" name="inPutFormat" type="radio">
+		<field name="inPutFormat"
+			type="list"
+			default="csv"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_FORMAT_LABEL" >
 				<option value="csv">CSV</option>
 				<option value="fabrikexcel">COM_FABRIK_FABRIK_EXCEL_IMPORT_FORMAT</option>
 				<option value="excel">COM_FABRIK_EXCEL_IMPORT_FORMAT</option>
@@ -29,13 +38,28 @@
 	
 	<fieldset name="format">
 		
-		<field default="," description="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_LABEL" name="field_delimiter" size="2" type="text"/>
+		<field name="field_delimiter"
+			type="text"
+			class="input-mini"
+			size="2"
+			default=","
+			description="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_FIELD_DELIMITER_LABEL" />
 		
-		<field default="false" description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL" name="tabdelimited" type="checkbox"/>
+		<field name="tabdelimited" 
+			type="checkbox"
+			default="false"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL" />
 			
-		<field default="&quot;" description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC" label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL" name="text_delimiter" size="2" type="text"/>
+		<field name="text_delimiter"
+			type="text"
+			class="input-mini"
+			default="&quot;"
+			description="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_DESC"
+			label="COM_FABRIK_FIELD_CSV_IMPORT_TEXT_DELIMITER_LABEL"
+			size="2" />
 			
-		
 	</fieldset>
 	
 	<fieldset name="creation">
