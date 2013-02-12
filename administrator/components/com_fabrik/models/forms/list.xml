@@ -328,7 +328,13 @@
 					<option value="0">CSV</option>
 					<option value="1">Excel CSV</option>
 			</field>
-			
+
+			<field default="selected" description="COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_DESC" label="COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_LABEL" name="csv_which_elements" type="list">
+				<option value="selected">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_SELECTED</option>
+				<option value="visible">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_VISIBLE</option>
+				<option value="all">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_ALL</option>
+			</field>
+							
 			<field description="COM_FABRIK_FIELD_CSV_ELEMENTS_DESC" label="COM_FABRIK_FIELD_CSV_ELEMENTS_LABEL" name="csv_elements" type="fabrikmodalrepeat">
 			
 				<fields name="params">
