@@ -651,7 +651,11 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			if ($groupModel->getGroup()->is_join)
 			{
-				$joinParams = new JRegistry($groupModel->getJoinModel()->getJoin()->params);
+				$joinParams = $groupModel->getJoinModel()->getJoin()->params;
+				if (!is_a($joinParams, 'JRegistry'))
+				{
+					$joinParams = new JRegistry($joinParams);
+				}
 				$opts->group_pk_ids[$groupModel->getGroup()->id] = FabrikString::safeColNameToArrayKey($joinParams->get('pk'));
 				$opts->join_group_ids[$groupModel->getGroup()->join_id] = (int) $groupModel->getGroup()->id;
 				$opts->group_join_ids[$groupModel->getGroup()->id] = (int) $groupModel->getGroup()->join_id;
