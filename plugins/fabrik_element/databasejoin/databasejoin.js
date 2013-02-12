@@ -197,6 +197,7 @@ var FbDatabasejoin = new Class({
 		{
 			var chxs = this.element.getElements('> .fabrik_subelement');
 			if (chxs.length === 0) {
+				console.log(this.options.editable);
 				this.chxTmplNode = this.element.getElement('.chxTmplNode').getChildren()[0].clone();
 				this.element.getElement('.chxTmplNode').destroy();
 			} else {
@@ -558,8 +559,10 @@ var FbDatabasejoin = new Class({
 	
 	init: function () {
 		
-		this.getCheckboxTmplNode();
-		this.getCheckboxIDTmplNode();
+		if (this.options.editable) {
+			this.getCheckboxTmplNode();
+			this.getCheckboxIDTmplNode();
+		}
 		
 		// If users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
