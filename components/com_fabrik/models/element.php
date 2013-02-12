@@ -786,10 +786,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function canView($view = 'form')
 	{
 		// As list view acl is new we should inherit from the details view setting which was being applied to the list view.
-		if ($view === 'list')
-		{
-			$default = $this->canView();
-		}
+		$default = ($view === 'list') ? $this->canView() : 1;
 		$key = $view == 'form' ? 'view' : 'listview';
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
 		if (!is_object($this->access) || !array_key_exists($key, $this->access))
