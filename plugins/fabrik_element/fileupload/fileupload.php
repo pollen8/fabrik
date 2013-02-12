@@ -2185,6 +2185,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 	public function addEmailAttachement($data)
 	{
+		if (is_object($data))
+		{
+			$data = $data->file;
+		}
 		// @TODO: check what happens here with open base_dir in effect
 		$params = $this->getParams();
 		if ($params->get('ul_email_file'))
