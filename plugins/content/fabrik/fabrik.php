@@ -388,6 +388,7 @@ class plgContentFabrik extends JPlugin
 		$input->set('origview', $origView);
 
 		$input->set('id', $id);
+		JRequest::setVar('view', $viewName);
 		$input->set('view', $viewName);
 
 		/*

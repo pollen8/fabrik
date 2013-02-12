@@ -105,13 +105,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	}
 
 	/**
-	 * Check user can view the read only element & view in list view
+	 * Check user can view the read only element OR view in list view
 	 * $$$ rob 14/03/2012 always returns false now - cant see a need to show it in the details / list view
+	 *
+	 * @param   string  $view  View list/form @since 3.0.7
 	 *
 	 * @return  bool  can view or not
 	 */
 
-	public function canView()
+	public function canView($view = 'form')
 	{
 		return false;
 	}

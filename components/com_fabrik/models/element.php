@@ -776,20 +776,30 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Check user can view the read only element & view in list view
+	 * Check user can view the read only element OR view in list view
+	 *
+	 * @param   string  $view  View list/form @since 3.0.7
 	 *
 	 * @return  bool  can view or not
 	 */
 
-	public function canView()
+	public function canView($view = 'form')
 	{
-		if (!is_object($this->access) || !array_key_exists('view', $this->access))
+		// As list view acl is new we should inherit from the details view setting which was being applied to the list view.
+		if ($view === 'list')
+		{
+			$default = $this->canView();
+		}
+		$key = $view == 'form' ? 'view' : 'listview';
+		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
+		if (!is_object($this->access) || !array_key_exists($key, $this->access))
 		{
 			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
-			$this->access->view = in_array($this->getParams()->get('view_access'), $groups);
+
+			$this->access->$key = in_array($this->getParams()->get($prop, $default), $groups);
 		}
-		return $this->access->view;
+		return $this->access->$key;
 	}
 
 	/**

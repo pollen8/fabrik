@@ -374,7 +374,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Check user can view the read only element & view in list view
+	 * Check user can view the read only element OR view in list view
 	 *
 	 * When processing the form, we always want to store the current userid
 	 * (subject to save-on-edit, but that's done elsewhere), regardless of
@@ -386,17 +386,19 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * case allows addDefaultDataFromRO to do that, whilst still enforcing
 	 * Read Access settings for detail/list view
 	 *
+	 * @param   string  $view  View list/form @since 3.0.7
+	 *
 	 * @return  bool  can view or not
 	 */
 
-	public function canView()
+	public function canView($view = 'form')
 	{
 		$app = JFactory::getApplication();
 		if ($app->input->get('task', '') == 'processForm')
 		{
 			return true;
 		}
-		return parent::canView();
+		return parent::canView($view);
 	}
 
 	/**

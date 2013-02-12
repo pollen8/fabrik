@@ -434,6 +434,9 @@ class FabrikViewListBase extends JViewLegacy
 		}
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
+
+		echo "<pre>";print_r($this->headings);echo "</pre>";
+
 		$this->groupByHeadings = $this->get('GroupByHeadings');
 		$this->filter_action = $this->get('FilterAction');
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;

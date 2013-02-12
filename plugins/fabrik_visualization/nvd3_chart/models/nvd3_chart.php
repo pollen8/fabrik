@@ -154,20 +154,25 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 			case 'multiBarChart':
 			case 'lineWithFocusChart':
 				$str[] = '.x(function(d) { return d[0] })';
+
+
 				$str[] = '.y(function(d) { return d[1] })';
 				$str[] = '.clipEdge(true)';
 				break;
 		}
 		//$str[] = 'chart.valueFormat = d3.format(",.2%");';
 
+
 		$id = $this->getContainerId();
 		$str[] = 'd3.select("#' . $id . ' svg")';
 		$str[] = '.datum(' . $data . ')';
+
 		$str[] = '.transition().duration(1200)';
 		$str[] = '.call(chart);';
 		$str[] = 'return chart;';
 		$str[] = '});';
 		$str[] = '});';
+		// $str[] = 'console.log(' . $data . ');';
 		return implode("\n", $str);
 		/**
 
