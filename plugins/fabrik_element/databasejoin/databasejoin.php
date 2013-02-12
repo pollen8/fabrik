@@ -1931,10 +1931,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->encryptFieldName($key);
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
-			$join = $this->getJoin();
-			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
-
-			$str = "$k $condition $value";
+			if ($type !== 'prefilter')
+			{
+				$join = $this->getJoin();
+				$key = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
+			}
+			$str = "$key $condition $value";
 		}
 		else
 		{
