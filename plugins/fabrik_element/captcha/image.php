@@ -31,11 +31,9 @@ if (!($code))
 	exit;
 }
 
-// ***** e-kinst
-// Felixkat - Removed width and height.  Now specified by font size.
-
-// $width = $session->get('com_' . $package . '.element.captach.width', 100);
-// $height = $session->get('com_' . $package . '.element.captach.height', 50);
+// Width and height used as back up if imagettfbbox not available
+$width = $session->get('com_' . $package . '.element.captach.width', 100);
+$height = $session->get('com_' . $package . '.element.captach.height', 50);
 
 $fontsize = $session->get('com_' . $package . '.element.captach.fontsize', 30);
 $angle = $session->get('com_' . $package . '.element.captach.angle', 0);
@@ -48,13 +46,21 @@ $nc = explode('+', $n_color);
 $t_color = $session->get('com_' . $package . '.element.captach.text_color', '0+0+255');
 $tc = explode('+', $t_color);
 
-/* create textbox and add text */
+// Create textbox and add text
 $fontPath = JPATH_SITE . '/plugins/fabrik_element/captcha/' . $font;
 
-$the_box = calculateTextBox($code, $fontPath, $fontsize, $angle);
+if (function_exists('imagettfbbox'))
+{
+	$the_box = calculateTextBox($code, $fontPath, $fontsize, $angle);
+}
+else
+{
+	$the_box = array('width' => 150, 'height' => 50, 'top' => 0, 'left' => 0);
+}
 
-$imgWidth    = $the_box["width"] + $padding;
-$imgHeight    = $the_box["height"] + $padding;
+
+$imgWidth = $the_box["width"] + $padding;
+$imgHeight = $the_box["height"] + $padding;
 
 $image = imagecreate($imgWidth, $imgHeight) or die ('Cannot initialize new GD image stream');
 
@@ -62,29 +68,39 @@ $background_color = imagecolorallocate($image, $bc[0], $bc[1], $bc[2]);
 $text_color = imagecolorallocate($image, $tc[0], $tc[1], $tc[2]);
 $noise_color = imagecolorallocate($image, $nc[0], $nc[1], $nc[2]);
 
-/* generate random dots in background */
+// Generate random dots in background
 for ($i = 0; $i < ($imgWidth * $imgHeight) / 3; $i++)
 {
 	imagefilledellipse($image, mt_rand(0, $imgWidth), mt_rand(0, $imgHeight), 1, 1, $noise_color);
 }
 
-/*  generate random lines in background */
+// Generate random lines in background
 for ($i = 0; $i < ($imgWidth * $imgHeight) / 150; $i++)
 {
 	imageline($image, mt_rand(0, $imgWidth), mt_rand(0, $imgHeight), mt_rand(0, $imgWidth), mt_rand(0, $imgHeight), $noise_color);
 }
 
+$left = $the_box["left"] + ($imgWidth / 2) - ($the_box["width"] / 2);
+$top = $the_box["top"] + ($imgHeight / 2) - ($the_box["height"] / 2);
+
+if (function_exists('imagettfbbox'))
+{
 imagettftext(
 	$image,
 	$fontsize,
 	$angle,
-	$the_box["left"] + ($imgWidth / 2) - ($the_box["width"] / 2),
-	$the_box["top"] + ($imgHeight / 2) - ($the_box["height"] / 2),
+	$left,
+	$top,
 	$text_color,
 	$fontPath,
 	$code
 ) or die('Error in imagettftext function');
-
+}
+else
+{
+	$font = 6;
+	imagestring($image, $font, $left, $top, $code, $text_color);
+}
 // $$$ hugh - @TODO - add some session identifier to the image name (maybe using the hash we use in the formsession stuff)
 
 

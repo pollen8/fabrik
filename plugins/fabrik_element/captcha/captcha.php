@@ -230,7 +230,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$session->set('com_' . $package . '.element.captach.noise_color', $noise_color);
 			$session->set('com_' . $package . '.element.captach.text_color', $text_color);
 			$session->set('com_' . $package . '.element.captach.bg_color', $bg_color);
-			$session->set('com_' . $package . '.element.captach.font', $this->_font);
+			$session->set('com_' . $package . '.element.captach.font', $this->font);
 			// * /e-kinst
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
@@ -239,9 +239,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			 *	It seems too dangerous to set all parameters here,
 			 *	because everybody can enlarge image size and set noise color to
 			 *	background color to OCR captcha values without problems
+			*/
 			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
 			    . JText::_('security image') . '" />';
-			 */
+
 			$str[] = '<br />';
 
 			$type = ($params->get('password') == "1") ? "password" : "text";
