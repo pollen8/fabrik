@@ -1610,6 +1610,7 @@ class FabrikWorker
 		$version = new JVersion;
 
 		// Only use template test for testing in 2.5 with my temp J bootstrap template.
-		return ($app->getTemplate() === 'bootstrap' || $version->RELEASE > 2.5);
+		$tpl = $app->getTemplate();
+		return ($tpl === 'bootstrap' || $tpl === 'fabrik4' || $version->RELEASE > 2.5);
 	}
 }

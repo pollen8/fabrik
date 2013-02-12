@@ -452,7 +452,7 @@ EOD;
 			return self::$printURL;
 		}
 		$url = COM_FABRIK_LIVESITE . "index.php?option=com_' . $package . '&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-		. "&rowid=" . $formModel->_rowId . '&iframe=1&print=1';
+		. "&rowid=" . $formModel->getRowId() . '&iframe=1&print=1';
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
 		*/
