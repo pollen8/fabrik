@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		
+		<fieldset name="options">
+			
+			<field name="chart"
+				type="list"
+				default="pie"
+				label="PLG_FABRIK_VIZ_CHART_LABEL">
+					<option value="pieChart">Pie</option>
+					<option value="discreteBarChart">Discrete bar chart</option>
+					<option value="stackedAreaChart">stacked Area Chart</option>
+					<option value="multiBarChart">multi Bar Chart</option>
+					<option value="lineWithFocusChart">line With Focus Chart</option>
+			</field>
+			
+			<field name="conn_id"
+				label="PLG_FABRIK_VIZ_NVD3_CONNECTON_LABEL"
+				type="connections"/> 
+			
+			<field name="tbl"
+				type="tables"
+				observe="params_conn_id"
+				description="PLG_FABRIK_VIZ_NVD3_TABLE_DESC"
+				label="PLG_FABRIK_VIZ_NVD3_TABLE_LABEL" />
+			
+			<field name="value_field"
+				type="listfields"
+				table="params_tbl"
+				connection="params_conn_id"
+				description="PLG_FABRIK_VIZ_NVD3_VALUE_DESC"
+				label="PLG_FABRIK_VIZ_NVD3_VALUE_LABEL"  />
+		
+			<field name="label_field"
+				type="listfields"
+				table="params_tbl"
+				connection="params_conn_id"
+				description="PLG_FABRIK_VIZ_NVD3_LABEL_DESC"
+				label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL"  />
+
+			<field name="script"
+				type="filelist"
+				hide_default="1"
+				description="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_DESC"
+				directory="/plugins/fabrik_visualization/nvd3_chart/scripts/"
+				label="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_LABEL"/>
+		</fieldset>
+	
+		<fieldset name="design">
+		
+			<field name="width"
+				default="350"
+				label="PLG_FABRIK_VIZ_NVD3_WIDTH_LABEL"
+				description="PLG_FABRIK_VIZ_NVD3_WIDTH_DESC" />
+				
+			<field name="height"
+				default="350"
+				label="PLG_FABRIK_VIZ_NVD3_HEIGHT_LABEL"
+				description="PLG_FABRIK_VIZ_NVD3_HEIGHT_DESC" />
+				
+			<field name="colours"
+					type="textarea"
+					default="#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C"
+					description="PLG_FABRIK_VIZ_NVD3_COLOUR_DESC"
+					label="PLG_FABRIK_VIZ_NVD3_COLOUR_LABEL" />
+					
+		</fieldset>
+		
+		<fieldset name="pie-options" label="pie opts">
+					
+				<field name="pie_labels"
+					type="radio"
+					default="1"
+					description="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_DESC"
+					label="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+					
+				<field name="donut"
+					type="radio"
+					default="0"
+					description="PLG_FABRIK_VIZ_NVD3_DONUT_DESC"
+					label="PLG_FABRIK_VIZ_NVD3_DONUT_LABEL">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>	
+						
+				</field>
+				
+		</fieldset>
+	</fields>
+</form>

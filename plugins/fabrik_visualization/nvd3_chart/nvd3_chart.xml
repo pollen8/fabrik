@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension group="fabrik_visualization" method="upgrade" type="plugin" version="2.5">
+	<name>plg_fabrik_visualization_nvd3_chart</name>
+	<author>Rob Clayburn</author>
+	<creationDate>${createdate}</creationDate>
+	<copyright>(C) 2005-${year} fabrikar.com</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.0.7</version>
+	<help url="PLG_VISUALIZATION_NVD3_CHART_HELP_SERVER"/>
+	<description>PLG_VISUALIZATION_NVD3_CHART_DESCRIPTION</description>
+	<files>
+		<filename plugin="nvd3_chart">nvd3_chart.php</filename>
+		<filename>index.html</filename>
+		<folder>controllers</folder>
+		<folder>forms</folder>
+		<folder>models</folder>
+		<folder>language</folder>
+		<folder>lib</folder>
+		<folder>views</folder>
+	</files>
+</extension>

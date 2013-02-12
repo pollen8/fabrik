@@ -355,7 +355,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 		$elements = '<select class="inputbox key" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
 		$add = '<a class="add button button-primary" href="#">
 		' . FabrikHelperHTML::image('add.png', 'list', $model->getTmpl()) . '</a>';
-		$del = '<a class="button delete" href="#">' . FabrikHelperHTML::image('del.png', 'list', $this->tmpl) . '</a>';
+		$del = '<a class="button delete" href="#">' . FabrikHelperHTML::image('del.png', 'list', $model->getTmpl()) . '</a>';
 		$html[] = '<form id="update_col' . $listRef . '">';
 
 		$html[] = '<table class="fabrikList table table-striped" style="width:100%">';

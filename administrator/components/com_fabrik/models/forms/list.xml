@@ -390,6 +390,16 @@
 					<option value="1">Excel CSV</option>
 			</field>
 			
+			<field name="csv_which_elements"
+				type="list"
+				default="selected"
+				description="COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_DESC"
+				label="COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_LABEL">
+					<option value="selected">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_SELECTED</option>
+					<option value="visible">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_VISIBLE</option>
+					<option value="all">COM_FABRIK_FIELD_CSV_WHICH_ELEMENTS_ALL</option>
+			</field>
+			
 			<field name="csv_elements"
 				type="fabrikmodalrepeat"
 				icon="list"

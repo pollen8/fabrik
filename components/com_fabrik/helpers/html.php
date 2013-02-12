@@ -1828,11 +1828,11 @@ EOD;
 	/**
 	 * Run Joomla content plugins over text
 	 *
-	 * @since   3.0.7
-	 *
 	 * @param   string  &$text  Content
 	 *
 	 * @return  void
+	 *
+	 * @since   3.0.7
 	 */
 
 	public static function runConentPlugins(&$text)
@@ -1849,5 +1849,79 @@ EOD;
 		$text = preg_replace('/\{emailcloak\=off\}/', '', $text);
 		$input->set('option', $opt);
 		$input->set('view', $view);
+	}
+
+	/**
+	* get content item template
+	*
+	* @since   3.0.7
+	*
+	* @param   int $contentTemplate
+	*
+	* @return  string  content item html
+	*/
+
+	public function getContentTemplate($contentTemplate)
+	{
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
+			$db->setQuery($query);
+			$res = $db->loadObject();
+		}
+		else
+		{
+			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			$articleModel = JModel::getInstance('Article', 'ContentModel');
+			$res = $articleModel->getItem($contentTemplate);
+		}
+		return $res->introtext . ' ' . $res->fulltext;
+	}
+
+	/**
+	* read a template file
+	*
+	* @param   string  path to template
+	*
+	* @return   string  template content
+	*/
+
+	function getTemplateFile($templateFile)
+	{
+		jimport('joomla.filesystem.file');
+		return JFile::read($templateFile);
+	}
+
+
+	/**
+	* Run a PHP tmeplate as a require.  Return buffered output, or false if require returns false.
+	*
+	* @param   string  path to template
+	*
+	* @param   array  optional element data in standard format, for eval'ed code to use
+	*
+	* @param   object  optional model object, depending on context, for eval'ed code to use
+	*
+	* @return   mixed  email message or false
+	*/
+
+	public function getPHPTemplate($tmpl, $data = array(), $model = null)
+	{
+		// start capturing output into a buffer
+		ob_start();
+		$result = require $tmpl;
+		$message = ob_get_contents();
+		ob_end_clean();
+		if ($return === false)
+		{
+			return false;
+		}
+		else
+		{
+			return $message;
+		}
 	}
 }

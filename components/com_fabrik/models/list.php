@@ -9771,7 +9771,17 @@ class FabrikFEModelList extends JModelForm
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$csvFields = array();
-		if ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
+
+		if ($params->get('csv_which_elements', 'selected') == 'visible')
+		{
+			$csvIds = $this->getAllPublishedListElementIDs();
+		}
+		else if ($params->get('csv_which_elements', 'selected') == 'all')
+		{
+			// Export code will export all, if list is empty
+			$csvIds = array();
+		}
+		else if ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
 		{
 			$csvIds = array();
 		}
@@ -9986,9 +9996,37 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Return an array of element ID's of all published and visible list elements
+	 * Created to call from GetCsvFields()
+	 *
+	 * @return   array  array of element IDs
+	 */
+	public function getAllPublishedListElementIDs()
+	{
+		$ids = array();
+		$form = $this->getFormModel();
+		$groups = $form->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
+			/*
+			if ($groupModel->canView() === false)
+			{
+				continue;
+			}
+			*/
+			$elementModels = $groupModel->getPublishedListElements();
+			foreach ($elementModels as $key => $elementModel)
+			{
+				$ids[] = $elementModel->getId();
+			}
+		}
+		return $ids;
+	}
+
+	/**
 	 * Return an array of elements which are set to always render
 	 *
-	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   bool  not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
 	 *
 	 * @return   bool  array of element models
 	 */
