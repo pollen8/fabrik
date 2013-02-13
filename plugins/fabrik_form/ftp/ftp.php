@@ -1,52 +1,60 @@
 <?php
 /**
- * Form email plugin
- * @package Joomla
- * @subpackage Fabrik
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.ftp
+ * @copyright   Copyright (C) 2005 Hugh Messenger. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-//require the abstract plugin class
+// Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
+
+/**
+ * FTP Form results to a given location
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.ftp
+ * @since       3.0.7
+ */
 
 class plgFabrik_FormFtp extends plgFabrik_Form
 {
 
 	/**
-	 * @var array of files to attach to email
+	 * Posted form keys that we don't want to include in the message
+	 * This is basically the fileupload elements
+	 *
+	 * @var array
 	 */
-	var $_counter = null;
-
-	var $_aAttachments = array();
-
-	var $_dontEmailKeys = null;
+	protected $dontEmailKeys = null;
 
 	/**
-	 * process the plugin, called when form is submitted
+	 * Process the plugin, called when form is submitted
 	 *
-	 * @param object $params
-	 * @param object form model
-	 * @returns bol
+	 * @param   object  $params      Plugin parameters
+	 * @param   object  &$formModel  Form model
+	 *
+	 * @return  bool
 	 */
 
-	function onAfterProcess($params, &$formModel )
+	public function onAfterProcess($params, &$formModel)
 	{
 		jimport('joomla.mail.helper');
 
-		$user						= &JFactory::getUser();
-		$config					=& JFactory::getConfig();
-		$db 						=& JFactory::getDBO();
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$user = JFactory::getUser();
+		$config	= JFactory::getConfig();
+		$db = JFactory::getDbo();
 
-		$this->formModel =& $formModel;
-		$formParams			= $formModel->getParams();
-		$ftpTemplate	= JPath::clean(JPATH_SITE.DS.'components'.DS.'com_fabrik'.DS.'plugins'.DS.'form'.DS.'fabrikftp'.DS.'tmpl'.DS . $params->get('ftp_template', ''));
+		$this->formModel = $formModel;
+		$formParams	= $formModel->getParams();
+		$ftpTemplate = JPath::clean(JPATH_SITE . '/components/com_fabrik/plugins/form/fabrikftp/tmpl/' . $params->get('ftp_template', ''));
 
-		$this->data 		= array_merge($formModel->_formData, $this->getEmailData());
+		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 
 		if (!$this->shouldProcess('ftp_conditon', null, $formModel))
 		{
@@ -54,39 +62,38 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 		}
 
 		$contentTemplate = $params->get('ftp_template_content');
-		if ($contentTemplate != '') {
-			$content = $this->_getConentTemplate($contentTemplate);
-		} else {
-			$content = '';
-		}
+		$content = $contentTemplate != '' ? $this->_getConentTemplate($contentTemplate) : '';
 
-		if (JFile::exists($ftpTemplate)) {
-			if (JFile::getExt($ftpTemplate) == 'php') {
+		if (JFile::exists($ftpTemplate))
+		{
+			if (JFile::getExt($ftpTemplate) == 'php')
+			{
 				$message = $this->_getPHPTemplateFtp($ftpTemplate);
-				if ($message === false) {
+				if ($message === false)
+				{
 					return;
 				}
-			} else {
+			}
+			else
+			{
 				$message = $this->_getTemplateFtp($ftpTemplate);
 			}
 			$message = str_replace('{content}', $content, $message);
-		} else {
-			if ($contentTemplate != '') {
-				$message = $content;
-			} else {
-				$message = $this->_getTextFtp();
-			}
+		}
+		else
+		{
+			$message = $contentTemplate != '' ? $content : $this->_getTextFtp();
 		}
 
-
-		$cc 		= null;
-		$bcc 		= null;
+		$cc = null;
+		$bcc = null;
 		$w = new FabrikWorker();
-		// $$$ hugh - test stripslashes(), should be safe enough.
-		$message 	= stripslashes($message);
 
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=".$formModel->get('id')."&amp;rowid=".JRequest::getVar('rowid');
+		// $$$ hugh - test stripslashes(), should be safe enough.
+		$message = stripslashes($message);
+
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -97,12 +104,14 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 
 		$ftp_filename = $params->get('ftp_filename', '');
 		$ftp_filename = $w->parseMessageForPlaceholder($ftp_filename, $this->data, false);
-		$ftp_eval_filename = (int)$params->get('ftp_eval_filename', '0');
-		if ($ftp_eval_filename) {
+		$ftp_eval_filename = (int) $params->get('ftp_eval_filename', '0');
+		if ($ftp_eval_filename)
+		{
 			$ftp_filename = @eval($ftp_filename);
 			FabrikWorker::logEval($email_to_eval, 'Caught exception on eval in ftp filename eval : %s');
 		}
-		if (empty($ftp_filename)) {
+		if (empty($ftp_filename))
+		{
 			$ftp_filename = 'fabrik_ftp_' . md5( uniqid() ) . '.txt';
 			// JError::raiseNotice(500, JText::sprintf('PLG_FTP_NO_FILENAME', $email));
 		}
@@ -113,64 +122,72 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 		$ftp_user = $w->parseMessageForPlaceholder($params->get('ftp_user', ''), $this->data, false);
 		$ftp_password = $w->parseMessageForPlaceholder($params->get('ftp_password', ''), $this->data, false);
 
-		$config = & JFactory::getConfig();
-		$tmp_dir = rtrim($config->getValue('config.tmp_path'), DS);
-		if (empty($tmp_dir) || !JFolder::exists($tmp_dir)) {
+		$tmp_dir = rtrim($config->getValue('config.tmp_path'), '/');
+		if (empty($tmp_dir) || !JFolder::exists($tmp_dir))
+		{
 			JError::raiseError(500, 'PLG_FORM_FTP_NO_JOOMLA_TEMP_DIR');
 			return false;
 		}
-		$tmp_file = $tmp_dir . DS . 'fabrik_ftp_' . md5( uniqid() );
+		$tmp_file = $tmp_dir . '/fabrik_ftp_' . md5(uniqid());
 		$message = $w->parseMessageForPlaceholder($message, $this->data, true, false);
-		if (JFile::write($tmp_file, $message)) {
+		if (JFile::write($tmp_file, $message))
+		{
 			$conn_id = ftp_connect($ftp_host, $ftp_port);
-			if ($conn_id) {
-				if (@ftp_login($conn_id, $ftp_user, $ftp_password)) {
-					if (!empty($ftp_chdir)) {
-						if (!ftp_chdir($conn_id, $ftp_chdir)) {
+			if ($conn_id)
+			{
+				if (@ftp_login($conn_id, $ftp_user, $ftp_password))
+				{
+					if (!empty($ftp_chdir))
+					{
+						if (!ftp_chdir($conn_id, $ftp_chdir))
+						{
 							JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'));
 							JFile::delete($tmp_file);
 							return false;
 						}
 					}
-					if (!ftp_put($conn_id, $ftp_filename, $tmp_file, FTP_ASCII)) {
+					if (!ftp_put($conn_id, $ftp_filename, $tmp_file, FTP_ASCII))
+					{
 						JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'));
 						JFile::delete($tmp_file);
 						return false;
 					}
 				}
-				else {
+				else
+				{
 					JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'));
 					JFile::delete($tmp_file);
 					return false;
 				}
 			}
-			else {
+			else
+			{
 				JError::raiseError(500, 'PLG_FORM_FTP_COULD_NOT_CONNECT');
 				JFile::delete($tmp_file);
 				return false;
 			}
 		}
-		else {
+		else
+		{
 			JError::raiseError(500, 'PLG_FORM_FTP_COULD_NOT_WRITE_TEMP_FILE');
 			JFile::delete($tmp_file);
 			return false;
 		}
-
 		JFile::delete($tmp_file);
 		return true;
 	}
 
 	/**
-	 * use a php template for advanced email templates, partularly for forms with repeat group data
+	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
-	 * @param bol if file uploads have been found
-	 * @param string path to template
-	 * @return string email message
+	 * @param   string  $tmpl  Path to template
+	 *
+	 * @return  string  Email message
 	 */
 
-	function _getPHPTemplateFtp($tmpl)
+	protected function _getPHPTemplateFtp($tmpl)
 	{
-		// start capturing output into a buffer
+		// Start capturing output into a buffer
 		ob_start();
 		$result = require $tmpl;
 		$message = ob_get_contents();
@@ -184,41 +201,47 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 
 
 	/**
-	 * get an array of keys we dont want to email to the user
+	 * Get an array of keys we dont want to email to the user
 	 *
-	 * @return array
+	 * @return  array
 	 */
 
-	function getDontEmailKeys()
+	protected function getDontEmailKeys()
 	{
-		if (is_null($this->_dontEmailKeys)) {
-			$this->_dontEmailKeys = array();
-			foreach ($_FILES as $key => $file) {
-				$this->_dontEmailKeys[] = $key;
+		if (is_null($this->dontEmailKeys))
+		{
+			$this->dontEmailKeys = array();
+			foreach ($_FILES as $key => $file)
+			{
+				$this->dontEmailKeys[] = $key;
 			}
 		}
-		return $this->_dontEmailKeys;
+		return $this->dontEmailKeys;
 	}
 
 	/**
-	 * template email handling routine, called if email template specified
-	 * @param string path to template
-	 * @return string email message
+	 * Template email handling routine, called if email template specified
+	 *
+	 * @param   string  $ftpTemplate  Path to template
+	 *
+	 * @return  string  Email message
 	 */
 
-	function _getTemplateFtp($ftpTemplate)
+	protected function _getTemplateFtp($ftpTemplate)
 	{
 		jimport('joomla.filesystem.file');
 		return JFile::read($ftpTemplate);
 	}
 
 	/**
-	 * get content item template
-	 * @param int $contentTemplate
-	 * @return string content item html (translated with Joomfish if installed)
+	 * Get content item template
+	 *
+	 * @param   int  $contentTemplate  Content template
+	 *
+	 * @return  string  Content item html (translated with Joomfish if installed)
 	 */
 
-	function _getConentTemplate($contentTemplate)
+	protected function _getConentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
 		if ($app->isAdmin())
@@ -239,11 +262,12 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 	}
 
 	/**
-	 * default template handling routine, called if no template specified
-	 * @return string email message
+	 * Default template handling routine, called if no template specified
+	 *
+	 * @return  string  Email message
 	 */
 
-	function _getTextFtp()
+	protected function _getTextFtp()
 	{
 		$data = $this->getEmailData();
 		$config = JFactory::getConfig();
@@ -304,4 +328,3 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 	}
 
 }
-?>
