@@ -71,6 +71,8 @@ class JFormFieldElement extends JFormFieldList
 		$include_calculations = (int) $this->element['include_calculations'];
 		$published = (int) $this->element['published'];
 		$showintable = (int) $this->element['showintable'];
+		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
+
 		if ($include_calculations != 1)
 		{
 			$include_calculations = 0;
@@ -100,6 +102,7 @@ class JFormFieldElement extends JFormFieldList
 		$opts->conn = 'jform_' . $conn;
 		$opts->value = $this->value;
 		$opts->include_calculations = $include_calculations;
+		$opts->highlightpk = (int) $highlightpk;
 		$opts = json_encode($opts);
 		$script = array();
 		$script[] = "var p = new elementElement('$this->id', $opts);";

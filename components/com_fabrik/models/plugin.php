@@ -80,7 +80,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  void
 	 */
 
-	function setId($id)
+	public function setId($id)
 	{
 		$this->_id = $id;
 	}
@@ -186,7 +186,6 @@ class FabrikPlugin extends JPlugin
 				$val = isset($val->$repeatCounter) ? $val->$repeatCounter : '';
 				$data['params'][$key] = $val;
 			}
-
 			else
 			{
 				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, '') : $val;
@@ -434,10 +433,11 @@ class FabrikPlugin extends JPlugin
 				case 'edit':
 					if ($model->$k == 0)
 					{
-						// $$$ hugh - don't think this is right, as it'll return true when it shouldn't.
-						// Think if this row is being copied, then by definition it's not being edited, it's new.
-						// For now, just set $ok to false;
-						// $ok = isset($model->_copyingRow) ? !$model->copyingRow() : false;
+						/** $$$ hugh - don't think this is right, as it'll return true when it shouldn't.
+						 * Think if this row is being copied, then by definition it's not being edited, it's new.
+						 * For now, just set $ok to false;
+						 * $ok = $ok = isset($model->copyingRow) ? !$model->copyingRow() : false;
+						 */
 						$ok = false;
 					}
 					break;
@@ -523,17 +523,24 @@ class FabrikPlugin extends JPlugin
 
 	function ajax_fields()
 	{
-		$tid = JRequest::getVar('t');
-		$keyType = JRequest::getVar('k', 1);
-		$showAll = JRequest::getVar('showall', false);//if true show all fields if false show fabrik elements
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$tid = $input->get('t');
+		$keyType = $input->get('k', 1);
 
-		//only used if showall = false, includes validations as separate entries
-		$incCalculations = JRequest::getVar('calcs', false);
+		// If true show all fields if false show fabrik elements
+		$showAll = $input->getBool('showall', false);
+
+		// Should we highlight the PK as a recommended option
+		$highlightpk = $input->getBool('highlightpk');
+
+		// Only used if showall = false, includes validations as separate entries
+		$incCalculations = $input->get('calcs', false);
 		$arr = array();
 		if ($showAll)
 		{
-			//show all db columns
-			$cid = JRequest::getVar('cid', -1);
+			// Show all db columns
+			$cid = $input->get('cid', -1);
 			$cnn = JModel::getInstance('Connection', 'FabrikFEModel');
 			$cnn->setId($cid);
 			$db = $cnn->getDb();
@@ -541,7 +548,7 @@ class FabrikPlugin extends JPlugin
 			{
 				if (is_numeric($tid))
 				{
-					//if loading on a numeric list id get the list db table name
+					// If loading on a numeric list id get the list db table name
 					$query = $db->getQuery(true);
 					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
 					$db->setQuery($query);
@@ -556,7 +563,15 @@ class FabrikPlugin extends JPlugin
 						$c = new stdClass;
 						$c->value = $r->Field;
 						$c->label = $r->Field;
-						$arr[$r->Field] = $c;
+						if ($highlightpk && $r->Key === 'PRI')
+						{
+							$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
+							array_unshift($arr, $c);
+						}
+						else
+						{
+							$arr[$r->Field] = $c;
+						}
 					}
 					ksort($arr);
 					$arr = array_values($arr);
@@ -571,6 +586,7 @@ class FabrikPlugin extends JPlugin
 			$model = JModel::getInstance('List', 'FabrikFEModel');
 			$model->setId($tid);
 			$table = $model->getTable();
+			$db = $model->getDb();
 			$groups = $model->getFormGroupElementData();
 			$published = JRequest::getVar('published', false);
 			$showintable = JRequest::getVar('showintable', false);
@@ -619,7 +635,19 @@ class FabrikPlugin extends JPlugin
 						$label = $join->table_join . '.' . $label;
 					}
 					$c->label = $label;
-					$arr[] = $c;
+
+					// Show hightlight primary key and shift to top of options
+					if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false, false)))
+					{
+						$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
+						array_unshift($arr, $c);
+					}
+					else
+					{
+						$arr[] = $c;
+					}
+
+
 					if ($incCalculations)
 					{
 						$params = $eVal->getParams();

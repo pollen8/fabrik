@@ -3,7 +3,8 @@ var ListFieldsElement = new Class({
 	Implements: [Options, Events],
 	
 	options: {
-		conn: null
+		conn: null,
+		highlightpk: false
 	},
 	
 	initialize: function (el, options) {
@@ -34,7 +35,7 @@ var ListFieldsElement = new Class({
 		document.id(this.options.conn).addEvent('change', this.updateMeEvent);
 		document.id(this.options.table).addEvent('change', this.updateMeEvent);
 			
-		//see if there is a connection selected
+		// See if there is a connection selected
 		var v = document.id(this.options.conn).get('value');
 		if (v !== '' && v !== -1) {
 			this.periodical = this.updateMe.periodical(500, this);
@@ -54,11 +55,13 @@ var ListFieldsElement = new Class({
 			return;
 		}
 		clearInterval(this.periodical);
-		//var url = this.options.livesite + 'index.php?option=com_fabrik&format=raw&view=plugin&task=pluginAjax&g=element&plugin=field&method=ajax_fields&showall=true&cid=' + cid + '&t=' + tid;
 		var url = 'index.php?option=com_fabrik&format=raw&task=plugin.pluginAjax&g=element&plugin=field&method=ajax_fields&showall=true&cid=' + cid + '&t=' + tid;
 		var myAjax = new Request({
 			url: url,
 			method: 'get', 
+			data: {
+				'highlightpk': this.options.highlightpk
+			},
 			onComplete: function (r) {
 				var opts = eval(r);
 				this.el.empty();

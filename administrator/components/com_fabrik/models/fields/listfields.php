@@ -68,6 +68,7 @@ class JFormFieldListfields extends JFormFieldList
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
+		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
 		switch ($controller)
 		{
 			case 'validationrule':
@@ -97,6 +98,7 @@ class JFormFieldListfields extends JFormFieldList
 					$opts->conn = 'jform_' . $connectionDd;
 					$opts->value = $this->value;
 					$opts->repeat = $this->value;
+					$opts->highlightpk = (int) $highlightpk;
 					$opts = json_encode($opts);
 					$script = "new ListFieldsElement('$this->id', $opts);\n";
 					FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/listfields.js', $script);
@@ -219,7 +221,7 @@ class JFormFieldListfields extends JFormFieldList
 	/**
 	 * Load the element list from the group id
 	 *
-	 * @param   int  $groupId group id
+	 * @param   int  $groupId  Group id
 	 *
 	 * @since   3.0.6
 	 *
