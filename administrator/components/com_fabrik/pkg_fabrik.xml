@@ -4,7 +4,7 @@
 	<packagename>fabrik</packagename>
 	<version>3.1b</version>
 	<url>http://www.fabrikar.com</url>
-	<creationDate>${createdate}</creationDate>
+	<creationDate>February 2013</creationDate>
 	<author>Fabrik</author>
 	<packager>Rob Clayburn</packager>
 	<packagerurl>http://www.fabrikar.com</packagerurl>

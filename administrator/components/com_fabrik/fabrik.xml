@@ -2,9 +2,9 @@
 <extension xmlns="http://www.joomla.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" client="site" method="upgrade" type="component" version="2.5" xsi:schemaLocation="http://www.joomla.org extension.xsd ">
 
 	<name>Fabrik</name>
-	<creationDate>${createdate}</creationDate>
+	<creationDate>February 2013</creationDate>
 	<author>Fabrik</author>
-	<copyright>(C) 2005-${year} fabrikar.com</copyright>
+	<copyright>(C) 2005-2013 fabrikar.com</copyright>
 	<license>GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.pollen-8.co.uk</authorUrl>
@@ -100,7 +100,7 @@
 	
 	<!-- START UPDATESERVERS -->
 	<updateservers>
-		<server type="collection">http://fabrikar.com/update/fabrik/package_list.xml</server>
+		<server type="collection">http://fabrikar.com/update/fabrik_sts/package_list.xml</server>
 	</updateservers>
 
 	

@@ -103,7 +103,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
-		if ($this->rowid != '')
+		if ($this->rowid !== '')
 		{
 			$form->formid .= '_' . $this->rowid;
 		}
@@ -347,11 +347,11 @@ class FabrikViewFormBase extends JViewLegacy
 			{
 				if ($app->isAdmin())
 				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
+					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
 				}
 				else
 				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->_rowId);
+					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
 				}
 				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}

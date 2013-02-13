@@ -317,7 +317,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function setRowId($id)
 	{
-		$this->_rowId = $id;
+		$this->rowId = $id;
 	}
 
 	/**

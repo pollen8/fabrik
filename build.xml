@@ -148,7 +148,7 @@
 		</if>
 		
 		<input message="Component version:" addproperty="version" defaultvalue="${git.log.range.end}"/>
-		
+		<input message="Joomla target version:" addproperty="jversion" defaultvalue="3.0"/>
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
 		
 		<if>
@@ -501,6 +501,8 @@
 		<delete dir="${cfg.destdir}" />
 		<mkdir dir="${cfg.destdir}/admin/" />
 
+		<antcall target="xml.update.repoistory" />
+
 		<copy todir="${cfg.destdir}/admin/">
 			<fileset dir="${basedir}/administrator/components/com_fabrik/">
 				<exclude name="**/*.zip" />
@@ -730,38 +732,24 @@
 			</fileset>
 		</copy>
 		
-		<antcall target="refresh.updatexml" />
 	</target>
 	
-	<target name="refresh.updatexml">
 	
-		<!-- <tstamp>
-	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
-	  </tstamp>
-	  <tstamp>
-	      <format property="year" pattern="yyyy" locale="en,UK"/>
-	  </tstamp>
-	  
-		<xmltask todir="${cfg.destdir}">
-			<fileset dir="${cfg.destdir}">
-				<include name="**/*.xml"/>
-			</fileset>
-			 <replace path="/extension/version/text()" withText="${version}"/> 
-			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
-			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-		</xmltask> -->
-		
-		<antcall target="xml.update.repoistory" />
-	</target>
 	
 	<target name="xml.update.repoistory">
+		<tstamp>
+	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
+	 	 </tstamp>
+	  	<tstamp>
+	      <format property="year" pattern="yyyy" locale="en,UK"/>
+	  	</tstamp>
+	  	<echo>create date : ${createdate}</echo>
+	  	<echo>year : ${year}</echo>
 		<input message="Update local repoistory xml files with version number?" addproperty="repository.xml.update" validargs="y,n" defaultvalue="y" />
 			<if>
 	 			<equals arg1="${repository.xml.update}" arg2="y" />
 				<then>
 
-				<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
-				
 				<!-- Update version -->
 				<replaceregexp flags="gs">
 					<regexp pattern="\&lt;version\&gt;(.*)\&lt;/version\&gt;"/>

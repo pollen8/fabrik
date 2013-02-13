@@ -69,7 +69,11 @@ var FbPassword = new Class({
 			var options = {
 				title: tipTitle
 			};
-			jQuery(strength).tooltip('destroy');
+			try {
+				jQuery(strength).tooltip('destroy');
+			} catch (e) {
+				console.log(e);
+			}
 			jQuery(strength).tooltip(options);
 		}
 		strength.set('html', html);

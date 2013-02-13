@@ -2,8 +2,8 @@
 craaaaaapppppp client="administrator" method="upgrade" type="module" version="1.7.0">
 	<name>mod_fabrik_list</name>
 	<author>Rob Clayburn</author>
-	<creationDate>${createdate}</creationDate>
-	<copyright>(C) 2005-${year} fabrikar.com</copyright>
+	<creationDate>February 2013</creationDate>
+	<copyright>(C) 2005-2013 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>

@@ -2,8 +2,8 @@
 <extension group="fabrik_validationrule" type="plugin" version="30">
 	<name>plg_fabrik_validationrule_areuniquevalues</name>
 	<author>Lieven Gryp</author>
-	<creationDate>${createdate}</creationDate>
-	<copyright>(C) 2005-${year} fabrikar.com</copyright>
+	<creationDate>February 2013</creationDate>
+	<copyright>(C) 2005-2013 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>lieven.gryp@telenet.be</authorEmail>
 	<authorUrl>www.acpegasus.be</authorUrl>
