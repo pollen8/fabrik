@@ -148,6 +148,7 @@ var FbDateTime = new Class({
 	onsubmit: function () {
 		//convert the date back into mysql format before submitting - saves all sorts of shenanigans 
 		//processing dates on the server.
+		debugger;
 		var v = this.getValue();
 		if (v !== '') {
 			// $$$ hugh - pretty sure we don't need to call update(), as getValue() is already returning
@@ -286,6 +287,9 @@ var FbDateTime = new Class({
 				return true;
 			}
 			if (this.options.dateTimeFormat.contains('%T')) {
+				return true;
+			}
+			if (this.options.dateTimeFormat.contains('s')) {
 				return true;
 			}
 		}

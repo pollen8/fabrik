@@ -222,6 +222,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$j3 = FabrikWorker::j3();
