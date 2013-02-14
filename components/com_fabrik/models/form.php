@@ -438,7 +438,7 @@ class FabrikFEModelForm extends FabModelForm
 		$document = JFactory::getDocument();
 		if ($document->getType() === 'pdf')
 		{
-			$tmpl = $params->get('pdf_template');
+			$tmpl = $params->get('pdf_template', '') !== '' ? $params->get('pdf_template') : $default;
 		}
 		else
 		{
