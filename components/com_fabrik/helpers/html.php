@@ -407,10 +407,11 @@ EOD;
 		$table = $formModel->getTable();
 		$status = "status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=400,height=350,directories=no,location=no";
 		$link = self::printURL($formModel);
-
 		if ($params->get('icons', true))
 		{
-			$image = JHtml::_('image', 'system/printButton.png', JText::_('COM_FABRIK_PRINT'), null, true);
+			//$text = '<i class="icon-print"></i> '.JText::_('JGLOBAL_PRINT');
+			$image = FabrikHelperHTML::image('print.png');
+			//$image = JHtml::_('image', 'system/printButton.png', JText::_('COM_FABRIK_PRINT'), null, true);
 		}
 		else
 		{
@@ -487,7 +488,7 @@ EOD;
 
 			if ($params->get('icons', true))
 			{
-				$image = JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
+				//$image = JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
 			}
 			else
 			{

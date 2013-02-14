@@ -316,7 +316,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 		if ($this->showPrint)
 		{
-			$text = JHTML::_('image.site', 'printButton.png', '/images/', null, null, JText::_('Print'));
+			$text = FabrikHelperHTML::image('print.png');
 			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 		if ($input->get('tmpl') != 'component')
@@ -351,7 +351,7 @@ class FabrikViewFormBase extends JViewLegacy
 				}
 				else
 				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
+					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf');
 				}
 				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 			}
