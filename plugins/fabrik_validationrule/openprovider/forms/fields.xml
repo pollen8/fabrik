@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-validationrule-openprovider">
+			
+			<field type="text"
+				size="30" 
+				name="openprovider_username"
+				label="PLG_VALIDATION_OPENPROVIDER_USERNAME_LABEL"
+				description="PLG_VALIDATION_OPENPROVIDER_USERNAME_DESC" />
+			
+			<field type="text"
+				size="30" 
+				name="openprovider_password"
+				label="PLG_VALIDATION_OPENPROVIDER_PASSWORD_LABEL"
+				description="PLG_VALIDATION_OPENPROVIDER_PASSWORD_DESC" />
+			 
+			<field name="openprovider-message"
+				type="text"
+				size="30"
+				description="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_LABEL" />
+
+			<field  name="openprovider-validation_condition"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_LABEL"/>
+		
+		</fieldset>
+	</fields>
+</form>
