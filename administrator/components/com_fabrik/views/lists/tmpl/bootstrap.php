@@ -92,7 +92,7 @@ $listDirn	= $this->state->get('list.direction');
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 				$ordering	= ($listOrder == 'ordering');
-				$link	= JRoute::_('index.php?option=com_fabrik&task=list.edit&id='. $item->id);
+				$link = JRoute::_('index.php?option=com_fabrik&task=list.edit&id='. $item->id);
 				$params = new JRegistry($item->params);
 				$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $this->table_groups[$item->id]->group_id);
  				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id=' . $item->form_id);

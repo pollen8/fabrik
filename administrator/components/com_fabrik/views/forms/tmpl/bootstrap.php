@@ -49,13 +49,20 @@ $listDirn	= $this->state->get('list.direction');
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th width="2%"><?php echo JHTML::_( 'grid.sort',  '#', 'f.id', $listDirn, $listOrder); ?></th>
-				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /> </th>
+				<th width="2%">
+					<?php echo JHTML::_( 'grid.sort',  '#', 'f.id', $listDirn, $listOrder); ?>
+				</th>
+				<th width="1%">
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
+				</th>
 				<th width="35%" >
 					<?php echo JHTML::_( 'grid.sort',  'COM_FABRIK_LABEL', 'f.label', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
-				<?php echo JHTML::_( 'grid.sort',  'JPUBLISHED', 'f.published', $listDirn, $listOrder); ?>
+					<?php echo JHTML::_( 'grid.sort',  'JPUBLISHED', 'f.published', $listDirn, $listOrder); ?>
+				</th>
+				<th width="14%">
+					<?php echo JText::_('COM_FABRIK_ELEMENT');?>
 				</th>
 				<th></th>
 				<th></th>
@@ -76,6 +83,8 @@ $listDirn	= $this->state->get('list.direction');
 			$canEdit	= $user->authorise('core.edit',			'com_fabrik.form.1');
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.form.1') && $canCheckin;
+			//$this->table_groups[$item->id]->group_id
+			$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $item->group_id);
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
 					<td><?php echo $item->id; ?></td>
@@ -93,6 +102,11 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'forms.', $canChange);?>
+					</td>
+					<td>
+						<a href="<?php echo $elementLink?>">
+							<i class="icon-plus-2"></i> <?php echo JText::_('COM_FABRIK_ADD');?>
+						</a>
 					</td>
 					<td>
 						<a href="#edit" onclick="return listItemTask('cb<?php echo $i; ?>','forms.updateDatabase')">

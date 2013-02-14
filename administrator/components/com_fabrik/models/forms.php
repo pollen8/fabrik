@@ -55,7 +55,7 @@ class FabrikAdminModelForms extends FabModelList
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
-		$query->select($this->getState('list.select', 'f.*, l.id AS list_id'));
+		$query->select($this->getState('list.select', 'f.*, l.id AS list_id, fg.group_id AS group_id'));
 		$query->from('#__{package}_forms AS f');
 
 		// Filter by published state
@@ -81,6 +81,8 @@ class FabrikAdminModelForms extends FabModelList
 		$query->select('u.name AS editor');
 		$query->join('LEFT', '#__users AS u ON checked_out = u.id');
 		$query->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id');
+
+		$query->join('INNER', '#__{package}_formgroup AS fg ON fg.form_id = f.id');
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
