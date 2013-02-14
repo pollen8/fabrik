@@ -5,7 +5,8 @@ var elementElement = new Class({
 	options : {
 		'plugin': 'chart',
 		'excludejoined': 0,
-		'value': ''
+		'value': '',
+		'highlightpk': 0
 	},
 	
 	initialize : function (el, options) {
@@ -58,7 +59,8 @@ var elementElement = new Class({
 			'calcs': this.options.include_calculations,
 			'showintable': this.options.showintable,
 			'published': this.options.published,
-			'excludejoined': this.options.excludejoined
+			'excludejoined': this.options.excludejoined,
+			'highlightpk': this.options.highlightpk
 		});
 	},
 

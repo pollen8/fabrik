@@ -409,9 +409,7 @@ EOD;
 		$link = self::printURL($formModel);
 		if ($params->get('icons', true))
 		{
-			//$text = '<i class="icon-print"></i> '.JText::_('JGLOBAL_PRINT');
 			$image = FabrikHelperHTML::image('print.png');
-			//$image = JHtml::_('image', 'system/printButton.png', JText::_('COM_FABRIK_PRINT'), null, true);
 		}
 		else
 		{
@@ -443,23 +441,25 @@ EOD;
 
 	public static function printURL($formModel)
 	{
+		if (isset(self::$printURL))
+		{
+			return self::$printURL;
+		}
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$form = $formModel->getForm();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$table = $formModel->getTable();
-		if (isset(self::$printURL))
-		{
-			return self::$printURL;
-		}
-		$url = COM_FABRIK_LIVESITE . "index.php?option=com_' . $package . '&tmpl=component&view=details&formid=" . $form->id . "&listid=" . $table->id
-		. "&rowid=" . $formModel->getRowId() . '&iframe=1&print=1';
+
+		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&tmpl=component&view=details&formid=' . $form->id . '&listid=' . $table->id
+		. '&rowid=' . $formModel->getRowId() . '&iframe=1&print=1';
+
 		/* $$$ hugh - @TODO - FIXME - if they were using rowid=-1, we don't need this, as rowid has already been transmogrified
 		 * to the correct (PK based) rowid.  but how to tell if original rowid was -1???
 		*/
 		if ($input->get('usekey') !== null)
 		{
-			$url .= "&usekey=" . $input->get('usekey');
+			$url .= '&usekey=' . $input->get('usekey');
 		}
 		$url = JRoute::_($url);
 

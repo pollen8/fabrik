@@ -63,17 +63,18 @@
 			
 		<field name="join_key_column"
 			type="listfields"
+			highlightpk="true"
 			connection="params_join_conn_id"
-			table="params_join_db_name"
 			description="PLG_ELEMENT_DBJOIN_JOIN_KEY_DESC"
-			label="PLG_ELEMENT_DBJOIN_JOIN_KEY_LABEL"/>
+			label="PLG_ELEMENT_DBJOIN_JOIN_KEY_LABEL"
+			table="params_join_db_name"/>
 			
 		<field name="join_val_column"
 			type="listfields"
 			connection="params_join_conn_id"
-			table="params_join_db_name"
 			description="PLG_ELEMENT_DBJOIN_JOIN_LABEL_DESC"
-			label="PLG_ELEMENT_DBJOIN_JOIN_LABEL_LABEL" />
+			label="PLG_ELEMENT_DBJOIN_JOIN_LABEL_LABEL"
+			table="params_join_db_name" />
 			
 		<field name="join_val_column_concat"
 			type="textarea"
@@ -84,10 +85,9 @@
 			
 		<field name="database_join_where_sql"
 			type="textarea"
-			cols="40"
+			cols="40" rows="8"
 			description="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_DESC"
-			label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL"
-			rows="6" />
+			label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL" />
 			
 		<field name="database_join_where_access"
 			type="accesslevel"

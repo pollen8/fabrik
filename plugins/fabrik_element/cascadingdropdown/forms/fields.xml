@@ -40,7 +40,16 @@
 						
 			<field connection_in_repeat="false" description="PLG_ELEMENT_CDD_TABLE_DESC" label="PLG_ELEMENT_CDD_TABLE_LABEL" name="cascadingdropdown_table" observe="params_cascadingdropdown_connection" type="fabriktables"/>
 				
-			<field connection="params_cascadingdropdown_connection" connection_in_repeat="false" description="PLG_ELEMENT_CDD_ID_DESC" excludejoined="1" label="PLG_ELEMENT_CDD_ID_LABEL" name="cascadingdropdown_id" showintable="true" table="params_cascadingdropdown_table" type="element"/>
+			<field name="cascadingdropdown_id"
+				type="element"
+				connection="params_cascadingdropdown_connection"
+				connection_in_repeat="false"
+				description="PLG_ELEMENT_CDD_ID_DESC"
+				excludejoined="1"
+				highlightpk="true"
+				label="PLG_ELEMENT_CDD_ID_LABEL"
+				showintable="true"
+				table="params_cascadingdropdown_table" />
 				
 			<field connection="params_cascadingdropdown_connection" connection_in_repeat="false" description="PLG_ELEMENT_CDD_LABEL_DESC" excludejoined="1" label="PLG_ELEMENT_CDD_LABEL_LABEL" name="cascadingdropdown_label" table="params_cascadingdropdown_table" type="element"/>
 				

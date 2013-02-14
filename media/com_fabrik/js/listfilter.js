@@ -17,6 +17,7 @@ var FbListFilter = new Class({
 		this.advancedSearch = false;
 		this.container = document.id(this.options.container);
 		this.filterContainer = this.container.getElements('.fabrikFilterContainer');
+		this.filtersInHeadings = this.container.getElements('.listfilter');
 		var b = this.container.getElement('.toggleFilters');
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
@@ -25,10 +26,12 @@ var FbListFilter = new Class({
 				var x = dims.x - this.filterContainer.getWidth();
 				var y = dims.y + b.getHeight();
 				this.filterContainer.toggle();
+				this.filtersInHeadings.toggle();
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
 				this.filterContainer.toggle();
+				this.filtersInHeadings.toggle();
 			}
 		}
 
