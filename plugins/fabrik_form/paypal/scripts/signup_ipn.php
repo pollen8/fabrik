@@ -81,16 +81,16 @@ class fabrikPayPalIPN
 		// See if we can find the coresponding row from our registration table,
 		// and fetch our userid element from it.  The PayPal plugin will have written
 		// the newly created userid in to it during the original form submission.
-		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->Quote($rowid));
+		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->quote($rowid));
 		$userid = $db->loadResult();
 		if (!empty($userid) && (int) $userid > 42)
 		{
 			// If we found the userid, and it is in the normal user range, set the 'block' field in J!'s
 			// user table to 0.
-			$db->setQuery("UPDATE `#__users` SET `block` = '0' WHERE `id` = " . $db->Quote($userid));
+			$db->setQuery("UPDATE `#__users` SET `block` = '0' WHERE `id` = " . $db->quote($userid));
 			$db->execute();
 			// Also set the block field in our registration table to 0.
-			$db->setQuery("UPDATE `registration_individual` SET `block` = '0' WHERE `id` = " . $db->Quote($rowid));
+			$db->setQuery("UPDATE `registration_individual` SET `block` = '0' WHERE `id` = " . $db->quote($rowid));
 			$db->execute();
 		}
 		return 'ok';
@@ -108,10 +108,10 @@ class fabrikPayPalIPN
 	 */
 	function payment_status_Pending($listModel, $request, &$set_list, &$err_msg)
 	{
-		global $mainframe;
-		$MailFrom = $mainframe->getCfg('mailfrom');
-		$FromName = $mainframe->getCfg('fromname');
-		$SiteName = $mainframe->getCfg('sitename');
+		$config = JFactory::getConfig();
+		$MailFrom = $config->get('mailfrom');
+		$FromName = $config->get('fromname');
+		$SiteName = $config->get('sitename');
 
 		$payer_email = $request['payer_email'];
 		$receiver_email = $request['receiver_email'];
@@ -123,12 +123,14 @@ class fabrikPayPalIPN
 		$msgbuyer = 'Your payment on %s is pending. (Paypal transaction ID: %s)<br /><br />%s';
 		$msgbuyer = sprintf($msgbuyer, $SiteName, $txn_id, $SiteName);
 		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
-		JUtility::sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
+		$mail = JFactory::getMailer();
+		$res = $mail->sendMail($MailFrom, $FromName, $payer_email, $subject, $msgbuyer, true);
 
 		$msgseller = 'Payment pending on %s. (Paypal transaction ID: %s)<br /><br />%s';
 		$msgseller = sprintf($msgseller, $SiteName, $txn_id, $SiteName);
 		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
-		JUtility::sendMail($MailFrom, $FromName, $receiver_email, $subject, $msgseller, true);
+		$mail = JFactory::getMailer();
+		$res = $mail->sendMail($MailFrom, $FromName, $payer_email, $subject, $msgseller, true);
 		return 'ok';
 	}
 
@@ -147,13 +149,13 @@ class fabrikPayPalIPN
 		$custom = $request['custom'];
 		list($formid, $rowid, $ipn_value) = explode(":", $custom);
 		$db = $listModel->getDb();
-		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->Quote($rowid));
+		$db->setQuery("SELECT `userid` FROM `registration_individual` WHERE `id` = " . $db->quote($rowid));
 		$userid = $db->loadResult();
 		if (!empty($userid) && (int) $userid > 42)
 		{
-			$db->setQuery("UPDATE `#__users` SET `block` = '1' WHERE `id` = " . $db->Quote($userid));
+			$db->setQuery("UPDATE `#__users` SET `block` = '1' WHERE `id` = " . $db->quote($userid));
 			$db->execute();
-			$db->setQuery("UPDATE `registration_individual` SET `block` = '1' WHERE `id` = " . $db->Quote($rowid));
+			$db->setQuery("UPDATE `registration_individual` SET `block` = '1' WHERE `id` = " . $db->quote($rowid));
 			$db->execute();
 		}
 		return 'ok';

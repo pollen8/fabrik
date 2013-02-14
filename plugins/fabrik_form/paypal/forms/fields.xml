@@ -1,19 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-form-paypal">
-
-			<field description="PLG_FORM_PAYPAL_EMAILACCOUNT_LABEL" label="PLG_FORM_PAYPAL_EMAILACCOUNT_LABEL" name="paypal_accountemail" repeat="true" type="text"/>
+		<fieldset name="plg-form-paypal-payment" label="PLG_FORM_PAYPAL_PAYMENT">
+		
+			<field name="paypal_accountemail"
+				type="text"
+				description="PLG_FORM_PAYPAL_EMAILACCOUNT_DESC"
+				label="PLG_FORM_PAYPAL_EMAILACCOUNT_LABEL"
+				repeat="true"/>
 				
-			<field description="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_DESC" label="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_LABEL" name="paypal_accountemail_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
+			<field name="paypal_accountemail_element"
+				type="listfields"
+				description="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_DESC"
+				label="PLG_FORM_PAYPAL_EMAIL_ACCOUNT_ELEMENT_LABEL"
+				onlytablefields="0"
+				repeat="true"
+				valueformat="tableelement"/>
 
-			<field default="_xclick" description="PLG_FORM_PAYPAL_PAYMENT_TYPE_DESC" label="PLG_FORM_PAYPAL_PAYMENT_TYPE_LABEL" name="paypal_cmd" repeat="true" type="list">
+			<field name="paypal_cmd"
+				type="list"
+				default="_xclick"
+				description="PLG_FORM_PAYPAL_PAYMENT_TYPE_DESC"
+				label="PLG_FORM_PAYPAL_PAYMENT_TYPE_LABEL"
+				repeat="true">
 					<option value="_xclick">PLG_FORM_PAYPAL_ONE_OFF</option>
 					<option value="_xclick-subscriptions">PLG_FORM_PAYPAL_SUBSCRIPTION</option>
 			</field>
 
-			<field default="USD" description="PLG_FORM_PAYPAL_CURRENCY_CODE_DESC" label="PLG_FORM_PAYPAL_CURRENCY_CODE_LABEL" name="paypal_currencycode" repeat="true" type="text"/>
+			<field name="paypal_currencycode"
+				type="text"
+				default="USD"
+				description="PLG_FORM_PAYPAL_CURRENCY_CODE_DESC"
+				label="PLG_FORM_PAYPAL_CURRENCY_CODE_LABEL"
+				repeat="true" />
+			
+			<field name="paypal_conditon"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_FORM_PAYPAL_CONDITION_DESC"
+				label="PLG_FORM_PAYPAL_CONDITION_LABEL"
+				repeat="true"/>
 				
+		</fieldset>
+		
+		<fieldset name="plg-form-paypal-price" label="PLG_FORM_PAYPAL_PRICE">
+		
 			<field cols="30" default="" description="PLG_FORM_PAYPAL_COST_DESC" label="PLG_FORM_PAYPAL_COST_LABEL" name="paypal_cost" repeat="true" rows="5" type="textarea"/>
 				
 			<field default="0"
@@ -24,8 +55,12 @@
 			</field>
 			
 			<field description="PLG_FORM_PAYPAL_COST_ELEMENT_DESC" label="PLG_FORM_PAYPAL_COST_ELEMENT_LABEL" name="paypal_cost_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
-				
-			<field cols="30" description="PLG_FORM_PAYPAL_PURCHASE_ITEM_DESC" label="PLG_FORM_PAYPAL_PURCHASE_ITEM_LABEL" name="paypal_item" repeat="true" rows="5" type="textarea"/>
+		</fieldset>
+		
+		<fieldset name="plg-form-paypal-item" label="PLG_FORM_PAYPAL_ITEM">
+		
+			<field cols="30" description="PLG_FORM_PAYPAL_PURCHASE_ITEM_DESC"
+				label="PLG_FORM_PAYPAL_PURCHASE_ITEM_LABEL" name="paypal_item" repeat="true" rows="5" type="textarea"/>
 				
 			<field default="0"
 				class="btn-group"
@@ -35,34 +70,10 @@
 			</field>
 			
 			<field description="PLG_FORM_PAYPAL_PURCHASE_ITEM_ELEMENT_DESC" label="PLG_FORM_PAYPAL_PURCHASE_ITEM_ELEMENT_LABEL" name="paypal_item_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
-				
-			<field description="PLG_FORM_PAYPAL_RETURN_URL_DESC" label="PLG_FORM_PAYPAL_RETURN_URL_LABEL" name="paypal_return_url" repeat="true" type="text"/>
-				
-			<field cols="30" description="PLG_FORM_PAYPAL_RETURN_MSG_DESC" label="PLG_FORM_PAYPAL_RETURN_MSG_LABEL" name="paypal_return_msg" repeat="true" rows="5" type="textarea"/>
-
-			<field label="" name="@spacer" repeat="true" type="spacer"/>
 			
-			<field description="PLG_FORM_PAYPAL_SUBS_CONNECTION_DESC" label="PLG_FORM_PAYPAL_SUBS_CONNECTION_LABEL" name="paypal_subs_connection" repeat="true" type="connections"/>
-				
-			<field description="PLG_FORM_PAYPAL_SUBS_DATA_TABLE_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_TABLE_LABEL" name="paypal_subs_table" observe="params_paypal_subs_connection" repeat="true" type="fabriktables"/>
-				
-			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_ID_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_ID_LABEL" name="paypal_subs_id" repeat="true" table="params_paypal_subs_table" type="element"/>
-								
-			<field description="PLG_FORM_PAYPAL_SUBS_DATA_NAME_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_NAME_LABEL" name="paypal_subs_name" repeat="true" type="text"/>
-				
-			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_LABEL" name="paypal_subs_duration" repeat="true" table="params_paypal_subs_table" type="element"/>
-				
-			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_LABEL" name="paypal_subs_duration_period" repeat="true" table="params_paypal_subs_table" type="element"/>
-				
-			<field description="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_LABEL" name="paypal_subs_invoice" repeat="true" type="text"/>
-				
-			<field description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_LABEL" name="paypal_subs_recurring" repeat="true" type="text">
-			</field>
-			
-			<field cols="30" description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC" label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" name="paypal_subscription_switch" rows="5" type="textarea">
-			</field>
-	
-			<field label="" name="@spacer" repeat="true" type="spacer"/>
+		</fieldset>
+		
+		<fieldset name="plg-form-paypal-shipping" label="PLG_FORM_PAYPAL_SHIPPING">
 			
 			<field cols="30" default="" description="PLG_FORM_PAYPAL_SHIPPING_COST_DESC" label="PLG_FORM_PAYPAL_SHIPPING_COST_LABEL" name="paypal_shipping_cost" repeat="true" rows="5" type="textarea"/>
 				
@@ -104,8 +115,50 @@
 					<option value="1">JYES</option>
 			</field>
 	
-			<field label="" name="@spacer" type="spacer"/>
-	
+		</fieldset>
+		
+		<fieldset name="plg-form-paypal-subs" label="PLG_FORM_PAYPAL_SUBSCRIPTION">
+		
+			<field description="PLG_FORM_PAYPAL_SUBS_CONNECTION_DESC" label="PLG_FORM_PAYPAL_SUBS_CONNECTION_LABEL" name="paypal_subs_connection" repeat="true" type="connections"/>
+				
+			<field description="PLG_FORM_PAYPAL_SUBS_DATA_TABLE_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_TABLE_LABEL" name="paypal_subs_table" observe="params_paypal_subs_connection" repeat="true" type="fabriktables"/>
+				
+			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_ID_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_ID_LABEL" name="paypal_subs_id" repeat="true" table="params_paypal_subs_table" type="element"/>
+								
+			<field description="PLG_FORM_PAYPAL_SUBS_DATA_NAME_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_NAME_LABEL" name="paypal_subs_name" repeat="true" type="text"/>
+				
+			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_LABEL" name="paypal_subs_duration" repeat="true" table="params_paypal_subs_table" type="element"/>
+				
+			<field connection="params_paypal_subs_connection" description="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_DURATION_PERIOD_LABEL" name="paypal_subs_duration_period" repeat="true" table="params_paypal_subs_table" type="element"/>
+				
+			<field description="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_INVOICE_LABEL" name="paypal_subs_invoice" repeat="true" type="text"/>
+				
+			<field description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_LABEL" name="paypal_subs_recurring" repeat="true" type="text">
+			</field>
+			
+			<field cols="30" description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC" label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" name="paypal_subscription_switch" rows="5" type="textarea">
+			</field>
+		</fieldset>
+		
+		<fieldset name="plg-form-paypal-return" label="PLG_FORM_PAYPAL_AFTER_PAYMENT">
+		
+			<field name="paypal_return_url"
+				type="text"
+				description="PLG_FORM_PAYPAL_RETURN_URL_DESC"
+				label="PLG_FORM_PAYPAL_RETURN_URL_LABEL"
+				repeat="true" />
+				
+			<field name="paypal_return_msg"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_FORM_PAYPAL_RETURN_MSG_DESC"
+				label="PLG_FORM_PAYPAL_RETURN_MSG_LABEL"
+				repeat="true"/>
+			
+		</fieldset>
+			
+		<fieldset name="plg-form-paypal-ipn" label="PLG_FORM_PAYPAL_IPN">
+
 			<field description="PLG_FORM_PAYPAL_IPN_ELEMENT_DESC" label="PLG_FORM_PAYPAL_IPN_ELEMENT_LABEL" name="paypal_ipn_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
 				
 			<field description="PLG_FORM_PAYPAL_IPN_UPDATE_VALUE_DESC" label="PLG_FORM_PAYPAL_IPN_UPDATE_VALUE_LABEL" name="paypal_ipn_value" repeat="true" type="text"/>
@@ -119,35 +172,60 @@
 			<field description="PLG_FORM_PAYPAL_IPN_ADDRESS_DESC" label="PLG_FORM_PAYPAL_IPN_ADDRESS_LABEL" name="paypal_ipn_address_element" onlytablefields="0" repeat="true" type="listfields" valueformat="tableelement"/>
 				
 			<field description="PLG_FORM_PAYPAL_PHP_FILE_DESC" directory="plugins/fabrik_form/paypal/scripts/" hide_default="1" label="PLG_FORM_PAYPAL_PHP_FILE_LABEL" name="paypal_run_php_file" repeat="true" type="filelist"/>
-				
-			<field label="" name="@spacer" repeat="true" type="spacer"/>
-
-			<field cols="30" description="PLG_FORM_PAYPAL_CONDITION_DESC" label="PLG_FORM_PAYPAL_CONDITION_LABEL" name="paypal_conditon" repeat="true" rows="5" type="textarea"/>
-				
-			<field default="0"
+		
+		</fieldset>
+			
+		<fieldset name="plg-form-paypal-other" label="PLG_FORM_PAYPAL_TEST_MODE">
+		
+			<field name="paypal_testmode"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FORM_PAYPAL_TEST_MODE_DESC" label="PLG_FORM_PAYPAL_TEST_MODE_LABEL" name="paypal_testmode" repeat="true" type="radio">
+				description="PLG_FORM_PAYPAL_TEST_MODE_DESC"
+				label="PLG_FORM_PAYPAL_TEST_MODE_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="1"
+			<field name="paypal_accountemail_testmode"
+				type="text"
+				description="PLG_FORM_PAYPAL_TEST_EMAILACCOUNT_DESC"
+				label="PLG_FORM_PAYPAL_TES_EMAILACCOUNT_LABEL"
+				repeat="true"/>
+			
+			<field name="paypal_receive_debug_emails"
+				type="radio"
+				default="1"
 				class="btn-group"
-				description="PLG_FORM_PAYPAL_DEBUG_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEBUG_EMAIL_LABEL" name="paypal_receive_debug_emails" repeat="true" type="radio">
+				description="PLG_FORM_PAYPAL_DEBUG_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEBUG_EMAIL_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="1"
+			<field name="paypal_send_default_email"
+				type="radio"
+				default="1"
 				class="btn-group"
-				description="PLG_FORM_PAYPAL_DEFAULT_EMAIL_DESC" label="PLG_FORM_PAYPAL_DEFAULT_EMAIL_LABEL" name="paypal_send_default_email" repeat="true" type="radio">
+				description="PLG_FORM_PAYPAL_DEFAULT_EMAIL_DESC"
+				label="PLG_FORM_PAYPAL_DEFAULT_EMAIL_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field description="PLG_FORM_PAYPAL_TEST_SITE_DESC" label="PLG_FORM_PAYPAL_TEST_SITE_LABEL" name="paypal_test_site" repeat="true" type="text"/>
+			<field name="paypal_test_site"
+				type="text"
+				description="PLG_FORM_PAYPAL_TEST_SITE_DESC"
+				label="PLG_FORM_PAYPAL_TEST_SITE_LABEL"
+				repeat="true" />
 				
-			<field description="PLG_FORM_PAYPAL_TEST_SITE_QS_DESC" label="PLG_FORM_PAYPAL_TEST_SITE_QS_LABEL" name="paypal_test_site_qs" repeat="true" type="text"/>
+			<field name="paypal_test_site_qs"
+				type="text"
+				description="PLG_FORM_PAYPAL_TEST_SITE_QS_DESC"
+				label="PLG_FORM_PAYPAL_TEST_SITE_QS_LABEL"
+				repeat="true"/>
 	
 		</fieldset>
 	</fields>

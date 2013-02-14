@@ -68,7 +68,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		$opts = array();
 		$opts['cmd'] = $params->get('paypal_cmd', "_xclick");
 
-		$email = $params->get('paypal_accountemail');
+		$email = $paypal_testmode ? 'paypal_accountemail_testmode' : 'paypal_accountemail';
+		$email = $params->get($email);
 		if (trim($email) == '')
 		{
 			$email = $emailData[FabrikString::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
@@ -305,7 +306,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 		}
 		else
 		{
-			$ppurl = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+			$ppurl = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&c=plugin&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 				. '&g=form&plugin=paypal&method=ipn';
 		}
 		$paypal_test_site_qs = $params->get('paypal_test_site_qs', '');
@@ -335,7 +336,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				}
 				else
 				{
-					$opts['return'] = COM_FABRIK_LIVESITE . '/' . $paypal_return_url;
+					$opts['return'] = COM_FABRIK_LIVESITE . $paypal_return_url;
 				}
 			}
 			if (!empty($paypal_test_site_qs))
@@ -351,7 +352,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			}
 			else
 			{
-				$opts['return'] = COM_FABRIK_LIVESITE . '/' . $paypal_return_url;
+				$opts['return'] = COM_FABRIK_LIVESITE . $paypal_return_url;
 			}
 		}
 		else
@@ -365,7 +366,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 			}
 			else
 			{
-				$opts['return'] = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
+				$opts['return'] = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
 			}
 		}
@@ -805,7 +806,8 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 	protected function getIPNHandler($params, $renderOrder = 0)
 	{
 		$php_file = (array) $params->get('paypal_run_php_file');
-		$php_file = JFilterInput::clean($php_file[$renderOrder], 'CMD');
+		$f = JFilterInput::getInstance();
+		$php_file = $f->clean($php_file[$renderOrder], 'CMD');
 		$php_file = empty($php_file) ? '' : 'plugins/fabrik_form/paypal/scripts/' . $php_file;
 		if (!empty($php_file) && file_exists($php_file))
 		{
