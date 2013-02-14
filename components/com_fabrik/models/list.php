@@ -5975,12 +5975,12 @@ class FabrikFEModelList extends JModelForm
 
 		// Check for conditions in https://github.com/Fabrik/fabrik/issues/621
 		$details = $this->canViewDetails();
-		if ($params->get('detaillink') == 0)
+		if ($params->get('detaillink', 1) == 0)
 		{
 			$details = false;
 		}
 		$edit = $this->canEdit();
-		if ($params->get('editlink') == 0)
+		if ($params->get('editlink', 1) == 0)
 		{
 			$edit = false;
 		}
