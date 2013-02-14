@@ -24,10 +24,12 @@ window.addEvent('domready', function () {
 	    (['jform_inPutFormat1', 'jform_inPutFormat2']).each(function (l) {
 	    	var options = {title: 'CSV', 'trigger': 'hover'};
 		    var opt = document.getElement('label[for=' + l + ']');
-		    var s = opt.getElement('small');
-		    options.content = s.get('text');
-		    s.destroy();
-			$('label[for=' + l + ']').popover(options);
+		    if (typeOf(opt) !== 'null') {
+			    var s = opt.getElement('small');
+			    options.content = s.get('text');
+			    s.destroy();
+				$('label[for=' + l + ']').popover(options);
+		    }
 	    });
 
     })(jQuery);

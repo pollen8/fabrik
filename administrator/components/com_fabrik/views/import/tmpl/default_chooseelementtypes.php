@@ -16,14 +16,14 @@ $app = JFactory::getApplication();
 $input = $app->input;
 $jform = $input->get('jform', array(), 'array');
 ?>
-<form action="index.php" method="post" name="adminForm">
+<form action="index.php" method="post" name="adminForm" id="adminForm">
 	<?php if (!empty($this->newHeadings)) :
 		if ((int) $this->table->id !== 0) :
 		echo "<H3>" . JText::_('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND') . "</h3>";
 		echo JText::sprintf('COM_FABRIK_IMPORT_NEW_HEADINGS_FOUND_DESC', $this->table->label, $this->table->label);
 	endif;?>
 
-		<table class="adminlist">
+		<table class="adminlist table table-striped">
 			<thead>
 			<tr>
 				<th class="title"><?php echo JText::_('COM_FABRIK_IMPORT_CREATE_ELEMENT');?></th>
@@ -84,7 +84,7 @@ $jform = $input->get('jform', array(), 'array');
 <?php
 			endif;
 			if (!empty($this->matchedHeadings)) :
-			?> <?php 	echo "<H3>" . JText::_('EXISTING HEADINGS FOUND') . "</h3>";?>
+			echo "<H3>" . JText::_('EXISTING HEADINGS FOUND') . "</h3>";?>
 <table class="adminlist">
 	<thead>
 	<tr>

@@ -145,7 +145,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$listid = $input->getInt('fabrik_list', $input->get('list_id'));
 		if ($listid == 0)
 		{
-			$plugins = $input->get('plugin');
+			$plugins = $input->get('plugin', array(), 'array');
 			$createElements = $input->get('createElements', array(), 'array');
 			$dataRemoved = false;
 			$newElements = array();
@@ -167,7 +167,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$input->set('defaultfields', $newElements);
 
 			// Create db
-			$listModel = $this->getModel('list', 'FabrikModel');
+			$listModel = $this->getModel('list', 'FabrikAdminModel');
 			$data = array('id' => 0, '_database_name' => $dbname, 'connection_id' => $input->getInt('connection_id'), 'access' => 0,
 				'rows_per_page' => 10, 'template' => 'default', 'published' => 1, 'access' => 1, 'label' => $input->get('label'),
 				'jform' => array('id' => 0, '_database_name' => $dbname, 'db_table_name' => ''));

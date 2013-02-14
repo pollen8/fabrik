@@ -211,7 +211,7 @@ class FabrikString extends JString
 
 	public static function dbFieldName($str)
 	{
-		$name = JFilterInput::clean($str, 'CMD');
+		$name = JFilterInput::getInstance()->clean($str, 'CMD');
 
 		// Chinese characters?
 		if ($name === '')
