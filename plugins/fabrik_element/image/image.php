@@ -193,6 +193,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 
 	public function renderListData($data, &$thisRow)
 	{
+		$w = new FabrikWorker;
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$pathset = false;
@@ -241,6 +242,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 			{
 				$data[$i] = '<a href="' . $linkURL . '" target="_blank">' . $data[$i] . '</a>';
 			}
+			$data[$i] = $w->parseMessageForPlaceHolder($data[$i], $thisRow);
 		}
 		$data = json_encode($data);
 		return parent::renderListData($data, $thisRow);
@@ -406,6 +408,8 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		}
 		else
 		{
+			$w = new FabrikWorker;
+			$value = $w->parseMessageForPlaceHolder($value, $data);
 			$linkURL = $params->get('link_url', '');
 			$imgstr = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>' . "\n";
 			if ($linkURL)
