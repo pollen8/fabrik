@@ -4815,6 +4815,10 @@ class FabrikFEModelList extends JModelForm
 			}
 			$params = $this->getParams();
 			$this->nav = new FPagination($total, $limitstart, $limit);
+			if ($limit == -1)
+			{
+				$this->nav->viewAll = true;
+			}
 
 			// $$$ rob set the nav link urls to the table action to avoid messed up url links when  doing ranged filters via the querystring
 			$this->nav->url = $this->getTableAction();

@@ -161,9 +161,9 @@ class FPagination extends JPagination
 		}
 		if ($this->showAllOption == true)
 		{
-			$limits[] = JHTML::_('select.option', '0', JText::_('COM_FABRIK_ALL'));
+			$limits[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_ALL'));
 		}
-		$selected = $this->viewAll ? 0 : $this->limit;
+		$selected = $this->viewAll ? '-1' : $this->limit;
 		$js = '';
 		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox input-mini" size="1" onchange="' . $js . '"', 'value', 'text',
 			$selected
