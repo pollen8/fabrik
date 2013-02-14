@@ -226,7 +226,8 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$this->geoJs();
 
-		// $this->radiusJs();
+		$mapShown = $this->isEditable() || (!$this->isEditable() && $v != '');
+
 		$opts->lat = (float) $o->coords[0];
 		$opts->lon = (float) $o->coords[1];
 		$opts->lat_dms = (float) $dms->coords[0];
@@ -276,7 +277,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		}
 		$opts->center = (int) $params->get('fb_gm_defaultloc', 0);
 
-		$opts->use_radius = $params->get('fb_gm_radius', '0') == '0' ? false : true;
+		$opts->use_radius = $params->get('fb_gm_radius', '0') == '0' || !$mapShown ? false : true;
 		$opts->radius_fitmap = $params->get('fb_gm_radius_fitmap', '0') == '0' ? false : true;
 		$opts->radius_write_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_write_element', $repeatCounter) : false;
 		$opts->radius_read_element = $opts->use_radius ? $this->_getFieldId('fb_gm_radius_read_element', $repeatCounter) : false;
