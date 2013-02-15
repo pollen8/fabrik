@@ -392,7 +392,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @param   array  $data           Data
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we add custom where statement into sql
-	 * @param   array  $opts           Addtional options passed into _buildQuery()
+	 * @param   array  $opts           Addtional options passed into buildQuery()
 	 *
 	 * @return  array	option values
 	 */
@@ -658,7 +658,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * If _buildQuery needs additional fields then set them here, used in notes plugin
+	 * If buildQuery needs additional fields then set them here, used in notes plugin
 	 *
 	 * @since 3.0rc1
 	 *
@@ -671,7 +671,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * If _buildQuery needs additional joins then set them here, used in notes plugin
+	 * If buildQuery needs additional joins then set them here, used in notes plugin
 	 *
 	 * @param   mixed  $query  false to return string, or JQueryBuilder object
 	 *
@@ -715,7 +715,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join = $this->getJoin();
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 
-		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of _buildQuery()
+		// $$$rob 11/10/2011  remove order by statements which will be re-inserted at the end of buildQuery()
 		if (preg_match('/(ORDER\s+BY)(.*)/i', $where, $matches))
 		{
 			$this->orderBy = str_replace("{thistable}", $join->table_join_alias, $matches[0]);

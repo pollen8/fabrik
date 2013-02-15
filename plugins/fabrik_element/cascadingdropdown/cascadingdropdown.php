@@ -437,7 +437,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @param   array  $data           Data
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we add custom where statement into sql
-	 * @param   array  $opts           Addtional options passed into _buildQuery()
+	 * @param   array  $opts           Addtional options passed into buildQuery()
 	 *
 	 * @return  array	option values
 	 */
@@ -452,7 +452,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$db = $this->getDb();
 		$opts = array();
 		$opts['repeatCounter'] = $repeatCounter;
-		$sql = $this->_buildQuery($data, $incWhere, $opts);
+		$sql = $this->buildQuery($data, $incWhere, $opts);
 		$sqlKey = (string) $sql;
 		$db->setQuery($sql);
 		if (array_key_exists($sqlKey, $this->_optionVals))
@@ -590,7 +590,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
 
-	protected function _buildQuery($data = array(), $incWhere = true, $opts = array())
+	protected function buildQuery($data = array(), $incWhere = true, $opts = array())
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;

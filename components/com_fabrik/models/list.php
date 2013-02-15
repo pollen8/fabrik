@@ -2519,7 +2519,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Should we order on multiple elements or one
 	 *
-	 * @since   3.0.7 (refractored from _buildQueryOrder())
+	 * @since   3.0.7 (refractored from buildQueryOrder())
 	 *
 	 * @return  bool
 	 */

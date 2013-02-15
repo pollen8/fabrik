@@ -243,7 +243,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * If _buildQuery needs additional fields then set them here, used in notes plugin
+	 * If buildQuery needs additional fields then set them here, used in notes plugin
 	 *
 	 * @since 3.0rc1
 	 *
@@ -268,7 +268,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * If _buildQuery needs additional joins then set them here, used in notes plugin
+	 * If buildQuery needs additional joins then set them here, used in notes plugin
 	 *
 	 * @param   mixed  $query  false to return string, or JQueryBuilder object
 	 *

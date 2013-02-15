@@ -3253,7 +3253,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		// Apply element where/order by statements to the filter (e.g. dbjoins 'Joins where and/or order by statement')
-		$elementWhere = $this->_buildQueryWhere(array(), true, null, array('mode' => 'filter'));
+		$elementWhere = $this->buildQueryWhere(array(), true, null, array('mode' => 'filter'));
 		if (JString::stristr($sql, 'WHERE ') && JString::stristr($elementWhere, 'WHERE '))
 		{
 			// $$$ hugh - only replace the WHERE with AND if it's the first word, so we don't munge sub-queries
@@ -6417,7 +6417,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * @return string|JDatabaseQuery
 	 */
 
-	protected function _buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
+	protected function buildQueryWhere($data = array(), $incWhere = true, $thisTableAlias = null, $opts = array(), $query = false)
 	{
 		return '';
 	}
