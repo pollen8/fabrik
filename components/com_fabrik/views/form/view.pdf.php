@@ -16,8 +16,11 @@ class fabrikViewForm extends FabrikViewFormBase
 {
 
 	/**
-	 * display the template
-	 * @param   string	$tpl
+	 * Main setup routine for displaying the form/detail view
+	 *
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
 	function display($tpl = null)
@@ -35,14 +38,20 @@ class fabrikViewForm extends FabrikViewFormBase
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see	FabrikViewFormBase::setTitle()
+	 * Set the page title
+	 *
+	 * @param   object  $w        parent worker
+	 * @param   object  &$params  parameters
+	 * @param   object  $model    form model
+	 *
+	 * @return  void
 	 */
 
 	protected function setTitle($w, &$params, $model)
 	{
 		parent::setTitle($w, $params, $model);
-		//set the download file name based on the document title
+
+		// Set the download file name based on the document title
 		$document = JFactory::getDocument();
 		$document->setName($document->getTitle() . '-' . $model->getRowId());
 	}
