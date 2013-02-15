@@ -2,9 +2,19 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-notempty">
-			<field description="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_DESC" label="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_LABEL" name="notempty-message" repeat="true" size="30" type="text"/>
+			<field name="notempty-message"
+				type="text"
+				description="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_LABEL"
+				repeat="true"
+				size="30"/>
 				
-			<field cols="30" description="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_DESC" label="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_LABEL" name="notempty-validation_condition" repeat="true" rows="5" type="textarea"/>
+			<field name="notempty-validation_condition"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_LABEL"
+				repeat="true"/>
 		</fieldset>
 	</fields>
 </form>
