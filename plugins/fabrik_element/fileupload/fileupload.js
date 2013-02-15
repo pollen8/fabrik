@@ -580,6 +580,7 @@ var ImageWidget = new Class({
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
+					this.storeActiveImageData(filepath);
 					this.storeImageDimensions(filepath, img, params);
 				}.bind(this)
 			});
@@ -630,10 +631,13 @@ var ImageWidget = new Class({
 		img.inject(document.body).hide();
 		params = params ? params : new CloneObject(this.imageDefault, true, []);
 		var s = img.getDimensions(true);
-		params.mainimagedim = params.imagedim;
+		if (!params.imagedim) {
+			params.mainimagedim = {};
+		} else {
+			params.mainimagedim = params.imagedim;
+		}
 		params.mainimagedim.w = s.width;
 		params.mainimagedim.h = s.height;
-		console.log(params);
 		params.img = img;
 		this.images.set(filepath, params);
 	},
@@ -841,8 +845,9 @@ var ImageWidget = new Class({
 		}.bind(this));
 	},
 	
-	storeActiveImageData: function () {
-		if (typeOf(this.activeFilePath) === 'null') {
+	storeActiveImageData: function (filepath) {
+		filepath = filepath ? filepath : this.activeFilePath;
+		if (typeOf(filepath) === 'null') {
 			return;
 		}
 		var x = this.cropperCanvas.x;
@@ -858,7 +863,7 @@ var ImageWidget = new Class({
 		var target = new Element('canvas', {'width': w + 'px', 'height': h + 'px' }).inject(document.body);
 		var ctx = target.getContext('2d');
 		
-		var file = this.activeFilePath.split('\\').getLast();
+		var file = filepath.split('\\').getLast();
 		var f = document.getElements('input[name*=' + file + ']').filter(function (fld) {
 			return fld.name.contains('cropdata');
 		});
