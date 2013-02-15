@@ -4424,7 +4424,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 					$custom_calc_php = $params->get('custom_calc_php', '');
 					if (!empty($custom_calc_php))
 					{
-						$o->value = @eval(stripslashes($custom_calc_php));
+						$o->value = @eval((string) stripslashes($custom_calc_php));
 						FabrikWorker::logEval($custom_calc_php, 'Caught exception on eval of ' . $name . ': %s');
 					}
 					else

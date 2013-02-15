@@ -825,7 +825,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 				if ($element->eval == "1")
 				{
-					$default = @eval(stripslashes($default));
+					$default = @eval((string) stripslashes($default));
 					FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 				}
 				if (trim($default) != '')

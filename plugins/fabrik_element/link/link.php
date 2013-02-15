@@ -414,7 +414,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
 			if ($element->eval == "1")
 			{
-				$default = @eval(stripslashes($default));
+				$default = @eval((string) stripslashes($default));
 			}
 			$this->default = array('label' => $default, 'link' => $link);
 		}

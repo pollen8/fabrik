@@ -171,7 +171,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 					$default = $w->parseMessageForPlaceHolder($default, $data);
 					if ($element->eval == "1")
 					{
-						$v = @eval(stripslashes($default));
+						$v = @eval((string) stripslashes($default));
 						FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 					}else{
 						$v = $default;

@@ -145,23 +145,32 @@ class imageRender
 		}
 		$file = $model->storage->preRenderPath($file);
 		$fullSize = $model->storage->preRenderPath($fullSize);
-		if ($model->isJoin())
+		if ($params->get('fu_show_image') == 0)
 		{
-			$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
-				. 'px; vertical-align: middle;text-align: center;">';
-		}
-		$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . strip_tags($element->label) . '" />';
-		if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
-		{
-			$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+			$fileName = explode("/", $file);
+			$fileName = array_pop($fileName);
+			$this->output .= '<a href="' . $fullSize . '">' . $fileName . '</a>';
 		}
 		else
 		{
-			$this->output .= $img;
-		}
-		if ($model->isJoin())
-		{
-			$this->output .= '</div>';
+			if ($model->isJoin())
+			{
+				$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
+					. 'px; vertical-align: middle;text-align: center;">';
+			}
+			$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . strip_tags($element->label) . '" />';
+			if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
+			{
+				$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+			}
+			else
+			{
+				$this->output .= $img;
+			}
+			if ($model->isJoin())
+			{
+				$this->output .= '</div>';
+			}
 		}
 	}
 

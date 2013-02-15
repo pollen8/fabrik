@@ -54,7 +54,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
 			if ($element->eval == "1")
 			{
-				$this->default = @eval(stripslashes($this->default));
+				$this->default = @eval((string) stripslashes($this->default));
 				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
 		}

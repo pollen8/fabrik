@@ -76,42 +76,79 @@
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_DISPLAY" name="plg-fileupload-display">
-			<field description="PLG_ELEMENT_FILEUPLOAD_DEFAULT_IMAGE_DESC" label="PLG_ELEMENT_FILEUPLOAD_DEFAULT_IMAGE_LABEL" name="default_image" type="text"/>
+		
+			<field name="default_image"
+				type="text"
+				description="PLG_ELEMENT_FILEUPLOAD_DEFAULT_IMAGE_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_DEFAULT_IMAGE_LABEL" />
 				
-			<field default="1"
+			<field name="make_link"
+				type="radio"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_LABEL" name="make_link" type="radio">
+				default="1"
+				description="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_DESC" 
+				label="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="1"
+			<field name="fu_show_image_in_table"
+				type="radio"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_DESC" label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_LABEL" name="fu_show_image_in_table" type="radio">
+				default="1"
+				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_DESC" label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_LABEL" name="fu_show_image" type="list">
+			<field name="fu_show_image"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_FORM_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_THUMBNAIL</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_FULL_SIZED</option>	
 			</field>
 			
-			<field default="1"
+			<field name="fu_show_image_in_email"
+				type="radio"
 				class="btn-group"
-				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_DESC" label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_LABEL" name="fu_show_image_in_email" type="radio">
+				default="1"
+				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="" label="PLG_ELEMENT_FILEUPLOAD_IMAGE_LIBRARY_LABEL" name="image_library" type="imagelibs"/>
+			<field name="image_library"
+				type="imagelibs"
+				default=""
+				label="PLG_ELEMENT_FILEUPLOAD_IMAGE_LIBRARY_LABEL" />
 				
-			<field class="input-mini" default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_LABEL" name="fu_main_max_width" size="3" type="text"/>
+			<field name="fu_main_max_width"
+				type="text"
+				class="input-mini"
+				default=""
+				description="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_LABEL"
+				size="3" />
 				
-			<field class="input-mini" default="" description="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_LABEL" name="fu_main_max_height" size="3" type="text"/>
+			<field name="fu_main_max_height"
+				type="text"
+				class="input-mini"
+				default=""
+				description="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_LABEL"
+				size="3" />
 				
-			<field description="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_DESC" label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL" name="fu_title_element" type="listfields" valueformat="tableelement"/>
+			<field name="fu_title_element"
+				type="listfields"
+				description="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_TITLE_ELEMENT_LABEL"
+				valueformat="tableelement"/>
+				
 		</fieldset>
 			
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_THUMBNAILS" name="plg-fileupload-thumbnail">
