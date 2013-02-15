@@ -473,7 +473,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 				else
 				{
-					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>\n';
+					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
 				}
 			}
 		}
@@ -536,7 +536,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
-		$this->getElement();
+		$this->loadMeForAjax();
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$filter = JFilterInput::getInstance();

@@ -381,7 +381,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
-		$this->getElement();
+		$this->loadMeForAjax();
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
 		$listid = $list->id;

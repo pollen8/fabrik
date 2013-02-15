@@ -116,8 +116,8 @@ else
  */
 if (strpos($input->getCmd('task'), '.') !== false)
 {
-	$controller = explode('.', $input->getCmd('task'));
-	$controller = array_shift($controller);
+	$controllerTask = explode('.', $input->getCmd('task'));
+	$controller = array_shift($controllerTask);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
 	if (JFile::exists($path))
@@ -126,8 +126,7 @@ if (strpos($input->getCmd('task'), '.') !== false)
 
 		// Needed to process J content plugin (form)
 		$input->set('view', $controller);
-		$task = explode('.', $input->getCmd('task'));
-		$task = array_pop($task);
+		$task = array_pop($controllerTask);
 		$controller = new $classname;
 	}
 	else

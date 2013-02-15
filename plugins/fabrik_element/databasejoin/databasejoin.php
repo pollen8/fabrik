@@ -2279,6 +2279,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$app = JFactory::getApplication();
 		$this->id = $app->input->getInt('element_id');
+		$this->loadMeForAjax();
 		$this->getElement(true);
 		$filter = JFilterInput::getInstance();
 		$request = $filter->clean($_REQUEST, 'array');

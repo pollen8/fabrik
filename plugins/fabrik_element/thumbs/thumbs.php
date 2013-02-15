@@ -285,6 +285,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$this->loadMeForAjax();
 		$listid = $input->getInt('listid');
 		$list = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$list->setId($listid);

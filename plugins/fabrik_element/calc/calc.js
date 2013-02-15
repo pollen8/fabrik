@@ -4,6 +4,7 @@ var FbCalc = new Class({
 		this.plugin = 'calc';
 		this.oldAjaxCalc = null;
 		this.parent(element, options);
+		this.spinner = new Spinner(this.element.getParent());
 	},
 	
 	attachedToForm : function () {
@@ -62,7 +63,7 @@ var FbCalc = new Class({
 	},
 	
 	calc: function () {
-		this.element.getParent().getElement('.loader').setStyle('display', '');
+		this.spinner.show();
 		var formdata = this.form.getFormElementData();
 		var testdata = $H(this.form.getFormData(false));
 
@@ -82,7 +83,7 @@ var FbCalc = new Class({
 			}
 		}.bind(this));
 		
-		// for placeholders lets set repeat joined groups to their full element name
+		// For placeholders lets set repeat joined groups to their full element name
 		
 		var data = {
 				'option': 'com_fabrik',
@@ -96,10 +97,11 @@ var FbCalc = new Class({
 		data = Object.append(formdata, data);
 		var myAjax = new Request({'url': '', method: 'post', 'data': data,
 		onComplete: function (r) {
-			this.element.getParent().getElement('.loader').setStyle('display', 'none');
+			this.spinner.hide();
 			this.update(r);
 			if (this.options.validations) {
-				//if we have a validation on the element run it after AJAX calc is done
+				
+				// If we have a validation on the element run it after AJAX calc is done
 				this.form.doElementValidation(this.options.element);
 			}
 		}.bind(this)}).send();
