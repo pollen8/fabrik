@@ -118,7 +118,7 @@ class plgFabrik_List extends FabrikPlugin
 			$label = $this->buttonLabel();
 			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', $this->buttonPrefix . '.png');
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
-			return '<a href="#" data-list="' . $this->context . '"class="' . $name . ' listplugin" title="' . $label . '">' . $img . '<span>' . $label . '</span></a>';
+			return '<a href="#" data-list="' . $this->context . '" class="' . $name . ' listplugin" title="' . $label . '">' . $img . '<span>' . $label . '</span></a>';
 		}
 		return '';
 	}
