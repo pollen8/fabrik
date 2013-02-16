@@ -2385,25 +2385,31 @@ class FabrikFEModelList extends JModelForm
 					$dir = JArrayHelper::getValue($orderdirs, $o, 'desc');
 					if ($orderbyRaw !== '')
 					{
-						$orderbyRaw = FabrikString::safeColName($orderbyRaw);
-						if (array_key_exists($orderbyRaw, $els))
+						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
+						if (!JString::stristr($orderbyRaw, 'CONCAT('))
 						{
-							// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
-							$field = $els[$orderbyRaw]->getOrderByName();
-							if (!JString::stristr($field, 'CONCAT('))
+							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
+							if (array_key_exists($orderbyRaw, $els))
 							{
-								$field = FabrikString::safeColName($field);
+								$field = $els[$orderbyRaw]->getOrderByName();
+								$bits[] = " $field $dir";
+								$this->orderEls[] = $field;
+								$this->orderDirs[] = $dir;
 							}
-							$bits[] = " $field $dir";
-							$this->orderEls[] = $field;
-							$this->orderDirs[] = $dir;
+							else
+							{
+								if (strstr($orderbyRaw, '_raw`'))
+								{
+									$orderbyRaw = FabrikString::safeColNameToArrayKey($orderbyRaw);
+								}
+								$bits[] = " $orderbyRaw $dir";
+								$this->orderEls[] = $orderbyRaw;
+								$this->orderDirs[] = $dir;
+							}
 						}
 						else
 						{
-							if (strstr($orderbyRaw, '_raw`'))
-							{
-								$orderbyRaw = FabrikString::safeColNameToArrayKey($orderbyRaw);
-							}
+							// If it was a CONCAT(), just add it with no other checks or processing
 							$bits[] = " $orderbyRaw $dir";
 							$this->orderEls[] = $orderbyRaw;
 							$this->orderDirs[] = $dir;
