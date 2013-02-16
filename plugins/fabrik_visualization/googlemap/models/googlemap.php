@@ -67,11 +67,11 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 
 	public function getJs()
 	{
-		if (!$this->getRequiredFiltersFound())
+		$params = $this->getParams();
+		if (!$this->getRequiredFiltersFound() && $params->get('fb_gm_always_show_map', '0') != '1')
 		{
 			return '';
 		}
-		$params = $this->getParams();
 		$str = "head.ready(function() {";
 		$viz = $this->getVisualization();
 

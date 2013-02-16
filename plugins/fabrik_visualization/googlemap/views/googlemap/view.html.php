@@ -110,7 +110,7 @@ class fabrikViewGooglemap extends JView
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) == '1' ? 1 : 0;
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
 		if ($this->get('ShowSideBar'))
