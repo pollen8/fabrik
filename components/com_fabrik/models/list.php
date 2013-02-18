@@ -2078,6 +2078,10 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
+			if (!$idRows)
+			{
+				JError::raiseError(500, $db->getErrorMsg());
+			}
 			$maxPossibleIds = count($idRows);
 
 			// An array of the lists pk values
@@ -2392,6 +2396,7 @@ class FabrikFEModelList extends JModelForm
 							if (array_key_exists($orderbyRaw, $els))
 							{
 								$field = $els[$orderbyRaw]->getOrderByName();
+								$field = FabrikString::safeColName($field);
 								$bits[] = " $field $dir";
 								$this->orderEls[] = $field;
 								$this->orderDirs[] = $dir;
