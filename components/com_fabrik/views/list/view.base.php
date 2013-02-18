@@ -145,6 +145,7 @@ class FabrikViewListBase extends JView
 		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
+		$opts->tmpl = $tmpl;
 		$csvOpts = new stdClass;
 		$csvOpts->excel = (int) $params->get('csv_format');
 		$csvOpts->inctabledata = (int) $params->get('csv_include_data');

@@ -744,6 +744,9 @@ var FbList = new Class({
 			for (var i = 0; i < this.options.fabrik_show_in_list.length; i ++) {
 				data += '&fabrik_show_in_list[]=' + this.options.fabrik_show_in_list[i]; 
 			}
+			
+			// Add in tmpl for custom nav in admin
+			data += '&tmpl=' + this.options.tmpl;
 			if (!this.request) {
 				this.request = new Request({
 					'url': this.form.get('action'),

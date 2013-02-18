@@ -82,7 +82,8 @@ class FabrikViewList extends JView{
 			'formid'=> $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
 		$d['nav'] = $nav->getProperties();
-		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
+		$tmpl = $input->get('tmpl', $this->getTmpl());
+		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $tmpl) : '';
 		$d['calculations'] = $model->getCalculations();
 
 		// $$$ hugh - see if we have a message to include, set by a list plugin
