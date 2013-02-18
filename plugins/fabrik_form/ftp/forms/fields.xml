@@ -45,7 +45,7 @@
 			<field name="ftp_template"
 				type="filelist"
 				repeat="true"
-				directory="components/com_fabrik/plugins/form/fabrikftp/tmpl/"
+				directory="plugins/fabrik_form/ftp/tmpl/"
 				hide_default="1"
 				label="PLG_FORM_FTP_TEMPLATE_LABEL"
 				description="PLG_FORM_FTP_TEMPLATE_DESC"
