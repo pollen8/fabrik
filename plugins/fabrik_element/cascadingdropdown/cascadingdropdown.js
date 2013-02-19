@@ -24,6 +24,7 @@ var FbCascadingdropdown = new Class({
 			}.bind(this));
 		}
 		this.watchJoinCheckboxes();
+		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 	},
 	
 	attachedToForm: function ()
@@ -64,7 +65,6 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 		}
-		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 		this.spinner.show();
 		// $$$ hugh testing new getFormElementData() method to include current form element values in data
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
