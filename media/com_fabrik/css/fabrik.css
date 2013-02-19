@@ -579,6 +579,11 @@ img[src*="gstatic.com/"], img[src*="googleapis.com/"]  {
     max-width: 99999px;
 }
 
+/** Bootstrap select list in fieldset.row-fluid would auto close **/
+
+fieldset.row-fluid:before {
+    content: normal;
+}
 /** Time Picker button group alignment **/
 
 .fbDateTime .btn-group + .btn-group {
