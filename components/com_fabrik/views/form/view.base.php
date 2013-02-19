@@ -649,7 +649,7 @@ class FabrikViewFormBase extends JView
 		}
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
-		$srcs[] = 'media/com_fabrik/js/encoder.js';
+		//$srcs[] = 'media/com_fabrik/js/encoder.js';
 		FabrikHelperHTML::script($srcs, $str);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}

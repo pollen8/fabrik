@@ -68,7 +68,7 @@ class fabrikViewTimeline extends JView
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
 		$srcs[] = 'media/com_fabrik/js/advanced-search.js';
-		$srcs[] = 'media/com_fabrik/js/encoder.js';
+		//$srcs[] = 'media/com_fabrik/js/encoder.js';
 
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::script($srcs, $js);
