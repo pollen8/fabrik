@@ -48,7 +48,7 @@ class FabrikAdminControllerCrons extends FabControllerAdmin
 	 * @return  J model
 	 */
 
-	public function getModel($name = 'Cron', $prefix = 'FabrikModel', $config = array())
+	public function getModel($name = 'Cron', $prefix = 'FabrikAdminModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
