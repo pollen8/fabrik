@@ -275,6 +275,12 @@ var Loader = new Class({
 				document.body.appendChild(script);
 				Fabrik.googleMap = true;
 			}
+			else {
+				// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
+				// opening a popup edit for the second time, the map JS will never get these events.
+				window.fireEvent('google.map.loaded');
+				window.fireEvent('google.radius.loaded');
+			}
 		};
 		
 		/** Globally observe delete links **/

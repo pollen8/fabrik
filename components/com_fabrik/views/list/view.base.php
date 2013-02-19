@@ -55,7 +55,7 @@ class FabrikViewListBase extends JView
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 
 		$model->getCustomJsAction($src);
-		$src[] = 'media/com_fabrik/js/encoder.js';
+		//$src[] = 'media/com_fabrik/js/encoder.js';
 
 		$tmpl = $this->get('tmpl');
 		$this->tmpl = $tmpl;
