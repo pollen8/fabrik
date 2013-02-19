@@ -179,13 +179,34 @@ class FabrikModelElements extends FabModelList
 
 			$validations = $params->get('validations');
 			$v = array();
-			for ($i = 0; $i < count($validations->plugin); $i ++)
+			// $$$ hugh - make sure the element has validations, if not it could return null or 0 length array
+			if (is_object($validations))
 			{
-				$pname = $validations->plugin[$i];
-				$msgs = $params->get($pname . '-message');
-				$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
-				$v[] = '<b>' . $pname . '</b><i> ' . $published . '</i>'
-				. '<br />' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <i>' . JArrayHelper::getValue($msgs, $i, 'n/a') . '</i>';
+				for ($i = 0; $i < count($validations->plugin); $i ++)
+				{
+					$pname = $validations->plugin[$i];
+					// $$$ hugh - it's possible to save an element with a validation that hasn't
+					// actually had a plugin type selected yet.  Yeah, I should add a language
+					// string for this.  So sue me.  :)
+					if (empty($pname))
+					{
+						$v[] = "No plugin type selected!";
+						continue;
+					}
+					$msgs = $params->get($pname . '-message');
+					// $$$ hugh - elements which haven't been saved since Published param was added won't have
+					// plugin_published, and just default to Published
+					if (!isset($validations->plugin_published))
+					{
+						$published = JText::_('JPUBLISHED');
+					}
+					else
+					{
+						$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
+					}
+					$v[] = '<b>' . $pname . '</b><i> ' . $published . '</i>'
+					. '<br />' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <i>' . JArrayHelper::getValue($msgs, $i, 'n/a') . '</i>';
+				}
 			}
 			$item->numValidations = count($v);
 			$item->validationTip = $v;
