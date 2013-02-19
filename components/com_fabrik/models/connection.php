@@ -137,6 +137,31 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
+	 * Decrypt once a connection password - if its params->encryptedPw option is true
+	 *
+	 * @param   JTable  &$cnn  Connection
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  void
+	 */
+
+	protected function decryptPw(&$cnn)
+	{
+		if (isset($cnn->decrypted) && $cnn->decrypted)
+		{
+			return;
+		}
+		$crypt = FabrikWorker::getCrypt();
+		$params = json_decode($cnn->params);
+		if (is_object($params) && $params->encryptedPw == true)
+		{
+			$cnn->password = $crypt->decrypt($cnn->password);
+			$cnn->decrypted = true;
+		}
+	}
+
+	/**
 	 * Get a connection table object
 	 *
 	 * @param   int  $id  connection id
@@ -167,6 +192,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				{
 					$this->connection = FabTable::getInstance('connection', 'FabrikTable');
 					$this->connection->bind($connProperties);
+					$this->decryptPw($this->connection);
 					return $this->connection;
 				}
 
@@ -183,6 +209,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			// $$$ rob store the connection for later use as it may be required by modules/plugins
 			$session->set($key, serialize($this->connection->getProperties()));
 		}
+		$this->decryptPw($this->connection);
 		return $this->connection;
 	}
 
@@ -349,6 +376,10 @@ class FabrikFEModelConnection extends JModelLegacy
 		$query->select('*, id AS value, description AS text')->from('#__fabrik_connections')->where('published = 1');
 		$db->setQuery($query);
 		$connections = $db->loadObjectList();
+		foreach ($connections as &$cnn)
+		{
+			$this->decryptPw($cnn);
+		}
 		return $connections;
 	}
 
@@ -529,6 +560,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			// jos_fabrik_connections and not jos_{package}_connections
 			$row = FabTable::getInstance('Connection', 'FabrikTable');
 			$row->load(array('default' => 1));
+			$this->decryptPw($row);
 			$this->defaultConnection = $row;
 		}
 		$this->connection = $this->defaultConnection;

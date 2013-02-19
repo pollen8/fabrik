@@ -574,7 +574,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$date = JFactory::getDate();
 		$row = $this->getTable();
 
-		$id = $data['id'];
+		$id = JArrayHelper::getValue($data, 'id');
 		$row->load($id);
 
 		$params = new JRegistry($row->params);

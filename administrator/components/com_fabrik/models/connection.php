@@ -168,6 +168,13 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		$session = JFactory::getSession();
 		$model = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$model->setId($data['id']);
+		$crypt = FabrikWorker::getCrypt();
+
+		$params = new stdClass;
+		$params->encryptedPw = true;
+		$data['params'] = json_encode($params);
+		$data['password'] = $crypt->encrypt($data['password']);
+
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
 		$db = JDatabase::getInstance($options);
 		if (JError::isError($db))
