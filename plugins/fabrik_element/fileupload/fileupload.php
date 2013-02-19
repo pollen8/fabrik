@@ -380,6 +380,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 
 		$opts->winWidth = (int) $params->get('win_width', 400);
 		$opts->winHeight = (int) $params->get('win_height', 400);
+		$opts->elementShortName = $element->name;
+		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
