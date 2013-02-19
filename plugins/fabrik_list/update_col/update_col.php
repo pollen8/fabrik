@@ -171,41 +171,50 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 
 		// $$$servantek reordered the update process in case the email routine wants to kill the updates
 		$emailColID = $params->get('update_email_element', '');
-		if (!empty($emailColID))
+		$emailTo = $params->get('update_email_to', '');
+		if (!empty($emailColID) || !empty($emailTo))
 		{
 			$w = new FabrikWorker;
 			jimport('joomla.mail.helper');
+			$aids = explode(',', $ids);
 			$message = $params->get('update_email_msg');
 			$subject = $params->get('update_email_subject');
 			$eval = $params->get('eval', 0);
 			$config = JFactory::getConfig();
 			$from = $config->get('mailfrom');
 			$fromname = $config->get('fromname');
-			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
-			$emailElement = $elementModel->getElement(true);
-			$emailField = $elementModel->getFullName(false, true, false);
-			$emailColumn = $elementModel->getFullName(false, false, false);
-			$emailFieldRaw = $emailField . '_raw';
-			$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
-			$tbl = array_shift(explode('.', $emailColumn));
-			$db = JFactory::getDBO();
-			$aids = explode(',', $ids);
-
-			// If using a user element, build a lookup list of emails from #__users,
-			// so we're only doing one query to grab all involved emails.
-			if ($emailWhich == 'user')
+			if (!empty($emailColId))
 			{
-				$userids_emails = array();
-				$query = $db->getQuery();
-				$query->select('#__users.id AS id, #__users.email AS email')
-				->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
-				->where(_primary_key . ' IN (' . $ids . ')');
-				$db->setQuery($query);
-				$results = $db->loadObjectList();
-				foreach ($results as $result)
+				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
+				$emailElement = $elementModel->getElement(true);
+				$emailField = $elementModel->getFullName(false, true, false);
+				$emailColumn = $elementModel->getFullName(false, false, false);
+				$emailFieldRaw = $emailField . '_raw';
+				$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
+				$tbl = array_shift(explode('.', $emailColumn));
+				$db = JFactory::getDBO();
+
+
+				// If using a user element, build a lookup list of emails from #__users,
+				// so we're only doing one query to grab all involved emails.
+				if ($emailWhich == 'user')
 				{
-					$userids_emails[(int) $result->id] = $result->email;
+					$userids_emails = array();
+					$query = $db->getQuery();
+					$query->select('#__users.id AS id, #__users.email AS email')
+					->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
+					->where(_primary_key . ' IN (' . $ids . ')');
+					$db->setQuery($query);
+					$results = $db->loadObjectList();
+					foreach ($results as $result)
+					{
+						$userids_emails[(int) $result->id] = $result->email;
+					}
 				}
+			}
+			else
+			{
+				$emailWhich = 'to';
 			}
 			foreach ($aids as $id)
 			{
@@ -215,9 +224,13 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 					$userid = (int) $row->$emailFieldRaw;
 					$to = JArrayHelper::getValue($userids_emails, $userid);
 				}
-				else
+				else if ($emailWhich == 'field')
 				{
 					$to = $row->$emailField;
+				}
+				else
+				{
+					$to = $emailTo;
 				}
 				if (JMailHelper::cleanAddress($to) && JMailHelper::isEmailAddress($to))
 				{
