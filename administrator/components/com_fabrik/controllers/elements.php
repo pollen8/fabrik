@@ -17,9 +17,9 @@ require_once 'fabcontrolleradmin.php';
 /**
  * Elements list controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerElements extends FabControllerAdmin
@@ -57,8 +57,9 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	/**
 	 * Proxy for getModel.
 	 *
-	 * @param   string  $name    model name
-	 * @param   string  $prefix  model prefix
+	 * @param   string  $name    Model name
+	 * @param   string  $prefix  Model prefix
+	 * @param   array   $config  Model config
 	 *
 	 * @return  J model
 	 */
@@ -198,6 +199,38 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$opts = $input->get('batch', array(), 'array');
 		$model->batch($cid, $opts);
 		$this->setRedirect('index.php?option=com_fabrik&view=elements', JText::_('COM_FABRIK_MSG_BATCH_DONE'));
+	}
+
+	/**
+	 * Method to save the submitted ordering values for records via AJAX.
+	 *
+	 * @return	void
+	 *
+	 * @since   3.1rc1
+	 */
+
+	public function saveOrderAjax()
+	{
+		$pks = $this->input->post->get('cid', array(), 'array');
+		$order = $this->input->post->get('order', array(), 'array');
+
+		// Sanitize the input
+		JArrayHelper::toInteger($pks);
+		JArrayHelper::toInteger($order);
+
+		// Get the model
+		$model = $this->getModel();
+
+		// Save the ordering
+		$return = $model->saveorder($pks, $order);
+
+		if ($return)
+		{
+			echo "1";
+		}
+
+		// Close the application
+		JFactory::getApplication()->close();
 	}
 
 }

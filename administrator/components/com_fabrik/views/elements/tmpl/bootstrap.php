@@ -13,13 +13,19 @@
 defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
-JHtml::_('behavior.tooltip');
+JHtml::_('bootstrap.tooltip');
 JHTML::_('script', 'system/multiselect.js', false, true);
 $user	= JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
+echo $listOrder;
 $saveOrder	= $listOrder == 'e.ordering';
+if ($saveOrder)
+{
+	$saveOrderingUrl = 'index.php?option=com_fabrik&task=elements.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'elementList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+}
 
 $states	= array(
 		1	=> array(
@@ -72,11 +78,14 @@ $states	= array(
 		</div>
 	</div>
 	<div class="clearfix"> </div>
-	<table class="table table-striped">
+	<table class="table table-striped" id="elementList">
 		<thead>
 			<tr>
-				<th width="2%"></th>
-				<th width="2%"><?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?></th>
+				<th width="2%">
+					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'e.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
+				</th>
+				<th width="2%">
+				</th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /> </th>
 				<th width="13%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'e.name', $listDirn, $listOrder); ?>
@@ -99,13 +108,6 @@ $states	= array(
 				<th width="5%">
 				<?php echo JHTML::_('grid.sort', 'JPUBLISHED', 'e.published', $listDirn, $listOrder); ?>
 				</th>
-				<th width="10%">
-					<?php echo JHtml::_('grid.sort',  'JGRID_HEADING_ORDERING', 'e.ordering', $listDirn, $listOrder); ?>
-					<?php if ($saveOrder) :?>
-					<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'elements.saveorder'); ?>
-					<?php  endif;
-					?>
-				</th>
 			</tr>
 		</thead>
 		<tfoot>
@@ -126,6 +128,26 @@ $states	= array(
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
+
+			<td>
+			<?php if ($canChange) :
+						$disableClassName = '';
+						$disabledLabel	  = '';
+
+						if (!$saveOrder) :
+							$disabledLabel    = JText::_('JORDERINGDISABLED');
+							$disableClassName = 'inactive tip-top';
+						endif; ?>
+						<span class="sortable-handler hasTooltip <?php echo $disableClassName?>" title="<?php echo $disabledLabel?>">
+							<i class="icon-menu"></i>
+						</span>
+						<input type="text" style="display:none" name="order[]" size="5" value="<?php echo $item->ordering;?>" class="width-20 text-area-order " />
+					<?php else : ?>
+						<span class="sortable-handler inactive" >
+							<i class="icon-menu"></i>
+						</span>
+					<?php endif; ?>
+					</td>
 				<td>
 				<?php if ($item->parent_id != 0) :
 					echo "<a href='index.php?option=com_fabrik&task=element.edit&id=" . $item->parent_id . "'>"
@@ -136,7 +158,6 @@ $states	= array(
 				endif;
 				?>
 					</td>
-					<td><?php echo $item->id; ?></td>
 					<td><?php $checkbox = JHtml::_('grid.id', $i, $item->id);
 					echo $checkbox; ?></td>
 					<td>
@@ -172,29 +193,6 @@ $states	= array(
 					</td>
 					<td>
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'elements.', $canChange);?>
-					</td>
-					<td class="order">
-						<?php if ($saveOrder) :
-						?>
-							<?php if ($listDirn == 'asc') :
-							?>
-								<span>
-								<?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i - 1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?>
-								</span>
-								<span>
-								<?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i + 1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?>
-								</span>
-							<?php elseif ($listDirn == 'desc') :?>
-								<span>
-								<?php echo $this->pagination->orderUpIcon($i, ($item->group_id == @$this->items[$i - 1]->group_id), 'elements.orderdown', 'JLIB_HTML_MOVE_UP', $ordering); ?>
-								</span>
-								<span>
-								<?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, ($item->group_id == @$this->items[$i + 1]->group_id), 'elements.orderup', 'JLIB_HTML_MOVE_DOWN', $ordering); ?>
-								</span>
-							<?php endif; ?>
-						<?php endif;?>
-						<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
-						<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" class="text-area-order" <?php echo $disabled?>/>
 					</td>
 				</tr>
 
