@@ -46,6 +46,15 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="speech"
+				type="radio"
+				default="0"
+				description="PLG_ELEMENT_FIELD_SPEECH_DESC"
+				label="PLG_ELEMENT_FIELD_SPEECH_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
 				
 		</fieldset>
 		

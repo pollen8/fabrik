@@ -4088,10 +4088,21 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function sum(&$listModel)
 	{
+		$app = JFactory::getApplication();
+		$requestGroupBy = $app->input->get('group_by', '');
+		if ($requestGroupBy == '0')
+		{
+			$requestGroupBy = '';
+		}
+		if ($requestGroupBy !== '')
+		{
+			$formModel = $this->getFormModel();
+			$requestGroupBy = $formModel->getElement($requestGroupBy)->getElement()->id;
+		}
 		$db = $listModel->getDb();
 		$params = $this->getParams();
 		$item = $listModel->getTable();
-		$splitSum = $params->get('sum_split', '');
+		$splitSum = $params->get('sum_split', $requestGroupBy);
 		$split = trim($splitSum) == '' ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split)
