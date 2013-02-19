@@ -176,6 +176,19 @@ class FabrikModelElements extends FabModelList
 			$params = new JRegistry($item->params);
 			$item->tip = JText::_('COM_FABRIK_ACCESS_EDITABLE_ELEMENT') . ': ' . $viewLevels[$item->access]->title .
 			'<br />' . JText::_('COM_FABRIK_ACCESS_VIEWABLE_ELEMENT') . ': ' . $viewLevels[$params->get('view_access', 1)]->title;
+
+			$validations = $params->get('validations');
+			$v = array();
+			for ($i = 0; $i < count($validations->plugin); $i ++)
+			{
+				$pname = $validations->plugin[$i];
+				$msgs = $params->get($pname . '-message');
+				$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
+				$v[] = '<b>' . $pname . '</b><i> ' . $published . '</i>'
+				. '<br />' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <i>' . JArrayHelper::getValue($msgs, $i, 'n/a') . '</i>';
+			}
+			$item->numValidations = count($v);
+			$item->validationTip = $v;
 		}
 		return $items;
 	}

@@ -81,11 +81,14 @@ $saveOrder	= $listOrder == 'e.ordering';
 				<th width="13%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'e.name', $listDirn, $listOrder); ?>
 				</th>
-				<th width="15%">
+				<th width="18%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_LABEL', 'e.label', $listDirn, $listOrder); ?>
 				</th>
-				<th width="20%">
-					<?php echo JText::_('COM_FABRIK_FULL_ELEMENT_NAME');?>
+				<th width="17%">
+					<?php echo JText::_('COM_FABRIK_FULL_ELEMENT_NAME'); ?>
+				</th>
+				<th width="5%">
+					<?php echo JText::_('COM_FABRIK_VALIDATIONS'); ?>
 				</th>
 				<th width="12%">
 				<?php echo JHTML::_('grid.sort', 'COM_FABRIK_GROUP', 'g.label', $listDirn, $listOrder); ?>
@@ -93,7 +96,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 				<th width="10%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_PLUGIN', 'e.plugin', $listDirn, $listOrder); ?>
 				</th>
-				<th width="10%">
+				<th width="5%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_SHOW_IN_LIST', 'e.show_in_list_summary', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
@@ -159,6 +162,11 @@ $saveOrder	= $listOrder == 'e.ordering';
 					</td>
 					<td>
 						<?php echo $item->full_element_name; ?>
+					</td>
+					<td>
+						<span class="hasTip" title="<?php echo JText::_('COM_FABRIK_VALIDATIONS') . '::' . implode('<br /><br />', $item->validationTip); ?>">
+							<?php echo $item->numValidations; ?>
+						</span>
 					</td>
 					<td>
 						<a href="index.php?option=com_fabrik&task=group.edit&id=<?php echo $item->group_id?>">
