@@ -55,7 +55,7 @@ class FabrikAdminModelForms extends FabModelList
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
-		$query->select($this->getState('list.select', 'f.*, l.id AS list_id, fg.group_id AS group_id'));
+		$query->select($this->getState('list.select', 'DISTINCT f.id, f.*, l.id AS list_id, "" AS group_id'));
 		$query->from('#__{package}_forms AS f');
 
 		// Filter by published state
@@ -92,7 +92,6 @@ class FabrikAdminModelForms extends FabModelList
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
-
 		return $query;
 	}
 
