@@ -1907,7 +1907,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$tip = $this->getTip();
 		if ($tip !== '')
 		{
-			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . $tip . '</div>';
+			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip . '</div>';
 		}
 		switch ($model->getParams()->get('tiplocation'))
 		{

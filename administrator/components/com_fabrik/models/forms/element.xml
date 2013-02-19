@@ -218,7 +218,7 @@
 					
 			</fieldset>
 			
-			<fieldset name="calculations">
+			<fieldset name="calculations-sum" label="COM_FABRIK_SUM">
 	
 				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_SUM_TOTAL_DESC" label="COM_FABRIK_FIELD_SUM_TOTAL_LABEL" name="sum_on" type="radio">
 						<option value="0">JNO</option>
@@ -231,8 +231,8 @@
 		
 				<field label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" name="sum_split" type="listfields" valueformat="id"/>
 					
-				<field default=" " name="" type="spacer"/>
-				
+			</fieldset>
+			<fieldset name="calculations-avg" label="COM_FABRIK_AVERAGE">
 				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_AVERAGE_TOTAL_DESC" label="COM_FABRIK_FIELD_AVERAGE_TOTAL_LABEL" name="avg_on" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
@@ -242,11 +242,18 @@
 					
 				<field description="COM_FABRIK_FIELD_AVERAGE_ACCESS_DESC" label="COM_FABRIK_FIELD_AVERAGE_ACCESS_LABEL" name="avg_access" type="accesslevel"/>
 				
-				<field default="0" description="COM_FABRIK_FIELD_AVERAGE_ROUND_DESC" label="COM_FABRIK_FIELD_AVERAGE_ROUND_LABEL" name="avg_round" size="2" type="field"/>
+				<field name="avg_round"
+					type="field"
+					default="0"
+					description="COM_FABRIK_FIELD_AVERAGE_ROUND_DESC"
+					class="input-mini"
+					size="2"
+					label="COM_FABRIK_FIELD_AVERAGE_ROUND_LABEL" />
 					
 				<field label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" name="avg_split" type="listfields" valueformat="id"/>
 				
-				<field default=" " name="" type="spacer"/>
+			</fieldset>
+			<fieldset name="calculations-median" label="COM_FABRIK_MEDIAN">
 				
 				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_MEDIAN_TOTAL_DESC" label="COM_FABRIK_FIELD_MEDIAN_TOTAL_LABEL" name="median_on" type="radio">
 						<option value="0">JNO</option>
@@ -259,7 +266,8 @@
 			
 				<field label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" name="median_split" type="listfields" valueformat="id"/>
 				
-				<field default=" " name="" type="spacer"/>
+			</fieldset>
+			<fieldset name="calculations-count" label="COM_FABRIK_COUNT">
 				
 				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_COUNT_RECORDS_DESC" label="COM_FABRIK_FIELD_COUNT_RECORDS_LABEL" name="count_on" type="radio">
 						<option value="0">JNO</option>
@@ -274,7 +282,8 @@
 					
 				<field label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" name="count_split" type="listfields" valueformat="id"/>
 					
-				<field default=" " name="" type="spacer"/>
+			</fieldset>
+			<fieldset name="calculations-custom" label="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL">
 				
 				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_CUSTOM_CALC_DESC" label="COM_FABRIK_FIELD_CUSTOM_CALC_LABEL" name="custom_calc_on" type="radio">
 						<option value="0">JNO</option>
@@ -290,7 +299,6 @@
 				<field label="COM_FABRIK_FIELD_SPLIT_ON_LABEL" name="custom_calc_split" type="listfields" valueformat="id"/>
 					
 				<field cols="6" description="COM_FABRIK_FIELD_CUSTOM_CALC_PHP_DESC" label="COM_FABRIK_FIELD_CUSTOM_CALC_PHP_LABEL" name="custom_calc_php" rows="10" type="textarea"/>
-				
 						
 			</fieldset>
 			

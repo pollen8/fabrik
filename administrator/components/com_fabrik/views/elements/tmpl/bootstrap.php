@@ -19,7 +19,6 @@ $user	= JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
-echo $listOrder;
 $saveOrder	= $listOrder == 'e.ordering';
 if ($saveOrder)
 {

@@ -33,7 +33,7 @@ $panels = array(
 
 	array('heading' => JText::_('COM_FABRIK_ELEMENT_LABEL_CALCULATIONS_DETAILS'),
 		'id'=>'calculations',
-		'fieldset'=>'calculations')
+		'fieldset'=> array('calculations-sum', 'calculations-avg', 'calculations-median', 'calculations-count', 'calculations-custom'))
 );
 
 echo JHtml::_('sliders.start','element-sliders-viewsettings-'.$this->item->id, array('useCookie'=>1));

@@ -75,10 +75,29 @@
 
 		<div class="tab-pane" id="listview-calculations">
 			<fieldset class="form-horizontal">
-				<?php foreach ($this->form->getFieldset('calculations') as $this->field) :
-					echo $this->loadTemplate('control_group');
+				<div class="span6">
+				<?php
+				$fieldsets = $this->form->getFieldsets();
+				$cals = array('calculations-sum', 'calculations-avg', 'calculations-median');
+				foreach ($cals as $cal) :?>
+					<legend><?php echo JText::_($fieldsets[$cal]->label) ;?></legend>
+					<?php foreach ($this->form->getFieldset($cal) as $this->field) :
+						echo $this->loadTemplate('control_group');
+					endforeach;
 				endforeach;
 				?>
+				</div>
+				<div class="span6">
+				<?php
+				$cals = array('calculations-count', 'calculations-custom');
+				foreach ($cals as $cal) :?>
+					<legend><?php echo JText::_($fieldsets[$cal]->label) ;?></legend>
+					<?php foreach ($this->form->getFieldset($cal) as $this->field) :
+						echo $this->loadTemplate('control_group');
+					endforeach;
+				endforeach;
+				?>
+				</div>
 			</fieldset>
 		</div>
 	</div>
