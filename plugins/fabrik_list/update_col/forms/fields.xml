@@ -86,7 +86,14 @@
 				repeat="true"
 				type="listfields"
 				valueformat="id"/>
-				
+
+			<field name="update_email_to"
+				type="text"
+				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_TO_DESC"
+				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_TO_LABEL"
+				repeat="true"
+				size="35"/>
+								
 			<field name="update_email_subject"
 				type="text"
 				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_SUBJECT_DESC"

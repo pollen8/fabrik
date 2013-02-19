@@ -52,7 +52,7 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 
 		$this->formModel = $formModel;
 		$formParams	= $formModel->getParams();
-		$ftpTemplate = JPath::clean(JPATH_SITE . '/components/com_fabrik/plugins/form/fabrikftp/tmpl/' . $params->get('ftp_template', ''));
+		$ftpTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/ftp/tmpl/' . $params->get('ftp_template', ''));
 
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 
