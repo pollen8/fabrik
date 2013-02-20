@@ -92,10 +92,12 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 			 <a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
 				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
-			<table class="table table-striped" width="100%">
-				<tbody id="filterContainer">
-				</tbody>
-			</table>
+			<div id="prefilters" style="padding-top:20px">
+				<table class="table table-striped" width="100%">
+					<tbody id="filterContainer">
+					</tbody>
+				</table>
+			</div>
 			<?php foreach ($this->form->getFieldset('prefilter') as $this->field):
 				echo $this->loadTemplate('control_group');
 			 endforeach;

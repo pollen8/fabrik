@@ -436,17 +436,26 @@ var adminFilters = new Class({
 	},
 	
 	deleteFilterOption: function (e) {
-		e.stop();
-		var element = e.target;
-		element.removeEvent("click", function (e) {
-			this.deleteFilterOption(e);
-		}.bind(this));
-		var tr = element.parentNode.parentNode;
-		var table = tr.parentNode;
-		table.removeChild(tr);
 		this.counter --;
-		if (this.counter === 0) {
-			document.id('filterTh').dispose();
+		var tbl, t;
+		e.stop();
+		if (this.options.j3) {
+			var row = e.target.id.replace('filterContainer-del-', '').toInt();
+			
+			t = e.target.getParent('tr');
+			tbl = e.target.getParent('table');
+		} else {
+			t = document.id(element.parentNode.parentNode); //was 3 but that was the tbody
+		}
+		if (this.options.j3) {
+			// in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
+			t.getElements('input, select, textarea').dispose();
+			t.hide();
+			if (this.counter === 0) {
+				tbl.hide();
+			}
+		} else {
+			t.dispose();
 		}
 	},
 	
@@ -469,7 +478,11 @@ var adminFilters = new Class({
 	addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
 		var and, or, joinDd, groupedNo, groupedYes, i, sels;
 		if (this.counter <= 0) {
-			this.addHeadings();
+			if (this.options.j3 && this.el.getParent('table').getElement('thead')) {
+				// We've already added the thead - in 3.1 we have to hide the rows rather than destroy otherwise the form doesnt submit!!!
+			} else {
+				this.addHeadings();
+			}
 		}
 		selJoin = selJoin ? selJoin : '';
 		selFilter = selFilter ? selFilter : '';
@@ -485,7 +498,7 @@ var adminFilters = new Class({
 			groupedYes = new Element('label').set('text', Joomla.JText._('JYES')).adopt(
 				new Element('input', opts)
 			);
-			//need to redeclare opts for ie8 otherwise it renders a field!
+			// Need to redeclare opts for ie8 otherwise it renders a field!
 			opts = {
 				'type': 'radio',
 				'name': 'jform[params][filter-grouped][' + this.counter + ']',
@@ -585,6 +598,7 @@ var adminFilters = new Class({
 
 		this.el.appendChild(tr);
 		
+		this.el.getParent('table').show();
 		document.id(delId).addEvent('click', function (e) {
 			this.deleteFilterOption(e);
 		}.bind(this));

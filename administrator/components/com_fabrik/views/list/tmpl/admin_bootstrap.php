@@ -34,7 +34,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 
-<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+<form action="index.php?option=com_fabrik" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<div class="row-fluid" id="elementFormTable">
 
 		<div class="span2">
