@@ -2078,7 +2078,8 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
-			if (!$idRows)
+			// $$$ hugh - can't use simple !$idRows, as empty array is false!
+			if (!is_array($idRows))
 			{
 				JError::raiseError(500, $db->getErrorMsg());
 			}

@@ -597,7 +597,9 @@ var FbForm = new Class({
 	},
 
 	addElement: function (oEl, elId, gid) {
+		elId = oEl.getFormElementsKey(elId);
 		elId = elId.replace('[]', '');
+		
 		var ro = elId.substring(elId.length - 3, elId.length) === '_ro';
 		oEl.form = this;
 		oEl.groupid = gid;
