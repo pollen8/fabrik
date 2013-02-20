@@ -66,10 +66,10 @@ class fabrikViewMedia extends JView
 		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
 		$this->filters = $this->get('Filters');
 		$this->params = $model->getParams();
-		$tmpl = $params->get('media_layout', $tmpl);
-		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/media/views/media/tmpl/' . $tmpl;
+		$tpl = $params->get('media_layout', $tpl);
+		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tmpl . '/template.css');
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
 
