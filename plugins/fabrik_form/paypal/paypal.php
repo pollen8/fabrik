@@ -272,19 +272,26 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 				$shipping_select['country'] = $shipping_country;
 			}
 			$query->clear();
-			$query->select($shipping_select)->from($shipping_table)
-			->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
-
-			$db->setQuery($query);
-			$user_shippingdata = $db->loadObject();
-
-			foreach ($shipping_select as $opt => $val)
+			if (empty($shipping_select) || $shipping_table == '')
 			{
-				// $$$tom Since we test on the current userid, it always adds the &name=&street=....
-				// Even if those vars are empty...
-				if ($val)
+				JError::raiseNotice(500, 'No shipping lookup table or shipping fields selected');
+			}
+			else
+			{
+				$query->select($shipping_select)->from($shipping_table)
+				->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
+
+				$db->setQuery($query);
+				$user_shippingdata = $db->loadObject();
+
+				foreach ($shipping_select as $opt => $val)
 				{
-					$opts[$opt] = $user_shippingdata->$val;
+					// $$$tom Since we test on the current userid, it always adds the &name=&street=....
+					// Even if those vars are empty...
+					if ($val)
+					{
+						$opts[$opt] = $user_shippingdata->$val;
+					}
 				}
 			}
 		}
