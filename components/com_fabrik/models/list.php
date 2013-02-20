@@ -2391,13 +2391,22 @@ class FabrikFEModelList extends JModelForm
 					if ($orderbyRaw !== '')
 					{
 						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
+						// $$$ hugh - OK, we need to test for this twice, because older elements
+						// which get converted form names to ids above have already been run through
+						// getOrderByName().  So first check here ...
 						if (!JString::stristr($orderbyRaw, 'CONCAT('))
 						{
 							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
 							if (array_key_exists($orderbyRaw, $els))
 							{
 								$field = $els[$orderbyRaw]->getOrderByName();
-								$field = FabrikString::safeColName($field);
+								// $$$ hugh - ... second check for CONCAT, see comment above
+								// $$$ @TODO why don't we just embed this logic in safeColName(), so
+								// it recognizes a CONCAT and treats it accordingly?
+								if (!JString::stristr($field, 'CONCAT('))
+								{
+									$field = FabrikString::safeColName($field);
+								}
 								$bits[] = " $field $dir";
 								$this->orderEls[] = $field;
 								$this->orderDirs[] = $dir;
