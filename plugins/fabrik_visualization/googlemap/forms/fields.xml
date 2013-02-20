@@ -333,6 +333,11 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field default="0" description="PLG_VISUALIZATION_GOOGLEMAP_ALWAYS_SHOW_MAP_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_ALWAYS_SHOW_MAP_LABEL" name="fb_gm_always_show_map" type="radio">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 		</fieldset>
 		
 		<fieldset label="PLG_VISUALIZATION_GOOGLEMAP_OVERLAY_HEADING" name="overlay_settings">

@@ -48,6 +48,18 @@ var FbElement =  new Class({
 		}
 	},
 	
+	/**
+	 * Sets the element key used in Fabrik.blocks.form_X.formElements
+	 * Overwritten by any element which performs a n-n join (multi ajax fileuploads, dbjoins as checkboxes) 
+	 * 
+	 * @since   3.0.7
+	 * 
+	 * @return  string
+	 */
+	getFormElementsKey: function (elId) {
+		return elId;
+	},
+	
 	attachedToForm: function ()
 	{
 		this.setElement();

@@ -121,7 +121,6 @@ class plgFabrik_List extends FabrikPlugin
 			$label = $this->buttonLabel();
 			$imageName = $this->getImageName();
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
-			//$label = $j3 ? $label : '<span>' . $label . '</span>';
 			$text = $this->buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 			$btnClass = ($j3 && $this->buttonAction != 'dropdown') ? 'btn ' : '';
 			return '<a href="#" data-list="' . $this->context . '"class="' . $btnClass . $name . ' listplugin" title="' . $label . '">' . $img . ' ' . $text . '</a>';

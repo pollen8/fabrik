@@ -531,12 +531,43 @@ var FbDatabasejoin = new Class({
 			return v;
 		case 'checkbox':
 			v = [];
-			this._getSubElements().each(function (sub) {
+			this.getChxLabelSubElements().each(function (sub) {
 				if (sub.checked) {
 					v.push(sub.get('value'));
 				}
 			});
 			return v;
+		}
+	},
+	
+	/**
+	 * When rendered as a checkbox - the joined to tables values are stored in the visible checkboxes,
+	 * for getValue() to get the actual values we only want to select these subElements and not the hidden
+	 * ones which if we did would add the lookup lists's ids into the values array. 
+	 * 
+	 * @return  array
+	 */
+	getChxLabelSubElements: function () {
+		var subs = this._getSubElements();
+		return subs.filter(function (sub) {
+			if (!sub.name.contains('___id')) {
+				return true;
+			}
+		});
+	},
+	
+	/**
+	 * Sets the element key used in Fabrik.blocks.form_X.formElements
+	 * 
+	 * @since   3.0.7
+	 * 
+	 * @return  string
+	 */
+	getFormElementsKey: function (elId) {
+		if (this.options.displayType === 'checkbox' || this.options.displayType === 'multilist') {
+			return this.options.listName + '___' + this.options.elementShortName;
+		} else {
+			return this.parent(elId);
 		}
 	},
 	

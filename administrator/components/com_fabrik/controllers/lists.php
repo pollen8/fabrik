@@ -140,12 +140,14 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	public function delete()
 	{
 		$model = $this->getModel();
+		$listsModel = $this->getModel('lists');
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('confirmdelete');
 		if (!JError::isError($model))
 		{
 			$view->setModel($model, true);
+			$view->setModel($listsModel);
 		}
 		// Used to load in the confirm form fields
 		$view->setModel($this->getModel('list'));

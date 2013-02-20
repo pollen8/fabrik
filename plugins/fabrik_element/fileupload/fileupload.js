@@ -87,6 +87,23 @@ var FbFileUpload = new Class({
 			}.bind(this));
 		}
 	},
+	
+	/**
+	 * Sets the element key used in Fabrik.blocks.form_X.formElements
+	 * overwritten by dbjoin rendered as checkbox 
+	 * 
+	 * @since   3.0.7
+	 * 
+	 * @return  string
+	 */
+
+	getFormElementsKey: function (elId) {
+		if (this.options.ajax_upload && this.options.ajax_max > 1) {
+			return this.options.listName + '___' + this.options.elementShortName;
+		} else {
+			return this.parent(elId);
+		}
+	},
 
 	/**
 	 * when in ajax form, on submit the list will call this, so we can remove the submit event

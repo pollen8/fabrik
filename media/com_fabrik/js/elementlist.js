@@ -46,7 +46,9 @@ FbElementList =  new Class({
 			this.runLoadEvent(js);
 		} else {
 			c = this.form.form;
-			var delegate = action + ':relay(input[type=' + this.type + '])';
+			
+			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
+			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.strElement + '])';
 			c.addEvent(delegate, function (event, target) {
 				
 				// As we are delegating the event, and reference to 'this' in the js will refer to the first element

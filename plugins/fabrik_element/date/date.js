@@ -387,7 +387,9 @@ var FbDateTime = new Class({
 				this._getSubElements().each(function (subEl) {
 					subEl.value = '';
 				});
-				this.cal.date = '';
+				if (this.cal) {
+					this.cal.date = '';
+				}
 				return;
 			}
 		} else {

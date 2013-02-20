@@ -208,8 +208,14 @@ class FabrikAdminViewLists extends JViewLegacy
 	protected function confirmdelete($tpl = null)
 	{
 		$this->form = $this->get('ConfirmDeleteForm', 'list');
-		$this->items = $this->get('DbTableNames');
+		$model = $this->getModel('lists');
+		$this->items = $model->getDbTableNames();
 		$this->addConfirmDeleteToolbar();
+		$v = new JVersion;
+		if ($v->RELEASE > 2.5)
+		{
+			$this->setLayout('confirmdeletebootstrap');
+		}
 		parent::display($tpl);
 	}
 

@@ -478,7 +478,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * the array_diff() we're about to do sees that as a diff.
 		 */
 		$selected = $this->getValue($data, $repeatCounter);
-		if (is_string($selected) || is_null($selected))
+		if (!is_array($selected))
 		{
 
 			// $$$ hugh - ooops, '0' will count as empty.

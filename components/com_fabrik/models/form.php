@@ -2606,6 +2606,8 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get form validation errors - if empty test session for errors
 	 * 31/01/13 - no longer restoring from session errors - see http://fabrikar.com/forums/showthread.php?t=31377
+	 * 19/02/13 - Changed from http refferer test to this->isMambot to restore session errors when redirecting from a non-ajax form
+	 * in module that has failed validaiton - see http://fabrikar.com/forums/showthread.php?t=31870
 	 *
 	 * @return  array  errors
 	 */
@@ -2621,10 +2623,10 @@ class FabrikFEModelForm extends FabModelForm
 		$errors = array();
 		if (empty($this->errors))
 		{
-			/* if (isset($_SERVER['HTTP_REFERER']))
+			if ($this->isMambot)
 			{
 				$errors = $session->get($context . 'errors', array());
-			} */
+			}
 		}
 		else
 		{
@@ -5045,7 +5047,7 @@ class FabrikFEModelForm extends FabModelForm
 		$baseRedirect = true;
 		if (!$incSession)
 		{
-			return $url;
+			return array('url' => $url, 'baseRedirect' => $baseRedirect);
 		}
 		$session = JFactory::getSession();
 		$formdata = $session->get('com_' . $package . '.form.data');
