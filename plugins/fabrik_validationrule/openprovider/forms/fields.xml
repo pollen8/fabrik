@@ -18,14 +18,14 @@
 			<field name="openprovider-message"
 				type="text"
 				size="30"
-				description="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_DESC"
-				label="PLG_VALIDATIONRULE_NOTEMPTY_ERROR_LABEL" />
+				description="PLG_VALIDATIONRULE_OPENPROVIDER_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_OPENPROVIDER_ERROR_LABEL" />
 
 			<field  name="openprovider-validation_condition"
 				type="textarea"
 				cols="30" rows="5"
-				description="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_DESC"
-				label="PLG_VALIDATIONRULE_NOTEMPTY_CONDITION_LABEL"/>
+				description="PLG_VALIDATIONRULE_OPENPROVIDER_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_OPENPROVIDER_CONDITION_LABEL"/>
 		
 		</fieldset>
 	</fields>

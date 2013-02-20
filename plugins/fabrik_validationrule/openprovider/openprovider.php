@@ -65,7 +65,7 @@ class plgFabrik_ValidationruleOpenprovider extends plgFabrik_Validationrule {
 		{
 			$data = substr($data, 4, strlen($data));
 		}
-		list($domain, $extension) = explode('.', $data);
+		list($domain, $extension) = explode('.', $data, 2);
 
 		$api = new OP_API('https://api.openprovider.eu');
 
