@@ -103,7 +103,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
-		if ($this->rowid !== '')
+		if ((string) $this->rowid !== '')
 		{
 			$form->formid .= '_' . $this->rowid;
 		}
