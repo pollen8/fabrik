@@ -372,6 +372,9 @@ var FbFileUpload = new Class({
 
 	pluploadRemoveFile : function (e, file) {
 		e.stop();
+		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
+			return;
+		}
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
 		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
 		
@@ -597,7 +600,7 @@ var ImageWidget = new Class({
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
-					this.storeActiveImageData(filepath);
+					// this.storeActiveImageData(filepath);
 					this.storeImageDimensions(filepath, img, params);
 				}.bind(this)
 			});
@@ -607,7 +610,6 @@ var ImageWidget = new Class({
 			this.img = params.img;
 			this.setInterfaceDimensions(params);
 			this.showWin();
-			console.log('already loaded', params);
 		}
 	},
 	

@@ -40,7 +40,7 @@ a.fabrikTip {
 /*** stoopid beez20 fixes */
 #main .fabrikForm  a:hover {
 	color: #000 !important;
-	background-color: transparent !important;
+	/* background-color: transparent !important; */
 }
 
 #main .floating-tip-wrapper ul {
@@ -519,4 +519,17 @@ table.fabrikList .oddRow1 {
 }
 .fabrikGroup ul li.date span {
 	display:inline
+}
+
+/** file upload styling **/
+
+.plupload_content ul {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#main .fabrikForm .plupload_content  .plupload_file_action a:hover,
+#main .fabrikForm .plupload_content  .plupload_file_action a:active,
+#main .fabrikForm .plupload_content  .plupload_file_action a:focus {
+	background: url("../../../plugins/fabrik_element/fileupload/lib/plupload/img/done.gif") repeat scroll 0 0 transparent;
 }
