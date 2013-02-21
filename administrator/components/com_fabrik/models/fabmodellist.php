@@ -32,7 +32,7 @@ class FabModelList extends JModelList
 
 	public function __construct($config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 		parent::__construct($config);
 	}
 

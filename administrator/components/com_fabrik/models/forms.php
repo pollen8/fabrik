@@ -106,7 +106,7 @@ class FabrikModelForms extends FabModelList
 
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabrikWorker::getDbo();
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

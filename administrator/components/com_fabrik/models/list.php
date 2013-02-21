@@ -77,7 +77,7 @@ class FabrikModelList extends FabModelAdmin
 		$sig = $type . $prefix . implode('.', $config);
 		if (!array_key_exists($sig, $this->tables))
 		{
-			$config['dbo'] = FabriKWorker::getDbo(true);
+			$config['dbo'] = FabrikWorker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
 		return $this->tables[$sig];
