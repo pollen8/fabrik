@@ -194,7 +194,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$baseContext = $this->getSessionContext();
 		//$style = $type[0] == 'geocode' ? '' : 'display:none';
 
-		$style = $type[0] == 'geocode' ? '' : 'position:absolute;left:-10000000px';
+		$style = $type[0] == 'geocode' ? '' : 'position:absolute;left:-10000000px;';
 
 		$address = $app->getUserStateFromRequest($baseContext . 'geocode' . $this->renderOrder, 'radius_search_geocode_field' . $this->renderOrder);
 		list($latitude, $longitude) = $this->getSearchLatLon();

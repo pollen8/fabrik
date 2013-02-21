@@ -113,7 +113,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 		</thead>
 		<tfoot>
 			<tr>
-				<td colspan="11">
+				<td colspan="12">
 					<?php echo $this->pagination->getListFooter(); ?>
 				</td>
 			</tr>

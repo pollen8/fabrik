@@ -393,8 +393,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_RESIZE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CROP_AND_SCALE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
-		JTExt::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
-		JTExt::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
+		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
+		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
 		return "new FbFileUpload('$id', $opts)";
 	}
 
@@ -1037,11 +1037,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$ids = (array) JArrayHelper::getValue($raw, 'id');
 				$cropData = (array) JArrayHelper::getValue($raw, 'cropdata');
 			}
+
 			if ($raw == '')
 			{
 				return true;
 			}
-
+			//echo "crop data = " ;print_r( ($cropData));exit;
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);

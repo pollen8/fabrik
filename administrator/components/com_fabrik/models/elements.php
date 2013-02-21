@@ -235,7 +235,7 @@ class FabrikAdminModelElements extends FabModelList
 
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabrikWorker::getDbo();
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
