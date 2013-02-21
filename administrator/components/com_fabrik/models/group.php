@@ -45,7 +45,7 @@ class FabrikModelGroup extends FabModelAdmin
 
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
