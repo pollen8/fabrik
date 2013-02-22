@@ -782,7 +782,25 @@
         return asset;
     }
 
+    // $$$ hugh - added for use in Horrible Hack in allLoaded
+    function countProperties(obj) {
+        var count = 0;
+
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+                ++count;
+        }
+
+        return count;
+    }
+    
     function allLoaded(items) {
+    	// $$$ hugh - Horrible Hack to work round premature firing in IE9
+    	// https://github.com/headjs/headjs/issues/203
+    	if (api.browser.name === 'ie' && api.browser.version === 9 && !items && countProperties(assets) === 0) {
+    		return false;
+    	}
+    	
         items = items || assets;
 
         for (var name in items) {
