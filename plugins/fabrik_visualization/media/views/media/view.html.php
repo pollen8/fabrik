@@ -63,7 +63,7 @@ class fabrikViewMedia extends JView
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
 		$this->containerId = $this->get('ContainerId');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->params = $model->getParams();
 		$tpl = $params->get('media_layout', $tpl);

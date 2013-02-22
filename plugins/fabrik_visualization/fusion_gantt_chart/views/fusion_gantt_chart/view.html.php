@@ -60,7 +60,7 @@ class fabrikViewFusion_gantt_chart extends JView
 		$plugin = $pluginManager->getPlugIn('fusion_gantt_chart', 'visualization');
 		$this->containerId = $this->get('ContainerId');
 		$this->filters = $this->get('Filters');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$pluginParams = $model->getPluginParams();
 		$tpl = $pluginParams->get('fusion_gantt_chart_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/fusion_gantt_chart/views/fusion_gantt_chart/tmpl/' . $tpl;
