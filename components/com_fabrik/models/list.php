@@ -2060,7 +2060,7 @@ class FabrikFEModelList extends JModelForm
 			// $$$ rob build order first so that we know of any elemenets we need to include in the select statement
 			$order = $this->_buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
-			$this->selectedOrderFields = array_merge($lookUps, $this->selectedOrderFields);
+			$this->selectedOrderFields = array_unique(array_merge($lookUps, $this->selectedOrderFields));
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->_buildQueryJoin();
@@ -9665,7 +9665,7 @@ class FabrikFEModelList extends JModelForm
 	public function getHasButtons()
 	{
 		$params = $this->getParams();
-		if ($this->canAdd() || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
+		if (($this->canAdd() && $params->get('show-table-add')) || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
 				|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
 		{
 			return true;

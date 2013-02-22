@@ -43,7 +43,7 @@ class FabrikModelHome extends JModelAdmin
 
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo(true);
+		$config['dbo'] = FabrikWorker::getDbo(true);
 		return parent::getTable($type, $prefix, $config);
 	}
 

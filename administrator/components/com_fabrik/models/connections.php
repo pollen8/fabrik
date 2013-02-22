@@ -100,7 +100,7 @@ class FabrikModelConnections extends JModelList
 
 	public function getTable($type = 'Connection', $prefix = 'FabrikTable', $config = array())
 	{
-		$config['dbo'] = FabriKWorker::getDbo();
+		$config['dbo'] = FabrikWorker::getDbo();
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
