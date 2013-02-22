@@ -555,14 +555,23 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
+
 		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
@@ -573,7 +582,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->_buildQueryJoin();
 			$whereSQL = $listModel->_buildQueryWhere();
-			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else

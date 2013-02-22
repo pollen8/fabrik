@@ -125,13 +125,22 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
+	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 	{
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
@@ -139,7 +148,7 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 		$name = $this->getFullName(false, false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
