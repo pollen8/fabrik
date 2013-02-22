@@ -15,6 +15,7 @@ var FloatingTips = new Class({
 		'heading': '',
 		'duration': 500,
 		'fadein': false,
+		'notice': false,
 		showFn: function (e) {
 			e.stop();
 			return true;
@@ -51,7 +52,9 @@ var FloatingTips = new Class({
 			}
 			opts.placement = opts.position;
 			opts.title = opts.heading;
-			opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
+			if (!opts.notice) {
+				opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
+			}
 			jQuery(trigger).popover(opts);
 		}.bind(this));
 	

@@ -914,6 +914,7 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
+				$liveSiteSrc[] = FabrikHelperHTML::tipInt();
 				$liveSiteSrc[] = "});";
 				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
@@ -934,6 +935,9 @@ EOD;
 		$tipJs[] = "\t});";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.plugin.inlineedit.editing', function () {";
 		$tipJs[] = "\t\tFabrik.tips.hideAll();";
+		$tipJs[] = "\t});";
+		$tipJs[] = "\tFabrik.addEvent('fabrik.list.inlineedit.setData', function () {";
+		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
 		$tipJs[] = "\t});";
 		return implode("\n", $tipJs);
 	}

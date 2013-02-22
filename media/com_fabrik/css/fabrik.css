@@ -149,6 +149,9 @@ a.fabrikTip {
 div.modal {
 	z-index: 1050 !important;
 }
+div.popover {
+	z-index: 1051 !important;
+}
 
 .fabrikWindow.modal {
 	overflow: hidden !important;
