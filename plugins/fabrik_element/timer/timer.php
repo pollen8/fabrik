@@ -141,7 +141,6 @@ class plgFabrik_ElementTimer extends plgFabrik_Element
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
-	{
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
