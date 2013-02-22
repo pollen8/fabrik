@@ -587,7 +587,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		else
 		{
-			return parent::getSumQuery($listModel, $label);
+			return parent::getSumQuery($listModel, $labels);
 		}
 	}
 

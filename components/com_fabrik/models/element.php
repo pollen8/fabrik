@@ -3958,7 +3958,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function getSumQuery(&$listModel, $labels = array())
 	{
-
 		if (count($labels) == 0)
 		{
 			$label = "'calc' AS label";
