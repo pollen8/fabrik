@@ -628,6 +628,12 @@ class FabrikFEModelList extends JModelForm
 
 	public function setLimits($limitstart_override = null, $limitlength_override = null)
 	{
+
+		// Plugins using setLimits - these limits would get overwritten by render() or getData() calls
+		if (isset($this->limitLength) && isset($this->limitStart) && is_null($limitstart_override) && is_null($limitlength_override))
+		{
+			return;
+		}
 		/*
 		 * $$$ hugh - added the overrides, so things like visualizations can just turn
 		 * limits off, by passing 0's, without having to go round the houses setting
@@ -833,7 +839,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			$fabrikDb->setQuery($query, $start, $length);
 		}
-
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
