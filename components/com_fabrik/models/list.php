@@ -9889,45 +9889,53 @@ class FabrikFEModelList extends JModelForm
 
 	public function reorder($colid, $where = '')
 	{
-		$elementModel = $this->getFormModel()->getElement($colid, true);
+	 	$elementModel = $this->getFormModel()->getElement($colid, true);
 		$asfields = array();
 		$fields = array();
 		$elementModel->getAsField_html($asfields, $fields);
 		$col = $asfields[0];
-		$field = array_shift(explode("AS", $col));
+		$field = explode("AS", $col);
+		$field = array_shift($field);
 		$db = $this->getDb();
 		$k = $this->getTable()->db_primary_key;
 		$shortKey = FabrikString::shortColName($k);
 		$tbl = $this->getTable()->db_table_name;
 
+		// Get the primary keys and ordering values for the selection.
 		$query = $db->getQuery(true);
-		$query->select(array($k, $col))->from($tbl);
-		if ($where !== '')
+		$query->select($k . ' AS id, ' . $field . ' AS ordering');
+		$query->from($tbl);
+		$query->where($field . ' >= 0');
+		$query->order($field);
+
+		// Setup the extra where and ordering clause data.
+		if ($where)
 		{
 			$query->where($where);
 		}
-		$query = $this->buildQueryOrder($query);
 
-		$dir = JString::strtolower(JArrayHelper::getValue($this->orderDirs, 0, 'asc'));
 		$db->setQuery($query);
-		if (!($orders = $db->loadObjectList()))
-		{
-			$this->setError($db->getErrorMsg());
-			return false;
-		}
-		$kk = trim(FabrikString::safeColNameToArrayKey($field));
+		$rows = $db->loadObjectList();
 
-		// Compact the ordering numbers
-		for ($i = 0, $n = count($orders); $i < $n; $i++)
+		// Compact the ordering values.
+		foreach ($rows as $i => $row)
 		{
-			$o = $orders[$i];
-			$neworder = ($dir == 'asc') ? $i + 1 : $n - $i;
-			$orders[$i]->$kk = $neworder;
-			$query->clear();
-			$query->update($tbl)->set($field . ' = ' . (int) $orders[$i]->$kk)->where($k . ' = ' . $this->_db->quote($orders[$i]->$shortKey));
-			$db->setQuery($query);
-			$db->execute();
+
+			// Only update rows that are necessary.
+			if ($row->ordering != $i + 1)
+			{
+				// Update the row ordering field.
+				$query = $db->getQuery(true);
+				$query->update($tbl);
+				$query->set($field . ' = ' . ($i + 1));
+				$query->where($k . ' = ' . $db->quote($row->id));
+				$db->setQuery($query);
+				echo $db->getQuery() . "\n\n";
+				$db->execute();
+			}
+
 		}
+
 		return true;
 	}
 
