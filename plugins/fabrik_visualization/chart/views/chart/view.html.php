@@ -80,7 +80,7 @@ class FabrikViewChart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
 		echo parent::display();
 	}

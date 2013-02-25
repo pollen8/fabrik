@@ -60,6 +60,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		}
 
 		$model->getPluginJsClasses($srcs);
+
 		global $ispda;
 		if ($ispda == 1)
 		{
@@ -103,7 +104,7 @@ class fabrikViewGooglemap extends JViewLegacy
 		$js .= $this->get('PluginJsObjects');
 		$js .= $model->getFilterJs();
 
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/template.css');
 

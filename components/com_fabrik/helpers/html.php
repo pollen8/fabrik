@@ -131,8 +131,8 @@ class FabrikHelperHTML
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
-	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal
-	 * @param   array   $params    window parameters
+	 * @param   string  $selector  Element select to auto create windows for  - was default = a.modal
+	 * @param   array   $params    Window parameters
 	 *
 	 * @deprecated use windows() instead
 	 *
@@ -839,7 +839,8 @@ EOD;
 	}
 
 	/**
-	 * Append a js file to the main require.js list of files to load
+	 * Append a js file to the main require.js list of files to load.
+	 * Will use the -min.js or .js file based on debug settings
 	 *
 	 * @param   array   $srcs  Already loaded scripts from framework()
 	 * @param   string  $file  JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'

@@ -51,7 +51,7 @@ class fabrikViewMedia extends JViewLegacy
 		{
 			$srcs[] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
 		}
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 		if ($this->row->published == 0)
 		{

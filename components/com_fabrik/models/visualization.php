@@ -418,7 +418,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get the js code to create instances of js table plugin classes
+	 * get the js code to create instances of js list plugin classes
 	 * needed for radius search filter
 	 *
 	 * @return  string
@@ -430,6 +430,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 		$listModels = $this->getListModels();
 		foreach ($listModels as $model)
 		{
+			$src = $model->getPluginJsClasses($src);
 			$tmp = $model->getPluginJsObjects($this->getContainerId());
 			foreach ($tmp as $t)
 			{
@@ -437,6 +438,27 @@ class FabrikFEModelVisualization extends JModelLegacy
 			}
 		}
 		return implode("\n", $str);
+	}
+
+	/**
+	 * Get the requirejs shim for the visualization
+	 * Load all the list plugin requirements
+	 *
+	 * @since  3.1rc
+	 *
+	 * @return array
+	 */
+
+	public function getShim()
+	{
+		$str = array();
+		$listModels = $this->getListModels();
+		$shim = array();
+		foreach ($listModels as $model)
+		{
+			$src = $model->getPluginJsClasses($src, $shim);
+		}
+		return $shim;
 	}
 
 	/**
