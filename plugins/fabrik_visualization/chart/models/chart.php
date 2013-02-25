@@ -299,9 +299,11 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	 *
 	 * @return array
 	 */
+
 	protected function horizontalBarChart($c, $gdata, $gsums)
 	{
 		$params = $this->getParams();
+		$chartWidth = (int) $params->get('chart_width', 200);
 		$chds_override = $params->get('chart_chds', '');
 		$chds_override = trim(str_replace('|', ',', $chds_override), '|');
 		$axisLabels = implode("|", $this->getAxisLabels($c));
@@ -318,6 +320,10 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		{
 			$chds = $minmax['min'] . ',' . $minmax['max'];
 		}
+
+		// Set the bar heights to auto so that they scale to fit inside chart area.
+		$chd .= '&chbh=a';
+
 		// $$$ hugh - we have to reverse the labels for horizontal bar charts
 		$axisLabels = implode('|', array_reverse(explode('|', $axisLabels)));
 		if (empty($chxl_override))
@@ -428,6 +434,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 				// Remove filters?
 
 				// $$$ hugh - pagination must be done BEFORE calling render(), to avoid caching issues from session data.
+				$listModel->setLimits(0, 0);
 				$listModel->getPagination(0, 0, 0);
 				$listModel->render();
 				$alldata = $listModel->getData();
