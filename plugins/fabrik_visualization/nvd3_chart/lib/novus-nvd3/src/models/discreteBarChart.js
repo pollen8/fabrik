@@ -10,7 +10,7 @@ nv.models.discreteBarChart = function() {
     , yAxis = nv.models.axis()
     ;
 
-  var margin = {top: 10, right: 10, bottom: 50, left: 60}
+  var margin = {top: 15, right: 10, bottom: 50, left: 60}
     , width = null
     , height = null
     , color = nv.utils.getColor()
@@ -23,7 +23,7 @@ nv.models.discreteBarChart = function() {
     , x
     , y
     , noData = "No Data Available."
-    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide')
+    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'beforeUpdate')
     ;
 
   xAxis
@@ -68,7 +68,7 @@ nv.models.discreteBarChart = function() {
                              - margin.top - margin.bottom;
 
 
-      chart.update = function() { selection.transition().call(chart); };
+      chart.update = function() { dispatch.beforeUpdate(); selection.transition().call(chart); };
       chart.container = this;
 
 
@@ -166,10 +166,11 @@ nv.models.discreteBarChart = function() {
 
       var xTicks = g.select('.nv-x.nv-axis').selectAll('g');
 
-      if (staggerLabels)
+      if (staggerLabels) {
         xTicks
             .selectAll('text')
-            .attr('transform', function(d,i,j) { return 'translate(0,' + (j % 2 == 0 ? '0' : '12') + ')' })
+            .attr('transform', function(d,i,j) { return 'translate(0,' + (j % 2 == 0 ? '5' : '17') + ')' })
+      }
 
       yAxis
         .scale(y)

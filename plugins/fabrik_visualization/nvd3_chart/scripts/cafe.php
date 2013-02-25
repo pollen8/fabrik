@@ -19,22 +19,26 @@ $query->select('belangen_cafe')->from('fab_userinfo');
 $db->setQuery($query);
 $data = array();
 $rows = $db->loadColumn();
+
 //echo "<pre>";print_r($rows);exit;
 foreach ($rows as $row)
 {
 	$vals = json_decode($row);
 	foreach ($vals as $val)
 	{
-		if (!array_key_exists($val, $data))
+		if (!is_null($val))
 		{
-			$o = new stdClass;
-			$o->label = $labels[$val];
-			$o->value = 1;
-			$data[$val] = $o;
-		}
-		else
-		{
-			$data[$val]->value ++;
+			if (!array_key_exists($val, $data))
+			{
+				$o = new stdClass;
+				$o->label = $labels[$val];
+				$o->value = 1;
+				$data[$val] = $o;
+			}
+			else
+			{
+				$data[$val]->value ++;
+			}
 		}
 	}
 }
