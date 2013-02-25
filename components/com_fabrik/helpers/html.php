@@ -866,17 +866,13 @@ EOD;
 				$src[] = 'media/com_fabrik/js/lib/Event.mock.js';
 
 				self::styleSheet(COM_FABRIK_LIVESITE . 'media/com_fabrik/css/fabrik.css');
-				/* $$$ hugh - setting liveSite needs to use addScriptDecleration, so it loads earlier, otherwise
-				 * in some browsers it's not available when other things (like map viz) are loading
-				 */
-				self::addScriptDeclaration("head.ready(function() { Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';});");
-
 				$script = array();
 				$script[] = "Fabrik.fireEvent('fabrik.framework.loaded');";
 
 				$tipOpts = self::tipOpts();
 				self::addScriptDeclaration(
 					"head.ready(function () {
+	Fabrik.liveSite = '" . COM_FABRIK_LIVESITE . "';
 	Fabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts)
 						. ");
 	Fabrik.addEvent('fabrik.list.updaterows', function () {
