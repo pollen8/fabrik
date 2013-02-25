@@ -622,7 +622,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$value = '';
 			$groupModel = $this->getGroupModel();
 			$group = $groupModel->getGroup();
-			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
+
+			// If its in a repeating group use the group id as the key:
+			$joinid = $this->isJoin() && !($groupModel->canRepeat() && $groupModel->isJoin()) ? $this->getJoinModel()->getJoin()->id : $group->join_id;
 			$formModel = $this->getForm();
 			$element = $this->getElement();
 
@@ -637,6 +639,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
 				if ($groupModel->canRepeat())
 				{
+					echo "<pre>getvalue group can repeat for key " . $nameKey . '.' . $repeatCounter ;print_r($data);
 					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{

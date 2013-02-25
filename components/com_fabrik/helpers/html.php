@@ -706,15 +706,15 @@ EOD;
 	/**
 	 * Generates an HTML radio OR checkbox list
 	 *
-	 * @param   string  $type             radio/checkbox
+	 * @param   string  $type             Radio/checkbox
 	 * @param   array   &$arr             An array of objects
 	 * @param   string  $tag_name         The value of the HTML name attribute
 	 * @param   string  $tag_attribs      Additional HTML attributes for the <select> tag
 	 * @param   mixed   $selected         The key that is selected
 	 * @param   string  $key              The name of the object variable for the option value
 	 * @param   string  $text             The name of the object variable for the option text
-	 * @param   int     $options_per_row  number of options to show per row @since 2.0.5
-	 * @param   bool    $editable         editable or not
+	 * @param   int     $options_per_row  Number of options to show per row @since 2.0.5
+	 * @param   bool    $editable         Editable or not
 	 *
 	 * @return	string	HTML for the select list
 	 */

@@ -632,7 +632,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = $db->quoteName($jointable . '___' . $this->element->name . '_raw');
-		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $table->db_primary_key
+		$pkField = $this->groupConcactJoinKey();
+		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
 			. ') AS ' . $fullElName;
 	}
 
@@ -646,7 +647,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getJoinDataNames()
 	{
-		$group = $this->getGroup()->getGroup();
+		$group = $this->getGroupModel()->getGroup();
 		$name = $this->getFullName(false, true, false);
 		$fv_name = 'join[' . $group->join_id . '][' . $name . ']';
 		$rawname = $name . '_raw';
@@ -710,12 +711,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->isJoin())
 			{
+
+
+				$pkField = $this->groupConcactJoinKey();
 				$str = $this->buildQueryElementConcatId();
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 				$fullElName = $db->quoteName($jointable . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-					. $table->db_primary_key . ') AS ' . $fullElName;
+					. $pkField . ') AS ' . $fullElName;
+
+				echo "<br><br>$str<br><br>";
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 			}
@@ -732,6 +738,29 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 	}
 
+	/**
+	 * OMG! If repeat element inside a repeat group then the group_concat subquery needs to change the key
+	 * it selected on - so it could either be the table pk or the joined groups pk.... :D
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return string
+	 */
+
+	protected function groupConcactJoinKey()
+	{
+		$table = $this->getListModel()->getTable();
+		if ($this->getGroupModel()->isJoin())
+		{
+			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
+			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
+		}
+		else
+		{
+			$pkField = $table->db_primary_key;
+		}
+		return $pkField;
+	}
 	/**
 	 * Get raw column name
 	 *

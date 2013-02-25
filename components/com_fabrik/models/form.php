@@ -1713,7 +1713,9 @@ class FabrikFEModelForm extends FabModelForm
 					if ($elementModel->getGroup()->isJoin())
 					{
 						// Repeat element in a repeat group :S
-						$groupJoin = $elementModel->getGroup()->getJoinModel();
+
+						// !!!! Deferring to element onStoreRow() method - tooo freakin complicated here.!!!!!!///
+						/* $groupJoin = $elementModel->getGroup()->getJoinModel();
 						$dataPks = JArrayHelper::getValue($data, $oJoin->table_join . '___id', array());
 						for ($r = 0; $r < count($dataPks); $r++)
 						{
@@ -1732,7 +1734,7 @@ class FabrikFEModelForm extends FabModelForm
 									}
 								}
 							}
-						}
+						} */
 					}
 					else
 					{
@@ -3088,6 +3090,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
+		echo "<Pre>getdata:";print_r($data);echo "</pre>";
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
@@ -3353,7 +3356,6 @@ class FabrikFEModelForm extends FabModelForm
 						}
 					}
 				}
-				// No need to setJoinData if you are correcting a failed validation
 				if (!empty($data))
 				{
 					$this->setJoinData($data);
@@ -3488,52 +3490,44 @@ class FabrikFEModelForm extends FabModelForm
 					$elementModels = $groupModel->getMyElements();
 					foreach ($elementModels as $elementModel)
 					{
-						$name = $elementModel->getFullName(false, true, false);
-						$fv_name = 'join[' . $group->join_id . '][' . $name . ']';
-						$rawname = $name . '_raw';
-						$fv_rawname = 'join[' . $group->join_id . '][' . $rawname . ']';
+						$names = $elementModel->getJoinDataNames();
+						/* $name = $elementModel->getFullName(false, true, false);
+						$rawname = $name . '_raw'; */
+
+						// Names when coming from failed validation
+
+
 						foreach ($data as $row)
 						{
-							if (array_key_exists($name, $row))
+							for ($i = 0; $i < 2; $i ++)
 							{
-								$v = $row->$name;
-								$v = FabrikWorker::JSONtoData($v, false);
-								$data[0]->join[$group->join_id][$name][] = $v;
-								unset($row->$name);
-							} /* $$$ hugh - seem to have a different format if just failed validation! */
-							elseif (array_key_exists($fv_name, $row))
-							{
-								$v = $row->$fv_name;
-								if (is_object($v))
+								$name = $names[$i][0];
+								$fv_name = $names[$i][0];
+								if (array_key_exists($name, $row))
 								{
-									$v = JArrayHelper::fromObject($v);
+									$v = $row->$name;
+									$v = FabrikWorker::JSONtoData($v, false);
+									$data[0]->join[$group->join_id][$name][] = $v;
+									unset($row->$name);
 								}
-								$data[0]->join[$group->join_id][$name] = $v;
-								unset($row->$fv_name);
-							}
-
-							if (array_key_exists($rawname, $row))
-							{
-								$v = $row->$rawname;
-								$v = FabrikWorker::JSONtoData($v, false);
-								$data[0]->join[$group->join_id][$rawname][] = $v;
-								unset($row->$rawname);
-							} /* $$$ hugh - seem to have a different format if just failed validation! */
-							elseif (array_key_exists($fv_rawname, $row))
-							{
-								$v = $row->$fv_rawname;
-								if (is_object($v))
+								elseif (array_key_exists($fv_name, $row))
 								{
-									$v = JArrayHelper::fromObject($v);
+									// $$$ hugh - seem to have a different format if just failed validation!
+									$v = $row->$fv_name;
+									if (is_object($v))
+									{
+										$v = JArrayHelper::fromObject($v);
+									}
+									$data[0]->join[$group->join_id][$name] = $v;
+									unset($row->$fv_name);
 								}
-								$data[0]->join[$group->join_id][$rawname][] = $v;
-								unset($row->$fv_rawname);
 							}
 						}
 					}
 				}
 			}
 		}
+		echo"<pre>set join data end:";print_r($data);exit;
 	}
 
 	/**
@@ -3691,6 +3685,8 @@ class FabrikFEModelForm extends FabModelForm
 			$sql .= $listModel->buildQueryOrder();
 		}
 		$this->query = $sql;
+
+		echo "<br><br>$sql <br><br>";
 		return $sql;
 	}
 
