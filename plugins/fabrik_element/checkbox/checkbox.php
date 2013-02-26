@@ -122,6 +122,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			$data[$element->name] = $params->get('sub_default_value');
 			$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
 		}
+		// $$$ hugh - this is killing CSV imports, where data is already in JSON
+		// I don't think this is necessary anyway, so commenting it out for now.
+		/*
 		else
 		{
 			if (!is_array($data[$element->name]))
@@ -130,6 +133,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 				$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
 			}
 		}
+		*/
 	}
 
 	/**
