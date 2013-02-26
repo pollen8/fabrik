@@ -256,7 +256,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 
 	public function read($filepath)
 	{
-		$file = $this->urlToPath($file);
+		$file = $this->urlToPath($filepath);
 		$file = str_replace("%20", " ", $file);
 		$file = str_replace("\\", '/', $file);
 		$bucket = $this->getBucketName();
