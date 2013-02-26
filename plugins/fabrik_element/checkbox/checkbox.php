@@ -250,7 +250,35 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		}
 		else
 		{
-			return isset($val) ? $val : '';
+			// $$$ hugh - nastyish hack to try and make sure we consistently save as JSON,
+			// for instance in CSV import, if data is just a single option value like 2,
+			// instead of ["2"], we have been saving it as just that value, rather than a single
+			// item JSON array.
+			if (isset($val))
+			{
+				// We know it's not an array or an object, so lets see if it's a string
+				// which doesn't contain ", [ or ]
+				if (!preg_match('#["\[\]]#', $val))
+				{
+					// No ", [ or ], so lets see if wrapping it up in JSON array format
+					// produces vlaid JSON
+					$json_val = '["' . $val . '"]';
+					if (FabrikWorker::isJSON($json_val))
+					{
+						// Looks ike we we have a valid JSON array, so return that
+						return $json_val;
+					}
+					else
+					{
+						// give up and just store whatever it was we got!
+						return $val;
+					}
+				}
+			}
+			else
+			{
+				return '';
+			}
 		}
 	}
 
