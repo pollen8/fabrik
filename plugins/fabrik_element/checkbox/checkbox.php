@@ -122,6 +122,9 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 			$data[$element->name] = $params->get('sub_default_value');
 			$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
 		}
+		// $$$ hugh - this is killing CSV imports, where data is already in JSON
+		// I don't think this is necessary anyway, so commenting it out for now.
+		/*
 		else
 		{
 			if (!is_array($data[$element->name]))
@@ -130,6 +133,7 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 				$data[$element->name . '_raw'] = array($params->get('sub_default_value'));
 			}
 		}
+		*/
 	}
 
 	/**
@@ -246,7 +250,40 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 		}
 		else
 		{
-			return isset($val) ? $val : '';
+			// $$$ hugh - nastyish hack to try and make sure we consistently save as JSON,
+			// for instance in CSV import, if data is just a single option value like 2,
+			// instead of ["2"], we have been saving it as just that value, rather than a single
+			// item JSON array.
+			if (isset($val))
+			{
+				// We know it's not an array or an object, so lets see if it's a string
+				// which doesn't contain ", [ or ]
+				if (!preg_match('#["\[\]]#', $val))
+				{
+					// No ", [ or ], so lets see if wrapping it up in JSON array format
+					// produces vlaid JSON
+					$json_val = '["' . $val . '"]';
+					if (FabrikWorker::isJSON($json_val))
+					{
+						// Looks ike we we have a valid JSON array, so return that
+						return $json_val;
+					}
+					else
+					{
+						// give up and just store whatever it was we got!
+						return $val;
+					}
+				}
+				else
+				{
+					// Contains ", [ or ], so wtf, hope it's json
+					return $val;
+				}
+			}
+			else
+			{
+				return '';
+			}
 		}
 	}
 
