@@ -274,6 +274,11 @@ class plgFabrik_ElementCheckbox extends plgFabrik_ElementList
 						return $val;
 					}
 				}
+				else
+				{
+					// Contains ", [ or ], so wtf, hope it's json
+					return $val;
+				}
 			}
 			else
 			{
