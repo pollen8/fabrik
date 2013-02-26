@@ -1340,15 +1340,15 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					else
 					{
 						$d = new FabDate($o->text);
-						$o->value = $d->toSql();
-						$o->text = $d->toFormat($format);
+						$d->setTimeZone($timeZone);
+						$o->value = $d->toSql(true);
+						$o->text = $d->toFormat($format, true);
 					}
 					if (!array_key_exists($o->value, $ddData))
 					{
 						$ddData[$o->value] = $o;
 					}
 				}
-
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
 				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
