@@ -118,9 +118,9 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -135,12 +135,10 @@ class plgFabrik_ElementPicklist extends plgFabrik_ElementList
 		$opts->allowadd = (bool) $params->get('allowadd', false);
 		$opts->defaultVal = $this->getValue($data, $repeatCounter);
 
-		//$opts->data = array_combine($arVals, $arTxt);;
 		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
-		return "new FbPicklist('$id', $opts)";
+		return array('FbPicklist', $id, $opts);
 	}
 
 	/**

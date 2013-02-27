@@ -487,9 +487,9 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -518,8 +518,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$opts->id = $this->_id;
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
-		$opts = json_encode($opts);
-		return "new FbCalc('$id', $opts)";
+		return array('FbCalc', $id, $opts);
 	}
 
 	/**

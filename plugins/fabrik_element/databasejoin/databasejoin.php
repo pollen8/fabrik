@@ -2134,9 +2134,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -2147,7 +2147,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'databasejoin');
 		}
 		$opts = $this->elementJavascriptOpts($repeatCounter);
-		return "new FbDatabasejoin('$id', $opts)";
+		return array('FbDatabasejoin', $id, $opts);
 	}
 
 	/**
@@ -2171,9 +2171,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	/**
 	 * Get element JS options
 	 *
-	 * @param   int  $repeatCounter  group repeat counter
+	 * @param   int  $repeatCounter  Group repeat counter
 	 *
-	 * @return  string  json_encoded options
+	 * @return  array  Options
 	 */
 
 	protected function elementJavascriptOpts($repeatCounter)
@@ -2212,7 +2212,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin = $this->isJoin();
-		return json_encode($opts);
+		return $opts;
 	}
 
 	/**

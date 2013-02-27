@@ -162,9 +162,9 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -173,15 +173,13 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$formparams = $this->getForm()->getParams();
 		$opts->ajax_validation = $formparams->get('ajax_validations') === '1';
-		$opts = json_encode($opts);
-		$lang = new stdClass;
 
 		JText::script('PLG_ELEMENT_PASSWORD_STRONG');
 		JText::script('PLG_ELEMENT_PASSWORD_MEDIUM');
 		JText::script('PLG_ELEMENT_PASSWORD_WEAK');
 		JText::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 		JText::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
-		return "new FbPassword('$id', $opts)";
+		return array('FbPassword', $id, $opts);
 	}
 
 	/**

@@ -168,9 +168,9 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -202,8 +202,7 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 		$uploader->wmode = "opaque";
 		$opts->uploader = $uploader;
 		$opts->flash = $this->getKalturaFlashVars();
-		$opts = json_encode($opts);
-		return "new FbKaltura('$id', $opts)";
+		return array('FbKaltura', $id, $opts);
 	}
 
 }

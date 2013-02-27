@@ -374,9 +374,9 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -405,8 +405,7 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 		$opts->wysiwyg = $this->useWysiwyg();
 		$opts->deleteOverflow = $params->get('delete_overflow', true) ? true : false;
 		$opts->htmlId = $this->getHTMLId($repeatCounter);
-		$opts = json_encode($opts);
-		return "new FbTextarea('$id', $opts)";
+		return array('FbTextarea', $id, $opts);
 	}
 
 	/**

@@ -28,9 +28,9 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -40,8 +40,7 @@ class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->_id;
-		$opts = json_encode($opts);
-		return "new FbNotes('$id', $opts)";
+		return array('FbNotes', $id, $opts);
 	}
 
 	/**

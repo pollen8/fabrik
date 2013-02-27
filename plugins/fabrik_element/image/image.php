@@ -448,9 +448,9 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -465,8 +465,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$opts->id = $element->id;
 		$opts->ds = DS;
 		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
-		$opts = json_encode($opts);
-		return "new FbImage('$id', $opts)";
+		return array('FbImage', $id, $opts);
 	}
 
 	/**

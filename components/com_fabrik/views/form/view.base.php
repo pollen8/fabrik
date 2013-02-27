@@ -584,11 +584,10 @@ class FabrikViewFormBase extends JView
 				{
 					for ($c = 0; $c < $max; $c++)
 					{
-						// $$$ rob ensure that some js code has been returned otherwise dont add empty data to array
-						$ref = trim($elementModel->elementJavascript($c));
-						if ($ref !== '')
+						$ref = $elementModel->elementJavascript($c);
+						if (!empty($ref))
 						{
-							$aObjs[] = $ref;
+							$aObjs[] = json_encode($ref);
 						}
 						$validations = $elementModel->getValidations();
 						if (!empty($validations) && $elementModel->isEditable())
