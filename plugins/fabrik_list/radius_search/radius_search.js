@@ -1,4 +1,7 @@
 function geoCode() {
+	// Tell fabrik that the google map script has loaded and the callback has run
+	Fabrik.googleMap = true;
+	
 	window.addEvent('domready', function () {
 		var latlng = new google.maps.LatLng(Fabrik.radiusSearch.geocode_default_lat, Fabrik.radiusSearch.geocode_default_long);
 		var mapOptions = {

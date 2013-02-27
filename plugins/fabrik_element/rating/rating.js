@@ -1,6 +1,6 @@
 var FbRating = new Class({
 	Extends : FbElement,
-	initialize : function (element, options, rating) {
+	initialize : function (element, options) {
 		this.field = document.id(element);
 		this.parent(element, options);
 		if (this.options.canRate === false) {
@@ -10,7 +10,7 @@ var FbRating = new Class({
 			// deactivate if in detail view and only the record creator can rate
 			return;
 		}
-		this.rating = rating;
+		this.rating = this.options.rating;
 		Fabrik.addEvent('fabrik.form.refresh', function (e) {
 			this.setup(e);
 		}.bind(this));

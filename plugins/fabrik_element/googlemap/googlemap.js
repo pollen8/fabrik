@@ -1,5 +1,9 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
+
+	// Tell fabrik that the google map script has loaded and the callback has run
+	Fabrik.googleMap = true;
+	console.log('googlemap loaded cb');
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
 		var script2 = document.createElement("script");
 		script2.type = "text/javascript";
@@ -57,8 +61,13 @@ var FbGoogleMap = new Class({
 	},
 	
 	initialize: function (element, options) {
+		this.heartbeat = (function () {
+			console.log('heartbeat', this);
+		}.bind(this)).periodical(800);
+		console.log('ini gmap element ', element);
 		this.mapMade = false;
 		this.parent(element, options);
+		console.log('set opt', this.options.lat, this.options.lon);
 		
 		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
 		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
@@ -76,6 +85,7 @@ var FbGoogleMap = new Class({
 			}
 		}
 		window.addEvent('google.map.loaded', function () {
+			console.log('gmap element google.map.loaded event received');
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
 				this.options.maptype = google.maps.MapTypeId.SATELLITE;
@@ -98,7 +108,7 @@ var FbGoogleMap = new Class({
 			this.makeRadius();
 		}.bind(this));
 		
-		this.loadScript();
+		//this.loadScript();
 		// @TODO test google object when offline typeOf(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {
@@ -119,21 +129,27 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap: function () {
-		if (this.mapMade === true) {
+		// Commented out these test as they stopped element rendering in pop up form in list.
+		/*if (this.mapMade === true) {
 			return;
 		}
 		this.mapMade = true;
-		if (typeOf(this.element) === 'null') {
-			return;
-		}
+		
 		if (typeof(this.map) !== 'undefined') {
+			return;
+		}*/
+		if (typeOf(this.element) === 'null') {
 			return;
 		}
 		if (this.options.geocode || this.options.reverse_geocode) {
 			this.geocoder = new google.maps.Geocoder();
 		}
+		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
+		// this.element refers to the first loaded row, which should have been removed from the dom
+		this.element = document.id(this.options.element);
 		this.field = this.element.getElement('input.fabrikinput');
 		this.watchGeoCode();
+		console.log(this.options.lat, this.options.lon);
 		if (this.options.staticmap) {
 			var i = this.element.getElement('img');
 			var w = i.getStyle('width').toInt();
