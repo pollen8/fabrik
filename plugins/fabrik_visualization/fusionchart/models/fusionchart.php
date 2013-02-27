@@ -492,6 +492,7 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 			 * object if we call getPagination after render().  So call it first, then render() will
 			 * get our cached pagination, rather than vice versa.
 			 */
+			$listModel->setLimits(0, 0);
 			$nav = $listModel->getPagination(0, 0, 0);
 			$listModel->render();
 			$alldata = $listModel->getData();

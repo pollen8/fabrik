@@ -326,13 +326,16 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.requestQueue = new RequestQueue();
 	
+	// cb function MUST set Fabrik.googleMap = true;
 	Fabrik.loadGoogleMap = function (s, cb) {
 		if (typeOf(Fabrik.googleMap) === 'null') {
 			var script = document.createElement("script");
 			script.type = "text/javascript";
 			script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=' + cb;
 			document.body.appendChild(script);
-			Fabrik.googleMap = true;
+			
+			// Cant do here as googleMap script not yet loaded
+			//Fabrik.googleMap = true;
 		} else {
 			// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
 			// opening a popup edit for the second time, the map JS will never get these events.
@@ -429,7 +432,10 @@ if (typeof(Fabrik) === "undefined") {
 			'loadMethod': loadMethod,
 			'contentURL': url,
 			'width': list.options.popup_width,
-			'height': list.options.popup_height
+			'height': list.options.popup_height,
+			'onClose': function (win) {
+				console.log('todo: close win, should clear form from memory');
+			} 
 		};
 		if (typeOf(list.options.popup_offset_x) !== 'null') {
 			winOpts.offset_x = list.options.popup_offset_x;

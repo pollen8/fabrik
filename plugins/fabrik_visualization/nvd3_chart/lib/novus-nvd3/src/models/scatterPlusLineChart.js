@@ -1,5 +1,5 @@
 
-nv.models.scatterChart = function() {
+nv.models.scatterPlusLineChart = function() {
 
   //============================================================
   // Public Variables with Default Settings
@@ -20,8 +20,6 @@ nv.models.scatterChart = function() {
     , color        = nv.utils.defaultColor()
     , x            = d3.fisheye ? d3.fisheye.scale(d3.scale.linear).distortion(0) : scatter.xScale()
     , y            = d3.fisheye ? d3.fisheye.scale(d3.scale.linear).distortion(0) : scatter.yScale()
-    , xPadding     = 0
-    , yPadding     = 0
     , showDistX    = false
     , showDistY    = false
     , showLegend   = true
@@ -31,9 +29,10 @@ nv.models.scatterChart = function() {
     , tooltips     = true
     , tooltipX     = function(key, x, y) { return '<strong>' + x + '</strong>' }
     , tooltipY     = function(key, x, y) { return '<strong>' + y + '</strong>' }
-    //, tooltip      = function(key, x, y) { return '<h3>' + key + '</h3>' }
-    , tooltip      = null
-    , dispatch     = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
+    , tooltip      = function(key, x, y, date) { return '<h3>' + key + '</h3>' 
+                                                      + '<p>' + date + '</p>' }
+    //, tooltip      = null
+    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
     , noData       = "No Data Available."
     ;
 
@@ -83,7 +82,7 @@ nv.models.scatterChart = function() {
       if( tooltipY != null )
           nv.tooltip.show([leftY, topY], tooltipY(e.series.key, xVal, yVal, e, chart), 'e', 1, offsetElement, 'y-nvtooltip');
       if( tooltip != null )
-          nv.tooltip.show([left, top], tooltip(e.series.key, xVal, yVal, e, chart), e.value < 0 ? 'n' : 's', null, offsetElement);
+          nv.tooltip.show([left, top], tooltip(e.series.key, xVal, yVal, e.point.tooltip, e, chart), e.value < 0 ? 'n' : 's', null, offsetElement);
   };
 
   var controlsData = [
@@ -134,6 +133,9 @@ nv.models.scatterChart = function() {
       //------------------------------------------------------------
       // Setup Scales
 
+      x = scatter.xScale();
+      y = scatter.yScale();
+
       x0 = x0 || x;
       y0 = y0 || y;
 
@@ -154,9 +156,12 @@ nv.models.scatterChart = function() {
       gEnter.append('g').attr('class', 'nv-x nv-axis');
       gEnter.append('g').attr('class', 'nv-y nv-axis');
       gEnter.append('g').attr('class', 'nv-scatterWrap');
+      gEnter.append('g').attr('class', 'nv-regressionLinesWrap');
       gEnter.append('g').attr('class', 'nv-distWrap');
       gEnter.append('g').attr('class', 'nv-legendWrap');
       gEnter.append('g').attr('class', 'nv-controlsWrap');
+
+      wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       //------------------------------------------------------------
 
@@ -198,9 +203,6 @@ nv.models.scatterChart = function() {
       //------------------------------------------------------------
 
 
-      wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-
       //------------------------------------------------------------
       // Main Chart Component(s)
 
@@ -216,16 +218,28 @@ nv.models.scatterChart = function() {
           .call(scatter);
 
 
-      //Adjust for x and y padding
-      if (xPadding) {
-        var xRange = x.domain()[1] - x.domain()[0];
-        x.domain([x.domain()[0] - (xPadding * xRange), x.domain()[1] + (xPadding * xRange)]);
-      }
+      wrap.select('.nv-regressionLinesWrap')
+          .attr('clip-path', 'url(#nv-edge-clip-' + scatter.id() + ')');
 
-      if (yPadding) {
-        var yRange = y.domain()[1] - y.domain()[0];
-        y.domain([y.domain()[0] - (yPadding * yRange), y.domain()[1] + (yPadding * yRange)]);
-      }
+      var regWrap = wrap.select('.nv-regressionLinesWrap').selectAll('.nv-regLines')
+                      .data(function(d) { return d });
+
+      var reglines = regWrap.enter()
+                       .append('g').attr('class', 'nv-regLines')
+                       .append('line').attr('class', 'nv-regLine')
+                       .style('stroke-opacity', 0);
+
+      //d3.transition(regWrap.selectAll('.nv-regLines line'))
+      regWrap.selectAll('.nv-regLines line')
+          .attr('x1', x.range()[0])
+          .attr('x2', x.range()[1])
+          .attr('y1', function(d,i) { return y(x.domain()[0] * d.slope + d.intercept) })
+          .attr('y2', function(d,i) { return y(x.domain()[1] * d.slope + d.intercept) })
+          .style('stroke', function(d,i,j) { return color(d,j) })
+          .style('stroke-opacity', function(d,i) {
+            return (d.disabled || typeof d.slope === 'undefined' || typeof d.intercept === 'undefined') ? 0 : 1 
+          });
+
 
       //------------------------------------------------------------
 
@@ -235,7 +249,7 @@ nv.models.scatterChart = function() {
 
       xAxis
           .scale(x)
-          .ticks( xAxis.ticks() && xAxis.ticks().length ? xAxis.ticks() : availableWidth / 100 )
+          .ticks( xAxis.ticks() ? xAxis.ticks() : availableWidth / 100 )
           .tickSize( -availableHeight , 0);
 
       g.select('.nv-x.nv-axis')
@@ -245,7 +259,7 @@ nv.models.scatterChart = function() {
 
       yAxis
           .scale(y)
-          .ticks( yAxis.ticks() && yAxis.ticks().length ? yAxis.ticks() : availableHeight / 36 )
+          .ticks( yAxis.ticks() ? yAxis.ticks() : availableHeight / 36 )
           .tickSize( -availableWidth, 0);
 
       g.select('.nv-y.nv-axis')
@@ -315,8 +329,8 @@ nv.models.scatterChart = function() {
         y.distortion(fisheye).focus(mouse[1]);
 
         g.select('.nv-scatterWrap')
+            .datum(data.filter(function(d) { return !d.disabled }))
             .call(scatter);
-
         g.select('.nv-x.nv-axis').call(xAxis);
         g.select('.nv-y.nv-axis').call(yAxis);
         g.select('.nv-distributionX')
@@ -517,18 +531,6 @@ nv.models.scatterChart = function() {
   chart.fisheye = function(_) {
     if (!arguments.length) return fisheye;
     fisheye = _;
-    return chart;
-  };
-
-  chart.xPadding = function(_) {
-    if (!arguments.length) return xPadding;
-    xPadding = _;
-    return chart;
-  };
-
-  chart.yPadding = function(_) {
-    if (!arguments.length) return yPadding;
-    yPadding = _;
     return chart;
   };
 

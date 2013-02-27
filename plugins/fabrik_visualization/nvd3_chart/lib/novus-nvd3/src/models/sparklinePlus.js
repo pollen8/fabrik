@@ -7,16 +7,18 @@ nv.models.sparklinePlus = function() {
 
   var sparkline = nv.models.sparkline();
 
-  var margin = {top: 15, right: 40, bottom: 3, left: 40}
+  var margin = {top: 15, right: 100, bottom: 10, left: 50}
     , width = null
     , height = null
     , x
     , y
-    , color = nv.utils.defaultColor()
-    , index
+    , index = []
     , paused = false
     , xTickFormat = d3.format(',r')
     , yTickFormat = d3.format(',.2f')
+    , showValue = true
+    , alignValue = true
+    , rightAlignValue = false
     , noData = "No Data Available."
     ;
 
@@ -32,6 +34,7 @@ nv.models.sparklinePlus = function() {
           availableHeight = (height || parseInt(container.style('height')) || 400)
                              - margin.top - margin.bottom;
 
+      var currentValue = sparkline.y()(data[data.length-1], data.length-1);
 
       chart.update = function() { chart(selection) };
       chart.container = this;
@@ -80,6 +83,7 @@ nv.models.sparklinePlus = function() {
       var g = wrap.select('g');
 
       gEnter.append('g').attr('class', 'nv-sparklineWrap');
+      gEnter.append('g').attr('class', 'nv-valueWrap');
       gEnter.append('g').attr('class', 'nv-hoverArea');
 
       wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
@@ -97,81 +101,99 @@ nv.models.sparklinePlus = function() {
         .height(availableHeight);
 
       sparklineWrap
-          .style('stroke', function(d, i){ return d.color || color(d, i) })
           .call(sparkline);
 
       //------------------------------------------------------------
+
+
+      var valueWrap = g.select('.nv-valueWrap');
+
+      var value = valueWrap.selectAll('.nv-currentValue')
+          .data([currentValue]);
+
+      value.enter().append('text').attr('class', 'nv-currentValue')
+          .attr('dx', rightAlignValue ? -8 : 8)
+          .attr('dy', '.9em')
+          .style('text-anchor', rightAlignValue ? 'end' : 'start');
+
+      value
+          .attr('x', availableWidth + (rightAlignValue ? margin.right : 0))
+          .attr('y', alignValue ? function(d) { return y(d) } : 0)
+          .style('fill', sparkline.color()(data[data.length-1], data.length-1))
+          .text(yTickFormat(currentValue));
 
 
 
       gEnter.select('.nv-hoverArea').append('rect')
           .on('mousemove', sparklineHover)
           .on('click', function() { paused = !paused })
-          .on('mouseout', function() { index = null; updateValueLine(); });
+          .on('mouseout', function() { index = []; updateValueLine(); });
+          //.on('mouseout', function() { index = null; updateValueLine(); });
 
       g.select('.nv-hoverArea rect')
           .attr('transform', function(d) { return 'translate(' + -margin.left + ',' + -margin.top + ')' })
           .attr('width', availableWidth + margin.left + margin.right)
           .attr('height', availableHeight + margin.top);
 
-      // if index is not set, default to last point
-      //index = typeof index == 'undefined' ? data.length - 1 : index;
-      // if index is not set, default to null
-      index = typeof index == 'undefined' ? null : index;
-
-      var hoverValue = g.selectAll('.nv-hoverValue').data([index]);
-
-      var hoverG = hoverValue.enter().append('g').attr('class', 'nv-hoverValue');
-
-      var hoverLine = hoverG.append('line')
-          .attr('x1', 0)
-          .attr('y1', -margin.top)
-          .attr('x2', 0)
-          .attr('y2', availableHeight);
-
-      var hoverX = hoverG.append('text').attr('class', 'nv-xValue')
-          .attr('x', -6)
-          .attr('y', -margin.top)
-          .attr('text-anchor', 'end')
-          .attr('dy', '.9em');
-
-      var hoverY = hoverG.append('text').attr('class', 'nv-yValue')
-          .attr('x', 6)
-          .attr('y', -margin.top)
-          .attr('text-anchor', 'start')
-          .attr('dy', '.9em');
-
-      updateValueLine();
 
 
       function updateValueLine() { //index is currently global (within the chart), may or may not keep it that way
         if (paused) return;
 
-        hoverValue.data([index])
+        var hoverValue = g.selectAll('.nv-hoverValue').data(index)
 
-        //d3.transition(hoverValue)
-        hoverValue
+        var hoverEnter = hoverValue.enter()
+          .append('g').attr('class', 'nv-hoverValue')
+            .style('stroke-opacity', 0)
+            .style('fill-opacity', 0);
+
+        hoverValue.exit()
           .transition().duration(250)
-            .style('stroke-opacity', function(d) { return d === null ? 0 : 1 })
-            .style('fill-opacity', function(d) { return d === null ? 0 : 1 });
-
-        if (index == null) return;
+            .style('stroke-opacity', 0)
+            .style('fill-opacity', 0)
+            .remove();
 
         hoverValue
             .attr('transform', function(d) { return 'translate(' + x(sparkline.x()(data[d],d)) + ',0)' })
+          .transition().duration(250)
+            .style('stroke-opacity', 1)
+            .style('fill-opacity', 1);
 
-        hoverValue.select('.nv-xValue')
-            .text(xTickFormat(sparkline.x()(data[index], index)));
+        if (!index.length) return;
 
-        hoverValue.select('.nv-yValue')
-            .text(yTickFormat(sparkline.y()(data[index], index)));
+        hoverEnter.append('line')
+            .attr('x1', 0)
+            .attr('y1', -margin.top)
+            .attr('x2', 0)
+            .attr('y2', availableHeight);
+
+
+        hoverEnter.append('text').attr('class', 'nv-xValue')
+            .attr('x', -6)
+            .attr('y', -margin.top)
+            .attr('text-anchor', 'end')
+            .attr('dy', '.9em')
+
+
+        g.select('.nv-hoverValue .nv-xValue')
+            .text(xTickFormat(sparkline.x()(data[index[0]], index[0])));
+
+        hoverEnter.append('text').attr('class', 'nv-yValue')
+            .attr('x', 6)
+            .attr('y', -margin.top)
+            .attr('text-anchor', 'start')
+            .attr('dy', '.9em')
+
+        g.select('.nv-hoverValue .nv-yValue')
+            .text(yTickFormat(sparkline.y()(data[index[0]], index[0])));
+
       }
 
 
       function sparklineHover() {
         if (paused) return;
 
-        var pos = d3.event.offsetX - margin.left;
+        var pos = d3.mouse(this)[0] - margin.left;
 
         function getClosestIndex(data, x) {
           var distance = Math.abs(sparkline.x()(data[0], 0) - x);
@@ -185,7 +207,7 @@ nv.models.sparklinePlus = function() {
           return closestIndex;
         }
 
-        index = getClosestIndex(data, Math.round(x.invert(pos)));
+        index = [getClosestIndex(data, Math.round(x.invert(pos)))];
 
         updateValueLine();
       }
@@ -203,7 +225,7 @@ nv.models.sparklinePlus = function() {
   // expose chart's sub-components
   chart.sparkline = sparkline;
 
-  d3.rebind(chart, sparkline, 'x', 'y', 'xScale', 'yScale');
+  d3.rebind(chart, sparkline, 'x', 'y', 'xScale', 'yScale', 'color');
 
   chart.margin = function(_) {
     if (!arguments.length) return margin;
@@ -235,6 +257,24 @@ nv.models.sparklinePlus = function() {
   chart.yTickFormat = function(_) {
     if (!arguments.length) return yTickFormat;
     yTickFormat = _;
+    return chart;
+  };
+
+  chart.showValue = function(_) {
+    if (!arguments.length) return showValue;
+    showValue = _;
+    return chart;
+  };
+
+  chart.alignValue = function(_) {
+    if (!arguments.length) return alignValue;
+    alignValue = _;
+    return chart;
+  };
+
+  chart.rightAlignValue = function(_) {
+    if (!arguments.length) return rightAlignValue;
+    rightAlignValue = _;
     return chart;
   };
 

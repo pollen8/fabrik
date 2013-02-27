@@ -1,6 +1,6 @@
 <?php
 /**
- * Fabrik Calendar HTML View
+ * Fabrik Google Chart HTML View
  *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.visualization.chart
@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.view');
 
 /**
- * Fabrik Calendar HTML View
+ * Fabrik Google Chart HTML View
  *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.visualization.chart
@@ -49,7 +49,6 @@ class FabrikViewChart extends JViewLegacy
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$calendar = $model->getRow();
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
 		if ($this->requiredFiltersFound)
 		{
@@ -81,7 +80,7 @@ class FabrikViewChart extends JViewLegacy
 		$js .= $model->getFilterJs();
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
-		FabrikHelperHTML::addScriptDeclaration($srcs, $js);
+		FabrikHelperHTML::script($srcs, $js);
 		echo parent::display();
 	}
 

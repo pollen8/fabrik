@@ -66,7 +66,7 @@ class fabrikViewMedia extends JViewLegacy
 		$pluginManager = FabrikWorker::getPluginManager();
 		$plugin = $pluginManager->getPlugIn('media', 'visualization');
 		$this->containerId = $this->get('ContainerId');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->params = $model->getParams();
 		$tpl = $j3 ? 'bootstrap' : 'default';

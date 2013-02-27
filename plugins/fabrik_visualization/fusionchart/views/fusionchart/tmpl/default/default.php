@@ -22,7 +22,7 @@ $row = $this->row;
 	<p>
 		<?php echo $row->intro_text;?>
 	</p>
-	<?php echo $this->loadTemplate( 'filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 	<br />
 	<?php echo $this->chart; ?>
 </div>

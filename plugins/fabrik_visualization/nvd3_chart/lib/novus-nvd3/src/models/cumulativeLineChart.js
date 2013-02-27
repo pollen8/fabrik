@@ -27,13 +27,14 @@ nv.models.cumulativeLineChart = function() {
     , x //can be accessed via chart.xScale()
     , y //can be accessed via chart.yScale()
     , id = lines.id()
+    , state = { index: 0, rescaleY: rescaleY }
     , noData = 'No Data Available.'
-    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide')
+    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
     ;
 
   xAxis
     .orient('bottom')
-    .tickPadding(5)
+    .tickPadding(7)
     ;
   yAxis
     .orient('left')
@@ -60,24 +61,32 @@ nv.models.cumulativeLineChart = function() {
     nv.tooltip.show([left, top], content, null, null, offsetElement);
   };
 
-
+/*
+  //Moved to see if we can get better behavior to fix issue #315
   var indexDrag = d3.behavior.drag()
                     .on('dragstart', dragStart)
                     .on('drag', dragMove)
                     .on('dragend', dragEnd);
 
-  function dragStart(d,i) {}
+  function dragStart(d,i) {
+    d3.select(chart.container)
+        .style('cursor', 'ew-resize');
+  }
 
   function dragMove(d,i) {
     d.x += d3.event.dx;
     d.i = Math.round(dx.invert(d.x));
 
     d3.select(this).attr('transform', 'translate(' + dx(d.i) + ',0)');
+    chart.update();
   }
 
   function dragEnd(d,i) {
+    d3.select(chart.container)
+        .style('cursor', 'auto');
     chart.update();
   }
+*/
 
   //============================================================
 
@@ -95,6 +104,36 @@ nv.models.cumulativeLineChart = function() {
 
       chart.update = function() { chart(selection) };
       chart.container = this;
+
+
+
+      var indexDrag = d3.behavior.drag()
+                        .on('dragstart', dragStart)
+                        .on('drag', dragMove)
+                        .on('dragend', dragEnd);
+
+
+      function dragStart(d,i) {
+        d3.select(chart.container)
+            .style('cursor', 'ew-resize');
+      }
+
+      function dragMove(d,i) {
+        index.x = d3.event.x;
+        index.i = Math.round(dx.invert(index.x));
+        updateZero();
+      }
+
+      function dragEnd(d,i) {
+        d3.select(chart.container)
+            .style('cursor', 'auto');
+
+        // update state and send stateChange with new index
+        state.index = index.i;
+        dispatch.stateChange(state);
+      }
+
+
 
 
       //------------------------------------------------------------
@@ -134,6 +173,9 @@ nv.models.cumulativeLineChart = function() {
           .map(function(series,i) {
             var initialDomain = d3.extent(series.values, lines.y());
 
+            //account for series being disabled when losing 95% or more
+            if (initialDomain[0] < -.95) initialDomain[0] = -.95;
+
             return [
               (initialDomain[0] - initialDomain[1]) / (1 + initialDomain[1]),
               (initialDomain[1] - initialDomain[0]) / (1 + initialDomain[0])
@@ -170,6 +212,7 @@ nv.models.cumulativeLineChart = function() {
 
       gEnter.append('g').attr('class', 'nv-x nv-axis');
       gEnter.append('g').attr('class', 'nv-y nv-axis');
+      gEnter.append('g').attr('class', 'nv-background');
       gEnter.append('g').attr('class', 'nv-linesWrap');
       gEnter.append('g').attr('class', 'nv-legendWrap');
       gEnter.append('g').attr('class', 'nv-controlsWrap');
@@ -221,8 +264,29 @@ nv.models.cumulativeLineChart = function() {
       wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 
+      // Show error if series goes below 100%
+      var tempDisabled = data.filter(function(d) { return d.tempDisabled });
+
+      wrap.select('.tempDisabled').remove(); //clean-up and prevent duplicates
+      if (tempDisabled.length) {
+        wrap.append('text').attr('class', 'tempDisabled')
+            .attr('x', availableWidth / 2)
+            .attr('y', '-.71em')
+            .style('text-anchor', 'end')
+            .text(tempDisabled.map(function(d) { return d.key }).join(', ') + ' values cannot be calculated for this time period.');
+      }
+
+
+
       //------------------------------------------------------------
       // Main Chart Component(s)
+
+      gEnter.select('.nv-background')
+        .append('rect');
+
+      g.select('.nv-background rect')
+          .attr('width', availableWidth)
+          .attr('height', availableHeight);
 
       lines
         //.x(function(d) { return d.x })
@@ -231,14 +295,15 @@ nv.models.cumulativeLineChart = function() {
         .height(availableHeight)
         .color(data.map(function(d,i) {
           return d.color || color(d, i);
-        }).filter(function(d,i) { return !data[i].disabled }));
+        }).filter(function(d,i) { return !data[i].disabled && !data[i].tempDisabled }));
 
 
 
       var linesWrap = g.select('.nv-linesWrap')
-          .datum(data.filter(function(d) { return !d.disabled }))
+          .datum(data.filter(function(d) { return !d.disabled && !d.tempDisabled }));
 
-      d3.transition(linesWrap).call(lines);
+      //d3.transition(linesWrap).call(lines);
+      linesWrap.call(lines);
 
 
       var indexLine = linesWrap.selectAll('.nv-indexLine')
@@ -262,7 +327,8 @@ nv.models.cumulativeLineChart = function() {
 
       xAxis
         .scale(x)
-        .ticks( availableWidth / 100 )
+        //Suggest how many ticks based on the chart width and D3 should listen (70 is the optimal number for MM/DD/YY dates)
+        .ticks( Math.min(data[0].values.length,availableWidth/70) )
         .tickSize(-availableHeight, 0);
 
       g.select('.nv-x.nv-axis')
@@ -286,11 +352,46 @@ nv.models.cumulativeLineChart = function() {
       // Event Handling/Dispatching (in chart's scope)
       //------------------------------------------------------------
 
+
+      function updateZero() {
+        indexLine
+          .data([index]);
+
+        chart.update();
+      }
+
+      g.select('.nv-background rect')
+          .on('click', function() {
+            index.x = d3.mouse(this)[0];
+            index.i = Math.round(dx.invert(index.x));
+
+            // update state and send stateChange with new index
+            state.index = index.i;
+            dispatch.stateChange(state);
+
+            updateZero();
+          });
+
+      lines.dispatch.on('elementClick', function(e) {
+        index.i = e.pointIndex;
+        index.x = dx(index.i);
+
+        // update state and send stateChange with new index
+        state.index = index.i;
+        dispatch.stateChange(state);
+
+        updateZero();
+      });
+
       controls.dispatch.on('legendClick', function(d,i) { 
         d.disabled = !d.disabled;
         rescaleY = !d.disabled;
 
-        selection.transition().call(chart);
+        state.rescaleY = rescaleY;
+        dispatch.stateChange(state);
+
+        //selection.transition().call(chart);
+        selection.call(chart);
       });
 
 
@@ -305,7 +406,11 @@ nv.models.cumulativeLineChart = function() {
           });
         }
 
-        selection.transition().call(chart);
+        state.disabled = data.map(function(d) { return !!d.disabled });
+        dispatch.stateChange(state);
+
+        //selection.transition().call(chart);
+        selection.call(chart);
       });
 
 /*
@@ -323,6 +428,37 @@ nv.models.cumulativeLineChart = function() {
 
       dispatch.on('tooltipShow', function(e) {
         if (tooltips) showTooltip(e, that.parentNode);
+      });
+
+
+      // Update chart from a state object passed to event handler
+      dispatch.on('changeState', function(e) {
+
+        if (typeof e.disabled !== 'undefined') {
+          data.forEach(function(series,i) {
+            series.disabled = e.disabled[i];
+          });
+
+          state.disabled = e.disabled;
+        }
+
+
+        if (typeof e.index !== 'undefined') {
+          index.i = e.index;
+          index.x = dx(index.i);
+
+          state.index = e.index;
+
+          indexLine
+            .data([index]);
+        }
+
+
+        if (typeof e.rescaleY !== 'undefined') {
+          rescaleY = e.rescaleY;
+        }
+
+        selection.call(chart);
       });
 
       //============================================================
@@ -394,6 +530,12 @@ nv.models.cumulativeLineChart = function() {
     return chart;
   };
 
+  chart.rescaleY = function(_) {
+    if (!arguments.length) return rescaleY;
+    rescaleY = _
+    return rescaleY;
+  };
+
   chart.showControls = function(_) {
     if (!arguments.length) return showControls;
     showControls = _;
@@ -418,6 +560,12 @@ nv.models.cumulativeLineChart = function() {
     return chart;
   };
 
+  chart.state = function(_) {
+    if (!arguments.length) return state;
+    state = _;
+    return chart;
+  };
+
   chart.noData = function(_) {
     if (!arguments.length) return noData;
     noData = _;
@@ -436,16 +584,20 @@ nv.models.cumulativeLineChart = function() {
     return data.map(function(line, i) {
       var v = lines.y()(line.values[idx], idx);
 
+      //TODO: implement check below, and disable series if series loses 100% or more cause divide by 0 issue
+      if (v < -.95) {
+        //if a series loses more than 100%, calculations fail.. anything close can cause major distortion (but is mathematically correct till it hits 100)
+        line.tempDisabled = true;
+        return line;
+      }
+
+      line.tempDisabled = false;
+
       line.values = line.values.map(function(point, pointIndex) {
         point.display = {'y': (lines.y()(point, pointIndex) - v) / (1 + v) };
         return point;
       })
-      /*
-      TODO: implement check below, and disable series if series loses 100% or more cause divide by 0 issue
-      if (v < -.9) {
-        //if a series loses more than 100%, calculations fail.. anything close can cause major distortion (but is mathematically currect till it hits 100)
-      }
-      */
+
       return line;
     })
   }

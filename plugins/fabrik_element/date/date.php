@@ -1353,15 +1353,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					else
 					{
 						$d = new FabDate($o->text);
-						$o->value = $d->toSql();
-						$o->text = $d->format($format);
+						$d->setTimeZone($timeZone);
+						$o->value = $d->toSql(true);
+						$o->text = $d->format($format, true);
 					}
 					if (!array_key_exists($o->value, $ddData))
 					{
 						$ddData[$o->value] = $o;
 					}
 				}
-
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
 				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" size="1" maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
@@ -1788,14 +1788,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->buildQueryJoin();
@@ -1803,7 +1811,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$name = $this->getFullName(false, false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
+		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' FROM '
 			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 

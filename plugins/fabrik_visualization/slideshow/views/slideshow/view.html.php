@@ -53,7 +53,7 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->params = $params;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();

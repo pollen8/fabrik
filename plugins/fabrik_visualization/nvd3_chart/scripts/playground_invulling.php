@@ -12,6 +12,7 @@ $sub_options = ($params->sub_options);
 $sub_values = ($sub_options->sub_values);
 
 $sub_labels = ($sub_options->sub_labels);
+
 $labels = array_combine($sub_values, $sub_labels);
 
 $query->clear();
@@ -19,21 +20,27 @@ $query->select('playground_invulling')->from('fab_userinfo');
 $db->setQuery($query);
 $data = array();
 $rows = $db->loadColumn();
+
 foreach ($rows as $row)
 {
 	$vals = json_decode($row);
 	foreach ($vals as $val)
 	{
-		if (!array_key_exists($val, $data))
+		if (!is_null($val))
 		{
-			$o = new stdClass;
-			$o->label = $labels[$val];
-			$o->value = 1;
-			$data[$val] = $o;
-		}
-		else
-		{
-			$data[$val]->value ++;
+			// hack for é in Café value
+			$val = str_replace("u00e9", 'é', $val);
+			if (!array_key_exists($val, $data))
+			{
+				$o = new stdClass;
+				$o->label = $labels[$val];
+				$o->value = 1;
+				$data[$val] = $o;
+			}
+			else
+			{
+				$data[$val]->value ++;
+			}
 		}
 	}
 }
