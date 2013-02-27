@@ -12,17 +12,17 @@
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.controllerform');
+require_once 'fabcontrollerform.php';
 
 /**
  * Raw List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
-class FabrikAdminControllerList extends JControllerForm
+class FabrikAdminControllerList extends FabControllerForm
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -104,33 +104,14 @@ class FabrikAdminControllerList extends JControllerForm
 	}
 
 	/**
-	 * Filter list items
-	 *
-	 * @return  null
-	 */
-
-	public function filter()
-	{
-		// Check for request forgeries
-		//JSession::checkToken() or die('Invalid Token');
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$id = $input->getInt('listid');
-		$model->setId($id);
-		$input->set('cid', $id);
-		$request = $model->getRequestData();
-		$model->storeRequestData($request);
-		$this->view();
-	}
-
-	/**
 	 * Show the lists data in the admin
+	 *
+	 * @param   object  $model  list model
 	 *
 	 * @return  void
 	 */
 
-	public function view()
+	public function view($model = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -138,9 +119,15 @@ class FabrikAdminControllerList extends JControllerForm
 		$cid = $cid[0];
 		$cid = $input->getInt('listid', $cid);
 
-		// Grab the model and set its id
-		$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-		$model->setState('list.id', $cid);
+		if (is_null($model))
+		{
+			$cid = JRequest::getInt('listid', $cid);
+
+			// Grab the model and set its id
+			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
+			$model->setState('list.id', $cid);
+		}
+
 		$viewType = JFactory::getDocument()->getType();
 
 		// Use the front end renderer to show the table
@@ -176,5 +163,42 @@ class FabrikAdminControllerList extends JControllerForm
 		$input->set('resetfilters', 0);
 		$input->set('clearfilters', 0);
 		$this->view();
+	}
+
+	/**
+	 * Clear filters
+	 *
+	 * @return  null
+	 */
+
+	public function clearfilter()
+	{
+		$app = JFactory::getApplication();
+		$app->enqueueMessage(JText::_('COM_FABRIK_FILTERS_CLEARED'));
+		$app->input->set('clearfilters', 1);
+		$this->filter();
+	}
+
+	/**
+	 * Filter list items
+	 *
+	 * @return  null
+	 */
+
+	public function filter()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die('Invalid Token');
+		$app = JFactory::getApplication();
+		$model = JModel::getInstance('List', 'FabrikFEModel');
+		$id = $app->input->getInt('listid');
+		$model->setId($id);
+		JRequest::setVar('cid', $id);
+		$app->input->set('cid', $id);
+		$request = $model->getRequestData();
+		$model->storeRequestData($request);
+
+		// Pass in the model otherwise display() rebuilds it and the request data is rebuilt
+		$this->view($model);
 	}
 }
