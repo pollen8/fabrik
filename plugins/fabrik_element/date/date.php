@@ -684,6 +684,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->firstDay = intval($params->get('date_firstday'));
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
+		$opts->timeFormat = 24;
 		FabDate::dateFormatToStrftimeFormat($opts->ifFormat);
 		$opts->hasValidations = empty($validations) ? false : true;
 		$opts->dateAllowFunc = $params->get('date_allow_func');

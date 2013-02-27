@@ -434,7 +434,10 @@ if (typeof(Fabrik) === "undefined") {
 			'width': list.options.popup_width,
 			'height': list.options.popup_height,
 			'onClose': function (win) {
-				console.log('todo: close win, should clear form from memory');
+				var k = 'form_' + list.options.formid + '_' + rowid;
+				Fabrik.blocks[k].destroyElements();
+				Fabrik.blocks[k].formElements = null;
+				Fabrik.blocks[k] = null;
 			} 
 		};
 		if (typeOf(list.options.popup_offset_x) !== 'null') {
@@ -496,6 +499,12 @@ if (typeof(Fabrik) === "undefined") {
 		}
 		Fabrik.getWindow(winOpts);
 	};
+	
+	Fabrik.form = function(ref, id, opts) {
+		var form = new FbForm(id, opts);
+		Fabrik.addBlock(ref, form);
+		return form;
+	}
 	
 	window.fireEvent('fabrik.loaded');
 }

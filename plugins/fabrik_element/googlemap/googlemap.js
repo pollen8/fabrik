@@ -61,9 +61,9 @@ var FbGoogleMap = new Class({
 	},
 	
 	initialize: function (element, options) {
-		this.heartbeat = (function () {
+		/*this.heartbeat = (function () {
 			console.log('heartbeat', this);
-		}.bind(this)).periodical(800);
+		}.bind(this)).periodical(800);*/
 		console.log('ini gmap element ', element);
 		this.mapMade = false;
 		this.parent(element, options);
@@ -592,6 +592,7 @@ var FbGoogleMap = new Class({
 	},
 
 	cloned: function (c) {
+		console.log('map cloned');
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
 			var bits = field.split('_');

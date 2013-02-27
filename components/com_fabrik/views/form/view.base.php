@@ -473,10 +473,12 @@ class FabrikViewFormBase extends JViewLegacy
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
-		$script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
+		/* $script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
 		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
 		$script[] = "\t\tFabrik.addBlock('$bkey', $bkey);";
-		$script[] = "\t}";
+		$script[] = "\t}"; */
+
+		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId(). ", $opts);";
 
 		// Instantaite js objects for each element
 		$vstr = "\n";
