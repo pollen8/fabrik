@@ -45,11 +45,15 @@ var FbListFilter = new Class({
 			c.addEvent('click', function (e) {
 				var plugins;
 				e.stop();
+
+				// Reset the filter fields that contain previously selected values
 				this.container.getElements('.fabrik_filter').each(function (f) {
-					if (f.get('tag') === 'select') {
-						f.selectedIndex = 0;
-					} else {
-						f.value = '';
+					if (f.name.contains('[value]')) { 
+						if (f.get('tag') === 'select') {
+							f.selectedIndex = 0;
+						} else {
+							f.value = '';
+						}
 					}
 				});
 				plugins = this.getList().plugins;
