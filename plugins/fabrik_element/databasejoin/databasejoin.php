@@ -530,7 +530,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$this->addSpaceToEmptyLabels($tmp);
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue'), $this->_getSelectLabel()));
+			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
 		}
 		return $tmp;
 	}
