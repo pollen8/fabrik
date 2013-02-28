@@ -11,6 +11,7 @@
  *  fabriktables.js
  *  
  */
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
@@ -68,8 +69,8 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
+	
 	success: function (text) {
-		
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
 		var urls = [];
@@ -273,7 +274,6 @@ var Loader = new Class({
 				script.type = "text/javascript";
 				script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=' + cb;
 				document.body.appendChild(script);
-				Fabrik.googleMap = true;
 			}
 			else {
 				// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
@@ -424,6 +424,12 @@ var Loader = new Class({
 			}
 			Fabrik.getWindow(winOpts);
 		};
+		
+		Fabrik.form = function(ref, id, opts) {
+			var form = new FbForm(id, opts);
+			Fabrik.addBlock(ref, form);
+			return form;
+		}
 		
 		window.fireEvent('fabrik.loaded');
 	}
