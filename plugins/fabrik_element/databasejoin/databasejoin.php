@@ -206,7 +206,18 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
-				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+				// $$$ hugh (and Joe) - added 'autocomplete_how', currently just "starts_with" or "contains"
+				// default to "contains" for backward compat.
+				// http://fabrikar.com/forums/showthread.php?p=165192&posted=1#post165192
+				$params = $this->getParams();
+				if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+				}
+				else
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote(JRequest::getVar('value') . '%');
+				}
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
 			else
