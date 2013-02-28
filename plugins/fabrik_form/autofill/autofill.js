@@ -206,7 +206,7 @@ var Autofill = new Class({
 		if (this.options.editOrig === true) {
 			this.form.getForm().getElement('input[name=rowid]').value = json.__pk_val;
 		}
-		Fabrik.fireEvent('fabrik.form.autofill.update.end', [this]);
+		Fabrik.fireEvent('fabrik.form.autofill.update.end', [this, json]);
 	},
 	
 	tryUpdate: function (key, val) {
