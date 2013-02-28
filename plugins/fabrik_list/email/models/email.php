@@ -555,7 +555,6 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$config = JFactory::getConfig();
 		$this->_type = 'table';
 		$params = $this->getParams();
-		$to = $input->get('list_email_to', '', 'string');
 		$renderOrder = $input->getInt('renderOrder');
 
 		$merge_emails = $params->get('emailtable_mergemessages', 0);
@@ -574,6 +573,14 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		if (is_array($toType))
 		{
 			$toType = JArrayHelper::getValue($toType, $renderOrder, 'list');
+		}
+		if ($toType == 'table' || $toType == 'table_picklist')
+		{
+			$to = $input->get('list_email_to', '', 'array');
+		}
+		else
+		{
+			$to = $input->get('list_email_to', '', 'string');
 		}
 		if ($toType == 'list')
 		{
@@ -625,7 +632,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		{
 			$contentTemplate = JArrayHelper::getValue($contentTemplate, $renderOrder, '');
 		}
-		$content = empty($contentTemplate) ? $content: FabrikHelperHTML::getContentTemplate($contentTemplate);
+		$content = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
 
 		$php_msg = false;
 		if (JFile::exists($emailTemplate))
@@ -644,13 +651,13 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		}
 		else
 		{
-			$message = $contentTemplate != '' ? $content : $message;
+			$message = $contentTemplate != '' ? $content : '';
 		}
 
 		$subject = $input->get('subject', '', 'string');
 
 		// $$$ hugh - may need to allow html
-		$cover_message = $input->get('message', '');
+		$cover_message = $input->get('message', '', 'html');
 		$old_style = false;
 		if (empty($message) && !$php_msg)
 		{
