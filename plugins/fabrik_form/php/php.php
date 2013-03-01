@@ -275,9 +275,9 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		{
 			$this->html = $formModel->_data;
 		}
+		$w = new FabrikWorker;
 		if ($params->get('form_php_file') == -1)
 		{
-			$w = new FabrikWorker;
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
 			return eval($code);
 		}
@@ -321,6 +321,14 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 			if ($php_result === false)
 			{
 				return false;
+			}
+			// $$$ hugh - added this to make it more convenient for defining functions to call in form PHP.
+			// So you can have a 'script file' that defines function(s), AND a direct eval that calls them,
+			// without having to stick a require() in the eval code.
+			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
+			if (!empty($code))
+			{
+				return eval($code);
 			}
 		}
 		return true;
