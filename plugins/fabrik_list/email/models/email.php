@@ -657,7 +657,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$subject = $input->get('subject', '', 'string');
 
 		// $$$ hugh - may need to allow html
-		$cover_message = $input->get('message', '', 'html');
+		$cover_message = nl2br($input->get('message', '', 'html'));
 		$old_style = false;
 		if (empty($message) && !$php_msg)
 		{
