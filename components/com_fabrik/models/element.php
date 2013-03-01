@@ -1950,10 +1950,36 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$c[] = 'fabrikHide';
 		}
+		else
+		{
+			// $$$ hugh - adding a class name for repeat groups, as per:
+			// http://fabrikar.com/forums/showthread.php?p=165128#post165128
+			// But as per my repsonse on that thread, if this turns out to be a performance
+			// hit, may take it out.  That said, I think having this class will make things
+			// easier for custom styling when the element ID isn't constant.
+			$groupModel = $this->getGroupModel();
+			if ($groupModel->canRepeat())
+			{
+				// $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
+				/*
+				$groupParams = $groupModel->getParams();
+				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
+				{
+					$c[] = 'fabrikRepeatGroupTable___' . $this->getFullName(false, true, false);
+				}
+				else
+				{
+					$c[] = 'fabrikRepeatGroupList___' . $this->getFullName(false, true, false);
+				}
+				*/
+				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(false, true, false);
+			}
+		}
 		if ($element->error != '')
 		{
 			$c[] = 'fabrikError';
 		}
+
 		return implode(' ', $c);
 	}
 
@@ -4630,6 +4656,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$opts->repeatCounter = $repeatCounter;
 		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->isEditable();
 		$opts->value = $this->getValue($data, $repeatCounter);
+		$opts->label = $element->label;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$validationEls = array();
