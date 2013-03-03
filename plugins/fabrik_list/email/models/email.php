@@ -236,6 +236,10 @@ class plgFabrik_ListEmail extends plgFabrik_List
 			->from($emailtable_to_table)->order('name ASC');
 			$toDb->setQuery($query);
 			$results = $toDb->loadObjectList();
+			if (empty($results))
+			{
+				return JText::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
+			}
 			$empty = new stdClass;
 
 			if ($toType == 'table_picklist')
@@ -310,7 +314,10 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$params = $this->getParams();
 		$var = $params->get('emailtable_email_to_field_how', 'readonly');
 		$var = is_array($var) ? JArrayHelper::getValue($var, $renderOrder, 'readonly') : $var;
-		return $var != 'hidden';
+		$toType = $params->get('emailtable_to_type', 'list');
+		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'single') : $toType;
+		// can only hide To if it's the simple field type, as all others require user input
+		return !($var == 'hidden' && $toType == 'field');
 	}
 
 	/**
