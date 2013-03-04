@@ -147,7 +147,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var array
 	 */
-	var $_imageExtensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
+	protected $imageExtensions = array('jpg', 'jpeg', 'gif', 'bmp', 'png');
 
 	/**
 	 * Is the element in a detailed view?
@@ -161,7 +161,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var array
 	 */
-	var $defaults = array();
+	public $defaults = array();
 
 	/**
 	 * The element's HTML ids based on $repeatCounter
@@ -239,6 +239,9 @@ class plgFabrik_Element extends FabrikPlugin
 	 * @var  string
 	 */
 	protected $fieldSize = '255';
+
+	/** @var string element error msg */
+	protected $elementError = '';
 
 	/**
 	 * Constructor
@@ -535,7 +538,7 @@ class plgFabrik_Element extends FabrikPlugin
 		$iconfile = $params->get('icon_file', '');
 
 		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
-		foreach ($this->_imageExtensions as $ex)
+		foreach ($this->imageExtensions as $ex)
 		{
 			$f = JPath::clean($cleanData . '.' . $ex);
 			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl);
@@ -6369,14 +6372,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * unset the element models access
+	 * Unset the element models access
 	 *
 	 * @return  null
 	 */
 
 	public function clearAccess()
 	{
-		unset($this->access);
+		unset($this->_access);
 	}
 
 	/**
