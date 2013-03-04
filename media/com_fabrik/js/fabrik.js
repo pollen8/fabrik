@@ -11,6 +11,7 @@
  *  fabriktables.js
  *  
  */
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
@@ -68,8 +69,8 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
+	
 	success: function (text) {
-		
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
 		var urls = [];
@@ -267,20 +268,55 @@ var Loader = new Class({
 		
 		Fabrik.requestQueue = new RequestQueue();
 		
+		Fabrik.cbQueue = {'google': []};
+		
 		Fabrik.loadGoogleMap = function (s, cb) {
-			if (typeOf(Fabrik.googleMap) === 'null') {
+			
+			var src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=Fabrik.mapCb';
+			
+			// Have we previously started to load the Googlemaps script?
+			var gmapScripts = $A(document.scripts).filter(function (f) {
+				return f.src === src;
+			});
+			
+			if (gmapScripts.length === 0) {
+				// Not yet loaded so create a script dom node and inject it into the page.
 				var script = document.createElement("script");
 				script.type = "text/javascript";
-				script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=' + cb;
+				script.src = src;
 				document.body.appendChild(script);
-				Fabrik.googleMap = true;
+				
+				// Store the callback into the cbQueue, which will be processed after gmaps is loaded.
+				Fabrik.cbQueue.google.push(cb);
+			} else {
+				// We've already added the Google maps js script to the document
+				if (Fabrik.googleMap) {
+					window[cb]();
+					
+					// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
+					// opening a popup edit for the second time, the map JS will never get these events.
+					
+					//window.fireEvent('google.map.loaded');
+					//window.fireEvent('google.radius.loaded');
+					
+				} else {
+					// We've started to load the Google Map code but the callback has not been fired.
+					// Cache the call back (it will be fired when Fabrik.mapCb is run.
+					Fabrik.cbQueue.google.push(cb);
+				}
 			}
-			else {
-				// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
-				// opening a popup edit for the second time, the map JS will never get these events.
-				window.fireEvent('google.map.loaded');
-				window.fireEvent('google.radius.loaded');
+		};
+		
+		/**
+		 * Called once the google maps script has loaded, will run through any queued callback methods and 
+		 * fire them.
+		 */
+		Fabrik.mapCb = function () {
+			Fabrik.googleMap = true;
+			for (var i = 0; i < Fabrik.cbQueue.google.length; i ++) {
+				window[Fabrik.cbQueue.google[i]]();
 			}
+			Fabrik.cbQueue.google = [];
 		};
 		
 		/** Globally observe delete links **/
