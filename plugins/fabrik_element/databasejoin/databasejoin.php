@@ -206,17 +206,19 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
+				$v = $app->input->get('value', '', 'string');
+
 				// $$$ hugh (and Joe) - added 'autocomplete_how', currently just "starts_with" or "contains"
 				// default to "contains" for backward compat.
 				// http://fabrikar.com/forums/showthread.php?p=165192&posted=1#post165192
 				$params = $this->getParams();
 				if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
 				{
-					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . JRequest::getVar('value') . '%');
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $v . '%');
 				}
 				else
 				{
-					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote(JRequest::getVar('value') . '%');
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote($v . '%');
 				}
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
@@ -627,11 +629,16 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		{
 			$table = $join->table_join;
 			$key = $join->table_join_key;
-			$val = $db->quoteName($join->_params->get('join-label', $val));
+			$val = $join->_params->get('join-label', $val);
 		}
 		if ($key == '' || $val == '')
 		{
 			return false;
+		}
+
+		if (!strstr($val, 'CONCAT'))
+		{
+			$val = $db->quoteName($val);
 		}
 
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
