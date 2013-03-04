@@ -507,7 +507,7 @@ var FbDateTime = new Class({
 				'background-color' : '#333333'
 			},
 			'id' : this.startElement + '_handle'
-		}).appendText(this.options.timelabel);
+		}).set('html', this.options.timelabel + '<a href="#" style="color:#eee" class="close">[x]</a>');
 		var d = new Element('div', {
 			'className' : 'fbDateTime',
 			'styles' : {
@@ -605,14 +605,23 @@ var FbDateTime = new Class({
 			if (this.timeActive) {
 				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
-					if (!t.within(this.dropdown)) {
+					/*if (!t.within(this.dropdown)) {
 						this.hideTime();
-					}
+					}*/
 				}
 			}
 		}.bind(this));
+		
 		d.injectInside(document.body);
 		var mydrag = new Drag.Move(d);
+		
+		var closeTime = handle.getElement('a.close');
+		if (typeOf(closeTime) !== 'null') {
+			closeTime.addEvent('click', function (e) {
+				e.stop();
+				this.hideTime();
+			}.bind(this));
+		}
 		return d;
 	},
 

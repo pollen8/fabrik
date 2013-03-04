@@ -471,9 +471,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -508,11 +508,9 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 		$opts->canRate = (bool) $this->canRate();
 		$opts->mode = $params->get('rating-mode');
 		$opts->view = JRequest::getCmd('view');
-		$opts = json_encode($opts);
+		$opts->rating = $value;
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
-
-		$str = "new FbRating('$id', $opts, '$value')";
-		return $str;
+		return array('FbRating', $id, $opts);
 	}
 
 	/**

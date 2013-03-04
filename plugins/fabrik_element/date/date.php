@@ -677,9 +677,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -701,8 +701,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		// For reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts->advanced = $params->get('date_advanced', '0') == '1';
-		$opts = json_encode($opts);
-		return "new FbDateTime('$id', $opts)";
+		return array('FbDateTime', $id, $opts);
 	}
 
 	/**

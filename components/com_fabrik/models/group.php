@@ -278,7 +278,7 @@ class FabrikFEModelGroup extends FabModel
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
 			$this->formsIamIn = $db->loadColumn();
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				return JError::raiseError(500, $db->getErrorMsg());
 			}
@@ -302,7 +302,6 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$group = $this->getGroup();
 			$this->elements = array();
-			$form = $this->getFormModel();
 			$pluginManager = FabrikWorker::getPluginManager();
 			$formModel = $this->getFormModel();
 			$allGroups = $pluginManager->getFormPlugins($formModel);
@@ -360,7 +359,15 @@ class FabrikFEModelGroup extends FabModel
 		$colcount = (int) $params->get('group_columns');
 
 		// Bootstrap grid formatting
-		$element->span = $colcount == 0 ? 12 : floor(12 / $colcount);
+		$spans = $this->columnSpans();
+		if ($colcount === 0)
+		{
+			$colcount = 1;
+		}
+		$spanKey = ($elCount -1) % $colcount;
+
+		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
+		$element->span = ' ' . $element->span;
 		$element->offset = $params->get('group_offset', 0);
 
 		$element->startRow = false;
@@ -377,17 +384,34 @@ class FabrikFEModelGroup extends FabModel
 			$element->column = ' style="float:left;width:' . $w . ';';
 			if ($elCount !== 0 && (($elCount - 1) % $colcount == 0) || $element->hidden)
 			{
-				$element->startRow = true;
+				$element->startRow = 1;
 				$element->column .= "clear:both;";
 			}
-			if (($elCount % $colcount === $colcount - 1) || $element->hidden)
+
+			if ($element->hidden)
 			{
-				$element->endRow = true;
+				$element->endRow = 1;
+			}
+			else
+			{
+				if ((($elCount -1) % $colcount === $colcount - 1))
+				{
+					// echo $element->label_raw . ($elCount - 1) . "  % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . " (yes)<br>";
+					$element->endRow = 1;
+				}
+				else
+				{
+					// echo $element->label_raw . ($elCount - 1) . " $elCount % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . "(no)<br>";
+
+				}
 			}
 			$element->column .= '" ';
 		}
 		else
 		{
+			$element->startRow = 0;
+			$element->endRow = 0;
+			$element->span = '';
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
 		// $$$ rob only advance in the column count if the element is not hidden
@@ -396,6 +420,40 @@ class FabrikFEModelGroup extends FabModel
 			$elCount++;
 		}
 		return $elCount;
+	}
+
+	/**
+	 * Work out the bootstrap column spans for the group
+	 * Assigned to each element in setColumnCss()
+	 * Looks at the property group_column_widths which accepts either % or 1-12 as values
+	 *
+	 * @since 3.0b
+	 *
+	 * @return  array
+	 */
+
+	public function columnSpans()
+	{
+		$params = $this->getParams();
+		$widths = $params->get('group_column_widths', '');
+		$widths = explode(',', $widths);
+		if (FabrikWorker::j3())
+		{
+			foreach ($widths as &$w)
+			{
+				if ($w == '')
+				{
+					$w = 6;
+				}
+				if (strstr($w, '%'))
+				{
+					$w = (int) str_replace('%', '', $w);
+					$w = floor(($w / 100) * 12);
+				}
+				$w = ' span' . $w;
+			}
+		}
+		return $widths;
 	}
 
 	/**
@@ -456,7 +514,8 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedElements = array();
 		}
-		$ids = (array) JRequest::getVar('elementid');
+		$app = JFactory::getApplication();
+		$ids = (array) $app->input->get('elementid', array(), 'array');
 		$sig = implode('.', $ids);
 		if (!array_key_exists($sig, $this->publishedElements))
 		{
@@ -492,9 +551,12 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements = array();
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', array());
+		$showInList = $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->listQueryElements))
 		{
@@ -516,7 +578,7 @@ class FabrikFEModelGroup extends FabModel
 					 * include elements in the list query if the user can not view them, as their data is sent to the json object
 					 * and thus visible in the page source
 					 */
-					if (JRequest::getVar('view') == 'list' && !$elementModel->canView('list'))
+					if ($input->get('view') == 'list' && !$elementModel->canView('list'))
 					{
 						continue;
 					}
@@ -553,9 +615,12 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->publishedListElements = array();
 		}
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ rob fabrik_show_in_list set in admin module params (will also be set in menu items and content plugins later on)
 		// its an array of element ids that should be show. Overrides default element 'show_in_list' setting.
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', array());
+		$showInList = (array) $input->get('fabrik_show_in_list', array(), 'array');
 		$sig = empty($showInList) ? 0 : implode('.', $showInList);
 		if (!array_key_exists($sig, $this->publishedListElements))
 		{
@@ -613,7 +678,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($ok)
 		{
 			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 			$ok = in_array($params->get('repeat_add_access', 1), $groups);
 		}
 		return $ok;
@@ -639,7 +704,7 @@ class FabrikFEModelGroup extends FabModel
 			if ($ok === -1)
 			{
 				$user = JFactory::getUser();
-				$groups = $user->authorisedLevels();
+				$groups = $user->getAuthorisedViewLevels();
 				$ok = in_array($params->get('repeat_delete_access', 1), $groups);
 			}
 		}
@@ -717,7 +782,7 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Get group params
 	 *
-	 * @return object params
+	 * @return  object	params
 	 */
 
 	public function &getParams()
@@ -810,11 +875,13 @@ class FabrikFEModelGroup extends FabModel
 
 	public function copy()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$elements = $this->getMyElements();
 		$group = $this->getGroup();
 
 		// NewGroupNames set in table copy
-		$newNames = JRequest::getVar('newGroupNames', array());
+		$newNames = $input->get('newGroupNames', array(), 'array');
 		if (array_key_exists($group->id, $newNames))
 		{
 			$group->name = $newNames[$group->id];

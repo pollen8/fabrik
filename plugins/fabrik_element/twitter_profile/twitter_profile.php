@@ -140,16 +140,14 @@ class plgFabrik_ElementTwitter_profile extends plgFabrik_Element
 	 *
 	 * @param   int  $repeatCounter  repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts = json_encode($opts);
-		return "new FbTwitter_profile('$id', $opts)";
+		return array('FbTwitter_profile', $id, $opts);
 	}
 
 }
-?>
