@@ -134,16 +134,31 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$renderOrder = $input->getInt('renderOrder');
 		$toType = $params->get('emailtable_to_type');
 		$toType = is_array($toType) ? $toType[$renderOrder] : $toType;
+		$email_to = '';
 		if ($toType == 'field')
 		{
 			$to = $params->get('emailtable_to');
 			$to = is_array($to) ? $to[$renderOrder] : $to;
-			return '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="true" />';
+			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
+			{
+				case 'editable':
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" />';
+					break;
+				case 'hidden':
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" type="hidden" />';
+					break;
+				case 'readonly':
+				default:
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
+					break;
+			}
+
 		}
 		else
 		{
-			return $this->formModel->getElementList('list_email_to');
+			$email_to = $this->formModel->getElementList('list_email_to');
 		}
+		return $email_to;
 	}
 
 	/**
@@ -164,9 +179,23 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'list') : $toType;
 		if ($toType == 'field')
 		{
+			$email_to = '';
 			$to = $params->get('emailtable_to');
 			$to = is_array($to) ? JArrayHelper::getValue($to, $renderOrder) : $to;
-			return "<input name=\"list_email_to\" id=\"list_email_to\" value=\"" . $to . "\" readonly=\"true\" />";
+			switch ($params->get('emailtable_email_to_field_how', 'readonly'))
+			{
+				case 'editable':
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" />';
+					break;
+				case 'hidden':
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" type="hidden" />';
+					break;
+				case 'readonly':
+				default:
+					$email_to = '<input name="list_email_to" id="list_email_to" value="' . $to . '" readonly="readonly" />';
+					break;
+			}
+			return $email_to;
 		}
 		elseif ($toType == 'list')
 		{
@@ -207,6 +236,10 @@ class plgFabrik_ListEmail extends plgFabrik_List
 			->from($emailtable_to_table)->order('name ASC');
 			$toDb->setQuery($query);
 			$results = $toDb->loadObjectList();
+			if (empty($results))
+			{
+				return JText::_('PLG_LIST_EMAIL_TO_TABLE_NO_DATA');
+			}
 			$empty = new stdClass;
 
 			if ($toType == 'table_picklist')
@@ -265,6 +298,26 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$params = $this->getParams();
 		$allow = $params->get('emailtable_allow_attachment');
 		return is_array($allow) ? JArrayHelper::getValue($allow, $renderOrder, false) : $allow;
+	}
+
+	/**
+	* Get the show to field
+	*
+	* @return  string
+	*/
+
+	public function getShowToField()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$renderOrder = $input->getInt('renderOrder');
+		$params = $this->getParams();
+		$var = $params->get('emailtable_email_to_field_how', 'readonly');
+		$var = is_array($var) ? JArrayHelper::getValue($var, $renderOrder, 'readonly') : $var;
+		$toType = $params->get('emailtable_to_type', 'list');
+		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'single') : $toType;
+		// can only hide To if it's the simple field type, as all others require user input
+		return !($var == 'hidden' && $toType == 'field');
 	}
 
 	/**
@@ -555,7 +608,6 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$config = JFactory::getConfig();
 		$this->_type = 'table';
 		$params = $this->getParams();
-		$to = $input->get('list_email_to', '', 'string');
 		$renderOrder = $input->getInt('renderOrder');
 
 		$merge_emails = $params->get('emailtable_mergemessages', 0);
@@ -574,6 +626,14 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		if (is_array($toType))
 		{
 			$toType = JArrayHelper::getValue($toType, $renderOrder, 'list');
+		}
+		if ($toType == 'table' || $toType == 'table_picklist')
+		{
+			$to = $input->get('list_email_to', '', 'array');
+		}
+		else
+		{
+			$to = $input->get('list_email_to', '', 'string');
 		}
 		if ($toType == 'list')
 		{
@@ -625,7 +685,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		{
 			$contentTemplate = JArrayHelper::getValue($contentTemplate, $renderOrder, '');
 		}
-		$content = empty($contentTemplate) ? $content: FabrikHelperHTML::getContentTemplate($contentTemplate);
+		$content = empty($contentTemplate) ? '' : FabrikHelperHTML::getContentTemplate($contentTemplate);
 
 		$php_msg = false;
 		if (JFile::exists($emailTemplate))
@@ -644,13 +704,13 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		}
 		else
 		{
-			$message = $contentTemplate != '' ? $content : $message;
+			$message = $contentTemplate != '' ? $content : '';
 		}
 
 		$subject = $input->get('subject', '', 'string');
 
 		// $$$ hugh - may need to allow html
-		$cover_message = $input->get('message', '');
+		$cover_message = nl2br($input->get('message', '', 'html'));
 		$old_style = false;
 		if (empty($message) && !$php_msg)
 		{
@@ -780,7 +840,7 @@ class plgFabrik_ListEmail extends plgFabrik_List
 									{
 										if ($php_msg)
 										{
-											$thismsg .= $this->_getPHPTemplateEmail($emailTemplate, $row, $listModel);
+											$thismsg .= FabrikHelperHTML::getPHPTemplate($emailTemplate, $row, $listModel);
 										}
 										else
 										{
