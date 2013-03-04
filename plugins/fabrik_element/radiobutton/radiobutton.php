@@ -72,9 +72,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -89,9 +89,8 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
-		return "new FbRadio('$id', $opts)";
+		return array('FbRadio', $id, $opts);
 	}
 
 	/**

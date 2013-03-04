@@ -82,13 +82,14 @@ class FabrikFEModelVisualization extends JModelLegacy
 		return (int) $input->get('showfilters', $params->get('show_filters')) === 1 ? true : false;
 	}
 
+	/**
+	 * Deprecated use getParams() insteead
+	 *
+	 * @deprecated  since 3.1b
+	 */
 	function getPluginParams()
 	{
-		if (!isset($this->_pluginParams))
-		{
-			$this->_pluginParams = $this->_loadPluginParams();
-		}
-		return $this->_pluginParams;
+		return $this->getParams();
 	}
 
 	/**

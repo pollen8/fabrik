@@ -27,6 +27,7 @@ endif;
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
 $this->headingstmpl =  $this->loadTemplate('headings');
+
 ?>
 
 <div class="fabrikDataContainer">

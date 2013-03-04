@@ -404,16 +404,16 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
 		$opts = parent::elementJavascriptOpts($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		return "new FbUser('$id', $opts)";
+		return array('FbUser', $id, $opts);
 	}
 
 	/**

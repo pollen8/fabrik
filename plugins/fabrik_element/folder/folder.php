@@ -86,9 +86,9 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -103,8 +103,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->defaultVal = $element->default;
 		$opts->data = $folders;
-		$opts = json_encode($opts);
-		return "new FbFolder('$id', $opts)";
+		return array('FbFolder', $id, $opts);
 	}
 
 }

@@ -208,9 +208,9 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -292,8 +292,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$opts->radius_resize_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 		$opts->radius_resize_off_icon = COM_FABRIK_LIVESITE . 'media/com_fabrik/images/radius_resize.png';
 
-		$opts = json_encode($opts);
-		return "new FbGoogleMap('$id', $opts)";
+		return array('FbGoogleMap', $id, $opts);
 	}
 
 	/**

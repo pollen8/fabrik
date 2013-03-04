@@ -3,7 +3,6 @@ function googlemapload() {
 
 	// Tell fabrik that the google map script has loaded and the callback has run
 	Fabrik.googleMap = true;
-	console.log('googlemap loaded cb');
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
 		var script2 = document.createElement("script");
 		script2.type = "text/javascript";
@@ -15,7 +14,7 @@ function googlemapload() {
 		window.fireEvent('google.map.loaded');
 	} else {
 		console.log('no body');
-	}	
+	}
 }
 
 function googleradiusloaded() {
@@ -61,31 +60,10 @@ var FbGoogleMap = new Class({
 	},
 	
 	initialize: function (element, options) {
-		/*this.heartbeat = (function () {
-			console.log('heartbeat', this);
-		}.bind(this)).periodical(800);*/
-		console.log('ini gmap element ', element);
 		this.mapMade = false;
 		this.parent(element, options);
-		console.log('set opt', this.options.lat, this.options.lon);
 		
-		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
-		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
-		
-		this.loadScript();
-		
-		// @TODO test google object when offline typeOf(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
-		window.addEvent('google.map.loaded', function () {
-			console.log('gmap element google.map.loaded event received');
+		this.loadFn = function () {
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
 				this.options.maptype = google.maps.MapTypeId.SATELLITE;
@@ -103,10 +81,30 @@ var FbGoogleMap = new Class({
 				break;
 			}
 			this.makeMap();
-		}.bind(this));
-		window.addEvent('google.radius.loaded', function () {
+		}.bind(this);
+		
+		this.radFn = function () {
 			this.makeRadius();
-		}.bind(this));
+		}.bind(this);
+		
+		window.addEvent('google.map.loaded', this.loadFn);
+		window.addEvent('google.radius.loaded', this.radFn);
+		
+		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
+		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
+		
+		this.loadScript();
+		
+		// @TODO test google object when offline typeOf(google) isnt working
+		if (this.options.center === 1 && this.options.rowid === 0) {
+			if (geo_position_js.init()) {
+				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
+					enableHighAccuracy: true
+				});
+			} else {
+				fconsole('Geo locaiton functionality not available');
+			}
+		}
 		
 		//this.loadScript();
 		// @TODO test google object when offline typeOf(google) isnt working
@@ -120,6 +118,14 @@ var FbGoogleMap = new Class({
 			}
 		}
 	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 */
+	destroy: function () {
+		window.removeEvent('google.map.loaded', this.loadFn);
+		window.removeEvent('google.radius.loaded', this.radFn);
+	},
 
 	getValue: function () {
 		if (typeOf(this.field) !== 'null') {
@@ -129,15 +135,14 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap: function () {
-		// Commented out these test as they stopped element rendering in pop up form in list.
-		/*if (this.mapMade === true) {
+		if (this.mapMade === true) {
 			return;
 		}
 		this.mapMade = true;
 		
 		if (typeof(this.map) !== 'undefined') {
 			return;
-		}*/
+		}
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
@@ -149,7 +154,6 @@ var FbGoogleMap = new Class({
 		this.element = document.id(this.options.element);
 		this.field = this.element.getElement('input.fabrikinput');
 		this.watchGeoCode();
-		console.log(this.options.lat, this.options.lon);
 		if (this.options.staticmap) {
 			var i = this.element.getElement('img');
 			var w = i.getStyle('width').toInt();
@@ -592,7 +596,6 @@ var FbGoogleMap = new Class({
 	},
 
 	cloned: function (c) {
-		console.log('map cloned');
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
 			var bits = field.split('_');

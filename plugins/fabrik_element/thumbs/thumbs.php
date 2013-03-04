@@ -394,9 +394,9 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -406,7 +406,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$input = $app->input;
 		if ($input->get('view') == 'form')
 		{
-			return;
+			return array();
 		}
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
@@ -422,10 +422,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$opts->userid = (int) $user->get('id');
 		$opts->view = $input->get('view');
 		$opts->listid = $listid;
-		$opts = json_encode($opts);
-
-		$str = "new FbThumbs('$id', $opts, '$value')";
-		return $str;
+		return array('FbThumbs', $id, $opts);
 	}
 
 	/**

@@ -536,14 +536,22 @@ var FbDateTime = new Class({
 			if (this.timeActive) {
 				var t = e.target;
 				if (t !== this.timeButton && t !== this.timeElement) {
-					if (!t.within(this.dropdown)) {
+					/*if (!t.within(this.dropdown)) {
 						this.hideTime();
-					}
+					}*/
 				}
 			}
 		}.bind(this));
 		d.inject(document.body);
 		var mydrag = new Drag.Move(d);
+		
+		var closeTime = handle.getElement('a.close');
+		if (typeOf(closeTime) !== 'null') {
+			closeTime.addEvent('click', function (e) {
+				e.stop();
+				this.hideTime();
+			}.bind(this));
+		}
 		return d;
 	},
 	

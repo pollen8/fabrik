@@ -58,15 +58,14 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();
 		$this->containerId = $this->get('ContainerId');
-		$pluginParams = $model->getPluginParams();
-		$tpl = $pluginParams->get('slideshow_viz_layout', $tpl);
+		$tpl = $params->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
-			$mode = $pluginParams->get('slideshow_viz_type', 1);
+			$mode = $params->get('slideshow_viz_type', 1);
 			switch ($mode)
 			{
 				case 1:

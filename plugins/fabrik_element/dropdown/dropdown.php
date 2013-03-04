@@ -111,9 +111,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -132,9 +132,8 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
-		return "new FbDropdown('$id', $opts)";
+		return array('FbDropdown', $id, $opts);
 	}
 
 	/**

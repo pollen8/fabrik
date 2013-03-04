@@ -198,9 +198,9 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -222,8 +222,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 		$opts->livesite = COM_FABRIK_LIVESITE;
 		$opts->ENABLEJAVASCRIPT = ($params->get('fbVideoEnableJS', 0) == 1) ? true : false;
 		$opts->PLAYEVERYFRAME = ($params->get('fbVideoPlayEveryFrame', 0) == 1) ? true : false;
-		$opts = json_encode($opts);
-		return "new FbVideo('$id', $opts)";
+		return array('FbVideo', $id, $opts);
 	}
 
 	/**

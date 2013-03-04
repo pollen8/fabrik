@@ -112,9 +112,9 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -124,8 +124,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->code = $params->get('jsperiod_code');
 		$opts->period = $params->get('jsperiod_period');
-		$opts = json_encode($opts);
-		return "new FbJSPeriodical('$id', $opts)";
+		return array('FbJSPeriodical', $id, $opts);
 	}
 
 	/**

@@ -33,6 +33,14 @@ var FbElement =  new Class({
 		return this.setElement();
 	},
 	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		
+	},
+	
 	setElement: function () {
 		if (document.id(this.options.element)) {
 			this.element = document.id(this.options.element);

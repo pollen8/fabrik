@@ -84,16 +84,16 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
-		$opts = json_encode(parent::getElementJSOptions($repeatCounter));
+		$opts = parent::getElementJSOptions($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		return "new FbUsergroup('$id', $opts)";
+		return array('FbUsergroup', $id, $opts);
 	}
 
 	/**

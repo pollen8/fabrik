@@ -474,8 +474,8 @@ class FabrikViewListBase extends JViewLegacy
 	 * Set page title
 	 *
 	 * @param   object  $w        Fabrikworker
-	 * @param   object  &$params  list params
-	 * @param   object  $model    list model
+	 * @param   object  &$params  List params
+	 * @param   object  $model    List model
 	 *
 	 * @return  void
 	 */

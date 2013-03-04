@@ -105,9 +105,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -116,10 +116,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->autostart = (bool)$params->get('timer_autostart', false);
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_TIMER_START');
 		JText::script('PLG_ELEMENT_TIMER_STOP');
-		return "new FbTimer('$id', $opts)";
+		return array('FbTimer', $id, $opts);
 	}
 
 	/**
