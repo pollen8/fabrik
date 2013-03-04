@@ -721,4 +721,29 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 
 		echo json_encode($return);
 	}
+
+	/**
+	* Turn form value into email formatted value
+	* $$$ hugh - I added this as for reasons I don't understand, something to do with
+	* how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
+	* it's submitted to the database, but wrong during form email plugin processing.  So
+	* I gave up trying to work out why, and now just re-calc it during getEmailData()
+	*
+	*
+	* @param   mixed  $value          Element value
+	* @param   array  $data           Form data
+	* @param   int    $repeatCounter  Group repeat counter
+	*
+	* @return  string  email formatted value
+	*/
+
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$params = $this->getParams();
+		if (!$params->get('calc_on_save_only', true))
+		{
+			$value = $this->_getV($data, $repeatCounter);
+		}
+		return $value;
+	}
 }
