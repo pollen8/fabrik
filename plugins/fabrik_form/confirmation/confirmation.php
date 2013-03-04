@@ -167,7 +167,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 
 		// If we have already processed the form
 		$this->html = '';
-		if ($input->get('fabrik_confirmation') == 1)
+		if ($input->getInt('fabrik_confirmation') === 1)
 		{
 			$session = JFactory::getSession();
 

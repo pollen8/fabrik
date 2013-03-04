@@ -500,11 +500,11 @@ if (typeof(Fabrik) === "undefined") {
 		Fabrik.getWindow(winOpts);
 	};
 	
-	Fabrik.form = function(ref, id, opts) {
+	Fabrik.form = function (ref, id, opts) {
 		var form = new FbForm(id, opts);
 		Fabrik.addBlock(ref, form);
 		return form;
-	}
+	};
 	
 	window.fireEvent('fabrik.loaded');
 }

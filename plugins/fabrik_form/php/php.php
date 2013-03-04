@@ -276,16 +276,26 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 		{
 			$this->html = $formModel->data;
 		}
+		$w = new FabrikWorker;
 		if ($params->get('form_php_file') == -1)
 		{
-			$w = new FabrikWorker;
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
-			return eval($code);
+			$php_result = eval($code);
+			// Bail out if code specifically returns false
+			if ($php_result === false)
+			{
+				return false;
+			}
 		}
 		else
 		{
+			// Added require_once param, for (kinda) corner case of having a file that defines functions, which gets used
+			// nore than once on the same page.
+			$require_once = $params->get('form_php_require_once', '0') == '1';
+
 			// $$$ hugh - give them some way of getting at form data
 			// (I'm never sure if $_REQUEST is 'safe', i.e. if it has post-validation data)
+			// $$$ hugh - pretty sure we can dump this, but left it in for possible backward compat issues
 			global $fabrikFormData, $fabrikFormDataWithTableName;
 
 			// For some reason, = wasn't working??
@@ -296,34 +306,64 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 			{
 				$fabrikFormDataWithTableName = $formModel->formDataWithtableName;
 			}
+
 			$php_file = JFilterInput::getInstance()->clean($params->get('form_php_file'), 'CMD');
 			$php_file = JPATH_ROOT . '/plugins/fabrik_form/php/scripts/' . $php_file;
 
 			if (!JFile::exists($php_file))
 			{
 				JError::raiseNotice(500, 'Mssing PHP form plugin file');
-				return;
+				return false;
 			}
+
 			$method = $params->get('only_process_curl');
+
+			// If it's a form load method, needs to be handled thisaway
 			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent')
 			{
 				// For these types of scripts any out put you want to inject into the form should be echo'd out
 				// @TODO - shouldn't we apply this logic above as well (direct eval)?
 				ob_start();
-				require $php_file;
+				if ($require_once)
+				{
+					require_once $php_file;
+				}
+				else
+				{
+					require $php_file;
+				}
 				$output = ob_get_contents();
 				ob_end_clean();
 				return $output;
 			}
-			else
-			{
-				$php_result = require $php_file;
-			}
+
+			// OK, it's a form submit method, so handle it thisaway
+			$php_result = $require_once ? require_once $php_file : require $php_file;
+
+			// Bail out if code specifically returns false
 			if ($php_result === false)
 			{
 				return false;
 			}
+
+			// $$$ hugh - added this to make it more convenient for defining functions to call in form PHP.
+			// So you can have a 'script file' that defines function(s), AND a direct eval that calls them,
+			// without having to stick a require() in the eval code.
+			// @TODO add an option to specify which way round to execute (file first or eval first)
+			// as per Skype convo with Rob.
+			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
+			if (!empty($code))
+			{
+				$php_result = eval($code);
+				// Bail out if code specifically returns false
+				if ($php_result === false)
+				{
+					return false;
+				}
+			}
 		}
+
+		// Well, we seemed to have got here without blowing up, so return true
 		return true;
 	}
 

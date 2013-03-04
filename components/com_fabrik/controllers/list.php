@@ -71,20 +71,26 @@ class FabrikControllerList extends JControllerLegacy
 		// Display the view
 		$view->error = $this->getError();
 
-		// Build unique cache id on url, post and user id
-		$user = JFactory::getUser();
-		$uri = JFactory::getURI();
-		$uri = $uri->toString(array('path', 'query'));
-		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
-		$cache = JFactory::getCache('com_fabrik', 'view');
-
-		// F3 cache with raw view gives error
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
+		/**
+		 * F3 cache with raw view gives error
+		 * $$$ hugh - added list_disable_caching option, to disable caching on a per list basis, due to some funky behavior
+		 * with pre-filtered lists and user ID's, which should be handled by the ID being in the $cacheid, but happens anyway.
+		 * $$$ hugh @TODO - we really shouldn't cache for guests (user ID 0), unless we can come up with a way of creating a unique
+		 * cache ID for guests.  We can't use their IP, as it could be two different machines behind a NAT'ing firewall.
+		 */
+		if ($model->getParams()->get('list_disable_caching', '0') === '1'
+			|| in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
 		{
 			$view->display();
 		}
 		else
 		{
+			// Build unique cache id on url, post and user id
+			$user = JFactory::getUser();
+			$uri = JFactory::getURI();
+			$uri = $uri->toString(array('path', 'query'));
+			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
+			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
 	}

@@ -203,7 +203,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
-				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $app->input->get('value', '', 'string') . '%');
+				$v = $app->input->get('value', '', 'string');
+
+				// $$$ hugh (and Joe) - added 'autocomplete_how', currently just "starts_with" or "contains"
+				// default to "contains" for backward compat.
+				// http://fabrikar.com/forums/showthread.php?p=165192&posted=1#post165192
+				$params = $this->getParams();
+				if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $v . '%');
+				}
+				else
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote($v . '%');
+				}
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
 			else
@@ -522,7 +535,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->addSpaceToEmptyLabels($tmp);
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue'), $this->_getSelectLabel()));
+			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
 		}
 		return $tmp;
 	}

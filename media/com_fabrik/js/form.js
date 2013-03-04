@@ -575,7 +575,7 @@ var FbForm = new Class({
 	},
 	
 	destroyElements: function () {
-		this.formElements.each(function(el) {
+		this.formElements.each(function (el) {
 			el.destroy();
 		});
 	},
@@ -600,7 +600,7 @@ var FbForm = new Class({
 						fconsole(el.options.element + ' attach to form:' + err);
 					}
 				}
-		}.bind(this));
+			}.bind(this));
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 

@@ -373,7 +373,7 @@ var FbDatabasejoin = new Class({
 				// is selcted
 				this.unactiveFn = function () {
 					this.activeSelect = false;
-				}.bind(this)
+				}.bind(this);
 				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 				
 			}
