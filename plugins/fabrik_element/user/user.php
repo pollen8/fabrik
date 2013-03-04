@@ -114,7 +114,6 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			// $$$ hugh ... what a mess ... of course if it's a new form, $data doesn't exist ...
 			if (empty($data))
 			{
-				// If $data is empty, we must (?) be a new row, so just grab logged on user
 				$user = JFactory::getUser();
 			}
 			else
@@ -143,7 +142,16 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					$id = $this->getValue($data, $repeatCounter);
 				}
 				$id = is_array($id) ? $id[0] : $id;
-				$user = $id === '' ? JFactory::getUser() : JFactory::getUser((int) $id);
+				// $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
+				// editing a row, where user element is not set yet, and 'update on edit' is No.
+				if ($rowid && empty($id) && !$params->get('update_on_edit'))
+				{
+					$user = JFactory::getUser(0);
+				}
+				else
+				{
+					$user = $id === '' ? JFactory::getUser() : JFactory::getUser((int) $id);
+				}
 			}
 		}
 
