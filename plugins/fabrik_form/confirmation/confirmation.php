@@ -144,7 +144,6 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 			foreach ($elementModels as $elementModel)
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
-				unset($elementModel->access);
 				$elementModel->clearAccess();
 				$elementModel->getElement()->access = -1;
 			}
