@@ -1698,7 +1698,7 @@ EOD;
 		$result = require $tmpl;
 		$message = ob_get_contents();
 		ob_end_clean();
-		if ($return === false)
+		if ($result === false)
 		{
 			return false;
 		}
