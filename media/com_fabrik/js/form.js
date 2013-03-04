@@ -590,7 +590,7 @@ var FbForm = new Class({
 						fconsole(el.options.element + ' attach to form:' + err);
 					}
 				}
-		}.bind(this));
+			}.bind(this));
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
