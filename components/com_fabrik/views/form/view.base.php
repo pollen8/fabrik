@@ -75,8 +75,8 @@ class FabrikViewFormBase extends JView
 				return false;
 			}
 		}
-		$this->assign('rowid', $model->getRowId());
-		$this->assign('access', $model->checkAccessFromListSettings());
+		$this->rowid = $model->getRowId();
+		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
 			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -99,6 +99,7 @@ class FabrikViewFormBase extends JView
 		$form->intro = $model->getIntro();
 		$form->outro = $model->getOutro();
 		$form->action = $this->get('Action');
+		$form->class = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
 
@@ -112,7 +113,7 @@ class FabrikViewFormBase extends JView
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
 		$tmpl = $this->get('tmpl');
-		$this->assign('tmpl', $tmpl);
+		$this->tmpl = $tmpl;
 
 		$this->_addButtons();
 		JDEBUG ? $profiler->mark('form view before group view got') : null;
@@ -152,11 +153,11 @@ class FabrikViewFormBase extends JView
 			$form->fieldsetTag = 'div';
 			$form->legendTag = 'h3';
 		}
-		$this->assignRef('form', $form);
+		$this->form = $form;
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass;
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
-		$this->assignRef('list', $list);
+		$this->list = $list;
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
 		$this->linkedTables = $this->get('RelatedTables');
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
@@ -168,6 +169,7 @@ class FabrikViewFormBase extends JView
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
 
 		JDEBUG ? $profiler->mark('form view before template load') : null;
+
 	}
 
 	/**
@@ -205,7 +207,7 @@ class FabrikViewFormBase extends JView
 		$model = $this->getModel();
 		if (!$model->isMultiPage())
 		{
-			$this->assign('message', '');
+			$this->message = '';
 			return;
 		}
 		$message = '';
@@ -220,7 +222,7 @@ class FabrikViewFormBase extends JView
 				$message .= ' <a href="#" class="clearSession">' . JText::_('COM_FABRIK_CLEAR') . '</a>';
 			}
 		}
-		$this->assign('message', $message);
+		$this->message = $message;
 	}
 
 	/**
@@ -354,7 +356,7 @@ class FabrikViewFormBase extends JView
 	/**
 	 * Append the form javascript into the document head
 	 *
-	 * @param   int  $tableId  table id
+	 * @param   int  $listId  table id
 	 *
 	 * @return  void
 	 */
@@ -433,7 +435,10 @@ class FabrikViewFormBase extends JView
 		FabrikHelperHTML::mocha();
 
 		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-
+		if ($this->rowid != '')
+		{
+			$bkey .= '_' . $this->rowid;
+		}
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 
@@ -476,7 +481,7 @@ class FabrikViewFormBase extends JView
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
 		$opts->images = $imgs;
 
-		// $$$rob if you are loading a table in a window from a form db join select record option
+		// $$$rob if you are loading a list in a window from a form db join select record option
 		// then we want to know the id of the window so we can set its showSpinner() method
 
 		// 3.0 changed to fabrik_window_id (automatically appended by Fabrik.Window xhr request to load window data
@@ -499,9 +504,6 @@ class FabrikViewFormBase extends JView
 		$opts->maxRepeat = $maxRepeat;
 		$opts->minRepeat = $minRepeat;
 		$opts->showMaxRepeats = $showMaxRepeats;
-
-		// $$$ rob 26/04/2011 joomfish translations of password validation error messages
-		// $opts->lang = FabrikWorker::getJoomfishLang();
 
 		// $$$ hugh adding these so calc element can easily find joined and repeated join groups
 		// when it needs to add observe events ... don't ask ... LOL!
@@ -704,7 +706,7 @@ class FabrikViewFormBase extends JView
 				$fields[] = '<input type="hidden" name="usekey_newrecord" value="1" />';
 			}
 		}
-		/* $$$ hugh - testing a fix for pagination issue when submitting a 'search form'.
+		/** $$$ hugh - testing a fix for pagination issue when submitting a 'search form'.
 		 * If this is a search form, we need to clear 'limitstart', otherwise ... say we
 		 * were last on page 4 of the (unfiltered) target table, and the search yields less than 4 pages,
 		 * we end up with a blank table 'cos the wrong LIMIT's are applied to the query
@@ -829,7 +831,7 @@ class FabrikViewFormBase extends JView
 				if (!$elementModel->canUse())
 				{
 					$input = (is_array($input) && array_key_exists('value', $input)) ? $input['value'] : $input;
-					/* $$$ hugh - need to check if $value is an array, 'cos if it isn't, like when presetting
+					/** $$$ hugh - need to check if $value is an array, 'cos if it isn't, like when presetting
 					 * a new form element with &table___element=foo, getValue was chomping it down to just first character
 					 * see http://fabrikar.com/forums/showthread.php?p=82726#post82726
 					 */
@@ -985,7 +987,7 @@ class FabrikViewFormBase extends JView
 			$views = array();
 			$views[] = JHTML::_('select.option', 'form');
 			$views[] = JHTML::_('select.option', 'details');
-			$selView = JRequest::getVar('cck_view');
+			$selView = $input->get('cck_view');
 			$opts->viewList = JHTML::_('select.radiolist', $views, 'fabrik_cck_view', 'class="inputbox"', 'value', 'text', $selView);
 
 			$opts = json_encode($opts);

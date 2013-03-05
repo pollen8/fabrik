@@ -17,24 +17,38 @@ FabrikHelperHTML::framework();
 	<form method="post" enctype="multipart/form-data" action="<?php echo JURI::base();?>index.php" name="emailtable" id="emailtable">
 		<p><?php echo JText::sprintf('PLG_LIST_EMAIL_N_RECORDS', $this->recordcount) ?></p>
 		<ul>
+		<?php
+		if ($this->showToField)
+		{
+		?>
 		<li>
 			<label>
 				<?php echo JText::_('PLG_LIST_EMAIL_TO') ?><br />
 				<?php echo $this->fieldList ?>
 			</label>
 		</li>
+		<?php
+		}
+		?>
+		<?php
+		if ($this->showSubject)
+		{
+		?>
 		<li>
 			<label>
 				<?php echo JText::_('PLG_LIST_EMAIL_SUBJECT') ?><br />
 				<input class="inputbox fabrikinput" type="text" name="subject" id="subject" value="<?php echo $this->subject?>" size="50" />
 			</label>
 		</li>
+		<?php
+		}
+		?>
 		<li>
 			<label>
 				<?php echo JText::_('PLG_LIST_EMAIL_MESSAGE') ?><br />
-				<?php $editor = JFactory::getEditor();
-				echo $editor->display('message', $this->message, 'message', 75, 10, 75, 10);?>
 			</label>
+				<?php $editor = JFactory::getEditor();
+				echo $editor->display('message', $this->message, '100%', '100%', 75, 10, 'message');?>
 		</li>
 		<li style="clear:both"></li>
 		<?php if ($this->allowAttachment) {?>
@@ -62,6 +76,20 @@ FabrikHelperHTML::framework();
 		<input type="hidden" name="renderOrder" value="<?php echo $this->renderOrder?>" />
 		<input type="hidden" name="id" value="<?php echo $this->listid ?>" />
 		<input type="hidden" name="recordids" value="<?php echo $this->recordids ?>" />
+		<?php
+		if (!$this->showToField)
+		{
+			echo $this->fieldList;
+		}
+                if (!$this->showSubject)
+		{
+                ?>
+                        <input type="hidden" name="subject" id="subject" value="<?php echo $this->subject?>" />
+                <?php
+                }
+		?>
+
+	
 	</form>
 </div>
 <?php if ($this->allowAttachment) {?>

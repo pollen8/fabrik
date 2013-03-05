@@ -15,7 +15,8 @@ class fabrikViewPopupwin extends JView
 
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
-		
+
+		$this->assign('showToField', $this->get('ShowToField'));
 		$this->assign('fieldList', $this->get('ToField'));
 		$records = $this->get('records');
 		if (count($records) == 0)
@@ -27,7 +28,7 @@ class fabrikViewPopupwin extends JView
 		$this->assign('renderOrder', $renderOrder);
 		$this->assign('recordids', implode(',', $records));
 		$this->assign('listid', $this->get('id', 'list'));
-
+		$this->assign('showSubject', $this->get('ShowSubject'));
 		$this->assign('subject', $this->get('subject'));
 		$this->assign('message', $this->get('message'));
 		$this->assign('allowAttachment', $this->get('allowAttachment'));

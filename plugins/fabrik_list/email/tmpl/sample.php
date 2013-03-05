@@ -11,7 +11,7 @@
 defined('_JEXEC') or die();
 
 $this->filepath = "foo";
-$formModel = $tableModel->getFormModel();
+$formModel = $model->getFormModel();
 foreach ($row as $name => $value) {
 	if (preg_match('#_raw$#', $name)) {
 		continue;

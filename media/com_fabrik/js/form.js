@@ -206,7 +206,8 @@ var FbForm = new Class({
 	},
 
 	getBlock : function () {
-		return this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
+		var block = this.options.editable === true ? 'form_' + this.id : 'details_' + this.id;
+		return block;
 	},
 
 	/**
@@ -596,7 +597,7 @@ var FbForm = new Class({
 						fconsole(el.options.element + ' attach to form:' + err);
 					}
 				}
-		}.bind(this));
+			}.bind(this));
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
@@ -1166,11 +1167,11 @@ var FbForm = new Class({
 	},
 
 	watchGroupButtons : function () {
-		this.form.getElements('.deleteGroup').each(function (g, i) {
+		/*this.form.getElements('.deleteGroup').each(function (g, i) {
 			g.addEvent('click', function (e) {
 				this.deleteGroup(e);
 			}.bind(this));
-		}.bind(this));
+		}.bind(this));*/
 		
 		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
 			e.preventDefault();
