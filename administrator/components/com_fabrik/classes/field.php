@@ -648,4 +648,13 @@ abstract class JFormField
 			return self::$generated_fieldname . self::$count;
 		}
 	}
+
+	/*
+	 * $$$ rob - useful func
+	 */
+	public function setValue($v)
+	{
+		$this->value = $v;
+	}
+
 }
