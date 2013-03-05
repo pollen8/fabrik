@@ -342,7 +342,7 @@ var FbFileUpload = new Class({
 			}).inject(this.pluploadContainer, 'after');
 			
 			// Stores the image id if > 1 fileupload
-			var idvalue = $pick(file.recordid, '0');
+			var idvalue = [file.recordid, '0'].pick();
 			new Element('input', {
 				'type' : 'hidden',
 				name : this.options.elementName + '[id][' + response.filepath + ']',
@@ -479,7 +479,8 @@ var ImageWidget = new Class({
 				h: 50
 			}
 		};
-		$extend(this.imageDefault, opts);
+
+		Object.append(this.imageDefault, opts);
 
 		this.windowopts = {
 			'id': this.canvas.id + '-mocha',

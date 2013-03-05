@@ -4,7 +4,7 @@
 
 /* jshint mootools: true */
 /*
- * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true,
+ * global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true,
  * $H:true,unescape:true,head:true,FbListActions:true,FbGroupedToggler:true,FbListKeys:true
  */
 
@@ -411,7 +411,7 @@ var FbList = new Class({
 			if (!opts) {
 				opts = {};
 				if (typeOf(document.id('exportcsv')) !== 'null') {
-					$A(['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel']).each(function (v) {
+					['incfilters', 'inctabledata', 'incraw', 'inccalcs', 'excel'].each(function (v) {
 						var inputs = document.id('exportcsv').getElements('input[name=' + v + ']');
 						if (inputs.length > 0) {
 							opts[v] = inputs.filter(function (i) {

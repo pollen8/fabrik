@@ -19,7 +19,8 @@ var fabrikCalendar = new Class({
 			'del': 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw'
 		},
 		monthday: {'width': 90, 'height': 80},
-		restFilterStart: 'na'
+		restFilterStart: 'na',
+		j3: false
 	},
 	
 	initialize: function (el) {
@@ -117,14 +118,47 @@ var fabrikCalendar = new Class({
 		if (opts.view === 'monthView') {
 			style.width -= 1;
 		}
-		var eventCont = new Element('div', {
-			'class': 'fabrikEvent',
-			'id': id,
-			'styles': style
-		});
-		eventCont.addEvent('mouseenter', this.doPopupEvent.bindWithEvent(this, [entry, label]));		
+		if (this.options.j3) {
+			var buttons = '';
+			if (entry._canDelete) {
+				buttons += this.options.buttons.del;
+			}
+			if (entry._canEdit) {
+				buttons += this.options.buttons.edit;
+			}
+			if (entry._canView) {
+				buttons += this.options.buttons.view;
+			}
+			var dataContent = 'Start: ' + new Date(entry.startdate).format('%X') + '<br /> End :' + entry.enddate.format('%X');
+			if (buttons !== '') {
+				buttons += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>'; 
+			}
+			eventCont = new Element('a', {
+				'class': 'fabrikEvent label',
+				'id': id,
+				'styles': style,
+				'rel': 'popover',
+				'data-original-title': label + '<button class="close" data-popover="' + id + '">&times;</button>',
+				'data-content': dataContent,
+				'data-placement': 'top',
+				'data-html': 'true',
+				'data-trigger' : 'click'
+			});
+			if (typeof(jQuery) !== 'undefined') {
+				jQuery(eventCont).popover();
+			}
+		} else {
+			eventCont = new Element('div', {
+				'class': 'fabrikEvent label',
+				'id': id,
+				'styles': style
+			});
+			eventCont.addEvent('mouseenter', function (e) {
+				this.doPopupEvent(e, entry, label);		
+			}.bind(this));
+		}
 		
-		if (entry.link !== '' && this.options.readonly === false) {
+		if (entry.link !== '' && this.options.readonly === false && this.options.j3 === false) {
 			x = new Element('a', {'href': entry.link, 'class': 'fabrikEditEvent', 
 				'events': {
 				'click': function (e) {
@@ -154,6 +188,7 @@ var fabrikCalendar = new Class({
 				x = new Element('span').appendText(label);
 			}
 		}
+		
 		eventCont.adopt(x);
 		return eventCont;
 	},
@@ -1221,7 +1256,9 @@ var fabrikCalendar = new Class({
 		});
 	
 		if (typeOf(this.el.getElement('.addEventButton')) !== 'null') {
-			this.el.getElement('.addEventButton').addEvent('click', this.openAddEvent.bindWithEvent(this));
+			this.el.getElement('.addEventButton').addEvent('click', function (e) {
+				this.openAddEvent(e);
+			}.bind(this));
 		}
 		var bs = [];
 		bs.push(new Element('li', {'class': 'centerOnToday'}).appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_TODAY')));
@@ -1256,7 +1293,7 @@ var fabrikCalendar = new Class({
 		//position relative messes up the drag of events
 		this.el.appendChild(new Element('div', {'class': 'viewContainer', styles: {'background-color': '#EFEFEF', 'padding': '5px'}}));
 		
-		if ($type(Cookie.read('fabrik.viz.calendar.date')) !== false) {
+		if (typeOf(Cookie.read('fabrik.viz.calendar.date')) !== 'null') {
 			this.date = new Date(Cookie.read('fabrik.viz.calendar.date'));
 		}
 		var startview = typeOf(Cookie.read("fabrik.viz.calendar.view")) === 'null' ? this.options.viewType : Cookie.read("fabrik.viz.calendar.view");
@@ -1275,18 +1312,31 @@ var fabrikCalendar = new Class({
 		
 		//this.showView();
 	
-		this.el.getElement('.nextPage').addEvent('click',  this.nextPage.bindWithEvent(this));
-		this.el.getElement('.previousPage').addEvent('click',  this.previousPage.bindWithEvent(this));
+		this.el.getElement('.nextPage').addEvent('click', function (e) {
+			this.nextPage(e);
+		}.bind(this));
+		this.el.getElement('.previousPage').addEvent('click',  function (e) {
+			this.previousPage(e);
+		}.bind(this));
+		
 		if (this.options.show_day) {
-			this.el.getElement('.dayViewLink').addEvent('click', this.renderDayView.bindWithEvent(this));
+			this.el.getElement('.dayViewLink').addEvent('click', function (e) {
+				this.renderDayView(e);
+			}.bind(this));
 		}
 		if (this.options.show_week) {
-			this.el.getElement('.weekViewLink').addEvent('click', this.renderWeekView.bindWithEvent(this));
+			this.el.getElement('.weekViewLink').addEvent('click', function (e) {
+				this.renderWeekView(e);
+			}.bind(this));
 		}
 		if (this.options.show_week || this.options.show_day) {
-			this.el.getElement('.monthViewLink').addEvent('click', this.renderMonthView.bindWithEvent(this));
+			this.el.getElement('.monthViewLink').addEvent('click', function (e) {
+				this.renderMonthView(e);
+			}.bind(this));
 		}
-		this.el.getElement('.centerOnToday').addEvent('click', this.centerOnToday.bindWithEvent(this));
+		this.el.getElement('.centerOnToday').addEvent('click', function (e) {
+			this.centerOnToday(e);
+		}.bind(this));
 		this.showMonth();
 		
 		this.ajax.updateEvents.send();
@@ -1358,7 +1408,7 @@ var fabrikCalendar = new Class({
 
 	},
 	
-	deleteEntry: function (e) {
+	deleteEntry: function () {
 		var key = this.activeHoverEvent.id.replace('fabrikEvent_', '');
 		var i = key.split('_');
 		var listid = i[0];
@@ -1377,7 +1427,7 @@ var fabrikCalendar = new Class({
 		}
 	},
 	
-	editEntry: function (e)
+	editEntry: function ()
 	{
 		var o = {};
 		o.id = this.options.formid;
@@ -1385,6 +1435,16 @@ var fabrikCalendar = new Class({
 		o.rowid = i[1];
 		o.listid = i[0];
 		e.stop();
+		this.addEvForm(o);
+	},
+	
+	viewEntry: function () {
+		var o = {};
+		o.id = this.options.formid;
+		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
+		o.rowid = i[1];
+		o.listid = i[0];
+		o.nextView = 'details';
 		this.addEvForm(o);
 	},
 	

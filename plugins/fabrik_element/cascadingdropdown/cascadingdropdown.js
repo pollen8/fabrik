@@ -24,6 +24,7 @@ var FbCascadingdropdown = new Class({
 			}.bind(this));
 		}
 		this.watchJoinCheckboxes();
+		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 	},
 	
 	attachedToForm: function ()
@@ -64,7 +65,7 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 		}
-		this.element.getParent().getElement('.loader').setStyle('display', '');
+		this.spinner.show();
 		// $$$ hugh testing new getFormElementData() method to include current form element values in data
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
 		// it includes all QS from current page, including task=processForm, which screws up this AJAX call.
@@ -93,7 +94,8 @@ var FbCascadingdropdown = new Class({
 			var origvalue = this.options.def,
 			opts = {},
 			c;
-			this.element.getParent().getElement('.loader').hide();
+			this.spinner.hide();
+			//this.element.getParent().getElement('.loader').hide();
 			json = JSON.decode(json);
 			if (this.options.editable) {
 				this.destroyElement();
@@ -123,7 +125,7 @@ var FbCascadingdropdown = new Class({
 					
 					if (this.options.showDesc === true && item.description) {
 						var classname = this.options.showPleaseSelect ? 'notice description-' + (k) : 'notice description-' + (k - 1);
-						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).injectInside(c);
+						new Element('div', {styles: {display: 'none'}, 'class': classname}).set('html', item.description).inject(c);
 					}
 				}.bind(this));
 			} else {

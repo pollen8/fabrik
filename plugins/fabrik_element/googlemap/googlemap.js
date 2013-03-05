@@ -64,7 +64,7 @@ var FbGoogleMap = new Class({
 		this.parent(element, options);
 		this.loadScript();
 		
-		// @TODO test google object when offline $type(google) isnt working
+		// @TODO test google object when offline typeOf(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {
 				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
@@ -152,13 +152,21 @@ var FbGoogleMap = new Class({
 			opts.draggable = this.options.drag;
 
 			if (this.options.latlng === true) {
-				this.element.getElement('.lat').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
-				this.element.getElement('.lng').addEvent('blur', this.updateFromLatLng.bindWithEvent(this));
+				this.element.getElement('.lat').addEvent('blur', function (e) {
+					this.updateFromLatLng(e);
+				}.bind(this));
+				this.element.getElement('.lng').addEvent('blur', function (e) {
+					this.updateFromLatLng(e);
+				}.bind(this));
 			}
 
 			if (this.options.latlng_dms === true) {
-				this.element.getElement('.latdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
-				this.element.getElement('.lngdms').addEvent('blur', this.updateFromDMS.bindWithEvent(this));
+				this.element.getElement('.latdms').addEvent('blur', function (e) {
+					this.updateFromDMS(e);
+				}.bind(this));
+				this.element.getElement('.lngdms').addEvent('blur', function (e) {
+					this.updateFromDMS(e);
+				}.bind(this));
 			}
 
 			this.marker = new google.maps.Marker(opts);
@@ -290,7 +298,7 @@ var FbGoogleMap = new Class({
 		// as it'll keep firing as they drag.  We don't want to fire 'change' until the changing is finished
 		if (this.options.radius_write_element) {
 			if (!this.distanceWidget.get('active')) {
-				$(this.options.radius_write_element).fireEvent('change', new Event.Mock($(this.options.radius_write_element), 'change'));
+				document.id(this.options.radius_write_element).fireEvent('change', new Event.Mock(document.id(this.options.radius_write_element), 'change'));
 			}
 		}		
 	},
@@ -527,15 +535,21 @@ var FbGoogleMap = new Class({
 				}.bind(this));
 			} else {
 				if (this.options.geocode_event === 'button') {
-					this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+					this.element.getElement('.geocode').addEvent('click', function (e) {
+						this.geoCode(e);
+					}.bind(this));
 				}
 			}
 		}
 		if (this.options.geocode === '1' && document.id(this.element).getElement('.geocode_input')) {
 			if (this.options.geocode_event === 'button') {
-				this.element.getElement('.geocode').addEvent('click', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode').addEvent('click', function (e) {
+					this.geoCode(e);
+				}.bind(this));
 			} else {
-				this.element.getElement('.geocode_input').addEvent('keyup', this.geoCode.bindWithEvent(this));
+				this.element.getElement('.geocode_input').addEvent('keyup', function (e) {
+					this.geoCode(e);
+				}.bind(this));
 			}
 		}
 	},
@@ -547,7 +561,7 @@ var FbGoogleMap = new Class({
 	cloned: function (c) {
 		var f = [];
 		this.options.geocode_fields.each(function (field) {
-			var bits = $A(field.split('_'));
+			var bits = field.split('_');
 			var i = bits.getLast();
 			if (i !== i.toInt()) {
 				return bits.join('_');
@@ -617,7 +631,9 @@ var FbGoogleMap = new Class({
 			var center = new google.maps.LatLng(this.options.lat, this.options.lon);
 			this.map.setCenter(center);
 			this.map.setZoom(this.map.getZoom());
-			this.options.tab_dt.removeEvent('click', this.doTabBound);
+			this.options.tab_dt.removeEvent('click', function (e) {
+				this.doTab(e);
+			}.bind(this));
 		}.bind(this)).delay(500);
 	},
     
@@ -630,8 +646,9 @@ var FbGoogleMap = new Class({
 				if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
 					this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
 					if (this.options.tab_dt) {
-						this.doTabBound = this.doTab.bindWithEvent(this);
-						this.options.tab_dt.addEvent('click', this.doTabBound);
+						this.options.tab_dt.addEvent('click', function (e) {
+							this.doTab(e);
+						}.bind(this));
 					}
 				}
 			}

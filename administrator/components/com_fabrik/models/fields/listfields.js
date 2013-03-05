@@ -10,7 +10,6 @@ var ListFieldsElement = new Class({
 	initialize: function (el, options) {
 		this.el = el;
 		this.setOptions(options);
-		this.updateMeEvent = this.updateMe.bindWithEvent(this);
 		if (typeOf(document.id(this.options.conn)) === 'null') {
 			this.cnnperiodical = this.getCnn.periodical(500, this);
 		} else {
@@ -32,8 +31,12 @@ var ListFieldsElement = new Class({
 	
 	setUp: function () {
 		this.el = document.id(this.el);
-		document.id(this.options.conn).addEvent('change', this.updateMeEvent);
-		document.id(this.options.table).addEvent('change', this.updateMeEvent);
+		document.id(this.options.conn).addEvent('change', function () {
+			this.updateMe();
+		}.bind(this));
+		document.id(this.options.table).addEvent('change', function () {
+			this.updateMe();
+		}.bind(this));
 			
 		// See if there is a connection selected
 		var v = document.id(this.options.conn).get('value');
@@ -47,7 +50,7 @@ var ListFieldsElement = new Class({
 			e.stop();
 		}
 		if (document.id(this.el.id + '_loader')) {
-			document.id(this.el.id + '_loader').setStyle('display', 'inline');
+			document.id(this.el.id + '_loader').show();
 		}
 		var cid = document.id(this.options.conn).get('value');
 		var tid = document.id(this.options.table).get('value');
@@ -74,7 +77,7 @@ var ListFieldsElement = new Class({
 					new Element('option', o).appendText(opt.label).inject(this.el);
 				}.bind(this));
 				if (document.id(this.el.id + '_loader')) {
-					document.id(this.el.id + '_loader').setStyle('display', 'none');
+					document.id(this.el.id + '_loader').hide();
 				}
 			}.bind(this)
 		}).send();

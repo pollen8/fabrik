@@ -43,8 +43,15 @@ var fabriktablesElement = new Class({
 			return;
 		}
 		this.loader = document.id(this.el.id + '_loader');
-		this.cnn.addEvent('change', this.updateMe.bindWithEvent(this));
-		this.el.addEvent('change', this.updateElements.bindWithEvent(this));
+		
+		this.cnn.addEvent('change', function (e) {
+			this.updateMe(e);
+		}.bind(this));
+		
+		this.el.addEvent('change', function (e) {
+			this.updateElements(e);
+		}.bind(this));
+	
 		// see if there is a connection selected
 		var v = this.cnn.get('value');
 		if (v !== '' && v !== -1) {
@@ -124,7 +131,6 @@ var fabriktablesElement = new Class({
 	updateElements : function () {
 		this.elements.each(function (element) {
 			var opts = element.getOpts();
-			console.log(opts);
 			var table = this.el.get('value');
 			if (table === '') {
 				// $$$ rob dont empty as this messes up parameter saving in paypal

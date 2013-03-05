@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
 
 /**
  *  This class is temporarily requied until this patch:
@@ -275,7 +275,7 @@ var Loader = new Class({
 			var src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=Fabrik.mapCb';
 			
 			// Have we previously started to load the Googlemaps script?
-			var gmapScripts = $A(document.scripts).filter(function (f) {
+			var gmapScripts = Array.from(document.scripts).filter(function (f) {
 				return f.src === src;
 			});
 			

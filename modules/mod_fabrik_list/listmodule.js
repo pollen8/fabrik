@@ -46,9 +46,7 @@ var fabrikTableModule = new Class({
 
 			this.watchViewLinks();
 			this.watchEditLinks();
-			// $$$ is this kosher? $A copies an array, and seems to make [0] be
-			// 'window' if you don't give it an array to copy.
-			var links = $A([]);
+			var links = [];
 			links.extend([this.blocks[0].getElement('.addbutton')]);
 			links.extend(this.blocks[1].getElements('.button'));
 			links.each(function (l) {

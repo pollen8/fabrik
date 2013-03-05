@@ -4,6 +4,7 @@ var FbCalc = new Class({
 		this.plugin = 'calc';
 		this.oldAjaxCalc = null;
 		this.parent(element, options);
+		this.spinner = new Spinner(this.element.getParent());
 	},
 	
 	attachedToForm : function () {
@@ -13,11 +14,12 @@ var FbCalc = new Class({
 			// as part of duplicating a group.  Don't want to do it in cloned(), as that would be before elements
 			// we observe have finished setting themselves up.  So just need to work out if this is on page load
 			// or on group clone.
-			this.ajaxCalc = this.calc.bindWithEvent(this);
 			var form = this.form;
 			this.options.observe.each(function (o) {
 				if (this.form.formElements[o]) {
-					this.form.formElements[o].addNewEventAux('change', this.ajaxCalc);
+					this.form.formElements[o].addNewEventAux('change', function (e) {
+						this.calc(e);
+					}.bind(this));
 				}
 				else {
 					// $$$ hugh - check to see if an observed element is actually part of a repeat group,
@@ -27,13 +29,17 @@ var FbCalc = new Class({
 						if (this.options.isGroupJoin) {
 							o2 = 'join___' + this.options.joinid + '___' + o + '_' + this.options.repeatCounter;
 							if (this.form.formElements[o2]) {
-								this.form.formElements[o2].addNewEventAux('change', this.ajaxCalc);
+								this.form.formElements[o2].addNewEventAux('change', function (e) {
+									this.calc(e);
+								}.bind(this));
 							}
 						}
 						else {
 							o2 = o + '_' + this.options.repeatCounter;
 							if (this.form.formElements[o2]) {
-								this.form.formElements[o2].addNewEventAux('change', this.ajaxCalc);
+								this.form.formElements[o2].addNewEventAux('change', function (e) {
+									this.calc(e);
+								}.bind(this));
 							}							
 						}
 					}
@@ -44,7 +50,9 @@ var FbCalc = new Class({
 								o2 = 'join___' + this.form.options.group_join_ids[k] + '___' + o + '_' + v2;
 								if (this.form.formElements[o2]) {
 									// $$$ hugh - think we can add this one as sticky ...
-									this.form.formElements[o2].addNewEvent('change', this.ajaxCalc);
+									this.form.formElements[o2].addNewEvent('change', function (e) {
+										this.calc(e);
+									}.bind(this));
 								}
 							}
 						}.bind(this));
@@ -55,7 +63,7 @@ var FbCalc = new Class({
 	},
 	
 	calc: function () {
-		this.element.getParent().getElement('.loader').setStyle('display', '');
+		this.spinner.show();
 		var formdata = this.form.getFormElementData();
 		var testdata = $H(this.form.getFormData(false));
 
@@ -75,7 +83,7 @@ var FbCalc = new Class({
 			}
 		}.bind(this));
 		
-		// for placeholders lets set repeat joined groups to their full element name
+		// For placeholders lets set repeat joined groups to their full element name
 		
 		var data = {
 				'option': 'com_fabrik',
@@ -89,10 +97,11 @@ var FbCalc = new Class({
 		data = Object.append(formdata, data);
 		var myAjax = new Request({'url': '', method: 'post', 'data': data,
 		onComplete: function (r) {
-			this.element.getParent().getElement('.loader').setStyle('display', 'none');
+			this.spinner.hide();
 			this.update(r);
 			if (this.options.validations) {
-				//if we have a validation on the element run it after AJAX calc is done
+				
+				// If we have a validation on the element run it after AJAX calc is done
 				this.form.doElementValidation(this.options.element);
 			}
 		}.bind(this)}).send();

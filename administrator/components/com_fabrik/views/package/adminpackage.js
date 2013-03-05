@@ -14,11 +14,17 @@ AdminPackage = new Class({
 		// only used to store newly added blocks
 		this.blocks = this.options.blocks;//{'form':[], 'list':[], 'visualization':[]}; 
 		this.makeBlockMenu();
-		Fabrik.addEvent('fabrik.tab.add', this.setDrops.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.tab.add', function (e) {
+			this.setDrops(e);
+		}.bind(this));
 		this.setDrops();
 		this.setDrags();
-		Fabrik.addEvent('fabrik.package.item.selected', this.addItem.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.page.block.delete', this.deleteItem.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.package.item.selected', function (e) {
+			this.addItem(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.page.block.delete', function (e) {
+			this.deleteItem(e);
+		}.bind(this));
 		//this.history = new History('undo', 'redo');
 	},
 	
@@ -54,10 +60,12 @@ AdminPackage = new Class({
 		dimensions['z-index'] = 100;
 		var c = new Element('div', {'id': id, 'class': 'fabrikWindow itemPlaceHolder itemPlaceHolder-' + type}).setStyles(dimensions);
 		if (page.editable) {
+			var delClick = function (e) {
+				page.removeItem(e, page, id);
+			}.bind(this);
 			art = this.iconGen.create(icon.cross);
-			del = new Element('a', {'href': '#', 'class': 'close', 'events': {
-				'click': page.removeItem.bindWithEvent(page, [id])
-			}});
+			var delopts = {'href': '#', 'class': 'close', 'events': {'click': delClick}};
+			del = new Element('a', delopts);
 			art.inject(del);
 		} else {
 			del = null;

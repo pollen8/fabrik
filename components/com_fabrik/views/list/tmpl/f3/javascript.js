@@ -113,7 +113,7 @@ var FabrikGrid = new Class({
 				}
 			}
 		}.bind(this));
-		var h = $A(this.container.getElements('.fabrik_ordercell').splice(0, 1));
+		var h = Array.from(this.container.getElements('.fabrik_ordercell').splice(0, 1));
 		h.each(function (r) {
 			r.addEvent('mouseover', function(e) {
 				this.resizeCol = e.target;

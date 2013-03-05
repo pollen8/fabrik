@@ -1,20 +1,30 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 var History = new Class({
 	initialize: function (undobutton, redobutton) {
 		this.recording = true;
 		this.pointer = -1;
 		if (document.id(undobutton)) {
-			document.id(undobutton).addEvent('click', this.undo.bindWithEvent(this));
+			document.id(undobutton).addEvent('click', function (e) {
+				this.undo(e);
+			}.bind(this));
 		}
 		if (document.id(redobutton)) {
-			document.id(redobutton).addEvent('click', this.redo.bindWithEvent(this));
+			document.id(redobutton).addEvent('click', function (e) {
+				this.redo(e);
+			}.bind(this));
 		}
-		Fabrik.addEvent('fabrik.history.on', this.on.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.history.off', this.off.bindWithEvent(this));
-		Fabrik.addEvent('fabrik.history.add', this.add.bindWithEvent(this));
-		this.history = $A([]);
+		Fabrik.addEvent('fabrik.history.on', function (e) {
+			this.on(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.history.off', function (e) {
+			this.off(e);
+		}.bind(this));
+		Fabrik.addEvent('fabrik.history.add', function (e) {
+			this.add(e);
+		}.bind(this));
+		this.history = [];
 	},
 
 	undo : function () {

@@ -8,9 +8,9 @@ Ver:1*/
 var InlineEdit = new Class({
 	Implements: [Options, Events],
 	options: {
-		onComplete: $empty, 
-		onLoad: $empty, 
-		onKeyup: $empty, 
+		onComplete: function () {}, 
+		onLoad: function () {}, 
+		onKeyup: function () {}, 
 		inputClass: 'input',
 		stripHtml: true
 	},

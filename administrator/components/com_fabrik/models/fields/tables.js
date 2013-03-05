@@ -9,8 +9,7 @@ var tablesElement = new Class({
 	initialize: function (el, options) {
 		this.el = el;
 		this.setOptions(options);
-		this.updateMeEvent = this.updateMe.bindWithEvent(this);
-		//if loading in a form plugin then the connect is not yet avaiable in the dom
+		// If loading in a form plugin then the connect is not yet avaiable in the dom
 		if (typeOf(document.id(this.options.conn)) === 'null') {
 			this.periodical = this.getCnn.periodical(500, this);
 		} else {
@@ -35,8 +34,10 @@ var tablesElement = new Class({
 		this.el = document.id(this.el);
 		this.cnn = document.id(this.options.conn);
 		this.loader = document.id(this.el.id + '_loader');
-		this.cnn.addEvent('change', this.updateMeEvent);
-		//see if there is a connection selected
+		this.cnn.addEvent('change', function (e) {
+			this.updateMe();
+		}.bind(this));
+		// See if there is a connection selected
 		var v = this.cnn.get('value');
 		if (v !== '' && v !== -1) {
 			this.updateMe();

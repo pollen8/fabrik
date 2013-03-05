@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Canvas:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Canvas:true */
 
 var FrontPackage = new Class({
 	Extends: Canvas,
@@ -8,7 +8,9 @@ var FrontPackage = new Class({
 		opts.editabe = false;
 		this.parent(opts);
 		this.setup();
-		Fabrik.addEvent('fabrik.list.add', this.loadForm.bindWithEvent(this));
+		Fabrik.addEvent('fabrik.list.add', function (e) {
+			this.loadForm(e);
+		}.bind(this));
 	},
 	
 	loadForm: function (list, e) {

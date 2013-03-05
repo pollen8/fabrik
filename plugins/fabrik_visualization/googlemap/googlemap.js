@@ -111,10 +111,18 @@ var FbGoogleMapViz = new Class({
 			
 			this.addIcons();
 			this.addOverlays();
-			
-			google.maps.event.addListener(this.map, "click", this.setCookies.bindWithEvent(this));
-			google.maps.event.addListener(this.map, "moveend", this.setCookies.bindWithEvent(this));
-			google.maps.event.addListener(this.map, "zoomend", this.setCookies.bindWithEvent(this));
+
+			google.maps.event.addListener(this.map, "click", function (e) {
+				this.setCookies(e);
+			}.bind(this));
+
+			google.maps.event.addListener(this.map, "moveend", function (e) {
+				this.setCookies(e);
+			}.bind(this));
+
+			google.maps.event.addListener(this.map, "zoomend", function (e) {
+				this.setCookies(e);
+			}.bind(this));
 
 			if (this.options.use_cookies) {
 				// $$$ jazzbass - get previous stored location
@@ -388,7 +396,9 @@ var FbGoogleMapViz = new Class({
 			this.options.overlay_urls.each(function (overlay_url, k) {
 				this.options.overlays[k] = new google.maps.KmlLayer(overlay_url);
 				this.options.overlays[k].setMap(this.map);
-				this.options.overlay_events[k] = this.toggleOverlay.bindWithEvent(this);
+				this.options.overlay_events[k] = function (e) {
+					this.toggleOverlay(e);
+				}.bind(this);
 				if (typeOf(document.id('overlay_chbox_' + k)) !== 'null') {
 					document.id('overlay_chbox_' + k).addEvent('click', this.options.overlay_events[k]);
 				}
@@ -429,7 +439,7 @@ var FbGoogleMapViz = new Class({
 					'href': '#',
 					'class': 'groupedLink' + k
 				}).set('text', i.groupkey));
-				h.injectInside(c);
+				h.inject(c);
 			}
 			this.grouped[i.groupkey].push(i);
 		}.bind(this));

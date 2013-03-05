@@ -20,9 +20,11 @@ var ListForm = new Class({
 	initialize: function (options) {
 		var rows;
 		this.setOptions(options);
-		this.addAJoinClick = this.addAJoin.bindWithEvent(this);
 		if (document.id('addAJoin')) {
-			document.id('addAJoin').addEvent('click', this.addAJoinClick);
+			document.id('addAJoin').addEvent('click', function (e) {
+				e.stop();
+				this.addJoin();
+			}.bind(this));
 		}
 		if (document.getElement('table.linkedLists')) {
 			rows = document.getElement('table.linkedLists').getElement('tbody');
@@ -41,10 +43,16 @@ var ListForm = new Class({
 	},
 	
 	watchOrderButtons: function () {
-		$$('.addOrder').removeEvents('click');
-		$$('.deleteOrder').removeEvents('click');
-		$$('.addOrder').addEvent('click', this.addOrderBy.bindWithEvent(this));
-		$$('.deleteOrder').addEvent('click', this.deleteOrderBy.bindWithEvent(this));
+		document.getElements('.addOrder').removeEvents('click');
+		document.getElements('.deleteOrder').removeEvents('click');
+		document.getElements('.addOrder').addEvent('click', function (e) {
+			e.stop();
+			this.addOrderBy();
+		}.bind(this));
+		document.getElements('.deleteOrder').addEvent('click', function (e) {
+			e.stop();
+			this.deleteOrderBy(e);
+		}.bind(this));
 	},
 	
 	addOrderBy: function (e)
@@ -60,7 +68,7 @@ var ListForm = new Class({
 	},
 	
 	deleteOrderBy: function (e) {
-		if ($$('.orderby_container').length > 1) {
+		if (document.getElements('.orderby_container').length > 1) {
 			e.target.getParent('.orderby_container').dispose();
 			this.watchOrderButtons();
 		}
@@ -114,7 +122,7 @@ var ListForm = new Class({
 	},
 	
 	_findActiveTables: function () {
-		var t = $$('.join_from').combine($$('.join_to'));
+		var t = document.getElements('.join_from').combine(document.getElements('.join_to'));
 		t.each(function (sel) {
 			var v = sel.get('value');
 			if (this.options.activetableOpts.indexOf(v) === -1) {
@@ -125,7 +133,7 @@ var ListForm = new Class({
 	},
 	
 	addJoin: function (groupId, joinId, joinType, joinToTable, thisKey, joinKey, joinFromTable, joinFromFields, joinToFields, repeat) {
-		var repeaton, repeatoff;
+		var repeaton, repeatoff, headings, row;
 		joinType = joinType ? joinType : 'left';
 		joinFromTable = joinFromTable ? joinFromTable : '';
 		joinToTable = joinToTable ? joinToTable : '';
@@ -150,7 +158,7 @@ var ListForm = new Class({
 		var ii = new Element('input', {
 			'readonly': 'readonly',
 			'size': '2',
-			'class': 'disabled readonly',
+			'class': 'disabled readonly input-mini',
 			'name': 'jform[params][join_id][]',
 			'value': joinId
 		});
@@ -367,7 +375,7 @@ var adminFilters = new Class({
 				opts.push(new Element('option', {'value': pair.value}).set('text', pair.label));
 			}
 		});
-		return new Element('select', {'class': c, 'name': name}).adopt(opts);
+		return new Element('select', {'class': c + ' input-small', 'name': name}).adopt(opts);
 	},
 	
 	addFilterOption: function (selJoin, selFilter, selCondition, selValue, selAccess, evaluate, grouped) {
@@ -389,7 +397,7 @@ var adminFilters = new Class({
 			groupedYes = new Element('label').set('text', Joomla.JText._('JYES')).adopt(
 				new Element('input', opts)
 			);
-			//need to redeclare opts for ie8 otherwise it renders a field!
+			// Need to redeclare opts for ie8 otherwise it renders a field!
 			opts = {
 				'type': 'radio',
 				'name': 'jform[params][filter-grouped][' + this.counter + ']',
@@ -421,7 +429,7 @@ var adminFilters = new Class({
 			}
 			joinDd = new Element('select', {
 				'id': 'paramsfilter-join',
-				'class': 'inputbox',
+				'class': 'inputbox  input-small',
 				'name': 'jform[params][filter-join][]'
 			}).adopt(
 		[and, or]);
@@ -488,13 +496,17 @@ var adminFilters = new Class({
 
 		this.el.appendChild(tr);
 		
-		document.id(delId).addEvent('click', this.onDeleteClick);
+		document.id(delId).addEvent('click', function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this));
 		
-		document.id(this.el.id + "-del-" + this.counter).click = this.onDeleteClick;
+		document.id(this.el.id + "-del-" + this.counter).click = function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this);
 		
 		/*set default values*/ 
 		if (selJoin !== '') {
-			sels = $A(td.getElementsByTagName('SELECT'));
+			sels = Array.from(td.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selJoin) {
@@ -504,7 +516,7 @@ var adminFilters = new Class({
 			}
 		}
 		if (selFilter !== '') {
-			sels = $A(td1.getElementsByTagName('SELECT'));
+			sels = Array.from(td1.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selFilter) {
@@ -515,7 +527,7 @@ var adminFilters = new Class({
 		}				
 
 		if (selCondition !== '') {
-			sels = $A(td2.getElementsByTagName('SELECT'));
+			sels = Array.from(td2.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selCondition) {
@@ -526,7 +538,7 @@ var adminFilters = new Class({
 		}	
 		
 		if (selAccess !== '') {
-			sels = $A(td4.getElementsByTagName('SELECT'));
+			sels = Array.from(td4.getElementsByTagName('SELECT'));
 			if (sels.length >= 1) {
 				for (i = 0; i < sels[0].length; i++) {
 					if (sels[0][i].value === selAccess) {

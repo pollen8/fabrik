@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true */
 
 AdvancedSearch = new Class({
 	
@@ -14,12 +14,16 @@ AdvancedSearch = new Class({
 	initialize: function (options) {
 		this.setOptions(options);
 		this.form = document.id('advanced-search-win' + this.options.listref).getElement('form');
-		this.trs = $A([]);
+		this.trs = Array.from([]);
 		if (this.form.getElement('.advanced-search-add')) {
 			this.form.getElement('.advanced-search-add').removeEvents('click');
-			this.form.getElement('.advanced-search-add').addEvent('click', this.addRow.bindWithEvent(this));
+			this.form.getElement('.advanced-search-add').addEvent('click', function (e) {
+				this.addRow(e);
+			}.bind(this));
 			this.form.getElement('.advanced-search-clearall').removeEvents('click');
-			this.form.getElement('.advanced-search-clearall').addEvent('click', this.resetForm.bindWithEvent(this));
+			this.form.getElement('.advanced-search-clearall').addEvent('click', function (e) {
+				this.resetForm(e);
+			}.bind(this));
 			this.trs.each(function (tr) {
 				tr.inject(this.form.getElement('.advanced-search-list').getElements('tr').getLast(), 'after');
 			}.bind(this));
@@ -64,12 +68,16 @@ AdvancedSearch = new Class({
 	watchDelete: function () {
 		//should really just delegate these events from the adv search table
 		this.form.getElements('.advanced-search-remove-row').removeEvents();
-		this.form.getElements('.advanced-search-remove-row').addEvent('click', this.removeRow.bindWithEvent(this));
+		this.form.getElements('.advanced-search-remove-row').addEvent('click', function (e) {
+			this.removeRow(e);
+		}.bind(this));
 	},
 	
 	watchElementList: function () {
 		this.form.getElements('select.key').removeEvents();
-		this.form.getElements('select.key').addEvent('change', this.updateValueInput.bindWithEvent(this));
+		this.form.getElements('select.key').addEvent('change', function (e) {
+			this.updateValueInput(e);
+		}.bind(this));
 	},
 	
 	/**
@@ -165,7 +173,9 @@ AdvancedSearch = new Class({
 	},
 
 	deleteFilterOption: function (e) {
-		event.target.removeEvent('click', this.deleteFilterOption.bindWithEvent(this));
+		event.target.removeEvent('click', function (e) {
+			this.deleteFilterOption(e);
+		}.bind(this));
 		var tr = event.target.parentNode.parentNode;
 		var table = tr.parentNode;
 		table.removeChild(tr);

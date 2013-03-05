@@ -1,15 +1,24 @@
 var FbPassword = new Class({
 	Extends: FbElement,
+	
+	options: {
+		progressbar: false
+	},
+	
 	initialize: function (element, options) {
 		this.parent(element, options);
 		if (!this.options.editable) {
 			return;
 		}
 		if (this.element) {
-			this.element.addEvent('keyup', this.passwordChanged.bindWithEvent(this));
+			this.element.addEvent('keyup', function (e) {
+				this.passwordChanged(e);
+			}.bind(this));
 		}
 		if (this.options.ajax_validation === true) {
-			this.getConfirmationField().addEvent('blur', this.callvalidation.bindWithEvent(this));
+			this.getConfirmationField().addEvent('blur', function (e) {
+				this.callvalidation(e);
+			}.bind(this));
 		}
 
 		if (this.getConfirmationField().get('value') === '') {

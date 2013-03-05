@@ -10,7 +10,6 @@ var Suboptions = new Class({
 		this.setOptions(options);
 		this.counter = 0;
 		this.name = name;
-		this.clickRemoveSubElement = this.removeSubElement.bindWithEvent(this);
 		document.id('addSuboption').addEvent('click', this.addOption.bindWithEvent(this));
 		this.options.sub_values.each(function (v, x) {
 			var chx = this.options.sub_initial_selection.indexOf(v) === -1 ? '' : "checked='checked'";
@@ -95,7 +94,9 @@ var Suboptions = new Class({
 		} else {
 			li.inject(document.id('sub_subElementBody'));
 		}
-		document.id('sub_delete_' + this.counter).addEvent('click', this.clickRemoveSubElement);
+		document.id('sub_delete_' + this.counter).addEvent('click', function (e) {
+			this.removeSubElement(e);
+		}.bind(this));
 		
 		if (!this.sortable) {
 			this.sortable = new Sortables('sub_subElementBody', {'handle': '.subhandle'});
