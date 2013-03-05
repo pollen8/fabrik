@@ -2668,13 +2668,14 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 
 		$default = $app->getUserStateFromRequest($context, $elid, $default);
-		if ($this->getElement()->filter_type !== 'range')
+		$fType = $this->getElement()->filter_type;
+		if ($this->multiOptionFilter())
 		{
 			$default = (is_array($default) && array_key_exists('value', $default)) ? $default['value'] : $default;
 			if (is_array($default))
 			{
 				// Hidden querystring filters can be using ranged valued though
-				if ($this->getElement()->filter_type !== 'hidden')
+				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect')))
 				{
 					// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
 					$default = '';
@@ -2686,6 +2687,12 @@ class plgFabrik_Element extends FabrikPlugin
 			}
 		}
 		return $default;
+	}
+
+	protected function multiOptionFilter()
+	{
+		$fType = $this->getElement()->filter_type;
+		return in_array($fType, array('range', 'checkbox', 'multiselect'));
 	}
 
 	/**
@@ -2749,24 +2756,33 @@ class plgFabrik_Element extends FabrikPlugin
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
 
-		if (in_array($element->filter_type, array('range', 'dropdown')))
+		if (in_array($element->filter_type, array('range', 'dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 			$this->unmergeFilterSplits($rows);
-			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			if (!in_array($element->filter_type,  array('checkbox', 'multiselect')))
+			{
+				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
 		}
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		switch ($element->filter_type)
 		{
-			case "range":
+			case 'range':
 				$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				break;
-
-			case "dropdown":
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $id);
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
+			case 'dropdown':
+			case 'multiselect':
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, 'value', 'text', $default, $id);
 				break;
 
-			case "field":
+			case 'field':
 			default:
 			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				$default = stripslashes($default);
@@ -2775,7 +2791,7 @@ class plgFabrik_Element extends FabrikPlugin
 					. $id . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (is_array($default))
 				{
 					$this->rangedFilterFields($default, $return, $rows, $v, 'hidden');
@@ -2788,13 +2804,38 @@ class plgFabrik_Element extends FabrikPlugin
 				}
 				break;
 
-			case "auto-complete":
+			case 'auto-complete':
 				$autoComplete = $this->autoCompleteFilter($default, $v, null, $normal);
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
 		return implode("\n", $return);
+	}
+
+	/**
+	 * Checkbox filter
+	 *
+	 * @param   array   $rows     Filter list options
+	 * @param   array   $default  Selected filter values
+	 * @param   string  $v        Filter name
+	 *
+	 * @since 3.0.7
+	 *
+	 * @return  string
+	 */
+
+	protected function checkboxFilter($rows, $default, $v)
+	{
+		$values = array();
+		$labels = array();
+		foreach ($rows as $row)
+		{
+			$values[] = $row->value;
+			$labels[] = $row->text;
+		}
+		$default = (array) $default;
+		return implode("\n", FabrikHelperHTML::grid($values, $labels, $default, $v, 'checkbox', false, 1, array('input' => array('fabrik_filter'))));
 	}
 
 	/**
@@ -3503,7 +3544,10 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			if (is_array($value) && !empty($value))
 			{
-				array_walk($value, array($db, 'quote'));
+				foreach ($value as &$v)
+				{
+					$v = $db->quote($v);
+				}
 				$value = ' (' . implode(',', $value) . ')';
 			}
 			$condition = 'IN';

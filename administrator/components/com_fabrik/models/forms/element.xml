@@ -86,6 +86,8 @@
 				<option value="dropdown">COM_FABRIK_DROPDOWN</option>
 				<option value="range">COM_FABRIK_RANGE</option>
 				<option value="auto-complete">COM_FABRIK_AUTOCOMPLETE</option>
+				<option value="checkbox">COM_FABRIK_CHECKBOX</option>
+				<option value="multiselect">COM_FABRIK_MULTISELECT</option>
 		</field>
 		
 		<field name="filter_exact_match"
