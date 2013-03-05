@@ -45,8 +45,8 @@ JLoader::register('JElement', JPATH_SITE . '/administrator/components/com_fabrik
 
 // $$$ rob 30/10/2011 commented out as we need to load these classes for the list menu form
 //if (JRequest::getCmd('option') != 'com_menus') {
-//	JLoader::import('components.com_fabrik.classes.field', JPATH_SITE . '/administrator', 'administrator.');
-//	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE . '/administrator', 'administrator.');
+	JLoader::import('components.com_fabrik.classes.field', JPATH_SITE . '/administrator', 'administrator.');
+	JLoader::import('components.com_fabrik.classes.form', JPATH_SITE . '/administrator', 'administrator.');
 //}
 
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
