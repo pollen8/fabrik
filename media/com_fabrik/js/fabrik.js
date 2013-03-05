@@ -401,7 +401,7 @@ var Loader = new Class({
 				'width': list.options.popup_width,
 				'height': list.options.popup_height,
 				'onClose': function (win) {
-					var k = 'form_' + list.options.formid + '_' + rowid;
+					var k = 'form_' + list.options.formid;
 					Fabrik.blocks[k].destroyElements();
 					Fabrik.blocks[k].formElements = null;
 					Fabrik.blocks[k] = null;
@@ -473,11 +473,11 @@ var Loader = new Class({
 			Fabrik.getWindow(winOpts);
 		};
 		
-		Fabrik.form = function(ref, id, opts) {
+		Fabrik.form = function (ref, id, opts) {
 			var form = new FbForm(id, opts);
 			Fabrik.addBlock(ref, form);
 			return form;
-		}
+		};
 		
 		window.fireEvent('fabrik.loaded');
 	}

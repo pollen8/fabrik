@@ -572,7 +572,7 @@ var FbForm = new Class({
 	},
 	
 	destroyElements: function () {
-		this.formElements.each(function(el) {
+		this.formElements.each(function (el) {
 			el.destroy();
 		});
 	},

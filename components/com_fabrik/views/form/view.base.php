@@ -435,10 +435,7 @@ class FabrikViewFormBase extends JView
 		FabrikHelperHTML::mocha();
 
 		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-		if ($this->rowid != '')
-		{
-			$bkey .= '_' . $this->rowid;
-		}
+
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 		$key = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 
