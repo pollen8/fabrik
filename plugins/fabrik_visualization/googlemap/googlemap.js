@@ -97,6 +97,32 @@ var FbGoogleMapViz = new Class({
 		};
 		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
 		this.map.setOptions({'styles': this.options.styles});
+		
+		this.infoWindow = new google.maps.InfoWindow({
+			content: ''
+		});
+		this.bounds = new google.maps.LatLngBounds();
+			
+		/*
+		if (this.options.clustering) {
+			this.markerMgr = new MarkerManager(this.map, {trackMarkers: true, maxZoom: 15});
+		}
+		*/
+			
+		this.addIcons();
+		this.addOverlays();
+
+		google.maps.event.addListener(this.map, "click", function (e) {
+			this.setCookies(e);
+		}.bind(this));
+
+		google.maps.event.addListener(this.map, "moveend", function (e) {
+			this.setCookies(e);
+		}.bind(this));
+
+		google.maps.event.addListener(this.map, "zoomend", function (e) {
+			this.setCookies(e);
+		}.bind(this));
 
 		this.infoWindow = new google.maps.InfoWindow({
 			content: ''

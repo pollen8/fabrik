@@ -216,6 +216,7 @@ div.calendar{
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+	background-image: -ms-linear-gradient(top, #eee, #ccc);
 	display:-moz-box;
 	/* chrome: causes images in menu not to be displayed
 	display:-webkit-box;*/

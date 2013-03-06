@@ -442,7 +442,6 @@ var FbList = new Class({
 
 	watchOrder: function () {
 		var elementId = false;
-		
 		var hs = document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
 		hs.removeEvents('click');
 		hs.each(function (h) {

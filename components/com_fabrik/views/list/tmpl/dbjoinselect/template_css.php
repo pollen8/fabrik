@@ -1,6 +1,6 @@
 <?php
 /**
- * Fabrik List Template: Default CSS
+ * Fabrik List Template: DB Join Select CSS
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -11,10 +11,10 @@
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 $buttonCount = (int) $_REQUEST['buttoncount'];
-$buttonTotal = $buttonCount === 0 ? 'auto' : 30 * $buttonCount ."px";
+$buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
 echo "
 #listform_$c table.fabrikList {
-	clear: right;
+	clear:right;
 	border-collapse: collapse;
 	margin-top: 10px;
 	color: #444444;
@@ -22,11 +22,6 @@ echo "
 	but it seems nicer to have the table full width
 	- then you can right align the top buttons against it */
 	width:100%;
-}
-
-#listform_$c .fabrikFilterContainer {
-	float: right;
-	width: 50%;
 }
 
 #listform_$c table.fabrikList .groupdataMsg{
@@ -118,7 +113,7 @@ div.calendar{
 
 /** autocomplete container inject in doc body not in #forn_$c */
 .auto-complete-container{
-	overflow: hidden;
+	overflow-y: hidden;
 	border-radius:0 0 6px 6px;
 	box-shadow:2px 2px 6px rgba(100, 100, 100, 150);
 	border:1px solid #999
@@ -131,7 +126,7 @@ div.calendar{
 	padding:0;
 }
 
-.auto-complete-container li{
+/* .auto-complete-container li{
 	text-align:left;
 	padding:6px 10px !important;
 	background-color:#999999;
@@ -140,7 +135,9 @@ div.calendar{
 	margin:0 !important;
 	cursor:hand;
 	font-size:0.9em;
-}
+	color: #eee;
+	text-shadow: 0 1px 0 #666;
+} */
 
 .auto-complete-container li:hover{
 	background-color:#777 !important;
@@ -159,7 +156,7 @@ div.calendar{
 #listform_$c .fabrik_groupheading,
 #listform_$c .fabrik___heading,
 .advancedSeach_$c .fabrik___heading{
-	background: #c0c0c0;
+	background-color: #c0c0c0;
 	border-bottom: 1px solid #B7B7B7;
 	border-top: 1px solid #FFFFFF;
 	color: #777777;
@@ -184,6 +181,7 @@ div.calendar{
 #listform_$c .fabrik_groupheading td{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 }
+
 
 #listform_$c .fabrik_groupheading a{
 	color: #777777;
@@ -213,15 +211,17 @@ div.calendar{
 	padding: 3px;
 }
 
+#listform_$c table.filtertable {
+	width: 50%;
+	float: right;
+}
+
 #listform_$c .fabrikHover,
-#advancedSearchContainer tr:hover {
-	background-color: #ffffff;
+#advancedSearchContainer tr:hover  {
+	background-color: #ffffcc;
+	cursor: pointer;
+	color: #000;
 }
-
-#advancedSearchContainer tr:active {
-background-color: red;
-}
-
 
 /** highlight the last row that was clicked */
 #listform_$c .fabrikRowClick {

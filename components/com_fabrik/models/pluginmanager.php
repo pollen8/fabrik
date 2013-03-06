@@ -292,7 +292,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 				}
 				else
 				{
-					JError::raiseNotice(500, 'did not load ' . $className . ' ' . $group);
+					JError::raiseNotice(500, 'plugin manager: did not load ' . $group . '.' . $className);
 					return false;
 				}
 			}

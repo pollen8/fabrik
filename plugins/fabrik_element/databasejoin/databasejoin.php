@@ -634,17 +634,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$table = $join->table_join;
 			$key = $join->table_join_key;
 			$val = $join->params->get('join-label', $val);
-
-			// Don't quote concat labels
-			if ($params->get($this->concatLabelParam) == '')
-			{
-				$val = $db->quoteName($val);
-			}
 		}
 		if ($key == '' || $val == '')
 		{
 			return false;
 		}
+
+		if (!strstr($val, 'CONCAT'))
+		{
+			$val = $db->quoteName($val);
+		}
+
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')

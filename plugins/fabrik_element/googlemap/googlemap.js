@@ -90,23 +90,8 @@ var FbGoogleMap = new Class({
 		window.addEvent('google.map.loaded', this.loadFn);
 		window.addEvent('google.radius.loaded', this.radFn);
 		
-		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
-		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
-		
 		this.loadScript();
 		
-		// @TODO test google object when offline typeOf(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
-		
-		//this.loadScript();
 		// @TODO test google object when offline typeOf(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {

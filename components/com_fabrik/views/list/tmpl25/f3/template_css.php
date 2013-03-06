@@ -24,6 +24,7 @@ echo "
 	-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 	background: -moz-linear-gradient(-90deg, #F3F3F3, #C1C3C5, #9B9EA0)
 	repeat scroll 0 0 transparent;
+	background-image: -ms-linear-gradient(top, #F3F3F3, #C1C3C5, #9B9EA0);
 	padding:10px;
 
 	border-radius: 7px 7px 0 0;
@@ -35,6 +36,7 @@ echo "
 #listform_$c .fabrik___headings {
 
 	background:	-moz-linear-gradient(-90deg, #e1e1e1, #f1f1f1, #ffffff) repeat scroll 0 0 transparent;
+	background-image: -ms-linear-gradient(top, #e1e1e1, #f1f1f1, #ffffff);
 	border-bottom:1px solid #a6a6a6;
 }
 
