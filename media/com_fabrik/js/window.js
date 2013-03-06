@@ -4,7 +4,7 @@ Fabrik.getWindow = function (opts) {
 			Fabrik.Windows[opts.id].open();
 		}
 		Fabrik.Windows[opts.id].setOptions(opts);
-		Fabrik.Windows[opts.id].loadContent();
+		// Fabrik.Windows[opts.id].loadContent();
 	} else {
 		var type = opts.type ? opts.type : '';
 		switch (type) {
@@ -23,6 +23,7 @@ Fabrik.getWindow = function (opts) {
 	}
 	return Fabrik.Windows[opts.id];
 };
+
 
 Fabrik.Window = new Class({
 

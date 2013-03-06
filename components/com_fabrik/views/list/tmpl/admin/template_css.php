@@ -84,6 +84,7 @@ echo "
 	background: -webkit-gradient(linear, left top, left bottom, from(#ccc),
 		to(#666) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+	background-image: -ms-linear-gradient(top, #eee, #ccc);
 	display:-moz-box;
 	/*display:-webkit-box;*/
 	display:box;

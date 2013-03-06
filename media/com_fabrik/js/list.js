@@ -124,11 +124,11 @@ var FbList = new Class({
 		'canEdit': true,
 		'canView': true,
 		'page': 'index.php',
-		'actionMethod': 'floating',
+		'actionMethod': 'floating', // deprecated in 3.1
 		'formels': [], // elements that only appear in the form
 		'data': [], // [{col:val, col:val},...] (depreciated)
 		'rowtemplate': '',
-		'floatPos': 'left',
+		'floatPos': 'left', // deprecated in 3.1
 		'csvChoose': false,
 		'csvOpts': {},
 		'popup_width': 300,
@@ -148,10 +148,12 @@ var FbList = new Class({
 		this.result = true; //used with plugins to determine if list actions should be performed
 		this.plugins = [];
 		this.list = document.id('list_' + this.options.listRef);
-		this.actionManager = new FbListActions(this, {
-			'method': this.options.actionMethod,
-			'floatPos': this.options.floatPos
-		});
+		if (this.options.j3 === false) {
+			this.actionManager = new FbListActions(this, {
+				'method': this.options.actionMethod,
+				'floatPos': this.options.floatPos
+			});
+		}
 		this.groupToggle = new FbGroupedToggler(this.form, this.options.groupByOpts);
 		new FbListKeys(this);
 		if (this.list) {
@@ -214,7 +216,8 @@ var FbList = new Class({
 			minimizable: false,
 			width: 360,
 			height: 120,
-			content: ''
+			content: '',
+			bootstrap: this.options.j3
 		};
 		if (this.options.view === 'csv') {
 			//for csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
@@ -239,7 +242,7 @@ var FbList = new Class({
 		this.exportWindowOpts.onContentLoaded = function () {
 			this.fitToContent();
 		};
-		Fabrik.getWindow(this.exportWindowOpts);
+		this.csvWindow = Fabrik.getWindow(this.exportWindowOpts);
 	},
 
 	makeCSVExportForm: function () {
@@ -480,11 +483,12 @@ var FbList = new Class({
 						this.triggerCSVExport(res.count);
 					} else {
 						var finalurl = Fabrik.liveSite + 'index.php?option=com_fabrik&view=list&format=csv&listid=' + this.id + '&start=' + res.count + '&Itemid=' + this.options.Itemid;
-						var msg = Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
-						msg += ' <a href="' + finalurl + '">' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a>';
+						var msg = '<div class="alert alert-success"><h3>' + Joomla.JText._('COM_FABRIK_CSV_COMPLETE');
+						msg += '</h3><p><a class="btn btn-success" href="' + finalurl + '"><i class="icon-download"></i> ' + Joomla.JText._('COM_FABRIK_CSV_DOWNLOAD_HERE') + '</a></p></div>';
 						if (typeOf(document.id('csvmsg')) !== 'null') {
 							document.id('csvmsg').set('html', msg);
 						}
+						this.csvWindow.fitToContent();
 						document.getElements('input.exportCSVButton').removeProperty('disabled');
 					}
 				}
@@ -514,7 +518,6 @@ var FbList = new Class({
 
 	watchOrder: function () {
 		var elementId = false;
-		
 		var hs = document.id(this.options.form).getElements('.fabrikorder, .fabrikorder-asc, .fabrikorder-desc');
 		hs.removeEvents('click');
 		hs.each(function (h) {
@@ -651,34 +654,10 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		
 		if (this.options.ajax_links) {
 			
-			// $$$rob - HACKKKKK!!!!!! 
-			// not sure why but on ajax first load of xhr content the form object does not ini
-			// if we created the window, hidden from view, then this 'fixes' the issue. I'd really like to 
-			// find out what the problem is here but for now this band aid is a help
-			
-			// Didnt work in admin list view if list add acl was anything other than public
-			//var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
-			var url = 'index.php?option=com_fabrik&task=form.view&formid=' + this.options.formid + '&rowid=0&tmpl=component&ajax=1';
-			var winOpts = {
-				'id': 'add.' + this.id,
-				'title': this.options.popup_edit_label,
-				'loadMethod': 'xhr',
-				'contentURL': url,
-				'visible': false,
-				'width': this.options.popup_width,
-				'height': this.options.popup_height,
-				'onContentLoaded': function () {}
-			};
-			if (typeOf(this.options.popup_offset_x) !== 'null') {
-				winOpts.offset_x = this.options.popup_offset_x;
-			}
-			if (typeOf(this.options.popup_offset_y) !== 'null') {
-				winOpts.offset_y = this.options.popup_offset_y;
-			}
-			var w = Fabrik.getWindow(winOpts);
+			// 3.1 - dont need to do this now
+			return;
 		}
 	},
 	
@@ -872,6 +851,7 @@ var FbList = new Class({
 	},
 
 	_updateRows: function (data) {
+		var tbody;
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);
@@ -905,7 +885,7 @@ var FbList = new Class({
 			var gcounter = 0;
 			gdata.each(function (groupData, groupKey) {
 				var container, thisrowtemplate;
-				var tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
+				tbody = this.options.isGrouped ? this.list.getElements('.fabrik_groupdata')[gcounter] : this.tbody;
 				
 				// Set the group by heading
 				if (this.options.isGrouped && tbody) {
@@ -1216,7 +1196,8 @@ var FbGroupedToggler = new Class({
 	
 	options: {
 		collapseOthers: false,
-		startCollapsed: false
+		startCollapsed: false,
+		bootstrap: false
 	},
 	
 	initialize: function (container, options) {
@@ -1237,7 +1218,7 @@ var FbGroupedToggler = new Class({
 				this.collapse();
 			}
 			var h = e.target.getParent('.fabrik_groupheading');
-			var img = h.getElement('img');
+			var img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
 			var state = img.retrieve('showgroup', true);
 			var rows = h.getParent().getNext();
 			state ? rows.hide() : rows.show();
@@ -1288,11 +1269,13 @@ var FbGroupedToggler = new Class({
 
 /**
  * set up and show/hide list actions for each row
+ * Deprecated in 3.1
  */
 var FbListActions = new Class({
 
 	Implements: [Options],
 	options: {
+		'selector': 'ul.fabrik_action, .btn-group.fabrik_action',
 		'method': 'floating',
 		'floatPos': 'bottom'
 	},
@@ -1320,7 +1303,7 @@ var FbListActions = new Class({
 		if (!this.list.form) {
 			return;
 		}
-		this.actions = this.list.form.getElements('ul.fabrik_action');
+		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
 			// sub menus ie group by options
 			if (ul.getElement('ul')) {
@@ -1343,7 +1326,7 @@ var FbListActions = new Class({
 	},
 
 	setUpDefault: function () {
-		this.actions = this.list.form.getElements('ul.fabrik_action');
+		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
 			if (ul.getParent().hasClass('fabrik_buttons')) {
 				return;
@@ -1366,7 +1349,7 @@ var FbListActions = new Class({
 	},
 
 	setUpFloating: function () {
-		this.list.form.getElements('ul.fabrik_action').each(function (ul) {
+		this.list.form.getElements(this.options.selector).each(function (ul) {
 			if (ul.getParent('.fabrik_row')) {
 				if (i = ul.getParent('.fabrik_row').getElement('input[type=checkbox]')) {
 					var hideFn = function (e, elem, leaving) {
@@ -1390,6 +1373,7 @@ var FbListActions = new Class({
 							showOn: 'click',
 							hideOn: 'click',
 							content: c,
+							'heading': 'Edit: ',
 							hideFn: function (e) {
 								return !e.target.checked;
 							},
@@ -1400,7 +1384,7 @@ var FbListActions = new Class({
 							}.bind(this.list)
 						};
 					
-					var tipOpts = Object.merge(Object.clone(Fabrik.tips.options), opts);
+					var tipOpts = Fabrik.tips ? Object.merge(Object.clone(Fabrik.tips.options), opts) : opts;
 					var tip = new FloatingTips(i, tipOpts);
 				}
 			}
@@ -1418,6 +1402,7 @@ var FbListActions = new Class({
 			showOn: 'click',
 			hideOn: 'click',
 			content: c,
+			'heading': 'Edit all: ',
 			hideFn: function (e) {
 				return !e.target.checked;
 			},

@@ -28,6 +28,7 @@ var FbDatabasejoin = new Class({
 	watchAdd: function () {
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
+			
 			// If duplicated remove old events
 			
 			b.removeEvent('click', function (e) {
@@ -250,7 +251,7 @@ var FbDatabasejoin = new Class({
 					return;
 				}
 				json.each(function (o) {
-					if (!existingValues.contains(o.value)) {
+					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
 						if (this.activePopUp) {
 							this.options.value = o.value;
 						}
@@ -369,12 +370,21 @@ var FbDatabasejoin = new Class({
 				
 				// Used for auto-completes in repeating groups to stop all fields updating when a record
 				// is selcted
-				window.addEvent('fabrik.dbjoin.unactivate', function () {
+				this.unactiveFn = function () {
 					this.activeSelect = false;
-				}.bind(this));
+				}.bind(this);
+				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 				
 			}
 		}
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		window.removeEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 	},
 	
 	selectRecord: function (e) {
