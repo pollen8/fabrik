@@ -35,6 +35,14 @@ var FbElement =  new Class({
 		return this.setElement();
 	},
 	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		
+	},
+	
 	setElement: function () {
 		if (document.id(this.options.element)) {
 			this.element = document.id(this.options.element);
@@ -65,9 +73,15 @@ var FbElement =  new Class({
 	attachedToForm: function ()
 	{
 		this.setElement();
-		this.alertImage = new Asset.image(this.form.options.images.alert);
-		this.alertImage.setStyle('cursor', 'pointer');
-		this.successImage = new Asset.image(this.form.options.images.action_check);
+		if (Fabrik.bootstrapped) {
+			this.alertImage = new Element('i.icon-warning');
+			this.successImage = new Element('i.icon-checkmark', {'styles': {'color': 'green'}});			
+		} else {
+			this.alertImage = new Asset.image(this.form.options.images.alert);
+			this.alertImage.setStyle('cursor', 'pointer');
+			this.successImage = new Asset.image(this.form.options.images.action_check);
+		}
+		
 		this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
 		//put ini code in here that can't be put in initialize()
 		// generally any code that needs to refer to  this.form, which
@@ -78,12 +92,12 @@ var FbElement =  new Class({
 	fireEvents: function (evnts) {
 		if (this.hasSubElements()) {
 			this._getSubElements().each(function (el) {
-				$A(evnts).each(function (e) {
+				Array.from(evnts).each(function (e) {
 					el.fireEvent(e);
 				}.bind(this));
 			}.bind(this));
 		} else {
-			$A(evnts).each(function (e) {
+			Array.from(evnts).each(function (e) {
 				this.element.fireEvent(e);
 			}.bind(this));
 		}
@@ -309,7 +323,7 @@ var FbElement =  new Class({
 	},
 	
 	/**
-	 * get the fx to fade up/down element validation feedback text
+	 * Get the fx to fade up/down element validation feedback text
 	 */
 	getValidationFx: function () {
 		if (!this.validationFX) {
@@ -319,7 +333,7 @@ var FbElement =  new Class({
 	},
 	
 	setErrorMessage: function (msg, classname) {
-		var a;
+		var a, m;
 		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
 		var container = this.getContainer();
 		if (container === false) {
@@ -335,18 +349,33 @@ var FbElement =  new Class({
 		});
 		switch (classname) {
 		case 'fabrikError':
-			a = new Element('a', {'href': '#', 'title': msg, 'events': {
-				'click': function (e) {
-					e.stop();
-				}
-			}}).adopt(this.alertImage);
+			if (Fabrik.bootstrapped) {
+				m = new Element('div').set('html', msg).getChildren()[0];
+				a = new Element('div').adopt([this.alertImage, m]);
+			} else {
+				a = new Element('a', {'href': '#', 'title': msg, 'events': {
+					'click': function (e) {
+						e.stop();
+					}
+				}}).adopt(this.alertImage);
+				
+				Fabrik.tips.attach(a);
+			}
 			errorElements[0].adopt(a);
-			Fabrik.tips.attach(a);
+			
+			container.removeClass('alert-success').removeClass('alert-info').addClass('alert-error');
 			break;
 		case 'fabrikSuccess':
+			container.addClass('alert-success').removeClass('alert-info').removeClass('alert-error');
 			errorElements[0].adopt(this.successImage);
+			var delFn = function () {
+				errorElements[0].addClass('fabrikHide');
+				container.removeClass('alert-success');
+			};
+			delFn.delay(700);
 			break;
 		case 'fabrikValidating':
+			container.removeClass('alert-success').addClass('alert-info').removeClass('alert-error');
 			errorElements[0].adopt(this.loadingImage);
 			break;
 		}
@@ -369,12 +398,13 @@ var FbElement =  new Class({
 			fx.start({
 				'opacity': 1
 			}).chain(function () {
-				//only fade out if its still the success message
+				// Only fade out if its still the success message
 				if (container.hasClass('fabrikSuccess')) {
 					container.removeClass('fabrikSuccess');
 					this.start.delay(700, this, {
 						'opacity': 0,
 						'onComplete': function () {
+							container.addClass('success').removeClass('error');
 							parent.updateMainError();
 							classes.each(function (c) {
 								container.removeClass(c);
@@ -434,7 +464,7 @@ var FbElement =  new Class({
 				suffixFound = true;
 			}
 		}
-		var bits = $A(n.split('_'));
+		var bits = Array.from(n.split('_'));
 		var i = bits.getLast();
 		if (typeOf(i.toInt()) === 'null') {
 			return bits.join('_');
@@ -542,8 +572,12 @@ var FbFileElement = new Class({
 		
 	watchAjaxFolderLinks: function ()
 	{
-		this.folderdiv.getElements('a').addEvent('click', this.browseFolders.bindWithEvent(this));
-		this.breadcrumbs.getElements('a').addEvent('click', this.useBreadcrumbs.bindWithEvent(this));
+		this.folderdiv.getElements('a').addEvent('click', function (e) {
+			this.browseFolders(e);
+		}.bind(this));
+		this.breadcrumbs.getElements('a').addEvent('click', function (e) {
+			this.useBreadcrumbs(e);
+		}.bind(this));
 	},
 	
 		

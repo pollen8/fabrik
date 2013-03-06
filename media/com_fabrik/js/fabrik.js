@@ -1,5 +1,5 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true $H:true,unescape:true,Asset:true,FloatingTips:true,head:true,IconGenerator:true */
 
 /**
  *  This class is temporarily requied until this patch:
@@ -11,6 +11,7 @@
  *  fabriktables.js
  *  
  */
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
@@ -68,8 +69,8 @@ Request.HTML = new Class({
 			Accept: 'text/html, application/xml, text/xml, */*'
 		}
 	},
+	
 	success: function (text) {
-		
 		var options = this.options, response = this.response;
 		var srcs = text.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
 		var urls = [];
@@ -267,20 +268,55 @@ var Loader = new Class({
 		
 		Fabrik.requestQueue = new RequestQueue();
 		
+		Fabrik.cbQueue = {'google': []};
+		
 		Fabrik.loadGoogleMap = function (s, cb) {
-			if (typeOf(Fabrik.googleMap) === 'null') {
+			
+			var src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=Fabrik.mapCb';
+			
+			// Have we previously started to load the Googlemaps script?
+			var gmapScripts = $A(document.scripts).filter(function (f) {
+				return f.src === src;
+			});
+			
+			if (gmapScripts.length === 0) {
+				// Not yet loaded so create a script dom node and inject it into the page.
 				var script = document.createElement("script");
 				script.type = "text/javascript";
-				script.src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=' + cb;
+				script.src = src;
 				document.body.appendChild(script);
-				Fabrik.googleMap = true;
+				
+				// Store the callback into the cbQueue, which will be processed after gmaps is loaded.
+				Fabrik.cbQueue.google.push(cb);
+			} else {
+				// We've already added the Google maps js script to the document
+				if (Fabrik.googleMap) {
+					window[cb]();
+					
+					// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
+					// opening a popup edit for the second time, the map JS will never get these events.
+					
+					//window.fireEvent('google.map.loaded');
+					//window.fireEvent('google.radius.loaded');
+					
+				} else {
+					// We've started to load the Google Map code but the callback has not been fired.
+					// Cache the call back (it will be fired when Fabrik.mapCb is run.
+					Fabrik.cbQueue.google.push(cb);
+				}
 			}
-			else {
-				// $$$ hugh - need to fire these by hand, otherwise when re-using a map object, like
-				// opening a popup edit for the second time, the map JS will never get these events.
-				window.fireEvent('google.map.loaded');
-				window.fireEvent('google.radius.loaded');
+		};
+		
+		/**
+		 * Called once the google maps script has loaded, will run through any queued callback methods and 
+		 * fire them.
+		 */
+		Fabrik.mapCb = function () {
+			Fabrik.googleMap = true;
+			for (var i = 0; i < Fabrik.cbQueue.google.length; i ++) {
+				window[Fabrik.cbQueue.google[i]]();
 			}
+			Fabrik.cbQueue.google = [];
 		};
 		
 		/** Globally observe delete links **/
@@ -363,7 +399,15 @@ var Loader = new Class({
 				'loadMethod': loadMethod,
 				'contentURL': url,
 				'width': list.options.popup_width,
-				'height': list.options.popup_height
+				'height': list.options.popup_height,
+				'onClose': function (win) {
+					// $$$ hugh @FIXME need to fix this for when it's a list popup so k context is different
+					var k = 'form_' + list.options.formid;
+					Fabrik.blocks[k].destroyElements();
+					Fabrik.blocks[k].formElements = null;
+					Fabrik.blocks[k] = null;
+					delete(Fabrik.blocks[k]);
+				}
 			};
 			if (typeOf(list.options.popup_offset_x) !== 'null') {
 				winOpts.offset_x = list.options.popup_offset_x;
@@ -371,11 +415,16 @@ var Loader = new Class({
 			if (typeOf(list.options.popup_offset_y) !== 'null') {
 				winOpts.offset_y = list.options.popup_offset_y;
 			}
+			
+			// Only one edit window open at the same time.
+			$H(Fabrik.Windows).each(function (win, key) {
+				win.close();
+			});
 			Fabrik.getWindow(winOpts);
 		};
 		
 		/**
-		 * Globally watch list edit links
+		 * Globally watch list view links
 		 * 
 		 * @param   event    e       relayed click event
 		 * @param   domnode  target  <a> link
@@ -423,6 +472,12 @@ var Loader = new Class({
 				winOpts.offset_y = list.options.popup_offset_y;
 			}
 			Fabrik.getWindow(winOpts);
+		};
+		
+		Fabrik.form = function (ref, id, opts) {
+			var form = new FbForm(id, opts);
+			Fabrik.addBlock(ref, form);
+			return form;
 		};
 		
 		window.fireEvent('fabrik.loaded');

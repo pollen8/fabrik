@@ -28,9 +28,16 @@ var FbDatabasejoin = new Class({
 	watchAdd: function () {
 		if (c = this.getContainer()) {
 			var b = c.getElement('.toggle-addoption');
+			
 			// If duplicated remove old events
-			b.removeEvent('click', this.startEvent);
-			b.addEvent('click', this.startEvent);
+			
+			b.removeEvent('click', function (e) {
+				this.start(e);
+			}.bind(this));
+			
+			b.addEvent('click', function (e) {
+				this.start(e);
+			}.bind(this));
 		}
 	},
 	
@@ -197,7 +204,6 @@ var FbDatabasejoin = new Class({
 		{
 			var chxs = this.element.getElements('> .fabrik_subelement');
 			if (chxs.length === 0) {
-				console.log(this.options.editable);
 				this.chxTmplNode = this.element.getElement('.chxTmplNode').getChildren()[0].clone();
 				this.element.getElement('.chxTmplNode').destroy();
 			} else {
@@ -245,7 +251,7 @@ var FbDatabasejoin = new Class({
 					return;
 				}
 				json.each(function (o) {
-					if (!existingValues.contains(o.value)) {
+					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
 						if (this.activePopUp) {
 							this.options.value = o.value;
 						}
@@ -348,7 +354,9 @@ var FbDatabasejoin = new Class({
 		if (c = this.getContainer()) {
 			var sel = c.getElement('.toggle-selectoption');
 			if (typeOf(sel) !== 'null') {
-				sel.addEvent('click', this.selectRecord.bindWithEvent(this));
+				sel.addEvent('click', function (e) {
+					this.selectRecord(e);
+				}.bind(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
 					if (this.options.popupform === json.formid && this.activeSelect) {
 						this.update(json.rowid);
@@ -360,14 +368,23 @@ var FbDatabasejoin = new Class({
 					}
 				}.bind(this));
 				
-				//used for auto-completes in repeating groups to stop all fields updating when a record
+				// Used for auto-completes in repeating groups to stop all fields updating when a record
 				// is selcted
-				window.addEvent('fabrik.dbjoin.unactivate', function () {
+				this.unactiveFn = function () {
 					this.activeSelect = false;
-				}.bind(this));
+				}.bind(this);
+				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 				
 			}
 		}
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		window.removeEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 	},
 	
 	selectRecord: function (e) {
@@ -564,7 +581,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	getValues: function () {
-		var v = $A([]);
+		var v = [];
 		var search = (this.options.displayType !== 'dropdown') ? 'input' : 'option';
 		document.id(this.element.id).getElements(search).each(function (f) {
 			v.push(f.value);
@@ -597,7 +614,6 @@ var FbDatabasejoin = new Class({
 		
 		// If users can add records to the database join drop down
 		if (this.options.allowadd === true && this.options.editable !== false) {
-			this.startEvent = this.start.bindWithEvent(this);
 			this.watchAdd();
 			Fabrik.addEvent('fabrik.form.submitted', function (form, json) {
 
@@ -628,7 +644,9 @@ var FbDatabasejoin = new Class({
 		if (this.options.editable) {
 			this.watchSelect();
 			if (this.options.showDesc === true) {
-				this.element.addEvent('change', this.showDesc.bindWithEvent(this));
+				this.element.addEvent('change', function (e) {
+					this.showDesc(e);
+				}.bind(this));
 			}
 			this.watchJoinCheckboxes();
 		}
@@ -693,7 +711,7 @@ var FbDatabasejoin = new Class({
 	decreaseName: function (delIndex) {
 		if (this.options.displayType === 'auto-complete') {
 			var f = this.getAutoCompleteLabelField();
-			if ($type(f) !== false) {
+			if (typeOf(f) !== 'null') {
 				f.name = this._decreaseName(f.name, delIndex, '-auto-complete');
 				f.id = this._decreaseId(f.id, delIndex, '-auto-complete');
 			}

@@ -4084,15 +4084,17 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		// Array key = old id value new id
 		$this->groupidmap = array();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$groupModels = $this->getGroups();
 		$this->_form = null;
 		$form = $this->getTable();
 		$form->id = false;
 
-		// Rob newFormLabel set in table copy
-		if (JRequest::getVar('newFormLabel', '') !== '')
+		// $$$ rob newFormLabel set in table copy
+		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = JRequest::getVar('newFormLabel');
+			$form->label = $input->get('newFormLabel');
 		}
 		$res = $form->store();
 		if (!$res)
@@ -4136,6 +4138,8 @@ class FabrikFEModelForm extends FabModelForm
 	public function getRelatedTables()
 	{
 		$db = FabrikWorker::getDbo(true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$links = array();
 		$params = $this->getParams();
 		if (!$params->get('show-referring-table-releated-data', false))
@@ -4245,6 +4249,26 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 		return $links;
+	}
+
+	public function getFormClass()
+	{
+		$class = array('');
+		$horiz = true;
+		$groups = $this->getGroupsHiarachy();
+		foreach ($groups as $gkey => $groupModel)
+		{
+			$groupParams = $groupModel->getParams();
+			if ($groupParams->get('group_columns', 1) > 1)
+			{
+				$horiz = false;
+			}
+		}
+		if ($horiz)
+		{
+			$class[] = 'form-horizontal';
+		}
+		return implode(' ', $class);
 	}
 
 	/**
