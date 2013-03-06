@@ -608,4 +608,17 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		return true;
 	}
 
+	/**
+	* Overridden by plugins if neceesary.
+	* If the plugin is a filter plugin, return true if it needs the 'form submit'
+	* method, i.e. the Go button.  Implemented specifically for radius search plugin.
+	*
+	* @return  bool
+	*/
+
+	public function requireFilterSubmit()
+	{
+		return true;
+	}
+
 }

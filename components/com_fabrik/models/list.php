@@ -4830,9 +4830,25 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->_real_filter_action))
 		{
-			$form = $this->getFormModel();
+			// first, grab the list's setting as the default
 			$table = $this->getTable();
 			$this->_real_filter_action = $table->filter_action;
+
+			// Check to see if any list filter plugins require a Go button, like radius search
+			$pluginManager = FabrikWorker::getPluginManager();
+			$listPlugins = $pluginManager->getPlugInGroup('list');
+			foreach ($listPlugins as $listPlugin)
+			{
+				if ($listPlugin->getParams()->get('plugin_state') == '1' && $listPlugin->requireFilterSubmit())
+				{
+					// we've got at least one plugin which needs the button, so set action and bail
+					$this->_real_filter_action = 'submitform';
+					return $this->_real_filter_action;
+				}
+			}
+
+			// No list plugins expressed a preference, so check for range filters
+			$form = $this->getFormModel();
 			$groups = $form->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{

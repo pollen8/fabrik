@@ -401,6 +401,7 @@ var Loader = new Class({
 				'width': list.options.popup_width,
 				'height': list.options.popup_height,
 				'onClose': function (win) {
+					// $$$ hugh @FIXME need to fix this for when it's a list popup so k context is different
 					var k = 'form_' + list.options.formid;
 					Fabrik.blocks[k].destroyElements();
 					Fabrik.blocks[k].formElements = null;
