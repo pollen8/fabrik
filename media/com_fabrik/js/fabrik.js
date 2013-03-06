@@ -438,7 +438,7 @@ if (typeof(Fabrik) === "undefined") {
 				Fabrik.blocks[k].destroyElements();
 				Fabrik.blocks[k].formElements = null;
 				Fabrik.blocks[k] = null;
-			} 
+			}
 		};
 		if (typeOf(list.options.popup_offset_x) !== 'null') {
 			winOpts.offset_x = list.options.popup_offset_x;
@@ -450,7 +450,7 @@ if (typeof(Fabrik) === "undefined") {
 	};
 	
 	/**
-	 * Globally watch list edit links
+	 * Globally watch list view links
 	 * 
 	 * @param   event    e       relayed click event
 	 * @param   domnode  target  <a> link
