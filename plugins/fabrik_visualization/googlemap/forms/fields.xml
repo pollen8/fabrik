@@ -7,7 +7,84 @@
 			<field description="CONNECTIONONLYFABRIKTABLES" label="Connection" name="googlemap_connection" type="connections"/>
 				
 			<field connection_in_repeat="false" label="COM_FABRIK_LIST" name="googlemap_table" observe="params_googlemap_connection" type="fabriktables"/>
+			
+			<field name="prefilters"
+				class="modal-prefilter" 
+				description="COM_FABRIK_LIST_PREFILTERS_DESC"
+				label="COM_FABRIK_LIST_PREFILTERS_LABEL"
+				type="fabrikmodalrepeat">
+			
+				<fields name="params">
+					<fieldset modal="true" name="prefilters_modal" repeat="true">
+						
+						<field name="filter-join"
+							type="list"
+							default="OR"
+							label="">
+								<option value="AND">AND</option>
+								<option value="OR">OR</option>
+						</field>
+						
+						<!-- <field name="filter-fields"
+							connection="googlemap_connection"
+							table="googlemap_table"
+							type="listfields"
+							raw="true"
+							valueformat="tableelement"
+							label="COM_FABRIK_LIST_ELEMENTS_HEADING" /> -->
+					
+						<!-- <field type="element"
+							name="filter-fields"
+							connection="params_googlemap_connection"
+							connection_in_repeat="true"
+							label="COM_FABRIK_LIST_ELEMENTS_HEADING"
+							table="params_googlemap_table" /> -->
 				
+					<field type="listfields"
+							repeat="true"
+							name="filter-fields"
+							connection="params_googlemap_connection"
+							connection_in_repeat="true"
+							label="COM_FABRIK_LIST_ELEMENTS_HEADING"
+							table="params_googlemap_table" />
+							
+						<field label="COM_FABRIK_LIST_CONDITION_LABEL" name="filter-conditions" type="list">
+								<option value="equals">EQUALS</option>
+								<option value="notequals">NOT EQUAL TO</option>
+								<option value="begins">BEGINS WITH</option>
+								<option value="contains">CONTAINS</option>
+								<option value="ends">ENDS WITH</option>
+								<option value="greaterthan">GREATER THAN</option>
+								<option value="greaterthanequals">GREATER THAN OR EQUALS</option>
+								<option value="lessthan">LESS THAN</option>
+								<option value="IS NULL">IS NULL</option>
+								<option value="lessthanequals">LESS THAN OR EQUALS</option>
+								<option value="in">IN</option>
+								<option value="not_in">NOT IN</option>
+								<option value="earlierthisyear">COM_FABRIK_LIST_EARLIER_THIS_YEAR</option>
+								<option value="laterthisyear">COM_FABRIK_LIST_LATER_THIS_YEAR</option>
+								<option value="yesterday">COM_FABRIK_YESTERDAY</option>
+								<option value="today">COM_FABRIK_TODAY</option>
+								<option value="tomorrow">COM_FABRIK_TOMORROW</option>
+								<opton value="thismonth">COM_FABRIK_THIS_MONTH</opton>
+								<option value="lastmonth">COM_FABRIK_LAST_MONTH</option>
+								<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
+						</field>
+						
+						<field label="COM_FABRIK_LIST_FILTER_VALUE_HEADING" name="filter-value" type="field"/>
+							
+						<field label="COM_FABRIK_TYPE" name="filter-eval" type="list">
+								<option value="0">COM_FABRIK_TEXT</option>
+								<option value="1">COM_FABRIK_EVAL</option>
+								<option value="2">COM_FABRIK_QUERY</option>
+								<option value="3">COM_FABRIK_NO_QUOTES</option>
+						</field>
+						
+						<field label="COM_FABRIK_LIST_FILTER_ACCESS_HEADING" name="filter-access" type="accesslevel"/>
+							
+					</fieldset>
+				</fields>
+			</field>
 			<field cols="40" description="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_DETAIL_TEMPLATE_LABEL" name="fb_gm_detailtemplate" rows="8" type="textarea"/>
 
 			<field name="fb_gm_detailtemplate_nl2br"
@@ -25,7 +102,13 @@
 			
 			<field description="PLG_VISUALIZATION_GOOGLEMAP_LAST_ICON_DESC" directory="media/com_fabrik/images" filter=".png|.jpg|.gif|.jpeg" hide_none="1" label="PLG_VISUALIZATION_GOOGLEMAP_LAST_ICON_LABEL" name="fb_gm_last_iconimage" type="filelist"/>
 				
-			<field connection="params_googlemap_connection" connection_in_repeat="false" description="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_LABEL" name="fb_gm_iconimage2" table="params_googlemap_table" type="element"/>
+			<field type="element"
+				name="fb_gm_iconimage2"
+				connection="params_googlemap_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_DESC"
+				label="PLG_VISUALIZATION_GOOGLEMAP_DATA_ICON_LABEL"
+				table="params_googlemap_table" />
 				
 			<field description="PLG_VISUALIZATION_GOOGLEMAP_ICON_LETTER_DESC" label="PLG_VISUALIZATION_GOOGLEMAP_ICON_LETTER_LABEL" name="fb_gm_icon_letter" size="1" type="text"/>
 				
