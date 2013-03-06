@@ -337,7 +337,14 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function requireFilterSubmit()
 	{
+		echo "here";
+	}
+
+	public function requireFilterSubmit_result()
+	{
+		echo"Here";
 		return false;
 	}
+
 
 }

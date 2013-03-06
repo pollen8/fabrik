@@ -618,6 +618,10 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 
 	public function requireFilterSubmit()
 	{
+	}
+
+	public function requireFilterSubmit_result()
+	{
 		return true;
 	}
 
