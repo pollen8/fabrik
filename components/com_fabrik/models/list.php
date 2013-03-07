@@ -4922,7 +4922,7 @@ class FabrikFEModelList extends JModelForm
 			$listPlugins = $pluginManager->getPlugInGroup('list');
 
 			$pluginManager->runPlugins('requireFilterSubmit', $this, 'list');
-			$res = $pluginManager->_data;
+			$res = $pluginManager->data;
 			if (!empty($res))
 			{
 				if (in_array(1, $res))
