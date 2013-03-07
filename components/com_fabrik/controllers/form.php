@@ -237,7 +237,15 @@ class FabrikControllerForm extends JControllerLegacy
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
-		$model->process();
+		try
+		{
+			$model->process();
+		}
+		catch (Exception $e)
+		{
+			$model->errors['process_error'] = true;
+			JError::raiseWarning(500, $e->getMessage());
+		}
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
