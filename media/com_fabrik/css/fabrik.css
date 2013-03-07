@@ -526,6 +526,10 @@ table.fabrikList {
 	color: #444444;
 }
 
+table .fabrik___heading span.heading{
+	white-space: nowrap;
+}
+
 table.fabrikList td,
 table.fabrikList th{
 	padding: 5px;

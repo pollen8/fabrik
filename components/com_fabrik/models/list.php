@@ -5869,18 +5869,18 @@ class FabrikFEModelList extends JModelForm
 						case "desc":
 							$orderDir = "-";
 							$class = 'class="fabrikorder-desc' . $responsiveClass . '"';
-							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
 							$orderDir = "desc";
 							$class = 'class="fabrikorder-asc"';
-							$img = FabrikHelperHTML::image('orderasc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "":
 						case "-":
 							$orderDir = "asc";
 							$class = 'class="fabrikorder"';
-							$img = FabrikHelperHTML::image('ordernone.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 					}
 
@@ -5896,7 +5896,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+					$heading = '<a ' . $class . ' href="#">' . $img . ' ' . $label . '</a>';
 				}
 				else
 				{
