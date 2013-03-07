@@ -1613,6 +1613,27 @@ class plgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Set and override element full name (used in pw element)
+	 *
+	 * @param   string  $name               Element name
+	 * @param   bool    $includeJoinString  Add join[joinid][] to element name (default true)
+	 * @param   bool    $useStep            Cconcat name with form's step element (true) or with '.' (false) default true
+	 * @param   bool    $incRepeatGroup     Include '[]' at the end of the name (used for repeat group elements) default true
+	 *
+	 * @return  void
+	 */
+
+	public function setFullName($name = '', $includeJoinString = true, $useStep = true, $incRepeatGroup = true)
+	{
+		$groupModel = $this->getGroup();
+		$formModel = $this->getFormModel();
+		$element = $this->getElement();
+		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
+				. $incRepeatGroup;
+		$this->fullNames[$key] = $name;
+	}
+
+	/**
 	 * If already run then stored value returned
 	 *
 	 * @param   bool  $includeJoinString  add join[joinid][] to element name (default true)
