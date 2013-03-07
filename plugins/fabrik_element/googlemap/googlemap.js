@@ -516,6 +516,9 @@ var FbGoogleMap = new Class({
 		} else {
 			address = this.element.getElement('.geocode_input').value;
 		}
+		// Strip HTML
+		var d = new Element('div').set('html', address);
+		address = d.get('text');
 		this.geocoder.geocode({'address': address}, function (results, status) {
 			if (status !== google.maps.GeocoderStatus.OK || results.length === 0) {
 				fconsole(address + " not found!");

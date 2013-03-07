@@ -636,18 +636,20 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 			// If its not editable and theres no val don't show the map
+			$geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
 			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
-					$str .= '<div style="margin-bottom:5px" class="control-group input-append">';
+					$append = $geoCodeEvent === 'button' ? '' : 'input-append';
+					$str .= '<div style="margin-bottom:5px" class="control-group ' . $append . '">';
 				}
 				if ($this->isEditable() && $params->get('fb_gm_geocode') == 1)
 				{
 					$str .= '<input type="text" class="geocode_input inputbox" />';
 				}
 
-				if ($params->get('fb_gm_geocode') != '0' && $params->get('fb_gm_geocode_event', 'button') == 'button' && $this->isEditable())
+				if ($params->get('fb_gm_geocode') != '0' && $geoCodeEvent == 'button' && $this->isEditable())
 				{
 					$str .= '<button class="button btn btn-info geocode" type="button">' . JText::_('PLG_ELEMENT_GOOGLE_MAP_GEOCODE') . '</button>';
 				}
