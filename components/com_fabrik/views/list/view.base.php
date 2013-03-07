@@ -367,7 +367,7 @@ class FabrikViewListBase extends JViewLegacy
 		// End deprecated
 		$this->list = $this->table;
 		$this->list->class = $model->htmlClass();
- 		$this->group_by = $item->group_by;
+		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
 		$this->renderContext = $this->get('RenderContext');
@@ -421,7 +421,7 @@ class FabrikViewListBase extends JViewLegacy
 		if ($app->isAdmin())
 		{
 			// Admin always uses com_fabrik option
-			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id .'&format=pdf&tmpl=component');
+			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id . '&format=pdf&tmpl=component');
 		}
 		else
 		{
@@ -587,7 +587,7 @@ class FabrikViewListBase extends JViewLegacy
 	/**
 	 * Get the list calculations
 	 *
-	 * @param   array   $aCols   columns
+	 * @param   array  $aCols  Columns
 	 *
 	 * @return  array
 	 */

@@ -39,7 +39,6 @@ class FabrikViewList extends FabrikViewListBase
 			if (!$app->isAdmin())
 			{
 				$this->state = $this->get('State');
-				$this->params = $this->state->get('params');
 				$this->document = JFactory::getDocument();
 				if ($this->params->get('menu-meta_description'))
 				{
