@@ -4920,9 +4920,12 @@ class FabrikFEModelList extends JModelForm
 			// Check to see if any list filter plugins require a Go button, like radius search
 			$pluginManager = FabrikWorker::getPluginManager();
 			$listPlugins = $pluginManager->getPlugInGroup('list');
-			foreach ($listPlugins as $listPlugin)
+
+			$pluginManager->runPlugins('requireFilterSubmit', $this, 'list');
+			$res = $pluginManager->_data;
+			if (!empty($res))
 			{
-				if ($listPlugin->getParams()->get('plugin_state') == '1' && $listPlugin->requireFilterSubmit())
+				if (in_array(1, $res))
 				{
 					// We've got at least one plugin which needs the button, so set action and bail
 					$this->real_filter_action = 'submitform';
