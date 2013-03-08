@@ -46,9 +46,10 @@ var FbDatabasejoin = new Class({
 	 * inside
 	 */
 	start: function (e) {
-		// First time loading
-		var onContentLoaded = function () {},
-		destroy = false,
+		// First time loading - auto close the hidden loaded popup.
+		var onContentLoaded = function () {
+			this.close();
+		};
 		visible = false;
 		if (e) {
 			// Loading from click
@@ -59,13 +60,17 @@ var FbDatabasejoin = new Class({
 			
 			// @FIXME - if set to true, then click addrow, click select rows, click add row => can't submit the form
 			// if set to false then theres an issue with loading data in repeat groups: see window.close()
-			destroy = true;
+			//destroy = true;
 			visible = true;
+			this.activePopUp = true;
 		}
+		
+		destroy = true;
+		
 		if (this.options.popupform === 0 || this.options.allowadd === false) {
 			return;
 		}
-		this.activePopUp = true;
+
 		var url = "index.php?option=com_fabrik&task=form.view&tmpl=component&ajax=1&formid=" + this.options.popupform;
 		if (typeOf(this.element) === 'null') {
 			return;
@@ -77,7 +82,6 @@ var FbDatabasejoin = new Class({
 			'contentType': 'xhr',
 			'loadMethod': 'xhr',
 			'contentURL': url,
-			'width': this.options.windowwidth.toInt(),
 			'height': 320,
 			'y': this.options.popwiny,
 			'minimizable': false,
@@ -86,6 +90,12 @@ var FbDatabasejoin = new Class({
 			'onContentLoaded': onContentLoaded,
 			destroy: destroy
 		};
+		var winWidth = this.options.windowwidth;
+		if (winWidth !== '') {
+			this.windowopts.width = winWidth.toInt();
+			this.windowopts.onContentLoaded = onContentLoaded;
+		}
+		
 		this.win = Fabrik.getWindow(this.windowopts);
 	},
 	
@@ -238,7 +248,8 @@ var FbDatabasejoin = new Class({
 		}
 		if (v) {
 			data[this.strElement + '_raw'] = v;
-			//joined elements strElement isnt right so use fullName as well
+			
+			// Joined elements strElement isnt right so use fullName as well
 			data[this.options.fullName + '_raw'] = v;
 		}
 		new Request.JSON({url: '',
@@ -246,6 +257,7 @@ var FbDatabasejoin = new Class({
 			'data': data,
 			onSuccess: function (json) {
 				var existingValues = this.getOptionValues();
+				
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
 				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
 					return;

@@ -48,8 +48,12 @@ class FabrikControllerElement extends FabControllerForm
 		// @TODO override the redirect url if confirm update is needed and task appropriate
 		if ($confirmUpdate == true)
 		{
-			$url = $app->getUserState('com_fabrik.redirect');
-			$this->redirect = $url;
+			// Odd nes where redirect url was blank - caused blank pages when editing an element
+			$testUrl = $app->getUserState('com_fabrik.redirect', '');
+			if ($testUrl !== '')
+			{
+				$url = $testUrl;
+			}
 		}
 		$this->redirect = $url;
 		if ($msg !== null)

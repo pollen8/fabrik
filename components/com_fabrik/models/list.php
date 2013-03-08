@@ -6529,7 +6529,12 @@ class FabrikFEModelList extends JModelForm
 			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
-		return $db->query();
+		if (!$db->query())
+		{
+			throw new Exception($db->getErrorMsg());
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -6572,6 +6577,7 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields), implode(",", $values)));
 		if (!$db->query())
 		{
+			throw new Exception($db->getErrorMsg());
 			return false;
 		}
 		$id = $db->insertid();

@@ -133,14 +133,18 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 
 	public function validate($data, $repeatCounter = 0)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$post = JRequest::get('post');
 		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
-		$element->name = $element->name . "_check";
-		$checkvalue = $this->getValue($post, $repeatCounter);
+
+		$name = $this->getFullName(false, true, false);
+		$name = str_replace($element->name, $element->name . '_check', $name);
+		$this->setFullName($name, false, true, false);
+		$checkvalue = $this->getValue($_REQUEST, $repeatCounter);
 		$element->name = $origname;
 		if ($checkvalue != $data)
 		{
@@ -149,8 +153,17 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		}
 		else
 		{
+			$rowId = $input->get('rowid', '', 'string');
+
+			// If its coming from an ajax form submit then the key is possibly an array.
+			$keyVal = JArrayHelper::getValue($_REQUEST, $k);
+			if (is_array($keyVal))
+			{
+				$keyVal = JArrayHelper::getValue($keyVal, 0);
+			}
+
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
-			if (JRequest::getInt('rowid') === 0 && JRequest::getInt($k, 0, 'post') === 0 && $data === '')
+			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $data === '')
 			{
 				$this->_validationErr .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
