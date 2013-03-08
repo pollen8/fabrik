@@ -1,8 +1,5 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
-
-	// Tell fabrik that the google map script has loaded and the callback has run
-	Fabrik.googleMap = true;
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
 		var script2 = document.createElement("script");
 		script2.type = "text/javascript";
