@@ -137,6 +137,8 @@ class plgFabrik_ElementTextarea extends plgFabrik_Element
 			$opts['tip'] = $params->get('textarea-hover');
 			$opts['position'] = $params->get('textarea_hover_location', 'top');
 			$data = fabrikString::truncate($data, $opts);
+			$listModel = $this->getListModel();
+			$data = $listModel->_addLink($data, $this, $thisRow);
 		}
 		return $data;
 	}
