@@ -22,9 +22,23 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
-		if (task !== 'form.cancel'  && !Fabrik.controller.canSaveForm()) {
-			alert('Please wait - still loading');
-			return false;
+		var currentGroups = document.id('jform_current_groups');
+		if (typeOf(currentGroups) !== 'null') {
+			Object.each(currentGroups.options, function (opt) {
+				opt.selected = true;
+			});
+		}
+
+		if (task !== 'form.cancel') {
+			if (!Fabrik.controller.canSaveForm()) {
+				alert('<?php echo JText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'); ?>');
+				return false;
+			}
+
+			if (typeOf(currentGroups) !== 'null' && currentGroups.options.length === 0) {
+				alert('Please select at least one group');
+				return false;
+			}
 		}
 		if (task == 'form.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 
