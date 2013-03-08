@@ -11,6 +11,11 @@
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
+
+#listform_$c .divlabel,
+#listform_$c .divelement {
+	display: inline;
+}
 #listform_$c .fabrikList {
 	color: #444444;
 	width:auto;
