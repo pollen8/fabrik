@@ -65,7 +65,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		return array('FbBirthday', $id, $opts);
+		return array('FbButton', $id, $opts);
 	}
 
 	/**

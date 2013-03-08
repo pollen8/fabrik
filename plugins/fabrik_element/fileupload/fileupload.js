@@ -351,6 +351,8 @@ var FbFileUpload = new Class({
 			}).inject(this.pluploadContainer, 'after');
 
 			document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
+			
+			
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
@@ -492,6 +494,7 @@ var ImageWidget = new Class({
 			storeOnClose: true,
 			createShowOverLay: false,
 			crop: opts.crop,
+			destroy: false,
 			onClose : function () {
 				this.storeActiveImageData();
 			}.bind(this),
@@ -598,14 +601,21 @@ var ImageWidget = new Class({
 	setImage: function (uri, filepath, params) {
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
+			
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
-					// this.storeActiveImageData(filepath);
-					this.storeImageDimensions(filepath, img, params);
+					
+					var params = this.storeImageDimensions(filepath, img, params);
+					this.img = params.img;
+					this.setInterfaceDimensions(params);
+					this.showWin();
+					this.storeActiveImageData(filepath);
+					this.win.close();
 				}.bind(this)
 			});
 		} else {
+			
 			// Previously set up image
 			params = this.images.get(filepath);
 			this.img = params.img;
@@ -645,6 +655,8 @@ var ImageWidget = new Class({
 	 * @param   string   filepath  Path to image
 	 * @param   DOMnode  img       Image - just created 
 	 * @param   params   object    Image parameters  
+	 * 
+	 * @return  object   Update image parameters
 	 */
 	
 	storeImageDimensions: function (filepath, img, params) {
@@ -660,6 +672,7 @@ var ImageWidget = new Class({
 		params.mainimagedim.h = s.height;
 		params.img = img;
 		this.images.set(filepath, params);
+		return params;
 	},
 	
 	makeImgCanvas: function () {
@@ -865,6 +878,11 @@ var ImageWidget = new Class({
 		}.bind(this));
 	},
 	
+	/**
+	 * Takes the current active image and creates cropped image data via a canvas element
+	 * 
+	 * @param   string  filepath  File path to image to crop. If blank use this.activeFilePath
+	 */
 	storeActiveImageData: function (filepath) {
 		filepath = filepath ? filepath : this.activeFilePath;
 		if (typeOf(filepath) === 'null') {
@@ -878,6 +896,10 @@ var ImageWidget = new Class({
 		y = y - (h / 2);
 		
 		var win = document.id(this.windowopts.id);
+		if (typeOf(win) === 'null') {
+			console.log('storeActiveImageData no window found for ' + this.windowopts.id);
+			return;
+		}
 		var canvas = win.getElement('canvas');
 		
 		var target = new Element('canvas', {'width': w + 'px', 'height': h + 'px' }).inject(document.body);
@@ -965,9 +987,11 @@ var ImageWidget = new Class({
 		
 		if (typeOf(this.CANVAS.threads) !== 'null') {
 			if (typeOf(this.CANVAS.threads.get('myThread')) !== 'null') {
-				//fixes issue where sometime canvas thread is not started/running so nothing is drawn
+				
+				// Fixes issue where sometime canvas thread is not started/running so nothing is drawn
 				this.CANVAS.threads.get('myThread').start();
 			}
 		}
+		this.win.center();
 	}
 });

@@ -110,12 +110,18 @@ var FbDatabasejoin = new Class({
 	 * Adds an option to the db join element, for dropdowns and radio buttons
 	 * (where only one selection is possible from a visible list of options)
 	 * the new option is only selected if its value = this.options.value
-	 * @param	string	value
-	 * @param	string	label
+	 * 
+	 * @param	string	value               Option value
+	 * @param	string	label               Option label
+	 * @param   bool    autoCompleteUpdate  Should the autocomplete element set its current label/value to the option
+	 * being added - set to false in updateFromServer if not the active element.
+	 * 
+	 * @return  void
 	 */
 	
-	addOption: function (v, l)
+	addOption: function (v, l, autoCompleteUpdate)
 	{
+		autoCompleteUpdate = typeof(autoCompleteUpdate) !== 'undefined' ? autoCompleteUpdate : true;
 		var opt, selected, chxed, last, subOpts = [], injectWhere, labelfield;
 		if (v === '') {
 			// return;
@@ -129,9 +135,11 @@ var FbDatabasejoin = new Class({
 			document.id(this.element.id).adopt(opt);
 			break;
 		case 'auto-complete':
-			labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
-			this.element.value = v;
-			labelfield.value = l;
+			if (autoCompleteUpdate) {
+				labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
+				this.element.value = v;
+				labelfield.value = l;
+			}
 			break;
 		case 'checkbox':
 			chxed = (v === this.options.value) ? true : false;
@@ -267,7 +275,7 @@ var FbDatabasejoin = new Class({
 						if (this.activePopUp) {
 							this.options.value = o.value;
 						}
-						this.addOption(o.value, o.text);
+						this.addOption(o.value, o.text, this.activePopUp);
 						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 					}

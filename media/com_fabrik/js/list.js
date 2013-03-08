@@ -1115,7 +1115,7 @@ var FbListKeys = new Class({
 });
 
 /**
- * toggle grouped data by click on the grouped headings icon
+ * Toggle grouped data by click on the grouped headings icon
  */
 
 var FbGroupedToggler = new Class({
@@ -1128,6 +1128,7 @@ var FbGroupedToggler = new Class({
 	},
 	
 	initialize: function (container, options) {
+		var rows, h, img, state;
 		this.setOptions(options);
 		this.container = container;
 		this.toggleState = 'shown';
@@ -1144,10 +1145,16 @@ var FbGroupedToggler = new Class({
 			if (this.options.collapseOthers) {
 				this.collapse();
 			}
-			var h = e.target.getParent('.fabrik_groupheading');
-			var img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
-			var state = img.retrieve('showgroup', true);
-			var rows = h.getParent().getNext();
+			h = e.target.getParent('.fabrik_groupheading');
+			img = this.options.bootstrap ? h.getElement('i') : h.getElement('img');
+			state = img.retrieve('showgroup', true);
+			
+			if (h.getNext() && h.getNext().hasClass('fabrik_groupdata')) {
+				// For div tmpl
+				rows = h.getNext(); 
+			} else {
+				rows = h.getParent().getNext();
+			}
 			state ? rows.hide() : rows.show();
 			this.setIcon(img, state);
 			state = state ? false : true;
