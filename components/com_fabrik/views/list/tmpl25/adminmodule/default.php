@@ -10,6 +10,10 @@
 
 // No direct access
 defined('_JEXEC') or die;
+$pageClass = $this->params->get('pageclass_sfx', '');
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
 ?>
 <form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="<?php echo $this->formid;?>">
 
@@ -80,4 +84,9 @@ endif;
 </div>
 <?php echo $this->loadTemplate('buttons');?>
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>

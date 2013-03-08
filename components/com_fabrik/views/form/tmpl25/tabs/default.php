@@ -10,8 +10,8 @@
  */
  ?>
  <?php
- if ($this->params->get('show_page_title', 1)) : ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+ if ($this->params->get('show_page_heading', 1)) : ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php
 endif;
 $form = $this->form;
@@ -116,7 +116,7 @@ endforeach;
 echo $this->hiddenFields;
  echo $this->pluginbottom; ?>
 <div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-<?php echo $form->prevButton?><?php echo $form->nextButton?> 
+<?php echo $form->prevButton?><?php echo $form->nextButton?>
  <?php echo $form->applyButton;?>
 <?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 </div>

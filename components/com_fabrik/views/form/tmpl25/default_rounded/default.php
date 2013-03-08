@@ -9,8 +9,8 @@ legend
 fieldset
 To learn about all the different elements in a basic form see http://www.w3schools.com/tags/tag_legend.asp.*/?>
 <!--If you have set to show the page title in the forms layout parameters, then the page title will show-->
-<?php if ($this->params->get('show_page_title', 1)) { ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+<?php if ($this->params->get('show_page_heading', 1)) { ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
 //echo $form->startTag;
@@ -86,7 +86,7 @@ echo "$form->error</div>";?>
 
 <!-- This is where the buttons at the bottom of the form are set up -->
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-	<?php echo $form->prevButton?> <?php echo $form->nextButton?> 
+	<?php echo $form->prevButton?> <?php echo $form->nextButton?>
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>

@@ -4,9 +4,9 @@ $model = $this->getModel();
 $groupTmpl = $model->editable ? 'group' : 'group_details';
 $active = ($form->error != '') ? '' : ' fabrikHide';
 
-if ($this->params->get('show_page_title', 1)) : ?>
+if ($this->params->get('show_page_heading', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>">
-		<?php echo $this->escape($this->params->get('page_title')); ?>
+		<?php echo $this->escape($this->params->get('page_heading')); ?>
 	</div>
 <?php
 endif;

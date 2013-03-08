@@ -496,13 +496,14 @@ class FabrikViewListBase extends JViewLegacy
 		if (is_object($menu) && !$this->isMambot)
 		{
 			$menu_params = new JRegistry((string) $menu->params);
-			$params->set('page_title', $menu_params->get('page_title', $menu->title));
-			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
+			$params->set('page_heading', $menu_params->get('page_heading'));
+			$params->set('show_page_heading', $menu_params->get('show_page_heading'));
+			$params->set('pageclass_sfx', $menu_params->get('pageclass_sfx'));
 		}
 		else
 		{
-			$params->set('show_page_title', $input->getInt('show_page_title', 0));
-			$params->set('page_title', $input->get('title', '', 'string'));
+			$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
+			$params->set('page_heading', $input->get('title', '', 'string'));
 		}
 		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 

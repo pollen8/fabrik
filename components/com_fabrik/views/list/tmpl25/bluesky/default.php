@@ -11,6 +11,11 @@
 // No direct access
 defined('_JEXEC') or die;
 
+$pageClass = $this->params->get('pageclass_sfx', '');
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
+
 if ($this->tablePicker != '') : ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php
@@ -101,4 +106,9 @@ endforeach;?>
 	</div>
 </div>
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>
