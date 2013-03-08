@@ -582,7 +582,11 @@ var FbForm = new Class({
 		a.each(function (elements, gid) {
 			elements.each(function (el) {
 				if (typeOf(el) === 'array') {
-					this.addElement(el, gid);
+					var oEl = new window[el[0]](el[1], el[2]);
+					this.addElement(oEl, el[1], gid);
+				}
+				else if (typeOf(el) !== 'null') {
+					this.addElement(el, el.options.element, gid);
 				}
 			}.bind(this));
 		}.bind(this));
@@ -601,9 +605,9 @@ var FbForm = new Class({
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
-	addElement: function (element, gid) {
-		var oEl = new window[element[0]](element[1], element[2]);
-		elId = element[1];
+	addElement: function (oEl, elId, gid) {
+		//var oEl = new window[element[0]](element[1], element[2]);
+		//elId = element[1];
 		elId = oEl.getFormElementsKey(elId);
 		elId = elId.replace('[]', '');
 		
