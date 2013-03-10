@@ -146,7 +146,7 @@ class FabrikControllerImport extends FabControllerForm
 		$listid = $input->getInt('fabrik_list', $input->get('list_id'));
 		if ($listid == 0)
 		{
-			$plugins = $input->get('plugin');
+			$plugins = $input->get('plugin', array(), 'array');
 			$createElements = $input->get('createElements', array(), 'array');
 			$dataRemoved = false;
 			$newElements = array();
