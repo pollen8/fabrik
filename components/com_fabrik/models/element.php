@@ -6183,7 +6183,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 
 			$html .= '</div>';
-			$onLoad = "Fabrik.inlineedit_$elementid = " . $this->elementJavascript($repeatCounter) . ";\n"
+			$elementJS = $this->elementJavascript($repeatCounter);
+			$onLoad = "Fabrik.inlineedit_$elementid = new " . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ");\n"
 				. "Fabrik.inlineedit_$elementid.select();
 			Fabrik.inlineedit_$elementid.focus();
 			Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';\n";
