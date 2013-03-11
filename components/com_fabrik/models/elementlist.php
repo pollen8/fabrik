@@ -635,15 +635,23 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$rawname = JString::substr($name, -4) === '_raw' ? JString::substr($name, 0, -4) : $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
-				$nameKey = 'join.' . $joinid . '.' . $name;
-				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
+				if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
+				{
+					$firstKey = 'join.' . $joinid . '.' . $rawname;
+					$secondKey = 'join.' . $joinid . '.' . $name;
+				}
+				else
+				{
+					$firstKey = 'join.' . $joinid . '.' . $name;
+					$secondKey = 'join.' . $joinid . '.' . $rawname;
+				}
 				if ($groupModel->canRepeat())
 				{
-					echo "<pre>getvalue group can repeat for key " . $nameKey . '.' . $repeatCounter ;print_r($data);
-					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					//echo "<pre>getvalue group can repeat for key " . $firstKey . '.' . $repeatCounter ;print_r($data);
+					$v = FArrayHelper::getNestedValue($data, $firstKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{
-						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
+						$v = FArrayHelper::getNestedValue($data, $secondKey . '.' . $repeatCounter, null);
 					}
 					if (!is_null($v))
 					{
@@ -652,10 +660,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				else
 				{
-					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+					$v = FArrayHelper::getNestedValue($data, $firstKey, null);
 					if (is_null($v))
 					{
-						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
+						$v = FArrayHelper::getNestedValue($data, $secondKey, null);
 					}
 					if (!is_null($v))
 					{

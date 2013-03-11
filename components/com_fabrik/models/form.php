@@ -3527,7 +3527,11 @@ class FabrikFEModelForm extends FabModelForm
 				}
 			}
 		}
-		echo"<pre>set join data end:";print_r($data);exit;
+		if (count($data) > 1)
+		{
+			$data = array_slice($data, 0, 1);
+		}
+		//echo"<pre>set join data end:";print_r($data);exit;
 	}
 
 	/**

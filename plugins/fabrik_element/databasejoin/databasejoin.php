@@ -916,8 +916,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinId = '';
 			$joinGroupId = '';
 		}
-		$default = (array) $this->getValue($data, $repeatCounter);
-		echo "<pre>default = ";print_r($default);echo "</pre>";
+		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
+		//echo "<pre>default = ";print_r($default);echo "</pre>";exit;
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;
 		foreach ($default as &$d)
@@ -1203,7 +1203,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		//echo "<pre>render checkbox list : $idname ";print_r($data);exit;
 		//$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 		$defaults = $default;
-		echo "<pre>defaults =";print_r($defaults);exit;
+		echo "<pre>defaults =";print_r($defaults);echo "</pre>";
+		//exit;
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$rawname = $this->getFullName(false, true, false) . '_raw';
 		$editable = $this->isEditable();
@@ -1218,9 +1219,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
 			if ($groupModel->canRepeat())
 			{
+				$groupJoin = $groupModel->getJoinModel()->getJoin();
+				//$jid = $join->id;
+				$jid = $groupJoin->id;
 				// $joinidsName .= '[' . $repeatCounter . '][]';
 				$joinidsName .= '[' . $repeatCounter . ']';
-				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $join->id . '.' . $rawname . '.' . $repeatCounter, 'not found');
+				echo "nested key = " . 'join.' . $jid . '.' . $rawname . '.' . $repeatCounter . "<br>";
+				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $jid . '.' . $rawname . '.' . $repeatCounter, 'not found');
+				echo "<pre>joinids = ";print_r($joinids);echo "</pre>";
 			}
 			else
 			{
@@ -1228,6 +1234,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
 			}
 			$tmpids = array();
+			//echo "<pre>tmp = ";print_r($tmp);
 			foreach ($tmp as $obj)
 			{
 				$o = new stdClass;
@@ -1243,7 +1250,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 				$tmpids[] = $o;
 			}
-
+echo "<pre>tmpids = ";print_r($tmpids);echo "</pre>";
+//exit;
 			$html[] = '<div class="fabrikHide">';
 			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
 			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $optsPerRow, $editable);

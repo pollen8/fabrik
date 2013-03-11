@@ -1245,7 +1245,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   array  $data           form data
 	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $opts           options, 'raw' = 1/0 use raw value
 	 *
 	 * @return  string	value
 	 */
@@ -1271,17 +1271,25 @@ class PlgFabrik_Element extends FabrikPlugin
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{
-				$nameKey = 'join.' . $joinid . '.' . $name;
-				$rawNameKey = 'join.' . $joinid . '.' . $rawname;
+				if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
+				{
+					$firstKey = 'join.' . $joinid . '.' . $rawname;
+					$secondKey = 'join.' . $joinid . '.' . $name;
+				}
+				else
+				{
+					$firstKey = 'join.' . $joinid . '.' . $name;
+					$secondKey = 'join.' . $joinid . '.' . $rawname;
+				}
 
 				// $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
 				// if ($groupModel->canRepeat() || !$this->isJoin()) {
 				if ($groupModel->canRepeat())
 				{
-					$v = FArrayHelper::getNestedValue($data, $nameKey . '.' . $repeatCounter, null);
+					$v = FArrayHelper::getNestedValue($data, $firstKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{
-						$v = FArrayHelper::getNestedValue($data, $rawNameKey . '.' . $repeatCounter, null);
+						$v = FArrayHelper::getNestedValue($data, $secondKey . '.' . $repeatCounter, null);
 					}
 					if (!is_null($v))
 					{
@@ -1290,10 +1298,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				else
 				{
-					$v = FArrayHelper::getNestedValue($data, $nameKey, null);
+					$v = FArrayHelper::getNestedValue($data, $firstKey, null);
 					if (is_null($v))
 					{
-						$v = FArrayHelper::getNestedValue($data, $rawNameKey, null);
+						$v = FArrayHelper::getNestedValue($data, $secondKey, null);
 					}
 					if (!is_null($v))
 					{
