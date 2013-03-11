@@ -238,23 +238,36 @@ var FbDateTime = new Class({
 		this.element.setProperty('readonly', 'readonly');
 		this.element.getElements('.fabrikinput').each(function (f) {
 			f.addEvent('focus', function (e) {
-				if (typeOf(e) === 'null') {
-					return;
-				}
-				if (e.target.hasClass('timeField')) {
-					this.getContainer().getElement('.timeButton').fireEvent('click');
-				} else {
-					this.options.calendarSetup.inputField = e.target.id;
-					this.options.calendarSetup.button = this.element.id + "_img";
-					this.addEventToCalOpts();
-					
-				}
+				this._disabledShowCalTime(f, e);
+			}.bind(this));
+			f.addEvent('click', function (e) {
+				this._disabledShowCalTime(f, e);
 			}.bind(this));
 		}.bind(this));
 	},
+	
+	/**
+	 * Show either the calender or time picker, when input field activated
+	 * 
+	 * @param   DOM Node  f  Field
+	 * @param   Event     e  focus/click event
+	 */
+	_disabledShowCalTime: function (f, e) {
+		if (typeOf(e) === 'null') {
+			return;
+		}
+		if (e.target.hasClass('timeField')) {
+			this.getContainer().getElement('.timeButton').fireEvent('click');
+		} else {
+			this.options.calendarSetup.inputField = e.target.id;
+			this.options.calendarSetup.button = this.element.id + "_img";
+			//this.addEventToCalOpts();
+			this.cal.showAtElement(f, this.cal.params.align);
+		}
+	},
 
 	/** 
-	 * returns the date and time in mySQL formatted string
+	 * Returns the date and time in mySQL formatted string
 	 */
 	getValue: function () {
 		var v;
