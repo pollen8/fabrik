@@ -9,8 +9,8 @@
  * @since       3.0
  */
  ?>
- <?php if ($this->params->get('show_page_title', 1)) { ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+ <?php if ($this->params->get('show_page_heading', 1)) { ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
 //echo $form->startTag;
@@ -85,7 +85,7 @@ echo "$form->error</div>";?>
 	<?php echo $this->pluginbottom; ?>
 	<?php if ($this->hasActions) {?>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-	<?php echo $form->prevButton?> <?php echo $form->nextButton?> 
+	<?php echo $form->prevButton?> <?php echo $form->nextButton?>
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>

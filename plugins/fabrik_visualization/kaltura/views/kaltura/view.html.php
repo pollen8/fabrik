@@ -62,7 +62,7 @@ EOT;
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/kaltura/views/kaltura/tmpl/' . $tpl . '/template.css');
 		$template = null;
 		$this->containerId = $this->get('ContainerId');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->_setPath('template', $tmplpath);
 

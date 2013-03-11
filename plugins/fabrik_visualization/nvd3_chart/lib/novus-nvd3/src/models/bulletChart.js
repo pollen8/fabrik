@@ -22,10 +22,10 @@ nv.models.bulletChart = function() {
     , tickFormat = null
     , tooltips = true
     , tooltip = function(key, x, y, e, graph) {
-        return '<h3>' + e.label + '</h3>' +
-               '<p>' +  e.value + '</p>'
+        return '<h3>' + x + '</h3>' +
+               '<p>' + y + '</p>'
       }
-    , noData = "No Data Available."
+    , noData = 'No Data Available.'
     , dispatch = d3.dispatch('tooltipShow', 'tooltipHide')
     ;
 
@@ -37,12 +37,9 @@ nv.models.bulletChart = function() {
   //------------------------------------------------------------
 
   var showTooltip = function(e, offsetElement) {
-    var offsetElement = document.getElementById("chart"),
-        left = e.pos[0] + offsetElement.offsetLeft + margin.left,
-        top = e.pos[1] + offsetElement.offsetTop + margin.top;
-
-    var content = '<h3>' + e.label + '</h3>' +
-            '<p>' + e.value + '</p>';
+    var left = e.pos[0] + ( offsetElement.offsetLeft || 0 ) + margin.left,
+        top = e.pos[1] + ( offsetElement.offsetTop || 0) + margin.top,
+        content = tooltip(e.key, e.label, e.value, e, chart);
 
     nv.tooltip.show([left, top], content, e.value < 0 ? 'e' : 'w', null, offsetElement);
   };
@@ -66,9 +63,7 @@ nv.models.bulletChart = function() {
       //------------------------------------------------------------
       // Display No Data message if there's nothing to show.
 
-      /*
-      // Disabled until I figure out a better way to check for no data with the bullet chart
-      if (!data || !data.length || !data.filter(function(d) { return d.values.length }).length) {
+      if (!d || !ranges.call(this, d, i)) {
         var noDataText = container.selectAll('.nv-noData').data([noData]);
 
         noDataText.enter().append('text')
@@ -78,14 +73,13 @@ nv.models.bulletChart = function() {
 
         noDataText
           .attr('x', margin.left + availableWidth / 2)
-          .attr('y', margin.top + availableHeight / 2)
+          .attr('y', 18 + margin.top + availableHeight / 2)
           .text(function(d) { return d });
 
         return chart;
       } else {
         container.selectAll('.nv-noData').remove();
       }
-      */
 
       //------------------------------------------------------------
 
@@ -148,16 +142,16 @@ nv.models.bulletChart = function() {
           w1 = function(d) { return Math.abs(x1(d) - x1(0)) };
 
 
-      var title = gEnter.select('.nv-titles').append("g")
-          .attr("text-anchor", "end")
-          .attr("transform", "translate(-6," + (height - margin.top - margin.bottom) / 2 + ")");
-      title.append("text")
-          .attr("class", "nv-title")
+      var title = gEnter.select('.nv-titles').append('g')
+          .attr('text-anchor', 'end')
+          .attr('transform', 'translate(-6,' + (height - margin.top - margin.bottom) / 2 + ')');
+      title.append('text')
+          .attr('class', 'nv-title')
           .text(function(d) { return d.title; });
 
-      title.append("text")
-          .attr("class", "nv-subtitle")
-          .attr("dy", "1em")
+      title.append('text')
+          .attr('class', 'nv-subtitle')
+          .attr('dy', '1em')
           .text(function(d) { return d.subtitle; });
 
 
@@ -173,11 +167,11 @@ nv.models.bulletChart = function() {
 
 
       // Compute the tick format.
-      var format = tickFormat || x1.tickFormat(8);
+      var format = tickFormat || x1.tickFormat( availableWidth / 100 );
 
       // Update the tick groups.
       var tick = g.selectAll('g.nv-tick')
-          .data(x1.ticks(8), function(d) {
+          .data(x1.ticks( availableWidth / 50 ), function(d) {
             return this.textContent || format(d);
           });
 
@@ -197,10 +191,6 @@ nv.models.bulletChart = function() {
           .attr('y', availableHeight * 7 / 6)
           .text(format);
 
-      // Transition the entering ticks to the new scale, x1.
-      d3.transition(tickEnter)
-          .attr('transform', function(d) { return 'translate(' + x1(d) + ',0)' })
-          .style('opacity', 1);
 
       // Transition the updating ticks to the new scale, x1.
       var tickUpdate = d3.transition(tick)
@@ -226,6 +216,7 @@ nv.models.bulletChart = function() {
       //------------------------------------------------------------
 
       dispatch.on('tooltipShow', function(e) {
+        e.key = data[0].title;
         if (tooltips) showTooltip(e, that.parentNode);
       });
 
@@ -264,6 +255,8 @@ nv.models.bulletChart = function() {
 
   chart.dispatch = dispatch;
   chart.bullet = bullet;
+
+  d3.rebind(chart, bullet, 'color');
 
   // left, right, top, bottom
   chart.orient = function(x) {

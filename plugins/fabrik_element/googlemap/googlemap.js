@@ -11,7 +11,7 @@ function googlemapload() {
 		window.fireEvent('google.map.loaded');
 	} else {
 		console.log('no body');
-	}	
+	}
 }
 
 function googleradiusloaded() {
@@ -60,22 +60,7 @@ var FbGoogleMap = new Class({
 		this.mapMade = false;
 		this.parent(element, options);
 		
-		// Issue in ajax loaded forms from list view - as each window now loads separately we have n map divs with the
-		// same id - so the map code will not ini a map on 2nd, 3rd created maps.
-		
-		this.loadScript();
-		
-		// @TODO test google object when offline typeOf(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
-		window.addEvent('google.map.loaded', function () {
+		this.loadFn = function () {
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
 				this.options.maptype = google.maps.MapTypeId.SATELLITE;
@@ -93,12 +78,17 @@ var FbGoogleMap = new Class({
 				break;
 			}
 			this.makeMap();
-		}.bind(this));
-		window.addEvent('google.radius.loaded', function () {
+		}.bind(this);
+		
+		this.radFn = function () {
 			this.makeRadius();
-		}.bind(this));
+		}.bind(this);
+		
+		window.addEvent('google.map.loaded', this.loadFn);
+		window.addEvent('google.radius.loaded', this.radFn);
 		
 		this.loadScript();
+		
 		// @TODO test google object when offline typeOf(google) isnt working
 		if (this.options.center === 1 && this.options.rowid === 0) {
 			if (geo_position_js.init()) {
@@ -109,6 +99,14 @@ var FbGoogleMap = new Class({
 				fconsole('Geo locaiton functionality not available');
 			}
 		}
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 */
+	destroy: function () {
+		window.removeEvent('google.map.loaded', this.loadFn);
+		window.removeEvent('google.radius.loaded', this.radFn);
 	},
 
 	getValue: function () {
@@ -123,15 +121,19 @@ var FbGoogleMap = new Class({
 			return;
 		}
 		this.mapMade = true;
-		if (typeOf(this.element) === 'null') {
+		
+		if (typeof(this.map) !== 'undefined') {
 			return;
 		}
-		if (typeof(this.map) !== 'undefined') {
+		if (typeOf(this.element) === 'null') {
 			return;
 		}
 		if (this.options.geocode || this.options.reverse_geocode) {
 			this.geocoder = new google.maps.Geocoder();
 		}
+		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
+		// this.element refers to the first loaded row, which should have been removed from the dom
+		this.element = document.id(this.options.element);
 		this.field = this.element.getElement('input.fabrikinput');
 		this.watchGeoCode();
 		if (this.options.staticmap) {
@@ -511,6 +513,9 @@ var FbGoogleMap = new Class({
 		} else {
 			address = this.element.getElement('.geocode_input').value;
 		}
+		// Strip HTML
+		var d = new Element('div').set('html', address);
+		address = d.get('text');
 		this.geocoder.geocode({'address': address}, function (results, status) {
 			if (status !== google.maps.GeocoderStatus.OK || results.length === 0) {
 				fconsole(address + " not found!");

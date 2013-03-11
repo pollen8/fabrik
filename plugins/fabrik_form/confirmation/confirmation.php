@@ -144,7 +144,6 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 			foreach ($elementModels as $elementModel)
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
-				unset($elementModel->access);
 				$elementModel->clearAccess();
 				$elementModel->getElement()->access = -1;
 			}
@@ -168,7 +167,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 
 		// If we have already processed the form
 		$this->html = '';
-		if ($input->get('fabrik_confirmation') == 1)
+		if ($input->getInt('fabrik_confirmation') === 1)
 		{
 			$session = JFactory::getSession();
 

@@ -94,7 +94,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		// Make sure same connection as this table
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $table . '___' . $element->name);
-		if ($params->get('join_conn_id') == $connection->get('_id') || $element->plugin != 'databasejoin')
+		if ($params->get('join_conn_id') == $connection->get('id') || $element->plugin != 'databasejoin')
 		{
 			$join = $this->getJoin();
 			if (!$join)
@@ -203,7 +203,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
-				$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $app->input->get('value', '', 'string') . '%');
+				$v = $app->input->get('value', '', 'string');
+
+				// $$$ hugh (and Joe) - added 'autocomplete_how', currently just "starts_with" or "contains"
+				// default to "contains" for backward compat.
+				// http://fabrikar.com/forums/showthread.php?p=165192&posted=1#post165192
+				$params = $this->getParams();
+				if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $v . '%');
+				}
+				else
+				{
+					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote($v . '%');
+				}
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
 			else
@@ -522,7 +535,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$this->addSpaceToEmptyLabels($tmp);
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue'), $this->_getSelectLabel()));
+			array_unshift($tmp, JHTML::_('select.option', $params->get('database_join_noselectionvalue', ''), $this->_getSelectLabel()));
 		}
 		return $tmp;
 	}
@@ -621,17 +634,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$table = $join->table_join;
 			$key = $join->table_join_key;
 			$val = $join->params->get('join-label', $val);
-
-			// Don't quote concat labels
-			if ($params->get($this->concatLabelParam) == '')
-			{
-				$val = $db->quoteName($val);
-			}
 		}
 		if ($key == '' || $val == '')
 		{
 			return false;
 		}
+
+		if (!strstr($val, 'CONCAT'))
+		{
+			$val = $db->quoteName($val);
+		}
+
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$desc = $params->get('join_desc_column', '');
 		if ($desc !== '')
@@ -2172,9 +2185,9 @@ echo "col = $col <br>";
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -2185,7 +2198,7 @@ echo "col = $col <br>";
 			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'databasejoin');
 		}
 		$opts = $this->elementJavascriptOpts($repeatCounter);
-		return "new FbDatabasejoin('$id', $opts)";
+		return array('FbDatabasejoin', $id, $opts);
 	}
 
 	/**
@@ -2209,9 +2222,9 @@ echo "col = $col <br>";
 	/**
 	 * Get element JS options
 	 *
-	 * @param   int  $repeatCounter  group repeat counter
+	 * @param   int  $repeatCounter  Group repeat counter
 	 *
-	 * @return  string  json_encoded options
+	 * @return  array  Options
 	 */
 
 	protected function elementJavascriptOpts($repeatCounter)
@@ -2250,7 +2263,7 @@ echo "col = $col <br>";
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$this->elementJavascriptJoinOpts($opts);
 		$opts->isJoin = $this->isJoin();
-		return json_encode($opts);
+		return $opts;
 	}
 
 	/**

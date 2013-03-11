@@ -102,10 +102,10 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 		// Rotate the labels otherwise they get merged together
 		$str[] = 'chart.xAxis.rotateLabels(-45);';
 
-		$str[] = 'chart.xAxis.tickPadding(30);';
-//
+	//	$str[] = 'chart.xAxis.tickPadding(30);';
+
 		// Additonal margin needed for rotated labels
-		$str[] = 'chart.margin({bottom: 160});';
+		$str[] = 'chart.margin({bottom: 160, left: 60});';
 		return implode("\n", $str);
 	}
 
@@ -169,6 +169,9 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 
 		$str[] = '.transition().duration(1200)';
 		$str[] = '.call(chart);';
+		
+		// Rotate x axis labels without stoopid offset 
+		$str[] = "d3.select('#" . $id . " .nv-x.nv-axis > g').selectAll('g').selectAll('text').attr('transform', function(d,i,j) { return 'translate (-10, 20) rotate(-45 0,0)' }) ;";
 		$str[] = 'return chart;';
 		$str[] = '});';
 		$str[] = '});';

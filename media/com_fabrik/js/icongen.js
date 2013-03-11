@@ -1,5 +1,6 @@
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,ART:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,ART:true */
+
 var IconGenerator = new Class({
 	
 	Implements: [Options],

@@ -10,6 +10,13 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
+$pageClass = $this->params->get('pageclass_sfx', '');
+
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
+
 ?>
 <?php if ($this->tablePicker != '') { ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
@@ -38,10 +45,10 @@ if ($this->showFilters) {
 
 			<?php
 			$gCounter = 0;
-			foreach ($this->rows as $groupedby => $group) {
-			if ($this->isGrouped) {
+			foreach ($this->rows as $groupedby => $group) {?>
+			<?php
+			if ($this->isGrouped) :
 			?>
-
 			<div class="fabrik_groupheading">
 				<a href="#" class="toggle">
 					<?php echo FabrikHelperHTML::image('orderasc.png', 'list', $this->tmpl, JText::_('COM_FABRIK_TOGGLE'));?>
@@ -50,41 +57,39 @@ if ($this->showFilters) {
 					</span>
 				</a>
 			</div>
-			<?php }?>
+			<?php
+			endif;
+			?>
 			<div class="fabrik_groupdata">
 				<div class="groupdataMsg">
 					<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
 						<?php echo $this->emptyDataMessage; ?>
 					</div>
 				</div>
-			</div>
-
-
-<?php
-			foreach ($group as $this->_row) {
-				echo $this->loadTemplate('row');
-		 	}
-		 	?>
 
 			<?php
-			if ($this->hasCalculations)
-			{ ?>
+			foreach ($group as $this->_row) :
+				echo $this->loadTemplate('row');
+		 	endforeach;
+			if ($this->hasCalculations) : ?>
 					<ul class="fabrik_calculations">
 					<?php
-					foreach ($this->calculations as $cal) {
+					foreach ($this->calculations as $cal) :
 						echo "<li>";
 						echo array_key_exists($groupedby, $cal->grouped ) ? $cal->grouped[$groupedby] : $cal->calc;
 						echo  "</li>";
-					}
+					endforeach;
 					?>
 					</ul>
 
 			<?php
-			}
+			endif;
 			?>
-
 			<?php
-			$gCounter++;
+			$gCounter++;?>
+
+			</div>
+			<?php
 			}?>
 
 		</div>
@@ -95,4 +100,9 @@ if ($this->showFilters) {
 </div>
 
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>

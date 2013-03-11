@@ -105,9 +105,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -116,30 +116,37 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->autostart = (bool)$params->get('timer_autostart', false);
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_TIMER_START');
 		JText::script('PLG_ELEMENT_TIMER_STOP');
-		return "new FbTimer('$id', $opts)";
+		return array('FbTimer', $id, $opts);
 	}
 
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM `$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**

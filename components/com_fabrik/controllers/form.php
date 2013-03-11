@@ -146,13 +146,26 @@ class FabrikControllerForm extends JControllerLegacy
 		// Display the view
 		$view->error = $this->getError();
 
-		if (in_array($input->get('format'), array('raw', 'csv', 'pdf')))
+		// $$$ hugh - added disable caching option, and no caching if not logged in (unless we can come up with a unique cacheid for guests)
+		// NOTE - can't use IP of client, as could be two users behind same NAT'ing proxy / firewall.
+		if ($viewName !== 'table') {
+			$listModel = $model->getListModel();
+			$listParams = $listModel->getParams();
+		}
+		else {
+			$listParams = $model->getParams();
+		}
+
+		$user = JFactory::getUser();
+
+		if ($user->get('id') == 0
+			|| $listParams->get('list_disable_caching', '0') === '1'
+			|| in_array($input->get('format'), array('raw', 'csv', 'pdf')))
 		{
 			$view->display();
 		}
 		else
 		{
-			$user = JFactory::getUser();
 			$uri = JFactory::getURI();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
@@ -224,7 +237,15 @@ class FabrikControllerForm extends JControllerLegacy
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
-		$model->process();
+		try
+		{
+			$model->process();
+		}
+		catch (Exception $e)
+		{
+			$model->errors['process_error'] = true;
+			JError::raiseWarning(500, $e->getMessage());
+		}
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now

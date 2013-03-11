@@ -47,6 +47,17 @@
 				type="text"
 			/>
 
+			<field name="emailtable_email_to_field_how"
+				type="list"
+				default="readonly" 
+				repeat="true"
+				label="PLG_LIST_EMAIL_TO_FIELD_HOW_LABEL" 
+				description="PLG_LIST_EMAIL_TO_FIELD_HOW_DESC">
+					<option value="hidden">PLG_LIST_EMAIL_TO_FIELD_HOW_HIDDEN</option>
+					<option value="readonly">PLG_LIST_EMAIL_TO_FIELD_HOW_READONLY</option>
+					<option value="editable">PLG_LIST_EMAIL_TO_FIELD_HOW_EDITABLE</option>
+			</field>
+			
 			<field name="emailtable_to_table_connection"
 				type="connections"
 				repeat="true"

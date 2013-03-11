@@ -14,7 +14,7 @@ FabrikHelperHTML::script('media/com_fabrik/js/lib/art.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icons.js');
 FabrikHelperHTML::script('media/com_fabrik/js/icongen.js');
 
-
+$pageClass = $this->params->get('pageclass_sfx', '');
 $filter = JFilterInput::getInstance(array('p'), array(), 1);
 $opts = new stdClass;
 $opts->listref = 'listform_' . $this->listref;
@@ -27,13 +27,15 @@ FabrikHelperHTML::addScriptDeclaration($script)
 ?>
 
 <div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>"><?php echo $this->emptyDataMessage; ?></div>
-
-<pre><?php print_r($opts)?></pre>
-
+<?php
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
+?>
 <div id="list_<?php echo $this->table->renderid;?>">
 <?php
-if ($this->params->get('show_page_title', 1)) { ?>
-		<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+if ($this->params->get('show_page_heading', 1)) { ?>
+		<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 	<?php } ?>
 	<?php if ($this->tablePicker != '') { ?>
 		<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
@@ -79,5 +81,10 @@ if ($this->params->get('show_page_title', 1)) { ?>
 	<?php	echo $this->loadTemplate('footer');?>
 </div>
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>
 </div>

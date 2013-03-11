@@ -11,6 +11,12 @@
 // No direct access
 defined('_JEXEC') or die;
 
+$pageClass = $this->params->get('pageclass_sfx', '');
+
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
+
 if ($this->tablePicker != '') : ?>
 	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
 <?php
@@ -52,20 +58,20 @@ endforeach;?>
 		 </tfoot>
 
 			<?php
-			echo '<thead>'.$this->headingstmpl.'</thead>';
-			if ($this->isGrouped && empty($this->rows)) {
+			echo '<thead>' . $this->headingstmpl . '</thead>';
+			if ($this->isGrouped && empty($this->rows)) :
 				?>
 				<tbody style="<?php echo $this->emptyStyle?>">
-				<tr>
-				<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
-				<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
-				<?php echo $this->emptyDataMessage; ?>
-									</div>
-								</td>
-							</tr>
-						</tbody>
+					<tr>
+						<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+							<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
+								<?php echo $this->emptyDataMessage; ?>
+							</div>
+						</td>
+					</tr>
+				</tbody>
 				<?php
-			}
+			endif;
 		$gCounter = 0;
 		foreach ($this->rows as $groupedby => $group) :
 			if ($this->isGrouped) :
@@ -114,4 +120,9 @@ endforeach;?>
 	</div>
 </div>
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>

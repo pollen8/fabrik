@@ -72,9 +72,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -89,9 +89,28 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->data = empty($arVals) ? array() : array_combine($arVals, $arTxt);
 		$opts->allowadd = $params->get('allow_frontend_addtoradio', false) ? true : false;
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_RADIO_ENTER_VALUE_LABEL');
-		return "new FbRadio('$id', $opts)";
+		return array('FbRadio', $id, $opts);
+	}
+
+	/**
+	 * Get the class to manage the form element
+	 * to ensure that the file is loaded only once
+	 *
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
+	 * @param   array   &$shim   Dependant class names to load before loading the class - put in requirejs.config shim
+	 *
+	 * @return void
+	 */
+
+	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
+	{
+		$s = new stdClass;
+		$s->deps = array('fab/element', 'fab/elementlist');
+		$shim['element/radiobutton/radiobutton'] = $s;
+
+		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
 	/**

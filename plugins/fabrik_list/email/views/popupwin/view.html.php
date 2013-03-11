@@ -18,6 +18,7 @@ class fabrikViewPopupwin extends JViewLegacy
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_list/email/views/popupwin/tmpl/' . $tmpl;
 		$this->_setPath('template', $tmplpath);
 
+		$this->showToField = $this->get('ShowToField');
 		$this->fieldList = $this->get('ToField');
 		$records = $this->get('records');
 		if (count($records) == 0)
@@ -29,10 +30,10 @@ class fabrikViewPopupwin extends JViewLegacy
 		$this->renderOrder = $renderOrder;
 		$this->recordids = implode(',', $records);
 		$this->listid = $this->get('id', 'list');
-
+		$this->showSubject = $this->get('ShowSubject');
 		$this->subject = $this->get('subject');
 		$this->message = $this->get('message');
-		$this->allowAttachment', $this->get('allowAttachment'));
+		$this->allowAttachment = $this->get('allowAttachment');
 		return parent::display();
 	}
 

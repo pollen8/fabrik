@@ -20,6 +20,7 @@ nv.models.discreteBar = function() {
     , xDomain
     , yDomain
     , dispatch = d3.dispatch('chartClick', 'elementClick', 'elementDblClick', 'elementMouseover', 'elementMouseout')
+    , rectClass = 'discreteBar'
     ;
 
   //============================================================
@@ -121,7 +122,7 @@ nv.models.discreteBar = function() {
 
       var barsEnter = bars.enter().append('g')
           .attr('transform', function(d,i,j) {
-              return 'translate(' + x(getX(d,i)) + ', ' + y(0) + ')' 
+              return 'translate(' + (x(getX(d,i)) + x.rangeBand() * .05 ) + ', ' + y(0) + ')' 
           })
           .on('mouseover', function(d,i) { //TODO: figure out why j works above, but not here
             d3.select(this).classed('hover', true);
@@ -173,13 +174,13 @@ nv.models.discreteBar = function() {
 
       barsEnter.append('rect')
           .attr('height', 0)
-          .attr('width', x.rangeBand() / data.length )
+          .attr('width', x.rangeBand() * .9 / data.length )
 
       if (showValues) {
         barsEnter.append('text')
           .attr('text-anchor', 'middle')
         bars.select('text')
-          .attr('x', x.rangeBand() / 2)
+          .attr('x', x.rangeBand() * .9 / 2)
           .attr('y', function(d,i) { return getY(d,i) < 0 ? y(getY(d,i)) - y(0) + 12 : -4 })
           .text(function(d,i) { return valueFormat(getY(d,i)) });
       } else {
@@ -191,16 +192,24 @@ nv.models.discreteBar = function() {
           .style('fill', function(d,i) { return d.color || color(d,i) })
           .style('stroke', function(d,i) { return d.color || color(d,i) })
         .select('rect')
-          .attr('width', x.rangeBand() / data.length);
+          .attr('class', rectClass)
+          .attr('width', x.rangeBand() * .9 / data.length);
       d3.transition(bars)
         //.delay(function(d,i) { return i * 1200 / data[0].values.length })
-		  .attr('transform', function(d,i) {
-              return 'translate(' + x(getX(d,i)) + ', ' + (getY(d,i) < 0 ? y(0) : y(getY(d,i))) + ')'
+          .attr('transform', function(d,i) {
+            var left = x(getX(d,i)) + x.rangeBand() * .05,
+                top = getY(d,i) < 0 ?
+                        y(0) :
+                        y(0) - y(getY(d,i)) < 1 ?
+                          y(0) - 1 : //make 1 px positive bars show up above y=0
+                          y(getY(d,i));
+
+              return 'translate(' + left + ', ' + top + ')'
           })
-		  .select('rect')
-		    .attr('height', function(d,i) {
-			   return Math.abs(y(getY(d,i)) - y(0))
-		     });
+        .select('rect')
+          .attr('height', function(d,i) {
+            return  Math.max(Math.abs(y(getY(d,i)) - y(0)) || 1)
+          });
 
 
       //store old scales for use in transitions on update
@@ -306,6 +315,11 @@ nv.models.discreteBar = function() {
     return chart;
   };
 
+  chart.rectClass= function(_) {
+    if (!arguments.length) return rectClass;
+    rectClass = _;
+    return chart;
+  }
   //============================================================
 
 

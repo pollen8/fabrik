@@ -64,7 +64,7 @@ class JFormFieldSwapList extends JFormFieldList
 			{
 				$str =	JText::_('COM_FABRIK_AVAILABLE_GROUPS');
 				$str .= '<br />' . $this->groupList;
-				$str .= '<button class="button btn btn-success btn-small" type="button" id="' . $this->id . '-add" /><i class="icon-new"></i>' . JText::_('COM_FABRIK_ADD') . '</button>';
+				$str .= '<button class="button btn btn-success btn-small" type="button" id="' . $this->id . '-add"><i class="icon-new"></i>' . JText::_('COM_FABRIK_ADD') . '</button>';
 				$str .='<br />' . JText::_('COM_FABRIK_CURRENT_GROUPS');
 				$str .= '<br />' . $this->currentGroupList;
 				$str .= '<button class="button btn btn-small" type="button" id="' . $this->id . '-up" ><i class="icon-arrow-up"></i> ' . JText::_('COM_FABRIK_UP') . '</button> ';

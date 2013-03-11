@@ -25,11 +25,14 @@ $total = 0;
 $data = array();
 foreach ($rows as $key => $obj)
 {
+	if (!is_null($labels[$key]))
+	{
+
 	$o = new stdClass;
 	$o->label = $labels[$key];
 	$o->value = $obj->value;
 	$data[$key] = $o;
-
+	}
 
 }
 $this->data = new stdClass;

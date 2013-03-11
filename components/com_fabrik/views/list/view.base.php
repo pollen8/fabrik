@@ -367,7 +367,7 @@ class FabrikViewListBase extends JViewLegacy
 		// End deprecated
 		$this->list = $this->table;
 		$this->list->class = $model->htmlClass();
- 		$this->group_by = $item->group_by;
+		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
 		$this->renderContext = $this->get('RenderContext');
@@ -421,7 +421,7 @@ class FabrikViewListBase extends JViewLegacy
 		if ($app->isAdmin())
 		{
 			// Admin always uses com_fabrik option
-			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id .'&format=pdf&tmpl=component');
+			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id . '&format=pdf&tmpl=component');
 		}
 		else
 		{
@@ -474,8 +474,8 @@ class FabrikViewListBase extends JViewLegacy
 	 * Set page title
 	 *
 	 * @param   object  $w        Fabrikworker
-	 * @param   object  &$params  list params
-	 * @param   object  $model    list model
+	 * @param   object  &$params  List params
+	 * @param   object  $model    List model
 	 *
 	 * @return  void
 	 */
@@ -496,13 +496,14 @@ class FabrikViewListBase extends JViewLegacy
 		if (is_object($menu) && !$this->isMambot)
 		{
 			$menu_params = new JRegistry((string) $menu->params);
-			$params->set('page_title', $menu_params->get('page_title', $menu->title));
-			$params->set('show_page_title', $menu_params->get('show_page_title', 0));
+			$params->set('page_heading', $menu_params->get('page_heading'));
+			$params->set('show_page_heading', $menu_params->get('show_page_heading'));
+			$params->set('pageclass_sfx', $menu_params->get('pageclass_sfx'));
 		}
 		else
 		{
-			$params->set('show_page_title', $input->getInt('show_page_title', 0));
-			$params->set('page_title', $input->get('title', '', 'string'));
+			$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
+			$params->set('page_heading', $input->get('title', '', 'string'));
 		}
 		$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 
@@ -587,7 +588,7 @@ class FabrikViewListBase extends JViewLegacy
 	/**
 	 * Get the list calculations
 	 *
-	 * @param   array   $aCols   columns
+	 * @param   array  $aCols  Columns
 	 *
 	 * @return  array
 	 */

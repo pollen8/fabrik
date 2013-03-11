@@ -573,12 +573,22 @@ var FbForm = new Class({
 			prev.setStyle('opacity', 1);
 		}
 	},
+	
+	destroyElements: function () {
+		this.formElements.each(function (el) {
+			el.destroy();
+		});
+	},
 
 	addElements: function (a) {
 		a = $H(a);
 		a.each(function (elements, gid) {
 			elements.each(function (el) {
-				if (typeOf(el) !== 'null') {
+				if (typeOf(el) === 'array') {
+					var oEl = new window[el[0]](el[1], el[2]);
+					this.addElement(oEl, el[1], gid);
+				}
+				else if (typeOf(el) !== 'null') {
 					this.addElement(el, el.options.element, gid);
 				}
 			}.bind(this));
@@ -586,8 +596,7 @@ var FbForm = new Class({
 		// $$$ hugh - moved attachedToForm calls out of addElement to separate loop, to fix forward reference issue,
 		// i.e. calc element adding events to other elements which come after itself, which won't be in formElements
 		// yet if we do it in the previous loop ('cos the previous loop is where elements get added to formElements)
-		a.each(function (elements) {
-			elements.each(function (el) {
+		this.formElements.each(function (el, elref) {
 				if (typeOf(el) !== 'null') {
 					try {
 						el.attachedToForm();
@@ -596,11 +605,12 @@ var FbForm = new Class({
 					}
 				}
 			}.bind(this));
-		}.bind(this));
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
 	addElement: function (oEl, elId, gid) {
+		//var oEl = new window[element[0]](element[1], element[2]);
+		//elId = element[1];
 		elId = oEl.getFormElementsKey(elId);
 		elId = elId.replace('[]', '');
 		
@@ -609,18 +619,11 @@ var FbForm = new Class({
 		oEl.groupid = gid;
 		this.formElements.set(elId, oEl);
 		Fabrik.fireEvent('fabrik.form.element.added', [this, elId, oEl]);
-		// $$$ hugh - moved this to addElements, see comment above
-		/*
-		try {
-			oEl.attachedToForm();
-		} catch (err) {
-			fconsole(elId + ' attach to form:' + err );
-		}
-		*/
 		if (ro) {
 			elId = elId.substr(0, elId.length - 3);
 			this.formElements.set(elId, oEl);
 		}
+		return elId;
 	},
 
 	// we have to buffer the events in a pop up window as
@@ -940,6 +943,9 @@ var FbForm = new Class({
 			e.stop();
 			// Update global status error
 			this.updateMainError();
+			
+			// Return otherwise ajax upload may still occur.
+			return;
 		}
 		// Insert a hidden element so we can reload the last page if validation vails
 		if (this.options.pages.getKeys().length > 1) {

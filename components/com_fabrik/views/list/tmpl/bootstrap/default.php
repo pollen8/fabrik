@@ -1,19 +1,32 @@
 <?php
 $this->bootShowFilters = true;
+$pageClass = $this->params->get('pageclass_sfx', '');
 $fKeys = array_keys($this->filters);
-if (count($fKeys) === 1 && $fKeys[0] === 'all')
-{
+if (count($fKeys) === 1 && $fKeys[0] === 'all') :
 	$this->bootShowFilters = false;
-}
-if ($this->tablePicker != '') { ?>
-	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
-<?php }
+endif;
 
-if ($this->params->get('show-title', 1)) {?>
+if ($pageClass !== '') :
+	echo '<div class="' . $pageClass . '">';
+endif;
+
+if ($this->tablePicker != '') : ?>
+	<div style="text-align:right"><?php echo JText::_('COM_FABRIK_LIST') ?>: <?php echo $this->tablePicker; ?></div>
+<?php
+endif;
+
+if ($this->params->get('show_page_heading')) :
+	echo '<h1>' . $this->params->get('page_heading') . '</h1>';
+endif;
+
+if ($this->params->get('show-title', 1)) : ?>
 	<div class="page-header">
 		<h1><?php echo $this->table->label;?></h1>
 	</div>
-<?php }
+<?php
+endif;
+
+// Intro outside of form to allow for other lists/forms to be injected.
 echo $this->table->intro;
 ?>
 <form class="fabrikForm form-search" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="fabrikList">
@@ -27,6 +40,7 @@ endif;
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
 $this->headingstmpl =  $this->loadTemplate('headings');
+
 ?>
 
 <div class="fabrikDataContainer">
@@ -102,3 +116,9 @@ endforeach;
 	<?php print_r($this->hiddenFields);?>
 </div>
 </form>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+?>

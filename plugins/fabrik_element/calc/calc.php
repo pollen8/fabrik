@@ -490,9 +490,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -521,8 +521,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts->id = $this->id;
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
-		$opts = json_encode($opts);
-		return "new FbCalc('$id', $opts)";
+		return array('FbCalc', $id, $opts);
 	}
 
 	/**
@@ -559,14 +558,23 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
+
 		$db = $listModel->getDb();
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
@@ -577,12 +585,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
-			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
+			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else
 		{
-			return parent::getSumQuery($listModel, $label);
+			return parent::getSumQuery($listModel, $labels);
 		}
 	}
 
@@ -715,5 +723,30 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 
 		echo json_encode($return);
+	}
+
+	/**
+	* Turn form value into email formatted value
+	* $$$ hugh - I added this as for reasons I don't understand, something to do with
+	* how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
+	* it's submitted to the database, but wrong during form email plugin processing.  So
+	* I gave up trying to work out why, and now just re-calc it during getEmailData()
+	*
+	*
+	* @param   mixed  $value          Element value
+	* @param   array  $data           Form data
+	* @param   int    $repeatCounter  Group repeat counter
+	*
+	* @return  string  email formatted value
+	*/
+
+	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	{
+		$params = $this->getParams();
+		if (!$params->get('calc_on_save_only', true))
+		{
+			$value = $this->_getV($data, $repeatCounter);
+		}
+		return $value;
 	}
 }

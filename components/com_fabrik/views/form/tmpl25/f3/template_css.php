@@ -44,6 +44,7 @@ echo "
 
 #{$view}_$c legend{
 	background: -moz-linear-gradient(center top , #1C1C1C, transparent) repeat scroll 0 0 transparent;
+	background-image: -ms-linear-gradient(top, #1C1C1C, transparent);
 	border-radius: 10px 10px 10px 10px;
 	display: block;
 	font-size: 1.5em;

@@ -47,7 +47,7 @@ Fabrik.Window = new Class({
 		onContentLoaded: function () {
 			this.fitToContent();
 		},
-		destroy: false
+		destroy: true
 	},
 	
 	modal: false,
@@ -332,7 +332,7 @@ Fabrik.Window = new Class({
 		if (e) {
 			e.stop();
 		}
-		// this.options.destroy = true;
+		//this.options.destroy = true;
 		
 		// By default cant destroy as we want to be able to reuse them (see crop in fileupload element)
 		if (this.options.destroy) {

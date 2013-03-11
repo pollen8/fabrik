@@ -88,7 +88,7 @@ class fabrikViewNvd3_chart extends JViewLegacy
 
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('filters', $this->get('Filters'));
-		$this->assign('showFilters', $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0);
+		$this->showFilters = $model->showFilters();
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
 		$tpl = $params->get('nvd3_chart_layout', $tpl);
 		$this->_setPath('template', JPATH_ROOT . '/plugins/fabrik_visualization/nvd3_chart/views/nvd3_chart/tmpl/' . $tpl);
@@ -102,7 +102,7 @@ class fabrikViewNvd3_chart extends JViewLegacy
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
 
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 
 		echo parent::display();

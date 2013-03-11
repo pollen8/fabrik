@@ -255,31 +255,31 @@ class FabrikViewFormBase extends JViewLegacy
 			if (is_object($menu) && !$this->isMambot)
 			{
 				$menu_params = new JRegistry($menu->params);
-				$params->set('page_title', $menu_params->get('page_title', ''));
-				$params->set('show_page_title', $menu_params->get('show_page_title', 0));
+				$params->set('page_heading', $menu_params->get('page_heading', ''));
+				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
 			}
 			else
 			{
-				$params->set('show_page_title', $input->getInt('show_page_title', 0));
-				$params->set('page_title', $input->get('title', $title, 'string'));
+				$params->set('show_page_heading', $input->getInt('show_page_heading', 0));
+				$params->set('page_heading', $input->get('title', $title, 'string'));
 				$params->set('show-title', $input->getInt('show-title', $params->get('show-title')));
 			}
 			if (!$this->isMambot)
 			{
 				$titleData = array_merge($_REQUEST, $model->data);
-				$title = $w->parseMessageForPlaceHolder($params->get('page_title'), $titleData, false);
-				$params->set('page_title', $title);
+				$title = $w->parseMessageForPlaceHolder($params->get('page_heading'), $titleData, false);
+				$params->set('page_heading', $title);
 			}
 		}
 		else
 		{
-			$params->set('page_title', $title);
-			$params->set('show_page_title', 0);
+			$params->set('page_heading', $title);
+			$params->set('show_page_heading', 0);
 		}
 		$model = $this->getModel();
 		if (!$this->isMambot)
 		{
-			$title = $model->getPageTitle($params->get('page_title'));
+			$title = $model->getPageTitle($params->get('page_heading'));
 			$document->setTitle($w->parseMessageForPlaceHolder($title, $_REQUEST));
 		}
 	}
@@ -473,10 +473,12 @@ class FabrikViewFormBase extends JViewLegacy
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
 		// inside an anoymous function, and therefore $bkey wont be available as a global var in window
 		$script = array();
-		$script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
+		/* $script[] = "\twindow.$bkey = new FbForm(" . $model->getId() . ", $opts);";
 		$script[] = "\tif(typeOf(Fabrik) !== 'null') {";
 		$script[] = "\t\tFabrik.addBlock('$bkey', $bkey);";
-		$script[] = "\t}";
+		$script[] = "\t}"; */
+
+		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId(). ", $opts);";
 
 		// Instantaite js objects for each element
 		$vstr = "\n";
@@ -513,11 +515,10 @@ class FabrikViewFormBase extends JViewLegacy
 				{
 					for ($c = 0; $c < $max; $c++)
 					{
-						// $$$ rob ensure that some js code has been returned otherwise dont add empty data to array
-						$ref = trim($elementModel->elementJavascript($c));
-						if ($ref !== '')
+						$ref = $elementModel->elementJavascript($c);
+						if (!empty($ref))
 						{
-							$aObjs[] = $ref;
+							$aObjs[] = json_encode($ref);
 						}
 						$validations = $elementModel->getValidations();
 						if (!empty($validations) && $elementModel->isEditable())

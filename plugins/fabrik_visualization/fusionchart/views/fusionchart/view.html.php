@@ -32,7 +32,7 @@ class fabrikViewFusionchart extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -79,7 +79,7 @@ class fabrikViewFusionchart extends JViewLegacy
 		$js = "$ref = {};";
 		$js .= "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$js .= $model->getFilterJs();
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 
 		echo parent::display();

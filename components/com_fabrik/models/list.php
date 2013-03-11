@@ -628,6 +628,12 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		// Plugins using setLimits - these limits would get overwritten by render() or getData() calls
+		if (isset($this->limitLength) && isset($this->limitStart) && is_null($limitstart_override) && is_null($limitlength_override))
+		{
+			return;
+		}
 		/*
 		 * $$$ hugh - added the overrides, so things like visualizations can just turn
 		 * limits off, by passing 0's, without having to go round the houses setting
@@ -830,7 +836,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			$fabrikDb->setQuery($query, $start, $length);
 		}
-
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'list GetData:' . $listModel->getTable()->label);
 		JDEBUG ? $profiler->mark('before query run') : null;
 
@@ -1174,8 +1179,14 @@ class FabrikFEModelList extends JModelForm
 		$tmpKey = '__pk_val';
 		$factedlinks = $params->get('factedlinks');
 
-		// Get a list of fabrik tables and ids for view table and form links
-		$linksToForms = $this->getLinksToThisKey();
+		// Get a list of fabrik lists and ids for view list and form links
+		$oldLinksToForms = $this->getLinksToThisKey();
+		$linksToForms = array();
+		foreach ($oldLinksToForms as $join)
+		{
+			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+			$linksToForms[$k] = $join;
+		}
 		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
@@ -1321,19 +1332,18 @@ class FabrikFEModelList extends JModelForm
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
 				// Create columns containing links which point to tables associated with this table
-				$joinsToThisKey = $this->getJoinsToThisKey();
-				$f = 0;
-				$keys = isset($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
-				for ($ii = 0; $ii < count($joinsToThisKey); $ii++)
+				$oldJoinsToThisKey = $this->getJoinsToThisKey();
+				$joinsToThisKey = array();
+				foreach ($oldJoinsToThisKey as $join)
 				{
-					if (!array_key_exists($f, $keys))
-					{
-						continue;
-					}
-					$join = $joinsToThisKey[$ii];
-					$linkedTable = $factedlinks->linkedlist->$keys[$f];
-					$popupLink = $factedlinks->linkedlist_linktype->$keys[$f];
-					$linkedListText = $factedlinks->linkedlisttext->$keys[$f];
+					$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+					$joinsToThisKey[$k] = $join;
+				}
+				foreach ($joinsToThisKey as $f => $join)
+				{
+					$linkedTable = $factedlinks->linkedlist->$f;
+					$popupLink = $factedlinks->linkedlist_linktype->$f;
+					$linkedListText = $factedlinks->linkedlisttext->$f;
 					if ($linkedTable != '0')
 					{
 						$recordKey = $join->element_id . '___' . $linkedTable;
@@ -1364,33 +1374,27 @@ class FabrikFEModelList extends JModelForm
 					$f++;
 				}
 
-				$f = 0;
-
-				// Create columns containing links which point to forms assosciated with this list
-				foreach ($linksToForms as $join)
+				// Create columns containing links which point to forms assosciated with this table
+				foreach ($linksToForms as $f => $join)
 				{
-					if (array_key_exists($f, $keys))
+					$linkedForm = $factedlinks->linkedform->$f;
+					$popupLink = $factedlinks->linkedform_linktype->$f;
+					/* $$$ hugh @TODO - rob, can you check this, I added this line,
+					 * but the logic applied for $val in the linked table code above seems to be needed?
+					* http://fabrikar.com/forums/showthread.php?t=9535
+					*/
+					$val = $pKeyVal;
+					if ($linkedForm !== '0')
 					{
-						$linkedForm = $factedlinks->linkedform->$keys[$f];
-						$popupLink = $factedlinks->linkedform_linktype->$keys[$f];
-						/* $$$ hugh @TODO - rob, can you check this, I added this line,
-						 * but the logic applied for $val in the linked table code above seems to be needed?
-						* http://fabrikar.com/forums/showthread.php?t=9535
-						*/
-						$val = $pKeyVal;
-						if ($linkedForm !== '0')
+						if (is_object($join))
 						{
-							if (is_object($join))
-							{
-								// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
-								$linkKey = @$join->db_table_name . '___' . @$join->name;
-								$gkey = $linkKey . '_form_heading';
-								$row2 = JArrayHelper::fromObject($row);
-								$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$keys[$f], $row2);
-								$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
-							}
+							// $$$rob moved these two lines here as there were giving warnings since Hugh commented out the if ($element != '') {
+							$linkKey = @$join->db_table_name . '___' . @$join->name;
+							$gkey = $linkKey . '_form_heading';
+							$row2 = JArrayHelper::fromObject($row);
+							$linkLabel = $this->parseMessageForRowHolder($factedlinks->linkedformtext->$f, $row2);
+							$group[$i]->$gkey = $this->viewFormLink($popupLink, $join, $row, $linkKey, $val, false, $f);
 						}
-						$f++;
 					}
 				}
 			}
@@ -4909,9 +4913,28 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->real_filter_action))
 		{
-			$form = $this->getFormModel();
+			// First, grab the list's setting as the default
 			$table = $this->getTable();
 			$this->real_filter_action = $table->filter_action;
+
+			// Check to see if any list filter plugins require a Go button, like radius search
+			$pluginManager = FabrikWorker::getPluginManager();
+			$listPlugins = $pluginManager->getPlugInGroup('list');
+
+			$pluginManager->runPlugins('requireFilterSubmit', $this, 'list');
+			$res = $pluginManager->data;
+			if (!empty($res))
+			{
+				if (in_array(1, $res))
+				{
+					// We've got at least one plugin which needs the button, so set action and bail
+					$this->real_filter_action = 'submitform';
+					return $this->real_filter_action;
+				}
+			}
+
+			// No list plugins expressed a preference, so check for range filters
+			$form = $this->getFormModel();
 			$groups = $form->getGroupsHiarachy();
 			foreach ($groups as $groupModel)
 			{
@@ -5766,7 +5789,14 @@ class FabrikFEModelList extends JModelForm
 		$w = new FabrikWorker;
 		$session = JFactory::getSession();
 		$formModel = $this->getFormModel();
-		$linksToForms = $this->getLinksToThisKey();
+		//$linksToForms = $this->getLinksToThisKey();
+		$oldLinksToForms = $this->getLinksToThisKey();
+		$linksToForms = array();
+		foreach ($oldLinksToForms as $join)
+		{
+			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+			$linksToForms[$k] = $join;
+		}
 		$groups = $formModel->getGroupsHiarachy();
 		$groupHeadings = array();
 
@@ -5849,18 +5879,18 @@ class FabrikFEModelList extends JModelForm
 						case "desc":
 							$orderDir = "-";
 							$class = 'class="fabrikorder-desc' . $responsiveClass . '"';
-							$img = FabrikHelperHTML::image('orderdesc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
 							$orderDir = "desc";
 							$class = 'class="fabrikorder-asc"';
-							$img = FabrikHelperHTML::image('orderasc.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('arrow-down.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "":
 						case "-":
 							$orderDir = "asc";
 							$class = 'class="fabrikorder"';
-							$img = FabrikHelperHTML::image('ordernone.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
+							$img = FabrikHelperHTML::image('menu-2.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 					}
 
@@ -5876,7 +5906,7 @@ class FabrikFEModelList extends JModelForm
 						}
 					}
 
-					$heading = '<a ' . $class . ' href="#">' . $img . $label . '</a>';
+					$heading = '<a ' . $class . ' href="#">' . $img . ' ' . $label . '</a>';
 				}
 				else
 				{
@@ -5948,13 +5978,12 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			$f = 0;
-			foreach ($linksToForms as $join)
+			foreach ($linksToForms as $key => $join)
 			{
 				if ($join === false)
 				{
 					continue;
 				}
-				$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
 				$linkedForm = $factedlinks->linkedform->$key;
 				if ($linkedForm != '0')
 				{
@@ -6639,7 +6668,12 @@ class FabrikFEModelList extends JModelForm
 			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
-		return $db->execute();
+		if (!$db->execute())
+		{
+			throw new Exception($db->getErrorMsg());
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -6682,6 +6716,7 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields), implode(",", $values)));
 		if (!$db->execute())
 		{
+			throw new Exception($db->getErrorMsg());
 			return false;
 		}
 		$id = $db->insertid();
@@ -9869,8 +9904,8 @@ class FabrikFEModelList extends JModelForm
 	public function getHasButtons()
 	{
 		$params = $this->getParams();
-		if ($this->canAdd() || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
-			|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
+		if (($this->canAdd() && $params->get('show-table-add')) || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
+				|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
 		{
 			return true;
 		}
@@ -9893,45 +9928,53 @@ class FabrikFEModelList extends JModelForm
 
 	public function reorder($colid, $where = '')
 	{
-		$elementModel = $this->getFormModel()->getElement($colid, true);
+	 	$elementModel = $this->getFormModel()->getElement($colid, true);
 		$asfields = array();
 		$fields = array();
 		$elementModel->getAsField_html($asfields, $fields);
 		$col = $asfields[0];
-		$field = array_shift(explode("AS", $col));
+		$field = explode("AS", $col);
+		$field = array_shift($field);
 		$db = $this->getDb();
 		$k = $this->getTable()->db_primary_key;
 		$shortKey = FabrikString::shortColName($k);
 		$tbl = $this->getTable()->db_table_name;
 
+		// Get the primary keys and ordering values for the selection.
 		$query = $db->getQuery(true);
-		$query->select(array($k, $col))->from($tbl);
-		if ($where !== '')
+		$query->select($k . ' AS id, ' . $field . ' AS ordering');
+		$query->from($tbl);
+		$query->where($field . ' >= 0');
+		$query->order($field);
+
+		// Setup the extra where and ordering clause data.
+		if ($where)
 		{
 			$query->where($where);
 		}
-		$query = $this->buildQueryOrder($query);
 
-		$dir = JString::strtolower(JArrayHelper::getValue($this->orderDirs, 0, 'asc'));
 		$db->setQuery($query);
-		if (!($orders = $db->loadObjectList()))
-		{
-			$this->setError($db->getErrorMsg());
-			return false;
-		}
-		$kk = trim(FabrikString::safeColNameToArrayKey($field));
+		$rows = $db->loadObjectList();
 
-		// Compact the ordering numbers
-		for ($i = 0, $n = count($orders); $i < $n; $i++)
+		// Compact the ordering values.
+		foreach ($rows as $i => $row)
 		{
-			$o = $orders[$i];
-			$neworder = ($dir == 'asc') ? $i + 1 : $n - $i;
-			$orders[$i]->$kk = $neworder;
-			$query->clear();
-			$query->update($tbl)->set($field . ' = ' . (int) $orders[$i]->$kk)->where($k . ' = ' . $this->_db->quote($orders[$i]->$shortKey));
-			$db->setQuery($query);
-			$db->execute();
+
+			// Only update rows that are necessary.
+			if ($row->ordering != $i + 1)
+			{
+				// Update the row ordering field.
+				$query = $db->getQuery(true);
+				$query->update($tbl);
+				$query->set($field . ' = ' . ($i + 1));
+				$query->where($k . ' = ' . $db->quote($row->id));
+				$db->setQuery($query);
+				echo $db->getQuery() . "\n\n";
+				$db->execute();
+			}
+
 		}
+
 		return true;
 	}
 

@@ -62,7 +62,10 @@ var FbOpenStreetMap = new Class({
 		this.map.addControl(new OpenLayers.Control.LayerSwitcher());
 
 		var controls = {
-			drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': this.dragComplete.bindWithEvent(this)})
+			drag: new OpenLayers.Control.DragMarker(this.markers, {'onComplete': function (e) {
+				this.dragComplete(e);
+			}.bind(this)
+			})
 		};
 
 		for (var key in controls) {

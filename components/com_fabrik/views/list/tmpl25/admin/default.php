@@ -12,12 +12,17 @@
 defined('_JEXEC') or die;
 $app = JFactory::getApplication();
 $input = $app->input;
+$pageClass = $this->params->get('pageclass_sfx', '');
 if (!$app->isAdmin()) :
 	JError::raiseNotice(500, JText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
 	return;
 endif;
-if ($this->params->get('show_page_title', 1)) : ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+if ($pageClass !== '') :
+echo '<div class="' . $pageClass . '">';
+endif;
+
+if ($this->params->get('show_page_heading', 1)) : ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php endif;
 if ($this->tablePicker != '') : ?>
 	<div style="text-align: right">
@@ -118,4 +123,10 @@ endforeach;?>
 	</div>
 </div>
 </form>
-<?php echo $this->table->outro;?>
+<?php
+echo $this->table->outro;
+if ($pageClass !== '') :
+	echo '</div>';
+endif;
+
+?>

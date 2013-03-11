@@ -72,16 +72,16 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
 		if (!$this->isEditable())
 		{
-			return;
+			return array();
 		}
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/colourpicker/images/', 'image', 'form', false);
 		$params = $this->getParams();
@@ -107,8 +107,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$opts->handleImage = FabrikHelperHTML::image("handle.gif", 'form', @$this->tmpl, array(), true);
 		$opts->trackImage = FabrikHelperHTML::image("track.gif", 'form', @$this->tmpl, array(), true);
 
-		$opts = json_encode($opts);
-		return "new ColourPicker('$id', $opts)";
+		return array('ColourPicker', $id, $opts);
 	}
 
 	/**

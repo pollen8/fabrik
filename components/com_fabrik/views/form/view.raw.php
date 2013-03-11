@@ -68,7 +68,8 @@ class fabrikViewForm extends JViewLegacy
 			$elementModel->getElement();
 			$elementModel->setEditable(true);
 			$elementModel->formJavascriptClass($srcs);
-			$onLoad[] = "var o = " . $elementModel->elementJavascript($repeatCounter) . ";";
+			$elementJS = $elementModel->elementJavascript($repeatCounter);
+			$onLoad[] = 'var o = new ' . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ');';
 			if ($eCounter === 0)
 			{
 				$onLoad[] = "o.select();";

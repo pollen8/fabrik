@@ -60,7 +60,7 @@ class fabrikViewApprovals extends JViewLegacy
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/approvals/approvals.js';
 
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
 
 		$text = $this->loadTemplate();

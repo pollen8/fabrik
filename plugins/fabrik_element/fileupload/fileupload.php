@@ -230,9 +230,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -386,7 +386,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->winHeight = (int) $params->get('win_height', 400);
 		$opts->elementShortName = $element->name;
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
-		$opts = json_encode($opts);
 		JText::script('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_DRAG_FILES_HERE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES');
@@ -395,7 +394,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
-		return "new FbFileUpload('$id', $opts)";
+		return array('FbFileUpload', $id, $opts);
 	}
 
 	/**

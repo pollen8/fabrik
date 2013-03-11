@@ -550,7 +550,6 @@ class plgContentFabrik extends JPlugin
 			$origVar = $input->get($k. '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
-			echo "set $k = $v <br>";
 			$input->set($k, $v);
 		}
 		/*

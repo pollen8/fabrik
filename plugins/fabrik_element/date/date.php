@@ -684,6 +684,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->firstDay = intval($params->get('date_firstday'));
 		$validations = $this->getValidations();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
+		$opts->timeFormat = 24;
 		FabDate::dateFormatToStrftimeFormat($opts->ifFormat);
 		$opts->hasValidations = empty($validations) ? false : true;
 		$opts->dateAllowFunc = $params->get('date_allow_func');
@@ -696,9 +697,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -711,7 +712,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->defaultVal = $this->offsetDate;
 		$opts->showtime = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel = JText::_('time');
-		$opts->typing = $params->get('date_allow_typing_in_field', true);
+		$opts->typing = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay = $params->get('date_timedisplay', 1);
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
@@ -720,8 +721,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		// For reuse if element is duplicated in repeat group
 		$opts->calendarSetup = $this->_CalendarJSOpts($id);
 		$opts->advanced = $params->get('date_advanced', '0') == '1';
-		$opts = json_encode($opts);
-		return "new FbDateTime('$id', $opts)";
+		return array('FbDateTime', $id, $opts);
 	}
 
 	/**
@@ -1353,15 +1353,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					else
 					{
 						$d = new FabDate($o->text);
-						$o->value = $d->toSql();
-						$o->text = $d->format($format);
+						$d->setTimeZone($timeZone);
+						$o->value = $d->toSql(true);
+						$o->text = $d->format($format, true);
 					}
 					if (!array_key_exists($o->value, $ddData))
 					{
 						$ddData[$o->value] = $o;
 					}
 				}
-
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
 				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" size="1" maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
@@ -1788,14 +1788,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->buildQueryJoin();
@@ -1803,7 +1811,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$name = $this->getFullName(false, false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
+		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' FROM '
 			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 

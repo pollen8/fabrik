@@ -26,16 +26,23 @@ nv.models.stackedAreaChart = function() {
     , x //can be accessed via chart.xScale()
     , y //can be accessed via chart.yScale()
     , yAxisTickFormat = d3.format(',.2f')
+    , state = { style: stacked.style() }
     , noData = 'No Data Available.'
-    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide')
+    , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
     ;
 
   xAxis
     .orient('bottom')
-    .tickPadding(5)
+    .tickPadding(7)
     ;
   yAxis
     .orient('left')
+    ;
+  stacked.scatter
+    .pointActive(function(d) {
+      //console.log(stacked.y()(d), !!Math.round(stacked.y()(d) * 100));
+      return !!Math.round(stacked.y()(d) * 100);
+    })
     ;
 
   //============================================================
@@ -125,7 +132,7 @@ nv.models.stackedAreaChart = function() {
 
       if (showLegend) {
         legend
-          .width( availableWidth / 2 );
+          .width( availableWidth * 2 / 3 );
 
         g.select('.nv-legendWrap')
             .datum(data)
@@ -138,7 +145,7 @@ nv.models.stackedAreaChart = function() {
         }
 
         g.select('.nv-legendWrap')
-            .attr('transform', 'translate(' + ( availableWidth / 2 ) + ',' + (-margin.top) +')');
+            .attr('transform', 'translate(' + ( availableWidth * 1 / 3 ) + ',' + (-margin.top) +')');
       }
 
       //------------------------------------------------------------
@@ -154,11 +161,24 @@ nv.models.stackedAreaChart = function() {
           { key: 'Expanded', disabled: stacked.offset() != 'expand' }
         ];
 
-        controls.width(280).color(['#444', '#444', '#444']);
+        controls
+          .width( Math.min(280, availableWidth * 1 / 3) )
+          .color(['#444', '#444', '#444']);
+
         g.select('.nv-controlsWrap')
             .datum(controlsData)
-            .attr('transform', 'translate(0,' + (-margin.top) +')')
             .call(controls);
+
+
+        if ( margin.top != Math.max(controls.height(), legend.height()) ) {
+          margin.top = Math.max(controls.height(), legend.height());
+          availableHeight = (height || parseInt(container.style('height')) || 400)
+                             - margin.top - margin.bottom;
+        }
+
+
+        g.select('.nv-controlsWrap')
+            .attr('transform', 'translate(0,' + (-margin.top) +')');
       }
 
       //------------------------------------------------------------
@@ -176,7 +196,8 @@ nv.models.stackedAreaChart = function() {
 
       var stackedWrap = g.select('.nv-stackedWrap')
           .datum(data);
-      d3.transition(stackedWrap).call(stacked);
+      //d3.transition(stackedWrap).call(stacked);
+      stackedWrap.call(stacked);
 
       //------------------------------------------------------------
 
@@ -191,7 +212,9 @@ nv.models.stackedAreaChart = function() {
 
       g.select('.nv-x.nv-axis')
           .attr('transform', 'translate(0,' + availableHeight + ')');
-      d3.transition(g.select('.nv-x.nv-axis'))
+      //d3.transition(g.select('.nv-x.nv-axis'))
+      g.select('.nv-x.nv-axis')
+        .transition().duration(0)
           .call(xAxis);
 
       yAxis
@@ -200,7 +223,9 @@ nv.models.stackedAreaChart = function() {
         .tickSize(-availableWidth, 0)
         .setTickFormat(stacked.offset() == 'expand' ? d3.format('%') : yAxisTickFormat);
 
-      d3.transition(g.select('.nv-y.nv-axis'))
+      //d3.transition(g.select('.nv-y.nv-axis'))
+      g.select('.nv-y.nv-axis')
+        .transition().duration(0)
           .call(yAxis);
 
       //------------------------------------------------------------
@@ -222,7 +247,8 @@ nv.models.stackedAreaChart = function() {
             return d
           });
 
-        selection.transition().call(chart);
+        //selection.transition().call(chart);
+        chart(selection);
       });
 
       legend.dispatch.on('legendClick', function(d,i) {
@@ -235,7 +261,11 @@ nv.models.stackedAreaChart = function() {
           });
         }
 
-        selection.transition().call(chart);
+        state.disabled = data.map(function(d) { return !!d.disabled });
+        dispatch.stateChange(state);
+
+        //selection.transition().call(chart);
+        chart(selection);
       });
 
       controls.dispatch.on('legendClick', function(d,i) {
@@ -259,11 +289,33 @@ nv.models.stackedAreaChart = function() {
             break;
         }
 
-        selection.transition().call(chart);
+        state.style = stacked.style();
+        dispatch.stateChange(state);
+
+        //selection.transition().call(chart);
+        chart(selection);
       });
 
       dispatch.on('tooltipShow', function(e) {
         if (tooltips) showTooltip(e, that.parentNode);
+      });
+
+      // Update chart from a state object passed to event handler
+      dispatch.on('changeState', function(e) {
+
+        if (typeof e.disabled !== 'undefined') {
+          data.forEach(function(series,i) {
+            series.disabled = e.disabled[i];
+          });
+
+          state.disabled = e.disabled;
+        }
+
+        if (typeof e.style !== 'undefined') {
+          stacked.style(e.style);
+        }
+
+        selection.call(chart);
       });
 
     });
@@ -280,10 +332,12 @@ nv.models.stackedAreaChart = function() {
   stacked.dispatch.on('tooltipShow', function(e) {
     //disable tooltips when value ~= 0
     //// TODO: consider removing points from voronoi that have 0 value instead of this hack
+    /*
     if (!Math.round(stacked.y()(e.point) * 100)) {  // 100 will not be good for very small numbers... will have to think about making this valu dynamic, based on data range
       setTimeout(function() { d3.selectAll('.point.hover').classed('hover', false) }, 0);
       return false;
     }
+   */
 
     e.pos = [e.pos[0] + margin.left, e.pos[1] + margin.top],
     dispatch.tooltipShow(e);
@@ -370,6 +424,12 @@ nv.models.stackedAreaChart = function() {
   chart.tooltipContent = function(_) {
     if (!arguments.length) return tooltip;
     tooltip = _;
+    return chart;
+  };
+
+  chart.state = function(_) {
+    if (!arguments.length) return state;
+    state = _;
     return chart;
   };
 

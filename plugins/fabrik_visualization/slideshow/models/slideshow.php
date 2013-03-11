@@ -217,7 +217,10 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 					$k = $tmp == false ? $pic->$slideshow_viz_file : $k = $tmp[0];
 					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
 					$this->addThumbOpts($pic_opts);
-					$js_opts->$k = $pic_opts;
+					if (!empty($k))
+					{
+						$js_opts->$k = $pic_opts;
+					}
 				}
 			}
 		}
@@ -314,10 +317,11 @@ class fabrikModelSlideshow extends FabrikFEModelVisualization
 		$opts->liveSite = COM_FABRIK_LIVESITE;
 		$opts = json_encode($opts);
 		$ref = $this->getJSRenderContext();
-		$str .= "$ref = new FbSlideshowViz('slideshow_viz', $opts)\n";
-		$str .= "\n" . "Fabrik.addBlock('$ref', $ref);";
-		$str .= $this->getFilterJs();
-		return $str;
+		$html = array();
+		$html[] = "$ref = new FbSlideshowViz('slideshow_viz', $opts)\n";
+		$html[] = "\n" . "Fabrik.addBlock('$ref', $ref);";
+		$html[] = $this->getFilterJs();
+		return implode("\n", $html);
 	}
 
 	/**

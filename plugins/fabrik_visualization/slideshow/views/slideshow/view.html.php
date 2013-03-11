@@ -53,20 +53,19 @@ class FabrikViewSlideshow extends JViewLegacy
 		$this->params = $params;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('slideshow', 'visualization');
-		$this->showFilters = $input->getInt('showfilters', $params->get('show_filters')) === 1 ? 1 : 0;
+		$this->showFilters = $model->showFilters();
 		$this->filters = $this->get('Filters');
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->params = $model->getParams();
 		$this->containerId = $this->get('ContainerId');
-		$pluginParams = $model->getPluginParams();
-		$tpl = $pluginParams->get('slideshow_viz_layout', $tpl);
+		$tpl = $params->get('slideshow_viz_layout', $tpl);
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
-			$mode = $pluginParams->get('slideshow_viz_type', 1);
+			$mode = $params->get('slideshow_viz_type', 1);
 			switch ($mode)
 			{
 				case 1:
@@ -87,7 +86,7 @@ class FabrikViewSlideshow extends JViewLegacy
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
 			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
-		FabrikHelperHTML::iniRequireJs();
+		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $this->js);
 
 		$tpl = $j3 ? 'bootstrap' : 'default';

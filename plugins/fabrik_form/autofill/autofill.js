@@ -99,6 +99,11 @@ var Autofill = new Class({
 		if (!e) {
 			return false;
 		}
+		var evnt = function (e) {
+			// Fabrik Trigger element object so don't use as this.element or lookup value will be wrong
+			this.lookUp();
+		}.bind(this);
+		
 		this.element = e;
 		if (this.options.trigger === '') {
 			if (!this.element) {
@@ -113,11 +118,7 @@ var Autofill = new Class({
 				}.bind(this));
 			}
 		} else {
-			this.form.dispatchEvent('', this.options.trigger, 'click', function (e) {
-				
-				// Fabrik Trigger element object so don't use as this.element or lookup value will be wrong
-				this.lookUp();
-			}.bind(this));
+			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
 		if (this.options.fillOnLoad && form.options.rowid === '0' || form.options.rowid === '') {
 			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
@@ -207,6 +208,7 @@ var Autofill = new Class({
 		if (this.options.editOrig === true) {
 			this.form.getForm().getElement('input[name=rowid]').value = json.__pk_val;
 		}
+		Fabrik.fireEvent('fabrik.form.autofill.update.end', [this, json]);
 	},
 	
 	tryUpdate: function (key, val) {

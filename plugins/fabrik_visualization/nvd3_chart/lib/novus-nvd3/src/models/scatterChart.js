@@ -14,12 +14,14 @@ nv.models.scatterChart = function() {
     , distY        = nv.models.distribution()
     ;
 
-  var margin       = {top: 30, right: 20, bottom: 50, left: 60}
+  var margin       = {top: 30, right: 20, bottom: 50, left: 75}
     , width        = null
     , height       = null
     , color        = nv.utils.defaultColor()
     , x            = d3.fisheye ? d3.fisheye.scale(d3.scale.linear).distortion(0) : scatter.xScale()
     , y            = d3.fisheye ? d3.fisheye.scale(d3.scale.linear).distortion(0) : scatter.yScale()
+    , xPadding     = 0
+    , yPadding     = 0
     , showDistX    = false
     , showDistY    = false
     , showLegend   = true
@@ -31,7 +33,7 @@ nv.models.scatterChart = function() {
     , tooltipY     = function(key, x, y) { return '<strong>' + y + '</strong>' }
     //, tooltip      = function(key, x, y) { return '<h3>' + key + '</h3>' }
     , tooltip      = null
-    , dispatch     = d3.dispatch('tooltipShow', 'tooltipHide')
+    , dispatch     = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState')
     , noData       = "No Data Available."
     ;
 
@@ -61,7 +63,8 @@ nv.models.scatterChart = function() {
   // Private Variables
   //------------------------------------------------------------
 
-  var x0, y0;
+  var state = {},
+      x0, y0;
 
   var showTooltip = function(e, offsetElement) {
     //TODO: make tooltip style an option between single or dual on axes (maybe on all charts with axes?)
@@ -131,9 +134,6 @@ nv.models.scatterChart = function() {
       //------------------------------------------------------------
       // Setup Scales
 
-      x = scatter.xScale();
-      y = scatter.yScale();
-
       x0 = x0 || x;
       y0 = y0 || y;
 
@@ -157,8 +157,6 @@ nv.models.scatterChart = function() {
       gEnter.append('g').attr('class', 'nv-distWrap');
       gEnter.append('g').attr('class', 'nv-legendWrap');
       gEnter.append('g').attr('class', 'nv-controlsWrap');
-
-      wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       //------------------------------------------------------------
 
@@ -200,6 +198,9 @@ nv.models.scatterChart = function() {
       //------------------------------------------------------------
 
 
+      wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
       //------------------------------------------------------------
       // Main Chart Component(s)
 
@@ -214,6 +215,18 @@ nv.models.scatterChart = function() {
           .datum(data.filter(function(d) { return !d.disabled }))
           .call(scatter);
 
+
+      //Adjust for x and y padding
+      if (xPadding) {
+        var xRange = x.domain()[1] - x.domain()[0];
+        x.domain([x.domain()[0] - (xPadding * xRange), x.domain()[1] + (xPadding * xRange)]);
+      }
+
+      if (yPadding) {
+        var yRange = y.domain()[1] - y.domain()[0];
+        y.domain([y.domain()[0] - (yPadding * yRange), y.domain()[1] + (yPadding * yRange)]);
+      }
+
       //------------------------------------------------------------
 
 
@@ -222,7 +235,7 @@ nv.models.scatterChart = function() {
 
       xAxis
           .scale(x)
-          .ticks( xAxis.ticks() ? xAxis.ticks() : availableWidth / 100 )
+          .ticks( xAxis.ticks() && xAxis.ticks().length ? xAxis.ticks() : availableWidth / 100 )
           .tickSize( -availableHeight , 0);
 
       g.select('.nv-x.nv-axis')
@@ -232,7 +245,7 @@ nv.models.scatterChart = function() {
 
       yAxis
           .scale(y)
-          .ticks( yAxis.ticks() ? yAxis.ticks() : availableHeight / 36 )
+          .ticks( yAxis.ticks() && yAxis.ticks().length ? yAxis.ticks() : availableHeight / 36 )
           .tickSize( -availableWidth, 0);
 
       g.select('.nv-y.nv-axis')
@@ -302,8 +315,8 @@ nv.models.scatterChart = function() {
         y.distortion(fisheye).focus(mouse[1]);
 
         g.select('.nv-scatterWrap')
-            .datum(data.filter(function(d) { return !d.disabled }))
             .call(scatter);
+
         g.select('.nv-x.nv-axis').call(xAxis);
         g.select('.nv-y.nv-axis').call(yAxis);
         g.select('.nv-distributionX')
@@ -352,6 +365,9 @@ nv.models.scatterChart = function() {
           });
         }
 
+        state.disabled = data.map(function(d) { return !!d.disabled });
+        dispatch.stateChange(state);
+
         chart(selection);
       });
 
@@ -379,6 +395,20 @@ nv.models.scatterChart = function() {
 
       dispatch.on('tooltipShow', function(e) {
         if (tooltips) showTooltip(e, that.parentNode);
+      });
+
+      // Update chart from a state object passed to event handler
+      dispatch.on('changeState', function(e) {
+
+        if (typeof e.disabled !== 'undefined') {
+          data.forEach(function(series,i) {
+            series.disabled = e.disabled[i];
+          });
+
+          state.disabled = e.disabled;
+        }
+
+        selection.call(chart);
       });
 
       //============================================================
@@ -490,6 +520,18 @@ nv.models.scatterChart = function() {
     return chart;
   };
 
+  chart.xPadding = function(_) {
+    if (!arguments.length) return xPadding;
+    xPadding = _;
+    return chart;
+  };
+
+  chart.yPadding = function(_) {
+    if (!arguments.length) return yPadding;
+    yPadding = _;
+    return chart;
+  };
+
   chart.tooltips = function(_) {
     if (!arguments.length) return tooltips;
     tooltips = _;
@@ -511,6 +553,12 @@ nv.models.scatterChart = function() {
   chart.tooltipYContent = function(_) {
     if (!arguments.length) return tooltipY;
     tooltipY = _;
+    return chart;
+  };
+
+  chart.state = function(_) {
+    if (!arguments.length) return state;
+    state = _;
     return chart;
   };
 

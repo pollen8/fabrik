@@ -46,9 +46,10 @@ var FbDatabasejoin = new Class({
 	 * inside
 	 */
 	start: function (e) {
-		// First time loading
-		var onContentLoaded = function () {},
-		destroy = false,
+		// First time loading - auto close the hidden loaded popup.
+		var onContentLoaded = function () {
+			this.close();
+		};
 		visible = false;
 		if (e) {
 			// Loading from click
@@ -59,13 +60,16 @@ var FbDatabasejoin = new Class({
 			
 			// @FIXME - if set to true, then click addrow, click select rows, click add row => can't submit the form
 			// if set to false then theres an issue with loading data in repeat groups: see window.close()
-			destroy = true;
+			//destroy = true;
 			visible = true;
+			this.activePopUp = true;
 		}
+		
+		destroy = true;
+		
 		if (this.options.popupform === 0 || this.options.allowadd === false) {
 			return;
 		}
-		this.activePopUp = true;
 		c = this.getContainer();
 		var url  = c.getElement('.toggle-addoption').get('href');
 		if (typeOf(this.element) === 'null') {
@@ -78,7 +82,6 @@ var FbDatabasejoin = new Class({
 			'contentType': 'xhr',
 			'loadMethod': 'xhr',
 			'contentURL': url,
-			'width': this.options.windowwidth.toInt(),
 			'height': 320,
 			'y': this.options.popwiny,
 			'minimizable': false,
@@ -87,6 +90,12 @@ var FbDatabasejoin = new Class({
 			'onContentLoaded': onContentLoaded,
 			destroy: destroy
 		};
+		var winWidth = this.options.windowwidth;
+		if (winWidth !== '') {
+			this.windowopts.width = winWidth.toInt();
+			this.windowopts.onContentLoaded = onContentLoaded;
+		}
+		
 		this.win = Fabrik.getWindow(this.windowopts);
 	},
 	
@@ -101,12 +110,18 @@ var FbDatabasejoin = new Class({
 	 * Adds an option to the db join element, for dropdowns and radio buttons
 	 * (where only one selection is possible from a visible list of options)
 	 * the new option is only selected if its value = this.options.value
-	 * @param	string	value
-	 * @param	string	label
+	 * 
+	 * @param	string	value               Option value
+	 * @param	string	label               Option label
+	 * @param   bool    autoCompleteUpdate  Should the autocomplete element set its current label/value to the option
+	 * being added - set to false in updateFromServer if not the active element.
+	 * 
+	 * @return  void
 	 */
 	
-	addOption: function (v, l)
+	addOption: function (v, l, autoCompleteUpdate)
 	{
+		autoCompleteUpdate = typeof(autoCompleteUpdate) !== 'undefined' ? autoCompleteUpdate : true;
 		var opt, selected, chxed, last, subOpts = [], injectWhere, labelfield;
 		if (v === '') {
 			// return;
@@ -120,9 +135,11 @@ var FbDatabasejoin = new Class({
 			document.id(this.element.id).adopt(opt);
 			break;
 		case 'auto-complete':
-			labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
-			this.element.value = v;
-			labelfield.value = l;
+			if (autoCompleteUpdate) {
+				labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
+				this.element.value = v;
+				labelfield.value = l;
+			}
 			break;
 		case 'checkbox':
 			chxed = (v === this.options.value) ? true : false;
@@ -239,7 +256,8 @@ var FbDatabasejoin = new Class({
 		}
 		if (v) {
 			data[this.strElement + '_raw'] = v;
-			//joined elements strElement isnt right so use fullName as well
+			
+			// Joined elements strElement isnt right so use fullName as well
 			data[this.options.fullName + '_raw'] = v;
 		}
 		new Request.JSON({url: '',
@@ -247,6 +265,7 @@ var FbDatabasejoin = new Class({
 			'data': data,
 			onSuccess: function (json) {
 				var existingValues = this.getOptionValues();
+				
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
 				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
 					return;
@@ -256,7 +275,7 @@ var FbDatabasejoin = new Class({
 						if (this.activePopUp) {
 							this.options.value = o.value;
 						}
-						this.addOption(o.value, o.text);
+						this.addOption(o.value, o.text, this.activePopUp);
 						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 					}
@@ -371,12 +390,21 @@ var FbDatabasejoin = new Class({
 				
 				// Used for auto-completes in repeating groups to stop all fields updating when a record
 				// is selcted
-				window.addEvent('fabrik.dbjoin.unactivate', function () {
+				this.unactiveFn = function () {
 					this.activeSelect = false;
-				}.bind(this));
+				}.bind(this);
+				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 				
 			}
 		}
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		window.removeEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 	},
 	
 	selectRecord: function (e) {

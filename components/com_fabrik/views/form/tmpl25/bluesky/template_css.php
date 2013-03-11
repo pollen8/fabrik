@@ -30,6 +30,7 @@ echo "
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#BECED2', endColorstr='#DCECF4'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#DCECF4),
 		to(#BECED2) );
+	background-image: -ms-linear-gradient(top, #DCECF4, #BECED2);
 		position:absolute;
 }
 
@@ -364,6 +365,7 @@ some fun with fancy buttons not ready for prime time
 
 #{$view}_$c .button{
 background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
+background-image: -ms-linear-gradient(top, #ccc, #777);
 border: 1px solid #614337;
 border-radius: 6px 6px 6px 6px;
 box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
@@ -376,17 +378,20 @@ padding: 5px 20px;
 #{$view}_$c .button:hover{
 background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
 background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
+background-image: -ms-linear-gradient(top, #8EC400, #558A01);
 text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
 box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
 
 }
 
 #{$view}_$c .button[name=delete]:hover{
-background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
+	background-image: -ms-linear-gradient(top, #E88801, #C93C00);
 }
 
 #{$view}_$c .button[name=Reset]:hover{
-background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
+	background-image: -ms-linear-gradient(top, #E88801, #B19F01);
 } */
 ";
 ?>

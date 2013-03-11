@@ -161,7 +161,7 @@
 			type="text"
 			size="3"
 			class="input-mini"
-			deafult="0"
+			deafult=""
 			description="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_DESC"
 			label="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_LABEL"/>
 			

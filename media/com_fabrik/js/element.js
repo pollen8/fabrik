@@ -3,7 +3,8 @@
  */
 
 /*jshint mootools: true */
-/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $A:true, $H:true,unescape:true,Asset:true */
+/*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Asset:true */
+
 var FbElement =  new Class({
 	
 	Implements: [Events, Options],
@@ -12,6 +13,7 @@ var FbElement =  new Class({
 		element: null,
 		defaultVal: '',
 		value: '',
+		label: '',
 		editable: false,
 		isJoin: false,
 		joinId: 0
@@ -31,6 +33,14 @@ var FbElement =  new Class({
 		this.events = $H({}); // was changeEvents
 		this.setOptions(options);
 		return this.setElement();
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 * Should remove any events added to Window or Fabrik
+	 */
+	destroy: function () {
+		
 	},
 	
 	setElement: function () {
@@ -221,6 +231,10 @@ var FbElement =  new Class({
 		}
 		s = s.substring(0, s.length - 1) + ']';
 		document.id(this.options.element + '_additions').value = s;
+	},
+	
+	getLabel: function () {
+		return this.options.label;
 	},
 	
 	//below functions can override in plugin element classes

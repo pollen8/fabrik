@@ -32,6 +32,7 @@ echo "
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+	background-image: -ms-linear-gradient(top, #F3F3F3, #D7D7D7);
 		position:absolute;
 	border-radius: 10px 10px 0px 0px; /*added rounded border*/
 }
@@ -385,32 +386,5 @@ section for dropdowns radio buttons etc**/
 	text-decoration: none;
 }
 
-/*
-some fun with fancy buttons not ready for prime time
-
-#{$view}_$c .button{
-	background: -moz-linear-gradient(center top , #ccc 0%, #777) repeat scroll 0 0 transparent;
-	border: 1px solid #614337;
-	border-radius: 6px 6px 6px 6px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 2px rgba(255, 255, 255, 0.6) inset;
-	color: #FFFFFF;
-	margin: 10px;
-	padding: 5px 20px;
-}
-
-#{$view}_$c .button:hover{
-	background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent; /* orange */
-	background: -moz-linear-gradient(center top , #8EC400 0%, #558A01) repeat scroll 0 0 transparent; /* green */
-	text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.2);
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.6) inset;
-}
-
-#{$view}_$c .button[name=delete]:hover{
-	background: -moz-linear-gradient(center top , #E88801 0%, #C93C00) repeat scroll 0 0 transparent;
-}
-
-#{$view}_$c .button[name=Reset]:hover{
-	background: -moz-linear-gradient(center top , #E3EB01 0%, #B19F01) repeat scroll 0 0 transparent;
-} */
 ";
 ?>

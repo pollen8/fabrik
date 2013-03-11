@@ -47,8 +47,8 @@ If you have set to show the page title in the forms layout parameters, then the 
 
 $form = $this->form;
 
-if ($this->params->get('show_page_title', 1)) : ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+if ($this->params->get('show_page_heading', 1)) : ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php
 endif;
 
@@ -132,7 +132,7 @@ echo $this->pluginbottom;
 // Render the form's buttons
 if ($this->hasActions) :?>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
-	<?php echo $form->prevButton?> <?php echo $form->nextButton?> 
+	<?php echo $form->prevButton?> <?php echo $form->nextButton?>
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . ' ' . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>

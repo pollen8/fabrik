@@ -4,8 +4,8 @@
 
 /*jshint mootools: true */
 /*global Fabrik:true, fconsole:true, Joomla:true, CloneObject:true, $H:true,unescape:true,Asset:true */
-FbElementList =  new Class({
-	
+FbElementList = new Class({
+
 	Extends: FbElement,
 	
 	type: 'text', // Sub element type

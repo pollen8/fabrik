@@ -112,9 +112,9 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
@@ -149,8 +149,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 		$opts->maptype = $params->get('fb_osm_maptype');
 		$opts->key = $params->get('fb_osm_key');
 		$opts->defaultLayer = $params->get('fb_osm_defaultlayer');
-		$opts = json_encode($opts);
-		return "new FbOpenStreetMap('$id', $opts)";
+		return array('FbOpenStreetMap', $id, $opts);
 	}
 
 	/**

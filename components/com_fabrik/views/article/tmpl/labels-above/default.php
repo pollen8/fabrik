@@ -1,5 +1,5 @@
-<?php if ($this->params->get('show_page_title', 1)) { ?>
-	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_title')); ?></div>
+<?php if ($this->params->get('show_page_heading', 1)) { ?>
+	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
 echo $form->startTag;

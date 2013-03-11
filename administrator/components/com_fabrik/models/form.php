@@ -173,6 +173,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$isnew = $this->getState($this->getName() . '.new');
 		$db = FabrikWorker::getDbo(true);
 		$currentGroups = (array) JArrayHelper::getValue($data, 'current_groups');
+
+		if (empty($currentGroups) && !$isnew)
+		{
+			throw new Exception(JText::_('COM_FABRIK_ERR_ONE_GROUP_MUST_BE_SELECTED'));
+		}
+
 		$record_in_database = $data['record_in_database'];
 		$createGroup = $data['_createGroup'];
 		$form = $this->getForm();

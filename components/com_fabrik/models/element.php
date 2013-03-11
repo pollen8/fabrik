@@ -1983,10 +1983,36 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$c[] = 'fabrikHide';
 		}
+		else
+		{
+			// $$$ hugh - adding a class name for repeat groups, as per:
+			// http://fabrikar.com/forums/showthread.php?p=165128#post165128
+			// But as per my repsonse on that thread, if this turns out to be a performance
+			// hit, may take it out.  That said, I think having this class will make things
+			// easier for custom styling when the element ID isn't constant.
+			$groupModel = $this->getGroupModel();
+			if ($groupModel->canRepeat())
+			{
+				// $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
+				/*
+				$groupParams = $groupModel->getParams();
+				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
+				{
+					$c[] = 'fabrikRepeatGroupTable___' . $this->getFullName(false, true, false);
+				}
+				else
+				{
+					$c[] = 'fabrikRepeatGroupList___' . $this->getFullName(false, true, false);
+				}
+				*/
+				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(false, true, false);
+			}
+		}
 		if ($element->error != '')
 		{
 			$c[] = 'fabrikError';
 		}
+
 		return implode(' ', $c);
 	}
 
@@ -3969,14 +3995,23 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Get sum query
 	 *
-	 * @param   object  &$listModel  list model
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
 
-	protected function getSumQuery(&$listModel, $label = "'calc'")
+	protected function getSumQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
+
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
@@ -3985,14 +4020,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT SUM($name) AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
+			return "SELECT SUM($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			return "SELECT SUM(value) AS value, label
-	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
-				. " $joinSQL $whereSQL) AS t";
+			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			. " $joinSQL $whereSQL) AS t";
+
 		}
 	}
 
@@ -4097,10 +4133,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * calculation: sum
+	 * Calculation: sum
 	 * can be overridden in element class
 	 *
-	 * @param   object  &$listModel  list model
+	 * @param   object  &$listModel  List model
 	 *
 	 * @return  array
 	 */
@@ -4113,24 +4149,36 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$requestGroupBy = '';
 		}
+		$groupBys = array();
+		$splitName = array();
 		if ($requestGroupBy !== '')
 		{
 			$formModel = $this->getFormModel();
 			$requestGroupBy = $formModel->getElement($requestGroupBy)->getElement()->id;
+			$groupBys[] = $requestGroupBy;
 		}
 		$db = $listModel->getDb();
 		$params = $this->getParams();
 		$item = $listModel->getTable();
-		$splitSum = $params->get('sum_split', $requestGroupBy);
-		$split = trim($splitSum) == '' ? false : true;
+
+		$splitSum = $params->get('sum_split', null);
+		if (!is_null($splitSum))
+		{
+			$groupBys[] = $splitSum;
+		}
+		$split = empty($groupBys) ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
-			$plugin = $pluginManager->getElementPlugin($splitSum);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$splitName = FabrikString::safeColName($splitName);
+			foreach ($groupBys as $gById)
+			{
+				$plugin = $pluginManager->getElementPlugin($gById);
+				$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+				$splitName[] = FabrikString::safeColName($sName);
+			}
 			$sql = $this->getSumQuery($listModel, $splitName) . ' GROUP BY label';
+
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -4591,13 +4639,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  string
+	 * @return  array
 	 */
 
 	public function elementJavascript($repeatCounter)
 	{
+		return array();
 	}
 
 	/**
@@ -4628,6 +4677,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$opts->repeatCounter = $repeatCounter;
 		$opts->editable = ($this->canView() && !$this->canUse()) ? false : $this->isEditable();
 		$opts->value = $this->getValue($data, $repeatCounter);
+		$opts->label = $element->label;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$validationEls = array();
@@ -6200,7 +6250,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			}
 
 			$html .= '</div>';
-			$onLoad = "Fabrik.inlineedit_$elementid = " . $this->elementJavascript($repeatCounter) . ";\n"
+			$elementJS = $this->elementJavascript($repeatCounter);
+			$onLoad = "Fabrik.inlineedit_$elementid = new " . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ");\n"
 				. "Fabrik.inlineedit_$elementid.select();
 			Fabrik.inlineedit_$elementid.focus();
 			Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';\n";
@@ -6410,7 +6461,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * unset the element models access
+	 * Unset the element models access
 	 *
 	 * @return  null
 	 */
