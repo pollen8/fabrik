@@ -642,7 +642,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 2.1.1
 	 *
-	 * @return  array	element names to search data in to create join data array
+	 * @return  array  Element names to search data in to create join data array
 	 */
 
 	public function getJoinDataNames()
@@ -6534,6 +6534,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$element = $this->getElement();
 		return $not_shown_only ? $element->show_in_list_summary == 0 && $params->get('always_render', '0') == '1' : $params->get('always_render', '0') == '1';
+	}
+
+	public function onFinalStoreRow(&$data)
+	{
+
 	}
 
 }

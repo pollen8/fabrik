@@ -790,7 +790,6 @@ class FabrikFEModelList extends JModelForm
 		// Ajax call needs to recall this - not sure why
 		$this->setLimits();
 		$query = $this->buildQuery();
-		echo $query;
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache();
@@ -6491,7 +6490,6 @@ class FabrikFEModelList extends JModelForm
 			* however, as we were iterating over all groups, the 2nd password field's data is used instead!
 			* this if statement ensures we only look at the correct group
 			*/
-			echo "$group->id == $joinGroupTable->id <br>";
 			if ($isJoin == false || $group->id == $joinGroupTable->id)
 			{
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
@@ -6591,12 +6589,10 @@ class FabrikFEModelList extends JModelForm
 			{
 				unset($oRecord->$primaryKey);
 			}
-			echo "insert object into $table->db_table_name <br>";
 			$ok = $this->insertObject($table->db_table_name, $oRecord, $primaryKey, false);
 		}
 		else
 		{
-			echo "update object into $table->db_table_name <br>";
 			$ok = $this->updateObject($table->db_table_name, $oRecord, $primaryKey, true);
 		}
 		$this->_tmpSQL = $fabrikDb->getQuery();

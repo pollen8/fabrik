@@ -155,7 +155,7 @@ var FbDatabasejoin = new Class({
 			opt.inject(last, injectWhere);
 			opt.getElement('input').checked = chxed;
 			
-			var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
+			/*var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
 			var newid = this.getCheckboxIDTmplNode().clone();
 			newid.getElement('span').set('text', l);
 			newid.getElement('input').set('value', 0); // to add a new join record set to 0
@@ -165,7 +165,7 @@ var FbDatabasejoin = new Class({
 			i = newid.getElement('input');
 			// Update end [n]
 			i.name = i.name.replace(/\[\d+\]$/, '[' + ids.length + ']');
-			newid.getElement('input').checked = chxed;
+			newid.getElement('input').checked = chxed;*/
 			
 			break;
 		case 'radio':
@@ -193,6 +193,8 @@ var FbDatabasejoin = new Class({
 	 * As cdd elements clear out the sub options before repopulating we need
 	 * to grab a copy of one of the checkboxes to use as a template node when recreating
 	 * the list
+	 * 
+	 * @deprecated
 	 * 
 	 * @return  dom node .fabrik_subelement (hidden id checkbox containing fk value)
 	 */
@@ -628,7 +630,7 @@ var FbDatabasejoin = new Class({
 		
 		if (this.options.editable) {
 			this.getCheckboxTmplNode();
-			this.getCheckboxIDTmplNode();
+			//this.getCheckboxIDTmplNode();
 		}
 		
 		// If users can add records to the database join drop down
@@ -672,7 +674,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	watchJoinCheckboxes: function () {
-		if (this.options.displayType === 'checkbox') {
+		/*if (this.options.displayType === 'checkbox') {
 			// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
 			var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
 			var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
@@ -683,7 +685,7 @@ var FbDatabasejoin = new Class({
 					}
 				}.bind(this));
 			}.bind(this));
-		}
+		}*/
 	},
 	
 	getAutoCompleteLabelField: function () {

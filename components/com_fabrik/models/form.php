@@ -2040,6 +2040,18 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
+		//
+		$groups = $this->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->onFinalStoreRow($this->formData);
+			}
+		}
+
+
 		// Testing for saving pages
 		$input->set('rowid', $insertId);
 		if (in_array(false, $pluginManager->runPlugins('onBeforeCalculations', $this)))
@@ -3090,7 +3102,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
-		echo "<Pre>getdata:";print_r($data);echo "</pre>";
 		$this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
@@ -3499,7 +3510,7 @@ class FabrikFEModelForm extends FabModelForm
 
 						foreach ($data as $row)
 						{
-							for ($i = 0; $i < 2; $i ++)
+							for ($i = 0; $i < count($names); $i ++)
 							{
 								$name = $names[$i][0];
 								$fv_name = $names[$i][0];

@@ -1456,6 +1456,7 @@ var FbForm = new Class({
 				// for all instances of the call to findClassUp use el.element rather
 				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
 				// NOW?)
+				debugger;
 				container = input.getParent('.fabrikSubElementContainer');
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
