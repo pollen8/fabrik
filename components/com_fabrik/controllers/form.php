@@ -381,11 +381,17 @@ class FabrikControllerForm extends JControllerLegacy
 				 * couldn't determine the exact set up that triggered this, but we need to reset the rowid to -1
 				 * if reshowing the form, otherwise it may not be editable, but rather show as a detailed view
 				 */
-				if ($input->get('usekey') !== '')
+				if ($input->get('usekey', '') !== '')
 				{
 					$input->set('rowid', -1);
 				}
+				// Meant that the form's data was in different format - so redirect to ensure that its showing the same data.
+				$input->set('task', '');
+				echo "<h1>display</h1>";
 				$view->display();
+				/* $formid = $input->getInt('formid');
+				$rowid = $input->get('rowid', '');
+				$this->setRedirect(JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid)); */
 			}
 			return;
 		}

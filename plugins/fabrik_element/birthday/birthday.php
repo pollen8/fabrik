@@ -257,7 +257,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 
 			$value = $this->getDefaultOnACL($data, $opts);
 
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$rawname = $name . "_raw";
 			if ($groupModel->isJoin())
 			{

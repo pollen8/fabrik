@@ -299,7 +299,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		else
 		{
 			$this->getParams();
-			$elName = $this->getFullName(true, true, false);
+			$elName = $this->getFullName(true, false);
 			$session = JFactory::getSession();
 			if ($session->get('com_' . $package . '.element.captach.security_code', null) != $data)
 			{

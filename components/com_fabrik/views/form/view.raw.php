@@ -259,8 +259,8 @@ class fabrikViewForm extends JViewLegacy
 			$group = new stdClass;
 			$groupParams = $groupModel->getParams();
 			$aElements = array();
-			//check if group is acutally a table join
 
+			// Check if group is acutally a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
 
@@ -274,19 +274,19 @@ class fabrikViewForm extends JViewLegacy
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
-						//need to duplicate this perhaps per the number of times
-						//that a repeat group occurs in the default data?
+
+						// Need to duplicate this perhaps per the number of times that a repeat group occurs in the default data?
 						if (isset($model->data['join']) && array_key_exists($joinTable->id, $model->data['join']))
 						{
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
-							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+							$smallerElHTMLName = $tmpElement->getFullName(true, false);
 							$repeatGroup = count($model->data['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
 						{
-							//$$$ rob test!!!
+							// $$$ rob test!!!
 							if (!$groupModel->canView())
 							{
 								continue;
@@ -296,11 +296,11 @@ class fabrikViewForm extends JViewLegacy
 				}
 				else
 				{
-					// repeat groups which arent joins
+					// Repeat groups which arent joins
 					$elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement)
 					{
-						$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+						$smallerElHTMLName = $tmpElement->getFullName(true, false);
 						if (array_key_exists($smallerElHTMLName . '_raw', $model->data))
 						{
 							$d = $model->data[$smallerElHTMLName . '_raw'];

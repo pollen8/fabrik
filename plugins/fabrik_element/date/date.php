@@ -884,7 +884,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				$value = $this->getDefaultOnACL($data, $opts);
 
 				// $$$ hugh - as we now run removeTableNameFromSaveData(), I think we just need the short name?
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 				if ($groupModel->isJoin())
 				{
 					if ($groupModel->canRepeat())
@@ -1259,8 +1259,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$element = $this->getElement();
 		$origTable = $table->db_table_name;
 		$fabrikDb = $listModel->getDb();
-		$elName = $this->getFullName(false, true, false);
-		$elName2 = $this->getFullName(false, false, false);
+		$elName = $this->getFullName(true, false);
+		$elName2 = $this->getFullName(false, false);
 		$v = $this->filterName($counter, $normal);
 		$class = $this->filterClass();
 
@@ -1480,7 +1480,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$listModel = $elementModel->getListModel();
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
-		$name = $elementModel->getFullName(false, false, false);
+		$name = $elementModel->getFullName(false, false);
 		$query = $db->getQuery(true);
 
 		$params = $elementModel->getParams();
@@ -1780,7 +1780,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 		return 'SELECT FROM_UNIXTIME(AVG(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' AS label FROM '
 			. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
@@ -1808,7 +1808,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's TIMESTAMP_MAX_VALUE value but the query in itself is correct
 		return 'SELECT FROM_UNIXTIME(SUM(UNIX_TIMESTAMP(' . $name . '))) AS value, ' . $label . ' FROM '

@@ -434,7 +434,7 @@ class PlgFabrik_ElementOpenstreetmap extends PlgFabrik_Element
 			}
 			if ($groupModel->isJoin())
 			{
-				$fullName = $this->getFullName(false, true, false);
+				$fullName = $this->getFullName(true, false);
 				if (isset($data[$fullName]))
 				{
 					$value = $data[$fullName];

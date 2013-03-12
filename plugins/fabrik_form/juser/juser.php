@@ -117,7 +117,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$data = $data['join'][$group->getGroup()->join_id];
 		}
-		$name = $elementModel->getFullName(false, true, false);
+		$name = $elementModel->getFullName(true, false);
 		return JArrayHelper::getValue($data, $name, $default);
 	}
 

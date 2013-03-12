@@ -51,7 +51,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 		if ($userEl)
 		{
 			$data = $formModel->getData();
-			$userid = JArrayHelper::getValue($data, $userEl->getFullName(false, true, false) . '_raw', 0);
+			$userid = JArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 			$thisUser = JFactory::getUser($userid);
 		}
 		$selected = $this->getValue($data, $repeatCounter);
@@ -122,7 +122,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 			$element = $this->getElement();
 			$value = $this->getDefaultOnACL($data, $opts);
 
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{

@@ -114,7 +114,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$element = $this->getElement();
 			$params = $this->getParams();
 			$default = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			if ($groupModel->isJoin())
 			{
 				if ($groupModel->canRepeat())
@@ -263,7 +263,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
 
-		$key = $this->getFullName(false, true, false);
+		$key = $this->getFullName(true, false);
 		if (!array_key_exists($key, $data))
 		{
 			$element = $this->getElement();

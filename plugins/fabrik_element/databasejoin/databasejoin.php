@@ -884,7 +884,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	public function render($data, $repeatCounter = 0)
 	{
-		echo "<hr>repeat counter $repeatCounter <br>";
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
@@ -917,7 +916,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinGroupId = '';
 		}
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
-		//echo "<pre>default = ";print_r($default);echo "</pre>";exit;
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;
 		foreach ($default as &$d)
@@ -951,9 +949,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
 			$obj = JArrayHelper::toObject($data);
-			echo "<pre>";print_r($obj);echo "</pre>";
+
+			$default = implode(GROUPSPLITTER, $default);
 			$defaultLabel = $this->renderListData($default, $obj);
-			echo "<Pre>default label: ";print_R($defaultLabel);echo "</pre>";
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
@@ -979,7 +977,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// $$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			if ($this->canUse())
 			{
-				$idname = $this->getFullName(false, true, false) . '_id';
+				$idname = $this->getFullName(true, false) . '_id';
 				$attribs = 'class="fabrikinput inputbox" size="1"';
 				/*if user can access the drop down*/
 				switch ($displayType)
@@ -1160,7 +1158,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$elName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$id = $this->getHTMLId($repeatCounter);
-		$idname = $this->getFullName(false, true, false) . '_id';
+		$idname = $this->getFullName(true, false) . '_id';
 		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
 		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
 		if ($this->isEditable())
@@ -1192,102 +1190,24 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function renderCheckBoxList($data, $repeatCounter, &$html, $tmp, $default)
 	{
-		$formModel = $this->getFormModel();
-		$groupModel = $this->getGroupModel();
 		$id = $this->getHTMLId($repeatCounter);
-		$idname = $this->getFullName(false, true, false) . '_id';
-		$thisElName = $this->getHTMLName($repeatCounter);
+		$idname = $this->getFullName(true, false) . '_id';
+		$name = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
-		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
+		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 
-		//echo "<pre>render checkbox list : $idname ";print_r($data);exit;
-		//$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
-		$defaults = $default;
-		echo "<pre>defaults =";print_r($defaults);echo "</pre>";
-		//exit;
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		$rawname = $this->getFullName(false, true, false) . '_raw';
 		$editable = $this->isEditable();
 		$attribs = 'class="fabrikinput inputbox" id="' . $id . '"';
 
-		$thisElName = FabrikString::rtrimword($thisElName, '[]');
+		$name = FabrikString::rtrimword($name, '[]');
 
-
-		$join = $this->getJoin();
-		$groupJoin = $groupModel->getJoinModel()->getJoin();
-		//$jid = $join->id;
-		$jid = $groupJoin->id;
 		if ($this->isJoin())
 		{
-			$defaults = (array) FArrayHelper::getNestedValue($data, 'join.' . $jid . '.' . $idname . '.' . $repeatCounter, 'not found');
-
+			$default = (array) FArrayHelper::getNestedValue($data, $idname . '.' . $repeatCounter, 'not found');
 		}
-
-		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', $optsPerRow, $editable);
-		//print_r($html);exit;
-		/* if ($this->isJoin() && $editable)
-		{
-			// Make a hidden set of mirrored checkbox elements whose values contain the lookup table's fk values
-
-			$joinidsName = 'join[' . $join->id . '][' . $join->table_join . '___id]';
-			if ($groupModel->canRepeat())
-			{
-
-				// $joinidsName .= '[' . $repeatCounter . '][]';
-				$joinidsName .= '[' . $repeatCounter . ']';
-
-				//$rawname = $idname;//$this->getElement()->name . '_id';
-				echo "nested key = " .  'join.' . $jid . '.' . $rawname . '.' . $repeatCounter . "<br>";
-
-				//join.6.countries_repeat_people___people_raw.0
-
-				//countries_repeat_people___people_id
-				//$defaults = FArrayHelper::getNestedValue($data, 'join.' . $jid . '.' . $idname . '.' . $repeatCounter, 'not found');
-				$joinids = FArrayHelper::getNestedValue($data, 'join.' . $jid . '.' . $rawname . '.' . $repeatCounter, 'not found');
-			}
-			else
-			{
-				// $joinidsName .= '[]';
-				$joinids = explode(GROUPSPLITTER, JArrayHelper::getValue($data, $rawname));
-			}
-			$tmpids = array();
-
-			foreach ($tmp as $obj)
-			{
-				$o = new stdClass;
-				$o->text = $obj->text;
-				if (in_array($obj->value, $defaults))
-				{
-					$index = array_search($obj->value, $defaults);
-					$o->value = JArrayHelper::getValue($joinids, $index);
-				}
-				else
-				{
-					$o->value = 0;
-				}
-				$tmpids[] = $o;
-			}
-			$html[] = '<div class="fabrikHide">';
-			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-			$html[] = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', $optsPerRow, $editable);
-
-
-
-			$html[] = '</div>';
-
-			if (empty($tmp))
-			{
-				$tmpids= array();
-				$o = new stdClass;
-				$o->text = 'dummy';
-				$o->value = 'dummy';
-				$tmpids[] = $o;
-				$tmp = $tmpids;
-				$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $thisElName, $attribs, $defaults, 'value', 'text', 1, true);
-				$dummyId = FabrikHelperHTML::aList('checkbox', $tmpids, $joinidsName, $attribs, $joinids, 'value', 'text', 1, true);
-				$html[] = '<div class="chxTmplNode">' . $dummy . '</div><div class="chxTmplIDNode">' . $dummyId . '</div>';
-			}
-		} */
+		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
+		$html[] = '</div><!-- close fabrikSubElementContainer -->';
 	}
 
 	/**
@@ -1301,7 +1221,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function getValueFullName($opts)
 	{
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 		if (!$this->isJoin() && JArrayHelper::getValue($opts, 'valueFormat', 'raw') == 'raw')
 		{
@@ -1501,10 +1421,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$groupModel = $this->getGroupModel();
 		$labeldata = array();
 
-		if (!$groupModel->isJoin() && $groupModel->canRepeat())
+		/* if (!$groupModel->isJoin() && $groupModel->canRepeat())
 		{
 			$opts = $this->_getOptionVals();
-			$name = $this->getFullName(false, true, false) . '_raw';
+			$name = $this->getFullName(true, false) . '_raw';
 
 			// If coming from fabrikemail plugin $thisRow is empty
 			if (isset($thisRow->$name))
@@ -1528,13 +1448,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 		}
 		else
-		{
+		{ */
 			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
-			$col = $this->getFullName(false, true, false) . '_raw';
+			$col = $this->getFullName(true, false) . '_raw';
 			$row = JArrayHelper::fromObject($thisRow);
-			$data = JArrayHelper::getValue($row, $col, $data);
-echo "col = $col <br>";
-			echo "<pre>data:@ ";print_r($data);echo "</pre>";
+
+			//$data = JArrayHelper::getValue($row, $col, $data);
+
 			// Rendered as checkbox/mutliselect
 			if (is_string($data) && strstr($data, GROUPSPLITTER))
 			{
@@ -1558,7 +1478,7 @@ echo "col = $col <br>";
 			{
 				$l = $this->getLabelForValue($l, $l);
 			}
-		}
+		//}
 
 		$data = json_encode($labeldata);
 
@@ -1725,7 +1645,7 @@ echo "col = $col <br>";
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		$joinKey = $this->getJoinValueColumn();
-		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
+		$elName = FabrikString::safeColName($this->getFullName(true, false));
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
 	}
 
@@ -1775,7 +1695,7 @@ echo "col = $col <br>";
 
 		// Ensure table prefilter is applied to query
 		$prefilterWhere = $listModel->buildQueryPrefilterWhere($this);
-		$elementName = FabrikString::safeColName($this->getFullName(false, false, false));
+		$elementName = FabrikString::safeColName($this->getFullName(false, false));
 		$prefilterWhere = str_replace($elementName, $joinKey, $prefilterWhere);
 		if (trim($where) == '')
 		{
@@ -2021,7 +1941,7 @@ echo "col = $col <br>";
 					if ($fType === 'auto-complete')
 					{
 						// If autocomplete then we should search on the element's column, not the joined label column http://fabrikar.com/forums/showthread.php?t=29977
-						$key = $db->quoteName($this->getFullName(false, false, false));
+						$key = $db->quoteName($this->getFullName(false, false));
 					}
 					$str = "$key $condition $value";
 				}
@@ -2200,6 +2120,7 @@ echo "col = $col <br>";
 		}
 		if ($data == '' || $data == '-1')
 		{
+
 			return true;
 		}
 		return false;
@@ -2266,7 +2187,7 @@ echo "col = $col <br>";
 		$popupform = (int) $params->get('databasejoin_popupform');
 		$popuplistid = (empty($popupform) || !isset($forms[$popupform])) ? '' : $forms[$popupform]->listid;
 		$opts->id = $this->id;
-		$opts->fullName = $this->getFullName(false, true, false);
+		$opts->fullName = $this->getFullName(true, false);
 		$opts->key = $table . '___' . $params->get('join_key_column');
 		$opts->label = $table . '___' . $this->getLabelParamVal();
 		$opts->formid = $this->getForm()->getForm()->id;
@@ -2738,7 +2659,7 @@ echo "col = $col <br>";
 			$jkey = str_replace($jointable, $dbName, $jkey);
 		}
 		$parentKey = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(false, true, false);
+		$fullElName = $this->getFullName(true, false);
 		$sql = "(SELECT GROUP_CONCAT(" . $jkey . " " . $where . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable
 		LEFT JOIN " . $dbName . " ON " . $dbName . "." . $this->getJoinValueFieldName() . " = $jointable." . $this->getElement()->name . " WHERE "
 				. $jointable . ".parent_id = " . $parentKey . ")";
@@ -2786,7 +2707,7 @@ echo "col = $col <br>";
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
 		$parentKey = $this->buildQueryParentKey();
-		$fullElName = $this->getFullName(false, true, false) . "_id";
+		$fullElName = $this->getFullName(true, false) . "_id";
 		$str .= ", (SELECT GROUP_CONCAT(" . $this->element->name . " SEPARATOR '" . GROUPSPLITTER . "') FROM $jointable WHERE " . $jointable
 		. ".parent_id = " . $parentKey . ") AS $fullElName";
 		return $str;
@@ -2806,7 +2727,6 @@ echo "col = $col <br>";
 		$a = parent::getJoinDataNames();
 		if ($this->isJoin())
 		{
-			echo "db join getJoin Data names <br>";
 			$element = $this->getElement();
 			$group = $this->getGroup()->getGroup();
 			$join = $this->getJoinModel()->getJoin();
@@ -2936,8 +2856,6 @@ echo "col = $col <br>";
 
 	public function onFinalStoreRow(&$data)
 	{
-echo "<pre>";
-//print_r($data);exit;
 		$groupModel = $this->getGroupModel();
 		if ($this->isJoin() && $groupModel->isJoin())
 		{
@@ -2945,27 +2863,21 @@ echo "<pre>";
 			$db = $listModel->getDb();
 			$query = $db->getQuery(true);
 			$joinModel = $this->getJoinModel();
-			$formData = $this->getFormModel()->formData;
+			$formData =& $this->getFormModel()->formDataWithTableName;
 			$groupJoin = $groupModel->getJoinModel()->getJoin();
 			$join = $this->getJoin();
-			$joinid = $join->id;
-			$thisData = $_POST['join'][$joinid];
 			$idKey = $join->table_join . '___id';
 			$shortName = $this->getElement()->name;
 			$valueKey = $join->table_join . '___' . $shortName;
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 
-			$groupJoinData = $formData['join'][$groupJoin->id];
 			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
-			$parentIds = $groupJoinData[$k];
+			$parentIds = $formData[$k];
 
-			$allJoinIds = $thisData[$idKey];
-			$allJoinValues = $thisData[$valueKey];
-echo "<pre>";print_r($parentIds);
-echo "join values = ";print_r($allJoinValues);
-exit;
+			$allJoinIds = $formData[$idKey];
+			$allJoinValues = $formData[$valueKey];
+			echo "<pre>";print_r($parentIds);
 			$i = 0;
-			//foreach ($allJoinValues as $groupIndex => $joinValues)
 			foreach ($parentIds as $parentId)
 			{
 				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
@@ -2982,13 +2894,13 @@ exit;
 					$db->setQuery($query);
 					$ids = $db->loadObjectList($shortName);
 				}
-				echo "existing ids = ";print_r($ids);
 				foreach ($joinValues as $jIndex => $jid)
 				{
 					$record = new stdClass;
 					$record->parent_id = $parentId;
-					$fkVal =  $joinValues[$jIndex];
-					if (array_key_exists($fkVal, $ids)) {
+					$fkVal = $joinValues[$jIndex];
+					if (array_key_exists($fkVal, $ids))
+					{
 						$record->id = $ids[$fkVal]->id;
 					}
 					else
@@ -2996,6 +2908,7 @@ exit;
 						$record->id = 0;
 					}
 					$record->$shortName = $fkVal;
+					echo "<pre>";print_r($record);
 					if ($record->id == 0)
 					{
 						$ok = $listModel->insertObject($join->table_join, $record);
@@ -3003,6 +2916,10 @@ exit;
 					else
 					{
 						$ok = $listModel->updateObject($join->table_join, $record, 'id');
+					}
+					if (!$ok)
+					{
+						throw new ErrorException('didnt save db joined repeat element');
 					}
 				}
 
@@ -3015,6 +2932,7 @@ exit;
 					{
 						$query->where($shortName . ' NOT IN ( ' . implode($joinValues, ',') . ')');
 					}
+					//echo $query;exit;
 					$db->setQuery($query);
 					$db->query();
 				}

@@ -116,7 +116,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			{
 				$id = $values['elementid'][$i];
 				$elementModel = $formModel->getElement($id, true);
-				$update->coltoupdate[] = $elementModel->getFullName(false, false, false);
+				$update->coltoupdate[] = $elementModel->getFullName(false, false);
 				$update->update_value[] = $values['value'][$i];
 			}
 
@@ -187,8 +187,8 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
 				$emailElement = $elementModel->getElement(true);
-				$emailField = $elementModel->getFullName(false, true, false);
-				$emailColumn = $elementModel->getFullName(false, false, false);
+				$emailField = $elementModel->getFullName(true, false);
+				$emailColumn = $elementModel->getFullName(false, false);
 				$emailFieldRaw = $emailField . '_raw';
 				$emailWhich = $emailElement->plugin == 'user' ? 'user' : 'field';
 				$tbl = array_shift(explode('.', $emailColumn));

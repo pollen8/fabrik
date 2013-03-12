@@ -63,11 +63,11 @@ class FabrikViewList extends JViewLegacy
 				$element = $elementModel->getElement();
 				if ($element->id == $titleEl)
 				{
-					$titleEl = $elementModel->getFullName(false, true, false);
+					$titleEl = $elementModel->getFullName(true, false);
 				}
 				if ($element->id == $dateEl)
 				{
-					$dateEl = $elementModel->getFullName(false, true, false);
+					$dateEl = $elementModel->getFullName(true, false);
 					$rawdateEl = $dateEl . '_raw';
 				}
 				$elParams = $elementModel->getParams();
@@ -83,7 +83,7 @@ class FabrikViewList extends JViewLegacy
 					{
 						$aTableHeadings[$heading]['label'] = '';
 					}
-					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName(false, true);
+					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName();
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 					// $$$ hugh - adding enclosure stuff for podcasting

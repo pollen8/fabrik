@@ -732,7 +732,7 @@ EOD;
 		{
 			$div = '<div class="fabrik_subelement">';
 		}
-		$html = "";
+		$html = array();
 		if ($editable)
 		{
 			$selectText = $type == 'checkbox' ? ' checked="checked"' : ' selected="selected"';
@@ -780,26 +780,26 @@ EOD;
 			{
 				$extra .= $k === $selected ? ' checked="checked"' : '';
 			}
-			$html .= $div;
+			$html[] = $div;
 
 			if ($editable)
 			{
 				$tmpName = $type === 'checkbox' ? $tag_name . '[' . $i . ']' : $tag_name;
-				$html .= '<label class="' . $type . '">';
-				$html .= '<input type="' . $type . '" value="' . $k . '" name="' . $tmpName . '" class="fabrikinput" ' . $extra . '/>';
+				$html[] = '<label class="' . $type . '">';
+				$html[] = '<input type="' . $type . '" value="' . $k . '" name="' . $tmpName . '" class="fabrikinput" ' . $extra . '/>';
 			}
 			if ($editable || $found)
 			{
-				$html .= '<span>' . $t . '</span>';
+				$html[] = '<span>' . $t . '</span>';
 			}
 			if ($editable)
 			{
-				$html .= '</label>';
+				$html[] = '</label>';
 			}
-			$html .= '</div>';
+			$html[] = '</div>';
 		}
-		$html .= "\n";
-		return $html;
+		$html[] = "";
+		return implode("\n", $html);
 	}
 
 	/**

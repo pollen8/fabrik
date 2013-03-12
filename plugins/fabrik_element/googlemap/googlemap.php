@@ -800,7 +800,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			}
 			if ($groupModel->isJoin())
 			{
-				$fullName = $this->getFullName(false, true, false);
+				$fullName = $this->getFullName(true, false);
 				$joinid = $groupModel->getGroup()->join_id;
 				if (isset($data['join'][$joinid][$fullName]))
 				{

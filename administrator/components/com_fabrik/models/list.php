@@ -731,7 +731,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				{
 					$size = '10';
 				}
-				$map[$element->getFullName(false, false, false)] = $size;
+				$map[$element->getFullName(false, false)] = $size;
 				$map[$element->getElement()->id] = $size;
 			}
 		}
@@ -1781,7 +1781,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$titleset = false;
 		foreach ($elements as $element)
 		{
-			if ($table->db_primary_key == FabrikString::safeColName($element->getFullName(false, false, false)))
+			if ($table->db_primary_key == FabrikString::safeColName($element->getFullName(false, false)))
 			{
 				// Primary key element
 				$type = 'referenceid';
@@ -1796,7 +1796,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 				else
 				{
-					if ($titleElement == $element->getFullName(false, false, false))
+					if ($titleElement == $element->getFullName(false, false))
 					{
 						$type = 'titletext';
 						$titleset = true;

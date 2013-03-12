@@ -648,7 +648,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getJoinDataNames()
 	{
 		$group = $this->getGroupModel()->getGroup();
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$fv_name = 'join[' . $group->join_id . '][' . $name . ']';
 		$rawname = $name . '_raw';
 		$fv_rawname = 'join[' . $group->join_id . '][' . $rawname . ']';
@@ -711,8 +711,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->isJoin())
 			{
-
-
 				$pkField = $this->groupConcactJoinKey();
 				$str = $this->buildQueryElementConcatId();
 				$aFields[] = $str;
@@ -720,8 +718,6 @@ class PlgFabrik_Element extends FabrikPlugin
 				$fullElName = $db->quoteName($jointable . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
 					. $pkField . ') AS ' . $fullElName;
-
-				echo "<br><br>$str<br><br>";
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 			}
@@ -771,7 +767,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getRawColumn($useStep = true)
 	{
-		$n = $this->getFullName(false, $useStep, false);
+		$n = $this->getFullName($useStep, false);
 		$n .= '_raw`';
 		return $n;
 	}
@@ -1116,7 +1112,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 		if ($group->canRepeat())
 		{
@@ -1146,7 +1142,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$group = $this->getGroup();
-		if ($group->isJoin())
+		/* if ($group->isJoin())
 		{
 			$jkey = 'join.' . $group->getGroup()->join_id . '.' . $key;
 			FArrayHelper::setValue($post, $jkey, $data);
@@ -1170,10 +1166,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 		else
-		{
+		{ */
 			FArrayHelper::setValue($post, $key, $data);
 			FArrayHelper::setValue($_REQUEST, $key, $data);
-		}
+		//}
 		// $$$rob even though $post is passed by reference - by adding in the value
 		// we arent actually modifiying the $_POST var that post was created from
 		$app->input->set($key, $data);
@@ -1243,16 +1239,15 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options, 'raw' = 1/0 use raw value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
+	 * @param   array  $opts           Options, 'raw' = 1/0 use raw value
 	 *
 	 * @return  string	value
 	 */
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		// @TODO rename $this->defaults to $this->values
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -1260,116 +1255,29 @@ class PlgFabrik_Element extends FabrikPlugin
 		$key = $repeatCounter . '.' . serialize($opts);
 		if (!array_key_exists($key, $this->defaults))
 		{
-			$groupModel = $this->getGroup();
-			$group = $groupModel->getGroup();
-			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
-			$formModel = $this->getFormModel();
-			$element = $this->getElement();
 
-			$value = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(false, true, false);
-			$rawname = $name . '_raw';
-			if ($groupModel->isJoin() || $this->isJoin())
+			$default = $this->getDefaultOnACL($data, $opts);
+			$name = $this->getFullName(true, false);
+			if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
 			{
-				if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
-				{
-					$firstKey = 'join.' . $joinid . '.' . $rawname;
-					$secondKey = 'join.' . $joinid . '.' . $name;
-				}
-				else
-				{
-					$firstKey = 'join.' . $joinid . '.' . $name;
-					$secondKey = 'join.' . $joinid . '.' . $rawname;
-				}
+				$name .= '_raw';
+			}
+			$values = JArrayHelper::getValue($data, $name, $default);
+			if ($this->getGroupModel()->canRepeat())
+			{
+				$values = JArrayHelper::getValue($values, $repeatCounter, '');
+			}
 
-				// $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
-				// if ($groupModel->canRepeat() || !$this->isJoin()) {
-				if ($groupModel->canRepeat())
-				{
-					$v = FArrayHelper::getNestedValue($data, $firstKey . '.' . $repeatCounter, null);
-					if (is_null($v))
-					{
-						$v = FArrayHelper::getNestedValue($data, $secondKey . '.' . $repeatCounter, null);
-					}
-					if (!is_null($v))
-					{
-						$value = $v;
-					}
-				}
-				else
-				{
-					$v = FArrayHelper::getNestedValue($data, $firstKey, null);
-					if (is_null($v))
-					{
-						$v = FArrayHelper::getNestedValue($data, $secondKey, null);
-					}
-					if (!is_null($v))
-					{
-						$value = $v;
-					}
-					/* $$$ rob if you have 2 tbl joins, one repeating and one not
-					 * the none repeating one's values will be an array of duplicate values
-					 * but we only want the first value
-					 */
-
-					if (is_array($value) && !$this->isJoin())
-					{
-						$value = array_shift($value);
-					}
-				}
-			}
-			else
-			{
-				if ($groupModel->canRepeat())
-				{
-					// Repeat group NO join
-					$thisname = $name;
-					if (!array_key_exists($name, $data))
-					{
-						$thisname = $rawname;
-					}
-					if (array_key_exists($thisname, $data))
-					{
-						if (is_array($data[$thisname]))
-						{
-							// Occurs on form submission for fields at least
-							$a = $data[$thisname];
-						}
-						else
-						{
-							// Occurs when getting from the db
-							$a = json_decode($data[$thisname]);
-						}
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
-
-				}
-				else
-				{
-					$value = !is_array($data) ? $data : JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
-				}
-			}
-			if (is_array($value) && !$this->isJoin())
-			{
-				$value = implode(',', $value);
-			}
-			if ($value === '' && !$groupModel->canRepeat())
-			{
-				// Query string for joined data
-				$value = JArrayHelper::getValue($data, $name);
-			}
-			if (is_array($value) && !$this->isJoin())
-			{
-				$value = implode(',', $value);
-			}
 			/*@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
 			 *stops this getting called from form validation code as it messes up repeated/join group validations
-			 */
+			*/
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
+				$formModel = $this->getFormModel();
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-			$this->defaults[$key] = $value;
+
+			$this->defaults[$key] = $values;
 		}
 		return $this->defaults[$key];
 	}
@@ -1644,7 +1552,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getFilterFullName()
 	{
-		return FabrikString::safeColName($this->getFullName(false, true, false));
+		return FabrikString::safeColName($this->getFullName(true, false));
 	}
 
 	/**
@@ -1666,19 +1574,18 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Set and override element full name (used in pw element)
 	 *
 	 * @param   string  $name               Element name
-	 * @param   bool    $includeJoinString  Add join[joinid][] to element name (default true)
 	 * @param   bool    $useStep            Cconcat name with form's step element (true) or with '.' (false) default true
 	 * @param   bool    $incRepeatGroup     Include '[]' at the end of the name (used for repeat group elements) default true
 	 *
 	 * @return  void
 	 */
 
-	public function setFullName($name = '', $includeJoinString = true, $useStep = true, $incRepeatGroup = true)
+	public function setFullName($name = '', $useStep = true, $incRepeatGroup = true)
 	{
 		$groupModel = $this->getGroup();
 		$formModel = $this->getFormModel();
 		$element = $this->getElement();
-		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
+		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $useStep . '_'
 				. $incRepeatGroup;
 		$this->fullNames[$key] = $name;
 	}
@@ -1686,14 +1593,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * If already run then stored value returned
 	 *
-	 * @param   bool  $includeJoinString  add join[joinid][] to element name (default true)
 	 * @param   bool  $useStep            concat name with form's step element (true) or with '.' (false) default true
 	 * @param   bool  $incRepeatGroup     include '[]' at the end of the name (used for repeat group elements) default true
 	 *
 	 * @return  string  element full name
 	 */
 
-	public function getFullName($includeJoinString = true, $useStep = true, $incRepeatGroup = true)
+	public function getFullName($useStep = true, $incRepeatGroup = true)
 	{
 		$db = FabrikWorker::getDbo();
 		$groupModel = $this->getGroup();
@@ -1701,7 +1607,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$listModel = $this->getListModel();
 		$element = $this->getElement();
 
-		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
+		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $useStep . '_'
 			. $incRepeatGroup;
 		if (isset($this->fullNames[$key]))
 		{
@@ -1716,14 +1622,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
 			$join = $joinModel->getJoin();
-			if ($includeJoinString)
-			{
-				$fullName = 'join[' . $join->id . '][' . $join->table_join . $thisStep . $element->name . ']';
-			}
-			else
-			{
-				$fullName = $join->table_join . $thisStep . $element->name;
-			}
+			$fullName = $join->table_join . $thisStep . $element->name;
 		}
 		else
 		{
@@ -1740,15 +1639,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get order by full name
 	 *
-	 * @param   bool  $includeJoinString  add join[joinid][] to element name (default true)
-	 * @param   bool  $useStep            concat name with form's step element (true) or with '.' (false) default true
+	 * @param   bool  $useStep  Concat name with form's step element (true) or with '.' (false) default true
 	 *
-	 * @return  string  oder by full name
+	 * @return  string  Order by full name
 	 */
 
-	public function getOrderbyFullName($includeJoinString = true, $useStep = true)
+	public function getOrderbyFullName($useStep = true)
 	{
-		return $this->getFullName($includeJoinString, $useStep);
+		return $this->getFullName($useStep);
 	}
 
 	/**
@@ -1890,7 +1788,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = new stdClass;
 		$element->startRow = 0;
 		$element->endRow = 0;
-		$elHTMLName = $this->getFullName(true, true);
+		$elHTMLName = $this->getFullName();
 
 		// If the element is in a join AND is the join's foreign key then we don't show the element
 		if ($elementTable->name == $this->_foreignKey)
@@ -2006,14 +1904,14 @@ class PlgFabrik_Element extends FabrikPlugin
 				$groupParams = $groupModel->getParams();
 				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
 				{
-					$c[] = 'fabrikRepeatGroupTable___' . $this->getFullName(false, true, false);
+					$c[] = 'fabrikRepeatGroupTable___' . $this->getFullName(true, false);
 				}
 				else
 				{
-					$c[] = 'fabrikRepeatGroupList___' . $this->getFullName(false, true, false);
+					$c[] = 'fabrikRepeatGroupList___' . $this->getFullName(true, false);
 				}
 				*/
-				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(false, true, false);
+				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(true, false);
 			}
 		}
 		if ($element->error != '')
@@ -2037,7 +1935,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function stockResults($element, &$aElements, &$namedData, &$aSubGroupElements)
 	{
-		$elHTMLName = $this->getFullName(true, true);
+		$elHTMLName = $this->getFullName();
 		$aElements[$this->getElement()->name] = $element;
 
 		// $$$ rob 12/10/2012 - $namedData is the formModels data - commenting out as the form data needs to be consistent
@@ -2175,7 +2073,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function getErrorMsg($repeatCount = 0)
 	{
 		$arErrors = $this->getFormModel()->errors;
-		$parsed_name = $this->getFullName(true, true);
+		$parsed_name = $this->getFullName();
 		$err_msg = '';
 		$parsed_name = FabrikString::rtrimword($parsed_name, '[]');
 		if (isset($arErrors[$parsed_name]))
@@ -2342,7 +2240,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
 				$joinTable = $joinModel->getJoin();
-				$fullName = 'join___' . $joinTable->id . '___' . $joinTable->table_join . '___' . $element->name;
+				$fullName = $joinTable->table_join . '___' . $element->name;
 			}
 			else
 			{
@@ -2382,7 +2280,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
 			$joinTable = $joinModel->getJoin();
-			$fullName = 'join[' . $joinTable->id . '][' . $joinTable->table_join . '___' . $element->name . ']';
+			$fullName = $joinTable->table_join . '___' . $element->name;
 		}
 		else
 		{
@@ -2777,14 +2675,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$listModel = $this->getListModel();
 		$formModel = $listModel->getFormModel();
-		$dbElName = $this->getFullName(false, false, false);
+		$dbElName = $this->getFullName(false, false);
 		if (!$formModel->hasElement($dbElName))
 		{
 			return '';
 		}
 		$table = $listModel->getTable();
 		$element = $this->getElement();
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$id = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 
@@ -3233,9 +3131,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $listModel->getTable();
 		$element = $this->getElement();
 		$origTable = $table->db_table_name;
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$params = $this->getParams();
-		$elName2 = $this->getFullName(false, false, false);
+		$elName2 = $this->getFullName(false, false);
 		if (!$this->isJoin())
 		{
 			$ids = $listModel->getColumnData($elName2);
@@ -3499,7 +3397,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getElement();
 		$type = $element->filter_type;
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$app = JFactory::getApplication();
 		$qsFilter = $app->input->get($name, array(), 'array');
 		$qsValues = JArrayHelper::getValue($qsFilter, 'value', array());
@@ -3981,7 +3879,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
 		$roundTo = (int) $this->getParams()->get('avg_round');
 		if ($groupModel->isJoin())
@@ -4023,7 +3921,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin())
 		{
@@ -4056,7 +3954,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin())
 		{
@@ -4089,7 +3987,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		return "SELECT {$this->getFullName(false, false, false)} AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
+		return "SELECT {$this->getFullName(false, false)} AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL ";
 	}
 
@@ -4108,7 +4006,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
-		$name = $this->getFullName(false, false, false);
+		$name = $this->getFullName(false, false);
 
 		// $$$ hugh - need to account for 'count value' here!
 		$params = $this->getParams();
@@ -4182,7 +4080,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			foreach ($groupBys as $gById)
 			{
 				$plugin = $pluginManager->getElementPlugin($gById);
-				$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+				$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 				$splitName[] = FabrikString::safeColName($sName);
 			}
 			$sql = $this->getSumQuery($listModel, $splitName) . ' GROUP BY label';
@@ -4236,7 +4134,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitAvg);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getAvgQuery($listModel, $splitName) . " GROUP BY label";
 			$sql = $listModel->pluginQuery($sql);
@@ -4309,7 +4207,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitMedian);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getMedianQuery($listModel, $splitName) . ' ORDER BY ' . $splitName . ' ';
 			$sql = $listModel->pluginQuery($sql);
@@ -4362,8 +4260,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitCount);
-			$name = $plugin->getFullName(false, true, false);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$name = $plugin->getFullName(true, false);
+			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getCountQuery($listModel, $splitName) . " GROUP BY label ";
 			$sql = $listModel->pluginQuery($sql);
@@ -4422,7 +4320,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitCustom);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false);
 			$splitName = FabrikString::safeColName($splitName);
 			$sql = $this->getCustomQuery($listModel, $splitName) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
@@ -4456,7 +4354,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$results = array();
 		$tomerge = array();
-		$name = $plugin->getFullName(false, true, false);
+		$name = $plugin->getFullName(true, false);
 
 		// $$$ hugh - avoid PHP warning if $results2 is NULL
 		if (empty($results2))
@@ -5152,7 +5050,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$table = $listModel->getTable();
-		$elFullName = $this->getFullName(true, false, false);
+		$elFullName = $this->getFullName(false, false);
 		if ($listModel->getOutPutFormat() === 'rss')
 		{
 			$bAddElement = ($params->get('show_in_rss_feed') == '1');
@@ -5272,7 +5170,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function getOrderByName()
 	{
-		return $this->getFullName(false, true, false);
+		return $this->getFullName(true, false);
 	}
 
 	/**
@@ -5665,7 +5563,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
-		$name = $elementModel->getFullName(false, false, false);
+		$name = $elementModel->getFullName(false, false);
 		$elementModel->encryptFieldName($name);
 		$listModel = $elementModel->getListModel();
 		$db = $listModel->getDb();
@@ -6347,7 +6245,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$params = $this->getParams();
 		$classes = array();
-		$classes[] = $this->getFullName(false, true, false);
+		$classes[] = $this->getFullName(true, false);
 		$classes[] = 'fabrik_element';
 		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$c = $params->get('tablecss_cell_class', '');
@@ -6371,7 +6269,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$classes = array();
 		$classes[] = 'fabrik_ordercell';
-		$classes[] = $this->getFullName(false, true, false);
+		$classes[] = $this->getFullName(true, false);
 		$classes[] = $this->getElement()->id . '_order';
 		$classes[] = 'fabrik_list_' . $this->getListModel()->getId() . '_group_' . $this->getGroupModel()->getId();
 		$classes[] = $this->getParams()->get('tablecss_header_class');
@@ -6435,7 +6333,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$rowclass = $this->getParams()->get('use_as_row_class');
 		if ($rowclass == 1)
 		{
-			$col = $this->getFullName(false, true, false);
+			$col = $this->getFullName(true, false);
 			$rawcol = $col . '_raw';
 			foreach ($data as $groupk => $group)
 			{
@@ -6535,6 +6433,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$element = $this->getElement();
 		return $not_shown_only ? $element->show_in_list_summary == 0 && $params->get('always_render', '0') == '1' : $params->get('always_render', '0') == '1';
 	}
+
+	/**
+	 * Called at end of form record save. Used for many-many join elements to save their data
+	 *
+	 * @param   array  &$data  Form data
+	 *
+	 * @since  3.1rc1
+	 *
+	 * @return  void
+	 */
 
 	public function onFinalStoreRow(&$data)
 	{

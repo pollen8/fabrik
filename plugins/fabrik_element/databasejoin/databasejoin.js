@@ -601,6 +601,18 @@ var FbDatabasejoin = new Class({
 		}
 	},
 	
+	/**
+	 * Used to find element when form clones a group
+	 * WYSIWYG text editor needs to return something specific as options.element has to use name 
+	 * and not id.
+	 */
+	getCloneName: function () {
+		if (this.options.isGroupJoin && this.options.isJoin) {
+			return this.options.elementName;
+		}
+		return this.options.element;
+	},
+	
 	getValues: function () {
 		var v = [];
 		var search = (this.options.displayType !== 'dropdown') ? 'input' : 'option';

@@ -125,7 +125,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 		$elementModels = $groupModel->getMyElements();
 		foreach ($elementModels as $elementModel)
 		{
-			if (FabrikString::safeColName($elementModel->getFullName(false, false, false)) == $pk)
+			if (FabrikString::safeColName($elementModel->getFullName(false, false)) == $pk)
 			{
 				return false;
 			}

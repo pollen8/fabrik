@@ -554,7 +554,7 @@ class FabrikFEModelListfilter extends FabModel
 				continue;
 			}
 			$searchable = true;
-			$k = $elementModel->getFullName(false, false, false);
+			$k = $elementModel->getFullName(false, false);
 			$k = FabrikString::safeColName($k);
 
 			// Lower case for search on accented characters e.g. Ö

@@ -170,7 +170,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$htmlid = $this->getHTMLId() . 'value';
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
@@ -591,7 +591,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	protected function getValueFullName($opts)
 	{
-		return $this->getFullName(false, true, false);
+		return $this->getFullName(true, false);
 	}
 
 	/**
@@ -606,6 +606,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		$v = parent::getValue($data, $repeatCounter, $opts);
+		return $v;
 		$data = (array) $data;
 		if (!isset($this->defaults))
 		{
@@ -623,8 +625,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$groupModel = $this->getGroupModel();
 			$group = $groupModel->getGroup();
 
-			// If its in a repeating group use the group id as the key:
-			$joinid = $this->isJoin() && !($groupModel->canRepeat() && $groupModel->isJoin()) ? $this->getJoinModel()->getJoin()->id : $group->join_id;
+			$task = JFactory::getApplication()->input->get('task');
+			if ($task === 'form.process')
+			{
+				$joinid = $this->getJoinModel()->getJoin()->id;
+			}
+			else
+			{
+				// If its in a repeating group use the group id as the key:
+				$joinid = $this->isJoin() && !($groupModel->canRepeat() && $groupModel->isJoin()) ? $this->getJoinModel()->getJoin()->id : $group->join_id;
+			}
+			echo "join id = $joinid<br>";;
 			$formModel = $this->getForm();
 			$element = $this->getElement();
 
@@ -647,7 +658,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				if ($groupModel->canRepeat())
 				{
-					//echo "<pre>getvalue group can repeat for key " . $firstKey . '.' . $repeatCounter ;print_r($data);
+					echo "firstkey = $firstKey <br>";
 					$v = FArrayHelper::getNestedValue($data, $firstKey . '.' . $repeatCounter, null);
 					if (is_null($v))
 					{

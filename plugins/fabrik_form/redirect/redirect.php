@@ -246,7 +246,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				foreach ($elements as $elementModel)
 				{
 
-					$name = $elementModel->getFullName(false, true, false);
+					$name = $elementModel->getFullName(true, false);
 					if (array_key_exists($name, $tmpData))
 					{
 						$this->_appendQS($queryvars, $name, $tmpData[$name]);
@@ -338,7 +338,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					{
 						continue;
 					}
-					$name = $element->getFullName(false);
+					$name = $element->getFullName();
 					if (array_key_exists($name, $tmpData))
 					{
 						$value = $tmpData[$name];

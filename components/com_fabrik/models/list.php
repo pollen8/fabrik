@@ -1022,7 +1022,7 @@ class FabrikFEModelList extends JModelForm
 				$e = $elementModel->getElement();
 				$elementModel->setContext($groupModel, $form, $this);
 				$params = $elementModel->getParams();
-				$col = $elementModel->getFullName(false, true, false);
+				$col = $elementModel->getFullName(true, false);
 
 				// Check if there is  a custom out put handler for the tables format
 				// Currently supports "renderListData_csv", "renderListData_rss", "renderListData_html", "renderListData_json"
@@ -1591,7 +1591,7 @@ class FabrikFEModelList extends JModelForm
 		$listModel->setId($element->list_id);
 		$db = $listModel->getDb();
 		$elementModel = $listModel->getFormModel()->getElement($element->element_id, true);
-		$key = $elementModel->getFullName(false, false, false);
+		$key = $elementModel->getFullName(false, false);
 		$linkKey = FabrikString::safeColName($key);
 		$fparams = $listModel->getParams();
 
@@ -2711,7 +2711,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function buildQueryPrefilterWhere($element)
 	{
-		$elementName = FabrikString::safeColName($element->getFullName(false, false, false));
+		$elementName = FabrikString::safeColName($element->getFullName(false, false));
 		$filters = $this->getFilterArray();
 		$keys = array_keys($filters);
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'value', array()));
@@ -3210,7 +3210,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			return false;
 		}
-		$groupBy = $elementModel->getFullName(false, true, false);
+		$groupBy = $elementModel->getFullName(true, false);
 		return $db->quoteName(FabrikString::safeColNameToArrayKey($groupBy));
 	}
 
@@ -4558,7 +4558,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($this->filters['no-filter-setup'][$i] == 1)
 			{
-				$tmpName = $elementModel->getFullName(false, true, false);
+				$tmpName = $elementModel->getFullName(true, false);
 				$tmpData = array($tmpName => $originalValue, $tmpName . '_raw' => $originalValue);
 
 				// Set defaults to null to ensure we get correct value for 2nd dropdown search value (mutli dropdown from search form)
@@ -5266,7 +5266,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			if ($elementModel->getParams()->get('filter_required') == 1)
 			{
-				$name = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+				$name = FabrikString::safeColName($elementModel->getFullName(false, false));
 				reset($filters['key']);
 				$found = false;
 				while (list($key, $val) = each($filters['key']))
@@ -5409,7 +5409,7 @@ class FabrikFEModelList extends JModelForm
 						// Force the correct group model into the element model to ensure no wierdness in getting the element name
 						$elementModel->setGroupModel($groupModel);
 						$o = new stdClass;
-						$o->name = $elementModel->getFullName(false, true, false);
+						$o->name = $elementModel->getFullName(true, false);
 						$o->filter = $elementModel->getFilter($counter, true);
 						$fscript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
@@ -5640,7 +5640,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				foreach ($elementModels as $elementModel)
 				{
-					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+					$testkey = FabrikString::safeColName($elementModel->getFullName(false, false));
 					if ($testkey == $key)
 					{
 						break;
@@ -5694,7 +5694,7 @@ class FabrikFEModelList extends JModelForm
 					$join = FabrikHelperHTML::conditonList($this->getRenderContext(), $join);
 				}
 
-				$lineElname = FabrikString::safeColName($elementModel->getFullName(false, true, false));
+				$lineElname = FabrikString::safeColName($elementModel->getFullName(true, false));
 				$orig = $input->get($lineElname);
 				$input->set($lineElname, array('value' => $value));
 				$filter = $elementModel->getFilter($counter, false);
@@ -5748,7 +5748,7 @@ class FabrikFEModelList extends JModelForm
 				$elModel = $this->getFormModel()->getElement($name);
 				if (is_object($elModel))
 				{
-					$name = $elModel->getFullName(false, true, false);
+					$name = $elModel->getFullName(true, false);
 					$pName = $elModel->isJoin() ? $db->quoteName($elModel->getJoinModel()->getJoin()->table_join . '___params') : '';
 					foreach ($asfields as $f)
 					{
@@ -5855,9 +5855,9 @@ class FabrikFEModelList extends JModelForm
 				}
 				$viewLinkAdded = false;
 				$groupHeadings[$groupHeadingKey]++;
-				$key = $elementModel->getFullName(false, true, false);
+				$key = $elementModel->getFullName(true, false);
 				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList) . ':' . $key : $key;
-				$orderKey = $elementModel->getOrderbyFullName(false, false);
+				$orderKey = $elementModel->getOrderbyFullName(false);
 				$elementParams = $elementModel->getParams();
 				$label = $elementParams->get('alt_list_heading');
 				if ($label == '')
@@ -6263,7 +6263,7 @@ class FabrikFEModelList extends JModelForm
 			foreach ($elementModels as $elementModel)
 			{
 				$params = $elementModel->getParams();
-				$elName = $elementModel->getFullName(false, true, false);
+				$elName = $elementModel->getFullName(true, false);
 				$sumOn = $params->get('sum_on', '0');
 				$avgOn = $params->get('avg_on', '0');
 				$medianOn = $params->get('median_on', '0');
@@ -6449,7 +6449,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   array   $data            to save
 	 * @param   int     $rowId           row id to edit/updated
 	 * @param   bool    $isJoin          is the data being saved into a join table
-	 * @param   object  $joinGroupTable  joined group table
+	 * @param   JTable  $joinGroupTable  joined group table
 	 *
 	 * @return  bool	true if saved ok
 	 */
@@ -6499,7 +6499,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$element = $elementModel->getElement();
 						$key = $element->name;
-						$fullkey = $elementModel->getFullName(false, true, false);
+						$fullkey = $elementModel->getFullName(true, false);
 
 						// For radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key . '_raw', $data) ? $key . '_raw' : $key;
@@ -6580,6 +6580,10 @@ class FabrikFEModelList extends JModelForm
 					$oRecord->$primaryKey = $rowId;
 				}
 			}
+		}
+		if ($isJoin)
+		{
+			//echo "<pre>" . $table->db_table_name;print_r($oRecord);print_r($joinGroupTable);exit;
 		}
 		if ($origRowId == '' || $origRowId == 0)
 		{
@@ -6727,11 +6731,11 @@ class FabrikFEModelList extends JModelForm
 	 * If an element is set to readonly, and has a default value selected then insert this
 	 * data into the array that is to be bound to the table record
 	 *
-	 * @param   array   &$data           list data
-	 * @param   object  &$oRecord        to bind to table row
-	 * @param   int     $isJoin          is record join record
-	 * @param   int     $rowid           row id
-	 * @param   object  $joinGroupTable  join group table
+	 * @param   array   &$data           List data
+	 * @param   object  &$oRecord        To bind to table row
+	 * @param   int     $isJoin          Is record join record
+	 * @param   int     $rowid           Row id
+	 * @param   JTable  $joinGroupTable  Join group table
 	 *
 	 * @since	1.0.6
 	 *
@@ -6800,7 +6804,7 @@ class FabrikFEModelList extends JModelForm
 						if (!$elementModel->canUse())
 						{
 							$element = $elementModel->getElement();
-							$fullkey = $elementModel->getFullName(false, true, false);
+							$fullkey = $elementModel->getFullName(true, false);
 
 							// $$$ rob 24/01/2012 if a previous joined data set had a ro element then if we werent checkign that group is the
 							// same as the join group then the insert failed as data from other joins added into the current join
@@ -7066,7 +7070,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			return '';
 		}
-		return $elementModel->getFullName(false, true, false);
+		return $elementModel->getFullName(true, false);
 	}
 
 	/**
@@ -7353,7 +7357,7 @@ class FabrikFEModelList extends JModelForm
 		if (is_numeric($field))
 		{
 			$el = $this->getFormModel()->getElement($field, true);
-			$field = $el->getFullName(false, true, false);
+			$field = $el->getFullName(true, false);
 		}
 		/* $$$ hugh - @TODO $field is in 'table.element' format but $indexes
 		 * has Column_name as just 'element' ... so we're always rebuilding indexes!
@@ -8589,7 +8593,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						continue;
 					}
-					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(false, true, false));
+					$dbkey = $key == 'filtername' ? trim($elementModel->getFilterFullName()) : trim($elementModel->getFullName(true, false));
 					switch ($key)
 					{
 						case 'safecolname':
@@ -8603,7 +8607,7 @@ class FabrikFEModelList extends JModelForm
 							// $$$ rob if prefilter was using _raw field then we need to assign the model twice to both possible keys
 							if (is_a($elementModel, 'PlgFabrik_ElementDatabasejoin'))
 							{
-								$dbkey2 = FabrikString::safeColName($elementModel->getFullName(false, false, false));
+								$dbkey2 = FabrikString::safeColName($elementModel->getFullName(false, false));
 								$this->elements[$sig][$dbkey2] = $elementModel;
 							}
 							$elementModel->getParams()->set('join_val_column_concat', $origconcat);
@@ -9064,7 +9068,7 @@ class FabrikFEModelList extends JModelForm
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$col = $elementModel->getFullName(false, true, false);
+				$col = $elementModel->getFullName(true, false);
 				if (!empty($data) && array_key_exists($col, $data[0]))
 				{
 					for ($i = 0; $i < $ec; $i++)
@@ -9856,7 +9860,7 @@ class FabrikFEModelList extends JModelForm
 				$elementModel = $formModel->getElement($id, true);
 				if ($elementModel !== false)
 				{
-					$csvFields[$elementModel->getFullName(false, true, false)] = 1;
+					$csvFields[$elementModel->getFullName(true, false)] = 1;
 				}
 
 			}

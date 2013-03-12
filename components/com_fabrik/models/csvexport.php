@@ -470,7 +470,7 @@ class FabrikFEModelCSVExport
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
-					$fullname = $elementModel->getFullName(false, true, false);
+					$fullname = $elementModel->getFullName(true, false);
 					if ($fullname == $heading || $fullname . '_raw' == $heading)
 					{
 						$found = true;
@@ -481,7 +481,7 @@ class FabrikFEModelCSVExport
 								$n = $element->name;
 								break;
 							case '1':
-								$n = $elementModel->getFullName(false, false, false);
+								$n = $elementModel->getFullName(false, false);
 								$label = $w->parseMessageForPlaceHolder($label, array());
 								break;
 							case '2':

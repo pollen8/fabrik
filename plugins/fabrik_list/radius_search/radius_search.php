@@ -174,7 +174,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		JText::script('PLG_LIST_RADIUS_SEARCH');
 
 		$mapElement = $this->getMapElement();
-		$mapName = $mapElement->getFullName(false, true, false);
+		$mapName = $mapElement->getFullName(true, false);
 		$model->viewfilters[$mapName] = $f;
 	}
 
@@ -230,7 +230,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$mapElement = $this->getMapElement();
-		$mapName = $mapElement->getFullName(false, true, false);
+		$mapName = $mapElement->getFullName(true, false);
 		$placeElement = $this->getPlaceElement()->getElement();
 		$db = $this->model->getDb();
 		$usekey = $input->get('usekey');
@@ -344,7 +344,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 		// Need to unset for multiple radius searches to work
 		unset($this->mapElement);
 		$el = $this->getMapElement();
-		$el = FabrikString::safeColName($el->getFullName(false, false, false));
+		$el = FabrikString::safeColName($el->getFullName(false, false));
 
 		// Crazy sql to get the lat/lon from google map element
 		$latfield = "SUBSTRING_INDEX(TRIM(LEADING '(' FROM $el), ',', 1)";

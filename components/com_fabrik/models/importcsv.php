@@ -479,13 +479,13 @@ class FabrikFEModelImportcsv extends JModelForm
 							$name = $element->name;
 							break;
 						case 1:
-							$name = $elementModel->getFullName(false, false, false);
+							$name = $elementModel->getFullName(false, false);
 							break;
 						case 2:
 							$name = $element->label;
 							break;
 					}
-					$hkey = $elementModel->getFullName(false, false, false);
+					$hkey = $elementModel->getFullName(false, false);
 					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
 					{
 						if (!array_key_exists($hkey, $this->matchedHeadings))

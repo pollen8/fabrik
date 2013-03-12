@@ -68,7 +68,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowid = $input->getInt('rowid', 0);
-		$fullName = $this->getFullName(false, true, true);
+		$fullName = $this->getFullName();
 		$watchName = $this->getWatchFullName();
 
 		// If returning from failed posted validation data can be in an array
@@ -357,7 +357,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$query = $db->getQuery(true);
 			$obs = $this->getWatchElement();
 			$obsName = $obs->getElement()->name;
-			$obsValue = $input->get($obs->getFullName(false, true, false) . '_raw');
+			$obsValue = $input->get($obs->getFullName(true, false) . '_raw');
 			$element = $this->getElement();
 			$tblName = $listModel->getTable()->db_table_name;
 			$query->select('DISTINCT ' . $element->name)->from($tblName)->where($obsName . ' = ' . $db->quote($obsValue));
@@ -401,7 +401,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$fullName = $elementModel->getFullName(false, true, true);
+				$fullName = $elementModel->getFullName();
 				if ($fullName == $watch)
 				{
 					$element = $elementModel->getElement();
@@ -614,7 +614,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$fullName = $elementModel->getFullName(true, true, true);
+				$fullName = $elementModel->getFullName();
 				if ($fullName == $watch)
 				{
 					// Test for ajax update
@@ -662,7 +662,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 							{
 								// $$$ hugh ::sigh:: might be coming in via swapLabelsForvalues in pre_process phase
 								// and join array in data will have been flattened.  So try regular element name for watch.
-								$no_join_watch_raw = $elementModel->getFullName(false, true, false) . '_raw';
+								$no_join_watch_raw = $elementModel->getFullName(true, false) . '_raw';
 								if (isset($data[$no_join_watch_raw]))
 								{
 									$whereval = $data[$no_join_watch_raw];
@@ -1138,7 +1138,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		$joinKey = $this->getJoinValueColumn();
-		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
+		$elName = FabrikString::safeColName($this->getFullName(true, false));
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
 	}
 

@@ -167,7 +167,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			$formModel = $this->getForm();
 			$value = $this->getDefaultOnACL($data, $opts);
 
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$rawname = $name . "_raw";
 			if ($groupModel->isJoin())
 			{

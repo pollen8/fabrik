@@ -173,7 +173,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			{
 				JError::raiseError(500, $e->getMessage());
 			}
-			$coordColumn = $mapsElements[0]->getFullName(false, false, false);
+			$coordColumn = $mapsElements[0]->getFullName(false, false);
 			$table = $listModel->getTable();
 
 			$db = $listModel->getDb();
@@ -308,7 +308,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			{
 				JError::raiseError(500, $e->getMessage());
 			}
-			$coordColumn = $mapsElements[0]->getFullName(false, true, false) . "_raw";
+			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
 			// Are we using random start location for icons?
 			$listModel->_randomRecords = ($params->get('fb_gm_random_marker') == 1 && $recLimit != 0) ? true : false;

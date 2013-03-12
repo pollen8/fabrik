@@ -19,7 +19,8 @@ foreach ($group->subgroups as $subgroup) :
 			<div class="fabrikGroupRepeater pull-right">
 				<?php if ($group->canAddRepeat) :?>
 				<a class="addGroup" href="#">
-					<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?></a>
+					<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
+				</a>
 				<?php
 				endif;
 				if ($group->canDeleteRepeat) :?>

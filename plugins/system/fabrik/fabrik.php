@@ -230,10 +230,10 @@ class PlgSystemFabrik extends JPlugin
 
 			$allrows = $listModel->getData();
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_description', $table->label), true);
-			$descname = is_object($elementModel) ? $elementModel->getFullName(false, true) : '';
+			$descname = is_object($elementModel) ? $elementModel->getFullName() : '';
 
 			$elementModel = $listModel->getFormModel()->getElement($params->get('search_title', 0), true);
-			$title = is_object($elementModel) ? $elementModel->getFullName(false, true) : '';
+			$title = is_object($elementModel) ? $elementModel->getFullName() : '';
 
 			$aAllowedList = array();
 			$pk = $table->db_primary_key;

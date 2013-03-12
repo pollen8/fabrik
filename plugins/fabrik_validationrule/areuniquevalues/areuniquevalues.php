@@ -70,8 +70,8 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		if ((int) $otherfield !== 0)
 		{
 			$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
-			$otherFullName = $otherElementModel->getFullName(false, true, false);
-			$otherfield = $otherElementModel->getFullName(false, false, false);
+			$otherFullName = $otherElementModel->getFullName(true, false);
+			$otherfield = $otherElementModel->getFullName(false, false);
 		}
 		else
 		{
@@ -84,7 +84,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$data = $db->quote($data);
 
 		$query = $db->getQuery(true);
-		$query->select('COUNT(*)')->from($lookuptable)->where($elementModel->getFullName(false, false, false) . ' = ' . $data);
+		$query->select('COUNT(*)')->from($lookuptable)->where($elementModel->getFullName(false, false) . ' = ' . $data);
 
 		$listModel->buildQueryJoin($query);
 

@@ -226,7 +226,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 							foreach ($elementModels as $elementModel)
 							{
 								$element = $elementModel->getElement();
-								$fullName = $elementModel->getFullName(false, true, false);
+								$fullName = $elementModel->getFullName(true, false);
 								if (empty($log_elements) || in_array($fullName, $log_elements))
 								{
 									if ($newData[$c]->$fullName != $origData[$c]->$fullName)

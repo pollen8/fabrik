@@ -279,7 +279,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$listModel = $this->getlistModel();
 		$table = $listModel->getTable();
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$htmlid = $this->getHTMLId() . 'value';
 		$elName = FabrikString::safeColName($elName);
 		$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';

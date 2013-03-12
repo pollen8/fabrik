@@ -87,7 +87,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 		{
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMethodFieldId);
 			$element = $elementModel->getElement(true);
-			$pingMethodField = $elementModel->getFullName(false, true, false);
+			$pingMethodField = $elementModel->getFullName(true, false);
 			$method = $data[$pingMethodField];
 
 			if (!in_array($method, array('status', 'blog', 'microblog')))
@@ -108,7 +108,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 		{ // Use field
 
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingTitleFieldId);
-			$pingTitleField = $elementModel->getFullName(false, true, false);
+			$pingTitleField = $elementModel->getFullName(true, false);
 
 			$title = $data[$pingTitleField];
 		}
@@ -154,7 +154,7 @@ class plgFabrik_FormPingdotfm extends plgFabrik_Form
 			$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($pingMsgFieldId);
 			$element = $elementModel->getElement(true);
 
-			$pingMsgField = $elementModel->getFullName(false, true, false);
+			$pingMsgField = $elementModel->getFullName(true, false);
 
 			$msg = $data[$pingMsgField];
 		}

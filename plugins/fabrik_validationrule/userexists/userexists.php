@@ -96,8 +96,8 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 				if ((int) $user_field !== 0)
 				{
 					$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
-					$user_fullName = $user_elementModel->getFullName(false, true, false);
-					$user_field = $user_elementModel->getFullName(false, false, false);
+					$user_fullName = $user_elementModel->getFullName(true, false);
+					$user_field = $user_elementModel->getFullName(false, false);
 				}
 				if (!empty($user_field))
 				{

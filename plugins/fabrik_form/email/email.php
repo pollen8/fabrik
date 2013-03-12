@@ -307,7 +307,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$elName = $elementModel->getFullName(false, true, false);
+				$elName = $elementModel->getFullName(true, false);
 				if (array_key_exists($elName, $this->data))
 				{
 					if (method_exists($elementModel, 'addEmailAttachement'))
@@ -443,7 +443,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				$element = $elementModel->getElement();
 
 				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types  can render themselves?
-				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false) : $element->name;
+				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(true, false) : $element->name;
 				if (!in_array($key, $ignore))
 				{
 					$val = '';

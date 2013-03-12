@@ -125,7 +125,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 				$el = $formModel->getElement($elid, true);
 				if (is_object($el))
 				{
-					$name = $el->getFullName(false, true, false);
+					$name = $el->getFullName(true, false);
 					$v = JArrayHelper::getValue($data, $name);
 					if ($k == 'og:image')
 					{
@@ -141,7 +141,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$locEl = $formModel->getElement($params->get('fblike_location'), true);
 		if ($locEl != '')
 		{
-			$loc = JArrayHelper::getValue($data, $locEl->getFullName(false, true, false));
+			$loc = JArrayHelper::getValue($data, $locEl->getFullName(true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
 			if (count($loc) == 2)

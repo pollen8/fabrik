@@ -1418,15 +1418,6 @@ var FbForm = new Class({
 			return;
 		}
 		
-		var cloneFromRepeatCount = '0';
-		if (e) {
-			var pk_id = this.options.group_pk_ids[group_id];
-			var pk_el = e.target.findClassUp('fabrikSubGroup').getElement("[name*=[" + pk_id + "]]");
-			var re = new RegExp('join\\[\\d+\\]\\[' + pk_id + '\\]\\[(\\d+)\\]');
-			if (typeOf(pk_el) !== 'null' && pk_el.name.test(re)) {
-				cloneFromRepeatCount = pk_el.name.match(re)[1];
-			}
-		}
 		var clone = this.getSubGroupToClone(i);
 		var tocheck = this.repeatGetChecked(group);
 
@@ -1453,21 +1444,20 @@ var FbForm = new Class({
 
 				hasSubElements = el.hasSubElements();
 
-				// for all instances of the call to findClassUp use el.element rather
-				// than input (HMM SEE LINE 912 - PERHAPS WE CAN REVERT TO USING INPUT
-				// NOW?)
-				debugger;
 				container = input.getParent('.fabrikSubElementContainer');
 				var testid = (hasSubElements && container) ? container.id : input.id;
 				var cloneName = el.getCloneName();
-				if (cloneName === testid) {
+				
+				// Looser test that previous === to catch db join rendered as checkbox
+				if (testid.contains(cloneName)) {
 					lastinput = input;
 					formElementFound = true;
 
 					if (hasSubElements) {
 						subElementCounter++;
 						subElementContainer = input.getParent('.fabrikSubElementContainer');
-						// clone the first inputs event to all subelements
+						
+						// Clone the first inputs event to all subelements
 						// $$$ hugh - sanity check in case we have an element which has no input
 						if (document.id(testid).getElement('input')) {
 							input.cloneEvents(document.id(testid).getElement('input'));
@@ -1477,13 +1467,13 @@ var FbForm = new Class({
 					} else {
 						input.cloneEvents(el.element);
 
-						// update the element id use el.element.id rather than input.id as
+						// Update the element id use el.element.id rather than input.id as
 						// that may contain _1 at end of id
 						var bits = Array.from(el.element.id.split('_'));
 						bits.splice(bits.length - 1, 1, c);
 						input.id = bits.join('_');
 
-						// update labels for non sub elements
+						// Update labels for non sub elements
 						var l = input.getParent('.fabrikElementContainer').getElement('label');
 						if (l) {
 							l.setProperty('for', input.id);
@@ -1539,7 +1529,8 @@ var FbForm = new Class({
 			// a group, instead of resetting to default value.  This means knowing what the group PK element
 			// is, do we don't copy that value.  hence new group_pk_ids[] array, which gives us the PK element
 			// name in regular full format, which we need to test against the join string name.
-			var pk_re = new RegExp('\\[' + this.options.group_pk_ids[group_id] + '\\]');
+			//var pk_re = new RegExp('\\[' + this.options.group_pk_ids[group_id] + '\\]');
+			var pk_re = new RegExp(this.options.group_pk_ids[group_id]);
 			if (!this.options.group_copy_element_values[group_id] || (this.options.group_copy_element_values[group_id] && newEl.element.name && newEl.element.name.test(pk_re))) {
 				// Call reset method that resets both events and value back to default.
 				newEl.reset();
@@ -1573,6 +1564,7 @@ var FbForm = new Class({
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above//duplicate
 		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
+		console.log(this.repeatGroupMarkers.get(i) + 1);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 	},
 

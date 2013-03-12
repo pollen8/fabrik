@@ -237,7 +237,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 		$input = $app->input;
 		$filter = JFilterInput::getInstance();
 		$aData = $filter->clean($_POST, 'array');
-		$elName = $this->getFullName(true, true, false);
+		$elName = $this->getFullName(true, false);
 		if (strstr($elName, 'join'))
 		{
 			$elTempName = str_replace('join', '', $elName);

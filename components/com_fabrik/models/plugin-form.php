@@ -259,7 +259,7 @@ class PlgFabrik_Form extends FabrikPlugin
 							$elementModels = $groupModel->getPublishedElements();
 							reset($elementModels);
 							$tmpElement = current($elementModels);
-							$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+							$smallerElHTMLName = $tmpElement->getFullName(true, false);
 							$repeatGroup = count($model->formDataWithTableName['join'][$joinTable->id][$smallerElHTMLName]);
 						}
 						else
@@ -277,7 +277,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					 * repeat groups which arent joins
 					 * $elementModels = $groupModel->getPublishedElements();
 					foreach ($elementModels as $tmpElement) {
-					    $smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+					    $smallerElHTMLName = $tmpElement->getFullName(true, false);
 					    if (is_array($model->formDataWithTableName)) {
 					        if (array_key_exists($smallerElHTMLName . '_raw', $model->formDataWithTableName)) {
 					            $d = $model->formDataWithTableName[$smallerElHTMLName . '_raw'];
@@ -305,8 +305,8 @@ class PlgFabrik_Form extends FabrikPlugin
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;
 					$element = $elementModel->getElement();
 
-					$k = $elementModel->getFullName(false, true, false);
-					$key = $elementModel->getFullName(true, true, false);
+					$k = $elementModel->getFullName(true, false);
+					$key = $elementModel->getFullName(true, false);
 
 					// Used for working out if the element should behave as if it was
 					// in a new form (joined grouped) even when editing a record

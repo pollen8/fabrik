@@ -337,7 +337,7 @@ class plgContentFabrik extends JPlugin
 				{
 					// $$$ rob 26/05/2011 changed it so that you can pick up joined elements without specifying plugin
 					// param 'element' as joinx[x][fullname] but simpy 'fullname'
-					if ($element == $elementModel->getFullName(false, true, false))
+					if ($element == $elementModel->getFullName(true, false))
 					{
 						$activeEl = $elementModel;
 						continue 2;

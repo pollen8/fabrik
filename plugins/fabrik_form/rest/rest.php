@@ -204,7 +204,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 			$values = $include->put_value;
 			$format = $include->put_type;
 			$i = 0;
-			$fkName = $fkElement->getFullName(true, false, true);
+			$fkName = $fkElement->getFullName(false, true);
 			foreach ($values as &$v)
 			{
 				if ($v === $fkName)

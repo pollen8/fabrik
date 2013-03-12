@@ -81,7 +81,7 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 				break;
 		}
 		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
-		$otherFullName = $otherElementModel->getFullName(false, true, false);
+		$otherFullName = $otherElementModel->getFullName(true, false);
 		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
 		if ($this->allowEmpty($elementModel, $pluginc) && ($data === '' || $compare === ''))
 		{

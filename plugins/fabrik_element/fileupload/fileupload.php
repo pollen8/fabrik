@@ -81,7 +81,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			return false;
 		}
-		$fullName = $this->getFullName(true, true, false);
+		$fullName = $this->getFullName(true, false);
 		$params = $this->getParams();
 		$groupModel = $this->getGroupModel();
 		$return = false;
@@ -97,7 +97,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			if ($groupModel->isJoin())
 			{
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 				$joinid = $groupModel->getGroup()->join_id;
 				$fileJoinData = JArrayHelper::getValue($_FILES['join']['name'], $joinid, array());
 				$fdata = JArrayHelper::getValue($fileJoinData, $name);
@@ -145,7 +145,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$app = JFactory::getApplication();
 		$rowId = (array) $app->input->get('rowid');
 		$this->loadMeForAjax();
-		$col = $this->getFullName(false, false, false);
+		$col = $this->getFullName(false, false);
 		$listModel = $this->getListModel();
 		$listModel->updateRows($rowId, $col, '');
 	}
@@ -243,7 +243,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$j3 = FabrikWorker::j3();
 
 		$element = $this->getElement();
-		$paramsKey = $this->getFullName(false, true, false);
+		$paramsKey = $this->getFullName(true, false);
 		$paramsKey = Fabrikstring::rtrimword($paramsKey, $this->getElement()->name);
 		$paramsKey .= 'params';
 		$formData = $this->getFormModel()->data;
@@ -257,7 +257,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		// Repeat_image_repeat_image___params
 		$rawvalues = count($value) == 0 ? array() : array_fill(0, count($value), 0);
 		$fdata = $this->getFormModel()->data;
-		$rawkey = $this->getFullName(false, true, false) . '_raw';
+		$rawkey = $this->getFullName(true, false) . '_raw';
 		$rawvalues = JArrayHelper::getValue($fdata, $rawkey, $rawvalues);
 		if (!is_array($rawvalues))
 		{
@@ -371,7 +371,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$opts->max_file_size = (int) $params->get('ul_max_file_size');
 		$opts->ajax_chunk_size = (int) $params->get('ajax_chunk_size', 0);
 		$opts->crop = (int) $params->get('fileupload_crop', 0);
-		$opts->elementName = $this->getFullName(true, true, true);
+		$opts->elementName = $this->getFullName();
 		$opts->cropwidth = (int) $params->get('fileupload_crop_width');
 		$opts->cropheight = (int) $params->get('fileupload_crop_height');
 		$opts->ajax_max = (int) $params->get('ajax_max', 4);
@@ -636,7 +636,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$title = '';
 			if ($params->get('fu_title_element') == '')
 			{
-				$title_name = $this->getFullName(true, true, false) . '__title';
+				$title_name = $this->getFullName(true, false) . '__title';
 			}
 			else
 			{
@@ -952,7 +952,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$joinsid = $j . '___id';
 				$joinsparam = $j . '___params';
 
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 
 				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
 				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
@@ -1117,7 +1117,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$joinsid = $j . '___id';
 				$joinsparam = $j . '___params';
 
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 
 				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
 				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
@@ -1173,12 +1173,12 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$origData = $formModel->getOrigData();
 		if ($isjoin)
 		{
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$joinid = $groupModel->getGroup()->join_id;
 		}
 		else
 		{
-			$name = $this->getFullName(true, true, false);
+			$name = $this->getFullName(true, false);
 		}
 		if ($this->processAjaxUploads($name))
 		{
@@ -1426,7 +1426,7 @@ foreach ($files as &$f) {
 			$olddaata = JArrayHelper::getValue($this->getFormModel()->_origData, $repeatCounter);
 			if (!is_null($olddaata))
 			{
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 				$aoldData = JArrayHelper::fromObject($olddaata);
 				$r = JArrayHelper::getValue($aoldData, $name, '') === '' ? true : false;
 				if (!$r)
@@ -1442,7 +1442,7 @@ foreach ($files as &$f) {
 		$groupModel = $this->getGroup();
 		if ($groupModel->isJoin())
 		{
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$joinid = $groupModel->getGroup()->join_id;
 			$joindata = $input->files->get('join', array(), 'array');
 
@@ -1468,14 +1468,14 @@ foreach ($files as &$f) {
 				$joinid = $join->id;
 				$joindata = $input->post->get('join', array(), 'array');
 				$joindata = JArrayHelper::getValue($joindata, $joinid, array());
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 				$joindata = JArrayHelper::getValue($joindata, $name, array());
 				$joinids = JArrayHelper::getValue($joindata, 'id', array());
 				return empty($joinids) ? true : false;
 			}
 			else
 			{
-				$name = $this->getFullName(true, true, false);
+				$name = $this->getFullName(true, false);
 				$file = $input->files->get($name, array(), 'array');
 				if ($groupModel->canRepeat())
 				{
@@ -1662,7 +1662,7 @@ foreach ($files as &$f) {
 		}
 		$filter = JFilterInput::getInstance();
 		$aData = $filter->clean($_POST, 'array');
-		$elName = $this->getFullName(true, true, false);
+		$elName = $this->getFullName(true, false);
 		$elNameRaw = $elName . '_raw';
 		$params = $this->getParams();
 
@@ -1671,7 +1671,7 @@ foreach ($files as &$f) {
 		if ($groupModel->isJoin())
 		{
 			$joinid = $groupModel->getGroup()->join_id;
-			$elNameNoJoinstr = $this->getFullName(false, true, false);
+			$elNameNoJoinstr = $this->getFullName(true, false);
 			if ($groupModel->canRepeat())
 			{
 				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr][$repeatCounter]
@@ -1945,7 +1945,7 @@ foreach ($files as &$f) {
 		$title = basename($value);
 		if ($params->get('fu_title_element') == '')
 		{
-			$title_name = $this->getFullName(true, true, false) . '__title';
+			$title_name = $this->getFullName(true, false) . '__title';
 		}
 		else
 		{
@@ -2129,12 +2129,12 @@ foreach ($files as &$f) {
 		$isjoin = $groupModel->isJoin();
 		if ($isjoin)
 		{
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$joinid = $groupModel->getGroup()->join_id;
 		}
 		else
 		{
-			$name = $this->getFullName(true, true, false);
+			$name = $this->getFullName(true, false);
 		}
 
 		// Get parameters
@@ -2292,7 +2292,7 @@ foreach ($files as &$f) {
 		if ($params->get('upload_delete_image'))
 		{
 			jimport('joomla.filesystem.file');
-			$elName = $this->getFullName(false, true, false);
+			$elName = $this->getFullName(true, false);
 			$name = $this->getElement()->name;
 			foreach ($groups as $rows)
 			{
@@ -2487,7 +2487,7 @@ foreach ($files as &$f) {
 			}
 		}
 		$storage = $this->getStorage();
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$filepath = $row->$elName;
 		$filepath = FabrikWorker::JSONtoData($filepath, true);
 		$filepath = JArrayHelper::getValue($filepath, $repeatcount);
@@ -2608,12 +2608,12 @@ foreach ($files as &$f) {
 			$groupModel = $this->getGroup();
 			if ($isjoin)
 			{
-				$name = $this->getFullName(false, true, false);
+				$name = $this->getFullName(true, false);
 				$joinid = $groupModel->getGroup()->join_id;
 			}
 			else
 			{
-				$name = $this->getFullName(true, true, false);
+				$name = $this->getFullName(true, false);
 			}
 			$val = $origData[$name];
 		}
@@ -2691,7 +2691,7 @@ foreach ($files as &$f) {
 			$element = $this->getElement();
 
 			$value = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			$rawname = $name . '_raw';
 			if ($groupModel->isJoin() || $this->isJoin())
 			{

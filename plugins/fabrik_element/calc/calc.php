@@ -62,7 +62,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$groupModel = $this->getGroup();
 		$joinid = $groupModel->getGroup()->join_id;
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$params = $this->getParams();
 
 		// $$$ hugh - if we don't do this, we get the cached default from the previous repeat
@@ -286,8 +286,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
 		 * below on repeat data, it ended up in the wrong format, like join.XX.table___element.0_raw
 		 */
-		$key = $this->getFullName(true, true, false);
-		$shortkey = $this->getFullName(false, true, false);
+		$key = $this->getFullName(true, false);
+		$shortkey = $this->getFullName(true, false);
 		$rawkey = $key . '_raw';
 		if ($group->canRepeat())
 		{
@@ -341,7 +341,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			for ($j = 0; $j < count($elementModels); $j++)
 			{
 				$elementModel = $elementModels[$j];
-				$elkey = $elementModel->getFullName(false, true, false);
+				$elkey = $elementModel->getFullName(true, false);
 				$v = JArrayHelper::getValue($d, $elkey);
 				if (is_array($v))
 				{
@@ -411,7 +411,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			// $$$ hugh - need to set _raw, might be needed if (say) calc is being used as 'use_as_row_class'
 			// See comments in formatData() in table model, we might could move this to a renderRawListData() method.
-			$raw_name = $this->getFullName(false, true, false) . '_raw';
+			$raw_name = $this->getFullName(true, false) . '_raw';
 			$row->$raw_name = str_replace(GROUPSPLITTER, ',', $res);
 			return parent::preFormatFormJoins($res, $row);
 		}
@@ -429,7 +429,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	public function renderListData_csv($data, &$thisRow)
 	{
 		$val = $this->renderListData($data, $thisRow);
-		$col = $this->getFullName(false, true, false);
+		$col = $this->getFullName(true, false);
 		$raw = $col . '_raw';
 		$thisRow->$raw = $val;
 		return $val;
@@ -581,7 +581,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$field = JArrayHelper::getValue($fields, $name, false);
 		if ($field !== false && $field->Type == 'time')
 		{
-			$name = $this->getFullName(false, false, false);
+			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
@@ -611,7 +611,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$field = JArrayHelper::getValue($fields, $name, false);
 		if ($field !== false && $field->Type == 'time')
 		{
-			$name = $this->getFullName(false, false, false);
+			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
@@ -641,7 +641,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$field = JArrayHelper::getValue($fields, $name, false);
 		if ($field !== false && $field->Type == 'time')
 		{
-			$name = $this->getFullName(false, false, false);
+			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();

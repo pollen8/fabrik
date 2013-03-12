@@ -18,7 +18,7 @@ jimport('joomla.application.component.model');
  *
  * @package  Fabrik
  * @since    3.0
- */
+*/
 
 class FabrikFEModelGroup extends FabModel
 {
@@ -219,11 +219,11 @@ class FabrikFEModelGroup extends FabModel
 
 		/*
 		 * Sigh - seems that the repeat group 'repeat_group_show_first' property has been bastardized to be a setting
-		 * that is applicable to a group even when not in a repeat group, and has basically become a standard group setting.
-		 * My bad for labelling it poorly to start with.
-		 * So, now if this is set to 'no' the group is not shown but canView was returning true - doh! Caused issues in
-		 * multi page forms where we were trying to set/check errors in groups which were not attached to the form.
-		 */
+		* that is applicable to a group even when not in a repeat group, and has basically become a standard group setting.
+		* My bad for labelling it poorly to start with.
+		* So, now if this is set to 'no' the group is not shown but canView was returning true - doh! Caused issues in
+		* multi page forms where we were trying to set/check errors in groups which were not attached to the form.
+		*/
 		$formModel = $this->getFormModel();
 		$showGroup = $params->get('repeat_group_show_first', '1');
 		if ($showGroup == 0)
@@ -310,8 +310,8 @@ class FabrikFEModelGroup extends FabModel
 
 				/*
 				 * $$$ rob Using @ for now as in inline edit in podion you get multiple notices when
-				 * saving the status element
-				 */
+				* saving the status element
+				*/
 				$this->elements = @$allGroups[$this->getId()]->elements;
 			}
 		}
@@ -469,10 +469,10 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	* Get the groups form model
-	*
-	* @return object form model
-	*/
+	 * Get the groups form model
+	 *
+	 * @return object form model
+	 */
 
 	public function getFormModel()
 	{
@@ -711,10 +711,10 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	* Is the group a repeat group
-	*
-	* @return  bool
-	*/
+	 * Is the group a repeat group
+	 *
+	 * @return  bool
+	 */
 
 	public function canCopyElementValues()
 	{
@@ -921,6 +921,90 @@ class FabrikFEModelGroup extends FabModel
 		unset($this->publishedElements);
 		unset($this->publishedListElements);
 		unset($this->elements);
+	}
+
+	/**
+	 * Part of process()
+	 * Set foreign key's value to the main records insert id
+	 */
+	protected function setForeignKey()
+	{
+		$formModel = $this->getFormModel();
+		$formData =& $formModel->formDataWithTableName;
+
+		$joinModel = $this->getJoinModel();
+		$joinToPk = $joinModel->getJoinedToTablePk();
+		$pk = $formData[$joinToPk];
+		$fk = $joinModel->getForeignKey();
+		$fks = array($fk, $fk . '_raw');
+		array_fill(0, count($formData[$fk]), $pk);
+		foreach ($fks as $fk) {
+			foreach ($formData[$fk] as $k => $v)
+			{
+				$formData[$fk][$k] = $pk;
+			}
+		}
+	}
+
+	/**
+	 * Group specific form submission code - deals with saving joined data.
+	 */
+	public function process()
+	{
+		if (!$this->isJoin())
+		{
+			return;
+		}
+		$input = JFactory::getApplication()->input;
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
+		$repeatTotals = JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		$joinModel = $this->getJoinModel();
+		$masterPk = $joinModel->getJoinedToTablePk();
+		echo $masterPk;
+		$pkField = $joinModel->getPrimaryKey();
+		echo "pk = $pkField";
+
+		$listModel = $this->getListModel();
+		$item = $this->getGroup();
+		$formModel = $this->getFormModel();
+		$formData =& $formModel->formDataWithTableName;
+		echo "<pre>";print_r($formData);
+		$pks = $formData[$masterPk];
+		$this->setForeignKey();
+
+		$elementModels = $this->getMyElements();
+		$list = $listModel->getTable();
+		$tblName = $list->db_table_name;
+		$list->db_table_name = $joinModel->getJoin()->table_join;
+print_r($pks);
+		// For each repeat group
+		for ($i = 0; $i < $repeatTotals; $i ++)
+		{
+			$pk = $pks[$i];
+			$data = array();
+			foreach ($elementModels as $elementModel)
+			{
+				// Deferred till later.
+				if ($elementModel->isJoin())
+				{
+					continue;
+				}
+				$name = $elementModel->getFullName(true, false);
+				$key = $elementModel->getElement()->name;
+				$values = JArrayHelper::getValue($formData, $name, array());
+				$values = JArrayHelper::getValue($values, $i, '');
+				$data[$key] = $values;
+
+			}
+			echo "<pre>";print_r($data);
+			$listModel->storeRow($data, $pk, true, $item);
+
+			// Update key
+			echo "I = $i last Insert Id = $listModel->lastInsertId <br>";
+			$formData[$pkField][$i] = $listModel->lastInsertId;
+		}
+		$list->db_table_name = $tblName;
+		exit;
 	}
 
 }

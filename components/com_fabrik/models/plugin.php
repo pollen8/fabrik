@@ -747,7 +747,7 @@ class FabrikPlugin extends JPlugin
 					$c->label = $label;
 
 					// Show hightlight primary key and shift to top of options
-					if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false, false)))
+					if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false)))
 					{
 						$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
 						array_unshift($arr, $c);

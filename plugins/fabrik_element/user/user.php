@@ -247,8 +247,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$form = $this->getFormModel();
 					$group = $this->getGroup();
 					$joinid = $group->getGroup()->join_id;
-					$key = $this->getFullName(true, true, false);
-					$shortkey = $this->getFullName(false, true, false);
+					$key = $this->getFullName(true, false);
+					$shortkey = $this->getFullName(true, false);
 					$rawkey = $key . '_raw';
 					if ($group->canRepeat())
 					{
@@ -304,7 +304,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		if (!empty($newuserid))
 		{
 			$newuserid_element = $input->get('newuserid_element', '');
-			$this_fullname = $this->getFullName(false, true, false);
+			$this_fullname = $this->getFullName(true, false);
 			if ($newuserid_element == $this_fullname)
 			{
 				return;
@@ -373,7 +373,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					// This allows us to still 'update on edit' when element is write access controlled.
 					if (!$this->canUse())
 					{
-						$this_fullname = $this->getFullName(false, true, false);
+						$this_fullname = $this->getFullName(true, false);
 						$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
 					}
 				}
@@ -634,7 +634,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	{
 		$listModel = $this->getlistModel();
 		$formModel = $listModel->getFormModel();
-		$elName2 = $this->getFullName(false, false, false);
+		$elName2 = $this->getFullName(false, false);
 		if (!$formModel->hasElement($elName2))
 		{
 			return '';
@@ -643,7 +643,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$element = $this->getElement();
 		$params = $this->getParams();
 
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		$htmlid = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 
@@ -727,7 +727,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 		$joinKey = $this->getJoinValueColumn();
-		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
+		$elName = FabrikString::safeColName($this->getFullName(true, false));
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
 	}
 
@@ -838,7 +838,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		$key = $this->getFullName(false, true, false);
+		$key = $this->getFullName(true, false);
 		$rawkey = $key . '_raw';
 		$userid = $value;
 		if (array_key_exists($rawkey, $data))
@@ -899,7 +899,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 	public function getFilterFullName()
 	{
-		$elName = $this->getFullName(false, true, false);
+		$elName = $this->getFullName(true, false);
 		return FabrikString::safeColName($elName);
 	}
 

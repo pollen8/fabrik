@@ -283,7 +283,7 @@ class plgFabrik_FormFtp extends plgFabrik_Form
 				$element = $elementModel->getElement();
 
 				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types  can render themselves?
-				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(false, true, false) : $element->name;
+				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(true, false) : $element->name;
 				if (!in_array($key, $ignore))
 				{
 					$val = '';

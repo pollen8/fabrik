@@ -69,7 +69,7 @@ class imageRender
 		$title = basename($file);
 		if ($params->get('fu_title_element') == '')
 		{
-			$title_name = $model->getFullName(true, true, false) . '__title';
+			$title_name = $model->getFullName(true, false) . '__title';
 		}
 		else
 		{

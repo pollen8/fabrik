@@ -69,7 +69,6 @@ class plgFabrik_FormClone extends plgFabrik_Form
 				$listModel->storeRow($formModel->formData, $formModel->_fullFormData['rowid']);
 			}
 
-			// $clone_times_field = $elementModel->getFullName(false, true, false);
 			$clone_times = $formModel->formData[$element->name];
 			if (is_numeric($clone_times))
 			{

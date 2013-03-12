@@ -155,8 +155,22 @@ class FabrikFEModelJoin extends FabModel
 	public function getPrimaryKey($glue = '___')
 	{
 		$join = $this->getJoin();
-		$pk = $join->table_join . $glue . $join->table_join_key;
+		$pk = str_replace('`', '', $join->params->get('pk'));
+		$pk = str_replace('.', $glue, $pk);
 		return $pk;
+	}
+
+	public function getForeignKey($glue = '___')
+	{
+		$join = $this->getJoin();
+		$fk = $join->table_join . $glue . $join->table_join_key;
+		return $fk;
+	}
+
+	public function getJoinedToTablePk($glue = '___')
+	{
+		$join = $this->getJoin();
+		return $join->join_from_table . $glue . $join->table_key;
 	}
 
 	/**

@@ -1,9 +1,8 @@
-
-	<?php $element = $this->element; ?>
+<?php $element = $this->element; ?>
 <div class="control-group <?php echo $element->containerClass . $element->span; ?>">
 	<?php echo $element->label;?>
-	<div class="controls">
 
+	<div class="controls">
 		<?php if ($this->tipLocation == 'above') : ?>
 			<p class="help-block"><?php echo $element->tipAbove ?></p>
 		<?php endif ?>
@@ -26,4 +25,4 @@
 		<p class="help-block"><?php echo $element->tipAbove ?></p>
 	<?php endif ?>
 
-</div>
+</div><!--  end span -->

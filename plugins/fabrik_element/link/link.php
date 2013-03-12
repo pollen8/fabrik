@@ -364,7 +364,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
 		$data = (array) json_decode($this->getValue($data, $c, true));
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 		if ($group->canRepeat())
 		{
@@ -445,7 +445,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$element = $this->getElement();
 
 			$default = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(false, true, false);
+			$name = $this->getFullName(true, false);
 			if ($groupModel->isJoin())
 			{
 				if ($groupModel->canRepeat())
