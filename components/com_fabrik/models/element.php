@@ -5573,7 +5573,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
 		$this->setId(JRequest::getInt('element_id'));
 		$this->getElement(true);
-		$cache = FabrikWorker::getCache();
+		$listModel = $this->getListModel();
+		$cache = FabrikWorker::getCache($listModel);
 		$search = JRequest::getVar('value');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}

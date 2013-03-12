@@ -1535,13 +1535,16 @@ class FabrikWorker
 
 	/**
 	 * Get a cachec handler
+	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
 	 * @since   3.0.7
+	 *
+	 * @param   object  listModel
 	 *
 	 * @return  JCache
 	 */
 
-	public static function getCache()
+	public static function getCache($listModel = null)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -1550,6 +1553,10 @@ class FabrikWorker
 						'storage' => 'file'));
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
+		if ($doCache && $listModel !== null)
+		{
+			$doCache = $listModel->getParams()->get('list_disable_caching', '0') == '0';
+		}
 		$cache->setCaching($doCache);
 		return $cache;
 	}

@@ -796,7 +796,7 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->_buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
-		$cache = FabrikWorker::getCache();
+		$cache = FabrikWorker::getCache($this);
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->_data = $results[1];
@@ -6824,7 +6824,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function doCalculations()
 	{
-		$cache = FabrikWorker::getCache();
+		$cache = FabrikWorker::getCache($this);
 		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
 	}
 
@@ -8297,7 +8297,7 @@ class FabrikFEModelList extends JModelForm
 		if (!array_key_exists($col, $this->columnData))
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$cache = FabrikWorker::getCache();
+			$cache = FabrikWorker::getCache($this);
 			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct);
 			if (is_null($res))
 			{
