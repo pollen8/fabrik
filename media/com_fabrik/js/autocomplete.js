@@ -142,7 +142,8 @@ var FbAutocomplete = new Class({
 		}
 	},
 	
-	makeSelection: function (e, li) {
+	makeSelection: function (e) {
+		var li = e.target;
 		// $$$ tom - make sure an item was selected before operating on it.
 		if (typeOf(li) !== 'null') {
 			this.getInputElement().value = li.get('text');
