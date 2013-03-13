@@ -2419,6 +2419,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$joindata = isset($post['join']) ? $post['join'] : array();
 
+		echo "<pre>repeta totals";print_r($repeatTotals);
 		foreach ($groups as $groupModel)
 		{
 			$groupCounter = $groupModel->getGroup()->id;
@@ -2428,9 +2429,10 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				$joinModel = $groupModel->getJoinModel();
 			}
+
 			foreach ($elementModels as $elementModel)
 			{
-				// If the user can't view or edit the element, then don't validate it. Otherwise user sees failed validation but no idication of what failed
+				// If the user can't view or edit the element, then don't validate it. Otherwise user sees failed validation but no indication of what failed
 				if (!$elementModel->canUse() && !$elementModel->canView())
 				{
 					continue;
@@ -2457,6 +2459,7 @@ class FabrikFEModelForm extends FabModelForm
 
 					// $$$ rob $this->formData was $_POST, but failed to get anything for calculation elements in php 5.2.1
 					$form_data = $elementModel->getValue($this->formData, $c, array('runplugins' => 0, 'use_default' => false));
+					echo "<pre><br>$elName2:";print_r($form_data);
 					if (get_magic_quotes_gpc())
 					{
 						if (is_array($form_data))
@@ -2510,9 +2513,7 @@ class FabrikFEModelForm extends FabModelForm
 					}
 					foreach ($validation_rules as $plugin)
 					{
-						$plugin->_formModel = $this;
-						// $$$ rob 10/06/2012 - dont think this is used
-						// $plugin->_listModel = $this->getListModel();
+						$plugin->formModel = $this;
 						if ($plugin->shouldValidate($form_data, $pluginc))
 						{
 							if (!$plugin->validate($form_data, $elementModel, $pluginc, $c))
@@ -2530,7 +2531,7 @@ class FabrikFEModelForm extends FabModelForm
 									{
 										$elDbVals[$c] = $testreplace;
 										$this->modifiedValidationData[$elName][$c] = $testreplace;
-										//$joindata[$joinModel->getId()][$elName2 . '_raw'][$c] = $testreplace;
+										$joindata[$elName2 . '_raw'][$c] = $testreplace;
 										$post[$elName . '_raw'][$c] = $testreplace;
 									}
 								}
@@ -2550,35 +2551,26 @@ class FabrikFEModelForm extends FabModelForm
 						$pluginc++;
 					}
 				}
-				if ($groupModel->isJoin())
+				if ($groupModel->isJoin() || $elementModel->isJoin())
 				{
-					$joindata[$joinModel->getId()][$elName2] = $elDbVals;
+					$joindata[$elName2] = $elDbVals;
 				}
 				else
 				{
-					if ($elementModel->isJoin())
-					{
-						$joinModel = $elementModel->getJoinModel();
-						$join = $joinModel->getJoin();
-						$joindata[$join->id][$elName2] = $elDbVals;
-					}
-					else
-					{
-						$input->set($elName, $elDbVals);
-						$post[$elName] = $elDbVals;
-					}
+					$input->set($elName, $elDbVals);
+					$post[$elName] = $elDbVals;
 				}
 				// Unset the deafults or the orig submitted form data will be used (see date plugin mysql vs form format)
 				$elementModel->defaults = null;
 			}
 		}
-
 		// Insert join data into request array
-		/* $post['join'] = $joindata;
-		$input->set('join', $joindata); */
-
-		//Might be: ?
-		// $input->post->set('join', $joindata);
+		foreach ($joindata as $key => $val)
+		{
+			$input->set($key, $val);
+			$post[$key] = $val;
+		}
+echo "<pre>";print_r($this->errors['countries_repeat_people___people']);exit;
 		if (!empty($this->errors))
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $this);

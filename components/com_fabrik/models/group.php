@@ -980,6 +980,7 @@ class FabrikFEModelGroup extends FabModel
 		// Set the list's table name to the join table, needed for storeRow()
 		$list->db_table_name = $joinModel->getJoin()->table_join;
 
+		echo" <pre>";print_r($repeats);exit;
 		// For each repeat group
 		for ($i = 0; $i < $repeats; $i ++)
 		{
