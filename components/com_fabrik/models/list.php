@@ -7844,6 +7844,11 @@ class FabrikFEModelList extends JModelForm
 			return $this->getFormModel()->getId();
 		}
 		$return = JArrayHelper::getValue($this->aRow, $match);
+		if (is_array($return))
+		{
+			$this->parseAddSlases = true;
+			$return = json_encode($return);
+		}
 		if ($this->parseAddSlases)
 		{
 			$return = htmlspecialchars($return, ENT_QUOTES, 'UTF-8');
