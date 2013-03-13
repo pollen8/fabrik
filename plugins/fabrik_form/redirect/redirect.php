@@ -235,14 +235,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
-				if ($group->isJoin())
-				{
-					$tmpData = $formModel->_fullFormData['join'][$group->getGroup()->join_id];
-				}
-				else
-				{
-					$tmpData = $formModel->_fullFormData;
-				}
+				$tmpData = $formModel->_fullFormData;
 				foreach ($elements as $elementModel)
 				{
 
@@ -326,14 +319,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				foreach ($elements as $element)
 				{
 
-					if ($group->isJoin())
-					{
-						$tmpData = $formModel->_fullFormData['join'][$group->getGroup()->join_id];
-					}
-					else
-					{
-						$tmpData = $formModel->_fullFormData;
-					}
+					$tmpData = $formModel->_fullFormData;
 					if ($element->getElement()->name == 'fabrik_list_filter_all')
 					{
 						continue;

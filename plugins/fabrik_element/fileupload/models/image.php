@@ -90,31 +90,7 @@ class imageRender
 			{
 				if (is_array($formModel->data))
 				{
-					$group = $model->getGroup();
-					if ($group->isJoin())
-					{
-						$join_id = $group->getGroup()->join_id;
-						if (isset($formModel->data['join']))
-						{
-							if (array_key_exists($join_id, $formModel->data['join']))
-							{
-								if (array_key_exists($title_name, $formModel->data['join'][$join_id]))
-								{
-									if (array_key_exists($model->_repeatGroupCounter, $formModel->data['join'][$join_id][$title_name]))
-									{
-										$title = $formModel->data['join'][$join_id][$title_name][$model->_repeatGroupCounter];
-									}
-								}
-							}
-						}
-					}
-					else
-					{
-						if (array_key_exists($title_name, $formModel->data))
-						{
-							$title = $formModel->data[$title_name];
-						}
-					}
+					$title = JArrayHelper::getValue($formModel->data, $title_name, '');
 				}
 			}
 		}

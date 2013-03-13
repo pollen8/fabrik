@@ -738,15 +738,6 @@ class FabrikWorker
 
 	protected function replaceWithFormData($matches)
 	{
-		// Merge any join data key val pairs down into the main data array
-		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
-		foreach ($joins as $k => $data)
-		{
-			foreach ($data as $k => $v)
-			{
-				$this->_searchData[$k] = $v;
-			}
-		}
 
 		$match = $matches[0];
 		$orig = $match;

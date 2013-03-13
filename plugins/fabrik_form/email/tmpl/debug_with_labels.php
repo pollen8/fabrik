@@ -9,7 +9,7 @@
  */
 
 // Alter these settings to limit what is shown in the email:
- 
+
 // Set this to show the raw element values.
 $raw = false;
 
@@ -60,10 +60,6 @@ function tryForLabel($formModel, $key, $raw, $info)
 <?php
 foreach ($this->data as $key => $val)
 {
-	if ($key === 'join') :
-		continue;
-	endif;
-
 	// Lets see if we can get the element name:
 	list($label, $thisRaw, $show) = tryForLabel($formModel, $key, $raw, $info);
 
@@ -88,21 +84,4 @@ foreach ($this->data as $key => $val)
 ?>
 </table>
 
-<h2>Join data</h2>
-<p>Below out puts the form's join data one record at a time:</p>
-<table>
-<?php
-$joindata = $this->data['join'];
-foreach (array_keys($joindata) as $joinkey) :
-	$keys = array_keys($joindata[$joinkey]);
-	$length = count($joindata[$joinkey][$keys[0]]);
-	for ($i = 0; $i < $length; $i++) :
-		echo '<tr><td colspan="2"><h3>record ' . $i . '</h3></td></tr>';
-		foreach ($keys as $k) :
-			echo '<tr><td>' . $k . '</td><td>' . @$this->data['join'][$joinkey][$k][$i] . '</td></tr>';
-		endforeach;
-	endfor;
-endforeach;
-?>
-</table>
 <?php exit;?>

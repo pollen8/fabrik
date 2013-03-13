@@ -12,9 +12,7 @@
 <?php
 foreach ($this->data as $key => $val)
 {
-	if ($key === 'join') :
-		continue;
-	endif;
+
 	echo '<tr><td>' . $key . '</td><td>';
 	if (is_array($val)) :
 		foreach ($val as $v):
@@ -29,26 +27,5 @@ foreach ($this->data as $key => $val)
 	endif;
 	echo "</td></tr>";
 }
-?>
-</table>
-
-<h2>Join data</h2>
-<p>Below out puts the form's join data one record at a time:</p>
-<table>
-<?php
-echo "<pre>";print_r($this->data['join']);echo "</pre>";
-$joindata = $this->data['join'];
-foreach (array_keys($joindata) as $joinkey) :
-	$keys = array_keys($joindata[$joinkey]);
-	$length = count($joindata[$joinkey][$keys[0]]);
-	for ($i = 0; $i < $length; $i++) :
-		echo '<tr><td colspan="2"><h3>record ' . $i . '</h3></td></tr>';
-		foreach ($keys as $k) :
-			echo '<tr><td>' . $k . '</td><td>';
-		print_r( htmlentities($this->data['join'][$joinkey][$k][$i]));
-		echo  '</td></tr>';
-		endforeach;
-	endfor;
-endforeach;
 ?>
 </table>

@@ -889,19 +889,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					if ($groupModel->canRepeat())
 					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+						if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
 						{
-							$value = $data['join'][$joinid][$name][$repeatCounter];
+							$value = $data[$name][$repeatCounter];
 						}
 					}
-					else
+					else if (array_key_exists($name, $data))
 					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]))
-						{
-							$value = $data['join'][$joinid][$name];
-						}
+						$value = $data[$name];
 					}
 				}
 				else
@@ -911,17 +906,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 						// Repeat group NO join
 						if (array_key_exists($name, $data))
 						{
-							if (is_array($data[$name]))
-							{
-								// Occurs on form submission for fields at least
-								$a = $data[$name];
-
-							}
-							else
-							{
-								// Occurs when getting from the db
-								$a = FabrikWorker::JSONtoData($data[$name], true);
-							}
+							// Occurs on form submission for fields at least : Occurs when getting from the db
+							$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
 							if (array_key_exists($repeatCounter, $a))
 							{
 								$value = $a[$repeatCounter];

@@ -919,10 +919,11 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _cryptViewOnlyElements(&$aHiddenFields)
 	{
+		$model = $this->getModel();
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$fields = array();
-		$ro = $this->get('readOnlyVals');
+		$ro = $model->getReadOnlyVals();
 		foreach ($ro as $key => $pair)
 		{
 			$repeatGroup = $pair['repeatgroup'];

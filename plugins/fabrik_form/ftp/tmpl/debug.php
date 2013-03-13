@@ -24,28 +24,7 @@ foreach ($this->data as $key => $val) {
 }
 ?>
 </table>
-<?php if (array_key_exists('join', $this->data)) {?>
-<h2>Join data</h2>
-<p>Below out puts the form's join data one record at a time:</p>
-<table>
-<?php
-$joindata = (array)$this->data['join'];
-foreach (array_keys($joindata) as $joinkey) {
-	$keys = array_keys($joindata[$joinkey]);
-	$length = count($joindata[$joinkey][$keys[0]]);
-	for ($i = 0; $i < $length; $i++) {
-		echo "<tr><td colspan=\"2\"><h3>record $i</h3></td></tr>";
-		foreach($keys as $k) {
-			$data = $this->data['join'][$joinkey][$k][$i];
-			echo  "<tr><td>$k</td><td>";print_r($data);echo "</td></tr>";
-		}
-	}
-}
-?>
-</table>
-<?php } else {?>
-<p>No join data found in the form </p>
-<?php }?>
+
 
 <h3>Here's some placeholder magic you can use</h3>
 

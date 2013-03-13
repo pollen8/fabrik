@@ -923,6 +923,14 @@ class FabrikFEModelGroup extends FabModel
 		unset($this->elements);
 	}
 
+	protected function masterInsertId()
+	{
+		$formModel = $this->getFormModel();
+		$joinModel = $this->getJoinModel();
+		$formData =& $formModel->formDataWithTableName;
+		$joinToPk = $joinModel->getJoinedToTablePk();
+		return $formData[$joinToPk];
+	}
 	/**
 	 * Part of process()
 	 * Set foreign key's value to the main records insert id
@@ -931,10 +939,8 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$formModel = $this->getFormModel();
 		$formData =& $formModel->formDataWithTableName;
-
 		$joinModel = $this->getJoinModel();
-		$joinToPk = $joinModel->getJoinedToTablePk();
-		$pk = $formData[$joinToPk];
+		$masterInsertId = $this->masterInsertId();
 		$fk = $joinModel->getForeignKey();
 		$fks = array($fk, $fk . '_raw');
 		array_fill(0, count($formData[$fk]), $pk);
@@ -942,7 +948,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			foreach ($formData[$fk] as $k => $v)
 			{
-				$formData[$fk][$k] = $pk;
+				$formData[$fk][$k] = $masterInsertId;
 			}
 		}
 	}
@@ -971,16 +977,19 @@ class FabrikFEModelGroup extends FabModel
 		$item = $this->getGroup();
 		$formModel = $this->getFormModel();
 		$formData =& $formModel->formDataWithTableName;
+
 		$this->setForeignKey();
 
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
 
-		// Set the list's table name to the join table, needed for storeRow()
-		$list->db_table_name = $joinModel->getJoin()->table_join;
 
-		echo" <pre>";print_r($repeats);exit;
+		// Set the list's table name to the join table, needed for storeRow()
+		$join = $joinModel->getJoin();
+		$list->db_table_name = $join->table_join;
+
+		$usedKeys = array();
 		// For each repeat group
 		for ($i = 0; $i < $repeats; $i ++)
 		{
@@ -994,7 +1003,22 @@ class FabrikFEModelGroup extends FabModel
 
 			// Update key
 			$formData[$pkField][$i] = $insertId;
+			$usedKeys[] = $insertId;
 		}
+
+		// Delete any removed groups
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		$masterInsertId = $this->masterInsertId();
+		$query->delete($list->db_table_name)->where($join->table_join_key .  ' = ' . $db->quote($masterInsertId));
+		if (!empty($usedKeys))
+		{
+			$pk = $join->params->get('pk');
+			$query->where('!(' . $pk  . 'IN (' . implode(',', $usedKeys) . ')) ');
+		}
+		$db->setQuery($query);
+		$db->execute();
+
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
 	}

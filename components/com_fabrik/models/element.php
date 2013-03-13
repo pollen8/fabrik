@@ -1111,6 +1111,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
 		$name = $this->getFullName(true, false);
+		$opts = array('raw' => true);
 		$group = $this->getGroup();
 		if ($group->canRepeat())
 		{
@@ -1118,11 +1119,11 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$values[$name]['data'] = array();
 			}
-			$values[$name]['data'][$c] = $this->getValue($data, $c);
+			$values[$name]['data'][$c] = $this->getValue($data, $c, $opts);
 		}
 		else
 		{
-			$values[$name]['data'] = $this->getValue($data, $c);
+			$values[$name]['data'] = $this->getValue($data, $c, $opts);
 		}
 	}
 
@@ -1140,34 +1141,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$group = $this->getGroup();
-		/* if ($group->isJoin())
-		{
-			$jkey = 'join.' . $group->getGroup()->join_id . '.' . $key;
-			FArrayHelper::setValue($post, $jkey, $data);
-			FArrayHelper::setValue($_REQUEST, $jkey, $data);
+		FArrayHelper::setValue($post, $key, $data);
+		FArrayHelper::setValue($_REQUEST, $key, $data);
 
-			// Seems the only way to add it into $post? FArrayHelper bug I guess but too scared to alter that at the moement
-
-			// Repeat group data
-			if ($group->canRepeat())
-			{
-				$repeatCounts = JArrayHelper::getValue($post, 'fabrik_repeat_group', array());
-				$c = JArrayHelper::getValue($repeatCounts, $group->getId());
-				for ($x = 0; $x < $c; $x ++)
-				{
-					$post['join'][$group->getGroup()->join_id][$key][$x] = $data[$x];
-				}
-			}
-			else
-			{
-				$post['join'][$group->getGroup()->join_id][$key] = $data;
-			}
-		}
-		else
-		{ */
-			FArrayHelper::setValue($post, $key, $data);
-			FArrayHelper::setValue($_REQUEST, $key, $data);
-		//}
 		// $$$rob even though $post is passed by reference - by adding in the value
 		// we arent actually modifiying the $_POST var that post was created from
 		$app->input->set($key, $data);
@@ -2028,26 +2004,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
 			$w = new FabrikWorker;
-			/*
-			 * merge join data down for current repetCounter so that parseing repeat joined data
-			 * only inserts current record
-			 */
 			foreach ($data as $k => $val)
 			{
-				/* if ($k === 'join')
-				{
-					foreach ($val as $joindata)
-					{
-						foreach ($joindata as $k2 => $val2)
-						{
-							$repData[$k2] = JArrayHelper::getValue($val2, $repeatCounter);
-						}
-					}
-				}
-				else
-				{ */
-					$repData[$k] = $val;
-				//}
+				$repData[$k] = $val;
 			}
 			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
 			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);

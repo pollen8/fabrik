@@ -103,13 +103,6 @@ class FabrikFEModelList extends JModelForm
 	public $lastInsertId = null;
 
 	/**
-	 * Store data to create joined records from
-	 *
-	 * @var array
-	 */
-	protected $_joinsToProcess = null;
-
-	/**
 	 * Database fields
 	 *
 	 * @var array
@@ -6359,61 +6352,6 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * When form saved (and set to record in database)
-	 * this is run to see if there is any table join data,
-	 * if there is it stores it in $this->_joinsToProcess
-	 *
-	 * @return  array	[joinid] = array(join => $join, 'groups' => array, 'elements' => array element models)
-	 */
-
-	public function preProcessJoin()
-	{
-		if (!isset($this->_joinsToProcess))
-		{
-			$this->_joinsToProcess = array();
-			$formModel = $this->getFormModel();
-			$groups = $formModel->getGroupsHiarachy();
-			foreach ($groups as $groupModel)
-			{
-				$group = $groupModel->getGroup();
-				if ($groupModel->isJoin())
-				{
-					$joinModel = $groupModel->getJoinModel();
-					$join = $joinModel->getJoin();
-					if (!array_key_exists($join->id, $this->_joinsToProcess))
-					{
-						$this->_joinsToProcess[$join->id] = array('join' => $join, 'groups' => array($groupModel));
-					}
-					else
-					{
-						$this->_joinsToProcess[$join->id]['groups'][] = $groupModel;
-					}
-				}
-				$elements = $groupModel->getPublishedElements();
-				$c = count($elements);
-				for ($x = 0; $x < $c; $x++)
-				{
-					$elementModel = $elements[$x];
-					if ($elementModel->isJoin())
-					{
-						$joinModel = $elementModel->getJoinModel();
-						$join = $joinModel->getJoin();
-						if (!array_key_exists($join->id, $this->_joinsToProcess))
-						{
-							$this->_joinsToProcess[$join->element_id] = array('join' => $join, 'elements' => array($elementModel));
-						}
-						else
-						{
-							$this->_joinsToProcess[$join->element_id]['elements'][] = $elementModel;
-						}
-					}
-				}
-			}
-		}
-		return $this->_joinsToProcess;
-	}
-
-	/**
 	 * Strip the table names from the front of the key
 	 *
 	 * @param   array   $data   data to strip
@@ -6503,7 +6441,6 @@ class FabrikFEModelList extends JModelForm
 						// For radio buttons and dropdowns otherwise nothing is stored for them??
 						$postkey = array_key_exists($key . '_raw', $data) ? $key . '_raw' : $key;
 
-						// @TODO similar check (but not quiet the same performed in formModel _removeIgnoredData() - should merge into one place
 						if ($elementModel->recordInDatabase($data))
 						{
 							if (array_key_exists($key, $data) && !in_array($key, $noRepeatFields))
@@ -6580,10 +6517,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		if (!$isJoin)
-		{
-			//echo "<pre>store row" . $table->db_table_name;print_r($oRecord);exit;
-		}
+
 		if ($origRowId == '' || $origRowId == 0)
 		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained

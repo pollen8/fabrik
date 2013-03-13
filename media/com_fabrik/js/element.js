@@ -488,6 +488,7 @@ var FbElement =  new Class({
 	 */
 
 	_decreaseName: function (n, delIndex, suffix) {
+		
 		suffixFound = false;
 		suffix = suffix ? suffix : false;
 		if (suffix !== false) {
@@ -496,16 +497,15 @@ var FbElement =  new Class({
 				suffixFound = true;
 			}
 		}
-		var namebits = n.split('][');
-		var i = namebits[2].replace(']', '').toInt();
+		var namebits = n.split('[');
+		var i = namebits[1].replace(']', '').toInt();
 		if (i >= 1  && i > delIndex) {
 			i --;
 		}
-		if (namebits.length === 3) {
-			i = i + ']';
-		}
-		namebits.splice(2, 1, i);
-		var r = namebits.join('][');
+		i = i + ']';
+		
+		namebits[1] = i;
+		var r = namebits.join('[');
 		if (suffixFound) {
 			r += suffix;
 		}

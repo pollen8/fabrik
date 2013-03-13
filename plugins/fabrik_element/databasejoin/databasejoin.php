@@ -991,7 +991,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 						break;
 					case 'checkbox':
-						echo "<pre>$repeatCounter: ";print_r($default);echo "</pre>";
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
 						$defaultLabel = implode("\n", $html);
 						break;
@@ -1162,17 +1161,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$id = $this->getHTMLId($repeatCounter);
 		$idname = $this->getFullName(true, false) . '_id';
 		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
-		$defaults = $formModel->failedValidation() ? $default : explode(GROUPSPLITTER, JArrayHelper::getValue($data, $idname));
+		if ($this->isJoin() && !$formModel->hasErrors())
+		{
+			$default = (array) FArrayHelper::getNestedValue($data, $idname . '.' . $repeatCounter, 'not found');
+		}
 		if ($this->isEditable())
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
 			$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
-			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $defaults, $id);
+			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $default, $id);
 		}
 		else
 		{
 			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $elName, $attribs, $defaults, 'value', 'text', $optsPerRow, $this->isEditable());
+			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $elName, $attribs, $default, 'value', 'text', $optsPerRow, $this->isEditable());
 		}
 	}
 
@@ -1210,7 +1212,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$default = (array) FArrayHelper::getNestedValue($data, $idname . '.' . $repeatCounter, 'not found');
 		}
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
-		$html[] = '</div><!-- close fabrikSubElementContainer -->';
+		$html[] = '</div>';
 	}
 
 	/**
@@ -2843,7 +2845,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$join = $this->getJoin();
 			$idKey = $join->table_join . '___id';
 			$shortName = $this->getElement()->name;
-			$valueKey = $join->table_join . '___' . $shortName;
+			$valueKey = $join->table_join . '___' . $shortName . '_raw';
 			$name = $this->getFullName(true, false);
 
 			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
@@ -2905,7 +2907,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					{
 						$query->where($shortName . ' NOT IN ( ' . implode($joinValues, ',') . ')');
 					}
-					//echo $query;exit;
 					$db->setQuery($query);
 					$db->query();
 				}

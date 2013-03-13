@@ -25,6 +25,8 @@ var FbCalc = new Class({
 					// $$$ hugh - check to see if an observed element is actually part of a repeat group,
 					// and if so, modify the placeholder name they used to match this instance of it
 					// @TODO - add and test code for non-joined repeats!
+					
+					// @TODO:  this needs updating as we dont store as join.x.element any more?
 					if (this.options.canRepeat) {
 						if (this.options.isGroupJoin) {
 							o2 = 'join___' + this.options.joinid + '___' + o + '_' + this.options.repeatCounter;

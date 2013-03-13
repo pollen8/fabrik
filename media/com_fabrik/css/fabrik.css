@@ -594,6 +594,11 @@ img[src*="gstatic.com/"], img[src*="googleapis.com/"]  {
 fieldset.row-fluid:before {
     content: normal;
 }
+
+
+.fabrikElement select[multiple], .fabrikElement select[size] {
+    height: auto !important;
+}
 /** Time Picker button group alignment **/
 
 .fbDateTime .btn-group + .btn-group {

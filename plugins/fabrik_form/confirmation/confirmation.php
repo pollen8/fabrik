@@ -185,7 +185,7 @@ class PlgFabrik_FormConfirmation extends plgFabrik_Form
 			foreach ($post as $key => $val)
 			{
 				$noneraw = JString::substr($key, 0, JString::strlen($key) - 4);
-				if ($key == 'join' || $key == 'fabrik_vars')
+				if ($key == 'fabrik_vars')
 				{
 					continue;
 				}

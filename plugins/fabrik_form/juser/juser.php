@@ -112,11 +112,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 			return $default;
 		}
 		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
-		$group = $elementModel->getGroup();
-		if ($group->isJoin())
-		{
-			$data = $data['join'][$group->getGroup()->join_id];
-		}
 		$name = $elementModel->getFullName(true, false);
 		return JArrayHelper::getValue($data, $name, $default);
 	}

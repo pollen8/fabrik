@@ -91,6 +91,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				if ($groupModel->canRepeat())
 				{
+					// @TODO this wont work with  new flat name structure
 					$joinid = $groupModel->getGroup()->join_id;
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]))
 					{
@@ -121,87 +122,52 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			if ($groupModel->canRepeat())
 			{
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-					&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+				if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
 				{
-					$default = $data['join'][$joinid][$name][$repeatCounter];
+					$default = $data[$name][$repeatCounter];
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
+					if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
 					{
-						$default = $data['join'][$joinid][$name][$repeatCounter];
+						$default = $data[$name][$repeatCounter];
 					}
 				}
 			}
 			else
 			{
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-					&& array_key_exists($name, $data['join'][$joinid]))
+				if (array_key_exists($name, $data))
 				{
-					$default = $data['join'][$joinid][$name];
+					$default = $data[$name];
 				}
 				else
 				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($rawname, $data['join'][$joinid]))
+					if (array_key_exists($rawname, $data))
 					{
-						$default = $data['join'][$joinid][$rawname];
+						$default = $data[$rawname];
 					}
 				}
 			}
 		}
 		else
 		{
-			if ($groupModel->canRepeat())
+			// When called from getFilterArray via getROElement, $data doesn't exist
+			// (i.e. when specified as a table___name=foo in a content plugin)
+			if (is_array($data))
 			{
-				// Repeat group NO join
-				if (is_array($data))
+				if (array_key_exists($name, $data))
 				{
-					$thisname = $name;
-					if (!array_key_exists($name, $data))
+					$default = $data[$name];
+				}
+				else
+				{
+					if (array_key_exists($rawname, $data))
 					{
-						$thisname = $rawname;
-					}
-					if (array_key_exists($thisname, $data))
-					{
-						if (is_array($data[$thisname]))
-						{
-							// Occurs on form submission for fields at least
-							$a = $data[$thisname];
-						}
-						else
-						{
-							// Occurs when getting from the db
-							$a = json_decode($data[$thisname]);
-						}
-						if (array_key_exists($repeatCounter, $a))
-						{
-							$default = $a[$repeatCounter];
-						}
+						$default = $data[$rawname];
 					}
 				}
 			}
-			else
-			{
-				// When called from getFilterArray via getROElement, $data doesn't exist
-				// (i.e. when specified as a table___name=foo in a content plugin)
-				if (is_array($data))
-				{
-					if (array_key_exists($name, $data))
-					{
-						$default = $data[$name];
-					}
-					else
-					{
-						if (array_key_exists($rawname, $data))
-						{
-							$default = $data[$rawname];
-						}
-					}
-				}
-			}
+
 		}
 		return $default;
 	}
@@ -256,31 +222,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$form = $this->getForm();
 
-		/*
-		 * $$$ hugh - need to copy the array, otherwise we blow away join data
-		 * from _formData in $joindata foreach below.
-		 */
+
 		$d = unserialize(serialize($form->formData));
-		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
-		$joinid = $group->getGroup()->join_id;
-		foreach ($joindata as $joinid => $thisJoindata)
-		{
-			foreach ($thisJoindata as $key => $val)
-			{
-				// If the joined group isn't repeated, $val will be a string
-				if (is_array($val))
-				{
-					$d[$key] = JArrayHelper::getValue($val, $c, JArrayHelper::getValue($val, 0, ''));
-				}
-				else
-				{
-					$d[$key] = $val;
-				}
-			}
-			unset($d['join'][$joinid]);
-		}
+
 		/**
 		 * get the key name in dot format for updateFormData method
 		 * $$$ hugh - added $rawkey stuff, otherwise when we did "$key . '_raw'" in the updateFormData
