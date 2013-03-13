@@ -387,11 +387,7 @@ class FabrikControllerForm extends JControllerLegacy
 				}
 				// Meant that the form's data was in different format - so redirect to ensure that its showing the same data.
 				$input->set('task', '');
-				echo "<h1>display</h1>";
 				$view->display();
-				/* $formid = $input->getInt('formid');
-				$rowid = $input->get('rowid', '');
-				$this->setRedirect(JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid)); */
 			}
 			return;
 		}

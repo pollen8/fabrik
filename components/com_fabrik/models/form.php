@@ -1317,46 +1317,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$value = $this->_fullFormData[$fullName];
 		}
-		// Wasn't in the form's main table data, so try joins
-		elseif (array_key_exists('join', $this->formData))
-		{
-			/* We can't just loop through the ['join'] structure, as we need to
-			 * know if the group is repeatable, and can't rely on key being an array,
-			 * to determine that, as it might be a list element type.
-			 */
-			$groups = $this->getGroupsHiarachy();
-			foreach ($groups as $groupModel)
-			{
-				$group = $groupModel->getGroup();
-				if (array_key_exists($group->join_id, $this->formData['join']))
-				{
-					if (array_key_exists($fullName, $this->formData['join'][$group->join_id]))
-					{
-						$value = $this->formData['join'][$group->join_id][$fullName];
-
-						// If the group is repeatable, see if they want a specific index
-						if ($groupModel->canRepeat())
-						{
-							if (isset($repeatCount))
-							{
-								// If they specified an index and it exists, condense return value down to just that
-								if (array_key_exists($repeatCount, $value))
-								{
-									$value = $value[$repeatCount];
-								}
-								else
-								{
-									// If the index they wanted doesn't exist, set to default
-									$value = $default;
-								}
-							}
-						}
-						// We found it, so break out of the foreach
-						break;
-					}
-				}
-			}
-		}
 
 		// If we didn't find it, set to default
 		if (!isset($value))
@@ -1592,7 +1552,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$this->formData = $listModel->removeTableNameFromSaveData($this->formData, '___');
 		$insertId = $this->storeMainRow ? $this->submitToDatabase($this->rowId) : $this->rowId;
-		echo "insert id = $insertId <br>";
+
 		$this->updateRefferrer($origid, $insertId);
 		$this->setInsertId($insertId);
 
@@ -1701,7 +1661,6 @@ class FabrikFEModelForm extends FabModelForm
 		// Save join data
 		$this->_removeIgnoredData($this->formData);
 
-		echo "<pre>process";print_r($this->formData);exit;
 		$aDeleteRecordId = '';
 
 
@@ -2187,67 +2146,31 @@ class FabrikFEModelForm extends FabModelForm
 		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
 		$pluginManager = FabrikWorker::getPluginManager();
-		/*
-		 *check if there is table data that is not posted by the form
-		 * (ie if no checkboxes were selected)
-		 */
 		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
 		$listModel->encrypt = array();
+		$data = array();
 		foreach ($groups as $groupModel)
 		{
-			$group = $groupModel->getGroup();
+			// Joined groups stored in groupModel::process();
+			if ($groupModel->isJoin())
+			{
+				continue;
+			}
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$element = $elementModel->getElement();
-				$element->label = strip_tags($element->label);
-				$params = $elementModel->getParams();
-				$elementModel->getEmptyDataValue($this->formData);
-
-				/* Check if the data gets inserted on update
-				 * $$$hugh @FIXME - at this point we've removed tablename from _formdata keys (in processTodb()),
-				 * but element getValue() methods assume full name in formData
-				 */
-				// $v = $elementModel->getValue($this->formData);
-				$v = $elementModel->getValue($this->formDataWithTableName);
-				if ($elementModel->ignoreOnUpdate($v))
-				{
-					// Currently only field password elements return true
-					$fullName = $elementModel->getFullName();
-					if (array_key_exists('join', $this->formData))
-					{
-						unset($this->formData['join'][$group->join_id][$fullName]);
-					}
-					if (array_key_exists($element->name, $this->formData))
-					{
-						unset($this->formData[$element->name]);
-					}
-				}
 				if ($elementModel->encryptMe())
 				{
-					$listModel->encrypt[] = $element->name;
+					$listModel->encrypt[] = $elementModel->getElement()->name;
 				}
-				if ($groupModel->isJoin())
-				{
-					$tmpdata = $this->formData['join'][$group->join_id];
-
-					// Maybe no joined data added so test before doing onstorerow
-					if (is_array($tmpdata))
-					{
-						$elementModel->onStoreRow($tmpdata);
-					}
-				}
-				else
-				{
-					$elementModel->onStoreRow($this->formData);
-				}
+				$elementModel->onStoreRow($data);
 			}
 		}
 		$listModel = $this->getListModel();
 		$listModel->setFormModel($this);
 		$item = $listModel->getTable();
-		$listModel->storeRow($this->formData, $rowId);
+		$listModel->storeRow($data, $rowId);
 
 		$usekey = $app->input->get('usekey', '');
 		if (!empty($usekey))
@@ -2411,37 +2334,12 @@ class FabrikFEModelForm extends FabModelForm
 			foreach ($elementModels as $elementModel)
 			{
 				$elName2 = $elementModel->getFullName(true, false);
-				/* if ($groupModel->isJoin())
+				if (!array_key_exists($elName2 . '_raw', $post))
 				{
-					$joinModel = $groupModel->getJoinModel();
-					$joinId = $joinModel->getId();
-					if (array_key_exists('join', $post) && array_key_exists($joinId, $post['join']))
-					{
-						if ($groupModel->canRepeat())
-						{
-							$v = JArrayHelper::getValue($post['join'][$joinId], $elName2, array());
-						}
-						else
-						{
-							$v = JArrayHelper::getValue($post['join'][$joinId], $elName2, '');
-						}
-						$joindata[$joinId][$elName2] = $v;
-						$joindata[$joinId][$elName2 . '_raw'] = $v;
-						$post['join'][$joinId][$elName2] = $v;
-						$post['join'][$joinId][$elName2 . '_raw'] = $v;
-						$_POST['join'][$joinId][$elName2] = $v;
-						$_POST['join'][$joinId][$elName2 . '_raw'] = $v;
-					}
+					// Post required getValue() later on
+					$input->set($elName2 . '_raw', @$post[$elName2]);
+					$post[$elName2 . '_raw'] = @$post[$elName2];
 				}
-				else
-				{ */
-					if (!array_key_exists($elName2 . '_raw', $post))
-					{
-						// Post required getValue() later on
-						$input->set($elName2 . '_raw', @$post[$elName2]);
-						$post[$elName2 . '_raw'] = @$post[$elName2];
-					}
-				//}
 			}
 		}
 	}
@@ -3310,11 +3208,12 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than $_GET
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
+
 					// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
 					// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
 					// but from this point on, code is expecting even non-repeat join data to be arrays.
 					$groups = $this->getGroupsHiarachy();
-					foreach ($groups as $groupModel)
+					/* foreach ($groups as $groupModel)
 					{
 						if ($groupModel->isJoin() && !$groupModel->canRepeat())
 						{
@@ -3323,12 +3222,12 @@ class FabrikFEModelForm extends FabModelForm
 								$el = array($el);
 							}
 						}
-					}
+					} */
 					$data = FArrayHelper::toObject($data, 'stdClass', false);
 
 					// $$$rob ensure "<tags>text</tags>" that are entered into plain text areas are shown correctly
 					JFilterOutput::objectHTMLSafe($data);
-					$data = array($data);
+					$data = JArrayHelper::fromObject($data);
 					FabrikHelperHTML::debug($data, 'form:getData from POST (form not in Mambot and errors)');
 				}
 			}
@@ -3477,6 +3376,7 @@ class FabrikFEModelForm extends FabModelForm
 
 */
 		}
+		//echo "<pre>";print_r($data);exit;
 		$this->listModel = $listModel;
 
 		// Test to allow {$my->id}'s to be evald from query strings
@@ -3537,7 +3437,6 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function setJoinData(&$data)
 	{
-		//echo "<pre>set join data";print_r($data);echo "</pre>";
 		$this->_joinDefaultData = array();
 		if (empty($data))
 		{
@@ -3553,7 +3452,6 @@ class FabrikFEModelForm extends FabModelForm
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
-
 			if ($groupModel->isJoin())
 			{
 				$group = $groupModel->getGroup();
@@ -3562,14 +3460,11 @@ class FabrikFEModelForm extends FabModelForm
 				foreach ($elementModels as $elementModel)
 				{
 					$names = $elementModel->getJoinDataNames();
-
 					foreach ($data as $row)
 					{
 						for ($i = 0; $i < count($names); $i ++)
 						{
-							$name = $names[$i][0];
-							$fv_name = $names[$i][0];
-
+							$name = $names[$i];
 							if (array_key_exists($name, $row))
 							{
 								$v = $row->$name;
@@ -3583,19 +3478,6 @@ class FabrikFEModelForm extends FabModelForm
 									$n =& $data[0]->$name;
 									$n[] = $v;
 								}
-
-								//unset($row->$name);
-							}
-							elseif (array_key_exists($fv_name, $row))
-							{
-								// $$$ hugh - seem to have a different format if just failed validation!
-								$v = $row->$fv_name;
-								if (is_object($v))
-								{
-									$v = JArrayHelper::fromObject($v);
-								}
-								$data[0]->$name = $v;
-								unset($row->$fv_name);
 							}
 						}
 					}

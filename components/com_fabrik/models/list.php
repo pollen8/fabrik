@@ -3985,7 +3985,7 @@ class FabrikFEModelList extends JModelForm
 					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
 					if (!$fabrikDb->execute())
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						throw new ErrorException('alter structure: ' . $fabrikDb->getErrorMsg(), 500);
 					}
 					$altered = true;
 				}
@@ -4052,27 +4052,26 @@ class FabrikFEModelList extends JModelForm
 		$tableName = FabrikString::safeColName($tableName);
 		$lastfield = FabrikString::safeColName($lastfield);
 
-		// $$$ rob this causes issues when renaming an element with the same name but different upper/lower case
-		// if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields)) {
-
-		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
-		// if (empty($element->name) || !in_array($element->name, $existingfields)) {
 		if (empty($origColName) || !in_array($origColName, $existingfields))
 		{
 			if (!$altered)
 			{
-				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-				if (!$fabrikDb->execute())
+				if (!in_array($element->name, $existingfields))
 				{
-					/* $$$ rob ok this is hacky but I had a whole series of elements wiped from the db,
-					 * but wanted to re-add them into the database.
-					* as the db table already had the fields this error was stopping the save.
-					*/
-					if (!array_key_exists($element->name, $dbdescriptions))
+					$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
+					try
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						$fabrikDb->execute();
 					}
+					catch (RuntimeException $e)
+					{
+						// Don't throw error for attempting to re-add an existing db column
+						if (!array_key_exists($element->name, $dbdescriptions))
+						{
+							throw new ErrorException('alter structure: ' . $e->getErrorMsg(), 500);
+						}
 
+					}
 				}
 			}
 		}
@@ -6446,12 +6445,12 @@ class FabrikFEModelList extends JModelForm
 	 * Saves posted form data into a table
 	 * data should be keyed on short name
 	 *
-	 * @param   array   $data            to save
-	 * @param   int     $rowId           row id to edit/updated
-	 * @param   bool    $isJoin          is the data being saved into a join table
-	 * @param   JTable  $joinGroupTable  joined group table
+	 * @param   array   $data            To save
+	 * @param   int     $rowId           Row id to edit/updated
+	 * @param   bool    $isJoin          Is the data being saved into a join table
+	 * @param   JTable  $joinGroupTable  Joined group table
 	 *
-	 * @return  bool	true if saved ok
+	 * @return  bool	int  Insert id
 	 */
 
 	public function storeRow($data, $rowId, $isJoin = false, $joinGroupTable = null)
@@ -6581,9 +6580,9 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		if ($isJoin)
+		if (!$isJoin)
 		{
-			//echo "<pre>" . $table->db_table_name;print_r($oRecord);print_r($joinGroupTable);exit;
+			//echo "<pre>store row" . $table->db_table_name;print_r($oRecord);exit;
 		}
 		if ($origRowId == '' || $origRowId == 0)
 		{
@@ -6603,7 +6602,7 @@ class FabrikFEModelList extends JModelForm
 		if (!$ok)
 		{
 			$q = JDEBUG ? $fabrikDb->getQuery() : '';
-			return JError::raiseWarning(500, 'Store row failed: ' . $q . "<br>" . $fabrikDb->getErrorMsg());
+			throw new ErrorException('Store row failed: ' . $q . "<br>" . $fabrikDb->getErrorMsg(), 500);
 		}
 		else
 		{
@@ -6612,7 +6611,7 @@ class FabrikFEModelList extends JModelForm
 
 			// $$$ rob new as if you update a record the insertid() returns 0
 			$this->lastInsertId = ($rowId == '' || $rowId == 0) ? $fabrikDb->insertid() : $rowId;
-			return true;
+			return $this->lastInsertId;
 		}
 	}
 

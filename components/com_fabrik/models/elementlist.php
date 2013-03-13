@@ -606,155 +606,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		$v = parent::getValue($data, $repeatCounter, $opts);
-		return $v;
-		$data = (array) $data;
-		if (!isset($this->defaults))
-		{
-			$this->defaults = array();
-		}
-
-		/*
-		 *  $$$ rob 20/08/2012 - added $data to serialized key
-		 *  Seems that db join _getOptionVals() _autocomplete_where is getting run a couple of times with key and labels being passed in
-		 */
-		$valueKey = $repeatCounter . serialize($opts) . serialize($data);
-		if (!array_key_exists($valueKey, $this->defaults))
-		{
-			$value = '';
-			$groupModel = $this->getGroupModel();
-			$group = $groupModel->getGroup();
-
-			$task = JFactory::getApplication()->input->get('task');
-			if ($task === 'form.process')
-			{
-				$joinid = $this->getJoinModel()->getJoin()->id;
-			}
-			else
-			{
-				// If its in a repeating group use the group id as the key:
-				$joinid = $this->isJoin() && !($groupModel->canRepeat() && $groupModel->isJoin()) ? $this->getJoinModel()->getJoin()->id : $group->join_id;
-			}
-			echo "join id = $joinid<br>";;
-			$formModel = $this->getForm();
-			$element = $this->getElement();
-
-			$value = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getValueFullName($opts);
-
-			// $name could already be in _raw format - so get inverse name e.g. with or without raw
-			$rawname = JString::substr($name, -4) === '_raw' ? JString::substr($name, 0, -4) : $name . '_raw';
-			if ($groupModel->isJoin() || $this->isJoin())
-			{
-				if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
-				{
-					$firstKey = 'join.' . $joinid . '.' . $rawname;
-					$secondKey = 'join.' . $joinid . '.' . $name;
-				}
-				else
-				{
-					$firstKey = 'join.' . $joinid . '.' . $name;
-					$secondKey = 'join.' . $joinid . '.' . $rawname;
-				}
-				if ($groupModel->canRepeat())
-				{
-					echo "firstkey = $firstKey <br>";
-					$v = FArrayHelper::getNestedValue($data, $firstKey . '.' . $repeatCounter, null);
-					if (is_null($v))
-					{
-						$v = FArrayHelper::getNestedValue($data, $secondKey . '.' . $repeatCounter, null);
-					}
-					if (!is_null($v))
-					{
-						$value = $v;
-					}
-				}
-				else
-				{
-					$v = FArrayHelper::getNestedValue($data, $firstKey, null);
-					if (is_null($v))
-					{
-						$v = FArrayHelper::getNestedValue($data, $secondKey, null);
-					}
-					if (!is_null($v))
-					{
-						$value = $v;
-					}
-					if (is_array($value) && (array_key_exists(0, $value) && is_array($value[0])))
-					{
-						// Fix for http://fabrikar.com/forums/showthread.php?t=23568&page=2
-						$value = $value[0];
-					}
-				}
-			}
-			else
-			{
-				if ($groupModel->canRepeat())
-				{
-					// Can repeat NO join
-					if (array_key_exists($name, $data))
-					{
-						// Occurs on form submission for fields at least : occurs when getting from the db
-						$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
-					elseif (array_key_exists($rawname, $data))
-					{
-						// Occurs on form submission for fields at least : occurs when getting from the db
-						$a = is_array($data[$rawname]) ? $a = $data[$rawname] : FabrikWorker::JSONtoData($data[$rawname], true);
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
-				}
-				else
-				{
-					if (array_key_exists($name, $data))
-					{
-						// Put this back in for radio button after failed validation not picking up previously selected option
-						$value = $data[$name];
-					}
-					elseif (array_key_exists($rawname, $data))
-					{
-						$value = $data[$rawname];
-					}
-				}
-			}
-			if ($value === '')
-			{
-				// Query string for joined data
-				$value = JArrayHelper::getValue($data, $name);
-			}
-			/**
-			 * $$$ hugh -- added this so we are consistent in what we return, otherwise uninitialized values,
-			 * i.e. if you've added a checkbox element to a form with existing data, don't get set, and causes
-			 * issues with methods that call getValue().
-			 */
-			if (!isset($value))
-			{
-				$value = '';
-			}
-			// $$$ corner case where you have a form and a list for the same table on the same page
-			// and the list is being filtered with table___name[value]=foo on the query string.
-			if (is_array($value) && array_key_exists('value', $value))
-			{
-				$value = $value['value'];
-			}
-			$element->default = $value;
-			$formModel = $this->getForm();
-
-			// Stops this getting called from form validation code as it messes up repeated/join group validations
-			if (JArrayHelper::getValue($opts, 'runplugins', false) == 1)
-			{
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
-			}
-			if (is_string($element->default))
-			{
-				// $$$ rob changed to false below as when saving encrypted data a stored valued of 62
-				// Was being returned as [62], then [[62]] etc.
-				$element->default = FabrikWorker::JSONtoData($element->default, false);
-			}
-			$this->defaults[$valueKey] = $element->default;
-		}
-		return $this->defaults[$valueKey];
+		return parent::getValue($data, $repeatCounter, $opts);
 	}
 
 	/**
@@ -795,21 +647,28 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Trigger called when a row is stored.
 	 * Check if new options have been added and if so store them in the element for future use.
 	 *
-	 * @param   array  &$data  to store
+	 * @param   array  &$data          Data to store
+	 * @param   int    $repeatCounter  Repeat group index
 	 *
 	 * @return  void
 	 */
 
-	public function onStoreRow(&$data)
+	public function onStoreRow(&$data, $repeatCounter = 0)
 	{
+		if (!parent::onStoreRow($data, $repeatCounter))
+		{
+			return false;
+		}
 		$element = $this->getElement();
 		$params = $this->getParams();
-		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $data))
+		$formModel = $this->getFormModel();
+		$formData = $formModel->formData;
+		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $formData))
 		{
-			$added = stripslashes($data[$element->name . '_additions']);
+			$added = stripslashes($formData[$element->name . '_additions']);
 			if (trim($added) == '')
 			{
-				return;
+				return true;
 			}
 			$added = json_decode($added);
 			$values = $this->getSubOptionValues();
@@ -835,6 +694,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$element->store();
 			}
 		}
+		return true;
 	}
 
 	/**

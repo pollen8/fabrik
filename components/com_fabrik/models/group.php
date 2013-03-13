@@ -938,12 +938,20 @@ class FabrikFEModelGroup extends FabModel
 		$fk = $joinModel->getForeignKey();
 		$fks = array($fk, $fk . '_raw');
 		array_fill(0, count($formData[$fk]), $pk);
-		foreach ($fks as $fk) {
+		foreach ($fks as $fk)
+		{
 			foreach ($formData[$fk] as $k => $v)
 			{
 				$formData[$fk][$k] = $pk;
 			}
 		}
+	}
+
+	protected function repeatTotals()
+	{
+		$input = JFactory::getApplication()->input;
+		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
+		return JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
@@ -955,56 +963,39 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return;
 		}
-		$input = JFactory::getApplication()->input;
-		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
-		$repeatTotals = JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
-		$masterPk = $joinModel->getJoinedToTablePk();
-		echo $masterPk;
 		$pkField = $joinModel->getPrimaryKey();
-		echo "pk = $pkField";
 
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
 		$formModel = $this->getFormModel();
 		$formData =& $formModel->formDataWithTableName;
-		echo "<pre>";print_r($formData);
-		$pks = $formData[$masterPk];
 		$this->setForeignKey();
 
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
+
+		// Set the list's table name to the join table, needed for storeRow()
 		$list->db_table_name = $joinModel->getJoin()->table_join;
-print_r($pks);
+
 		// For each repeat group
-		for ($i = 0; $i < $repeatTotals; $i ++)
+		for ($i = 0; $i < $repeats; $i ++)
 		{
-			$pk = $pks[$i];
 			$data = array();
 			foreach ($elementModels as $elementModel)
 			{
-				// Deferred till later.
-				if ($elementModel->isJoin())
-				{
-					continue;
-				}
-				$name = $elementModel->getFullName(true, false);
-				$key = $elementModel->getElement()->name;
-				$values = JArrayHelper::getValue($formData, $name, array());
-				$values = JArrayHelper::getValue($values, $i, '');
-				$data[$key] = $values;
-
+				$elementModel->onStoreRow($data, $i);
 			}
-			echo "<pre>";print_r($data);
-			$listModel->storeRow($data, $pk, true, $item);
+			$pk = JArrayHelper::getValue($formData[$pkField], $i, '');
+			$insertId = $listModel->storeRow($data, $pk, true, $item);
 
 			// Update key
-			echo "I = $i last Insert Id = $listModel->lastInsertId <br>";
-			$formData[$pkField][$i] = $listModel->lastInsertId;
+			$formData[$pkField][$i] = $insertId;
 		}
+		// Reset the list's table name
 		$list->db_table_name = $tblName;
-		exit;
 	}
 
 }

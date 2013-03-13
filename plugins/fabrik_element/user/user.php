@@ -288,13 +288,18 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
 	 *
-	 * @param   array  &$data  to store
+	 * @param   array  &$data          Data to store
+	 * @param   int    $repeatCounter  Repeat group index
 	 *
-	 * @return  void
+	 * @return  bool  If false, data should not be added.
 	 */
 
-	public function onStoreRow(&$data)
+	public function onStoreRow(&$data, $repeatCounter = 0)
 	{
+		if (!parent::onStoreRow($data, $repeatCounter))
+		{
+			return false;
+		}
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -307,7 +312,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$this_fullname = $this->getFullName(true, false);
 			if ($newuserid_element == $this_fullname)
 			{
-				return;
+				return true;
 			}
 		}
 		$element = $this->getElement();
@@ -323,7 +328,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+			if ((int) $input->get('rowid', '') === 0 && $input->get('task') !== 'doimport')
 			{
 				$session = JFactory::getSession();
 				if ($session->has('fabrik.plugin.profile_id'))
@@ -332,7 +337,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$data[$element->name . '_raw'] = $data[$element->name];
 
 					// $session->clear('fabrik.plugin.profile_id');
-					return;
+					return true;
 				}
 			}
 		}
@@ -340,7 +345,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// $$$ rob if in joined data then $data['rowid'] isnt set - use $input->get var instead
 		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
-		if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+		if ((int) $input->get('rowid', '') == 0 && $input->get('task') !== 'doimport')
 		{
 
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
@@ -379,6 +384,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				}
 			}
 		}
+		return true;
 	}
 
 	/**

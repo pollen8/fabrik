@@ -607,7 +607,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		foreach ($validation_plugins as $plugin)
 		{
 			$plugin_form = $plugin->getJForm();
-			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->_pluginName);
+			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->get('pluginName');
 			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->get('pluginName') . '/forms/fields.xml';
 			$xml = $plugin->jform->loadFile($xmlFile, false);
 			foreach ($plugin_form->getFieldsets() as $fieldset)

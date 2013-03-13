@@ -91,7 +91,7 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 		$domatch = JArrayHelper::getValue($domatch, $pluginc);
 		if (!$domatch)
 		{
-			$v = (array) $params->get($this->_pluginName . '-expression');
+			$v = (array) $params->get($this->pluginName . '-expression');
 			$v = JArrayHelper::getValue($v, $pluginc);
 			$v = trim($v);
 			$replace = (array) $params->get('regex-replacestring');

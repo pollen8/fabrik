@@ -916,6 +916,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinGroupId = '';
 		}
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
+
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;
 		foreach ($default as &$d)
@@ -990,6 +991,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
 						break;
 					case 'checkbox':
+						echo "<pre>$repeatCounter: ";print_r($default);echo "</pre>";
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
 						$defaultLabel = implode("\n", $html);
 						break;
@@ -1202,7 +1204,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		$name = FabrikString::rtrimword($name, '[]');
 
-		if ($this->isJoin())
+		$formModel = $this->getFormModel();
+		if ($this->isJoin() && !$formModel->hasErrors())
 		{
 			$default = (array) FArrayHelper::getNestedValue($data, $idname . '.' . $repeatCounter, 'not found');
 		}
@@ -2102,31 +2105,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Does the element conside the data to be empty
-	 * Used in isempty validation rule
-	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
-	 *
-	 * @return  bool
-	 */
-
-	public function dataConsideredEmpty($data, $repeatCounter)
-	{
-		// $$$ hugh on validations (at least), we're getting arrays
-		if (is_array($data))
-		{
-			return empty($data[0]);
-		}
-		if ($data == '' || $data == '-1')
-		{
-
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  Repeat group counter
@@ -2718,7 +2696,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 *
 	 * @since 2.1.1
 	 *
-	 * @return array of element names to search data in to create join data array
+	 * @return  array  of element names to search data in to create join data array
 	 * in this case append with the repeatnums data for checkboxes rendered in repeat groups
 	 */
 
@@ -2731,13 +2709,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$group = $this->getGroup()->getGroup();
 			$join = $this->getJoinModel()->getJoin();
 			$repeatName = $join->table_join . '___repeatnum';
-			$fvRepeatName = 'join[' . $group->join_id . '][' . $repeatName . ']';
-			$a[] = array($repeatName, $fvRepeatName);
-
+			$a[] = $repeatName;
 
 			$repeatName = $join->table_join . '___' . $element->name . '_id';
-			$fvRepeatName = 'join[' . $group->join_id . '][' . $repeatName . ']';
-			$a[] = array($repeatName, $fvRepeatName);
+			$a[] = $repeatName;
 		}
 		return $a;
 	}
@@ -2876,7 +2851,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 			$allJoinIds = $formData[$idKey];
 			$allJoinValues = $formData[$valueKey];
-			echo "<pre>";print_r($parentIds);
 			$i = 0;
 			foreach ($parentIds as $parentId)
 			{
@@ -2908,7 +2882,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$record->id = 0;
 					}
 					$record->$shortName = $fkVal;
-					echo "<pre>";print_r($record);
 					if ($record->id == 0)
 					{
 						$ok = $listModel->insertObject($join->table_join, $record);

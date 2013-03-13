@@ -118,7 +118,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				else
 				{
 					/*if we can crop we need to store the cropped coordinated in the field data
-					 * @see onStoreRow();
 					 * above depreciated - not sure what to return here for the moment
 					 */
 					return false;

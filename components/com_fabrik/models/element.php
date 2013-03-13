@@ -649,10 +649,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$group = $this->getGroupModel()->getGroup();
 		$name = $this->getFullName(true, false);
-		$fv_name = 'join[' . $group->join_id . '][' . $name . ']';
 		$rawname = $name . '_raw';
-		$fv_rawname = 'join[' . $group->join_id . '][' . $rawname . ']';
-		return array(array($name, $fv_name), array($rawname, $fv_rawname));
+		return array($name, $rawname);
 	}
 
 	/**
@@ -2030,14 +2028,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($customLink !== '' && $this->getElement()->link_to_detail == '1' && $params->get('custom_link_indetails', true))
 		{
 			$w = new FabrikWorker;
-			$repData = array();
 			/*
 			 * merge join data down for current repetCounter so that parseing repeat joined data
 			 * only inserts current record
 			 */
 			foreach ($data as $k => $val)
 			{
-				if ($k === 'join')
+				/* if ($k === 'join')
 				{
 					foreach ($val as $joindata)
 					{
@@ -2048,12 +2045,12 @@ class PlgFabrik_Element extends FabrikPlugin
 					}
 				}
 				else
-				{
+				{ */
 					$repData[$k] = $val;
-				}
+				//}
 			}
-			$customLink = $w->parseMessageForPlaceHolder($customLink, $repData);
-			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $repData);
+			$customLink = $w->parseMessageForPlaceHolder($customLink, $data);
+			$customLink = $this->getListModel()->parseMessageForRowHolder($customLink, $data);
 			if (trim($customLink) !== '')
 			{
 				$v = '<a href="' . $customLink . '">' . $v . '</a>';
@@ -2530,17 +2527,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elid = $this->getElement()->id;
 		$f = JFilterInput::getInstance();
 		$data = $f->clean($_REQUEST, 'array');
-		$groupModel = $this->getGroup();
-		$group = $groupModel->getGroup();
 
 		// See if the data is in the request array - can use tablename___elementname=filterval in query string
-		if ($groupModel->isJoin())
-		{
-			if (array_key_exists('join', $data) && array_key_exists($group->join_id, $data['join']))
-			{
-				$data = $data['join'][$group->join_id];
-			}
-		}
+
 		$default = '';
 		if (array_key_exists($elName, $data))
 		{
@@ -4919,16 +4908,40 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * Trigger called when a row is stored.
-	 * Check if new options have been added and if so store them in the element for future use.
+	 * Trigger called when a form or group row is stored.
+	 * Ignores the element if it is a join chx/multi select
 	 *
-	 * @param   array  &$data  to store
+	 * @param   array  &$data          Data to store
+	 * @param   int    $repeatCounter  Repeat group index
 	 *
-	 * @return  void
+	 * @return  bool  If false, data should not be added.
 	 */
 
-	public function onStoreRow(&$data)
+	public function onStoreRow(&$data, $repeatCounter = 0)
 	{
+		if ($this->isJoin())
+		{
+			return false;
+		}
+		$shortName = $this->getElement()->name;
+		$listModel = $this->getListModel();
+		if ($this->encryptMe())
+		{
+			$listModel->encrypt[] = $shortName;
+		}
+		$formModel = $this->getFormModel();
+		$name = $this->getFullName(true, false);
+
+		if (!array_key_exists($name, $formModel->formDataWithTableName))
+		{
+			$this->getEmptyDataValue($data);
+		}
+		$v = $this->getValue($formModel->formDataWithTableName, $repeatCounter);
+		if (!$this->ignoreOnUpdate($v))
+		{
+			$data[$shortName] = $v;
+		}
+		return true;
 	}
 
 	/**

@@ -86,15 +86,22 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	 * If we are creating a new record, and the element was set to readonly
 	 * then insert the users data into the record to be stored
 	 *
-	 * @param   array  &$data  to store
+	 * @param   array  &$data          Data to store
+	 * @param   int    $repeatCounter  Repeat group index
 	 *
-	 * @return  void
+	 * @return  bool  If false, data should not be added.
 	 */
 
-	public function onStoreRow(&$data)
+	public function onStoreRow(&$data, $repeatCounter = 0)
 	{
+		if (!parent::onStoreRow($data, $repeatCounter))
+		{
+			return false;
+		}
 		$element = $this->getElement();
-		if (JArrayHelper::getValue($data, 'rowid', 0) == 0 && !in_array($element->name, $data))
+		$formModel = $this->getFormModel();
+		$formData = $formModel->formData;
+		if (JArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 		}
@@ -107,6 +114,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 				$data[$element->name . '_raw'] = $_SERVER['REMOTE_ADDR'];
 			}
 		}
+		return true;
 	}
 
 	/**
