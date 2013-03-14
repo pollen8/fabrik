@@ -277,6 +277,8 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		 *  as this method can run on render or on submit we have to do a little check to see which one we should use.
 		 *  really we should use the same form property to store the data regardless of form state
 		 */
+
+		// $$$ hugh - erm, why are we putting data in $this->html?  It's only used by onGetFooContent plugins, for, well, html!
 		$this->html = array();
 		if (!empty($formModel->_formData))
 		{
