@@ -47,6 +47,17 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 	}
 
 	/**
+	* Get any html that needs to be written after the form close tag
+	*
+	* @return	string	html
+	*/
+
+	public function getTopContent_result()
+	{
+		return $this->html;
+	}
+
+	/**
 	 * Store the html to insert at the top of the form
 	 *
 	 * @param   object  $params     params
@@ -260,7 +271,7 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
-
+		$method = $params->get('only_process_curl');
 		/*
 		 *  $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
 		 *  as this method can run on render or on submit we have to do a little check to see which one we should use.
@@ -279,11 +290,39 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 		if ($params->get('form_php_file') == -1)
 		{
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
-			$php_result = eval($code);
-			// Bail out if code specifically returns false
-			if ($php_result === false)
+
+			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent')
 			{
-				return false;
+				// For these types of scripts any out put you want to inject into the form should be echo'd out
+				// $$$ hugh - the tooltip on the PHP plugin says specifically NOT to echo, but to return the content.
+				// Rather than break any existing code by changing this code to do what the tooltip says, here's a
+				// Horrible Hack so either way should work.
+				ob_start();
+				$php_result = eval($code);
+				$output = ob_get_contents();
+				ob_end_clean();
+				if (!empty($output))
+				{
+					return $output;
+				}
+				else
+				{
+					if (is_string($php_result))
+					{
+						return $php_result;
+					}
+				}
+				// Didn't get a viable response from either OB or result, so just return empty string
+				return '';
+			}
+			else
+			{
+				$php_result = eval($code);
+				// Bail out if code specifically returns false
+				if ($php_result === false)
+				{
+					return false;
+				}
 			}
 		}
 		else
@@ -315,25 +354,31 @@ class plgFabrik_FormPHP extends plgFabrik_Form
 				return false;
 			}
 
-			$method = $params->get('only_process_curl');
-
 			// If it's a form load method, needs to be handled thisaway
 			if ($method == 'getBottomContent' || $method == 'getTopContent' || $method == 'getEndContent')
 			{
 				// For these types of scripts any out put you want to inject into the form should be echo'd out
 				// @TODO - shouldn't we apply this logic above as well (direct eval)?
+				// $$$ hugh - AAAAGH.  Tbe tooltip on the form plugin itself specifically says NOT to echo, but to
+				// return the content.  Rather than just changing this code to do what the comment says, which would
+				// break any existing code folk have, I'll do a Horrible Hack so it works either way.
 				ob_start();
-				if ($require_once)
+				$php_result = $require_once ? require_once $php_file : require $php_file;
+				$output = ob_get_contents();
+				ob_end_clean();
+				if (!empty($output))
 				{
-					require_once $php_file;
+					return $output;
 				}
 				else
 				{
-					require $php_file;
+					if (is_string($php_result))
+					{
+						return $php_result;
+					}
 				}
-				$output = ob_get_contents();
-				ob_end_clean();
-				return $output;
+				// Didn't get a viable response from either OB or result, so just return empty string
+				return '';
 			}
 
 			// OK, it's a form submit method, so handle it thisaway
