@@ -219,7 +219,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 				$data = (array) $iPath;
 			}
 		}
-		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
+		$selectImage_root_folder = $this->rootFolder();
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
