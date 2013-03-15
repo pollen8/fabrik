@@ -115,17 +115,8 @@ var FabrikModalRepeat = new Class({
 				this._setRadioValues(radiovals);
 				this.resizeWin();
 				
-				if (jQuery) {
-					
-					// Chosen reset 
-					clone.getElements('select').removeClass('chzn-done');
-					clone.getElements('.chzn-container').destroy();
-					
-					jQuery('select').chosen({
-						disable_search_threshold : 10,
-						allow_single_deselect : true
-					});
-				}
+				this.resetChosen(clone);
+				
 			}
 			this.win.position();
 			e.stop();
@@ -147,6 +138,20 @@ var FabrikModalRepeat = new Class({
 		}.bind(this));
 	},
 	
+	resetChosen: function (clone) {
+		if (jQuery) {
+			
+			// Chosen reset 
+			clone.getElements('select').removeClass('chzn-done');
+			clone.getElements('.chzn-container').destroy();
+			
+			jQuery('select').chosen({
+				disable_search_threshold : 10,
+				allow_single_deselect : true
+			});
+		}
+	},
+	
 	getTrs: function () {
 		return this.content.getElement('tbody').getElements('tr');
 	},
@@ -165,6 +170,7 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	build: function () {
+		var clone;
 		if (this.setup) {
 			return;
 		}
@@ -175,12 +181,14 @@ var FabrikModalRepeat = new Class({
 		var tr = this.content.getElement('tbody').getElement('tr');
 		var keys = Object.keys(a);
 		var newrow = keys.length === 0 || a[keys[0]].length === 0 ? true : false;
-		//var rowcount = keys.length === 0 ? 1 : a[keys[0]].length;
 		var rowcount = newrow ? 1 : a[keys[0]].length;
 		
 		// Build the rows from the json object
 		for (var i = 1; i < rowcount; i ++) {
-			tr.clone().inject(tr, 'after');
+			clone = tr.clone();
+			
+			clone.inject(tr, 'after');
+			this.resetChosen(clone);
 		}
 		this.stripe();
 		var trs = this.getTrs();
@@ -196,6 +204,11 @@ var FabrikModalRepeat = new Class({
 					} else {
 						// Works for input,select and textareas
 						f.value = a[k][i];
+						if (f.get('tag') === 'select' && jQuery) {
+							
+							// Manually fire chosen dropdown update
+							jQuery(f).trigger("liszt:updated");
+						}
 					}	
 				});
 			});

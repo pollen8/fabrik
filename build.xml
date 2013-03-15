@@ -873,6 +873,15 @@
 	</target>
 	
 	<target name="git.tags.get">
+		<!-- to get this to work:
+		 
+		* go to run->external tools configuration
+		* select the ant build
+		* click on the environment tab
+		* add a new entry
+		* set the name 'PATH' and then add in the path to git e.g. C:\Program Files (x86)\Git\bin.
+		-->
+		
 		 <exec executable="git" failonerror="true" outputproperty="git.tag">
 		        <arg line="tag"/>
 		    </exec> 
