@@ -353,7 +353,8 @@ var FbDateTime = new Class({
 				if (!this.setUpDone) {
 					if (this.timeElement) {
 						this.dropdown = this.makeDropDown();
-						this.dropdown.getElement('a.close-time').addEvent('click', function () {
+						this.dropdown.getElement('a.close-time').addEvent('click', function (e) {
+							e.stop();
 							this.hideTime();
 						}.bind(this));
 						this.setUpDone = true;
@@ -487,6 +488,9 @@ var FbDateTime = new Class({
 		return r;
 	},
 
+	/**
+	 * Make the time picker
+	 */
 	makeDropDown: function () {
 		var h = null;
 		var handle = new Element('div.draggable.modal-header', {
@@ -593,7 +597,7 @@ var FbDateTime = new Class({
 		return hrGroup;
 	},
 
-	toggleTime : function () {
+	toggleTime: function () {
 		if (this.dropdown.style.display === 'none') {
 			this.doShowTime();
 		} else {
@@ -601,7 +605,7 @@ var FbDateTime = new Class({
 		}
 	},
 
-	doShowTime : function () {
+	doShowTime: function () {
 		this.dropdown.show();
 		this.timeActive = true;
 		Fabrik.fireEvent('fabrik.date.showtime', this);
