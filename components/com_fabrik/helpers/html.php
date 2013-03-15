@@ -1311,9 +1311,10 @@ EOD;
 			}
 			if ($fbConfig->get('use_mediabox', false))
 			{
-				$folder = 'components/com_fabrik/libs/mediabox/';
-				JHTML::stylesheet($folder . '/css/mediabox.css');
-				self::script($folder . 'mediabox.js');
+				$folder = 'components/com_fabrik/libs/mediabox-advanced/';
+				$mbStyle = $fbConfig->get('mediabox_style', 'Dark');
+				JHTML::stylesheet($folder . 'mediaboxAdv-' . $mbStyle . '.css');
+				self::script($folder . 'mediaboxAdv.js');
 			}
 			else
 			{
