@@ -463,7 +463,6 @@ if (typeof(Fabrik) === "undefined") {
 			win.close();
 		});
 		
-		// Make id the same as the add button so we reuse the same form.
 		var winOpts = {
 			'id': 'add.' + listRef + '.' + rowid,
 			'title': list.options.popup_edit_label,
@@ -472,12 +471,13 @@ if (typeof(Fabrik) === "undefined") {
 			'width': list.options.popup_width,
 			'height': list.options.popup_height,
 			'onClose': function (win) {
-				// $$$ hugh @FIXME need to fix this for when it's a list popup so k context is different
-				var k = 'form_' + list.options.formid + '_' + rowid;
-				Fabrik.blocks[k].destroyElements();
-				Fabrik.blocks[k].formElements = null;
-				Fabrik.blocks[k] = null;
-				delete(Fabrik.blocks[k]);
+				try {
+					var k = 'form_' + list.options.formid + '_' + rowid;
+					Fabrik.blocks[k].destroyElements();
+					Fabrik.blocks[k].formElements = null;
+					Fabrik.blocks[k] = null;
+					delete(Fabrik.blocks[k]);
+				} catch (e) {}
 			}
 		};
 		if (typeOf(list.options.popup_offset_x) !== 'null') {
@@ -527,7 +527,6 @@ if (typeof(Fabrik) === "undefined") {
 		$H(Fabrik.Windows).each(function (win, key) {
 			win.close();
 		});
-		Fabrik.getWindow(winOpts);
 		
 		var winOpts = {
 			'id': 'view.' + '.' + listRef + '.' + rowid,
@@ -537,12 +536,16 @@ if (typeof(Fabrik) === "undefined") {
 			'width': list.options.popup_width,
 			'height': list.options.popup_height,
 			'onClose': function (win) {
-				// $$$ hugh @FIXME need to fix this for when it's a list popup so k context is different
-				var k = 'form_' + list.options.formid + '_' + rowid;
-				Fabrik.blocks[k].destroyElements();
-				Fabrik.blocks[k].formElements = null;
-				Fabrik.blocks[k] = null;
-				delete(Fabrik.blocks[k]);
+				var k = 'details_' + list.options.formid + '_' + rowid;
+				try {
+					Fabrik.blocks[k].destroyElements();
+					Fabrik.blocks[k].formElements = null;
+					Fabrik.blocks[k] = null;
+					delete(Fabrik.blocks[k]);	
+				} catch (e) {
+					console.log(e);
+				}
+				
 			}
 		};
 		if (typeOf(list.options.popup_offset_x) !== 'null') {

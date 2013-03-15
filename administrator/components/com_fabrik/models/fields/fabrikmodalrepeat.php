@@ -121,7 +121,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$attributes = $this->element->attributes();
 		foreach ($subForm->getFieldset($attributes->name . '_modal') as $field)
 		{
-			$names[] = (string)$field->element->attributes()->name;
+			$names[] = (string) $field->element->attributes()->name;
 			$str[] = '<th>' . strip_tags($field->getLabel($field->name));
 			$str[] = '<br /><small style="font-weight:normal">' . JText::_($field->description) . '</small>';
 			$str[] = '</th>';
