@@ -748,6 +748,14 @@ class FabrikWorker
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
+		/* $$$ hugh - added dbprefix substitution
+		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
+		 * after, so we don't potentially disclose dbprefix if no substitution found.
+		 */
+		$config = JFactory::getConfig();
+		$prefix = $config->get('dbprefix');
+		$match = str_replace('#__', $prefix, $match);
+
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
 		if (count($bits) == 2)
