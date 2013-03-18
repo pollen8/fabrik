@@ -1128,7 +1128,12 @@ class FabrikWorker
 		{
 			if ($val === false && $error = error_get_last() && (JRequest::getVar('fabrikdebug') == 1 || JDEBUG))
 			{
-				JError::raiseNotice(500, sprintf($msg, $error['message']));
+				// $$$ hugh - for some strange reason, error_get_last() sometimes returns true, instead of an array
+				// or null, when there hasn't been an eror.
+				if ($error !== true)
+				{
+					JError::raiseNotice(500, sprintf($msg, $error['message']));
+				}
 			}
 		}
 	}
