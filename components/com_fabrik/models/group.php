@@ -366,6 +366,7 @@ class FabrikFEModelGroup extends FabModel
 		$spanKey = ($elCount -1) % $colcount;
 
 		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
+		
 		$element->span = ' ' . $element->span;
 		$element->offset = $params->get('group_offset', 0);
 
@@ -435,6 +436,10 @@ class FabrikFEModelGroup extends FabModel
 	{
 		$params = $this->getParams();
 		$widths = $params->get('group_column_widths', '');
+		if (trim($widths) === '')
+		{
+			return;
+		}
 		$widths = explode(',', $widths);
 		if (FabrikWorker::j3())
 		{

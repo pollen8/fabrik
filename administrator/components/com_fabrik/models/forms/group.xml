@@ -11,11 +11,22 @@
 			description="JGLOBAL_FIELD_ID_DESC" label="JGLOBAL_FIELD_ID_LABEL"
 			readonly="true"/>
 			
-		<field description="COM_FABRIK_FIELD_NAME_DESC" label="COM_FABRIK_FIELD_NAME_LABEL" name="name" required="true" size="40" type="text"/>
+		<field name="name"
+			type="text"
+			description="COM_FABRIK_FIELD_NAME_DESC"
+			label="COM_FABRIK_FIELD_NAME_LABEL"
+			required="true" size="40" />
 			
-		<field description="COM_FABRIK_FIELD_TITLE_DESC" label="COM_FABRIK_FIELD_TITLE_LABEL" name="label" size="40" type="text"/>
+		<field name="label"
+			type="text"
+			description="COM_FABRIK_FIELD_TITLE_DESC"
+			label="COM_FABRIK_FIELD_TITLE_LABEL"  size="40" />
 		
-		<field description="COM_FABRIK_FIELD_GROUP_FORM_DESC" label="COM_FABRIK_FIELD_GROUP_FORM_LABEL" name="form" showtrashed="true" type="formlist"/>
+		<field name="form"
+			type="formlist"
+			description="COM_FABRIK_FIELD_GROUP_FORM_DESC"
+			label="COM_FABRIK_FIELD_GROUP_FORM_LABEL"
+			showtrashed="true" />
 		
 		<field name="published"
 			class="inputbox input-small"
@@ -37,7 +48,12 @@
 	<fields name="params">
 		<fieldset legend="test" name="pagination">
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_SPLIT_PAGE_DESC" label="COM_FABRIK_SPLIT_PAGE_LABEL" name="split_page" type="radio">
+			<field name="split_page"
+				type="radio"
+				class="btn-group"
+				default="0
+				description="COM_FABRIK_SPLIT_PAGE_DESC"
+				label="COM_FABRIK_SPLIT_PAGE_LABEL">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 			</field>
@@ -64,9 +80,13 @@
 	
 	<fieldset name="repeat">
 	
-		<field default="0" class="radio btn-group" description="COM_FABRIK_REPEAT_GROUP_BUTTON_DESC" label="COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL" name="repeat_group_button" type="grouprepeat">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
+		<field name="repeat_group_button" 
+			type="grouprepeat"
+			default="0" class="radio btn-group"
+			description="COM_FABRIK_REPEAT_GROUP_BUTTON_DESC"
+			label="COM_FABRIK_REPEAT_GROUP_BUTTON_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 			</field>
 			
 			<field name="repeat_template"
