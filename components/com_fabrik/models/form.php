@@ -2788,7 +2788,7 @@ class FabrikFEModelForm extends FabModelForm
 
 */
 		}
-		$this->listModel = $listModel;
+//		$this->listModel = $listModel;
 
 		// Test to allow {$my->id}'s to be evald from query strings
 		$w = new FabrikWorker;
