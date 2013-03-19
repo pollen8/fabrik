@@ -380,7 +380,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
+		$jsControllerKey = $model->jsBlockKey();
 
 		$srcs = FabrikHelperHTML::framework();
 		$shim = array();
@@ -448,11 +448,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$form = $model->getForm();
 		FabrikHelperHTML::windows();
 
-		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-		if ($this->rowid != '')
-		{
-			$bkey .= '_' . $this->rowid;
-		}
+		$bkey = $model->jsBlockKey();
+		
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 
 		$this->get('FormCss');
@@ -795,8 +792,22 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit" value="'
-					. $form->submit_button_label . '" />';
+			$form->submitButton = '<button type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit">';
+			$submitIconBefore = '';
+			$submitIconAfter = '';
+			if (FabrikWorker::j3())
+			{
+				$submitIcon = $params->get('submit_button_icon', '');
+				if ($submitIcon !== '')
+				{
+					$submitIcon = '<i class="' . $submitIcon . '"></i>';
+					$submitIconLoc = $params->get('submit_icon_location', 'after');
+					$submitIconBefore = $submitIconLoc == 'before' ? $submitIcon . ' ' : '';
+					$submitIconAfter = $submitIconLoc == 'after' ? ' ' . $submitIcon : '';
+				}
+			}
+			$form->submitButton .= $submitIconBefore . $form->submit_button_label . $submitIconAfter;
+			$form->submitButton .= '</button>';
 		}
 		else
 		{
