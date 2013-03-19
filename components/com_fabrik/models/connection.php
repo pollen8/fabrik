@@ -253,15 +253,21 @@ class FabrikFEModelConnection extends JModelLegacy
 				'prefix' => $prefix);
 			$options = $this->getConnectionOptions($cn);
 
-			if ($this->compareConnectionOpts($deafult_options, $options))
+			$error = false;
+			
+			$db = $this->compareConnectionOpts($deafult_options, $options) ? FabrikWorker::getDbo() : JDatabaseDriver::getInstance($options);
+			
+			try
 			{
-				self::$dbs[$cn->id] = FabrikWorker::getDbo();
+				$db->connect();
 			}
-			else
+			catch (RuntimeException $e)
 			{
-				self::$dbs[$cn->id] = JDatabase::getInstance($options);
+				$error = true;
 			}
-			if (is_a(self::$dbs[$cn->id], 'JException') || self::$dbs[$cn->id]->getErrorNum() !== 0)
+			self::$dbs[$cn->id] = $db;
+		
+			if ($error)
 			{
 				/**
 				 * $$$Rob - not sure why this is happening on badmintonrochelais.com (mySQL 4.0.24) but it seems like

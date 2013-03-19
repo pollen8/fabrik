@@ -28,6 +28,17 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 {
 
 	/**
+	 * Constructor
+	 *
+	 * @param   array  $config  options
+	 */
+
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+	}
+
+	/**
 	 * Delete all data from fabrik
 	 *
 	 * @return  null
@@ -35,25 +46,7 @@ class FabrikAdminControllerUpgrade extends JControllerAdmin
 
 	public function check()
 	{
-		$model = $this->getModel();
-		$model->run();
-		
-	}
-	
-		/**
-	 * Proxy for getModel.
-	 *
-	 * @param   string  $name    model name
-	 * @param   string  $prefix  model prefix
-	 * @param   array   $config  Configuration array for model. Optional.
-	 *
-	 * @return  J model
-	 */
-
-	public function getModel($name = 'Upgrade', $prefix = 'FabrikAdminModel', $config = array())
-	{
-		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
-		return $model;
+		$model = $this->getModel('Upgrade');
 	}
 
 }

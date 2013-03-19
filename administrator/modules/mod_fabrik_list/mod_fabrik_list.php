@@ -23,7 +23,7 @@ jimport('joomla.application.component.helper');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $app = JFactory::getApplication();
-$j3 = FabrikWorker::j3();
+
 require_once COM_FABRIK_FRONTEND . '/controller.php';
 require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 
@@ -53,12 +53,7 @@ if (isset($listels->show_in_list))
 $useajax = $params->get('useajax');
 $random = intval($params->get('radomizerecords', 0));
 $limit = intval($params->get('limit', 0));
-$defaultLayout = $j3 ? 'bootstrap' : 'default';
-$layout	= $params->get('fabriklayout', $defaultLayout);
-if ($layout == '-1')
-{
-	$layout = $defaultLayout;
-}
+$layout	= $params->get('fabriklayout', 'default');
 $input->set('layout', $layout);
 
 /* this all works fine for a list

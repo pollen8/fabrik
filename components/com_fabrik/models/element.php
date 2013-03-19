@@ -543,15 +543,17 @@ class PlgFabrik_Element extends FabrikPlugin
 				$data = '<span>' . $data . '</span>';
 
 				// See if data has an <a> tag
-				$html = new DOMDocument;
-				$html->loadXML($data);
-				$as = $html->getElementsBytagName('a');
-
+				if (class_exists('DOMDocument'))
+				{
+					$html = new DOMDocument;
+					$html->loadXML($data);
+					$as = $html->getElementsBytagName('a');
+				}
 				if ($params->get('icon_hovertext', true))
 				{
 					$ahref = '#';
 					$target = '';
-					if ($as->length)
+					if (class_exists('DOMDocument') && $as->length)
 					{
 						// Data already has an <a href="foo"> lets get that for use in hover text
 						$a = $as->item(0);
@@ -570,7 +572,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
 					 */
 
-					if ($as->length)
+					if (class_exists('DOMDocument') && $as->length)
 					{
 						$img = $html->createElement('img');
 						$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
@@ -2469,10 +2471,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 *create the js code to observe the elements js actions
+	 *Create the js code to observe the elements js actions
 	 *
-	 * @param   string  $jsControllerKey  either form_ or _details
-	 * @param   int     $repeatCount      counter
+	 * @param   string  $jsControllerKey  Either form_ or _details
+	 * @param   int     $repeatCount      Counter
 	 *
 	 * @return  string	js events
 	 */

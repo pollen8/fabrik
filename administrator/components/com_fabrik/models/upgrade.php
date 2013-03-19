@@ -9,6 +9,14 @@
  * @since       1.6
  */
 
+/**
+* @package     Joomla
+* @subpackage  Fabrik
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+* @since       1.6
+*/
+
 defined('_JEXEC') or die;
 
 require_once 'fabmodeladmin.php';
@@ -21,7 +29,7 @@ require_once 'fabmodeladmin.php';
  * @since       3.0
  */
 
-class FabrikAdminModelUpgrade extends FabModelAdmin
+class FabrikModelUpgrade extends FabModelAdmin
 {
 
 	/**
@@ -32,22 +40,18 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 
 	public function __construct($config = array())
 	{
-		return parent::__construct($config);
-	}
-	
-	public function run()
-	{
 		$this->fundleMenus();
-		
 		if (!$this->shouldUpgrade())
 		{
-			JFactory::getApplication()->redirect('index.php?option=com_fabrik', 'Already updated');
+			JFactory::getApplication()->enqueueMessage('Already updated');
+			return parent::__construct($config);
 		}
 		if ($this->backUp())
 		{
 			$this->upgrade();
 		}
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
+		return parent::__construct($config);
 	}
 
 	/**
@@ -65,21 +69,18 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 		$tables = $db->loadObjectList('db_table_name') + $this->getFabrikTables();
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
-		
 		$cnnTables = array();
 		foreach ($tables as $dbName => $item)
 		{
 			$connModel->setId($item->connection_id);
 			$connModel->getConnection($item->connection_id);
 			$cDb = $connModel->getDb();
-			
 			if (!array_key_exists($item->connection_id, $cnnTables))
 			{
 				$cnnTables[$item->connection_id] = $cDb->getTableList();
 			}
 			$listModel->set('connection', $connModel);
-			//$qTable = $cDb->quoteName('bkup_' . $item->db_table_name);
-			$qTable = 'bkup_' . $item->db_table_name;
+			$qTable = $cDb->quoteName('bkup_' . $item->db_table_name);
 			$qItemTable = $cDb->quoteName($item->db_table_name);
 
 			// Drop the bkup table
@@ -108,11 +109,17 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 		return true;
 	}
 
-	protected function upgradeACL()
+	/**
+	 * Upgrade the database to fabrik3's structure.
+	 *
+	 * @return  void
+	 */
+
+	protected function upgrade()
 	{
 		$db = JFactory::getDbo(true);
 		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions',
-				'#__fabrik_tables', '#__fabrik_visualizations');
+			'#__fabrik_tables', '#__fabrik_visualizations');
 		foreach ($updates as $update)
 		{
 			$db->setQuery("SELECT * FROM $update");
@@ -131,7 +138,7 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 					switch ($update)
 					{
 						case '#__fabrik_elements':
-							// Elements had some fields moved into the attribs/params json object
+						// Elements had some fields moved into the attribs/params json object
 							if ($row->state == 0)
 							{
 								$row->state = -2;
@@ -140,14 +147,14 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							$p->view_access = isset($p->view_access) ? $this->mapACL($p->view_access) : 1;
 							$p->filter_access = isset($p->filter_access) ? $this->mapACL($p->filter_access) : 1;
-		
+
 							$p->sum_access = isset($p->sum_access) ? $this->mapACL($p->sum_access) : 1;
 							$p->avg_access = isset($p->avg_access) ? $this->mapACL($p->avg_access) : 1;
 							$p->median_access = isset($p->median_access) ? $this->mapACL($p->median_access) : 1;
 							$p->count_access = isset($p->count_access) ? $this->mapACL($p->count_access) : 1;
-		
+
 							$subOpts = new stdClass;
-		
+
 							$subOts->sub_values = explode('|', $row->sub_values);
 							$subOts->sub_labels = explode('|', $row->sub_labels);
 							$subOts->sub_initial_selection = explode('|', $row->sub_intial_selection);
@@ -160,7 +167,7 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 							$p->allow_add = isset($p->allow_add) ? $this->mapACL($p->allow_add) : 1;
 							$p->allow_drop = isset($p->allow_drop) ? $this->mapACL($p->allow_drop) : 1;
 							break;
-		
+
 						case '#__fabrik_visualizations':
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							break;
@@ -170,18 +177,6 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 				}
 			}
 		}
-	}
-	/**
-	 * Upgrade the database to fabrik3's structure.
-	 *
-	 * @return  void
-	 */
-
-	protected function upgrade()
-	{
-		$db = JFactory::getDbo(true);
-		$this->upgradeACL();
-		
 		// Get the upgrade script
 		$sql = JFile::read(JPATH_SITE . '/administrator/components/com_fabrik/sql/updates/mysql/2.x-3.0.sql');
 		$prefix = JFactory::getApplication()->getCfg('dbprefix');
@@ -192,10 +187,8 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 			$db->setQuery($q);
 			if (trim($q) !== '')
 			{
-				try
+				if (!$db->execute())
 				{
-					$db->execute();
-				} catch (RuntimeException $e) {
 					JError::raiseNotice(500, $db->getErrorMsg());
 				}
 			}
@@ -216,8 +209,6 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
 			$db->execute();
 		}
-		
-		
 	}
 
 	/**
@@ -345,20 +336,6 @@ class FabrikAdminModelUpgrade extends FabModelAdmin
 				return true;
 			}
 		}
-		return false;
-	}
-	
-	/**
-	 * Method to get the record form.
-	 *
-	 * @param   array  $data      Data for the form.
-	 * @param   bool   $loadData  True if the form is to load its own data (default case), false if not.
-	 *
-	 * @return  mixed	A JForm object on success, false on failure
-	 */
-	
-	public function getForm($data = array(), $loadData = true)
-	{
 		return false;
 	}
 }

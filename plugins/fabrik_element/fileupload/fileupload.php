@@ -174,36 +174,36 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
-			$suffix = FabrikHelperHTML::isDebug() ? '.js' : '.min.js';
+			$prefix = FabrikHelperHTML::isDebug() ? '' : '.min';
 			$runtimes = $params->get('ajax_runtime', 'html5');
 			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
-			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $suffix);
+			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $ext);
 
 			if (strstr($runtimes, 'html5'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $ext);
 			}
 			if (strstr($runtimes, 'html4'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $ext);
 			}
 			if (strstr($runtimes, 'gears'))
 			{
 				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $ext);
 			}
 
 			if (strstr($runtimes, 'flash'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $ext);
 			}
 			if (strstr($runtimes, 'silverlight'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $ext);
 			}
 			if (strstr($runtimes, 'browserplus'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $suffix);
+				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $ext);
 			}
 		}
 		parent::formJavascriptClass($srcs, $script, $shim);
@@ -2018,21 +2018,21 @@ foreach ($files as &$f) {
 		$pstr[] = '<canvas id="' . $id . '-widget" width="' . $winWidth . '" height="' . $winHeight . '"></canvas>';
 		if ($params->get('fileupload_crop', 0))
 		{
-			$pstr[] = '<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:180px">';
+			$pstr[] = '<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">';
 			$pstr[] = '	zoom:';
 			$pstr[] = '	<div class="fabrikslider-line" style="width: 100px;float:left;">';
 			$pstr[] = '		<div class="knob"></div>';
 			$pstr[] = '	</div>';
 			$pstr[] = '	<input name="zoom-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
-			$pstr[] = '<div class="rotate" style="float:left;margin-top:10px;width:180px">' . JText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE') . ':';
+			$pstr[] = '<div class="rotate" style="float:left;margin-top:10px;width:200px">' . JText::_('PLG_ELEMENT_FILEUPLOAD_ROTATE') . ':';
 			$pstr[] = '	<div class="fabrikslider-line" style="width: 100px;float:left;">';
 			$pstr[] = '		<div class="knob"></div>';
 			$pstr[] = '	</div>';
 			$pstr[] = '	<input name="rotate-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
 		}
-		$pstr[] = '<div style="text-align: right;float:right;margin:10px 0; width: 205px">';
+		$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';
 		$pstr[] = '<input type="button" class="button btn btn-primary" name="close-crop" value="' . JText::_('CLOSE') . '" />';
 		$pstr[] = '</div>';
 		$pstr[] = '</div>';

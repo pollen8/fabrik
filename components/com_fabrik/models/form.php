@@ -5202,23 +5202,5 @@ class FabrikFEModelForm extends FabModelForm
 		$msg = $showmsg == 1 ? $msg : '';
 		return $msg;
 	}
-	
-	/**
-	 * Get the Fabrik.blocks key used to reference the form.
-	 * 
-	 * @since   3.1rc1
-	 * 
-	 * @return  string
-	 */
-	
-	public function jsBlockKey()
-	{
-		$bkey = $this->isEditable() ? 'form_' . $this->getId() : 'details_' . $this->getId();
-		if ($this->getRowId() != '')
-		{
-			$bkey .= '_' . $this->getRowId();
-		}
-		return $bkey;
-	}
 
 }

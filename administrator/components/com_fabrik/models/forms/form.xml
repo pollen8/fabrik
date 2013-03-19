@@ -146,40 +146,12 @@
 					<option value="1">JSHOW</option>
 			</field>				
 			
-			<field name="submit_button_label"
-				type="text"
-				default="Save"
-				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC"
-				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" />
-				
-			<field name="submit_button_icon"
-				type="text"
-				default=""
-				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_ICON_DESC"
-				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_ICON_LABEL" />
+			<field default="Save" description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" name="submit_button_label" type="text"/>
 			
-			<field
-				name="submit_icon_location"
-				type="radio"
-				class="btn-group"
-				default="after"
-				description="COM_FABRIK_FIELD_SUBMIT_ICON_LOCATION_DESC"
-				label="COM_FABRIK_FIELD_SUBMIT_ICON_LOCATION_LABEL">
-					<option value="before">COM_FABRIK_BEFORE</option>
-					<option value="after">COM_FABRIK_AFTER</option>	
-			</field>
-			
-			<field
-				name="submit_on_enter"
-				type="radio"
-				class="btn-group"
-				default="0"
-				description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC"
-				label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL">
+			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC" label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL" name="submit_on_enter" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-			
 		</fieldset>
 		
 		<fieldset name="templates2">
