@@ -7390,10 +7390,11 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch (Exception $e) {
+		} catch (RuntimeException $e)
+		{
+			// Try to suppress error
 			$this->setError($e->getMessage());
 		}
-		$db->execute();
 	}
 
 	/**
