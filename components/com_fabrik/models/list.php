@@ -2619,6 +2619,10 @@ class FabrikFEModelList extends JModelForm
 			}
 			$sql = JString::strtoupper($join->join_type) . ' JOIN ' . $db->quoteName($join->table_join);
 			$k = FabrikString::safeColName($join->keytable . '.' . $join->table_key);
+			
+			// Check we only get the field name
+			$join->table_join_key = explode('.',  $join->table_join_key);
+			$join->table_join_key = array_pop($join->table_join_key);
 			if ($join->table_join_alias == '')
 			{
 				$on = FabrikString::safeColName($join->table_join . '.' . $join->table_join_key);

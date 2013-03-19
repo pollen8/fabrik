@@ -690,7 +690,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')
 		{
-			$whereBits = explode('___', $wherekey);
+			$whereBits = strstr('___', $wherekey) ? explode('___', $wherekey) : explode('.', $wherekey);
 			$wherekey = array_pop($whereBits);
 			if (is_array($whereval))
 			{
