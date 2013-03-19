@@ -22,7 +22,6 @@ var FbDatabasejoin = new Class({
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
 		this.init();
-		// this.start();
 	},
 	
 	watchAdd: function () {
@@ -45,7 +44,9 @@ var FbDatabasejoin = new Class({
 	 * add option via a popup form. Opens a window with the releated form
 	 * inside
 	 */
-	start: function (e) {
+	start: function (e, force) {
+		force = force ? true : false;
+		
 		// First time loading - auto close the hidden loaded popup.
 		var onContentLoaded = function () {
 			this.close();
@@ -67,11 +68,14 @@ var FbDatabasejoin = new Class({
 		
 		destroy = true;
 		
-		if (this.options.popupform === 0 || this.options.allowadd === false) {
+		if (force === false && (this.options.popupform === 0 || this.options.allowadd === false)) {
 			return;
 		}
+		console.log(this.options.popupform);
 		c = this.getContainer();
-		var url  = c.getElement('.toggle-addoption').get('href');
+		var a = c.getElement('.toggle-addoption');
+		var url = typeOf(a) === 'null' ? e.target.get('href') : a.get('href');
+		
 		if (typeOf(this.element) === 'null') {
 			return;
 		}
@@ -396,7 +400,26 @@ var FbDatabasejoin = new Class({
 				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
 				
 			}
+			this.selectThenAdd();
 		}
+	},
+	
+	/**
+	 * Watch the list load so that its add button will close the window and open the db join add window
+	 * 
+	 * @return void
+	 */
+	selectThenAdd: function () {
+		Fabrik.addEvent('fabrik.block.added', function (block, blockid) {
+			if (blockid === 'list_' + this.options.listid + this.options.listRef) {
+				block.form.addEvent('click:relay(.addbutton)', function (event, target) {
+					event.preventDefault();
+					var id = this.selectRecordWindowId();
+					Fabrik.Windows[id].close();
+					this.start(event, true);
+				}.bind(this));
+			}
+		}.bind(this));
 	},
 	
 	/**
@@ -411,7 +434,7 @@ var FbDatabasejoin = new Class({
 		window.fireEvent('fabrik.dbjoin.unactivate');
 		this.activeSelect = true;
 		e.stop();
-		var id = this.element.id + '-popupwin-select';
+		var id = this.selectRecordWindowId();
 		var url = this.getContainer().getElement('a.toggle-selectoption').href;
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
@@ -433,6 +456,15 @@ var FbDatabasejoin = new Class({
 			}
 		};
 		var mywin = Fabrik.getWindow(this.windowopts);
+	},
+	
+	/**
+	 * Get the window id for the 'select record' window
+	 * 
+	 * @return  string
+	 */
+	selectRecordWindowId: function () {
+		this.element.id + '-popupwin-select';
 	},
 	
 	update: function (val) {
