@@ -316,7 +316,8 @@ class FPagination extends JPagination
 	protected function _list_render($list)
 	{
 		// Reverse output rendering for right-to-left display.
-		$html = '<ul class="pagination">';
+		$html = '<div class="pagination">';
+		$html .= '<ul class="pagination-list">';
 		$class =  $list['start']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-start' . $class . '">' . $list['start']['data'] . '</li>';
 		$class =  $list['previous']['active'] == 1 ? ' ' : ' active';
@@ -331,6 +332,7 @@ class FPagination extends JPagination
 		$class =  $list['end']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-end' . $class . '">' . $list['end']['data'] . '</li>';
 		$html .= '</ul>';
+		$html .= '</div>';
 		return $html;
 	}
 

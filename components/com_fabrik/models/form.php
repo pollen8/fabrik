@@ -3919,82 +3919,40 @@ class FabrikFEModelForm extends FabModelForm
 			$startHidden = false;
 			if ($groupModel->canRepeat())
 			{
-				/* if ($groupModel->isJoin())
-				{ */
-					$joinTable = $groupModel->getJoinModel()->getJoin();
-					$foreignKey = '';
-					if (is_object($joinTable))
+				$joinTable = $groupModel->getJoinModel()->getJoin();
+				$foreignKey = '';
+				if (is_object($joinTable))
+				{
+					
+					$repeatGroup = $groupModel->repeatCount();
+					if (!$groupModel->fkPublished())
 					{
+						$startHidden = false;
+					}
+					else
+					{
+						// Show empty groups if we are validating a posted form
 
-						$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
-
-						$elementModels = $groupModel->getPublishedElements();
-						reset($elementModels);
-						$tmpElement = current($elementModels);
-						if (!empty($elementModels))
+						// @TODO - relook at this !IMPORTANT
+						/* if ($input->get('task') !== 'process' && $input->get('task') !== 'form.process')
 						{
-
-							$smallerElHTMLName = $tmpElement->getFullName(true, false);
-							$repeatGroup = count(JArrayHelper::getValue($origData, $smallerElHTMLName, 1));
-						}
-						else
-						{
-							// No published elements - not sure if setting repeatGroup to 0 is right though
-							$repeatGroup = 0;
-						}
-						if (!array_key_exists($fullFk, $this->data))
-						{
-							JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
-							$startHidden = false;
-						}
-						else
-						{
-							// Show empty groups if we are validating a posted form
-
-							// @TODO - relook at this !IMPORTANT
-							/* if ($input->get('task') !== 'process' && $input->get('task') !== 'form.process')
+							$this->getSessionData();
+							if ($this->sessionModel->row->data === '')
 							{
-								$this->getSessionData();
-								if ($this->sessionModel->row->data === '')
+								$startHidden = true;
+								foreach ($origData['join'][$joinTable->id] as $jData)
 								{
-									$startHidden = true;
-									foreach ($origData['join'][$joinTable->id] as $jData)
+									if (!empty($jData[0]))
 									{
-										if (!empty($jData[0]))
-										{
-											$startHidden = false;
-											continue;
-										}
+										$startHidden = false;
+										continue;
 									}
 								}
-							} */
-						}
+							}
+						} */
+					}
 
-					}
-				/*}
-				else
-				{
-					// Repeat groups which aren't joins - shouldn't exist now
-					 $elementModels = $groupModel->getPublishedElements();
-					foreach ($elementModels as $tmpElement)
-					{
-						$smallerElHTMLName = $tmpElement->getFullName(true, false);
-						if (array_key_exists($smallerElHTMLName . '_raw', $this->data))
-						{
-							$d = $this->data[$smallerElHTMLName . '_raw'];
-						}
-						else
-						{
-							$d = @$this->data[$smallerElHTMLName];
-						}
-						$d = json_decode($d, true);
-						$c = count($d);
-						if ($c > $repeatGroup)
-						{
-							$repeatGroup = $c;
-						}
-					}
-				}*/
+				}
 			}
 			// Test failed validated forms, repeat group counts are in request
 			$repeatGroups = $input->get('fabrik_repeat_group', array(), 'array');

@@ -6,7 +6,8 @@ $buttonTotal = $buttonCount === 0 ? '100%' : 30 * $buttonCount ."px";
 echo "
 
 .fabrikDataContainer {
-clear:both;
+	clear:both;
+	overflow: auto;
 }
 
 .fabrikDataContainer .pagination a{

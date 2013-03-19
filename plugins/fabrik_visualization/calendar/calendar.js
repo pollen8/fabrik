@@ -79,7 +79,7 @@ var fabrikCalendar = new Class({
 		}*/
 	},
 	
-	_makeEventRelDiv: function (entry, opts, aDate)
+	_makeEventRelDiv: function (entry, opts, aDate, target)
 	{
 		var x, eventCont;
 		var label = entry.label;
@@ -117,8 +117,10 @@ var fabrikCalendar = new Class({
 			style.left = opts.left.toInt() + 1 + 'px';
 		}
 		style['max-width'] = opts['max-width'] ? opts['max-width'] - 10 + 'px' : '';
-			
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;
+		if (target) {
+			id += target.className.replace(' ', '');
+		}
 		if (opts.view === 'monthView') {
 			style.width -= 1;
 		}
@@ -325,7 +327,7 @@ var fabrikCalendar = new Class({
 						opts.startMin = entry.startdate.getMinutes();
 						opts.endMin = entry.enddate.getMinutes();
 						opts['margin-left'] = 0;
-						td.adopt(this._makeEventRelDiv(entry, opts, firstDate));
+						td.adopt(this._makeEventRelDiv(entry, opts, firstDate, td));
 					}
 					j ++;
 				}.bind(this));
@@ -542,7 +544,7 @@ var fabrikCalendar = new Class({
 					eventWidth = Math.floor((td.getSize().x - gridSize) / (gridSize + 1));
 					opts.width = eventWidth + 'px';
 					opts['margin-left'] = thisOffset * (eventWidth + 1);
-					var div = this._makeEventRelDiv(entry, opts);
+					var div = this._makeEventRelDiv(entry, opts, null, td);
 					div.inject(document.body);
 					div.store('opts', opts);
 					
@@ -715,7 +717,7 @@ var fabrikCalendar = new Class({
 					}
 				}
 				opts['margin-left'] = maxOffset * (eventWidth + 1);
-				var div = this._makeEventRelDiv(entry, opts);
+				var div = this._makeEventRelDiv(entry, opts, null, td);
 				div.inject(document.body);
 				div.store('opts', opts);
 				

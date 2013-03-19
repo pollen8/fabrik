@@ -4293,6 +4293,7 @@ class FabrikFEModelList extends JModelForm
 		$db = FabrikWorker::getDbo();
 		$table = $this->getTable();
 		$cn = $this->getConnection();
+		
 		$c = $cn->getConnection();
 		$dbname = $c->database;
 		if ($table->db_table_name == '')
@@ -7326,10 +7327,11 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery($query);
 		try {
 			$db->execute();
-		} catch (Exception $e) {
+		} catch (RuntimeException $e)
+		{
+			// Try to suppress error
 			$this->setError($e->getMessage());
 		}
-		$db->execute();
 	}
 
 	/**
@@ -9546,6 +9548,12 @@ class FabrikFEModelList extends JModelForm
 			if ($document->getType() === 'pdf')
 			{
 				$this->tmpl = $params->get('pdf_template', $this->tmpl);
+			}
+			
+			// Migration test
+			if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl))
+			{
+				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
 		}
 		return $this->tmpl;

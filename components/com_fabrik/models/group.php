@@ -1022,5 +1022,65 @@ class FabrikFEModelGroup extends FabModel
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
 	}
+	
+	/**
+	 * Test if the group can repeat and if the fk element is published
+	 * 
+	 * @since   3.1rc1
+	 * 
+	 * @return boolean
+	 */
+	public function fkPublished()
+	{
+		if ($this->canRepeat())
+		{
+			return true;
+		}
+		$joinTable = $this->getJoinModel()->getJoin();
+		$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
+			
+		$elementModels = $this->getPublishedElements();
+		$fkFound = false;
+		foreach ($elementModels as $elementModel)
+		{
+			if ($elementModel->getFullName(true, false) === $fullFk)
+			{
+				$fkFound = true;
+			}
+		}
+		if (!fkFound)
+		{
+			JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
+		}
+		return $fkFound;
+	}
+	
+	/**
+	 * Get the number of times the group was repeated based on the form's current data
+	 * 
+	 * @since   3.1rc1
+	 * 
+	 * @return number
+	 */
+	
+	public function repeatCount()
+	{
+		$data = $this->getFormModel()->getData();
+		$elementModels = $this->getPublishedElements();
+		reset($elementModels);
+		$tmpElement = current($elementModels);
+		if (!empty($elementModels))
+		{
+		
+			$smallerElHTMLName = $tmpElement->getFullName(true, false);
+			$repeatGroup = count(JArrayHelper::getValue($data, $smallerElHTMLName, 1));
+		}
+		else
+		{
+			// No published elements - not sure if setting repeatGroup to 0 is right though
+			$repeatGroup = 0;
+		}
+		return $repeatGroup;
+	}
 
 }
