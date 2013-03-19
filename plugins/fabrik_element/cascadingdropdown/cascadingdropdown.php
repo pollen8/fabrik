@@ -65,6 +65,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->watch = $this->getWatchId($repeatCounter);
 		$opts->displayType = $params->get('cdd_display_type', 'dropdown');
 		$opts->id = $this->getId();
+		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
 		$rowid = $input->getInt('rowid', 0);
