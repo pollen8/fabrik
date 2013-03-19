@@ -59,7 +59,7 @@ class FabrikViewListBase extends JViewLegacy
 		FabrikHelperHTML::addToFrameWork($src, 'media/com_fabrik/js/list');
 		$model->getCustomJsAction($src);
 
-		$tmpl = $this->get('tmpl');
+		$tmpl = $model->getTmpl();
 		$this->tmpl = $tmpl;
 
 		$this->get('ListCss');
@@ -261,6 +261,7 @@ class FabrikViewListBase extends JViewLegacy
 
 	public function display($tpl = null)
 	{
+		
 		if ($this->getLayout() == '_advancedsearch')
 		{
 			$this->advancedSearch($tpl);
@@ -280,7 +281,7 @@ class FabrikViewListBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
-
+		
 		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
 		$model = $this->getModel();
@@ -288,7 +289,7 @@ class FabrikViewListBase extends JViewLegacy
 		$item = $model->getTable();
 		$data = $model->render();
 		$w = new FabrikWorker;
-
+		
 		// Add in some styling short cuts
 		$c = 0;
 		$form = $model->getFormModel();

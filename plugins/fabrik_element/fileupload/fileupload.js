@@ -489,8 +489,8 @@ var ImageWidget = new Class({
 			'type': 'modal',
 			content: this.canvas.getParent(),
 			loadMethod: 'html',
-			width: this.imageDefault.imagedim.w.toInt() + 20,
-			height: this.imageDefault.imagedim.h.toInt() + 140,
+			width: this.imageDefault.imagedim.w.toInt() + 35,
+			height: this.imageDefault.imagedim.h.toInt() + 150,
 			storeOnClose: true,
 			createShowOverLay: false,
 			crop: opts.crop,
@@ -978,6 +978,7 @@ var ImageWidget = new Class({
 	
 	showWin : function () {
 		this.win = Fabrik.getWindow(this.windowopts);
+		this.win.window.position();
 		if (typeOf(this.CANVAS) === 'null') {
 			return;
 		}
@@ -992,6 +993,5 @@ var ImageWidget = new Class({
 				this.CANVAS.threads.get('myThread').start();
 			}
 		}
-		this.win.center();
 	}
 });

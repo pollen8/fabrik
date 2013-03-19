@@ -1188,7 +1188,9 @@ class FabrikWorker
 			$conf = JFactory::getConfig();
 			if (!$loadJoomlaDb)
 			{
-				$cn = JTable::getInstance('Connection', 'FabrikTable');
+				$cnModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
+				$cn = $cnModel->getConnection($cnnId);
+				/* $cn = JTable::getInstance('Connection', 'FabrikTable');
 				if (is_null($cnnId))
 				{
 					$cn->load(array('default' => 1));
@@ -1196,7 +1198,7 @@ class FabrikWorker
 				else
 				{
 					$cn->load((int) $cnnId);
-				}
+				} */
 				$host = $cn->host;
 				$user = $cn->user;
 				$password = $cn->password;

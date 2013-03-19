@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-craaaaaapppppp client="administrator" method="upgrade" type="module" version="1.7.0">
+<extension client="administrator" method="upgrade" type="module" version="1.7.0">
 	<name>mod_fabrik_list</name>
 	<author>Rob Clayburn</author>
 	<creationDate>February 2013</creationDate>
@@ -14,6 +14,7 @@ craaaaaapppppp client="administrator" method="upgrade" type="module" version="1.
 		<filename>listmodule.js</filename>
 		<filename>index.html</filename>
 		<filename>mod_fabrik_list.xml</filename>
+		<folder>language</folder>
 	</files>
 	<config>
 		<fields name="params">
@@ -22,31 +23,50 @@ craaaaaapppppp client="administrator" method="upgrade" type="module" version="1.
 					
 				<field description="" label="" name="@spacer" type="spacer"/>
 				
-				<field description="MOD_FABRIK_LIST_LIST_DESC" label="MOD_FABRIK_LIST_LIST_LABEL" name="list_id" type="fabriktables"/>
+				<field name="list_id"
+					type="fabriktables"
+					description="MOD_FABRIK_LIST_LIST_DESC"
+					label="MOD_FABRIK_LIST_LIST_LABEL"/>
 				
-				<field default="" description="MOD_FABRIK_LIST_AJAX_DESC" label="MOD_FABRIK_LIST_AJAX_LABEL" name="useajax" type="list">
+				<field default="" description="MOD_FABRIK_LIST_AJAX_DESC"
+					label="MOD_FABRIK_LIST_AJAX_LABEL" name="useajax" type="list">
 						<option value="">JGLOBAL_USE_GLOBAL</option>
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
 				
-				<field default="" description="MOD_FABRIK_LIST_AJAX_LINKS_DESC" label="MOD_FABRIK_LIST_AJAX_LINKS_LABEL" name="ajax_links" type="list">
+				<field default="" description="MOD_FABRIK_LIST_AJAX_LINKS_DESC"
+					label="MOD_FABRIK_LIST_AJAX_LINKS_LABEL"
+					name="ajax_links" type="list">
 						<option value="">JGLOBAL_USE_GLOBAL</option>
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
 				
-				<field default="0" label="MOD_FABRIK_LIST_RANDOMIZE_LABEL" name="radomizerecords" type="radio">
-					description="MOD_FABRIK_LIST_RANDOMIZE_DESC"
+				<field name="radomizerecords" type="radio"
+					default="0" label="MOD_FABRIK_LIST_RANDOMIZE_LABEL"
+					description="MOD_FABRIK_LIST_RANDOMIZE_DESC">
 						<option value="0">JNo</option>
 						<option value="1">JYES</option>
 				</field>
 				
-				<field default="0" description="MOD_FABRIK_LIST_LIMIT_DESC" label="MOD_FABRIK_LIST_LIMIT_LABEL" name="limit" size="4" type="text"/>
+				<field name="limit"
+					type="text"
+					default="0"
+					description="MOD_FABRIK_LIST_LIMIT_DESC"
+					label="MOD_FABRIK_LIST_LIMIT_LABEL"  size="4" />
 					
-				<field default="default" descrption="MOD_FABRIK_LIST_TEMPLATE_DESC" directory="/components/com_fabrik/views/list/tmpl/" label="MOD_FABRIK_LIST_TEMPLATE_LABEL" name="fabriklayout" type="folderlist"/>
+				<field name="fabriklayout"
+					default="default"
+					descrption="MOD_FABRIK_LIST_TEMPLATE_DESC"
+					directory="/components/com_fabrik/views/list/tmpl/"
+					label="MOD_FABRIK_LIST_TEMPLATE_LABEL"
+					type="folderlist"/>
 					
-				<field description="MOD_FABRIK_LIST_ELEMENTS_DESC" label="MOD_FABRIK_LIST_ELEMENTS_LABEL" name="list_elements" type="fabrikmodalrepeat">
+				<field description="MOD_FABRIK_LIST_ELEMENTS_DESC"
+					label="MOD_FABRIK_LIST_ELEMENTS_LABEL"
+					name="list_elements"
+					type="fabrikmodalrepeat">
 				
 					<fields name="params">
 						<fieldset modal="true" name="list_elements_modal" repeat="true">
