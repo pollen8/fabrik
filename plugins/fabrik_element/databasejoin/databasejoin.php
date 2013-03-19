@@ -2066,7 +2066,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$label = $params->get($this->labelParam);
 		$label = FabrikString::shortColName($label);
-		echo $label . "<br>";
 		$this->labelParamVal = $label;
 		return $this->labelParamVal;
 	}
