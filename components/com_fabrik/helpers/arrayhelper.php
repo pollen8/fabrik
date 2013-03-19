@@ -187,7 +187,7 @@ class FArrayHelper extends JArrayHelper
 	 * @return unknown_type
 	 */
 
-	public function filter(&$array, $key, $value)
+	public static function filter(&$array, $key, $value)
 	{
 		for ($i = count($array) - 1; $i >= 0; $i--)
 		{
