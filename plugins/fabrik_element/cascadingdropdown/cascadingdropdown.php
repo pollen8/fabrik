@@ -986,8 +986,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	{
 		$params = $this->getParams();
 		$full = $params->get('cascadingdropdown_id');
-		$bits = explode('___', $full);
-		return JArrayHelper::getValue($bits, 1, $full);
+		return FabrikString::shortColName($full);
 	}
 
 	/**

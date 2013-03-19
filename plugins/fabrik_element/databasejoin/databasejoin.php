@@ -1830,7 +1830,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function getJoinValueFieldName()
 	{
 		$params = $this->getParams();
-		return $params->get('join_key_column');
+		return FabrikString::shortColName($params->get('join_key_column'));
 	}
 	/**
 	 * Builds an array containing the filters value and condition
@@ -2065,12 +2065,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		$params = $this->getParams();
 		$label = $params->get($this->labelParam);
-		if (JString::strpos($label, '___'))
-		{
-			// CDD is stored as full element name - db join as simple element name
-			$bits = explode('___', $label);
-			$label = $bits[1];
-		}
+		$label = FabrikString::shortColName($label);
+		echo $label . "<br>";
 		$this->labelParamVal = $label;
 		return $this->labelParamVal;
 	}
