@@ -42,6 +42,7 @@ var Autofill = new Class({
 			if (oEl.strElement === this.element.strElement) {
 				// The element is a clone of our observable element
 				this.element = false;
+				this.setupDone = false;
 				this.setUp(form);
 			}
 		}.bind(this));
