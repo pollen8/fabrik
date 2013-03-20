@@ -339,24 +339,23 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		{
 			if ($d)
 			{
-				list($hour, $min, $sec) = explode(':', $d);
-				$hms = $hour . $sep . $min . $sep . $sec;
-				$hm = $hour . $sep . $min;
-				$ms = $min . $sep . $sec;
 				$timedisp = '';
 				if ($ft == "H:i:s")
 				{
-					$timedisp = $hms;
+					list($hour, $min, $sec) = explode(':', $d);
+					$timedisp = $hour . $sep . $min . $sep . $sec;
 				}
 				else
 				{
 					if ($ft == "H:i")
 					{
-						$timedisp = $hm;
+						list($hour, $min) = explode(':', $d);
+						$timedisp = $hour . $sep . $min;
 					}
 					if ($ft == "i:s")
 					{
-						$timedisp = $ms;
+						list($min, $sec) = explode(':', $d);
+						$timedisp = $min . $sep . $sec;
 					}
 				}
 				$format[] = $timedisp;
