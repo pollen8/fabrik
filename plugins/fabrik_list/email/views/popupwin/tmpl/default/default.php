@@ -89,7 +89,7 @@ FabrikHelperHTML::framework();
                 }
 		?>
 
-	
+
 	</form>
 </div>
 <?php if ($this->allowAttachment) {?>
