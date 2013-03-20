@@ -1184,8 +1184,11 @@ class FabrikFEModelList extends JModelForm
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
 		{
-			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
-			$linksToForms[$k] = $join;
+			if ($join !== false)
+			{
+				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+				$linksToForms[$k] = $join;
+			}
 		}
 		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
@@ -1328,37 +1331,43 @@ class FabrikFEModelList extends JModelForm
 				}
 				foreach ($joinsToThisKey as $f => $join)
 				{
-					$linkedTable = $factedlinks->linkedlist->$f;
-					$popupLink = $factedlinks->linkedlist_linktype->$f;
-					$linkedListText = $factedlinks->linkedlisttext->$f;
-					if ($linkedTable != '0')
+					// $$$ hugh - for reasons I don't understand, $joinsToThisKey now contains entries
+					// which aren't in $factedlinks->linkedlist, so added this sanity check.
+					if (isset($factedlinks->linkedlist->$f))
 					{
-						$recordKey = $join->element_id . '___' . $linkedTable;
-						$key = $recordKey . "_list_heading";
-						$val = $pKeyVal;
-						$recordCounts = $this->getRecordCounts($join, $pks);
-						$count = 0;
-						$linkKey = $recordCounts['linkKey'];
-						if (is_array($recordCounts))
+						$linkedTable = $factedlinks->linkedlist->$f;
+						$popupLink = $factedlinks->linkedlist_linktype->$f;
+						$linkedListText = $factedlinks->linkedlisttext->$f;
+						if ($linkedTable != '0')
 						{
-							if (array_key_exists($val, $recordCounts))
+							$recordKey = $join->element_id . '___' . $linkedTable;
+							$key = $recordKey . "_list_heading";
+							$val = $pKeyVal;
+							$recordCounts = $this->getRecordCounts($join, $pks);
+							$count = 0;
+							$linkKey = $recordCounts['linkKey'];
+							if (is_array($recordCounts))
 							{
-								$count = $recordCounts[$val]->total;
-								$linkKey = $recordCounts[$val]->linkKey;
-							}
-							else
-							{
-								if (array_key_exists((int) $val, $recordCounts) && (int) $val !== 0)
+								if (array_key_exists($val, $recordCounts))
 								{
-									$count = $recordCounts[(int) $val]->total;
+									$count = $recordCounts[$val]->total;
 									$linkKey = $recordCounts[$val]->linkKey;
 								}
+								else
+								{
+									if (array_key_exists((int) $val, $recordCounts) && (int) $val !== 0)
+									{
+										$count = $recordCounts[(int) $val]->total;
+										$linkKey = $recordCounts[$val]->linkKey;
+									}
+								}
 							}
+							$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
+							$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
 						}
-						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
-						$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
+						// $$$ hugh - pretty sure we don't need to be doing this
+						// $f++;
 					}
-					$f++;
 				}
 
 				// Create columns containing links which point to forms assosciated with this table
@@ -3343,24 +3352,34 @@ class FabrikFEModelList extends JModelForm
 	public function canEdit($row = null)
 	{
 		$params = $this->getParams();
-		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
-		/* $$$ hugh - AAAAAAGHHHH!!!  This one took a while ...
-		 * canUserDo() returns true, false, or -1 ... when "loose" testing with !=
-		* then true is the same as -1.  But we want strict testing, with !==
+
+		/**
+		 * $$$ hugh - FIXME - we really need to split out a onCanEditRow method, rather than overloading
+		 * onCanEdit for both table and per-row contexts.  At the moment, we calling per-row plugins with
+		 * null $row when canEdit() is called in a table context.
+		 */
+
+		/**
+		* Find out what any plugins have to say
 		*/
-		if ($canUserDo !== -1)
+
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
+		$pluginCanEdit = !in_array(false, $pluginCanEdit);
+
+		/*
+		 * All of the plugins said Yes, so that's it, let them override, don't even
+		 * bother findin out what canUserDo and regular ACL's say.
+		 */
+		if ($pluginCanEdit)
 		{
-			return $canUserDo;
+			return true;
 		}
 
-		/* $$$ hugh - FIXME - we really need to split out a onCanEditRow method, rather than overloading
-		 * onCanEdit for both table and per-row contexts.  At the moment, we calling per-row plugins with
-		* null $row when canEdit() is called in a table context.
-		*/
-		$canEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
-		if (in_array(false, $canEdit))
+		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
+		if ($canUserDo !== -1)
 		{
-			return false;
+			// If userDo doesn't allow edit, let plugin override
+			return $canUserDo ?  $canUserDo : $pluginCanEdit;
 		}
 		if (!is_object($this->_access) || !array_key_exists('edit', $this->_access))
 		{
@@ -3368,7 +3387,8 @@ class FabrikFEModelList extends JModelForm
 			$groups = $user->authorisedLevels();
 			$this->_access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
-		return $this->_access->edit;
+		// If group access doesn't allow edit, then let plugin override
+		return $this->_access->edit ? $this->_access->edit : $pluginCanEdit;
 	}
 
 	/**
@@ -3424,13 +3444,13 @@ class FabrikFEModelList extends JModelForm
 		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
 		 * deny access.
 		 */
-		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
-		$pluginCanEdit = !in_array(false, $pluginCanEdit);
+		$pluginCanDelete = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
+		$pluginCanDelete = !in_array(false, $pluginCanDelete);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
 			// If userDo allows delete, let plugin override
-			return $canUserDo ? $pluginCanEdit : $canUserDo;
+			return $canUserDo ? $pluginCanDelete : $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
 		{
@@ -3438,7 +3458,7 @@ class FabrikFEModelList extends JModelForm
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
 		// If group access allows delete, then let plugin override
-		return $this->_access->delete ? $pluginCanEdit : $this->_access->delete;
+		return $this->_access->delete ? $pluginCanDelete : $this->_access->delete;
 	}
 
 	/**
