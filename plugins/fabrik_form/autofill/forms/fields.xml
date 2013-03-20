@@ -23,9 +23,11 @@
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="0" description="PLG_FORM_AUTOFILL_ONLOAD_DESC" label="PLG_FORM_AUTOFILL_ONLOAD_LABEL" name="autofill_onload" repeat="true" type="radio">
+			<field default="0" description="PLG_FORM_AUTOFILL_ONLOAD_DESC" label="PLG_FORM_AUTOFILL_ONLOAD_LABEL" name="autofill_onload" repeat="true" type="list">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>				
+					<option value="1">PLG_FORM_AUTOFILL_ONLOAD_NEW_ONLY</option>
+					<option value="2">PLG_FORM_AUTOFILL_ONLOAD_EDIT_ONLY</option>
+					<option value="3">PLG_FORM_AUTOFILL_ONLOAD_NEW_AND_EDIT</option>				
 			</field>
 			
 		</fieldset>

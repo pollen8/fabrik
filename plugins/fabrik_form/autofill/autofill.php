@@ -47,6 +47,9 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 
 	public function onAfterJSLoad(&$params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$rowid = $input->getInt('rowid', 0);
 		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
@@ -60,7 +63,22 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		}
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
-		$opts->fillOnLoad = (bool) $params->get('autofill_onload', false);
+		switch ($params->get('autofill_onload', '0'))
+		{
+			case '0':
+			default:
+				$opts->fillOnLoad = false;
+				break;
+			case '1':
+				$opts->fillOnLoad = ($rowid === 0);
+				break;
+			case '2':
+				$opts->fillOnLoad = ($rowid > 0);
+				break;
+			case '3':
+				$opts->fillOnLoad = true;
+				break;
+		}
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
