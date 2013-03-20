@@ -1355,7 +1355,6 @@ class FabrikFEModelForm extends FabModelForm
 		$this->_fullFormData = $this->formData;
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.data', $this->formData);
-		echo "<pre>";print_r($this->formData);;
 		return $this->formData;
 	}
 

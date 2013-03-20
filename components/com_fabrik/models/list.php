@@ -3142,6 +3142,8 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
+		//echo "<pre>";print_r($this->asfields);
+		//exit;
 		/*temporaraily add in the db key so that the edit links work, must remove it before final return
 		 of getData();
 		*/

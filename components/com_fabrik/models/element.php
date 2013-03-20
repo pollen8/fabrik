@@ -606,7 +606,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = $db->quoteName($jointable . '___' . $this->element->name);
+		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name);
 		$sql = '(SELECT GROUP_CONCAT(' . $jkey . ' SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
 			. $table->db_primary_key . ')';
 		if ($addAs)
@@ -633,7 +633,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$table = $this->getListModel()->getTable();
-		$fullElName = $db->quoteName($jointable . '___' . $this->element->name . '_raw');
+		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name . '_raw');
+		
 		$pkField = $this->groupConcactJoinKey();
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
 			. ') AS ' . $fullElName;
@@ -671,7 +672,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		$db = FabrikWorker::getDbo();
 		$table = $this->getListModel()->getTable();
 		$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
-		$k = $db->quoteName($dbtable . '.' . $this->element->name);
+		$fName = $dbtable . '.' . $this->element->name;
+		$k = $db->quoteName($fName);
 		$secret = JFactory::getConfig()->get('secret');
 		if ($this->encryptMe())
 		{
@@ -685,7 +687,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$jkey = 'AES_DECRYPT(' . $jkey . ', ' . $db->quote($secret) . ')';
 			}
 			$jointable = $this->getJoinModel()->getJoin()->table_join;
-			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($jointable . '___' . $this->element->name));
+			$fullElName = JArrayHelper::getValue($opts, 'alias', $k);
 			$str = $this->buildQueryElementConcat($jkey);
 		}
 		else
@@ -704,7 +706,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
 			}
-			$k = $db->quoteName($dbtable) . '.' . $db->quoteName($this->element->name);
+			$k = $db->quoteName($dbtable . '.' . $this->element->name);
 			if ($this->encryptMe())
 			{
 				$k = 'AES_DECRYPT(' . $k . ', ' . $db->quote($secret) . ')';
@@ -715,11 +717,13 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str = $this->buildQueryElementConcatId();
 				$aFields[] = $str;
 				$aAsFields[] = $fullElName;
-				$fullElName = $db->quoteName($jointable . '___params');
+				//$fullElName = $db->quoteName($fName . '___params');
+				
+				$as = $db->quoteName($dbtable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-					. $pkField . ') AS ' . $fullElName;
+					. $pkField . ') AS ' . $as;
 				$aFields[] = $str;
-				$aAsFields[] = $fullElName;
+				$aAsFields[] = $as;
 			}
 			else
 			{
@@ -1594,9 +1598,9 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$thisStep = ($useStep) ? $formModel->joinTableElementStep : '.';
 		$group = $groupModel->getGroup();
-		if ($groupModel->isJoin() || $this->isJoin())
+		if ($groupModel->isJoin())
 		{
-			$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
+			$joinModel = $groupModel->getJoinModel();
 			$join = $joinModel->getJoin();
 			$fullName = $join->table_join . $thisStep . $element->name;
 		}
@@ -2194,9 +2198,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			$table = $listModel->getTable();
 			$groupTable = $groupModel->getGroup();
 			$element = $this->getElement();
-			if ($groupModel->isJoin() || $this->isJoin())
+			if ($groupModel->isJoin())
 			{
-				$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
+				$joinModel = $groupModel->getJoinModel();
 				$joinTable = $joinModel->getJoin();
 				$fullName = $joinTable->table_join . '___' . $element->name;
 			}
@@ -2234,9 +2238,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->getListModel()->getTable();
 		$group = $groupModel->getGroup();
 		$element = $this->getElement();
-		if ($groupModel->isJoin() || $this->isJoin())
+		if ($groupModel->isJoin())
 		{
-			$joinModel = $this->isJoin() ? $this->getJoinModel() : $groupModel->getJoinModel();
+			$joinModel = $groupModel->getJoinModel();
 			$joinTable = $joinModel->getJoin();
 			$fullName = $joinTable->table_join . '___' . $element->name;
 		}
@@ -4818,12 +4822,16 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Get join row
 	 *
-	 * @return  object	join table or false if not loaded
+	 * @return  JTable	join table or false if not loaded
 	 */
 
 	protected function getJoin()
 	{
-		return null;
+		if ($this->isJoin())
+		{
+			return $this->getJoinModel()->getJoin();
+		}
+		return false;
 	}
 
 	/**
@@ -6420,7 +6428,113 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function onFinalStoreRow(&$data)
 	{
+		$groupModel = $this->getGroupModel();
+		if ($this->isJoin())
+		{
+			$listModel = $this->getListModel();
+			$joinModel = $this->getJoinModel();
+			$db = $listModel->getDb();
+			$query = $db->getQuery(true);
+			$formData =& $this->getFormModel()->formDataWithTableName;
+			$tableName = $listModel->getTable()->db_table_name;
+			$name = $this->getFullName(true, false);
+			$join = $this->getJoin();
+			if ($groupModel->isJoin())
+			{
+				$groupJoin = $groupModel->getJoinModel()->getJoin();
+				
+				$idKey = $join->table_join . '___id';
+				$paramsKey = $join->table_join . '___params';
+				$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
+				$parentIds = $formData[$k];
+				$valueKey = $join->table_join . '___' . $shortName . '_raw';
+				$allJoinValues = $formData[$valueKey];
+			}
+			else 
+			{
+				$idKey = $name . '___id';
+				$paramsKey = $name . '___params';
+				
+				$allJoinValues = $formData[$name];
+				$parentIds = array_fill(0, count($allJoinValues), $formData['rowid']);
+				
+			}
+			$allJoinIds = $formData[$idKey];
+			$allParams = array_values($formData[$paramsKey]);
+			
+			$shortName = $this->getElement()->name;
+			
+			$i = 0;
+			$idsToKeep = array();
+			foreach ($parentIds as $parentId)
+			{
+				if (!array_key_exists($parentId, $idsToKeep))
+				{
+					$idsToKeep[$parentId] = array();
+				}
+				$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
 
+				// Get existing records
+				if ($parentId == '')
+				{
+					$ids = array();
+				}
+				else
+				{
+					$query->clear();
+					$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
+					$db->setQuery($query);
+					$ids = $db->loadObjectList($shortName);
+				}
+				
+				foreach ($joinValues as $jIndex => $jid)
+				{
+					$record = new stdClass;
+					$record->parent_id = $parentId;
+					$fkVal = $joinValues[$jIndex];
+					$record->$shortName = $fkVal;
+					$record->params = JArrayHelper::getValue($allParams, $jIndex);
+					
+					if (array_key_exists($fkVal, $ids))
+					{
+						$record->id = $ids[$fkVal]->id;
+						$idsToKeep[$parentId][] = $record->id;
+					}
+					else
+					{
+						$record->id = 0;
+					}
+					
+					if ($record->id == 0)
+					{
+						$ok = $listModel->insertObject($join->table_join, $record);
+					}
+					else
+					{
+						$ok = $listModel->updateObject($join->table_join, $record, 'id');
+					}
+					if (!$ok)
+					{
+						throw new RuntimeException('didnt save db joined repeat element');
+					}
+				}
+				$i ++;
+			}
+			
+
+			// Delete any records that were unselected.
+			foreach ($idsToKeep as $parentId => $ids)
+			{
+				$query->clear();
+				$query->delete($join->table_join)->where('parent_id = ' . $parentId);
+				if (!empty($ids))
+				{
+					$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
+				}
+				$db->setQuery($query);
+				$db->query();
+			}
+		}
 	}
 
 }

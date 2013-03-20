@@ -312,7 +312,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get join row
 	 *
-	 * @return  object	join table or false if not loaded
+	 * @return  JTable  join table or false if not loaded
 	 */
 
 	protected function getJoin()
@@ -2826,87 +2826,4 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		return false;
 	}
 
-	public function onFinalStoreRow(&$data)
-	{
-		$groupModel = $this->getGroupModel();
-		if ($this->isJoin() && $groupModel->isJoin())
-		{
-			$listModel = $this->getListModel();
-			$db = $listModel->getDb();
-			$query = $db->getQuery(true);
-			$joinModel = $this->getJoinModel();
-			$formData =& $this->getFormModel()->formDataWithTableName;
-			$groupJoin = $groupModel->getJoinModel()->getJoin();
-			$join = $this->getJoin();
-			$idKey = $join->table_join . '___id';
-			$shortName = $this->getElement()->name;
-			$valueKey = $join->table_join . '___' . $shortName . '_raw';
-			$name = $this->getFullName(true, false);
-
-			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
-			$parentIds = $formData[$k];
-
-			$allJoinIds = $formData[$idKey];
-			$allJoinValues = $formData[$valueKey];
-			$i = 0;
-			foreach ($parentIds as $parentId)
-			{
-				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
-
-				// Get existing records
-				if ($parentId == '')
-				{
-					$ids = array();
-				}
-				else
-				{
-					$query->clear();
-					$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
-					$db->setQuery($query);
-					$ids = $db->loadObjectList($shortName);
-				}
-				foreach ($joinValues as $jIndex => $jid)
-				{
-					$record = new stdClass;
-					$record->parent_id = $parentId;
-					$fkVal = $joinValues[$jIndex];
-					if (array_key_exists($fkVal, $ids))
-					{
-						$record->id = $ids[$fkVal]->id;
-					}
-					else
-					{
-						$record->id = 0;
-					}
-					$record->$shortName = $fkVal;
-					if ($record->id == 0)
-					{
-						$ok = $listModel->insertObject($join->table_join, $record);
-					}
-					else
-					{
-						$ok = $listModel->updateObject($join->table_join, $record, 'id');
-					}
-					if (!$ok)
-					{
-						throw new ErrorException('didnt save db joined repeat element');
-					}
-				}
-
-				// Delete any records that were unselected.
-				if ($parentId != '')
-				{
-					$query->clear();
-					$query->delete($join->table_join)->where('parent_id = ' . $parentId);
-					if (!empty($joinValues))
-					{
-						$query->where($shortName . ' NOT IN ( ' . implode($joinValues, ',') . ')');
-					}
-					$db->setQuery($query);
-					$db->query();
-				}
-				$i ++;
-			}
-		}
-	}
 }

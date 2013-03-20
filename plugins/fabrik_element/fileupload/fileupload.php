@@ -1035,12 +1035,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$ids = (array) JArrayHelper::getValue($raw, 'id');
 				$cropData = (array) JArrayHelper::getValue($raw, 'cropdata');
 			}
-
 			if ($raw == '')
 			{
 				return true;
 			}
-			//echo "crop data = " ;print_r( ($cropData));exit;
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);
@@ -1048,6 +1046,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 			$fileCounter = 0;
+			echo "crop <br>";print_r($crop);
 			foreach ($crop as $filepath => $json)
 			{
 				$imgData = $cropData[$filepath];
@@ -1112,20 +1111,28 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				{
 					$joinid = $this->getJoinModel()->getJoin()->id;
 				}
-				$j = $this->getJoinModel()->getJoin()->table_join;
+				$name = $this->getFullName(true, false);
+				
+				if ($groupModel->isJoin())
+				{
+					$j = $this->getJoinModel()->getJoin()->table_join;
+				}
+				else
+				{
+					$j = $name;
+				}
+				
 				$joinsid = $j . '___id';
 				$joinsparam = $j . '___params';
 
-				$name = $this->getFullName(true, false);
+				$formModel->updateFormData($name, $files);
+				$formModel->updateFormData($name . '_raw', $files);
 
-				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
-				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
+				$formModel->updateFormData($joinsid, $ids);
+				$formModel->updateFormData($joinsid . '_raw', $ids);
 
-				$formModel->updateFormData("join.{$joinid}.{$joinsid}", $ids);
-				$formModel->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
-
-				$formModel->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
-				$formModel->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
+				$formModel->updateFormData($joinsparam, $saveParams);
+				$formModel->updateFormData($joinsparam . '_raw', $saveParams);
 			}
 			else
 			{
@@ -1179,6 +1186,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			$name = $this->getFullName(true, false);
 		}
+		
 		if ($this->processAjaxUploads($name))
 		{
 			// Stops form data being updated with blank data.
@@ -1192,11 +1200,13 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		/* If we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
 		 * otherwise no standard image processed
 		 */
+		echo "crop start";
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			// Stops form data being updated with blank data.
 			return;
 		}
+		echo "crop down";
 		$files = array();
 		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
 		$gid = $groupModel->getGroup()->id;
@@ -1222,6 +1232,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			}
 		}
 
+		echo "do stuff here";exit;
 		if ($groupModel->canRepeat())
 		{
 			if ($isjoin)
@@ -1739,6 +1750,7 @@ foreach ($files as &$f) {
 		$this->_repeatGroupCounter = $repeatCounter;
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
+		echo "Name = $name<br>";
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();

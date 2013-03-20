@@ -120,8 +120,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			// JError::raiseWarning(500, 'Could not find the join label for ' . $this->getElement()->name . ' try unlinking and saving it');
 			$label = $this->getElement()->name;
 		}
-		$joinTableName = $join->table_join_alias;
-		return $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName) . '.' . $db->quoteName($label);
+		if ($this->isJoin())
+		{
+			$joinTableName = $this->getDbName();
+			$label = $this->getLabelParamVal();
+		}
+		else
+		{
+			$joinTableName = $join->table_join_alias;
+				
+		}
+		return $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
 	}
 
 	/**
@@ -581,7 +590,15 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Create the sql query used to get the join data
+	 * Create the sql query used to get the possible selectionable value/labels used to create
+	 * the dropdown/checkboxes
+	 *
+	 * @param   array  $data      data
+	 * @param   bool   $incWhere  include where
+	 * @param   array  $opts      query options
+	 *
+	 * @return  mixed	JDatabaseQuery or false if query can't be built
+	 */
 	 *
 	 * @param   array  $data      data
 	 * @param   bool   $incWhere  include where
