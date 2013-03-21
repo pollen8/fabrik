@@ -599,13 +599,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 *
 	 * @return  mixed	JDatabaseQuery or false if query can't be built
 	 */
-	 *
-	 * @param   array  $data      data
-	 * @param   bool   $incWhere  include where
-	 * @param   array  $opts      query options
-	 *
-	 * @return  mixed	JDatabaseQuery or false if query can't be built
-	 */
 
 	protected function buildQuery($data = array(), $incWhere = true, $opts = array())
 	{

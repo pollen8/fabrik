@@ -2862,12 +2862,13 @@ class FabrikFEModelForm extends FabModelForm
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
-			if ($groupModel->isJoin())
-			{
-				$group = $groupModel->getGroup();
+			
+			$group = $groupModel->getGroup();
 
-				$elementModels = $groupModel->getMyElements();
-				foreach ($elementModels as $elementModel)
+			$elementModels = $groupModel->getMyElements();
+			foreach ($elementModels as $elementModel)
+			{
+				if ($groupModel->isJoin() || $elementModel->isJoin())
 				{
 					$names = $elementModel->getJoinDataNames();
 					foreach ($data as $row)
@@ -2881,12 +2882,19 @@ class FabrikFEModelForm extends FabModelForm
 								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
 								if (!is_array($data[0]->$name))
 								{
-									$data[0]->$name = array($v);
+									if ($groupModel->isJoin())
+									{
+										$v = array($v);
+									}
+									$data[0]->$name = $v;
 								}
 								else
 								{
+									if ($groupModel->isJoin())
+									{
 									$n =& $data[0]->$name;
 									$n[] = $v;
+									}
 								}
 							}
 						}

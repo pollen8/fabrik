@@ -6428,112 +6428,119 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	public function onFinalStoreRow(&$data)
 	{
-		$groupModel = $this->getGroupModel();
-		if ($this->isJoin())
+		
+		if (!$this->isJoin())
 		{
-			$listModel = $this->getListModel();
-			$joinModel = $this->getJoinModel();
-			$db = $listModel->getDb();
-			$query = $db->getQuery(true);
-			$formData =& $this->getFormModel()->formDataWithTableName;
-			$tableName = $listModel->getTable()->db_table_name;
-			$name = $this->getFullName(true, false);
-			$join = $this->getJoin();
-			if ($groupModel->isJoin())
-			{
-				$groupJoin = $groupModel->getJoinModel()->getJoin();
-				
-				$idKey = $join->table_join . '___id';
-				$paramsKey = $join->table_join . '___params';
-				$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
-				$parentIds = $formData[$k];
-				$valueKey = $join->table_join . '___' . $shortName . '_raw';
-				$allJoinValues = $formData[$valueKey];
-			}
-			else 
-			{
-				$idKey = $name . '___id';
-				$paramsKey = $name . '___params';
-				
-				$allJoinValues = $formData[$name];
-				$parentIds = array_fill(0, count($allJoinValues), $formData['rowid']);
-				
-			}
-			$allJoinIds = $formData[$idKey];
-			$allParams = array_values($formData[$paramsKey]);
+			return;
+		}
+		$groupModel = $this->getGroupModel();
+		$listModel = $this->getListModel();
+		$joinModel = $this->getJoinModel();
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		$formData =& $this->getFormModel()->formDataWithTableName;
+		$tableName = $listModel->getTable()->db_table_name;
+		$name = $this->getFullName(true, false);
+		$shortName = $this->getElement()->name;
+		if ($name != 'countries___fav_region_id')
+		{
+			echo "<pre>";print_r($formData);
+			echo $name;
+		}
+		$join = $this->getJoin();
+		$allJoinValues = $formData[$name];
+		if ($groupModel->isJoin())
+		{
+			$groupJoin = $groupModel->getJoinModel()->getJoin();
 			
-			$shortName = $this->getElement()->name;
+			$idKey = $join->table_join . '___id';
+			$paramsKey = $join->table_join . '___params';
+			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
+			$parentIds = $formData[$k];
 			
-			$i = 0;
-			$idsToKeep = array();
-			foreach ($parentIds as $parentId)
+		}
+		else 
+		{
+			$idKey = $name . '___id';
+			$paramsKey = $name . '___params';
+			$parentIds = array_fill(0, count($allJoinValues), $formData['rowid']);
+			
+		}
+		$allJoinIds = $formData[$idKey];
+		$allParams = array_values($formData[$paramsKey]);
+		
+		$i = 0;
+		$idsToKeep = array();
+		foreach ($parentIds as $parentId)
+		{
+			if (!array_key_exists($parentId, $idsToKeep))
 			{
-				if (!array_key_exists($parentId, $idsToKeep))
+				$idsToKeep[$parentId] = array();
+			}
+			$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
+				
+			// Get existing records
+			if ($parentId == '')
+			{
+				$ids = array();
+			}
+			else
+			{
+				$query->clear();
+				$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
+				$db->setQuery($query);
+				$ids = $db->loadObjectList($shortName);
+			}
+			
+			foreach ($joinValues as $jIndex => $jid)
+			{
+				$record = new stdClass;
+				$record->parent_id = $parentId;
+				$fkVal = $joinValues[$jIndex];
+				$record->$shortName = $fkVal;
+				$record->params = JArrayHelper::getValue($allParams, $jIndex);
+				
+				if (array_key_exists($fkVal, $ids))
 				{
-					$idsToKeep[$parentId] = array();
-				}
-				$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
-
-				// Get existing records
-				if ($parentId == '')
-				{
-					$ids = array();
+					$record->id = $ids[$fkVal]->id;
+					$idsToKeep[$parentId][] = $record->id;
 				}
 				else
 				{
-					$query->clear();
-					$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
-					$db->setQuery($query);
-					$ids = $db->loadObjectList($shortName);
+					$record->id = 0;
 				}
 				
-				foreach ($joinValues as $jIndex => $jid)
+				
+				if ($record->id == 0)
 				{
-					$record = new stdClass;
-					$record->parent_id = $parentId;
-					$fkVal = $joinValues[$jIndex];
-					$record->$shortName = $fkVal;
-					$record->params = JArrayHelper::getValue($allParams, $jIndex);
-					
-					if (array_key_exists($fkVal, $ids))
-					{
-						$record->id = $ids[$fkVal]->id;
-						$idsToKeep[$parentId][] = $record->id;
-					}
-					else
-					{
-						$record->id = 0;
-					}
-					
-					if ($record->id == 0)
-					{
-						$ok = $listModel->insertObject($join->table_join, $record);
-					}
-					else
-					{
-						$ok = $listModel->updateObject($join->table_join, $record, 'id');
-					}
-					if (!$ok)
-					{
-						throw new RuntimeException('didnt save db joined repeat element');
-					}
+					$ok = $listModel->insertObject($join->table_join, $record);
+					$lastInsertId = $listModel->getDb()->insertid();
+					$idsToKeep[$parentId][] = $lastInsertId;
 				}
-				$i ++;
+				else
+				{
+					$ok = $listModel->updateObject($join->table_join, $record, 'id');
+					
+				}
+				if (!$ok)
+				{
+					throw new RuntimeException('didnt save db joined repeat element');
+				}
 			}
-			
+			$i ++;
+		}
 
-			// Delete any records that were unselected.
-			foreach ($idsToKeep as $parentId => $ids)
+		// Delete any records that were unselected.
+		foreach ($idsToKeep as $parentId => $ids)
+		{
+			$query->clear();
+			$query->delete($join->table_join)->where('parent_id = ' . $parentId);
+			if (!empty($ids))
 			{
-				$query->clear();
-				$query->delete($join->table_join)->where('parent_id = ' . $parentId);
-				if (!empty($ids))
-				{
-					$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
-				}
-				$db->setQuery($query);
-				$db->query();
+				$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
 			}
+			$db->setQuery($query);
+			$db->query();
 		}
 	}
 

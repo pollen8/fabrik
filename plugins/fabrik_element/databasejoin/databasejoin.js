@@ -224,7 +224,7 @@ var FbDatabasejoin = new Class({
 	 * @return  dom node .fabrik_subelement (visible checkbox)
 	 */
 	getCheckboxTmplNode: function () {
-		/*if (!this.chxTmplNode && this.options.displayType === 'checkbox')
+		if (!this.chxTmplNode && this.options.displayType === 'checkbox')
 		{
 			var chxs = this.element.getElements('> .fabrik_subelement');
 			if (chxs.length === 0) {
@@ -235,7 +235,7 @@ var FbDatabasejoin = new Class({
 			}
 			
 		}
-		return this.chxTmplNode;*/
+		return this.chxTmplNode;
 	},
 	
 	/**

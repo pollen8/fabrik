@@ -916,7 +916,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$joinGroupId = '';
 		}
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
-
+		
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;
 		foreach ($default as &$d)
@@ -1205,13 +1205,25 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$attribs = 'class="fabrikinput inputbox" id="' . $id . '"';
 
 		$name = FabrikString::rtrimword($name, '[]');
-
 		$formModel = $this->getFormModel();
 		if ($this->isJoin() && !$formModel->hasErrors())
 		{
 			$default = (array) FArrayHelper::getNestedValue($data, $idname . '.' . $repeatCounter, 'not found');
 		}
 		$html[] = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', $optsPerRow, $editable);
+		
+		if (empty($tmp))
+		{
+			$tmpids= array();
+			$o = new stdClass;
+			$o->text = 'dummy';
+			$o->value = 'dummy';
+			$tmpids[] = $o;
+			$tmp = $tmpids;
+			$dummy = FabrikHelperHTML::aList('checkbox', $tmp, $name, $attribs, $default, 'value', 'text', 1, true);
+			$html[] = '<div class="chxTmplNode">' . $dummy . '</div>';
+		}
+		
 		$html[] = '</div>';
 	}
 
@@ -2705,10 +2717,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$element = $this->getElement();
 			$group = $this->getGroup()->getGroup();
 			$join = $this->getJoinModel()->getJoin();
-			$repeatName = $join->table_join . '___repeatnum';
+			//$repeatName = $join->table_join . '___repeatnum';
+			$repeatName = $this->getFullName(true, false) . '___repeatnum';
 			$a[] = $repeatName;
 
-			$repeatName = $join->table_join . '___' . $element->name . '_id';
+			//$repeatName = $join->table_join . '___' . $element->name . '_id';
+			$repeatName = $this->getFullName(true, false) . '_id';;
 			$a[] = $repeatName;
 		}
 		return $a;
