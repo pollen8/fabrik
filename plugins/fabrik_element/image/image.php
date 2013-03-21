@@ -340,7 +340,7 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$rootFolder = $this->rootFolder();
+		$rootFolder = $this->rootFolder($value);
 		
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
@@ -469,16 +469,22 @@ class plgFabrik_ElementImage extends plgFabrik_Element
 		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
 		return array('FbImage', $id, $opts);
 	}
-	
-	protected function rootFolder()
+
+	/**
+	 * Get the root folder for images
+	 * 
+	 * @param   string  $value  Value
+	 * 
+	 * @return  string  root folder
+	 */
+
+	protected function rootFolder($value = '')
 	{
+		$rootFolder = '';
 		$params = $this->getParams();
-		$rootFolder = $params->get('selectImage_root_folder');
-		
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
-		
 		$defaultImg = $params->get('imagepath');
-		if ($canSelect && JFolder::exists($defaultImg))
+		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
 		{
 			$rootFolder = $defaultImg;
 		}
