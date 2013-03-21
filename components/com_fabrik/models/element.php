@@ -91,7 +91,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 *
 	 *  @var array
 	 */
-	var $_aFullNames = array();
+	public $fullNames = array();
 
 	/**
 	 * Group model
@@ -1653,9 +1653,9 @@ class plgFabrik_Element extends FabrikPlugin
 
 		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $includeJoinString . '_' . $useStep . '_'
 			. $incRepeatGroup;
-		if (isset($this->_aFullNames[$key]))
+		if (isset($this->fullNames[$key]))
 		{
-			return $this->_aFullNames[$key];
+			return $this->fullNames[$key];
 		}
 		$table = $listModel->getTable();
 		$db_table_name = $table->db_table_name;
@@ -1683,7 +1683,7 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$fullName .= '[]';
 		}
-		$this->_aFullNames[$key] = $fullName;
+		$this->fullNames[$key] = $fullName;
 		return $fullName;
 	}
 
