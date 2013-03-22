@@ -380,8 +380,8 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-
+		$bkey = $model->jsKey();
+		
 		$srcs = FabrikHelperHTML::framework();
 		$shim = array();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
@@ -437,7 +437,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$eventMax = ($groupModel->repeatTotal == 0) ? 1 : $groupModel->repeatTotal;
 				for ($c = 0; $c < $eventMax; $c++)
 				{
-					$jsActions[] = $elementModel->getFormattedJSActions($jsControllerKey, $c);
+					$jsActions[] = $elementModel->getFormattedJSActions($bkey, $c);
 				}
 			}
 		}
@@ -448,11 +448,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$form = $model->getForm();
 		FabrikHelperHTML::windows();
 
-		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-		if ($this->rowid != '')
-		{
-			$bkey .= '_' . $this->rowid;
-		}
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 
 		$this->get('FormCss');

@@ -5202,5 +5202,23 @@ class FabrikFEModelForm extends FabModelForm
 		$msg = $showmsg == 1 ? $msg : '';
 		return $msg;
 	}
+	
+	/**
+	 * Build the JS key that the model uses in the view. This key is assigned to Fabrik.blocks
+	 * 
+	 * @since   3.1rc1
+	 * 
+	 * @return  string
+	 */
+	 
+	public function jsKey()
+	{
+		$key = $this->isEditable() ? 'form_' . $this->getId() : 'details_' . $this->getId();
+		if ($this->getRowId() != '')
+		{
+			$key .= '_' . $this->getRowId();
+		}
+		return $key;
+	}
 
 }
