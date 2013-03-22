@@ -745,4 +745,22 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		return $value;
 	}
+
+	/**
+	* Get database field description
+	* For calc, as we have no idea what they will be storing, needs to be TEXT.
+	*
+	* @return  string  db field type
+	*/
+
+	public function getFieldDescription()
+	{
+		$p = $this->getParams();
+		if ($this->encryptMe())
+		{
+			return 'BLOB';
+		}
+		return "TEXT";
+	}
+
 }
