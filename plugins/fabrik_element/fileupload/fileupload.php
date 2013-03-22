@@ -24,7 +24,7 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
- */
+*/
 
 class plgFabrik_ElementFileupload extends plgFabrik_Element
 {
@@ -89,8 +89,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		{
 			/*$$$rob could be the case that we aren't uploading an element by have removed
 			 *a repeat group (no join) with a file upload element, in this case processUpload has the correct
-			 *file path settings.
-			 */
+			*file path settings.
+			*/
 			return false;
 		}
 		else
@@ -119,8 +119,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				{
 					/*if we can crop we need to store the cropped coordinated in the field data
 					 * @see onStoreRow();
-					 * above depreciated - not sure what to return here for the moment
-					 */
+					* above depreciated - not sure what to return here for the moment
+					*/
 					return false;
 				}
 			}
@@ -614,7 +614,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					$noImg = ($img == '' || !JFile::exists('media/com_fabrik/images/' . $img));
 					$aClass = $noImg ? 'class="btn button"' : '';
 					$a = $params->get('fu_download_noaccess_url') == '' ? ''
-						: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
+							: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
 					$a2 = $params->get('fu_download_noaccess_url') == '' ? '' : '</a>';
 
 					if ($noImg)
@@ -624,7 +624,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 					else
 					{
 						$img = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
-							. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
+								. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
 					}
 					return $a . $img . $a2;
 				}
@@ -663,8 +663,8 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 			}
 			$link = COM_FABRIK_LIVESITE
-				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='
-				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
+			. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='
+					. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
 			$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 			return $url;
 		}
@@ -924,9 +924,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			// $$$ hugh - no longer seems to be in $raw[0] ?
 
 			/*
-			$crop = (array)JArrayHelper::getValue($raw[0], 'crop');
+			 $crop = (array)JArrayHelper::getValue($raw[0], 'crop');
 			$ids = (array)JArrayHelper::getValue($raw[0], 'id');
-			 */
+			*/
 			$crop = (array) JArrayHelper::getValue($raw, 'crop');
 			$ids = (array) JArrayHelper::getValue($raw, 'id');
 			$ids = array_values($ids);
@@ -1041,7 +1041,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				return true;
 			}
-			//echo "crop data = " ;print_r( ($cropData));exit;
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);
@@ -1192,7 +1191,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		/* If we've turnd on crop but not set ajax upload then the cropping wont work so we shouldnt return
 		 * otherwise no standard image processed
-		 */
+		*/
 		if ($this->crop($name) && $params->get('ajax_upload'))
 		{
 			// Stops form data being updated with blank data.
@@ -1238,7 +1237,7 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				if ($isjoin)
 				{
 					$myFileDir = (is_array($request['join'][$joinid][$name]) && array_key_exists($i, $request['join'][$joinid][$name]))
-						? $request['join'][$joinid][$name][$i] : '';
+					? $request['join'][$joinid][$name][$i] : '';
 				}
 				else
 				{
@@ -1246,10 +1245,10 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 
 				$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid][$name][$i] : $_FILES[$name]['name'][$i],
-					'type' => $isjoin ? $_FILES['join']['type'][$joinid][$name][$i] : $_FILES[$name]['type'][$i],
-					'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name][$i] : $_FILES[$name]['tmp_name'][$i],
-					'error' => $isjoin ? $_FILES['join']['error'][$joinid][$name][$i] : $_FILES[$name]['error'][$i],
-					'size' => $isjoin ? $_FILES['join']['size'][$joinid][$name][$i] : $_FILES[$name]['size'][$i]);
+						'type' => $isjoin ? $_FILES['join']['type'][$joinid][$name][$i] : $_FILES[$name]['type'][$i],
+						'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name][$i] : $_FILES[$name]['tmp_name'][$i],
+						'error' => $isjoin ? $_FILES['join']['error'][$joinid][$name][$i] : $_FILES[$name]['error'][$i],
+						'size' => $isjoin ? $_FILES['join']['size'][$joinid][$name][$i] : $_FILES[$name]['size'][$i]);
 				if ($file['name'] != '')
 				{
 					$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
@@ -1296,14 +1295,14 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 			}
 			/*
-			$file = array(
-			        'name' 			=> $isjoin ? $_FILES['join']['name'][$joinid][$name] : $_FILES[$name]['name'],
-			        'type' 			=> $isjoin ? $_FILES['join']['type'][$joinid][$name] : $_FILES[$name]['type'],
-			        'tmp_name' 	=> $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name] : $_FILES[$name]['tmp_name'],
-			        'error' 		=> $isjoin ? $_FILES['join']['error'][$joinid][$name] : $_FILES[$name]['error'],
-			        'size' 			=> $isjoin ? $_FILES['join']['size'][$joinid][$name] : $_FILES[$name]['size']
-			);
-			 */
+			 $file = array(
+			 		'name' 			=> $isjoin ? $_FILES['join']['name'][$joinid][$name] : $_FILES[$name]['name'],
+			 		'type' 			=> $isjoin ? $_FILES['join']['type'][$joinid][$name] : $_FILES[$name]['type'],
+			 		'tmp_name' 	=> $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name] : $_FILES[$name]['tmp_name'],
+			 		'error' 		=> $isjoin ? $_FILES['join']['error'][$joinid][$name] : $_FILES[$name]['error'],
+			 		'size' 			=> $isjoin ? $_FILES['join']['size'][$joinid][$name] : $_FILES[$name]['size']
+			 );
+			*/
 
 			if ($file['name'] != '')
 			{
@@ -1313,9 +1312,9 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 			{
 				/* $$$ hugh - fixing nasty bug where existing upload was getting wiped when editing an existing row and not uploading anything.
 				 * I think this should work.  if we're not in a repeat group, then it doesn't matter how many rows were in origData, and hence
-				 * how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
-				 * b) it'll at least be in [0]
-				 */
+				* how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
+				* b) it'll at least be in [0]
+				*/
 				if (!empty($imagesToKeep))
 				{
 					$files[] = $origData[0]->$name;
@@ -1324,15 +1323,16 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 		}
 		$files = array_flip(array_flip($files));
 
-foreach ($files as &$f) {
-	$f = str_replace('\\', '/', $f);
-}
+		foreach ($files as &$f)
+		{
+			$f = str_replace('\\', '/', $f);
+		}
 
 		/* $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
 		 * so the double array_flip will have made 'holes' in the array, by removign duplicates.
-		 * So, we need to re-index, otherwise the _formData['join'] data
-		 * structure will end up havign holes in it in processToDb, and we drop data.
-		 */
+		* So, we need to re-index, otherwise the _formData['join'] data
+		* structure will end up havign holes in it in processToDb, and we drop data.
+		*/
 		$files = array_values($files);
 		if ($params->get('upload_delete_image'))
 		{
@@ -1433,7 +1433,7 @@ foreach ($files as &$f) {
 				{
 					/* If an original value is found then data not empty - if not found continue to check the $_FILES array to see if one
 					 * has been uploaded
-					 */
+					*/
 					return false;
 				}
 			}
@@ -1479,7 +1479,7 @@ foreach ($files as &$f) {
 				$file = $input->files->get($name, array(), 'array');
 				if ($groupModel->canRepeat())
 				{
-					// return JArrayHelper::getValue($file['name'], $repeatCounter, '') == '' ? true : false;
+					// Was: return JArrayHelper::getValue($file['name'], $repeatCounter, '') == '' ? true : false;
 					return $file[$repeatCounter]['name'] == '' ? true : false;
 				}
 			}
@@ -1571,7 +1571,7 @@ foreach ($files as &$f) {
 
 		/* $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
 		 * tooltip on these options say 'leave blank for no resizing'
-		 */
+		*/
 		$mainWidth = $params->get('fu_main_max_width', '');
 		$mainHeight = $params->get('fu_main_max_height', '');
 
@@ -1675,7 +1675,7 @@ foreach ($files as &$f) {
 			if ($groupModel->canRepeat())
 			{
 				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr][$repeatCounter]
-					: @$_FILES['file']['name'];
+				: @$_FILES['file']['name'];
 				$myFileDir = JArrayHelper::getValue($aData['join'][$joinid][$elNameNoJoinstr], 'ul_end_dir', array());
 				$myFileDir = JArrayHelper::getValue($myFileDir, $repeatCounter, '');
 			}
@@ -1691,7 +1691,7 @@ foreach ($files as &$f) {
 			{
 				$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'][$repeatCounter] : @$_FILES['file']['name'];
 				$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'][$repeatCounter]
-					: '';
+				: '';
 			}
 			else
 			{
@@ -1934,8 +1934,8 @@ foreach ($files as &$f) {
 			{
 				$img = $params->get('fu_download_noaccess_image');
 				return $img == '' ? ''
-					: '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
-						. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
+						: '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $img . '" alt="'
+								. JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_NO_PERMISSION') . '" />';
 			}
 		}
 
@@ -1966,10 +1966,10 @@ foreach ($files as &$f) {
 		if ($params->get('fu_download_access_image') !== '')
 		{
 			$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_access_image') . '" alt="' . $title
-				. '" />';
+			. '" />';
 		}
 		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id='
-			. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
+				. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
 		$url = '<a href="' . $link . '">' . $title . '</a>';
 		return $url;
 	}
@@ -2059,9 +2059,9 @@ foreach ($files as &$f) {
 		$pstr[] = '		<div class="plupload_file_name">';
 		$pstr[] = '			<div class="plupload_buttons">';
 		$pstr[] = '				<a id="' . $id . '_browseButton" class="plupload_button plupload_add" href="#">'
-			. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
+				. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
 		$pstr[] = '				<a class="plupload_button plupload_start plupload_disabled" href="#">'
-			. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
+				. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
 		$pstr[] = '			</div>';
 		$pstr[] = '			<span class="plupload_upload_status"></span>';
 		$pstr[] = '		</div>';
@@ -2108,10 +2108,10 @@ foreach ($files as &$f) {
 
 		/*
 		 * Got this warning on fabrikar.com - not sure why set testing with errors off:
-		 *
-		 * <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
-		 * <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
-		 */
+		*
+		* <b>Warning</b>:  utf8_to_unicode: Illegal sequence identifier in UTF-8 at byte 0 in
+		* <b>/home/fabrikar/public_html/downloads/libraries/phputf8/utils/unicode.php</b> on line <b>110</b><br />
+		*/
 		/* error_reporting(0); */
 		// $$$ hugh - reinstated this workaround, as I started getting those utf8 warnings as well.
 		error_reporting(E_ERROR | E_PARSE);
@@ -2152,10 +2152,10 @@ foreach ($files as &$f) {
 		if (array_key_exists('file', $_FILES) || array_key_exists('join', $_FILES))
 		{
 			$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid] : $_FILES['file']['name'],
-				'type' => $isjoin ? $_FILES['join']['type'][$joinid] : $_FILES['file']['type'],
-				'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid] : $_FILES['file']['tmp_name'],
-				'error' => $isjoin ? $_FILES['join']['error'][$joinid] : $_FILES['file']['error'],
-				'size' => $isjoin ? $_FILES['join']['size'][$joinid] : $_FILES['file']['size']);
+					'type' => $isjoin ? $_FILES['join']['type'][$joinid] : $_FILES['file']['type'],
+					'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid] : $_FILES['file']['tmp_name'],
+					'error' => $isjoin ? $_FILES['join']['error'][$joinid] : $_FILES['file']['error'],
+					'size' => $isjoin ? $_FILES['join']['size'][$joinid] : $_FILES['file']['size']);
 
 			$filepath = $this->_processIndUpload($file, '', 0);
 			$uri = $this->getStorage()->pathToURL($filepath);
@@ -2260,7 +2260,7 @@ foreach ($files as &$f) {
 
 			// Replace the backslashes with forward slashes
 			$str = "CONCAT('<img src=\"" . COM_FABRIK_LIVESITE . "'," . "REPLACE(" . "REPLACE($val, '$ulDir', '" . $thumbDir . "')" . ", '\\\', '/')"
-				. ", '\" alt=\"database join image\" />')";
+					. ", '\" alt=\"database join image\" />')";
 
 		}
 		else
@@ -2305,7 +2305,7 @@ foreach ($files as &$f) {
 							$join = $this->getJoinModel()->getJoin();
 							$query = $db->getQuery(true);
 							$query->select('*')->from($db->quoteName($join->table_join))
-								->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
+							->where($db->quoteName('parent_id') . ' = ' . $db->quote($row->__pk_val));
 							$db->setQuery($query);
 							$imageRows = $db->loadObjectList('id');
 							if (!empty($imageRows))
@@ -2316,7 +2316,7 @@ foreach ($files as &$f) {
 								}
 								$query->clear();
 								$query->delete($db->quoteName($join->table_join))
-									->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
+								->where($db->quoteName('id') . ' IN (' . implode(', ', array_keys($imageRows)) . ')');
 								$db->setQuery($query);
 								$db->execute();
 							}
@@ -2697,7 +2697,7 @@ foreach ($files as &$f) {
 			{
 				/* $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
 				 * if ($groupModel->canRepeat() || !$this->isJoin()) {
-				 */
+				*/
 				if ($groupModel->canRepeat())
 				{
 					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
@@ -2731,8 +2731,8 @@ foreach ($files as &$f) {
 					}
 					/* $$$ rob if you have 2 tbl joins, one repeating and one not
 					 * the none repeating one's values will be an array of duplicate values
-					 * but we only want the first value
-					 */
+					* but we only want the first value
+					*/
 					if (is_array($value) && !$this->isJoin())
 					{
 						$value = array_shift($value);
@@ -2780,8 +2780,8 @@ foreach ($files as &$f) {
 			}
 			/* $$$ hugh - don't know what this is for, but was breaking empty fields in repeat
 			 * groups, by rendering the //..*..// seps.
-			 * if ($value === '') { //query string for joined data
-			 */
+			* if ($value === '') { //query string for joined data
+			*/
 			if ($value === '' && !$groupModel->canRepeat())
 			{
 				// Query string for joined data

@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
- */
+*/
 
 abstract class FabrikStorageAdaptor
 {
@@ -77,7 +77,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $path  folder path to test
 	 *
 	 * @return bool
-	 */
+	*/
 
 	public abstract function folderExists($path);
 
@@ -87,7 +87,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $path  folder path
 	 *
 	 * @return bool
-	 */
+	*/
 
 	public abstract function createFolder($path);
 
@@ -98,7 +98,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $buffer  the buffer to write
 	 *
 	 * @return  void
-	 */
+	*/
 
 	public abstract function write($file, $buffer);
 
@@ -108,7 +108,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  file path
 	 *
 	 * @return  mixed  Returns file contents or boolean False if failed
-	 */
+	*/
 
 	public abstract function read($filepath);
 
@@ -118,7 +118,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $path  path to clean
 	 *
 	 * @return  string  cleaned path
-	 */
+	*/
 
 	public abstract function clean($path);
 
@@ -129,7 +129,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   int     $repeatCounter  repeat group counter
 	 *
 	 * @return  string  cleaned name
-	 */
+	*/
 
 	public abstract function cleanName($filename, $repeatCounter);
 
@@ -139,7 +139,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  file to delete
 	 *
 	 * @return  void
-	 */
+	*/
 
 	public abstract function delete($filepath);
 
@@ -150,7 +150,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  The path (including filename) to move the uploaded file to
 	 *
 	 * @return  boolean True on success
-	 */
+	*/
 
 	public abstract function upload($tmpFile, $filepath);
 
@@ -160,7 +160,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  file to set permissions for
 	 *
 	 * @return  string
-	 */
+	*/
 
 	public abstract function setPermissions($filepath);
 
@@ -170,7 +170,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $url  URL
 	 *
 	 * @return string  path
-	 */
+	*/
 
 	public function urlToPath($url)
 	{
@@ -204,7 +204,7 @@ abstract class FabrikStorageAdaptor
 		$path = FabrikString::ltrimiword($path, '/');
 		$path = COM_FABRIK_LIVESITE . $path;
 		$path = str_replace('\\', '/', $path);
-		
+
 		// Some servers do not like double slashes in the URL.
 		$path = str_replace('\/\/', '/', $path);
 		return $path;
@@ -247,7 +247,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  path to file
 	 *
 	 * @return  string
-	 */
+	*/
 
 	public function preRenderPath($filepath)
 	{
