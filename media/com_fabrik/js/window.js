@@ -78,17 +78,29 @@ Fabrik.Window = new Class({
 		return del;
 	},
 	
+	center: function () {
+		var w = this.window.getStyle('width') === null ? this.options.width : this.window.getStyle('width');
+		var h = this.window.getStyle('height') === null ? this.options.height + 10 : this.window.getStyle('width');
+		var d = {'width': w + 'px', 'height': h + 'px'};
+		d.margin = 0;
+		if (!(Fabrik.bootstrapped && this.modal)) {
+			var yy = window.getSize().y / 2 + window.getScroll().y - (h.toInt() / 4);
+			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : yy;
+			var xx = window.getSize().x / 2  + window.getScroll().x - w.toInt() / 2; 
+			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : xx;
+		}
+		this.window.setStyles(d);
+	},
+	
 	makeWindow: function ()
 	{
 		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label;
 		var handleParts = [];
-		var d = {'width': this.options.width + 'px', 'height': this.options.height + 10 + 'px'};
+		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'});
 		
-		if (!(Fabrik.bootstrapped && this.modal)) {
-			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : window.getSize().y / 2 + window.getScroll().y;
-			d.left = typeOf(this.options.offset_x) !== 'null' ? window.getScroll().x + this.options.offset_x : window.getSize().x / 2  + window.getScroll().x - this.options.width / 2;
-		}
-		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'}).setStyles(d);
+		this.center();
+		
+
 		this.contentWrapperEl = this.window;
 		
 		del = this.deleteButton();
@@ -297,10 +309,9 @@ Fabrik.Window = new Class({
 		}
 	},
 	
-	fitToContent: function () {
-		if (!this.options.offset_y) {
-			var myfx = new Fx.Scroll(window).toElement(this.window);
-		}
+	fitToContent: function (scroll) {
+		scroll = scroll === undefined ? true : scroll;
+		
 		if (this.options.loadMethod !== 'iframe') {
 			
 			// As iframe content may not be on the same domain we CAN'T guarentee access to its body element to work out its dimensions
@@ -319,11 +330,9 @@ Fabrik.Window = new Class({
 			this.window.setStyle('width', w);
 		}
 		this.drawWindow();
-	},
-	
-	center: function () {
-		if (!(Fabrik.bootstrapped && this.modal)) {
-			this.window.makeCenter();
+		this.center();
+		if (!this.options.offset_y && scroll) {
+			var myfx = new Fx.Scroll(window).toElement(this.window);
 		}
 	},
 	

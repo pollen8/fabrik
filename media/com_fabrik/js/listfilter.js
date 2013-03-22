@@ -101,6 +101,7 @@ var FbListFilter = new Class({
 							this.options.advancedSearch.parentView = this.options.container;
 						}
 						list.advancedSearch = new AdvancedSearch(this.options.advancedSearch);
+						mywin.fitToContent(false);
 					}.bind(this)
 				};
 				var mywin = Fabrik.getWindow(this.windowopts);
