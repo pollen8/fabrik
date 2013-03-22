@@ -200,8 +200,13 @@ abstract class FabrikStorageAdaptor
 
 	public function pathToURL($path)
 	{
-		$path = COM_FABRIK_LIVESITE . str_replace(COM_FABRIK_BASE, '', $path);
+		$path = str_replace(COM_FABRIK_BASE, '', $path);
+		$path = FabrikString::ltrimiword($path, '/');
+		$path = COM_FABRIK_LIVESITE . $path;
 		$path = str_replace('\\', '/', $path);
+		
+		// Some servers do not like double slashes in the URL.
+		$path = str_replace('\/\/', '/', $path);
 		return $path;
 	}
 
