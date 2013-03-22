@@ -13,22 +13,27 @@ var FbRepeatGroup = new Class({
 	initialize: function (element, options) {
 		this.element = document.id(element);
 		this.setOptions(options);
-		this.counter = this.element.getElements('ul').length - 1;
+		this.counter = this.getCounter();
 		this.watchAdd();
 		this.watchDelete();
+	},
+	
+	repeatContainers: function () {
+		return this.element.getElements('.repeatGroup');
 	},
 
 	watchAdd : function () {
 		var newid;
 		this.element.getElement('a[data-button=addButton]').addEvent('click', function (e) {
 			e.stop();
-			var div = this.element.getElements('div.repeatGroup').getLast();
+			var div = this.repeatContainers().getLast();
 			newc = this.counter + 1;
 			var id = div.id.replace('-' + this.counter, '-' + newc);
 			var c = new Element('div', {'class': 'repeatGroup', 'id': id}).set('html', div.innerHTML);
 			c.inject(div, 'after');
 			this.counter = newc;
-			//update params ids
+			
+			// Update params ids
 			if (this.counter !== 0) {
 				c.getElements('input, select').each(function (i) {
 					var newPlugin = false;
@@ -46,7 +51,6 @@ var FbRepeatGroup = new Class({
 						var newPlugin = false;
 						if (typeOf(FabrikAdmin.model.fields[type][oldid]) !== 'null') {
 							var plugin = FabrikAdmin.model.fields[type][oldid];
-							//ewPlugin = new CloneObject(plugin, true, []);
 							newPlugin = Object.clone(plugin);
 							try {
 								newPlugin.cloned(newid, this.counter);
@@ -74,7 +78,7 @@ var FbRepeatGroup = new Class({
 	},
 	
 	getCounter : function () {
-		return this.element.getElements('.repeatGroup').length;
+		return this.repeatContainers().length;
 	},
 	
 	watchDelete : function () {
@@ -84,7 +88,7 @@ var FbRepeatGroup = new Class({
 				e.stop();
 				var count = this.getCounter();
 				if (count > this.options.repeatmin) {
-					var u = this.element.getElements('.repeatGroup').getLast();
+					var u = this.repeatContainers().getLast();
 					u.destroy();
 				}
 				this.rename(x);
