@@ -192,7 +192,8 @@ class FabrikFEModelConnection extends JModelLegacy
 				{
 					$this->connection = FabTable::getInstance('connection', 'FabrikTable');
 					$this->connection->bind($connProperties);
-					$this->decryptPw($this->connection);
+
+					// Dont' decrypt as already decrypted before storing in session
 					return $this->connection;
 				}
 
@@ -206,10 +207,11 @@ class FabrikFEModelConnection extends JModelLegacy
 				$this->connection = FabTable::getInstance('Connection', 'FabrikTable');
 				$this->connection->load($this->id);
 			}
+			$this->decryptPw($this->connection);
+
 			// $$$ rob store the connection for later use as it may be required by modules/plugins
 			$session->set($key, serialize($this->connection->getProperties()));
 		}
-		$this->decryptPw($this->connection);
 		return $this->connection;
 	}
 
@@ -254,9 +256,9 @@ class FabrikFEModelConnection extends JModelLegacy
 			$options = $this->getConnectionOptions($cn);
 
 			$error = false;
-			
+
 			$db = $this->compareConnectionOpts($deafult_options, $options) ? FabrikWorker::getDbo() : JDatabaseDriver::getInstance($options);
-			
+
 			try
 			{
 				$db->connect();
@@ -266,7 +268,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				$error = true;
 			}
 			self::$dbs[$cn->id] = $db;
-		
+
 			if ($error)
 			{
 				/**
