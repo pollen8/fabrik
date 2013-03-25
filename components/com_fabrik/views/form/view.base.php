@@ -615,9 +615,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
 
 		$imgs = new stdClass;
-		echo "error icon = $errorIcon <br>";
 		$imgs->alert = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl, '', true);
-		print_r($imgs);
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
 
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
