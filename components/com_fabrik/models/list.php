@@ -3364,10 +3364,10 @@ class FabrikFEModelList extends JModelForm
 		*/
 
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
-		$pluginCanEdit = !in_array(false, $pluginCanEdit);
+		$pluginCanEdit = !empty($pluginCanEdit) && !in_array(false, $pluginCanEdit);
 
 		/*
-		 * All of the plugins said Yes, so that's it, let them override, don't even
+		 * At least one plugin ran, and none of them said No, so that's it, let them override, don't even
 		 * bother findin out what canUserDo and regular ACL's say.
 		 */
 		if ($pluginCanEdit)
@@ -3378,8 +3378,8 @@ class FabrikFEModelList extends JModelForm
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
 		if ($canUserDo !== -1)
 		{
-			// If userDo doesn't allow edit, let plugin override
-			return $canUserDo ?  $canUserDo : $pluginCanEdit;
+			// canUserDo() expressed a boolean preference, so use that
+			return $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('edit', $this->_access))
 		{
@@ -3387,8 +3387,8 @@ class FabrikFEModelList extends JModelForm
 			$groups = $user->authorisedLevels();
 			$this->_access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
-		// If group access doesn't allow edit, then let plugin override
-		return $this->_access->edit ? $this->_access->edit : $pluginCanEdit;
+		// Plugins didn't override, canuserDo() didn't express a preference, so return standard ACL
+		return $this->_access->edit;
 	}
 
 	/**
