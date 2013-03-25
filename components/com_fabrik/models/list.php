@@ -3751,7 +3751,13 @@ class FabrikFEModelList extends JModelForm
 			$join->params->set('pk', $fabrikDb->quoteName($pks));
 			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->params))->where('id = ' . (int) $join->id);
 			$db->setQuery($query);
-			$db->execute();
+			try {
+				$db->execute();
+			}
+			catch (RuntimeException $e)
+			{
+
+			}
 			$join->params = new JRegistry($join->params);
 		}
 	}
@@ -3892,10 +3898,12 @@ class FabrikFEModelList extends JModelForm
 			$db = $this->getDb();
 			$tbl = FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE " . $tbl);
-			$this->dbFields[$sig] = $db->loadObjectList($key);
-			if ($db->getErrorNum())
+			try {
+				$this->dbFields[$sig] = $db->loadObjectList($key);
+			}
+			catch (RuntimeException $e)
 			{
-				JError::raiseWarning(500, $db->getErrorMsg());
+				// List may be in second connection but we might try to get #__user fields for join
 				$this->dbFields[$sig] = array();
 			}
 		}
