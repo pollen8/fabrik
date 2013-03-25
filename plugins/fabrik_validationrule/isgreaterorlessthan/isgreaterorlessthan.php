@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @since       3.0
  */
 
-class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationrule
+class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationrule
 {
 
 	/**
@@ -33,19 +33,12 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	protected $pluginName = 'isgreaterorlessthan';
 
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
-	 *
-	 *  @var bool
-	 */
-	protected $icon = 'notempty';
-
-	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           to check
-	 * @param   object  &$elementModel  element Model
-	 * @param   int     $pluginc        plugin sequence ref
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           To check
+	 * @param   object  &$elementModel  Element Model
+	 * @param   int     $pluginc        Plugin sequence ref
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
@@ -95,8 +88,8 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
 	 *
 	 * @return	bool
 	 */
@@ -112,8 +105,8 @@ class plgFabrik_validationruleIsgreaterorlessthan extends plgFabrik_Validationru
 	/**
 	 * Get the other element to compare this elements data against
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
 	 *
 	 * @return  object element model
 	 */

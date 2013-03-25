@@ -23,24 +23,20 @@ require_once JPATH_SITE . '/components/com_fabrik/models/plugin.php';
 class PlgFabrik_Validationrule extends FabrikPlugin
 {
 
-	protected $pluginName = null;
-
-	protected $rule = null;
-
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
+	 * Plugin name
 	 *
-	 *  @var bool
+	 * @var string
 	 */
-	protected $icon = true;
+	protected $pluginName = null;
 
 	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           to check
-	 * @param   object  &$elementModel  element Model
-	 * @param   int     $pluginc        plugin sequence ref
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           To check
+	 * @param   object  &$elementModel  Element Model
+	 * @param   int     $pluginc        Plugin sequence ref
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
@@ -54,15 +50,15 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * Checks if the validation should replace the submitted element data
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
-	 * @param   string  $data           original data
-	 * @param   model   &$elementModel  element model
-	 * @param   int     $pluginc        validation plugin counter
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Original data
+	 * @param   model   &$elementModel  Element model
+	 * @param   int     $pluginc        Validation plugin counter
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */
 
-	function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
 	{
 		return $data;
 	}
@@ -71,8 +67,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * Looks at the validation condition & evaulates it
 	 * if evaulation is true then the validation rule is applied
 	 *
-	 * @param   string  $data  elements data
-	 * @param   int     $c     repeat group counter
+	 * @param   string  $data  Elements data
+	 * @param   int     $c     Repeat group counter
 	 *
 	 * @return  bool	apply validation
 	 */
@@ -119,7 +115,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get element model params
 	 *
-	 * @return  object  params
+	 * @return  object  Params
 	 */
 
 	public function getParams()
@@ -130,7 +126,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get the warning message
 	 *
-	 * @param   int  $c  validation rule number.
+	 * @param   int  $c  Validation rule number.
 	 *
 	 * @return  string
 	 */
@@ -151,9 +147,9 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * Now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $c             repeat group counter
-	 * @param   string  $tmpl          template folder name
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $c             Repeat group counter
+	 * @param   string  $tmpl          Template folder name
 	 *
 	 * @deprecated @since 3.0.5
 	 *
@@ -176,29 +172,31 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get hover text with icon
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
-	 * @param   string  $tmpl          template folder name
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
+	 * @param   string  $tmpl          Template folder name
 	 *
 	 * @return  string
 	 */
 
 	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{
-		$name = $this->icon === true ? $this->pluginName : $this->icon;
+		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
+		$params = new JRegistry($plugin->params);
+		$name = $params->get('icon', 'star');
 		if ($this->allowEmpty($elementModel, $pluginc))
 		{
 			$name .= '_allowempty';
 		}
 		$i = FabrikHelperHTML::image($name . '.png', 'form', $tmpl, array('class' => $this->pluginName));
-		return $i . $this->getLabel($elementModel, $pluginc);
+		return $i . ' ' . $this->getLabel($elementModel, $pluginc);
 	}
 
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
 	 *
 	 * @return  string	label
 	 */
@@ -219,8 +217,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
 	 *
 	 * @return  bool
 	 */

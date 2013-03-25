@@ -33,19 +33,12 @@ class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 	protected $pluginName = 'isnumeric';
 
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
-	 *
-	 *  @var bool
-	 */
-	protected $icon = 'isnumeric';
-
-	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           to check
-	 * @param   object  &$elementModel  element Model
-	 * @param   int     $pluginc        plugin sequence ref
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           To check
+	 * @param   object  &$elementModel  Element Model
+	 * @param   int     $pluginc        Plugin sequence ref
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
@@ -71,8 +64,8 @@ class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       validation render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
 	 *
 	 * @return bool
 	 */
