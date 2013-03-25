@@ -139,7 +139,7 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	resetChosen: function (clone) {
-		if (jQuery) {
+		if (jQuery && typeOf(jQuery('select').chosen) !== 'null') {
 			
 			// Chosen reset 
 			clone.getElements('select').removeClass('chzn-done');
