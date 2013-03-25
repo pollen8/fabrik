@@ -128,6 +128,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->modeldata = $model->data;
 		$this->params = $params;
 		$this->tipLocation = $params->get('tiplocation');
+
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 
 		// Cck in admin?
@@ -381,7 +382,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
 		$bkey = $model->jsKey();
-		
+
 		$srcs = FabrikHelperHTML::framework();
 		$shim = array();
 		if (!defined('_JOS_FABRIK_FORMJS_INCLUDED'))
@@ -575,6 +576,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = $this->getModel();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$form = $model->getForm();
 		$params = $model->getParams();
 		$listModel = $model->getlistModel();
@@ -609,10 +611,17 @@ class FabrikViewFormBase extends JViewLegacy
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
+		$errorIcon = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
+
 		$imgs = new stdClass;
-		$imgs->alert = FabrikHelperHTML::image('alert.png', 'form', $this->tmpl, '', true);
+		echo "error icon = $errorIcon <br>";
+		$imgs->alert = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl, '', true);
+		print_r($imgs);
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
+
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
+		$imgs->ajax_loader = '<i class="icon-spinner icon-spin"></i>';
 		$opts->images = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option
@@ -790,8 +799,15 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit" value="'
-					. $form->submit_button_label . '" />';
+			$submitIcon = $params->get('save_icon', '');
+			$submitLabel = $form->submit_button_label;
+			if ($submitIcon !== '')
+			{
+				$submitIcon = '<i class="' . $submitIcon . '"></i>';
+				$submitLabel =  $params->get('save_icon_location') == 'before' ? $submitIcon . ' ' . $submitLabel : $submitLabel . ' ' . $submitIcon;
+			}
+			$form->submitButton = '<button type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit">'
+				. $submitLabel . '</button>';
 		}
 		else
 		{

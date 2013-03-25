@@ -1693,11 +1693,19 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		if (FabrikWorker::j3() && !$srcOnly)
+		if (FabrikWorker::j3())
 		{
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
-			$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
-			return '<i class="icon-' . JFile::stripExt($file) . ' ' . $class . '"' . $id . '></i>';
+			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
+			if (!$srcOnly)
+			{
+				$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
+				return '<i class="' . $class . '"' . $id . '></i>';
+			}
+			else
+			{
+				return $class;
+			}
 		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);

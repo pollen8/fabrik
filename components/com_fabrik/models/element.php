@@ -765,9 +765,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Set the element edit state - wrapper for _editable property as 3.1 uses editable
 	 *
-	 * @since 3.0.7
+	 * @param   bool  $editable  Is the element edtiable
 	 *
-	 * @param   bool  $editable  is the element edtiable
+	 * @since 3.0.7
 	 *
 	 * @return  void
 	 */
@@ -852,6 +852,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
+
 			// $$$ hugh - fix for where certain elements got created with 0 as the
 			// the default for filter_access, which isn't a legal value, should be 1
 			$filter_access = $this->getParams()->get('filter_access');
@@ -1068,7 +1069,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$default = @eval($default);
 					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
 
-					// test this does stop error
+					// Test this does stop error
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
@@ -1173,8 +1174,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *    If the form is being edited we don't want to get the default value
 	 * Otherwise use the 'use_default' value in $opts, defaulting to true
 	 *
-	 * @param   array  $data   form data
-	 * @param   array  $opts   options
+	 * @param   array  $data  Form data
+	 * @param   array  $opts  Options
 	 *
 	 * @since  3.0.7
 	 *
@@ -1182,7 +1183,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected function getDefaultOnACL($data, $opts)
 	{
-		// rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
+		// Rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
 		if (!$this->isEditable() && JArrayHelper::getValue($data, 'rowid') != 0)
 		{
 			$opts['use_default'] = false;
@@ -1478,7 +1479,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * set fabrikErrorMessage div with potential error messages
+	 * Set fabrikErrorMessage div with potential error messages
 	 *
 	 * @param   int     $repeatCounter  repeat counter
 	 * @param   string  $tmpl           template
@@ -1493,7 +1494,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($err !== '')
 		{
 			$err = '<span>' . $err . '</span>';
-			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">' . FabrikHelperHTML::image('alert.png', 'form', $tmpl)
+
+			$usersConfig = JComponentHelper::getParams('com_fabrik');
+			$icon = FabrikWorker::j3() ? $usersConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">' . FabrikHelperHTML::image($icon, 'form', $tmpl)
 				. '</a>';
 		}
 		$str .= '</span>';
@@ -1523,7 +1527,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$validationTip = '';
 		$rollOver = '';
 		$pos = $params->get('tiplocation', 'top');
-		$opts = new stdClass();
+		$opts = new stdClass;
 		$opts->position = $pos;
 		$opts->trigger = 'hover';
 		$opts->notice = true;
@@ -1958,16 +1962,19 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			// $$$ hugh - adding a class name for repeat groups, as per:
-			// http://fabrikar.com/forums/showthread.php?p=165128#post165128
-			// But as per my repsonse on that thread, if this turns out to be a performance
-			// hit, may take it out.  That said, I think having this class will make things
-			// easier for custom styling when the element ID isn't constant.
+			/**
+			 * $$$ hugh - adding a class name for repeat groups, as per:
+			 * http://fabrikar.com/forums/showthread.php?p=165128#post165128
+			 * But as per my repsonse on that thread, if this turns out to be a performance
+			 * hit, may take it out.  That said, I think having this class will make things
+			 * easier for custom styling when the element ID isn't constant.
+			 */
 			$groupModel = $this->getGroupModel();
 			if ($groupModel->canRepeat())
 			{
-				// $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
-				/*
+				/**
+				 $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
+
 				$groupParams = $groupModel->getParams();
 				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
 				{
@@ -2005,9 +2012,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		$elHTMLName = $this->getFullName(true, true);
 		$aElements[$this->getElement()->name] = $element;
 
-		// $$$ rob 12/10/2012 - $namedData is the formModels data - commenting out as the form data needs to be consistent
-		// as we loop over elements - this was setting from a string to an object ?!!!???!!
-		// $namedData[$elHTMLName] = $element;
+		/**
+		 * $$$ rob 12/10/2012 - $namedData is the formModels data - commenting out as the form data needs to be consistent
+		 * as we loop over elements - this was setting from a string to an object ?!!!???!!
+		 * $namedData[$elHTMLName] = $element;
+		 */
 		if ($elHTMLName)
 		{
 			// $$$ rob was key'd on int but thats not very useful for templating
@@ -2525,7 +2534,8 @@ class PlgFabrik_Element extends FabrikPlugin
 					$post = $f->clean($_POST, 'array');
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, $post);
 
-					if ($jsAct->js_e_condition == 'hidden') {
+					if ($jsAct->js_e_condition == 'hidden')
+					{
 						$js = "if (this.getContainer().getStyle('display') === 'none') {";
 					}
 					elseif ($jsAct->js_e_condition == 'shown')
@@ -2549,7 +2559,6 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
 					}
-
 
 					// Need to use corrected triggerid here as well
 					if (preg_match('#^fabrik_trigger#', $triggerid))
@@ -3306,7 +3315,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get a readonly value for a filter, uses getROElement() to asscertain value, adds between x & y if ranged values
 	 *
-	 * @param    mixed  $data  String or array of filter value(s)
+	 * @param   mixed  $data  String or array of filter value(s)
 	 *
 	 * @since   3.0.7
 	 *
@@ -5162,7 +5171,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
 		$str[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';
 		$str[] = FabrikHelperHTML::image('plus-sign.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_ADD')));
-		//$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/plus-sign.png" alt="' . JText::_('COM_FABRIK_ADD') . '"/>';
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left">';
 		$str[] = '<div class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
@@ -5506,9 +5514,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	 * true if basic search
 	 * true/false if advanced search
 	 *
-	 * @since  3.1b
+	 * @param   bool  $advancedMode  Is the list using advanced search
 	 *
-	 * @param  bool  $advancedMode  Is the list using advanced search
+	 * @since  3.1b
 	 *
 	 * @return boolean
 	 */
@@ -6472,11 +6480,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array            $data            Current row data to use in placeholder replacements
-	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string           $thisTableAlias  Db table alais
-	 * @param   array            $opts            Options
-	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   array           $data            Current row data to use in placeholder replacements
+	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string          $thisTableAlias  Db table alais
+	 * @param   array           $opts            Options
+	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
@@ -6487,10 +6495,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 *
 	 * Is the element set to always render in list contexts
 	 *
-	 * @param    bool  $not_shown_only
+	 * @param   bool  $not_shown_only  No idea????
 	 *
 	 * @return   bool
 	 */
@@ -6498,7 +6505,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		return $not_shown_only ? $element->show_in_list_summary == 0 && $params->get('always_render', '0') == '1' : $params->get('always_render', '0') == '1';
+		$alwaysRender = $params->get('always_render', '0');
+		return $not_shown_only ? $element->show_in_list_summary == 0 && $alwaysRender == '1' : $alwaysRender == '1';
 	}
 
 }

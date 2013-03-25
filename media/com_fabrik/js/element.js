@@ -74,7 +74,7 @@ var FbElement =  new Class({
 	{
 		this.setElement();
 		if (Fabrik.bootstrapped) {
-			this.alertImage = new Element('i.icon-warning');
+			this.alertImage = new Element('i.' + this.form.options.images.alert);
 			this.successImage = new Element('i.icon-checkmark', {'styles': {'color': 'green'}});			
 		} else {
 			this.alertImage = new Asset.image(this.form.options.images.alert);
@@ -82,7 +82,11 @@ var FbElement =  new Class({
 			this.successImage = new Asset.image(this.form.options.images.action_check);
 		}
 		
-		this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
+		if (this.form.options.images.ajax_loader.contains('<i')) {
+			this.loadingImage = new Element('span').set('html', this.form.options.images.ajax_loader);
+		} else {
+			this.loadingImage = new Asset.image(this.form.options.images.ajax_loader);
+		}
 		//put ini code in here that can't be put in initialize()
 		// generally any code that needs to refer to  this.form, which
 		//is only set when the element is assigned to the form.
@@ -363,19 +367,19 @@ var FbElement =  new Class({
 			}
 			errorElements[0].adopt(a);
 			
-			container.removeClass('alert-success').removeClass('alert-info').addClass('alert-error');
+			container.removeClass('success').removeClass('info').addClass('error');
 			break;
 		case 'fabrikSuccess':
-			container.addClass('alert-success').removeClass('alert-info').removeClass('alert-error');
+			container.addClass('success').removeClass('info').removeClass('error');
 			errorElements[0].adopt(this.successImage);
 			var delFn = function () {
 				errorElements[0].addClass('fabrikHide');
-				container.removeClass('alert-success');
+				container.removeClass('success');
 			};
 			delFn.delay(700);
 			break;
 		case 'fabrikValidating':
-			container.removeClass('alert-success').addClass('alert-info').removeClass('alert-error');
+			container.removeClass('success').addClass('info').removeClass('error');
 			errorElements[0].adopt(this.loadingImage);
 			break;
 		}

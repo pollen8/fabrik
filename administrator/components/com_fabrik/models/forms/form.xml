@@ -148,6 +148,20 @@
 			
 			<field default="Save" description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" name="submit_button_label" type="text"/>
 			
+			<field name="save_icon"	
+				type="text"
+				label="COM_FABRIK_FIELD_SAVE_ICON_LABEL"
+				description="COM_FABRIK_FIELD_SAVE_ICON_DESC" />
+				
+			<field name="save_icon_location"
+				type="radio"
+				class="btn-group" default="after"
+				description="COM_FABRIK_FIELD_SUBMIT_ICON_LOC_DESC"
+				label="COM_FABRIK_FIELD_SUBMIT_ICON_LOC_LABEL">
+					<option value="before">COM_FABRIK_BEFORE</option>
+					<option value="after">COM_FABRIK_AFTER</option>
+			</field>
+			
 			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC" label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL" name="submit_on_enter" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
@@ -156,6 +170,17 @@
 		
 		<fieldset name="templates2">
 		
+			<field name="labels_above"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="COM_FABRIK_FIELD_LABELS_ABOVE_LABEL"
+				description="COM_FABRIK_FIELD_LABELS_ABOVE_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			
 			<field name="pdf_template" 
 				default="admin"
 				type="fabriktemplate"

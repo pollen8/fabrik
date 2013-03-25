@@ -899,7 +899,13 @@ var FbForm = new Class({
 		var b = this.form.getElement('input[type=button][name=' + name + ']');
 		if (!b) {
 			b = this.form.getElement('input[type=submit][name=' + name + ']');
-		} 
+		}
+		if (!b) {
+			b = this.form.getElement('button[type=button][name=' + name + ']');
+		}
+		if (!b) {
+			b = this.form.getElement('button[type=submit][name=' + name + ']');
+		}
 		return b;
 	},
 

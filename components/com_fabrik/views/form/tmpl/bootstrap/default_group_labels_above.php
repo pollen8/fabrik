@@ -1,5 +1,5 @@
 <?php $element = $this->element;?>
-<div class="<?php echo $element->containerClass . $element->span; ?>">
+<div class="control-group <?php echo $element->containerClass . $element->span; ?>">
 	<?php echo $element->label;?>
 
 	<?php if ($this->tipLocation == 'above') : ?>
