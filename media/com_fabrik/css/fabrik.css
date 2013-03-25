@@ -315,8 +315,9 @@ span.handlelabel {
 	z-index:999;
 }
 
-.floating-tip ul.validation-notices{
+ul.validation-notices{
 	padding: 3px;
+	margin: 0;
 }
 
 /** Inline edit focus class */
