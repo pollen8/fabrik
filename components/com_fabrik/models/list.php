@@ -4301,7 +4301,7 @@ class FabrikFEModelList extends JModelForm
 		$db = FabrikWorker::getDbo();
 		$table = $this->getTable();
 		$cn = $this->getConnection();
-		
+
 		$c = $cn->getConnection();
 		$dbname = $c->database;
 		if ($table->db_table_name == '')
@@ -9533,6 +9533,7 @@ class FabrikFEModelList extends JModelForm
 		unset($this->_joinsNoCdd);
 		unset($this->elements);
 		unset($this->data);
+		unset($this->tmpl);
 	}
 
 	public function htmlClass()
@@ -9607,7 +9608,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->tmpl = $params->get('pdf_template', $this->tmpl);
 			}
-			
+
 			// Migration test
 			if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl))
 			{
