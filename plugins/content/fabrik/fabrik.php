@@ -5,7 +5,7 @@
  * @package     Joomla.Plugin
  * @subpackage  Content
  * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license     GNU/GPL
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -21,7 +21,7 @@ jimport('joomla.plugin.plugin');
  * @since       1.5
  */
 
-class plgContentFabrik extends JPlugin
+class PlgContentFabrik extends JPlugin
 {
 
 	/**
@@ -547,7 +547,7 @@ class plgContentFabrik extends JPlugin
 		$this->origRequestVars = array();
 		foreach ($qs_arr as $k => $v)
 		{
-			$origVar = $input->get($k. '', 'string');
+			$origVar = $input->get($k, '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
 			$input->set($k, $v);
