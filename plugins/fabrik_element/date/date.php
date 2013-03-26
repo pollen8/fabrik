@@ -717,15 +717,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		{
 			return 'BLOB';
 		}
-		$groupModel = $this->getGroup();
-		if (is_object($groupModel) && !$groupModel->isJoin() && $groupModel->canRepeat())
-		{
-			return "VARCHAR(255)";
-		}
-		else
-		{
-			return "DATETIME";
-		}
+		return "DATETIME";
 	}
 
 	/**

@@ -228,11 +228,6 @@ class plgFabrik_ElementField extends plgFabrik_Element
 		{
 			return 'BLOB';
 		}
-		$group = $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat())
-		{
-			return "TEXT";
-		}
 		switch ($p->get('text_format'))
 		{
 			case 'text':
