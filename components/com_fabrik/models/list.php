@@ -8308,17 +8308,18 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
+	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
 	 *
 	 * @return  array  Values for the column - empty array if no results found
 	 */
 
-	public function getColumnData($col, $distinct = true)
+	public function getColumnData($col, $distinct = true, $opts = array())
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
 			$cache = FabrikWorker::getCache($this);
-			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct);
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct, $opts);
 			if (is_null($res))
 			{
 				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
@@ -8343,13 +8344,14 @@ class FabrikFEModelList extends JModelForm
 	 * @param   int    $listId    List id
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
+	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  array  column's values
 	 */
 
-	public static function columnData($listId, $col, $distinct = true)
+	public static function columnData($listId, $col, $distinct = true, $opts = array())
 	{
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -8367,7 +8369,15 @@ class FabrikFEModelList extends JModelForm
 		$query = $listModel->_buildQueryJoin($query);
 		$query = $listModel->_buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
-		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
+		if ($filterLimit) {
+			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		}
+		else
+		{
+			$db->setQuery($query);
+		}
+
 		$res = $db->loadColumn(0);
 		return $res;
 	}

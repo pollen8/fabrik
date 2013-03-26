@@ -31,10 +31,8 @@ class fabrikViewNvd3_chart extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
-
-
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -42,7 +40,6 @@ class fabrikViewNvd3_chart extends JViewLegacy
 		$model = $this->getModel();
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
-
 
 		$srcs = FabrikHelperHTML::framework();
 
@@ -73,19 +70,19 @@ class fabrikViewNvd3_chart extends JViewLegacy
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
 			return '';
 		}
-		$this->assign('requiredFiltersFound', $this->get('RequiredFiltersFound'));
+		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
 
 		$params = $model->getParams();
 		$js = $model->js();
 		$document->addScriptDeclaration($js);
 
-		//$this->js($model);
-		$this->assign('params', $params);
+		$this->params = $params;
 		$viewName = $this->getName();
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$plugin = $pluginManager->getPlugIn('calendar', 'visualization');
 		$this->params = $params;
 
+		$this->postText = $model->postText;
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assign('filters', $this->get('Filters'));
 		$this->showFilters = $model->showFilters();
