@@ -2532,7 +2532,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					}
 					$f = JFilterInput::getInstance();
 					$post = $f->clean($_POST, 'array');
-					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, $post);
+					$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
 
 					if ($jsAct->js_e_condition == 'hidden')
 					{
