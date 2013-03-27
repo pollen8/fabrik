@@ -651,29 +651,37 @@ var FbGoogleMap = new Class({
     
 	doTab: function (event) {
 		(function () {
-			//this.map.checkResize();
-			google.maps.event.trigger(this.map, 'resize');
-			var center = new google.maps.LatLng(this.options.lat, this.options.lon);
-			this.map.setCenter(center);
-			this.map.setZoom(this.map.getZoom());
-			this.options.tab_dt.removeEvent('click', function (e) {
-				this.doTab(e);
-			}.bind(this));
+			this.redraw();
+			if (!Fabrik.bootstrapped) {
+				this.options.tab_dt.removeEvent('click', function (e) {
+					this.doTab(e);
+				}.bind(this));
+			}
 		}.bind(this)).delay(500);
 	},
     
 	watchTab: function () {
-		var tab_div = this.element.getParent('.current');
+		var c = Fabrik.bootstrapped ? '.tab-pane' : '.current',
+		a, tab_dl;
+		var tab_div = this.element.getParent(c);
 		if (tab_div) {
-			var tab_dl = tab_div.getPrevious('.tabs');
-			if (tab_dl) {
-				this.options.tab_dd = this.element.getParent('.fabrikGroup');
-				if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
-					this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
-					if (this.options.tab_dt) {
-						this.options.tab_dt.addEvent('click', function (e) {
-							this.doTab(e);
-						}.bind(this));
+			if (Fabrik.bootstrapped) {
+				a = document.getElement('a[href=#' + tab_div.id + ']');
+				tab_dl = a.getParent('ul.nav');
+				tab_dl.addEvent('click:relay(a)', function (event, target) {
+					this.doTab(event);
+				}.bind(this));
+			} else {
+				tab_dl = tab_div.getPrevious('.tabs');
+				if (tab_dl) {
+					this.options.tab_dd = this.element.getParent('.fabrikGroup');
+					if (this.options.tab_dd.style.getPropertyValue('display') === 'none') {
+						this.options.tab_dt = tab_dl.getElementById('group' + this.groupid + '_tab');
+						if (this.options.tab_dt) {
+							this.options.tab_dt.addEvent('click', function (e) {
+								this.doTab(e);
+							}.bind(this));
+						}
 					}
 				}
 			}
