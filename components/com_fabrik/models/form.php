@@ -989,7 +989,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected function setOrigData()
 	{
 		$app = JFactory::getApplication();
-		if ($app->$input->getString('rowid', '', 'string') == '')
+		if ($app->input->getString('rowid', '', 'string') == '')
 		{
 			$this->_origData = array(new stdClass);
 		}
