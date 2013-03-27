@@ -41,6 +41,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 
 	public function onLastProcess($params, &$formModel)
 	{
+		$w = new FabrikWorker;
 		$this->formModel = $formModel;
 		$db = $this->getDb($params);
 		$query = $db->getQuery(true);
@@ -53,7 +54,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		$rowid = $params->get('row_value', '');
 		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data);
 
-		$fields = $this->upsertData();
+		$fields = $this->upsertData($params);
 		$query->set($fields);
 
 		if ($rowid === '')
