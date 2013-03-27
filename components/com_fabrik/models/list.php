@@ -5492,6 +5492,8 @@ class FabrikFEModelList extends JModelForm
 		$url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=list&amp;layout=_advancedsearch&amp;tmpl=component&amp;listid='
 				. $table->id . '&amp;nextview=' . $app->input->get('view', 'list');
 
+		// Defines if we are in a module or in the component.
+		$url .= '&amp;scope=' . $app->scope;
 		$url .= '&amp;tkn=' . JSession::getFormToken();
 		return $url;
 	}
