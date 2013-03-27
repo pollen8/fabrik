@@ -101,11 +101,11 @@ var FbTextarea = new Class({
 		if (this.options.wysiwyg) {
 			var p = this.element.getParent('.fabrikElement');
 			var txt = p.getElement('textarea').clone(true, true);
-			var charLeft = p.getElement('.fabrik_characters_left').clone();
+			var charLeft = p.getElement('.fabrik_characters_left');
 			p.empty();
 			p.adopt(txt);
 			if (typeOf(charLeft) !== 'null') {
-				p.adopt(charLeft);
+				p.adopt(charLeft.clone());
 			}
 			txt.removeClass('mce_editable');
 			txt.setStyle('display', '');
