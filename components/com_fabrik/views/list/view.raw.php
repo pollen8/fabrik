@@ -31,7 +31,7 @@ class FabrikViewList extends JViewLegacy
 		$model->setId($input->getInt('listid'));
 		$table = $model->getTable();
 		$params = $model->getParams();
-		$rowid = $input->getInt('rowid');
+		$rowid = $input->getString('rowid', '', 'string');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->render();
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');

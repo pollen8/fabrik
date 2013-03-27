@@ -138,7 +138,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 			$prefix = $config->get('dbprefix');
 			$datefield = $prefix . 'fabrik_calendar_events___start_date';
 		}
-		$rowid = $input->getInt('rowid');
+		$rowid = $input->getString('rowid', '', 'string');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
 		$table = $listModel->getTable();

@@ -234,7 +234,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 */
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 			{
 				$context = 'fabrik.plugin.profile_id';
 				if ($input->get('fabrik_social_profile_hash', '') != '')
@@ -324,7 +324,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 			{
 				$session = JFactory::getSession();
 				if ($session->has('fabrik.plugin.profile_id'))
@@ -339,7 +339,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		}
 
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
-		if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+		if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 		{
 
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user

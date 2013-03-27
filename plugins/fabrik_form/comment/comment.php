@@ -165,7 +165,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$opts = new stdClass;
 		$digg = $this->getDigg();
 		$opts->livesite = COM_FABRIK_LIVESITE;
-		$opts->row_id = $input->getInt('rowid');
+		$opts->row_id = $input->getString('rowid', '', 'string');
 		$opts->voteType = 'comment';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/digg/images/', 'image', 'form', false);
@@ -396,15 +396,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 * see http://dev.mysql.com/tech-resources/articles/hierarchical-data.html
 	 * Get the comments from the db
 	 *
-	 * @param   int  $formid  form id
-	 * @param   int  $rowid   row id
+	 * @param   int     $formid  Form id
+	 * @param   string  $rowid   Row id
 	 *
 	 * @return  array	replies
 	 */
 
 	protected function getComments($formid, $rowid)
 	{
-		$rowid = (int) $rowid;
 		$formid = (int) $formid;
 		$db = FabrikWorker::getDbo();
 		$formModel = $this->setFormModel();
@@ -416,7 +415,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			$query->join('LEFT', '#__users AS u ON c.user_id = u.id');
 		}
-		$query->where('formid = ' . $formid . ' AND c.row_id = ' . $rowid . ' AND c.approved = 1')->order('c.time_date ASC');
+		$query->where('formid = ' . $formid . ' AND c.row_id = ' . $db->quote($rowid) . ' AND c.approved = 1')->order('c.time_date ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		$main = array();

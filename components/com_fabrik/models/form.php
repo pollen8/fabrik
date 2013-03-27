@@ -989,7 +989,7 @@ class FabrikFEModelForm extends FabModelForm
 	protected function setOrigData()
 	{
 		$app = JFactory::getApplication();
-		if ($app->input->getInt('rowid') == 0)
+		if ($app->$input->getString('rowid', '', 'string') == '')
 		{
 			$this->_origData = array(new stdClass);
 		}
@@ -2964,7 +2964,7 @@ class FabrikFEModelForm extends FabModelForm
 		$listModel = $this->getListModel();
 		$order = $listModel->buildQueryOrder();
 		$item = $listModel->getTable();
-		$rowid = $input->getInt('rowid');
+		$rowid = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
 			->where($item->db_primary_key . ' ' . $c . ' ' . $rowid);
@@ -5024,7 +5024,7 @@ class FabrikFEModelForm extends FabModelForm
 			// Admin always uses option com_fabrik
 			if (array_key_exists('apply', $this->formData))
 			{
-				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid');
+				$url = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->getString('rowid', '', 'string');
 			}
 			else
 			{
@@ -5035,7 +5035,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			if (array_key_exists('apply', $this->formData))
 			{
-				$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getInt('rowid')
+				$url = 'index.php?option=com_' . $package . '&view=form&formid=' . $input->getInt('formid') . '&rowid=' . $input->getString('rowid', '', 'string')
 					. '&listid=' . $input->getInt('listid');
 			}
 			else
