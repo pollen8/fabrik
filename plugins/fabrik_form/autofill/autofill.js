@@ -43,6 +43,7 @@ var Autofill = new Class({
 			if (oEl.strElement === this.element.strElement) {
 				// The element is a clone of our observable element
 				this.element = false;
+				this.setupDone = false;
 				this.setUp(form);
 			}
 		}.bind(this));
@@ -120,7 +121,7 @@ var Autofill = new Class({
 		} else {
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
-		if (this.options.fillOnLoad && form.options.rowid === '0' || form.options.rowid === '') {
+		if (this.options.fillOnLoad) {
 			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
 			this.form.dispatchEvent('', t, 'load', evnt);
 		}

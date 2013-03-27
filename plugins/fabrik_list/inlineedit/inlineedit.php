@@ -158,16 +158,18 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 		{
 			foreach ($elements as $key => $val)
 			{
-				$key = FabrikString::safeColNameToArrayKey($key);
+				// Stop elements such as the password element from incorrectly updating themselves
+				if ($val->recordInDatabase(array()))
+				{
+					$key = FabrikString::safeColNameToArrayKey($key);
+					$els[$key] = new stdClass;
+					$els[$key]->elid = $val->getId();
+					$els[$key]->plugins = array();
+					$els[$key]->plugins[$key] = $val->getElement()->id;
 
-				$els[$key] = new stdClass;
-				$els[$key]->elid = $val->getId();
-				$els[$key]->plugins = array();
-				$els[$key]->plugins[$key] = $val->getElement()->id;
-
-				// Load in all element js classes
+					// Load in all element js classes
 				$val->formJavascriptClass($srcs, '', $shim);
-
+				}
 			}
 		}
 		$this->elementJs = array($srcs, $els, $shim);

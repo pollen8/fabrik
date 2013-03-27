@@ -792,7 +792,7 @@ class FabrikFEModelList extends JModelForm
 		$query = $this->buildQuery();
 		JDEBUG ? $profiler->mark('query build end') : null;
 
-		$cache = FabrikWorker::getCache();
+		$cache = FabrikWorker::getCache($this);
 		$results = $cache->call(array(get_class($this), 'finesseData'), $this->getId(), $query, $this->limitStart, $this->limitLength, $this->outPutFormat);
 		$this->totalRecords = $results[0];
 		$this->data = $results[1];
@@ -1183,8 +1183,11 @@ class FabrikFEModelList extends JModelForm
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
 		{
-			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
-			$linksToForms[$k] = $join;
+			if ($join !== false)
+			{
+				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+				$linksToForms[$k] = $join;
+			}
 		}
 		$action = $app->isAdmin() ? 'task' : 'view';
 		$query = $db->getQuery(true);
@@ -1340,37 +1343,43 @@ class FabrikFEModelList extends JModelForm
 				}
 				foreach ($joinsToThisKey as $f => $join)
 				{
-					$linkedTable = $factedlinks->linkedlist->$f;
-					$popupLink = $factedlinks->linkedlist_linktype->$f;
-					$linkedListText = $factedlinks->linkedlisttext->$f;
-					if ($linkedTable != '0')
+					// $$$ hugh - for reasons I don't understand, $joinsToThisKey now contains entries
+					// which aren't in $factedlinks->linkedlist, so added this sanity check.
+					if (isset($factedlinks->linkedlist->$f))
 					{
-						$recordKey = $join->element_id . '___' . $linkedTable;
-						$key = $recordKey . "_list_heading";
-						$val = $pKeyVal;
-						$recordCounts = $this->getRecordCounts($join, $pks);
-						$count = 0;
-						$linkKey = $recordCounts['linkKey'];
-						if (is_array($recordCounts))
+						$linkedTable = $factedlinks->linkedlist->$f;
+						$popupLink = $factedlinks->linkedlist_linktype->$f;
+						$linkedListText = $factedlinks->linkedlisttext->$f;
+						if ($linkedTable != '0')
 						{
-							if (array_key_exists($val, $recordCounts))
+							$recordKey = $join->element_id . '___' . $linkedTable;
+							$key = $recordKey . "_list_heading";
+							$val = $pKeyVal;
+							$recordCounts = $this->getRecordCounts($join, $pks);
+							$count = 0;
+							$linkKey = $recordCounts['linkKey'];
+							if (is_array($recordCounts))
 							{
-								$count = $recordCounts[$val]->total;
-								$linkKey = $recordCounts[$val]->linkKey;
-							}
-							else
-							{
-								if (array_key_exists((int) $val, $recordCounts) && (int) $val !== 0)
+								if (array_key_exists($val, $recordCounts))
 								{
-									$count = $recordCounts[(int) $val]->total;
+									$count = $recordCounts[$val]->total;
 									$linkKey = $recordCounts[$val]->linkKey;
 								}
+								else
+								{
+									if (array_key_exists((int) $val, $recordCounts) && (int) $val !== 0)
+									{
+										$count = $recordCounts[(int) $val]->total;
+										$linkKey = $recordCounts[$val]->linkKey;
+									}
+								}
 							}
+							$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
+							$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
 						}
-						$join->list_id = array_key_exists($join->listlabel, $aTableNames) ? $aTableNames[$join->listlabel]->id : '';
-						$group[$i]->$key = $this->viewDataLink($popupLink, $join, $row, $linkKey, $val, $count, $f);
+						// $$$ hugh - pretty sure we don't need to be doing this
+						// $f++;
 					}
-					$f++;
 				}
 
 				// Create columns containing links which point to forms assosciated with this table
@@ -3419,24 +3428,34 @@ class FabrikFEModelList extends JModelForm
 	public function canEdit($row = null)
 	{
 		$params = $this->getParams();
-		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
-		/* $$$ hugh - AAAAAAGHHHH!!!  This one took a while ...
-		 * canUserDo() returns true, false, or -1 ... when "loose" testing with !=
-		* then true is the same as -1.  But we want strict testing, with !==
+
+		/**
+		 * $$$ hugh - FIXME - we really need to split out a onCanEditRow method, rather than overloading
+		 * onCanEdit for both table and per-row contexts.  At the moment, we calling per-row plugins with
+		 * null $row when canEdit() is called in a table context.
+		 */
+
+		/**
+		* Find out what any plugins have to say
 		*/
-		if ($canUserDo !== -1)
+
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
+		$pluginCanEdit = !empty($pluginCanEdit) && !in_array(false, $pluginCanEdit);
+
+		/*
+		 * At least one plugin ran, and none of them said No, so that's it, let them override, don't even
+		 * bother findin out what canUserDo and regular ACL's say.
+		 */
+		if ($pluginCanEdit)
 		{
-			return $canUserDo;
+			return true;
 		}
 
-		/* $$$ hugh - FIXME - we really need to split out a onCanEditRow method, rather than overloading
-		 * onCanEdit for both table and per-row contexts.  At the moment, we calling per-row plugins with
-		* null $row when canEdit() is called in a table context.
-		*/
-		$canEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
-		if (in_array(false, $canEdit))
+		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
+		if ($canUserDo !== -1)
 		{
-			return false;
+			// canUserDo() expressed a boolean preference, so use that
+			return $canUserDo;
 		}
 		if (!array_key_exists('edit', $this->access))
 		{
@@ -3444,6 +3463,7 @@ class FabrikFEModelList extends JModelForm
 			$groups = $user->getAuthorisedViewLevels();
 			$this->access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
+		// Plugins didn't override, canuserDo() didn't express a preference, so return standard ACL
 		return $this->access->edit;
 	}
 
@@ -3500,13 +3520,13 @@ class FabrikFEModelList extends JModelForm
 		 * if useDo or group ACL allows edit.  But we don't allow plugin to allow, if userDo or group ACL
 		 * deny access.
 		 */
-		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
-		$pluginCanEdit = !in_array(false, $pluginCanEdit);
+		$pluginCanDelete = FabrikWorker::getPluginManager()->runPlugins('onCanDelete', $this, 'list', $row);
+		$pluginCanDelete = !in_array(false, $pluginCanDelete);
 		$canUserDo = $this->canUserDo($row, 'allow_delete2');
 		if ($canUserDo !== -1)
 		{
 			// If userDo allows delete, let plugin override
-			return $canUserDo ? $pluginCanEdit : $canUserDo;
+			return $canUserDo ? $pluginCanDelete : $canUserDo;
 		}
 		if (!array_key_exists('delete', $this->access))
 		{
@@ -3514,7 +3534,7 @@ class FabrikFEModelList extends JModelForm
 			$this->access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
 		// If group access allows delete, then let plugin override
-		return $this->access->delete ? $pluginCanEdit : $this->access->delete;
+		return $this->access->delete ? $pluginCanDelete : $this->access->delete;
 	}
 
 	/**
@@ -6968,7 +6988,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function doCalculations()
 	{
-		$cache = FabrikWorker::getCache();
+		$cache = FabrikWorker::getCache($this);
 		$cache->call(array(get_class($this), 'cacheDoCalculations'), $this->getId());
 	}
 
@@ -8439,17 +8459,18 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
+	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
 	 *
 	 * @return  array  Values for the column - empty array if no results found
 	 */
 
-	public function getColumnData($col, $distinct = true)
+	public function getColumnData($col, $distinct = true, $opts = array())
 	{
 		if (!array_key_exists($col, $this->columnData))
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$cache = FabrikWorker::getCache();
-			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct);
+			$cache = FabrikWorker::getCache($this);
+			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct, $opts);
 			if (is_null($res))
 			{
 				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
@@ -8474,13 +8495,14 @@ class FabrikFEModelList extends JModelForm
 	 * @param   int    $listId    List id
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
+	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  array  column's values
 	 */
 
-	public static function columnData($listId, $col, $distinct = true)
+	public static function columnData($listId, $col, $distinct = true, $opts = array())
 	{
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($listId);
@@ -8497,7 +8519,15 @@ class FabrikFEModelList extends JModelForm
 		$query = $listModel->buildQueryJoin($query);
 		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
-		$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
+		if ($filterLimit) {
+			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
+		}
+		else
+		{
+			$db->setQuery($query);
+		}
+
 		$res = $db->loadColumn(0);
 		return $res;
 	}

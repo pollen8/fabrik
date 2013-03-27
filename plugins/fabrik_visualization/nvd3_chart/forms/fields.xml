@@ -13,6 +13,7 @@
 					<option value="stackedAreaChart">stacked Area Chart</option>
 					<option value="multiBarChart">multi Bar Chart</option>
 					<option value="lineWithFocusChart">line With Focus Chart</option>
+					<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
 			</field>
 			
 			<field name="conn_id"
@@ -64,6 +65,27 @@
 					default="#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C"
 					description="PLG_FABRIK_VIZ_NVD3_COLOUR_DESC"
 					label="PLG_FABRIK_VIZ_NVD3_COLOUR_LABEL" />
+					
+			<field name="margin"
+				type="text"
+				default=""
+				description="PLG_FABRIK_VIZ_NV3D_MARGIN_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_MARGIN_LABEL" />
+				
+			<field name="controls"
+				type="radio"
+				default="1"
+				description="PLG_FABRIK_VIZ_NV3D_CONTROLS_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_CONTROLS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="rotate_labels"
+				type="text"
+				default="45"
+				label="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_LABEL"
+				description="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_DESC" />
 					
 		</fieldset>
 		

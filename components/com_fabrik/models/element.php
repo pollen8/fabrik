@@ -1058,7 +1058,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				 * was causing the default to be eval'd twice (no idea y) - add in check for 'return' into eval string
 				 * see http://fabrikar.com/forums/showthread.php?t=30859
 				 */
-				if (!stristr($default, 'return'))
+				if (is_string($default) && !stristr($default, 'return'))
 				{
 					$this->_default = $default;
 				}

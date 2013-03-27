@@ -274,15 +274,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		{
 			return 'BLOB';
 		}
-		$group = $this->getGroup();
-		if ($group->isJoin() == 0 && $group->canRepeat())
-		{
-			return "TEXT";
-		}
-		else
-		{
-			$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
-		}
+		$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 		return $objtype;
 	}
 

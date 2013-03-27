@@ -54,25 +54,39 @@
 				type="listfields"
 				valueformat="tableelement"/>
 			
-			<field default="0"
+			<field name="autofill_edit_orig"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FORM_AUTOFILL_EDIT_ORIG_DESC" label="PLG_FORM_AUTOFILL_EDIT_ORIG_LABEL" name="autofill_edit_orig" repeat="true" type="radio">
+				description="PLG_FORM_AUTOFILL_EDIT_ORIG_DESC"
+				label="PLG_FORM_AUTOFILL_EDIT_ORIG_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 				
-			<field default="1"
+			<field name="autofill_confirm"
+				type="radio"
+				default="1"
 				class="btn-group"
-				description="PLG_FORM_AUTOFILL_CONFIRM_DESC" label="PLG_FORM_AUTOFILL_CONFIRM_LABEL" name="autofill_confirm" repeat="true" type="radio">
+				description="PLG_FORM_AUTOFILL_CONFIRM_DESC"
+				label="PLG_FORM_AUTOFILL_CONFIRM_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="0"
+			<field name="autofill_onload"
+				type="list"
+				default="0"
 				class="btn-group"
-				description="PLG_FORM_AUTOFILL_ONLOAD_DESC" label="PLG_FORM_AUTOFILL_ONLOAD_LABEL" name="autofill_onload" repeat="true" type="radio">
+				description="PLG_FORM_AUTOFILL_ONLOAD_DESC"
+				label="PLG_FORM_AUTOFILL_ONLOAD_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
-					<option value="1">JYES</option>				
+					<option value="1">PLG_FORM_AUTOFILL_ONLOAD_NEW_ONLY</option>
+					<option value="2">PLG_FORM_AUTOFILL_ONLOAD_EDIT_ONLY</option>
+					<option value="3">PLG_FORM_AUTOFILL_ONLOAD_NEW_AND_EDIT</option>				
 			</field>
 		</fieldset>
 	</fields>

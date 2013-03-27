@@ -752,6 +752,14 @@ class FabrikWorker
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
+		/* $$$ hugh - added dbprefix substitution
+		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
+		 * after, so we don't potentially disclose dbprefix if no substitution found.
+		 */
+		$config = JFactory::getConfig();
+		$prefix = $config->get('dbprefix');
+		$match = str_replace('#__', $prefix, $match);
+
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
 		if (count($bits) == 2)
@@ -1133,7 +1141,12 @@ class FabrikWorker
 		{
 			if ($val === false && $error = error_get_last() && ($app->input->get('fabrikdebug') == 1 || JDEBUG))
 			{
-				JError::raiseNotice(500, sprintf($msg, $error['message']));
+				// $$$ hugh - for some strange reason, error_get_last() sometimes returns true, instead of an array
+				// or null, when there hasn't been an eror.
+				if ($error !== true)
+				{
+					JError::raiseNotice(500, sprintf($msg, $error['message']));
+				}
 			}
 		}
 	}
@@ -1537,13 +1550,16 @@ class FabrikWorker
 
 	/**
 	 * Get a cachec handler
+	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
 	 * @since   3.0.7
+	 *
+	 * @param   object  listModel
 	 *
 	 * @return  JCache
 	 */
 
-	public static function getCache()
+	public static function getCache($listModel = null)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -1552,6 +1568,10 @@ class FabrikWorker
 		$cache = JCache::getInstance('callback', $opts);
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
+		if ($doCache && $listModel !== null)
+		{
+			$doCache = $listModel->getParams()->get('list_disable_caching', '0') == '0';
+		}
 		$cache->setCaching($doCache);
 		return $cache;
 	}

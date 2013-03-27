@@ -14,8 +14,8 @@ defined('_JEXEC') or die();
 /**
  * Access element
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.access
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.access
  * @since       3.0
  */
 

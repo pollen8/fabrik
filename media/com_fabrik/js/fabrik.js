@@ -330,7 +330,8 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.loadGoogleMap = function (s, cb) {
 		
-		var src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=Fabrik.mapCb';
+		var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
+		var src = prefix + '//maps.googleapis.com/maps/api/js?&sensor=' + s + '&callback=Fabrik.mapCb';
 		
 		// Have we previously started to load the Googlemaps script?
 		var gmapScripts = Array.from(document.scripts).filter(function (f) {

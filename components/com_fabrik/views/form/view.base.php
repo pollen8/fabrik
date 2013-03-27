@@ -79,7 +79,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			return false;
 		}
 		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
 		if (!$listModel->noTable())

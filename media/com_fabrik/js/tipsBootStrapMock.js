@@ -28,7 +28,7 @@ var FloatingTips = new Class({
 			// Custom functions should return top, left, right, bottom to set the tip location
 			// Return false to use the default location
 			Fabrik.fireEvent('bootstrap.tips.place', [tip, ele]);
-			var pos = Fabrik.eventResults[0];
+			var pos = Fabrik.eventResults.length === 0 ? false : Fabrik.eventResults[0];
 			if (pos === false) {
 				var opts = JSON.decode(ele.get('opts', '{}').opts);
 				return opts.position ? opts.position : 'top';

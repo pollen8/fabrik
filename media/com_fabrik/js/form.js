@@ -171,6 +171,10 @@ var FbForm = new Class({
 				if (Fabrik.Windows[this.options.fabrik_window_id]) {
 					Fabrik.Windows[this.options.fabrik_window_id].close();
 				}
+				else {
+					// $$$ hugh - http://fabrikar.com/forums/showthread.php?p=166140#post166140
+					window.history.back();
+				}
 			}.bind(this));
 		}
 	},

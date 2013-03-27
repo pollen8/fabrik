@@ -3,8 +3,8 @@
  * Insert Fabrik Content into Joomla Articles
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
- * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
+ * @subpackage  Content.fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
@@ -17,7 +17,7 @@ jimport('joomla.plugin.plugin');
  * Fabrik content plugin - renders forms, lists and visualizations
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
+ * @subpackage  Content.fabrik
  * @since       1.5
  */
 
