@@ -104,49 +104,121 @@
 			</field>
 				
 		</fieldset>
-		<fieldset name="buttons">
 		
-			<field class="btn-group" default="0" label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL" name="reset_button" type="radio">
+		<fieldset name="buttons-reset">
+		
+			<field name="reset_button"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL">
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 			</field>
 			
-			<field default="Reset" description="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_LABEL" name="reset_button_label" type="text"/>
+			<field name="reset_button_label"
+				type="text"
+				default="Reset"
+				description="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_LABEL"/>
 				
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_COPY_BUTTON_DESC" label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL" name="copy_button" type="radio">
+		</fieldset>
+		
+		<fieldset name="buttons-copy">
+			
+			<field name="copy_button"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_COPY_BUTTON_DESC"
+				label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL">
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 			</field>
 			
-			<field default="Save as a copy" description="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL" label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL" name="copy_button_label" type="text"/>
+			<field name="copy_button_label"
+				type="text"
+				default="Save as a copy"
+				description="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL"
+				label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL"/>
+			
+		</fieldset>
+		
+		<fieldset name="buttons-goback">
+			
+			<field name="goback_button"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL">
+					<option value="0">JHIDE</option>
+					<option value="1">JSHOW</option>
+			</field>
+			
+			<field name="goback_button_label"
+				type="text"
+				default="Go back"
+				label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_LABEL"/>
+			
+		</fieldset>
+		
+		<fieldset name="buttons-apply">
+		
+			<field name="apply_button"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_APPLY_BUTTON_DESC"
+				label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL">
+					<option value="0">JHIDE</option>
+					<option value="1">JSHOW</option>
+			</field>
+			
+			<field name="apply_button_label"
+				type="text"
+				default="Apply"
+				description="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_LABEL"/>
 				
-			<field class="btn-group" default="0" label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL" name="goback_button" type="radio">
+		</fieldset>
+		
+		<fieldset name="buttons-delete">
+		
+			<field name="delete_button"
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_DELETE_BUTTON_DESC"
+				label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL">
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 			</field>
 			
-			<field default="Go back" label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_LABEL" name="goback_button_label" type="text"/>
+			<field name="delete_button_label"
+				type="text"
+				default="Delete"
+				description="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_LABEL" />
+		
+		</fieldset>
+		
+		<fieldset name="buttons-save">
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_APPLY_BUTTON_DESC" label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL" name="apply_button" type="radio">
-					<option value="0">JHIDE</option>
-					<option value="1">JSHOW</option>
-			</field>
-			
-			<field default="Apply" description="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_LABEL" name="apply_button_label" type="text"/>
-				
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_DELETE_BUTTON_DESC" label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL" name="delete_button" type="radio">
-					<option value="0">JHIDE</option>
-					<option value="1">JSHOW</option>
-			</field>
-			
-			<field default="Delete" description="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_LABEL" name="delete_button_label" type="text"/>
-
-			<field class="btn-group" default="1" description="COM_FABRIK_FIELD_SUBMIT_BUTTON_DESC" label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL" name="submit_button" type="radio">
+			<field name="submit_button"
+				type="radio"
+				class="btn-group"
+				default="1"
+				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_DESC"
+				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL">
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 			</field>				
 			
-			<field default="Save" description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC" label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL" name="submit_button_label" type="text"/>
+			<field name="submit_button_label"
+				type="text"
+				default="Save"
+				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL"/>
 			
 			<field name="save_icon"	
 				type="text"
@@ -162,10 +234,16 @@
 					<option value="after">COM_FABRIK_AFTER</option>
 			</field>
 			
-			<field class="btn-group" default="0" description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC" label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL" name="submit_on_enter" type="radio">
+			<field name="submit_on_enter"	
+				type="radio"
+				class="btn-group"
+				default="0"
+				description="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_DESC"
+				label="COM_FABRIK_FIELD_SUBMIT_ON_ENTER_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
+			
 		</fieldset>
 		
 		<fieldset name="templates2">
