@@ -1767,7 +1767,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
-		$label = '(' . $count . ') ' . $label;
+		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		if ($app->isAdmin())
 		{
 			$bits[] = 'task=list.view';
@@ -2369,6 +2369,7 @@ class FabrikFEModelList extends JModelForm
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
+			print_r($orderbys);
 			$orderbys = explode(',', JRequest::getVar('order_by', ''));
 			if ($orderbys[0] == '')
 			{
