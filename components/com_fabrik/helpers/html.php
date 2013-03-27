@@ -1697,10 +1697,13 @@ EOD;
 		{
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
+			unset($properties['icon-class']);
+			$p = FabrikHelperHTML::propertiesFromArray($properties);
+
 			if (!$srcOnly)
 			{
-				$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
-				return '<i class="' . $class . '"' . $id . '></i>';
+				//$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
+				return '<i class="' . $class . '"' . $p . '></i>';
 			}
 			else
 			{
@@ -1725,6 +1728,12 @@ EOD;
 			$properties['class'] = 'fabrikImg';
 		}
 
+		$p = FabrikHelperHTML::propertiesFromArray($properties);
+		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
+	}
+
+	protected static function propertiesFromArray($properties)
+	{
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{
@@ -1740,7 +1749,7 @@ EOD;
 			$val = str_replace('"', "'", $val);
 			$p .= $key . '="' . $val . '" ';
 		}
-		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
+		return $p;
 	}
 
 	/**
