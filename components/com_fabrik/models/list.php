@@ -2369,7 +2369,7 @@ class FabrikFEModelList extends JModelForm
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
-			print_r($orderbys);
+			//print_r($orderbys);
 			$orderbys = explode(',', JRequest::getVar('order_by', ''));
 			if ($orderbys[0] == '')
 			{
