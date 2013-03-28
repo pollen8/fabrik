@@ -3968,13 +3968,21 @@ class plgFabrik_Element extends FabrikPlugin
 	 * Build the query for the avg calculation
 	 *
 	 * @param   model   &$listModel  list model
-	 * @param   string  $label       the label to apply to each avg
+	 * @param   array   $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
 
-	protected function getAvgQuery(&$listModel, $label = "'calc'")
+	protected function getAvgQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
@@ -3984,14 +3992,14 @@ class plgFabrik_Element extends FabrikPlugin
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
+			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
-FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
+FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 
 		}
@@ -4016,7 +4024,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
-
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
@@ -4073,34 +4080,50 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 	}
 
 	/**
-	 * Get a query for our media query
+	 * Get a query for our median query
 	 *
-	 * @param   object  &$listModel  list
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List
+	 * @param   array   $label       Label
 	 *
 	 * @return string
 	 */
 
-	protected function getMedianQuery(&$listModel, $label = "'calc'")
+	protected function getMedianQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
-		return "SELECT {$this->getFullName(false, false, false)} AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
+		return "SELECT {$this->getFullName(false, false, false)} AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 			. " $joinSQL $whereSQL ";
 	}
 
 	/**
 	 * Get a query for our count method
 	 *
-	 * @param   object  &$listModel  list
-	 * @param   string  $label       label
+	 * @param   object  &$listModel  List
+	 * @param   array   $label       Labels
 	 *
 	 * @return string
 	 */
 
-	protected function getCountQuery(&$listModel, $label = "'calc'")
+	protected function getCountQuery(&$listModel, $labels = array())
 	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
 		$db = FabrikWorker::getDbo();
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
@@ -4125,30 +4148,35 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		if ($groupModel->isJoin())
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
-			return "SELECT COUNT($name) AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
+			return "SELECT COUNT($name) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			$query = "SELECT COUNT(value) AS value, label
-	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name)
+	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 				. " $joinSQL $whereSQL) AS t";
 		}
 		return $query;
 	}
 
 	/**
-	 * Calculation: sum
-	 * can be overridden in element class
+	 * Work out the calculation group by's to apply:
 	 *
-	 * @param   object  &$listModel  List model
+	 * - If group_by is assigned in the app input
+	 * - If no group_by request then check the list models group by and add that
 	 *
-	 * @return  array
+	 * @param   string  $splitParam  Element parameter name containing the calculation split option
+	 * @param   object  $listModel   List model
+	 *
+	 * @since   3.0.8
+	 *
+	 * @return  array  Group by element names
 	 */
-
-	public function sum(&$listModel)
+	protected function calcGroupBys($splitParam, $listModel)
 	{
 		$app = JFactory::getApplication();
+		$pluginManager = FabrikWorker::getPluginManager();
 		$requestGroupBy = $app->input->get('group_by', '');
 		if ($requestGroupBy == '0')
 		{
@@ -4162,27 +4190,54 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			$requestGroupBy = $formModel->getElement($requestGroupBy)->getElement()->id;
 			$groupBys[] = $requestGroupBy;
 		}
-		$db = $listModel->getDb();
-		$params = $this->getParams();
-		$item = $listModel->getTable();
+		else
+		{
+			$listGroupBy = $listModel->getTable()->group_by;
+			if ($listGroupBy !== '')
+			{
+				$groupBys[] = $listGroupBy;
+			}
+		}
 
-		$splitSum = $params->get('sum_split', null);
+		$params = $this->getParams();
+		$splitSum = $params->get($splitParam, null);
 		if (!is_null($splitSum))
 		{
 			$groupBys[] = $splitSum;
 		}
+
+		foreach ($groupBys as &$gById)
+		{
+			$plugin = $pluginManager->getElementPlugin($gById);
+			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
+			$gById = FabrikString::safeColName($sName);
+		}
+		return $groupBys;
+	}
+	/**
+	 * Calculation: sum
+	 * can be overridden in element class
+	 *
+	 * @param   object  &$listModel  List model
+	 *
+	 * @return  array
+	 */
+
+	public function sum(&$listModel)
+	{
+		$db = $listModel->getDb();
+		$app = JFactory::getApplication();
+		$params = $this->getParams();
+		$item = $listModel->getTable();
+		$splitSum = $params->get('sum_split', '');
+		$groupBys = $this->calcGroupBys('sum_split', $listModel);
 		$split = empty($groupBys) ? false : true;
 		$calcLabel = $params->get('sum_label', JText::_('COM_FABRIK_SUM'));
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
-			foreach ($groupBys as $gById)
-			{
-				$plugin = $pluginManager->getElementPlugin($gById);
-				$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-				$splitName[] = FabrikString::safeColName($sName);
-			}
-			$sql = $this->getSumQuery($listModel, $splitName) . ' GROUP BY label';
+			$plugin = $pluginManager->getElementPlugin($splitSum);
+			$sql = $this->getSumQuery($listModel, $groupBys) . ' GROUP BY label';
 
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
@@ -4205,6 +4260,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
+			echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 		}
@@ -4228,14 +4284,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$splitAvg = $params->get('avg_split', '');
 		$item = $listModel->getTable();
 		$calcLabel = $params->get('avg_label', JText::_('COM_FABRIK_AVERAGE'));
-		$split = trim($splitAvg) == '' ? false : true;
+		$groupBys = $this->calcGroupBys('avg_split', $listModel);
+
+		$split = empty($groupBys) ? false : true;
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitAvg);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$splitName = FabrikString::safeColName($splitName);
-			$sql = $this->getAvgQuery($listModel, $splitName) . " GROUP BY label";
+			$sql = $this->getAvgQuery($listModel, $groupBys) . " GROUP BY label";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
@@ -4297,7 +4354,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$whereSQL = $listModel->_buildQueryWhere();
 		$params = $this->getParams();
 		$splitMedian = $params->get('median_split', '');
-		$split = $splitMedian == '' ? false : true;
+		$groupBys = $this->calcGroupBys('sum_split', $listModel);
+		$split = empty($groupBys) ? false : true;
 		$format = $this->getFormatString();
 		$res = '';
 		$calcLabel = $params->get('median_label', JText::_('COM_FABRIK_MEDIAN'));
@@ -4306,9 +4364,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitMedian);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$splitName = FabrikString::safeColName($splitName);
-			$sql = $this->getMedianQuery($listModel, $splitName) . ' ORDER BY ' . $splitName . ' ';
+			$sql = $this->getMedianQuery($listModel, $groupBys) . ' GROUP BY label ';
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList();
@@ -4353,15 +4409,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$params = $this->getParams();
 		$calcLabel = $params->get('count_label', JText::_('COM_FABRIK_COUNT'));
 		$splitCount = $params->get('count_split', '');
-		$split = $splitCount == '' ? false : true;
+
+		$groupBys = $this->calcGroupBys('count_split', $listModel);
+		$split = empty($groupBys) ? false : true;
+
 		if ($split)
 		{
 			$pluginManager = FabrikWorker::getPluginManager();
 			$plugin = $pluginManager->getElementPlugin($splitCount);
-			$name = $plugin->getFullName(false, true, false);
-			$splitName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$splitName = FabrikString::safeColName($splitName);
-			$sql = $this->getCountQuery($listModel, $splitName) . " GROUP BY label ";
+			$sql = $this->getCountQuery($listModel, $groupBys) . " GROUP BY label ";
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
