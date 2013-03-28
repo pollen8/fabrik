@@ -613,3 +613,8 @@ fieldset.row-fluid:before {
 #main .fabrikForm .plupload_content  .plupload_file_action a:focus {
 	background: url("../../../plugins/fabrik_element/fileupload/lib/plupload/img/done.gif") repeat scroll 0 0 transparent;
 }
+
+
+select.fabrikinput[multiple] {
+	height: auto;
+}
