@@ -532,13 +532,14 @@ class FabrikFEModelForm extends FabModelForm
 	public function getCustomJsAction(&$srcs)
 	{
 		// $$$ hugh - added ability to use form_XX, as am adding custom list_XX
+		$view = $this->isEditable() ? 'form' : 'details';
 		if (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $this->getId() . '.js'))
 		{
 			$srcs[] = 'components/com_fabrik/js/' . $this->getId() . '.js';
 		}
-		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/form_' . $this->getId() . '.js'))
+		elseif (JFile::exists(COM_FABRIK_FRONTEND . '/js/' . $view . '_' . $this->getId() . '.js'))
 		{
-			$srcs[] = 'components/com_fabrik/js/form_' . $this->getId() . '.js';
+			$srcs[] = 'components/com_fabrik/js/' . $view . '_' . $this->getId() . '.js';
 		}
 	}
 
