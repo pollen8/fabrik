@@ -93,16 +93,6 @@
 				label="COM_FABRIK_FIELD_OUTRO_LABEL"
 				description="COM_FABRIK_FIELD_OUTRO_DESC" />
 				
-			<field name="process-jplugins"
-				type="list"
-				default="2"
-				description="COM_FABRIK_FIELD_PROCESS_JPLUGINS_DESC"
-				label="COM_FABRIK_FIELD_PROCESS_JPLUGINS_LABEL">
-					<option value="0">JNO</option>
-					<option value="1">COM_FABRIK_DETAILS_AND_FORM_VIEW</option>
-					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
-			</field>
-				
 		</fieldset>
 		
 		<fieldset name="buttons-reset">
@@ -365,6 +355,16 @@
 					<option value="above">COM_FABRIK_TIP_ABOVE</option>
 					<option value="below">COM_FABRIK_TIP_BELOW</option>
 					<option value="side">COM_FABRIK_TIP_SIDE</option>
+			</field>
+			
+			<field name="process-jplugins"
+				type="list"
+				default="2"
+				description="COM_FABRIK_FIELD_PROCESS_JPLUGINS_DESC"
+				label="COM_FABRIK_FIELD_PROCESS_JPLUGINS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">COM_FABRIK_DETAILS_AND_FORM_VIEW</option>
+					<option value="2">COM_FABRIK_DETAILS_VIEW_ONLY</option>
 			</field>
 			
 		</fieldset>
