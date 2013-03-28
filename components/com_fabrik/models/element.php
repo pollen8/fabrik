@@ -5159,6 +5159,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 
 	protected function getAddOptionFields($repeatCounter, $onlylabel = false)
 	{
+
 		$params = $this->getParams();
 		if (!$params->get('allow_frontend_addto'))
 		{
@@ -5169,8 +5170,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		$labelid = $id . '_ddLabel';
 		$value = '<input class="inputbox text" id="' . $valueid . '" name="addPicklistValue" />';
 		$label = '<input class="inputbox text" id="' . $labelid . '" name="addPicklistLabel" />';
-		$str[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';
-		$str[] = FabrikHelperHTML::image('plus-sign.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_ADD')));
+		$str[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="btn btn-info toggle-addoption">';
+		$str[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_ADD')));
 		$str[] = '</a>';
 		$str[] = '<div style="clear:left">';
 		$str[] = '<div class="addoption"><div>' . JText::_('COM_FABRIK_ADD_A_NEW_OPTION_TO_THOSE_ABOVE') . '</div>';
@@ -5189,7 +5190,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label AS label FRO
 		{
 			$str[] = $label;
 		}
-		$str[] = '<input class="button btn" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
+		$str[] = '<input class="button btn btn-success" type="button" id="' . $id . '_dd_add_entry" value="' . JText::_('COM_FABRIK_ADD') . '" />';
 		$str[] = $this->getHiddenField($id . "_additions", '', $id . "_additions");
 		$str[] = '</div>';
 		$str[] = '</div>';
