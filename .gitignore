@@ -5,13 +5,15 @@
 *.php
 *.xml
 *.jpg
+.htaccess
+php.ini
 cache/*
 administrator/*
 !administrator/components/com_fabrik/
 cache/*
 components/*
 !components/com_fabrik
-`!components/com_fabrik/*
+components/com_fabrik/js/*
 cli/*
 images/*
 includes/*
@@ -30,6 +32,7 @@ plugins/*
 plugins/search/*
 !plugins/search/fabrik
 plugins/system/*
+!plugins/system/fabrik/
 !plugins/fabrik_element/
 !plugins/fabrik_form/
 !plugins/fabrik_list/
@@ -49,6 +52,7 @@ transfer/*
 /tests
 /cache
 fabrik_build/output/
+fabrik_build/docs/
 /build_config_private.ini
 /images
 /includes
@@ -60,4 +64,5 @@ libraries/dompdf/lib/fonts/log.htm
 /docs
 /uploads
 libraries/dompdf/lib/fonts/dompdf_font_family_cache.dist.php
+/t3-assets
 
