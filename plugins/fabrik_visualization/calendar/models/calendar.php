@@ -218,7 +218,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	 * @return  array
 	 */
 
-	function setupEvents()
+	public function setupEvents()
 	{
 		if (is_null($this->_events))
 		{
@@ -459,10 +459,8 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
-								$row->startdate = $date->toMySQL();
-								$date = JFactory::getDate($row->startdate);
-								$date->setOffset($tzoffset);
-								$row->startdate = $date->toFormat('%Y-%m-%d %H:%M:%S');
+								$date->setTimezone($tz);
+								$row->startdate = $date->toFormat('%Y-%m-%d %H:%M:%S', true);
 							}
 
 							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '')
@@ -470,7 +468,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 								if ($data['endShowTime'] == true)
 								{
 									$date = JFactory::getDate($row->enddate);
-									$date->setOffset($tzoffset);
+									$date->setTimezone($tz);
 									$row->enddate = $date->toFormat('%Y-%m-%d %H:%M:%S');
 								}
 							}
@@ -495,7 +493,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	 * @return  string
 	 */
 
-	function getLegend()
+	public function getLegend()
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();
@@ -505,6 +503,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 		$legend = (array) $params->get('legendtext');
 		$calendar = $this->_row;
 		$ref = $this->getJSRenderContext();
+
 		// @TODO: json encode the returned value and move to the view
 		$aLegend = "$ref.addLegend([";
 		$jsevents = array();
