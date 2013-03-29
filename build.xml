@@ -101,12 +101,14 @@
 				<property name="ftp.updatedir" value="${ftp.updatedir.test}" />
 				<property name="ftp.update.folder" value="${ftp.update.folder.test}" />
 				<property name="update.download_folder" value="${update.download_folder_test}" />
+				<property name="ftp.downloaddir" value="${ftp.downloaddir_test}" />
 			</then>
 			<else>
 				<property name="sql.downloads_table" value="${sql.downloads_table.live}" />
 				<property name="ftp.updatedir" value="${ftp.updatedir.live}" />
 				<property name="ftp.update.folder" value="${ftp.update.folder.live}" />
 				<property name="update.download_folder" value="${update.download_folder_live}" />
+				<property name="ftp.downloaddir" value="${ftp.downloaddir_live}" />
 			</else>
 		</if>
 		<echo>${sql.downloads_table} ${ftp.updatedir} ${ftp.update.folder}</echo>
