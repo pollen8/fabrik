@@ -30,6 +30,11 @@
  *
  * http://fabrikar.com/wiki/index.php/3.x_Form_Templates#Custom_CSS
  *
+ * NOTE - for backward compatibility with Fabrik 2.1, and in case you
+ * just prefer a simpler CSS file, without the added PHP parsing that
+ * allows you to be be more specific in your selectors, we will also include
+ * a custom.css we find in the same location as this file.
+ *
  */
 
 header('Content-type: text/css');

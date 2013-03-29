@@ -540,7 +540,7 @@ var fabrikCalendar = new Class({
 			ht = this.options.shortDays[counterDate.getDay()] + ' ' + counterDate.getDate() + '/' + this.options.shortMonths[counterDate.getMonth()];
 			hdiv = new Element('div', {'styles': {'background-color': this._getColor(thbg, counterDate)}}).set('text', ht);
 			
-			ths[i].empty().adopt(h);
+			ths[i].empty().adopt(hdiv);
 			
 			var eventWidth = 10;
 			var maxoffsets = {};

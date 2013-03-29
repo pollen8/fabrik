@@ -108,6 +108,13 @@ class FabrikFEModelGroup extends FabModel
 	protected $canView = null;
 
 	/**
+	* Can the group be edited (if false, will override element ACL's and make all elements read only)
+	*
+	* @var bool
+	*/
+	protected $canEdit = null;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
@@ -174,6 +181,47 @@ class FabrikFEModelGroup extends FabModel
 	public function setGroup($group)
 	{
 		$this->_group = $group;
+	}
+
+	/**
+	* Can the user edit the group
+	*
+	* @return   bool
+	*/
+
+	public function canEdit()
+	{
+		/**
+		 * First cut at this code, need to add actual ACL setting for edit
+		 *
+		 * Mostly needed so people can run plugins on this hook, to set groups to read only
+		 */
+		if (!is_null($this->canEdit))
+		{
+			return $this->canEdit;
+		}
+		$params = $this->getParams();
+		$this->canEdit = true;
+		// If group show is type 5, then read only.
+		if ($params->get('repeat_group_show_first', '1') == '5')
+		{
+			$this->canEdit = false;
+		}
+
+		$formModel = $this->getFormModel();
+		//$row = $formModel()->getData();
+		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
+		if (empty($pluginCanEdit))
+		{
+			$pluginCanEdit = true;
+		}
+		else
+		{
+			$pluginCanEdit = !in_array(false, $pluginCanEdit);
+		}
+		$this->canEdit = $pluginCanEdit;
+
+		return $this->canView;
 	}
 
 	/**

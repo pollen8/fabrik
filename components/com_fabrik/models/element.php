@@ -830,8 +830,9 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
 			// So if element's group show is type 5, then element is de-facto read only.
-			if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
-			{
+			//if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			if (!$this->getGroup()->canEdit())
+						{
 				$this->_access->use = false;
 			}
 			else
