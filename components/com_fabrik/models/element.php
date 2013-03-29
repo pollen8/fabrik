@@ -771,9 +771,9 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * Set the element edit state - wrapper for _editable property as 3.1 uses editable
 	 *
-	 * @since 3.0.7
-	 *
 	 * @param   bool  $editable  is the element edtiable
+	 *
+	 * @since 3.0.7
 	 *
 	 * @return  void
 	 */
@@ -828,9 +828,11 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		if (!is_object($this->_access) || !array_key_exists('use', $this->_access))
 		{
-			// $$$ hugh - testing new "Option 5" for group show, "Always show read only"
-			// So if element's group show is type 5, then element is de-facto read only.
-			//if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			/**
+			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
+			 * So if element's group show is type 5, then element is de-facto read only.
+			 * if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
+			 */
 			if (!$this->getGroup()->canEdit())
 						{
 				$this->_access->use = false;
@@ -859,6 +861,7 @@ class plgFabrik_Element extends FabrikPlugin
 		{
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
+
 			// $$$ hugh - fix for where certain elements got created with 0 as the
 			// the default for filter_access, which isn't a legal value, should be 1
 			$filter_access = $this->getParams()->get('filter_access');
@@ -1076,7 +1079,7 @@ class plgFabrik_Element extends FabrikPlugin
 					$default = @eval($default);
 					FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
 
-					// test this does stop error
+					// Test this does stop error
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
@@ -1180,8 +1183,8 @@ class plgFabrik_Element extends FabrikPlugin
 	 *    If the form is being edited we don't want to get the default value
 	 * Otherwise use the 'use_default' value in $opts, defaulting to true
 	 *
-	 * @param   array  $data   form data
-	 * @param   array  $opts   options
+	 * @param   array  $data  Form data
+	 * @param   array  $opts  Options
 	 *
 	 * @since  3.0.7
 	 *
@@ -1189,7 +1192,7 @@ class plgFabrik_Element extends FabrikPlugin
 	 */
 	protected function getDefaultOnACL($data, $opts)
 	{
-		// rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
+		// $$$rob - 31/10/2012 - if readonly and editing an existing record we don't want to show the default label
 		if (!$this->isEditable() && JArrayHelper::getValue($data, 'rowid') != 0)
 		{
 			$opts['use_default'] = false;
@@ -1468,7 +1471,7 @@ class plgFabrik_Element extends FabrikPlugin
 						$validationHovers[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
 					}
 					$validationHovers[] = '</ul></div>';
-					$title = htmlspecialchars(implode('', $validationHovers),ENT_QUOTES);
+					$title = htmlspecialchars(implode('', $validationHovers), ENT_QUOTES);
 					$opts = new stdClass;
 					$opts->position = 'top';
 					$opts = json_encode($opts);
@@ -1977,16 +1980,19 @@ class plgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			// $$$ hugh - adding a class name for repeat groups, as per:
-			// http://fabrikar.com/forums/showthread.php?p=165128#post165128
-			// But as per my repsonse on that thread, if this turns out to be a performance
-			// hit, may take it out.  That said, I think having this class will make things
-			// easier for custom styling when the element ID isn't constant.
+			/**
+			 * $$$ hugh - adding a class name for repeat groups, as per:
+			 * http://fabrikar.com/forums/showthread.php?p=165128#post165128
+			 * But as per my repsonse on that thread, if this turns out to be a performance
+			 * hit, may take it out.  That said, I think having this class will make things
+			 * easier for custom styling when the element ID isn't constant.
+			 */
 			$groupModel = $this->getGroupModel();
 			if ($groupModel->canRepeat())
 			{
-				// $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
-				/*
+				/**
+				 * $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
+				 *
 				$groupParams = $groupModel->getParams();
 				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
 				{
@@ -2540,7 +2546,8 @@ class plgFabrik_Element extends FabrikPlugin
 					}
 					$jsAct->js_e_value = $w->parseMessageForPlaceHolder($jsAct->js_e_value, JRequest::get('post'));
 
-					if ($jsAct->js_e_condition == 'hidden') {
+					if ($jsAct->js_e_condition == 'hidden')
+					{
 						$js = "if (this.getContainer().getStyle('display') === 'none') {";
 					}
 					elseif ($jsAct->js_e_condition == 'shown')
@@ -2564,7 +2571,6 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
 					}
-
 
 					// Need to use corrected triggerid here as well
 					if (preg_match('#^fabrik_trigger#', $triggerid))
@@ -3300,7 +3306,7 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * Get a readonly value for a filter, uses _getROElement() to asscertain value, adds between x & y if ranged values
 	 *
-	 * @param    mixed  $data  String or array of filter value(s)
+	 * @param   mixed  $data  String or array of filter value(s)
 	 *
 	 * @since   3.0.7
 	 *
@@ -3968,8 +3974,8 @@ class plgFabrik_Element extends FabrikPlugin
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model   &$listModel  list model
-	 * @param   array   $labels      Labels
+	 * @param   model  &$listModel  list model
+	 * @param   array  $labels      Labels
 	 *
 	 * @return  string	sql statement
 	 */
@@ -4084,7 +4090,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	 * Get a query for our median query
 	 *
 	 * @param   object  &$listModel  List
-	 * @param   array   $label       Label
+	 * @param   array   $labels      Label
 	 *
 	 * @return string
 	 */
@@ -4110,7 +4116,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	 * Get a query for our count method
 	 *
 	 * @param   object  &$listModel  List
-	 * @param   array   $label       Labels
+	 * @param   array   $labels      Labels
 	 *
 	 * @return string
 	 */
@@ -4215,6 +4221,22 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		}
 		return $groupBys;
 	}
+
+	/**
+	 * If the calculation query has had to convert the data to a machine format, use
+	 * this function to convert back to human readable format. E.g. time element
+	 * calcs in seconds but we'd want to convert back into h:m:s
+	 *
+	 * @param   array  &$rows  Calculaton values
+	 *
+	 * @return  void
+	 */
+
+	protected function formatCalValues(&$rows)
+	{
+
+	}
+
 	/**
 	 * Calculation: sum
 	 * can be overridden in element class
@@ -4243,6 +4265,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			$this->formatCalValues($results2);
 			$uberTotal = 0;
 			foreach ($results2 as $pair)
 			{
@@ -4264,6 +4287,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
+			$this->formatCalValues($results);
 		}
 		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
@@ -4297,6 +4321,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
+			$this->formatCalValues($results2);
 			$uberTotal = 0;
 			foreach ($results2 as $pair)
 			{
@@ -4318,6 +4343,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$sql = $listModel->pluginQuery($sql);
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
+			$this->formatCalValues($results);
 		}
 		$res = $this->formatCalcs($results, $calcLabel, $split);
 		return array($res, $results);
@@ -6490,11 +6516,11 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	/**
 	 * Create the where part for the query that selects the list options
 	 *
-	 * @param   array            $data            Current row data to use in placeholder replacements
-	 * @param   bool             $incWhere        Should the additional user defined WHERE statement be included
-	 * @param   string           $thisTableAlias  Db table alais
-	 * @param   array            $opts            Options
-	 * @param   JDatabaseQuery   $query           Append where to JDatabaseQuery object or return string (false)
+	 * @param   array           $data            Current row data to use in placeholder replacements
+	 * @param   bool            $incWhere        Should the additional user defined WHERE statement be included
+	 * @param   string          $thisTableAlias  Db table alais
+	 * @param   array           $opts            Options
+	 * @param   JDatabaseQuery  $query           Append where to JDatabaseQuery object or return string (false)
 	 *
 	 * @return string|JDatabaseQuery
 	 */
@@ -6505,13 +6531,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	}
 
 	/**
-	 *
 	 * Is the element set to always render in list contexts
 	 *
-	 * @param    bool  $not_shown_only
+	 * @param   bool  $not_shown_only  Not sure???
 	 *
 	 * @return   bool
 	 */
+
 	public function isAlwaysRender($not_shown_only = true)
 	{
 		$params = $this->getParams();
