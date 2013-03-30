@@ -11,6 +11,7 @@
 	</target>
 	
 	<target name="updater.makefile">
+		<echo message=" updater.makefile ${update_source}plg_${folder}_${plugin}.xml" />
 		<if>
 			<available file="${update_source}plg_${folder}_${plugin}.xml"/>
 				<then>
