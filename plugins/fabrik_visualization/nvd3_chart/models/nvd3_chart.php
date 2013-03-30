@@ -257,6 +257,26 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 	}
 
 	/**
+	 * Should the chart show controls for swapping between views
+	 *
+	 * @param   array  &$str  JS output
+	 *
+	 * @return void
+	 */
+
+	protected function showControls(&$str)
+	{
+		$allowed = array('stackedAreaChart', 'multiBarChart', 'lineWithFocusChart', 'multiBarHorizontalChart');
+		$params = $this->getParams();
+		$chart = $params->get('chart', 'pieChart');
+		$controls = $params->get('controls', 0);
+		if ($controls == 0 && in_array($chart, $allowed))
+		{
+			$str[] = 'chart.showControls(false);';
+		}
+	}
+
+	/**
 	 * Get chart js code
 	 *
 	 * @return string
@@ -324,18 +344,11 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 			}
 		}
 
-		$controls = $params->get('controls', 0);
-		if ($controls == 0)
-		{
-			$str[] = 'chart.showControls(false);';
-		}
-
-
+		$this->showControls($str);
 		// $str[] = 'chart.valueFormat = d3.format(",.2%");';
 
 
 		$id = $this->getContainerId();
-		//$str[] = 'console.log(' . $data . ')';
 		$str[] = 'd3.select("#' . $id . ' svg")';
 
 		$str[] = '.datum(' . $data . ')';
@@ -347,7 +360,9 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 		if ($rotate !== 0)
 		{
 			// Rotate x axis labels without stoopid offset
-			$str[] = "d3.select('#" . $id . " .nv-x.nv-axis > g').selectAll('g').selectAll('text').attr('transform', function(d,i,j) { return 'translate (-10, 20) rotate(-' . $rotate . ' 0,0)' }) ;";
+			$str[] = "d3.select('#" . $id . " .nv-x.nv-axis > g').selectAll('g').selectAll('text').attr('transform', function(d,i,j) {";
+			$str[] = "return 'translate (-10, 20) rotate(-" . $rotate . " 0,0)'";
+			$str[] = "}) ;";
 
 		}
 		$str[] = 'return chart;';

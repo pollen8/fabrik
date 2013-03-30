@@ -54,8 +54,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
-
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$multiple = $params->get('multiple', 0);

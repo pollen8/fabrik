@@ -795,9 +795,9 @@
     }
     
     function allLoaded(items) {
-    	// $$$ hugh - Horrible Hack to work round premature firing in IE9
+    	// $$$ hugh - Horrible Hack to work round premature firing in IE9 or earlier
     	// https://github.com/headjs/headjs/issues/203
-    	if (api.browser.name === 'ie' && api.browser.version === 9 && !items && countProperties(assets) === 0) {
+    	if (api.browser.name === 'ie' && api.browser.version <= 9 && !items && countProperties(assets) === 0) {
     		return false;
     	}
     	

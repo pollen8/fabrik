@@ -148,13 +148,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 		// $$$ hugh - added disable caching option, and no caching if not logged in (unless we can come up with a unique cacheid for guests)
 		// NOTE - can't use IP of client, as could be two users behind same NAT'ing proxy / firewall.
-		if ($viewName !== 'list') {
-			$listModel = $model->getListModel();
-			$listParams = $listModel->getParams();
-		}
-		else {
-			$listParams = $model->getParams();
-		}
+		$listModel = $model->getListModel();
+		$listParams = $listModel->getParams();
 
 		$user = JFactory::getUser();
 

@@ -1830,7 +1830,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
-		$label = '(' . $count . ') ' . $label;
+		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
 		if ($app->isAdmin())
 		{
 			$bits[] = 'task=list.view';

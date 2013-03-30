@@ -4380,7 +4380,15 @@ class FabrikFEModelForm extends FabModelForm
 
 			// Get array of all querystring vars
 			$uri = JFactory::getURI();
-			$queryvars = $router->parse($uri);
+
+			/**
+			 * Was $router->parse($uri);
+			 * but if you had a module + form on a page using sef urls and
+			 * Joomla's language switcher - calling parse() would re-parse the url and
+			 * mung it well good and proper like.
+			 *
+			 */
+			$queryvars = $router->getVars();
 			if ($this->isAjax())
 			{
 				$queryvars['format'] = 'raw';

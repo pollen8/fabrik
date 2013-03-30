@@ -24,6 +24,32 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 {
 
 	/**
+	* canEditGroup, called when canEdit called in group model
+	*
+	* @param   object  $params      plugin parameters
+	* @param   object  &$formModel  form model
+	* @param   array  $groupModel  group model
+	*
+	* @return  void
+	*/
+
+	public function onCanEditGroup($params, &$formModel, $groupModel)
+	{
+		if ($params->get('only_process_curl') == 'onCanEditGroup')
+		{
+			if (is_array($groupModel))
+			{
+				$groupModel = $groupModel[0];
+			}
+			if ($this->_runPHP($params, $formModel, $groupModel) === false)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
 	 * @param   object  $params     params
@@ -261,11 +287,12 @@ class PlgFabrik_FormPHP extends plgFabrik_Form
 	 *
 	 * @param   object  $params      plugin params
 	 * @param   object  &$formModel  form model
+	 * $param   object  &$groupModel  group model
 	 *
 	 * @return bool false if error running php code
 	 */
 
-	private function _runPHP($params, &$formModel)
+	private function _runPHP($params, &$formModel, &$groupModel = null)
 	{
 		/**
 		 * if you want to modify the submitted form data
