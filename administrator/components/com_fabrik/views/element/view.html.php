@@ -73,18 +73,18 @@ class FabrikAdminViewElement extends JViewLegacy
 		}
 
 		// Initialiase variables.
-		$this->form = $this->get('Form');
 		$model = $this->getModel();
-		$this->item = $this->get('Item');
-		$this->state = $this->get('State');
-		$this->pluginFields = $this->get('PluginHTML');
+		$this->form = $model->getForm();
+		$this->item = $model->getItem();
+		$this->state = $model->getState();
+		$this->pluginFields = $model->getPluginHTML();
 
 		$this->js = $model->getJs();
 
-		$this->jsevents = $this->get('JsEvents');
+		$this->jsevents = $model->getJsEvents();
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
+		if (count($errors = $model->getErrors()))
 		{
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
@@ -99,9 +99,9 @@ class FabrikAdminViewElement extends JViewLegacy
 		}
 		else
 		{
-			$this->elements = $this->get('Elements');
+			$this->elements = $model->getElements();
 		}
-		$this->parent = $this->get('Parent');
+		$this->parent = $model->getParent();
 		FabrikAdminHelper::setViewLayout($this);
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 
@@ -138,10 +138,11 @@ class FabrikAdminViewElement extends JViewLegacy
 
 	protected function confirmupdate($tpl = null)
 	{
-		$this->state = $this->get('State');
+		$model = $this->getModel();
+		$this->state = $model->getState();
 		$app = JFactory::getApplication();
 		$this->addConfirmToolbar();
-		$this->item = $this->get("Item");
+		$this->item = $model->getItem();
 		$this->oldName = $app->getUserState('com_fabrik.oldname');
 		$this->origDesc = $app->getUserState('com_fabrik.origDesc');
 		$this->newDesc = $app->getUserState('com_fabrik.newdesc');

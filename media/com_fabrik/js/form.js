@@ -171,6 +171,10 @@ var FbForm = new Class({
 				if (Fabrik.Windows[this.options.fabrik_window_id]) {
 					Fabrik.Windows[this.options.fabrik_window_id].close();
 				}
+				else {
+					// $$$ hugh - http://fabrikar.com/forums/showthread.php?p=166140#post166140
+					window.history.back();
+				}
 			}.bind(this));
 		}
 	},
@@ -899,7 +903,13 @@ var FbForm = new Class({
 		var b = this.form.getElement('input[type=button][name=' + name + ']');
 		if (!b) {
 			b = this.form.getElement('input[type=submit][name=' + name + ']');
-		} 
+		}
+		if (!b) {
+			b = this.form.getElement('button[type=button][name=' + name + ']');
+		}
+		if (!b) {
+			b = this.form.getElement('button[type=submit][name=' + name + ']');
+		}
 		return b;
 	},
 

@@ -238,8 +238,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			return $this->getHiddenField($name, $this->getValue($data, $repeatCounter), $id);
 		}
 		$params = $this->getParams();
-		$cols = $element->width;
-		$rows = $element->height;
+		$cols = $params->get('width', $element->width);
+		$rows = $params->get('height', $element->height);
 		$value = $this->getValue($data, $repeatCounter);
 		$bits = array();
 		$wysiwyg = $this->useWysiwyg();
@@ -259,7 +259,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 		{
 			$bits['placeholder'] = $params->get('textarea_placeholder');
 		}
-		$bits['class'] = "fabrikinput inputbox";
+		$bits['class'] = "fabrikinput inputbox " . $params->get('bootstrap_class');
 		if ($this->elementError != '')
 		{
 			$bits['class'] .= ' elementErrorHighlight';
@@ -299,7 +299,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			{
 				$str .= $key . '="' . $val . '" ';
 			}
-			$str .= "name=\"$name\" id=\"" . $id . "\" cols=\"$cols\" rows=\"$rows\">" . $value . "</textarea>\n";
+
+			$str .= 'name="' . $name . '" id="' . $id . '" cols="' . $cols . '" rows="' . $rows . '">' . $value . '</textarea>';
 		}
 		if ($params->get('textarea-showmax'))
 		{

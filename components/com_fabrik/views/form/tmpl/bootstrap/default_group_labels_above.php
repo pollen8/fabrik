@@ -1,5 +1,5 @@
 <?php $element = $this->element;?>
-<div class="<?php echo $element->containerClass . $element->span; ?>">
+<div class="control-group <?php echo $element->containerClass . $element->span; ?>">
 	<?php echo $element->label;?>
 
 	<?php if ($this->tipLocation == 'above') : ?>
@@ -15,11 +15,11 @@
 	</div>
 
 	<?php if ($this->tipLocation == 'side') : ?>
-		<span class="help-block"><?php echo $element->tipAbove ?></span>
+		<span class="help-block"><?php echo $element->tipSide ?></span>
 	<?php endif ?>
 
 	<?php if ($this->tipLocation == 'below') :?>
-		<span class="help-block"><?php echo $element->tipAbove ?></span>
+		<span class="help-block"><?php echo $element->tipBelow ?></span>
 	<?php endif ?>
 </div>
 

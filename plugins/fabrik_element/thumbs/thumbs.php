@@ -109,30 +109,29 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 	}
 
 	/**
+	 * Get the # of likes
 	 *
-	 * @param $listid int table id
-	 * @param $formid int form id
-	 * @param $row_id int row id
+	 * @param    $listid  int     table id
+	 * @param    $formid  int     form id
+	 * @param    $row_id  string  row id
+	 *
 	 * @return count thumbs-up, count thumbs-down
 	 */
 
 	function getThumbsCount($data, $listid, $formid, $row_id)
 	{
-		/*if ($data != '') {
-		    return $data;
-		    }*/
 		$db = FabrikWorker::getDbo();
 		$elementid = $this->getElement()->id;
 
 		$db
 			->setQuery(
 				"SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
-					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND thumb = 'up'");
+					. $db->quote($row_id) . " AND element_id = " . (int) $elementid . " AND thumb = 'up'");
 		$resup = $db->loadResult();
 		$db
 			->setQuery(
 				"SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
-					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND thumb = 'down'");
+					. $db->quote($row_id) . " AND element_id = " . (int) $elementid . " AND thumb = 'down'");
 		$resdown = $db->loadResult();
 		return json_encode(array($resup, $resdown));
 	}
@@ -198,7 +197,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$str = "<div id=\"$id" . "_div\" class=\"fabrikSubElementContainer\">";
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
-		$row_id = $input->getInt('rowid');
+		$row_id = $input->getString('rowid', '', 'string');
 		if (!isset($thisRow))
 		{
 			$thisRow = new stdClass;
@@ -248,7 +247,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$input = $app->input;
 		$listid = $input->getInt('listid');
 		$formid = $input->getInt('formid');
-		$row_id = $input->getInt('rowid');
+		$row_id = $input->getString('rowid', '', 'string');
 		if ($params->get('rating-mode') != 'creator-rating')
 		{
 			//$val = $this->getRatingAverage($val, $listid, $formid, $row_id);
@@ -269,7 +268,7 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$db
 			->setQuery(
 				"SELECT thumb FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = " . (int) $formid . " AND row_id = "
-					. (int) $row_id . " AND element_id = " . (int) $elementid . " AND user_id = '$user_id' LIMIT 1");
+					. $db->quote($row_id) . " AND element_id = " . (int) $elementid . " AND user_id = '$user_id' LIMIT 1");
 		$ret = $db->loadResult();
 
 		return $ret;
@@ -374,11 +373,11 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 			->setQuery(
 				"UPDATE " . $this->getlistModel()->getTable()->db_table_name . "
                     SET " . $this->getElement()->name . " = ((SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid
-					. " AND formid = " . (int) $formid . " AND row_id = " . (int) $row_id . " AND element_id = " . (int) $elementid
+					. " AND formid = " . (int) $formid . " AND row_id = " . $db->quote($row_id) . " AND element_id = " . (int) $elementid
 					. " AND thumb = 'up') - (SELECT COUNT(thumb) FROM #__{package}_thumbs WHERE listid = " . (int) $listid . " AND formid = "
-					. (int) $formid . " AND row_id = " . (int) $row_id . " AND element_id = " . (int) $elementid
+					. (int) $formid . " AND row_id = " . $db->quote($row_id) . " AND element_id = " . (int) $elementid
 					. " AND thumb = 'down'))
-                    WHERE " . $this->getlistModel()->getTable()->db_primary_key . " = " . (int) $row_id . "
+                    WHERE " . $this->getlistModel()->getTable()->db_primary_key . " = " . $db->quote($row_id) . "
                         LIMIT 1");
 		$db->execute();
 		if ($db->getErrorNum())
@@ -413,10 +412,10 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 		$data = $this->getFormModel()->data;
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
-		$row_id = $input->getInt('rowid');
+		$row_id = $input->getString('rowid', '', 'string');
 		$value = $this->getValue($data, $repeatCounter);
 		$opts = new stdClass;
-		$opts->row_id = $input->getInt('rowid');
+		$opts->row_id = $row_id;
 		$opts->myThumb = $this->_getMyThumb($listid, $formid, $row_id);
 		$opts->elid = $this->getElement()->id;
 		$opts->userid = (int) $user->get('id');

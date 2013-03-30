@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
  * @since       3.0
- */
+*/
 
 class PlgFabrik_ElementTime extends PlgFabrik_Element
 {
@@ -101,21 +101,22 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			$minvalue = JArrayHelper::getValue($value, 1);
 			$secvalue = JArrayHelper::getValue($value, 2);
 
-			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', JText::_('HOUR'))));
+			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
 			for ($i = 0; $i < 24; $i++)
 			{
-				$v = str_pad($i, 2, '0', STR_PAD_LEFT);
-				$hours[] = JHTML::_('select.option', $v, $i);
+				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
+				$hours[] = JHTML::_('select.option', $i);
 			}
-			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('MINUTE'))));
+			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
+			$increment = (int)$params->get( 'minutes_increment', 1 );
 
 			// Siin oli enne $monthlabels, viisin ülespoole
-			for ($i = 0; $i < 60; $i++)
+			for ($i = 0; $i < 60; $i += $increment)
 			{
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
 				$mins[] = JHTML::_('select.option', $i);
 			}
-			$secs = array(JHTML::_('select.option', '', $params->get('time_seclabel', JText::_('SECOND'))));
+			$secs = array(JHTML::_('select.option', '', $params->get('time_seclabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_SECOND'))));
 			for ($i = 0; $i < 60; $i++)
 			{
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
@@ -130,13 +131,13 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			if ($fd != 'i:s')
 			{
 				$str[] = JHTML::_('select.genericlist', $hours, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $hourvalue) . ' '
-					. $sep;
+						. $sep;
 			}
 			$str[] = JHTML::_('select.genericlist', $mins, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $minvalue);
 			if ($fd != 'H:i')
 			{
 				$str[] = $sep . ' '
-					. JHTML::_('select.genericlist', $secs, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $secvalue);
+						. JHTML::_('select.genericlist', $secs, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $secvalue);
 			}
 			$str[] = '</div>';
 			return implode("\n", $str);
@@ -172,6 +173,91 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			return rtrim(str_replace('', '00', $val[0]) . ':' . str_replace('', '00', $val[1]) . ':' . str_replace('', '00', $val[2]), ':');
 		}
 		return $val;
+	}
+
+	/**
+	 * If the calculation query has had to convert the data to a machine format, use
+	 * this function to convert back to human readable format. E.g. time element
+	 * calcs in seconds but we'd want to convert back into h:m:s
+	 *
+	 * @param   array  &$rows  Calculaton values
+	 *
+	 * @return  void
+	 */
+
+	protected function formatCalValues(&$rows)
+	{
+		foreach ($rows as &$row)
+		{
+			$seconds = $row->value;
+			$h = (int) ($seconds / 3600);
+			$m = (int) (($seconds - $h * 3600) / 60);
+			$s = (int) ($seconds - $h * 3600 - $m * 60);
+			$row->value = (($h) ? (($h < 10) ? ("0" . $h) : $h) : "00") . ":" . (($m) ? (($m < 10) ? ("0" . $m) : $m) : "00") . ":" . (($s) ? (($s < 10) ? ("0" . $s) : $s) : "00");
+		}
+	}
+
+	/**
+	 * Get sum query
+	 *
+	 * @param   object  &$listModel  List model
+	 * @param   array   $labels      Label
+	 *
+	 * @return string
+	 */
+
+	protected function getSumQuery(&$listModel, $labels = array())
+	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
+		$table = $listModel->getTable();
+		$db = $listModel->getDb();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
+
+		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60 + substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
+				. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
+	}
+
+	/**
+	 * Build the query for the avg calculation
+	 *
+	 * @param   model  &$listModel  list model
+	 * @param   array  $labels      Labels
+	 *
+	 * @return  string	sql statement
+	 */
+
+	protected function getAvgQuery(&$listModel, $labels = array())
+	{
+		if (count($labels) == 0)
+		{
+			$label = "'calc' AS label";
+		}
+		else
+		{
+			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
+		}
+		$item = $listModel->getTable();
+		$joinSQL = $listModel->_buildQueryJoin();
+		$whereSQL = $listModel->_buildQueryWhere();
+		$name = $this->getFullName(false, false, false);
+		$groupModel = $this->getGroup();
+		$roundTo = (int) $this->getParams()->get('avg_round');
+
+		$valueSelect = 'substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60 + substr(' . $name . ' FROM 7 FOR 2)';
+
+		// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
+		return "SELECT ROUND(AVG($valueSelect), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+		. " $joinSQL $whereSQL";
+
 	}
 
 	/**
@@ -234,8 +320,8 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		/*
 		 * Jaanus: removed condition canrepeat() from renderListData:
-		 * weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
-		 */
+		* weird result such as ["00:03:45","00 when not repeating but still join and merged. Using isJoin() instead
+		*/
 		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
 		$ft = $params->get('list_time_format', 'H:i:s');
@@ -246,24 +332,23 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		{
 			if ($d)
 			{
-				list($hour, $min, $sec) = explode(':', $d);
-				$hms = $hour . $sep . $min . $sep . $sec;
-				$hm = $hour . $sep . $min;
-				$ms = $min . $sep . $sec;
 				$timedisp = '';
 				if ($ft == "H:i:s")
 				{
-					$timedisp = $hms;
+					list($hour, $min, $sec) = explode(':', $d);
+					$timedisp = $hour . $sep . $min . $sep . $sec;
 				}
 				else
 				{
 					if ($ft == "H:i")
 					{
-						$timedisp = $hm;
+						list($hour, $min) = explode(':', $d);
+						$timedisp = $hour . $sep . $min;
 					}
 					if ($ft == "i:s")
 					{
-						$timedisp = $ms;
+						list($min, $sec) = explode(':', $d);
+						$timedisp = $min . $sep . $sec;
 					}
 				}
 				$format[] = $timedisp;

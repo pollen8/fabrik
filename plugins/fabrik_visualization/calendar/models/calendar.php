@@ -191,7 +191,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	 * @return  array
 	 */
 
-	function setupEvents()
+	public function setupEvents()
 	{
 		if (is_null($this->_events))
 		{
@@ -435,8 +435,6 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
-								$row->startdate = $date->toSql();
-								$date = JFactory::getDate($row->startdate);
 								$date->setTimezone($tz);
 								$row->startdate = $date->format('Y-m-d H:i:s');
 							}
@@ -471,7 +469,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	 * @return  string
 	 */
 
-	function getLegend()
+	public function getLegend()
 	{
 		$db = FabrikWorker::getDbo();
 		$params = $this->getParams();

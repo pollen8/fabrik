@@ -125,7 +125,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				$data = (array) $iPath;
 			}
 		}
-		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
+		$selectImage_root_folder = $this->rootFolder();
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
@@ -246,8 +246,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$rootFolder = $params->get('selectImage_root_folder');
-
+		$rootFolder = $this->rootFolder($value);
+		
+		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
+		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
+	
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
 		$rootFolder = JString::ltrim($rootFolder, '/');
 		$rootFolder = JString::rtrim($rootFolder, '/');
@@ -255,8 +258,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		// $$$ rob - 30/062011 allow for full urls in the image. (e.g from csv import)
 		$defaultImage = JString::substr($value, 0, 4) == 'http' ? $value : COM_FABRIK_LIVESITE . $rootFolder . '/' . $value;
 
-		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
-		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
+		
 		$float = $params->get('image_float');
 		$float = $float != '' ? "style='float:$float;'" : '';
 		$str = array();
@@ -367,12 +369,33 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$element = $this->getElement();
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
-		$opts->rootPath = $params->get('selectImage_root_folder', '');
+		$opts->rootPath = $this->rootFolder();
 		$opts->canSelect = (bool) $params->get('image_front_end_select', false);
 		$opts->id = $element->id;
 		$opts->ds = DS;
 		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
 		return array('FbImage', $id, $opts);
+	}
+
+	/**
+	 * Get the root folder for images
+	 * 
+	 * @param   string  $value  Value
+	 * 
+	 * @return  string  root folder
+	 */
+
+	protected function rootFolder($value = '')
+	{
+		$rootFolder = '';
+		$params = $this->getParams();
+		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
+		$defaultImg = $params->get('imagepath');
+		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
+		{
+			$rootFolder = $defaultImg;
+		}
+		return $rootFolder;
 	}
 
 	/**

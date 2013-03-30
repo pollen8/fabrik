@@ -38,14 +38,17 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 *
-	 * @param   object  &$params     plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  &$params     Plugin params
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return  void
 	 */
 
 	public function onAfterJSLoad(&$params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$rowid = $input->get('rowid', '', 'string');
 		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
@@ -59,8 +62,23 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		}
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
-		$opts->fillOnLoad = (bool) $params->get('autofill_onload', false);
 		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
+		switch ($params->get('autofill_onload', '0'))
+		{
+			case '0':
+			default:
+				$opts->fillOnLoad = false;
+				break;
+			case '1':
+				$opts->fillOnLoad = ($rowid === '');
+				break;
+			case '2':
+				$opts->fillOnLoad = ($rowid !== '');
+				break;
+			case '3':
+				$opts->fillOnLoad = true;
+				break;
+		}
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');

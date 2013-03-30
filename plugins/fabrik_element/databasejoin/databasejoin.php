@@ -685,6 +685,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	/**
 	 * If buildQuery needs additional joins then set them here, used in notes plugin
+	 * $$$ hugh - added new "Additional join statement" option in join element, which now gets
+	 * parsed here.  Should probably take the main logic in this, and put it in a helper, as this
+	 * is probably something we'll need to do elsewhere.
 	 *
 	 * @param   mixed  $query  false to return string, or JQueryBuilder object
 	 *
@@ -695,7 +698,94 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 	protected function buildQueryJoin($query = false)
 	{
-		return $query === false ? '' : $query;
+		if ($query !== false)
+		{
+			$params = $this->getParams();
+			$query_join = trim($params->get('database_join_join_sql'), '');
+
+			/*
+			 * Set up RE of all possible valid MySQL join types, as per join_table spec here:
+			 * http://dev.mysql.com/doc/refman/5.0/en/join.html
+			 * EXCEPT just 'JOIN' by itself.  Don't ask.
+			 */
+			$re =   "(LEFT\s+JOIN)" .
+        			"|" .
+        			"(LEFT\s+OUTER\s+JOIN)" .
+        			"|" .
+        			"(RIGHT\s+JOIN)" .
+        			"|" .
+        			"(RIGHT\s+OUTER\s+JOIN)" .
+        			"|" .
+        			"(INNER\s+JOIN)" .
+        			"|" .
+        			"(CROSS\s+JOIN)" .
+        			"|" .
+        			"(STRAIGHT_JOIN)" .
+        			"|" .
+        			"(NATURAL\s+JOIN)" .
+        			"|" .
+        			"(NATURAL\s+LEFT\s+JOIN)" .
+        			"|" .
+        			"(NATURAL\s+RIGHT\s+JOIN)" .
+        			"|" .
+        			"(NATURAL\s+LEFT\s+OUTER\s+JOIN)" .
+        			"|" .
+        			"(NATURAL\s+RIGHT\s+OUTER\s+JOIN)";
+
+			/*
+			 * Using NO_EMPT and SPLIT_CAPTURE, we should end up with an array which alternates
+			 * between the JOIN type, and the rest of the expression
+			 */
+	        $joins = preg_split("#$re#i", $query_join, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+
+	        if (!empty($joins))
+	        {
+	        	$ojoin = $this->getJoin();
+	        	$thistable_alias =
+	        	$join_types = array();
+	        	$join_exprs = array();
+	        	foreach ($joins as $index => $join)
+	        	{
+	        		if (!($index & 1))
+	        		{
+	        			/*
+	        			 * Index is odd, so should be a JOIN type.
+	        			 * If it doesn't have the word 'join' in it, something went
+	        			 * wrong, so just bail.
+	        			 */
+	        			if (!stristr($join, 'join'))
+	        			{
+	        				return '';
+	        			}
+	        			/*
+	        			 * Strip out the word JOIN.  Must use preg_replace, so we don't break STRAIGHT_JOIN.
+	        			 * Trim it, and stuff it in the types array.
+	        			 */
+	        			$join = preg_replace("#\s+JOIN\s*#i", '', $join);
+	        			$join_types[] = trim($join);
+	        		}
+	        		else
+	        		{
+	        			/*
+	        			 * It's an odd index, so should be the rest of the expression.
+	        			 * Do {thistable} replacement on it, trim it, and stuff it in the exprs array
+	        			 */
+	        			$join = str_replace("{thistable}", $ojoin->table_join_alias, $join);
+	        			$join_exprs[] = trim($join);
+	        		}
+	        	}
+	        	/*
+	        	 * Now just iterate through the types array, and add type and expr to the query builder.
+	        	 */
+	        	foreach ($join_types as $index => $join_type)
+	        	{
+	        		$join_expr = $join_exprs[$index];
+	        		$query->join($join_type, $join_expr);
+	        	}
+	        }
+			return $query;
+		}
+		return "";
 	}
 
 	/**

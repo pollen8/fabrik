@@ -34,19 +34,12 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	protected $pluginName = 'areuniquevalues';
 
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
-	 *
-	 *  @var bool
-	 */
-	protected $icon = 'notempty';
-
-	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           to check
-	 * @param   object  &$elementModel  element Model
-	 * @param   int     $pluginc        plugin sequence ref
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           To check
+	 * @param   object  &$elementModel  Element Model
+	 * @param   int     $pluginc        Plugin sequence ref
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
@@ -117,8 +110,8 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	/**
 	 * Gets the other element model to compare this plugins element data against
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       plugin render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Plugin render order
 	 *
 	 * @return	object element model
 	 */
@@ -134,8 +127,8 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
 	 *
-	 * @param   object  $elementModel  element model
-	 * @param   int     $pluginc       plugin render order
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Plugin render order
 	 *
 	 * @return	string	label
 	 */

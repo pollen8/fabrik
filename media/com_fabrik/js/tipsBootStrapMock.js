@@ -23,13 +23,26 @@ var FloatingTips = new Class({
 		hideFn: function (e) {
 			e.stop();
 			return true;
+		},
+		placement: function (tip, ele) {
+			// Custom functions should return top, left, right, bottom to set the tip location
+			// Return false to use the default location
+			Fabrik.fireEvent('bootstrap.tips.place', [tip, ele]);
+			var pos = Fabrik.eventResults.length === 0 ? false : Fabrik.eventResults[0];
+			if (pos === false) {
+				var opts = JSON.decode(ele.get('opts', '{}').opts);
+				return opts.position ? opts.position : 'top';
+			} else {
+				return pos;
+			}
 		}
 	},
 	
 	initialize: function (elements, options) {
 		this.setOptions(options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
-		//any tip (not necessarily in this instance has asked for all other tips to be hidden.
+		
+		// Any tip (not necessarily in this instance has asked for all other tips to be hidden.
 		window.addEvent('tips.hideall', function (e, trigger) {
 			this.hideOthers(trigger);
 		}.bind(this));
@@ -41,7 +54,10 @@ var FloatingTips = new Class({
 	attach: function (elements) {
 		this.elements = $$(elements);
 		this.elements.each(function (trigger) {
-			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
+			var thisOpts = JSON.decode(trigger.get('opts', '{}').opts);
+			thisOpts.defaultPos = thisOpts.position;
+			delete(thisOpts.position);
+			var opts = Object.merge(Object.clone(this.options), thisOpts);
 			if (opts.content === 'title') {
 				opts.content = trigger.get('title');
 				trigger.erase('title');
@@ -50,7 +66,8 @@ var FloatingTips = new Class({
 				var c = opts.content(trigger);
 				opts.content = typeOf(c) === 'null' ? '' : c.innerHTML;
 			}
-			opts.placement = opts.position;
+			// Should always use the default placement function which can then via the Fabrik event allow for custom tip placement
+			opts.placement = this.options.placement;
 			opts.title = opts.heading;
 			if (!opts.notice) {
 				opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';

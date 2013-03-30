@@ -3,9 +3,9 @@
  * Insert Fabrik Content into Joomla Articles
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
- * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license     GNU/GPL
+ * @subpackage  Content.fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -17,11 +17,11 @@ jimport('joomla.plugin.plugin');
  * Fabrik content plugin - renders forms, lists and visualizations
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
+ * @subpackage  Content.fabrik
  * @since       1.5
  */
 
-class plgContentFabrik extends JPlugin
+class PlgContentFabrik extends JPlugin
 {
 
 	/**
@@ -268,8 +268,11 @@ class plgContentFabrik extends JPlugin
 				default:
 					if (array_key_exists(1, $m))
 					{
-						// $unused[trim($m[0])] = $m[1];//these are later set as app->input vars if present in list view
-						$unused[] = trim($m[0]) . '=' . $m[1];
+						/**
+						 * These are later set as app->input vars if present in list view
+						 * Urlencode the value for plugin statements such as: asylum_events___start_date[condition]=>
+						 */
+						$unused[] = trim($m[0]) . '=' . urlencode($m[1]);
 					}
 			}
 		}
@@ -547,7 +550,7 @@ class plgContentFabrik extends JPlugin
 		$this->origRequestVars = array();
 		foreach ($qs_arr as $k => $v)
 		{
-			$origVar = $input->get($k. '', 'string');
+			$origVar = $input->get($k, '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
 			$input->set($k, $v);

@@ -144,7 +144,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 
 		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $params, $output);
 
-
 		foreach ($curlOpts as $key => $value)
 		{
 			curl_setopt($chandle, $key, $value);
@@ -319,7 +318,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	/**
 	 * Handle any error generated
 	 *
-	 * @param   mixed              $output     CURL request result - may be a json string
+	 * @param   mixed              &$output    CURL request result - may be a json string
 	 * @param   FabrikFEModelForm  $formModel  Form Model
 	 * @param   object             $chandle    CURL object
 	 *

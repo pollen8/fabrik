@@ -221,6 +221,8 @@ class FabrikPlugin extends JPlugin
 		// Copy over the data into the params array - plugin fields can have data in either
 		// jform[params][name] or jform[name]
 		$pluginData = array();
+
+		$dontMove = array('width', 'height');
 		if (!array_key_exists('params', $data))
 		{
 			$data['params'] = array();
@@ -234,10 +236,21 @@ class FabrikPlugin extends JPlugin
 			}
 			else
 			{
-				$data['params'][$key] = is_array($val) ? JArrayHelper::getValue($val, $repeatCounter, '') : $val;
+				if (is_array($val))
+				{
+					$data['params'][$key] = JArrayHelper::getValue($val, $repeatCounter, '');
+				}
+				else
+				{
+					// Textarea now stores width/height in params, dont want to copy over old w/h values into the params array
+					if (!in_array($key, $dontMove))
+					{
+						$data['params'][$key] = $val;
+					}
+				}
+
 			}
 		}
-
 		// Bind the plugins data to the form
 		$form->bind($data);
 

@@ -33,13 +33,6 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 	protected $pluginName = 'notempty';
 
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
-	 *
-	 *  @var bool
-	 */
-	protected $icon = 'notempty';
-
-	/**
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check

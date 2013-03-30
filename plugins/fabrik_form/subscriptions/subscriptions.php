@@ -389,7 +389,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$formid = $input->getInt('formid');
-		$rowid = $input->getInt('rowid');
+		$rowid = $input->getString('rowid', '', 'string');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($formid);

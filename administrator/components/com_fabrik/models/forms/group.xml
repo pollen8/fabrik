@@ -51,7 +51,7 @@
 			<field name="split_page"
 				type="radio"
 				class="btn-group"
-				default="0
+				default="0"
 				description="COM_FABRIK_SPLIT_PAGE_DESC"
 				label="COM_FABRIK_SPLIT_PAGE_LABEL">
 					<option value="1">JYES</option>

@@ -124,7 +124,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		$input = $app->input;
 		$db = FabrikWorker::getDBO();
 		$query = $db->getQuery(true);
-		$rowid = $input->get('rowid', '');
+		$rowid = $input->get('rowid', '', 'string');
 		$loading = strstr($messageType, 'form.load');
 		$http_referrer = $input->server->get('HTTP_REFERER', 'no HTTP_REFERER', 'string');
 		$user = JFactory::getUser();
@@ -396,7 +396,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 
 			$clabelsCreateDb[] = $db->quoteName('rowid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('rowid');
-			$cdataDb[] = $db->quote((int) $rowid);
+			$cdataDb[] = $db->quote($rowid);
 
 			$clabelsCreateDb[] = $db->quoteName('userid') . " INT(11) NOT NULL";
 			$clabelsDb[] = $db->quoteName('userid');
@@ -499,7 +499,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 					$txtMsg = "Date: " . $date . "\n";
 					$txtMsg .= "Form ID: " . $formModel->getId() . "\n";
 					$txtMsg .= "Table ID: " . $formModel->getListModel()->getId() . "\n";
-					$txtMsg .= "Row ID: " . (int) $rowid . "\n";
+					$txtMsg .= "Row ID: " . $rowid . "\n";
 					$txtMsg .= "User ID: $userid ($username)\n";
 					if ($params->get('logs_record_ip') == 1)
 					{

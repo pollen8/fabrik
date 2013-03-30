@@ -8,7 +8,15 @@ jimport('joomla.application.component.view');
 class fabrikViewPopupwin extends JViewLegacy
 {
 
-	function display($tmpl = 'default')
+	/**
+	 * Display the view
+	 *
+	 * @param   string  $tmpl  Template
+	 *
+	 * @return  JView  this
+	 */
+
+	public function display($tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -34,6 +42,9 @@ class fabrikViewPopupwin extends JViewLegacy
 		$this->subject = $this->get('subject');
 		$this->message = $this->get('message');
 		$this->allowAttachment = $this->get('allowAttachment');
+
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		return parent::display();
 	}
 

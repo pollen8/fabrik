@@ -248,6 +248,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		for ($i = 0; $i < count($items); $i++)
 		{
 			$items[$i]->params = json_decode($items[$i]->params);
+			$items[$i]->params->js_e_value = htmlspecialchars_decode($items[$i]->params->js_e_value);
 		}
 		return $items;
 	}
@@ -305,7 +306,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
 		$js[] = "window.addEvent('domready', function () {";
-		$js[] = "console.log('domready, set fabrik controller', Fabrik);";
 		$js[] = "\tvar opts = $opts;";
 
 		$plugins = json_encode($this->getPlugins());
@@ -954,7 +954,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$params->js_e_event = $eEvent[$c];
 				$params->js_e_trigger = $eTrigger[$c];
 				$params->js_e_condition = $eCond[$c];
-				$params->js_e_value = $eVal[$c];
+				$params->js_e_value = htmlspecialchars($eVal[$c]);
 				$params->js_published = $ePublished[$c];
 				$params = json_encode($params);
 				if ($jsAction != '')

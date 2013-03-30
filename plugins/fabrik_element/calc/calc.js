@@ -105,6 +105,7 @@ var FbCalc = new Class({
 				
 				// If we have a validation on the element run it after AJAX calc is done
 				this.form.doElementValidation(this.options.element);
+				Fabrik.fireEvent('fabrik.calc.update', [this, r]);
 			}
 		}.bind(this)}).send();
 	},

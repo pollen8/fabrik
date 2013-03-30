@@ -494,7 +494,7 @@ var fabrikCalendar = new Class({
 			ht = this.options.shortDays[counterDate.getDay()] + ' ' + counterDate.getDate() + '/' + this.options.shortMonths[counterDate.getMonth()];
 			hdiv = new Element('div', {'styles': {'background-color': this._getColor(thbg, counterDate)}}).set('text', ht);
 			
-			ths[i].empty().adopt(h);
+			ths[i].empty().adopt(hdiv);
 			
 			var eventWidth = 10;
 			var maxoffsets = {};
@@ -614,7 +614,7 @@ var fabrikCalendar = new Class({
 		existing.setStyle('width', width + 'px');
 		var v = opts.divclass.substr(1, opts.divclass.length);
 		width -= td.getStyle('border-width').toInt(); 
-		opts = {'margin-left': marginleft + 'px', 'height': height, 'view': 'weekView', 'background-color': this._getColor(this.options.colors.headingBg)};
+		opts = {'z-index': 999, 'margin-left': marginleft + 'px', 'height': height, 'view': 'weekView', 'background-color': this._getColor(this.options.colors.headingBg)};
 		opts['max-width'] = width + 'px';
 		opts.left = left;
 		opts.top = top;
@@ -1379,7 +1379,7 @@ var fabrikCalendar = new Class({
 		}
 	},
 	
-	editEntry: function ()
+	editEntry: function (e)
 	{
 		var o = {};
 		o.id = this.options.formid;

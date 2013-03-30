@@ -507,8 +507,8 @@ class FabrikWorker
 	/**
 	 * Check a string is not reserved by Fabrik
 	 *
-	 * @param   string  $str  to check
-	 * @param   bool  $strict  incude things like rowid, listid in the reserved words, defaults to true
+	 * @param   string  $str     To check
+	 * @param   bool    $strict  Incude things like rowid, listid in the reserved words, defaults to true
 	 *
 	 * @return bool
 	 */
@@ -588,7 +588,6 @@ class FabrikWorker
 		 * as having the line below commented in causes the request to be used before searchData.
 		 * self::replaceRequest($msg);
 		 */
-
 
 		$f = JFilterInput::getInstance();
 		$post = $f->clean($_REQUEST, 'array');
@@ -743,6 +742,14 @@ class FabrikWorker
 		$orig = $match;
 		/* strip the {} */
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
+
+		/* $$$ hugh - added dbprefix substitution
+		 * Not 100% if we should do this on $match before copying to $orig, but for now doing it
+		 * after, so we don't potentially disclose dbprefix if no substitution found.
+		 */
+		$config = JFactory::getConfig();
+		$prefix = $config->get('dbprefix');
+		$match = str_replace('#__', $prefix, $match);
 
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
@@ -1125,7 +1132,12 @@ class FabrikWorker
 		{
 			if ($val === false && $error = error_get_last() && ($app->input->get('fabrikdebug') == 1 || JDEBUG))
 			{
-				JError::raiseNotice(500, sprintf($msg, $error['message']));
+				// $$$ hugh - for some strange reason, error_get_last() sometimes returns true, instead of an array
+				// or null, when there hasn't been an eror.
+				if ($error !== true)
+				{
+					JError::raiseNotice(500, sprintf($msg, $error['message']));
+				}
 			}
 		}
 	}
@@ -1179,15 +1191,8 @@ class FabrikWorker
 			$conf = JFactory::getConfig();
 			if (!$loadJoomlaDb)
 			{
-				$cn = JTable::getInstance('Connection', 'FabrikTable');
-				if (is_null($cnnId))
-				{
-					$cn->load(array('default' => 1));
-				}
-				else
-				{
-					$cn->load((int) $cnnId);
-				}
+				$cnModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
+				$cn = $cnModel->getConnection($cnnId);
 				$host = $cn->host;
 				$user = $cn->user;
 				$password = $cn->password;
@@ -1536,21 +1541,28 @@ class FabrikWorker
 
 	/**
 	 * Get a cachec handler
+	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
 	 * @since   3.0.7
+	 *
+	 * @param   object  listModel
 	 *
 	 * @return  JCache
 	 */
 
-	public static function getCache()
+	public static function getCache($listModel = null)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$cache = JCache::getInstance('callback',
-				array('defaultgroup' => 'com_' . $package, 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
-						'storage' => 'file'));
+		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60),
+			 'language' => 'en-GB', 'storage' => 'file');
+		$cache = JCache::getInstance('callback', $opts);
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
+		if ($doCache && $listModel !== null)
+		{
+			$doCache = $listModel->getParams()->get('list_disable_caching', '0') == '0';
+		}
 		$cache->setCaching($doCache);
 		return $cache;
 	}
@@ -1575,7 +1587,8 @@ class FabrikWorker
 
 		foreach ($fs as $name => $field)
 		{
-			if (substr($name, 0, 7) === 'params_') {
+			if (substr($name, 0, 7) === 'params_')
+			{
 				$name = str_replace('params_', '', $name);
 				$json['params'][$name] = $field->value;
 			}

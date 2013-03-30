@@ -315,8 +315,9 @@ span.handlelabel {
 	z-index:999;
 }
 
-.floating-tip ul.validation-notices{
+ul.validation-notices{
 	padding: 3px;
+	margin: 0;
 }
 
 /** Inline edit focus class */
@@ -616,4 +617,9 @@ fieldset.row-fluid:before {
 #main .fabrikForm .plupload_content  .plupload_file_action a:active,
 #main .fabrikForm .plupload_content  .plupload_file_action a:focus {
 	background: url("../../../plugins/fabrik_element/fileupload/lib/plupload/img/done.gif") repeat scroll 0 0 transparent;
+}
+
+
+select.fabrikinput[multiple] {
+	height: auto;
 }

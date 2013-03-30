@@ -16,10 +16,11 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a group.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
 */
+
 class FabrikAdminViewGroup extends JViewLegacy
 {
 	/**
@@ -53,7 +54,6 @@ class FabrikAdminViewGroup extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-
 		// Initialiase variables.
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');

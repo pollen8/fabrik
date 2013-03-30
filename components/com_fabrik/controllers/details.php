@@ -320,7 +320,7 @@ class FabrikControllerDetails extends JControllerLegacy
 			if (array_key_exists('apply', $model->formData))
 			{
 				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
-					. '&rowid=' . $input->getInt('rowid');
+					. '&rowid=' . $input->getString('rowid', '', 'string');
 			}
 			else
 			{
@@ -332,7 +332,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		{
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getInt('rowid')
+				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getString('rowid', '', 'string')
 					. "&listid=" . $input->getInt('listid');
 			}
 			else

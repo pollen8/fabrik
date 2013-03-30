@@ -40,7 +40,11 @@
 	
 	<fieldset name="access">
 	
-		<field default="1" description="COM_FABRIK_ACCESS_EDITABLE_ELEMENT_DESC" label="COM_FABRIK_ACCESS_EDITABLE_ELEMENT" name="access" type="accesslevel"/>
+		<field name="access" 
+			type="accesslevel"
+			default="1"
+			label="COM_FABRIK_ACCESS_EDITABLE_ELEMENT" 
+			description="COM_FABRIK_ACCESS_EDITABLE_ELEMENT_DESC" />
 				
 	</fieldset>
 	

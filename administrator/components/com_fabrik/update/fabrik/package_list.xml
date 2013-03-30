@@ -1,47 +1,47 @@
 <?xml version="1.0" ?>
 <extensionset name="Fabrik" description="Fabrik">
-	<extension name="Fabrik" element="com_fabrik" type="component" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/com_fabrik.xml"/>
-	<extension name="Fabrik form module" element="mod_fabrik_form" type="module" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_form.xml" />
-	<extension name="Fabrik list module" element="mod_fabrik_list" type="module" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/mod_fabrik_list.xml" />
-	<extension name="Fabrik Joomla content plugin" element="fabrik" type="plugin" folder="content" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_content_fabrik.xml" />
+	<extension name="Fabrik" element="com_fabrik" type="component" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/com_fabrik.xml"/>
+	<extension name="Fabrik form module" element="mod_fabrik_form" type="module" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/mod_fabrik_form.xml" />
+	<extension name="Fabrik list module" element="mod_fabrik_list" type="module" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/mod_fabrik_list.xml" />
+	<extension name="Fabrik Joomla content plugin" element="fabrik" type="plugin" folder="content" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_content_fabrik.xml" />
 	
-	<extension name="Fabrik Cron - email" element="email" type="plugin" folder="fabrik_cron" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_cron_email.xml" />
-	<extension name="Fabrik Cron - php" element="php" type="plugin" folder="fabrik_cron" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_cron_php.xml" />
+	<extension name="Fabrik Cron - email" element="email" type="plugin" folder="fabrik_cron" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_cron_email.xml" />
+	<extension name="Fabrik Cron - php" element="php" type="plugin" folder="fabrik_cron" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_cron_php.xml" />
 	
-	<extension name="Fabrik Element - button" element="button" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_element_button.xml" />
-	<extension name="Fabrik Element - checkbox" element="checkbox" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_element_checkbox.xml" />	
-	<extension name="Fabrik Element - databasejoin" element="databasejoin" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_element_databasejoin.xml" />
-	<extension name="Fabrik Element - date" element="date" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_date.xml" />
-	<extension name="Fabrik Element - display" element="display" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_display.xml" />
-	<extension name="Fabrik Element - dropdown" element="dropdown" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_dropdown.xml" />
-	<extension name="Fabrik Element - field" element="field" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_field.xml" />
-	<extension name="Fabrik Element - fileupload" element="fileupload" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_fileupload.xml" />
-	<extension name="Fabrik Element - googlemap" element="googlemap" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_googlemap.xml" />
-	<extension name="Fabrik Element - image" element="image" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_image.xml" />
-	<extension name="Fabrik Element - internalid" element="internalid" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_internalid.xml" />
-	<extension name="Fabrik Element - link" element="link" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_link.xml" />
-	<extension name="Fabrik Element - radiobutton" element="radiobutton" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_radiobutton.xml" />
-	<extension name="Fabrik Element - textarea" element="textarea" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_textarea.xml" />
-	<extension name="Fabrik Element - user" element="user" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik/plg_element_user.xml" />
+	<extension name="Fabrik Element - button" element="button" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_button.xml" />
+	<extension name="Fabrik Element - checkbox" element="checkbox" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_checkbox.xml" />	
+	<extension name="Fabrik Element - databasejoin" element="databasejoin" type="plugin" folder="fabrik_element" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_databasejoin.xml" />
+	<extension name="Fabrik Element - date" element="date" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_date.xml" />
+	<extension name="Fabrik Element - display" element="display" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_display.xml" />
+	<extension name="Fabrik Element - dropdown" element="dropdown" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_dropdown.xml" />
+	<extension name="Fabrik Element - field" element="field" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_field.xml" />
+	<extension name="Fabrik Element - fileupload" element="fileupload" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_fileupload.xml" />
+	<extension name="Fabrik Element - googlemap" element="googlemap" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_googlemap.xml" />
+	<extension name="Fabrik Element - image" element="image" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_image.xml" />
+	<extension name="Fabrik Element - internalid" element="internalid" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_internalid.xml" />
+	<extension name="Fabrik Element - link" element="link" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_link.xml" />
+	<extension name="Fabrik Element - radiobutton" element="radiobutton" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_radiobutton.xml" />
+	<extension name="Fabrik Element - textarea" element="textarea" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_textarea.xml" />
+	<extension name="Fabrik Element - user" element="user" type="plugin" version="3.0b" folder="fabrik_element" detailsurl="http://fabrikar.com/update/fabrik_test/plg_element_user.xml" />
 	
-	<extension name="Fabrik Form - email" element="email" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_form_email.xml" />
-	<extension name="Fabrik Form - php" element="php" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_form_php.xml" />
-	<extension name="Fabrik Form - receipt" element="receipt" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_form_receipt.xml" />
-	<extension name="Fabrik Form - redirect" element="redirect" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_form_redirect.xml" />
+	<extension name="Fabrik Form - email" element="email" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_form_email.xml" />
+	<extension name="Fabrik Form - php" element="php" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_form_php.xml" />
+	<extension name="Fabrik Form - receipt" element="receipt" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_form_receipt.xml" />
+	<extension name="Fabrik Form - redirect" element="redirect" type="plugin" folder="fabrik_form" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_form_redirect.xml" />
 		
-	<extension name="Fabrik List - copy" element="copy" type="plugin" folder="fabrik_list" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_list_copy.xml" />		
-	<extension name="Fabrik List - php" element="php" type="plugin" folder="fabrik_list" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_list_php.xml" />
+	<extension name="Fabrik List - copy" element="copy" type="plugin" folder="fabrik_list" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_list_copy.xml" />		
+	<extension name="Fabrik List - php" element="php" type="plugin" folder="fabrik_list" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_list_php.xml" />
 	
-	<extension name="Fabrik Validationrule - isgreaterorlessthan" element="isgreaterorlessthan" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_validation_isgreaterorlessthan.xml" />
-	<extension name="Fabrik Validationrule - notempty" element="notempty" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_validation_notempty.xml" />
-	<extension name="Fabrik Validationrule - php" element="php" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_validation_php.xml" />
-	<extension name="Fabrik Validationrule - regex" element="regex" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_validation_regex.xml" />
+	<extension name="Fabrik Validationrule - isgreaterorlessthan" element="isgreaterorlessthan" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_validation_isgreaterorlessthan.xml" />
+	<extension name="Fabrik Validationrule - notempty" element="notempty" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_validation_notempty.xml" />
+	<extension name="Fabrik Validationrule - php" element="php" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_validation_php.xml" />
+	<extension name="Fabrik Validationrule - regex" element="regex" type="plugin" folder="fabrik_validationrule" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_validation_regex.xml" />
 		
-	<extension name="Fabrik Visualization - calendar" element="calendar" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_calendar.xml" />
-	<extension name="Fabrik Visualization - chart" element="chart" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_chart.xml" />
-	<extension name="Fabrik Visualization - googlemap" element="googlemap" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_googlemap.xml" />
-	<extension name="Fabrik Visualization - media" element="media" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_media.xml" />
-	<extension name="Fabrik Visualization - slideshow" element="slideshow" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_visualization_slideshow.xml" />
+	<extension name="Fabrik Visualization - calendar" element="calendar" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_visualization_calendar.xml" />
+	<extension name="Fabrik Visualization - chart" element="chart" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_visualization_chart.xml" />
+	<extension name="Fabrik Visualization - googlemap" element="googlemap" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_visualization_googlemap.xml" />
+	<extension name="Fabrik Visualization - media" element="media" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_visualization_media.xml" />
+	<extension name="Fabrik Visualization - slideshow" element="slideshow" type="plugin" folder="fabrik_visualization" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_visualization_slideshow.xml" />
 		
-	<extension name="System - fabrik" element="fabrik" type="plugin" folder="system" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik/plg_system_fabrik.xml" />
+	<extension name="System - fabrik" element="fabrik" type="plugin" folder="system" version="3.0b" detailsurl="http://fabrikar.com/update/fabrik_test/plg_system_fabrik.xml" />
 </extensionset>

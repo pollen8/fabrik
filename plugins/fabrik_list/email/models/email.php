@@ -111,6 +111,8 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 	public function onLoadJavascriptInstance($params, $model, $args)
 	{
+		echo "slim box ";
+		FabrikHelperHTML::slimbox();
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
 		$opts->renderOrder = $this->renderOrder;

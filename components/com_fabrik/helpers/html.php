@@ -1693,11 +1693,22 @@ EOD;
 			$properties = array('alt' => $properties);
 		}
 
-		if (FabrikWorker::j3() && !$srcOnly)
+		if (FabrikWorker::j3())
 		{
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
-			$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
-			return '<i class="icon-' . JFile::stripExt($file) . ' ' . $class . '"' . $id . '></i>';
+			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
+			unset($properties['icon-class']);
+			$p = FabrikHelperHTML::propertiesFromArray($properties);
+
+			if (!$srcOnly)
+			{
+				//$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
+				return '<i class="' . $class . '"' . $p . '></i>';
+			}
+			else
+			{
+				return $class;
+			}
 		}
 		$src = self::getImagePath($file, $type, $tmpl);
 		$src = str_replace(COM_FABRIK_BASE, COM_FABRIK_LIVESITE, $src);
@@ -1717,6 +1728,12 @@ EOD;
 			$properties['class'] = 'fabrikImg';
 		}
 
+		$p = FabrikHelperHTML::propertiesFromArray($properties);
+		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
+	}
+
+	protected static function propertiesFromArray($properties)
+	{
 		$bits = array();
 		foreach ($properties as $key => $val)
 		{
@@ -1732,7 +1749,7 @@ EOD;
 			$val = str_replace('"', "'", $val);
 			$p .= $key . '="' . $val . '" ';
 		}
-		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
+		return $p;
 	}
 
 	/**

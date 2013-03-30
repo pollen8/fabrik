@@ -425,7 +425,7 @@ class FabrikFEModelFormsession extends FabModel
 		$app = JFactory::getApplication();
 		if (is_null($this->rowid))
 		{
-			$this->rowid = $app->input->getInt('rowid');
+			$this->rowid = $app->input->getString('rowid', '', 'string');
 		}
 		return (int) $this->rowid;
 	}

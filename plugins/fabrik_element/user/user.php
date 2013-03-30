@@ -141,6 +141,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$id = $this->getValue($data, $repeatCounter);
 				}
 				$id = is_array($id) ? $id[0] : $id;
+
 				// $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
 				// editing a row, where user element is not set yet, and 'update on edit' is No.
 				if ($rowid && empty($id) && !$params->get('update_on_edit'))
@@ -233,7 +234,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		 */
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ($input->getInt('rowid') == 0 && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 			{
 				$context = 'fabrik.plugin.profile_id';
 				if ($input->get('fabrik_social_profile_hash', '') != '')
@@ -328,7 +329,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// TODO - make this table/form specific, but not so easy to do in CB plugin
 		if ((int) $params->get('user_use_social_plugin_profile', 0))
 		{
-			if ((int) $input->get('rowid', '') === 0 && $input->get('task') !== 'doimport')
+			if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 			{
 				$session = JFactory::getSession();
 				if ($session->has('fabrik.plugin.profile_id'))
@@ -342,10 +343,8 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		// $$$ rob if in joined data then $data['rowid'] isnt set - use $input->get var instead
-		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
-		if ((int) $input->get('rowid', '') == 0 && $input->get('task') !== 'doimport')
+		if ($input->getString('rowid', '', 'string') == '' && $input->get('task') !== 'doimport')
 		{
 
 			// $$$ rob if we cant use the element or its hidden force the use of current logged in user
@@ -599,19 +598,13 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			// When rendering the element to the form
 			$key = '__pk_val';
 		}
-		//empty(data) when you are saving a new record and this element is in a joined group
-		// $$$ hugh - added !array_key_exists(), as ... well, rowid doesn't always exist in the query string
 
-		// $$$ rob replaced ALL references to rowid with __pk_val as rowid doesnt exists in the data :O
-
-		//$$$ rob
-		//($this->inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)
-		//is for saying that the last record in a repeated join group should be treated as if it was in a new form
-
-		// $$$ rob - erm why on earth would i want to do that! ?? (see above!) - test case:
-		// form with joined data - make record with on repeated group (containing this element)
-		// edit record and the commented out if statement below meant the user dd reverted
-		// to the current logged in user and not the previously selected one
+		/**
+		 * $$$ rob - erm why on earth would i want to do that! ?? (see above!) - test case:
+		 * form with joined data - make record with on repeated group (containing this element)
+		 * edit record and the commented out if statement below meant the user dd reverted
+		 * to the current logged in user and not the previously selected one
+		 */
 		if (empty($data) || !array_key_exists($key, $data) )
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
@@ -867,7 +860,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * Get the user's property to show, if gid raise warning and revert to username (no gid in J1.7)
 	 *
-	 * @param   object	$user  joomla user
+	 * @param   object  $user  Joomla user
 	 *
 	 * @since	3.0b
 	 *

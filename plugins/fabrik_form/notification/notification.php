@@ -230,14 +230,14 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 		{
 			return;
 		}
-
-		$why = $input->getInt('rowid') == 0 ? 'author' : 'editor';
+		$rowId = $input->getString('rowid', '', 'string');
+		$why = $rowId == '' ? 'author' : 'editor';
 		$this->process($notify, $why, $params);
 
 		// Add entry indicating the form has been updated this record will then be used by the cron plugin to
 		// see which new events have been generated and notify subscribers of said events.
 		$db = FabrikWorker::getDbo();
-		$event = $input->getInt('rowid') == 0 ? $db->quote(JText::_('RECORD_ADDED')) : $db->quote(JText::_('RECORD_UPDATED'));
+		$event = $rowId == '' ? $db->quote(JText::_('RECORD_ADDED')) : $db->quote(JText::_('RECORD_UPDATED'));
 		$date = JFactory::getDate();
 		$date = $db->quote($date->toSql());
 		$ref = $this->getRef();

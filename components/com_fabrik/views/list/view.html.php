@@ -36,7 +36,7 @@ class FabrikViewList extends FabrikViewListBase
 		if (parent::display($tpl) !== false)
 		{
 			$app = JFactory::getApplication();
-			if (!$app->isAdmin())
+			if (!$app->isAdmin() && isset($this->params))
 			{
 				$this->state = $this->get('State');
 				$this->document = JFactory::getDocument();

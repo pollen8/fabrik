@@ -33,19 +33,12 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	protected $pluginName = 'specialchars';
 
 	/**
-	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
-	 *
-	 *  @var bool
-	 */
-	protected $icon = 'notempty';
-
-	/**
 	 * Validate the elements data against the rule
 	 *
-	 * @param   string  $data           to check
-	 * @param   object  &$elementModel  element Model
-	 * @param   int     $pluginc        plugin sequence ref
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           To check
+	 * @param   object  &$elementModel  Element Model
+	 * @param   int     $pluginc        Plugin sequence ref
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
@@ -79,10 +72,10 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 * Checks if the validation should replace the submitted element data
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
-	 * @param   string  $data           original data
-	 * @param   model   &$elementModel  element model
-	 * @param   int     $pluginc        validation plugin counter
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Original data
+	 * @param   model   &$elementModel  Element model
+	 * @param   int     $pluginc        Validation plugin counter
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */

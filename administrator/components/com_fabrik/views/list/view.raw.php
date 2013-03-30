@@ -41,7 +41,7 @@ class FabrikAdminViewList extends JViewLegacy
 		$params = $model->getParams();
 		$model->render();
 		$this->emptyDataMessage = $params->get('empty_data_msg');
-		$rowid = $input->getInt('rowid');
+		$rowid = $input->getString('rowid', '', 'string');
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
 		$data = $model->getData();
 		$nav = $model->getPagination();

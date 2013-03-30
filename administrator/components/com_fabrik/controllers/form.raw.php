@@ -193,7 +193,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		}
 		if ($input->getInt('packageId', 0) !== 0)
 		{
-			$rowid = $input->getInt('rowid');
+			$rowid = $input->getString('rowid', '', 'string');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
 			return;
 		}
@@ -229,7 +229,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		if (array_key_exists('apply', $model->formData))
 		{
 			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
-				. '&rowid=' . $input->getInt('rowid');
+				. '&rowid=' . $input->getString('rowid', '', 'string');
 		}
 		else
 		{

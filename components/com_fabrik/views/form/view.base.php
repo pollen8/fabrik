@@ -79,7 +79,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->access = $model->checkAccessFromListSettings();
 		if ($this->access == 0)
 		{
-			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			return false;
 		}
 		JDEBUG ? $profiler->mark('form view before join group ids got') : null;
 		if (!$listModel->noTable())
@@ -128,6 +129,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->modeldata = $model->data;
 		$this->params = $params;
 		$this->tipLocation = $params->get('tiplocation');
+
 		FabrikHelperHTML::debug($this->groups, 'form:view:groups');
 
 		// Cck in admin?
@@ -380,7 +382,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$aLoadedElementPlugins = array();
 		$jsActions = array();
-		$jsControllerKey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
+		$bkey = $model->jsKey();
 
 		$srcs = FabrikHelperHTML::framework();
 		$shim = array();
@@ -437,7 +439,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$eventMax = ($groupModel->repeatTotal == 0) ? 1 : $groupModel->repeatTotal;
 				for ($c = 0; $c < $eventMax; $c++)
 				{
-					$jsActions[] = $elementModel->getFormattedJSActions($jsControllerKey, $c);
+					$jsActions[] = $elementModel->getFormattedJSActions($bkey, $c);
 				}
 			}
 		}
@@ -448,11 +450,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$form = $model->getForm();
 		FabrikHelperHTML::windows();
 
-		$bkey = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
-		if ($this->rowid != '')
-		{
-			$bkey .= '_' . $this->rowid;
-		}
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 
 		$this->get('FormCss');
@@ -467,7 +464,7 @@ class FabrikViewFormBase extends JViewLegacy
 			JText::script('COM_FABRIK_NO_REPEAT_GROUP_DATA');
 			JText::script('COM_FABRIK_VALIDATION_ERROR');
 			JText::script('COM_FABRIK_FORM_SAVED');
-			Jtext::script('COM_FABRIK_CONFIRM_DELETE');
+			JText::script('COM_FABRIK_CONFIRM_DELETE_1');
 		}
 
 		// $$$ rob dont declare as var $bkey, but rather assign to window, as if loaded via ajax window the function is wrapped
@@ -580,6 +577,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = $this->getModel();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$form = $model->getForm();
 		$params = $model->getParams();
 		$listModel = $model->getlistModel();
@@ -614,10 +612,15 @@ class FabrikViewFormBase extends JViewLegacy
 		// 3.0 needed for ajax requests
 		$opts->listid = (int) $this->get('ListModel')->getId();
 
+		$errorIcon = FabrikWorker::j3() ? $fbConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
+		$this->errorIcon = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl);
+
 		$imgs = new stdClass;
-		$imgs->alert = FabrikHelperHTML::image('alert.png', 'form', $this->tmpl, '', true);
+		$imgs->alert = FabrikHelperHTML::image($errorIcon, 'form', $this->tmpl, '', true);
 		$imgs->action_check = FabrikHelperHTML::image('action_check.png', 'form', $this->tmpl, '', true);
+
 		$imgs->ajax_loader = FabrikHelperHTML::image('ajax-loader.gif', 'form', $this->tmpl, '', true);
+		$imgs->ajax_loader = '<i class="icon-spinner icon-spin"></i>';
 		$opts->images = $imgs;
 
 		// $$$rob if you are loading a list in a window from a form db join select record option
@@ -786,7 +789,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
 		? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
-		? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button" name="delete" />' : '';
+		? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button btn-danger" name="delete" />' : '';
 		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
 				? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $params->get('goback_button_label')
@@ -795,8 +798,15 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
-			$form->submitButton = '<input type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit" value="'
-					. $form->submit_button_label . '" />';
+			$submitIcon = $params->get('save_icon', '');
+			$submitLabel = $form->submit_button_label;
+			if ($submitIcon !== '')
+			{
+				$submitIcon = '<i class="' . $submitIcon . '"></i>';
+				$submitLabel =  $params->get('save_icon_location') == 'before' ? $submitIcon . ' ' . $submitLabel : $submitLabel . ' ' . $submitIcon;
+			}
+			$form->submitButton = '<button type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit">'
+				. $submitLabel . '</button>';
 		}
 		else
 		{

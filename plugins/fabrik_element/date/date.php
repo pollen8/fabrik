@@ -269,7 +269,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			{
 				// $$$ rob - date is always stored with time now, so always apply tz unless store_as_local set
 				// or if we are defaulting to today
-				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getInt('rowid') == 0 || $params->get('date_alwaystoday', false));
+				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getString('rowid', '', 'string') == '' || $params->get('date_alwaystoday', false));
 				if (!$store_as_local || $showLocale)
 				{
 					$oDate->setTimeZone($timeZone);
@@ -737,15 +737,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			return 'BLOB';
 		}
-		$groupModel = $this->getGroup();
-		if (is_object($groupModel) && !$groupModel->isJoin() && $groupModel->canRepeat())
-		{
-			return "VARCHAR(255)";
-		}
-		else
-		{
-			return "DATETIME";
-		}
+		return "DATETIME";
 	}
 
 	/**
