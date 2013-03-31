@@ -377,7 +377,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
 		if ($filterview == 'table')
 		{
-			$params->set('cascadingdropdown_showpleaseselect', true);
+			/**
+			 * $$$ hugh - no point just setting the param here, 'cos the 'please select'
+			 * handling has already ben done, in _getOptionVals.
+			 * So ... check to see if the showPleaseSelect() is returning false, and if so
+			 * go ahead and add one regardless.
+			 */
+			//$params->set('cascadingdropdown_showpleaseselect', true);
+			if (!$this->showPleaseSelect())
+			{
+				array_unshift($opts, JHTML::_('select.option', '', $this->_getSelectLabel()));
+			}
 		}
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
 		echo json_encode($opts);
@@ -404,11 +414,20 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 				if ($fullName == $watch)
 				{
 					$element = $elementModel->getElement();
-					if (get_parent_class($elementModel) == 'FabrikModelFabrikDatabasejoin')
+					/**
+					 * $$$ hugh - not sure what this is for, but changed class name to 3.x name,
+					 * as it was still set to the old 2.1 naming.
+					 */
+					if (get_parent_class($elementModel) == 'plgFabrik_ElementDatabasejoin')
 					{
 						$data = array();
 						$joinopts = $elementModel->_getOptions($data);
 					}
+					/**
+					 * $$$ hugh - I assume we can break out of both foreach now, as there shouldn't
+					 * be more than one match for the $watch element.
+					 */
+					break 2;
 				}
 			}
 		}
