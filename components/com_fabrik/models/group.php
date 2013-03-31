@@ -221,7 +221,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 		$this->canEdit = $pluginCanEdit;
 
-		return $this->canView;
+		return $this->canEdit;
 	}
 
 	/**
