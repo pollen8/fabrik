@@ -493,16 +493,18 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 			}
 		}
 
-		if ($this->showPleaseSelect())
+		// if it's a filter, need to use filterSelectLabel() regardless of showPleaseSelect()
+		// (should probably shift this logic into showPleaseSelect, and have that just do this
+		// test, and return the label to use.
+		$app = JFactory::getApplication();
+		$filterview = $app->input->get('filterview', '');
+		if ($filterview == 'table')
 		{
-			// if it's a filter, need to use filterSelectLabel()
-			$app = JFactory::getApplication();
-			$filterview = $app->input->get('filterview', '');
-			if ($filterview == 'table')
-			{
-				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->filterSelectLabel()));
-			}
-			else
+			array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->filterSelectLabel()));
+		}
+		else
+		{
+			if ($this->showPleaseSelect())
 			{
 				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
 			}
