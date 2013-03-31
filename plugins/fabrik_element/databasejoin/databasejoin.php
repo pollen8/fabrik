@@ -1853,7 +1853,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			switch ($params->get('filter_groupby', 'text'))
 			{
 				case 'text':
-					$oder = $joinLabel . 'ASC ';
+					$order = $joinLabel . 'ASC ';
 					break;
 				case 'value':
 					$order = $joinKey . 'ASC ';
