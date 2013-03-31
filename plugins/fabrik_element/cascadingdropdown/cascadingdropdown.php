@@ -374,21 +374,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$data = $filter->clean($_POST, 'array');
 		$opts = $this->_getOptionVals($data);
 
+		/**
+		 * $$$ hugh - had to move this logic into _getOptionvals()
+		 * will delete this chunk when it's tested and working
+		 */
+		/*
 		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
 		if ($filterview == 'table')
-		{
-			/**
-			 * $$$ hugh - no point just setting the param here, 'cos the 'please select'
-			 * handling has already ben done, in _getOptionVals.
-			 * So ... check to see if the showPleaseSelect() is returning false, and if so
-			 * go ahead and add one regardless.
-			 */
-			//$params->set('cascadingdropdown_showpleaseselect', true);
-			if (!$this->showPleaseSelect())
-			{
-				array_unshift($opts, JHTML::_('select.option', '', $this->_getSelectLabel()));
-			}
+
+			$params->set('cascadingdropdown_showpleaseselect', true);
 		}
+		*/
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
 		echo json_encode($opts);
 	}
@@ -499,7 +495,17 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 
 		if ($this->showPleaseSelect())
 		{
-			array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+			// if it's a filter, need to use filterSelectLabel()
+			$app = JFactory::getApplication();
+			$filterview = $app->input->get('filterview', '');
+			if ($filterview == 'table')
+			{
+				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
+			else
+			{
+				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+			}
 		}
 		return $this->_optionVals[$sqlKey];
 	}
@@ -1139,6 +1145,23 @@ class plgFabrik_ElementCascadingdropdown extends plgFabrik_ElementDatabasejoin
 		$joinKey = $this->getJoinValueColumn();
 		$elName = FabrikString::safeColName($this->getFullName(false, true, false));
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
+	}
+
+	/**
+	* Get dropdown filter select label
+	*
+	* @return  string
+	*/
+
+	protected function filterSelectLabel()
+	{
+		$params = $this->getParams();
+		$label = $params->get('cascadingdropdown_noselectionlabel', '');
+		if (empty($label))
+		{
+			$label = $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+		}
+		return $label;
 	}
 
 }
