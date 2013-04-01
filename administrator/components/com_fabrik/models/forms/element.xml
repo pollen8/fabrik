@@ -315,15 +315,14 @@
 						<option value="1">JYES</option>
 				</field>
 												
-				<field class="btn-group" default="0" description="COM_FABRIK_FIELD_TIPS_OVER_ELEMENT_DESC" label="COM_FABRIK_FIELD_TIPS_OVER_ELEMENT_LABEL" name="tipsoverelement" type="radio">
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-				</field>
-				
-				<field default="top" description="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_DESC" label="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_LABEL" name="tiplocation" type="list">
+				<field default="top-left" description="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_DESC" label="COM_FABRIK_FIELD_ELEMENT_TIP_LOCATION_LABEL" name="tiplocation" type="list">
 						<option value="top">COM_FABRIK_TIP_LOCATION_TOP</option>
+						<option value="top-right">COM_FABRIK_TIP_LOCATION_TOP_RIGHT</option>
+						<option value="top-left">COM_FABRIK_TIP_LOCATION_TOP_LEFT</option>
 						<option value="right">COM_FABRIK_TIP_LOCATION_RIGHT</option>
 						<option value="bottom">COM_FABRIK_TIP_LOCATION_BOTTOM</option>
+						<option value="bottom-left">COM_FABRIK_TIP_LOCATION_BOTTOM_LEFT</option>
+						<option value="bottom-right">COM_FABRIK_TIP_LOCATION_BOTTOM_RIGHT</option>
 						<option value="left">COM_FABRIK_TIP_LOCATION_LEFT</option>
 				</field>
 				

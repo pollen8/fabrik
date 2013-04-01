@@ -226,7 +226,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected $fieldSize = '255';
 
-	/** @var string element error msg */
+	/**
+	 * Element error msg
+	 *
+	 * @var string
+	 */
 	protected $elementError = '';
 
 	/**
@@ -841,7 +845,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$element = $this->getElement();
 
-		// Odd! even though defined in initialize() for confirmation plugin _access was not set.
+		// Odd! even though defined in initialize() for confirmation plugin access was not set.
 		if (!isset($this->access))
 		{
 			$this->access = new stdClass;
@@ -1237,7 +1241,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$key = $repeatCounter . '.' . serialize($opts);
 		if (!array_key_exists($key, $this->defaults))
 		{
-
+			$groupRepeat = $this->getGroupModel()->canRepeat();
 			$default = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(true, false);
 			if (JArrayHelper::getValue($opts, 'raw', 0) == 1)
@@ -1245,7 +1249,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$name .= '_raw';
 			}
 			$values = JArrayHelper::getValue($data, $name, $default);
-			if ($this->getGroupModel()->canRepeat())
+			if ($groupRepeat)
 			{
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
@@ -1389,7 +1393,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			$l .= $j3 ? $element->label : '';
 			$model = $this->getFormModel();
-			$str .= $this->rollover($l, $model->data, 'form', $tmpl);
+			$str .= $l;
 			if ($bLabel && !$this->isHidden())
 			{
 				$str .= '</label>';
@@ -1435,28 +1439,65 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $txt   label
 	 * @param   array   $data  row data
 	 * @param   string  $mode  form/list render context
-	 * @param   string  $tmpl  template
 	 *
 	 * @return  string  label with tip
 	 */
 
-	protected function rollover($txt, $data = array(), $mode = 'form', $tmpl = '')
+	protected function rollover($txt, $data = array(), $mode = 'form')
 	{
 		if (is_object($data))
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
+		$rollOver = $this->tipTextAndValidations($mode);
+		$opts = $this->tipOpts();
+		$opts = json_encode($opts);
+		return '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+	}
+
+	/**
+	 * Get the hover tip options
+	 *
+	 * @return stdClass
+	 */
+
+	protected function tipOpts()
+	{
 		$params = $this->getParams();
-		$formModel = $this->getFormModel();
-		$validationTip = '';
-		$rollOver = '';
-		$pos = $params->get('tiplocation', 'top');
+		$tmpl = $this->getFormModel()->getTmpl();
 		$opts = new stdClass;
+		$pos = $params->get('tiplocation', 'top');
+		$opts->formTip = true;
 		$opts->position = $pos;
 		$opts->trigger = 'hover';
 		$opts->notice = true;
 
 		if ($this->editable)
+		{
+			$validations = array_unique($this->getValidations());
+			if (count($validations) > 0)
+			{
+				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
+			}
+		}
+		return $opts;
+	}
+
+	/**
+	 * Get Hover tip text and validation text
+	 *
+	 * @param   string  $mode  View mode form/list
+	 * @param   array   $data  Model data
+	 *
+	 * @return string
+	 */
+
+	protected function tipTextAndValidations($mode, $data = array())
+	{
+		$rollOver = '';
+		$validationTip = '';
+		$tmpl = $this->getFormModel()->getTmpl();
+		if ($this->canUse() && $mode === 'form')
 		{
 			$validations = array_unique($this->getValidations());
 			if (count($validations) > 0)
@@ -1470,27 +1511,21 @@ class PlgFabrik_Element extends FabrikPlugin
 				$lines = array_unique($lines);
 				$validationHovers = array_merge($validationHovers, $lines);
 				$validationHovers[] = '</ul></div>';
-				$validationTip  = implode('', $validationHovers);
-				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
+				$validationTip = implode('', $validationHovers);
 			}
 		}
-
 		if ($this->isTipped($mode))
 		{
-			$rollOver = $this->getTip($data);
+			$rollOver = $this->getTipText($data);
 		}
 		$rollOver .= $validationTip;
-
-		if ($rollOver == '')
+		if ($rollOver != '')
 		{
-			return $txt;
+			$rollOver = '<span>' . $rollOver . '</span>';
 		}
-		$rollOver = '<span>' . $rollOver . '</span>';
-		$opts = json_encode($opts);
-
 		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
-		return '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+		return $rollOver;
 	}
 
 	/**
@@ -1501,7 +1536,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return  string  tip HTML
 	 */
 
-	protected function getTip($data = null)
+	protected function getTipText($data = null)
 	{
 		if (is_null($data))
 		{
@@ -1793,10 +1828,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
-		if ($params->get('tipsoverelement', false))
-		{
-			$element->element = $this->rollover($element->element, $model->data);
-		}
 		$element->label_raw = $this->element->label;
 
 		// GetLabel needs to know if the element is editable
@@ -1824,7 +1855,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		// Tips (if not rendered as hovers)
-		$tip = $this->getTip();
+		$tip = $this->getTipText();
 		if ($tip !== '')
 		{
 			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip . '</div>';
@@ -1853,6 +1884,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$element->tipSide = $tip;
 				break;
 		}
+
+		$title = $this->tipTextAndValidations('form', $model->data);
+		$opts = $this->tipOpts();
+		$opts = json_encode($opts);
+		$element->containerProperties = $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
 		return $element;
 	}
 
@@ -1886,19 +1922,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$groupModel = $this->getGroupModel();
 			if ($groupModel->canRepeat())
 			{
-				/**
-				 * $$$ hugh - decided don't need to differentiate between list / table type, saves getParams anyway
-				 *
-				$groupParams = $groupModel->getParams();
-				if ($groupParams->get('repeat_template', 'repeatgroup') == 'repeatgroup_table')
-				{
-					$c[] = 'fabrikRepeatGroupTable___' . $this->getFullName(true, false);
-				}
-				else
-				{
-					$c[] = 'fabrikRepeatGroupList___' . $this->getFullName(true, false);
-				}
-				*/
 				$c[] = 'fabrikRepeatGroup___' . $this->getFullName(true, false);
 			}
 		}
@@ -1906,7 +1929,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$c[] = 'fabrikError';
 		}
-
+		$title = $this->tipTextAndValidations('form');
+		if ($title !== '')
+		{
+			$c[] = 'fabrikTip';
+		}
 		return implode(' ', $c);
 	}
 
@@ -2877,12 +2904,6 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
-				/* if ($found)
-				 {
-				// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
-				unset($rows[$j]);
-				} */
-
 				if (FabrikWorker::isJSON($rows[$j]))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
@@ -6515,7 +6536,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	public function onFinalStoreRow(&$data)
 	{
-
 		if (!$this->isJoin())
 		{
 			return;
@@ -6527,10 +6547,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$query = $db->getQuery(true);
 		$formData =& $this->getFormModel()->formDataWithTableName;
 		$tableName = $listModel->getTable()->db_table_name;
-		$name = $this->getFullName(true, false);
+
+		// I set this to raw for cdd.
+		$name = $this->getFullName(true, false) . '_raw';
 		$shortName = $this->getElement()->name;
 
 		$join = $this->getJoin();
+
+		// The submitted element's values
+
 		$allJoinValues = $formData[$name];
 		if ($groupModel->isJoin())
 		{
@@ -6544,9 +6569,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		}
 		else
 		{
+			$k = 'rowid';
 			$idKey = $name . '___id';
 			$paramsKey = $name . '___params';
-			$parentIds = array_fill(0, count($allJoinValues), $formData['rowid']);
+			$parentIds = array_fill(0, count($allJoinValues), $formData[$k]);
 
 		}
 		$allJoinIds = $formData[$idKey];
@@ -6554,6 +6580,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 		$i = 0;
 		$idsToKeep = array();
+		echo "<pre>parent id =s ";print_r($parentIds);
 		foreach ($parentIds as $parentId)
 		{
 			if (!array_key_exists($parentId, $idsToKeep))
@@ -6574,7 +6601,12 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$db->setQuery($query);
 				$ids = $db->loadObjectList($shortName);
 			}
-
+			if (!$groupModel->isJoin())
+			{
+				echo "parent id = $parentId <br>";
+echo "<pre>existing ids = ";print_r($ids);
+echo "join values = ";print_r($joinValues);
+			}
 			foreach ($joinValues as $jIndex => $jid)
 			{
 				$record = new stdClass;
@@ -6613,6 +6645,33 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		}
 
 		// Delete any records that were unselected.
+		$this->deleteDeselectedItems($idsToKeep, $k);
+
+	}
+
+	/**
+	 * Delete any deselected items from the cross-reference table
+	 *
+	 * @param   array   $idsToKeep  List of ids to keep
+	 * @param   string  $k          Parent record key name
+	 *
+	 * @return  void
+	 */
+
+	protected function deleteDeselectedItems($idsToKeep, $k)
+	{
+		$listModel = $this->getListModel();
+		$join = $this->getJoin();
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		if (empty($idsToKeep))
+		{
+			$formData = $this->getFormModel()->formDataWithTableName;
+			$parentId = $formData[$k];
+			$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
+			$db->setQuery($query);
+			$db->query();
+		}
 		foreach ($idsToKeep as $parentId => $ids)
 		{
 			$query->clear();

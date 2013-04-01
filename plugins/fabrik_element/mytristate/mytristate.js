@@ -3,8 +3,6 @@ var FbMytristate = new Class({
 	initialize: function (element, options) {
 		this.parent(element, options);
 	    this.plugin = 'Mytristate';
-	    alert("asasasa");
-		//this.element = $(element);
 	},
 	
 	changeValue: function ()

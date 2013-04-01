@@ -149,6 +149,7 @@ var FbAutocomplete = new Class({
 	},
 	
 	makeSelection: function (e, li) {
+		e.preventDefault();
 		// $$$ tom - make sure an item was selected before operating on it.
 		if (typeOf(li) !== 'null') {
 			this.getInputElement().value = li.get('text');
@@ -217,7 +218,7 @@ var FbAutocomplete = new Class({
 				if (!this.shown) {
 					this.openMenu();
 				}
-				if (this.selected + 1 < max) {
+				if (this.selected + 1 <= max) {
 					this.selected ++;
 					this.highlight();
 				}

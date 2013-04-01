@@ -1,5 +1,5 @@
 	<?php $element = $this->element; ?>
-<div class="control-group <?php echo $element->containerClass . $element->span; ?>">
+<div class="control-group <?php echo $element->containerClass . $element->span; ?>" <?php echo $element->containerProperties?>>
 	<?php echo $element->label;?>
 
 	<div class="controls">

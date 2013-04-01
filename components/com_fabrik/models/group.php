@@ -201,6 +201,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 		$params = $this->getParams();
 		$this->canEdit = true;
+
 		// If group show is type 5, then read only.
 		if ($params->get('repeat_group_show_first', '1') == '5')
 		{
@@ -208,7 +209,6 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		$formModel = $this->getFormModel();
-		//$row = $formModel()->getData();
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
 		if (empty($pluginCanEdit))
 		{
@@ -411,10 +411,10 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$colcount = 1;
 		}
-		$spanKey = ($elCount -1) % $colcount;
+		$spanKey = ($elCount - 1) % $colcount;
 
 		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
-		
+
 		$element->span = ' ' . $element->span;
 		$element->offset = $params->get('group_offset', 0);
 
@@ -442,15 +442,9 @@ class FabrikFEModelGroup extends FabModel
 			}
 			else
 			{
-				if ((($elCount -1) % $colcount === $colcount - 1))
+				if ((($elCount - 1) % $colcount === $colcount - 1))
 				{
-					// echo $element->label_raw . ($elCount - 1) . "  % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . " (yes)<br>";
 					$element->endRow = 1;
-				}
-				else
-				{
-					// echo $element->label_raw . ($elCount - 1) . " $elCount % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . "(no)<br>";
-
 				}
 			}
 			$element->column .= '" ';
@@ -787,7 +781,6 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 *
 	 * Get the group's join_id
 	 *
 	 * @return  mixed   join_id, or false if not a join
@@ -976,6 +969,12 @@ class FabrikFEModelGroup extends FabModel
 		unset($this->elements);
 	}
 
+	/**
+	 * Get the records master Insert Id - need better description...
+	 *
+	 * @return  string
+	 */
+
 	protected function masterInsertId()
 	{
 		$formModel = $this->getFormModel();
@@ -987,7 +986,10 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Part of process()
 	 * Set foreign key's value to the main records insert id
+	 *
+	 * @return  void
 	 */
+
 	protected function setForeignKey()
 	{
 		$formModel = $this->getFormModel();
@@ -1006,16 +1008,28 @@ class FabrikFEModelGroup extends FabModel
 		}
 	}
 
+	/**
+	 * Get the number of times the group was repeated when the user fills
+	 * in the form
+	 *
+	 * @todo whats the difference between this and @link(repeatCount)
+	 *
+	 * @return  int
+	 */
+
 	protected function repeatTotals()
 	{
 		$input = JFactory::getApplication()->input;
 		$repeatTotals = $input->get('fabrik_repeat_group', array(0), 'post', 'array');
-		return JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
+		return (int) JArrayHelper::getValue($repeatTotals, $this->getGroup()->id, 0);
 	}
 
 	/**
 	 * Group specific form submission code - deals with saving joined data.
+	 *
+	 * @return  void
 	 */
+
 	public function process()
 	{
 		if (!$this->isJoin())
@@ -1037,12 +1051,12 @@ class FabrikFEModelGroup extends FabModel
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
 
-
 		// Set the list's table name to the join table, needed for storeRow()
 		$join = $joinModel->getJoin();
 		$list->db_table_name = $join->table_join;
 
 		$usedKeys = array();
+
 		// For each repeat group
 		for ($i = 0; $i < $repeats; $i ++)
 		{
@@ -1063,11 +1077,11 @@ class FabrikFEModelGroup extends FabModel
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		$query->delete($list->db_table_name)->where($join->table_join_key .  ' = ' . $db->quote($masterInsertId));
+		$query->delete($list->db_table_name)->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
 		if (!empty($usedKeys))
 		{
 			$pk = $join->params->get('pk');
-			$query->where('!(' . $pk  . 'IN (' . implode(',', $usedKeys) . ')) ');
+			$query->where('!(' . $pk . 'IN (' . implode(',', $usedKeys) . ')) ');
 		}
 		$db->setQuery($query);
 		$db->execute();
@@ -1075,12 +1089,12 @@ class FabrikFEModelGroup extends FabModel
 		// Reset the list's table name
 		$list->db_table_name = $tblName;
 	}
-	
+
 	/**
 	 * Test if the group can repeat and if the fk element is published
-	 * 
+	 *
 	 * @since   3.1rc1
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function fkPublished()
@@ -1091,7 +1105,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 		$joinTable = $this->getJoinModel()->getJoin();
 		$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
-			
+
 		$elementModels = $this->getPublishedElements();
 		$fkFound = false;
 		foreach ($elementModels as $elementModel)
@@ -1101,21 +1115,21 @@ class FabrikFEModelGroup extends FabModel
 				$fkFound = true;
 			}
 		}
-		if (!fkFound)
+		if (!$fkFound)
 		{
 			JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
 		}
 		return $fkFound;
 	}
-	
+
 	/**
 	 * Get the number of times the group was repeated based on the form's current data
-	 * 
+	 *
 	 * @since   3.1rc1
-	 * 
+	 *
 	 * @return number
 	 */
-	
+
 	public function repeatCount()
 	{
 		$data = $this->getFormModel()->getData();
@@ -1124,7 +1138,7 @@ class FabrikFEModelGroup extends FabModel
 		$tmpElement = current($elementModels);
 		if (!empty($elementModels))
 		{
-		
+
 			$smallerElHTMLName = $tmpElement->getFullName(true, false);
 			$repeatGroup = count(JArrayHelper::getValue($data, $smallerElHTMLName, 1));
 		}

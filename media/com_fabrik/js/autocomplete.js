@@ -134,7 +134,8 @@ var FbAutocomplete = new Class({
 			var li = new Element('li', {'data-value': pair.value, 'class': 'unselected ' + this.options.classes.li}).set('text', pair.text);
 			li.inject(ul);
 			li.addEvent('click', function (e) {
-				this.makeSelection(e);
+				e.stop();
+				this.makeSelection(e.target);
 			}.bind(this));
 		}
 		if (data.length > this.options.max) {
@@ -142,8 +143,7 @@ var FbAutocomplete = new Class({
 		}
 	},
 	
-	makeSelection: function (e) {
-		var li = e.target;
+	makeSelection: function (li) {
 		// $$$ tom - make sure an item was selected before operating on it.
 		if (typeOf(li) !== 'null') {
 			this.getInputElement().value = li.get('text');
@@ -228,7 +228,7 @@ var FbAutocomplete = new Class({
 			case 13://enter
 			case 9://tab
 				e.stop();
-				this.makeSelection({}, this.getSelected());
+				this.makeSelection(this.getSelected());
 				this.closeMenu();
 				break;
 			case 27://escape

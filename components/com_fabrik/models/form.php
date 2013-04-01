@@ -1460,6 +1460,12 @@ class FabrikFEModelForm extends FabModelForm
 		}
 	}
 
+	/**
+	 * Prepare the submitted form data for copying
+	 *
+	 * @return  string  Original records reference
+	 */
+
 	protected function prepareForCopy()
 	{
 		$listModel = $this->getListModel();
@@ -1478,17 +1484,33 @@ class FabrikFEModelForm extends FabModelForm
 		return $origid;
 	}
 
+	/**
+	 * As part of the form process we may need to update the referring url if making a copy
+	 *
+	 * @param   string  $origid    Original record ref
+	 * @param   string  $insertId  New insert reference
+	 *
+	 * @return  void
+	 */
 	protected function updateRefferrer($origid, $insertId)
 	{
 		$input = JFactory::getApplication()->input;
-		// Set the redirect page to the form's url if making a copy and set the id
-		// to the new insertid
+
+		// Set the redirect page to the form's url if making a copy and set the id to the new insertid
 		if (array_key_exists('Copy', $this->formData))
 		{
 			$u = str_replace('rowid=' . $origid, 'rowid=' . $insertId, $input->get('HTTP_REFERER', '', 'string'));
 			$input->set('fabrik_referrer', $u);
 		}
 	}
+
+	/**
+	 * Set various request / input arrays with the main records insert id
+	 *
+	 * @param   string  $insertId  The records insert id
+	 *
+	 * @return  void
+	 */
 
 	protected function setInsertId($insertId)
 	{
@@ -1519,6 +1541,12 @@ class FabrikFEModelForm extends FabModelForm
 		$input->set('usekey', '');
 	}
 
+	/**
+	 * Process groups when the form is submitted
+	 *
+	 * @return  void
+	 */
+
 	protected function processGroups()
 	{
 		$groupModels = $this->getGroups();
@@ -1527,6 +1555,17 @@ class FabrikFEModelForm extends FabModelForm
 			$groupModel->process();
 		}
 	}
+
+	/**
+	 * Process individual elements when subitting the form
+	 * Used for multi-select join elements which need to store data in
+	 * related tables
+	 *
+	 * @since   3.1rc2
+	 *
+	 * @return  void
+	 */
+
 	protected function processElements()
 	{
 		$groups = $this->getGroupsHiarachy();
@@ -1539,6 +1578,12 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 	}
+
+	/**
+	 * Process the form to the database
+	 *
+	 * @return void
+	 */
 
 	public function processToDB()
 	{
@@ -2505,8 +2550,8 @@ class FabrikFEModelForm extends FabModelForm
 			return false;
 		}
 
-		// @TODO - relook at this
-		//$this->_reduceDataForXRepeatedJoins();
+		// @TODO - relook at this:
+		// $this->_reduceDataForXRepeatedJoins();
 		JDEBUG ? $profiler->mark('formmodel render end') : null;
 
 		$session = JFactory::getSession();
@@ -2889,7 +2934,7 @@ class FabrikFEModelForm extends FabModelForm
 								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
 								if (!is_array($data[0]->$name))
 								{
-									if ($groupModel->isJoin())
+									if ($groupModel->isJoin() && $groupModel->canRepeat())
 									{
 										$v = array($v);
 									}
@@ -2899,8 +2944,8 @@ class FabrikFEModelForm extends FabModelForm
 								{
 									if ($groupModel->isJoin())
 									{
-									$n =& $data[0]->$name;
-									$n[] = $v;
+										$n =& $data[0]->$name;
+										$n[] = $v;
 									}
 								}
 							}

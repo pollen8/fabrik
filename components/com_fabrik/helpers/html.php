@@ -719,8 +719,7 @@ EOD;
 	 * @return	string	HTML for the select list
 	 */
 
-	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0,
-			$editable = true)
+	public static function aList($type, &$arr, $tag_name, $tag_attribs, $selected = null, $key = 'value', $text = 'text', $options_per_row = 0, $editable = true)
 	{
 		reset($arr);
 		if ($options_per_row > 1)
@@ -779,6 +778,7 @@ EOD;
 			else
 			{
 				$extra .= $k === $selected ? ' checked="checked"' : '';
+				$found = $k == $selected;
 			}
 			$html[] = $div;
 
@@ -1695,15 +1695,23 @@ EOD;
 
 		if (FabrikWorker::j3())
 		{
+			unset($properties['alt']);
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
 			unset($properties['icon-class']);
-			$p = FabrikHelperHTML::propertiesFromArray($properties);
+			if (array_key_exists('class', $properties))
+			{
+				$properties['class'] = $class . ' ' . $properties['class'];
+			}
+			else
+			{
+				$properties['class'] = $class;
+			}
+			$p = self::propertiesFromArray($properties);
 
 			if (!$srcOnly)
 			{
-				//$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
-				return '<i class="' . $class . '"' . $p . '></i>';
+				return '<i ' . $p . '></i>';
 			}
 			else
 			{

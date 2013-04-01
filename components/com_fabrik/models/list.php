@@ -783,6 +783,7 @@ class FabrikFEModelList extends JModelForm
 		// Ajax call needs to recall this - not sure why
 		$this->setLimits();
 		$query = $this->buildQuery();
+		//echo $query;
 		JDEBUG ? $profiler->mark('query build end') : null;
 
 		$cache = FabrikWorker::getCache($this);
@@ -836,6 +837,7 @@ class FabrikFEModelList extends JModelForm
 		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		*/
 		$listModel->data = $fabrikDb->loadObjectList('', 'stdClass', false);
+		//echo "<pre>";print_r($listModel->data);echo "</pre>";
 		if ($fabrikDb->getErrorNum() != 0)
 		{
 			jexit('getData:' . $fabrikDb->getErrorMsg());
@@ -2132,6 +2134,7 @@ class FabrikFEModelList extends JModelForm
 			$order = $this->buildQueryOrder();
 			$this->selectedOrderFields = (array) $this->selectedOrderFields;
 			$this->selectedOrderFields = array_unique(array_merge($lookUps, $this->selectedOrderFields));
+
 			$query['select'] = 'SELECT  ' . implode(', ', $this->selectedOrderFields) . ' FROM ' . $db->quoteName($table->db_table_name);
 
 			$query['join'] = $this->buildQueryJoin();
@@ -2149,6 +2152,7 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
+
 			// $$$ hugh - can't use simple !$idRows, as empty array is false!
 			if (!is_array($idRows))
 			{
@@ -2628,7 +2632,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			$sql = JString::strtoupper($join->join_type) . ' JOIN ' . $db->quoteName($join->table_join);
 			$k = FabrikString::safeColName($join->keytable . '.' . $join->table_key);
-			
+
 			// Check we only get the field name
 			$join->table_join_key = explode('.',  $join->table_join_key);
 			$join->table_join_key = array_pop($join->table_join_key);
@@ -3151,9 +3155,8 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		//echo "<pre>";print_r($this->asfields);
-		//exit;
-		/*temporaraily add in the db key so that the edit links work, must remove it before final return
+		/**
+		 * temporaraily add in the db key so that the edit links work, must remove it before final return
 		 of getData();
 		*/
 		JDEBUG ? $profiler->mark('getAsFields: starting to test if a view') : null;
@@ -6554,7 +6557,6 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-
 		if ($origRowId == '' || $origRowId == 0)
 		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained

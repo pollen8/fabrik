@@ -68,7 +68,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 
 		// This bizarre chunk of code handles the case of setting a CDD value on the QS on a new form
-		$rowid = $input->getInt('rowid', 0);
+		$rowid = $input->get('rowid', '', 'string');
 		$fullName = $this->getFullName();
 		$watchName = $this->getWatchFullName();
 
@@ -77,17 +77,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$qsValue = JArrayHelper::getValue($qsValue, 0, null);
 		$qsWatchValue = $input->get($watchName, array(), 'array');
 		$qsWatchValue = JArrayHelper::getValue($qsWatchValue, 0, null);
-		$opts->def = $this->getFormModel()->hasErrors() && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
+		$opts->def = $this->getFormModel()->hasErrors() && $this->isEditable() && $rowid === '' && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);
 
 		// $$$ hugh - for reasons utterly beyond me, after failed validation, getValue() is returning an array.
-		if (is_array($opts->def))
+		if (is_array($opts->def) && !empty($opts->def))
 		{
 			$opts->def = $opts->def[0];
 		}
 		$watchGroup = $this->getWatchElement()->getGroup()->getGroup();
 		$group = $this->getGroup()->getGroup();
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
-		$opts->editing = ($this->isEditable() && $app->input->getInt('rowid', 0) != 0);
+		$opts->editing = ($this->isEditable() && $rowid !== '');
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
 		$this->elementJavascriptJoinOpts($opts);
 		return array('FbCascadingdropdown', $id, $opts);
@@ -128,7 +128,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		else
 		{
 			$joinTableName = $join->table_join_alias;
-				
+
 		}
 		return $useStep ? $joinTableName . '___' . $label : $db->quoteName($joinTableName . '.' . $label);
 	}
@@ -166,7 +166,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$name = $this->getHTMLName($repeatCounter);
-		$default = (array) $this->getValue($data, $repeatCounter);
+		$opts = array('raw' => 1);
+		$default = (array) $this->getValue($data, $repeatCounter, $opts);
 
 		/* $$$ rob don't bother getting the options if editable as the js event is going to get them.
 		 * However if in readonly mode the we do need to get the options
@@ -179,12 +180,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		 * elementJavascript() above, so the JS won't get options on init when editing an existing row
 		 */
 		$tmp = array();
-		$rowid = $app->input->getInt('rowid', 0);
+		$rowid = $app->input->string('rowid', '', 'string');
 		$show_please = $this->showPleaseSelect();
 
 		// $$$ hugh testing to see if we need to load options after a validation failure, but I don't think we do, as JS will reload via AJAX
-		//if (!$this->isEditable() || ($this->isEditable() && $rowid != 0) || !empty($this->getFormModel()->_arErrors))
-		if (!$this->isEditable() || ($this->isEditable() && $rowid != 0))
+		if (!$this->isEditable() || ($this->isEditable() && $rowid !== ''))
 		{
 			$tmp = $this->_getOptions($data, $repeatCounter);
 		}
@@ -216,8 +216,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if (count($tmp) == 1)
 		{
 			$class .= " readonly";
+
 			// Selects don't have readonly properties !
-			//$disabled = 'readonly="readonly"';
 		}
 
 		$w = new FabrikWorker;
@@ -231,14 +231,15 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if ($this->canUse())
 		{
 			// $$$ rob display type not set up in parameters as not had time to test fully yet
-
 			switch ($displayType)
 			{
 				case 'checkbox':
 					$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
+					$defaultLabel = implode("\n", $html);
 					break;
 				case 'radio':
 					$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
+					$defaultLabel = implode("\n", $html);
 					break;
 				case 'multilist':
 					$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $default);
@@ -275,6 +276,21 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			return $defaultLabel . $this->loadingImg;
 		}
 
+		$this->renderDescription($html, $default);
+		return implode("\n", $html);
+	}
+
+	/**
+	 * Add the description to the element's form HTML
+	 *
+	 * @param   array  &$html    Output HTML
+	 * @param   array  $default  Default values
+	 *
+	 * @return  void
+	 */
+	protected function renderDescription(&$html, $default)
+	{
+		$params = $this->getParams();
 		if ($params->get('cdd_desc_column', '') !== '')
 		{
 			$html[] = '<div class="dbjoin-description">';
@@ -287,7 +303,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 			$html[] = '</div>';
 		}
-		return implode("\n", $html);
 	}
 
 	/**
@@ -328,7 +343,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @param   array  $data           From current record (when editing form?)
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we include custom where in query
-	 * @param   array  $opts           Additional optiosn passed intto _getOptionVals()
+	 * @param   array  $opts           Additional optiosn passed into _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
@@ -620,79 +635,71 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$groups = $this->getForm()->getGroupsHiarachy();
 
 		$formModel = $this->getFormModel();
-		foreach ($groups as $groupModel)
-		{
-			$elementModels = $groupModel->getPublishedElements();
-			foreach ($elementModels as $elementModel)
-			{
-				$fullName = $elementModel->getFullName();
-				if ($fullName == $watch)
-				{
-					// Test for ajax update
-					if ($input->get('fabrik_cascade_ajax_update') == 1)
-					{
 
-						// Allow for multiple values - e.g. when observing a db join rendered as a checkbox
-						$whereval = $input->get('v', array(), 'array');
+		$watchElement = $this->getWatchElement();
+
+		// Test for ajax update
+		if ($input->get('fabrik_cascade_ajax_update') == 1)
+		{
+
+			// Allow for multiple values - e.g. when observing a db join rendered as a checkbox
+			$whereval = $input->get('v', array(), 'array');
+		}
+		else
+		{
+			if (isset($formModel->data) || isset($formModel->formData))
+			{
+				$watchOpts = array('raw' => 1);
+				if (isset($formModel->data))
+				{
+					$whereval = $watchElement->getValue($formModel->data, $repeatCounter, $watchOpts);
+				}
+				else
+				{
+					$whereval = $watchElement->getValue($formModel->formData, $repeatCounte, $watchOpts);
+				}
+				/* $$$ hugh - temporary bandaid to fix 'array' issue in view=details
+				 * @TODO fix underlying cause in database join getValue
+				 * http://fabrikar.com/forums/showthread.php?p=63512#post63512
+				 */
+				if (is_array($whereval))
+				{
+					$whereval = JArrayHelper::getValue($whereval, 0);
+				}
+				// $$$ hugh - if not set, set to '' to avoid selecting entire table
+				elseif (!isset($whereval))
+				{
+					$whereval = '';
+				}
+			}
+			else
+			{
+				// $$$ hugh - prolly rendering table view ...
+				$watch_raw = $watch . '_raw';
+				if (isset($data[$watch_raw]))
+				{
+					$whereval = $data[$watch_raw];
+				}
+				else
+				{
+					// $$$ hugh ::sigh:: might be coming in via swapLabelsForvalues in pre_process phase
+					// and join array in data will have been flattened.  So try regular element name for watch.
+					$no_join_watch_raw = $watchElement->getFullName(true, false) . '_raw';
+					if (isset($data[$no_join_watch_raw]))
+					{
+						$whereval = $data[$no_join_watch_raw];
 					}
 					else
 					{
-						if (isset($formModel->data) || isset($formModel->formData))
-						{
-							if (isset($formModel->data))
-							{
-								$whereval = $elementModel->getValue($formModel->data, $repeatCounter);
-							}
-							else
-							{
-								$whereval = $elementModel->getValue($formModel->formData, $repeatCounter);
-							}
-							/* $$$ hugh - temporary bandaid to fix 'array' issue in view=details
-							 * @TODO fix underlying cause in database join getValue
-							 * http://fabrikar.com/forums/showthread.php?p=63512#post63512
-							 */
-							if (is_array($whereval))
-							{
-								$whereval = JArrayHelper::getValue($whereval, 0);
-							}
-							// $$$ hugh - if not set, set to '' to avoid selecting entire table
-							elseif (!isset($whereval))
-							{
-								$whereval = '';
-							}
-						}
-						else
-						{
-							// $$$ hugh - prolly rendering table view ...
-							$watch_raw = $watch . '_raw';
-							if (isset($data[$watch_raw]))
-							{
-								$whereval = $data[$watch_raw];
-							}
-							else
-							{
-								// $$$ hugh ::sigh:: might be coming in via swapLabelsForvalues in pre_process phase
-								// and join array in data will have been flattened.  So try regular element name for watch.
-								$no_join_watch_raw = $elementModel->getFullName(true, false) . '_raw';
-								if (isset($data[$no_join_watch_raw]))
-								{
-									$whereval = $data[$no_join_watch_raw];
-								}
-								else
-								{
-									// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
-									// but should probably select none.
+						// $$$ hugh - if watched element has no value, we have been selecting all rows from CDD table
+						// but should probably select none.
 
-									// Unless its a cdd autocomplete list filter - seems sensible to populate that with the values matching the search term
-									if ($app->input->get('method') !== 'autocomplete_options')
-									{
-										$whereval = '';
-									}
-								}
-							}
+						// Unless its a cdd autocomplete list filter - seems sensible to populate that with the values matching the search term
+						if ($app->input->get('method') !== 'autocomplete_options')
+						{
+							$whereval = '';
 						}
 					}
-					continue 2;
 				}
 			}
 		}
@@ -709,11 +716,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				{
 					$v = $db->quote($v);
 				}
-				$where .=  count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
+				$where .= count($whereval) == 0 ? '1 = -1' : $wherekey . ' IN (' . implode(',', $whereval) . ')';
 			}
 			else
 			{
-				$where .= $wherekey . ' = ' .$db->quote($whereval);
+				$where .= $wherekey . ' = ' . $db->quote($whereval);
 			}
 
 		}
@@ -856,10 +863,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
-			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-			/* $bits = explode('___', $params->get($this->labelParam));
-			return $join->table_join_alias . '___' . $bits[1]; */
-
 			return $this->getLabelParamVal();
 		}
 		else
@@ -1150,6 +1153,27 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$joinKey = $this->getJoinValueColumn();
 		$elName = FabrikString::safeColName($this->getFullName(true, false));
 		return 'INNER JOIN ' . $joinTable . ' AS ' . $joinTableName . ' ON ' . $joinKey . ' = ' . $elName;
+	}
+
+	/**
+	 * Use in list model storeRow() to determine if data should be stored.
+	 * Currently only supported for db join elements whose values are default values
+	 * avoids casing '' into 0 for int fields
+	 *
+	 * Extended this from dbjoin element as an empty string should be possible in cdd, if no options selected.
+	 * Otherwise previously selected values are kept
+	 *
+	 * @param   array  $data  Data being inserted
+	 * @param   mixed  $val   Element value to insert into table
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return boolean
+	 */
+
+	public function dataIsNull($data, $val)
+	{
+		return false;
 	}
 
 }
