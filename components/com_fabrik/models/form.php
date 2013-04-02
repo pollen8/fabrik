@@ -2524,7 +2524,6 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->listModel = null;
-		//@set_time_limit(300);
 		$this->rowId = $this->getRowId();
 
 		/**
@@ -4067,7 +4066,6 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						continue;
 					}
-
 
 					$elementModel->_foreignKey = $foreignKey;
 					$elementModel->_repeatGroupTotal = $repeatGroup - 1;

@@ -1001,9 +1001,16 @@ class FabrikFEModelGroup extends FabModel
 		array_fill(0, count($formData[$fk]), $pk);
 		foreach ($fks as $fk)
 		{
-			foreach ($formData[$fk] as $k => $v)
+			if ($this->canRepeat())
 			{
-				$formData[$fk][$k] = $masterInsertId;
+				foreach ($formData[$fk] as $k => $v)
+				{
+					$formData[$fk][$k] = $masterInsertId;
+				}
+			}
+			else
+			{
+				$formData[$fk] = $masterInsertId;
 			}
 		}
 	}
@@ -1036,6 +1043,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			return;
 		}
+		$canRepeat = $this->canRepeat();
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
 		$pkField = $joinModel->getPrimaryKey();
@@ -1046,7 +1054,6 @@ class FabrikFEModelGroup extends FabModel
 		$formData =& $formModel->formDataWithTableName;
 
 		$this->setForeignKey();
-
 		$elementModels = $this->getMyElements();
 		$list = $listModel->getTable();
 		$tblName = $list->db_table_name;
@@ -1065,11 +1072,19 @@ class FabrikFEModelGroup extends FabModel
 			{
 				$elementModel->onStoreRow($data, $i);
 			}
-			$pk = JArrayHelper::getValue($formData[$pkField], $i, '');
+
+			$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
 
 			// Update key
-			$formData[$pkField][$i] = $insertId;
+			if ($canRepeat)
+			{
+				$formData[$pkField][$i] = $insertId;
+			}
+			else
+			{
+				$formData[$pkField] = $insertId;
+			}
 			$usedKeys[] = $insertId;
 		}
 
@@ -1077,12 +1092,14 @@ class FabrikFEModelGroup extends FabModel
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
+		print_r($usedKeys);
 		$query->delete($list->db_table_name)->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
 		if (!empty($usedKeys))
 		{
 			$pk = $join->params->get('pk');
 			$query->where('!(' . $pk . 'IN (' . implode(',', $usedKeys) . ')) ');
 		}
+
 		$db->setQuery($query);
 		$db->execute();
 
@@ -1097,6 +1114,7 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @return boolean
 	 */
+
 	public function fkPublished()
 	{
 		if ($this->canRepeat())
