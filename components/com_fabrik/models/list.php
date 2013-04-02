@@ -9786,8 +9786,9 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			if ((($input->get('task') == 'list.view' || $input->get('task') == 'list.delete') && $input->get('format') == 'raw')
-				|| $input->get('layout') == '_advancedsearch' || $input->get('task') === 'list.elementFilter'
+			$task = $input->get('task');
+			if ((($task == 'list.view' || $task == 'list.delete') && $input->get('format') == 'raw')
+				|| $input->get('layout') == '_advancedsearch' || $task === 'list.elementFilter'
 				|| $input->get('setListRefFromRequest') == 1)
 			{
 				// Testing for ajax nav in content plugin or in advanced search
