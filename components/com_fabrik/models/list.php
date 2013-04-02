@@ -2301,11 +2301,8 @@ class FabrikFEModelList extends JModelForm
 		if ($this->outPutFormat == 'fabrikfeed' || $this->outPutFormat == 'feed')
 		{
 			$dateColId = (int) $params->get('feed_date', 0);
-			$q = $db->getQuery(true);
-			$q->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
-			$db->setQuery($q);
-			$dateCol = $db->quoteName($table->db_table_name . '.' . $db->loadResult());
-			$q->clear();
+			$dateColElement = $formModel->getElement($dateColId, true);
+			$dateCol = $db->quoteName($dateColElement->getFullName(false, false, false));
 			if ($dateColId !== 0)
 			{
 				$this->order_dir = 'DESC';
