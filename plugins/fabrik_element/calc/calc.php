@@ -668,7 +668,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		return $params->get('calc_format_string');
 	}
 
-
 	/**
 	 * Get JS code for ini element list js
 	 * Overwritten in plugin classes
@@ -688,6 +687,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts = json_encode($opts);
 		return "new FbCalcList('$id', $opts);\n";
 	}
+
+	/**
+	 * Update list data
+	 *
+	 * @return  void
+	 */
 
 	public function onAjax_listUpdate()
 	{
@@ -714,7 +719,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$key = $listRef . $row->__pk_val;
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
-				$return->$key =  @eval($default);
+				$return->$key = @eval($default);
 				if ($store)
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
@@ -731,7 +736,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	* how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
 	* it's submitted to the database, but wrong during form email plugin processing.  So
 	* I gave up trying to work out why, and now just re-calc it during getEmailData()
-	*
 	*
 	* @param   mixed  $value          Element value
 	* @param   array  $data           Form data
