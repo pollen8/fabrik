@@ -33,7 +33,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 */
 	protected $text_prefix = 'COM_FABRIK_ELEMENT';
 
-
 	/**
 	 * Validation plugin models for this element
 	 *
@@ -366,7 +365,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	 * @return  void
 	 */
 
-	protected function prepareTable($table)
+	protected function prepareTable(&$item)
 	{
 	}
 
@@ -692,7 +691,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 		if ((int) $listModel->getTable()->id !== 0)
 		{
 			$this->updateIndexes($elementModel, $listModel, $row);
-			// $listModel->updateFromElement($elementModel);
 		}
 		$return = parent::save($data);
 		if ($return)
@@ -1265,9 +1263,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$dispatcher = JDispatcher::getInstance();
 		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
 
-		// $$$ rob - $usedPlugins was not defined at all - not sure what should be happening here but assinged empty array to stop notices
-		// $usedPlugins = array();
-		// $$$ hugh - yes it is defined ... it's the second argument!
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')
