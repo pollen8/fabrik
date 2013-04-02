@@ -737,7 +737,6 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	        if (!empty($joins))
 	        {
 	        	$ojoin = $this->getJoin();
-	        	$thistable_alias =
 	        	$join_types = array();
 	        	$join_exprs = array();
 	        	foreach ($joins as $index => $join)
