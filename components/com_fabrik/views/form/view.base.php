@@ -297,7 +297,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		if ($app->input->get('format') === 'pdf')
 		{
-			// if we're rendering as PDF, no point showing any buttons
+			// If we're rendering as PDF, no point showing any buttons
 			$this->showEmail = false;
 			$this->showPrint = false;
 			$this->showPDF = false;
@@ -475,7 +475,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$script[] = "\t\tFabrik.addBlock('$bkey', $bkey);";
 		$script[] = "\t}"; */
 
-		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId(). ", $opts);";
+		$script[] = "\t\tvar $bkey = Fabrik.form('$bkey', " . $model->getId() . ", $opts);";
 
 		// Instantaite js objects for each element
 		$vstr = "\n";
@@ -504,7 +504,6 @@ class FabrikViewFormBase extends JViewLegacy
 				}
 				$fullName = $elementModel->getFullName();
 				$id = $elementModel->getHTMLId();
-				$elementModel->setEditable($model->isEditable());
 
 				// If the view is a form then we should always add the js as long as the element is editable or viewable
 				// if the view is details then we should only add the js if the element is viewable.
@@ -676,9 +675,9 @@ class FabrikViewFormBase extends JViewLegacy
 	/**
 	 * Append JS code for form submit
 	 *
-	 * @param   array  $script        Scripts
-	 * @param   int    $listId        List id
-	 * @param   array $aWYSIWYGNames  WYSIWYG editor names
+	 * @param   array  &$script        Scripts
+	 * @param   int    $listId         List id
+	 * @param   array  $aWYSIWYGNames  WYSIWYG editor names
 	 *
 	 * @since   3.1b
 	 * @return  void
@@ -803,7 +802,7 @@ class FabrikViewFormBase extends JViewLegacy
 			if ($submitIcon !== '')
 			{
 				$submitIcon = '<i class="' . $submitIcon . '"></i>';
-				$submitLabel =  $params->get('save_icon_location') == 'before' ? $submitIcon . ' ' . $submitLabel : $submitLabel . ' ' . $submitIcon;
+				$submitLabel = $params->get('save_icon_location') == 'before' ? $submitIcon . ' ' . $submitLabel : $submitLabel . ' ' . $submitIcon;
 			}
 			$form->submitButton = '<button type="' . $button . '" class="btn-primary btn button ' . $submitClass . '" name="submit">'
 				. $submitLabel . '</button>';

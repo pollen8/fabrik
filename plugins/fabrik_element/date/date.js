@@ -79,7 +79,7 @@ var FbDateTime = new Class({
 				e.stop();
 				if (!this.cal.params.position) {
 					this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
-					this.cal.wrapper.position(this.cal.params.inputField);
+					this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
 				} else {
 					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
@@ -267,6 +267,7 @@ var FbDateTime = new Class({
 			this.options.calendarSetup.button = this.element.id + "_img";
 			//this.addEventToCalOpts();
 			this.cal.showAtElement(f, this.cal.params.align);
+			this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
 		}
 	},
 

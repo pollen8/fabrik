@@ -22,6 +22,7 @@ var FbAutocomplete = new Class({
 	},
 
 	initialize: function (element, options) {
+		console.log('ini cdd', element, options);
 		this.setOptions(options);
 		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
@@ -269,6 +270,7 @@ var FabCddAutocomplete = new Class({
 	Extends: FbAutocomplete,
 	
 	search: function (e) {
+		console.log(this.options.url);
 		var key;
 		var v = this.getInputElement().get('value');
 		if (v === '') {
@@ -277,6 +279,9 @@ var FabCddAutocomplete = new Class({
 		if (v !== this.searchText && v !== '') {
 			var observer = document.id(this.options.observerid);
 			if (typeOf(observer) !== 'null') {
+				if (this.options.formRef) {
+					observer = Fabrik.blocks[this.options.formRef].formElements[this.options.observerid];
+				}
 				key = observer.get('value') + '.' + v;
 			} else {
 				this.parent(e);
@@ -288,7 +293,6 @@ var FabCddAutocomplete = new Class({
 				this.openMenu();
 			} else {
 				Fabrik.loader.start(this.getInputElement());
-				//this.spinner.fade('in'); //f3 fx now used
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
@@ -298,7 +302,7 @@ var FabCddAutocomplete = new Class({
 					data: {
 						value: v,
 						fabrik_cascade_ajax_update: 1,
-						v: document.id(this.options.observerid).get('value')
+						v: observer.get('value')
 					},
 					
 					onSuccess: function (e) {

@@ -1180,7 +1180,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$thisElName = $this->getHTMLName($repeatCounter);
 		$params = $this->getParams();
 		$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
-		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
+		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 
 		// $$$ rob 24/05/2011 - always set one value as selected for radio button if none already set
 		if ($defaultValue == '' && !empty($tmp))
@@ -1190,7 +1190,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$editable = $this->isEditable();
 		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attribs, $defaultValue, 'value', 'text', $optsPerRow, $editable);
-		$html[] = '</div>';
+		//$html[] = '</div>';
 	}
 
 	/**

@@ -21,6 +21,6 @@
 	<?php if ($this->tipLocation == 'below') :?>
 		<span class="help-block"><?php echo $element->tipBelow ?></span>
 	<?php endif ?>
-</div>
+</div><!-- end control-group -->
 
 

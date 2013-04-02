@@ -83,6 +83,7 @@ var FbCascadingdropdown = new Class({
 				'lang': this.options.lang
 			};
 		data = Object.append(formdata, data);
+		console.log(data);
 		if (this.myAjax) {
 			// $$$ rob stops ascyro behaviour when older ajax call might take longer than new call and thus populate the dd with old data.
 			this.myAjax.cancel();
@@ -192,6 +193,7 @@ var FbCascadingdropdown = new Class({
 		// c is the repeat group count
 		this.myAjax = null;
 		this.parent(c);
+		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 		// Cloned seems to be called correctly 
 		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {

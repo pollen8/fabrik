@@ -53,10 +53,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$id = $this->getHTMLId($repeatCounter);
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		if ($this->getDisplayType() == 'auto-complete')
+		if ($this->getDisplayType() === 'auto-complete')
 		{
 			$autoOpts = array();
 			$autoOpts['observerid'] = $this->getWatchId($repeatCounter);
+			$autoOpts['formRef'] = $this->getFormModel()->jsKey();
 			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'cascadingdropdown', $autoOpts);
 		}
 		FabrikHelperHTML::script('media/com_fabrik/js/lib/Event.mock.js');
@@ -89,6 +90,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && $rowid !== '');
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
+		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
+				? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'cascadingdropdown') : null;
 		$this->elementJavascriptJoinOpts($opts);
 		return array('FbCascadingdropdown', $id, $opts);
 	}

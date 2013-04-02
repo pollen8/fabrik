@@ -31,7 +31,7 @@ var FloatingTips = new Class({
 			var pos = Fabrik.eventResults.length === 0 ? false : Fabrik.eventResults[0];
 			if (pos === false) {
 				var opts = JSON.decode(ele.get('opts', '{}').opts);
-				return opts.position ? opts.position : 'top';
+				return opts && opts.position ? opts.position : 'top';
 			} else {
 				return pos;
 			}
@@ -64,18 +64,24 @@ var FloatingTips = new Class({
 			if (opts.content === 'title') {
 				opts.content = trigger.get('title');
 				trigger.erase('title');
-			}
-			if (typeOf(opts.content) === 'function') {
+			} else if (typeOf(opts.content) === 'function') {
 				var c = opts.content(trigger);
 				opts.content = typeOf(c) === 'null' ? '' : c.innerHTML;
 			}
 			// Should always use the default placement function which can then via the Fabrik event allow for custom tip placement
 			opts.placement = this.options.placement;
 			opts.title = opts.heading;
-			if (!opts.notice) {
-				opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
+			
+			if (trigger.hasClass('tip-small')) {
+				opts.title = opts.content;
+				jQuery(trigger).tooltip(opts);
+			} else {
+				if (!opts.notice) {
+					opts.title += '<button class="close" data-popover="' + trigger.id + '">&times;</button>';
+				}
+				jQuery(trigger).popoverex(opts);
 			}
-			jQuery(trigger).popoverex(opts);
+			
 		}.bind(this));
 	
 	},

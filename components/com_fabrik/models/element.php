@@ -1497,7 +1497,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$rollOver = '';
 		$validationTip = '';
 		$tmpl = $this->getFormModel()->getTmpl();
-		if ($this->canUse() && $mode === 'form')
+		if ($this->isEditable() && $mode === 'form')
 		{
 			$validations = array_unique($this->getValidations());
 			if (count($validations) > 0)
@@ -1776,9 +1776,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * This was in the views display and _getElement code but seeing as its used
 	 * by multiple views its safer to have it here
 	 *
-	 * @param   int     $c        repeat group counter
-	 * @param   int     $elCount  order in which the element is shown in the form
-	 * @param   string  $tmpl     template
+	 * @param   int     $c        Repeat group counter
+	 * @param   int     $elCount  Order in which the element is shown in the form
+	 * @param   string  $tmpl     Template
 	 *
 	 * @return  mixed	- false if you shouldnt continue to render the element
 	 */
@@ -2020,9 +2020,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			return '';
 		}
+		$editable = $this->isEditable();
 		$this->setEditable(false);
 		$v = $this->render($data, $repeatCounter);
 		$this->addCustomLink($v, $data, $repeatCounter);
+		$this->setEditable($editable);
 		return $v;
 	}
 
