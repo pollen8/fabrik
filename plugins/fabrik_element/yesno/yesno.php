@@ -205,26 +205,34 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * format the read only output for the page
+	 * Format the read only output for the page
 	 *
-	 * @param   string  $value  initial value
-	 * @param   string  $label  label
+	 * @param   string  $value  Initial value
+	 * @param   string  $label  Label
 	 *
 	 * @return  string  read only value
 	 */
 
 	protected function getReadOnlyOutput($value, $label)
 	{
+		$j3 = FabrikWorker::j3();
+		if ($value == '1')
+		{
+			$img = $j3 ? 'checkmark.png' : '1.png';
+		}
+		else
+		{
+			$img = $j3 ? 'remove.png' : '0.png';
+		}
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
-		$img = $value == '1' ? "1.png" : "0.png";
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}
 
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
