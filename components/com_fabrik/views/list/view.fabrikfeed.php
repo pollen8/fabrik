@@ -238,7 +238,8 @@ class FabrikViewList extends JView
 						// Set a default title
 						$title = $row->$dbcolname['colName'];
 					}
-					$rsscontent = strip_tags($row->$dbcolname['colName']);
+					// Rob - was stripping tags - but arent they valid in the content?
+					$rsscontent = $row->$dbcolname['colName'];
 
 					$found = false;
 					foreach ($rsstags as $rsstag => $namespace)
