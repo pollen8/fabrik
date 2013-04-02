@@ -1242,13 +1242,12 @@ var FbForm = new Class({
 			return;
 		}
 		e.stop();
-		
 		var group = e.target.getParent('.fabrikGroup');
 		
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
-			if (b.getElement('img') === e.target) {
+			if (b.getElement('img') === e.target || b.getElement('i') === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));

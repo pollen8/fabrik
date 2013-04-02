@@ -83,7 +83,6 @@ var FbCascadingdropdown = new Class({
 				'lang': this.options.lang
 			};
 		data = Object.append(formdata, data);
-		console.log(data);
 		if (this.myAjax) {
 			// $$$ rob stops ascyro behaviour when older ajax call might take longer than new call and thus populate the dd with old data.
 			this.myAjax.cancel();

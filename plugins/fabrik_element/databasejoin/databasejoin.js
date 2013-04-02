@@ -21,6 +21,7 @@ var FbDatabasejoin = new Class({
 		this.activeSelect = false;
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
+		console.log(this.options);
 		this.init();
 	},
 	
@@ -71,7 +72,6 @@ var FbDatabasejoin = new Class({
 		if (force === false && (this.options.popupform === 0 || this.options.allowadd === false)) {
 			return;
 		}
-		console.log(this.options.popupform);
 		c = this.getContainer();
 		var a = c.getElement('.toggle-addoption');
 		var url = typeOf(a) === 'null' ? e.target.get('href') : a.get('href');
@@ -175,6 +175,16 @@ var FbDatabasejoin = new Class({
 		case 'radio':
 		/* falls through */
 		default:
+			console.log(this.options);
+			// Not working in cdd in repeat group.
+			//var name = this.options.element + '[]';
+			var name;
+			if (this.options.canRepeat) {
+				name = this.options.fullName + '[' + this.options.repeatCounter + '][]';
+			} else {
+				name = this.options.fullName + '[]';	
+			}
+		
 			chxed = (v === this.options.value) ? true : false;
 			opt = new Element('div', {
 				'class': 'fabrik_subelement'
@@ -182,7 +192,7 @@ var FbDatabasejoin = new Class({
 				'class': 'fabrikinput',
 				'type': 'radio',
 				'checked': true,
-				'name': this.options.element + '[]',
+				'name': name,
 				'value': v
 			}), new Element('span').set('text', l)]));
 			subOpts = this.element.getElements('> .fabrik_subelement');

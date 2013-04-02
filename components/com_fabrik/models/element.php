@@ -4662,6 +4662,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$validationEls[] = $o;
 			}
 		}
+		$opts->fullName = $this->getFullName(true, false);
 		$opts->watchElements = $validationEls;
 		$groupModel = $this->getGroup();
 		$opts->canRepeat = (bool) $groupModel->canRepeat();
