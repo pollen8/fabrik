@@ -736,13 +736,9 @@
 		
 	</target>
 	
-<<<<<<< HEAD
-	
-=======
 	<target name="refresh.updatexml">
 		<antcall target="xml.update.repoistory" />
 	</target>
->>>>>>> b909d010b5321afa5b28cf55e84f0c2b146739b9
 	
 	<target name="xml.update.repoistory">
 		<tstamp>
@@ -757,10 +753,6 @@
 			<if>
 	 			<equals arg1="${repository.xml.update}" arg2="y" />
 				<then>
-
-<<<<<<< HEAD
-=======
-				
 				
 					<tstamp>
 				      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
@@ -771,7 +763,6 @@
 				  	<echo>create date : ${createdate}</echo>
 				  	<echo>year : ${year}</echo>
 					
->>>>>>> b909d010b5321afa5b28cf55e84f0c2b146739b9
 				<!-- Update version -->
 				<replaceregexp flags="gs">
 					<regexp pattern="\&lt;version\&gt;(.*)\&lt;/version\&gt;"/>

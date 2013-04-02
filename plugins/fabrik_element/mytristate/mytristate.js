@@ -2,9 +2,7 @@ var FbMytristate = new Class({
 	Extends: FbElement,
 	initialize: function (element, options) {
 		this.parent(element, options);
-	    this.plugin = 'Mytristate';
-	    alert("asasasa");
-		//this.element = $(element);
+		this.plugin = 'Mytristate';
 	},
 	
 	changeValue: function ()
