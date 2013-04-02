@@ -2846,11 +2846,12 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $show_in_list_summary  only show those elements shown in table summary
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
+	 * $param   bool    $noJoins               do not include elements in joined tables (default false)
 	 *
 	 * @return	array	html options
 	 */
 
-	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array())
+	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array(), $noJoins = false)
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
@@ -2859,6 +2860,10 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($gkeys as $gid)
 		{
 			$groupModel = $groups[$gid];
+			if ($noJoins && $groupModel->isJoin())
+			{
+				continue;
+			}
 			$elementModels = $groupModel->getMyElements();
 			$prefix = $groupModel->isJoin() ? $groupModel->getJoinModel()->getJoin()->table_join . '.' : '';
 			foreach ($elementModels as $elementModel)

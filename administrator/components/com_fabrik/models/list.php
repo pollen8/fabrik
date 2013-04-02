@@ -61,6 +61,14 @@ class FabrikModelList extends FabModelAdmin
 	protected $pluginType = 'List';
 
 	/**
+	* Database fields
+	*
+	* @var array
+	*/
+	protected $_dbFields = null;
+
+
+	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
 	 * @param   string  $type    The table type to instantiate
@@ -2410,5 +2418,59 @@ class FabrikModelList extends FabModelAdmin
 				return JError::raiseWarning(500, 'amend table: ' . $fabrikDb->getErrorMsg());
 			}
 		}
+	}
+
+	/**
+	* Gets the field names for the given table
+	* $$$ hugh - added this to backend, as I need it in some places where we have
+	* a backend list model, and until now only existed in the FE model.
+	*
+	* @param   string  $tbl  table name
+	* @param   string  $key  field to key return array on
+	*
+	* @return  array	table fields
+	*/
+
+	public function getDBFields($tbl = null, $key = null, $basetype = false)
+	{
+		if (is_null($tbl))
+		{
+			$table = $this->getTable();
+			$tbl = $table->db_table_name;
+		}
+		if ($tbl == '')
+		{
+			return array();
+		}
+		$sig = $tbl . $key;
+		$tbl = FabrikString::safeColName($tbl);
+		if (!isset($this->_dbFields[$sig]))
+		{
+			$db = $this->getDb();
+			$tbl = FabrikString::safeColName($tbl);
+			$db->setQuery("DESCRIBE " . $tbl);
+			$this->_dbFields[$sig] = $db->loadObjectList($key);
+			if ($db->getErrorNum())
+			{
+				JError::raiseWarning(500, $db->getErrorMsg());
+				$this->_dbFields[$sig] = array();
+			}
+			/**
+			 * $$$ hugh - added BaseType, which strips (X) from things like INT(6) OR varchar(32)
+			 * Also converts it to UPPER, just to make things a little easier.
+			 */
+			foreach ($this->_dbFields[$sig] as &$row)
+			{
+				/**
+				 * Boil the type down to just the base type, so "INT(11) UNSIGNED" becomes just "INT"
+				 * I'm sure there's other cases than just UNSIGNED I need to deal with, but for now that's
+				 * what I most care about, as this stuff is being written handle being more specific about
+				 * the elements the list PK can be selected from.
+				 */
+				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
+			}
+		}
+		return $this->_dbFields[$sig];
 	}
 }

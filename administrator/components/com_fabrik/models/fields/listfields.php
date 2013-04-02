@@ -68,6 +68,14 @@ class JFormFieldListfields extends JFormFieldList
 		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
+
+		/**
+		 * $$$ hugh - added these two options, initially just for the table PK listelements, to avoid issues with
+		 * selecting non-INT types, or elements on joined tables, as the PK
+		 */
+		$noJoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
+		$typeFilters = trim($this->element['typefilter']) == '' ? array() : explode('|', strtoupper($this->element['typefilter']));
+
 		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
 		switch ($controller)
 		{
@@ -138,12 +146,52 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$formModel = $listModel->getFormModel();
 					$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
-					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters);
+					/**
+					 * $$$ hugh - Added nojoins="true" option to listfields, which I added as a param to getElementOptions,
+					 * initially just for the PK list, as we really don't want people choosing joined elements as the main table PK!
+					 */
+					$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $noJoins);
+					/**
+					 * $$ hugh - new option for 'typefilter', lets us filter by db type, like typefilter="INT|BIGINT"
+					 * Specificaly added so we can only show INT types for the list PK, to avoid nasty side effects of converting
+					 * a non-INT to an INT PK, thereby destroying any non-numeric the data in that field.
+					 * Also added nojoins="true" option to listfields, which I added as a param to getElementOptions, again
+					 * initially just for the PK list, as we really don't want people choosing joined elements as the main table PK!
+					 */
+					if (!empty($typeFilters) && method_exists($listModel, 'getDBFields'))
+					{
+						list($this_table, $this_value) = explode('.', str_replace('`', '', $this->value));
+
+						$fieldtypes = $listModel->getDBFields();
+						foreach ($res as $el_index => $el)
+						{
+							list($table_name, $el_name) = explode('.', $el->value);
+							foreach ($fieldtypes as $fieldtype)
+							{
+								if ($fieldtype->Field === $el_name)
+								{
+									if (!in_array($fieldtype->BaseType, $typeFilters))
+									{
+										/**
+										 * Avoid nasty situation if (say) someone already has a PK selected which is not an INT type,
+										 * we don't want to unset their PK selection.  May want to enqueue a warning about it, though.
+										 */
+										if ($el_name != $this_value)
+										{
+											unset($res[$el_index]);
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
 				}
 				else
 				{
 					$res = array();
 				}
+
 				break;
 			case 'form':
 				if (!isset($this->form->model))

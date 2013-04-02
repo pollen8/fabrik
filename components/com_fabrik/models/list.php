@@ -3812,6 +3812,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Gets the field names for the given table
+	 * $$$ hugh - copies this to backend model, so remember to modify that as well, if
+	 * you make changes to this one.  Better yet, make it a Helper func that requires
+	 * the $tbl arg, as that's the only thing that makes it list model specific.
 	 *
 	 * @param   string  $tbl  table name
 	 * @param   string  $key  field to key return array on
@@ -3842,6 +3845,17 @@ class FabrikFEModelList extends JModelForm
 			{
 				JError::raiseWarning(500, $db->getErrorMsg());
 				$this->_dbFields[$sig] = array();
+			}
+			foreach ($this->_dbFields[$sig] as &$row)
+			{
+				/**
+				 * Boil the type down to just the base type, so "INT(11) UNSIGNED" becomes just "INT"
+				 * I'm sure there's other cases than just UNSIGNED I need to deal with, but for now that's
+				 * what I most care about, as this stuff is being written handle being more specific about
+				 * the elements the list PK can be selected from.
+				 */
+				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}
 		return $this->_dbFields[$sig];
@@ -5722,8 +5736,12 @@ class FabrikFEModelList extends JModelForm
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
 		{
-			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
-			$linksToForms[$k] = $join;
+			// $$$ hugh - anoher issue with getLinksTothisKey() now returning false for some joins.
+			if ($join)
+			{
+				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+				$linksToForms[$k] = $join;
+			}
 		}
 		$groups = $formModel->getGroupsHiarachy();
 		$groupHeadings = array();
