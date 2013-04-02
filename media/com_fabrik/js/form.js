@@ -1384,7 +1384,7 @@ var FbForm = new Class({
 
 	/* duplicates the groups sub group and places it at the end of the group */
 
-	duplicateGroup : function (e) {
+	duplicateGroup: function (e) {
 		var subElementContainer, container;
 		Fabrik.fireEvent('fabrik.form.group.duplicate', [this, e]);
 		if (this.result === false) {
@@ -1573,7 +1573,6 @@ var FbForm = new Class({
 		// $$$ hugh - added groupid (i) and repeatCounter (c) as args
 		// note I commented out the increment of c a few lines above//duplicate
 		Fabrik.fireEvent('fabrik.form.group.duplicate.end', [this, e, i, c]);
-		console.log(this.repeatGroupMarkers.get(i) + 1);
 		this.repeatGroupMarkers.set(i, this.repeatGroupMarkers.get(i) + 1);
 	},
 

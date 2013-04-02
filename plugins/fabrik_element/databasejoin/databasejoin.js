@@ -21,7 +21,6 @@ var FbDatabasejoin = new Class({
 		this.activeSelect = false;
 		this.plugin = 'databasejoin';
 		this.parent(element, options);
-		console.log(this.options);
 		this.init();
 	},
 	
@@ -224,6 +223,14 @@ var FbDatabasejoin = new Class({
 			}
 		}
 		return this.chxTmplIDNode;
+	},
+	
+	hasSubElements: function () {
+		var d = this.options.displayType;
+		if (d === 'checkbox' || d === 'radio') {
+			return true;
+		}
+		return this.parent();
 	},
 	
 	/**
@@ -633,15 +640,11 @@ var FbDatabasejoin = new Class({
 	 * 
 	 * @since   3.0.7
 	 * 
+	 * @deprecated since 3.1rc1
 	 * @return  string
 	 */
-	getFormElementsKey: function (elId) {
-		if (this.options.displayType === 'checkbox' || this.options.displayType === 'multilist') {
-			return this.options.listName + '___' + this.options.elementShortName;
-		} else {
-			return this.parent(elId);
-		}
-	},
+	/*getFormElementsKey: function (elId) {
+	},*/
 	
 	/**
 	 * Used to find element when form clones a group
@@ -649,9 +652,10 @@ var FbDatabasejoin = new Class({
 	 * and not id.
 	 */
 	getCloneName: function () {
-		if (this.options.isGroupJoin && this.options.isJoin) {
+		// Testing for issues with cdd rendered as chx in repeat group when observing autocomplete db join element in main group
+		/*if (this.options.isGroupJoin && this.options.isJoin) {
 			return this.options.elementName;
-		}
+		}*/
 		return this.options.element;
 	},
 	

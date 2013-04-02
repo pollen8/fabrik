@@ -9,10 +9,9 @@ var FbCascadingdropdown = new Class({
 	 
 	Extends: FbDatabasejoin, 
 	initialize: function (element, options) {
-		var o = null;
 		this.ignoreAjax = false;
-		this.plugin = 'cascadingdropdown';
 		this.parent(element, options);
+		this.plugin = 'cascadingdropdown';
 		if (document.id(this.options.watch)) {
 			document.id(this.options.watch).addEvent('change', function (e) {
 				this.dowatch(e);
@@ -209,10 +208,10 @@ var FbCascadingdropdown = new Class({
 			}
 			if (document.id(this.options.watch)) {
 
-				// Remove and re-attach watch event
-				document.id(this.options.watch).removeEvents('change', function (e) {
-					this.dowatch(e);
-				}.bind(this)); 
+				/**
+				 * Was removing and attaching again, but seems remove removed
+				 * change events in other cloned plug-in instances
+				 */
 				
 				document.id(this.options.watch).addEvent('change', function (e) {
 					this.dowatch(e);
