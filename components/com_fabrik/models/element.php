@@ -6555,7 +6555,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$join = $this->getJoin();
 
 		// The submitted element's values
-
 		$allJoinValues = $formData[$name];
 		if ($groupModel->isJoin())
 		{
@@ -6564,7 +6563,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
 			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
-			$parentIds = $formData[$k];
+			$parentIds = (array) $formData[$k];
 
 		}
 		else
@@ -6580,15 +6579,20 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 		$i = 0;
 		$idsToKeep = array();
-		echo "<pre>parent id =s ";print_r($parentIds);
 		foreach ($parentIds as $parentId)
 		{
 			if (!array_key_exists($parentId, $idsToKeep))
 			{
 				$idsToKeep[$parentId] = array();
 			}
-			$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
-
+			if ($groupModel->canRepeat())
+			{
+				$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
+			}
+			else
+			{
+				$joinValues = $allJoinValues;
+			}
 			// Get existing records
 			if ($parentId == '')
 			{
@@ -6600,12 +6604,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
 				$db->setQuery($query);
 				$ids = $db->loadObjectList($shortName);
-			}
-			if (!$groupModel->isJoin())
-			{
-				echo "parent id = $parentId <br>";
-echo "<pre>existing ids = ";print_r($ids);
-echo "join values = ";print_r($joinValues);
 			}
 			foreach ($joinValues as $jIndex => $jid)
 			{
@@ -6624,7 +6622,6 @@ echo "join values = ";print_r($joinValues);
 				{
 					$record->id = 0;
 				}
-
 				if ($record->id == 0)
 				{
 					$ok = $listModel->insertObject($join->table_join, $record);
