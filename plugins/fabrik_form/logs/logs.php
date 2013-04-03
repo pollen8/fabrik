@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormLogs extends plgFabrik_Form
+class PlgFabrik_FormLogs extends PlgFabrik_Form
 {
 
 	/**
@@ -59,7 +59,7 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		if $input->get('view') == 'details')
+		if ($input->get('view') == 'details')
 		{
 			return 'form.details';
 		}
@@ -134,7 +134,14 @@ class plgFabrik_FormLogs extends plgFabrik_Form
 		// Generate random filename
 		if ($params->get('logs_random_filename') == 1)
 		{
-			function generate_filename($length)
+			/**
+			 * Internal generate file name
+			 *
+			 * @param   int  $length  Length of file name
+			 *
+			 * @return  string
+			 */
+			function generate_filename ($length)
 			{
 				$key = "";
 				$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";

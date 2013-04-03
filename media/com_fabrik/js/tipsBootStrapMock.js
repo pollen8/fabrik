@@ -16,6 +16,7 @@ var FloatingTips = new Class({
 		'duration': 500,
 		'fadein': false,
 		'notice': false,
+		'html': true,
 		showFn: function (e) {
 			e.stop();
 			return true;

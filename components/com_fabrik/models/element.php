@@ -1555,10 +1555,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			$tip = @eval($tip);
 			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
-		$tip = trim(JText::_($tip));
 		$tip = JText::_($tip);
-
-		$tip = htmlspecialchars($tip, ENT_QUOTES);
+		//$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
 	}
 

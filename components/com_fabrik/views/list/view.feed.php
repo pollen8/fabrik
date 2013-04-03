@@ -11,10 +11,26 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * PDF Fabrik List view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewList extends JViewLegacy
 {
 
-	function display()
+	/**
+	 * Display the Feed
+	 *
+	 * @param   sting  $tpl  template
+	 *
+	 * @return void
+	 */
+
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -96,7 +112,6 @@ class FabrikViewList extends JViewLegacy
 			}
 		}
 
-		$dateCol = $params->get('feed_date', '');
 		$w = new FabrikWorker;
 		$rows = $model->getData();
 		$document->title = $w->parseMessageForPlaceHolder($table->label, $_REQUEST);
@@ -113,32 +128,31 @@ class FabrikViewList extends JViewLegacy
 
 		$titleEl = $params->get('feed_title');
 		$dateEl = $params->get('feed_date');
-		$dateEl = $params->get('feed_date');
+
+		$dateColId = (int) $params->get('feed_date', 0);
+		$dateColElement = $formModel->getElement($dateColId, true);
+		$dateEl = $db->quoteName($dateColElement->getFullName(false, false, false));
+
 		$view = $model->canEdit() ? 'form' : 'details';
 
 		// List of tags to look for in the row data
-		// if they are there don't put them in the desc but put them in as a seperate item param
+		// If they are there don't put them in the desc but put them in as a seperate item param
 		$rsstags = array('<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"');
 		foreach ($rows as $group)
 		{
 			foreach ($group as $row)
 			{
-				// Strip html from feed item title
-				// $title = html_entity_decode($this->escape( $row->$titleEl));
-
 				// Get the content
 				$str2 = '';
 				$str = '<table style="margin-top:10px;padding-top:10px;">';
-				//used for content not in dl
-				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
-				$item = new JFeedItem();
+				$item = new JFeedItem;
 
 				foreach ($aTableHeadings as $heading => $dbcolname)
 				{
 					if ($title == '')
 					{
-						//set a default title
+						// Set a default title
 						$title = $row->$dbcolname['colName'];
 					}
 					$rsscontent = $row->$dbcolname['colName'];
@@ -146,7 +160,6 @@ class FabrikViewList extends JViewLegacy
 					$found = false;
 					foreach ($rsstags as $rsstag => $namespace)
 					{
-
 						if (strstr($rsscontent, $rsstag))
 						{
 							$found = true;
@@ -184,11 +197,10 @@ class FabrikViewList extends JViewLegacy
 				$str = $str2 . $str . "</table>";
 
 				// Url link to article
-				$link = JRoute::_(
-					'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->__pk_val);
+				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->__pk_val);
 
 				// Strip html from feed item description text
-				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
+				$author	= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
 				if ($dateEl != '')
 				{

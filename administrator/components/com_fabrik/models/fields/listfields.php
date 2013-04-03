@@ -146,6 +146,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$res = array();
 				}
+
 				break;
 			case 'form':
 				if (!isset($this->form->model))

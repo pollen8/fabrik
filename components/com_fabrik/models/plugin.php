@@ -149,15 +149,16 @@ class FabrikPlugin extends JPlugin
 	 * Create bootstrap horizontal tab headings from fieldset labels
 	 * Used for rendering viz plugin options
 	 *
-	 * @param   JForm  $form     plugin form
-	 * @param   array  &$output  plugin render output
+	 * @param   JForm  $form           Plugin form
+	 * @param   array  &$output        Plugin render output
+	 * @param   int    $repeatCounter  Repeat count for plugin
 	 *
 	 * @since   3.1
 	 *
 	 * @return  void
 	 */
 
-	protected function renderFromNavTabHeadings($form, &$output)
+	protected function renderFromNavTabHeadings($form, &$output, $repeatCounter = 0)
 	{
 		$fieldsets = $form->getFieldsets();
 		if (count($fieldsets) <= 1)
@@ -177,6 +178,7 @@ class FabrikPlugin extends JPlugin
 			}
 			$class = $i === 0 ? ' class="active"' : '';
 			$id = 'tab-' . $fieldset->name;
+			$id .= '-' . $repeatCounter;
 			$output[] = '<li' . $class . '>
 		    	<a data-toggle="tab" href="#' . $id . '">
 		    		' . JText::_($fieldset->label) . '
@@ -190,9 +192,9 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Render the element admin settings
 	 *
-	 * @param   array   $data           admin data
-	 * @param   int     $repeatCounter  repeat plugin counter
-	 * @param   string  $mode           how the fieldsets should be rendered currently support 'nav-tabs' (@since 3.1)
+	 * @param   array   $data           Admin data
+	 * @param   int     $repeatCounter  Repeat plugin counter
+	 * @param   string  $mode           How the fieldsets should be rendered currently support 'nav-tabs' (@since 3.1)
 	 *
 	 * @return  string	admin html
 	 */
@@ -263,7 +265,7 @@ class FabrikPlugin extends JPlugin
 
 		if ($mode === 'nav-tabs')
 		{
-			$this->renderFromNavTabHeadings($form, $str);
+			$this->renderFromNavTabHeadings($form, $str, $repeatCounter);
 			$str[] = '<div class="tab-content">';
 		}
 
@@ -280,7 +282,7 @@ class FabrikPlugin extends JPlugin
 			if ($mode === 'nav-tabs')
 			{
 				$tabClass = $c === 0 ? ' active' : '';
-				$str[] = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '">';
+				$str[] = '<div class="tab-pane' . $tabClass . '" id="tab-' . $fieldset->name . '-' . $repeatCounter . '">';
 			}
 			$class = $j3 ? 'form-horizontal ' : 'adminform ';
 			$class .= $type . 'Settings page-' . $this->_name;
@@ -318,12 +320,12 @@ class FabrikPlugin extends JPlugin
 			if ($repeat)
 			{
 				$bClass = $j3 ? 'btn' : 'addButton';
- 				$str[] = '<a class="' . $bClass . '" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
- 				if ($j3)
- 				{
- 					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
- 					. '</a>';
- 				}
+				$str[] = '<a class="' . $bClass . '" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+				if ($j3)
+				{
+					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
+					. '</a>';
+				}
 			}
 			if (is_null($mode))
 			{

@@ -403,11 +403,17 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$data = $filter->clean($_POST, 'array');
 		$opts = $this->_getOptionVals($data);
 
+		/**
+		 * $$$ hugh - had to move this logic into _getOptionvals()
+		 * will delete this chunk when it's tested and working
+		 */
+		/*
 		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
 		if ($filterview == 'table')
-		{
+
 			$params->set('cascadingdropdown_showpleaseselect', true);
 		}
+		*/
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
 		echo json_encode($opts);
 	}
@@ -433,11 +439,20 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				if ($fullName == $watch)
 				{
 					$element = $elementModel->getElement();
-					if (get_parent_class($elementModel) == 'FabrikModelFabrikDatabasejoin')
+					/**
+					 * $$$ hugh - not sure what this is for, but changed class name to 3.x name,
+					 * as it was still set to the old 2.1 naming.
+					 */
+					if (get_parent_class($elementModel) == 'plgFabrik_ElementDatabasejoin')
 					{
 						$data = array();
 						$joinopts = $elementModel->_getOptions($data);
 					}
+					/**
+					 * $$$ hugh - I assume we can break out of both foreach now, as there shouldn't
+					 * be more than one match for the $watch element.
+					 */
+					break 2;
 				}
 			}
 		}
@@ -507,9 +522,21 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		if ($this->showPleaseSelect())
+		// if it's a filter, need to use filterSelectLabel() regardless of showPleaseSelect()
+		// (should probably shift this logic into showPleaseSelect, and have that just do this
+		// test, and return the label to use.
+		$app = JFactory::getApplication();
+		$filterview = $app->input->get('filterview', '');
+		if ($filterview == 'table')
 		{
-			array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+			array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->filterSelectLabel()));
+		}
+		else
+		{
+			if ($this->showPleaseSelect())
+			{
+				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
+			}
 		}
 		return $this->_optionVals[$sqlKey];
 	}
@@ -1177,6 +1204,23 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	public function dataIsNull($data, $val)
 	{
 		return false;
+	}
+
+	/**
+	* Get dropdown filter select label
+	*
+	* @return  string
+	*/
+
+	protected function filterSelectLabel()
+	{
+		$params = $this->getParams();
+		$label = $params->get('cascadingdropdown_noselectionlabel', '');
+		if (empty($label))
+		{
+			$label = $params->get('filter_required') == 1 ? JText::_('COM_FABRIK_PLEASE_SELECT') : JText::_('COM_FABRIK_FILTER_PLEASE_SELECT');
+		}
+		return $label;
 	}
 
 }

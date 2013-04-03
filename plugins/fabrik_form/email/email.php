@@ -218,6 +218,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// Send email
 		foreach ($email_to as $email)
 		{
+			$email = strip_tags($email);
 			if (FabrikWorker::isEmail($email))
 			{
 				$thisAttachments = $this->attachments;
