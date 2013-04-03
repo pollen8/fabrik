@@ -741,7 +741,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	        if (!empty($joins))
 	        {
 	        	$ojoin = $this->getJoin();
-	        	$thistable_alias =
 	        	$join_types = array();
 	        	$join_exprs = array();
 	        	foreach ($joins as $index => $join)
@@ -1875,7 +1874,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			switch ($params->get('filter_groupby', 'text'))
 			{
 				case 'text':
-					$oder = $joinLabel . 'ASC ';
+					$order = $joinLabel . 'ASC ';
 					break;
 				case 'value':
 					$order = $joinKey . 'ASC ';

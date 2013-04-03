@@ -2368,11 +2368,8 @@ class FabrikFEModelList extends JModelForm
 		if ($this->outPutFormat == 'fabrikfeed' || $this->outPutFormat == 'feed')
 		{
 			$dateColId = (int) $params->get('feed_date', 0);
-			$q = $db->getQuery(true);
-			$q->select('name')->from('#__{package}_elements')->where('id = ' . $dateColId);
-			$db->setQuery($q);
-			$dateCol = $db->quoteName($table->db_table_name . '.' . $db->loadResult());
-			$q->clear();
+			$dateColElement = $formModel->getElement($dateColId, true);
+			$dateCol = $db->quoteName($dateColElement->getFullName(false, false, false));
 			if ($dateColId !== 0)
 			{
 				$this->order_dir = 'DESC';
@@ -3893,6 +3890,9 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Gets the field names for the given table
+	 * $$$ hugh - copies this to backend model, so remember to modify that as well, if
+	 * you make changes to this one.  Better yet, make it a Helper func that requires
+	 * the $tbl arg, as that's the only thing that makes it list model specific.
 	 *
 	 * @param   string  $tbl  table name
 	 * @param   string  $key  field to key return array on
@@ -3925,6 +3925,17 @@ class FabrikFEModelList extends JModelForm
 			{
 				// List may be in second connection but we might try to get #__user fields for join
 				$this->dbFields[$sig] = array();
+			}
+			foreach ($this->_dbFields[$sig] as &$row)
+			{
+				/**
+				 * Boil the type down to just the base type, so "INT(11) UNSIGNED" becomes just "INT"
+				 * I'm sure there's other cases than just UNSIGNED I need to deal with, but for now that's
+				 * what I most care about, as this stuff is being written handle being more specific about
+				 * the elements the list PK can be selected from.
+				 */
+				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}
 		return $this->dbFields[$sig];
@@ -5824,8 +5835,12 @@ class FabrikFEModelList extends JModelForm
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
 		{
-			$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
-			$linksToForms[$k] = $join;
+			// $$$ hugh - anoher issue with getLinksTothisKey() now returning false for some joins.
+			if ($join)
+			{
+				$k = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+				$linksToForms[$k] = $join;
+			}
 		}
 		$groups = $formModel->getGroupsHiarachy();
 		$groupHeadings = array();

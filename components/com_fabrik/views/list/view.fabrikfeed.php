@@ -11,10 +11,26 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * PDF Fabrik List view class, including closures
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewList extends JViewLegacy
 {
 
-	function display()
+	/**
+	 * Display the Feed
+	 *
+	 * @param   sting  $tpl  template
+	 *
+	 * @return void
+	 */
+
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -28,7 +44,7 @@ class FabrikViewList extends JViewLegacy
 		$document = JFactory::getDocument();
 		$document->_itemTags = array();
 
-		//Get the active menu item
+		// Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 
 		// $$$ hugh - modified this so you can enable QS filters on RSS links
@@ -54,7 +70,7 @@ class FabrikViewList extends JViewLegacy
 		$groupModels = $formModel->getGroupsHiarachy();
 
 		$titleEl = $params->get('feed_title');
-		$dateEl = $params->get('feed_date');
+		$dateEl = (int) $params->get('feed_date');
 		foreach ($groupModels as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
@@ -86,6 +102,7 @@ class FabrikViewList extends JViewLegacy
 					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName(false, true);
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
+
 					// $$$ hugh - adding enclosure stuff for podcasting
 					if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')
 					{
@@ -118,6 +135,7 @@ class FabrikViewList extends JViewLegacy
 				$aTableHeadings[$heading]['colName'] = $element->db_table_name . "___" . $element->name;
 				$aTableHeadings[$heading]['dbField'] = $element->name;
 				$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
+
 				// $$$ hugh - adding enclosure stuff for podcasting
 				if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')
 				{
@@ -146,8 +164,8 @@ class FabrikViewList extends JViewLegacy
 
 		$view = $model->canEdit() ? 'form' : 'details';
 
-		//list of tags to look for in the row data
-		//- if they are there don't put them in the desc but put them in as a seperate item param
+		// List of tags to look for in the row data
+		// If they are there don't put them in the desc but put them in as a seperate item param
 		$rsstags = array(
 				'<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"'
 		);
@@ -155,30 +173,27 @@ class FabrikViewList extends JViewLegacy
 		{
 			foreach ($group as $row)
 			{
-				// strip html from feed item title
-				//$title = html_entity_decode($this->escape( $row->$titleEl));
-
-				//get the content
+				// Get the content
 				$str2 = '';
 				$str = '';
 				$tstart = '<table style="margin-top:10px;padding-top:10px;">';
 
-				//used for content not in dl
-				//ok for feed gator you cant have the same item title so we'll take the first value from the table (asume its the pk and use that to append to the item title)'
 				$title = '';
-				$item = new JFabrikFeedItem();
+				$item = new JFabrikFeedItem;
 
 				$enclosures = array();
 				foreach ($aTableHeadings as $heading => $dbcolname)
 				{
 					if ($dbcolname['enclosure'])
 					{
+
 						// $$$ hugh - diddling aorund trying to add enclosures
 						$colName = $dbcolname['colName'] . '_raw';
 						$enclosure_url = $row->$colName;
 						if (!empty($enclosure_url))
 						{
 							$remote_file = false;
+
 							// Element value should either be a full path, or relative to J! base
 							if (strstr($enclosure_url, 'http://') && !strstr($enclosure_url, COM_FABRIK_LIVESITE))
 							{
@@ -210,8 +225,10 @@ class FabrikViewList extends JViewLegacy
 											'length' => $enclosure_size,
 											'type' => $enclosure_type
 									);
-									// no need to insert the URL in the description, as feed readers should
-									// automagically show 'media' when they see an 'enclosure', so just move on ..
+									/**
+									 * No need to insert the URL in the description, as feed readers should
+									 * automagically show 'media' when they see an 'enclosure', so just move on ..
+									 */
 									continue;
 								}
 							}
@@ -219,10 +236,11 @@ class FabrikViewList extends JViewLegacy
 					}
 					if ($title == '')
 					{
-						//set a default title
+						// Set a default title
 						$title = $row->$dbcolname['colName'];
 					}
-					$rsscontent = strip_tags($row->$dbcolname['colName']);
+					// Rob - was stripping tags - but arent they valid in the content?
+					$rsscontent = $row->$dbcolname['colName'];
 
 					$found = false;
 					foreach ($rsstags as $rsstag => $namespace)
@@ -270,13 +288,11 @@ class FabrikViewList extends JViewLegacy
 					$str = $str2;
 				}
 
-				// url link to article
-				$link = JRoute::_(
-					'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
-				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id
-					. '&rowid=' . $row->slug;
+				// Url link to article
+				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
+				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug;
 
-				// strip html from feed item description text
+				// Strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
 
 				if ($dateEl != '')
@@ -287,26 +303,36 @@ class FabrikViewList extends JViewLegacy
 				{
 					$date = '';
 				}
-				// load individual item creator class
+				// Load individual item creator class
 
 				$item->title = $title;
 				$item->link = $link;
 				$item->guid = $guid;
 				$item->description = $str;
 				$item->date = $date;
+
 				// $$$ hugh - not quite sure where we were expecting $row->category to come from.  Comment out for now.
-				//$item->category = $row->category;
+				// $item->category = $row->category;
 
 				foreach ($enclosures as $enclosure)
 				{
 					$item->setEnclosure($enclosure);
 				}
 
-				// loads item info into rss array
+				// Loads item info into rss array
 				$res = $document->addItem($item);
 			}
 		}
 	}
+
+	/**
+	 * Get file size
+	 *
+	 * @param   string  $path    File path
+	 * @param   bool    $remote  Remote file, if true attempt to load file via Curl
+	 *
+	 * @return mixed|number
+	 */
 
 	protected function get_filesize($path, $remote = false)
 	{
@@ -331,4 +357,3 @@ class FabrikViewList extends JViewLegacy
 	}
 
 }
-?>
