@@ -356,16 +356,15 @@ class FabrikAdminModelElement extends FabModelAdmin
 	}
 
 	/**
-	 * Called when the table is saved
-	 * here we are hacking various repeat data into the params
-	 * data stored as a json object
+	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   object  &$item  element item
+	 * @param   JTable  $table  A reference to a JTable object.
 	 *
 	 * @return  void
+	 *
+	 * @since   12.2
 	 */
-
-	protected function prepareTable(&$item)
+	protected function prepareTable($table)
 	{
 	}
 
