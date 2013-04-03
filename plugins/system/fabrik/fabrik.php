@@ -57,7 +57,6 @@ class plgSystemFabrik extends JPlugin
 		jimport('joomla.filesystem.file');
 		$p = JPATH_SITE . '/plugins/system/fabrik/';
 		$defines = JFile::exists($p . 'user_defines.php') ? $p . 'user_defines.php' : $p . 'defines.php';
-		$doc = JFactory::getDocument();
 		require_once $defines;
 		$this->setBigSelects();
 	}
