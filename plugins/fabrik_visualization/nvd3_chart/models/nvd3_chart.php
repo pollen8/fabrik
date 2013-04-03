@@ -16,6 +16,38 @@ jimport('joomla.application.component.model');
 require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 /**
+ * data_mode parameter defines 2 states for the data
+ *
+ * 0/LABELS_IN_VALUES
+ *
+ * If the table has 2 columns, one for labels and one for data
+ * +--------+--------+-----------+
+ * | state  | Number | Age range |
+ * +========+========+===========+
+ * |   CA   |  33    |  0-5      |
+ * +--------+--------+-----------+
+ * |   TX   |  12    |  5-10     |
+ * +--------+--------+-----------+
+ */
+define('LABELS_IN_VALUES', 0);
+
+/**
+ * 1/LABELS_IN_COLUMNS
+ *
+ * If the table has lines of data with n field names which contain the labels
+ *
+ * +--------+------+------+-------+
+ * | state  | 0_5  | 5_10 | 10_15 |
+ * +========+======+======+=======+
+ * |   CA   |  33  |  32  |  21   |
+ * +--------+------+------+-------+
+ * |   TX   |  12  | 6    |   43  |
+ * +--------+------+------+-------+
+ * @var unknown
+ */
+define('LABELS_IN_COLUMNS', 1);
+
+/**
  * Fabrik nvd3_chart Chart Plug-in Model
  *
  * @package     Joomla.Plugin
@@ -23,7 +55,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0.7
  */
 
-class fabrikModelNvd3_chart extends FabrikFEModelVisualization
+class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 {
 
 	/**
@@ -61,6 +93,12 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 		}
 		else
 		{
+			$chartType = $params->get('chart');
+			if ($chartType === 'multiBarHorizontalChart' || $chartType === 'multiBarChart')
+			{
+				$this->data = $this->multiChartData();
+				return $this->data;
+			}
 			$this->data = new stdClass;
 			$this->data->key = 'todo2';
 			$db = JFactory::getDbo();
@@ -165,6 +203,150 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 						$data[$val]->value ++;
 					}
 				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Build data for the mutli Chart types
+	 * Current only works
+	 *
+	 * @return stdClass
+	 */
+
+	protected function multiChartData()
+	{
+		$params = $this->getParams();
+		$labelColumns = explode(',', $params->get('label_columns'));
+		$table = $params->get('tbl');
+		$split = $params->get('split', '');
+		$groupBy = $params->get('group_by');
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select($labelColumns)->from($table);
+		if ($split !== '')
+		{
+			$query->select($split . ' AS ' . $db->nameQuote('key'));
+		}
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+
+		$labelAxisValues = $params->get('label_axis_values', 'label_columns');
+		if ($labelAxisValues === 'label_columns')
+		{
+			if ($split === '')
+			{
+				return $this->multiChartLabelsNoSplit($rows);
+			}
+			else
+			{
+				return $this->multiChartLabels($rows);
+			}
+		}
+		else
+		{
+			return $this->multiChartSplit($rows);
+		}
+	}
+
+	/**
+	 * Organise data for showing in a multichart when the columns are used as the labels and no split
+	 * value has been assigned. Will basically group all the data into one record (as no spli supplied)
+	 *
+	 * @param   array  $rows  Chart data
+	 *
+	 * @return stdClass
+	 */
+	protected function  multiChartLabelsNoSplit($rows)
+	{
+		$o = new stdClass;
+		$o->values = array();
+		foreach ($rows as $d)
+		{
+			foreach ($d as $k => $v)
+			{
+				if (!array_key_exists($k, $o->values))
+				{
+					$thisV = new stdClass;
+					$thisV->label = $k;
+					$thisV->value = (int) $v;
+					$o->values[$k] = $thisV;
+				}
+				else
+				{
+					$o->values[$k]->value += (int) $v;
+				}
+
+			}
+		}
+		$o->values = array_values($o->values);
+		$data[] = $o;
+		return $data;
+	}
+	/**
+	 * Organise data for showing in a multichart when the columns are used as the labels and a split
+	 * value has been assigned.
+	 *
+	 * @param   array  $rows  Chart data
+	 *
+	 * @return stdClass
+	 */
+	protected function multiChartLabels($rows)
+	{
+		foreach ($rows as $d)
+		{
+			$o = new stdClass;
+			$o->key = $d->key;
+			$values = array();
+			foreach ($d as $k => $v)
+			{
+				if ($k != 'key')
+				{
+					$thisV = new stdClass;
+					$thisV->label = $k;
+					$thisV->value = (int) $v;
+					$values[] = $thisV;
+				}
+			}
+			$o->values = $values;
+			$data[] = $o;
+		}
+		return $data;
+	}
+
+	/**
+	 * Organise data for showing in a multichart when the split column is used for the axis labels
+	 *
+	 * @param   array  $rows  Chart data
+	 *
+	 * @return stdClass
+	 */
+	protected function multiChartSplit($rows)
+	{
+		$data = array();
+		if (empty($rows))
+		{
+			return $data;
+		}
+		$firstRow = $rows[0];
+		$labelColumns = array_keys(get_object_vars($firstRow));
+		foreach ($labelColumns as $chartKey)
+		{
+			if ($chartKey !== 'key')
+			{
+			$o = new stdClass;
+			$o->key = $chartKey;
+			$o->values = array();
+			foreach ($rows as $d)
+			{
+				$thisV = new stdClass;
+				$thisV->label = $d->key;
+				$thisV->value = $d->$chartKey;
+				$o->values[] = $thisV;
+			}
+			$data[] = $o;
 			}
 		}
 		return $data;
@@ -317,9 +499,13 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 				$str[] = '.y(function(d) { return d.value })';
 				$str[] = $this->discreteBarChartOpts();
 				break;
-			case 'stackedAreaChart':
-			case 'multiBarChart':
 
+				// Test: was the same as stackedAreaChart (was the same as stackedAreaChart)
+			case 'multiBarChart':
+				$str[] = '.x(function(d) { return d.label })';
+				$str[] = '.y(function(d) { return d.value })';
+				break;
+			case 'stackedAreaChart':
 			case 'lineWithFocusChart':
 				$str[] = '.x(function(d) { return d[0] })';
 				$str[] = '.y(function(d) { return d[1] })';
@@ -343,8 +529,8 @@ class fabrikModelNvd3_chart extends FabrikFEModelVisualization
 		}
 
 		$this->showControls($str);
-		// $str[] = 'chart.valueFormat = d3.format(",.2%");';
 
+		// $str[] = 'chart.valueFormat = d3.format(",.2%");';
 		$id = $this->getContainerId();
 		$str[] = 'd3.select("#' . $id . ' svg")';
 
