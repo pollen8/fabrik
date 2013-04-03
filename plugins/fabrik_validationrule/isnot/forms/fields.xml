@@ -7,6 +7,13 @@
 			<field cols="30" description="PLG_VALIDATIONRULE_ISNOT_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISNOT_CONDITION_LABEL" name="isnot-validation_condition" repeat="true" rows="5" type="textarea"/>
 				
 			<field description="PLG_VALIDATIONRULE_ISNOT_VALIDATION_DESC" label="PLG_VALIDATIONRULE_ISNOT_VALIDATION_LABEL" name="isnot-isnot" repeat="true" size="30" type="text"/>
+			
+			<field name="tip_text"
+				type="textarea"
+				repeat="true"
+				cols="30" rows="3"
+				description="COM_FABRIK_VALIDATION_TIP_TEXT_DESC"
+				label="COM_FABRIK_VALIDATION_TIP_TEXT_LABEL"/>
 				
 		</fieldset>
 	</fields>

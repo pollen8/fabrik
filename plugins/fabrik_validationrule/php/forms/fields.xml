@@ -2,16 +2,43 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-php">
-			<field description="PLG_VALIDATIONRULE_PHP_ERROR_DESC" label="PLG_VALIDATIONRULE_PHP_ERROR_LABEL" name="php-message" repeat="true" size="30" type="text"/>
+		
+			<field name="php-message"
+				type="text"
+				description="PLG_VALIDATIONRULE_PHP_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_PHP_ERROR_LABEL"
+				repeat="true" size="30" />
 				
-			<field cols="30" description="PLG_VALIDATIONRULE_PHP_CONDITION_DESC" label="PLG_VALIDATIONRULE_PHP_CONDITION_LABEL" name="php-validation_condition" repeat="true" rows="5" type="textarea"/>
+			<field name="php-validation_condition"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_VALIDATIONRULE_PHP_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_PHP_CONDITION_LABEL"
+				repeat="true"/>
 				
-			<field cols="30" description="PLG_VALIDATIONRULE_PHP_CODE_DESC" label="PLG_VALIDATIONRULE_PHP_CODE_LABEL" name="php-code" repeat="true" rows="5" type="textarea"/>
+			<field name="php-code"
+				type="textarea"
+				cols="30" rows="5"
+				description="PLG_VALIDATIONRULE_PHP_CODE_DESC"
+				label="PLG_VALIDATIONRULE_PHP_CODE_LABEL"
+				repeat="true"/>
 				
-			<field default="1" description="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_DESC" label="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_LABEL" name="php-match" repeat="true" type="list">
+			<field name="php-match"
+				type="list"
+				default="1"
+				description="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_DESC"
+				label="PLG_VALIDATIONRULE_PHP_MATCH_OR_REPLACE_LABEL"
+				repeat="true">
 					<option value="0">PLG_VALIDATIONRULE_PHP_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_PHP_MATCH</option>
 			</field>
+			
+			<field name="tip_text"
+				type="textarea"
+				repeat="true"
+				cols="30" rows="3"
+				description="COM_FABRIK_VALIDATION_TIP_TEXT_DESC"
+				label="COM_FABRIK_VALIDATION_TIP_TEXT_LABEL"/>
 			
 		</fieldset>
 	</fields>

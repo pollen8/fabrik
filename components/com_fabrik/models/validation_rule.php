@@ -203,6 +203,13 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	protected function getLabel($elementModel, $pluginc)
 	{
+		$params = $elementModel->getParams();
+		$tipText = $params->get('tip_text', '');
+		$tipText = JArrayHelper::getValue($tipText, $pluginc, '');
+		if ($tipText !== '')
+		{
+			return JText::_($tipText);
+		}
 		if ($this->allowEmpty($elementModel, $pluginc))
 		{
 			return JText::_('PLG_VALIDATIONRULE_' . JString::strtoupper($this->pluginName) . '_ALLOWEMPTY_LABEL');

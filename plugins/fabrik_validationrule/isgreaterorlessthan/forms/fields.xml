@@ -22,6 +22,13 @@
 			</field>
 							
 			<field cols="30" description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_CONDITION_LABEL" name="isgreaterorlessthan-validation_condition" repeat="true" rows="5" type="textarea"/>
+			
+			<field name="tip_text"
+				type="textarea"
+				repeat="true"
+				cols="30" rows="3"
+				description="COM_FABRIK_VALIDATION_TIP_TEXT_DESC"
+				label="COM_FABRIK_VALIDATION_TIP_TEXT_LABEL"/>
 				
 		</fieldset>
 	</fields>
