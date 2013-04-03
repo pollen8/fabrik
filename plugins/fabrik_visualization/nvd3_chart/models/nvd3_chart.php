@@ -271,12 +271,12 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				{
 					$thisV = new stdClass;
 					$thisV->label = $k;
-					$thisV->value = (int) $v;
+					$thisV->value = (float) $v;
 					$o->values[$k] = $thisV;
 				}
 				else
 				{
-					$o->values[$k]->value += (int) $v;
+					$o->values[$k]->value += (float) $v;
 				}
 
 			}
@@ -306,7 +306,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				{
 					$thisV = new stdClass;
 					$thisV->label = $k;
-					$thisV->value = (int) $v;
+					$thisV->value = (float) $v;
 					$values[] = $thisV;
 				}
 			}
@@ -343,7 +343,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			{
 				$thisV = new stdClass;
 				$thisV->label = $d->key;
-				$thisV->value = $d->$chartKey;
+				$thisV->value = (float) $d->$chartKey;
 				$o->values[] = $thisV;
 			}
 			$data[] = $o;
