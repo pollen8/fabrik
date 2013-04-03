@@ -546,7 +546,11 @@ class FabrikWorker
 		jimport('joomla.crypt.crypt');
 		jimport('joomla.crypt.key');
 		$config = JFactory::getConfig();
-		$secret = $config->get('secret');
+		$secret = $config->get('secret', '');
+		if (trim($secret) == '')
+		{
+			JError::raiseError(500, 'You must supply a secret code in your Joomla configuration.php file');
+		}
 		$key = new JCryptKey('simple', $secret, $secret);
 		$crypt = new JCrypt(new JCryptCipherSimple, $key);
 		return $crypt;
