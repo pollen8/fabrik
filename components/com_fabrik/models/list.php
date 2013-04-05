@@ -2091,6 +2091,7 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
+
 			// $$$ hugh - can't use simple !$idRows, as empty array is false!
 			if (!is_array($idRows))
 			{
@@ -2366,7 +2367,6 @@ class FabrikFEModelList extends JModelForm
 		// If nothing found in session use default ordering (or that set by querystring)
 		if ($strOrder == '')
 		{
-			//print_r($orderbys);
 			$orderbys = explode(',', JRequest::getVar('order_by', ''));
 			if ($orderbys[0] == '')
 			{

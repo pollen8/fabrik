@@ -1135,8 +1135,11 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 				if ($emptyValue && $index !== false)
 				{
-					// $$ $rob - if the filter has been added from search all then don't remove it
-					if (JArrayHelper::getValue($searchTypes, $index) != 'searchall')
+					/*
+					 * Testing clearing only if normal filter, previous test on serachType != 'searchall'
+					 * meant advanced search filters were removed on page nav
+					 */
+					if (JArrayHelper::getValue($searchTypes, $index) == 'normal')
 					{
 						$this->clearAFilter($filters, $index);
 					}
