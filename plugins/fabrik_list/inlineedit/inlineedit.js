@@ -507,7 +507,10 @@ var FbListInlineEdit = new Class({
 	
 	setFocus : function (td) {
 		if (typeOf(td.getElement('.fabrikinput')) !== 'null') {
-			td.getElement('.fabrikinput').focus();
+			var el = td.getElement('.fabrikinput');
+			setTimeout(function (el) {
+				el.focus();
+			}, 1000);
 		}
 	},
 	
