@@ -190,8 +190,9 @@ var FbListRadiusSearch = new Class({
 				'loadMethod': 'html',
 				'content': c,
 				'width': 500,
-				'height': 500,
+				'height': 540,
 				'visible': false,
+				'destroy': false,
 				'onContentLoaded': function () {
 					this.center();
 				}
@@ -203,7 +204,8 @@ var FbListRadiusSearch = new Class({
 			
 			// Show the map.
 			c.setStyles({'position': 'relative', 'left': 0});
-			b.retrieve('win').open();
+			var w = b.retrieve('win'); 
+			w.open();
 		}.bind(this));
 		
 		b.store('win', win);
