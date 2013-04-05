@@ -178,7 +178,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$displayParam = $this->getValColumn();
+			$displayParam = $this->getLabelOrConcatVal();
 			if (is_a($user, 'JUser'))
 			{
 				$str = $user->get($displayParam);
@@ -651,7 +651,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
-		$tabletype = $this->getValColumn();
+		$tabletype = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 
@@ -792,7 +792,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					break;
 				case 'field':
 				default:
-					$tabletype = $this->getValColumn();
+					$tabletype = $this->getLabelOrConcatVal();
 					break;
 			}
 			$k = $db->quoteName($joinTableName . '.' . $tabletype);
@@ -805,7 +805,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$tabletype = $this->getValColumn();
+				$tabletype = $this->getLabelOrConcatVal();
 				$k = $db->quoteName($joinTableName . '.' . $tabletype);
 			}
 		}
@@ -871,7 +871,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	{
 		static $displayMessage;
 		$params = $this->getParams();
-		$displayParam = $this->getValColumn();
+		$displayParam = $this->getLabelOrConcatVal();
 		return is_a($user, 'JUser') ? $user->get($displayParam) : false;
 	}
 
@@ -947,7 +947,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function getValColumn()
+	protected function getLabelOrConcatVal()
 	{
 		static $displayMessage;
 		$params = $this->getParams();

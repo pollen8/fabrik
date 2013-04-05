@@ -258,6 +258,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
+			$this->joinLabelCols[(int) $useStep] = 'CONCAT(' . $val . ')';
 			return 'CONCAT(' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
@@ -623,7 +624,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$rob not sure these should be used anyway?
 		$table = $params->get('join_db_name');
 		$key = $this->getJoinValueColumn();
-		$val = $this->getValColumn();
+		$val = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
 		if ($table == '')
 		{
@@ -861,7 +862,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	 * @return  string
 	 */
 
-	protected function getValColumn()
+	protected function getLabelOrConcatVal()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();
@@ -2014,8 +2015,11 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		if (!$this->_rawFilter && ($type == 'searchall' || $type == 'prefilter'))
 		{
 			$join = $this->getJoin();
-			$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($this->getLabelParamVal());
-
+			$k = $this->getLabelOrConcatVal();
+			if (!strstr($k, 'CONCAT'))
+			{
+				$k = FabrikString::safeColName($join->table_join_alias) . '.' . $db->quoteName($k);
+			}
 			$str = "$k $condition $value";
 		}
 		else
@@ -2098,7 +2102,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// If rendering as mulit/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
 		if ($this->isJoin())
 		{
-			$jkey = $this->getValColumn();
+			$jkey = $this->getLabelOrConcatVal();
 			$jkey = !strstr($jkey, 'CONCAT') ? $label : $jkey;
 			$label = str_replace($join->table_join, $to, $jkey);
 		}
@@ -2620,7 +2624,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 	{
 		$params = $elementModel->getParams();
 		$db = FabrikWorker::getDbo();
-		$c = $elementModel->getValColumn();
+		$c = $elementModel->getLabelOrConcatVal();
 		if (!strstr($c, 'CONCAT'))
 		{
 			$c = FabrikString::safeColName($c);
@@ -2667,7 +2671,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$params = $this->getParams();
 		$join = $this->getJoin();
 		$joinTable = $join->table_join_alias;
-		$joinVal = $this->getValColumn();
+		$joinVal = $this->getLabelOrConcatVal();
 		if (!strstr($joinVal, 'CONCAT'))
 		{
 			$return = strstr($joinVal, '___') ? FabrikString::safeColName($joinVal) : $joinTable . '.' . $joinVal;
@@ -2752,7 +2756,7 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		$dbtable = $this->actualTableName();
 		$db = JFactory::getDbo();
 		$item = $this->getListModel()->getTable();
-		$jkey = $this->getValColumn();
+		$jkey = $this->getLabelOrConcatVal();
 		$where = $this->_buildQueryWhere(array(), true, $params->get('join_db_name'));
 		$where = JString::stristr($where, 'order by') ? $where : '';
 
