@@ -4284,7 +4284,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
-			echo $sql;
+			// echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
