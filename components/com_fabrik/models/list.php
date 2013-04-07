@@ -3918,7 +3918,8 @@ class FabrikFEModelList extends JModelForm
 			$db = $this->getDb();
 			$tbl = FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE " . $tbl);
-			try {
+			try
+			{
 				$this->dbFields[$sig] = $db->loadObjectList($key);
 			}
 			catch (RuntimeException $e)
@@ -3926,7 +3927,7 @@ class FabrikFEModelList extends JModelForm
 				// List may be in second connection but we might try to get #__user fields for join
 				$this->dbFields[$sig] = array();
 			}
-			foreach ($this->_dbFields[$sig] as &$row)
+			foreach ($this->dbFields[$sig] as &$row)
 			{
 				/**
 				 * Boil the type down to just the base type, so "INT(11) UNSIGNED" becomes just "INT"
@@ -3934,7 +3935,7 @@ class FabrikFEModelList extends JModelForm
 				 * what I most care about, as this stuff is being written handle being more specific about
 				 * the elements the list PK can be selected from.
 				 */
-				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}
@@ -4022,11 +4023,17 @@ class FabrikFEModelList extends JModelForm
 				{
 					$fabrikDb
 					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-					if (!$fabrikDb->execute())
+					try
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						$fabrikDb->execute();
+						$altered = true;
 					}
-					$altered = true;
+					catch (Exception $e)
+					{
+						JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
+						$altered = false;
+					}
+
 				}
 			}
 			// Commented out as it stops the update when changing an element name
@@ -4101,17 +4108,13 @@ class FabrikFEModelList extends JModelForm
 			if (!$altered)
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-				if (!$fabrikDb->execute())
+				try
 				{
-					/* $$$ rob ok this is hacky but I had a whole series of elements wiped from the db,
-					 * but wanted to re-add them into the database.
-					* as the db table already had the fields this error was stopping the save.
-					*/
-					if (!array_key_exists($element->name, $dbdescriptions))
-					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
-					}
-
+					$fabrikDb->execute();
+				}
+				catch (Exception $e)
+				{
+					JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 				}
 			}
 		}
@@ -4199,9 +4202,13 @@ class FabrikFEModelList extends JModelForm
 			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields))
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
-				if (!$fabrikDb->execute())
+				try
 				{
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					$fabrikDb->execute();
+				}
+				catch (Exception $e)
+				{
+					JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 				}
 			}
 			else
@@ -4214,9 +4221,13 @@ class FabrikFEModelList extends JModelForm
 					}
 					$origColName = FabrikString::safeColName($origColName);
 					$fabrikDb->setQuery("ALTER TABLE $tableName CHANGE $origColName $element->name $objtype");
-					if (!$fabrikDb->execute())
+					try
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						$fabrikDb->execute();
+					}
+					catch (Exception $e)
+					{
+						JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 					}
 				}
 			}
@@ -7361,7 +7372,17 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		return $isstring ? $selValue[0] : $selValue;
+
+		$selValue = $isstring ? $selValue[0] : $selValue;
+
+		// Replace {authorisedViewLevels} with array of view levels the user can access
+		if (strstr($selValue, '{authorisedViewLevels}'))
+		{
+			$isstring = true;
+			$user = JFactory::getUser();
+			$selValue = $user->getAuthorisedViewLevels();
+		}
+		return $selValue;
 	}
 
 	/**
