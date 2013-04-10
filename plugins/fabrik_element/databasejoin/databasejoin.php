@@ -2246,7 +2246,15 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 		// $$$ hugh on validations (at least), we're getting arrays
 		if (is_array($data))
 		{
-			return empty($data[0]);
+			// Check if it's an array because we are a multiselect join
+			if ($this->isJoin())
+			{
+				return empty($data);
+			}
+			else
+			{
+				return empty($data[0]);
+			}
 		}
 		if ($data == '' || $data == '-1')
 		{
