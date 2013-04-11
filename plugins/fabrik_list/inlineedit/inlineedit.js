@@ -506,6 +506,11 @@ var FbListInlineEdit = new Class({
 	},
 	
 	setFocus : function (td) {
+		
+		// See http://www.fabrikar.com/forums/index.php?threads/inline-edit-dialog-window-shows-highlight-in-ie.31732/page-2#post-167922
+		if (Browser.ie) {
+			return;
+		}
 		if (typeOf(td.getElement('.fabrikinput')) !== 'null') {
 			var el = td.getElement('.fabrikinput');
 			setTimeout(function (el) {
