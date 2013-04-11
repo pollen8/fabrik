@@ -664,7 +664,6 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		return $params->get('calc_format_string');
 	}
 
-
 	/**
 	 * Get JS code for ini element list js
 	 * Overwritten in plugin classes

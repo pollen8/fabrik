@@ -874,6 +874,10 @@ class FabrikFEModelList extends JModelForm
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
 		}
 
+		// Add labels before preformatting - otherwise calc elements on dropdown elements show raw data for {list___element}
+		$listModel->addLabels($listModel->_data);
+
+		// Run calculations
 		$listModel->preFormatFormJoins($listModel->_data);
 
 		JDEBUG ? $profiler->mark('start format for joins') : null;
@@ -885,6 +889,76 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('data formatted') : null;
 
 		return array($listModel->totalRecords, $listModel->_data, $listModel->groupTemplates);
+	}
+
+	/**
+	 * Part of list model finesseData() replace list___element values with labels for
+	 * things like dropdowns, needed so that calc elements in preFormatFormJoins() have access to the element
+	 * label
+	 *
+	 * @param   array  &$data  List data
+	 *
+	 * @return  void
+	 */
+	protected function addLabels(&$data)
+	{
+		$form = $this->getFormModel();
+		$groups = $form->getGroupsHiarachy();
+		$ec = count($data);
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $this->activeContextElements($groupModel);
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->setContext($groupModel, $form, $this);
+				$col = $elementModel->getFullName(false, true, false);
+
+				if (!empty($data) && array_key_exists($col, $data[0]))
+				{
+					for ($i = 0; $i < $ec; $i++)
+					{
+						$thisRow = $data[$i];
+						$coldata = $thisRow->$col;
+						$data[$i]->$col = $elementModel->getLabelForValue($coldata);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * $$$ rob pointless getting elemetsnnot shown in the table view?
+	 * $$$ hugh - oops, they might be using elements in group-by template not shown in table
+	 * http://fabrikar.com/forums/showthread.php?p=102600#post102600
+	 * $$$ rob in that case lets test that rather than loading blindly
+	 * $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
+	 * $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
+	 *
+	 * @param   JModel  $groupModel  Group model
+	 *
+	 * @return array element models
+	 */
+	private function activeContextElements($groupModel)
+	{
+		$tableParams = $this->getParams();
+		if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+			|| $this->outPutFormat == 'feed')
+		{
+			$elementModels = $groupModel->getPublishedElements();
+		}
+		else
+		{
+			/* $$$ hugh - added 'always render' option to elements, and methods to grab those.
+			 * Could probably do this in getPublishedListElements(), but for now just grab a list
+			 * of elements with 'always render' set to Yes, and "show in list" set to No,
+			 * then merge that with the getPublishedListElements.  This is to work around issues
+			 * where things like plugin bubble templates use placeholders for elements not shown in the list.
+			 */
+			$alwaysRenderElements = $this->getAlwaysRenderElements(true);
+			$elementModels = $groupModel->getPublishedListElements();
+			$elementModels = array_merge($elementModels, $alwaysRenderElements);
+		}
+		return $elementModels;
 	}
 
 	/**
@@ -996,29 +1070,7 @@ class FabrikFEModelList extends JModelForm
 		$ec = count($data);
 		foreach ($groups as $groupModel)
 		{
-			/* $$$ rob pointless getting elemetsnnot shown in the table view?
-			 * $$$ hugh - oops, they might be using elements in group-by template not shown in table
-			* http://fabrikar.com/forums/showthread.php?p=102600#post102600
-			* $$$ rob in that case lets test that rather than loading blindly
-			* $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
-			* $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
-			*/
-			if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-				|| $this->outPutFormat == 'feed')
-			{
-				$elementModels = $groupModel->getPublishedElements();
-			}
-			else
-			{
-				// $$$ hugh - added 'always render' option to elements, and methods to grab those.
-				// Could probably do this in getPublishedListElements(), but for now just grab a list
-				// of elements with 'always render' set to Yes, and "show in list" set to No,
-				// then merge that with the getPublishedListElements.  This is to work around issues
-				// where things like plugin bubble templates use placeholders for elements not shown in the list.
-				$alwaysRenderElements = $this->getAlwaysRenderElements(true);
-				$elementModels = $groupModel->getPublishedListElements();
-				$elementModels = array_merge($elementModels, $alwaysRenderElements);
-			}
+			$elementModels = $this->activeContextElements($groupModel);
 			foreach ($elementModels as $elementModel)
 			{
 				$e = $elementModel->getElement();
