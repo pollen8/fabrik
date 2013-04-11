@@ -120,7 +120,7 @@ class plgFabrik_ListRadius_search extends plgFabrik_List
 			. '<input type="hidden" name="geo_code_def_lon" value="' . $defaultLon . '" />';
 		}
 
-		$active = $app->getUserStateFromRequest($baseContext . 'radius_serach_active', 'radius_search_active' . $this->renderOrder, array( $params->get('start_active', 0)));
+		$active = $app->getUserStateFromRequest($baseContext . 'radius_serach_active', 'radius_search_active' . $this->renderOrder, array($params->get('start_active', 0)));
 
 		if ($active[0] == 1)
 		{
