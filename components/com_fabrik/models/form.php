@@ -3550,7 +3550,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sql .= $listModel->_buildQueryJoin();
 		$emptyRowId = $this->_rowId === '' ? true : false;
 		$random = JRequest::getVar('random');
-		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
+		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
 		if ($usekey != '')
 		{
 			$usekey = explode('|', $usekey);
