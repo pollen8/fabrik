@@ -2808,7 +2808,8 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array  $opts    Propery 'includePublised' can be set to 0; @since 3.0.7
+	 * @param   array  $opts    Property 'includePublised' can be set to 0; @since 3.0.7
+	 *                          Property 'loadPrefilters' @since 3.0.7.1 - used to ensure that prefilter elements are loaded in inline edit
 	 *
 	 * @return  array  ints ids
 	 */
@@ -2822,19 +2823,45 @@ class FabrikFEModelForm extends FabModelForm
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$class = get_class($elementModel);
-				if (!in_array($class, $ignore))
-				{
-					$element = $elementModel->getElement();
-					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
-					{
-						continue;
-					}
-					$aEls[] = (int) $element->id;
-				}
+				$this->getElementIds_check($elementModel, $ignore, $opts, $aEls);
+			}
+		}
+		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
+		{
+			$tmp = array();
+			$this->getListModel()->getPrefilterArray($tmp);
+			$ids = JArrayHelper::getValue($tmp, 'elementid', array());
+			foreach ($ids as $id)
+			{
+				$elementModel = $this->getElement($id, true);
+				$this->getElementIds_check($elementModel, $ignore, $opts, $aEls);
 			}
 		}
 		return $aEls;
+	}
+
+	/**
+	 * Helper function for getElementIds(), test if the element should be added
+	 *
+	 * @param   plgFabrik_Element  $elementModel  Element model
+	 * @param   array              $ignore        ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array              $opts          Filter options
+	 * @param   array              &$aEls         Array of element ids to load
+	 *
+	 * @return  void
+	 */
+	private function getElementIds_check($elementModel, $ignore, $opts, &$aEls)
+	{
+		$class = get_class($elementModel);
+		if (!in_array($class, $ignore))
+		{
+			$element = $elementModel->getElement();
+			if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+			{
+				continue;
+			}
+			$aEls[] = (int) $element->id;
+		}
 	}
 
 	/**
