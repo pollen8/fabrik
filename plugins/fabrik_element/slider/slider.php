@@ -81,7 +81,7 @@ class plgFabrik_ElementSlider extends plgFabrik_Element
 		{
 			return $val;
 		}
-		$labels = array_filter(explode(',', $params->get('slider-labels')));
+		$labels = (explode(',', $params->get('slider-labels')));
 		$str = array();
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
