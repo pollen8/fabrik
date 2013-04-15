@@ -511,11 +511,14 @@ var FbListInlineEdit = new Class({
 		if (Browser.ie) {
 			return;
 		}
-		if (typeOf(td.getElement('.fabrikinput')) !== 'null') {
-			var el = td.getElement('.fabrikinput');
-			setTimeout(function (el) {
-				el.focus();
-			}, 1000);
+		var el = td.getElement('.fabrikinput');
+		if (typeOf(el) !== 'null') {
+			var fn = function () {
+				if (typeOf(el) !== 'null') {
+					el.focus();
+				}
+			};
+			fn.delay(1000);
 		}
 	},
 	

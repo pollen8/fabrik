@@ -3688,7 +3688,10 @@ class FabrikFEModelList extends JModelForm
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			$ids = $form->getElementIds(array(), array('includePublised' => false));
+			// $ids = $form->getElementIds(array(), array('includePublised' => false));
+
+			// Force loading of join elements
+			$ids = $form->getElementIds(array(), array('includePublised' => false, 'loadPrefilters' => true));
 			$db = FabrikWorker::getDbo(true);
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
@@ -4610,13 +4613,14 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Creates array of prefilters
+	 * Set to public 15/04/2013
 	 *
 	 * @param   array  &$filters  filters
 	 *
 	 * @return  array	prefilters combinde with filters
 	 */
 
-	protected function getPrefilterArray(&$filters)
+	public function getPrefilterArray(&$filters)
 	{
 		if (!isset($this->prefilters))
 		{
