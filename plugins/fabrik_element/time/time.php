@@ -65,7 +65,10 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 			if ($value)
 			{
 				// Avoid 0000-00-00
-				list($hour, $min, $sec) = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				$bits = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				$hour = JArrayHelper::getValue($bits, 0, '00');
+				$min = JArrayHelper::getValue($bits, 1, '00');
+				$sec = JArrayHelper::getValue($bits, 2, '00');
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
