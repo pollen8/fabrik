@@ -102,7 +102,6 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
 		$value = $input->get('v', '', 'string');
-		//echo "value = $value ";
 		$input->set('resetfilters', 1);
 		if ($cnn === 0 || $cnn == -1)
 		{
@@ -146,7 +145,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		}
 		else
 		{
-			$map = $input->get('map', '', 'string');
+			$map = stripslashes($input->get('map', '', 'string'));
 			$map = json_decode($map);
 			if (!empty($map))
 			{
