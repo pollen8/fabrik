@@ -3414,21 +3414,18 @@ class FabrikFEModelList extends JModelForm
 		*/
 
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
-		$pluginCanEdit = !empty($pluginCanEdit) && !in_array(false, $pluginCanEdit);
 
-		/*
-		 * At least one plugin ran, and none of them said No, so that's it, let them override, don't even
-		 * bother findin out what canUserDo and regular ACL's say.
-		 */
-		if ($pluginCanEdit)
+		// At least one plugin run, so plugin results take precedence over anything else.
+		if (!empty($pluginCanEdit))
 		{
-			return true;
+			// If one plugin returns false then return false.
+			return in_array(false, $pluginCanEdit) ? false : true;
 		}
 
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
 		if ($canUserDo !== -1)
 		{
-			// canUserDo() expressed a boolean preference, so use that
+			// $canUserDo expressed a boolean preference, so use that
 			return $canUserDo;
 		}
 		if (!is_object($this->_access) || !array_key_exists('edit', $this->_access))
