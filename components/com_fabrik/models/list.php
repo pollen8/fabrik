@@ -1173,7 +1173,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo(true);
 		$params = $this->getParams();
-		$buttonAction = $params->get('actionMethod');
+		$buttonAction = $this->actionMethod();
 		$nextview = $this->canEdit() ? 'form' : 'details';
 		$tmpKey = '__pk_val';
 		$factedlinks = $params->get('factedlinks');
@@ -1437,9 +1437,10 @@ class FabrikFEModelList extends JModelForm
 					}
 					if ($j3)
 					{
-						if ($params->get('actionMethod') == 'dropdown')
+						$align = $params->get('checkboxLocation', 'end') == 'end' ? 'right' : 'left';
+						if ($buttonAction == 'dropdown')
 						{
-							$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions);
+							$row->fabrik_actions = FabrikHelperHTML::bootStrapDropDown($row->fabrik_actions, $align);
 						}
 						else
 						{
@@ -1492,21 +1493,32 @@ class FabrikFEModelList extends JModelForm
 
 	public function actionMethod()
 	{
-		if (FabrikWorker::j3())
-		{
-			return 'inline';
-		}
 		$params = $this->getParams();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 		if ($params->get('actionMethod', 'default') == 'default')
 		{
 			// Use global
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			return $fbConfig->get('actionMethod', 'floating');
+			$globalDefault = $fbConfig->get('actionMethod', 'floating');
+
+			// Floating depreacted in J3
+			if (FabrikWorker::j3() && $globalDefault === 'floating')
+			{
+				return 'inline';
+			}
+			return $globalDefault;
 		}
 		else
 		{
-			return $params->get('actionMethod', 'floating');
+			$defaut = $params->get('actionMethod', 'floating');
 		}
+		// Floating depreacted in J3
+		if (FabrikWorker::j3() && $default === 'floating')
+		{
+			return 'inline';
+		}
+		return $defaut;
 	}
 
 	/**
@@ -1524,14 +1536,14 @@ class FabrikFEModelList extends JModelForm
 	{
 		$params = $this->getParams();
 		$label = JText::_('COM_FABRIK_DELETE');
-		$buttonAction = $params->get('actionMethod');
+		$buttonAction = $this->actionMethod();
 		$tpl = $this->getTmpl();
 		$j3 = FabrikWorker::j3();
 		$text = $buttonAction == 'dropdown' ? $label : '<span class="hidden">' . $label . '</span>';
 		$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
 		$label = $j3 ? ' ' . JText::_('COM_FABRIK_DELETE') : '<span>' . JText::_('COM_FABRIK_DELETE') . '</span>';
 		$btn = '<a href="#" class="' . $btnClass . 'delete" data-listRef="list_' . $this->getRenderContext() . '" title="' . JText::_('COM_FABRIK_DELETE') . '">'
-				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => $label, 'icon-class' => 'icon-minus')) . $text . '</a>';
+				. FabrikHelperHTML::image('delete.png', 'list', $tpl, array('alt' => $label, 'icon-class' => 'icon-minus')) . ' ' . $text . '</a>';
 		return $j3 ? $btn : '<li class="fabrik_delete">' . $btn . '</li>';
 	}
 
@@ -6105,7 +6117,7 @@ class FabrikFEModelList extends JModelForm
 			$res = $pluginManager->data;
 			foreach ($res as &$r)
 			{
-				$r = $params->get('actionMethod') == 'dropdown' ? '<li>' . $r . '</li>' : $r;
+				$r = $this->actionMethod() == 'dropdown' ? '<li>' . $r . '</li>' : $r;
 			}
 
 			$headingButtons = array_merge($headingButtons, $res);
@@ -6118,7 +6130,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				else
 				{
-					if ($params->get('actionMethod') == 'dropdown')
+					if ($this->actionMethod() == 'dropdown')
 					{
 						$aTableHeadings['fabrik_actions'] = FabrikHelperHTML::bootStrapDropDown($headingButtons);
 					}
