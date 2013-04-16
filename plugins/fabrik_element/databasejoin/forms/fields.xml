@@ -242,6 +242,12 @@
 				<option value="contains">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_CONTAINS</option>
 				<option value="starts_with">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_STARTS_WITH</option>
 		</field>
+		
+		<field name="bootstrap_class"
+			default="input-large"
+			type="bootstrapfieldclass"
+			description="PLG_ELEMENT_DBJOIN_CLASS_DESC"
+			label="PLG_ELEMENT_DBJOIN_CLASS_LABEL" />
 					
 	</fieldset>
 	</fields>

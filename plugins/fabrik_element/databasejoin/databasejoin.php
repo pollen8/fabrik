@@ -1065,7 +1065,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->canUse())
 			{
 				$idname = $this->getFullName(false, true, false) . '_id';
-				$attribs = 'class="fabrikinput inputbox" size="1"';
+				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 				/*if user can access the drop down*/
 				switch ($displayType)
 				{
