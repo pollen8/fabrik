@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelTimeline extends FabrikFEModelVisualization
+class FabrikModelTimeline extends FabrikFEModelVisualization
 {
 
 	/**
@@ -42,12 +42,12 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	public function onAjax_getEvents()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$lists = $params->get('timeline_table', array());
-
 		$session = JFactory::getSession();
 
-		$key = 'com_fabrik.timeline.total.' . $app->input->getInt('visualizationid');
+		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
 		if (!$session->has($key))
 		{
 			$totals = $this->getTotal();
@@ -57,8 +57,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		{
 			$totals = $session->get($key);
 		}
-		$currentList = JRequest::getInt('currentList', 0);
-		$start = JRequest::getInt('start', 0);
+		$currentList = $input->getInt('currentList', 0);
+		$start = $input->getInt('start', 0);
 
 		$res = new stdClass;
 		$fabrik = new stdClass;
@@ -66,7 +66,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$res->events = array();
 		$fabrik->total = array_sum($totals);
 		$fabrik->done = 0;
-
+		$c = 0;
 		if ($start <= $totals[$currentList])
 		{
 			$fabrik->next = $start + $this->step;
@@ -74,7 +74,6 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 
 			$c = array_search($currentList, $lists);
 			$res->events = $this->jsonEvents($currentList, $totals[$currentList], $start, $c);
-
 
 			if ($start + $this->step > $totals[$currentList])
 			{
@@ -116,12 +115,14 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$res->dateTimeFormat = 'ISO8601';
 
 		$json_data = array (
-				//Timeline attributes
-				//'wiki-url'=>'http://simile.mit.edu/shelf',
-				//'wiki-section'=>'Simile Cubism Timeline',
-				//'dateTimeFormat'=>'Gregorian', //JSON!
-				//Event attributes
-				'events'=> $res
+				/*
+				 * Timeline attributes
+				 * 'wiki-url'=>'http://simile.mit.edu/shelf',
+				 * 'wiki-section'=>'Simile Cubism Timeline',
+				 * 'dateTimeFormat'=>'Gregorian', //JSON!
+				 * Event attributes
+				 */
+				'events' => $res
 		);
 		$return = new stdClass;
 		$return->timeline = $json_data;
@@ -134,6 +135,8 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	 * End the ajax get events
 	 *
 	 * @param   object  &$res  return object
+	 *
+	 * @return  void
 	 */
 
 	protected function endAjax_getEvents(&$res)
@@ -156,6 +159,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	protected function jsonEvents($listId, $total, $start, $c)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 		$document = JFactory::getDocument();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
@@ -183,10 +187,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$listModel->setId($listId);
 
 		$eventdata = array();
-		JRequest::setVar('limit' . $listId, $this->step);
-		JRequest::setVar('limitstart' . $listId, $start);
-		$listModel->setLimits();
-
+		$input->set('limit' . $listId, $this->step);
+		$input->set('limitstart' . $listId, $start);
+		$listModel->setLimits($start, $this->step);
 
 		if ($listModel->canView() || $listModel->canEdit())
 		{
@@ -265,6 +268,10 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 			}
 			// $eventdata['query'] = $listModel->mainQuery;
 		}
+		else
+		{
+			throw new RuntimeException('Timeline: no access to list', 500);
+		}
 		return $eventdata;
 	}
 
@@ -297,8 +304,9 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 	protected function clearSession()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$session = JFactory::getSession();
-		$key = 'com_fabrik.timeline.total.' . $app->input->getInt('visualizationid');
+		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
 		$session->clear($key);
 	}
 
@@ -338,7 +346,7 @@ class fabrikModelTimeline extends FabrikFEModelVisualization
 		$json = json_encode($json);
 		$options = new stdClass;
 		$options->id = $this->getId();
-		$options->listRef ='list' . $lists[0] . '_' . $app->scope . '_' . $lists[0];
+		$options->listRef = 'list' . $lists[0] . '_' . $app->scope . '_' . $lists[0];
 		$options->step = $this->step;
 		$options->admin = (bool) $app->isAdmin();
 		$options->dateFormat = $params->get('timeline_date_format', '%c');
