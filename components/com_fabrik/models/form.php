@@ -445,6 +445,7 @@ class FabrikFEModelForm extends FabModelForm
 			if ($app->isAdmin())
 			{
 				$tmpl = $this->isEditable() ? $params->get('admin_form_template') : $params->get('admin_details_template');
+				$tmpl = $tmpl == '' ? $default : $tmpl;
 			}
 			if ($tmpl == '')
 			{
@@ -462,7 +463,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Finally see if the options are overridden by a querystring var
 		$baseTmpl = $tmpl;
-		$tmpl = $input->get('layout', '$tmpl');
+		$tmpl = $input->get('layout', $tmpl);
 
 		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
