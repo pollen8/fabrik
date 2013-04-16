@@ -1342,7 +1342,10 @@ var FbListActions = new Class({
 		});
 		// watch the top/master chxbox
 		var chxall = this.list.form.getElement('input[name=checkAll]');
-		chxall.store('listid', this.list.id);
+		if (typeOf(chxall) !== 'null') {
+			chxall.store('listid', this.list.id);
+		}
+		
 		var c = function (el) {
 			return el.getParent('.fabrik___heading').getElement(this.options.selector);
 		}.bind(this);
