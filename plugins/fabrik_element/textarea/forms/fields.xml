@@ -56,10 +56,22 @@
 				
 			<field default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_DESC" label="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_LABEL" name="use_wysiwyg" type="radio">
+				description="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_DESC"
+				label="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_LABEL" name="use_wysiwyg" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="wysiwyg_extra_buttons"
+				type="radio"
+				class="btn-group"
+				default="1"
+				label="PLG_ELEMENT_TEXTAREA_WYSIWYG_EXTRA_BUTTONS_LABEL"
+				description="PLG_ELEMENT_TEXTAREA_WYSIWYG_EXTRA_BUTTONS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
+				
 			
 		</fieldset>
 		
