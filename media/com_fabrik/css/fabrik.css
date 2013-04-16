@@ -510,6 +510,19 @@ table.fabrikList .oddRow1 {
 /************  End basic table styling *******************/
 /*********************************************************/
 
+/** repeat data ***/
+
+td.repeat-merge,
+td.repeat-reduce {
+	padding: 0 !important;
+	vertical-align: top;
+}
+
+td.repeat-merge ul.fabrikRepeatData li,
+td.repeat-reduce ul.fabrikRepeatData li {
+	padding: 5px !important;
+	border-bottom: 1px solid #CCCCCC;
+}
 /*********************************************************/
 /************  Misc. Workarounds *************************/
 /*********************************************************/

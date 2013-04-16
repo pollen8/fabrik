@@ -5908,6 +5908,17 @@ class FabrikFEModelList extends JModelForm
 				$headingClass[$compsitKey] = array('class' => $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
 				$cellClass[$compsitKey] = array('class' => $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
 
+				// Add in classes for repeat/merge data
+				if ($groupModel->canRepeat())
+				{
+					$cellClass[$compsitKey]['class'] .= ' repeat';
+					$dis = $params->get('join-display');
+					if ($dis != 'default')
+					{
+						$cellClass[$compsitKey]['class'] .= '-' . $dis;
+					}
+				}
+
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0)
 			{
