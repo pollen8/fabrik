@@ -870,6 +870,10 @@ class FabrikFEModelList extends JModelForm
 			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
 		}
 
+		// Add labels before preformatting - otherwise calc elements on dropdown elements show raw data for {list___element}
+		$listModel->addLabels($listModel->data);
+
+		// Run calculations
 		$listModel->preFormatFormJoins($listModel->data);
 
 		JDEBUG ? $profiler->mark('start format for joins') : null;
@@ -881,6 +885,76 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('data formatted') : null;
 
 		return array($listModel->totalRecords, $listModel->data, $listModel->groupTemplates);
+	}
+
+	/**
+	 * Part of list model finesseData() replace list___element values with labels for
+	 * things like dropdowns, needed so that calc elements in preFormatFormJoins() have access to the element
+	 * label
+	 *
+	 * @param   array  &$data  List data
+	 *
+	 * @return  void
+	 */
+	protected function addLabels(&$data)
+	{
+		$form = $this->getFormModel();
+		$groups = $form->getGroupsHiarachy();
+		$ec = count($data);
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $this->activeContextElements($groupModel);
+			foreach ($elementModels as $elementModel)
+			{
+				$elementModel->setContext($groupModel, $form, $this);
+				$col = $elementModel->getFullName(false, true, false);
+
+				if (!empty($data) && array_key_exists($col, $data[0]))
+				{
+					for ($i = 0; $i < $ec; $i++)
+					{
+						$thisRow = $data[$i];
+						$coldata = $thisRow->$col;
+						$data[$i]->$col = $elementModel->getLabelForValue($coldata);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * $$$ rob pointless getting elemetsnnot shown in the table view?
+	 * $$$ hugh - oops, they might be using elements in group-by template not shown in table
+	 * http://fabrikar.com/forums/showthread.php?p=102600#post102600
+	 * $$$ rob in that case lets test that rather than loading blindly
+	 * $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
+	 * $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
+	 *
+	 * @param   JModel  $groupModel  Group model
+	 *
+	 * @return array element models
+	 */
+	private function activeContextElements($groupModel)
+	{
+		$tableParams = $this->getParams();
+		if ($this->formatAll() || ($tableParams->get('group_by_template') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
+			|| $this->outPutFormat == 'feed')
+		{
+			$elementModels = $groupModel->getPublishedElements();
+		}
+		else
+		{
+			/* $$$ hugh - added 'always render' option to elements, and methods to grab those.
+			 * Could probably do this in getPublishedListElements(), but for now just grab a list
+			 * of elements with 'always render' set to Yes, and "show in list" set to No,
+			 * then merge that with the getPublishedListElements.  This is to work around issues
+			 * where things like plugin bubble templates use placeholders for elements not shown in the list.
+			 */
+			$alwaysRenderElements = $this->getAlwaysRenderElements(true);
+			$elementModels = $groupModel->getPublishedListElements();
+			$elementModels = array_merge($elementModels, $alwaysRenderElements);
+		}
+		return $elementModels;
 	}
 
 	/**
@@ -994,29 +1068,7 @@ class FabrikFEModelList extends JModelForm
 		$ec = count($data);
 		foreach ($groups as $groupModel)
 		{
-			/* $$$ rob pointless getting elemetsnnot shown in the table view?
-			 * $$$ hugh - oops, they might be using elements in group-by template not shown in table
-			* http://fabrikar.com/forums/showthread.php?p=102600#post102600
-			* $$$ rob in that case lets test that rather than loading blindly
-			* $$$ rob 15/02/2011 or out put may be csv in which we want to format any fields not shown in the form
-			* $$$ hugh 06/05/2012 added formatAll() mechanism, so plugins can force formatting of all elements
-			*/
-			if ($this->formatAll() || ($tableParams->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-				|| $this->outPutFormat == 'feed')
-			{
-				$elementModels = $groupModel->getPublishedElements();
-			}
-			else
-			{
-				// $$$ hugh - added 'always render' option to elements, and methods to grab those.
-				// Could probably do this in getPublishedListElements(), but for now just grab a list
-				// of elements with 'always render' set to Yes, and "show in list" set to No,
-				// then merge that with the getPublishedListElements.  This is to work around issues
-				// where things like plugin bubble templates use placeholders for elements not shown in the list.
-				$alwaysRenderElements = $this->getAlwaysRenderElements(true);
-				$elementModels = $groupModel->getPublishedListElements();
-				$elementModels = array_merge($elementModels, $alwaysRenderElements);
-			}
+			$elementModels = $this->activeContextElements($groupModel);
 			foreach ($elementModels as $elementModel)
 			{
 				$e = $elementModel->getElement();
@@ -1511,14 +1563,14 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$defaut = $params->get('actionMethod', 'floating');
+			$default = $params->get('actionMethod', 'floating');
 		}
 		// Floating depreacted in J3
 		if (FabrikWorker::j3() && $default === 'floating')
 		{
 			return 'inline';
 		}
-		return $defaut;
+		return $default;
 	}
 
 	/**
@@ -2168,6 +2220,7 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
+
 			// $$$ hugh - can't use simple !$idRows, as empty array is false!
 			if (!is_array($idRows))
 			{
@@ -3449,21 +3502,18 @@ class FabrikFEModelList extends JModelForm
 		*/
 
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEdit', $this, 'list', $row);
-		$pluginCanEdit = !empty($pluginCanEdit) && !in_array(false, $pluginCanEdit);
 
-		/*
-		 * At least one plugin ran, and none of them said No, so that's it, let them override, don't even
-		 * bother findin out what canUserDo and regular ACL's say.
-		 */
-		if ($pluginCanEdit)
+		// At least one plugin run, so plugin results take precedence over anything else.
+		if (!empty($pluginCanEdit))
 		{
-			return true;
+			// If one plugin returns false then return false.
+			return in_array(false, $pluginCanEdit) ? false : true;
 		}
 
 		$canUserDo = $this->canUserDo($row, 'allow_edit_details2');
 		if ($canUserDo !== -1)
 		{
-			// canUserDo() expressed a boolean preference, so use that
+			// $canUserDo expressed a boolean preference, so use that
 			return $canUserDo;
 		}
 		if (!array_key_exists('edit', $this->access))
@@ -3723,7 +3773,10 @@ class FabrikFEModelList extends JModelForm
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			$ids = $form->getElementIds(array(), array('includePublised' => false));
+			// $ids = $form->getElementIds(array(), array('includePublised' => false));
+
+			// Force loading of join elements
+			$ids = $form->getElementIds(array(), array('includePublised' => false, 'loadPrefilters' => true));
 			$db = FabrikWorker::getDbo(true);
 			$id = (int) $this->getId();
 			$query = $db->getQuery(true);
@@ -4666,13 +4719,14 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Creates array of prefilters
+	 * Set to public 15/04/2013
 	 *
 	 * @param   array  &$filters  filters
 	 *
 	 * @return  array	prefilters combinde with filters
 	 */
 
-	protected function getPrefilterArray(&$filters)
+	public function getPrefilterArray(&$filters)
 	{
 		if (!isset($this->prefilters))
 		{
@@ -5991,6 +6045,17 @@ class FabrikFEModelList extends JModelForm
 				}
 				$headingClass[$compsitKey] = array('class' => $responsiveClass . $elementModel->getHeadingClass(), 'style' => $elementParams->get('tablecss_header'));
 				$cellClass[$compsitKey] = array('class' => $responsiveClass . $elementModel->getCellClass(), 'style' => $elementParams->get('tablecss_cell'));
+
+				// Add in classes for repeat/merge data
+				if ($groupModel->canRepeat())
+				{
+					$cellClass[$compsitKey]['class'] .= ' repeat';
+					$dis = $params->get('join-display');
+					if ($dis != 'default')
+					{
+						$cellClass[$compsitKey]['class'] .= '-' . $dis;
+					}
+				}
 
 			}
 			if ($groupHeadings[$groupHeadingKey] == 0)

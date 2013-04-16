@@ -231,8 +231,10 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			$query->select($split . ' AS ' . $db->nameQuote('key'));
 		}
 		$db->setQuery($query);
-		$rows = $db->loadObjectList();
-
+		if (!$rows = $db->loadObjectList())
+		{
+			throw new RuntimeException('Fabrik: nv3d viz data load error: ' . $db->getErrorMsg());
+		}
 		$labelAxisValues = $params->get('label_axis_values', 'label_columns');
 		if ($labelAxisValues === 'label_columns')
 		{
@@ -295,6 +297,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 */
 	protected function multiChartLabels($rows)
 	{
+		$data = array();
 		foreach ($rows as $d)
 		{
 			$o = new stdClass;

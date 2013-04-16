@@ -2409,9 +2409,13 @@ class FabrikAdminModelList extends FabModelAdmin
 		{
 			$sql .= implode(', ', $sqlAdd);
 			$fabrikDb->setQuery($sql);
-			if (!$fabrikDb->execute())
+			try
 			{
-				return JError::raiseWarning(500, 'amend table: ' . $fabrikDb->getErrorMsg());
+				$fabrikDb->execute();
+			}
+			catch (Exception $e)
+			{
+				JError::raiseWarning(500, 'amend table: ' . $e->getMessage());
 			}
 		}
 	}

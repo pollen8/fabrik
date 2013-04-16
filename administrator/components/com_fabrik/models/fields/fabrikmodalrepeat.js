@@ -204,7 +204,7 @@ var FabrikModalRepeat = new Class({
 					} else {
 						// Works for input,select and textareas
 						f.value = a[k][i];
-						if (f.get('tag') === 'select' && jQuery) {
+						if (f.get('tag') === 'select' && typeof jQuery !== 'undefined') {
 							
 							// Manually fire chosen dropdown update
 							jQuery(f).trigger("liszt:updated");

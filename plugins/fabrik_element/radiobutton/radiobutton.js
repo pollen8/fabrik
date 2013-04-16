@@ -22,6 +22,9 @@ window.FbRadio = new Class({
 		this.btnGroupRelay();
 		
 		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
 		c.getElements('.radio.btn-group label').addClass('btn');
 		
 		
@@ -40,6 +43,9 @@ window.FbRadio = new Class({
 	
 	btnGroupRelay: function () {
 		var c = this.getContainer();
+		if (!c) {
+			return;
+		}
 		c.getElements('.radio.btn-group label').addClass('btn');
 		c.addEvent('mouseup:relay(.btn-group label)', function (e, label) {
 			var id = label.get('for'), input;

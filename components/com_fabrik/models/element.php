@@ -803,10 +803,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * Check if the user can use the active element
+	 * If location is 'list' then we don't check the group canEdit() option - causes inline edit plugin not to work
+	 * when followed by a update_col plugin.
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   object  &$model    Calling the plugin list/form
+	 * @param   string  $location  To trigger plugin on form/list for elements
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
@@ -826,7 +828,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
 			 * So if element's group show is type 5, then element is de-facto read only.
 			 */
-			if (!$this->getGroup()->canEdit())
+			if ($location !== 'list' && !$this->getGroup()->canEdit())
 			{
 				$this->access->use = false;
 			}
@@ -4254,7 +4256,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
-			echo $sql;
+			// echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);

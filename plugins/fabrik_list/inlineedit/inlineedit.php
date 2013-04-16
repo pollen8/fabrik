@@ -76,7 +76,9 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 			if (!array_key_exists($key, $shim))
 			{
 				$shim[$key] = $deps;
-			} else {
+			}
+			else
+			{
 				$shim[$key]['deps'] = array_merge($shim[$key]->deps, $shim->deps);
 			}
 		}
@@ -137,19 +139,23 @@ class PlgFabrik_ListInlineedit extends plgFabrik_List
 		{
 			foreach ($use as $key => $fields)
 			{
-				$trigger = $elements[$key];
-				$els[$key] = new stdClass;
-				$els[$key]->elid = $trigger->getId();
-				$els[$key]->plugins = array();
-				foreach ($fields as $field)
+				if (array_key_exists($key, $elements))
 				{
-					$val = $elements[$field];
-
-					// Load in all element js classes
-					if (is_object($val))
+					$trigger = $elements[$key];
+					$els[$key] = new stdClass;
+					$els[$key]->elid = $trigger->getId();
+					$els[$key]->plugins = array();
+					foreach ($fields as $field)
 					{
-						$val->formJavascriptClass($srcs, '', $shim);
-						$els[$key]->plugins[$field] = $val->getElement()->id;
+						$val = $elements[$field];
+
+						// Load in all element js classes
+						if (is_object($val))
+						{
+							$val->formJavascriptClass($srcs, '', $shim);
+							$els[$key]->plugins[$field] = $val->getElement()->id;
+
+						}
 					}
 				}
 			}

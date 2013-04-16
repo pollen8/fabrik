@@ -178,7 +178,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$displayParam = $this->getValColumn();
+			$displayParam = $this->getLabelOrConcatVal();
 			if (is_a($user, 'JUser'))
 			{
 				$str = $user->get($displayParam);
@@ -643,7 +643,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
-		$tabletype = $this->getValColumn();
+		$tabletype = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 
@@ -747,7 +747,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		// $$$ hugh - we need to use the join alias, not hard code #__users
 		$join = $this->getJoin();
-		$joinTableName = $join->table_join_alias;
+		if (is_object($join))
+		{
+			$joinTableName = $join->table_join_alias;
+		}
 		if (empty($joinTableName))
 		{
 			$joinTableName = '#__users';
@@ -786,7 +789,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					break;
 				case 'field':
 				default:
-					$tabletype = $this->getValColumn();
+					$tabletype = $this->getLabelOrConcatVal();
 					break;
 			}
 			$k = $db->quoteName($joinTableName . '.' . $tabletype);
@@ -799,7 +802,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$tabletype = $this->getValColumn();
+				$tabletype = $this->getLabelOrConcatVal();
 				$k = $db->quoteName($joinTableName . '.' . $tabletype);
 			}
 		}
@@ -865,7 +868,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	{
 		static $displayMessage;
 		$params = $this->getParams();
-		$displayParam = $this->getValColumn();
+		$displayParam = $this->getLabelOrConcatVal();
 		return is_a($user, 'JUser') ? $user->get($displayParam) : false;
 	}
 
@@ -941,7 +944,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function getValColumn()
+	protected function getLabelOrConcatVal()
 	{
 		static $displayMessage;
 		$params = $this->getParams();

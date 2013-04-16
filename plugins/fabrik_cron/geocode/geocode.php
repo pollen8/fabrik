@@ -4,8 +4,7 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.geocode
- * @author      Hugh Messenger
- * @copyright   (C) Hugh Messenger
+ * @copyright   Copyright (C) 2005 Hugh Messenger
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
@@ -25,7 +24,7 @@ require_once JPATH_SITE . '/plugins/fabrik_cron/geocode/libs/gmaps2.php';
  * @since       3.0
  */
 
-class plgFabrik_CronGeocode extends plgFabrik_Cron
+class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 {
 
 	/**
@@ -44,30 +43,41 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 	}
 
 	/**
-	 * do the plugin action
+	 * Do the plugin action
 	 *
+	 * @param   array   &$data       array data to process
+	 * @param   object  &$listModel  plugin's list model
+	 *
+	 * @return  int  number of records run
 	 */
-	function process(&$data, &$listModel)
+
+	public function process(&$data, &$listModel)
 	{
 		$params = $this->getParams();
 
-		// grab the table model and find table name and PK
+		// Grab the table model and find table name and PK
 		$table = $listModel->getTable();
 		$table_name = $table->db_table_name;
 		$primary_key = $table->db_primary_key;
 		$primary_key_element = FabrikString::shortColName($table->db_primary_key);
 
-		// for now, we have to read the table ourselves.  We can't rely on the $data passed to us
-		// because it can be arbitrarily filtered according to who happened to hit the page when cron
-		// needed to run.
+		$connection = (int) $params->get('connection');
+
+		/*
+		 * For now, we have to read the table ourselves.  We can't rely on the $data passed to us
+		 * because it can be arbitrarily filtered according to who happened to hit the page when cron
+		 * needed to run.
+		 */
 
 		$mydata = array();
-		$db = FabrikWorker::getDbo();
-		$db->setQuery("SELECT * FROM $table_name");
+		$db = FabrikWorker::getDbo(false, $connection);
+		$query = $db->getQuery(true);
+		$query->select('*')->from($table_name);
+		$db->setQuery($query);
 		$mydata[0] = $db->loadObjectList();
 
-		// grab all the params, like GMaps key, field names to use, etc
-		// $geocode_gmap_key = $params->get('geocode_gmap_key');
+		// Grab all the params, like GMaps key, field names to use, etc
+
 		$geocode_batch_limit = (int) $params->get('geocode_batch_limit', '0');
 		$geocode_delay = (int) $params->get('geocode_delay', '0');
 		$geocode_is_empty = $params->get('geocode_is_empty');
@@ -88,16 +98,9 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
 		$geocode_when = $params->get('geocode_zip_element', '1');
 
-		// sanity check, make sure required elements have been specified
-		/*
-		if (empty($geocode_gmap_key)) {
-		    JError::raiseNotice(500, 'No google maps key specified');
-		    return;
-		}
-		$gmap = new GMaps($geocode_gmap_key);
-		 */
-		$gmap = new GeoCode();
-		// run through our table data
+		$gmap = new GeoCode;
+
+		// Run through our table data
 		$total_encoded = 0;
 		$total_attempts = 0;
 		foreach ($mydata as $gkey => $group)
@@ -111,11 +114,13 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 						FabrikWorker::log('plg.cron.geocode.information', 'reached batch limit');
 						break 2;
 					}
-					// See if the map element is considered empty
-					// Values of $geocode_when are:
-					// 1: default or empty
-					// 2: empty
-					// 3: always
+					/*
+					 * See if the map element is considered empty
+					 * Values of $geocode_when are:
+					 * 1: default or empty
+					 * 2: empty
+					 * 3: always
+					 */
 					$do_geocode = true;
 					if ($geocode_when == '1')
 					{
@@ -127,13 +132,17 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 					}
 					if ($do_geocode)
 					{
-						// it's empty, so lets try and geocode.
-						// first, construct the address
-						// we'll build an array of address components, which we'll explode into a string later
+						/*
+						 * It's empty, so lets try and geocode.
+						 * first, construct the address
+						 * we'll build an array of address components, which we'll explode into a string later
+						 */
 						$a_full_addr = array();
-						// for each address component element, see if one is specific in the params,
-						// if so, see if it has a value in this row
-						// if so, add it to the address array.
+						/*
+						 * For each address component element, see if one is specific in the params,
+						 * if so, see if it has a value in this row
+						 * if so, add it to the address array.
+						 */
 						if ($geocode_addr1_element)
 						{
 							if ($row->$geocode_addr1_element)
@@ -187,27 +196,24 @@ class plgFabrik_CronGeocode extends plgFabrik_Cron
 							$res = $gmap->getLatLng($full_addr);
 							if ($res['status'] == 'OK')
 							{
-								//echo 'found ';
 								$lat = $res['lat'];
 								$long = $res['lng'];
 								if (!empty($lat) && !empty($long))
 								{
 									$map_value = "($lat,$long):$geocode_zoom_level";
-									$db
-										->setQuery(
-											"
-										UPDATE $table_name
-										SET $geocode_map_element = '$map_value'
-										WHERE $primary_key = '{$row->$primary_key_element}'
-									");
+
+									$query->clear();
+									$query->update($table_name)->set($geocode_map_element . ' = ' . $db->quote($map_value))
+									->where($primary_key . ' = ' . $db->quote($row->$primary_key_element));
+									$db->setQuery($query);
 									$db->execute();
 									$total_encoded++;
 								}
 							}
 							else
 							{
-								FabrikWorker::log('plg.cron.geocode.information',
-									sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr));
+								$logMsg = sprintf('Error (%s), no geocode result for: %s', $res['status'], $full_addr);
+								FabrikWorker::log('plg.cron.geocode.information', $logMsg);
 							}
 							if ($geocode_delay > 0)
 							{

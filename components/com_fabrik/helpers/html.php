@@ -1427,9 +1427,9 @@ EOD;
 			$style .= ".fabrikDebugOutput pre{padding:5px;background:#efefef;color:#999;}";
 			$style .= ".fabrikDebugHidden{display:none}";
 			self::addStyleDeclaration($style);
-			$script = "window.addEvent('fabrik.loadeded', function() {
-				$$('.fabrikDebugOutputTitle').each(function(title) {
-				title.addEvent('click', function(e) {
+			$script = "window.addEvent('domready', function() {
+				document.getElements('.fabrikDebugOutputTitle').each(function (title) {
+				title.addEvent('click', function (e) {
 				title.getNext().toggleClass('fabrikDebugHidden');
 		});
 		});

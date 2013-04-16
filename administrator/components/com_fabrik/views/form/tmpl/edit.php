@@ -23,6 +23,14 @@ JHtml::_('behavior.keepalive');
 <script type="text/javascript">
 
 	Joomla.submitbutton = function(task) {
+
+		var currentGroups = document.id('jform_current_groups');
+		if (typeOf(currentGroups) !== 'null') {
+			Object.each(currentGroups.options, function (opt) {
+				opt.selected = true;
+			});
+		}
+
 		if (task !== 'form.cancel'  && !Fabrik.controller.canSaveForm()) {
 			alert('Please wait - still loading');
 			return false;

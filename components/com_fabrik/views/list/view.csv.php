@@ -11,6 +11,14 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * CSV Fabrik List view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewList extends JViewLegacy
 {
 
@@ -44,9 +52,16 @@ class FabrikViewList extends JViewLegacy
 		$model->storeRequestData($request);
 
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+		$start = $input->getInt('start', 0);
+
+		// If we are asking for a new export - clear previous total as list may be filtered differently
+		if ($start === 0)
+		{
+			$session->clear($key);
+		}
 		if (!$session->has($key))
 		{
-			// Only get the total if not set - otherwise causes memory issues when we donwload
+			// Only get the total if not set - otherwise causes memory issues when we downloading
 			$total = $model->getTotalRecords();
 			$session->set($key, $total);
 		}
@@ -55,7 +70,6 @@ class FabrikViewList extends JViewLegacy
 			$total = $session->get($key);
 		}
 
-		$start = $input->getInt('start', 0);
 		if ($start <= $total)
 		{
 			if ((int) $total === 0)

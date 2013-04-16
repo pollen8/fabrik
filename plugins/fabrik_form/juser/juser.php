@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormJUser extends plgFabrik_Form
+class PlgFabrik_FormJUser extends plgFabrik_Form
 {
 
 	/**
@@ -97,10 +97,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Get the fields value regardless of whether its in joined data or no
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   string  $pname   params property name to get the value for
-	 * @param   array   $data    posted form data
-	 * @param   mixed   $default default value
+	 * @param   object  $params   Plugin params
+	 * @param   string  $pname    Params property name to get the value for
+	 * @param   array   $data     Posted form data
+	 * @param   mixed   $default  Default value
 	 *
 	 * @return  mixed  value
 	 */
@@ -350,8 +350,13 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		if ($params->get('juser_field_userid') != '')
 		{
 			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
-			if (!empty($formModel->rowId))
-			{
+
+			/*
+			 * This test would cause a fail if you were editing a record which contained hte user data in a join
+			 * E.g. Fabrikar.com/subscribe - user logged in but adding a new subscription
+			 */
+			//if (!empty($formModel->rowId))
+			//{
 				$original_id = $formModel->formData[$this->useridfield];
 
 				// $$$ hugh - if it's a user element, it'll be an array
@@ -359,7 +364,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 				{
 					$original_id = JArrayHelper::getValue($original_id, 0, 0);
 				}
-			}
+			//}
 		}
 		else
 		{
@@ -525,7 +530,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']);
+					$data['username'], $data['password_clear']
+				);
 			}
 			elseif ($useractivation == 1 && !$bypassActivation && !$autoLogin)
 			{
@@ -682,7 +688,6 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		//$groupIds = (array) JArrayHelper::getValue($formModel->formData, $this->gidfield, $defaultGroup);
 		$groupIds = (array) $this->getFieldValue($params, 'juser_field_usertype', $formModel->formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
@@ -826,6 +831,11 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 	protected function check($post, &$formModel, $params)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
+		$userElName = $userElement->getFullName();
+		$userId = $input->get($userElName);
 		$db = FabrikWorker::getDbo(true);
 		$ok = true;
 		jimport('joomla.mail.helper');
@@ -857,7 +867,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 		if (empty($post['password']))
 		{
 			// $$$tom added a new/edit test
-			if ((int) $post['id'] === 0)
+			if ((int) $userId === 0)
 			{
 				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;
@@ -874,10 +884,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		// Check for existing username
 		$query = $db->getQuery(true);
-		$query->select('id')->from('#__users')->where('username = ' . $db->quote($post['username']))->where('id != ' . (int) $post['id']);
+		$query->select('COUNT(*)')->from('#__users')->where('username = ' . $db->quote($post['username']))->where('id != ' . (int) $userId);
 		$db->setQuery($query);
-		$xid = intval($db->loadResult());
-		if ($xid && $xid != intval($post['id']))
+		$xid = (int) $db->loadResult();
+		if ($xid > 0)
 		{
 			$this->raiseError($formModel->errors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
 			$ok = false;
@@ -885,10 +895,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		// Check for existing email
 		$query->clear();
-		$query->select('id')->from('#__users')->where('email = ' . $db->quote($post['email']))->where('id != ' . (int) $post['id']);
+		$query->select('COUNT(*)')->from('#__users')->where('email = ' . $db->quote($post['email']))->where('id != ' . (int) $userId);
 		$db->setQuery($query);
-		$xid = intval($db->loadResult());
-		if ($xid && $xid != intval($post['id']))
+		$xid = (int) $db->loadResult();
+		if ($xid > 0)
 		{
 			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
 			$ok = false;
