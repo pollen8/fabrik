@@ -103,6 +103,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		$element = $input->get('observe');
 		$value = $input->get('v', '', 'string');
 		$input->set('resetfilters', 1);
+		$input->set('usekey', '');
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
