@@ -147,14 +147,20 @@ class FabrikHelperHTML
 	/**
 	 * Build a datatoggling dropdown
 	 *
-	 * @param   array  $lis  Array of links to create dropdown from
+	 * @param   array   $lis  Array of links to create dropdown from
+	 * @param   string  $align  Should the drop down be left or right aligned - If right then the dropdown content's end is right algined to the button
 	 *
 	 * @return  string
 	 */
 
-	public static function bootStrapDropDown($lis)
+	public static function bootStrapDropDown($lis, $align = 'left')
 	{
-		return '<div class="btn-group fabrik_action"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
+		$class = 'btn-group fabrik_action';
+		if ($align == 'right')
+		{
+			$class .= ' pull-right';
+		}
+		return '<div class="' . $class . '"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
 				<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
