@@ -3912,13 +3912,26 @@ class FabrikFEModelForm extends FabModelForm
 				$jdata = &$this->_data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
+				$keyCount = 0;
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
 					{
-						$pkField = $tblJoin->table_join . '___' . $f->Field;
-						break;
+						if (!isset($pkField))
+						{
+							$pkField = $tblJoin->table_join . '___' . $f->Field;
+						}
+						$keyCount ++;
 					}
+				}
+				/*
+				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so
+				 * simply checking on the user_id (the first col) will find duplicate results and incorrectly
+				 * merge down.
+				 */
+				if ($keyCount > 1)
+				{
+					return;
 				}
 				$usedkeys = array();
 				if (!empty($jdata) && array_key_exists($pkField, $jdata))
