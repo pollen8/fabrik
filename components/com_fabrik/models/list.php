@@ -4610,14 +4610,13 @@ class FabrikFEModelList extends JModelForm
 
 	/**
 	 * Creates array of prefilters
-	 * Set to public 15/04/2013
 	 *
 	 * @param   array  &$filters  filters
 	 *
 	 * @return  array	prefilters combinde with filters
 	 */
 
-	public function getPrefilterArray(&$filters)
+	protected function getPrefilterArray(&$filters)
 	{
 		if (!isset($this->prefilters))
 		{

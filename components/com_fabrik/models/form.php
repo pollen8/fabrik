@@ -2828,9 +2828,16 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
 		{
-			$tmp = array();
-			$this->getListModel()->getPrefilterArray($tmp);
-			$ids = JArrayHelper::getValue($tmp, 'elementid', array());
+			$listModel = $this->getListModel();
+			$ids = array();
+			$filters = $listModel->getFilterArray();
+			foreach ($filters as $f)
+			{
+				if ($f['search_type'] === 'prefilter')
+				{
+					$ids[] = $f['elementid'];
+				}
+			}
 			foreach ($ids as $id)
 			{
 				$elementModel = $this->getElement($id, true);
