@@ -2833,7 +2833,8 @@ class FabrikFEModelForm extends FabModelForm
 			$filters = $listModel->getFilterArray();
 			foreach ($filters as $f)
 			{
-				if ($f['search_type'] === 'prefilter')
+				$searchType = JArrayHelper::getValue($f, 'search_type');
+				if ($searchType === 'prefilter')
 				{
 					$ids[] = $f['elementid'];
 				}
