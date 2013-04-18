@@ -70,6 +70,7 @@ class FabrikViewPackage extends JView
 	{
 		// Initialiase variables.
 		JHtml::_('behavior.modal', 'a.modal');
+		$model = $this->getModel();
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
@@ -107,6 +108,12 @@ class FabrikViewPackage extends JView
 		$opts = json_encode($opts);
 		$this->js = "PackageCanvas = new AdminPackage($opts);
 		new inline('#packagemenu li span');";
+
+		// Simple layout
+		$this->listOpts = $model->getListOpts();
+		$this->formOpts = $model->getFormOpts();
+		$this->selFormOpts = $model->getSelFormOpts();
+		$this->selListOpts = $model->getSelListOpts();
 		parent::display($tpl);
 	}
 
