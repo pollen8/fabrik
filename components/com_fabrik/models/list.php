@@ -4616,6 +4616,8 @@ class FabrikFEModelList extends JModelForm
 	 */
 	public function prefilterSetting()
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
@@ -4699,8 +4701,6 @@ class FabrikFEModelList extends JModelForm
 		if (!isset($this->prefilters))
 		{
 			$elements = $this->getElements('filtername');
-			$app = JFactory::getApplication();
-			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			$params = $this->getParams();
 			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
 			$join = 'WHERE';
