@@ -4698,6 +4698,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->prefilters))
 		{
+			$elements = $this->getElements('filtername');
 			$app = JFactory::getApplication();
 			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			$params = $this->getParams();
