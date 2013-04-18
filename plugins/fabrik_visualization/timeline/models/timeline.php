@@ -246,7 +246,15 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 						$bits = explode('+', $event->start);
 						$event->start = $bits[0] . '+00:00';
 
-						$event->title = strip_tags(@$row->$title);
+						if (isset($row->$title))
+						{
+							$event->title = @$row->$title;
+						}
+						else
+						{
+							$event->title = $w->parseMessageForPlaceHolder($title, $row);
+						}
+						$event->title = strip_tags($event->title);
 						$url = $this->getLinkURL($listModel, $row, $c);
 						$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;
 						$event->image = '';

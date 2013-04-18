@@ -202,20 +202,28 @@ var fabriktablesElement = new Class({
 	},
 
 	updateElementOptions : function (r, element) {
+		var target;
 		if (r === '') {
 			return;
 		}
+		
 		var table = document.id(this.el).get('value');
 		var key = element.getOpts().getValues().toString() + ',' + table;
 		var opts = eval(r);
-		element.el.empty();
+		
+		if (element.el.get('tag') === 'textarea') {
+			target = element.el.getParent().getElement('select');
+		} else {
+			target = element.el;
+		}
+		target.empty();
 		var o = {
 			'value' : ''
 		};
 		if (element.options.value === '') {
 			o.selected = 'selected';
 		}
-		new Element('option', o).appendText('-').inject(element.el);
+		new Element('option', o).appendText('-').inject(target);
 		opts.each(function (opt) {
 			var v = opt.value.replace('[]', '');
 			var o = {
@@ -224,11 +232,12 @@ var fabriktablesElement = new Class({
 			if (v === element.options.value) {
 				o.selected = 'selected';
 			}
-			new Element('option', o).set('text', opt.label).inject(element.el);
+			new Element('option', o).set('text', opt.label).inject(target);
 		}.bind(this));
 		if (this.loader) {
 			this.loader.hide();
 		}
+		
 	},
 	// only called from repeat viz admin interface i think
 	cloned : function (newid, counter) {
