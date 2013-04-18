@@ -111,7 +111,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$hours[] = JHTML::_('select.option', $i);
 			}
 			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
-			$increment = (int)$params->get( 'minutes_increment', 1 );
+			$increment = (int) $params->get('minutes_increment', 1);
 
 			// Siin oli enne $monthlabels, viisin ülespoole
 			for ($i = 0; $i < 60; $i += $increment)
@@ -126,7 +126,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$secs[] = JHTML::_('select.option', $i);
 			}
 			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
+			$attribs = 'class="input-small fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
