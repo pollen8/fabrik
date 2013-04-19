@@ -21,7 +21,7 @@ jimport('joomla.application.component.model');
  * @since       3.0
  */
 
-class plgFabrik_ElementField extends plgFabrik_Element
+class PlgFabrik_ElementField extends PlgFabrik_Element
 {
 
 	/**

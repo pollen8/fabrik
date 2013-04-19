@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementDate extends plgFabrik_Element
+class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
 
 	/**
@@ -1301,8 +1301,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$return[] = '<div class="fabrik_filter_container">';
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else

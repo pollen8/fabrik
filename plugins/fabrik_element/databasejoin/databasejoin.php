@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
  * @since       3.0
 */
 
-class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
+class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 {
 
 	/** @var object connection */
