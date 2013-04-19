@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementCalc extends plgFabrik_Element
+class PlgFabrik_ElementCalc extends PlgFabrik_Element
 {
 
 	/**
@@ -254,9 +254,11 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$form = $this->getForm();
-		// $$$ hugh - need to copy the array, otherwise we blow away join data
-		// from _formData in $joindata foreach below.
-		//$d = $form->_formData;
+
+		/*
+		 * $$$ hugh - need to copy the array, otherwise we blow away join data
+		 * from _formData in $joindata foreach below.
+		 */
 		$d = unserialize(serialize($form->_formData));
 		$joindata = JArrayHelper::getValue($d, 'join', array());
 		$calc = $params->get('calc_calculation');
@@ -470,7 +472,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 				}
 				else
 				{
-					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>\n';
+					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
 				}
 			}
 		}
@@ -548,7 +550,6 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
 		$c = @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
-		echo $c;
 	}
 
 	/**
@@ -664,7 +665,6 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		return $params->get('calc_format_string');
 	}
 
-
 	/**
 	 * Get JS code for ini element list js
 	 * Overwritten in plugin classes
@@ -684,6 +684,12 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		$opts = json_encode($opts);
 		return "new FbCalcList('$id', $opts);\n";
 	}
+
+	/**
+	 * Update list data
+	 *
+	 * @return  void
+	 */
 
 	public function onAjax_listUpdate()
 	{
@@ -710,7 +716,7 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 			{
 				$key = $listRef . $row->__pk_val;
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
-				$return->$key =  @eval($default);
+				$return->$key = @eval($default);
 				if ($store)
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
@@ -728,7 +734,6 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 	* it's submitted to the database, but wrong during form email plugin processing.  So
 	* I gave up trying to work out why, and now just re-calc it during getEmailData()
 	*
-	*
 	* @param   mixed  $value          Element value
 	* @param   array  $data           Form data
 	* @param   int    $repeatCounter  Group repeat counter
@@ -745,4 +750,22 @@ class plgFabrik_ElementCalc extends plgFabrik_Element
 		}
 		return $value;
 	}
+
+	/**
+	* Get database field description
+	* For calc, as we have no idea what they will be storing, needs to be TEXT.
+	*
+	* @return  string  db field type
+	*/
+
+	public function getFieldDescription()
+	{
+		$p = $this->getParams();
+		if ($this->encryptMe())
+		{
+			return 'BLOB';
+		}
+		return "TEXT";
+	}
+
 }

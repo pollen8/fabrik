@@ -148,13 +148,8 @@ class FabrikControllerForm extends JController
 
 		// $$$ hugh - added disable caching option, and no caching if not logged in (unless we can come up with a unique cacheid for guests)
 		// NOTE - can't use IP of client, as could be two users behind same NAT'ing proxy / firewall.
-		if ($viewName !== 'table') {
-			$listModel = $model->getListModel();
-			$listParams = $listModel->getParams();
-		}
-		else {
-			$listParams = $model->getParams();
-		}
+		$listModel = $model->getListModel();
+		$listParams = $listModel->getParams();
 
 		$user = JFactory::getUser();
 
@@ -298,7 +293,15 @@ class FabrikControllerForm extends JController
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->clearErrors();
 
-		$model->process();
+		try
+		{
+			$model->process();
+		}
+		catch (Exception $e)
+		{
+			$model->_arErrors['process_error'] = true;
+			JError::raiseWarning(500, $e->getMessage());
+		}
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now

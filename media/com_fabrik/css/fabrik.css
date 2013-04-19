@@ -168,10 +168,11 @@ a.fabrikTip {
 	filter: progid:    DXImageTransform.Microsoft.gradient(    startColorstr=
 		
 		 
-		'#cccccc', endColorstr=    '#666666' ); /* for IE */
+		'#cccccc', endColorstr=    '#666666' ); /* for IE < 10 */
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+	background-image: -ms-linear-gradient(top, #eee, #ccc);
 	padding: 4px 11px;
 	height: 15px;
 }
@@ -211,6 +212,7 @@ span.handlelabel {
 	background: -webkit-gradient(linear, left top, left bottom, from(#eee),
 		to(#ccc) ); /* for webkit browsers */
 	background: -moz-linear-gradient(top, #eee, #ccc);
+	background-image: -ms-linear-gradient(top, #eee, #ccc);
 	padding: 4px 11px;
 	position: relative;
 }
@@ -490,9 +492,10 @@ table.fabrikList th{
 
 table.fabrikList th{
 	background: -moz-linear-gradient(center top , #F3F3F3, #D7D7D7) repeat scroll 0 0 #E7E7E7;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE < 10*/
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+	background-image: -ms-linear-gradient(top, #F3F3F3, #D7D7D7);
 }
 
 table.fabrikList .oddRow0 {
@@ -507,6 +510,19 @@ table.fabrikList .oddRow1 {
 /************  End basic table styling *******************/
 /*********************************************************/
 
+/** repeat data ***/
+
+td.repeat-merge,
+td.repeat-reduce {
+	padding: 0 !important;
+	vertical-align: top;
+}
+
+td.repeat-merge ul.fabrikRepeatData li,
+td.repeat-reduce ul.fabrikRepeatData li {
+	padding: 5px !important;
+	border-bottom: 1px solid #CCCCCC;
+}
 /*********************************************************/
 /************  Misc. Workarounds *************************/
 /*********************************************************/

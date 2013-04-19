@@ -1,29 +1,25 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
-	window.addEvent('domready', function () {
-		if (typeOf(Fabrik.googleMapRadius) === 'null') {
-			var script2 = document.createElement("script");
-			script2.type = "text/javascript";
-			script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
-			document.body.appendChild(script2);
-			Fabrik.googleMapRadius = true;
-		}
-		if (document.body) {
-			window.fireEvent('google.map.loaded');
-		} else {
-			console.log('no body');
-		}	
-	});
+	if (typeOf(Fabrik.googleMapRadius) === 'null') {
+		var script2 = document.createElement("script");
+		script2.type = "text/javascript";
+		script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
+		document.body.appendChild(script2);
+		Fabrik.googleMapRadius = true;
+	}
+	if (document.body) {
+		window.fireEvent('google.map.loaded');
+	} else {
+		console.log('no body');
+	}
 }
 
 function googleradiusloaded() {
-	window.addEvent('domready', function () {
-		if (document.body) {
-			window.fireEvent('google.radius.loaded');
-		} else {
-			console.log('no body');
-		}	
-	});	
+	if (document.body) {
+		window.fireEvent('google.radius.loaded');
+	} else {
+		console.log('no body');
+	}	
 }
 
 var FbGoogleMap = new Class({
@@ -61,20 +57,10 @@ var FbGoogleMap = new Class({
 	},
 	
 	initialize: function (element, options) {
+		this.mapMade = false;
 		this.parent(element, options);
-		this.loadScript();
 		
-		// @TODO test google object when offline typeOf(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
-		window.addEvent('google.map.loaded', function () {
+		this.loadFn = function () {
 			switch (this.options.maptype) {
 			case 'G_SATELLITE_MAP':
 				this.options.maptype = google.maps.MapTypeId.SATELLITE;
@@ -92,10 +78,35 @@ var FbGoogleMap = new Class({
 				break;
 			}
 			this.makeMap();
-		}.bind(this));
-		window.addEvent('google.radius.loaded', function () {
+		}.bind(this);
+		
+		this.radFn = function () {
 			this.makeRadius();
-		}.bind(this));
+		}.bind(this);
+		
+		window.addEvent('google.map.loaded', this.loadFn);
+		window.addEvent('google.radius.loaded', this.radFn);
+		
+		this.loadScript();
+		
+		// @TODO test google object when offline typeOf(google) isnt working
+		if (this.options.center === 1 && this.options.rowid === 0) {
+			if (geo_position_js.init()) {
+				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
+					enableHighAccuracy: true
+				});
+			} else {
+				fconsole('Geo locaiton functionality not available');
+			}
+		}
+	},
+	
+	/**
+	 * Called when form closed in ajax window
+	 */
+	destroy: function () {
+		window.removeEvent('google.map.loaded', this.loadFn);
+		window.removeEvent('google.radius.loaded', this.radFn);
 	},
 
 	getValue: function () {
@@ -106,15 +117,23 @@ var FbGoogleMap = new Class({
 	},
 
 	makeMap: function () {
-		if (typeOf(this.element) === 'null') {
+		if (this.mapMade === true) {
 			return;
 		}
+		this.mapMade = true;
+		
 		if (typeof(this.map) !== 'undefined') {
+			return;
+		}
+		if (typeOf(this.element) === 'null') {
 			return;
 		}
 		if (this.options.geocode || this.options.reverse_geocode) {
 			this.geocoder = new google.maps.Geocoder();
 		}
+		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
+		// this.element refers to the first loaded row, which should have been removed from the dom
+		this.element = document.id(this.options.element);
 		this.field = this.element.getElement('input.fabrikinput');
 		this.watchGeoCode();
 		if (this.options.staticmap) {
@@ -579,6 +598,9 @@ var FbGoogleMap = new Class({
 		v = v.split(':');
 		if (v.length < 2) {
 			v[1] = this.options.zoomlevel;
+		}
+		if (!this.ma) {
+			return;
 		}
 		var zoom = v[1].toInt();
 		this.map.setZoom(zoom);

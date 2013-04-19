@@ -36,7 +36,7 @@ define("COM_FABRIK_EXCEL_CSV_DELIMITER", ";");
 /** @var string separator used in repeat elements/groups IS USED IN F3 */
 define("GROUPSPLITTER", "//..*..//");
 
-// Override JHTML -needed for framework overrde
+// Override JHTML -needed for framework override
 $version = new JVersion;
 JHTML::addIncludePath(JPATH_SITE . '/components/com_fabrik/jhelpers/' . $version->RELEASE . '/');
 

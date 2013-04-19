@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementDate extends plgFabrik_Element
+class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
 
 	/**
@@ -692,7 +692,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$opts->defaultVal = $this->offsetDate;
 		$opts->showtime = (!$element->hidden && $params->get('date_showtime', 0)) ? true : false;
 		$opts->timelabel = JText::_('time');
-		$opts->typing = $params->get('date_allow_typing_in_field', true);
+		$opts->typing = (bool) $params->get('date_allow_typing_in_field', true);
 		$opts->timedisplay = $params->get('date_timedisplay', 1);
 		$validations = $this->getValidations();
 		$opts->validations = empty($validations) ? false : true;
@@ -717,15 +717,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		{
 			return 'BLOB';
 		}
-		$groupModel = $this->getGroup();
-		if (is_object($groupModel) && !$groupModel->isJoin() && $groupModel->canRepeat())
-		{
-			return "VARCHAR(255)";
-		}
-		else
-		{
-			return "DATETIME";
-		}
+		return "DATETIME";
 	}
 
 	/**
@@ -1312,8 +1304,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$return[] = '<div class="fabrik_filter_container">';
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else

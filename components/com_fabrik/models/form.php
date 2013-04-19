@@ -2808,7 +2808,8 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array  $opts    Propery 'includePublised' can be set to 0; @since 3.0.7
+	 * @param   array  $opts    Property 'includePublised' can be set to 0; @since 3.0.7
+	 *                          Property 'loadPrefilters' @since 3.0.7.1 - used to ensure that prefilter elements are loaded in inline edit
 	 *
 	 * @return  array  ints ids
 	 */
@@ -2822,19 +2823,45 @@ class FabrikFEModelForm extends FabModelForm
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$class = get_class($elementModel);
-				if (!in_array($class, $ignore))
-				{
-					$element = $elementModel->getElement();
-					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
-					{
-						continue;
-					}
-					$aEls[] = (int) $element->id;
-				}
+				$this->getElementIds_check($elementModel, $ignore, $opts, $aEls);
+			}
+		}
+		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
+		{
+			$listModel = $this->getListModel();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
+			foreach ($afilterFields as $name)
+			{
+				$raw = preg_match("/_raw$/", $name) > 0;
+				$name = $name ? FabrikString::rtrimword($name, '_raw') : $name;
+				$elementModel = $this->getElement($name);
 			}
 		}
 		return $aEls;
+	}
+
+	/**
+	 * Helper function for getElementIds(), test if the element should be added
+	 *
+	 * @param   plgFabrik_Element  $elementModel  Element model
+	 * @param   array              $ignore        ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array              $opts          Filter options
+	 * @param   array              &$aEls         Array of element ids to load
+	 *
+	 * @return  void
+	 */
+	private function getElementIds_check($elementModel, $ignore, $opts, &$aEls)
+	{
+		$class = get_class($elementModel);
+		if (!in_array($class, $ignore))
+		{
+			$element = $elementModel->getElement();
+			if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+			{
+				continue;
+			}
+			$aEls[] = (int) $element->id;
+		}
 	}
 
 	/**
@@ -2846,11 +2873,12 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $show_in_list_summary  only show those elements shown in table summary
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
+	 * $param   bool    $noJoins               do not include elements in joined tables (default false)
 	 *
 	 * @return	array	html options
 	 */
 
-	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array())
+	public function getElementOptions($useStep = false, $key = 'name', $show_in_list_summary = false, $incRaw = false, $filter = array(), $noJoins = false)
 	{
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
@@ -2859,6 +2887,10 @@ class FabrikFEModelForm extends FabModelForm
 		foreach ($gkeys as $gid)
 		{
 			$groupModel = $groups[$gid];
+			if ($noJoins && $groupModel->isJoin())
+			{
+				continue;
+			}
 			$elementModels = $groupModel->getMyElements();
 			$prefix = $groupModel->isJoin() ? $groupModel->getJoinModel()->getJoin()->table_join . '.' : '';
 			foreach ($elementModels as $elementModel)
@@ -3545,7 +3577,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sql .= $listModel->_buildQueryJoin();
 		$emptyRowId = $this->_rowId === '' ? true : false;
 		$random = JRequest::getVar('random');
-		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
+		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
 		if ($usekey != '')
 		{
 			$usekey = explode('|', $usekey);
@@ -3872,13 +3904,26 @@ class FabrikFEModelForm extends FabModelForm
 				$jdata = &$this->_data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
+				$keyCount = 0;
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
 					{
-						$pkField = $tblJoin->table_join . '___' . $f->Field;
-						break;
+						if (!isset($pkField))
+						{
+							$pkField = $tblJoin->table_join . '___' . $f->Field;
+						}
+						$keyCount ++;
 					}
+				}
+				/*
+				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so
+				 * simply checking on the user_id (the first col) will find duplicate results and incorrectly
+				 * merge down.
+				 */
+				if ($keyCount > 1)
+				{
+					return;
 				}
 				$usedkeys = array();
 				if (!empty($jdata) && array_key_exists($pkField, $jdata))
@@ -4084,15 +4129,17 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		// Array key = old id value new id
 		$this->groupidmap = array();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$groupModels = $this->getGroups();
 		$this->_form = null;
 		$form = $this->getTable();
 		$form->id = false;
 
-		// Rob newFormLabel set in table copy
-		if (JRequest::getVar('newFormLabel', '') !== '')
+		// $$$ rob newFormLabel set in table copy
+		if ($input->get('newFormLabel', '') !== '')
 		{
-			$form->label = JRequest::getVar('newFormLabel');
+			$form->label = $input->get('newFormLabel');
 		}
 		$res = $form->store();
 		if (!$res)
@@ -4136,6 +4183,8 @@ class FabrikFEModelForm extends FabModelForm
 	public function getRelatedTables()
 	{
 		$db = FabrikWorker::getDbo(true);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$links = array();
 		$params = $this->getParams();
 		if (!$params->get('show-referring-table-releated-data', false))
@@ -4247,6 +4296,26 @@ class FabrikFEModelForm extends FabModelForm
 		return $links;
 	}
 
+	public function getFormClass()
+	{
+		$class = array('');
+		$horiz = true;
+		$groups = $this->getGroupsHiarachy();
+		foreach ($groups as $gkey => $groupModel)
+		{
+			$groupParams = $groupModel->getParams();
+			if ($groupParams->get('group_columns', 1) > 1)
+			{
+				$horiz = false;
+			}
+		}
+		if ($horiz)
+		{
+			$class[] = 'form-horizontal';
+		}
+		return implode(' ', $class);
+	}
+
 	/**
 	 * Get the url to use as the form's action property
 	 *
@@ -4280,7 +4349,15 @@ class FabrikFEModelForm extends FabModelForm
 
 			// Get array of all querystring vars
 			$uri = JFactory::getURI();
-			$queryvars = $router->parse($uri);
+
+			/**
+			 * Was $router->parse($uri);
+			 * but if you had a module + form on a page using sef urls and
+			 * Joomla's language switcher - calling parse() would re-parse the url and
+			 * mung it well good and proper like.
+			 *
+			 */
+			$queryvars =& $router->getVars();
 			if ($this->isAjax())
 			{
 				$queryvars['format'] = 'raw';

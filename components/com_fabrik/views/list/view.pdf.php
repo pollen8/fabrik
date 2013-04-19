@@ -34,6 +34,11 @@ class FabrikViewList extends FabrikViewListBase
 
 	public function display($tpl = null)
 	{
+		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
+		{
+			JError::raiseError(404, 'Please install the dompdf library');
+			return;
+		}
 		$document = JFactory::getDocument();
 		$model = $this->getModel();
 		$params = $model->getParams();

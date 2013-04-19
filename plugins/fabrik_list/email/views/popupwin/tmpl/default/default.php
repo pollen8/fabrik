@@ -1,7 +1,6 @@
 <?php
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-FabrikHelperHTML::framework();
 ?>
 <style>
 #emailtable ul{
@@ -89,7 +88,7 @@ FabrikHelperHTML::framework();
                 }
 		?>
 
-	
+
 	</form>
 </div>
 <?php if ($this->allowAttachment) {?>

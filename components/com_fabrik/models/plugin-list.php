@@ -327,4 +327,22 @@ class plgFabrik_List extends FabrikPlugin
 		return 'plugins/fabrik_list/' . $p . '/' . $p . '.js';
 	}
 
+	/**
+	 * Overridden by plugins if neceesary.
+	 * If the plugin is a filter plugin, return true if it needs the 'form submit'
+	 * method, i.e. the Go button.  Implemented specifically for radius search plugin.
+	 *
+	 * @return  bool
+	 */
+
+	public function requireFilterSubmit()
+	{
+	}
+
+	public function requireFilterSubmit_result()
+	{
+		return false;
+	}
+
+
 }

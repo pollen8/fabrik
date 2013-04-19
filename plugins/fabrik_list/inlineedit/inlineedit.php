@@ -95,19 +95,22 @@ class plgFabrik_ListInlineedit extends plgFabrik_List
 		{
 			foreach ($use as $key => $fields)
 			{
-				$trigger = $elements[$key];
-				$els[$key] = new stdClass;
-				$els[$key]->elid = $trigger->_id;
-				$els[$key]->plugins = array();
-				foreach ($fields as $field)
+				if (array_key_exists($key, $elements))
 				{
-					$val = $elements[$field];
-
-					// Load in all element js classes
-					if (is_object($val))
+					$trigger = $elements[$key];
+					$els[$key] = new stdClass;
+					$els[$key]->elid = $trigger->_id;
+					$els[$key]->plugins = array();
+					foreach ($fields as $field)
 					{
-						$val->formJavascriptClass($srcs);
-						$els[$key]->plugins[$field] = $val->getElement()->id;
+						$val = $elements[$field];
+
+						// Load in all element js classes
+						if (is_object($val))
+						{
+							$val->formJavascriptClass($srcs);
+							$els[$key]->plugins[$field] = $val->getElement()->id;
+						}
 					}
 				}
 			}
@@ -116,16 +119,18 @@ class plgFabrik_ListInlineedit extends plgFabrik_List
 		{
 			foreach ($elements as $key => $val)
 			{
-				$key = FabrikString::safeColNameToArrayKey($key);
+				// Stop elements such as the password element from incorrectly updating themselves
+				if ($val->recordInDatabase(array()))
+				{
+					$key = FabrikString::safeColNameToArrayKey($key);
+					$els[$key] = new stdClass;
+					$els[$key]->elid = $val->_id;
+					$els[$key]->plugins = array();
+					$els[$key]->plugins[$key] = $val->getElement()->id;
 
-				$els[$key] = new stdClass;
-				$els[$key]->elid = $val->_id;
-				$els[$key]->plugins = array();
-				$els[$key]->plugins[$key] = $val->getElement()->id;
-
-				// Load in all element js classes
-				$val->formJavascriptClass($srcs);
-
+					// Load in all element js classes
+					$val->formJavascriptClass($srcs);
+				}
 			}
 		}
 		FabrikHelperHTML::script($srcs);

@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_elementIp extends plgFabrik_Element
+class PlgFabrik_ElementIp extends PlgFabrik_Element
 {
 
 	/**

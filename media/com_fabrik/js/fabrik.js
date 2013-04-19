@@ -272,7 +272,8 @@ var Loader = new Class({
 		
 		Fabrik.loadGoogleMap = function (s, cb) {
 			
-			var src = 'http://maps.googleapis.com/maps/api/js?sensor=' + s + '&callback=Fabrik.mapCb';
+			var prefix = document.location.protocol === 'https:' ? 'https:' : 'http:';
+			var src = prefix + '//maps.googleapis.com/maps/api/js?&sensor=' + s + '&callback=Fabrik.mapCb';
 			
 			// Have we previously started to load the Googlemaps script?
 			var gmapScripts = Array.from(document.scripts).filter(function (f) {
@@ -399,7 +400,15 @@ var Loader = new Class({
 				'loadMethod': loadMethod,
 				'contentURL': url,
 				'width': list.options.popup_width,
-				'height': list.options.popup_height
+				'height': list.options.popup_height,
+				'onClose': function (win) {
+					// $$$ hugh @FIXME need to fix this for when it's a list popup so k context is different
+					var k = 'form_' + list.options.formid;
+					Fabrik.blocks[k].destroyElements();
+					Fabrik.blocks[k].formElements = null;
+					Fabrik.blocks[k] = null;
+					delete(Fabrik.blocks[k]);
+				}
 			};
 			if (typeOf(list.options.popup_offset_x) !== 'null') {
 				winOpts.offset_x = list.options.popup_offset_x;
@@ -407,11 +416,16 @@ var Loader = new Class({
 			if (typeOf(list.options.popup_offset_y) !== 'null') {
 				winOpts.offset_y = list.options.popup_offset_y;
 			}
+			
+			// Only one edit window open at the same time.
+			$H(Fabrik.Windows).each(function (win, key) {
+				win.close();
+			});
 			Fabrik.getWindow(winOpts);
 		};
 		
 		/**
-		 * Globally watch list edit links
+		 * Globally watch list view links
 		 * 
 		 * @param   event    e       relayed click event
 		 * @param   domnode  target  <a> link
@@ -459,6 +473,12 @@ var Loader = new Class({
 				winOpts.offset_y = list.options.popup_offset_y;
 			}
 			Fabrik.getWindow(winOpts);
+		};
+		
+		Fabrik.form = function (ref, id, opts) {
+			var form = new FbForm(id, opts);
+			Fabrik.addBlock(ref, form);
+			return form;
 		};
 		
 		window.fireEvent('fabrik.loaded');

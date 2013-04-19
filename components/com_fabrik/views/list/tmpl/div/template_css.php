@@ -11,6 +11,11 @@
 header('Content-type: text/css');
 $c = $_REQUEST['c'];
 echo "
+
+#listform_$c .divlabel,
+#listform_$c .divelement {
+	display: inline;
+}
 #listform_$c .fabrikList {
 	color: #444444;
 	width:auto;
@@ -190,6 +195,7 @@ div.calendar{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D7D7D7', endColorstr='#F3F3F3'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#F3F3F3),
 		to(#D7D7D7) );
+	background-image: -ms-linear-gradient(top, #F3F3F3, #D7D7D7);
 }
 
 #listform_$c .fabrik_groupheading td{

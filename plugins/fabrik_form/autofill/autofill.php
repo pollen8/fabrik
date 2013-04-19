@@ -39,14 +39,17 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 *
-	 * @param   object  &$params     plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  &$params     Plugin params
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return  void
 	 */
 
 	public function onAfterJSLoad(&$params, &$formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$rowid = $input->get('rowid', '', 'string');
 		$opts = new stdClass;
 		$opts->observe = str_replace('.', '___', $params->get('autofill_field_name'));
 		$opts->trigger = str_replace('.', '___', $params->get('autofill_trigger'));
@@ -60,7 +63,23 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		}
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
-		$opts->fillOnLoad = (bool) $params->get('autofill_onload', false);
+		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
+		switch ($params->get('autofill_onload', '0'))
+		{
+			case '0':
+			default:
+				$opts->fillOnLoad = false;
+				break;
+			case '1':
+				$opts->fillOnLoad = ($rowid === '');
+				break;
+			case '2':
+				$opts->fillOnLoad = ($rowid !== '');
+				break;
+			case '3':
+				$opts->fillOnLoad = true;
+				break;
+		}
 		$opts = json_encode($opts);
 		JText::script('PLG_FORM_AUTOFILL_DO_UPDATE');
 		JText::script('PLG_FORM_AUTOFILL_SEARCHING');
@@ -76,28 +95,45 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 
 	public function onajax_getAutoFill()
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$params = $this->getParams();
-		$cnn = (int) JRequest::getInt('cnn');
-		$element = JRequest::getVar('observe');
-		$value = JRequest::getVar('v');
-		JRequest::setVar('resetfilters', 1);
+		$cnn = (int) $input->getInt('cnn');
+		$element = $input->get('observe');
+		$value = $input->get('v', '', 'string');
+		$input->set('resetfilters', 1);
+		$input->set('usekey', '');
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
-			$formid = JRequest::getInt('formid');
-			JRequest::setVar($element, $value, 'get');
-			$model = JModel::getInstance('form', 'FabrikFEModel');
+			$formid = $input->getInt('formid');
+			$input->set($element, $value, 'get');
+			$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
 			$model->setId($formid);
 			$listModel = $model->getlistModel();
 		}
 		else
 		{
-			$listModel = JModel::getInstance('list', 'FabrikFEModel');
-			$listModel->setId(JRequest::getInt('table'));
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+			$listModel->setId($input->getInt('table'));
 		}
 		if ($value !== '')
 		{
 			// Don't get the row if its empty
+			if ($input->get('autofill_lookup_field', '') !== '')
+			{
+				// Load on a fk
+				$fkid = $input->get('autofill_lookup_field', '');
+				$db = $listModel->getDb();
+				$fk = $listModel->getFormModel()->getElement($fkid, true);
+				$elname = $fk->getElement()->name;
+				$table = $listModel->getTable();
+				$query = $db->getQuery(true);
+				$query->select($table->db_primary_key)->from($table->db_table_name)->where($elname . ' = ' . $db->quote($value));
+				$db->setQuery($query);
+				$value = $db->loadResult();
+			}
 			$data = $listModel->getRow($value, true, true);
 			if (!is_null($data))
 			{
@@ -110,7 +146,7 @@ class plgFabrik_FormAutofill extends plgFabrik_Form
 		}
 		else
 		{
-			$map = JRequest::getVar('map');
+			$map = stripslashes($input->get('map', '', 'string'));
 			$map = json_decode($map);
 			if (!empty($map))
 			{

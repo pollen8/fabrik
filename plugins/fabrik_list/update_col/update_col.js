@@ -50,13 +50,13 @@ var FbListUpdateCol = new Class({
 	},
 	
 	makeUpdateColWindow: function () {
-		
 		this.windowopts = {
 			'id': 'update_col_win_' + this.options.ref,
 			title: Joomla.JText._('PLG_LIST_UPDATE_COL_UPDATE'),
 			loadMethod: 'html',
 			content: this.options.form,
 			width: 400,
+			destroy: false,
 			height: 300,
 			onContentLoaded: function (win) {
 				var form = document.id('update_col' + this.options.ref);

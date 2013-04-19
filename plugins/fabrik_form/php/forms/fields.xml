@@ -6,6 +6,7 @@
 					<option value="">Never</option>
 					<option value="onBeforeLoad">Before the form data is loaded (onBeforeLoad)</option>
 					<option value="onLoad">Before the form is loaded (onLoad)</option>
+					<option value="onCanEditGroup">While groups are rendered on the form (onCanEditGroup)</option>
 					<option value="onBeforeProcess">Start of form submission (onBeforeProcess)</option>
 					<option value="onBeforeStore">After any images have been uploaded (onBeforeStore)</option>
 					<option value="onBeforeCalculations">After data stored, before calculations (onBeforeCalculations)</option>

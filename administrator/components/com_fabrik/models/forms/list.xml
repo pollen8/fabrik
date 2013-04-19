@@ -78,7 +78,7 @@
 		 
 		 <field description="COM_FABRIK_FIELD_LINK_TO_TABLE_DESC" label="COM_FABRIK_FIELD_LINK_TO_TABLE_LABEL" name="db_table_name" observe="connection_id" readonlyonedit="true" type="tables"/>
 			
-		<field description="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" name="db_primary_key" type="listfields" valueformat="tableelement"/>
+		<field description="COM_FABRIK_FIELD_PRIMARY_KEY_DESC" label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL" name="db_primary_key" type="listfields" valueformat="tableelement" nojoins="true" typefilter="MEDIUMINT|INT|BIGINT"/>
 					
 		<field class="btn-group" default="1" description="COM_FABRIK_FIELD_AUTO_INC_DESC" filter="intval" label="COM_FABRIK_FIELD_AUTO_INC_LABEL" name="auto_inc" type="radio">
 			<option value="0">JNO</option>

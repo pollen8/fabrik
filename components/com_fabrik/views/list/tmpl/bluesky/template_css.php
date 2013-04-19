@@ -165,6 +165,7 @@ div.calendar{
 	background: -moz-linear-gradient(center top , #DCECF4, #BECED2) repeat scroll 0 0 #E7E7E7;
 	background: -webkit-gradient(linear, left top, left bottom, from(#DCECF4),
 		to(#BECED2) );
+	background-image: -ms-linear-gradient(top, #DCECF4, #BECED2);
 }
 
 #listform_$c .fabrik_groupheading td{

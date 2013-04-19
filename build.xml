@@ -100,15 +100,29 @@
 				<property name="sql.downloads_table" value="${sql.downloads_table.test}" />
 				<property name="ftp.updatedir" value="${ftp.updatedir.test}" />
 				<property name="ftp.update.folder" value="${ftp.update.folder.test}" />
+				<property name="update.download_folder" value="${update.download_folder_test}" />
+				<property name="ftp.downloaddir" value="${ftp.downloaddir_test}" />
 			</then>
 			<else>
 				<property name="sql.downloads_table" value="${sql.downloads_table.live}" />
 				<property name="ftp.updatedir" value="${ftp.updatedir.live}" />
 				<property name="ftp.update.folder" value="${ftp.update.folder.live}" />
+				<property name="update.download_folder" value="${update.download_folder_live}" />
+				<property name="ftp.downloaddir" value="${ftp.downloaddir_live}" />
 			</else>
 		</if>
 		<echo>${sql.downloads_table} ${ftp.updatedir} ${ftp.update.folder}</echo>
+		<echo>update download folder = ${update.download_folder} </echo>
 		
+		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
+				
+		<if>
+ 			<equals arg1="${jslint.do}" arg2="y" />
+			<then>
+			<antcall target="js" />
+			</then>
+		</if>
+
 		<input message="Create Change log?" addproperty="changelog" validargs="y,n" defaultvalue="n" />
 		<if>
 			<equals arg1="${changelog}" arg2="y" />
@@ -131,22 +145,9 @@
 				<antcall target="uploadPhpDoc"/>
 			</then>	
 		</if>
-		<!-- <input message="PHPCS?" addproperty="phpcs" validargs="y,n" defaultvalue="n" />
-		<if>
- 			<equals arg1="${phpcs}" arg2="y" />
-			<then>
-			<antcall target="phpcs" />
-			</then>
-		</if> -->
-		<input message="JS Lint and compress?" addproperty="jslint.do" validargs="y,n" defaultvalue="y" />
+	
 		
-		<if>
- 			<equals arg1="${jslint.do}" arg2="y" />
-			<then>
-			<antcall target="js" />
-			</then>
-		</if>
-		
+		<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
 		<input message="Component version:" addproperty="version" defaultvalue="${git.log.range.end}"/>
 		
 		<input message="build zips?" addproperty="zip.do" validargs="y,n" defaultvalue="y" />
@@ -154,19 +155,19 @@
 		<if>
  			<equals arg1="${zip.do}" arg2="y" />
 			<then>
-			<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
-			<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
-			<antcall target="fabrik.refreshfiles" />
-			<antcall target="fabrik.start_packagelist" />
-			<antcall target="fabrik.component" />
-			<antcall target="fabrik.modules" />
-			<antcall target="fabrik.package.sink.start" />
-			<antcall target="fabrik.package.start" />
-			<antcall target="fabrik.plugins" />
-			<antcall target="fabrik.fabrikplugins" />
-			<antcall target="fabrik.package.sink.end" />
-			<antcall target="fabrik.package.end" />
-		</then>
+				<foreach list="element,cron,form,list,validationrule,visualization" param="folder" target="updater.testfiles" inheritall="true" inheritrefs="true"/>
+				<echo message=" destination dir = ${cfg.destdir}, git files ${basedir}" />
+				<antcall target="fabrik.refreshfiles" />
+				<antcall target="fabrik.start_packagelist" />
+				<antcall target="fabrik.component" />
+				<antcall target="fabrik.modules" />
+				<antcall target="fabrik.package.sink.start" />
+				<antcall target="fabrik.package.start" />
+				<antcall target="fabrik.plugins" />
+				<antcall target="fabrik.fabrikplugins" />
+				<antcall target="fabrik.package.sink.end" />
+				<antcall target="fabrik.package.end" />
+			</then>
 		</if>
 		<antcall target="updater.ftp" />
 		<echo message="Fabrik build ${version} complete" />
@@ -499,6 +500,7 @@
 	</target>
 		
 	<target name="fabrik.refreshfiles">
+		<antcall target="refresh.updatexml" />
 		<delete dir="${cfg.destdir}" />
 		<mkdir dir="${cfg.destdir}/admin/" />
 
@@ -684,27 +686,9 @@
 			</fileset>
 		</copy>
 		
-		<antcall target="refresh.updatexml" />
 	</target>
 	
 	<target name="refresh.updatexml">
-	
-		<!-- <tstamp>
-	      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
-	  </tstamp>
-	  <tstamp>
-	      <format property="year" pattern="yyyy" locale="en,UK"/>
-	  </tstamp>
-	  
-		<xmltask todir="${cfg.destdir}">
-			<fileset dir="${cfg.destdir}">
-				<include name="**/*.xml"/>
-			</fileset>
-			 <replace path="/extension/version/text()" withText="${version}"/> 
-			 <replace path="/extension/creationDate/text()" withText="${createdate}" />
-			 <replace path="/extension/copyright/text()" withText="(C) 2005-${year} fabrikar.com" />
-		</xmltask> -->
-		
 		<antcall target="xml.update.repoistory" />
 	</target>
 	
@@ -714,8 +698,17 @@
 	 			<equals arg1="${repository.xml.update}" arg2="y" />
 				<then>
 
-				<input message="Joomla target version:" addproperty="jversion" defaultvalue="2.5"/>
 				
+				
+					<tstamp>
+				      <format property="createdate" pattern="MMMM yyyy" locale="en,UK"/>
+				 	 </tstamp>
+				  	<tstamp>
+				      <format property="year" pattern="yyyy" locale="en,UK"/>
+				  	</tstamp>
+				  	<echo>create date : ${createdate}</echo>
+				  	<echo>year : ${year}</echo>
+					
 				<!-- Update version -->
 				<replaceregexp flags="gs">
 					<regexp pattern="\&lt;version\&gt;(.*)\&lt;/version\&gt;"/>

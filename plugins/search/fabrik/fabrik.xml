@@ -2,8 +2,8 @@
 <extension group="search" method="upgrade" type="plugin" version="2.5">
 	<name>plg_fabrik_search</name>
 	<author>Rob Claybrun</author>
-	<creationDate>${createdate}</creationDate>
-	<copyright>(C) 2005-${year} fabrikar.com</copyright>
+	<creationDate>March 2013</creationDate>
+	<copyright>(C) 2005-2013 fabrikar.com</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>

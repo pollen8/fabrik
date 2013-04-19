@@ -18,12 +18,12 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 /**
 * Fabrik Chart Plug-in Model
 *
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.chart
-* @since        3.0
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.visualization.chart
+* @since       3.0
 */
 
-class fabrikModelChart extends FabrikFEModelVisualization
+class FabrikModelChart extends FabrikFEModelVisualization
 {
 
 	/**
@@ -37,7 +37,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	/**
 	 * Get min and max values form totals
 	 *
-	 * @param   array  $totals  Totals
+	 * @param   array  &$totals  Totals
 	 *
 	 * @return  array
 	 */
@@ -72,7 +72,8 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	protected function getMinMax($gdata, $gsums)
 	{
 		$calcfound = $this->getCalcFound();
-		//@TODO if showing a chart that is displaying a summed element then the max is returned as the total
+
+		// @TODO if showing a chart that is displaying a summed element then the max is returned as the total
 		// of that elements summed values which is incorrect
 		$minmax = $calcfound ? $this->_getMinMax($gsums) : $this->_getMinMax(explode(",", $gdata[0]));
 		return $minmax;
@@ -110,7 +111,6 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		$max = 0;
 		$min = 0;
 
-		//$calculationLabels = array();
 		$calculationData = array();
 
 		$tableDatas = $this->getTableData();
@@ -122,7 +122,6 @@ class fabrikModelChart extends FabrikFEModelVisualization
 			$column = $chartElements[$c];
 			$listModel = $tableData['model'];
 
-			//$measurement_unit = JArrayHelper::getValue($measurement_units, $c, '');
 			$pref = substr($column, 0, 6);
 
 			$label = JArrayHelper::getValue($x_axis_label, $c, '');
@@ -137,15 +136,16 @@ class fabrikModelChart extends FabrikFEModelVisualization
 			$elements = $listModel->getElements('filtername');
 			$safename = FabrikString::safeColName($column);
 			$colElement = $elements[$safename];
-
 			if ($calcfound)
 			{
 				$calckey = $this->calc_prefixmap[$pref];
-				// you shouldnt mix calculation elements with normal elements when creating the chart
-				// so if ONE calculation element is found we use the calculation data rather than normal element data
-				// this is because a calculation element only generates one value, if want to compare two averages then
-				//they get rendered as two groups of data and on bar charts this overlays one average over the other, rather than next to it
-				//$calcfound = true;
+				/*
+				 * you shouldnt mix calculation elements with normal elements when creating the chart
+				 * so if ONE calculation element is found we use the calculation data rather than normal element data
+				 * this is because a calculation element only generates one value, if want to compare two averages then
+				 * they get rendered as two groups of data and on bar charts this overlays one average over the other, rather than next to it
+				 */
+				// $calcfound = true;
 
 				$caldata = $cals[$calckey][$column . '_obj'];
 				if (is_array($caldata))
@@ -153,25 +153,30 @@ class fabrikModelChart extends FabrikFEModelVisualization
 
 					foreach ($caldata as $k => $o)
 					{
-						$calculationData[] = $colElement->getCalculationValue($o->value);
+						if ($k !== 'Total')
+						{
+							$calculationData[] = $colElement->getCalculationValue($o->value);
+						}
 					}
 				}
-
 				$gdata[$c] = implode(',', $tmpgdata);
+
 				// $$$ hugh - playing around with pie charts
 				$gsums[$c] = array_sum($calculationData);
 			}
 			else
 			{
 				$origColumn = $column;
-				$column = $column . "_raw"; //_raw fields are most likely to contain the value
+
+				// _raw fields are most likely to contain the value
+				$column .= "_raw";
 				foreach ($alldata as $group)
 				{
 					foreach ($group as $row)
 					{
 						if (!array_key_exists($column, $row))
 						{
-							//didnt find a _raw column - revent to orig
+							// Didn't find a _raw column - revent to orig
 							$column = $origColumn;
 
 							if (!array_key_exists($column, $row))
@@ -202,9 +207,11 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		{
 			$gdata = array(implode(',', $calculationData));
 		}
-		// $$$ hugh - pie chart data has to be summed - the API only takes a
-		// single dataset for pie charts.  And it doesn't make sense trying to
-		// chart individual row data for multiple elements in a pie chart.
+		/*
+		 * $$$ hugh - pie chart data has to be summed - the API only takes a
+		 * single dataset for pie charts.  And it doesn't make sense trying to
+		 * chart individual row data for multiple elements in a pie chart.
+		 */
 		switch ($graph)
 		{
 			case 'p':
@@ -293,9 +300,9 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	/**
 	 * Get code to form horizontal bar chart
 	 *
-	 * @param   int    $c        Total data sets
-	 * @param   array  $gdata    Grouped data
-	 * @param   array  $gsums    Summed data
+	 * @param   int    $c      Total data sets
+	 * @param   array  $gdata  Grouped data
+	 * @param   array  $gsums  Summed data
 	 *
 	 * @return array
 	 */
@@ -340,9 +347,9 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	/**
 	 * Get some data for the default chart types
 	 *
-	 * @param   $c      int     Total data sets
-	 * @param   $gdata  array   Data
-	 * @param   $gsums  array   Calcs
+	 * @param   int    $c      Total data sets
+	 * @param   array  $gdata  Data
+	 * @param   array  $gsums  Calcs
 	 *
 	 * @return array
 	 */
@@ -449,7 +456,7 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	/**
 	 * Get Axis Labels
 	 *
-	 * @param  int  $total  Total?
+	 * @param   int  $total  Total?
 	 *
 	 * @return array axis labels
 	 */
@@ -494,7 +501,6 @@ class fabrikModelChart extends FabrikFEModelVisualization
 				{
 					foreach ($caldata as $k => $o)
 					{
-						//$calculationLabels[] = trim(strip_tags($o->elLabel));
 						$calculationLabels[] = trim(strip_tags($o->label));
 					}
 				}
@@ -503,7 +509,8 @@ class fabrikModelChart extends FabrikFEModelVisualization
 			}
 			else
 			{
-				$column = $column . "_raw"; //_raw fields are most likely to contain the value
+				// _raw fields are most likely to contain the value
+				$column = $column . "_raw";
 				foreach ($alldata as $group)
 				{
 					foreach ($group as $row)
@@ -582,9 +589,9 @@ class fabrikModelChart extends FabrikFEModelVisualization
 	/**
 	 * Make a pie chart
 	 *
-	 * @param   $c      int     Total data sets
-	 * @param   $gdata  array   Data
-	 * @param   $gsums  array   Calcs
+	 * @param   int    $c      Total data sets
+	 * @param   array  $gdata  Data
+	 * @param   array  $gsums  Calcs
 	 *
 	 * @return  array
 	 */
@@ -597,8 +604,10 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		$axisLabels = $this->getAxisLabels($c);
 		if ($c > 1)
 		{
-			// mutiple table/elements, so use the sums
-			// need to scale our data into percentages
+			/*
+			 * mutiple table/elements, so use the sums
+			 * need to scale our data into percentages
+			 */
 			$tot_sum = array_sum($gsums);
 			$percs = array();
 			foreach ($gsums as $sum)
@@ -619,10 +628,10 @@ class fabrikModelChart extends FabrikFEModelVisualization
 		}
 		else
 		{
-			// single table/elements, so use the row data
+			// Single table/elements, so use the row data
 			$gsums = explode(',', $gdata[0]);
 
-			// scale to percentages
+			// Scale to percentages
 			$tot_sum = array_sum($gsums);
 			$percs = array();
 			foreach ($gsums as $sum)

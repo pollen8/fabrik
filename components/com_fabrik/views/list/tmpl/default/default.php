@@ -52,20 +52,20 @@ endforeach;?>
 		 </tfoot>
 
 			<?php
-			echo '<thead>'.$this->headingstmpl.'</thead>';
-			if ($this->isGrouped && empty($this->rows)) {
+			echo '<thead>' . $this->headingstmpl . '</thead>';
+			if ($this->isGrouped && empty($this->rows)) :
 				?>
 				<tbody style="<?php echo $this->emptyStyle?>">
-				<tr>
-				<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
-				<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
-				<?php echo $this->emptyDataMessage; ?>
-									</div>
-								</td>
-							</tr>
-						</tbody>
+					<tr>
+						<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+							<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
+								<?php echo $this->emptyDataMessage; ?>
+							</div>
+						</td>
+					</tr>
+				</tbody>
 				<?php
-			}
+			endif;
 		$gCounter = 0;
 		foreach ($this->rows as $groupedby => $group) :
 			if ($this->isGrouped) :

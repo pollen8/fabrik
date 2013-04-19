@@ -3,9 +3,9 @@
  * Insert Fabrik Content into Joomla Articles
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
- * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license     GNU/GPL
+ * @subpackage  Content.fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Check to ensure this file is included in Joomla!
@@ -17,7 +17,7 @@ jimport('joomla.plugin.plugin');
  * Fabrik content plugin - renders forms, lists and visualizations
  *
  * @package     Joomla.Plugin
- * @subpackage  Content
+ * @subpackage  Content.fabrik
  * @since       1.5
  */
 
@@ -508,8 +508,6 @@ class plgContentFabrik extends JPlugin
 			if (method_exists($model, 'reset'))
 			{
 				$model->reset();
-				// $$$ rob erm $ref is a regex?! something not right here (caused js error in cb plugin)
-				//$model->setRenderContext($ref);
 			}
 			$controller->display($model);
 			$result = ob_get_contents();
@@ -554,7 +552,7 @@ class plgContentFabrik extends JPlugin
 		$this->origRequestVars = array();
 		foreach ($qs_arr as $k => $v)
 		{
-			$origVar = $input->get($k. '', 'string');
+			$origVar = $input->get($k, '', 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
 			$input->set($k, $v);
@@ -702,7 +700,7 @@ class plgContentFabrik extends JPlugin
 				$controller = new FabrikControllerVisualization;
 				break;
 			case 'form':
-				$controller = new FabrikControllerForm();
+				$controller = new FabrikControllerForm;
 				break;
 			case 'details':
 				$controller = new FabrikControllerDetails;
@@ -713,7 +711,7 @@ class plgContentFabrik extends JPlugin
 				{
 					if (!array_key_exists($id, $this->controllers['list']))
 					{
-						$this->controllers['list'][$id] = new FabrikControllerList();
+						$this->controllers['list'][$id] = new FabrikControllerList;
 					}
 				}
 				else

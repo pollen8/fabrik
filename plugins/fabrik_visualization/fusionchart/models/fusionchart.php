@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelFusionchart extends FabrikFEModelVisualization
+class FabrikModelFusionchart extends FabrikFEModelVisualization
 {
 
 	/**
@@ -339,7 +339,8 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 	private function _replaceRequest($msg)
 	{
 		$db = JFactory::getDbo();
-		$request = JRequest::get('request');
+		$filter = JFilterInput::getInstance();
+		$request = $filter->clean($_REQUEST, 'array');
 		foreach ($request as $key => $val)
 		{
 			if (is_string($val))
@@ -408,8 +409,12 @@ class fabrikModelFusionchart extends FabrikFEModelVisualization
 		$w = $params->get('fusionchart_width');
 		$h = $params->get('fusionchart_height');
 
-		$chartType = $params->get('fusionchart_type');
+		$chartType = $params->get('fusionchart_type', '');
 
+		if ($chartType == '')
+		{
+			JError::raiseError(501, 'Not chart type selected');
+		}
 		// Create new chart
 		$this->FC = new FusionCharts($chartType, $w, $h);
 

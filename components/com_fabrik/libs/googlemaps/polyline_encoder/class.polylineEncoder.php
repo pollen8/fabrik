@@ -1,12 +1,12 @@
 <?php
 /**
- * 
+ *
  * $$$ hugh - hacked around for Fabrik use, to allow using the 'radius widget' in static maps.
  * Fixed a bunch of undefined notices, and added the GMapCircle() method.
- * 
+ *
  * PolylineEncoder based on Mark McClure's Javascript PolylineEncoder
  * and Jim Hribar's PHP version. All nicely melted into a proper PHP5 class.
- * 
+ *
  * @package     Google Maps Helpers
  * @since       2008-12-02
  * @author      Matthias Bauer <matthias@pulpmedia.at>
@@ -20,7 +20,7 @@ class PolylineEncoder
 	private $verySmall = 0.00001;
 	private $forceEndpoints = true;
 	private $zoomLevelBreaks = array();
-	
+
 	/**
 	 * All parameters are set with useful defaults.
 	 * If you actually want to understand them, see Mark McClure's detailed description.
@@ -33,19 +33,19 @@ class PolylineEncoder
 		$this->zoomFactor = $zoomFactor;
 		$this->verySmall = $verySmall;
 		$this->forceEndpoints = $forceEndpoints;
-		
-		for($i = 0; $i < $this->numLevels; $i++) 
+
+		for($i = 0; $i < $this->numLevels; $i++)
 		{
 			$this->zoomLevelBreaks[$i] = $this->verySmall * pow($this->zoomFactor, $this->numLevels-$i-1);
 		}
 	}
-	
+
 	/**
 	 * Generates all values needed for the encoded Google Maps GPolyline.
 	 *
 	 * @param array		Multidimensional input array in the form of
 	 * 					array(array(latitude, longitude), array(latitude, longitude),...)
-	 * 
+	 *
 	 * @return stdClass	Simple object containing three public parameter:
 	 * 					- points: the points string with escaped backslashes
    *          - levels: the encoded levels ready to use
@@ -53,12 +53,13 @@ class PolylineEncoder
    *          - numLevels: should be used for creating the polyline
    *          - zoomFactor: should be used for creating the polyline
 	 */
-	public function encode($points) 
+	public function encode($points)
 	{
-    if(count($points) > 2) 
+		$dists = array();
+    if(count($points) > 2)
     {
       $stack[] = array(0, count($points)-1);
-      while(count($stack) > 0) 
+      while(count($stack) > 0)
       {
           $current = array_pop($stack);
           $maxDist = $absMaxDist = 0;
@@ -69,7 +70,7 @@ class PolylineEncoder
         {
             $maxDist = $temp;
             $maxLoc = $i;
-            if($maxDist > $absMaxDist) 
+            if($maxDist > $absMaxDist)
             {
                 $absMaxDist = $maxDist;
             }
@@ -90,12 +91,12 @@ class PolylineEncoder
     $polyline->points = str_replace("\\","\\\\", $polyline->rawPoints);
     $polyline->numLevels = $this->numLevels;
     $polyline->zoomFactor = $this->zoomFactor;
-    
+
     return $polyline;
 	}
-	
+
 	private function computeLevel($dd)
-	{	
+	{
 	    if($dd > $this->verySmall)
 	    {
 	        $lev = 0;
@@ -106,7 +107,7 @@ class PolylineEncoder
 	    }
 	    return $lev;
 	}
-	
+
 	private function distance($p0, $p1, $p2)
 	{
 	    if($p1[0] == $p2[0] && $p1[1] == $p2[1])
@@ -120,35 +121,35 @@ class PolylineEncoder
 	        {
 	            $out = sqrt(pow($p0[0] - $p1[0],2) + pow($p0[1] - $p1[1],2));
 	        }
-	        if($u >= 1) 
+	        if($u >= 1)
 		{
 	            $out = sqrt(pow($p0[0] - $p2[0],2) + pow($p0[1] - $p2[1],2));
 	        }
-	        if(0 < $u && $u < 1) 
+	        if(0 < $u && $u < 1)
 		{
 	            $out = sqrt(pow($p0[0]-$p1[0]-$u*($p2[0]-$p1[0]),2) + pow($p0[1]-$p1[1]-$u*($p2[1]-$p1[1]),2));
 	        }
 	    }
 	    return $out;
 	}
-	
+
 	private function encodeSignedNumber($num)
 	{
 	   $sgn_num = $num << 1;
-	   if ($num < 0) 
+	   if ($num < 0)
 	   {
 	       $sgn_num = ~($sgn_num);
 	   }
 	   return $this->encodeNumber($sgn_num);
 	}
-	
+
 	private function createEncodings($points, $dists)
 	{
 		$plat = $plng = 0;
 		$encoded_points = '';
 	    for($i=0; $i<count($points); $i++)
 	    {
-	        if(isset($dists[$i]) || $i == 0 || $i == count($points)-1) 
+	        if(isset($dists[$i]) || $i == 0 || $i == count($points)-1)
 		{
 		    $point = $points[$i];
 		    $lat = $point[0];
@@ -164,8 +165,8 @@ class PolylineEncoder
 	    }
 	    return $encoded_points;
 	}
-	
-	private function encodeLevels($points, $dists, $absMaxDist) 
+
+	private function encodeLevels($points, $dists, $absMaxDist)
 	{
 		$encoded_levels = '';
 	    if($this->forceEndpoints)
@@ -174,7 +175,7 @@ class PolylineEncoder
 	    }
 	    else
 	    {
-	        $encoded_levels .= $this->encodeNumber($this->numLevels-$this->computeLevel($absMaxDist)-1);    
+	        $encoded_levels .= $this->encodeNumber($this->numLevels-$this->computeLevel($absMaxDist)-1);
 	    }
 	    for($i=1; $i<count($points)-1; $i++)
 	    {
@@ -193,11 +194,11 @@ class PolylineEncoder
 	    }
 	    return $encoded_levels;
 	}
-	
+
 	private function encodeNumber($num)
 	{
 		$encodeString = '';
-	    while($num >= 0x20) 
+	    while($num >= 0x20)
 	    {
 	        $nextValue = (0x20 | ($num & 0x1f)) + 63;
 	        $encodeString .= chr($nextValue);
@@ -207,12 +208,12 @@ class PolylineEncoder
 	    $encodeString .= chr($finalValue);
 	    return $encodeString;
 	}
-	
+
 	/**
 	 * Code to build a polyline circle, stolen from:
 	 * http://stackoverflow.com/questions/7316963/drawing-a-circle-google-static-maps
 	 * Needed for drawing radius circle on static maps
-	 * 
+	 *
 	 * @param unknown_type $Lat
 	 * @param unknown_type $Lng
 	 * @param unknown_type $Rad
@@ -220,29 +221,29 @@ class PolylineEncoder
 	 */
 	public function GMapCircle($Lat,$Lng,$Rad,$Detail=8){
 		$R    = 6371;
-	
+
 		$pi   = pi();
-	
+
 		$Lat  = ($Lat * $pi) / 180;
 		$Lng  = ($Lng * $pi) / 180;
 		$d    = $Rad / $R;
-	
+
 		$points = array();
 		$i = 0;
-	
+
 		for ($i = 0; $i <= 360; $i+=$Detail)
 		{
 			$brng = $i * $pi / 180;
-		
+
 			$pLat = asin(sin($Lat)*cos($d) + cos($Lat)*sin($d)*cos($brng));
 			$pLng = (($Lng + atan2(sin($brng)*sin($d)*cos($Lat), cos($d)-sin($Lat)*sin($pLat))) * 180) / $pi;
 			$pLat = ($pLat * 180) /$pi;
-		
+
 			$points[] = array($pLat,$pLng);
 		}
-	
+
 		$EncString = $this->encode($points);
-	
+
 		return $EncString->points;
 	}
 }

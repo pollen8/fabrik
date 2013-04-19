@@ -12,7 +12,16 @@
 				
 			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_END_DATE_DESC" label="PLG_VIZ_TIMELINE_END_DATE_LABEL" name="timeline_enddate" published="true" showintable="true" table="params_timeline_table" type="element"/>
 				
-			<field connection="params_timeline_connection" connection_in_repeat="false" description="PLG_VIZ_TIMELINE_LABEL_DESC" label="PLG_VIZ_TIMELINE_LABEL_LABEL" name="timeline_label" published="true" showintable="true" table="params_timeline_table" type="element"/>
+			<field name="timeline_label"
+				type="element"
+				connection="params_timeline_connection"
+				connection_in_repeat="false"
+				description="PLG_VIZ_TIMELINE_LABEL_DESC"
+				label="PLG_VIZ_TIMELINE_LABEL_LABEL"
+				published="true"
+				showintable="true"
+				mode="gui"
+				table="params_timeline_table" />
 				
 			<field cols="40" description="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_DESC" label="PLG_VIZ_TIMELINE_DETAIL_TEMPLATE_LABEL" name="timeline_detailtemplate" rows="8" type="textarea"/>
 			

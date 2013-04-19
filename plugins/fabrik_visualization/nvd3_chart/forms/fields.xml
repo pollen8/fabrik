@@ -11,8 +11,9 @@
 					<option value="pieChart">Pie</option>
 					<option value="discreteBarChart">Discrete bar chart</option>
 					<option value="stackedAreaChart">stacked Area Chart</option>
-					<option value="multiBarChart">multi Bar Chart</option>
 					<option value="lineWithFocusChart">line With Focus Chart</option>
+					<option value="multiBarChart">multi Bar Chart</option>
+					<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
 			</field>
 			
 			<field name="conn_id"
@@ -24,6 +25,30 @@
 				observe="params_conn_id"
 				description="PLG_FABRIK_VIZ_NVD3_TABLE_DESC"
 				label="PLG_FABRIK_VIZ_NVD3_TABLE_LABEL" />
+			
+			<field name="script"
+				type="filelist"
+				hide_default="1"
+				description="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_DESC"
+				directory="/plugins/fabrik_visualization/nvd3_chart/scripts/"
+				label="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_LABEL"/>
+		</fieldset>
+		
+		<fieldset name="data" label="PLG_FABRIK_VIZ_NV3D_DATA_MODE">
+			
+			<field name="data_mode"
+				type="toggleoptionsradio"
+				show="1" hide="0" toggle="data-labels-in-fieldnames"
+				alt="data-labels-in-data"
+				default="0"
+				label="PLG_FBRIK_VIZ_NV3D_DATA_MODE_LABEL"
+				description="PLG_FBRIK_VIZ_NV3D_DATA_MODE_DESC">
+					<option value="0">PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA</option>
+					<option value="1">PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES</option>	
+			</field>
+		</fieldset>
+		
+		<fieldset name="data-labels-in-data" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_DATA">
 			
 			<field name="value_field"
 				type="listfields"
@@ -37,17 +62,36 @@
 				table="params_tbl"
 				connection="params_conn_id"
 				description="PLG_FABRIK_VIZ_NVD3_LABEL_DESC"
-				label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL"  />
-
-			<field name="script"
-				type="filelist"
-				hide_default="1"
-				description="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_DESC"
-				directory="/plugins/fabrik_visualization/nvd3_chart/scripts/"
-				label="PLG_FABRIK_VIZ_NVD3_DATA_SCRIPT_LABEL"/>
+				label="PLG_FABRIK_VIZ_NVD3_LABEL_LABEL" />
+				
 		</fieldset>
 	
-		<fieldset name="design">
+		<fieldset name="data-labels-in-fieldnames" label="PLG_FABRIK_VIZ_NV3D_LABELS_IN_FIELDNAMES">
+		
+			<field name="label_columns"
+				type="textarea"
+				rows="6"
+				cols="3"
+				description="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS_LABEL" />
+			
+			<field name="split"
+				type="field"
+				description="PLG_FABRIK_VIZ_NV3D_SPLIT_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_SPLIT_LABEL" />
+				
+			<field name="label_axis_values"
+				type="radio"
+				default="label_columns"
+				description="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_LABEL_AXIS_VALUES_LABEL">
+					<option value="label_columns">PLG_FABRIK_VIZ_NV3D_LABEL_COLUMNS</option>
+					<option value="split">PLG_FABRIK_VIZ_NV3D_SPLIT_COLUMNS</option>
+			</field>
+				
+		</fieldset>
+		
+		<fieldset name="design" label="PLG_FABRIK_VIZ_NV3D_FORMATTIING">
 		
 			<field name="width"
 				default="350"
@@ -65,9 +109,30 @@
 					description="PLG_FABRIK_VIZ_NVD3_COLOUR_DESC"
 					label="PLG_FABRIK_VIZ_NVD3_COLOUR_LABEL" />
 					
+			<field name="margin"
+				type="text"
+				default=""
+				description="PLG_FABRIK_VIZ_NV3D_MARGIN_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_MARGIN_LABEL" />
+				
+			<field name="controls"
+				type="radio"
+				default="1"
+				description="PLG_FABRIK_VIZ_NV3D_CONTROLS_DESC"
+				label="PLG_FABRIK_VIZ_NV3D_CONTROLS_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="rotate_labels"
+				type="text"
+				default="45"
+				label="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_LABEL"
+				description="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_DESC" />
+					
 		</fieldset>
 		
-		<fieldset name="pie-options" label="pie opts">
+		<fieldset name="pie-options" label="PLG_FABRIK_VIZ_NV3D_PIE_OPTS">
 					
 				<field name="pie_labels"
 					type="radio"

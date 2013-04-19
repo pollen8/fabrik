@@ -82,6 +82,13 @@
 				<option value="2">PLG_ELEMENT_DBJOIN_EDIT</option>
 				<option value="3">PLG_ELEMENT_DBJOIN_BOTH</option>
 		</field>
+		
+		<field name="database_join_join_sql"
+			type="textarea"
+			cols="40" rows="8"
+			description="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_DESC"
+			label="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_LABEL" />
+			
 	</fieldset>
 	
 	<fieldset label="Default" name="plg-databasejoin-xtra">
@@ -108,7 +115,7 @@
 		
 		<field default="0" description="PLG_ELEMENT_DBJOIN_Y_OFFSET_DESC" label="PLG_ELEMENT_DBJOIN_Y_OFFSET_LABEL" name="yoffset" size="3" type="text"/>
 			
-		<field default="0" description="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_DESC" label="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_LABEL" name="join_popupwidth" size="3" type="text"/>
+		<field default="" description="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_DESC" label="PLG_ELEMENT_DBJOIN_POPUP_WINDOW_WIDTH_LABEL" name="join_popupwidth" size="3" type="text"/>
 			
 		<field default="0" description="PLG_ELEMENT_DBJOIN_READONLY_LINK_DESC" label="PLG_ELEMENT_DBJOIN_READONLY_LINK_LABEL" name="databasejoin_readonly_link" type="radio">
 				<option value="0">JNO</option>

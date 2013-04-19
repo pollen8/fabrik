@@ -11,6 +11,14 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * CSV Fabrik List view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewList extends JView
 {
 
@@ -33,7 +41,7 @@ class FabrikViewList extends JView
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
 		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
-		JRequest::setVar('limit' . $model->getId(), $exporter->_getStep());
+		$input->set('limit' . $model->getId(), $exporter->_getStep());
 
 		// $$$ rob moved here from csvimport::getHeadings as we need to do this before we get
 		// the list total
@@ -44,9 +52,16 @@ class FabrikViewList extends JView
 		$model->storeRequestData($request);
 
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+		$start = $input->getInt('start', 0);
+
+		// If we are asking for a new export - clear previous total as list may be filtered differently
+		if ($start === 0)
+		{
+			$session->clear($key);
+		}
 		if (!$session->has($key))
 		{
-			// Only get the total if not set - otherwise causes memory issues when we donwload
+			// Only get the total if not set - otherwise causes memory issues when we downloading
 			$total = $model->getTotalRecords();
 			$session->set($key, $total);
 		}
@@ -55,7 +70,6 @@ class FabrikViewList extends JView
 			$total = $session->get($key);
 		}
 
-		$start = $input->getInt('start', 0);
 		if ($start <= $total)
 		{
 			if ((int) $total === 0)

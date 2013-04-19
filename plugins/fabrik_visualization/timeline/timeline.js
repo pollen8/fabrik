@@ -107,7 +107,10 @@ var FbVisTimeline = new Class({
 					this.ajax.options.data.currentList = json.fabrik.currentList;
 					this.ajax.send();
 				}
-			}.bind(this)
+			}.bind(this),
+			onFailure: function (xhr) {
+				alert(xhr.status + ': ' + xhr.statusText);
+			}
 		});
 		
 		Fabrik.addEvent('fabrik.advancedSearch.submit', function (e) {

@@ -144,7 +144,6 @@ class plgFabrik_FormRest extends plgFabrik_Form
 
 		$curlOpts = $this->buildCurlOpts($method, $headers, $endpoint, $params, $output);
 
-
 		foreach ($curlOpts as $key => $value)
 		{
 			curl_setopt($chandle, $key, $value);
@@ -319,7 +318,7 @@ class plgFabrik_FormRest extends plgFabrik_Form
 	/**
 	 * Handle any error generated
 	 *
-	 * @param   mixed              $output     CURL request result - may be a json string
+	 * @param   mixed              &$output    CURL request result - may be a json string
 	 * @param   FabrikFEModelForm  $formModel  Form Model
 	 * @param   object             $chandle    CURL object
 	 *
@@ -374,4 +373,243 @@ class plgFabrik_FormRest extends plgFabrik_Form
 		return true;
 	}
 
+	/**
+	 * Get the OAuth store
+	 */
+	protected function getOAuthStore()
+	{
+		$params = $this->getParams();
+
+		//  Init the OAuthStore
+		$options = array(
+				'consumer_key' => $params->get('oauth_consumer_key'),
+				'consumer_secret' => $params->get('oauth_consumer_secret'),
+				'server_uri' => $params->get('server_uri'),
+				'request_token_uri' => $params->get('request_token_uri'),
+				'authorize_uri' => $params->get('authorize_uri'),
+				'access_token_uri' => $params->get('access_token_uri')
+		);
+
+		// Note: do not use "Session" storage in production. Prefer a database
+		// storage, such as MySQL.
+		OAuthStore::instance("Session", $options);
+
+		/* $options = array('server' => $config->get('host'), 'username' => $config->get('user'),
+		 'password' => $config->get('password'),  'database' => $config->get('db'));
+		$store   = OAuthStore::instance('MySQL', $options); */
+	}
+
+	/**
+	 * Run once the form's data has been loaded
+	 *
+	 * @param   object  $params      Plugin parameters
+	 * @param   object  &$formModel  Form model
+	 *
+	 * @return	bool
+	 */
+	public function onLoad($params, &$formModel)
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->formModel = $formModel;
+		require COM_FABRIK_BASE . '/components/com_fabrik/libs/xing/xing.php';
+		//require_once COM_FABRIK_BASE . '/components/com_fabrik/libs/oauth-php/OAuthStore.php';
+		//require_once COM_FABRIK_BASE . '/components/com_fabrik/libs/oauth-php/OAuthRequester.php';
+
+		$config = JFactory::getConfig();
+
+		define("OAUTH_CALLBACK_URL", JUri::getInstance());
+		define('OAUTH_TMP_DIR', $config->get('tmp_path'));
+		define("OAUTH_AUTHORIZE_URL", $params->get('authorize_uri'));
+
+		$this->getOAuthStore();
+
+		$session = JFactory::getSession();
+		$user = JFactory::getUser();
+		$userid = $user->get('id');
+		define(OATH_SESSION_KEY, 'fabrik.rest.xing' . $userid);
+		$sessionResponseKey = 'fabrik.rest.xing' . $userid . '.response';
+
+		if ($input->get('reset') == 1 && $input->get('oauth_token', '') === '')
+		{
+			echo "rset<br>";
+			$session->destroy($sessionResponseKey);
+			return;
+		}
+		if ($session->has($sessionResponseKey))
+		{
+
+			$responseBody = $session->get($sessionResponseKey);
+		}
+		else
+		{
+			//  STEP 1:  If we do not have an OAuth token yet, go get one
+			$token = $input->get('oauth_token');
+			if (empty($token))
+			{
+				$this->getOAuthRequestToken();
+			}
+			else
+			{
+				$result = $this->getAccessToken();
+
+				if ($result === false)
+				{
+					return;
+				}
+				echo "<pre>";print_r($result);echo "</pre>";
+				parse_str($result["body"], $responseBody);
+
+
+				if (!isset($responseBody["user_id"]))
+				{
+					throw new Exception("user_id not found.");
+					return;
+				}
+
+				// Save access token for subsequent requests (without asking the user for permission again)
+				$session->set($sessionResponseKey, $responseBody);
+			}
+		}
+		$url = $params->get('get');
+		$w = new FabrikWorker;
+		$url = $w->parseMessageForPlaceHolder($url, $responseBody);
+		$result = $this->doGet($url);
+		if ($result !== false)
+		{
+			$data = json_decode($result['body']);
+			$this->updateFormModelData($params, $responseBody, $data);
+		}
+	}
+
+	/**
+	 * Step 1:
+	 * Get a request token then redirect to the authorization page, they will redirect back
+	 *
+	 * @return void
+	 */
+	protected function getOAuthRequestToken()
+	{
+		$params = $this->getParams();
+		$consumerKey = $params->get('oauth_consumer_key');
+		$app = JFactory::getApplication();
+		$tokenParams = array(
+			'oauth_callback' => OAUTH_CALLBACK_URL,
+			'oauth_consumer_key' => $consumerKey
+		);
+
+		$curlOpts = $this->getOAuthCurlOpts();
+
+		$tokenResult = XingOAuthRequester::requestRequestToken($consumerKey, 0, $tokenParams, 'POST', array(), $curlOpts);
+		$requestOpts = array('http_error_codes' => array(200, 201));
+		//$tokenResult = OAuthRequester::requestRequestToken($consumerKey, 0, $tokenParams, 'POST', $requestOpts, $curlOpts);
+		$uri = OAUTH_AUTHORIZE_URL . "?btmpl=mobile&oauth_token=" . $tokenResult['token'];
+		$app->redirect($uri);
+	}
+
+	/**
+	 * Get the curl options required for the REST request
+	 *
+	 * @return  array
+	 */
+	protected function getOAuthCurlOpts()
+	{
+		return array(CURLOPT_SSL_VERIFYPEER => false);
+	}
+
+	/**
+	 * Step 2: Get the acces token
+	 *
+	 * @return boolean|array
+	 */
+	protected function getAccessToken()
+	{
+		$app = JFactory::getApplication();
+		$params = $this->getParams();
+		$consumerKey = $params->get('oauth_consumer_key');
+		$session = JFactory::getSession();
+		$oauthToken = $app->input->get('oauth_token', '', 'string');
+		try
+		{
+			//$_GET['http_error_codes'] = array(200, 201, 301, 302);
+
+			$curlOpts = $this->getOAuthCurlOpts();
+			$result = XingOAuthRequester::requestAccessToken($consumerKey, $oauthToken, 0, 'POST', $_GET, $curlOpts);
+			//$result = OAuthRequester::requestAccessToken($consumerKey, $oauthToken, 0, 'POST', $_GET, $curlOpts);
+		}
+		catch (OAuthException2 $e)
+		{
+			echo "<h1>get access token error</h1>";
+			echo "<pre>restult...";print_r($result);echo "</pre>";
+			print_r($e->getMessage());
+			return false;
+		}
+		return $result;
+	}
+
+	/**
+	 * Perform a curl request to GET from teh web service
+	 *
+	 * @param   string  $url  GET endpoint
+	 *
+	 * @throws  RuntimeException
+	 *
+	 * @return  array|boolean
+	 */
+	protected function doGet($url)
+	{
+		// Make the docs requestrequest.
+		$curlOpts = array(CURLOPT_SSL_VERIFYPEER => false);
+		$request = new XingOAuthRequester($url, 'GET', array());
+		//$request = new OAuthRequester($url, 'GET', array());
+
+		$result = $request->doRequest(0, $curlOpts);
+		if (in_array((int) $result['code'], array(200, 201)))
+		{
+			return $result;
+		}
+		else
+		{
+			echo "<pre>fabrik rest parse error =";print_r($result);echo "</pre>";//exit;
+			//throw new RuntimeException('Fabrik REST form: error parsing result', $result['code']);
+			return false;
+		}
+	}
+
+	/**
+	 * Update the form models data with data from CURL request
+	 *
+	 * @param   JRegistry  $params        Parameters
+	 * @param   array      $responseBody  Response body
+	 * @param   array      $data          Data returned from CURL request
+	 *
+	 * @return  void
+	 */
+
+	protected function updateFormModelData($params, $responseBody, $data)
+	{
+		$w = new FabrikWorker;
+		$dataMap = $params->get('put_include_list', '');
+		$include = $w->parseMessageForPlaceholder($dataMap, $responseBody, true);
+		if (FabrikWorker::isJSON($include))
+		{
+			$include = json_decode($include);
+
+			$keys = $include->put_key;
+			$values = $include->put_value;
+			$defaults = $include->put_value;
+			for ($i = 0; $i < count($keys); $i++)
+			{
+				$key = $keys[$i];
+				$default = $defaults[$i];
+				$localKey = FabrikString::safeColNameToArrayKey($values[$i]);
+				$remoteData = FArrayHelper::getNestedValue($data, $key, $default, true);
+				if (!is_null($remoteData))
+				{
+					$this->formModel->_data[$localKey] = $remoteData;
+				}
+			}
+		}
+
+	}
 }

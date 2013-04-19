@@ -1,11 +1,12 @@
 <?php
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * PDF Form view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
-
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
@@ -15,14 +16,21 @@ require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 class fabrikViewForm extends FabrikViewFormBase
 {
 
-  /**
-	 * display the template
+	/**
+	 * Main setup routine for displaying the form/detail view
 	 *
-	 * @param sting $tpl
+	 * @param   string  $tpl  template
+	 *
+	 * @return  void
 	 */
 
-	function display($tpl = null)
+	public function display($tpl = null)
 	{
+		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
+		{
+			JError::raiseError(404, 'Please install the dompdf library');
+			return;
+		}
 		if (parent::display($tpl) !== false)
 		{
 			$document = JFactory::getDocument();
@@ -36,17 +44,22 @@ class fabrikViewForm extends FabrikViewFormBase
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see	FabrikViewFormBase::setTitle()
+	 * Set the page title
+	 *
+	 * @param   object  $w        parent worker
+	 * @param   object  &$params  parameters
+	 * @param   object  $model    form model
+	 *
+	 * @return  void
 	 */
 
 	protected function setTitle($w, &$params, $model)
 	{
-		parent:: setTitle($w, $params, $model);
-		//set the download file name based on the document title
+		parent::setTitle($w, $params, $model);
+
+		// Set the download file name based on the document title
 		$document = JFactory::getDocument();
-		$document->setName($document->getTitle() . '-' .  $model->getRowId());
+		$document->setName($document->getTitle() . '-' . $model->getRowId());
 	}
 
 }
-?>

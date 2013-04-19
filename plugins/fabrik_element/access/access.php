@@ -14,12 +14,12 @@ defined('_JEXEC') or die();
 /**
  * Access element
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.element.access
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.access
  * @since       3.0
  */
 
-class plgFabrik_ElementAccess extends plgFabrik_Element
+class PlgFabrik_ElementAccess extends PlgFabrik_Element
 {
 
 	/**
@@ -54,7 +54,7 @@ class plgFabrik_ElementAccess extends plgFabrik_Element
 	 * @return  string	elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
 

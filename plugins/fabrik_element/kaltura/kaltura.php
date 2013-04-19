@@ -17,9 +17,10 @@ jimport('kaltura.kaltura_client');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.kaltura
+ * @since       3.0
  */
 
-class plgFabrik_ElementKaltura extends plgFabrik_Element
+class PlgFabrik_ElementKaltura extends PlgFabrik_Element
 {
 
 	/**
@@ -63,7 +64,6 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 </script>
 		<?php
 		return '<div id="' . $id . '"></div>';
-		//return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -84,6 +84,11 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 		return $return;
 	}
 
+	/**
+	 * Get flash var
+	 *
+	 * @return multitype:number string boolean NULL unknown
+	 */
 	private function getKalturaFlashVars()
 	{
 		if (!isset($this->kalturaFlashVars))
@@ -107,6 +112,12 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 		return $this->kalturaFlashVars;
 	}
 
+	/**
+	 * Get session
+	 *
+	 * @return  Kaltura session
+	 */
+
 	private function getKalturaSession()
 	{
 		if (!isset($this->kalturaSession))
@@ -121,9 +132,11 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 	}
 
 	/**
-	 * get the kaltura client
-	 * @return unknown_type
+	 * Get the kaltura config
+	 *
+	 * @return object
 	 */
+
 	private function getKalturaConfig()
 	{
 		if (!isset($this->kalturaConfig))
@@ -138,8 +151,9 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 	}
 
 	/**
-	 * get the curent kaltura user
-	 * @return unknown_type
+	 * Get the curent kaltura user
+	 *
+	 * @return  object
 	 */
 	private function getKalturaUser()
 	{
@@ -151,8 +165,9 @@ class plgFabrik_ElementKaltura extends plgFabrik_Element
 	}
 
 	/**
-	 * get the kaltura client
-	 * @return unknown_type
+	 * Get the kaltura client
+	 *
+	 * @return object
 	 */
 
 	private function getKalturaClient()

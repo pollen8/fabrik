@@ -14,7 +14,8 @@ var Autofill = new Class({
 		map: '',
 		editOrig: false,
 		fillOnLoad: false,
-		confirm: true
+		confirm: true,
+		autofill_lookup_field: 0
 	},
 	
 	initialize: function (options) {
@@ -42,6 +43,7 @@ var Autofill = new Class({
 			if (oEl.strElement === this.element.strElement) {
 				// The element is a clone of our observable element
 				this.element = false;
+				this.setupDone = false;
 				this.setUp(form);
 			}
 		}.bind(this));
@@ -119,7 +121,7 @@ var Autofill = new Class({
 		} else {
 			this.form.dispatchEvent('', this.options.trigger, 'click', evnt);
 		}
-		if (this.options.fillOnLoad && form.options.rowid === '0') {
+		if (this.options.fillOnLoad) {
 			var t = this.options.trigger === '' ? this.element.strElement : this.options.trigger;
 			this.form.dispatchEvent('', t, 'load', evnt);
 		}
@@ -157,7 +159,8 @@ var Autofill = new Class({
 				'observe': observe,
 				'cnn': this.options.cnn,
 				'table': this.options.table,
-				'map': this.options.map
+				'map': this.options.map,
+				'autofill_lookup_field': this.options.autofill_lookup_field
 			},
 			onCancel: function () {
 				Fabrik.loader.stop('form_' + this.options.formid);
@@ -190,14 +193,20 @@ var Autofill = new Class({
 			var k2 = key.substr(key.length - 4, 4);
 			if (k2 === '_raw') {
 				key = key.replace('_raw', '');
+				var origKey = key;
 				if (!this.tryUpdate(key, val)) {
 					if (repeatNum) {
 						key += '_' + repeatNum;
-						if (!this.tryUpdate(key, val)) {
-							// See if the user has used simply the full element name rather than the full element name with
-							// the join string
-							key = 'join___' + this.element.options.joinid + '___' + key;
-							this.tryUpdate(key, val);
+					} else {
+						key += '_0';
+					}
+					if (!this.tryUpdate(key, val)) {
+						// See if the user has used simply the full element name rather than the full element name with
+						// the join string
+						key = 'join___' + this.element.options.joinid + '___' + key;
+						
+						// Perhaps element is in main group and update element in repeat group :S
+						if (!this.tryUpdate(origKey, val, true)) {
 						}
 					}
 				}
@@ -209,11 +218,34 @@ var Autofill = new Class({
 		Fabrik.fireEvent('fabrik.form.autofill.update.end', [this, json]);
 	},
 	
-	tryUpdate: function (key, val) {
-		var el = this.form.formElements.get(key);
-		if (typeOf(el) !== 'null') {
-			el.update(val);
-			return true;
+	/**
+	 * Try to update an element
+	 * 
+	 * @param   string  key         Form.formElements key to update
+	 * @param   string  value       Value to update to
+	 * @param   bool    looseMatch  Should we test if the key is contained within any of Form.formElements keys?
+	 * 
+	 * @return  bool  True if update occured 
+	 */
+	tryUpdate: function (key, val, looseMatch) {
+		looseMatch = looseMatch ? true : false;
+		if (!looseMatch) {
+			var el = this.form.formElements.get(key);
+			if (typeOf(el) !== 'null') {
+				el.update(val);
+				return true;
+			}
+		} else {
+			var m = Object.keys(this.form.formElements).filter(function (k, v) {
+				return k.contains(key);
+			});
+			if (m.length > 0) {
+				m.each(function (key) {
+					var el = this.form.formElements.get(key);
+					el.update(val);
+				}.bind(this));
+				return true;
+			}
 		}
 		return false;
 	}
