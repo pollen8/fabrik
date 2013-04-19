@@ -7,7 +7,9 @@ echo "
 
 .fabrikDataContainer {
 	clear:both;
-	overflow: auto;
+	/*
+		dont use this as it stops dropdowns from showing correctly
+		overflow: auto;*/
 }
 
 .fabrikDataContainer .pagination a{

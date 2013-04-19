@@ -71,11 +71,15 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 
 		// Check if the data is in csv format, if so then the element is a multi drop down
+		$raw = $this->getFullName() . '_raw';
+		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
 		if ($data == '1')
 		{
 			$icon = $j3 ? 'checkmark.png' : '1.png';
-			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => JText::_('JYES')));
+			$opts = array('alt' => JText::_('JYES'));
+			$opts['icon-class'] = 'icon-ok-sign';
+			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $opts);
 		}
 		else
 		{
@@ -255,7 +259,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	protected function buttonGroup()
 	{
 		$params = $this->getParams();
-		return FabrikWorker::j3() && $params->get('btnGroup', true);
+		$ok = FabrikWorker::j3() && $params->get('btnGroup', true);
+		return $ok;
 	}
 
 	/**

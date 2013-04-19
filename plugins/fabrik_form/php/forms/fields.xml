@@ -21,6 +21,7 @@
 
 			<field name="form_php_require_once"
 				type="radio"
+				class="btn-group"
 				default="0"
 				repeat = "true"
 				label="PLG_FORM_PHP_REQUIRE_ONCE_LABEL"

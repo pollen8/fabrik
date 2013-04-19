@@ -4718,6 +4718,86 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get the prefilter settings from list/module/menu options
+	 * Use in listModel::getPrefilterArray() and formModel::getElementIds()
+	 *
+	 * @return multitype:array
+	 */
+	public function prefilterSetting()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$params = $this->getParams();
+		$showInList = array();
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+		if (isset($listels->show_in_list))
+		{
+			$showInList = $listels->show_in_list;
+		}
+		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+
+		// Are we coming from a post request via a module?
+		$moduleid = 0;
+		$requestRef = $input->get('listref', '', 'string');
+		if ($requestRef !== '' && !strstr($requestRef, 'com_' . $package))
+		{
+			// If so we need to load in the modules parameters
+			$ref = explode('_', $requestRef);
+			if (count($ref) > 1)
+			{
+				$moduleid = (int) array_pop($ref);
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true);
+				if ($moduleid !== 0)
+				{
+					$this->setRenderContext($moduleid);
+					$query->select('params')->from('#__modules')->where('id = ' . $moduleid);
+					$db->setQuery($query);
+					$obj = json_decode($db->loadResult());
+					if (is_object($obj) && isset($obj->prefilters))
+					{
+						$properties = $obj->prefilters;
+					}
+				}
+			}
+		}
+
+		// List prfilter properties
+		$elements = $this->getElements('filtername');
+		$afilterFields = (array) $params->get('filter-fields');
+		$afilterConditions = (array) $params->get('filter-conditions');
+		$afilterValues = (array) $params->get('filter-value');
+		$afilterAccess = (array) $params->get('filter-access');
+		$afilterEval = (array) $params->get('filter-eval');
+		$afilterJoins = (array) $params->get('filter-join');
+		$afilterGrouped = (array) $params->get('filter-grouped');
+
+		/* If we are rendering as a module dont pick up the menu item options (parmas already set in list module)
+		 * so first statement when rendenering a module, 2nd when posting to the component from a module.
+		*/
+		if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
+		{
+			$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot);
+		}
+		if (isset($properties))
+		{
+			$prefilters = JArrayHelper::fromObject(json_decode($properties));
+			$conditions = (array) $prefilters['filter-conditions'];
+			if (!empty($conditions))
+			{
+				$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields', array());
+				$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions', array());
+				$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value', array());
+				$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access', array());
+				$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', array());
+				$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', array());
+			}
+		}
+		return array($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins);
+	}
+
+	/**
 	 * Creates array of prefilters
 	 * Set to public 15/04/2013
 	 *
@@ -4730,75 +4810,9 @@ class FabrikFEModelList extends JModelForm
 	{
 		if (!isset($this->prefilters))
 		{
-			$app = JFactory::getApplication();
-			$package = $app->getUserState('com_fabrik.package', 'fabrik');
-			$input = $app->input;
-			$params = $this->getParams();
-			$showInList = array();
-			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
-			if (isset($listels->show_in_list))
-			{
-				$showInList = $listels->show_in_list;
-			}
-			$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
-
-			// Are we coming from a post request via a module?
-			$moduleid = 0;
-			$requestRef = $input->get('listref', '');
-			if ($requestRef !== '' && !strstr($requestRef, 'com_' . $package))
-			{
-				// If so we need to load in the modules parameters
-				$ref = explode('_', $requestRef);
-				if (count($ref) > 1)
-				{
-					$moduleid = (int) array_pop($ref);
-					$db = JFactory::getDbo();
-					$query = $db->getQuery(true);
-					if ($moduleid !== 0)
-					{
-						$this->setRenderContext($moduleid);
-						$query->select('params')->from('#__modules')->where('id = ' . $moduleid);
-						$db->setQuery($query);
-						$obj = json_decode($db->loadResult());
-						if (is_object($obj) && isset($obj->prefilters))
-						{
-							$properties = $obj->prefilters;
-						}
-					}
-				}
-			}
-
-			// List prfilter properties
 			$elements = $this->getElements('filtername');
-			$afilterFields = (array) $params->get('filter-fields');
-			$afilterConditions = (array) $params->get('filter-conditions');
-			$afilterValues = (array) $params->get('filter-value');
-			$afilterAccess = (array) $params->get('filter-access');
-			$afilterEval = (array) $params->get('filter-eval');
-			$afilterJoins = (array) $params->get('filter-join');
-			$afilterGrouped = (array) $params->get('filter-grouped');
-
-			/* If we are rendering as a module dont pick up the menu item options (parmas already set in list module)
-			 * so first statement when rendenering a module, 2nd when posting to the component from a module.
-			*/
-			if (!strstr($this->getRenderContext(), 'mod_fabrik_list') && $moduleid === 0)
-			{
-				$properties = FabrikWorker::getMenuOrRequestVar('prefilters', '', $this->isMambot);
-			}
-			if (isset($properties))
-			{
-				$prefilters = JArrayHelper::fromObject(json_decode($properties));
-				$conditions = (array) $prefilters['filter-conditions'];
-				if (!empty($conditions))
-				{
-					$afilterFields = JArrayHelper::getValue($prefilters, 'filter-fields', array());
-					$afilterConditions = JArrayHelper::getValue($prefilters, 'filter-conditions', array());
-					$afilterValues = JArrayHelper::getValue($prefilters, 'filter-value', array());
-					$afilterAccess = JArrayHelper::getValue($prefilters, 'filter-access', array());
-					$afilterEval = JArrayHelper::getValue($prefilters, 'filter-eval', array());
-					$afilterJoins = JArrayHelper::getValue($prefilters, 'filter-join', array());
-				}
-			}
+			$params = $this->getParams();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $this->prefilterSetting();
 			$join = 'WHERE';
 			$w = new FabrikWorker;
 			for ($i = 0; $i < count($afilterFields); $i++)

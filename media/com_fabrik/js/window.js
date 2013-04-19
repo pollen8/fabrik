@@ -69,7 +69,7 @@ Fabrik.Window = new Class({
 		var del;
 		if (Fabrik.bootstrapped) {
 			del = new Element('a', {'href': '#', 'class': 'closeFabWin', 'events': {'click': delClick}});
-			del.adopt(new Element('i.icon-cancel'));
+			del.adopt(new Element('i.icon-cancel.icon-remove-sign'));
 		} else {
 			del = new Element('a', {'href': '#', 'class': 'close', 'events': {'click': delClick}});
 			var art = Fabrik.iconGen.create(icon.cross);
@@ -131,7 +131,7 @@ Fabrik.Window = new Class({
 		}
 		
 		if (Fabrik.bootstrapped) {
-			expandIcon = new Element('i.icon-out-2');
+			expandIcon = new Element('i.icon-out-2.icon-fullscreen');
 			label = new Element('h3', {'class': hclass}).set('text', this.options.title);
 			
 		} else {

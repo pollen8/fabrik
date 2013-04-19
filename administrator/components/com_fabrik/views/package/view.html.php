@@ -70,6 +70,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 	{
 		// Initialiase variables.
 		JHtml::_('behavior.modal', 'a.modal');
+		$model = $this->getModel();
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
@@ -125,6 +126,14 @@ class FabrikAdminViewPackage extends JViewLegacy
 
 		FabrikHelperHTML::iniRequireJS();
 		FabrikHelperHTML::script($srcs, $this->js);
+
+		// Simple layout
+		$this->listOpts = $model->getListOpts();
+		$this->formOpts = $model->getFormOpts();
+		$this->selFormOpts = $model->getSelFormOpts();
+		$this->selListOpts = $model->getSelListOpts();
+
+		FabrikAdminHelper::setViewLayout($this);
 		parent::display($tpl);
 	}
 

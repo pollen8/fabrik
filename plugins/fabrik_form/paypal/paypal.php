@@ -210,26 +210,26 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 				unset($opts['no_note']);
 			}
 		}
-		/* @TODO Hugh/Rob check $$$tom: Adding shipping options
-		 * Currently the admin select a user element on the form to compare it to the user id on the custom user table
-		 * Should we just make it to get the current user ID and use that?
-		 * $shipping_userid = $data[FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_userelement') )];
-		 * if (is_array($shipping_userid)) {
-		 *	$shipping_userid = array_shift($shipping_userid);
-		 *}
-		 */
+
+		$shipping_table = $this->shippingTable();
+		$thisTable = $formModel->getTableModel()->getTable()->db_table_name;
 		$shipping_userid = $userid;
+
+		/*
+		 * If the shipping table is the same as the form's table, and no user logged in
+		 * then use the shipping data entered into the form:
+		 * see http://fabrikar.com/forums/index.php?threads/paypal-shipping-address-without-joomla-userid.33229/
+		 */
+		if ($shipping_userid === 0 && $thisTable === $shipping_table)
+		{
+			$shipping_userid = $formModel->_formData['id'];
+		}
 		if ($shipping_userid > 0)
 		{
 			$shipping_select = array();
 
 			$db = FabrikWorker::getDbo();
-
-			// $$$tom Surely there's a better Fabrik way of getting the table name...
 			$query = $db->getQuery(true);
-			$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
-			$db->setQuery($query);
-			$shipping_table = $db->loadResult();
 
 			if ($params->get('paypal_shippingdata_firstname'))
 			{
@@ -442,6 +442,20 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		return true;
 	}
 
+	/**
+	 * Get the Shipping table name
+	 *
+	 * @return  string  db table name
+	 */
+	protected function shippingTable()
+	{
+		$params = $this->getParams();
+		$db = FabrikWorker::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
+		$db->setQuery($query);
+		return $db->loadResult();
+	}
 	/**
 	 * Show thanks page
 	 *

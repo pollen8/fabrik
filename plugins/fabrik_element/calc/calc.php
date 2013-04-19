@@ -552,7 +552,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
 		$c = @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
-		// echo $c;
 	}
 
 	/**

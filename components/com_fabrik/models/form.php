@@ -2865,13 +2865,13 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
 		{
-			$tmp = array();
-			$this->getListModel()->getPrefilterArray($tmp);
-			$ids = JArrayHelper::getValue($tmp, 'elementid', array());
-			foreach ($ids as $id)
+			$listModel = $this->getListModel();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
+			foreach ($afilterFields as $name)
 			{
-				$elementModel = $this->getElement($id, true);
-				$this->getElementIds_check($elementModel, $ignore, $opts, $aEls);
+				$raw = preg_match("/_raw$/", $name) > 0;
+				$name = $name ? FabrikString::rtrimword($name, '_raw') : $name;
+				$elementModel = $this->getElement($name);
 			}
 		}
 		return $aEls;
@@ -3976,13 +3976,26 @@ class FabrikFEModelForm extends FabModelForm
 				$jdata = &$this->data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
+				$keyCount = 0;
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
 					{
-						$pkField = $tblJoin->table_join . '___' . $f->Field;
-						break;
+						if (!isset($pkField))
+						{
+							$pkField = $tblJoin->table_join . '___' . $f->Field;
+						}
+						$keyCount ++;
 					}
+				}
+				/*
+				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so
+				 * simply checking on the user_id (the first col) will find duplicate results and incorrectly
+				 * merge down.
+				 */
+				if ($keyCount > 1)
+				{
+					return;
 				}
 				$usedkeys = array();
 				if (!empty($jdata) && array_key_exists($pkField, $jdata))
