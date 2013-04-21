@@ -9,7 +9,8 @@
 			<field connection_in_repeat="false" label="COM_FABRIK_LIST" name="googlemap_table" observe="params_googlemap_connection" type="fabriktables"/>
 			
 			<field name="prefilters"
-				class="modal-prefilter" 
+				class="modal-prefilter"
+				repeat="true"
 				description="COM_FABRIK_LIST_PREFILTERS_DESC"
 				label="COM_FABRIK_LIST_PREFILTERS_LABEL"
 				type="fabrikmodalrepeat">
@@ -20,6 +21,7 @@
 						<field name="filter-join"
 							type="list"
 							default="OR"
+							repeat="true"
 							label="">
 								<option value="AND">AND</option>
 								<option value="OR">OR</option>
@@ -40,15 +42,19 @@
 							label="COM_FABRIK_LIST_ELEMENTS_HEADING"
 							table="params_googlemap_table" /> -->
 				
-					<field type="listfields"
+						<field name="filter-fields"
+							type="listfields"
 							repeat="true"
-							name="filter-fields"
+							valueformat="tableelement"
 							connection="params_googlemap_connection"
 							connection_in_repeat="true"
 							label="COM_FABRIK_LIST_ELEMENTS_HEADING"
 							table="params_googlemap_table" />
 							
-						<field label="COM_FABRIK_LIST_CONDITION_LABEL" name="filter-conditions" type="list">
+						<field name="filter-conditions"
+							type="list"
+							repeat="true"
+							label="COM_FABRIK_LIST_CONDITION_LABEL">
 								<option value="equals">EQUALS</option>
 								<option value="notequals">NOT EQUAL TO</option>
 								<option value="begins">BEGINS WITH</option>
@@ -71,16 +77,25 @@
 								<option value="nextmonth">COM_FABRIK_NEXT_MONTH</option>
 						</field>
 						
-						<field label="COM_FABRIK_LIST_FILTER_VALUE_HEADING" name="filter-value" type="field"/>
+						<field name="filter-value"
+							type="field"
+							repeat="true"
+							label="COM_FABRIK_LIST_FILTER_VALUE_HEADING" />
 							
-						<field label="COM_FABRIK_TYPE" name="filter-eval" type="list">
+						<field name="filter-eval"
+							type="list"
+							label="COM_FABRIK_TYPE"
+							repeat="true">
 								<option value="0">COM_FABRIK_TEXT</option>
 								<option value="1">COM_FABRIK_EVAL</option>
 								<option value="2">COM_FABRIK_QUERY</option>
 								<option value="3">COM_FABRIK_NO_QUOTES</option>
 						</field>
 						
-						<field label="COM_FABRIK_LIST_FILTER_ACCESS_HEADING" name="filter-access" type="accesslevel"/>
+						<field name="filter-access"
+							type="accesslevel"
+							repeat="true"
+							label="COM_FABRIK_LIST_FILTER_ACCESS_HEADING" />
 							
 					</fieldset>
 				</fields>

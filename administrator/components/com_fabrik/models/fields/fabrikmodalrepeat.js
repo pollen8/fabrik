@@ -34,58 +34,79 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	setUp: function () {
-		console.log(document.id(this.elid));
 		this.button = document.id(this.elid + '_button');
-		
-		
-		
+		if (this.mask) {
+			this.mask.destroy();
+		}
+		this.mask = new Mask(document.body, {style: {'background-color': '#000', 'opacity': 0.4, 'z-index': 9998}});
 		document.addEvent('click:relay(*[data-modal=' + this.elid + '])', function (e, target) {
-			var id = target.getNext('input').id; // correct when in repeating group
+			var tbl;
+			// Correct when in repeating group
+			var id = target.getNext('input').id; 
 			this.field[id] = target.getNext('input');
-			if (!this.el[id]) {
-				var c = target.getParent('li');
-				
-				if (c.getElement('table')) {
-					this.el[id] = c.getElement('table');
-					target.store('table', this.el[id]);
-				} else {
-					this.el[id] = target.retrieve('table');
-				}
-				//this.el[id].id = this.elid + '-table';
+			var c = target.getParent('li');
+			this.origContainer = c;
+			tbl = c.getElement('table');
+			if (typeOf(tbl) !== 'null') {
+				this.el[id] = tbl;
 			}
-			console.log('click', id);
 			this.openWindow(id);
 		}.bind(this));
 	},
 	
 	openWindow: function (target) {
+		
+		var makeWin = false;
 		if (!this.win[target]) {
-			this.win[target] = new Element('div', {'data-modal-content': target, 'styles': {'padding': '5px', 'background-color': '#fff', 'display': 'none', 'z-index': 9999}}).inject(document.body);
-			this.win[target].adopt(this.el[target]);
-			var close = new Element('button.btn.button').set('text', 'close');
-			close.addEvent('click', function (e) {
-				e.stop();
-				this.store();
-				this.close();
-			}.bind(this));
-			var controls = new Element('div.controls', {'styles': {'text-align': 'right'}}).adopt(close);
-			this.win[target].adopt(controls);
-			this.win[target].position();
-			this.mask = new Mask(document.body, {style: {'background-color': '#000', 'opacity': 0.4, 'z-index': 9998}});
-			this.content = this.el[target];
-			this.build(target);
-			this.watchButtons(this.win[target], target);
+			makeWin = true;
+			this.makeTarget(target);
 		}
+		this.el[target].inject(this.win[target], 'top');
+		this.el[target].show();
+		
+		if (!this.win[target] || makeWin) {
+			this.makeWin(target);
+		}
+		// Testing moviing out of makeWin
+		
+		
+		//this.build(target);
+		
 		this.win[target].show();
 		this.win[target].position();
-		this.resizeWin(true);
+		this.resizeWin(true, target);
 		this.win[target].position();
 		this.mask.show();
 	},
 	
-	resizeWin: function (setup) {
+	makeTarget: function (target) {
+		this.win[target] = new Element('div', {'data-modal-content': target, 'styles': {'padding': '5px', 'background-color': '#fff', 'display': 'none', 'z-index': 9999}}).inject(document.body);
+	},
+	
+	makeWin: function (target) {
+		
+		// Testing adopting in.out on show/hide
+		//this.win[target].adopt(this.el[target]);
+		var close = new Element('button.btn.button').set('text', 'close');
+		close.addEvent('click', function (e) {
+			e.stop();
+			this.store(target);
+			this.el[target].hide();
+			this.el[target].inject(this.origContainer);
+			this.close();
+		}.bind(this));
+		var controls = new Element('div.controls', {'styles': {'text-align': 'right'}}).adopt(close);
+		this.win[target].adopt(controls);
+		this.win[target].position();
+		this.content = this.el[target];
+		this.build(target);
+		this.watchButtons(this.win[target], target);
+	},
+	
+	resizeWin: function (setup, target) {
+		console.log(target);
+		
 		Object.each(this.win, function (win, key) {
-			console.log(this.el, key);
 			var size = this.el[key].getDimensions(true);
 			var wsize = win.getDimensions(true);
 			var y = setup ? wsize.y : size.y + 30;
@@ -120,26 +141,26 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	watchButtons: function (win, target) {
-		/*if (this.buttonsWatched) {
-			return;
-		}
-		this.buttonsWatched = true;*/
 		win.addEvent('click:relay(a.add)', function (e) {
 			if (tr = this.findTr(e)) {
 				
 				// Store radio button selections
 				var radiovals = this._getRadioValues(target); 
 				
-				if (tr.getChildren('th').length !== 0) {
-					this.tmpl.clone().inject(tr, 'after');
+				var body = tr.getParent('table').getElement('tbody');
+				this.tmpl.clone(true, true).inject(body);
+				
+				/*if (tr.getChildren('th').length !== 0) {
+					var body = tr.getParent('table').getElement('tbody');
+					this.tmpl.clone(true, true).inject(body);
 				} else {
-					tr.clone().inject(tr, 'after');
-				}
+					tr.clone(true, true).inject(tr, 'after');
+				}*/
 				this.stripe(target);
 				
 				// Reapply values as renaming radio buttons 
 				this._setRadioValues(radiovals, target);
-				this.resizeWin(win);
+				this.resizeWin(false, target);
 			}
 			win.position();
 			e.stop();
@@ -155,7 +176,7 @@ var FabrikModalRepeat = new Class({
 			if (tr = this.findTr(e)) {
 				tr.dispose();
 			}
-			this.resizeWin(win);
+			this.resizeWin(false, target);
 			win.position();
 			e.stop();
 		}.bind(this));
@@ -179,6 +200,9 @@ var FabrikModalRepeat = new Class({
 	},
 	
 	build: function (target) {
+		if (!this.win[target]) {
+			this.makeWin(target);
+		}
 		
 		var a = JSON.decode(this.field[target].get('value'));
 		if (typeOf(a) === 'null') {
@@ -211,9 +235,7 @@ var FabrikModalRepeat = new Class({
 				});
 			});
 		}
-		if (newrow || typeOf(this.tmpl) === 'null') {
-			this.tmpl = tr;
-		}
+		this.tmpl = tr;
 		if (newrow) {
 			tr.dispose();
 		}
@@ -226,13 +248,15 @@ var FabrikModalRepeat = new Class({
 		return (tr.length === 0) ? false : tr[0];
 	},
 	
-	store: function () {
+	store: function (target) {
+		var c = this.content;
+		c = this.el[target];
 		
 		// Get the current values 
 		var json = {};
 		for (var i = 0; i < this.names.length; i++) {
 			var n = this.names[i];
-			var fields = this.content.getElements('*[name*=' + n + ']');
+			var fields = c.getElements('*[name*=' + n + ']');
 			json[n] = [];	
 			fields.each(function (field) {
 				if (field.get('type') === 'radio') {
@@ -245,7 +269,7 @@ var FabrikModalRepeat = new Class({
 			}.bind(this));		
 		}
 		// Store them in the parent field.
-		this.field.value = JSON.encode(json);
+		this.field[target].value = JSON.encode(json);
 		return true;
 	}
 
