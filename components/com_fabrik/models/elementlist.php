@@ -837,4 +837,67 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		parent::formJavascriptClass($srcs, $script);
 	}
 
+	/**
+	* used by elements with suboptions
+	* 
+	* $$$ hugh - started working on adding this to elementlist, as we need to handle
+	* JSON-ified options for multiselect elements, which the main element model getLabelForValue()
+	* doesn't do.  But I need to sort out how this gets handled in rendering as well.
+	*
+	* @param   string  $v             value
+	* @param   string  $defaultLabel  default label
+	*
+	* @return  string	label
+	*/
+
+	public function notreadyyet_getLabelForValue($v, $defaultLabel = '')
+	{
+		/**
+		 * $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
+		 * which we should now be doing ... and getParent() causes an extra table lookup for every child
+		 * element on the form.
+		 * $element = $this->getParent();
+		 */
+		$element = $this->getElement();
+		$params = $this->getParams();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
+		$multiple = $this->isMultiple();
+		//$key = array_search($v, $values);
+		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
+		foreach ($vals as $val)
+		{
+			$l = JArrayHelper::getValue($labels, $val, $defaultLabel);
+			if (trim($l) !== '')
+			{
+				if ($multiple && $this->renderWithHTML)
+				{
+					$lis[] = '<li>' . $l . '</li>';
+				}
+				else
+				{
+					$lis[] = $l;
+				}
+			}
+		}
+		$return = '';
+		if (!empty($lis))
+		{
+			$return = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
+		}
+
+		/**
+		 * $$$ rob if we allow adding to the dropdown but not recording
+		 * then there will be no $key set to revert to the $val instead
+		 */
+		/*
+		if ($v === $params->get('sub_default_value'))
+		{
+			$v = $params->get('sub_default_label');
+		}
+		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
+		*/
+		return $return;
+	}
+
 }
