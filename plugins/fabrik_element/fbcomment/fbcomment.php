@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class plgFabrik_ElementFbcomment extends plgFabrik_Element
+class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 {
 
 	/**
@@ -70,8 +70,8 @@ class plgFabrik_ElementFbcomment extends plgFabrik_Element
 		if (empty($href))
 		{
 			$app = JFactory::getApplication();
-			$rowid = $app->input->getInt('rowid');
-			if ($rowid != 0)
+			$rowid = $app->input->getString('rowid', '', 'string');
+			if ($rowid != '')
 			{
 				$formModel = $this->getForm();
 				$formid = $formModel->getId();

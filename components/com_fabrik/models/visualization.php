@@ -103,7 +103,7 @@ class FabrikFEModelVisualization extends JModel
 		$pluginParams = new JRegistry($this->getVisualization()->params);
 		return $pluginParams;
 	}
-	
+
 	/**
 	 * alais to getVisualization()
 	 *
@@ -111,7 +111,7 @@ class FabrikFEModelVisualization extends JModel
 	 *
 	 * @return  FabTable viz
 	 */
-	
+
 	public function getRow()
 	{
 		return $this->getVisualization();
@@ -388,6 +388,42 @@ class FabrikFEModelVisualization extends JModel
 			{
 				JError::raiseNotice(500, $model->getRequiredMsg());
 			}
+		}
+	}
+
+	/**
+	 * Set visualiazation prefilters
+	 *
+	 * @return  void
+	 */
+	public function setPrefilters()
+	{
+		$listModels = $this->getListModels();
+		$filters = array();
+		$params = $this->getParams();
+		$prefilters = (array) $params->get('prefilters');
+		$c = 0;
+		foreach ($listModels as $listModel)
+		{
+			// Set prefilter params
+			$listParams =& $listModel->getParams();
+			$prefilter = JArrayHelper::getValue($prefilters, $c);
+			$prefilter = JArrayHelper::fromObject(json_decode($prefilter));
+			$conditions = (array) $prefilter['filter-conditions'];
+			if (!empty($conditions))
+			{
+				$fields = $prefilter['filter-fields'];
+				foreach ($fields as &$f)
+				{
+					$f = FabrikString::safeColName($f);
+				}
+				$listParams->set('filter-fields', $fields);
+				$listParams->set('filter-conditions', $prefilter['filter-conditions']);
+				$listParams->set('filter-value', $prefilter['filter-value']);
+				$listParams->set('filter-access', $prefilter['filter-access']);
+				$listParams->set('filter-eval', $prefilter['filter-eval']);
+			}
+			$c ++;
 		}
 	}
 

@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementDropdown extends plgFabrik_ElementList
+class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
 
 	/**
@@ -54,8 +54,6 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$allowAdd = $params->get('allow_frontend_addtodropdown', false);
-
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$multiple = $params->get('multiple', 0);
@@ -170,7 +168,7 @@ class plgFabrik_ElementDropdown extends plgFabrik_ElementList
 					$default = $w->parseMessageForPlaceHolder($default, $data);
 					if ($element->eval == "1")
 					{
-						$v = @eval(stripslashes($default));
+						$v = @eval((string) stripslashes($default));
 						FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 					}
 					else

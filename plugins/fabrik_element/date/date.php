@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementDate extends plgFabrik_Element
+class PlgFabrik_ElementDate extends PlgFabrik_Element
 {
 
 	/**
@@ -1275,7 +1275,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$htmlid = $this->getHTMLId();
 		$fType = $this->getFilterType();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		if (in_array($fType, array('dropdown')))
+		if (in_array($fType, array('dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 		}
@@ -1283,6 +1283,9 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 		$return = array();
 		switch ($fType)
 		{
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
 			case 'range':
 			case 'range-hidden':
 				FabrikHelperHTML::loadcalendar();
@@ -1301,8 +1304,8 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				$return[] = '<div class="fabrik_filter_container">';
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="inputbox fabrik_filter" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="inputbox fabrik_filter" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else
@@ -1315,10 +1318,17 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 				}
 				break;
 
-			case "dropdown": /**
+			case 'dropdown':
+			case 'multiselect':
+							/**
 							  *  cant do the format in the MySQL query as its not the same formatting
 							  *  e.g. M in mysql is month and J's date code its minute
 							  */
+
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$v = $fType === 'multiselect' ? $v . '[]' : $v;
+
 				jimport('joomla.utilities.date');
 				$ddData = array();
 				foreach ($rows as $k => $o)
@@ -1341,7 +1351,7 @@ class plgFabrik_ElementDate extends plgFabrik_Element
 					}
 				}
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" size="1" maxlength="19"', 'value', 'text',
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="inputbox fabrik_filter" ' . $size . ' maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
 				break;
 			default:

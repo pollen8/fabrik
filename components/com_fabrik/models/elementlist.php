@@ -175,14 +175,14 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
 		$v = $this->filterName($counter, $normal);
-		if (in_array($element->filter_type, array('range', 'dropdown', '')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 			if ($params->get('filter_groupby') != -1)
 			{
 				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
-			if (!in_array('', $values))
+			if (!in_array('', $values) && !in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
@@ -193,7 +193,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		$return = array();
 		switch ($element->filter_type)
 		{
-			case "range":
+			case 'range':
 				if (!is_array($default))
 				{
 					$default = array('', '');
@@ -203,12 +203,19 @@ class plgFabrik_ElementList extends plgFabrik_Element
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[1],
 					$element->name . "_filter_range_1");
 				break;
-			case "dropdown":
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
+			case 'dropdown':
+			case 'multiselect':
 			default:
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="7"' : 'size="1"';
+				$attribs = 'class="inputbox fabrik_filter" ' . $size;
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$return[] = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
 				break;
 
-			case "field":
+			case 'field':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -218,7 +225,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 					. $htmlid . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);

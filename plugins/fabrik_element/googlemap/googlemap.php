@@ -17,9 +17,10 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.googlemap
+ * @since       3.0
  */
 
-class plgFabrik_ElementGooglemap extends plgFabrik_Element
+class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
 
 	protected static $geoJs = null;
@@ -175,7 +176,6 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			if ($params->get('fb_gm_defaultloc'))
 			{
 				$uri = JURI::getInstance();
-				// $document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 				FabrikHelperHTML::script('components/com_fabrik/libs/geo-location/geo.js');
 				self::$geoJs = true;
 			}
@@ -449,29 +449,18 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			$dms_lat_min = (int) $dms_lat_min_float;
 			$dms_lat_sec_float = 60 * ($dms_lat_min_float - $dms_lat_min);
 
-			//Round the secs
+			// Round the secs
 			$dms_lat_sec = round($dms_lat_sec_float, 0);
-			//$dms_lat_sec = $dms_lat_sec_float;
 			if ($dms_lat_sec == 60)
 			{
-				$dms_lat_min += 1;
+				$dms_lat_min ++;
 				$dms_lat_sec = 0;
 			}
 			if ($dms_lat_min == 60)
 			{
-				$dms_lat_deg += 1;
+				$dms_lat_deg ++;
 				$dms_lat_min = 0;
 			}
-
-			//@TODO $$$tom Maybe add the possibility to "construct" our own format:
-			// W87Â°43'41"
-			// W 87Â° 43' 41" (with the spacing)
-			// 87Â°43'41" W (Direction at the end)
-			// etc.
-			//
-			// Also: for the seconds: use 1 quote (") or 2 single quotes ('') ? Right now: 1 quote
-
-			// Currently W87Â°43'41"
 
 			$dms->coords[0] = $dms_lat_dir . $dms_lat_deg . '&deg;' . $dms_lat_min . '&rsquo;' . $dms_lat_sec . '&quot;';
 
@@ -489,17 +478,16 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			$dms_long_min = (int) $dms_long_min_float;
 			$dms_long_sec_float = 60 * ($dms_long_min_float - $dms_long_min);
 
-			//Round the secs
+			// Round the secs
 			$dms_long_sec = round($dms_long_sec_float, 0);
-			//$dms_long_sec = $dms_long_sec_float;
 			if ($dms_long_sec == 60)
 			{
-				$dms_long_min += 1;
+				$dms_long_min ++;
 				$dms_long_sec = 0;
 			}
 			if ($dms_long_min == 60)
 			{
-				$dms_long_deg += 1;
+				$dms_long_deg ++;
 				$dms_long_min = 0;
 			}
 
@@ -521,7 +509,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	 * @param   int     $h              Height
 	 * @param   int     $z              Zoom level
 	 * @param   int     $repeatCounter  Repeat group counter
-	 * @param   bool 	$tableView      Is the static map in the table view
+	 * @param   bool    $tableView      Is the static map in the table view
 	 * @param   array   $data           Row / form data, needed for optional radius value
 	 *
 	 * @return  string  static map html
@@ -565,7 +553,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 				break;
 		}
 
-		// new api3 url:
+		// New api3 url:
 		$markers = '';
 		if ($icon !== '')
 		{
@@ -581,13 +569,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		 */
 		if ((int) $params->get('fb_gm_radius', '0') == 1)
 		{
-			require_once(COM_FABRIK_FRONTEND . DS . 'libs' . DS . 'googlemaps' . DS . 'polyline_encoder' . DS . 'class.polylineEncoder.php');
-			$polyEnc = new PolylineEncoder();
+			require_once COM_FABRIK_FRONTEND . '/libs/googlemaps/polyline_encoder/class.polylineEncoder.php';
+			$polyEnc = new PolylineEncoder;
 			$radius = $this->_getFieldValue('fb_gm_radius_read_element', $data, $repeatCounter);
 			if ($radius === false || !isset($radius))
 			{
 				$radius = $params->get('fb_gm_radius_default', '50');
-				;
 			}
 			$enc_str = $polyEnc->GMapCircle($lat, $lon, $radius);
 			$src .= "&amp;path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:" . $enc_str;
@@ -608,11 +595,11 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	 * @return  string  elements html
 	 */
 
-	function render($data, $repeatCounter = 0)
+	public function render($data, $repeatCounter = 0)
 	{
 		require_once COM_FABRIK_FRONTEND . '/libs/mobileuseragent/mobileuseragent.php';
 		require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
-		$ua = new MobileUserAgent();
+		$ua = new MobileUserAgent;
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
 		$groupModel = $this->getGroupModel();
@@ -627,7 +614,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 		}
 		else
 		{
-			$val = JArrayHelper::getValue($data, $name, $val);//(array_key_exists($name, $data) && !empty($data[$name])) ? $data[$name] : $val;
+			$val = JArrayHelper::getValue($data, $name, $val);
 			if ($element->hidden == '1')
 			{
 				return $this->getHiddenField($name, $data[$name], $id);
@@ -635,11 +622,13 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 			$str = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 			// If its not editable and theres no val don't show the map
+			$geoCodeEvent = $params->get('fb_gm_geocode_event', 'button');
 			if ((!$this->isEditable() && $val != '') || $this->isEditable())
 			{
 				if ($this->isEditable() && $params->get('fb_gm_geocode') != '0')
 				{
-					$str .= '<div style="margin-bottom:5px" class="control-group input-append">';
+					$append = $geoCodeEvent === 'button' ? '' : 'input-append';
+					$str .= '<div style="margin-bottom:5px" class="control-group ' . $append . '">';
 				}
 				if ($this->isEditable() && $params->get('fb_gm_geocode') == 1)
 				{
@@ -732,7 +721,7 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 	 * @return mixed
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
 		{
@@ -841,10 +830,12 @@ class plgFabrik_ElementGooglemap extends plgFabrik_Element
 				}
 			}
 			if ($value === '')
-			{ //query string for joined data
+			{
+				// Query string for joined data
 				$value = JArrayHelper::getValue($data, $fullName);
 			}
-			//stops this getting called from form validation code as it messes up repeated/join group validations
+
+			// Stops this getting called from form validation code as it messes up repeated/join group validations
 			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
