@@ -24,7 +24,7 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
  * @since       3.0
  */
 
-class fabrikModelGooglemap extends FabrikFEModelVisualization
+class FabrikModelGooglemap extends FabrikFEModelVisualization
 {
 
 	/**
@@ -67,6 +67,7 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 
 	public function getJs()
 	{
+		$this->setPrefilters();
 		$params = $this->getParams();
 		if (!$this->getRequiredFiltersFound() && $params->get('fb_gm_always_show_map', '0') != '1')
 		{
@@ -291,7 +292,8 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 			* but for now all we can do is set formatAll(), in case they use an element
 			* which isn't set for list display, which then wouldn't get rendered unless we do this.
 			*/
-			if (FabrikString::usesElementPlaceholders($template)) {
+			if (FabrikString::usesElementPlaceholders($template))
+			{
 				$listModel->formatAll(true);
 			}
 			$template_nl2br = JArrayHelper::getValue($templates_nl2br, $c, '1') == '1';
@@ -353,26 +355,33 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 					 */
 					if (empty($html) && (array_key_exists('fabrik_view', $rowdata) || array_key_exists('fabrik_edit', $rowdata)))
 					{
-						//Don't insert linebreak in empty bubble without links $html .= "<br />";
+						// Don't insert linebreak in empty bubble without links $html .= "<br />";
 
 						// Use edit link by preference
 						if (array_key_exists('fabrik_edit', $rowdata))
 						{
-							if ($rowdata['fabrik_edit']!="") $html .= "<br />";
+							if ($rowdata['fabrik_edit'] != '')
+							{
+								$html .= "<br />";
+							}
 							$html .= $rowdata['fabrik_edit'];
 						}
 						else
 						{
-							if ($rowdata['fabrik_view']!="") $html .= "<br />";
+							if ($rowdata['fabrik_view'] != '')
+							{
+								$html .= "<br />";
+							}
 							$html .= $rowdata['fabrik_view'];
 						}
 					}
 					if ($template_nl2br)
 					{
-						// $$$ hugh - not sure why we were doing this rather than nl2br?
-						// If there was a reason, this is still broken, as it ends up inserting
-						// two breaks.  So if we can't use nl2br ... I need fix this before using it again!
 						/*
+						 *  $$$ hugh - not sure why we were doing this rather than nl2br?
+						 If there was a reason, this is still broken, as it ends up inserting
+						 two breaks.  So if we can't use nl2br ... I need fix this before using it again!
+
 						$html = str_replace(array("\n\r"), "<br />", $html);
 						$html = str_replace(array("\r\n"), "<br />", $html);
 						$html = str_replace(array("\n", "\r"), "<br />", $html);
@@ -438,8 +447,11 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 							 * $icons[$v[0].$v[1]][2] = $icons[$v[0].$v[1]][2] . "<h6>$table->label</h6>" . $html;
 							 * Don't insert linebreaks in empty bubble
 							 */
-							 if ($html!="") $html = "<br />" . $html;
-							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] .  $html;
+							if ($html != '')
+							{
+								$html = "<br />" . $html;
+							}
+							$icons[$v[0] . $v[1]][2] = $icons[$v[0] . $v[1]][2] . $html;
 							if ($customimagefound)
 							{
 								$icons[$v[0] . $v[1]][3] = $iconImg;
@@ -471,13 +483,13 @@ class fabrikModelGooglemap extends FabrikFEModelVisualization
 						{
 							$radius = (float) $row->$radiusElement;
 							$radius *= $radiusMeters;
-							$icons[$v[0].$v[1]]['radius'] = $radius;
+							$icons[$v[0] . $v[1]]['radius'] = $radius;
 						}
 						else
 						{
 							$default = (float) JArrayHelper::getvalue($radiusDefaults, $c, 50);
 							$default *= $radiusMeters;
-							$icons[$v[0].$v[1]]['radius'] = $default;
+							$icons[$v[0] . $v[1]]['radius'] = $default;
 						}
 					}
 					$icons[$v[0] . $v[1]]['c'] = $c;

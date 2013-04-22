@@ -15,13 +15,21 @@
 				repeat="true"
 				description="PLG_FORM_REST_PASSWORD_DESC"
 				label="PLG_FORM_REST_PASSWORD_LABEL" />
+			
+			<field name="get"
+				type="text"
+				repeat="true"
+				size="60"
+				description="PLG_FORM_REST_GET_ENDPOINT_DESC"
+				label="PLG_FORM_REST_GET_ENDPOINT_LABEL" />
 				
 			<field name="endpoint"
 				type="text"
 				repeat="true"
 				size="60"
-				description="PLG_FORM_REST_ENDPOINT_DESC" label="PLG_FORM_REST_ENDPOINT_LABEL"/>	
-				
+				description="PLG_FORM_REST_ENDPOINT_DESC"
+				label="PLG_FORM_REST_ENDPOINT_LABEL"/>	
+			
 			<field name="put"
 				type="text"
 				repeat="true"
@@ -81,5 +89,47 @@
 				label="PLG_FORM_REST_FOREIGN_KEY_EVAL_LABEL" />
 		
 		</fieldset>
+		
+		<fieldset name="oAuth" label="oAuth">
+		
+			<field name="oauth_consumer_key"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_CONSUMER_KEY_LABEL"
+				description="PLG_FORM_REST_OAUTH_CONSUMER_KEY_DESC" />
+			
+			<field name="oauth_consumer_secret"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_CONSUMER_SECRET_LABEL"
+				description="PLG_FORM_REST_OAUTH_CONSUMER_SECRET_DESC" />
+			
+			
+			<field name="server_uri"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_SERVER_URI_LABEL"
+				description="PLG_FORM_REST_OAUTH_SERVER_URI_DESC" />
+				
+			<field name="request_token_uri"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_REQUEST_TOKEN_URI_LABEL"
+				description="PLG_FORM_REST_OAUTH_REQUEST_TOKEN_URI_DESC" />
+				
+			<field name="authorize_uri"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_AUTHORIZE_URI_LABEL"
+				description="PLG_FORM_REST_OAUTH__AUTHORIZE_URI_DESC" />
+				
+			<field name="access_token_uri"
+				type="text"
+				repeat="true"
+				label="PLG_FORM_REST_OAUTH_ACCESS_TOKEN_URI_LABEL"
+				description="PLG_FORM_REST_OAUTH_ACCESS_TOKEN_URI_DESC" />
+				
+		</fieldset>
+		
 	</fields>
 </form>

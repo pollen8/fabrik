@@ -59,7 +59,7 @@ class JFormFieldListfields extends JFormFieldList
 		$formModel = false;
 		$aEls = array();
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
-		$c = ElementHelper::getRepeatCounter($this);
+		$c = (int) @$this->form->repeatCounter;
 		$connection = $this->element['connection'];
 		/*
 		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
@@ -99,16 +99,21 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				else
 				{
-					$repeat = ElementHelper::getRepeat($this);
+					$repeat = ElementHelper::getRepeat($this) || $this->element['repeat'];
 					$tableDd = $this->element['table'];
 					$opts = new stdClass;
 					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
 					$opts->conn = 'jform_' . $connectionDd;
 					$opts->value = $this->value;
-					$opts->repeat = $this->value;
+					$opts->repeat = $repeat;
 					$opts->highlightpk = (int) $highlightpk;
 					$opts = json_encode($opts);
-					$script = "new ListFieldsElement('$this->id', $opts);\n";
+					$script = array();
+					$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
+					$script[] = "FabrikAdmin.model.fields.listfields = {};";
+					$script[] = "}";
+					$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
+					$script = implode("\n", $script);
 					FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/listfields.js', $script);
 					$rows = array(JHTML::_('select.option', '', JText::_('SELECT A CONNECTION FIRST')), 'value', 'text');
 					$o = new stdClass;

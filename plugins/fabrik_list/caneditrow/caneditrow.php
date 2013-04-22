@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
  * @since       3.0
  */
 
-class plgFabrik_ListCaneditrow extends plgFabrik_List
+class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 {
 
 	/**
