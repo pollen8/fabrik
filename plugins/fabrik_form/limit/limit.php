@@ -20,13 +20,14 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 * @since       3.0
 */
 
-class plgFabrik_FormLimit extends plgFabrik_Form {
+class PlgFabrik_FormLimit extends plgFabrik_Form
+{
 
 	/**
 	 * Process the plugin, called when form is loaded
 	 *
 	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
+	 * @param   JModel  &$formModel  Form model
 	 *
 	 * @return  void
 	 */
@@ -39,16 +40,13 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 	/**
 	 * Process the plugin
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  $params      Plugin params
+	 * @param   JModel  &$formModel  Form model
 	 *
 	 * @return  bool
 	 */
 	private function _process($params, &$formModel)
 	{
-		$user = JFactory::getUser();
-		$db = FabrikWorker::getDbo();
-		$query = $db->getQuery(true);
 		if ($params->get('limit_allow_anonymous'))
 		{
 			return true;
@@ -57,32 +55,9 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 		{
 			return true;
 		}
-		$listid = (int) $params->get('limit_table');
-		if ($listid === 0)
-		{
-			// Use the limit setting supplied in the admin params
-			$limit = (int) $params->get('limit_length');
-		}
-		else
-		{
-			// Look up the limit from the table spec'd in the admin params
-			$listModel = JModel::getInstance('List', 'FabrikFEModel');
-			$listModel->setId($listid);
-			$max = $db->quoteName(FabrikString::shortColName($params->get('limit_max')));
-			$userfield = $db->quoteName(FabrikString::shortColName($params->get('limit_user')));
-			$query->select($max)->from($listModel->getTable()->db_table_name)->where($userfield . ' = ' . (int) $user->get('id'));
-			$db->setQuery($query);
-			$limit = (int) $db->loadResult();
 
-		}
-		$field = $params->get('limit_userfield');
-		$listModel = $formModel->getlistModel();
-		$list = $listModel->getTable();
-		$db = $listModel->getDb();
-		$query->clear()->select(' COUNT(' . $field . ')')->from($list->db_table_name)->where($field . ' = ' . (int) $user->get('id'));
-		$db->setQuery($query);
-
-		$c = $db->loadResult();
+		$limit = $this->limit();
+		$c = $this->count($formModel);
 		if ($c >= $limit)
 		{
 			$msg = $params->get('limit_reached_message', JText::sprintf('PLG_FORM_LIMIT_LIMIT_REACHED', $limit));
@@ -96,6 +71,84 @@ class plgFabrik_FormLimit extends plgFabrik_Form {
 			$app->enqueueMessage(JText::sprintf('PLG_FORM_LIMIT_ENTRIES_LEFT_MESSAGE', $limit - $c, $limit));
 		}
 		return true;
+	}
+
+	/**
+	 * Count the number of records the user has already submitted
+	 *
+	 * @param   JModel  $formModel  Form model
+	 *
+	 * @return  int
+	 */
+	protected function count($formModel)
+	{
+		$user = JFactory::getUser();
+		$params = $this->getParams();
+		$field = $params->get('limit_userfield');
+		$listModel = $formModel->getlistModel();
+		$list = $listModel->getTable();
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		$query->clear()->select(' COUNT(' . $field . ')')->from($list->db_table_name)->where($field . ' = ' . (int) $user->get('id'));
+		$db->setQuery($query);
+		return (int) $db->loadResult();
+	}
+
+	/**
+	 * Work ok the max number of records the user can submit
+	 *
+	 * @return number
+	 */
+	protected function limit()
+	{
+		$params = $this->getParams();
+		$listid = (int) $params->get('limit_table');
+		if ($listid === 0)
+		{
+			// Use the limit setting supplied in the admin params
+			$limit = (int) $params->get('limit_length');
+		}
+		else
+		{
+			// Query the db to get limits
+			$limit = $this->limitQuery();
+
+		}
+		return $limit;
+	}
+
+	/**
+	 * Look up the limit from the table spec'd in the admin params
+	 * looup done on user id OR user groups, max limit returned
+	 *
+	 * @return number
+	 */
+	protected function limitQuery()
+	{
+		$user = JFactory::getUser();
+		$params = $this->getParams();
+		$listid = (int) $params->get('limit_table');
+		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel->setId($listid);
+		$dbTable = $listModel->getTable()->db_table_name;
+		$db = $listModel->getDb();
+		$query = $db->getQuery(true);
+		$lookup = FabrikString::safeColName($params->get('limit_user'));
+		$max = FabrikString::safeColName($params->get('limit_max'));
+		$query->select('MAX(' . $max . ')')->from($dbTable);
+		$type = $params->get('lookup_type', '');
+		if ($type == 'user')
+		{
+			$query->where($lookup . ' = ' . (int) $user->get('id'));
+		}
+		else
+		{
+			$groups = $user->getAuthorisedGroups();
+			$query->where($lookup . ' IN (' . implode(',', $groups) . ')');
+		}
+		$db->setQuery($query);
+		$limit = (int) $db->loadResult();
+		return $limit;
 	}
 
 }
