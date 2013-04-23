@@ -657,21 +657,15 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 		// If filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
-		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '')))
 		{
 			$rows = $this->filterValueList($normal, '', $joinTableName . '.' . $tabletype, '', false);
 			$rows = (array) $rows;
-			if ($element->filter_type !== 'checkbox')
-			{
-				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
-			}
+			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 		}
 
 		switch ($element->filter_type)
 		{
-			case 'checkbox':
-				$return[] = $this->checkboxFilter($rows, $default, $v);
-				break;
 			case "range":
 				$attribs = 'class="inputbox fabrik_filter" size="1" ';
 				$default1 = is_array($default) ? $default[0] : '';
@@ -679,16 +673,12 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$default1 = is_array($default) ? $default[1] : '';
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
-			case 'dropdown':
-			case 'multiselect':
+			case "dropdown":
 			default:
-				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
-				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, 'value', 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
 				break;
 
-			case 'field':
+			case "field":
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -697,7 +687,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case 'hidden':
+			case "hidden":
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -706,7 +696,7 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case 'auto-complete':
+			case "auto-complete":
 				$defaultLabel = $this->getLabelForValue($default);
 				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);

@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
+class plgFabrik_ElementColourpicker extends plgFabrik_Element
 {
 
 	/**

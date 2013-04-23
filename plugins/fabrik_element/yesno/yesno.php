@@ -44,7 +44,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	 *
 	 * @param   array  $data  to use as parsemessage for placeholder
 	 *
-	 * @return mixed
+	 * @return unknown_type
 	 */
 
 	function getDefaultValue($data = array())
@@ -56,15 +56,6 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 		}
 		return $this->_default;
 	}
-
-	/**
-	 * Shows the data formatted for the list view
-	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
-	 *
-	 * @return  string	formatted value
-	 */
 
 	public function renderListData($data, &$thisRow)
 	{
@@ -91,7 +82,7 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	 * @return string formatted value
 	 */
 
-	public function renderListData_pdf($data, $thisRow)
+	function renderListData_pdf($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
 		if ($data == '1')
@@ -105,15 +96,14 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * Prepares the element data for CSV export
+	 * Shows the data formatted for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
-	 *
-	 * @return  string	formatted value
+	 * @param string data
+	 * @param object all the data in the tables current row
+	 * @return string formatted value
 	 */
 
-	public function renderListData_csv($data, &$thisRow)
+	function renderListData_csv($data, &$thisRow)
 	{
 		if ($data == '1')
 		{
@@ -175,16 +165,17 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * Get the class to manage the form element
+	 * @param array of scripts previously loaded (load order is important as we are loading via head.js
+	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
+	 * current file
+	 *
+	 * get the class to manage the form element
+	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
+	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
-	 *
-	 * @param   array   &$srcs   Scripts previously loaded
-	 * @param   string  $script  Script to load once class has loaded
-	 *
-	 * @return void
 	 */
 
-	public function formJavascriptClass(&$srcs, $script = '')
+	function formJavascriptClass(&$srcs, $script = '')
 	{
 		$elementList = 'media/com_fabrik/js/elementlist.js';
 		if (!in_array($elementList, $srcs))
@@ -201,11 +192,9 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 
 	/**
 	 * format the read only output for the page
-	 *
-	 * @param   string  $value  initial value
-	 * @param   string  $label  label
-	 *
-	 * @return  string  read only value
+	 * @param string $value
+	 * @param string label
+	 * @return string value
 	 */
 
 	protected function getReadOnlyOutput($value, $label)
@@ -231,13 +220,8 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	}
 
 	/**
-	 * Get the table filter for the element
-	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
-	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
-	 *
-	 * @return  string	filter html
+	 * (non-PHPdoc)
+	 * @see plgFabrik_ElementList::getFilter()
 	 */
 
 	public function getFilter($counter = 0, $normal = true)

@@ -50,13 +50,9 @@ var FbListFilter = new Class({
 				this.container.getElements('.fabrik_filter').each(function (f) {
 					if (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all')) { 
 						if (f.get('tag') === 'select') {
-							f.selectedIndex = f.get('multiple') ? -1 : 0;
+							f.selectedIndex = 0;
 						} else {
-							if (f.get('type') === 'checkbox') {
-								f.checked = false;
-							} else {
-								f.value = '';
-							}
+							f.value = '';
 						}
 					}
 				});
