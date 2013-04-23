@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 * @since       3.0
 */
 
-class PlgFabrik_ListInlineedit extends plgFabrik_List
+class PlgFabrik_ListInlineedit extends PlgFabrik_List
 {
 
 	/**

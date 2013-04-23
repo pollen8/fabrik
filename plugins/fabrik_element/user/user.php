@@ -649,15 +649,21 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		// If filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
-		if (in_array($element->filter_type, array('range', 'dropdown', '')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox')))
 		{
 			$rows = $this->filterValueList($normal, '', $joinTableName . '.' . $tabletype, '', false);
 			$rows = (array) $rows;
-			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			if ($element->filter_type !== 'checkbox')
+			{
+				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
 		}
 		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
 			case "range":
 				$attribs = 'class="' . $class . '" size="1" ';
 				$default1 = is_array($default) ? $default[0] : '';
@@ -665,12 +671,16 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$default1 = is_array($default) ? $default[1] : '';
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
-			case "dropdown":
+			case 'dropdown':
+			case 'multiselect':
 			default:
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $htmlid);
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $htmlid);
 				break;
 
-			case "field":
+			case 'field':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -679,7 +689,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -688,7 +698,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case "auto-complete":
+			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
 				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);

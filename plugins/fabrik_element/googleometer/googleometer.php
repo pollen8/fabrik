@@ -65,12 +65,24 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		return '';
 	}
 
+	/**
+	 * Get the data element's full name
+	 *
+	 * @return  string
+	 */
+
 	private function getDataElementFullName()
 	{
 		$dataelement = $this->getDataElement();
 		$fullName = $dataelement->getFullName();
 		return $fullName;
 	}
+
+	/**
+	 * Get the data element
+	 *
+	 * @return  PlgFabrik_Element
+	 */
 
 	private function getDataElement()
 	{
@@ -80,6 +92,12 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$element->setId($elementid);
 		return $element;
 	}
+
+	/**
+	 * Get the min max rating range
+	 *
+	 * @return  object
+	 */
 
 	private function getRange()
 	{
@@ -98,8 +116,8 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -118,7 +136,16 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		return parent::renderListData($data, $thisRow);
 	}
 
-	function _renderListData($data, $range)
+	/**
+	 * Render the google meter
+	 *
+	 * @param   string  $data   Elements data
+	 * @param   object  $range  Min / Max range
+	 *
+	 * @return  string	formatted value
+	 */
+
+	protected function _renderListData($data, $range)
 	{
 		$options = array();
 		$params = $this->getParams();
@@ -133,4 +160,3 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	}
 
 }
-?>

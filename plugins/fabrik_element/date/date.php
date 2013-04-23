@@ -1289,7 +1289,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$htmlid = $this->getHTMLId();
 		$fType = $this->getFilterType();
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		if (in_array($fType, array('dropdown')))
+		if (in_array($fType, array('dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 		}
@@ -1297,6 +1297,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$return = array();
 		switch ($fType)
 		{
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
 			case 'range':
 			case 'range-hidden':
 				FabrikHelperHTML::loadcalendar();
@@ -1329,10 +1332,17 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				break;
 
-			case "dropdown": /**
+			case 'dropdown':
+			case 'multiselect':
+							/**
 							  *  cant do the format in the MySQL query as its not the same formatting
 							  *  e.g. M in mysql is month and J's date code its minute
 							  */
+
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$v = $fType === 'multiselect' ? $v . '[]' : $v;
+
 				jimport('joomla.utilities.date');
 				$ddData = array();
 				foreach ($rows as $k => $o)
@@ -1355,7 +1365,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 					}
 				}
 				array_unshift($ddData, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" size="1" maxlength="19"', 'value', 'text',
+				$return[] = JHTML::_('select.genericlist', $ddData, $v, 'class="' . $class . '" ' . $size . ' maxlength="19"', 'value', 'text',
 					$default, $htmlid . '0');
 				break;
 			default:

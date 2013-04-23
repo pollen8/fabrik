@@ -4904,6 +4904,7 @@ class FabrikFEModelList extends JModelForm
 		// $$$ rob getData() should always be run first
 		if (is_null($this->data))
 		{
+			echo "list gettotal records going to call getData() <br>";
 			$this->getData();
 			return $this->totalRecords;
 		}

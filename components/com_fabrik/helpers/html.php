@@ -1791,6 +1791,10 @@ EOD;
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
 			$inputClass = FabrikWorker::j3() ? '' : $type;
+			if (array_key_exists('input', $classes))
+			{
+				$inputClass .= ' ' . implode(' ', $classes['input']);
+			}
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';

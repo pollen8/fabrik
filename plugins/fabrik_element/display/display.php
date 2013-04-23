@@ -16,6 +16,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.display
+ * @since       3.0
  */
 
 class PlgFabrik_ElementDisplay extends PlgFabrik_Element
@@ -106,8 +107,8 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 	 * Unlike other elements where readonly effects what is displayed, the display element is always
 	 * read only, so get the default value.
 	 *
-	 * @param   array  $data   Form data
-	 * @param   array  $opts   Options
+	 * @param   array  $data  Form data
+	 * @param   array  $opts  Options
 	 *
 	 * @since  3.0.7
 	 *

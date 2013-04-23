@@ -91,7 +91,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$str[] = '</ul></div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 
-		//Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
+		// Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
 		if ($rowid > 0)
 		{
 			if ($params->get('fieldType', 'textarea') == 'field')

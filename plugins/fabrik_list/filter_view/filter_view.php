@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.0
  */
 
-class plgFabrik_ListFilter_view extends plgFabrik_List
+class PlgFabrik_ListFilter_View extends PlgFabrik_List
 {
 
 	protected $buttonPrefix = 'filter_view';
@@ -35,6 +35,16 @@ class plgFabrik_ListFilter_view extends plgFabrik_List
 	{
 		return 'filter_view_access';
 	}
+
+	/**
+	 * Get the content to show before the list
+	 *
+	 * @param   object  $params  List parameters
+	 * @param   JModel  $model   List model
+	 * @param   array   $args    Options
+	 *
+	 * @return  void
+	 */
 
 	public function onGetContentBeforeList($params, $model, $args)
 	{
@@ -93,7 +103,6 @@ class plgFabrik_ListFilter_view extends plgFabrik_List
 							$vraw = $val . '_raw';
 							foreach ($rows as $row)
 							{
-								//$qs = $val.'_raw='.$row->$vraw;
 								$qs = str_replace($key . '=' . $val, $val . '_raw=' . $row->$vraw, $links[$i]);
 								if ($qs == $_SERVER['QUERY_STRING'])
 								{
@@ -126,6 +135,12 @@ class plgFabrik_ListFilter_view extends plgFabrik_List
 		$this->html = implode("\n", $html);
 	}
 
+	/**
+	 * Return the content to display before the list
+	 *
+	 * @return string
+	 */
+
 	public function onGetContentBeforeList_result()
 	{
 		return $this->html;
@@ -151,4 +166,3 @@ class plgFabrik_ListFilter_view extends plgFabrik_List
 	}
 
 }
-?>

@@ -176,14 +176,14 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$params = $this->getParams();
 		$class = $this->filterClass();
 		$v = $this->filterName($counter, $normal);
-		if (in_array($element->filter_type, array('range', 'dropdown', '')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 			if ($params->get('filter_groupby') != -1)
 			{
 				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
-			if (!in_array('', $values))
+			if (!in_array('', $values) && !in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
 			}
@@ -194,7 +194,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$return = array();
 		switch ($element->filter_type)
 		{
-			case "range":
+			case 'range':
 				if (!is_array($default))
 				{
 					$default = array('', '');
@@ -204,12 +204,19 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[1],
 					$element->name . "_filter_range_1");
 				break;
-			case "dropdown":
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
+			case 'dropdown':
+			case 'multiselect':
 			default:
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="7"' : 'size="1"';
+				$attribs = 'class="inputbox fabrik_filter" ' . $size;
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$return[] = JHTML::_('select.genericlist', $rows, $v, $attribs, 'value', 'text', $default, $htmlid);
 				break;
 
-			case "field":
+			case 'field':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -219,7 +226,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					. $htmlid . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -838,6 +845,69 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 		parent::formJavascriptClass($srcs, $script, $shim);
+	}
+
+	/**
+	* used by elements with suboptions
+	* 
+	* $$$ hugh - started working on adding this to elementlist, as we need to handle
+	* JSON-ified options for multiselect elements, which the main element model getLabelForValue()
+	* doesn't do.  But I need to sort out how this gets handled in rendering as well.
+	*
+	* @param   string  $v             value
+	* @param   string  $defaultLabel  default label
+	*
+	* @return  string	label
+	*/
+
+	public function notreadyyet_getLabelForValue($v, $defaultLabel = '')
+	{
+		/**
+		 * $$$ hugh - only needed getParent when we weren't saving changes to parent params to child
+		 * which we should now be doing ... and getParent() causes an extra table lookup for every child
+		 * element on the form.
+		 * $element = $this->getParent();
+		 */
+		$element = $this->getElement();
+		$params = $this->getParams();
+		$values = $this->getSubOptionValues();
+		$labels = $this->getSubOptionLabels();
+		$multiple = $this->isMultiple();
+		//$key = array_search($v, $values);
+		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
+		foreach ($vals as $val)
+		{
+			$l = JArrayHelper::getValue($labels, $val, $defaultLabel);
+			if (trim($l) !== '')
+			{
+				if ($multiple && $this->renderWithHTML)
+				{
+					$lis[] = '<li>' . $l . '</li>';
+				}
+				else
+				{
+					$lis[] = $l;
+				}
+			}
+		}
+		$return = '';
+		if (!empty($lis))
+		{
+			$return = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
+		}
+
+		/**
+		 * $$$ rob if we allow adding to the dropdown but not recording
+		 * then there will be no $key set to revert to the $val instead
+		 */
+		/*
+		if ($v === $params->get('sub_default_value'))
+		{
+			$v = $params->get('sub_default_label');
+		}
+		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
+		*/
+		return $return;
 	}
 
 }

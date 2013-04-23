@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelFusionchart extends FabrikFEModelVisualization
+class FabrikModelFusionchart extends FabrikFEModelVisualization
 {
 
 	/**

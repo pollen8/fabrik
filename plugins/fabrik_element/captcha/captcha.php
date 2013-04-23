@@ -18,6 +18,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha-php-1.11/re
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.captcha
+ * @since       3.0
  */
 
 class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
@@ -192,7 +193,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error, $ssl);
 			}
 		}
-		else if ($params->get('captcha-method') == 'playthru')
+		elseif ($params->get('captcha-method') == 'playthru')
 		{
 			if ($user->id != 0 && $params->get('captcha-showloggedin', 0) == false)
 			{
@@ -200,19 +201,17 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			}
 			if (!defined('AYAH_PUBLISHER_KEY'))
 			{
-				define( 'AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
-				define( 'AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
+				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
+				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
 			}
 			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/ayah_php_bundle_1.1.7/ayah.php';
-			$ayah = new AYAH();
+			$ayah = new AYAH;
 			return $ayah->getPublisherHTML();
 		}
 		else
 		{
 			$str = array();
 			$size = $element->width;
-			//$height = $params->get('captcha-height', 40);
-			//$width = $params->get('captcha-width', 40);
 			$fontsize = $params->get('captcha-font-size', 22);
 			$angle = $params->get('captcha-angle', 0);
 			$padding = $params->get('captcha-padding', 10);
@@ -239,16 +238,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$session->set('com_' . $package . '.element.captach.fontsize', $fontsize);
 			$session->set('com_' . $package . '.element.captach.angle', $angle);
 			$session->set('com_' . $package . '.element.captach.padding', $padding);
-
-			// Felixkat - Remove
-			//$session->set('com_' . $package . '.element.captach.height', $height);
-			//$session->set('com_' . $package . '.element.captach.width', $width);
-			// Felixkat - End
 			$session->set('com_' . $package . '.element.captach.noise_color', $noise_color);
 			$session->set('com_' . $package . '.element.captach.text_color', $text_color);
 			$session->set('com_' . $package . '.element.captach.bg_color', $bg_color);
 			$session->set('com_' . $package . '.element.captach.font', $this->font);
-			// * /e-kinst
 
 			// $$$ hugh - changed from static image path to using simple image.php script, to get round IE caching images
 
@@ -258,7 +251,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			 *	background color to OCR captcha values without problems
 			*/
 			$str[] = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_element/captcha/image.php?foo=' . rand() . '" alt="'
-			    . JText::_('security image') . '" />';
+			. JText::_('security image') . '" />';
 
 			$str[] = '<br />';
 
@@ -311,15 +304,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 
 			return false;
 		}
-		else if ($params->get('captcha-method') == 'playthru')
+		elseif ($params->get('captcha-method') == 'playthru')
 		{
 			if (!defined('AYAH_PUBLISHER_KEY'))
 			{
-				define( 'AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
-				define( 'AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
+				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
+				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
 			}
 			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/ayah_php_bundle_1.1.7/ayah.php';
-			$ayah = new AYAH();
+			$ayah = new AYAH;
 			return $ayah->scoreResult();
 		}
 		else

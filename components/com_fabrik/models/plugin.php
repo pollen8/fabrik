@@ -674,10 +674,11 @@ class FabrikPlugin extends JPlugin
 				if (is_numeric($tid))
 				{
 					// If loading on a numeric list id get the list db table name
-					$query = $db->getQuery(true);
+					$jDb = FabrikWorker::getDbo(true);
+					$query = $jDb->getQuery(true);
 					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
-					$db->setQuery($query);
-					$tid = $db->loadResult();
+					$jDb->setQuery($query);
+					$tid = $jDb->loadResult();
 				}
 				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 				$rows = $db->loadObjectList();
@@ -951,19 +952,14 @@ class FabrikPlugin extends JPlugin
 		switch ($no_bytes)
 		{
 			case 2:
-				{
-					$prefix = array(31, 192);
-					break;
-				}
+				$prefix = array(31, 192);
+				break;
 			case 3:
-				{
-					$prefix = array(15, 224);
-					break;
-				}
+				$prefix = array(15, 224);
+				break;
 			case 4:
-				{
-					$prefix = array(7, 240);
-				}
+				$prefix = array(7, 240);
+				break;
 		}
 		for ($i = 0; $i < $no_bytes; $i++)
 		{
@@ -998,8 +994,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get user ids from group ids
 	 *
-	 * @param   array  $sendTo  user group id
-	 * @param  string  $field   field to return from user group. Default = 'id'
+	 * @param   array   $sendTo  User group id
+	 * @param   string  $field   Field to return from user group. Default = 'id'
 	 *
 	 * @since   3.0.7
 	 *

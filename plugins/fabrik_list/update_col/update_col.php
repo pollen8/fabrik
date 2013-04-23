@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.0
  */
 
-class plgFabrik_ListUpdate_col extends plgFabrik_List
+class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 {
 
 	protected $buttonPrefix = 'update_col';
@@ -194,7 +194,6 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 				$tbl = array_shift(explode('.', $emailColumn));
 				$db = JFactory::getDBO();
 
-
 				// If using a user element, build a lookup list of emails from #__users,
 				// so we're only doing one query to grab all involved emails.
 				if ($emailWhich == 'user')
@@ -203,7 +202,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 					$query = $db->getQuery();
 					$query->select('#__users.id AS id, #__users.email AS email')
 					->from('#__users')->join('LEFT', $tbl . ' ON #__users.id = ' . $emailColumn)
-					->where(_primary_key . ' IN (' . $ids . ')');
+					->where($item->db_primary_key . ' IN (' . $ids . ')');
 					$db->setQuery($query);
 					$results = $db->loadObjectList();
 					foreach ($results as $result)
@@ -224,7 +223,7 @@ class plgFabrik_ListUpdate_col extends plgFabrik_List
 					$userid = (int) $row->$emailFieldRaw;
 					$to = JArrayHelper::getValue($userids_emails, $userid);
 				}
-				else if ($emailWhich == 'field')
+				elseif ($emailWhich == 'field')
 				{
 					$to = $row->$emailField;
 				}

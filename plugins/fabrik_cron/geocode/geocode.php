@@ -96,7 +96,7 @@ class PlgFabrik_CronGeocode extends PlgFabrik_Cron
 		$geocode_zip_element = $geocode_zip_element_long ? FabrikString::shortColName($geocode_zip_element_long) : '';
 		$geocode_country_element_long = $params->get('geocode_country_element');
 		$geocode_country_element = $geocode_country_element_long ? FabrikString::shortColName($geocode_country_element_long) : '';
-		$geocode_when = $params->get('geocode_zip_element', '1');
+		$geocode_when = $params->get('geocode_when', '1');
 
 		$gmap = new GeoCode;
 
