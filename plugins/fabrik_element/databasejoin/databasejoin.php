@@ -1078,9 +1078,9 @@ class plgFabrik_ElementDatabasejoin extends plgFabrik_ElementList
 				switch ($displayType)
 				{
 					case 'dropdown':
-					default:
 					//Jaanus: to avoid dropdowns becoming too large because of possible long labels
-						$attribs .= $params->get('max-width') && $params->get('max-width') != '' ? ' style="max-width:' . $params->get('max-width') . ';' : '';
+						$attribs .= $params->get('max-width') && $params->get('max-width') != '' ? ' style="max-width:' . $params->get('max-width') . ';"' : '';
+					default:
 						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
