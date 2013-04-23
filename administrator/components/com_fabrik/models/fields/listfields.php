@@ -88,8 +88,11 @@ class JFormFieldListfields extends JFormFieldList
 				break;
 			case 'visualization':
 			case 'element':
-			// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
-				$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
+				$repeat = ElementHelper::getRepeat($this) || $this->element['repeat'];
+
+				// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
+				//$connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
+				$connectionDd = $repeat ? $connection . '-' . $c : $connection;
 				if ($connection == '')
 				{
 
@@ -99,7 +102,6 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				else
 				{
-					$repeat = ElementHelper::getRepeat($this) || $this->element['repeat'];
 					$tableDd = $this->element['table'];
 					$opts = new stdClass;
 					$opts->table = ($repeat) ? 'jform_' . $tableDd . '-' . $c : 'jform_' . $tableDd;
