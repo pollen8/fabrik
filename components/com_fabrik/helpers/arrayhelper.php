@@ -25,23 +25,18 @@ class FArrayHelper extends JArrayHelper
 	/**
 	 * Get a value from a nested array
 	 *
-	 * @param   array   $array         Data to search
-	 * @param   string  $key           Search key, use key.dot.format to get nested value
-	 * @param   string  $default       Default value if key not found
-	 * @param   bool    $allowObjects  Should objects found in $array be converted into arrays
+	 * @param   array   $array    to search
+	 * @param   string  $key      search key, use key.dot.format to get nested value
+	 * @param   string  $default  default value if key not found
 	 *
 	 *  @return  mixed
 	 */
 
-	public static function getNestedValue($array, $key, $default = null, $allowObjects = false)
+	public static function getNestedValue($array, $key, $default = null)
 	{
 		$keys = explode('.', $key);
 		foreach ($keys as $key)
 		{
-			if (is_object($array) && $allowObjects)
-			{
-				$array = JArrayHelper::fromObject($array);
-			}
 			if (!is_array($array))
 			{
 				return $default;

@@ -26,7 +26,7 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
  * @since       3.0
  */
 
-class PlgFabrik_ElementFileupload extends PlgFabrik_Element
+class plgFabrik_ElementFileupload extends plgFabrik_Element
 {
 
 	/**
@@ -1037,6 +1037,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
+			//echo "crop data = " ;print_r( ($cropData));exit;
 			$ids = array_values($ids);
 			$saveParams = array();
 			$files = array_keys($crop);
@@ -1469,6 +1470,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$file = $input->files->get($name, array(), 'array');
 				if ($groupModel->canRepeat())
 				{
+					// return JArrayHelper::getValue($file['name'], $repeatCounter, '') == '' ? true : false;
 					return $file[$repeatCounter]['name'] == '' ? true : false;
 				}
 			}

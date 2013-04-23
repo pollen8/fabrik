@@ -23,7 +23,7 @@ require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
  * @since       3.0
  */
 
-class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
+class plgFabrik_Cronimportcsv extends plgFabrik_Cron
 {
 
 	protected $db = null;
@@ -42,12 +42,6 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 	{
 		return true;
 	}
-
-	/**
-	 * Whether cron should automagically load table data
-	 *
-	 * @return  bool
-	 */
 
 	public function requiresTableData()
 	{
@@ -83,13 +77,13 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 	/**
 	 * Do the plugin action
 	 *
-	 * @param   array   &$data       array data to process
-	 * @param   object  &$listModel  plugin's list model
+	 * @param   array   &$data  data
+	 * @param   object  $listModel  list model
 	 *
-	 * @return  int  number of records run
+	 * @return  int  number of records updated
 	 */
 
-	public function process(&$data, &$listModel)
+	public function process(&$data, $listModel)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -165,12 +159,12 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 			}
 			$input->set('listid', $listid);
 
-			// Grab the CSV file, need to strip import root off path first
+			// grab the CSV file, need to strip import root off path first
 			$csvfile = str_replace(FABRIK_CSV_IMPORT_ROOT, '', $full_csvfile);
 			$clsImportCSV->setBaseDir(FABRIK_CSV_IMPORT_ROOT);
 			$clsImportCSV->readCSV($csvfile);
 
-			// Get this->matchedHeading
+			//get this->matchedHeading
 			$clsImportCSV->findExistingElements();
 
 			$msg = $clsImportCSV->makeTableFromCSV();

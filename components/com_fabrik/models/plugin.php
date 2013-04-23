@@ -549,11 +549,10 @@ class FabrikPlugin extends JPlugin
 				if (is_numeric($tid))
 				{
 					// If loading on a numeric list id get the list db table name
-					$jDb = FabrikWorker::getDbo(true);
-					$query = $jDb->getQuery(true);
+					$query = $db->getQuery(true);
 					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
-					$jDb->setQuery($query);
-					$tid = $jDb->loadResult();
+					$db->setQuery($query);
+					$tid = $db->loadResult();
 				}
 				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 				$rows = $db->loadObjectList();

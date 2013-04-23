@@ -19,7 +19,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @since       3.0
  */
 
-class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
+class plgFabrik_ElementNotes extends plgFabrik_ElementDatabasejoin
 {
 
 	/** @var int last row id to be inserted via ajax call */
@@ -91,7 +91,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$str[] = '</ul></div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 
-		// Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
+		//Jaanus - Submitting notes before saving form data results with the notes belonging to nowhere but new, not submitted forms.
 		if ($rowid > 0)
 		{
 			if ($params->get('fieldType', 'textarea') == 'field')
@@ -197,7 +197,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		}
 		if ($this->loadRow != '')
 		{
-			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
+			$pk = $db->quoteName($this->getJoin()->table_join_alias) . '.' . $db->quoteName($params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
 		if ($query)
@@ -227,17 +227,20 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$orderBy = $params->get('notes_order_element');
 		if ($orderBy == '')
 		{
-			return $query ? $query : '';
+			return $query ? $query :'';
 		}
 		else
 		{
-			$order = $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
 			if ($query)
 			{
-				$query->order($order);
+				$query->order($db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC'));
 				return $query;
 			}
-			return " ORDER BY " . $order;
+			else
+			{
+				return " ORDER BY " . $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+			}
+
 		}
 	}
 
@@ -315,8 +318,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 
 	public function onAjax_addNote()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
 		$this->loadMeForAjax();
 		$return = new stdClass;
 		$db = $this->getDb();
@@ -325,7 +326,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$table = $db->quoteName($params->get('join_db_name'));
 		$col = $params->get('join_val_column');
 		$key = $db->quoteName($params->get('join_key_column'));
-		$v = $db->quote($input->get('v'));
+		$v = $db->quote(JRequest::getVar('v'));
 		$rowid = $this->getFormModel()->getRowId();
 
 		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
@@ -348,11 +349,11 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$fk = $params->get('join_fk_column', '');
 			if ($fk !== '')
 			{
-				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
+				$query->set($db->quoteName($fk) . ' = ' . $db->quote(JRequest::getVar('rowid')));
 			}
 			$db->setQuery($query);
 
-			if (!$db->execute())
+			if (!$db->query())
 			{
 				JError::raiseError(500, 'db insert failed');
 			}

@@ -25,7 +25,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class PlgFabrik_ElementCount extends PlgFabrik_Element
+class plgFabrik_ElementCount extends plgFabrik_Element
 {
 
 	/**
@@ -51,16 +51,15 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	public function getAsField_html(&$aFields, &$aAsFields, $opts = array())
 	{
 		$dbtable = $this->actualTableName();
-		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo();
-		if ($app->input->get('c') != 'form')
+		if (JRequest::getVar('c') != 'form')
 		{
 			$params = $this->getParams();
-			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . '___' . $this->element->name));
-			$r = 'COUNT(' . $params->get('count_field', '*') . ')';
-			$aFields[] = $r . ' AS ' . $fullElName;
+			$fullElName = JArrayHelper::getValue($opts, 'alias', $db->quoteName($dbtable . "___" . $this->_element->name));
+			$r = "COUNT(" . $params->get('count_field', '*') . ")";
+			$aFields[] = "$r AS $fullElName";
 			$aAsFields[] = $fullElName;
-			$aAsFields[] = $db->quoteName($dbtable . '___' . $this->getElement()->name . '_raw');
+			$aAsFields[] = "`$dbtable" . "___" . $this->getElement()->name . "_raw`";
 		}
 	}
 
@@ -102,7 +101,7 @@ class PlgFabrik_ElementCount extends PlgFabrik_Element
 	 * @return  string	elements html
 	 */
 
-	public function render($data, $repeatCounter = 0)
+	function render($data, $repeatCounter = 0)
 	{
 		return '';
 		/*$name 			= $this->getHTMLName($repeatCounter);

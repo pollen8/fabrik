@@ -70,7 +70,7 @@ if (isset($listels->show_in_list))
 
 $viewName = 'list';
 $viewType = $document->getType();
-$controller = new FabrikControllerList;
+$controller = new FabrikControllerList();
 
 // Set the default view name from the Request
 $view = clone($controller->getView($viewName, $viewType));
@@ -119,7 +119,7 @@ if (!empty($orderBy))
 // Set up prefilters - will overwrite ones defined in the list!
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
-$conditions = (array) $prefilters['filter-conditions'];
+$conditions = (array)$prefilters['filter-conditions'];
 if (!empty($conditions))
 {
 	$listParams->set('filter-fields', $prefilters['filter-fields']);
