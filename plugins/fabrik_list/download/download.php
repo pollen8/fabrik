@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.0
  */
 
-class plgFabrik_ListDownload extends plgFabrik_List
+class PlgFabrik_ListDownload extends PlgFabrik_List
 {
 
 	/**

@@ -413,6 +413,7 @@ var FbListInlineEdit = new Class({
 					//delay the script to allow time for the dom to be updated
 					(function () {
 						Browser.exec(this.javascript);
+						Fabrik.tips.attach('.fabrikTip');
 					}.bind(this)).delay(1000);
 					td.empty().set('html', r);
 					r = r + '<script type="text/javascript">' + this.javascript + '</script>';
@@ -446,6 +447,7 @@ var FbListInlineEdit = new Class({
 			
 			// Make a new instance of the element js class which will use the new html
 			eval(this.javascript);
+			Fabrik.tips.attach('.fabrikTip');
 			
 			// Set some options for use in 'fabrik.list.inlineedit.setData'
 			this.editOpts = opts;

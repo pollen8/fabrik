@@ -1,4 +1,13 @@
 <?php
+/**
+ * Email list plugin default template
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 ?>
@@ -50,7 +59,8 @@ defined('_JEXEC') or die();
 				echo $editor->display('message', $this->message, '100%', '100%', 75, 10, 'message');?>
 		</li>
 		<li style="clear:both"></li>
-		<?php if ($this->allowAttachment) {?>
+<?php if ($this->allowAttachment)
+{?>
 		<li class="attachement">
 			<label>
 				<?php echo JText::_('PLG_LIST_EMAIL_ATTACHMENTS') ?><br />
@@ -64,7 +74,9 @@ defined('_JEXEC') or die();
 			</a>
 		</li>
 		<li>
-		<?php }?>
+		<?php
+}
+		?>
 			<input type="submit" id="submit" value="<?php echo JText::_('PLG_LIST_EMAIL_SEND') ?>" class="button" />
 		</li>
 	</ul>
