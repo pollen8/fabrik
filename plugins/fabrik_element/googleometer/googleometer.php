@@ -19,7 +19,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class plgFabrik_ElementGoogleometer extends plgFabrik_Element
+class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 {
 
 	/**
@@ -47,15 +47,16 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
-		$params = &$this->getParams();
+		$params = $this->getParams();
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
 		$range = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		if (JRequest::getCmd('task') === 'details')
+		if ($input->get('task') === 'details')
 		{
 			$data = $data[$fullName];
 			$str = $this->_renderListData($data, $range);
@@ -64,12 +65,24 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 		return '';
 	}
 
+	/**
+	 * Get the data element's full name
+	 *
+	 * @return  string
+	 */
+
 	private function getDataElementFullName()
 	{
 		$dataelement = $this->getDataElement();
 		$fullName = $dataelement->getFullName();
 		return $fullName;
 	}
+
+	/**
+	 * Get the data element
+	 *
+	 * @return  PlgFabrik_Element
+	 */
 
 	private function getDataElement()
 	{
@@ -79,6 +92,12 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 		$element->setId($elementid);
 		return $element;
 	}
+
+	/**
+	 * Get the min max rating range
+	 *
+	 * @return  object
+	 */
 
 	private function getRange()
 	{
@@ -97,8 +116,8 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -117,7 +136,16 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 		return parent::renderListData($data, $thisRow);
 	}
 
-	function _renderListData($data, $range)
+	/**
+	 * Render the google meter
+	 *
+	 * @param   string  $data   Elements data
+	 * @param   object  $range  Min / Max range
+	 *
+	 * @return  string	formatted value
+	 */
+
+	protected function _renderListData($data, $range)
 	{
 		$options = array();
 		$params = $this->getParams();
@@ -132,4 +160,3 @@ class plgFabrik_ElementGoogleometer extends plgFabrik_Element
 	}
 
 }
-?>

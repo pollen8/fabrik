@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Display a json loaded window with a repeatble set of sub fields
  *
  * @package     Joomla
  * @subpackage  Form
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 defined('JPATH_BASE') or die;
@@ -13,12 +14,13 @@ defined('JPATH_BASE') or die;
 jimport('joomla.form.formfield');
 
 /**
- * Form Field class for the Joomla Framework.
+ * Display a json loaded window with a repeatble set of sub fields
  *
  * @package		Joomla
  * @subpackage	Form
  * @since		1.6
  */
+
 class JFormFieldFabrikModalrepeat extends JFormField
 {
 	/**
@@ -48,11 +50,15 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$xml = $this->element->children()->asFormattedXML();
 		$subForm->load($xml);
 
+		// Needed for repeating modals in gmaps viz
+		$subForm->repeatCounter = $this->form->repeatCounter;
+
 		/**
 		 * f3 hack
 		 */
 
-		$view = JRequest::getCmd('view', 'list');
+		$input = $app->input;
+		$view = $input->get('view', 'list');
 		switch ($view)
 		{
 			case 'item':
@@ -64,7 +70,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 				$id = (int) $this->form->getValue('params.list_id');
 				break;
 			default:
-				$id = JRequest::getInt('id');
+				$id = $input->getInt('id');
 				break;
 		}
 		if ($view === 'element')
@@ -98,6 +104,9 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		 */
 		$children = $this->element->children();
 		$subForm->setFields($children);
+
+		// $$$ rob 19/07/2012 not sure y but this fires a strict standard warning deep in JForm, suppress error for now
+		@$subForm->setFields($children);
 
 		$str = array();
 		$modalid = $this->id . '_modal';
@@ -155,8 +164,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			$pane = str_replace('jform_params_', '', $modalid) . '-options';
 			$modalrepeat[$modalid][$this->form->repeatCounter] = true;
 			$script = str_replace('-', '', $modalid) . " = new FabrikModalRepeat('$modalid', $names, '$this->id');";
-
-			if (JRequest::getVar('option') === 'com_fabrik')
+			$option = $input->get('option');
+			if ($option === 'com_fabrik')
 			{
 				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
@@ -180,7 +189,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		$str[] = '<div class="button2-left">';
 		$str[] = '	<div class="blank">';
-		$str[] = '<a id="' . $modalid . '_button" />' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+		$str[] = '<a id="' . $modalid . '_button" data-modal="' . $modalid . '" />' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 		$html[] = '	</div>';
 		$html[] = '</div>';
 		if (is_array($this->value))

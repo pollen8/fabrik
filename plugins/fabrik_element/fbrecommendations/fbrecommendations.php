@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  * @since       3.0
  */
 
-class plgFabrik_ElementFbrecommendations extends plgFabrik_Element
+class PlgFabrik_ElementFbrecommendations extends PlgFabrik_Element
 {
 
 	/**

@@ -1656,7 +1656,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$v = $this->filterName($counter, $normal);
 		$return = array();
 		$default = $this->getDefaultFilterVal($normal, $counter);
-		if (in_array($element->filter_type, array('range', 'dropdown', '')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
 			$joinVal = $this->getJoinLabelColumn();
 			$incJoin = (trim($params->get($this->concatLabelParam)) == '' && trim($params->get('database_join_where_sql') == '')) ? false : true;
@@ -1680,31 +1680,41 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			$this->unmergeFilterSplits($rows);
 			$this->reapplyFilterLabels($rows);
-			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			if (!in_array($element->filter_type, array('checkbox', 'multiselect')))
+			{
+				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
 		}
 
 		$size = $params->get('filter_length', 20);
 		switch ($element->filter_type)
 		{
-			case "dropdown":
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
+			case 'dropdown':
 			default:
 			case '':
+			case 'multiselect':
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$this->addSpaceToEmptyLabels($rows, 'text');
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, "value", 'text', $default, $htmlid);
 				break;
 
-			case "field":
+			case 'field':
 				$return[] = '<input type="text" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
 						. $htmlid . '" />';
 						$return[] = $this->filterHiddenFields();
 						break;
 
-			case "hidden":
+			case 'hidden':
 				$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size
 				. '" id="' . $htmlid . '" />';
 				$return[] = $this->filterHiddenFields();
 				break;
-			case "auto-complete":
+			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
 				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);

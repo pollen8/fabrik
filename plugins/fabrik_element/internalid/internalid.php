@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementInternalid extends plgFabrik_Element
+class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 {
 
 	/**
@@ -50,7 +50,7 @@ class plgFabrik_ElementInternalid extends plgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
 		}
 		$value = stripslashes($value);
-		return '<input class="inputbox fabrikinput hidden" type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
+		return $this->getHiddenField($name, $value, $id, 'inputbox hidden');
 	}
 
 	/**

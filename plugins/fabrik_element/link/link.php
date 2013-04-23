@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementLink extends plgFabrik_Element
+class PlgFabrik_ElementLink extends PlgFabrik_Element
 {
 
 	public $hasSubElements = true;
@@ -298,7 +298,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 					}
 					/*$return .= implode(GROUPSPLITTER2, $v);
 					$return .= GROUPSPLITTER;*/
-
 				}
 				else
 				{
@@ -375,7 +374,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 				$values[$name]['data']['label'] = array();
 				$values[$name]['data']['link'] = array();
 			}
-			$values[$name]['data']['label'][$c] =  JArrayHelper::getValue($data, 'label');
+			$values[$name]['data']['label'][$c] = JArrayHelper::getValue($data, 'label');
 			$values[$name]['data']['link'][$c] = JArrayHelper::getValue($data, 'link');
 		}
 		else
@@ -414,7 +413,7 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
 			if ($element->eval == "1")
 			{
-				$default = @eval(stripslashes($default));
+				$default = @eval((string) stripslashes($default));
 			}
 			$this->_default = array('label' => $default, 'link' => $link);
 		}
@@ -447,7 +446,6 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 
 			$default = $this->getDefaultOnACL($data, $opts);
 			$name = $this->getFullName(false, true, false);
-
 			if ($groupModel->isJoin())
 			{
 				if ($groupModel->canRepeat())
@@ -648,15 +646,11 @@ class plgFabrik_ElementLink extends plgFabrik_Element
 	}
 
 	/**
-	 * get the class to manage the form element
-	 * if a plugin class requires to load another elements class (eg user for dbjoin then it should
-	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
+	 * Get the class to manage the form element
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
-	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
-	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   array   &$srcs   Scripts previously loaded
+	 * @param   string  $script  Script to load once class has loaded
 	 *
 	 * @return void
 	 */
