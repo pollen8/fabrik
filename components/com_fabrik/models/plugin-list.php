@@ -19,7 +19,7 @@ jimport('joomla.application.component.model');
  * @since       3.0
  */
 
-class plgFabrik_List extends FabrikPlugin
+class PlgFabrik_List extends FabrikPlugin
 {
 	/** @var string button prefix*/
 	protected $buttonPrefix = '';
@@ -240,7 +240,7 @@ class plgFabrik_List extends FabrikPlugin
 
 	public function onGetFilterKey()
 	{
-		$this->filterKey = JString::strtolower(str_replace('plgFabrik_List', '', get_class($this)));
+		$this->filterKey = JString::strtolower(str_ireplace('PlgFabrik_List', '', get_class($this)));
 		return $this->filterKey;
 	}
 
@@ -332,17 +332,23 @@ class plgFabrik_List extends FabrikPlugin
 	 * If the plugin is a filter plugin, return true if it needs the 'form submit'
 	 * method, i.e. the Go button.  Implemented specifically for radius search plugin.
 	 *
-	 * @return  bool
+	 * @return  null
 	 */
 
 	public function requireFilterSubmit()
 	{
 	}
 
+	/**
+	  * Overridden by plugins if neceesary.
+	 * If the plugin is a filter plugin, return true if it needs the 'form submit'
+	 * method, i.e. the Go button.  Implemented specifically for radius search plugin.
+	 *
+	 * @return  bool
+	 */
 	public function requireFilterSubmit_result()
 	{
 		return false;
 	}
-
 
 }

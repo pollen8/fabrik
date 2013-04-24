@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 * @since       3.0
 */
 
-class plgFabrik_ListWebservice extends plgFabrik_List
+class PlgFabrik_ListWebservice extends PlgFabrik_List
 {
 
 	/**@var	string	button prefix name */
@@ -72,7 +72,9 @@ class plgFabrik_ListWebservice extends plgFabrik_List
 	}
 
 	/**
-	 * @see plgFabrik_List::button_result()
+	 * Build the HTML for the plug-in button
+	 *
+	 * @return  string
 	 */
 
 	public function button_result()

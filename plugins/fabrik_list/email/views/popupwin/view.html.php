@@ -1,21 +1,38 @@
 <?php
+/**
+ * Email list plugin view
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ */
+
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class fabrikViewPopupwin extends JView
+/**
+ * Email list plugin view
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.email
+ * @since       3.0
+ */
+
+class FabrikViewPopupwin extends JView
 {
 
 	/**
 	 * Display the view
-	 * 
+	 *
 	 * @param   string  $tmpl  Template
-	 * 
+	 *
 	 * @return  JView  this
 	 */
-	
+
 	public function display($tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
@@ -42,8 +59,7 @@ class fabrikViewPopupwin extends JView
 		$this->subject = $this->get('subject');
 		$this->message = $this->get('message');
 		$this->allowAttachment = $this->get('allowAttachment');
-		
-		
+
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
 		return parent::display();

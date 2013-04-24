@@ -21,7 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
  * @since       3.0
  */
 
-class plgFabrik_ListEmail extends plgFabrik_List
+class PlgFabrik_ListEmail extends PlgFabrik_List
 {
 
 	/**
@@ -318,7 +318,8 @@ class plgFabrik_ListEmail extends plgFabrik_List
 		$var = is_array($var) ? JArrayHelper::getValue($var, $renderOrder, 'readonly') : $var;
 		$toType = $params->get('emailtable_to_type', 'list');
 		$toType = is_array($toType) ? JArrayHelper::getValue($toType, $renderOrder, 'single') : $toType;
-		// can only hide To if it's the simple field type, as all others require user input
+
+		// Can only hide To if it's the simple field type, as all others require user input
 		return !($var == 'hidden' && $toType == 'field');
 	}
 
