@@ -1376,7 +1376,7 @@ var FbListActions = new Class({
 
 					var opts =  {
 							position: this.options.floatPos,
-							showOn: 'click',
+							showOn: 'change',
 							hideOn: 'click',
 							content: c,
 							'heading': 'Edit: ',
