@@ -89,6 +89,35 @@ class FabrikFEModelConnection extends JModel
 	}
 
 	/**
+	 * Test if the connection is exactly the same as Joomla's db connection as
+	 * defined in configuration.php
+	 *
+	 * @since  3.0.8
+	 *
+	 * @return boolean  True if the same
+	 */
+
+	public function isJdb()
+	{
+		// $$$rob lets see if we have an exact config match with J db if so just return that
+		$conf = JFactory::getConfig();
+		$host = $conf->get('host');
+		$user = $conf->get('user');
+		$password = $conf->get('password');
+		$database = $conf->get('db');
+		$prefix = $conf->get('dbprefix');
+		$driver = $conf->get('dbtype');
+		$debug = $conf->get('debug');
+
+		$default_options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
+				'prefix' => $prefix);
+
+		$cn = $this->getConnection();
+		$options = $this->getConnectionOptions($cn);
+		return $this->_compareConnectionOpts($default_options, $options);
+	}
+
+	/**
 	 * Creates a html dropdown box for the current connection
 	 *
 	 * @param   string  $javascript  to add to select box
@@ -210,21 +239,7 @@ class FabrikFEModelConnection extends JModel
 
 		if (!array_key_exists($cn->id, $dbs))
 		{
-			// $$$rob lets see if we have an exact config match with J db if so just return that
-			$conf = JFactory::getConfig();
-			$host = $conf->get('host');
-			$user = $conf->get('user');
-			$password = $conf->get('password');
-			$database = $conf->get('db');
-			$prefix = $conf->get('dbprefix');
-			$driver = $conf->get('dbtype');
-			$debug = $conf->get('debug');
-
-			$default_options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
-				'prefix' => $prefix);
-			$options = $this->getConnectionOptions($cn);
-
-			if ($this->_compareConnectionOpts($default_options, $options))
+			if ($this->isJdb())
 			{
 				$dbs[$cn->id] = FabrikWorker::getDbo();
 			}
@@ -288,7 +303,7 @@ class FabrikFEModelConnection extends JModel
 
 	private function _compareConnectionOpts($opts1, $opts2)
 	{
-		return ($opts1['driver'] == $opts2['driver'] && $opts1['host'] == $opts2['host'] && $opts1['user'] == $opts2['user']
+		return ($opts1['host'] == $opts2['host'] && $opts1['user'] == $opts2['user']
 			&& $opts1['password'] == $opts2['password'] && $opts1['database'] == $opts2['database']);
 	}
 

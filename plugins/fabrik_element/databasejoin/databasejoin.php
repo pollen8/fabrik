@@ -1697,7 +1697,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			case '':
 			case 'multiselect':
 				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
 				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$this->addSpaceToEmptyLabels($rows, 'text');
 				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, "value", 'text', $default, $htmlid);
@@ -2622,21 +2622,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Is the dropdowns cnn the same as the main Joomla db
+	 * Is the element's cnn the same as the main Joomla db
 	 *
 	 * @return  bool
 	 */
 
 	protected function inJDb()
 	{
-		$config = JFactory::getConfig();
-		$cnn = $this->getListModel()->getConnection()->getConnection();
-
-		/*
-		 * If the table database is not the same as the joomla database then
-		* we should simply return a hidden field with the user id in it.
-		*/
-		return $config->getValue('db') == $cnn->database;
+		return $this->getListModel()->inJDb();
 	}
 
 	/**
