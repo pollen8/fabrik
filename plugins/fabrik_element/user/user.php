@@ -21,7 +21,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
  * @since       3.0
  */
 
-class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
+class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 {
 
 	/**
@@ -142,8 +142,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 					$id = $this->getValue($data, $repeatCounter);
 				}
 				$id = is_array($id) ? $id[0] : $id;
-				// $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
-				// editing a row, where user element is not set yet, and 'update on edit' is No.
+				/* $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
+				 * editing a row, where user element is not set yet, and 'update on edit' is No.
+				 */
 				if ($rowid && empty($id) && !$params->get('update_on_edit'))
 				{
 					$user = JFactory::getUser(0);
@@ -234,6 +235,8 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	public function preProcess($c)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$params = $this->getParams();
 
 		/**
@@ -308,6 +311,9 @@ class plgFabrik_ElementUser extends plgFabrik_ElementDatabasejoin
 
 	public function onStoreRow(&$data)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
 		// $$$ hugh - special case, if we have just run the fabrikjuser plugin, we need to
 		// use the 'newuserid' as set by the plugin.
 		$newuserid = JRequest::getInt('newuserid', 0);
