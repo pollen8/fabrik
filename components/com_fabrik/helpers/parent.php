@@ -611,6 +611,7 @@ class FabrikWorker
 		{
 			$msg = preg_replace("/{[^}\s]+}/i", '', $msg);
 		}
+
 		return $msg;
 	}
 

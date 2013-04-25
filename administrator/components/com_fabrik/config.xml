@@ -50,6 +50,7 @@
 			description="COM_FABRIK_FIELD_ACTION_METHOD_DESC">
 				<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
 				<option value="floating">COM_FABRIK_FIELD_ACTION_METHOD_FLOATING</option>
+				<option value="dropdown">COM_FABRIK_FIELD_ACTION_METHOD_DROPDOWN</option>
 		</field>
 
 	</fieldset>

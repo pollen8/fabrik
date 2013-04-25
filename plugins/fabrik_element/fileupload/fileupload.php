@@ -26,7 +26,7 @@ define("FU_DOWNLOAD_SCRIPT_BOTH", '3');
  * @since       3.0
 */
 
-class plgFabrik_ElementFileupload extends plgFabrik_Element
+class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 {
 
 	/**
@@ -1489,7 +1489,6 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				$file = $input->files->get($name, array(), 'array');
 				if ($groupModel->canRepeat())
 				{
-					// Was: return JArrayHelper::getValue($file['name'], $repeatCounter, '') == '' ? true : false;
 					return $file[$repeatCounter]['name'] == '' ? true : false;
 				}
 			}
@@ -1974,14 +1973,22 @@ class plgFabrik_ElementFileupload extends plgFabrik_Element
 				}
 			}
 		}
-		if ($params->get('fu_download_access_image') !== '')
+		$downloadImg = $params->get('fu_download_access_image');
+		if ($downloadImg !== '' && JFile::exists('media/com_fabrik/images/' . $downloadImg))
 		{
-			$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $params->get('fu_download_access_image') . '" alt="' . $title
-			. '" />';
+			$aClass = '';
+			$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg . '" alt="' . $title . '" />';
 		}
+		else
+		{
+			$aClass = 'class="btn btn-primary button"';
+			$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
+		}
+
+
 		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id='
 				. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
-		$url = '<a href="' . $link . '">' . $title . '</a>';
+		$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 		return $url;
 	}
 

@@ -210,7 +210,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$data[] = '<div id="fabrik-comments">';
-		$rowid = $input->get('rowid');
+		$rowid = $input->get('rowid', '', 'string');
 		if (strstr($rowid, ':'))
 		{
 			// SLUG
@@ -255,7 +255,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 		$opts = new stdClass;
 		$opts->formid = $formModel->get('id');
-		$opts->rowid = $input->get('rowid');
+		$opts->rowid = $rowid;
 		$opts->admin = $user->authorise('core.delete', 'com_fabrik');
 		$opts->label = '';
 		foreach ($formModel->data as $k => $v)
@@ -683,8 +683,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$row->approved = 1;
 
 		// @TODO this isnt set?
-		$row->url = $input->server->get('HTTP_REFERER', '');
-		$rowid = $input->get('rowid');
+		$row->url = $input->server->get('HTTP_REFERER', '', 'string');
+		$rowid = $input->get('rowid', '', 'string');
 		$row->formid = $input->getInt('formid');
 		$row->row_id = $rowid;
 		if ($user->get('id') != 0)
@@ -776,7 +776,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$event = $db->quote('COMMENT_ADDED');
 		$user = JFactory::getUser();
 		$user_id = (int) $user->get('id');
-		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $input->get('rowid'));
+		$rowid = $input->get('rowid', '', 'string');
+		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $rowid);
 		$date = $db->quote(JFactory::getDate()->toSql());
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification_event')
@@ -809,8 +810,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$user_id = (int) $user->get('id');
+		$rowid = $input->get('rowid', '', 'string');
 		$label = $db->quote($input->get('label', '', 'string'));
-		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $input->get('rowid'));
+		$ref = $db->quote($formModel->getlistModel()->getTable()->id . '.' . $formModel->get('id') . '.' . $rowid);
 		$query = $db->getQuery(true);
 		$query->insert('#__{package}_notification')
 		->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
@@ -1023,7 +1025,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			require_once $jcomments;
 			$this->data = '<div id="jcomments" style="clear: both;">
-					' . JComments::show($input->get('rowid'), "com_fabrik_{$formModel->getId()}") . '
+					' . JComments::show($input->get('rowid', '', 'string'), "com_fabrik_{$formModel->getId()}") . '
 							</div>';
 		}
 		else

@@ -110,10 +110,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * @access      protected
-	 * @param       object  $subject The object to observe
-	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An array that holds the plugin configuration
 	 */
 
 	public function __construct(&$subject, $config = array())
@@ -404,8 +402,8 @@ class FabrikPlugin extends JPlugin
 	 * Used in plugin manager runPlugins to set the correct repeat set of
 	 * data for the plugin
 	 *
-	 * @param   object  $params         original params
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   object  &$params        Original params
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return   object  params
 	 */
@@ -674,10 +672,11 @@ class FabrikPlugin extends JPlugin
 				if (is_numeric($tid))
 				{
 					// If loading on a numeric list id get the list db table name
-					$query = $db->getQuery(true);
+					$jDb = FabrikWorker::getDbo(true);
+					$query = $jDb->getQuery(true);
 					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
-					$db->setQuery($query);
-					$tid = $db->loadResult();
+					$jDb->setQuery($query);
+					$tid = $jDb->loadResult();
 				}
 				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
 				$rows = $db->loadObjectList();
@@ -705,9 +704,11 @@ class FabrikPlugin extends JPlugin
 		}
 		else
 		{
-			//show fabrik elements in the table
-			//$keyType 1 = $element->id;
-			//$keyType 2 = tablename___elementname
+			/*
+			 * show fabrik elements in the table
+			 * $keyType 1 = $element->id;
+			 * $keyType 2 = tablename___elementname
+			 */
 			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setId($tid);
 			$table = $model->getTable();
@@ -747,9 +748,11 @@ class FabrikPlugin extends JPlugin
 					}
 					else
 					{
-						//@TODO if in repeat group this is going to add [] to name - is this really
-						// what we want? In timeline viz options i've simply stripped out the [] off the end
-						// as a temp hack
+						/*
+						 * @TODO if in repeat group this is going to add [] to name - is this really
+						 * what we want? In timeline viz options i've simply stripped out the [] off the end
+						 * as a temp hack
+						 */
 						$v = $eVal->getFullName(false);
 					}
 					$c = new stdClass;
@@ -771,7 +774,6 @@ class FabrikPlugin extends JPlugin
 					{
 						$arr[] = $c;
 					}
-
 
 					if ($incCalculations)
 					{
@@ -839,7 +841,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get the options to ini the J Admin js plugin controller class
 	 *
-	 * @param   string  $html
+	 * @param   string  $html  HTML?
 	 *
 	 * @return  object
 	 */
@@ -951,19 +953,14 @@ class FabrikPlugin extends JPlugin
 		switch ($no_bytes)
 		{
 			case 2:
-				{
-					$prefix = array(31, 192);
-					break;
-				}
+				$prefix = array(31, 192);
+				break;
 			case 3:
-				{
-					$prefix = array(15, 224);
-					break;
-				}
+				$prefix = array(15, 224);
+				break;
 			case 4:
-				{
-					$prefix = array(7, 240);
-				}
+				$prefix = array(7, 240);
+				break;
 		}
 		for ($i = 0; $i < $no_bytes; $i++)
 		{
@@ -998,8 +995,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get user ids from group ids
 	 *
-	 * @param   array  $sendTo  user group id
-	 * @param  string  $field   field to return from user group. Default = 'id'
+	 * @param   array   $sendTo  User group id
+	 * @param   string  $field   Field to return from user group. Default = 'id'
 	 *
 	 * @since   3.0.7
 	 *

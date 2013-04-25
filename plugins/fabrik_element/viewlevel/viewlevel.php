@@ -54,7 +54,7 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_Element
 		{
 			$arSelected = !is_array($data[$name]) ? explode(',', $data[$name]) : $arSelected = $data[$name];
 		}
-		if (!$this->canUse())
+		if (!$this->isEditable())
 		{
 			$data = new stdClass;
 			return $this->renderListData($arSelected[0], $data);

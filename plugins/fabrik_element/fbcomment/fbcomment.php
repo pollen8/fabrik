@@ -71,7 +71,7 @@ class PlgFabrik_ElementFbcomment extends PlgFabrik_Element
 		{
 			$app = JFactory::getApplication();
 			$rowid = $app->input->getString('rowid', '', 'string');
-			if ($rowid != 0)
+			if ($rowid != '')
 			{
 				$formModel = $this->getForm();
 				$formid = $formModel->getId();

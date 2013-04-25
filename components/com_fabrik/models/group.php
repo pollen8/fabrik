@@ -209,6 +209,7 @@ class FabrikFEModelGroup extends FabModel
 		}
 
 		$formModel = $this->getFormModel();
+
 		$pluginCanEdit = FabrikWorker::getPluginManager()->runPlugins('onCanEditGroup', $formModel, 'form', $this);
 		if (empty($pluginCanEdit))
 		{
@@ -785,6 +786,7 @@ class FabrikFEModelGroup extends FabModel
 	 *
 	 * @return  mixed   join_id, or false if not a join
 	 */
+
 	public function getJoinId()
 	{
 		if (!$this->isJoin())

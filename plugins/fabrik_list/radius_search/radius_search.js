@@ -193,8 +193,9 @@ var FbListRadiusSearch = new Class({
 				'loadMethod': 'html',
 				'content': c,
 				'width': 500,
-				'height': 500,
+				'height': 540,
 				'visible': false,
+				'destroy': false,
 				'onContentLoaded': function () {
 					this.center();
 				}
@@ -206,19 +207,31 @@ var FbListRadiusSearch = new Class({
 			
 			// Show the map.
 			c.setStyles({'position': 'relative', 'left': 0});
-			b.retrieve('win').open();
+			var w = b.retrieve('win'); 
+			w.open();
 		}.bind(this));
 		
 		b.store('win', win);
+		this.button = b;
+		this.win = win;
 		
 		// When submitting the filter re-injet the window content back into the <form>
 		Fabrik.addEvent('list.filter', function (list) {
-			win.close();
-			var c = win.contentEl;
-			c.hide();
-			b.getParent().adopt(c);
-			return true;
+			return this.injectIntoListForm();
 		}.bind(this));
+	},
+	
+	/**
+	 * Re-inject the radius search form back into the list's form. Needed when filtering or 
+	 * clearing filters
+	 */
+	injectIntoListForm: function () {
+		var win = this.button.retrieve('win');
+		win.close();
+		var c = win.contentEl;
+		c.hide();
+		this.button.getParent().adopt(c);
+		return true;
 	},
 	
 	watchActivate: function () {
@@ -267,7 +280,7 @@ var FbListRadiusSearch = new Class({
 		}
 	},
 
-	geoCenter : function (p) {
+	geoCenter: function (p) {
 		if (typeOf(p) === 'null') {
 			alert(Joomla.JText._('PLG_VIEW_RADIUS_NO_GEOLOCATION_AVAILABLE'));
 		} else {
@@ -276,15 +289,15 @@ var FbListRadiusSearch = new Class({
 		}
 	},
 
-	geoCenterErr : function (p) {
+	geoCenterErr: function (p) {
 		fconsole('geo location error=' + p.message);
 	},
 
-	toggleActive : function (e) {
+	toggleActive: function (e) {
 		
 	},
 
-	toggleFields : function (e) {
+	toggleFields: function (e) {
 		// var c = this.listform;
 		var c = e.target.getParent('.radius_search_options');
 		
@@ -314,10 +327,11 @@ var FbListRadiusSearch = new Class({
 		}
 	},
 
-	clearFilter : function () {
+	clearFilter: function () {
 		this.listform.getElements('input[name^=radius_search_active]').filter(function (f) {
 			return f.get('value') === '0';
 		}).getLast().checked = true;
+		return this.injectIntoListForm();
 	}
 
 });

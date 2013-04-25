@@ -34,6 +34,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function exists($filepath)
 	{
+		$filepath = JPath::clean($filepath);
 		return JFile::exists($filepath);
 	}
 
@@ -363,10 +364,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function getFileInfo($filepath)
 	{
-		if (!$this->exists($filepath))
+		// Suppress notice if open base_dir in effect
+		if (!@$this->exists($filepath))
 		{
 			$filepath = $this->getFullPath($filepath);
 		}
+		$filepath = JPath::clean($filepath);
 		if ($this->exists($filepath))
 		{
 			// $$$ hugh - turn of E_DEPRECATED to avoid warnings about eregi() in getid3

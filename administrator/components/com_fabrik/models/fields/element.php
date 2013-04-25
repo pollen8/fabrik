@@ -23,7 +23,7 @@ JFormHelper::loadFieldClass('list');
  *
  * @package     Joomla
  * @subpackage  Form
- * @since		1.6
+ * @since       1.6
  */
 
 class JFormFieldElement extends JFormFieldList
@@ -70,12 +70,16 @@ class JFormFieldElement extends JFormFieldList
 		$published = (int) $this->element['published'];
 		$showintable = (int) $this->element['showintable'];
 		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
-
+		$mode = (string) $this->element['mode'];
 		if ($include_calculations != 1)
 		{
 			$include_calculations = 0;
 		}
-
+		/*
+		 * $$$ hugh - don't know what's going on here, except that this method is getting called twice for every element
+		 * but first time round, $this->value is not set, so if we cache it, setting loses it's value.
+		 * if (!array_key_exists($this->id, $fabrikelements)) {
+		 */
 		$opts = new stdClass;
 		if ($this->form->repeat)
 		{
@@ -106,9 +110,26 @@ class JFormFieldElement extends JFormFieldList
 		$fabrikelements[$this->id] = true;
 		$src[] = 'administrator/components/com_fabrik/models/fields/element.js';
 		FabrikHelperHTML::script($src, $script);
-		$return = parent::getInput();
-		$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
-			. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING') . '" />';
+
+		if ($mode === 'gui')
+		{
+			$return = $this->gui();
+		}
+		else
+		{
+			$return = parent::getInput();
+			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
+				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('COM_FABRIK_LOADING') . '" />';
+		}
 		return $return;
+	}
+
+	private function gui()
+	{
+		$str = array();
+		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
+		$str[] = '<button class="button btn">Add</button>';
+		$str[] = '<select class="elements"></select>';
+		return implode("\n", $str);
 	}
 }

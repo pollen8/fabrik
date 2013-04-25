@@ -402,18 +402,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$filter = JFilterInput::getInstance();
 		$data = $filter->clean($_POST, 'array');
 		$opts = $this->_getOptionVals($data);
-
-		/**
-		 * $$$ hugh - had to move this logic into _getOptionvals()
-		 * will delete this chunk when it's tested and working
-		 */
-		/*
-		// OK its due to list filters so lets test if we are in the table view (posted from filter.js)
-		if ($filterview == 'table')
-
-			$params->set('cascadingdropdown_showpleaseselect', true);
-		}
-		*/
 		$this->_replaceAjaxOptsWithDbJoinOpts($opts);
 		echo json_encode($opts);
 	}
@@ -522,9 +510,11 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		// if it's a filter, need to use filterSelectLabel() regardless of showPleaseSelect()
-		// (should probably shift this logic into showPleaseSelect, and have that just do this
-		// test, and return the label to use.
+		/*
+		 * If it's a filter, need to use filterSelectLabel() regardless of showPleaseSelect()
+		 * (should probably shift this logic into showPleaseSelect, and have that just do this
+		 * test, and return the label to use.
+		 */
 		$app = JFactory::getApplication();
 		$filterview = $app->input->get('filterview', '');
 		if ($filterview == 'table')
@@ -887,7 +877,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function getValColumn()
+	protected function getLabelOrConcatVal()
 	{
 		$params = $this->getParams();
 		$join = $this->getJoin();

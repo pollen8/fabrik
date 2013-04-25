@@ -178,7 +178,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$displayParam = $this->getValColumn();
+			$displayParam = $this->getLabelOrConcatVal();
 			if (is_a($user, 'JUser'))
 			{
 				$str = $user->get($displayParam);
@@ -649,21 +649,27 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// Corect default got
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
-		$tabletype = $this->getValColumn();
+		$tabletype = $this->getLabelOrConcatVal();
 		$join = $this->getJoin();
 		$joinTableName = FabrikString::safeColName($join->table_join_alias);
 
 		// If filter type isn't set was blowing up in switch below 'cos no $rows
 		// so added '' to this test.  Should probably set $element->filter_type to a default somewhere.
-		if (in_array($element->filter_type, array('range', 'dropdown', '')))
+		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox')))
 		{
 			$rows = $this->filterValueList($normal, '', $joinTableName . '.' . $tabletype, '', false);
 			$rows = (array) $rows;
-			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			if ($element->filter_type !== 'checkbox')
+			{
+				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
 		}
 		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
 			case "range":
 				$attribs = 'class="' . $class . '" size="1" ';
 				$default1 = is_array($default) ? $default[0] : '';
@@ -671,12 +677,16 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$default1 = is_array($default) ? $default[1] : '';
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default1, $element->name . "_filter_range_1");
 				break;
-			case "dropdown":
+			case 'dropdown':
+			case 'multiselect':
 			default:
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $htmlid);
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $htmlid);
 				break;
 
-			case "field":
+			case 'field':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -685,7 +695,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (get_magic_quotes_gpc())
 				{
 					$default = stripslashes($default);
@@ -694,7 +704,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
-			case "auto-complete":
+			case 'auto-complete':
 				$defaultLabel = $this->getLabelForValue($default);
 				$autoComplete = $this->autoCompleteFilter($default, $v, $defaultLabel, $normal);
 				$return = array_merge($return, $autoComplete);
@@ -753,7 +763,10 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 
 		// $$$ hugh - we need to use the join alias, not hard code #__users
 		$join = $this->getJoin();
-		$joinTableName = $join->table_join_alias;
+		if (is_object($join))
+		{
+			$joinTableName = $join->table_join_alias;
+		}
 		if (empty($joinTableName))
 		{
 			$joinTableName = '#__users';
@@ -792,7 +805,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					break;
 				case 'field':
 				default:
-					$tabletype = $this->getValColumn();
+					$tabletype = $this->getLabelOrConcatVal();
 					break;
 			}
 			$k = $db->quoteName($joinTableName . '.' . $tabletype);
@@ -805,7 +818,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 			else
 			{
-				$tabletype = $this->getValColumn();
+				$tabletype = $this->getLabelOrConcatVal();
 				$k = $db->quoteName($joinTableName . '.' . $tabletype);
 			}
 		}
@@ -871,7 +884,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	{
 		static $displayMessage;
 		$params = $this->getParams();
-		$displayParam = $this->getValColumn();
+		$displayParam = $this->getLabelOrConcatVal();
 		return is_a($user, 'JUser') ? $user->get($displayParam) : false;
 	}
 
@@ -947,7 +960,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	 * @return  string
 	 */
 
-	protected function getValColumn()
+	protected function getLabelOrConcatVal()
 	{
 		static $displayMessage;
 		$params = $this->getParams();

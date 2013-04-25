@@ -445,6 +445,7 @@ class FabrikFEModelForm extends FabModelForm
 			if ($app->isAdmin())
 			{
 				$tmpl = $this->isEditable() ? $params->get('admin_form_template') : $params->get('admin_details_template');
+				$tmpl = $tmpl == '' ? $default : $tmpl;
 			}
 			if ($tmpl == '')
 			{
@@ -462,7 +463,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Finally see if the options are overridden by a querystring var
 		$baseTmpl = $tmpl;
-		$tmpl = $input->get('layout', '$tmpl');
+		$tmpl = $input->get('layout', $tmpl);
 
 		// Test it exists - otherwise revert to baseTmpl tmpl
 		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
@@ -1519,7 +1520,6 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $listModel->getTable();
 		$tmpKey = str_replace("`", "", $item->db_primary_key);
 		$tmpKey = str_replace('.', '___', $tmpKey);
-		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
 		$this->formData[$tmpKey] = $insertId;
 		$this->formData[$tmpKey . '_raw'] = $insertId;
 		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
@@ -2297,7 +2297,8 @@ class FabrikFEModelForm extends FabModelForm
 	 * Get an array of the form's element's ids
 	 *
 	 * @param   array  $ignore  ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
-	 * @param   array  $opts    Propery 'includePublised' can be set to 0; @since 3.0.7
+	 * @param   array  $opts    Property 'includePublised' can be set to 0; @since 3.0.7
+	 *                          Property 'loadPrefilters' @since 3.0.7.1 - used to ensure that prefilter elements are loaded in inline edit
 	 *
 	 * @return  array  ints ids
 	 */
@@ -2311,19 +2312,45 @@ class FabrikFEModelForm extends FabModelForm
 			$elementModels = $groupModel->getPublishedElements();
 			foreach ($elementModels as $elementModel)
 			{
-				$class = get_class($elementModel);
-				if (!in_array($class, $ignore))
-				{
-					$element = $elementModel->getElement();
-					if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
-					{
-						continue;
-					}
-					$aEls[] = (int) $element->id;
-				}
+				$this->getElementIds_check($elementModel, $ignore, $opts, $aEls);
+			}
+		}
+		if (JArrayHelper::getValue($opts, 'loadPrefilters', false))
+		{
+			$listModel = $this->getListModel();
+			list($afilterFields, $afilterConditions, $afilterValues, $afilterAccess, $afilterEval, $afilterJoins) = $listModel->prefilterSetting();
+			foreach ($afilterFields as $name)
+			{
+				$raw = preg_match("/_raw$/", $name) > 0;
+				$name = $name ? FabrikString::rtrimword($name, '_raw') : $name;
+				$elementModel = $this->getElement($name);
 			}
 		}
 		return $aEls;
+	}
+
+	/**
+	 * Helper function for getElementIds(), test if the element should be added
+	 *
+	 * @param   plgFabrik_Element  $elementModel  Element model
+	 * @param   array              $ignore        ClassNames to ignore e.g. array('FabrikModelFabrikCascadingdropdown')
+	 * @param   array              $opts          Filter options
+	 * @param   array              &$aEls         Array of element ids to load
+	 *
+	 * @return  void
+	 */
+	private function getElementIds_check($elementModel, $ignore, $opts, &$aEls)
+	{
+		$class = get_class($elementModel);
+		if (!in_array($class, $ignore))
+		{
+			$element = $elementModel->getElement();
+			if (JArrayHelper::getValue($opts, 'includePublised', true) && $element->published == 0)
+			{
+				continue;
+			}
+			$aEls[] = (int) $element->id;
+		}
 	}
 
 	/**
@@ -2336,7 +2363,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
 	 * @param   string  $labelMethod           An element method that if set can alter the option's label - used to only show elements that can be selected for search all
-	 * $param   bool    $noJoins               do not include elements in joined tables (default false)
+	 * @param   bool    $noJoins               do not include elements in joined tables (default false)
 	 *
 	 * @return	array	html options
 	 */
@@ -2531,7 +2558,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->listModel = null;
 		$this->rowId = $this->getRowId();
 
-		/**
+		/*
 		 * $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
 		 * hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
 		 * so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
@@ -2708,7 +2735,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($srow->data != '')
 					{
 						$sessionLoaded = true;
-						/**
+						/*
 						 * $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
 						 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
 						 * but from this point on, code is expecting even non-repeat join data to be arrays.
@@ -2725,7 +2752,6 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						// $data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 						$data = array_merge($tmp_data, JArrayHelper::fromObject($data[0]));
 						$data = array(FArrayHelper::toObject($data));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
@@ -3029,7 +3055,7 @@ class FabrikFEModelForm extends FabModelForm
 		$sql .= $listModel->buildQueryJoin();
 		$emptyRowId = $this->rowId === '' ? true : false;
 		$random = $input->get('random');
-		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
+		$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot, 'var');
 		if ($usekey != '')
 		{
 			$usekey = explode('|', $usekey);
@@ -3347,13 +3373,26 @@ class FabrikFEModelForm extends FabModelForm
 				$jdata = &$this->data['join'][$tblJoin->id];
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
+				$keyCount = 0;
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
 					{
-						$pkField = $tblJoin->table_join . '___' . $f->Field;
-						break;
+						if (!isset($pkField))
+						{
+							$pkField = $tblJoin->table_join . '___' . $f->Field;
+						}
+						$keyCount ++;
 					}
+				}
+				/*
+				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so
+				 * simply checking on the user_id (the first col) will find duplicate results and incorrectly
+				 * merge down.
+				 */
+				if ($keyCount > 1)
+				{
+					return;
 				}
 				$usedkeys = array();
 				if (!empty($jdata) && array_key_exists($pkField, $jdata))
@@ -3729,6 +3768,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
+
 	public function getFormClass()
 	{
 		$params = $this->getParams();

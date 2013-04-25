@@ -257,7 +257,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		}
 		else
 		{
-			/**
+			/*
 			 * $$$ hugh - nastyish hack to try and make sure we consistently save as JSON,
 			 * for instance in CSV import, if data is just a single option value like 2,
 			 * instead of ["2"], we have been saving it as just that value, rather than a single

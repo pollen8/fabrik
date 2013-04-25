@@ -615,7 +615,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		}
 		else
 		{
-			// $val = JArrayHelper::getValue($data, $name, $val);//(array_key_exists($name, $data) && !empty($data[$name])) ? $data[$name] : $val;
 			if ($element->hidden == '1')
 			{
 				return $this->getHiddenField($name, $data[$name], $id);

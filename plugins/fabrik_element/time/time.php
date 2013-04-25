@@ -66,7 +66,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			if ($value)
 			{
 				// Avoid 0000-00-00
-				list($hour, $min, $sec) = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				$bits = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				$hour = JArrayHelper::getValue($bits, 0, '00');
+				$min = JArrayHelper::getValue($bits, 1, '00');
+				$sec = JArrayHelper::getValue($bits, 2, '00');
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
@@ -108,7 +111,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$hours[] = JHTML::_('select.option', $i);
 			}
 			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
-			$increment = (int)$params->get( 'minutes_increment', 1 );
+			$increment = (int) $params->get('minutes_increment', 1);
 
 			// Siin oli enne $monthlabels, viisin ülespoole
 			for ($i = 0; $i < 60; $i += $increment)
@@ -123,7 +126,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$secs[] = JHTML::_('select.option', $i);
 			}
 			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
+			$attribs = 'class="input-small fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -332,6 +335,13 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		{
 			if ($d)
 			{
+				$bits = explode(':', $d);
+				$hour = JArrayHelper::getValue($bits, 0, '00');
+				$min = JArrayHelper::getValue($bits, 1, '00');
+				$sec = JArrayHelper::getValue($bits, 2, '00');
+				$hms = $hour . $sep . $min . $sep . $sec;
+				$hm = $hour . $sep . $min;
+				$ms = $min . $sep . $sec;
 				$timedisp = '';
 				if ($ft == "H:i:s")
 				{

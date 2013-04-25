@@ -105,8 +105,9 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		$params = $this->getParams();
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
-		$value = $input->get('v');
+		$value = $input->get('v', '', 'string');
 		$input->set('resetfilters', 1);
+		$input->set('usekey', '');
 		if ($cnn === 0 || $cnn == -1)
 		{
 			// No connection selected so query current forms' table data
@@ -149,7 +150,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		}
 		else
 		{
-			$map = $input->get('map', '', 'string');
+			$map = stripslashes($input->get('map', '', 'string'));
 			$map = json_decode($map);
 			if (!empty($map))
 			{

@@ -48,11 +48,15 @@ var FbListFilter = new Class({
 
 				// Reset the filter fields that contain previously selected values
 				this.container.getElements('.fabrik_filter').each(function (f) {
-					if (f.name.contains('[value]')) { 
+					if (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all')) { 
 						if (f.get('tag') === 'select') {
-							f.selectedIndex = 0;
+							f.selectedIndex = f.get('multiple') ? -1 : 0;
 						} else {
-							f.value = '';
+							if (f.get('type') === 'checkbox') {
+								f.checked = false;
+							} else {
+								f.value = '';
+							}
 						}
 					}
 				});

@@ -168,12 +168,13 @@ var FabrikComment = new Class({
 			}
 		}
 		var v = replyform.getElement('textarea').get('value');
+		e.stop();
 		if (v === '') {
 			this.spinner.hide();
 			alert(Joomla.JText._('PLG_FORM_COMMENT_PLEASE_ENTER_A_COMMENT_BEFORE_POSTING'));
 			return;
 		}
-		e.stop();
+		
 		var name = replyform.getElement('input[name=name]');
 		if (name) {
 			var namestr = name.get('value');

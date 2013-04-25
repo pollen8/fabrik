@@ -45,6 +45,7 @@ class FabrikAdminViewHome extends JViewLegacy
 
 	public function display($tpl = null)
 	{
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();

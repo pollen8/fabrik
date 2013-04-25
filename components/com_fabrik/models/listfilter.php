@@ -1134,8 +1134,11 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 				if ($emptyValue && $index !== false)
 				{
-					// $$ $rob - if the filter has been added from search all then don't remove it
-					if (JArrayHelper::getValue($searchTypes, $index) != 'searchall')
+					/*
+					 * Testing clearing only if normal filter, previous test on serachType != 'searchall'
+					 * meant advanced search filters were removed on page nav
+					 */
+					if (JArrayHelper::getValue($searchTypes, $index) == 'normal')
 					{
 						$this->clearAFilter($filters, $index);
 					}
@@ -1217,8 +1220,7 @@ class FabrikFEModelListfilter extends FabModel
 				$filters['join'][] = $joinMode;
 				$filters['no-filter-setup'][] = ($element->filter_type == '') ? 1 : 0;
 				$filters['hidden'][] = ($element->filter_type == '') ? 1 : 0;
-
-				/**
+				/*
 				 * $$$ hugh - need to check for magic quotes, otherwise filter keys for
 				 * CONCAT's get munged into things like CONCAT(last_name,\', \',first_name)
 				 * which then blows up the WHERE query.

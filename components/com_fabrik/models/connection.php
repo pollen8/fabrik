@@ -257,7 +257,9 @@ class FabrikFEModelConnection extends JModelLegacy
 
 			$error = false;
 
-			$db = $this->compareConnectionOpts($deafult_options, $options) ? FabrikWorker::getDbo() : JDatabaseDriver::getInstance($options);
+			$version = new JVersion;
+			$compareOpts = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+			$db = $this->compareConnectionOpts($deafult_options, $options) ? FabrikWorker::getDbo() : $compareOpts;
 
 			try
 			{

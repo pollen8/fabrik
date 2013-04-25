@@ -389,7 +389,7 @@ class FabrikFEModelCSVExport
 						}
 					}
 				}
-				$str .= implode($this->delimiter, array_map(array($this, "quote"), $aCalcs[$calkey]));;
+				$str .= implode($this->delimiter, array_map(array($this, "quote"), $aCalcs[$calkey]));
 				$str .= "\n";
 			}
 		}

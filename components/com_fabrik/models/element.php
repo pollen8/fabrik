@@ -833,10 +833,12 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	/**
 	 * Check if the user can use the active element
+	 * If location is 'list' then we don't check the group canEdit() option - causes inline edit plugin not to work
+	 * when followed by a update_col plugin.
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   object  &$model    Calling the plugin list/form
+	 * @param   string  $location  To trigger plugin on form/list for elements
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
@@ -856,7 +858,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
 			 * So if element's group show is type 5, then element is de-facto read only.
 			 */
-			if (!$this->getGroup()->canEdit())
+			if ($location !== 'list' && !$this->getGroup()->canEdit())
 			{
 				$this->access->use = false;
 			}
@@ -1556,7 +1558,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
 		$tip = JText::_($tip);
-		//$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
 	}
 
@@ -2600,13 +2601,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 
 		$default = $app->getUserStateFromRequest($context, $elid, $default);
-		if ($this->getElement()->filter_type !== 'range')
+		$fType = $this->getElement()->filter_type;
+		if ($this->multiOptionFilter())
 		{
 			$default = (is_array($default) && array_key_exists('value', $default)) ? $default['value'] : $default;
 			if (is_array($default))
 			{
 				// Hidden querystring filters can be using ranged valued though
-				if ($this->getElement()->filter_type !== 'hidden')
+				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect')))
 				{
 					// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
 					$default = '';
@@ -2618,6 +2620,18 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 		return $default;
+	}
+
+	/**
+	 * Is the element filter type a multi-select
+	 *
+	 * @return boolean
+	 */
+
+	protected function multiOptionFilter()
+	{
+		$fType = $this->getElement()->filter_type;
+		return in_array($fType, array('range', 'checkbox', 'multiselect'));
 	}
 
 	/**
@@ -2681,25 +2695,34 @@ class PlgFabrik_Element extends FabrikPlugin
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		$return = array();
 
-		if (in_array($element->filter_type, array('range', 'dropdown')))
+		if (in_array($element->filter_type, array('range', 'dropdown', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
 			$this->unmergeFilterSplits($rows);
-			array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			if (!in_array($element->filter_type,  array('checkbox', 'multiselect')))
+			{
+				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
+			}
 		}
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
-			case "range":
+			case 'range':
 				$this->rangedFilterFields($default, $return, $rows, $v, 'list');
 				break;
-
-			case "dropdown":
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', 'value', 'text', $default, $id);
+			case 'checkbox':
+				$return[] = $this->checkboxFilter($rows, $default, $v);
+				break;
+			case 'dropdown':
+			case 'multiselect':
+				$max = count($rows) < 7 ? count($rows) : 7;
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
+				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $id);
 				break;
 
-			case "field":
+			case 'field':
 			default:
 			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				$default = stripslashes($default);
@@ -2708,7 +2731,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					. $id . '" />';
 				break;
 
-			case "hidden":
+			case 'hidden':
 				if (is_array($default))
 				{
 					$this->rangedFilterFields($default, $return, $rows, $v, 'hidden');
@@ -2721,7 +2744,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 				break;
 
-			case "auto-complete":
+			case 'auto-complete':
 				$autoComplete = $this->autoCompleteFilter($default, $v, null, $normal);
 				$return = array_merge($return, $autoComplete);
 				break;
@@ -2745,6 +2768,31 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bootstrapClass = $params->get('filter_class', 'input-small');
 		$classes[] = $bootstrapClass;
 		return implode(' ', $classes);
+	}
+
+	/**
+	 * Checkbox filter
+	 *
+	 * @param   array   $rows     Filter list options
+	 * @param   array   $default  Selected filter values
+	 * @param   string  $v        Filter name
+	 *
+	 * @since 3.0.7
+	 *
+	 * @return  string  Checkbox filter HTML
+	 */
+
+	protected function checkboxFilter($rows, $default, $v)
+	{
+		$values = array();
+		$labels = array();
+		foreach ($rows as $row)
+		{
+			$values[] = $row->value;
+			$labels[] = $row->text;
+		}
+		$default = (array) $default;
+		return implode("\n", FabrikHelperHTML::grid($values, $labels, $default, $v, 'checkbox', false, 1, array('input' => array('fabrik_filter'))));
 	}
 
 	/**
@@ -3450,7 +3498,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			if (is_array($value) && !empty($value))
 			{
-				array_walk($value, array($db, 'quote'));
+				foreach ($value as &$v)
+				{
+					$v = $db->quote($v);
+				}
 				$value = ' (' . implode(',', $value) . ')';
 			}
 			$condition = 'IN';
@@ -4163,7 +4214,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
-			echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);

@@ -514,13 +514,12 @@ var FbList = new Class({
 
 	watchFilters: function () {
 		var e = '';
-		var submit = document.id(this.options.form).getElement('.fabrik_filter_submit');
+		var submit = document.id(this.options.form).getElements('.fabrik_filter_submit');
 		this.getFilters().each(function (f) {
 			e = f.get('tag') === 'select' ? 'change' : 'blur';
 			if (this.options.filterMethod !== 'submitform') {
 				f.removeEvent(e);
 				f.store('initialvalue', f.get('value'));
-				//document.getElement('.fabrik_filter_submit').highlight('#ffaa00');
 				f.addEvent(e, function (e) {
 					e.stop();
 					if (e.target.retrieve('initialvalue') !== e.target.get('value')) {
@@ -1342,7 +1341,10 @@ var FbListActions = new Class({
 		});
 		// watch the top/master chxbox
 		var chxall = this.list.form.getElement('input[name=checkAll]');
-		chxall.store('listid', this.list.id);
+		if (typeOf(chxall) !== 'null') {
+			chxall.store('listid', this.list.id);
+		}
+		
 		var c = function (el) {
 			return el.getParent('.fabrik___heading').getElement(this.options.selector);
 		}.bind(this);

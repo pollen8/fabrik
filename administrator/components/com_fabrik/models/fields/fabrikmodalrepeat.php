@@ -50,11 +50,13 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$xml = $this->element->children()->asXML();
 		$subForm->load($xml);
 
+		// Needed for repeating modals in gmaps viz
+		$subForm->repeatCounter = (int) @$this->form->repeatCounter;
+
 		/**
 		 * f3 hack
 		 */
 
-		$app = JFactory::getApplication();
 		$input = $app->input;
 		$view = $input->get('view', 'list');
 		switch ($view)
@@ -232,13 +234,13 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		if (FabrikWorker::j3())
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';
-			$str[] = '<button class="btn" id="' . $modalid . '_button">' . $icon . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
+			$str[] = '<button class="btn" id="' . $modalid . '_button" data-modal="' . $modalid . '">' . $icon . JText::_('JLIB_FORM_BUTTON_SELECT') . '</button>';
 		}
 		else
 		{
 			$str[] = '<div class="button2-left">';
 			$str[] = '	<div class="blank">';
-			$str[] = '<a id="' . $modalid . '_button">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
+			$str[] = '<a id="' . $modalid . '_button" data-modal="' . $modalid . '">' . JText::_('JLIB_FORM_BUTTON_SELECT') . '</a>';
 			$str[] = '	</div>';
 			$str[] = '</div>';
 		}

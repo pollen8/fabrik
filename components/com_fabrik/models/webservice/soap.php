@@ -22,10 +22,10 @@ class FabrikWebServiceSoap extends FabrikWebService
 {
 
 	/**
-	* Constructor
-	*
-* @param   array  $options  ini state
-	*/
+	 * Constructor
+	 *
+	 * @param   array  $options  ini state
+	 */
 
 	public function __construct($options)
 	{
@@ -35,7 +35,7 @@ class FabrikWebServiceSoap extends FabrikWebService
 
 	/**
 	 * get SOAP clients function
-	 * 
+	 *
 	 * @return  null
 	 */
 
@@ -46,13 +46,13 @@ class FabrikWebServiceSoap extends FabrikWebService
 
 	/**
 	 * Query the web service to get the data
-	 * 
-* @param   string  $method      to call at web service (soap only)
-* @param   array   $options     key value filters to send to web service to filter the data
-* @param   string  $startPoint  of actual data, if soap this is an xpath expression, 
+	 *
+	 * @param   string  $method      to call at web service (soap only)
+	 * @param   array   $options     key value filters to send to web service to filter the data
+	 * @param   string  $startPoint  of actual data, if soap this is an xpath expression,
 	 * otherwise its a key.key2.key3 string to traverse the returned data to arrive at the data to map to the fabrik list
-* @param   string  $result      method name - soap only, if not set then "$method . 'Result' will be used
-	 * 
+	 * @param   string  $result      method name - soap only, if not set then "$method . 'Result' will be used
+	 *
 	 * @return  array	series of objects which can then be bound to the list using storeLocally()
 	 */
 

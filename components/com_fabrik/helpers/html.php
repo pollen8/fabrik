@@ -147,14 +147,20 @@ class FabrikHelperHTML
 	/**
 	 * Build a datatoggling dropdown
 	 *
-	 * @param   array  $lis  Array of links to create dropdown from
+	 * @param   array   $lis  Array of links to create dropdown from
+	 * @param   string  $align  Should the drop down be left or right aligned - If right then the dropdown content's end is right algined to the button
 	 *
 	 * @return  string
 	 */
 
-	public static function bootStrapDropDown($lis)
+	public static function bootStrapDropDown($lis, $align = 'left')
 	{
-		return '<div class="btn-group fabrik_action"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
+		$class = 'btn-group fabrik_action';
+		if ($align == 'right')
+		{
+			$class .= ' pull-right';
+		}
+		return '<div class="' . $class . '"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
 				<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
@@ -488,7 +494,7 @@ EOD;
 
 			if ($params->get('icons', true))
 			{
-				//$image = JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
+				$image = FabrikWorker::j3() ? '<i class="icon-envelope"></i> ' : JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
 			}
 			else
 			{
@@ -1421,9 +1427,9 @@ EOD;
 			$style .= ".fabrikDebugOutput pre{padding:5px;background:#efefef;color:#999;}";
 			$style .= ".fabrikDebugHidden{display:none}";
 			self::addStyleDeclaration($style);
-			$script = "window.addEvent('fabrik.loadeded', function() {
-				$$('.fabrikDebugOutputTitle').each(function(title) {
-				title.addEvent('click', function(e) {
+			$script = "window.addEvent('domready', function() {
+				document.getElements('.fabrikDebugOutputTitle').each(function (title) {
+				title.addEvent('click', function (e) {
 				title.getNext().toggleClass('fabrikDebugHidden');
 		});
 		});
@@ -1793,6 +1799,10 @@ EOD;
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
 			$inputClass = FabrikWorker::j3() ? '' : $type;
+			if (array_key_exists('input', $classes))
+			{
+				$inputClass .= ' ' . implode(' ', $classes['input']);
+			}
 			$chx = '<input type="' . $type . '" class="fabrikinput ' . $inputClass . '" name="' . $thisname . '" value="' . $value . '" ';
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';

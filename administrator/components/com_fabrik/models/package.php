@@ -80,6 +80,97 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
+	 * Get set of lists not selected in the package
+	 *
+	 * @return  array
+	 */
+	public function getListOpts()
+	{
+		$ids = $this->selectedBlocks('list');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id AS value, label AS text')->from('#__fabrik_lists');
+		if (!empty($ids))
+		{
+			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
+		}
+		$db->setQuery($query);
+		return $db->loadObjectList();
+	}
+
+	/**
+	 * Get set of form not selected in the package
+	 *
+	 * @return  array
+	 */
+	public function getFormOpts()
+	{
+		$ids = $this->selectedBlocks('form');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id AS value, label, label AS text')->from('#__fabrik_forms');
+		if (!empty($ids))
+		{
+			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
+		}
+		$db->setQuery($query);
+		return $db->loadObjectList();
+	}
+
+	/**
+	 * Get set of selected block ids
+	 *
+	 * @param   string  $type  Block type form/list
+	 *
+	 * @return  array
+	 */
+	protected function selectedBlocks($type = 'form')
+	{
+		$item = $this->getItem();
+		$canvas = JArrayHelper::getValue($item->params, 'canvas', array());
+		$b = JArrayHelper::getValue($canvas, 'blocks', array());
+		$ids = JArrayHelper::getValue($b, $type, array());
+		return $ids;
+	}
+
+	/**
+	 * Get set of lists selected by the package
+	 *
+	 * @return  array
+	 */
+	public function getSelListOpts()
+	{
+		$ids = $this->selectedBlocks('list');
+		if (empty($ids))
+		{
+			return array();
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id AS value, label, label AS text')->from('#__fabrik_lists')->where('id IN (' . implode(', ', $ids) . ')');
+		$db->setQuery($query);
+		return $db->loadObjectList();
+	}
+	/**
+	 * Get set of forms selected by the package
+	 *
+	 * @return  array
+	 */
+	public function getSelFormOpts()
+	{
+		$ids = $this->selectedBlocks('form');
+		if (empty($ids))
+		{
+			return array();
+		}
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id AS value, label, label AS text')->from('#__fabrik_forms')->where('id IN (' . implode(', ', $ids) . ')');
+		$db->setQuery($query);
+		return $db->loadObjectList();
+	}
+
+	/**
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return  mixed  The data for the form.
@@ -111,8 +202,13 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	public function save($data)
 	{
 		$canvas = $data['params']['canvas'];
-		$canvas = json_decode($canvas);
 		$o = new stdClass;
+		$o->canvas = new stdClass;
+		$o->canvas->blocks = new stdClass;
+		$o->canvas->blocks->list = array();
+		$o->canvas->blocks->form = array();
+		/* $canvas = json_decode($canvas);
+
 		if (is_null($canvas))
 		{
 			JError::raiseError(E_ERROR, 'malformed json package object');
@@ -123,7 +219,40 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$data['id'] = $this->getState($this->getName() . '.id');
 		$packageId = $this->getState($this->getName() . '.id');
 		$blocks = is_object($o->canvas) ? $o->canvas->blocks : array();
-		foreach ($blocks as $fullkey => $ids)
+		*/
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$blocks = $input->get('blocks', array(), 'array');
+		foreach ($blocks as $type => $values)
+		{
+			$o->canvas->blocks->$type = $values;
+		}
+
+		foreach ($blocks as $type => $values)
+		{
+			// $o->canvas->blocks->$type = $values;
+			$tbl = JString::ucfirst($type);
+
+			foreach ($values as $id)
+			{
+				$item = $this->getTable($tbl);
+				$item->load($id);
+				if ($type == 'list')
+				{
+					// Also assign the form to the package
+					$form = $this->getTable('Form');
+					$form->load($item->form_id);
+
+					if (!in_array($form->id, $o->canvas->blocks->form))
+					{
+						$o->canvas->blocks->form[] = $form->id;
+					}
+				}
+
+			}
+		}
+
+		/*foreach ($blocks as $fullkey => $ids)
 		{
 			$key = FabrikString::rtrimword($fullkey, 's');
 			$tbl = JString::ucfirst($key);
@@ -143,7 +272,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 					}
 				}
 			}
-		}
+		} */
 		// Resave the data to update blocks
 		$data['params'] = json_encode($o);
 		$return = parent::save($data);

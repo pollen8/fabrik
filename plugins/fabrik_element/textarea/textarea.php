@@ -53,7 +53,7 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			$bits = JArrayHelper::getValue($bits, 1, '', 'string');
 			$bits = explode("&", $bits);
 			$fullName = $this->getFullName(true, false);
-			for($b = count($bits) -1; $b >= 0; $b --)
+			for ($b = count($bits) - 1; $b >= 0; $b --)
 			{
 				$parts = explode("=", $bits[$b]);
 				if (count($parts) > 1)
@@ -279,7 +279,8 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 			else
 			{
 				$editor = JFactory::getEditor();
-				$str = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, true, $id);
+				$buttons = (bool) $params->get('wysiwyg_extra_buttons', true);
+				$str = $editor->display($name, $value, $cols * 10, $rows * 15, $cols, $rows, $buttons, $id);
 			}
 		}
 		else
