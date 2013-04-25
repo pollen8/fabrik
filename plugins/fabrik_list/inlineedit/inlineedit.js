@@ -419,9 +419,7 @@ var FbListInlineEdit = new Class({
 					td.empty().set('html', r);
 					
 					// IE selection wierdness
-					if (document.selection) {
-						document.selection.empty();
-					}
+					this.clearSelection();
 					r = r + '<script type="text/javascript">' + this.javascript + '</script>';
 					this.editors[opts.elid] = r;
 					this.watchControls(td);
@@ -453,9 +451,7 @@ var FbListInlineEdit = new Class({
 			
 			// Make a new instance of the element js class which will use the new html
 			eval(this.javascript);
-			if (document.selection) {
-				document.selection.empty();
-			}
+			this.clearSelection();
 			Fabrik.tips.attach('.fabrikTip');
 			
 			// Set some options for use in 'fabrik.list.inlineedit.setData'
@@ -464,6 +460,14 @@ var FbListInlineEdit = new Class({
 			this.editCell = td;
 		}
 		return true;
+	},
+	
+	clearSelection: function () {
+		if (document.selection) {
+			document.selection.empty();
+		} else {
+			window.getSelection().removeAllRanges();
+		}
 	},
 	
 	getDataFromTable: function (td) {

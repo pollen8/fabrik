@@ -98,7 +98,9 @@ var FbElement =  new Class({
 			}.bind(this));
 		} else {
 			Array.from(evnts).each(function (e) {
-				this.element.fireEvent(e);
+				if (this.element) {
+					this.element.fireEvent(e);
+				}
 			}.bind(this));
 		}
 	},
