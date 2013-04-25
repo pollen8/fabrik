@@ -318,7 +318,14 @@ var FbForm = new Class({
 				return;
 			}
 		}
-		fxElement = groupfx ? fx.css.element : fx.css.element.getParent('.fabrikElementContainer');
+		if (groupfx) {
+			fxElement = groupfx;
+		} else {
+			fxElement = fx.css.element.getParent('.fabrikElementContainer');
+			if (typeOf(fxElement) === 'null') {
+				fxElement = fx.css.element;
+			}
+		}
 		
 		// For repeat groups rendered as tables we cant apply fx on td so get child
 		if (fxElement.get('tag') === 'td') {
