@@ -1578,7 +1578,9 @@ class FabrikFEModelForm extends FabModelForm
 		$joinKeys[$tmpKey] = $insertId;
 		$tmpKey = str_replace('.', '___', $tmpKey);
 		$this->formData[$tmpKey] = $insertId;
+		$this->formData[$tmpKey . '_raw'] = $insertId;
 		$this->formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
+		$this->formData[FabrikString::shortColName($item->db_primary_key) . '_raw'] = $insertId;
 
 		// Need for things like the redirect plugin
 		$this->_fullFormData[$tmpKey] = $insertId;
@@ -3107,7 +3109,7 @@ class FabrikFEModelForm extends FabModelForm
 		@set_time_limit(300);
 		$this->rowId = $this->getRowId();
 
-		/**
+		/*
 		 * $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
 		 * hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
 		 * so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
@@ -3262,8 +3264,7 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than $_GET
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
-					/**
-					 * $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+					/* $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
 					 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
 					 * but from this point on, code is expecting even non-repeat join data to be arrays.
 					 */
@@ -3298,7 +3299,7 @@ class FabrikFEModelForm extends FabModelForm
 					if ($srow->data != '')
 					{
 						$sessionLoaded = true;
-						/**
+						/*
 						 * $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
 						 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
 						 * but from this point on, code is expecting even non-repeat join data to be arrays.
@@ -3315,7 +3316,6 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						// $data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 						$data = array_merge($tmp_data, JArrayHelper::fromObject($data[0]));
 						$data = array(FArrayHelper::toObject($data));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
@@ -4371,6 +4371,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  string
 	 */
+
 	public function getFormClass()
 	{
 		$params = $this->getParams();

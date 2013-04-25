@@ -361,8 +361,9 @@ class PlgFabrik_Form extends FabrikPlugin
 
 					// $$$ rob in repeat join groups this isnt really efficient as you end up reformatting the data $c times
 					$elementModel->getFormModel()->data = $model->formDataWithTableName;
-					// $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
-					// (may only be on AJAX submit)
+					/* $$$ hugh - for some reason, CDD keys themselves are missing form emailData, if no selection was made?
+					 * (may only be on AJAX submit)
+					 */
 					$email_value = '';
 					if (array_key_exists($k . '_raw', $this->emailData))
 					{

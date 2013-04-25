@@ -52,7 +52,15 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		$pk = FabrikString::safeColName($params->get('primary_key'));
 
 		$rowid = $params->get('row_value', '');
-		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data);
+
+		// Used for updating previously added records. Need previous pk val to ensure new records are still created.
+		$origData = $formModel->getOrigData();
+		$origData = JArrayHelper::getValue($origData, 0, new stdClass);
+		if (isset($origData->__pk_val))
+		{
+			$this->data['origid'] = $origData->__pk_val;
+		}
+		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
 
 		$fields = $this->upsertData($params);
 		$query->set($fields);

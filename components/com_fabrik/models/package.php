@@ -100,7 +100,8 @@ class FabrikFEModelPackage extends FabModel
 	/**
 	 * Method to get package data.
 	 * Packages are all stored in jos_fabrik_packages - so dont use {package} in the query to load them
-* @param   integer	The id of the package.
+	 *
+	 * @param   integer	The id of the package.
 	 *
 	 * @return  mixed	Menu item data object on success, false on failure.
 	 */
@@ -121,7 +122,6 @@ class FabrikFEModelPackage extends FabModel
 				$query = $db->getQuery(true);
 
 				$query->select('label, params, published, component_name');
-				//$query->from('#__{package}_packages');
 				$query->from('#__fabrik_packages');
 
 				$query->where('id = ' . (int) $pk);
@@ -183,7 +183,8 @@ class FabrikFEModelPackage extends FabModel
 		{
 			$this->_package = FabTable::getInstance('Package', 'FabrikTable');
 			$this->_package->load($this->id);
-			//forms can currently only be set from form module
+
+			// Forms can currently only be set from form module
 			$this->_package->forms = '';
 		}
 		return $this->_package;
@@ -198,7 +199,8 @@ class FabrikFEModelPackage extends FabModel
 		$db = FabrikWorker::getDbo();
 		$config = JFactory::getConfig();
 	 	$document = JFactory::getDocument();
-		//test stuff needs to be assigned in admin
+
+		// Test stuff needs to be assigned in admin
 		$this->_blocks = array();
 		return;
 		// @TODO: loading of visualizations
@@ -242,6 +244,8 @@ class FabrikFEModelPackage extends FabModel
 
 	/**
 	 * (un)publish the package & all its tables
+	 *
+	 * @return  void
 	 */
 
 	function publish($state)
@@ -273,7 +277,7 @@ class fabrikPackageMenu extends JModel
 	 * Method to set the  id
 	 *
 	 * @access	public
-* @param   int	ID number
+	 * @param   int	ID number
 	 */
 
 	function setId($id)
@@ -287,5 +291,3 @@ class fabrikPackageMenu extends JModel
 		return "menu items to go here";
 	}
 }
-
-?>

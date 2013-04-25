@@ -494,7 +494,7 @@ EOD;
 
 			if ($params->get('icons', true))
 			{
-				//$image = JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
+				$image = FabrikWorker::j3() ? '<i class="icon-envelope"></i> ' : JHtml::_('image', 'system/emailButton.png', JText::_('JGLOBAL_EMAIL'), null, true);
 			}
 			else
 			{

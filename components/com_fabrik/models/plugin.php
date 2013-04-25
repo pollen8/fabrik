@@ -110,10 +110,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Constructor
 	 *
-	 * @access      protected
-	 * @param       object  $subject The object to observe
-	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An array that holds the plugin configuration
 	 */
 
 	public function __construct(&$subject, $config = array())
@@ -404,8 +402,8 @@ class FabrikPlugin extends JPlugin
 	 * Used in plugin manager runPlugins to set the correct repeat set of
 	 * data for the plugin
 	 *
-	 * @param   object  $params         original params
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   object  &$params        Original params
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return   object  params
 	 */
@@ -706,9 +704,11 @@ class FabrikPlugin extends JPlugin
 		}
 		else
 		{
-			//show fabrik elements in the table
-			//$keyType 1 = $element->id;
-			//$keyType 2 = tablename___elementname
+			/*
+			 * show fabrik elements in the table
+			 * $keyType 1 = $element->id;
+			 * $keyType 2 = tablename___elementname
+			 */
 			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$model->setId($tid);
 			$table = $model->getTable();
@@ -748,9 +748,11 @@ class FabrikPlugin extends JPlugin
 					}
 					else
 					{
-						//@TODO if in repeat group this is going to add [] to name - is this really
-						// what we want? In timeline viz options i've simply stripped out the [] off the end
-						// as a temp hack
+						/*
+						 * @TODO if in repeat group this is going to add [] to name - is this really
+						 * what we want? In timeline viz options i've simply stripped out the [] off the end
+						 * as a temp hack
+						 */
 						$v = $eVal->getFullName(false);
 					}
 					$c = new stdClass;
@@ -772,7 +774,6 @@ class FabrikPlugin extends JPlugin
 					{
 						$arr[] = $c;
 					}
-
 
 					if ($incCalculations)
 					{
@@ -840,7 +841,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get the options to ini the J Admin js plugin controller class
 	 *
-	 * @param   string  $html
+	 * @param   string  $html  HTML?
 	 *
 	 * @return  object
 	 */
