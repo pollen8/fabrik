@@ -21,7 +21,7 @@ jimport('joomla.plugin.plugin');
  * @since       1.5
  */
 
-class plgContentFabrik extends JPlugin
+class PlgContentFabrik extends JPlugin
 {
 
 	/**
@@ -212,7 +212,8 @@ class plgContentFabrik extends JPlugin
 					$viewName = JString::strtolower($m[1]);
 					break;
 				case 'id':
-					$id = $m[1];
+					// Cast to int incase there are two spaces after value.
+					$id = (int) $m[1];
 					break;
 				case 'layout':
 					$layoutFound = true;
