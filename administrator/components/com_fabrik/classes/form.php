@@ -39,6 +39,7 @@ jimport('joomla.utilities.arrayhelper');
  * @link        http://www.w3.org/TR/html5/forms.html
  * @since       11.1
  */
+ if(class_exists('JForm') != true) {
 class JForm
 {
 	/**
@@ -2156,3 +2157,4 @@ class JForm
 		}
 	}
 }
+} // end if class exist
