@@ -571,6 +571,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		return FabrikWorker::j3() && $params->get('btnGroup', false);
 	}
 
+	/**
+	 * Get classes to assign to the label
+	 *
+	 * @return  array
+	 */
+
 	protected function labelClasses()
 	{
 		return array();
@@ -849,7 +855,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	/**
 	* used by elements with suboptions
-	* 
+	*
 	* $$$ hugh - started working on adding this to elementlist, as we need to handle
 	* JSON-ified options for multiselect elements, which the main element model getLabelForValue()
 	* doesn't do.  But I need to sort out how this gets handled in rendering as well.
@@ -873,7 +879,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$multiple = $this->isMultiple();
-		//$key = array_search($v, $values);
 		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
 		foreach ($vals as $val)
 		{

@@ -1601,7 +1601,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			FabrikWorker::logEval($tip, 'Caught exception on eval of ' . $this->getElement()->name . ' tip: %s');
 		}
 		$tip = JText::_($tip);
-		//$tip = htmlspecialchars($tip, ENT_QUOTES);
 		return $tip;
 	}
 
@@ -2708,6 +2707,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		return $default;
 	}
 
+	/**
+	 * Is the element filter type a multi-select
+	 *
+	 * @return boolean
+	 */
+
 	protected function multiOptionFilter()
 	{
 		$fType = $this->getElement()->filter_type;
@@ -2858,6 +2863,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @param   string  $v        Filter name
 	 *
 	 * @since 3.0.7
+	 *
+	 * @return  string  Checkbox filter HTML
 	 */
 
 	protected function checkboxFilter($rows, $default, $v)
@@ -3030,12 +3037,6 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 					}
 				}
-				/* if ($found)
-				 {
-				// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
-				unset($rows[$j]);
-				} */
-
 				if (FabrikWorker::isJSON($rows[$j]))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
@@ -4298,7 +4299,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
-			// echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);

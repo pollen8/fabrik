@@ -412,10 +412,10 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$colcount = 1;
 		}
-		$spanKey = ($elCount -1) % $colcount;
+		$spanKey = ($elCount - 1) % $colcount;
 
 		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
-		
+
 		$element->span = ' ' . $element->span;
 		$element->offset = $params->get('group_offset', 0);
 
@@ -443,15 +443,9 @@ class FabrikFEModelGroup extends FabModel
 			}
 			else
 			{
-				if ((($elCount -1) % $colcount === $colcount - 1))
+				if ((($elCount - 1) % $colcount === $colcount - 1))
 				{
-					// echo $element->label_raw . ($elCount - 1) . "  % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . " (yes)<br>";
 					$element->endRow = 1;
-				}
-				else
-				{
-					// echo $element->label_raw . ($elCount - 1) . " $elCount % $colcount = " . $elCount % $colcount . " = " . ($colcount - 1) . "(no)<br>";
-
 				}
 			}
 			$element->column .= '" ';
@@ -788,11 +782,11 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 *
 	 * Get the group's join_id
 	 *
 	 * @return  mixed   join_id, or false if not a join
 	 */
+
 	public function getJoinId()
 	{
 		if (!$this->isJoin())

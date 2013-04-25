@@ -92,7 +92,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * Constructor
 	 */
 
-	function __construct()
+	public function __construct()
 	{
 		if (!defined('_FABRIKFORMSESSION_LOADED_FROM_COOKIE'))
 		{
@@ -212,9 +212,11 @@ class FabrikFEModelFormsession extends FabModel
 	 * Set use cookie
 	 *
 	 * @param   bool  $bol  set use cookie true/false
+	 *
+	 * @return  void
 	 */
 
-	function useCookie($bol)
+	public function useCookie($bol)
 	{
 		$this->useCookie = $bol;
 	}
@@ -225,7 +227,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * @return object session table row
 	 */
 
-	function load()
+	public function load()
 	{
 		$user = JFactory::getUser();
 		$row = $this->getTable('Formsession', 'FabrikTable');
@@ -254,7 +256,7 @@ class FabrikFEModelFormsession extends FabModel
 		}
 		if ($hash !== '')
 		{
-			// no point loading it if the hash is empty
+			// No point loading it if the hash is empty
 			$row->load(array('hash' => $hash));
 		}
 		if (is_null($row->id))
@@ -306,10 +308,10 @@ class FabrikFEModelFormsession extends FabModel
 	/**
 	 * Remove the saved session
 	 *
-	 * return  bool
+	 * @return  bool
 	 */
 
-	function remove()
+	public function remove()
 	{
 		// $$$ hugh - need to clear the 'session.on'.  If we're zapping the stored
 		// session form data, doesn't matter who or what set 'session.on' ... it ain't there any more.
@@ -362,7 +364,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * @return  string  hash
 	 */
 
-	function getHash()
+	public function getHash()
 	{
 		$userid = $this->getUserId();
 		if (is_null($this->hash))
@@ -378,7 +380,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * @return  mixed  user id if logged in, unique id if not
 	 */
 
-	function getUserId()
+	protected function getUserId()
 	{
 		$user = JFactory::getUser();
 		if ($user->get('id') == 0)
@@ -396,7 +398,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * @return  null
 	 */
 
-	function setFormId($id)
+	public function setFormId($id)
 	{
 		$this->formid = $id;
 	}
@@ -404,12 +406,12 @@ class FabrikFEModelFormsession extends FabModel
 	/**
 	 * Set the row id that is being edited or saved
 	 *
-	 * @param   int  $id row id
+	 * @param   int  $id  Row id
 	 *
 	 * @return  null
 	 */
 
-	function setRowId($id)
+	public function setRowId($id)
 	{
 		$this->rowid = $id;
 	}
@@ -420,7 +422,7 @@ class FabrikFEModelFormsession extends FabModel
 	 * @return  int
 	 */
 
-	function getRowId()
+	protected function getRowId()
 	{
 		$app = JFactory::getApplication();
 		if (is_null($this->rowid))

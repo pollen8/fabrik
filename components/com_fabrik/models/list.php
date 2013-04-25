@@ -514,7 +514,7 @@ class FabrikFEModelList extends JModelForm
 	 * Get an array of plugin js classes to load
 	 *
 	 * @param   array  &$r    Previously loaded classes
-	 * @param   array  $shim  Shim object to ini require.js
+	 * @param   array  &$shim  Shim object to ini require.js
 	 *
 	 * @return  array
 	 */
@@ -1128,7 +1128,7 @@ class FabrikFEModelList extends JModelForm
 			$w = new FabrikWorker;
 
 			// 3.0 if not group by template spec'd by group but assigned in qs then use that as the group by tmpl
-			$requestGroupBy =  $input->get('group_by', '');
+			$requestGroupBy = $input->get('group_by', '');
 			if ($requestGroupBy == '')
 			{
 
@@ -1332,7 +1332,6 @@ class FabrikFEModelList extends JModelForm
 				$viewLink = '<a class="' . $class . '" ' . $detailsLinkAttribs . 'data-list="list_' . $this->getRenderContext() . '" href="'
 						. $link . '" title="' . $viewLabel . '">' . FabrikHelperHTML::image('search.png', 'list', '', array('alt' => $viewLabel))
 						. ' ' . $viewText . '</a>';
-
 
 				// 3.0 actions now in list in one cell
 				$row->fabrik_actions = array();
