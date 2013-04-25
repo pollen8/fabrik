@@ -1563,6 +1563,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->_formData[$tmpKey . '_raw'] = $insertId;
 		$this->_formData[FabrikString::shortColName($item->db_primary_key)] = $insertId;
 		$this->_formData[FabrikString::shortColName($item->db_primary_key) . '_raw'] = $insertId;
+
 		// Need for things like the redirect plugin
 		$this->_fullFormData[$tmpKey] = $insertId;
 		$this->_fullFormData[$tmpKey . '_raw'] = $insertId;
@@ -1717,6 +1718,7 @@ class FabrikFEModelForm extends FabModelForm
 					else
 					{
 						$repeatTotals[$oJoin->group_id] = $elementModel->getJoinRepeatCount($data, $oJoin);
+
 						// $$$ hugh - need to re-index data
 						foreach ($data as &$d)
 						{
@@ -2873,7 +2875,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @param   bool    $show_in_list_summary  only show those elements shown in table summary
 	 * @param   bool    $incRaw                include raw labels in list (default = false) Only works if $key = name
 	 * @param   array   $filter                list of plugin names that should be included in the list - if empty include all plugin types
-	 * $param   bool    $noJoins               do not include elements in joined tables (default false)
+	 * @param   bool    $noJoins               do not include elements in joined tables (default false)
 	 *
 	 * @return	array	html options
 	 */
@@ -3063,11 +3065,13 @@ class FabrikFEModelForm extends FabModelForm
 		@set_time_limit(300);
 		$this->_rowId = $this->getRowId();
 
-		// $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
-		// hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
-		// so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
-		// do something funky like change the rowid being loaded.  Not a huge problem, but caught me out
-		// when a custom PHP onBeforeLoad plugin I'd written for a client suddenly broke.
+		/*
+		 * $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		 * hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
+		 * so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
+		 * do something funky like change the rowid being loaded.  Not a huge problem, but caught me out
+		 * when a custom PHP onBeforeLoad plugin I'd written for a client suddenly broke.
+		 */
 		$this->checkAccessFromListSettings();
 		$pluginManager = FabrikWorker::getPluginManager();
 		$res = $pluginManager->runPlugins('onBeforeLoad', $this);
@@ -3088,6 +3092,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.' . $this->getId() . '.data', $this->_data);
+
 		// $$$ rob return res - if its false the the form will not load
 		return $res;
 	}
@@ -3212,9 +3217,10 @@ class FabrikFEModelForm extends FabModelForm
 					// $$$ rob - use setFormData rather than JRequest::get()
 					// as it applies correct input filtering to data as defined in article manager parameters
 					$data = $this->setFormData();
-					// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
-					// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
-					// but from this point on, code is expecting even non-repeat join data to be arrays.
+					/* $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+					 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+					 * but from this point on, code is expecting even non-repeat join data to be arrays.
+					 */
 					$groups = $this->getGroupsHiarachy();
 					foreach ($groups as $groupModel)
 					{
@@ -3246,9 +3252,11 @@ class FabrikFEModelForm extends FabModelForm
 					if ($srow->data != '')
 					{
 						$sessionLoaded = true;
-						// $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
-						// problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
-						// but from this point on, code is expecting even non-repeat join data to be arrays.
+						/*
+						 * $$$ hugh - this chunk should probably go in setFormData, but don't want to risk any side effects just now
+						 * problem is that fater failed validation, non-repeat join element data is not formatted as arrays,
+						 * but from this point on, code is expecting even non-repeat join data to be arrays.
+						 */
 						$tmp_data = unserialize($srow->data);
 						$groups = $this->getGroupsHiarachy();
 						foreach ($groups as $groupModel)
@@ -3261,7 +3269,7 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						//$data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
+						// $data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
 						$data = array(FArrayHelper::toObject(array_merge($tmp_data, JArrayHelper::fromObject($data[0]))));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
@@ -3553,7 +3561,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Create the sql query to get the rows data for insertion into the form
 	 *
-	 * @param   array  $opts - key: ignoreOrder ingores order by part of query - needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
+	 * @param   array  $opts  key: ignoreOrder ingores order by part of query - needed for inline edit, as it only selects certain fields, order by on a db join element returns 0 results
 	 *
 	 * @return  string  query
 	 */
@@ -4256,9 +4264,6 @@ class FabrikFEModelForm extends FabModelForm
 
 				$count = is_array($recordCounts) && array_key_exists($val, $recordCounts) ? $recordCounts[$val]->total : 0;
 
-				// $$$ tom - 2012-09-14 - This should be from the linkedlistheader:
-				// Jaanus: or listlabel
-				// $label = $factedLinks->linkedformheader->$key;
 				$label = $factedLinks->linkedlistheader->$key == '' ? $element->listlabel : $factedLinks->linkedlistheader->$key;
 				$links[$element->list_id][] = $label . ': ' . $referringTable->viewDataLink($popUpLink, $element, null, $linkKey, $val, $count, $f);
 			}
@@ -4296,6 +4301,12 @@ class FabrikFEModelForm extends FabModelForm
 		return $links;
 	}
 
+	/**
+	 * Get the form clas
+	 *
+	 * @return string
+	 */
+
 	public function getFormClass()
 	{
 		$class = array('');
@@ -4326,6 +4337,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		// Get the router
 		$router = $app->getRouter();
 		if ($app->isAdmin())
@@ -4543,7 +4555,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if ($groupModel->canRepeat())
 			{
-				$group->tmpl =  $groupParams->get('repeat_template', 'repeatgroup');
+				$group->tmpl = $groupParams->get('repeat_template', 'repeatgroup');
 			}
 			else
 			{
@@ -4623,7 +4635,6 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						else
 						{
-							//if (!$groupParams->get('repeat_group_show_first'))
 							if ($groupModel->canView() === false)
 							{
 								continue;
@@ -4907,9 +4918,9 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Set editable state
 	 *
-	 * @since 3.0.7
-	 *
 	 * @param   bool  $editable  editable state
+	 *
+	 * @since 3.0.7
 	 *
 	 * @return  void
 	 */
