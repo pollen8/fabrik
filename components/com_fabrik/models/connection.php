@@ -294,6 +294,20 @@ class FabrikFEModelConnection extends JModel
 	}
 
 	/**
+	 * Strip the _fab off of a driver name, to get the standard J! driver name
+	 * 
+	 * Really just a wrapper round a helper rtrimword(), but wanted to make it'
+	 * clear what it's doing.
+	 * 
+	 * @param string $driverName
+	 * @return string
+	 */
+	private function getBaseDriverName($driverName = '')
+	{
+		return FabrikString::rtrimword($driverName, '_fab');	
+	}
+	
+	/**
 	 * Compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
 	 *
 	 * @param   array  $opts1  first compare
@@ -304,8 +318,19 @@ class FabrikFEModelConnection extends JModel
 
 	private function _compareConnectionOpts($opts1, $opts2)
 	{
-		return ($opts1['driver'] == $opts2['driver'] && $opts1['host'] == $opts2['host'] && $opts1['user'] == $opts2['user']
-			&& $opts1['password'] == $opts2['password'] && $opts1['database'] == $opts2['database']);
+		/**
+		 * $$$ hugh - this is returning false when one of the options are defaults from the J! config, and the other is an
+		 * actual connection, where the driver is (say) mysqli vs mysqli_fab.  The J! config will never have the _fab driver
+		 * specified, so I'm pretty sure we want to strip that off, and just compare the base type.
+		 */
+		
+		return (
+			$this->getBaseDriverName($opts1['driver']) == $this->getBaseDriverName($opts2['driver'])
+			&& $opts1['host'] == $opts2['host']
+			&& $opts1['user'] == $opts2['user']
+			&& $opts1['password'] == $opts2['password']
+			&& $opts1['database'] == $opts2['database']
+		);
 	}
 
 	/**
