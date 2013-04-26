@@ -1315,7 +1315,7 @@ class FabrikFEModelList extends JModelForm
 				$row->fabrik_view = '';
 				$row->fabrik_edit = '';
 
-				$editLabel = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
+				$editLabel = $this->editLabel();
 				$editText = $buttonAction == 'dropdown' ? $editLabel : '<span class="hidden">' . $editLabel . '</span>';
 
 				$btnClass = ($j3 && $buttonAction != 'dropdown') ? 'btn ' : '';
@@ -1324,7 +1324,7 @@ class FabrikFEModelList extends JModelForm
 						. $edit_link . '" title="' . $editLabel . '">' . FabrikHelperHTML::image('edit.png', 'list', '', array('alt' => $editLabel))
 						. ' ' . $editText . '</a>';
 
-				$viewLabel = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
+				$viewLabel = $this->viewLabel();
 				$viewText = $buttonAction == 'dropdown' ? $viewLabel : '<span class="hidden">' . $viewLabel . '</span>';
 				$class = $j3 ? $btnClass . 'fabrik_view fabrik__rowlink' : 'btn fabrik__rowlink';
 
@@ -8864,6 +8864,48 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get add button label
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  string
+	 */
+
+	public function addLabel()
+	{
+		$params = $this->getParams();
+		return JText::_($params->get('addlabel', JText::_('COM_FABRIK_ADD')));
+	}
+
+	/**
+	 * Get view details button label
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  string
+	 */
+
+	public function viewLabel()
+	{
+		$params = $this->getParams();
+		return JText::_($params->get('detaillabel', JText::_('COM_FABRIK_VIEW')));
+	}
+
+	/**
+	 * Get edit row button label
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  string
+	 */
+
+	public function editLabel()
+	{
+		$params = $this->getParams();
+		return JText::_($params->get('editlabel', JText::_('COM_FABRIK_EDIT')));
+	}
+
+	/**
 	 * Build the table's add record link
 	 * if a querystring filter has been passed in to the table then apply this to the link
 	 * this means that table->faceted table->add will auto select the data you browsed on
@@ -8881,7 +8923,6 @@ class FabrikFEModelList extends JModelForm
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$params = $this->getParams();
 		$addurl_url = $params->get('addurl', '');
-		$addlabel = $params->get('addlabel', '');
 		$filters = $this->getRequestData();
 		$keys = JArrayHelper::getValue($filters, 'key', array());
 		$vals = JArrayHelper::getValue($filters, 'value', array());

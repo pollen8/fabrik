@@ -234,7 +234,7 @@ class FabrikHelperHTML
 			return;
 		}
 
-		$script .= "window.addEvent('fabrik.loadeded', function() {";
+		$script .= "window.addEvent('fabrik.loaded', function() {";
 		if ($selector == '')
 		{
 			return;

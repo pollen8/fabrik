@@ -606,23 +606,45 @@
 					<option value="dropdown">COM_FABRIK_FIELD_ACTION_METHOD_DROPDOWN</option>
 			</field>
 				
-			<field description="COM_FABRIK_FIELD_DETAIL_URL_DESC" label="COM_FABRIK_FIELD_DETAIL_URL_LABEL" name="detailurl" size="50" type="text"/>
+			<field name="detailurl"
+				type="text"
+				description="COM_FABRIK_FIELD_DETAIL_URL_DESC"
+				label="COM_FABRIK_FIELD_DETAIL_URL_LABEL"
+				size="50" />
 		
+			<field name="detaillabel"
+				type="text"
+				description="COM_FABRIK_DETAIL_DESC"
+				label="COM_FABRIK_DETAIL_LABEL"
+				size="30"/>
+				
 			<field name="editurl" 
 				type="text" size="50"
 				label="COM_FABRIK_EDIT_URL_LABEL" 
 				description="COM_FABRIK_EDIT_URL_DESC" />
+				
+			<field name="editlabel"
+				type="text" size="30"
+				label="COM_FABRIK_EDIT_LABEL" 
+				description="COM_FABRIK_EDIT_DESC" />
 			
 			<field class="btn-group" default="end" description="COM_FABRIK_FIELD_CHECKBOX_LOCATION_DESC" label="COM_FABRIK_FIELD_CHECKBOX_LOCATION_LABEL" name="checkboxLocation" type="radio">
 					<option value="beginning">COM_FABRIK_BEGINNING</option>	
 					<option value="end">COM_FABRIK_END</option>
 			</field>
 			
-			<field description="COM_FABRIK_FIELD_ADD_URL_DESC" label="COM_FABRIK_FIELD_ADD_URL_LABEL" name="addurl" size="100" type="text"/>
-				
+			<field name="addurl"
+				type="text"
+				description="COM_FABRIK_FIELD_ADD_URL_DESC"
+				label="COM_FABRIK_FIELD_ADD_URL_LABEL"
+				size="100" />
 			
+			<field name="addlabel"
+				type="text"
+				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
+				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
+				size="20" />
 				
-
 		</fieldset>
 		
 		<fieldset name="links-fabrik30x">
