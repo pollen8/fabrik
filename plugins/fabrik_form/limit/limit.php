@@ -58,6 +58,12 @@ class PlgFabrik_FormLimit extends plgFabrik_Form
 
 		$limit = $this->limit();
 		$c = $this->count($formModel);
+
+		// Allow for unlimited
+		if ($c == -1)
+		{
+			return true;
+		}
 		if ($c >= $limit)
 		{
 			$msg = $params->get('limit_reached_message', JText::sprintf('PLG_FORM_LIMIT_LIMIT_REACHED', $limit));
