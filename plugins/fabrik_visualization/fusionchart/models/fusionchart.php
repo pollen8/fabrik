@@ -625,7 +625,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 				{
 					$strParam .= ';pieBorderThickness=' . $params->get('fusionchart_borderthick', '');
 					$strParam .= ';pieBorderAlpha=' . $params->get('fusionchart_cnvalpha', '');
-					$strParam .= ';pieFillAlpha=' . $params->get('fusionchart_elalpha', '');
+					$strParam .= ';pieFillAlpha=' . JArrayHelper::getValue($params->get('fusionchart_elalpha', array()), 0);
 				}
 
 				if ($this->c > 1)
