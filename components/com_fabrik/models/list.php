@@ -8657,10 +8657,11 @@ class FabrikFEModelList extends JModelForm
 	public function getAdvancedElementFilter()
 	{
 		$app = JFactory::getApplication();
-		$element = JRequest::getVar('element');
-		$elementid = JRequest::getVar('elid');
+		$input = $app->input;
+		$element = $input->get('element');
+		$elementid = $input->getId('elid');
 		$pluginManager = FabrikWorker::getPluginManager();
-		$className = JRequest::getVar('plugin');
+		$className = $input->get('plugin');
 		$plugin = $pluginManager->getPlugIn($className, 'element');
 		$plugin->setId($elementid);
 		$el = $plugin->getElement();
@@ -8674,7 +8675,14 @@ class FabrikFEModelList extends JModelForm
 		}
 		$script = $plugin->filterJS(false, $container);
 		FabrikHelperHTML::addScriptDeclaration($script);
-		echo $plugin->getFilter(JRequest::getInt('counter', 0), false);
+
+		// For update col plug-in we override to use the field filter type.
+		$filterOverride = $input->get('filterOverride', '');
+		if ($filterOverride !== '')
+		{
+			$plugin->getElement()->filter_type = 'field';
+		}
+		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}
 
 	/**
@@ -8690,6 +8698,7 @@ class FabrikFEModelList extends JModelForm
 		$qs = array();
 		$w = new FabrikWorker;
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$params = $this->getParams();
