@@ -3008,7 +3008,6 @@ class plgFabrik_Element extends FabrikPlugin
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
 			if (is_array($vals))
 			{
-				$found = false;
 				for ($i = 0; $i < count($vals); $i++)
 				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
@@ -3017,19 +3016,12 @@ class plgFabrik_Element extends FabrikPlugin
 					{
 						if (!in_array($vals2[$jj], $allvalues))
 						{
-							$found = true;
 							$allvalues[] = $vals2[$jj];
 							$rows[] = JHTML::_('select.option', $vals2[$jj], $txt2[$jj]);
 						}
 					}
 				}
-				/* if ($found)
-				 {
-				// $$$ rob 01/08/2011 - caused empty list in advanced search on dropdown element
-				unset($rows[$j]);
-				} */
-
-				if (FabrikWorker::isJSON($rows[$j]))
+				if (FabrikWorker::isJSON($rows[$j]->value))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);

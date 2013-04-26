@@ -21,7 +21,7 @@ jimport('joomla.filesystem.file');
  * @since    3.0
  */
 
-class plgFabrik_ElementList extends plgFabrik_Element
+class PlgFabrik_ElementList extends PlgFabrik_Element
 {
 
 	/**
@@ -846,7 +846,7 @@ class plgFabrik_ElementList extends plgFabrik_Element
 
 	/**
 	* used by elements with suboptions
-	* 
+	*
 	* $$$ hugh - started working on adding this to elementlist, as we need to handle
 	* JSON-ified options for multiselect elements, which the main element model getLabelForValue()
 	* doesn't do.  But I need to sort out how this gets handled in rendering as well.
@@ -870,7 +870,6 @@ class plgFabrik_ElementList extends plgFabrik_Element
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$multiple = $this->isMultiple();
-		//$key = array_search($v, $values);
 		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
 		foreach ($vals as $val)
 		{
