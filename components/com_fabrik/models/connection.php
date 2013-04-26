@@ -245,6 +245,7 @@ class FabrikFEModelConnection extends JModel
 			}
 			else
 			{
+				$options = $this->getConnectionOptions($cn);
 				$dbs[$cn->id] = JDatabase::getInstance($options);
 			}
 			if (JError::isError($dbs[$cn->id]) || is_a($dbs[$cn->id], 'JException') || $dbs[$cn->id]->getErrorNum() !== 0)
