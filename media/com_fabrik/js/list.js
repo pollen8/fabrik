@@ -176,13 +176,16 @@ var FbList = new Class({
 		
 		/**
 		 * once an ajax form has been submitted lets clear out any loose events and the form object itself
+		 * 
+		 * Commenting out as this causes issues for cdd after ajax form post
+		 * http://www.fabrikar.com/forums/index.php?threads/cdd-only-triggers-js-change-code-on-first-change.32793/
 		 */
-		Fabrik.addEvent('fabrik.form.ajax.submit.end', function (form) {
+		/*Fabrik.addEvent('fabrik.form.ajax.submit.end', function (form) {
 			form.formElements.each(function (el) {
 				el.removeCustomEvents();
 			});
 			delete Fabrik.blocks['form_' + form.id];
-		});
+		});*/
 	},
 
 	setRowTemplate: function () {
