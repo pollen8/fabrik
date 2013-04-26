@@ -21,7 +21,7 @@ jimport('joomla.filesystem.file');
  * @since    3.0
  */
 
-class plgFabrik_Element extends FabrikPlugin
+class PlgFabrik_Element extends FabrikPlugin
 {
 	/**
 	 * Element id
@@ -2719,6 +2719,12 @@ class plgFabrik_Element extends FabrikPlugin
 		return $default;
 	}
 
+	/**
+	 * Is filter multi select?
+	 *
+	 * @return boolean
+	 */
+
 	protected function multiOptionFilter()
 	{
 		$fType = $this->getElement()->filter_type;
@@ -4322,7 +4328,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// Need to add a group by here as well as if the ONLY_FULL_GROUP_BY SQL mode is enabled an error is produced
 			$sql = $this->getSumQuery($listModel) . ' GROUP BY label';
 			$sql = $listModel->pluginQuery($sql);
-			// echo $sql;
 			$db->setQuery($sql);
 			$results = $db->loadObjectList('label');
 			$this->formatCalValues($results);
@@ -4487,13 +4492,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
 			$uberTotal = 0;
-			foreach ($results2 as $k => &$r)
+			/*
+			 * Removes values from display when split on used:
+			 * see http://www.fabrikar.com/forums/index.php?threads/calculation-split-on-problem.32035/
+			 foreach ($results2 as $k => &$r)
 			{
 				if ($k == '')
 				{
 					unset($results2[$k]);
 				}
 			}
+			*/
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
