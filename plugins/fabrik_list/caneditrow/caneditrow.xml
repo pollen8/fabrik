@@ -12,6 +12,8 @@
 	<description>PLG_LIST_CANEDITROW_DESCRIPTION</description>
 	<files>
 		<filename plugin="caneditrow">caneditrow.php</filename>
+		<filename>caneditrow.js</filename>
+		<filename>caneditrow-min.js</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>language</folder>

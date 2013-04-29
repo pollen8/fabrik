@@ -506,6 +506,16 @@ var FbList = new Class({
 		}.bind(this));
 		this.plugins = a;
 	},
+	
+	firePlugin: function (method) {
+		var args = Array.prototype.slice.call(arguments);
+		args = args.slice(1, args.length);
+		this.plugins.each(function (plugin) {
+			console.log('list fire event ', method, this, args);
+			Fabrik.fireEvent(method, [this, args]);
+		}.bind(this));
+		return this.result === false ? false : true;
+	},
 
 	watchEmpty: function (e) {
 		var b = document.id(this.options.form).getElement('.doempty', this.options.form);
