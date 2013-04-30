@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Form
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -195,7 +195,7 @@ abstract class JFormField
 	/**
 	 * Method to instantiate the form field object.
 	 *
-	 * @param   JForm  $form  The form to attach to the form field object.
+	 * @param   object  $form  The form to attach to the form field object.
 	 *
 	 * @since   11.1
 	 */
@@ -211,7 +211,7 @@ abstract class JFormField
 		// Detect the field type if not set
 		if (!isset($this->type))
 		{
-			$parts = JStringNormalise::fromCamelCase(get_called_class(), true);
+			$parts = JString::splitCamelCase(get_class($this));
 			if ($parts[0] == 'J')
 			{
 				$this->type = JString::ucfirst($parts[count($parts) - 1], '_');
@@ -236,6 +236,7 @@ abstract class JFormField
 	{
 		switch ($name)
 		{
+			case 'class':
 			case 'description':
 			case 'formControl':
 			case 'hidden':
@@ -250,6 +251,7 @@ abstract class JFormField
 			case 'fieldname':
 			case 'group':
 				return $this->$name;
+				break;
 
 			case 'input':
 				// If the input hasn't yet been generated, generate it.
@@ -259,6 +261,7 @@ abstract class JFormField
 				}
 
 				return $this->input;
+				break;
 
 			case 'label':
 				// If the label hasn't yet been generated, generate it.
@@ -268,9 +271,10 @@ abstract class JFormField
 				}
 
 				return $this->label;
-
+				break;
 			case 'title':
 				return $this->getTitle();
+				break;
 		}
 
 		return null;
@@ -281,7 +285,7 @@ abstract class JFormField
 	 *
 	 * @param   JForm  $form  The JForm object to attach to the form field.
 	 *
-	 * @return  JFormField  The form field object so that the method can be used in a chain.
+	 * @return  object  The form field object so that the method can be used in a chain.
 	 *
 	 * @since   11.1
 	 */
@@ -296,20 +300,20 @@ abstract class JFormField
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
-	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
-	 * @param   mixed             $value    The form field value to validate.
-	 * @param   string            $group    The field name group control value. This acts as as an array container for the field.
-	 *                                      For example if the field has name="foo" and the group value is set to "bar" then the
-	 *                                      full field name would end up being "bar[foo]".
+	 * @param   object  &$element  The SimpleXMLElement object representing the <field /> tag for the form field object.
+	 * @param   mixed   $value     The form field value to validate.
+	 * @param   string  $group     The field name group control value. This acts as as an array container for the field.
+	 *                             For example if the field has name="foo" and the group value is set to "bar" then the
+	 *                             full field name would end up being "bar[foo]".
 	 *
 	 * @return  boolean  True on success.
 	 *
 	 * @since   11.1
 	 */
-	public function setup(SimpleXMLElement $element, $value, $group = null)
+	public function setup(&$element, $value, $group = null)
 	{
 		// Make sure there is a valid JFormField XML element.
-		if ((string) $element->getName() != 'field')
+		if (!($element instanceof SimpleXMLElement) || (string) $element->getName() != 'field')
 		{
 			return false;
 		}
@@ -348,7 +352,7 @@ abstract class JFormField
 			}
 			else
 			{
-				$this->element['class'] = 'required';
+				$this->element->addAttribute('class', 'required');
 			}
 		}
 
@@ -417,6 +421,7 @@ abstract class JFormField
 	 */
 	protected function getId($fieldId, $fieldName)
 	{
+		// Initialise variables.
 		$id = '';
 
 		// If there is a form control set for the attached form add it first.
@@ -483,6 +488,7 @@ abstract class JFormField
 	 */
 	protected function getTitle()
 	{
+		// Initialise variables.
 		$title = '';
 
 		if ($this->hidden)
@@ -507,6 +513,7 @@ abstract class JFormField
 	 */
 	protected function getLabel()
 	{
+		// Initialise variables.
 		$label = '';
 
 		if ($this->hidden)
@@ -563,6 +570,7 @@ abstract class JFormField
 		// $$$ rob set in plugin->onRenderSettings
 		$repeatCounter = empty($this->form->repeatCounter) ? 0 : $this->form->repeatCounter;
 
+		// Initialise variables.
 		$name = '';
 
 		// If there is a form control set for the attached form add it first.
@@ -612,20 +620,7 @@ abstract class JFormField
 		// If the field should support multiple values add the final array segment.
 		if ($this->multiple)
 		{
-			switch (strtolower((string) $this->element['type']))
-			{
-				case 'text':
-				case 'textarea':
-				case 'email':
-				case 'password':
-				case 'radio':
-				case 'calendar':
-				case 'editor':
-				case 'hidden':
-					break;
-				default:
-					$name .= '[]';
-			}
+			$name .= '[]';
 		}
 
 		return $name;

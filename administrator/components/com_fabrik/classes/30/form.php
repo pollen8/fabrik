@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Form
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -205,6 +205,7 @@ class JForm
 			return false;
 		}
 
+		// Initialise variables.
 		$input = new JRegistry($data);
 		$output = new JRegistry;
 
@@ -219,6 +220,7 @@ class JForm
 		// Filter the fields.
 		foreach ($fields as $field)
 		{
+			// Initialise variables.
 			$name = (string) $field['name'];
 
 			// Get the field groups for the element.
@@ -340,6 +342,7 @@ class JForm
 	 */
 	public function getFieldset($set = null)
 	{
+		// Initialise variables.
 		$fields = array();
 
 		// Get all of the field elements in the fieldset.
@@ -388,6 +391,7 @@ class JForm
 	 */
 	public function getFieldsets($group = null)
 	{
+		// Initialise variables.
 		$fieldsets = array();
 		$sets = array();
 
@@ -510,6 +514,7 @@ class JForm
 	 */
 	public function getGroup($group, $nested = false)
 	{
+		// Initialise variables.
 		$fields = array();
 
 		// Get all of the field elements in the field group.
@@ -1071,6 +1076,7 @@ class JForm
 			return false;
 		}
 
+		// Initialise variables.
 		$return = true;
 
 		// Create an input registry object from the data to validate.
@@ -1087,6 +1093,7 @@ class JForm
 		// Validate the fields.
 		foreach ($fields as $field)
 		{
+			// Initialise variables.
 			$value = null;
 			$name = (string) $field['name'];
 
@@ -1191,7 +1198,7 @@ class JForm
 
 			// Convert a date to UTC based on the server timezone offset.
 			case 'SERVER_UTC':
-				if ((int) $value > 0)
+				if (intval($value) > 0)
 				{
 					// Get the server timezone setting.
 					$offset = JFactory::getConfig()->get('offset');
@@ -1207,7 +1214,7 @@ class JForm
 
 			// Convert a date to UTC based on the user timezone offset.
 			case 'USER_UTC':
-				if ((int) $value > 0)
+				if (intval($value) > 0)
 				{
 					// Get the user timezone setting defaulting to the server timezone setting.
 					$offset = JFactory::getUser()->getParam('timezone', JFactory::getConfig()->get('offset'));
@@ -1379,6 +1386,7 @@ class JForm
 	 */
 	protected function findField($name, $group = null)
 	{
+		// Initialise variables.
 		$element = false;
 		$fields = array();
 
@@ -1470,6 +1478,7 @@ class JForm
 	 */
 	protected function &findFieldsByFieldset($name)
 	{
+		// Initialise variables.
 		$false = false;
 
 		// Make sure there is a valid JForm XML document.
@@ -1506,6 +1515,7 @@ class JForm
 	 */
 	protected function &findFieldsByGroup($group = null, $nested = false)
 	{
+		// Initialise variables.
 		$false = false;
 		$fields = array();
 
@@ -1580,6 +1590,7 @@ class JForm
 	 */
 	protected function &findGroup($group)
 	{
+		// Initialise variables.
 		$false = false;
 		$groups = array();
 		$tmp = array();
@@ -1821,6 +1832,7 @@ class JForm
 	 */
 	protected function validateField(SimpleXMLElement $element, $group = null, $value = null, JRegistry $input = null)
 	{
+		// Initialise variables.
 		$valid = true;
 
 		// Check if the field is required.
@@ -1831,15 +1843,23 @@ class JForm
 			// If the field is required and the value is empty return an error message.
 			if (($value === '') || ($value === null))
 			{
-				if ($element['label'])
+				// Does the field have a defined error message?
+				if ($element['message'])
 				{
-					$message = JText::_($element['label']);
+					$message = $element['message'];
 				}
 				else
 				{
-					$message = JText::_($element['name']);
+					if ($element['label'])
+					{
+						$message = JText::_($element['label']);
+					}
+					else
+					{
+						$message = JText::_($element['name']);
+					}
+					$message = sprintf('Field required: %s', $message);
 				}
-				$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_REQUIRED', $message);
 
 				return new RuntimeException($message);
 			}
@@ -1875,14 +1895,11 @@ class JForm
 
 			if ($message)
 			{
-				$message = JText::_($element['message']);
 				return new UnexpectedValueException($message);
 			}
 			else
 			{
-				$message = JText::_($element['label']);
-				$message = JText::sprintf('JLIB_FORM_VALIDATE_FIELD_INVALID', $message);
-				return new UnexpectedValueException($message);
+				return new UnexpectedValueException((string) $element['label']);
 			}
 		}
 
@@ -2016,10 +2033,10 @@ class JForm
 	}
 
 	/**
-	 * Update the attributes of a child node
+	 * Adds a new child SimpleXMLElement node to the source.
 	 *
-	 * @param   SimpleXMLElement  $source  The source element on which to append the attributes
-	 * @param   SimpleXMLElement  $new     The new element to append
+	 * @param   SimpleXMLElement  $source  The source element on which to append.
+	 * @param   SimpleXMLElement  $new     The new element to append.
 	 *
 	 * @return  void
 	 *
@@ -2039,6 +2056,8 @@ class JForm
 				$source->addAttribute($name, $value);
 			}
 		}
+
+		// What to do with child elements?
 	}
 
 	/**
