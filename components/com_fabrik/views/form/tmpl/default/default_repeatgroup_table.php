@@ -16,7 +16,7 @@ $group = $this->group;
 		<tr>
 	<?php
 	// Add in the table heading
-	$firstGroup = $group->subgroups[0];
+	$firstGroup = JArrayHelper::getValue($group->subgroups, 0, array());
 	foreach ($firstGroup as $el) :
 		$style = $el->hidden ? 'style="display:none"' : '';
 		?>

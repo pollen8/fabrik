@@ -289,7 +289,9 @@ var FbListInlineEdit = new Class({
 		if (cell.hasClass('fabrik_uneditable') || cell.hasClass('fabrik_ordercell') || cell.hasClass('fabrik_select') || cell.hasClass('fabrik_actions')) {
 			return false;
 		}
-		return true;
+		var rowid = this.getRowId(cell.getParent('.fabrik_row'));
+		res = this.getList().firePlugin('onCanEditRow', rowid);
+		return res;
 	},
 	
 	getPreviousEditable: function (active) {
