@@ -11,7 +11,16 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class FabrikViewList extends JView{
+/**
+ * RAw Fabrik List view class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
+class FabrikViewList extends JView
+{
 
 	/**
 	 * Display the template
@@ -21,7 +30,7 @@ class FabrikViewList extends JView{
 	 * @return void
 	 */
 
-	function display($tpl = null)
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -77,9 +86,9 @@ class FabrikViewList extends JView{
 				$elementModel->setRowClass($data);
 			}
 		}
-		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model'=>'list', 'data' => $data,
+		$d = array('id' => $table->id, 'listRef' => JRequest::getVar('listref'), 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
 		'headings' => $this->headings,
-			'formid'=> $model->getTable()->form_id,
+			'formid' => $model->getTable()->form_id,
 			'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
 		$d['nav'] = $nav->getProperties();
 		$tmpl = $input->get('tmpl', $this->getTmpl());

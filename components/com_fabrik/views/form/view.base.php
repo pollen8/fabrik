@@ -291,7 +291,7 @@ class FabrikViewFormBase extends JView
 		$app = JFactory::getApplication();
 		if ($app->input->get('format') === 'pdf')
 		{
-			// if we're rendering as PDF, no point showing any buttons
+			// If we're rendering as PDF, no point showing any buttons
 			$this->showEmail = false;
 			$this->showPrint = false;
 			$this->showPDF = false;
@@ -362,7 +362,7 @@ class FabrikViewFormBase extends JView
 	 * @return  void
 	 */
 
-	protected function _addJavascript($tableId)
+	protected function _addJavascript($listId)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -552,12 +552,6 @@ class FabrikViewFormBase extends JView
 		$gs = array();
 		foreach ($groups as $groupModel)
 		{
-			/* $showGroup = $groupModel->getParams()->get('repeat_group_show_first');
-			if ($showGroup == -1 || ($showGroup == 2 && $model->isEditable()))
-			{
-				// $$$ rob unpublished group so dont include the element js
-				continue;
-			} */
 			if (!$groupModel->canView())
 			{
 				continue;
@@ -627,7 +621,7 @@ class FabrikViewFormBase extends JView
 
 		$script[] = "function submitbutton(button) {";
 		$script[] = "\tif (button==\"cancel\") {";
-		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_' . $package . '&task=viewTable&cid=' . $tableId) . "';";
+		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_' . $package . '&task=viewTable&cid=' . $listId) . "';";
 		$script[] = "\t}";
 		$script[] = "\tif (button == \"cancelShowForm\") {";
 		$script[] = "\t\treturn false;";
@@ -648,7 +642,6 @@ class FabrikViewFormBase extends JView
 		}
 		$str = implode("\n", $script);
 		$model->getCustomJsAction($srcs);
-		//$srcs[] = 'media/com_fabrik/js/encoder.js';
 		FabrikHelperHTML::script($srcs, $str);
 		$pluginManager->runPlugins('onAfterJSLoad', $model);
 	}

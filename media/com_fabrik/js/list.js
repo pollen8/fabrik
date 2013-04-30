@@ -511,7 +511,6 @@ var FbList = new Class({
 		var args = Array.prototype.slice.call(arguments);
 		args = args.slice(1, args.length);
 		this.plugins.each(function (plugin) {
-			console.log('list fire event ', method, this, args);
 			Fabrik.fireEvent(method, [this, args]);
 		}.bind(this));
 		return this.result === false ? false : true;
