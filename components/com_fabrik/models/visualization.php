@@ -406,7 +406,7 @@ class FabrikFEModelVisualization extends JModel
 		foreach ($listModels as $listModel)
 		{
 			// Set prefilter params
-			$listParams =& $listModel->getParams();
+			$listParams = $listModel->getParams();
 			$prefilter = JArrayHelper::getValue($prefilters, $c);
 			$prefilter = JArrayHelper::fromObject(json_decode($prefilter));
 			$conditions = (array) $prefilter['filter-conditions'];
