@@ -1121,6 +1121,8 @@ var FbForm = new Class({
 			p = p.split('=');
 			var k = p[0];
 			// $$$ rob deal with checkboxes
+			// Ensure [] is not encoded
+			k = decodeURI(k);
 			if (k.substring(k.length - 2) === '[]') {
 				k = k.substring(0, k.length - 2);
 				if (!arrayCounters.has(k)) {
