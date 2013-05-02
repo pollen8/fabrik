@@ -4261,7 +4261,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		{
 			$plugin = $pluginManager->getElementPlugin($gById);
 			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$gById = FabrikString::safeColName($sName);
+			if (!stristr($sName, 'CONCAT'))
+			{
+				$gById = FabrikString::safeColName($sName);
+			}
 		}
 		return $groupBys;
 	}
