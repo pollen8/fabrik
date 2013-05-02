@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
 require_once 'fabcontrollerform.php';
 
 /**
- * List controller class.
+ * Admin List controller class.
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
@@ -257,7 +257,7 @@ class FabrikControllerList extends FabControllerForm
 	public function delete()
 	{
 		// Check for request forgeries
-		JRequest::checkToken() or die('Invalid Token');
+		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$model = JModel::getInstance('List', 'FabrikFEModel');
 		$listid = JRequest::getInt('listid');
@@ -301,9 +301,11 @@ class FabrikControllerList extends FabControllerForm
 	public function doempty()
 	{
 		$model = $this->getModel('list', 'FabrikFEModel');
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$model->truncate();
-		$listid = JRequest::getInt('listid');
-		$ref = JRequest::getVar('fabrik_referrer', 'index.php?option=com_fabrik&view=list&cid=' . $listid, 'post');
+		$listid = $input->getInt('listid');
+		$ref = $input->get('fabrik_referrer', 'index.php?option=com_fabrik&view=list&cid=' . $listid, 'string');
 		$this->setRedirect($ref);
 	}
 
@@ -316,13 +318,11 @@ class FabrikControllerList extends FabControllerForm
 	public function doPlugin()
 	{
 		$app = JFactory::getApplication();
-		$cid = JRequest::getVar('cid', array(0), 'method', 'array');
-		if (is_array($cid))
-		{
-			$cid = $cid[0];
-		}
+		$input = $app->input;
+		$cid = $input->get('cid', array(0), 'array');
+		$cid = $cid[0];
 		$model = $this->getModel('list', 'FabrikFEModel');
-		$model->setId(JRequest::getInt('listid', $cid));
+		$model->setId($input->getInt('listid', $cid));
 
 		// $$$ rob need to ask the model to get its data here as if the plugin calls $model->getData
 		// then the other plugins are recalled which makes the current plugins params incorrect.
@@ -330,12 +330,12 @@ class FabrikControllerList extends FabControllerForm
 		$model->getData();
 
 		// If showing n tables in article page then ensure that only activated table runs its plugin
-		if (JRequest::getInt('id') == $model->get('id') || JRequest::getVar('origid', '') == '')
+		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '', 'string') == '')
 		{
 			$msgs = $model->processPlugin();
-			if (JRequest::getVar('format') == 'raw')
+			if ($input->get('format') == 'raw')
 			{
-				JRequest::setVar('view', 'list');
+				$input->set('view', 'list');
 			}
 			else
 			{
@@ -345,8 +345,8 @@ class FabrikControllerList extends FabControllerForm
 				}
 			}
 		}
-		$format = JRequest::getCmd('fromat', 'html');
-		$ref = 'index.php?option=com_fabrik&task=list.view&cid[]=' . $model->getId() . '&format=' . $format;
+		$format = $input->get('fromat', 'html');
+		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getId() . '&format=' . $format;
 		$app->redirect($ref);
 	}
 
