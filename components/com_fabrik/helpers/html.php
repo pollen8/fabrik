@@ -1704,12 +1704,16 @@ EOD;
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
 			unset($properties['icon-class']);
+
+			$class .= ' ' . JArrayHelper::getValue($properties, 'class', '');
+			unset($properties['class']);
+
 			$p = FabrikHelperHTML::propertiesFromArray($properties);
 
 			if (!$srcOnly)
 			{
 				//$id = array_key_exists('id', $properties) ? ' id="' . $properties['id'] . '"' : '';
-				return '<i class="' . $class . '"' . $p . '></i>';
+				return '<i class="' . $class . '" ' . $p . '></i>';
 			}
 			else
 			{

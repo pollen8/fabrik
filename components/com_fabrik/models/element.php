@@ -2427,7 +2427,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$validations = (array) $params->get('validations', 'array');
-		$usedPlugins = JArrayHelper::getValue($validations, 'plugin', array());
+		$usedPlugins = (array) JArrayHelper::getValue($validations, 'plugin', array());
 		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
