@@ -6,20 +6,24 @@ var FbPicklist = new Class({
 		if (this.options.allowadd === true) {
 			this.watchAdd();
 		}
-		// hovercolor: this.options.bghovercolour,
-		var dropcolour = document.id(this.options.element + '_fromlist').getStyle(
-				'background-color');
-		this.sortable = new Sortables([ '#' + this.element.id + '_fromlist',
-				'#' + this.element.id + '_tolist' ], {
+		var from = document.id(this.options.element + '_fromlist');
+		var to =  document.id(this.options.element + '_tolist');
+		
+		var dropcolour = from.getStyle('background-color');
+		this.sortable = new Sortables([ from, to ], {
 			clone : true,
 			revert : true,
 			opacity : 0.7,
 			hovercolor : '#ffddff',
 			onComplete : function () {
-				// alert(this.serialize());
 				this.setData();
 			}.bind(this),
-			onStart : function () {
+			onSort: function (element, clone) {
+				this.showNotices(element, clone);
+			}.bind(this),
+			
+			
+			onStart : function (element, clone) {
 				this.drag.addEvent('onEnter', function (element, droppable) {
 					if (this.lists.contains(droppable)) {
 						var hoverFx = new Fx.Tween(droppable, {
@@ -41,15 +45,37 @@ var FbPicklist = new Class({
 				}.bind(this));
 			}
 		});
+		
+		var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
+		this.sortable.removeItems(notices);
+		this.showNotices();
+	},
+	
+	showNotices: function (element, clone) {
+		if (element) {
+			element = element.getParent('ul');
+		}
+		var limit, to, i;
+		var lists = [this.options.element + '_tolist', this.options.element + '_fromlist'];
+		for (i = 0; i < lists.length; i++) {
+			to = document.id(lists[i]);
+			limit = (to === element || typeOf(element) === 'null') ? 1 : 2;
+			var notice = to.getElement('li.emptyplicklist');
+			var lis = to.getElements('li');
+			lis.length > limit ? notice.hide() : notice.show();
+		}
 	},
 
-	setData : function () {
-		var v = document.id(this.options.element + '_tolist').getElements('li').map(
+	setData: function () {
+		
+		var to = document.id(this.options.element + '_tolist');
+		var lis = to.getElements('li');
+		
+		var v = lis.map(
 				function (item, index) {
 					return item.id
 							.replace(this.options.element + '_value_', '');
 				}.bind(this));
-		//this.element.value = v.join(this.options.splitter);
 		this.element.value = JSON.encode(v);
 	},
 
@@ -85,8 +111,6 @@ var FbPicklist = new Class({
 							document.id(id + '_ddVal').value = '';
 						}
 						document.id(id + '_ddLabel').value = '';
-						// this.showEmptyMsg(document.id(this.options.element +
-						// '_tolist'));
 						this.setData();
 						this.addNewOption(val, label);
 					}
