@@ -103,10 +103,6 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;
 		$opts->swatch = json_decode(JFile::read($swatchFile));
 
-		$opts->closeImage = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array(), true);
-		$opts->handleImage = FabrikHelperHTML::image("handle.gif", 'form', @$this->tmpl, array(), true);
-		$opts->trackImage = FabrikHelperHTML::image("track.gif", 'form', @$this->tmpl, array(), true);
-
 		return array('ColourPicker', $id, $opts);
 	}
 
@@ -131,7 +127,39 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			. $value . ')"></div>';
 		if ($this->isEditable())
 		{
-			$str[] = '<div class="colourPickerBackground colourpicker-widget" style="color:#000;z-index:99999;left:200px;background-color:#EEEEEE;border:1px solid #333333;width:390px;padding:0 0 5px 0;"></div>';
+			$str[] = '<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">';
+			$str[] = '<div class="draggable modal-header">';
+			$str[] = '<div class="colourpicker_output" style="width:15px;height:15px;float:left;margin-right:10px;"></div> ';
+			$str[] = JText::_('PLG_FABRIK_COLOURPICKER_COLOUR');
+
+			if (FabrikWorker::j3())
+			{
+				$str[] = '<a class="pull-right" href="#"><i class="icon-cancel "></i></a>';
+			}
+			else
+			{
+				$str[] = FabrikHelperHTML::image("close.gif", 'form', @$this->tmpl, array());
+			}
+			$str[] = '</div>';
+
+			$str[] = '<div class="itemContentPadder">';
+			$str[] = '<div class="row-fluid">';
+			$str[] = '  <div class="span7">';
+			$str[] = '    <ul class="nav nav-tabs">';
+			$str[] = '      <li class="active"><a href="#' . $name . '-picker" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_PICKER') . '</a></li>';
+			$str[] = '      <li><a href="#' . $name . '-swatch" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_SWATCH') . '</a></li>';
+			$str[] = '    </ul>';
+			$str[] = '    <div class="tab-content">';
+			$str[] = '      <div class="tab-pane active" id="' . $name . '-picker"></div>';
+			$str[] = '      <div class="tab-pane" id="' . $name . '-swatch"></div>';
+			$str[] = '    </div>';
+			$str[] = '  </div>';
+			$str[] = '  <div class="span5 sliders" style="margin-top:50px">';
+			$str[] = '  </div>';
+
+			$str[] = '</div>';
+			$str[] = '</div>';
+			$str[] = '</div>';
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
