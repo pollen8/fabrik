@@ -10,10 +10,6 @@
 			
 			<field cols="45" label="PLG_ELEMENT_SLIDER_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 			
-		</fieldset>
-	</fields>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset label="" name="plg-element-slider-params">
 			<field default="250" label="PLG_ELEMENT_SLIDER_WIDTH_LABEL" name="slider_width" size="3" type="text"/>
 				
 			<field default="100" description="PLG_ELEMENT_SLIDER_STEPS_DESC" label="PLG_ELEMENT_SLIDER_STEPS_LABEL" name="slider-steps" type="text"/>
