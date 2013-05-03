@@ -16,13 +16,7 @@
 				cols="45"
 				label="PLG_ELEMENT_SLIDER_DEFAULT_LABEL"
 				rows="6"/>
-			
-		</fieldset>
-	</fields>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-
-		<fieldset label="" name="plg-element-slider-params">
-		
+					
 			<field name="slider_width"
 				class="input-mini"
 				default="250"
