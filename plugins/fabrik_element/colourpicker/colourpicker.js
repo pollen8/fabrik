@@ -65,6 +65,13 @@ var ColourPicker = new Class({
 		this.widget.getElement('#' + element + '-picker').adopt(this.grad.square);
 		this.update(this.options.value);
 		
+		var close = this.widget.getElement('.modal-header a');
+		if (close) {
+			close.addEvent('click', function (e) {
+				e.stop();
+				this.widget.hide();
+			}.bind(this));
+		}
 	},
 	
 	setOutputs: function (output) {
