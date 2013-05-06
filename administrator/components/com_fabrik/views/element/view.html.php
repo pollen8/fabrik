@@ -227,7 +227,6 @@ class FabrikAdminViewElement extends JViewLegacy
 		}
 
 		JToolBarHelper::divider();
-		//JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT');
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT'));
 	}
 
