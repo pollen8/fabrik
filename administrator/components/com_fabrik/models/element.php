@@ -261,8 +261,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function getPlugins()
 	{
 		$item = $this->getItem();
-		$plugins = FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
-		$published = FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
+		$plugins = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin', array());
+		$published = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
 		$return = array();
 		for ($i = 0; $i < count($plugins); $i ++)
 		{
