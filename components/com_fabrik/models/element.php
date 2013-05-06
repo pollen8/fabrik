@@ -797,12 +797,27 @@ class PlgFabrik_Element extends FabrikPlugin
 		$default = ($view === 'list') ? $this->canView() : 1;
 		$key = $view == 'form' ? 'view' : 'listview';
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
+		$params = $this->getParams();
+		$user = JFactory::getUser();
+
 		if (!is_object($this->_access) || !array_key_exists($key, $this->_access))
 		{
-			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
+			$this->_access->$key = in_array($params->get($prop, $default), $groups);
+		}
 
-			$this->_access->$key = in_array($this->getParams()->get($prop, $default), $groups);
+		// Override with check on lookup element's value = logged in user id.
+		if ($params->get('view_access_user', '') !== '' && $view == 'form')
+		{
+			$formModel = $this->getFormModel();
+			$data = $formModel->getData();
+			if (!empty($data))
+			{
+				$fullName = $this->getFullName(false, true, false);
+				$value = $formModel->getElementData($fullName);
+				$this->_access->$key = ($user->get('id') == $value) ? true : false;
+			}
+
 		}
 		return $this->_access->$key;
 	}
