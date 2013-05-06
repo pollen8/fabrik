@@ -1314,25 +1314,27 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
 	{
+		$data = isset($this->formData) ? $this->formData : $this->data;
 		$value = null;
 		if ($raw)
 		{
 			$fullName .= '_raw';
 		}
 		// Simplest case, element name exists in main group
-		if (array_key_exists($fullName, $this->formData))
+		if (is_array($data) && array_key_exists($fullName, $data))
 		{
-			$value = $this->formData[$fullName];
-		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
-		   * running after store, when non-joined data names have been reduced to short
-		   * names in formData, so peek in _fullFormData
-		   */
+			$value = $data[$fullName];
+		}
+		/* Maybe we are being called from onAfterProcess hook, or somewhere else
+		 * running after store, when non-joined data names have been reduced to short
+		 * names in formData, so peek in _fullFormData
+		 */
 		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
 			$value = $this->_fullFormData[$fullName];
 		}
 		// Wasn't in the form's main table data, so try joins
-		elseif (array_key_exists('join', $this->formData))
+		elseif (is_array($data) && array_key_exists('join', $data))
 		{
 			/* We can't just loop through the ['join'] structure, as we need to
 			 * know if the group is repeatable, and can't rely on key being an array,
@@ -1342,11 +1344,11 @@ class FabrikFEModelForm extends FabModelForm
 			foreach ($groups as $groupModel)
 			{
 				$group = $groupModel->getGroup();
-				if (array_key_exists($group->join_id, $this->formData['join']))
+				if (array_key_exists($group->join_id, $data['join']))
 				{
-					if (array_key_exists($fullName, $this->formData['join'][$group->join_id]))
+					if (array_key_exists($fullName, $data['join'][$group->join_id]))
 					{
-						$value = $this->formData['join'][$group->join_id][$fullName];
+						$value = $data['join'][$group->join_id][$fullName];
 
 						// If the group is repeatable, see if they want a specific index
 						if ($groupModel->canRepeat())
