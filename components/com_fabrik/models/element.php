@@ -804,11 +804,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$formModel = $this->getFormModel();
 			$data = $formModel->getData();
-			if (!empty($data))
+
+			if (!empty($data) &&  $user->get('id') !== 0)
 			{
-				$fullName = $this->getFullName(false, true, false);
+				$lookUp = $params->get('view_access_user', '');
+				$lookUp = $formModel->getElement($lookUp, true);
+				$fullName = $lookUp->getFullName(false, true, false);
 				$value = $formModel->getElementData($fullName);
-				$this->_access->$key = ($user->get('id') == $value) ? true : false;
+				$this->access->$key = ($user->get('id') == $value) ? true : false;
 			}
 
 		}
