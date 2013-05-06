@@ -15,7 +15,7 @@ if ($pageClass !== '') :
 	echo '<div class="' . $pageClass . '">';
 endif;
 ?>
-<form class="fabrikForm" action="<?php echo $this->table->action;?>" method="post" id="<?php echo $this->formid;?>" name="<?php echo $this->formid;?>">
+<form class="fabrikForm" action="<?php echo $this->table->action;?>" autocomplete="off" method="post" id="<?php echo $this->formid;?>" name="<?php echo $this->formid;?>">
 
 <?php
 /*

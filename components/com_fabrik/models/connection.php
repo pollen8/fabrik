@@ -89,6 +89,35 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
+	 * Test if the connection is exactly the same as Joomla's db connection as
+	 * defined in configuration.php
+	 *
+	 * @since  3.0.8
+	 *
+	 * @return boolean  True if the same
+	 */
+
+	public function isJdb()
+	{
+		// $$$rob lets see if we have an exact config match with J db if so just return that
+		$conf = JFactory::getConfig();
+		$host = $conf->get('host');
+		$user = $conf->get('user');
+		$password = $conf->get('password');
+		$database = $conf->get('db');
+		$prefix = $conf->get('dbprefix');
+		$driver = $conf->get('dbtype');
+		$debug = $conf->get('debug');
+
+		$default_options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
+				'prefix' => $prefix);
+
+		$cn = $this->getConnection();
+		$options = $this->getConnectionOptions($cn);
+		return $this->compareConnectionOpts($default_options, $options);
+	}
+
+	/**
 	 * Creates a html dropdown box for the current connection
 	 *
 	 * @param   string  $javascript  to add to select box
@@ -132,8 +161,8 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			$tableOptions[] = JHTML::_('select.option', 'host not set');
 		}
-		$options = 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript;
-		return JHTML::_('select.genericlist', $tableOptions, $name, $options, 'value', 'text', $selected);
+		$attribs = 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript;
+		return JHTML::_('select.genericlist', $tableOptions, $name, $attribs, 'value', 'text', $selected);
 	}
 
 	/**
@@ -227,6 +256,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			self::$dbs = array();
 		}
+		$error = false;
 		$cn = $this->getConnection();
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
@@ -241,25 +271,16 @@ class FabrikFEModelConnection extends JModelLegacy
 
 		if (!array_key_exists($cn->id, self::$dbs))
 		{
-			// $$$rob lets see if we have an exact config match with J db if so just return that
-			$conf = JFactory::getConfig();
-			$host = $conf->get('host');
-			$user = $conf->get('user');
-			$password = $conf->get('password');
-			$database = $conf->get('db');
-			$prefix = $conf->get('dbprefix');
-			$driver = $conf->get('dbtype');
-			$debug = $conf->get('debug');
-
-			$deafult_options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
-				'prefix' => $prefix);
-			$options = $this->getConnectionOptions($cn);
-
-			$error = false;
-
-			$version = new JVersion;
-			$compareOpts = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
-			$db = $this->compareConnectionOpts($deafult_options, $options) ? FabrikWorker::getDbo() : $compareOpts;
+			if ($this->isJdb())
+			{
+				$db = FabrikWorker::getDbo();
+			}
+			else
+			{
+				$version = new JVersion;
+				$options = $this->getConnectionOptions($cn);
+				$db = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+			}
 
 			try
 			{
@@ -317,6 +338,21 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
+	 * Strip the _fab off of a driver name, to get the standard J! driver name
+	 *
+	 * Really just a wrapper round a helper rtrimword(), but wanted to make it'
+	 * clear what it's doing.
+	 *
+	 * @param   string  $driverName  Database driver name
+	 *
+	 * @return string
+	 */
+	private function getBaseDriverName($driverName = '')
+	{
+		return FabrikString::rtrimword($driverName, '_fab');
+	}
+
+	/**
 	 * Compare two arrays of connection details. Ignore prefix as this may be set to '' if using koowna
 	 *
 	 * @param   array  $opts1  first compare
@@ -327,8 +363,19 @@ class FabrikFEModelConnection extends JModelLegacy
 
 	private function compareConnectionOpts($opts1, $opts2)
 	{
-		return ($opts1['driver'] == $opts2['driver'] && $opts1['host'] == $opts2['host'] && $opts1['user'] == $opts2['user']
-			&& $opts1['password'] == $opts2['password'] && $opts1['database'] == $opts2['database']);
+		/**
+		 * $$$ hugh - this is returning false when one of the options are defaults from the J! config, and the other is an
+		 * actual connection, where the driver is (say) mysqli vs mysqli_fab.  The J! config will never have the _fab driver
+		 * specified, so I'm pretty sure we want to strip that off, and just compare the base type.
+		 */
+
+		return (
+			$this->getBaseDriverName($opts1['driver']) == $this->getBaseDriverName($opts2['driver'])
+			&& $opts1['host'] == $opts2['host']
+			&& $opts1['user'] == $opts2['user']
+			&& $opts1['password'] == $opts2['password']
+			&& $opts1['database'] == $opts2['database']
+		);
 	}
 
 	/**

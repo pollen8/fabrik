@@ -791,12 +791,26 @@ class PlgFabrik_Element extends FabrikPlugin
 		$default = ($view === 'list') ? $this->canView() : 1;
 		$key = $view == 'form' ? 'view' : 'listview';
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
+		$params = $this->getParams();
+		$user = JFactory::getUser();
 		if (!is_object($this->access) || !array_key_exists($key, $this->access))
 		{
-			$user = JFactory::getUser();
 			$groups = $user->getAuthorisedViewLevels();
+			$this->access->$key = in_array($params->get($prop, $default), $groups);
+		}
 
-			$this->access->$key = in_array($this->getParams()->get($prop, $default), $groups);
+		// Override with check on lookup element's value = logged in user id.
+		if ($params->get('view_access_user', '') !== '' && $view == 'form')
+		{
+			$formModel = $this->getFormModel();
+			$data = $formModel->getData();
+			if (!empty($data))
+			{
+				$fullName = $this->getFullName(false, true, false);
+				$value = $formModel->getElementData($fullName);
+				$this->_access->$key = ($user->get('id') == $value) ? true : false;
+			}
+
 		}
 		return $this->access->$key;
 	}
@@ -3022,7 +3036,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$txt = FabrikWorker::JSONtoData($rows[$j]->text, true);
 			if (is_array($vals))
 			{
-				$found = false;
 				for ($i = 0; $i < count($vals); $i++)
 				{
 					$vals2 = FabrikWorker::JSONtoData($vals[$i], true);
@@ -3031,13 +3044,12 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						if (!in_array($vals2[$jj], $allvalues))
 						{
-							$found = true;
 							$allvalues[] = $vals2[$jj];
 							$rows[] = JHTML::_('select.option', $vals2[$jj], $txt2[$jj]);
 						}
 					}
 				}
-				if (FabrikWorker::isJSON($rows[$j]))
+				if (FabrikWorker::isJSON($rows[$j]->value))
 				{
 					// $$$ rob 01/10/2012 - if not unset then you could get json values in standard dd filter (checkbox)
 					unset($rows[$j]);
@@ -4232,7 +4244,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		{
 			$plugin = $pluginManager->getElementPlugin($gById);
 			$sName = method_exists($plugin, 'getJoinLabelColumn') ? $plugin->getJoinLabelColumn() : $plugin->getFullName(false, false, false);
-			$gById = FabrikString::safeColName($sName);
+			if (!stristr($sName, 'CONCAT'))
+			{
+				$gById = FabrikString::safeColName($sName);
+			}
 		}
 		return $groupBys;
 	}
@@ -4464,13 +4479,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$db->setQuery($sql);
 			$results2 = $db->loadObjectList('label');
 			$uberTotal = 0;
-			foreach ($results2 as $k => &$r)
+			/*
+			 * Removes values from display when split on used:
+			 * see http://www.fabrikar.com/forums/index.php?threads/calculation-split-on-problem.32035/
+			 foreach ($results2 as $k => &$r)
 			{
 				if ($k == '')
 				{
 					unset($results2[$k]);
 				}
 			}
+			*/
 			foreach ($results2 as $pair)
 			{
 				$uberTotal += $pair->value;
@@ -4567,7 +4586,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			}
 			if ($plugin->hasSubElements)
 			{
-				$val->label = ($type == 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key);
+				$val->label = ($type == 'median') ? $plugin->getLabelForValue($val->label) : $plugin->getLabelForValue($key, $key);
 			}
 			else
 			{

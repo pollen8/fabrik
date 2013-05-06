@@ -3948,6 +3948,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
+		$pkField = '';
 		foreach ($groups as $groupModel)
 		{
 			/**
@@ -3977,6 +3978,7 @@ class FabrikFEModelForm extends FabModelForm
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
 				$keyCount = 0;
+				unset($pkField);
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
@@ -3987,6 +3989,10 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						$keyCount ++;
 					}
+				}
+				if (!isset($pkField))
+				{
+					$pkField = '';
 				}
 				/*
 				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so

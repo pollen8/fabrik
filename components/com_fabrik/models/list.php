@@ -3867,8 +3867,7 @@ class FabrikFEModelList extends JModelForm
 			if ($join->table_join == '#__users' || $join->table_join == $prefix . 'users')
 			{
 				$conf = JFactory::getConfig();
-				$thisCn = $this->getConnection()->getConnection();
-				if (!($thisCn->host == $conf->get('host') && $thisCn->database == $conf->get('db')))
+				if (!$this->inJDb())
 				{
 					/* $$$ hugh - changed this to pitch an error and bang out, otherwise if we just set canUse to false, our getData query
 					 * is just going to blow up, with no useful warning msg.
@@ -8860,6 +8859,13 @@ class FabrikFEModelList extends JModelForm
 		}
 		$script = $plugin->filterJS(false, $container);
 		FabrikHelperHTML::addScriptDeclaration($script);
+
+		// For update col plug-in we override to use the field filter type.
+		$filterOverride = $input->get('filterOverride', '');
+		if ($filterOverride !== '')
+		{
+			$plugin->getElement()->filter_type = 'field';
+		}
 		echo $plugin->getFilter($input->getInt('counter', 0), false);
 	}
 
@@ -9855,19 +9861,14 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Is the list's db table in the main Joomla database
+	 * Short cut to test if the lists connection is the same as the Joomla database
 	 *
 	 * @return bool
 	 */
 
 	public function inJDb()
 	{
-		$config = JFactory::getConfig();
-		$cnn = $this->getConnection()->getConnection();
-		/* if the table database is not the same as the joomla database then
-		 * we should simply return a hidden field with the user id in it.
-		*/
-		return $config->get('db') == $cnn->database;
+		return $this->getConnection()->isJdb();
 	}
 
 	/**

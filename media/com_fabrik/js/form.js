@@ -775,8 +775,13 @@ var FbForm = new Class({
 		}).send();
 	},
 
-	_completeValidaton : function (r, id, origid) {
+	_completeValidaton: function (r, id, origid) {
 		r = JSON.decode(r);
+		if (typeOf(r) === 'null') {
+			this._showElementError(['Oups'], id);
+			this.result = true;
+			return;
+		}
 		this.formElements.each(function (el, key) {
 			el.afterAjaxValidation();
 		});
@@ -786,7 +791,7 @@ var FbForm = new Class({
 			return;
 		}
 		var el = this.formElements.get(id);
-		if ((r.modified[origid] !== undefined)) {
+		if ((typeOf(r.modified[origid]) !== 'null')) {
 			el.update(r.modified[origid]);
 		}
 		if (typeOf(r.errors[origid]) !== 'null') {
@@ -1136,6 +1141,8 @@ var FbForm = new Class({
 			p = p.split('=');
 			var k = p[0];
 			// $$$ rob deal with checkboxes
+			// Ensure [] is not encoded
+			k = decodeURI(k);
 			if (k.substring(k.length - 2) === '[]') {
 				k = k.substring(0, k.length - 2);
 				if (!arrayCounters.has(k)) {

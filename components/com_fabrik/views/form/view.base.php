@@ -297,7 +297,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		if ($app->input->get('format') === 'pdf')
 		{
-			// if we're rendering as PDF, no point showing any buttons
+			// If we're rendering as PDF, no point showing any buttons
 			$this->showEmail = false;
 			$this->showPrint = false;
 			$this->showPDF = false;

@@ -201,4 +201,21 @@ class FabrikAdminControllerList extends FabControllerForm
 		// Pass in the model otherwise display() rebuilds it and the request data is rebuilt
 		$this->view($model);
 	}
+
+	/**
+	 * Called via ajax when element selected in advanced search popup window
+	 * OR in update_col plugin
+	 *
+	 * @return  null
+	 */
+
+	public function elementFilter()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$id = $input->getInt('id');
+		$model = $this->getModel('list', 'FabrikFEModel');
+		$model->setId($id);
+		echo $model->getAdvancedElementFilter();
+	}
 }
