@@ -2236,7 +2236,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
-			jimport('joomla.utilities.simplecrypt');
+			//jimport('joomla.utilities.simplecrypt');
 			$crypt = FabrikWorker::getCrypt();
 			$w = new FabrikWorker;
 			foreach ($gkeys as $g)

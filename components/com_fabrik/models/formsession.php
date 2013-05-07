@@ -196,6 +196,10 @@ class FabrikFEModelFormsession extends FabModel
 
 	protected function getCrypt()
 	{
+		/**
+		 * $$$ hugh - might want to alter this to use FabrikWorker::getCrypt()
+		 * as we now use that everywhere else.
+		 */
 		if (!isset($this->crypt))
 		{
 			jimport('joomla.utilities.simplecrypt');

@@ -6725,7 +6725,7 @@ $groupBy .= '_raw';
 
 	function _addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
 	{
-		jimport('joomla.utilities.simplecrypt');
+		//jimport('joomla.utilities.simplecrypt');
 
 		// $$$ rob since 1.0.6 : 10 June 08
 		// Get the current record - not that which was posted
@@ -6828,7 +6828,8 @@ $groupBy .= '_raw';
 		// Check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
-			$crypt = new JSimpleCrypt;
+			// $crypt = new JSimpleCrypt;
+			$crypt = FabrikWorker::getCrypt();
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{
 
