@@ -23,7 +23,7 @@ jimport('joomla.filesystem.file');
  * @since       3.0
  */
 
-class plgSystemFabrik extends JPlugin
+class PlgSystemFabrik extends JPlugin
 {
 
 	/**

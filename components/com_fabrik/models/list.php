@@ -1147,7 +1147,7 @@ class FabrikFEModelList extends JModelForm
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
-
+$groupBy .= '_raw';
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;

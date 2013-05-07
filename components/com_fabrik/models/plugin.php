@@ -42,11 +42,11 @@ class FabrikPlugin extends JPlugin
 	var $_xmlPath = null;
 
 	/**
-	 * Params
+	 * Params (must be public)
 	 *
 	 * @var JRegistry
 	 */
-	protected $_params = null;
+	public $params = null;
 
 	var $attribs = null;
 
@@ -427,7 +427,7 @@ class FabrikPlugin extends JPlugin
 				case 'new':
 					if ($model->$k != 0)
 					{
-						$ok = isset($model->_copyingRow) ? $model->copyingRow() : false;
+						$ok = isset($model->copyingRow) ? $model->copyingRow() : false;
 					}
 					break;
 				case 'edit':
@@ -471,9 +471,11 @@ class FabrikPlugin extends JPlugin
 
 	function ajax_tables()
 	{
-		$cid = JRequest::getInt('cid', -1);
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$cid = $input->getInt('cid', -1);
 		$rows = array();
-		$showFabrikLists = JRequest::getVar('showf', false);
+		$showFabrikLists = $input->get('showf', false);
 		if ($showFabrikLists)
 		{
 			$db = FabrikWorker::getDbo(true);
@@ -589,13 +591,13 @@ class FabrikPlugin extends JPlugin
 			$table = $model->getTable();
 			$db = $model->getDb();
 			$groups = $model->getFormGroupElementData();
-			$published = JRequest::getVar('published', false);
-			$showintable = JRequest::getVar('showintable', false);
+			$published = $input->get('published', false);
+			$showintable = $input->get('showintable', false);
 			foreach ($groups as $g => $groupModel)
 			{
 				if ($groupModel->isJoin())
 				{
-					if (JRequest::getVar('excludejoined') == 1)
+					if ($input->get('excludejoined') == 1)
 					{
 						continue;
 					}
@@ -623,9 +625,11 @@ class FabrikPlugin extends JPlugin
 					}
 					else
 					{
-						//@TODO if in repeat group this is going to add [] to name - is this really
-						// what we want? In timeline viz options i've simply stripped out the [] off the end
-						// as a temp hack
+						/*
+						 * @TODO if in repeat group this is going to add [] to name - is this really
+						 * what we want? In timeline viz options i've simply stripped out the [] off the end
+						 * as a temp hack
+						 */
 						$v = $eVal->getFullName(false);
 					}
 					$c = new stdClass;
@@ -647,7 +651,6 @@ class FabrikPlugin extends JPlugin
 					{
 						$arr[] = $c;
 					}
-
 
 					if ($incCalculations)
 					{
@@ -715,7 +718,7 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Get the options to ini the J Admin js plugin controller class
 	 *
-	 * @param   string  $html
+	 * @param   string  $html  HTML?
 	 *
 	 * @return  object
 	 */
@@ -889,5 +892,41 @@ class FabrikPlugin extends JPlugin
 			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
 		$db->setQuery($query);
 		return $db->loadColumn();
+	}
+
+	/**
+	 * Make db tables if found, called from onRenderAdminSettings - seems plugins cant run their own sql files atm
+	 *
+	 * @since   3.1a
+	 *
+	 * @return  void
+	 */
+
+	protected function makeDbTable()
+	{
+		$db = FabrikWorker::getDbo();
+
+		// Attempt to create the db table?
+		$file = COM_FABRIK_BASE . '/plugins/' . $this->_type . '/' . $this->_name . '/sql/install.mysql.uft8.sql';
+		if (JFile::exists($file))
+		{
+			$sql = JFile::read($file);
+			$sqls = explode(";", $sql);
+			if (!empty($sqls))
+			{
+				foreach ($sqls as $sql)
+				{
+					if (trim($sql) !== '')
+					{
+						$db->setQuery($sql);
+
+						if (!$db->execute())
+						{
+							JError::raiseError(500, $db->getErrorMsg());
+						}
+					}
+				}
+			}
+		}
 	}
 }

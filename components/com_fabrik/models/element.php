@@ -38,13 +38,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	var $_jsActions = null;
 
 	/**
-	 * params
-	 *
-	 * @var object
-	 */
-	protected $_params = null;
-
-	/**
 	 * Validation objects associated with the element
 	 *
 	 * @var array
@@ -508,10 +501,29 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
+	 * @deprecated use replaceWithIcons()
 	 * @return  string	data
 	 */
 
 	protected function _replaceWithIcons($data, $view = 'list', $tmpl = null)
+	{
+		return $this->replaceWithIcons($data, $view, $tmpl);
+	}
+
+	/**
+	 * Replace labels shown in table view with icons (if found)
+	 *
+	 * @param   string  $data  data
+	 * @param   string  $view  list/details
+	 * @param   string  $tmpl  template
+	 *
+	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
+	 *
+	 * @deprecated use
+	 * @return  string	data
+	 */
+
+	protected function replaceWithIcons($data, $view = 'list', $tmpl = null)
 	{
 		if ($data == '')
 		{
@@ -811,10 +823,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$formModel = $this->getFormModel();
 			$data = $formModel->getData();
-			if (!empty($data))
+
+			if (!empty($data) &&  $user->get('id') !== 0)
 			{
-				$fullName = $this->getFullName(false, true, false);
-				$value = $formModel->getElementData($fullName);
+				$lookUp = $params->get('view_access_user', '');
+				$lookUp = $formModel->getElement($lookUp, true);
+				$fullName = $lookUp->getFullName(false, true, false);
+				$value = $formModel->getElementData($fullName, true);
 				$this->_access->$key = ($user->get('id') == $value) ? true : false;
 			}
 
@@ -2392,11 +2407,11 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getParams()
 	{
-		if (!isset($this->_params))
+		if (!isset($this->params))
 		{
-			$this->_params = new JRegistry($this->getElement()->params);
+			$this->params = new JRegistry($this->getElement()->params);
 		}
-		return $this->_params;
+		return $this->params;
 	}
 
 	/**
@@ -2817,6 +2832,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 		}
 		$size = (int) $this->getParams()->get('filter_length', 20);
+		$class = $this->filterClass();
 		switch ($element->filter_type)
 		{
 			case 'range':
@@ -2830,7 +2846,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$max = count($rows) < 7 ? count($rows) : 7;
 				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
 				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, 'value', 'text', $default, $id);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, 'value', 'text', $default, $id);
 				break;
 
 			case 'field':
@@ -2838,7 +2854,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" size="' . $size . '" value="' . $default . '" id="'
+				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
 					. $id . '" />';
 				break;
 
@@ -2851,7 +2867,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$default = stripslashes($default);
 					$default = htmlspecialchars($default);
-					$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $id . '" />';
+					$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $id . '" />';
 				}
 				break;
 
@@ -2865,6 +2881,23 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get filter classes
+	 *
+	 * @since 3.1b
+	 *
+	 * @return  string
+	 */
+
+	protected function filterClass()
+	{
+		$params = $this->getParams();
+		$classes = array('inputbox fabrik_filter');
+		$bootstrapClass = $params->get('filter_class', 'input-small');
+		$classes[] = $bootstrapClass;
+		return implode(' ', $classes);
+	}
+
+	/**
 	 * Checkbox filter
 	 *
 	 * @param   array   $rows     Filter list options
@@ -2873,7 +2906,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0.7
 	 *
-	 * @return  string
+	 * @return  string  Checkbox filter HTML
 	 */
 
 	protected function checkboxFilter($rows, $default, $v)
@@ -2906,7 +2939,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function rangedFilterFields($default, &$return, $rows, $v, $type = 'list')
 	{
 		$element = $this->getElement();
-		$attribs = 'class="inputbox fabrik_filter" size="1" ';
+		$class = $this->filterClass();
+		$attribs = 'class="' . $class . '" size="1" ';
 		$default = (array) $default;
 		$default0 = array_key_exists('value', $default) ? $default['value'][0] : $default[0];
 		$default1 = array_key_exists('value', $default) ? $default['value'][1] : $default[1];
@@ -2921,8 +2955,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
-			$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[0]" value="' . $default0 . '" id="' . $element->name . '_filter_range_0" />';
+			$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '[1]" value="' . $default1 . '" id="' . $element->name . '_filter_range_1" />';
 		}
 	}
 
@@ -2948,14 +2982,15 @@ class PlgFabrik_Element extends FabrikPlugin
 		$default = stripslashes($default);
 		$default = htmlspecialchars($default);
 		$id = $this->getHTMLId() . 'value';
+		$class = $this->filterClass();
 		$size = (int) $this->getParams()->get('filter_length', 20);
 		/**
 		 * $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters
 		 * showing and not produce invald html & duplicate js calls
 		 */
 		$return = array();
-		$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter ' . $id . '" value="' . $default . '" />';
-		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="inputbox fabrik_filter autocomplete-trigger '
+		$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
+		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
 			. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 
 		$opts = array();
@@ -3447,6 +3482,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+		$class = $this->filterClass();
 
 		// $$$ needs to apply to CDD's as well, so just making this an overideable method.
 		if ($this->quoteLabel())
@@ -3474,7 +3510,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$condition = $this->getFilterCondition();
 
 		// Need to include class other wise csv export produces incorrect results when exporting
-		$prefix = '<input type="hidden" class="fabrik_filter" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
+		$prefix = '<input type="hidden" class="' . $class . '" name="fabrik___filter[list_' . $this->getListModel()->getRenderContext() . ']';
 		$return[] = $prefix . '[condition][' . $counter . ']" value="' . $condition . '" />';
 		$return[] = $prefix . '[join][' . $counter . ']" value="AND" />';
 		$return[] = $prefix . '[key][' . $counter . ']" value="' . $elName . '" />';
@@ -5178,7 +5214,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			if ($params->get('icon_folder') == '1')
 			{
 				// $$$ rob was returning here but that stoped us being able to use links and icons together
-				$d = $this->_replaceWithIcons($d, 'list', $listModel->getTmpl());
+				$d = $this->replaceWithIcons($d, 'list', $listModel->getTmpl());
 			}
 			$d = $this->rollover($d, $thisRow, 'list');
 			$d = $listModel->_addLink($d, $this, $thisRow, $i);

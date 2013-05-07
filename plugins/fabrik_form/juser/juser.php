@@ -324,7 +324,7 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 		if ($ftable == $jos_users)
 		{
-			$formModel->_storeMainRow = false;
+			$formModel->storeMainRow = false;
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');

@@ -87,7 +87,7 @@ class plgFabrik_ElementTime extends plgFabrik_Element
 						$detailvalue = $min . $sep . $sec;
 					}
 				}
-				$value = $this->_replaceWithIcons($detailvalue);
+				$value = $this->replaceWithIcons($detailvalue);
 				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else

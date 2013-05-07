@@ -25,7 +25,7 @@ class FabrikFEModelPluginmanager extends JModel
 	/** @var array plugins */
 	public $plugIns = array();
 
-	var $_group = null;
+	protected $group = null;
 
 	/** @var int # of plugins run */
 	protected $runPlugins = 0;
@@ -36,6 +36,13 @@ class FabrikFEModelPluginmanager extends JModel
 	/** @var array containing out put from run plugins */
 	var $_data = array();
 
+	/**
+	 * Array of array of form plugins - keyed on group id
+	 *
+	 * @var  array
+	 */
+	protected $formPlugins = array();
+	
 	/**
 	 * Constructor
 	 *
@@ -123,12 +130,12 @@ class FabrikFEModelPluginmanager extends JModel
 	protected function _getList($query = null, $limitstart = 0, $limit = 0)
 	{
 		$db = FabrikWorker::getDbo(true);
-		if (is_null($this->_group))
+		if (is_null($this->group))
 		{
-			$this->_group = 'element';
+			$this->group = 'element';
 		}
 		$query = $db->getQuery(true);
-		$folder = $db->quote('fabrik_' . $this->_group);
+		$folder = $db->quote('fabrik_' . $this->group);
 		$query->select('element AS value, name AS text')->from('#__extensions')->where('folder =' . $folder);
 		$db->setQuery($query);
 		$elementstypes = $db->loadObjectList();
@@ -307,6 +314,24 @@ class FabrikFEModelPluginmanager extends JModel
 	}
 
 	/**
+	 * Unset a form's element plugins
+	 *
+	 * @since   3.1b
+	 *
+	 * @param   JModel  $formModel  Form model
+	 *
+	 * @return  void
+	 */
+
+	public function clearFormPlugins($formModel)
+	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$sig = $package . '.' . $formModel->get('id');
+		unset($this->formPlugins[$sig]);
+
+	}
+	/**
 	 * Load all the forms element plugins
 	 *
 	 * @param   object  &$form  form model
@@ -319,17 +344,17 @@ class FabrikFEModelPluginmanager extends JModel
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$profiler = JProfiler::getInstance('Application');
-		if (!isset($this->formplugins))
+		if (!isset($this->formPlugins))
 		{
-			$this->formplugins = array();
+			$this->formPlugins = array();
 		}
 
 		// Ensure packages load their own form
 		$sig = $package . '.' . $form->get('id');
 		JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:start - ' . $sig) : null;
-		if (!array_key_exists($sig, $this->formplugins))
+		if (!array_key_exists($sig, $this->formPlugins))
 		{
-			$this->formplugins[$sig] = array();
+			$this->formPlugins[$sig] = array();
 			$lang = JFactory::getLanguage();
 			$folder = 'fabrik_element';
 			$client = JApplicationHelper::getClientInfo(0);
@@ -369,7 +394,7 @@ class FabrikFEModelPluginmanager extends JModel
 			{
 				JDEBUG ? $profiler->mark('pluginmanager:getFormPlugins:' . $element->id . '' . $element->plugin) : null;
 				require_once JPATH_PLUGINS . '/fabrik_element/' . $element->plugin . '/' . $element->plugin . '.php';
-				$class = 'plgFabrik_Element' . $element->plugin;
+				$class = 'PlgFabrik_Element' . $element->plugin;
 				$pluginModel = new $class($dispatcher, array());
 				if (!is_object($pluginModel))
 				{
@@ -391,10 +416,10 @@ class FabrikFEModelPluginmanager extends JModel
 			}
 			foreach ($groupModels as $groupid => $g)
 			{
-				$this->formplugins[$sig][$groupid] = $g;
+				$this->formPlugins[$sig][$groupid] = $g;
 			}
 		}
-		return $this->formplugins[$sig];
+		return $this->formPlugins[$sig];
 	}
 
 	/**
@@ -451,18 +476,6 @@ class FabrikFEModelPluginmanager extends JModel
 
 	protected function loadLists($group, $lists, &$elementModel)
 	{
-		if (empty($this->_plugIns))
-		{
-			$this->loadPlugInGroup($group);
-		}
-		foreach ($this->_plugIns[$group] as $plugIn)
-		{
-			if (method_exists($plugIn->object, 'getAdminLists'))
-			{
-				$lists = $plugIn->object->getAdminLists($lists, $elementModel, $plugIn->params);
-			}
-		}
-		return $lists;
 	}
 
 	/**

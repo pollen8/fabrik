@@ -155,7 +155,7 @@ class FabrikControllerDetails extends JController
 				// If its in a module with ajax or in a package
 				if ($input->getInt('packageId') !== 0)
 				{
-					$data = array('modified' => $model->_modifiedValidationData);
+					$data = array('modified' => $model->modifiedValidationData);
 
 					// Validating entire group when navigating form pages
 					$data['errors'] = $model->_arErrors;
@@ -377,7 +377,7 @@ class FabrikControllerDetails extends JController
 		$model->getForm();
 		$model->setRowId($input->get('rowid', '', 'string'));
 		$model->validate();
-		$data = array('modified' => $model->_modifiedValidationData);
+		$data = array('modified' => $model->modifiedValidationData);
 
 		// Validating entire group when navigating form pages
 		$data['errors'] = $model->_arErrors;

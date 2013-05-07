@@ -1003,9 +1003,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			JError::raiseWarning(JText::sprintf('PLG_ELEMENT_DBJOIN_DB_CONN_ERR', $element->name));
 			return '';
 		}
-		if (isset($formModel->_aJoinGroupIds[$groupModel->getId()]))
+		if (isset($formModel->aJoinGroupIds[$groupModel->getId()]))
 		{
-			$joinId = $formModel->_aJoinGroupIds[$groupModel->getId()];
+			$joinId = $formModel->aJoinGroupIds[$groupModel->getId()];
 			$joinGroupId = $groupModel->getId();
 		}
 		else

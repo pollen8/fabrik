@@ -177,7 +177,7 @@ class plgFabrik_ElementBirthday extends plgFabrik_Element
 						}
 					}
 				}
-				$value = $this->_replaceWithIcons($detailvalue);
+				$value = $this->replaceWithIcons($detailvalue);
 				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else

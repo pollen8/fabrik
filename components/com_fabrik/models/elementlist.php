@@ -174,6 +174,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$htmlid = $this->getHTMLId() . 'value';
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
+		$class = $this->filterClass();
 		$v = $this->filterName($counter, $normal);
 		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
@@ -188,7 +189,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 
-		$attribs = 'class="inputbox fabrik_filter" size="1" ';
+		$attribs = 'class="' . $class . '" size="1" ';
 		$size = $params->get('filter_length', 20);
 		$return = array();
 		switch ($element->filter_type)
@@ -221,7 +222,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" size="' . $size . '" value="' . $default . '" id="'
+				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
 					. $htmlid . '" />';
 				break;
 
@@ -231,7 +232,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$default = stripslashes($default);
 				}
 				$default = htmlspecialchars($default);
-				$return[] = '<input type="hidden" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
+				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
 
 			case 'auto-complete':
@@ -338,26 +339,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	 * Ajax call to get auto complete options
-	 *
-	 * @return  string  json encoded options
-	 */
-
-	/* public function onAutocomplete_options()
-	{
-		// Needed for ajax update (since we are calling this method via dispatcher element is not set
-		$this->setId(JRequest::getInt('element_id'));
-		$this->getElement(true);
-
-		$cache = JCache::getInstance('callback',
-			array('defaultgroup' => 'com_fabrik', 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60), 'language' => 'en-GB',
-				'storage' => 'file'));
-		$cache->setCaching(true);
-		$search = JRequest::getVar('value');
-		echo $cache->call(array('plgFabrik_elementList', 'cacheAutoCompleteOptions'), $this, $search);
-	} */
-
-	/**
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
@@ -371,10 +352,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
+		$app = JFactory::getApplication();
 		$listModel = $elementModel->getListModel();
 		$label = JArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
-		$v = addslashes(JRequest::getVar('value'));
+		$v = addslashes($app->input->get('value'));
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)
 		{
@@ -429,7 +411,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
 			foreach ($vals as $val)
 			{
-				$l = $useIcon ? $this->_replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
+				$l = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 				if (!$this->iconsSet == true)
 				{
 					if (!is_a($this, 'plgFabrik_ElementDatabasejoin'))
@@ -440,7 +422,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$l = $val;
 					}
-					$l = $this->_replaceWithIcons($l, 'list', $listModel->getTmpl());
+					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				$l = $this->rollover($l, $thisRow, 'list');
 				$l = $listModel->_addLink($l, $this, $thisRow, $i);
@@ -488,6 +470,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function render($data, $repeatCounter = 0)
 	{
 		$name = $this->getHTMLName($repeatCounter);
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
 		$values = $this->getSubOptionValues();
@@ -554,11 +538,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$elBeforeLabel = (bool) $this->getParams()->get('element_before_label', true);
 
 		// Element_before_label
-		if (JRequest::getVar('format') == 'raw')
+		if ($input->get('format') == 'raw')
 		{
 			$optionsPerRow = 1;
 		}
-		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow);
+		$classes = $this->labelClasses();
+		$buttonGroup = $this->buttonGroup();
+		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
 
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
 
@@ -569,6 +555,31 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			$grid[] = $this->getAddOptionFields($repeatCounter, $onlylabel);
 		}
 		return implode("\n", $grid);
+	}
+
+	/**
+	 * Should the grid be rendered as a Bootstrap button-group
+	 *
+	 * @since 3.1
+	 *
+	 * @return  bool
+	 */
+
+	protected function buttonGroup()
+	{
+		$params = $this->getParams();
+		return FabrikWorker::j3() && $params->get('btnGroup', false);
+	}
+
+	/**
+	 * Get classes to assign to the label
+	 *
+	 * @return  array
+	 */
+
+	protected function labelClasses()
+	{
+		return array();
 	}
 
 	/**
@@ -762,7 +773,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$params = $this->getParams();
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
 		{
-			$icon = $this->_replaceWithIcons($value);
+			$icon = $this->replaceWithIcons($value);
 			if ($this->iconsSet)
 			{
 				$label = $icon;
