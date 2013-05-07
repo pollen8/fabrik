@@ -1134,6 +1134,11 @@ class FabrikFEModelForm extends FabModelForm
 			// returning false here stops the default redirect occuring
 			return false;
 		}
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
+		// Clean both admin and front end cache.
+		parent::cleanCache('com_' . $package, 1);
+		parent::cleanCache('com_' . $package, 0);
 		return true;
 	}
 

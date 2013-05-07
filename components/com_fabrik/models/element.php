@@ -810,7 +810,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$lookUp = $params->get('view_access_user', '');
 				$lookUp = $formModel->getElement($lookUp, true);
 				$fullName = $lookUp->getFullName(false, true, false);
-				$value = $formModel->getElementData($fullName);
+				$value = $formModel->getElementData($fullName, true);
 				$this->access->$key = ($user->get('id') == $value) ? true : false;
 			}
 
