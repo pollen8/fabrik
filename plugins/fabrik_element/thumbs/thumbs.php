@@ -277,6 +277,7 @@ class plgFabrik_ElementThumbs extends plgFabrik_Element
 
 	function onAjax_rate()
 	{
+		$this->loadMeForAjax();
 		$listid = JRequest::getInt('listid');
 		$list = JModel::getInstance('list', 'FabrikFEModel');
 		$list->setId($listid);

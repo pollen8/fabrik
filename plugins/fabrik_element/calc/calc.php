@@ -534,7 +534,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
-		$this->getElement();
+		$this->loadMeForAjax();
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$d = JRequest::get('request');

@@ -6442,7 +6442,17 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$this->_list = JModel::getInstance('list', 'FabrikFEModel');
 		$this->_list->loadFromFormId($formId);
 		$table = $this->_list->getTable(true);
-		$element = $this->getElement(true);
+		/**
+		 * $$$ hugh - had to add this after this commit:
+		 * https://github.com/Fabrik/fabrik/commit/2b17e07c3999f3f531ef14617f69ff9062e7b68d
+		 * The change to using $params instead of $_params to bring 3.0 in ine with 3.1 means
+		 * that getParams() is now testing for $this->params being null, instead of $this->_params,
+		 * which it isn't, because $params gets created by default with nothing in it.  So need to
+		 * force creating the params here, using the same line of code getParams() would use.
+		 * What puzzles me is why there doesn't seem to be a similar issue in 3.1?
+		 */
+		$this->params = new JRegistry($this->getElement(true)->params);
+		$element = $this->getElement();
 	}
 
 	/**

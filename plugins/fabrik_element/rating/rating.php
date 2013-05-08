@@ -366,6 +366,7 @@ class plgFabrik_ElementRating extends plgFabrik_Element
 	public function onAjax_rate()
 	{
 		$this->setId(JRequest::getInt('element_id'));
+		$this->loadMeForAjax();
 		$this->getElement();
 		$listModel = $this->getListModel();
 		$list = $listModel->getTable();
