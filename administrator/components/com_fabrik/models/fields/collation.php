@@ -18,7 +18,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
  *
  * @package     Joomla
  * @subpackage  Form
- * @since		3.0.7
+ * @since       3.0.7
  */
 
 class JFormFieldCollation extends JFormFieldList
@@ -36,7 +36,7 @@ class JFormFieldCollation extends JFormFieldList
 	 *
 	 * @since   11.1
 	 */
-	public function setup(&$element, $value, $group = null)
+	public function setup(SimpleXMLElement $element, $value, $group = null)
 	{
 		$return = parent::setup($element, $value, $group);
 		if ($this->value == '' && $return)
