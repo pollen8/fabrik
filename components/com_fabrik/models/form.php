@@ -5283,7 +5283,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		$showmsg = null;
 		$session->set($context . 'msg', $smsg);
-		$shosmsg = (array) $session->get($context . 'showsystemmsg', array(true));
+		$showmsg = (array) $session->get($context . 'showsystemmsg', array(true));
 		if (is_array($showmsg))
 		{
 			$showmsg = array_shift($showmsg);
