@@ -2569,11 +2569,7 @@ class FabrikFEModelForm extends FabModelForm
 									{
 										$elDbVals = $testreplace;
 										$this->modifiedValidationData[$elName] = $testreplace;
-<<<<<<< HEAD
 										$input->set($elName . '_raw', $elDbVals);
-=======
-										JRequest::setVar($elName . '_raw', $elDbVals);
->>>>>>> 051822f71c07103a41e4dbab7f8fec9d567ed77a
 										$post[$elName . '_raw'] = $elDbVals;
 									}
 								}
@@ -2703,11 +2699,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getJsonErrors()
 	{
-<<<<<<< HEAD
 		$data = array('modified' => $this->modifiedValidationData, 'errors' => $this->errors);
-=======
-		$data = array('modified' => $this->modifiedValidationData, 'errors' => $this->_arErrors);
->>>>>>> 051822f71c07103a41e4dbab7f8fec9d567ed77a
 		return json_encode($data);
 	}
 

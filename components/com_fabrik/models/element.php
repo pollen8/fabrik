@@ -504,7 +504,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return  string	data
 	 */
 
-	protected function replaceWithIcons($data, $view = 'list', $tmpl = null)
+	protected function _replaceWithIcons($data, $view = 'list', $tmpl = null)
 	{
 		return $this->replaceWithIcons($data, $view, $tmpl);
 	}
