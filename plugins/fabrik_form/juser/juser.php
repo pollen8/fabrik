@@ -834,7 +834,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
-		$userElName = $userElement->getFullName();
+		$userElName = $userElement === false ? false : $userElement->getFullName();
 		$userId = $input->get($userElName);
 		$db = FabrikWorker::getDbo(true);
 		$ok = true;
