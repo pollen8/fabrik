@@ -5288,10 +5288,10 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	/**
 	 * Prepares the element data for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted CSV export value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -5756,7 +5756,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
 		$this->setId(JRequest::getInt('element_id'));
-		$this->getElement(true);
+		//$this->getElement(true);
+		$this->loadMeForAjax();
 		$listModel = $this->getListModel();
 		$cache = FabrikWorker::getCache($listModel);
 		$search = JRequest::getVar('value');
@@ -6435,13 +6436,27 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$this->setId($input->getInt('element_id'));
+		$element = $this->getElement(true);
+		$this->params = new JRegistry($element->params);
+		$formModel = $this->getFormModel();
+		//$formModel = $groupModel->getFormModel();
+		$listModel = $formModel->getListModel();
+		$table = $listModel->getTable(true);
+		$listModel->setId($table->id);
+		/*
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
 		$formId = $input->getInt('formid');
 		$this->_form->setId($formId);
-		$this->setId($input->getInt('element_id'));
-		$this->_list = JModel::getInstance('list', 'FabrikFEModel');
-		$this->_list->loadFromFormId($formId);
-		$table = $this->_list->getTable(true);
+		*/
+		/*
+		$listModel = JModel::getInstance('list', 'FabrikFEModel');
+		$listModel->loadFromFormId($formModel->getId());
+		$table = $listModel->getTable(true);
+		$formModel->setListModel($listModel);
+		*/
+		$this->_form = $formModel;
+		$this->_list = $listModel;
 		/**
 		 * $$$ hugh - had to add this after this commit:
 		 * https://github.com/Fabrik/fabrik/commit/2b17e07c3999f3f531ef14617f69ff9062e7b68d
@@ -6451,8 +6466,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		 * force creating the params here, using the same line of code getParams() would use.
 		 * What puzzles me is why there doesn't seem to be a similar issue in 3.1?
 		 */
-		$this->params = new JRegistry($this->getElement(true)->params);
-		$element = $this->getElement();
+
 	}
 
 	/**
