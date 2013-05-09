@@ -51,6 +51,27 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	}
 
 	/**
+	 * Prepares the element data for CSV export
+	 *
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
+	 *
+	 * @return  string	Formatted CSV export value
+	 */
+
+	public function renderListData_csv($data, &$thisRow)
+	{
+		$params = $this->getParams();
+		$data = $this->numberFormat($data);
+		$format = $params->get('text_format_string');
+		if ($format != '')
+		{
+			$data = sprintf($format, $data);
+		}
+		return $data;
+	}
+
+	/**
 	 * Determines if the element can contain data used in sending receipts,
 	 * e.g. fabrikfield returns true
 	 *
