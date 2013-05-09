@@ -882,9 +882,11 @@ var FbList = new Class({
 			tbodys.each(function (tbody) {
 				if (!tbody.hasClass('fabrik_groupdata')) {
 					var groupTbody = tbody.getNext();
-					if (groupTbody.getElements('.fabrik_row').length === 0) {
-						tbody.hide();
-						groupTbody.hide();
+					if (typeOf(groupTbody) !== 'null') {
+						if (groupTbody.getElements('.fabrik_row').length === 0) {
+							tbody.hide();
+							groupTbody.hide();
+						}
 					}
 				}
 			});
