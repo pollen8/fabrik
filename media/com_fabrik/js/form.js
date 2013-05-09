@@ -1233,6 +1233,9 @@ var FbForm = new Class({
 	duplicateGroupsToMin: function () {
 		// Check for new form
 		if (this.options.rowid.toInt() === 0) {
+			// $$$ hugh - added ability to override min count
+			// http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
+			Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
 			Object.each(this.options.minRepeat, function (min, groupId) {
 				
 				// Create mock event

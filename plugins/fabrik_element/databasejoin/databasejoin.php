@@ -2304,7 +2304,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$id = $this->getHTMLId($repeatCounter);
 		if ($this->getParams()->get('database_join_display_type') == 'auto-complete')
 		{
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'databasejoin');
+			$autoOpts = array();
+			$autoOpts['storeMatchedResultsOnly'] = true;
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'databasejoin', $autoOpts);
 		}
 		$opts = $this->elementJavascriptOpts($repeatCounter);
 		return array('FbDatabasejoin', $id, $opts);

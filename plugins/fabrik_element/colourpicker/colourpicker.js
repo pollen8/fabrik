@@ -544,5 +544,4 @@ var ColourPickerGradient = new Class({
 		ctx.translate(-width, -size);
 		return arrow;
 	}
-	
 });

@@ -68,9 +68,9 @@ class FabrikFEModelForm extends FabModelForm
 	public $editable = true;
 
 	/**
-	 * Form encoding type
+	 * Validation rule classes
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $validationRuleClasses = null;
 
@@ -1024,7 +1024,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Are we copying a row?  Usually set in controller process().
 	 *
-	 * @param   bool  $set  if true, set _copyingRow to true
+	 * @param   bool  $set  if true, set copyingRow to true
 	 *
 	 * @return	bool
 	 */
@@ -2256,7 +2256,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
-			jimport('joomla.utilities.simplecrypt');
 			$crypt = FabrikWorker::getCrypt();
 			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
@@ -2570,7 +2569,11 @@ class FabrikFEModelForm extends FabModelForm
 									{
 										$elDbVals = $testreplace;
 										$this->modifiedValidationData[$elName] = $testreplace;
+<<<<<<< HEAD
 										$input->set($elName . '_raw', $elDbVals);
+=======
+										JRequest::setVar($elName . '_raw', $elDbVals);
+>>>>>>> 051822f71c07103a41e4dbab7f8fec9d567ed77a
 										$post[$elName . '_raw'] = $elDbVals;
 									}
 								}
@@ -2700,7 +2703,11 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function getJsonErrors()
 	{
+<<<<<<< HEAD
 		$data = array('modified' => $this->modifiedValidationData, 'errors' => $this->errors);
+=======
+		$data = array('modified' => $this->modifiedValidationData, 'errors' => $this->_arErrors);
+>>>>>>> 051822f71c07103a41e4dbab7f8fec9d567ed77a
 		return json_encode($data);
 	}
 
@@ -3117,7 +3124,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->rowId = $this->getRowId();
 
 		/*
-		 * $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		 * $$$ hugh - need to call this here as we set $this->editable here, which is needed by some plugins
 		 * hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
 		 * so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
 		 * do something funky like change the rowid being loaded.  Not a huge problem, but caught me out

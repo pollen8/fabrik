@@ -1460,7 +1460,7 @@ class FabrikWorker
 		$input = $app->input;
 		if ($priority === 'menu')
 		{
-			$val = $input->get($name, $val);
+			$val = $input->get($name, $val, 'string');
 			if (!$app->isAdmin())
 			{
 				$menus = $app->getMenu();
@@ -1486,7 +1486,7 @@ class FabrikWorker
 					$val = $menu->params->get($name, $val);
 				}
 			}
-			$val = $input->get($name, $val);
+			$val = $input->get($name, $val, 'string');
 		}
 		return $val;
 	}

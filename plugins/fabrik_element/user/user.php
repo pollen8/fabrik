@@ -397,7 +397,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Check user can view the read only element & view in list view
+	 * Check user can view the read only element OR view in list view
 	 *
 	 * When processing the form, we always want to store the current userid
 	 * (subject to save-on-edit, but that's done elsewhere), regardless of

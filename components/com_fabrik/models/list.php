@@ -1145,6 +1145,7 @@ class FabrikFEModelList extends JModelForm
 			$groupedData = array();
 			$thisGroupedData = array();
 			$groupBy = FabrikString::safeColNameToArrayKey($groupBy);
+			$groupBy .= '_raw';
 			$groupTitle = null;
 			$aGroupTitles = array();
 			$groupId = 0;
@@ -6888,7 +6889,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected function addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
 	{
-		jimport('joomla.utilities.simplecrypt');
+		//jimport('joomla.utilities.simplecrypt');
 
 		// $$$ rob since 1.0.6 : 10 June 08
 		// Get the current record - not that which was posted

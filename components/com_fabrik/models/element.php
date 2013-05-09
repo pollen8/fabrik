@@ -500,6 +500,25 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
+	 * @deprecated use replaceWithIcons()
+	 * @return  string	data
+	 */
+
+	protected function replaceWithIcons($data, $view = 'list', $tmpl = null)
+	{
+		return $this->replaceWithIcons($data, $view, $tmpl);
+	}
+
+	/**
+	 * Replace labels shown in table view with icons (if found)
+	 *
+	 * @param   string  $data  data
+	 * @param   string  $view  list/details
+	 * @param   string  $tmpl  template
+	 *
+	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
+	 *
+	 * @deprecated use
 	 * @return  string	data
 	 */
 

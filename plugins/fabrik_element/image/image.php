@@ -395,7 +395,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
 			$imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
 				: $id . '_image';
-			$image = array_pop(explode('/', $value));
+			$bits = explode('/', $value);
+			$image = array_pop($bits);
 
 			// $$$ hugh - append $rootFolder to JPATH_SITE, otherwise we're showing folders
 			// they aren't supposed to be able to see.

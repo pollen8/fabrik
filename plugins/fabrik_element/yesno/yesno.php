@@ -101,6 +101,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	public function renderListData_pdf($data, $thisRow)
 	{
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'list', false);
+		$raw = $this->getFullName() . '_raw';
+		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
 		if ($data == '1')
 		{
@@ -125,14 +127,10 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 
 	public function renderListData_csv($data, &$thisRow)
 	{
-		if ($data == '1')
-		{
-			return JText::_('JYES');
-		}
-		else
-		{
-			return JText::_('JNO');
-		}
+		$raw = $this->getFullName(false, true, false) . '_raw';
+		$rawdata = $thisRow->$raw;
+		$data = $rawdata ? $data : JText::_('JNO');
+		return $data;
 	}
 
 	/**

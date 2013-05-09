@@ -60,7 +60,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		$c = $this->count($formModel);
 
 		// Allow for unlimited
-		if ($c == -1)
+		if ($limit == -1)
 		{
 			return true;
 		}
