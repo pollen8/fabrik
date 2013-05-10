@@ -437,7 +437,10 @@ class FabrikModelPackage extends FabModelAdmin
 		$folders = JFolder::folders($this->outputPath, '.', false, true);
 		foreach ($folders as $folder)
 		{
-			JFolder::delete($folder);
+			if (JFolder::exists($folder))
+			{
+				JFolder::delete($folder);
+			}
 		}
 	}
 
@@ -685,7 +688,10 @@ class FabrikModelPackage extends FabModelAdmin
 		$root = JPath::clean($root);
 		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/com_fabrik_skeleton/mod_fabrik_skeleton_form';
 		$to = $this->outputPath . 'mod_' . $row->component_name . '_form';
-		JFolder::delete($to);
+		if (JFolder::exists($to))
+		{
+			JFolder::delete($to);
+		}
 		JFolder::create($to);
 		//JFolder::copy($from, $to, '', true);
 
