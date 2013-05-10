@@ -203,10 +203,11 @@ class FabrikFEModelGroup extends FabModel
 		$params = $this->getParams();
 		$this->canEdit = true;
 
-		// If group show is type 5, then read only.
+		// If group show is type 5, then always read only.
 		if ($params->get('repeat_group_show_first', '1') == '5')
 		{
 			$this->canEdit = false;
+			return $this->canEdit;
 		}
 
 		$formModel = $this->getFormModel();
