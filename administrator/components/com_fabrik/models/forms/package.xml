@@ -23,7 +23,7 @@
 			type="text"
 			required="true" 
 			size="40"
-			filter="cmd"
+			filter="word"
 			label="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_LABEL"
 			description="COM_FABRIK_FIELD_PACKAGE_COMPONENT_NAME_DESC" />
 			
