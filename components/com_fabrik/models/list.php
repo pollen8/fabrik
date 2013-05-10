@@ -7917,6 +7917,7 @@ $groupBy .= '_raw';
 	function viewDetailsLink(&$row, $view = null)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$keyIdentifier = $this->getKeyIndetifier($row);
@@ -7937,11 +7938,11 @@ $groupBy .= '_raw';
 			}
 			if ($app->isAdmin())
 			{
-				$link .= "index.php?option=com_fabrik&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
+				$link .= "index.php?option=' . $package . '&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
 			}
 			else
 			{
-				$link .= "index.php?option=com_fabrik&view=$view&formid=" . $table->form_id . $keyIdentifier;
+				$link .= "index.php?option=' . $package. '&view=$view&formid=" . $table->form_id . $keyIdentifier;
 			}
 			if ($this->packageId !== 0)
 			{
@@ -8303,6 +8304,8 @@ $groupBy .= '_raw';
 
 	public function xRecord($mode = 'table')
 	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$fabrikDb = $this->getDb();
 		$cursor = JRequest::getInt('cursor', 1);
 		$this->getConnection();
@@ -8328,7 +8331,7 @@ $groupBy .= '_raw';
 			JRequest::setVar('rowid', $rowid);
 			$app = JFactory::getApplication();
 			$formid = JRequest::getInt('formid');
-			$app->redirect('index.php?option=com_fabrik&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
+			$app->redirect('index.php?option=' . $package. '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
 		}
 		return json_encode($data);
 	}
@@ -8699,6 +8702,7 @@ $groupBy .= '_raw';
 		$qs = array();
 		$w = new FabrikWorker;
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
@@ -8731,7 +8735,7 @@ $groupBy .= '_raw';
 			}
 		}
 		// $$$ rob needs the item id for when sef urls are turned on
-		if (JRequest::getCmd('option') !== 'com_fabrik')
+		if (JRequest::getCmd('option') !== 'com_' . $package)
 		{
 			if (!array_key_exists('Itemid', $addurl_qs))
 			{
@@ -8753,7 +8757,7 @@ $groupBy .= '_raw';
 			$qs['tmpl'] = 'component';
 			} */
 
-			$qs['option'] = 'com_fabrik';
+			$qs['option'] = 'com_' . $package;
 			if ($app->isAdmin())
 			{
 				$qs['task'] = 'form.view';
@@ -8782,6 +8786,7 @@ $groupBy .= '_raw';
 		}
 		$qs = implode('&', $qs_args);
 		$qs = $w->parseMessageForPlaceHolder($qs, JRequest::get('request'));
+		echo $qs;
 		return !empty($addurl_url) ? JRoute::_($addurl_url . '?' . $qs) : JRoute::_('index.php?' . $qs);
 	}
 
@@ -8835,6 +8840,7 @@ $groupBy .= '_raw';
 		// Get the router
 		$app = JFactory::getApplication();
 		$router = $app->getRouter();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		$uri = clone (JURI::getInstance());
 		/* $$$ rob force these to be 0 once the menu item has been loaded for the first time
@@ -8842,7 +8848,7 @@ $groupBy .= '_raw';
 		* rest filters is set to 1 again
 		*/
 		$router->setVar('resetfilters', 0);
-		if ($option !== 'com_fabrik')
+		if ($option !== $package)
 		{
 			// $$$ rob these can't be set by the menu item, but can be set in {fabrik....}
 			$router->setVar('clearordering', 0);
