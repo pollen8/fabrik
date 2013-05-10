@@ -6436,27 +6436,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$this->setId($input->getInt('element_id'));
-		$element = $this->getElement(true);
-		$this->params = new JRegistry($element->params);
-		$formModel = $this->getFormModel();
-		//$formModel = $groupModel->getFormModel();
-		$listModel = $formModel->getListModel();
-		$table = $listModel->getTable(true);
-		$listModel->setId($table->id);
-		/*
 		$this->_form = JModel::getInstance('form', 'FabrikFEModel');
 		$formId = $input->getInt('formid');
 		$this->_form->setId($formId);
-		*/
-		/*
-		$listModel = JModel::getInstance('list', 'FabrikFEModel');
-		$listModel->loadFromFormId($formModel->getId());
-		$table = $listModel->getTable(true);
-		$formModel->setListModel($listModel);
-		*/
-		$this->_form = $formModel;
-		$this->_list = $listModel;
+		$this->setId($input->getInt('element_id'));
+		$this->_list = JModel::getInstance('list', 'FabrikFEModel');
+		$this->_list->loadFromFormId($formId);
+		$table = $this->_list->getTable(true);
+		$element = $this->getElement(true);
 		/**
 		 * $$$ hugh - had to add this after this commit:
 		 * https://github.com/Fabrik/fabrik/commit/2b17e07c3999f3f531ef14617f69ff9062e7b68d
@@ -6466,7 +6453,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		 * force creating the params here, using the same line of code getParams() would use.
 		 * What puzzles me is why there doesn't seem to be a similar issue in 3.1?
 		 */
-
+		$this->params = new JRegistry($element->params);
 	}
 
 	/**
