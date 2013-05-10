@@ -517,6 +517,7 @@ var FbForm = new Class({
 		this._setMozBoxWidths();
 		this.hideOtherPages();
 		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change.end', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
