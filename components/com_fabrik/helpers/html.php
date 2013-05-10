@@ -1681,25 +1681,28 @@ EOD;
 	/**
 	 * Search various folder locations for a template image
 	 *
-	 * @param   string  $file        file name
-	 * @param   string  $type        type e.g. form/list/element
-	 * @param   string  $tmpl        template folder name
-	 * @param   array   $properties  assoc list of properties or string (if you just want to set the image alt tag)
-	 * @param   bool    $srcOnly     src only (default false)
+	 * @param   string  $file        File name
+	 * @param   string  $type        Type e.g. form/list/element
+	 * @param   string  $tmpl        Template folder name
+	 * @param   array   $properties  Assoc list of properties or string (if you just want to set the image alt tag)
+	 * @param   bool    $srcOnly     Src only (default false)
+	 * @param   array   $opts        Additional render options:
+	 *                                 forceImage: regardless of in J3 site - render an <img> if set to true (bypasses bootstrap icon loading)
 	 *
 	 * @since 3.0
 	 *
 	 * @return  string  image
 	 */
 
-	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
+	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false, $opts = array())
 	{
 		if (is_string($properties))
 		{
 			$properties = array('alt' => $properties);
 		}
 
-		if (FabrikWorker::j3())
+		$forceImage = JArrayHelper::getValue($opts, 'forceImage', false);
+		if (FabrikWorker::j3() && $forceImage !== true)
 		{
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;

@@ -518,7 +518,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
-	 * @deprecated use
 	 * @return  string	data
 	 */
 
@@ -552,7 +551,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		foreach ($this->imageExtensions as $ex)
 		{
 			$f = JPath::clean($cleanData . '.' . $ex);
-			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl);
+			$opts = array('forceImage' => true);
+			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
 			if ($img !== '')
 			{
 				$this->iconsSet = true;
