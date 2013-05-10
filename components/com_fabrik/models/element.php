@@ -70,7 +70,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var object
 	 */
-	var $_access = null;
+	protected $access = null;
 
 	/**
 	 * Validation error
@@ -247,7 +247,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
-		$this->_access = new stdClass;
+		$this->access = new stdClass;
 	}
 
 	/**
@@ -812,10 +812,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 
-		if (!is_object($this->_access) || !array_key_exists($key, $this->_access))
+		if (!is_object($this->access) || !array_key_exists($key, $this->access))
 		{
 			$groups = $user->authorisedLevels();
-			$this->_access->$key = in_array($params->get($prop, $default), $groups);
+			$this->access->$key = in_array($params->get($prop, $default), $groups);
 		}
 
 		// Override with check on lookup element's value = logged in user id.
@@ -830,11 +830,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$lookUp = $formModel->getElement($lookUp, true);
 				$fullName = $lookUp->getFullName(false, true, false);
 				$value = $formModel->getElementData($fullName, true);
-				$this->_access->$key = ($user->get('id') == $value) ? true : false;
+				$this->access->$key = ($user->get('id') == $value) ? true : false;
 			}
 
 		}
-		return $this->_access->$key;
+		return $this->access->$key;
 	}
 
 	/**
@@ -854,29 +854,29 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 
 		// Odd! even though defined in initialize() for confirmation plugin _access was not set.
-		if (!isset($this->_access))
+		if (!isset($this->access))
 		{
-			$this->_access = new stdClass;
+			$this->access = new stdClass;
 		}
-		if (!is_object($this->_access) || !array_key_exists('use', $this->_access))
+		if (!is_object($this->access) || !array_key_exists('use', $this->access))
 		{
 			/**
 			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
 			 * So if element's group show is type 5, then element is de-facto read only.
 			 * if ($this->getGroup()->getParams()->get('repeat_group_show_first', '1') == '5')
 			 */
-			if ($location !== 'list' && !$this->getGroup()->canEdit())
+			if ($location !== 'list' && !$this->getGroupModel()->canEdit())
 			{
-				$this->_access->use = false;
+				$this->access->use = false;
 			}
 			else
 			{
 				$user = JFactory::getUser();
 				$groups = $user->getAuthorisedViewLevels();
-				$this->_access->use = in_array($this->getElement()->access, $groups);
+				$this->access->use = in_array($this->getElement()->access, $groups);
 			}
 		}
-		return $this->_access->use;
+		return $this->access->use;
 	}
 
 	/**
@@ -889,7 +889,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
-		if (!is_object($this->_access) || !array_key_exists('filter', $this->_access))
+		if (!is_object($this->access) || !array_key_exists('filter', $this->access))
 		{
 			$user = JFactory::getUser();
 			$groups = $user->authorisedLevels();
@@ -898,9 +898,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			// the default for filter_access, which isn't a legal value, should be 1
 			$filter_access = $this->getParams()->get('filter_access');
 			$filter_access = $filter_access == '0' ? '1' : $filter_access;
-			$this->_access->filter = in_array($filter_access, $groups);
+			$this->access->filter = in_array($filter_access, $groups);
 		}
-		return $this->_access->filter;
+		return $this->access->filter;
 	}
 
 	/**
@@ -6610,7 +6610,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	public function clearAccess()
 	{
-		unset($this->_access);
+		unset($this->access);
 	}
 
 	/**

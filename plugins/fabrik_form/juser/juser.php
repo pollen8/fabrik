@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormJUser extends plgFabrik_Form
+class PlgFabrik_FormJUser extends plgFabrik_Form
 {
 
 	/**
@@ -97,10 +97,10 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Get the fields value regardless of whether its in joined data or no
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   string  $pname   params property name to get the value for
-	 * @param   array   $data    posted form data
-	 * @param   mixed   $default default value
+	 * @param   object  $params   Plugin params
+	 * @param   string  $pname    Params property name to get the value for
+	 * @param   array   $data     Posted form data
+	 * @param   mixed   $default  Default value
 	 *
 	 * @return  mixed  value
 	 */
@@ -526,7 +526,8 @@ class plgFabrik_FormJUser extends plgFabrik_Form
 
 				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
 					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']);
+					$data['username'], $data['password_clear']
+				);
 			}
 			elseif ($useractivation == 1 && !$bypassActivation && !$autoLogin)
 			{
