@@ -83,3 +83,5 @@ libraries/dompdf/lib/fonts/dompdf_font_family_cache.dist.php
 /t3-assets
 /joomlatools-files
 >>>>>>> b909d010b5321afa5b28cf55e84f0c2b146739b9
+/bin
+/layouts
