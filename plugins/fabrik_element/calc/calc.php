@@ -376,15 +376,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$format = trim($params->get('calc_format_string'));
-		/**
-		 * $$$ hugh - the 'calculated value' bit is for legacy data that was created
-		 * before we started storing a value when row is saved
-		 */
 		if ($params->get('calc_on_save_only', 0))
 		{
 			if ($format != '')
 			{
-				$element_data = sprintf($format, $element_data);
+				$element_data = sprintf($format, $data);
 			}
 			return parent::preFormatFormJoins($element_data, $row);
 		}
