@@ -716,7 +716,7 @@ class plgFabrik_FormPaypal extends plgFabrik_Form
 								->set(implode(',', $set_array))
 								->where($table->db_primary_key . ' = ' . $db->quote($rowid));
 								$db->setQuery($query);
-								if (!$db->query())
+								if (!$db->execute())
 								{
 									$status = 'form.paypal.ipnfailure.query_error';
 									$err_msg = 'sql query error: ' . $db->getErrorMsg();

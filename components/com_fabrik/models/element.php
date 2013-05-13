@@ -4011,7 +4011,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$id = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
 		$db->setQuery($query);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			JError::raiseNotice(500, 'didnt delete js actions for element ' . $id);
 			return false;
@@ -5008,7 +5008,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_joins')->where('element_id = ' . $id);
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 
 		$query->clear();
 		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('LEFT', ' #__{package}_joins AS j ON j.element_id = e.id')
@@ -5020,7 +5020,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$query->clear();
 			$query->delete('#__{package}_joins')->where('id IN (' . implode(',', $join_ids) . ')');
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -5469,7 +5469,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$query = $db->getQuery(true);
 		$query->update('#__{package}_elements')->set('params = ' . $db->quote($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
-		$res = $db->query();
+		$res = $db->execute();
 		if (!$res)
 		{
 			JError::raiseError(500, $db->getErrorMsg());
@@ -6131,7 +6131,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$query->update('#__{package}_joins')->set('table_key = ' . $db->quote($newName))
 			->where('join_from_table = ' . $db->quote($item->db_table_name))->where('table_key = ' . $db->quote($oldName));
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 
 		// Update join pk parameter
 		$query->clear();
@@ -6196,7 +6196,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
 		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_ENCRYPT(" . $name . ", " . $db->quote($secret) . ")");
-		$db->query();
+		$db->execute();
 	}
 
 	/**
@@ -6215,7 +6215,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$tbl = $this->actualTableName();
 		$name = $this->getElement()->name;
 		$db->setQuery("UPDATE $tbl SET " . $name . " = AES_DECRYPT(" . $name . ", " . $db->quote($secret) . ")");
-		$db->query();
+		$db->execute();
 	}
 
 	/**

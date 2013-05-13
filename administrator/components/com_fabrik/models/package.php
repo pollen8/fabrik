@@ -436,7 +436,7 @@ class FabrikModelPackage extends FabModelAdmin
 		$return[] = "\t\t\$query->delete('#__fabrik_packages')->where('external_ref <> \"\" AND component_name = ' .
 		\$db->quote(\$m->name) . ' AND version = ' . \$db->quote(\$m->version));";
 		$return[] = "\t\t\$db->setQuery(\$query);";
-		$return[] = "\t\t\$db->query();";
+		$return[] = "\t\t\$db->execute();";
 		$return[] = "\t\t\$app = JFactory::getApplication('administrator');";
 		$return[] = "\t\t\$app->setUserState('com_fabrik.package', '');";
 		$return[] = "\t\t}";
@@ -605,7 +605,7 @@ class FabrikModelPackage extends FabModelAdmin
 			}
 			$sql = sprintf($fmtsql, implode(",", $fields), implode(",", $values), implode(',', $updates)) . ';';
 			$return[] = "\t\t\$db->setQuery(\"$sql\");";
-			$return[] = "\t\t\$db->query();";
+			$return[] = "\t\t\$db->execute();";
 		}
 	}
 

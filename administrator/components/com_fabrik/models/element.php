@@ -922,7 +922,7 @@ class FabrikModelElement extends JModelAdmin
 		$ids[] = $this_id;
 		$db = FabrikWorker::getDbo(true);
 		$db->setQuery("DELETE FROM #__{package}_jsactions WHERE element_id IN (" . implode(',', $ids) . ")");
-		$db->query();
+		$db->execute();
 		$post = JRequest::get('post');
 		if (array_key_exists('js_action', $post['jform']) && is_array($post['jform']['js_action']))
 		{
@@ -950,7 +950,7 @@ class FabrikModelElement extends JModelAdmin
 						$query->set('code = ' . $db->quote($code));
 						$query->set('params = \'' . $params . "'");
 						$db->setQuery($query);
-						$db->query();
+						$db->execute();
 					}
 				}
 			}
@@ -1011,7 +1011,7 @@ class FabrikModelElement extends JModelAdmin
 					$db = $listModel->getDb();
 					$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
 					$db->setQuery('DROP TABLE ' . $tableName);
-					if (!$db->query())
+					if (!$db->execute())
 					{
 						JError::raiseNotice(500, 'didnt drop joined db table ' . $tableName);
 					}
@@ -1024,7 +1024,7 @@ class FabrikModelElement extends JModelAdmin
 				{
 					$db = $listModel->getDb();
 					$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -1095,7 +1095,7 @@ class FabrikModelElement extends JModelAdmin
 			->setQuery(
 				'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), '
 					. $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
-		$db->query();
+		$db->execute();
 		if ($db->getErrorNum() != 0)
 		{
 			JError::raiseError(500, $db->getErrorMsg());

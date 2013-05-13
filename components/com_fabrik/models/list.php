@@ -3690,7 +3690,6 @@ $groupBy .= '_raw';
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			// $ids = $form->getElementIds(array(), array('includePublised' => false));
 
 			// Force loading of join elements
 			$ids = $form->getElementIds(array(), array('includePublised' => false, 'loadPrefilters' => true));
@@ -3750,7 +3749,7 @@ $groupBy .= '_raw';
 			$join->_params->set('pk', $fabrikDb->quoteName($pks));
 			$query->update('#__{package}_joins')->set('params = ' . $db->quote((string) $join->_params))->where('id = ' . (int) $join->id);
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 			$join->_params = new JRegistry($join->params);
 		}
 	}
@@ -3995,11 +3994,17 @@ $groupBy .= '_raw';
 				{
 					$fabrikDb
 					->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-					if (!$fabrikDb->query())
+					try
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						$fabrikDb->execute();
+						$altered = true;
 					}
-					$altered = true;
+					catch (Exception $e)
+					{
+						JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
+						$altered = false;
+					}
+
 				}
 			}
 			// Commented out as it stops the update when changing an element name
@@ -4074,17 +4079,13 @@ $groupBy .= '_raw';
 			if (!$altered)
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN " . FabrikString::safeColName($element->name) . " $objtype AFTER $lastfield");
-				if (!$fabrikDb->query())
+				try
 				{
-					/* $$$ rob ok this is hacky but I had a whole series of elements wiped from the db,
-					 * but wanted to re-add them into the database.
-					* as the db table already had the fields this error was stopping the save.
-					*/
-					if (!array_key_exists($element->name, $dbdescriptions))
-					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
-					}
-
+					$fabrikDb->execute();
+				}
+				catch (Exception $e)
+				{
+					JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 				}
 			}
 		}
@@ -4172,9 +4173,13 @@ $groupBy .= '_raw';
 			if (empty($origColName) || !in_array(JString::strtolower($origColName), $existingfields))
 			{
 				$fabrikDb->setQuery("ALTER TABLE $tableName ADD COLUMN $element->name $objtype AFTER $lastfield");
-				if (!$fabrikDb->query())
+				try
 				{
-					return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+					$fabrikDb->execute();
+				}
+				catch (Exception $e)
+				{
+					JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 				}
 			}
 			else
@@ -4187,9 +4192,13 @@ $groupBy .= '_raw';
 					}
 					$origColName = FabrikString::safeColName($origColName);
 					$fabrikDb->setQuery("ALTER TABLE $tableName CHANGE $origColName $element->name $objtype");
-					if (!$fabrikDb->query())
+					try
 					{
-						return JError::raiseError(500, 'alter structure: ' . $fabrikDb->getErrorMsg());
+						$fabrikDb->execute();
+					}
+					catch (Exception $e)
+					{
+						JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
 					}
 				}
 			}
@@ -4932,7 +4941,7 @@ $groupBy .= '_raw';
 	{
 		if (!isset($this->_real_filter_action))
 		{
-			// first, grab the list's setting as the default
+			// First, grab the list's setting as the default
 			$table = $this->getTable();
 			$this->_real_filter_action = $table->filter_action;
 
@@ -6652,7 +6661,7 @@ $groupBy .= '_raw';
 			$tmp[] = $db->quoteName($k) . '=' . $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			throw new Exception($db->getErrorMsg());
 			return false;
@@ -6698,7 +6707,7 @@ $groupBy .= '_raw';
 			$values[] = $val;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $fields), implode(",", $values)));
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			throw new Exception($db->getErrorMsg());
 			return false;
@@ -6730,8 +6739,6 @@ $groupBy .= '_raw';
 
 	function _addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
 	{
-		//jimport('joomla.utilities.simplecrypt');
-
 		// $$$ rob since 1.0.6 : 10 June 08
 		// Get the current record - not that which was posted
 		$formModel = $this->getFormModel();
@@ -7370,10 +7377,16 @@ $groupBy .= '_raw';
 			$size = '( ' . $size . ' )';
 		}
 		$this->dropIndex($field, $prefix, $type, $table);
-		$query = " ALTER TABLE " . $db->quoteName($table) . " ADD INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . " ("
-				. $db->quoteName($field) . " $size)";
+		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
+				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
-		$db->query();
+		try {
+			$db->execute();
+		} catch (RuntimeException $e)
+		{
+			// Try to suppress error
+			$this->setError($e->getMessage());
+		}
 	}
 
 	/**
@@ -7405,8 +7418,12 @@ $groupBy .= '_raw';
 			{
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
-					$db->setQuery(" ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
-					$db->query();
+					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
+					try {
+						$db->execute();
+					} catch (Exception $e) {
+						$this->setError($e->getMessage());
+					}
 					break;
 				}
 			}
@@ -7437,7 +7454,7 @@ $groupBy .= '_raw';
 		foreach ($dbIndexes as $index)
 		{
 			$db->setQuery(" ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName($index->Key_name));
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -7464,7 +7481,7 @@ $groupBy .= '_raw';
 					$sql = "DELETE FROM " . $db->quoteName($join->table_join) . " WHERE " . $db->quoteName($join->table_join_key) . " IN (" . $val
 					. ")";
 					$db->setQuery($sql);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -7599,7 +7616,7 @@ $groupBy .= '_raw';
 		$query = $db->getQuery(true);
 		$query->delete($table->db_table_name)->where($key . ' IN (' . $val . ')');
 		$db->setQuery($query);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return JError::raiseWarning($db->getErrorMsg());
 		}
@@ -7624,7 +7641,7 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$query->delete($db->quoteName($table->db_table_name));
 		$db->setQuery($query);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return JError::raiseWarning(JText::_($db->getErrorMsg()));
 		}
@@ -7645,7 +7662,7 @@ $groupBy .= '_raw';
 		{
 			$sql = "DROP TABLE IF EXISTS " . $db->quoteName($item->db_table_name);
 			$db->setQuery($sql);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				return JError::raiseError(500, 'drop:' . JText::_($db->getErrorMsg()));
 			}
@@ -7658,7 +7675,7 @@ $groupBy .= '_raw';
 			{
 				$sql = "DROP TABLE IF EXISTS " . $db->quoteName($joinModel->getJoin()->table_join);
 				$db->setQuery($sql);
-				$db->query();
+				$db->execute();
 				if ($db->getErrorNum())
 				{
 					JError::raiseError(500, 'drop internal group tables: ' . $db->getErrorMsg());
@@ -7713,10 +7730,10 @@ $groupBy .= '_raw';
 		foreach ($joinModels as $joinModel)
 		{
 			$db->setQuery("TRUNCATE " . $db->quoteName($joinModel->getJoin()->table_join));
-			$db->query();
+			$db->execute();
 		}
 		$db->setQuery("TRUNCATE " . $db->quoteName($item->db_table_name));
-		$db->query();
+		$db->execute();
 
 		// 3.0 clear filters (resets limitstart so that subsequently added records are shown)
 		$this->getFilterModel()->clearFilters();
@@ -7943,11 +7960,11 @@ $groupBy .= '_raw';
 			}
 			if ($app->isAdmin())
 			{
-				$link .= "index.php?option=' . $package . '&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package . '&task=' . $view . '.view&formid=' . $table->form_id . '&listid=' . $this->getId() . $keyIdentifier;
 			}
 			else
 			{
-				$link .= "index.php?option=' . $package. '&view=$view&formid=" . $table->form_id . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package. '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
 			if ($this->packageId !== 0)
 			{
@@ -9355,7 +9372,7 @@ $groupBy .= '_raw';
 		$table = $this->getTable();
 		$query = "UPDATE $table->db_table_name SET $key = COALESCE($key, 0)  + $dir WHERE $table->db_primary_key = " . $db->quote($rowId);
 		$db->setQuery($query);
-		return $db->query();
+		return $db->execute();
 	}
 
 	/**
@@ -9476,7 +9493,7 @@ $groupBy .= '_raw';
 					$ids = implode(',', $ids);
 					$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -9486,7 +9503,7 @@ $groupBy .= '_raw';
 			$query = $db->getQuery(true);
 			$query->update($db_table_name)->set($update)->where($dbk . ' IN (' . $ids . ')');
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 
@@ -9904,7 +9921,7 @@ $groupBy .= '_raw';
 			$query->clear();
 			$query->update($tbl)->set($field . ' = ' . (int) $orders[$i]->$kk)->where($k . ' = ' . $this->_db->quote($orders[$i]->$shortKey));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		return true;
 	}

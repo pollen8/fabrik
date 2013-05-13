@@ -83,7 +83,7 @@ class Com_FabrikInstallerScript
 			$query = $db->getQuery(true);
 			$query->update('#__extensions')->set('params = ' . $db->quote($json))->where('extension_id = ' . (int) $row->extension_id);
 			$db->setQuery($query);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				return false;
 			}
@@ -232,8 +232,8 @@ class Com_FabrikInstallerScript
 
 		// Remove old update site
 		$db->setQuery("DELETE FROM #__update_sites WHERE location LIKE '%update/component/com_fabrik%'");
-		$db->query();
-		if (!$db->query())
+		$db->execute();
+		if (!$db->execute())
 		{
 			echo "<P>didnt remove old update site</p>";
 		}
@@ -244,7 +244,7 @@ class Com_FabrikInstallerScript
 		$db
 			->setQuery(
 				"UPDATE #__extensions SET enabled = 1 WHERE type = 'plugin' AND (folder LIKE 'fabrik_%' OR (folder='system' AND element = 'fabrik'))");
-		$db->query();
+		$db->execute();
 		$this->fixmMenuComponentId();
 		if ($type !== 'update')
 		{

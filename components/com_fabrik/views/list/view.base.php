@@ -76,7 +76,15 @@ class FabrikViewListBase extends JView
 
 		$this->_row = new stdClass;
 		$script = array();
-		$script[] = "head.ready(function() {";
+		// 3.0 only attempt to allow js to be run when list loaded in ajax window. (head.ready never fired in ajax load)
+		if ($input->getInt('ajax') === 1)
+		{
+			$script[]= 'head.js([], function () {';
+		}
+		else
+		{
+			$script[] = "head.ready(function() {";
+		}
 
 		$params = $model->getParams();
 		$opts = new stdClass;

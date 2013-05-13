@@ -78,7 +78,7 @@ class fabrikModelNotification extends JModel
 				{
 					$db->setQuery($sql);
 
-					if (!$db->query())
+					if (!$db->execute())
 					{
 						JError::raiseError(500, $db->getErrorMsg());
 					}
@@ -117,7 +117,7 @@ class fabrikModelNotification extends JModel
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_notification')->where('id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 }

@@ -378,7 +378,7 @@ var FbDatabasejoin = new Class({
 					this.selectRecord(e);
 				}.bind(this));
 				Fabrik.addEvent('fabrik.list.row.selected', function (json) {
-					if (this.options.popupform === json.formid && this.activeSelect) {
+					if (this.options.listid.toInt() === json.listid.toInt() && this.activeSelect) {
 						this.update(json.rowid);
 						var winid = this.element.id + '-popupwin-select';
 						if (Fabrik.Windows[winid]) {
@@ -394,9 +394,28 @@ var FbDatabasejoin = new Class({
 					this.activeSelect = false;
 				}.bind(this);
 				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
-				
+				this.selectThenAdd();
 			}
 		}
+	},
+	
+	/**
+	 * Watch the list load so that its add button will close the window and open the db join add window
+	 * 
+	 * @return void
+	 */
+	selectThenAdd: function () {
+		Fabrik.addEvent('fabrik.block.added', function (block, blockid) {
+			console.log('block added', block, blockid);
+			if (blockid === 'list_' + this.options.listid + this.options.listRef) {
+				block.form.addEvent('click:relay(.addbutton)', function (event, target) {
+					event.preventDefault();
+					var id = this.selectRecordWindowId();
+					Fabrik.Windows[id].close();
+					this.start(event, true);
+				}.bind(this));
+			}
+		}.bind(this));
 	},
 	
 	/**
@@ -411,9 +430,8 @@ var FbDatabasejoin = new Class({
 		window.fireEvent('fabrik.dbjoin.unactivate');
 		this.activeSelect = true;
 		e.stop();
-		var id = this.element.id + '-popupwin-select';
+		var id = this.selectRecordWindowId();
 		var url = this.getContainer().getElement('a.toggle-selectoption').href;
-		url += '&layout=dbjoinselect';
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
 		url += '&c=' + this.options.listRef;
@@ -434,6 +452,15 @@ var FbDatabasejoin = new Class({
 			}
 		};
 		var mywin = Fabrik.getWindow(this.windowopts);
+	},
+	
+	/**
+	 * Get the window id for the 'select record' window
+	 * 
+	 * @return  string
+	 */
+	selectRecordWindowId: function () {
+		return this.element.id + '-popupwin-select';
 	},
 	
 	update: function (val) {
