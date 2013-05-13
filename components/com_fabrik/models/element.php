@@ -864,7 +864,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			 * $$$ hugh - testing new "Option 5" for group show, "Always show read only"
 			 * So if element's group show is type 5, then element is de-facto read only.
 			 */
-			if ($location !== 'list' && !$this->getGroup()->canEdit())
+			if ($location !== 'list' && !$this->getGroupModel()->canEdit())
 			{
 				$this->access->use = false;
 			}
@@ -5780,7 +5780,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
-		$this->getElement(true);
+		$this->loadMeForAjax();
 		$cache = FabrikWorker::getCache();
 		$search = $input->get('value');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);

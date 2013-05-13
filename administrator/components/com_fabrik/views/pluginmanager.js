@@ -160,6 +160,7 @@ var PluginManager = new Class({
 				}
 				this.accordion.addSection(toggler, div.getElement('.pane-slider'));
 				this.updateBootStrap();
+				FabrikAdmin.reTip();
 			}.bind(this),
 			onFailure: function (xhr) {
 				console.log('fail', xhr);
@@ -238,6 +239,7 @@ var PluginManager = new Class({
 			update: document.id('plugins').getElements('.actionContainer')[c].getElement('.pluginOpts'),
 			onComplete: function () {
 				this.updateBootStrap();
+				FabrikAdmin.reTip();
 			}.bind(this)
 		});
 		this.pluginTotal ++;

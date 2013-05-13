@@ -2668,7 +2668,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$query->delete($db->quoteName($join->table_join))->where($db->quoteName('id') . ' = ' . $input->getInt('recordid'));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 

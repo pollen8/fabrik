@@ -22,6 +22,13 @@ JHTML::stylesheet('media/com_fabrik/css/package.css');
 <script type="text/javascript">
 Joomla.submitbutton = function(task)
 {
+	// Ensure that the multiselect lists options are selected
+	var multis = ['blockslist', 'blocksform'];
+	for (var i = 0; i < multis.length; i++) {
+		document.id(multis[i]).getElements('option').each(function (e) {
+			e.selected = true;
+		});
+	}
 	if (task == 'package.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 		submitform(task);
 	}
@@ -58,6 +65,11 @@ submitform = function(task){
 				</li>
 				<?php endforeach; ?>
 
+				<?php foreach ($this->form->getFieldset('more') as $field): ?>
+				<li>
+					<?php echo $field->label . $field->input; ?>
+				</li>
+				<?php endforeach; ?>
 			</ul>
 			<div class="clr"> </div>
 

@@ -3773,7 +3773,6 @@ class FabrikFEModelList extends JModelForm
 		{
 			$form = $this->getFormModel();
 			$form->getGroupsHiarachy();
-			// $ids = $form->getElementIds(array(), array('includePublised' => false));
 
 			// Force loading of join elements
 			$ids = $form->getElementIds(array(), array('includePublised' => false, 'loadPrefilters' => true));
@@ -6889,8 +6888,6 @@ class FabrikFEModelList extends JModelForm
 
 	protected function addDefaultDataFromRO(&$data, &$oRecord, $isJoin, $rowid, $joinGroupTable)
 	{
-		//jimport('joomla.utilities.simplecrypt');
-
 		// $$$ rob since 1.0.6 : 10 June 08
 		// Get the current record - not that which was posted
 		$formModel = $this->getFormModel();
@@ -8089,6 +8086,7 @@ class FabrikFEModelList extends JModelForm
 	protected function viewDetailsLink(&$row, $view = null)
 	{
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
 		$keyIdentifier = $this->getKeyIndetifier($row);
@@ -8109,11 +8107,11 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($app->isAdmin())
 			{
-				$link .= "index.php?option=com_fabrik&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
+				$link .= "index.php?option=' . $package . '&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
 			}
 			else
 			{
-				$link .= "index.php?option=com_fabrik&view=$view&formid=" . $table->form_id . $keyIdentifier;
+				$link .= "index.php?option=' . $package. '&view=$view&formid=" . $table->form_id . $keyIdentifier;
 			}
 			if ($this->packageId !== 0)
 			{
@@ -8481,6 +8479,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$fabrikDb = $this->getDb();
 		$cursor = $input->getInt('cursor', 1);
 		$this->getConnection();
@@ -8506,7 +8505,7 @@ class FabrikFEModelList extends JModelForm
 			$input->set('rowid', $rowid);
 			$app = JFactory::getApplication();
 			$formid = $input->getInt('formid');
-			$app->redirect('index.php?option=com_fabrik&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
+			$app->redirect('index.php?option=' . $package. '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
 		}
 		return json_encode($data);
 	}
@@ -8925,6 +8924,7 @@ class FabrikFEModelList extends JModelForm
 		$qs = array();
 		$w = new FabrikWorker;
 		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$menuItem = $app->getMenu('site')->getActive();
 		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
@@ -8956,7 +8956,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 		// $$$ rob needs the item id for when sef urls are turned on
-		if ($input->get('option') !== 'com_fabrik')
+		if ($input->get('option') !== 'com_' . $package)
 		{
 			if (!array_key_exists('Itemid', $addurl_qs))
 			{
@@ -8978,7 +8978,7 @@ class FabrikFEModelList extends JModelForm
 			$qs['tmpl'] = 'component';
 			} */
 
-			$qs['option'] = 'com_fabrik';
+			$qs['option'] = 'com_' . $package;
 			if ($app->isAdmin())
 			{
 				$qs['task'] = 'form.view';
@@ -9061,6 +9061,7 @@ class FabrikFEModelList extends JModelForm
 
 		// Get the router
 		$router = $app->getRouter();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		$uri = clone (JURI::getInstance());
 		/* $$$ rob force these to be 0 once the menu item has been loaded for the first time
@@ -9068,7 +9069,7 @@ class FabrikFEModelList extends JModelForm
 		* rest filters is set to 1 again
 		*/
 		$router->setVar('resetfilters', 0);
-		if ($option !== 'com_fabrik')
+		if ($option !== $package)
 		{
 			// $$$ rob these can't be set by the menu item, but can be set in {fabrik....}
 			$router->setVar('clearordering', 0);

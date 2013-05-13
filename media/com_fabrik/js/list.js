@@ -91,6 +91,11 @@ var FbList = new Class({
 			});
 			delete Fabrik.blocks['form_' + form.id];
 		});*/
+		
+		// Reload state 
+		if (!!(window.history && history.pushState) && history.state && this.options.ajax) {
+			this._updateRows(history.state);
+		}
 	},
 
 	setRowTemplate: function () {
@@ -685,6 +690,8 @@ var FbList = new Class({
 				this.request.options.data = data;
 			}
 			this.request.send();
+			
+			history.pushState(data, 'fabrik.list.submit');
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
@@ -792,6 +799,10 @@ var FbList = new Class({
 
 	_updateRows: function (data) {
 		var tbody;
+		if (typeOf(data) !== 'object') {
+			return;
+		}
+		history.pushState(data, 'fabrik.list.rows');
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);

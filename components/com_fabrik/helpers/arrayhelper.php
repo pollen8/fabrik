@@ -234,7 +234,7 @@ class FArrayHelper extends JArrayHelper
 	 * @return  array of single key values
 	 */
 
-	public function extract($array, $key)
+	public static function extract($array, $key)
 	{
 		$return = array();
 		foreach ($array as $object)

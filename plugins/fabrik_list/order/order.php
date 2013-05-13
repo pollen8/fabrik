@@ -105,7 +105,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	public function onAjaxReorder()
 	{
 		// Get list model
-		 $model = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model->setId($input->getInt('listid'));
@@ -127,7 +127,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		// Get the rows whose order has been altered
 		$result = array_diff_assoc($order, $origOrder);
 		$result = array_flip($result);
-		print_r($result);
+
 		// Remove the dragged row from the list of altered rows
 		unset($result[$dragged]);
 
@@ -176,8 +176,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 
 			$db->setQuery($query);
 
-			echo $db->getQuery();
-
 			if (!$db->execute())
 			{
 				echo $db->getErrorMsg();
@@ -188,8 +186,6 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 				$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = ' . $o;
 				$query .= " WHERE " . $table->db_primary_key . ' = ' . $dragged;
 				$db->setQuery($query);
-
-				echo $db->getQuery();
 				$db->execute();
 			}
 		}
