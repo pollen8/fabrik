@@ -632,7 +632,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						}
 						$q .= implode(',', $messages);
 						$db->setQuery($q);
-						$db->query();
+						$db->execute();
 					}
 				}
 			}

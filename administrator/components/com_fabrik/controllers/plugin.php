@@ -136,7 +136,7 @@ class FabrikControllerPlugin extends JController
 		$query = $db->getQuery();
 		$query->update('#__{package}_cron')->set('lastrun=NOW()')->where('id IN (' . implode(',', $cid) . ')');
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 	}
 
 }

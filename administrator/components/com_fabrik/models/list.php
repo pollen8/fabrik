@@ -818,7 +818,7 @@ class FabrikModelList extends FabModelAdmin
 			$db = $feModel->getDb();
 			$item = $feModel->getTable();
 			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				JError::raiseNotice(500, $db->getErrorMsg());
 				return false;
@@ -1665,7 +1665,7 @@ class FabrikModelList extends FabModelAdmin
 		$sql = 'ALTER TABLE ' . $tableName . ' ADD PRIMARY KEY (' . $fieldName . ')';
 		/* add a primary key */
 		$db->setQuery($sql);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			return JError::raiseWarning(500, $db->getErrorMsg());
 		}
@@ -1674,7 +1674,7 @@ class FabrikModelList extends FabModelAdmin
 			// Add the autoinc
 			$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $fieldName . ' ' . $fieldName . ' ' . $type . ' NOT NULL AUTO_INCREMENT';
 			$db->setQuery($sql);
-			if (!$db->query())
+			if (!$db->execute())
 			{
 				return JError::raiseError(500, 'add key: ' . $db->getErrorMsg());
 			}
@@ -1697,17 +1697,19 @@ class FabrikModelList extends FabModelAdmin
 		$tableName = FabrikString::safeColName($post['jform']['db_table_name']);
 		$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($aPriKey['colname']) . ' '
 			. FabrikString::safeColName($aPriKey['colname']) . ' ' . $aPriKey['type'] . ' NOT NULL';
-		/* removes the autoinc */
+
+		// Remove the autoinc
 		$db->setQuery($sql);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			JError::raiseWarning(500, $db->getErrorMsg());
 			return false;
 		}
 		$sql = 'ALTER TABLE ' . $tableName . ' DROP PRIMARY KEY';
-		/* drops the primary key */
+
+		// Drop the primary key
 		$db->setQuery($sql);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			JError::raiseWarning(500, 'alter table: ' . $db->getErrorMsg());
 			return false;
@@ -1742,13 +1744,14 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($fieldName) . ' ' . FabrikString::safeColName($fieldName) . ' '
 			. $type . ' NOT NULL';
-		/* update primary key */
+
+		// Update primary key
 		if ($autoIncrement)
 		{
 			$sql .= " AUTO_INCREMENT";
 		}
 		$db->setQuery($sql);
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			$this->setError('update key:' . $db->getErrorMsg());
 		}
@@ -1979,7 +1982,7 @@ class FabrikModelList extends FabModelAdmin
 		}
 		$query->delete()->from('#__{package}_forms')->where('id = ' . (int) $form->id);
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 		return $form;
 	}
 
@@ -2075,7 +2078,7 @@ class FabrikModelList extends FabModelAdmin
 		$query .= ' primary key (' . $key . '))';
 		$query .= ' ENGINE = MYISAM ';
 		$db->setQuery($query);
-		$db->query();
+		$db->execute();
 
 		// Get a list of existinig ids
 		$query = $db->getQuery(true);

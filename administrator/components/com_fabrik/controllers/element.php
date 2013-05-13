@@ -109,7 +109,7 @@ class FabrikControllerElement extends FabControllerForm
 		$model->updateJoinedPks($oldName, $newName);
 		$db->setQuery($app->getUserState('com_fabrik.q'));
 
-		if (!$db->query())
+		if (!$db->execute())
 		{
 			JError::raiseWarning(E_WARNING, $db->stderr(true));
 			$msg = '';
