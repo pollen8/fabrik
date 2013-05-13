@@ -319,7 +319,7 @@ var FbForm = new Class({
 			}
 		}
 		if (groupfx) {
-			fxElement = groupfx;
+			fxElement = fx.css.element;
 		} else {
 			fxElement = fx.css.element.getParent('.fabrikElementContainer');
 			if (typeOf(fxElement) === 'null') {
