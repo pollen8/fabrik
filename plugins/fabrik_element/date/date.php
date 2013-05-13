@@ -1400,7 +1400,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					$autoId = '.advanced-search-list .autocomplete-trigger';
 				}
-				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, 'date');
+				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
 				break;
 		}
 		if ($normal)
