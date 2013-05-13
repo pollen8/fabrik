@@ -604,7 +604,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			return false;
 		}
-		return in_array($gid, JFactory::getUser()->authorisedLevels());
+		return in_array($gid, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
 	/**
@@ -1073,7 +1073,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($this->canUse())
 			{
 				$idname = $this->getFullName(false, true, false) . '_id';
-				$attribs = 'class="fabrikinput inputbox" size="1"';
+				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 				/*if user can access the drop down*/
 				switch ($displayType)
 				{
@@ -1432,10 +1432,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				/* $$$ hugh - this almost certainly means we are changing element type to a join,
 				 * and the join row hasn't been created yet.  So let's grab the params, instead of
-				* defaulting to VARCHAR
-				* return "VARCHAR(255)";
-				*/
-				$dbName = $params->get('join_db_name');
+				 * defaulting to VARCHAR
+				 * return "VARCHAR(255)";
+				 */
+				$dbName = $params->get('join_db_name', $this->getDbName());
 				$joinKey = $params->get('join_key_column');
 			}
 			else
@@ -1446,7 +1446,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		else
 		{
-			$dbName = $params->get('join_db_name');
+			$dbName = $params->get('join_db_name', $this->getDbName());
 			$joinKey = $params->get('join_key_column');
 		}
 
@@ -1655,6 +1655,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$htmlid = $this->getHTMLId() . 'value';
 		$v = $this->filterName($counter, $normal);
 		$return = array();
+		$class = $this->filterClass();
 		$default = $this->getDefaultFilterVal($normal, $counter);
 		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
@@ -1675,7 +1676,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				*/
 				$rows = array();
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" size="1" ', "value", 'text', $default, $htmlid);
 				return implode("\n", $return);
 			}
 			$this->unmergeFilterSplits($rows);
@@ -1700,18 +1701,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
 				$v = $element->filter_type === 'multiselect' ? $v . '[]' : $v;
 				$this->addSpaceToEmptyLabels($rows, 'text');
-				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" ' . $size, "value", 'text', $default, $htmlid);
+				$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="' . $class . '" ' . $size, "value", 'text', $default, $htmlid);
 				break;
 
-			case 'field':
-				$return[] = '<input type="text" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
-						. $htmlid . '" />';
-						$return[] = $this->filterHiddenFields();
-						break;
+			case "field":
+				$return[] = '<input type="text" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size . '" id="'
+					. $htmlid . '" />';
+				$return[] = $this->filterHiddenFields();
+				break;
 
-			case 'hidden':
-				$return[] = '<input type="hidden" class="inputbox fabrik_filter" name="' . $v . '" value="' . $default . '" size="' . $size
-				. '" id="' . $htmlid . '" />';
+			case "hidden":
+				$return[] = '<input type="hidden" class="' . $class . '" name="' . $v . '" value="' . $default . '" size="' . $size
+					. '" id="' . $htmlid . '" />';
 				$return[] = $this->filterHiddenFields();
 				break;
 			case 'auto-complete':
@@ -2557,6 +2558,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Get an array of element html ids and their corresponding
+	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
 	 * @param   int  $repeatCounter  repeat group counter

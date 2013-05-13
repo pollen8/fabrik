@@ -195,7 +195,7 @@ var Loader = new Class({
 		Fabrik.blocks = {};
 		Fabrik.addBlock = function (blockid, block) {
 			Fabrik.blocks[blockid] = block;
-			Fabrik.fireEvent('fabrik.block.added', block);
+			Fabrik.fireEvent('fabrik.block.added', [block, blockid]);
 		};
 		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
 			if (e.rightClick) {

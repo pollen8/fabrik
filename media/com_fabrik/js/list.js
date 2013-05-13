@@ -138,7 +138,8 @@ var FbList = new Class({
 		'groupByOpts': {},
 		'listRef': '', // e.g. '1_com_fabrik_1'
 		'fabrik_show_in_list': [],
-		'singleOrdering' : false
+		'singleOrdering' : false,
+		'tmpl': ''
 	},
 
 	initialize: function (id, options) {
@@ -203,6 +204,25 @@ var FbList = new Class({
 			}
 		}
 	},
+	
+	/**
+	 * Used for db join select states.
+	 */
+	rowClicks: function () {
+		console.log('rowClicks', this.list);
+		this.list.addEvent('click:relay(.fabrik_row)', function (e, r) {
+			var d = Array.from(r.id.split('_')),
+			data = {};
+			data.rowid = d.getLast();
+			var json = {
+					'errors' : {},
+					'data' : data,
+					'rowid': d.getLast(),
+					listid: this.id
+				};
+			Fabrik.fireEvent('fabrik.list.row.selected', json);
+		}.bind(this));
+	},
 
 	watchAll: function (ajaxUpdate) {
 		ajaxUpdate = ajaxUpdate ? ajaxUpdate : false;
@@ -228,7 +248,8 @@ var FbList = new Class({
 			bootstrap: this.options.j3
 		};
 		if (this.options.view === 'csv') {
-			//for csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
+			
+			// For csv links e.g. index.php?option=com_fabrik&view=csv&listid=10
 			this.openCSVWindow();
 		} else {
 			if (this.form.getElements('.csvExportButton')) {
@@ -274,7 +295,7 @@ var FbList = new Class({
 	},
 	
 	_csvExportForm: function () {
-		// cant build via dom as ie7 doesn't accept checked status
+		// Can't build via dom as ie7 doesn't accept checked status
 		var rad = "<input type='radio' value='1' name='incfilters' checked='checked' />" + Joomla.JText._('JYES');
 		var rad2 = "<input type='radio' value='1' name='incraw' checked='checked' />" + Joomla.JText._('JYES');
 		var rad3 = "<input type='radio' value='1' name='inccalcs' checked='checked' />" + Joomla.JText._('JYES');
@@ -670,11 +691,7 @@ var FbList = new Class({
 		if (!this.list) {
 			return;
 		}
-		if (this.options.ajax_links) {
-			
-			// 3.1 - dont need to do this now
-			return;
-		}
+		this.rowClicks();
 	},
 	
 	getForm: function () {
@@ -682,6 +699,12 @@ var FbList = new Class({
 			this.form = document.id(this.options.form);
 		}
 		return this.form;
+	},
+	
+	uncheckAll: function () {
+		this.form.getElements('input[name^=ids]').each(function (c) {
+			c.checked = '';
+		});
 	},
 
 	submit: function (task) {
@@ -703,6 +726,7 @@ var FbList = new Class({
 			var delMsg = delCount === 1 ? Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1') : Joomla.JText._('COM_FABRIK_CONFIRM_DELETE').replace('%s', delCount); 
 			if (!confirm(delMsg)) {
 				Fabrik.loader.stop('listform_' + this.options.listRef);
+				this.uncheckAll();
 				return false;
 			}
 		}
@@ -1336,7 +1360,7 @@ var FbListActions = new Class({
 		}
 		this.actions = this.list.form.getElements(this.options.selector);
 		this.actions.each(function (ul) {
-			// sub menus ie group by options
+			// Sub menus ie group by options
 			if (ul.getElement('ul')) {
 				var el = ul.getElement('ul');
 				var c = new Element('div').adopt(el.clone());
@@ -1421,11 +1445,18 @@ var FbListActions = new Class({
 			}
 		}.bind(this));
 
+		this.list.form.getElements('.fabrik_select input[type=checkbox]').addEvent('click', function (e) {
+			Fabrik.activeRow = e.target.getParent('.fabrik_row');
+		});
 		// watch the top/master chxbox
 		var chxall = this.list.form.getElement('input[name=checkAll]');
+		if (typeOf(chxall) !== 'null') {
+			chxall.store('listid', this.list.id);
+		}
+		
 		var c = function (el) {
-			return el.getParent('.fabrik___heading').getElement('ul.fabrik_action');
-		};
+			return el.getParent('.fabrik___heading').getElement(this.options.selector);
+		}.bind(this);
 
 		var tipChxAllOpts = Object.merge(Object.clone(Fabrik.tips.options), {
 			position: this.options.floatPos,
