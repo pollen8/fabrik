@@ -133,7 +133,8 @@ var FbDatabasejoin = new Class({
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
-			selected = (v === this.options.value) ? 'selected' : '';
+			var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			selected = sel.contains(v) ? 'selected' : '';
 			opt = new Element('option', {'value': v, 'selected': selected}).set('text', l);
 			document.id(this.element.id).adopt(opt);
 			break;
@@ -145,7 +146,9 @@ var FbDatabasejoin = new Class({
 			}
 			break;
 		case 'checkbox':
-			chxed = (v === this.options.value) ? true : false;
+			sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			chxed = sel.contains(v) ? true : false;
+			
 			subOpts = this.element.getElements('> .fabrik_subelement');
 			opt = this.getCheckboxTmplNode().clone();
 			var i = opt.getElement('input');
@@ -478,6 +481,7 @@ var FbDatabasejoin = new Class({
 	},
 	
 	update: function (val) {
+		console.log('update', val);
 		this.getElement();
 		if (typeOf(this.element) === 'null') {
 			return;

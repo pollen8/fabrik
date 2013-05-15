@@ -45,6 +45,11 @@ var FbCascadingdropdown = new Class({
 		this.change(v, e.target.id);
 	},
 	
+	/**
+	 * Change
+	 * @param   v          Value of observered element
+	 * @param   triggerid  Observed element's HTML id
+	 */
 	change: function (v, triggerid)
 	{
 		/* $$$ rob think this is obsolete:
@@ -69,6 +74,7 @@ var FbCascadingdropdown = new Class({
 		// so any custom 'where' clause on the cdd can use {placeholders}.  Can't use getFormData() because
 		// it includes all QS from current page, including task=processForm, which screws up this AJAX call.
 		var formdata = this.form.getFormElementData();
+		
 		var data = {
 				'option': 'com_fabrik',
 				'format': 'raw',
@@ -94,7 +100,9 @@ var FbCascadingdropdown = new Class({
 			opts = {},
 			c;
 			this.spinner.hide();
-			//this.element.getParent().getElement('.loader').hide();
+			this.setValue(this.getValue());
+			console.log('cdd request ok current value = ', this.getValue(), this.element);
+			
 			json = JSON.decode(json);
 			if (this.options.editable) {
 				this.destroyElement();
@@ -106,12 +114,12 @@ var FbCascadingdropdown = new Class({
 				c = this.getContainer().getElement('.dbjoin-description');
 				c.empty();
 			}
-			
+			console.log('cdd request ok current value = ', this.options.value, this.element);
 			this.myAjax = null;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {
 					// $$$ rob if loading edit form, at page load, u may have a previously selected value 
-					opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
+					//opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
 					if (this.options.editable === false) {
 						
 						// Pretify new lines to brs
