@@ -81,6 +81,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	protected function _renderListData($data, $thisRow)
 	{
+		$w = new FabrikWorker;
 		if (is_string($data))
 		{
 			$data = FabrikWorker::JSONtoData($data, true);
@@ -95,6 +96,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			}
 			$_lnk = trim($data['link']);
 			$_lbl = trim($data['label']);
+			$_lnk = $w->parseMessageForPlaceHolder(urldecode($_lnk), JArrayHelper::fromObject($thisRow));
 			if (JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')
 			{
 				// Treat some default values as empty
