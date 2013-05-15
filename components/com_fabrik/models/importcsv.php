@@ -731,8 +731,10 @@ class FabrikFEModelImportcsv extends JModelForm
 			if (!$tableJoinsFound)
 			{
 				$formModel->_formData = $aRow;
-				FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
-				$formModel->processToDB();
+				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+				{
+					$formModel->processToDB();
+				}
 			}
 			else
 			{
@@ -820,8 +822,10 @@ class FabrikFEModelImportcsv extends JModelForm
 			// $$$ rob here we're setting up fabrik_repeat_group to allow the form to 'know' how many repeated records to insert.
 			JRequest::setVar('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->_formData = $data;
-			FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list');
-			$formModel->processToDB();
+			if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
+			{
+				$formModel->processToDB();
+			}
 		}
 	}
 
