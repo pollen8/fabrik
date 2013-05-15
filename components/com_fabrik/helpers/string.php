@@ -409,7 +409,9 @@ class FabrikString extends JString
 				$new_qs = array();
 				foreach (explode('&', $qs) as $arg)
 				{
-					list($key, $val) = explode('=', $arg);
+					$bits = explode('=', $arg);
+					$key = JArrayHelper::getValue($bits, 0, '');
+					$val = JArrayHelper::getValue($bits, 1, '');
 					$new_qs[] = $key . "=" . urlencode($val);
 				}
 				$url = $site . "?" . implode("&", $new_qs);

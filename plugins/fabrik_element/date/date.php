@@ -1326,7 +1326,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 							  */
 
 				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
 				$v = $fType === 'multiselect' ? $v . '[]' : $v;
 
 				jimport('joomla.utilities.date');

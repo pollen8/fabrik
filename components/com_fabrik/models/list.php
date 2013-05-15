@@ -170,7 +170,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @bar bool
 	 */
-	//var $_inPackage  = false;
+	// var $_inPackage  = false;
 
 	protected $_joinsToThisKey = null;
 
@@ -599,7 +599,6 @@ class FabrikFEModelList extends JModelForm
 
 		// Cant set time limit in safe mode so suppress warning
 		@set_time_limit(60);
-		//$this->getRequestData();
 		JDEBUG ? $profiler->mark('About to get table filter') : null;
 		$filters = $this->getFilterArray();
 		JDEBUG ? $profiler->mark('Got filters') : null;
@@ -2454,18 +2453,23 @@ $groupBy .= '_raw';
 					if ($orderbyRaw !== '')
 					{
 						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
-						// $$$ hugh - OK, we need to test for this twice, because older elements
-						// which get converted form names to ids above have already been run through
-						// getOrderByName().  So first check here ...
+
+						/*
+						 * $$$ hugh - OK, we need to test for this twice, because older elements
+						 * which get converted form names to ids above have already been run through
+						 * getOrderByName().  So first check here ...
+						 */
 						if (!JString::stristr($orderbyRaw, 'CONCAT('))
 						{
 							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
 							if (array_key_exists($orderbyRaw, $els))
 							{
 								$field = $els[$orderbyRaw]->getOrderByName();
-								// $$$ hugh - ... second check for CONCAT, see comment above
-								// $$$ @TODO why don't we just embed this logic in safeColName(), so
-								// it recognizes a CONCAT and treats it accordingly?
+								/*
+								 * $$$ hugh - ... second check for CONCAT, see comment above
+								 * $$$ @TODO why don't we just embed this logic in safeColName(), so
+								 * it recognizes a CONCAT and treats it accordingly?
+								 */
 								if (!JString::stristr($field, 'CONCAT('))
 								{
 									$field = FabrikString::safeColName($field);
@@ -3901,7 +3905,7 @@ $groupBy .= '_raw';
 				 * what I most care about, as this stuff is being written handle being more specific about
 				 * the elements the list PK can be selected from.
 				 */
-				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}
@@ -5803,7 +5807,8 @@ $groupBy .= '_raw';
 		$w = new FabrikWorker;
 		$session = JFactory::getSession();
 		$formModel = $this->getFormModel();
-		//$linksToForms = $this->getLinksToThisKey();
+
+		// $linksToForms = $this->getLinksToThisKey();
 		$oldLinksToForms = $this->getLinksToThisKey();
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
@@ -7375,9 +7380,11 @@ $groupBy .= '_raw';
 		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
 				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
-		try {
+		try
+		{
 			$db->execute();
-		} catch (RuntimeException $e)
+		}
+		catch (RuntimeException $e)
 		{
 			// Try to suppress error
 			$this->setError($e->getMessage());
@@ -7414,9 +7421,12 @@ $groupBy .= '_raw';
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
 					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
-					try {
+					try
+					{
 						$db->execute();
-					} catch (Exception $e) {
+					}
+					catch (Exception $e)
+					{
 						$this->setError($e->getMessage());
 					}
 					break;
@@ -7959,7 +7969,7 @@ $groupBy .= '_raw';
 			}
 			else
 			{
-				$link .= 'index.php?option=com_' . $package. '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
 			if ($this->packageId !== 0)
 			{
@@ -8348,7 +8358,7 @@ $groupBy .= '_raw';
 			JRequest::setVar('rowid', $rowid);
 			$app = JFactory::getApplication();
 			$formid = JRequest::getInt('formid');
-			$app->redirect('index.php?option=' . $package. '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
+			$app->redirect('index.php?option=' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
 		}
 		return json_encode($data);
 	}
@@ -8484,7 +8494,8 @@ $groupBy .= '_raw';
 		$query = $listModel->_buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
 		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
-		if ($filterLimit) {
+		if ($filterLimit)
+		{
 			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
 		}
 		else
@@ -9549,12 +9560,10 @@ $groupBy .= '_raw';
 			$document = JFactory::getDocument();
 			if ($app->isAdmin())
 			{
-				//$this->tmpl = JRequest::getVar('layout', $params->get('admin_template'));
 				$this->tmpl = $input->get('layout', $params->get('admin_template'));
 			}
 			else
 			{
-				//$this->tmpl = JRequest::getVar('layout', $item->template);
 				$this->tmpl = $input->get('layout', $item->template);
 				if ($app->scope !== 'mod_fabrik_list')
 				{
@@ -9597,7 +9606,7 @@ $groupBy .= '_raw';
 		foreach ($groups as $groupModel)
 		{
 			if (($params->get('group_by_template', '') !== '' && $this->getGroupBy() != '') || $this->outPutFormat == 'csv'
-					|| $this->outPutFormat == 'feed')
+				|| $this->outPutFormat == 'feed')
 			{
 				$elementModels = $groupModel->getPublishedElements();
 			}
@@ -9624,8 +9633,11 @@ $groupBy .= '_raw';
 	}
 
 	/**
-	 * @since 3.0 loads lists's css files
 	 * Checks : J template html override css file then fabrik list tmpl template css file. Including them if found
+	 *
+	 * @since 3.0 loads lists's css files
+	 *
+	 * @return  void
 	 */
 
 	public function getListCss()
@@ -9658,6 +9670,12 @@ $groupBy .= '_raw';
 			}
 		}
 	}
+
+	/**
+	 * Get render context
+	 *
+	 * @return  string
+	 */
 
 	public function getRenderContext()
 	{
@@ -9696,8 +9714,8 @@ $groupBy .= '_raw';
 		else
 		{
 			if (((JRequest::getVar('task') == 'list.view' || JRequest::getVar('task') == 'list.delete') && JRequest::getVar('format') == 'raw')
-					|| JRequest::getVar('layout') == '_advancedsearch' || JRequest::getVar('task') === 'list.elementFilter'
-					|| JRequest::getVar('setListRefFromRequest') == 1)
+				|| JRequest::getVar('layout') == '_advancedsearch' || JRequest::getVar('task') === 'list.elementFilter'
+				|| JRequest::getVar('setListRefFromRequest') == 1)
 			{
 				// Testing for ajax nav in content plugin or in advanced search
 				$this->setRenderContextFromRequest();
@@ -9746,7 +9764,6 @@ $groupBy .= '_raw';
 	{
 		$base = JURI::getInstance();
 		$base = $base->toString(array('scheme', 'user', 'pass', 'host', 'port', 'path'));
-		//$base .= JString::strpos($base, '?') ? '&' : '?';
 		$qs = JRequest::getVar('QUERY_STRING', '', 'server');
 		if (JString::stristr($qs, 'group_by'))
 		{
@@ -9792,12 +9809,12 @@ $groupBy .= '_raw';
 		{
 			$csvIds = $this->getAllPublishedListElementIDs();
 		}
-		else if ($params->get('csv_which_elements', 'selected') == 'all')
+		elseif ($params->get('csv_which_elements', 'selected') == 'all')
 		{
 			// Export code will export all, if list is empty
 			$csvIds = array();
 		}
-		else if ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
+		elseif ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
 		{
 			$csvIds = array();
 		}
@@ -9856,7 +9873,7 @@ $groupBy .= '_raw';
 	{
 		$params = $this->getParams();
 		if (($this->canAdd() && $params->get('show-table-add')) || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
-				|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
+			|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
 		{
 			return true;
 		}
@@ -10066,7 +10083,7 @@ $groupBy .= '_raw';
 	/**
 	 * Return an array of elements which are set to always render
 	 *
-	 * @param   bool  not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
 	 *
 	 * @return   bool  array of element models
 	 */

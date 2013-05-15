@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewGooglemap extends JView
+class FabrikViewGooglemap extends JView
 {
 
 	/**
@@ -54,7 +54,6 @@ class fabrikViewGooglemap extends JView
 		$uri = JURI::getInstance();
 		if ($params->get('fb_gm_center') == 'userslocation')
 		{
-			// $document->addScript($uri->getScheme() . '://code.google.com/apis/gears/gears_init.js');
 			$srcs[] = 'components/com_fabrik/libs/geo-location/geo.js';
 		}
 
