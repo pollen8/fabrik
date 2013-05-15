@@ -54,6 +54,7 @@ require_once COM_FABRIK_FRONTEND . '/models/fabrik.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/arrayhelper.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 require_once COM_FABRIK_FRONTEND . '/models/parent.php';
+
 require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 require_once COM_FABRIK_FRONTEND . '/models/plugin.php';

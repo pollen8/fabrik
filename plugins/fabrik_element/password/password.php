@@ -144,12 +144,18 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$element = $this->getElement();
 		$origname = $element->name;
 
+		/**
+		 * $$$ hugh - need to fetch the value for the main data, as well as the confirmatoin,
+		 * rather than using $data, to avoid issues with things like "foo%20bar" getting incorrectly
+		 * decoded as "foo bar" in $data.
+		 */
+		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$name = $this->getFullName(true, false);
-		$name = str_replace($element->name, $element->name . '_check', $name);
-		$this->setFullName($name, true, false);
-		$checkvalue = $this->getValue($_REQUEST, $repeatCounter);
+		$check_name = str_replace($element->name, $element->name . '_check', $name);
+		$this->setFullName($check_name, true, false);
+		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
-		if ($checkvalue != $data)
+		if ($checkvalue != $value)
 		{
 			$this->validationError = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
 			return false;
@@ -166,7 +172,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			}
 
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
-			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $data === '')
+			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $value === '')
 			{
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;

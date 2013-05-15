@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/visualization.php';
  * @subpackage  Fabrik.visualization.fusionchart
  */
 
-class plgFabrik_VisualizationFusionchart extends FabrikPlugin
+class PlgFabrik_VisualizationFusionchart extends FabrikPlugin
 {
 
 }

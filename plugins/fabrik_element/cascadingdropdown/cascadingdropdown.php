@@ -58,7 +58,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$autoOpts = array();
 			$autoOpts['observerid'] = $this->getWatchId($repeatCounter);
 			$autoOpts['formRef'] = $this->getFormModel()->jsKey();
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, 'cascadingdropdown', $autoOpts);
+			$autoOpts['storeMatchedResultsOnly'] = true;
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'cascadingdropdown', $autoOpts);
 		}
 		FabrikHelperHTML::script('media/com_fabrik/js/lib/Event.mock.js');
 		$opts = $this->getElementJSOptions($repeatCounter);

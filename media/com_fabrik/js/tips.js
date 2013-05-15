@@ -90,8 +90,12 @@ var FloatingTips = new Class({
 		var opts = trigger.retrieve('opts');
 		opts = opts[evnt];
 		trigger.addEvent(opts.showOn, function (e) {
+			
+			/*
+			 * Think this if statement may not be needed - I believe it was trying to fix the issue where in IE 8 the checkbox
+			 * was not checked with a click event - now in list.js I've changed the showOn option to 'change' works
+			 */ 
 			if (opts.showOn === 'click') {
-				window.fireEvent('tips.hideall', [trigger]);
 				//toggling
 				var active = trigger.retrieve('active', false);
 				var newActive = active ? false : true;
@@ -101,6 +105,7 @@ var FloatingTips = new Class({
 				}
 			}
 			if (opts.showFn(e, trigger)) {
+				window.fireEvent('tips.hideall', [trigger]);
 				this.show(trigger, evnt);
 			}
 		}.bind(this));

@@ -2,10 +2,10 @@
 /**
  * Default Google Map Viz Filter Template
  *
-* @package      Joomla.Plugin
-* @subpackage   Fabrik.visualization.googlemap
-* @copyright    Copyright (C) 2005 Fabrik. All rights reserved.
-* @license      GNU General Public License version 2 or later; see LICENSE.txt
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.visualization.googlemap
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 defined('_JEXEC') or die('Restricted access');
@@ -41,7 +41,7 @@ show
 			$c = 0;
 			foreach ($filters as $filter) :
 				$required = $filter->required == 1 ? ' class="notempty"' : '';
-			 ?>
+			?>
 	    <tr class="fabrik_row oddRow<?php echo ($c % 2); ?>">
 	    	<td<?php echo $required ?>><?php echo $filter->label ?> </td>
 	    	<td><?php echo $filter->element ?></td>

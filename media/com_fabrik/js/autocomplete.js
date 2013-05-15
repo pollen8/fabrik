@@ -18,10 +18,12 @@ var FbAutocomplete = new Class({
 		url: 'index.php',
 		max: 10,
 		onSelection: Class.empty,
-		autoLoadSingleResult: true
+		autoLoadSingleResult: true,
+		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
 	initialize: function (element, options) {
+		this.matchedResult = false;
 		this.setOptions(options);
 		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
@@ -41,9 +43,20 @@ var FbAutocomplete = new Class({
 			this.search(e);
 		}.bind(this));
 		
+		this.getInputElement().addEvent('blur', function (e) {
+			if (this.options.storeMatchedResultsOnly) {
+				if (!this.matchedResult) {
+					if (!(this.data.length === 1 && this.options.autoLoadSingleResult)) {
+						this.element.value = '';
+					}
+				}
+			}
+		}.bind(this));
+		
 	},
 	
 	search: function (e) {
+		this.matchedResult = false;
 		if (e.key === 'tab') {
 			this.closeMenu();
 			return;
@@ -126,6 +139,7 @@ var FbAutocomplete = new Class({
 		var ul = this.menu.getElement('ul');
 		ul.empty();
 		if (data.length === 1 && this.options.autoLoadSingleResult) {
+			this.matchedResult = true;
 			this.element.value = data[0].value;
 			this.fireEvent('selection', [this, this.element.value]);
 		}
@@ -148,6 +162,8 @@ var FbAutocomplete = new Class({
 		if (typeOf(li) !== 'null') {
 			this.getInputElement().value = li.get('text');
 			this.element.value = li.getProperty('data-value');
+			
+			this.matchedResult = true;
 			this.closeMenu();
 			this.fireEvent('selection', [this, this.element.value]);
 			// $$$ hugh - need to fire change event, in case it's something like a join element

@@ -232,6 +232,11 @@ var Autofill = new Class({
 		if (!looseMatch) {
 			var el = this.form.formElements.get(key);
 			if (typeOf(el) !== 'null') {
+				// $$$ hugh - nasty litte hack to get auto-complete joins to properly update, if we don't set
+				// el.activePopUp, the displayed label value won't get updated properly in the join's update() processing
+				if (typeOf(el.options.displayType !== 'null') && el.options.displayType === 'auto-complete') {
+					el.activePopUp = true;
+				}
 				el.update(val);
 				return true;
 			}

@@ -319,7 +319,7 @@ var FbForm = new Class({
 			}
 		}
 		if (groupfx) {
-			fxElement = groupfx;
+			fxElement = fx.css.element;
 		} else {
 			fxElement = fx.css.element.getParent('.fabrikElementContainer');
 			if (typeOf(fxElement) === 'null') {
@@ -527,6 +527,7 @@ var FbForm = new Class({
 		this._setMozBoxWidths();
 		this.hideOtherPages();
 		Fabrik.fireEvent('fabrik.form.page.chage.end', [this]);
+		Fabrik.fireEvent('fabrik.form.page.change.end', [this]);
 		if (this.result === false) {
 			this.result = true;
 			return;
@@ -775,8 +776,13 @@ var FbForm = new Class({
 		}).send();
 	},
 
-	_completeValidaton : function (r, id, origid) {
+	_completeValidaton: function (r, id, origid) {
 		r = JSON.decode(r);
+		if (typeOf(r) === 'null') {
+			this._showElementError(['Oups'], id);
+			this.result = true;
+			return;
+		}
 		this.formElements.each(function (el, key) {
 			el.afterAjaxValidation();
 		});
@@ -786,7 +792,7 @@ var FbForm = new Class({
 			return;
 		}
 		var el = this.formElements.get(id);
-		if ((r.modified[origid] !== undefined)) {
+		if ((typeOf(r.modified[origid]) !== 'null')) {
 			el.update(r.modified[origid]);
 		}
 		if (typeOf(r.errors[origid]) !== 'null') {
@@ -1136,6 +1142,8 @@ var FbForm = new Class({
 			p = p.split('=');
 			var k = p[0];
 			// $$$ rob deal with checkboxes
+			// Ensure [] is not encoded
+			k = decodeURI(k);
 			if (k.substring(k.length - 2) === '[]') {
 				k = k.substring(0, k.length - 2);
 				if (!arrayCounters.has(k)) {
@@ -1226,6 +1234,9 @@ var FbForm = new Class({
 	duplicateGroupsToMin: function () {
 		// Check for new form
 		if (this.options.rowid.toInt() === 0) {
+			// $$$ hugh - added ability to override min count
+			// http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
+			Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
 			Object.each(this.options.minRepeat, function (min, groupId) {
 				
 				// Create mock event

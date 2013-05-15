@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewForm extends JViewLegacy
+class FabrikViewForm extends JViewLegacy
 {
 
 	/**
@@ -43,11 +43,17 @@ class fabrikViewForm extends JViewLegacy
 		$input = $app->input;
 		$j3 = FabrikWorker::j3();
 
+		// Need to render() with all element ids in case canEditRow plugins etc use the row data.
+		$elids = $input->get('elementid', array(), 'array');
+		$input->set('elementid', null);
+
 		$form = $model->getForm();
 		if ($model->render() === false)
 		{
 			return false;
 		}
+		// Set back to original input so we only show the requested elements
+		$input->set('elementid', $elids);
 		$this->groups = $this->get('GroupView');
 
 		// Main trigger element's id

@@ -94,23 +94,18 @@ var ListFieldsElement = new Class({
 				}
 				var els = document.getElementsByName(this.el.name);
 				
-				
 				var opts = eval(r);
 				this.el.empty();
-				Object.each(els, function (el) {
-					el.empty();
+				Array.each(els, function (el) {
+					document.id(el).empty();
 				});
-				console.log(els, this.el.name);
 				document.id(this.strEl).empty();
 				opts.each(function (opt) {
 					var o = {'value': opt.value};
 					if (opt.value === this.options.value) {
 						o.selected = 'selected';
 					}
-					
-					//new Element('option', o).appendText(opt.label).inject(this.el);
-					
-					Object.each(els, function (el) {
+					Array.each(els, function (el) {
 						new Element('option', o).set('text', opt.label).inject(el);
 					});
 				}.bind(this));

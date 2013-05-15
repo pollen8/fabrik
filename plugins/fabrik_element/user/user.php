@@ -141,9 +141,9 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 					$id = $this->getValue($data, $repeatCounter);
 				}
 				$id = is_array($id) ? $id[0] : $id;
-
-				// $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
-				// editing a row, where user element is not set yet, and 'update on edit' is No.
+				/* $$$ hugh - hmmm, might not necessarily be a new row.  So corner case check for
+				 * editing a row, where user element is not set yet, and 'update on edit' is No.
+				 */
 				if ($rowid && empty($id) && !$params->get('update_on_edit'))
 				{
 					$user = JFactory::getUser(0);
@@ -364,26 +364,42 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		// $$$ hugh - so how come we don't do the same thing on a new row?  Seems inconsistant to me?
 		else
 		{
-			$params = $this->getParams();
-			if ($params->get('update_on_edit', 0))
+			if ($this->updateOnEdit())
 			{
-				if (!$this->canUse() || $this->getElement()->hidden == 1)
-				{
-					$user = JFactory::getUser();
-					$data[$element->name] = $user->get('id');
-					$data[$element->name . '_raw'] = $data[$element->name];
+				$user = JFactory::getUser();
+				$data[$element->name] = $user->get('id');
+				$data[$element->name . '_raw'] = $data[$element->name];
 
-					// $$$ hugh - need to add to updatedByPlugin() in order to override write access settings.
-					// This allows us to still 'update on edit' when element is write access controlled.
-					if (!$this->canUse())
-					{
-						$this_fullname = $this->getFullName(true, false);
-						$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
-					}
+				// $$$ hugh - need to add to updatedByPlugin() in order to override write access settings.
+				// This allows us to still 'update on edit' when element is write access controlled.
+				if (!$this->canUse())
+				{
+					$this_fullname = $this->getFullName(true, false);
+					$this->getFormModel()->updatedByPlugin($this_fullname, $user->get('id'));
 				}
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Should the element's value be replaced with the current user's id
+	 *
+	 * @return  bool
+	 */
+	protected function updateOnEdit()
+	{
+		$params = $this->getParams();
+		$updaeOnEdit = $params->get('update_on_edit', 0);
+		if ($updaeOnEdit == 1)
+		{
+			$updaeOnEdit = !$this->canUse() || $this->getElement()->hidden == 1;
+		}
+		if ($updaeOnEdit == 2)
+		{
+			$updaeOnEdit = true;
+		}
+		return $updaeOnEdit;
 	}
 
 	/**

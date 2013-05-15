@@ -139,9 +139,9 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			$opts->popup_offset_y = (int) $yOffset;
 		}
-		$opts->popup_edit_label = $params->get('editlabel', JText::_('COM_FABRIK_EDIT'));
-		$opts->popup_view_label = $params->get('detaillabel', JText::_('COM_FABRIK_VIEW'));
-		$opts->popup_add_label = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
+		$opts->popup_edit_label = $model->editLabel();
+		$opts->popup_view_label = $model->viewLabel();
+		$opts->popup_add_label = $model->addLabel();
 		$opts->limitLength = $model->limitLength;
 		$opts->limitStart = $model->limitStart;
 		$opts->tmpl = $tmpl;
@@ -408,7 +408,7 @@ class FabrikViewListBase extends JViewLegacy
 				$this->showAdd = false;
 			}
 		}
-		$this->addLabel = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
+		$this->addLabel = $model->addLabel();
 		$this->showRSS = $params->get('rss', 0) == 0 ? 0 : 1;
 		if ($this->showRSS)
 		{
@@ -577,8 +577,9 @@ class FabrikViewListBase extends JViewLegacy
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>' . $params->get('addlabel', JText::_('COM_FABRIK_ADD')) . '</span>';
-		$buttonProperties['alt'] = $params->get('addlabel', JText::_('COM_FABRIK_ADD'));
+		$addLabel = $model->addLabel();
+		$buttonProperties['title'] = '<span>' . $addLabel . '</span>';
+		$buttonProperties['alt'] = $addLabel;
 		$this->buttons->add = FabrikHelperHTML::image('plus-sign.png', 'list', $this->tmpl, $buttonProperties);
 
 		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_PDF') . '</span>';

@@ -520,7 +520,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		if ($params->get('place', 1) == 1)
 		{
 			$el = $this->getPlaceElement();
-			FabrikHelperHTML::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $el->getElement()->plugin, $opts);
+			FabrikHelperHTML::autoComplete("radius_search_place{$this->renderOrder}", $el->getElement()->id, $formid, $el->getElement()->plugin, $opts);
 		}
 		if ($params->get('myloc', 1) == 1)
 		{

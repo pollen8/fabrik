@@ -417,7 +417,7 @@ var FbDatabasejoin = new Class({
 					this.activeSelect = false;
 				}.bind(this);
 				window.addEvent('fabrik.dbjoin.unactivate', this.unactiveFn);
-				
+				this.selectThenAdd();
 			}
 			this.selectThenAdd();
 		}
@@ -483,7 +483,7 @@ var FbDatabasejoin = new Class({
 	 * @return  string
 	 */
 	selectRecordWindowId: function () {
-		this.element.id + '-popupwin-select';
+		return this.element.id + '-popupwin-select';
 	},
 	
 	update: function (val) {

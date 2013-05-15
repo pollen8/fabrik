@@ -234,7 +234,7 @@ class FabrikHelperHTML
 			return;
 		}
 
-		$script .= "window.addEvent('fabrik.loadeded', function() {";
+		$script .= "window.addEvent('fabrik.loaded', function() {";
 		if ($selector == '')
 		{
 			return;
@@ -1487,15 +1487,16 @@ EOD;
 	 *
 	 * @param   string  $htmlid     of element to turn into autocomplete
 	 * @param   int     $elementid  element id
+	 * @param   int     $formid     form id
 	 * @param   string  $plugin     plugin name
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  void
 	 */
 
-	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
-		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
+		$json = self::autoCompletOptions($htmlid, $elementid, $formid, $plugin, $opts);
 		$str = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
@@ -1511,19 +1512,20 @@ EOD;
 	 *
 	 * @param   string  $htmlid     element to turn into autocomplete
 	 * @param   int     $elementid  element id
+	 * @param   int     $formid     form id
 	 * @param   string  $plugin     plugin type
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoCompletOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
-		. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{
@@ -1681,43 +1683,42 @@ EOD;
 	/**
 	 * Search various folder locations for a template image
 	 *
-	 * @param   string  $file        file name
-	 * @param   string  $type        type e.g. form/list/element
-	 * @param   string  $tmpl        template folder name
-	 * @param   array   $properties  assoc list of properties or string (if you just want to set the image alt tag)
-	 * @param   bool    $srcOnly     src only (default false)
+	 * @param   string  $file        File name
+	 * @param   string  $type        Type e.g. form/list/element
+	 * @param   string  $tmpl        Template folder name
+	 * @param   array   $properties  Assoc list of properties or string (if you just want to set the image alt tag)
+	 * @param   bool    $srcOnly     Src only (default false)
+	 * @param   array   $opts        Additional render options:
+	 *                                 forceImage: regardless of in J3 site - render an <img> if set to true (bypasses bootstrap icon loading)
 	 *
 	 * @since 3.0
 	 *
 	 * @return  string  image
 	 */
 
-	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false)
+	public static function image($file, $type = 'form', $tmpl = '', $properties = array(), $srcOnly = false, $opts = array())
 	{
 		if (is_string($properties))
 		{
 			$properties = array('alt' => $properties);
 		}
 
-		if (FabrikWorker::j3())
+		$forceImage = JArrayHelper::getValue($opts, 'forceImage', false);
+		if (FabrikWorker::j3() && $forceImage !== true)
 		{
 			unset($properties['alt']);
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
 			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
 			unset($properties['icon-class']);
-			if (array_key_exists('class', $properties))
-			{
-				$properties['class'] = $class . ' ' . $properties['class'];
-			}
-			else
-			{
-				$properties['class'] = $class;
-			}
+
+			$class .= ' ' . JArrayHelper::getValue($properties, 'class', '');
+			unset($properties['class']);
+
 			$p = self::propertiesFromArray($properties);
 
 			if (!$srcOnly)
 			{
-				return '<i ' . $p . '></i>';
+				return '<i class="' . $class . '" ' . $p . '></i>';
 			}
 			else
 			{

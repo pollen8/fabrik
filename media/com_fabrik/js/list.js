@@ -81,13 +81,21 @@ var FbList = new Class({
 		
 		/**
 		 * once an ajax form has been submitted lets clear out any loose events and the form object itself
+		 * 
+		 * Commenting out as this causes issues for cdd after ajax form post
+		 * http://www.fabrikar.com/forums/index.php?threads/cdd-only-triggers-js-change-code-on-first-change.32793/
 		 */
-		Fabrik.addEvent('fabrik.form.ajax.submit.end', function (form) {
+		/*Fabrik.addEvent('fabrik.form.ajax.submit.end', function (form) {
 			form.formElements.each(function (el) {
 				el.removeCustomEvents();
 			});
 			delete Fabrik.blocks['form_' + form.id];
-		});
+		});*/
+		
+		// Reload state 
+		if (!!(window.history && history.pushState) && history.state && this.options.ajax) {
+			this._updateRows(history.state);
+		}
 	},
 
 	setRowTemplate: function () {
@@ -429,6 +437,15 @@ var FbList = new Class({
 		}.bind(this));
 		this.plugins = a;
 	},
+	
+	firePlugin: function (method) {
+		var args = Array.prototype.slice.call(arguments);
+		args = args.slice(1, args.length);
+		this.plugins.each(function (plugin) {
+			Fabrik.fireEvent(method, [this, args]);
+		}.bind(this));
+		return this.result === false ? false : true;
+	},
 
 	watchEmpty: function (e) {
 		var b = document.id(this.options.form).getElement('.doempty', this.options.form);
@@ -673,6 +690,8 @@ var FbList = new Class({
 				this.request.options.data = data;
 			}
 			this.request.send();
+			
+			history.pushState(data, 'fabrik.list.submit');
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
@@ -780,6 +799,10 @@ var FbList = new Class({
 
 	_updateRows: function (data) {
 		var tbody;
+		if (typeOf(data) !== 'object') {
+			return;
+		}
+		history.pushState(data, 'fabrik.list.rows');
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);
@@ -870,9 +893,11 @@ var FbList = new Class({
 			tbodys.each(function (tbody) {
 				if (!tbody.hasClass('fabrik_groupdata')) {
 					var groupTbody = tbody.getNext();
-					if (groupTbody.getElements('.fabrik_row').length === 0) {
-						tbody.hide();
-						groupTbody.hide();
+					if (typeOf(groupTbody) !== 'null') {
+						if (groupTbody.getElements('.fabrik_row').length === 0) {
+							tbody.hide();
+							groupTbody.hide();
+						}
 					}
 				}
 			});
@@ -1316,7 +1341,7 @@ var FbListActions = new Class({
 
 					var opts =  {
 							position: this.options.floatPos,
-							showOn: 'click',
+							showOn: 'change',
 							hideOn: 'click',
 							content: c,
 							'heading': 'Edit: ',

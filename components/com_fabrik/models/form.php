@@ -68,9 +68,9 @@ class FabrikFEModelForm extends FabModelForm
 	public $editable = true;
 
 	/**
-	 * Form encoding type
+	 * Validation rule classes
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected $validationRuleClasses = null;
 
@@ -1024,7 +1024,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Are we copying a row?  Usually set in controller process().
 	 *
-	 * @param   bool  $set  if true, set _copyingRow to true
+	 * @param   bool  $set  if true, set copyingRow to true
 	 *
 	 * @return	bool
 	 */
@@ -1122,6 +1122,11 @@ class FabrikFEModelForm extends FabModelForm
 			// returning false here stops the default redirect occuring
 			return false;
 		}
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
+		// Clean both admin and front end cache.
+		parent::cleanCache('com_' . $package, 1);
+		parent::cleanCache('com_' . $package, 0);
 		return true;
 	}
 
@@ -1302,19 +1307,21 @@ class FabrikFEModelForm extends FabModelForm
 	 */
 	public function getElementData($fullName, $raw = false, $default = '', $repeatCount = null)
 	{
+		$data = isset($this->formData) ? $this->formData : $this->data;
 		$value = null;
 		if ($raw)
 		{
 			$fullName .= '_raw';
 		}
 		// Simplest case, element name exists in main group
-		if (array_key_exists($fullName, $this->formData))
+		if (is_array($data) && array_key_exists($fullName, $data))
 		{
-			$value = $this->formData[$fullName];
-		} /* Maybe we are being called from onAfterProcess hook, or somewhere else
-		   * running after store, when non-joined data names have been reduced to short
-		   * names in formData, so peek in _fullFormData
-		   */
+			$value = $data[$fullName];
+		}
+		/* Maybe we are being called from onAfterProcess hook, or somewhere else
+		 * running after store, when non-joined data names have been reduced to short
+		 * names in formData, so peek in _fullFormData
+		 */
 		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
 			$value = $this->_fullFormData[$fullName];
@@ -1735,7 +1742,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$groups = $this->getGroupsHiarachy();
 			$gkeys = array_keys($groups);
-			jimport('joomla.utilities.simplecrypt');
 			$crypt = FabrikWorker::getCrypt();
 			$w = new FabrikWorker;
 			foreach ($gkeys as $g)
@@ -2559,7 +2565,7 @@ class FabrikFEModelForm extends FabModelForm
 		$this->rowId = $this->getRowId();
 
 		/*
-		 * $$$ hugh - need to call this here as we set $this->_editable here, which is needed by some plugins
+		 * $$$ hugh - need to call this here as we set $this->editable here, which is needed by some plugins
 		 * hmmmm, this means that getData() is being called from checkAccessFromListSettings(),
 		 * so plugins running onBeforeLoad will have to unset($formModel->_data) if they want to
 		 * do something funky like change the rowid being loaded.  Not a huge problem, but caught me out
@@ -3345,6 +3351,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$groups = $this->getGroupsHiarachy();
 		$listModel = $this->getListModel();
+		$pkField = '';
 		foreach ($groups as $groupModel)
 		{
 			/**
@@ -3374,6 +3381,7 @@ class FabrikFEModelForm extends FabModelForm
 				$db = $listModel->getDb();
 				$fields = $db->getTableColumns($tblJoin->table_join, false);
 				$keyCount = 0;
+				unset($pkField);
 				foreach ($fields as $f)
 				{
 					if ($f->Key == 'PRI')
@@ -3384,6 +3392,10 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						$keyCount ++;
 					}
+				}
+				if (!isset($pkField))
+				{
+					$pkField = '';
 				}
 				/*
 				 * Corner case if you link to #__user_profile - its primary key is made of 2 elements, so
@@ -3855,8 +3867,16 @@ class FabrikFEModelForm extends FabModelForm
 				if (!is_array($v))
 				{
 					$v = urlencode($v);
+					$qs[] = $k . '=' . $v;
 				}
-				$qs[] = $k . '=' . $v;
+				else
+				{
+					foreach ($v as $subV)
+					{
+						$qs[] = $k . '[]=' . urlencode($subV);
+					}
+				}
+
 			}
 			$action = $page . implode("&amp;", $qs);
 			$action = JRoute::_($action);
@@ -4609,7 +4629,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		$showmsg = null;
 		$session->set($context . 'msg', $smsg);
-		$shosmsg = (array) $session->get($context . 'showsystemmsg', array(true));
+		$showmsg = (array) $session->get($context . 'showsystemmsg', array(true));
 		if (is_array($showmsg))
 		{
 			$showmsg = array_shift($showmsg);

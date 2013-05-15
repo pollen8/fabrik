@@ -58,7 +58,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$attribs = 'class="picklistcontainer' . $errorCSS . "\"";
-		$style = ".frompicklist, .topicklist{\n" . "background-color:#efefef;\n" . "padding:5px !important;\n" . "}\n" . "\n"
+		$style = ".frompicklist, .topicklist{\n" . "background-color:#efefef;\n" . "padding:5px !important;\n" . "list-style:none;}\n" . "\n"
 			. "div.picklistcontainer{\n" . "width:40%;\n" . "margin-right:10px;\n" . "margin-bottom:10px;\n" . "float:left;\n" . "}\n" . "\n"
 			. ".frompicklist li, .topicklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
 			. "cursor:move;\n" . "}\n" . "\n" . "li.emptyplicklist{\n" . "background-color:transparent;\n" . "cursor:pointer;\n" . "}";
@@ -92,14 +92,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			$aRoValues[] = $tmptxt;
 			$i++;
 		}
-		if (empty($arSelected))
-		{
-			$fromlist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
-		}
-		if (empty($aRoValues))
-		{
-			$tolist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
-		}
+		$fromlist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
+		$tolist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 
 		$fromlist[] = '</ul>';
 		$tolist[] = '</ul>';
