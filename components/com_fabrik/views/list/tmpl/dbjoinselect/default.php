@@ -2,6 +2,8 @@
 /**
  * Fabrik List Template: DB Join Select
  *
+ * @deprecated since 3.0.8/3.1 as we now load list defult tmpl, and us js else where to observe row clicks.
+ *
  * @package     Joomla
  * @subpackage  Fabrik
  * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.

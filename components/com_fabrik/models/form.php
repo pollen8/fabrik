@@ -4470,8 +4470,16 @@ class FabrikFEModelForm extends FabModelForm
 				if (!is_array($v))
 				{
 					$v = urlencode($v);
+					$qs[] = $k . '=' . $v;
 				}
-				$qs[] = $k . '=' . $v;
+				else
+				{
+					foreach ($v as $subV)
+					{
+						$qs[] = $k . '[]=' . urlencode($subV);
+					}
+				}
+
 			}
 			$action = $page . implode("&amp;", $qs);
 			$action = JRoute::_($action);

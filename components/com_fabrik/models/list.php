@@ -2391,16 +2391,21 @@ class FabrikFEModelList extends JModelForm
 		JDEBUG ? $profiler->mark('queryselect: fields loaded') : null;
 		$sfields = (empty($fields)) ? '' : implode(", \n ", $fields) . "\n ";
 
+		/**
+		 * Testing potential fix for FOUND_ROWS performance issue on large tables.  If merging,
+		 * we never do a SELECT FOUND_ROWS(), so no need to use SQL_CALC_FOUND_ROWS.
+		 */
+		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
-			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . $sfields . $strPKey;
+			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . $sfields . $strPKey;
 		}
 		else
 		{
-			$query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . trim($sfields, ", \n") . "\n";
+			$query = 'SELECT ' . $calc_found_rows . ' DISTINCT ' . trim($sfields, ", \n") . "\n";
 		}
 		$query .= ' FROM ' . $db->quoteName($table->db_table_name) . " \n";
 		return $query;
@@ -2533,18 +2538,23 @@ class FabrikFEModelList extends JModelForm
 					if ($orderbyRaw !== '')
 					{
 						// $$$ hugh - getOrderByName can return a CONCAT, ie join element ...
-						// $$$ hugh - OK, we need to test for this twice, because older elements
-						// which get converted form names to ids above have already been run through
-						// getOrderByName().  So first check here ...
+
+						/*
+						 * $$$ hugh - OK, we need to test for this twice, because older elements
+						 * which get converted form names to ids above have already been run through
+						 * getOrderByName().  So first check here ...
+						 */
 						if (!JString::stristr($orderbyRaw, 'CONCAT('))
 						{
 							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
 							if (array_key_exists($orderbyRaw, $els))
 							{
 								$field = $els[$orderbyRaw]->getOrderByName();
-								// $$$ hugh - ... second check for CONCAT, see comment above
-								// $$$ @TODO why don't we just embed this logic in safeColName(), so
-								// it recognizes a CONCAT and treats it accordingly?
+								/*
+								 * $$$ hugh - ... second check for CONCAT, see comment above
+								 * $$$ @TODO why don't we just embed this logic in safeColName(), so
+								 * it recognizes a CONCAT and treats it accordingly?
+								 */
 								if (!JString::stristr($field, 'CONCAT('))
 								{
 									$field = FabrikString::safeColName($field);
@@ -5919,7 +5929,8 @@ class FabrikFEModelList extends JModelForm
 		$w = new FabrikWorker;
 		$session = JFactory::getSession();
 		$formModel = $this->getFormModel();
-		//$linksToForms = $this->getLinksToThisKey();
+
+		// $linksToForms = $this->getLinksToThisKey();
 		$oldLinksToForms = $this->getLinksToThisKey();
 		$linksToForms = array();
 		foreach ($oldLinksToForms as $join)
@@ -7541,9 +7552,11 @@ class FabrikFEModelList extends JModelForm
 		$query = ' ALTER TABLE ' . $db->quoteName($table) . ' ADD INDEX ' . $db->quoteName("fb_{$prefix}_{$field}_{$type}") . ' ('
 				. $db->quoteName($field) . ' ' . $size . ')';
 		$db->setQuery($query);
-		try {
+		try
+		{
 			$db->execute();
-		} catch (RuntimeException $e)
+		}
+		catch (RuntimeException $e)
 		{
 			// Try to suppress error
 			$this->setError($e->getMessage());
@@ -7580,9 +7593,12 @@ class FabrikFEModelList extends JModelForm
 				if ($index->Key_name == "fb_{$prefix}_{$field}_{$type}")
 				{
 					$db->setQuery("ALTER TABLE " . $db->quoteName($table) . " DROP INDEX " . $db->quoteName("fb_{$prefix}_{$field}_{$type}"));
-					try {
+					try
+					{
 						$db->execute();
-					} catch (Exception $e) {
+					}
+					catch (Exception $e)
+					{
 						$this->setError($e->getMessage());
 					}
 					break;
@@ -8107,11 +8123,11 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($app->isAdmin())
 			{
-				$link .= "index.php?option=' . $package . '&task=$view.view&formid=" . $table->form_id . "&listid=" . $this->getId() . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package . '&task=' . $view . '.view&formid=' . $table->form_id . '&listid=' . $this->getId() . $keyIdentifier;
 			}
 			else
 			{
-				$link .= "index.php?option=' . $package. '&view=$view&formid=" . $table->form_id . $keyIdentifier;
+				$link .= 'index.php?option=com_' . $package . '&view=' . $view . '&formid=' . $table->form_id . $keyIdentifier;
 			}
 			if ($this->packageId !== 0)
 			{
@@ -8505,7 +8521,7 @@ class FabrikFEModelList extends JModelForm
 			$input->set('rowid', $rowid);
 			$app = JFactory::getApplication();
 			$formid = $input->getInt('formid');
-			$app->redirect('index.php?option=' . $package. '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
+			$app->redirect('index.php?option=' . $package . '&view=form&formid=' . $formid . '&rowid=' . $rowid . '&format=raw');
 		}
 		return json_encode($data);
 	}
@@ -8645,7 +8661,8 @@ class FabrikFEModelList extends JModelForm
 		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
 		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
-		if ($filterLimit) {
+		if ($filterLimit)
+		{
 			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));
 		}
 		else
@@ -10056,12 +10073,12 @@ class FabrikFEModelList extends JModelForm
 		{
 			$csvIds = $this->getAllPublishedListElementIDs();
 		}
-		else if ($params->get('csv_which_elements', 'selected') == 'all')
+		elseif ($params->get('csv_which_elements', 'selected') == 'all')
 		{
 			// Export code will export all, if list is empty
 			$csvIds = array();
 		}
-		else if ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
+		elseif ($params->get('csv_elements') == '' || $params->get('csv_elements') == 'null')
 		{
 			$csvIds = array();
 		}
@@ -10121,7 +10138,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$params = $this->getParams();
 		if (($this->canAdd() && $params->get('show-table-add')) || $this->getShowFilters() || $this->getAdvancedSearchLink() || $this->canGroupBy() || $this->canCSVExport()
-				|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
+			|| $this->canCSVImport() || $params->get('rss') || $params->get('pdf') || $this->canEmpty())
 		{
 			return true;
 		}
@@ -10314,7 +10331,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Return an array of elements which are set to always render
 	 *
-	 * @param   bool  not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
+	 * @param   bool  $not_shown_only  Only return elements which have 'always render' enabled, AND are not displayed in the list
 	 *
 	 * @return   bool  array of element models
 	 */

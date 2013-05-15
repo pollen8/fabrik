@@ -63,7 +63,7 @@ class FabrikViewFormBase extends JViewLegacy
 			return false;
 		}
 		$this->isMultiPage = $model->isMultiPage();
-		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $this->get('FormPluginHTML');
+		list($this->plugintop, $this->pluginbottom, $this->pluginend) = $model->getFormPluginHTML();
 
 		$listModel = $model->getlistModel();
 		$table = $listModel->noTable() ? null : $listModel->getTable();
@@ -96,10 +96,10 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->editable = $model->isEditable();
 
-		$form->label = $this->get('label');
+		$form->label = $model->getLabel();
 		$form->intro = $model->getIntro();
 		$form->outro = $model->getOutro();
-		$form->action = $this->get('Action');
+		$form->action = $model->getAction();
 		$form->class = $model->getFormClass();
 		$form->formid = $model->isEditable() ? 'form_' . $model->getId() : 'details_' . $model->getId();
 		$form->name = 'form_' . $model->getId();
@@ -117,7 +117,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		JDEBUG ? $profiler->mark('form view before validation classes loaded') : null;
 
-		$tmpl = $this->get('tmpl');
+		$tmpl = $model->getTmpl();
 		$this->tmpl = $tmpl;
 
 		$this->_addButtons();
@@ -165,7 +165,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$list->id = $form->record_in_database ? $model->getListModel()->getTable()->id : 0;
 		$this->list = $list;
 		JDEBUG ? $profiler->mark('form view: before getRelatedTables()') : null;
-		$this->linkedTables = $this->get('RelatedTables');
+		$this->linkedTables = $model->getRelatedTables();
 		JDEBUG ? $profiler->mark('form view: after getRelatedTables()') : null;
 		$this->setMessage();
 
@@ -452,7 +452,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		FabrikHelperHTML::tips('.hasTip', array(), "$('$bkey')");
 
-		$this->get('FormCss');
+		$model->getFormCss();
 
 		$opts = $this->jsOpts();
 		$opts = json_encode($opts);
@@ -931,6 +931,7 @@ class FabrikViewFormBase extends JViewLegacy
 	{
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
+
 		$fields = array();
 		$ro = $this->get('readOnlyVals');
 		foreach ($ro as $key => $pair)

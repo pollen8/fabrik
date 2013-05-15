@@ -1340,7 +1340,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 							  */
 
 				$max = count($rows) < 7 ? count($rows) : 7;
-				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max. '"' : 'size="1"';
+				$size = $element->filter_type === 'multiselect' ? 'multiple="multiple" size="' . $max . '"' : 'size="1"';
 				$v = $fType === 'multiselect' ? $v . '[]' : $v;
 
 				jimport('joomla.utilities.date');
@@ -1416,7 +1416,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					$autoId = '.advanced-search-list .autocomplete-trigger';
 				}
-				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, 'date');
+				FabrikHelperHTML::autoComplete($autoId, $this->getElement()->id, $this->getFormModel()->getId(), 'date');
 				break;
 		}
 		if ($normal)
