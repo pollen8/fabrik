@@ -1319,16 +1319,17 @@ EOD;
 	 *
 	 * @param   string  $htmlid     of element to turn into autocomplete
 	 * @param   int     $elementid  element id
+	 * @param   int     $formid     form id
 	 * @param   string  $plugin     plugin name
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  void
 	 */
 
-	public static function autoComplete($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		self::autoCompleteScript();
-		$json = self::autoCompletOptions($htmlid, $elementid, $plugin, $opts);
+		$json = self::autoCompletOptions($htmlid, $elementid, $formid, $plugin, $opts);
 		$str = json_encode($json);
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
 		self::addScriptDeclaration("head.ready(function() { new $class('$htmlid', $str); });");
@@ -1339,19 +1340,20 @@ EOD;
 	 *
 	 * @param   string  $htmlid     element to turn into autocomplete
 	 * @param   int     $elementid  element id
+	 * @param   int     $formid     form id
 	 * @param   string  $plugin     plugin type
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public static function autoCompletOptions($htmlid, $elementid, $plugin = 'field', $opts = array())
+	public static function autoCompletOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
-			. '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{
