@@ -22,8 +22,8 @@ var FbAutocomplete = new Class({
 	},
 
 	initialize: function (element, options) {
-		console.log('ini cdd', element, options);
 		this.setOptions(options);
+		element = element.replace('-auto-complete', '');
 		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
 		this.cache = {};
 		this.selected = -1;
@@ -270,7 +270,6 @@ var FabCddAutocomplete = new Class({
 	Extends: FbAutocomplete,
 	
 	search: function (e) {
-		console.log(this.options.url);
 		var key;
 		var v = this.getInputElement().get('value');
 		if (v === '') {

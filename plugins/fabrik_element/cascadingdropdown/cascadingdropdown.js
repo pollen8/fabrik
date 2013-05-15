@@ -119,7 +119,6 @@ var FbCascadingdropdown = new Class({
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
 						this.addOption(item.value, item.text);
-						//new Element('option', opts).set('text', item.text).inject(this.element);
 					}
 					
 					if (this.options.showDesc === true && item.description) {
@@ -231,6 +230,17 @@ var FbCascadingdropdown = new Class({
 			}.bind(this));
 		}
 		Fabrik.fireEvent('fabrik.cdd.update', this);
+	},
+	
+	/**
+	 * Update auto-complete fields id and create new autocompleter object for duplicated element
+	 */
+	cloneAutoComplete: function () {
+		var f = this.getAutoCompleteLabelField();
+		f.id = this.element.id + '-auto-complete';
+		f.name = this.element.name.replace('[]', '') + '-auto-complete';
+		document.id(f.id).value = '';
+		new FabCddAutocomplete(this.element.id, this.options.autoCompleteOpts);
 	},
 	
 	showDesc: function (e) {

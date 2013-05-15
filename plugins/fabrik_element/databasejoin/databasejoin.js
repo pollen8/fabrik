@@ -149,7 +149,11 @@ var FbDatabasejoin = new Class({
 			subOpts = this.element.getElements('> .fabrik_subelement');
 			opt = this.getCheckboxTmplNode().clone();
 			var i = opt.getElement('input');
-			i.name = i.name.replace(/\[\d+\]$/, '[' + subOpts.length + ']');
+			if (this.options.canRepeat) {
+				i.name = this.options.fullName + '[' + this.options.repeatCounter + '][' + subOpts.length + ']';
+			} else {
+				i.name = this.options.fullName + '[' + subOpts.length + ']';	
+			}
 			
 			opt.getElement('span').set('text', l);
 			opt.getElement('input').set('value', v);
@@ -158,23 +162,10 @@ var FbDatabasejoin = new Class({
 			opt.inject(last, injectWhere);
 			opt.getElement('input').checked = chxed;
 			
-			/*var ids = this.element.getElements('.fabrikHide > .fabrik_subelement');
-			var newid = this.getCheckboxIDTmplNode().clone();
-			newid.getElement('span').set('text', l);
-			newid.getElement('input').set('value', 0); // to add a new join record set to 0
-			last = ids.length === 0 ? this.element.getElement('.fabrikHide') : ids.getLast();
-			newid.inject(last, injectWhere);
-			
-			i = newid.getElement('input');
-			// Update end [n]
-			i.name = i.name.replace(/\[\d+\]$/, '[' + ids.length + ']');
-			newid.getElement('input').checked = chxed;*/
-			
 			break;
 		case 'radio':
 		/* falls through */
 		default:
-			console.log(this.options);
 			// Not working in cdd in repeat group.
 			//var name = this.options.element + '[]';
 			var name;
@@ -675,13 +666,19 @@ var FbDatabasejoin = new Class({
 		this.init();
 		this.watchSelect();
 		if (this.options.displayType === 'auto-complete') {
-			// Update auto-complete fields id and create new autocompleter object for duplicated element
-			var f = this.getAutoCompleteLabelField();
-			f.id = this.element.id + '-auto-complete';
-			f.name = this.element.name.replace('[]', '') + '-auto-complete';
-			document.id(f.id).value = '';
-			new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
+			this.cloneAutoComplete();
 		}
+	},
+	
+	/**
+	 * Update auto-complete fields id and create new autocompleter object for duplicated element
+	 */
+	cloneAutoComplete: function () {
+		var f = this.getAutoCompleteLabelField();
+		f.id = this.element.id + '-auto-complete';
+		f.name = this.element.name.replace('[]', '') + '-auto-complete';
+		document.id(f.id).value = '';
+		new FbAutocomplete(this.element.id, this.options.autoCompleteOpts);
 	},
 	
 	init: function () {

@@ -91,8 +91,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->watchInSameGroup = $watchGroup->id === $group->id;
 		$opts->editing = ($this->isEditable() && $rowid !== '');
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
+		$formId = $this->getFormModel()->getId();
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
-				? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, 'cascadingdropdown') : null;
+				? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, $formId, 'cascadingdropdown') : null;
 		$this->elementJavascriptJoinOpts($opts);
 		return array('FbCascadingdropdown', $id, $opts);
 	}

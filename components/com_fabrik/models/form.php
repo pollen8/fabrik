@@ -769,8 +769,10 @@ class FabrikFEModelForm extends FabModelForm
 				$query = $db->getQuery(true);
 				$query->select('g.id, j.id AS joinid')->from('#__{package}_joins AS j')
 					->join('INNER', '#__{package}_groups AS g ON g.id = j.group_id')->where('list_id = ' . $listid . ' AND g.published = 1');
-				$db->setQuery($query);
 
+				// Added as otherwise you could potentially load a element joinid as a group join id. 3.1
+				$query->where('j.element_id = 0');
+				$db->setQuery($query);
 				$joinGroups = $db->loadObjectList('id');
 				foreach ($joinGroups as $k => $o)
 				{

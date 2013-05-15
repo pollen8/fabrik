@@ -815,7 +815,7 @@ class FabrikFEModelGroup extends FabModel
 			// $$$ rob set join models data from preloaded table joins - reduced load time
 			for ($x = 0; $x < count($js); $x++)
 			{
-				if ($js[$x]->id == $group->join_id)
+				if ($js[$x]->id == $group->join_id && $js[$x]->element_id == 0)
 				{
 					$this->joinModel->setData($js[$x]);
 					break;

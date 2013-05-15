@@ -52,7 +52,6 @@ class FabrikAdminControllerList extends FabControllerForm
 		// Use the front end list renderer
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= $input->get('layout', 'default');
-		echo $this->view_item . $viewType;exit;
 		$view = $this->getView($this->view_item, $viewType, 'FabrikView');
 		//$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
