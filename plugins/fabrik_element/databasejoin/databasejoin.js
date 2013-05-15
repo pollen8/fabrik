@@ -406,7 +406,6 @@ var FbDatabasejoin = new Class({
 	 */
 	selectThenAdd: function () {
 		Fabrik.addEvent('fabrik.block.added', function (block, blockid) {
-			console.log('block added', block, blockid);
 			if (blockid === 'list_' + this.options.listid + this.options.listRef) {
 				block.form.addEvent('click:relay(.addbutton)', function (event, target) {
 					event.preventDefault();
