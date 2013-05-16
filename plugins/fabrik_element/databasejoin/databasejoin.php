@@ -1193,7 +1193,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$html[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 		$editable = $this->isEditable();
 		$html[] = FabrikHelperHTML::aList('radio', $tmp, $thisElName, $attribs, $defaultValue, 'value', 'text', $optsPerRow, $editable);
-		//$html[] = '</div>';
 	}
 
 	/**
@@ -2684,7 +2683,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$return = $joinVal;
 		}
-		if ($return == '.')
+
+		// If storing in join tbl then we should use the alias created from the CONCAT select subquery
+		if ($return == '.' || $this->isJoin())
 		{
 			$return = parent::getOrderByName();
 		}
@@ -2789,6 +2790,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		return $sql;
 	}
+
+	/**
+	 * Get the parent key element name
+	 *
+	 * @return string
+	 */
 
 	protected function buildQueryParentKey()
 	{
