@@ -407,7 +407,11 @@ var FbDateTime = new Class({
 					subEl.value = '';
 				});
 				if (this.cal) {
-					this.cal.date = '';
+					/*
+					 * Can't set this.cal.date to a blank string as it expects a date object
+					 * So, defaulting to todays date, not sure we can do anything else?
+					 */ 
+					this.cal.date = new Date();
 				}
 				return;
 			}
