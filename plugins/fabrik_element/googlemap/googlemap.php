@@ -405,7 +405,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
-			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : 4;
+			$o->zoomlevel = count($ar) == 2 ? array_pop($ar) : $o->zoomlevel;
 			$v = FabrikString::ltrimword($ar[0], "(");
 			$v = rtrim($v, ")");
 			$o->coords = explode(",", $v);

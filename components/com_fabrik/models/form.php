@@ -466,7 +466,8 @@ class FabrikFEModelForm extends FabModelForm
 		$tmpl = $input->get('layout', $tmpl);
 
 		// Test it exists - otherwise revert to baseTmpl tmpl
-		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/form/tmpl/' . $tmpl))
+		$folder = $this->isEditable() ? 'form' : 'details';
+		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/' . $folder . '/tmpl/' . $tmpl))
 		{
 			$tmpl = $baseTmpl;
 		}

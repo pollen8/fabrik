@@ -1749,7 +1749,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$this->_repeatGroupCounter = $repeatCounter;
 		$id = $this->getHTMLId($repeatCounter);
 		$name = $this->getHTMLName($repeatCounter);
-		echo "Name = $name<br>";
 		$groupModel = $this->getGroup();
 		$element = $this->getElement();
 		$params = $this->getParams();

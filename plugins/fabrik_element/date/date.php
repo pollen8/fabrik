@@ -886,7 +886,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 							$value = $data[$name][$repeatCounter];
 						}
 					}
-					else if (array_key_exists($name, $data))
+					elseif (array_key_exists($name, $data))
 					{
 						$value = $data[$name];
 					}
@@ -1304,8 +1304,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				$return[] = '<div class="fabrik_filter_container">';
 				if ($fType === 'range-hidden')
 				{
-					$return[] = '<input type="hidden" name="' . $v. '[0]' . '" class="' . $class . '" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
-					$return[] = '<input type="hidden" name="' . $v. '[1]' . '" class="' . $class . '" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
+					$return[] = '<input type="hidden" name="' . $v . '[0]' . '" class="' . $class . '" value="' . $default[0] . '" id="' . $htmlid . '-0" />';
+					$return[] = '<input type="hidden" name="' . $v . '[1]' . '" class="' . $class . '" value="' . $default[1] . '" id="' . $htmlid . '-1" />';
 					$return[] = '</div>';
 				}
 				else
@@ -2364,11 +2364,11 @@ class FabDate extends JDate
 	/**
 	 * Converts strftime format into PHP date() format
 	 *
-	 * @param   string  $format  strftime format
+	 * @param   string  &$format  Strftime format
 	 *
-	 * @since 3.0.7
+	 * @since   3.0.7
 	 *
-	 * @return string  php date() format
+	 * @return  void
 	 */
 
 	static public function strftimeFormatToDateFormat(&$format)
@@ -2386,6 +2386,14 @@ class FabDate extends JDate
 
 		$format = str_replace($search, $replace, $format);
 	}
+
+	/**
+	 * Convert strftime to PHP time format
+	 *
+	 * @param   string  &$format  Format
+	 *
+	 * @return  void
+	 */
 
 	static public function dateFormatToStrftimeFormat(&$format)
 	{

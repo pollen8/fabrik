@@ -80,12 +80,17 @@ $states	= array(
 	<table class="table table-striped" id="elementList">
 		<thead>
 			<tr>
+				<th width="4%">
+					<?php echo JHTML::_('grid.sort', 'JGRID_HEADING_ID', 'e.id', $listDirn, $listOrder); ?>
+				</th>
+
 				<th width="2%">
 					<?php echo JHtml::_('grid.sort', '<i class="icon-menu-2"></i>', 'e.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING'); ?>
 				</th>
 				<th width="2%">
 				</th>
 				<th width="1%"> <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /> </th>
+
 				<th width="13%" >
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_NAME', 'e.name', $listDirn, $listOrder); ?>
 				</th>
@@ -101,7 +106,7 @@ $states	= array(
 				<th width="10%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_PLUGIN', 'e.plugin', $listDirn, $listOrder); ?>
 				</th>
-				<th width="10%">
+				<th width="7%">
 					<?php echo JHTML::_('grid.sort', 'COM_FABRIK_SHOW_IN_LIST', 'e.show_in_list_summary', $listDirn, $listOrder); ?>
 				</th>
 				<th width="5%">
@@ -127,7 +132,9 @@ $states	= array(
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
-
+<td>
+						<?php echo $item->id; ?>
+					</td>
 			<td>
 			<?php if ($canChange) :
 						$disableClassName = '';

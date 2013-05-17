@@ -619,7 +619,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		return parent::getValue($data, $repeatCounter, $opts);
+		$v = parent::getValue($data, $repeatCounter, $opts);
+		if (is_string($v))
+		{
+			$v = FabrikWorker::JSONtoData($v, true);
+		}
+		return $v;
 	}
 
 	/**

@@ -2,12 +2,16 @@
 <extension client="site" method="upgrade" type="module" version="30">
 	<name>mod_fabrik_list</name>
 	<author>Rob Clayburn</author>
-	<creationDate>March 2013</creationDate>
+	<creationDate>May 2013</creationDate>
 	<copyright>(C) 2005-2013 fabrikar.com</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
+<<<<<<< HEAD
 	<version>3.1b</version>
+=======
+	<version>3.0.8</version>
+>>>>>>> 8beaea6903c65193bd2b8d7cc5c3b00c6e2c98d7
 	<description>MOD_FABRIK_LIST_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fabrik_list">mod_fabrik_list.php</filename>
