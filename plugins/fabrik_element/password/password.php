@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class plgFabrik_ElementPassword extends plgFabrik_Element
+class plgFabrik_ElementPassword extends PlgFabrik_Element
 {
 
 	/**
@@ -146,12 +146,13 @@ class plgFabrik_ElementPassword extends plgFabrik_Element
 		 * rather than using $data, to avoid issues with things like "foo%20bar" getting incorrectly
 		 * decoded as "foo bar" in $data.
 		 */
-		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
+ 		$value = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$name = $this->getFullName(false, true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
+		unset($this->defaults);
 		$this->setFullName($check_name, false, true, false);
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
-		
+
 		$element->name = $origname;
 		if ($checkvalue != $value)
 		{
