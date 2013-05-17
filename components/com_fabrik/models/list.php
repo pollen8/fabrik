@@ -6497,6 +6497,15 @@ $groupBy .= '_raw';
 				if (($isJoin && $groupModel->isJoin()) || (!$isJoin && !$groupModel->isJoin()))
 				{
 					$elementModels = $groupModel->getPublishedElements();
+
+					/*
+					 * If the group is un-editable - then the form won't contain the group data, thus we don't want to add blank data into $oRecord
+					 * @see http://fabrikar.com/forums/index.php?threads/changing-access-level-for-a-group-corrupts-data.34067/
+					 */
+					if (!$groupModel->canView())
+					{
+						continue;
+					}
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
