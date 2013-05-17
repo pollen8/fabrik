@@ -170,7 +170,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->setMessage();
 
 		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
-		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/' . $jTmplFolder . '/' . $tmpl);
+		$folder = $model->isEditable() ? 'form' : 'details';
+		$this->addTemplatePath($this->_basePath . '/' . $folder . '/' . $jTmplFolder . '/' . $tmpl);
 
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl);
