@@ -209,7 +209,7 @@ var FbList = new Class({
 	 * Used for db join select states.
 	 */
 	rowClicks: function () {
-		fconsole.log('rowClicks', this.list);
+		fconsole('rowClicks', this.list);
 		this.list.addEvent('click:relay(.fabrik_row)', function (e, r) {
 			var d = Array.from(r.id.split('_')),
 			data = {};
@@ -884,10 +884,10 @@ var FbList = new Class({
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this),
 			onError: function (text, error) {
-				fconsole.log(text, error);
+				fconsole(text, error);
 			},
 			onFailure: function (xhr) {
-				fconsole.log(xhr);
+				fconsole(xhr);
 			}
 		}).send();
 	},
