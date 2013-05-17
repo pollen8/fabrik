@@ -260,7 +260,7 @@ var FbGoogleMapViz = new Class({
 			var i = 0;
 			for (i = 1; i <= 5; ++i) {
 				styles.push({
-					'url': Fabrik.liveSite + "/components/com_fabrik/libs/googlemaps/markerclustererplus/images/m" + i + ".png",
+					'url': Fabrik.liveSite + "components/com_fabrik/libs/googlemaps/markerclustererplus/images/m" + i + ".png",
 					'height': sizes[i - 1],
 					'width': sizes[i - 1]
 				});
