@@ -342,19 +342,31 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			return false;
 		}
-		$listModel = $this->getlistModel();
-		$table = $listModel->getTable();
-		$joins = $listModel->getJoins();
-		foreach ($joins as $join)
+
+		if (!$this->getFormModel()->getForm()->record_in_database)
 		{
-			if ($join->element_id == $element->id)
+			// Db join in form not recording to db
+			$joinModel = JModelLegacy::getInstance('Join', 'FabrikFEModel');
+			$this->join = $joinModel->getJoinFromKey('element_id', $element->id);
+			return $this->join;
+		}
+		else
+		{
+			$listModel = $this->getlistModel();
+
+			$table = $listModel->getTable();
+			$joins = $listModel->getJoins();
+			foreach ($joins as $join)
 			{
-				$this->join = $join;
-				if (is_string($this->join->params))
+				if ($join->element_id == $element->id)
 				{
-					$this->join->params = new JRegistry($this->join->params);
+					$this->join = $join;
+					if (is_string($this->join->params))
+					{
+						$this->join->params = new JRegistry($this->join->params);
+					}
+					return $this->join;
 				}
-				return $this->join;
 			}
 		}
 		if (!in_array($app->input->get('task'), array('inlineedit', 'form.inlineedit')))

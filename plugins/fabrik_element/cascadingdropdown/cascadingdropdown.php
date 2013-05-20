@@ -381,6 +381,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (!empty($filterview) && $this->getFilterBuildMethod() == 1)
 		{
+
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
 			$listModel = $this->getListModel();
 			$db = $listModel->getDb();
@@ -725,7 +726,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				}
 			}
 		}
-
 		$where = '';
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')

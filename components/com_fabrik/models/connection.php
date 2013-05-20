@@ -35,7 +35,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	 * Default connection table
 	 *
 	 * @var JTable
-	*/
+	 */
 	protected $defaultConnection = null;
 
 	/**

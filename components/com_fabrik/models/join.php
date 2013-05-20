@@ -22,18 +22,26 @@ jimport('joomla.application.component.model');
 class FabrikFEModelJoin extends FabModel
 {
 
-	/** @var object join table */
+	/**
+	 * Join table
+	 *
+	 * @var object
+	 */
 	protected $join = null;
 
-	/** @var int id of join to load */
+	/**
+	 * Join id to load
+	 *
+	 * @var int
+	 */
 	protected $id = null;
 
-	/** @var array join data to bind to Join table */
-	protected $data = null;
-
 	/**
-	 * Enter description here ...
+	 * Data to bind to Join table
+	 *
+	 * @var array
 	 */
+	protected $data = null;
 
 	/**
 	 * Constructor
@@ -104,13 +112,29 @@ class FabrikFEModelJoin extends FabModel
 			{
 				$this->join->load($this->id);
 			}
-			if (is_string($this->join->params))
-			{
-				$this->join->params = trim($this->join->params) == '' ? '{"type": ""}' : $this->join->params;
-				$this->join->params = json_decode($this->join->params);
-			}
+			$this->paramsType($this->join);
 		}
 		return $this->join;
+	}
+
+	/**
+	 * When loading the join JTable ensure its params are set to be a JRegistry item
+	 *
+	 * @param  JTable  &$join  Join table
+	 *
+	 * @return  void
+	 */
+
+	private function paramsType(&$join)
+	{
+		if (is_string($join->params))
+		{
+			$join->params = trim($join->params) == '' ? '{"type": ""}' : $join->params;
+			$join->params = new JRegistry($join->params);
+		}
+
+		// Set a default join alias - normally overwritten in listModel::_makeJoinAliases();
+		$join->table_join_alias = $join->table_join;
 	}
 
 	/**
@@ -127,8 +151,8 @@ class FabrikFEModelJoin extends FabModel
 	/**
 	 * Load the model from the element id
 	 *
-	 * @param   string  $key  db table key
-	 * @param   int     $id   key value
+	 * @param   string  $key  Db table key
+	 * @param   int     $id   Key value
 	 *
 	 * @return  FabTable  join
 	 */
@@ -140,6 +164,7 @@ class FabrikFEModelJoin extends FabModel
 			$db = FabrikWorker::getDbo(true);
 			$this->join = FabTable::getInstance('join', 'FabrikTable');
 			$this->join->load(array($key => $id));
+			$this->paramsType($this->join);
 		}
 		return $this->join;
 	}
@@ -147,7 +172,7 @@ class FabrikFEModelJoin extends FabModel
 	/**
 	 * Get join table's primary key
 	 *
-	 * @param   string  $glue  between table and field name
+	 * @param   string  $glue  Between table and field name
 	 *
 	 * @return  string
 	 */
@@ -160,12 +185,28 @@ class FabrikFEModelJoin extends FabModel
 		return $pk;
 	}
 
+	/**
+	 * Get foreign key
+	 *
+	 * @param   string  $glue  Between table and field name
+	 *
+	 * @return string
+	 */
+
 	public function getForeignKey($glue = '___')
 	{
 		$join = $this->getJoin();
 		$fk = $join->table_join . $glue . $join->table_join_key;
 		return $fk;
 	}
+
+	/**
+	 * Get joined to table primary key
+	 *
+	 * @param   string  $glue  Between table and field name
+	 *
+	 * @return string
+	 */
 
 	public function getJoinedToTablePk($glue = '___')
 	{
@@ -213,7 +254,7 @@ class FabrikFEModelJoin extends FabModel
 			return JError::raiseError(500, $db->getErrorMsg());
 		}
 
-		/* delete all form group records */
+		// Delete all form group records
 		$query->clear();
 		$query->delete(' #__{package}_formgroup')->where('group_id = ' . (int) $groupId);
 		$db->setQuery($query);
