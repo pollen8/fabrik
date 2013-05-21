@@ -29,7 +29,7 @@
 		
 		<field name="max-width" 
 			type="text" 
-			size="3" 
+			size="10" 
 			description="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_DESC" 
 			label="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_LABEL"/>
 
