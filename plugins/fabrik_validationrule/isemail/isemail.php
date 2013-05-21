@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
  * @since       3.0
  */
 
-class plgFabrik_ValidationruleIsEmail extends plgFabrik_Validationrule
+class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 {
 
 	/**
