@@ -2399,7 +2399,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set
 		$this->_id = JRequest::getInt('element_id');
-		$this->getElement(true);
+		$this->loadMeForAjax();
 		echo json_encode($this->_getOptions(JRequest::get('request')));
 	}
 

@@ -248,7 +248,8 @@ var FbDatabasejoin = new Class({
 				'task': 'plugin.pluginAjax',
 				'plugin': 'databasejoin',
 				'method': 'ajax_getOptions',
-				'element_id': this.options.id
+				'element_id': this.options.id,
+				'formid': this.options.formid
 			};
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
