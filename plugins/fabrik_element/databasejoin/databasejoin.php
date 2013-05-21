@@ -1112,14 +1112,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					{
 						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
-					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption" title="' . JText::_('COM_FABRIK_SELECT') . '">'
-							. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
+						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
 				if ($params->get('fabrikdatabasejoin_frontend_add') && $this->isEditable())
 				{
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
-					$html[] = '<a href="#" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption">';
+					$popupform = (int) $params->get('databasejoin_popupform');
+					$addURL = 'index.php?option=com_fabrik';
+					$addURL .= $app->isAdmin() ? '&task=form.view' : '&view=form';
+					$addURL .= '&tmpl=component&ajax=1&formid=' . $popupform;
+					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
 					$html[] = FabrikHelperHTML::image('action_add.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 

@@ -1182,13 +1182,16 @@ var FbForm = new Class({
 		return h;
 	},
 
-	watchGroupButtons : function () {
+	watchGroupButtons: function () {
 		/*this.form.getElements('.deleteGroup').each(function (g, i) {
 			g.addEvent('click', function (e) {
 				this.deleteGroup(e);
 			}.bind(this));
 		}.bind(this));*/
-		
+		if (typeOf(this.form) === 'null') {
+			fconsole('form: watchgroup buttons - didnt find form');
+			return;
+		}
 		this.form.addEvent('click:relay(.deleteGroup)', function (e, target) {
 			e.preventDefault();
 			this.deleteGroup(e);
