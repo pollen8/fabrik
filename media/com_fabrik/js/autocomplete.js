@@ -220,6 +220,7 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			}
 		} else {
+			console.log(e.key, e.code);
 			if (e.key === 'enter') {
 				window.fireEvent('blur');
 			}
@@ -244,8 +245,8 @@ var FbAutocomplete = new Class({
 			case 13://enter
 			case 9://tab
 				e.stop();
-				this.makeSelection({}, this.getSelected());
-				this.closeMenu();
+				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
+				this.makeSelection(selectEvnt);
 				break;
 			case 27://escape
 				e.stop();
