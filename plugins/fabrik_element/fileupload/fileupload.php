@@ -1231,7 +1231,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		echo "do stuff here";exit;
+		//echo "do stuff here";exit;
 		if ($groupModel->canRepeat())
 		{
 			if ($isjoin)
