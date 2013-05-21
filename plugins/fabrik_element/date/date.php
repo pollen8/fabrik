@@ -682,7 +682,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$opts->align = "Tl";
 		$opts->singleClick = true;
 		$opts->firstDay = intval($params->get('date_firstday'));
-		$validations = $this->getValidations();
+		$validations = $this->validator->findAll();
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->timeFormat = 24;
 		FabDate::dateFormatToStrftimeFormat($opts->ifFormat);

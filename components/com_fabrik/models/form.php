@@ -1929,7 +1929,7 @@ class FabrikFEModelForm extends FabModelForm
 				$elDbVals = array();
 				$element = $elementModel->getElement();
 
-				$validation_rules = $elementModel->getValidations();
+				$validation_rules = $elementModel->validator->findAll();
 
 				// $$ rob incorrect for ajax validation on joined elements
 				// $elName = $elementModel->getFullName(true, false);

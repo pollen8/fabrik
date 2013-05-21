@@ -517,7 +517,7 @@ class FabrikViewFormBase extends JViewLegacy
 						{
 							$aObjs[] = json_encode($ref);
 						}
-						$validations = $elementModel->getValidations();
+						$validations = $elementModel->validator->findAll();
 						if (!empty($validations) && $elementModel->isEditable())
 						{
 							$watchElements = $elementModel->getValidationWatchElements($c);

@@ -38,13 +38,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected $jsActions = null;
 
 	/**
-	 * Validation objects associated with the element
-	 *
-	 * @var array
-	 */
-	protected $validations = null;
-
-	/**
 	 * Editable
 	 *
 	 * @var bool
@@ -244,6 +237,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
+		$this->validator = JModelLegacy::getInstance('ElementValidator', 'FabrikFEModel');
+		$this->validator->setElementModel($this);
 		$this->access = new stdClass;
 	}
 
@@ -1422,10 +1417,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($this->isEditable())
 			{
-				$validations = array_unique($this->getValidations());
+				$validations = array_unique($this->validator->findAll());
 				if (count($validations) > 0)
 				{
-					$emptyIcon = $j3 ? 'star.png' : 'notempty.png';
+					$emptyIcon = $this->validator->getIcon();
 					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
@@ -1512,7 +1507,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($this->editable)
 		{
-			$validations = array_unique($this->getValidations());
+			$validations = array_unique($this->validator->findAll());
 			if (count($validations) > 0)
 			{
 				$opts->heading = JText::_('COM_FABRIK_VALIDATION');
@@ -1537,7 +1532,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$tmpl = $this->getFormModel()->getTmpl();
 		if ($this->isEditable() && $mode === 'form')
 		{
-			$validations = array_unique($this->getValidations());
+			$validations = array_unique($this->validator->findAll());
 			if (count($validations) > 0)
 			{
 				$lines = array();
@@ -2374,49 +2369,14 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Loads in elements validation objects
 	 *
+	 * @deprecated use $this->validator->findAll()
+	 *
 	 * @return  array	validation objects
 	 */
 
 	public function getValidations()
 	{
-		if (isset($this->validations))
-		{
-			return $this->validations;
-		}
-		$element = $this->getElement();
-		$params = $this->getParams();
-		$validations = (array) $params->get('validations', 'array');
-		$usedPlugins = (array) JArrayHelper::getValue($validations, 'plugin', array());
-		$published = JArrayHelper::getValue($validations, 'plugin_published', array());
-		$pluginManager = FabrikWorker::getPluginManager();
-		$pluginManager->getPlugInGroup('validationrule');
-		$c = 0;
-		$this->validations = array();
-
-		$dispatcher = JDispatcher::getInstance();
-		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
-		$i = 0;
-		foreach ($usedPlugins as $usedPlugin)
-		{
-			if ($usedPlugin !== '')
-			{
-				$isPublished = JArrayHelper::getValue($published, $i, true);
-				if ($isPublished)
-				{
-					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
-					$conf = array();
-					$conf['name'] = JString::strtolower($usedPlugin);
-					$conf['type'] = JString::strtolower('fabrik_Validationrule');
-					$plugIn = new $class($dispatcher, $conf);
-					$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
-					$plugIn->elementModel = $this;
-					$this->validations[] = $plugIn;
-					$c++;
-				}
-			}
-			$i ++;
-		}
-		return $this->validations;
+		return $this->validator->findAll();
 	}
 
 	/**
@@ -4738,21 +4698,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$opts->label = $element->label;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
-		$validationEls = array();
-		$validations = $this->getValidations();
-		if (!empty($validations) && $this->isEditable())
-		{
-			$watchElements = $this->getValidationWatchElements($repeatCounter);
-			foreach ($watchElements as $watchElement)
-			{
-				$o = new stdClass;
-				$o->id = $watchElement['id'];
-				$o->triggerEvent = $watchElement['triggerEvent'];
-				$validationEls[] = $o;
-			}
-		}
 		$opts->fullName = $this->getFullName(true, false);
-		$opts->watchElements = $validationEls;
+		$opts->watchElements = $this->validator->jsWatchElements($repeatCounter);;
 		$groupModel = $this->getGroup();
 		$opts->canRepeat = (bool) $groupModel->canRepeat();
 		$opts->isGroupJoin = (bool) $groupModel->isJoin();

@@ -158,15 +158,23 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getIcon($elementModel, $c = 0, $tmpl = '')
 	{
-		$name = $this->icon === true ? $this->pluginName : $this->icon;
-		if ($this->allowEmpty($elementModel, $c))
-		{
-			$name .= '_allowempty';
-		}
-		$label = '<span>' . $this->getLabel($elementModel, $c) . '</span>';
-		$opts = array('class' => 'fabrikTip ' . $this->pluginName, 'opts' => "{notice:true}", 'title' => $label);
-		$str = FabrikHelperHTML::image($name . '.png', 'form', $tmpl, $opts);
-		return $str;
+		$name = $elementModel->validator->getIcon();
+		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
+	}
+
+	/**
+	 * Get the base icon image as defined by the J Plugin options
+	 *
+	 * @since   3.1b2
+	 *
+	 * @return  string
+	 */
+
+	public function iconImage()
+	{
+		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
+		$params = new JRegistry($plugin->params);
+		return $params->get('icon', 'star');
 	}
 
 	/**
@@ -181,14 +189,8 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getHoverText($elementModel, $pluginc = 0, $tmpl = '')
 	{
-		$plugin = JPluginHelper::getPlugin('fabrik_validationrule', $this->pluginName);
-		$params = new JRegistry($plugin->params);
-		$name = $params->get('icon', 'star');
-		if ($this->allowEmpty($elementModel, $pluginc))
-		{
-			$name .= '_allowempty';
-		}
-		$i = FabrikHelperHTML::image($name . '.png', 'form', $tmpl, array('class' => $this->pluginName));
+		$name = $elementModel->validator->getIcon();
+		$i = FabrikHelperHTML::image($name, 'form', $tmpl, array('class' => $this->pluginName));
 		return $i . ' ' . $this->getLabel($elementModel, $pluginc);
 	}
 
