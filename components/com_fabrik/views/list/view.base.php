@@ -55,7 +55,6 @@ class FabrikViewListBase extends JView
 		array_unshift($src, 'media/com_fabrik/js/advanced-search.js');
 
 		$model->getCustomJsAction($src);
-		//$src[] = 'media/com_fabrik/js/encoder.js';
 
 		$tmpl = $this->get('tmpl');
 		$this->tmpl = $tmpl;
@@ -76,10 +75,11 @@ class FabrikViewListBase extends JView
 
 		$this->_row = new stdClass;
 		$script = array();
+
 		// 3.0 only attempt to allow js to be run when list loaded in ajax window. (head.ready never fired in ajax load)
 		if ($input->getInt('ajax') === 1)
 		{
-			$script[]= 'head.js([], function () {';
+			$script[] = 'head.js([], function () {';
 		}
 		else
 		{
@@ -438,7 +438,7 @@ class FabrikViewListBase extends JView
 		if ($app->isAdmin())
 		{
 			// Admin always uses com_fabrik option
-			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id .'&format=pdf&tmpl=component');
+			$this->pdfLink = JRoute::_('index.php?option=com_fabrik&task=list.view&listid=' . $item->id . '&format=pdf&tmpl=component');
 		}
 		else
 		{
@@ -451,7 +451,7 @@ class FabrikViewListBase extends JView
 			$this->pdfLink = JRoute::_($pdfLink);
 		}
 
-		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
+		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 
 		$this->groupByHeadings = $this->get('GroupByHeadings');
 		$this->filter_action = $this->get('FilterAction');

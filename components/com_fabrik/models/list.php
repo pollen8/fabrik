@@ -5801,6 +5801,7 @@ $groupBy .= '_raw';
 	public function getHeadings()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$item = $this->getTable();
 		$item->order_dir = JString::strtolower($item->order_dir);
@@ -5832,8 +5833,16 @@ $groupBy .= '_raw';
 		$listels = json_decode($params->get('list_elements'));
 
 		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 
+		// If we're loading in component tmpl then we shouldn't use the menu items
+		if ($input->get('tmpl') !== 'component')
+		{
+			$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+		}
+		else
+		{
+			$listels = $input->get('list_elements');
+		}
 		// $$$ rob check if empty or if a single empty value was set in the menu/module params
 		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
 		{
