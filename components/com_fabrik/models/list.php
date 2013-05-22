@@ -566,7 +566,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
-		$pluginManager->runPlugins('loadJavascriptInstance', $this, 'list', $container);
+		$pluginManager->runPlugins('onLoadJavascriptInstance', $this, 'list', $container);
 		return $pluginManager->_data;
 	}
 
