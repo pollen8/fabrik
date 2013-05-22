@@ -21,7 +21,7 @@ var Suboptions = new Class({
 		}
 		// $$$ rob - could probably do this better with firing an event from the main element page but for now this will do
 		Joomla.submitbutton = function (pressbutton) {
-			if (!this.onSave()) {
+			if (pressbutton !== 'element.cancel' && !this.onSave()) {
 				return false;
 			}
 			Joomla.submitform(pressbutton);
