@@ -435,7 +435,7 @@ class FabrikViewListBase extends JViewLegacy
 			$this->pdfLink = JRoute::_($pdfLink);
 		}
 
-		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $this->get('Headings');
+		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 
 		$this->groupByHeadings = $this->get('GroupByHeadings');
 		$this->filter_action = $this->get('FilterAction');

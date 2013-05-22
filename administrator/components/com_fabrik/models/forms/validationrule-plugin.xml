@@ -16,8 +16,18 @@
 				type="radio"
 				default="1"
 				repeat="true"
-				class="inputbox"
+				class="btn-group"
 				label="COM_FABRIK_PUBLISHED">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="show_icon"
+				type="radio"
+				default="1"
+				repeat="true"
+				label="COM_FABRIK_LABEL_SHOW_VALIDATION_ICON_LABEL"
+				description="COM_FABRIK_LABEL_SHOW_VALIDATION_ICON_DESC">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

@@ -5956,7 +5956,6 @@ class FabrikFEModelList extends JModelForm
 		$listels = json_decode($params->get('list_elements'));
 
 		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));

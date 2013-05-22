@@ -65,12 +65,12 @@ class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 		$api = new OP_API('https://api.openprovider.eu');
 
 		$args = array(
-		'domains' => array(
-		array(
-		'name' => $domain,
-		'extension' => $extension
-		)
-		)
+			'domains' => array(
+				array(
+					'name' => $domain,
+					'extension' => $extension
+				)
+			)
 		);
 		$request = new OP_Request;
 		$request->setCommand('checkDomainRequest')

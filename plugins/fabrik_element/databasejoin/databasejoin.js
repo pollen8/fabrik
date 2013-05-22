@@ -263,7 +263,8 @@ var FbDatabasejoin = new Class({
 				'task': 'plugin.pluginAjax',
 				'plugin': 'databasejoin',
 				'method': 'ajax_getOptions',
-				'element_id': this.options.id
+				'element_id': this.options.id,
+				'formid': this.options.formid
 			};
 		// $$$ hugh - don't think we need to fetch values if auto-complete
 		// and v is empty, otherwise we'll just fetch every row in the target table,
@@ -281,7 +282,7 @@ var FbDatabasejoin = new Class({
 			method: 'post', 
 			'data': data,
 			onSuccess: function (json) {
-				var existingValues = this.getOptionValues();
+				var sel, existingValues = this.getOptionValues();
 				
 				// If duplicating an element in a repeat group when its auto-complete we dont want to update its value
 				if (this.options.displayType === 'auto-complete' && v === '' && existingValues.length === 0) {
@@ -289,10 +290,8 @@ var FbDatabasejoin = new Class({
 				}
 				json.each(function (o) {
 					if (!existingValues.contains(o.value) && typeOf(o.value) !== 'null') {
-						if (this.activePopUp) {
-							this.options.value = o.value;
-						}
-						this.addOption(o.value, o.text, this.activePopUp);
+						sel = this.options.value === o.value;
+						this.addOption(o.value, o.text, sel);
 						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 						this.element.fireEvent('blur', new Event.Mock(this.element, 'blur'));
 					}
@@ -401,7 +400,6 @@ var FbDatabasejoin = new Class({
 						if (Fabrik.Windows[winid]) {
 							Fabrik.Windows[winid].close();
 						}
-						this.updateFromServer(json.rowid);
 					}
 				}.bind(this));
 				
@@ -699,11 +697,13 @@ var FbDatabasejoin = new Class({
 
 				// Fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
+					this.options.value = json.rowid;
+
 					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
 					if (this.options.displayType === 'auto-complete') {
 						
 						// Need to get v if autocomplete and updating from posted popup form as we only want to get ONE 
-						// option back inside updateFromServer;
+						// option back inside update();
 						var myajax = new Request.JSON({
 							'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=form&format=raw',
 							'data': {
@@ -711,7 +711,7 @@ var FbDatabasejoin = new Class({
 								'rowid': json.rowid
 							},
 							'onSuccess': function (json) {
-								this.updateFromServer(json.data[this.options.key]);
+								this.update(json.data[this.options.key]);
 							}.bind(this)
 						}).send();
 					} else {

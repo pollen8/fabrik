@@ -1133,7 +1133,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
 					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
-							. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
 				if ($frontEndAdd && $this->isEditable())

@@ -789,10 +789,10 @@ var FbList = new Class({
 				// Fabrik.fireEvent('fabrik.list.update', [this, json]);
 			}.bind(this),
 			onError: function (text, error) {
-				fconsole.log(text, error);
+				fconsole(text, error);
 			},
 			onFailure: function (xhr) {
-				fconsole.log(xhr);
+				fconsole(xhr);
 			}
 		}).send();
 	},

@@ -161,6 +161,25 @@ class PlgFabrik_ElementTextarea extends PlgFabrik_Element
 	}
 
 	/**
+	 * Get the element's HTML label
+	 *
+	 * @param   int     $repeatCounter  Group repeat counter
+	 * @param   string  $tmpl           Form template
+	 *
+	 * @return  string  label
+	 */
+
+	public function getLabel($repeatCounter = 0, $tmpl = '')
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		if ($params->get('textarea_showlabel') == '0')
+		{
+			$element->label = '';
+		}
+		return parent::getLabel($repeatCounter, $tmpl);
+	}
+	/**
 	 * Does the element use the WYSWYG editor
 	 *
 	 * @return  bool	use wysiwyg editor

@@ -206,7 +206,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = $input->get('isMambot', 0);
 		$form = $model->getForm();
-		$model->rowId = $input->get('rowid', '');
+		$model->rowId = $input->get('rowid', '', 'string');
 
 		/**
 		 * $$$ hugh - need this in plugin manager to be able to treat a "Copy" form submission

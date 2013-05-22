@@ -190,16 +190,17 @@ var PluginManager = new Class({
 				jQuery('*[rel=tooltip]').tooltip();
 			}
 
-			document.getElements('.hasTip').each(function (el) {
-				var title = el.get('title');
-				if (title) {
-					var parts = title.split('::', 2);
-					el.store('tip:title', parts[0]);
-					el.store('tip:text', parts[1]);
-				}
-			});
-			var JTooltips = new Tips($$('.hasTip'), {maxTitleChars: 50, fixed: false});
 		});
+		
+		document.getElements('.hasTip').each(function (el) {
+			var title = el.get('title');
+			if (title) {
+				var parts = title.split('::', 2);
+				el.store('tip:title', parts[0]);
+				el.store('tip:text', parts[1]);
+			}
+		});
+		var JTooltips = new Tips($$('.hasTip'), {maxTitleChars: 50, fixed: false});
 	},
 	
 	/**
