@@ -265,7 +265,6 @@ var FbListRadiusSearch = new Class({
 	 */
 	prefilter: function () {
 		if (this.options.prefilter) {
-			this.fx.slideIn();
 			this.mySlide.set(this.options.prefilterDistance);
 			
 			this.listform.getElements('input[name^=radius_search_active]').filter(function (f) {
