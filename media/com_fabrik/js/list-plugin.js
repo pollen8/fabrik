@@ -19,13 +19,23 @@ var FbListPlugin = new Class({
 		this.result = true; // set this to false in window.fireEvents to stop
 												// current action (eg stop ordering when
 												// fabrik.list.order run)
-		this.listform = this.getList().getForm();
-		var l = this.listform.getElement('input[name=listid]');
-		// in case its in a viz
-		if (typeOf(l) === 'null') {
+		if (typeOf(this.getList()) === 'null') {
 			return;
+		} else {
+			// Viz dont have getForm methid;
+			if (typeof this.getList().getForm === 'function') {
+				this.listform = this.getList().getForm();
+				var l = this.listform.getElement('input[name=listid]');
+				// in case its in a viz
+				if (typeOf(l) === 'null') {
+					return;
+				}
+				this.listid = l.value;
+			} else {
+				this.listform = this.getList().container.getElement('form');
+			}
 		}
-		this.listid = l.value;
+		
 		this.watchButton();
 	},
 
@@ -34,7 +44,11 @@ var FbListPlugin = new Class({
 	 */
 
 	getList: function () {
-		return Fabrik.blocks['list_' + this.options.ref];
+		var b = Fabrik.blocks['list_' + this.options.ref];
+		if (typeOf(b) === 'null') {
+			b = Fabrik.blocks['visualization_' + this.options.ref];
+		}
+		return b;
 	},
 	
 	/**

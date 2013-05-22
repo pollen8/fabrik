@@ -42,7 +42,7 @@ class FabrikFEModelPluginmanager extends JModel
 	 * @var  array
 	 */
 	protected $formPlugins = array();
-	
+
 	/**
 	 * Constructor
 	 *
@@ -316,9 +316,9 @@ class FabrikFEModelPluginmanager extends JModel
 	/**
 	 * Unset a form's element plugins
 	 *
-	 * @since   3.1b
-	 *
 	 * @param   JModel  $formModel  Form model
+	 *
+	 * @since   3.1b
 	 *
 	 * @return  void
 	 */
