@@ -63,7 +63,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @var bol
 	 */
-	protected $_recordInDatabase = 1;
+	protected $recordInDatabase = 1;
 
 	/**
 	 * Contain access rights
@@ -4030,7 +4030,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function recordInDatabase($data = null)
 	{
-		return $this->_recordInDatabase;
+		return $this->recordInDatabase;
 	}
 
 	/**
@@ -5756,7 +5756,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	{
 		// Needed for ajax update (since we are calling this method via dispatcher element is not set)
 		$this->setId(JRequest::getInt('element_id'));
-		//$this->getElement(true);
 		$this->loadMeForAjax();
 		$listModel = $this->getListModel();
 		$cache = FabrikWorker::getCache($listModel);

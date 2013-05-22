@@ -30,14 +30,22 @@ class FabrikFEModelVisualization extends JModel
 
 	var $_params = null;
 
-	//@var string url for filter form
-	var $getFilterFormURL = null;
+	/**
+	 * Url for filter form
+	 *
+	 * @var string
+	 */
+	protected $getFilterFormURL = null;
 
 	public $srcBase = "plugins/fabrik_visualization/";
 
 	public $pathBase = null;
 
-	/** @var string js code to ini list filters */
+	/**
+	 * JS code to ini list filters
+	 *
+	 * @var string
+	 */
 	protected $filterJs = null;
 
 	/**
@@ -467,7 +475,7 @@ class FabrikFEModelVisualization extends JModel
 	}
 
 	/**
-	 * get the js code to create instances of js table plugin classes
+	 * get the js code to create instances of js list plugin classes
 	 * needed for radius search filter
 	 *
 	 * @return  string
