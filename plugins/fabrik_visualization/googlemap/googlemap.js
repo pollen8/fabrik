@@ -63,6 +63,36 @@ var FbGoogleMapViz = new Class({
 			this.timer = this.update.periodical(this.options.refresh_rate, this);
 		}
 		
+		head.ready(function () {
+			if (typeof(Slimbox) !== 'undefined') {
+				Slimbox.scanPage();
+			} else if (typeof(Mediabox) !== 'undefined') {
+				Mediabox.scanPage();
+			}
+
+			//clear filter list
+			this.container =  document.id(this.options.container);
+			if (typeOf(this.container) !== 'null') {
+				var c = this.container.getElement('.clearFilters');
+				if (c) {
+					c.addEvent('click', function (e) {
+						this.container.getElements('.fabrik_filter').each(function (f) {
+							f.value = '';
+						});
+						e.stop();
+						this.container.getElement('form[name=filter]').submit();
+					}.bind(this));
+				}
+			}
+		}.bind(this));
+		
+		Fabrik.loadGoogleMap(true, function () {
+			this.iniGMap();
+		}.bind(this));
+		
+	},
+	
+	iniGMap: function () {
 		switch (this.options.maptype) {
 		case 'G_NORMAL_MAP':
 		/* falls through */
@@ -141,27 +171,6 @@ var FbGoogleMapViz = new Class({
 			}
 			//end
 			
-			if (typeof(Slimbox) !== 'undefined') {
-				Slimbox.scanPage();
-			} else if (typeof(Mediabox) !== 'undefined') {
-				Mediabox.scanPage();
-			}
-
-			//clear filter list
-			this.container =  document.id(this.options.container);
-			if (typeOf(this.container) !== 'null') {
-				var c = this.container.getElement('.clearFilters');
-				if (c) {
-					c.addEvent('click', function (e) {
-						this.container.getElements('.fabrik_filter').each(function (f) {
-							f.value = '';
-						});
-						e.stop();
-						this.container.getElement('form[name=filter]').submit();
-					}.bind(this));
-				}
-			}
-
 			this.setPolyLines();
 		}.bind(this));
 	},
