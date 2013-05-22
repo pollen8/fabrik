@@ -414,20 +414,38 @@ var FbGoogleMapViz = new Class({
 	},
 	
 	renderGroupedSideBar: function () {
+		var a, linkText, c;
 		if (!this.options.use_groups) {
 			return;
 		}
 		this.grouped = {};
-		var c = document.id(this.options.container).getElement('.grouped_sidebar');
+		c = document.id(this.options.container).getElement('.grouped_sidebar');
 		if (typeOf(c) === 'null') {
 			return;
 		}
+		c.empty();
+		// Iterate over the map icons to find the group by info
 		this.options.icons.each(function (i) {
 			if (typeOf(this.grouped[i.groupkey]) === 'null') {
+				
+				linkText = i.groupkey;
+				
+				var lookup = i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
+				
+				// Allow for images as group by text, (Can't have nested <a>'s so parse the label for content inside possible <a>)
+				var label = this.options.groupTemplates[i.listid][lookup];
+				var d = new Element('div').set('html', label);
+				if (d.getElement('a')) {
+					d = d.getElement('a');
+				}
+				linkText = d.get('html');
+					
 				this.grouped[i.groupkey] = [];
 				var k = i.listid + i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
 				k += ' ' + i.groupClass;
-				var h = new Element('div', {'class': 'groupedContainer' + k}).adopt(new Element('a', {
+				
+				// Build the group by toggle link
+				var a = new Element('a', {
 					'events': {
 						'click': function (e) {
 							var cname = e.target.className.replace('groupedLink', 'groupedContent');
@@ -438,21 +456,30 @@ var FbGoogleMapViz = new Class({
 					},
 					'href': '#',
 					'class': 'groupedLink' + k
-				}).set('text', i.groupkey));
+				}).set('html', linkText);
+				
+				// Store the group key for later use in the toggle co
+				a.store('data-groupkey', i.groupkey);
+				var h = new Element('div', {'class': 'groupedContainer' + k}).adopt(a);
 				h.inject(c);
 			}
 			this.grouped[i.groupkey].push(i);
 		}.bind(this));
 		
-		c.addEvent('click:relay(a)', function (event, clicked) {
-			event.preventDefault(); //don't follow the link
-			this.infoWindow.close();
-			document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
-			clicked.addClass('active');
-			var l = clicked.get('text');
-			this.toggledGroup = l;
-			this.toggleGrouped();
-		}.bind(this));
+		if (!this.watchingSideBar) {
+			c.addEvent('click:relay(a)', function (event, clicked) {
+				
+				// Don't follow the link
+				event.preventDefault();
+				this.infoWindow.close();
+				document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
+				clicked.addClass('active');
+				this.toggledGroup = clicked.retrieve('data-groupkey');
+				this.toggleGrouped();
+			}.bind(this));
+			this.watchingSideBar = true;
+		}
+		
 	},
 	
 	toggleGrouped: function ()

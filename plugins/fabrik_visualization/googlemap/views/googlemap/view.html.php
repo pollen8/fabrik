@@ -112,6 +112,7 @@ class FabrikViewGooglemap extends JView
 		$this->showFilters = $model->showFilters();
 		$this->filterFormURL = $this->get('FilterFormURL');
 		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
+		$this->showOverLays = (bool) $params->get('fb_gm_use_overlays');
 		if ($this->get('ShowSideBar'))
 		{
 			$this->showSidebar = 1;
