@@ -494,6 +494,7 @@ class FabrikFEModelForm extends FabModelForm
 		if ($tmpl != '')
 		{
 			$qs = '?c=' . $this->getId();
+			$qs .= '&amp;rowid=' . $this->getRowId();
 
 			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			 * If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
