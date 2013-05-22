@@ -814,7 +814,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if (!is_object($this->access) || !array_key_exists($key, $this->access))
 		{
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 			$this->access->$key = in_array($params->get($prop, $default), $groups);
 		}
 
@@ -892,7 +892,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (!is_object($this->access) || !array_key_exists('filter', $this->access))
 		{
 			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 
 			// $$$ hugh - fix for where certain elements got created with 0 as the
 			// the default for filter_access, which isn't a legal value, should be 1

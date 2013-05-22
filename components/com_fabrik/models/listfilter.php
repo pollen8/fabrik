@@ -205,7 +205,7 @@ class FabrikFEModelListfilter extends FabModel
 			// the default for filter_access, which isn't a legal value, should be 1
 			$selAccess = $selAccess == '0' ? '1' : $selAccess;
 			$i = $filters['key'][$key];
-			if (!in_array($selAccess, JFactory::getUser()->authorisedLevels()))
+			if (!in_array($selAccess, JFactory::getUser()->getAuthorisedViewLevels()))
 			{
 				$filters['sqlCond'][$key] = '1=1';
 			}

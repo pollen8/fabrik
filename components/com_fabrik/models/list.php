@@ -3377,7 +3377,7 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('allow_drop', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->allow_drop = in_array($this->getParams()->get('allow_drop'), $groups);
 		}
 		return $this->_access->allow_drop;
@@ -3394,7 +3394,7 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('viewdetails', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->viewdetails = in_array($this->getParams()->get('allow_view_details'), $groups);
 		}
 		return $this->_access->viewdetails;
@@ -3440,7 +3440,7 @@ $groupBy .= '_raw';
 		if (!is_object($this->_access) || !array_key_exists('edit', $this->_access))
 		{
 			$user = JFactory::getUser();
-			$groups = $user->authorisedLevels();
+			$groups = $user->getAuthorisedViewLevels();
 			$this->_access->edit = in_array($this->getParams()->get('allow_edit_details'), $groups);
 		}
 		// Plugins didn't override, canuserDo() didn't express a preference, so return standard ACL
@@ -3510,7 +3510,7 @@ $groupBy .= '_raw';
 		}
 		if (!is_object($this->_access) || !array_key_exists('delete', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->delete = in_array($this->getParams()->get('allow_delete'), $groups);
 		}
 		// If group access allows delete, then let plugin override
@@ -3550,7 +3550,7 @@ $groupBy .= '_raw';
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvimport', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->csvimport = in_array($this->getParams()->get('csv_import_frontend'), $groups);
 		}
 		return $this->_access->csvimport;
@@ -3566,7 +3566,7 @@ $groupBy .= '_raw';
 	{
 		if (!is_object($this->_access) || !array_key_exists('csvexport', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->csvexport = in_array($this->getParams()->get('csv_export_frontend'), $groups);
 		}
 		return $this->_access->csvexport;
@@ -3582,7 +3582,7 @@ $groupBy .= '_raw';
 	{
 		if (!is_object($this->_access) || !array_key_exists('groupby', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->groupby = in_array($this->getParams()->get('group_by_access'), $groups);
 		}
 		return $this->_access->groupby;
@@ -3599,7 +3599,7 @@ $groupBy .= '_raw';
 		$params = $this->getParams();
 		if (!is_object($this->_access) || !array_key_exists('add', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->add = in_array($this->getParams()->get('allow_add'), $groups);
 		}
 		return $this->_access->add;
@@ -3615,7 +3615,7 @@ $groupBy .= '_raw';
 	{
 		if (!is_object($this->_access) || !array_key_exists('view', $this->_access))
 		{
-			$groups = JFactory::getUser()->authorisedLevels();
+			$groups = JFactory::getUser()->getAuthorisedViewLevels();
 			$this->_access->view = in_array($this->getTable()->access, $groups);
 		}
 		return $this->_access->view;
@@ -6260,7 +6260,7 @@ $groupBy .= '_raw';
 			return $this->_aRunCalculations;
 		}
 		$user = JFactory::getUser();
-		$aclGroups = $user->authorisedLevels();
+		$aclGroups = $user->getAuthorisedViewLevels();
 		$aCalculations = array();
 		$formModel = $this->getFormModel();
 		$aAvgs = array();
@@ -7046,14 +7046,14 @@ $groupBy .= '_raw';
 	/**
 	 * Check to see if prefilter should be applied
 	 *
-	 * @param   int  $gid  group id to check against
+	 * @param   int  $gid  View access level to check against
 	 *
-	 * @return  bool	must apply filter
+	 * @return  bool  Must apply filter
 	 */
 
 	protected function mustApplyFilter($gid)
 	{
-		return in_array($gid, JFactory::getUser()->authorisedLevels());
+		return in_array($gid, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
 	/**
