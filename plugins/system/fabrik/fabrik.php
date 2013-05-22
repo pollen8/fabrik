@@ -41,6 +41,14 @@ class PlgSystemFabrik extends JPlugin
 
 	public function plgSystemFabrik(&$subject, $config)
 	{
+		/**
+		 * Moved these from defines.php to here, to fix an issue with Kunena.  Kunena imports the J!
+		 * JForm class in their system plugin, in the class constructure.  So if we wait till onAfterInitialize
+		 * to do this, we blow up.  So, import them here, and make sure the Fabrik plugin has a lower ordering
+		 * than Kunena's.  We might want to set our default to -1.
+		 */
+		JLoader::import('components.com_fabrik.classes.field', JPATH_SITE . '/administrator', 'administrator.');
+		JLoader::import('components.com_fabrik.classes.form', JPATH_SITE . '/administrator', 'administrator.');
 		parent::__construct($subject, $config);
 	}
 
