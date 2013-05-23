@@ -513,6 +513,9 @@ var FbGoogleMap = new Class({
 		} else {
 			address = this.element.getElement('.geocode_input').value;
 		}
+		// Strip HTML
+		var d = new Element('div').set('html', address);
+		address = d.get('text');
 		this.geocoder.geocode({'address': address}, function (results, status) {
 			if (status !== google.maps.GeocoderStatus.OK || results.length === 0) {
 				fconsole(address + " not found!");
@@ -565,8 +568,16 @@ var FbGoogleMap = new Class({
 				this.element.getElement('.geocode').addEvent('click', function (e) {
 					this.geoCode(e);
 				}.bind(this));
+				
+				// Stop enter in geocode field submitting the form.
+				this.element.getElement('.geocode_input').addEvent('keypress', function (e) {
+					if (e.key === 'enter') {
+						e.stop();
+					}
+				}.bind(this));
 			} else {
 				this.element.getElement('.geocode_input').addEvent('keyup', function (e) {
+					e.stop();
 					this.geoCode(e);
 				}.bind(this));
 			}
