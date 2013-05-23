@@ -38,7 +38,7 @@ class JFormFieldElement extends JFormFieldList
 	/**
 	 * Method to get the field options.
 	 *
-	 * @return  array  The field option objects.
+	 * @return  array	The field option objects.
 	 */
 
 	protected function getOptions()
@@ -48,9 +48,9 @@ class JFormFieldElement extends JFormFieldList
 	}
 
 	/**
-	 * Get the input
+	 * Method to get the field input markup.
 	 *
-	 * @return  string The field input markup
+	 * @return  string	The field input markup.
 	 */
 
 	protected function getInput()
@@ -112,7 +112,6 @@ class JFormFieldElement extends JFormFieldList
 		$fabrikelements[$this->id] = true;
 		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/element.js', $script);
 
-		// }
 		if ($mode === 'gui')
 		{
 			$return = $this->gui();
@@ -125,6 +124,12 @@ class JFormFieldElement extends JFormFieldList
 		}
 		return $return;
 	}
+
+	/**
+	 * Build GUI for adding in elements
+	 *
+	 * @return string
+	 */
 
 	private function gui()
 	{
