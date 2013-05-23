@@ -31,7 +31,7 @@ class FabrikAdminHelper
 	 * @return  null
 	 */
 
-	public function prepareSaveDate(&$strdate)
+	public static function prepareSaveDate(&$strdate)
 	{
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
