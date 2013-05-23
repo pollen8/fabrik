@@ -497,21 +497,39 @@ var FbGoogleMapViz = new Class({
 				
 				// Don't follow the link
 				event.preventDefault();
-				this.infoWindow.close();
-				document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
-				clicked.addClass('active');
-				this.toggledGroup = clicked.retrieve('data-groupkey');
-				this.toggleGrouped();
+				this.toggleGrouped(clicked);
 			}.bind(this));
+			
+			// Clear the grouped by icon selection
+			var clear = this.container.getElements('.clear-grouped');
+			if (typeOf(clear) !== 'null') {
+				clear.addEvent('click', function (e) {
+					e.stop();
+					this.toggleGrouped(false);
+				}.bind(this));
+			}
 			this.watchingSideBar = true;
 		}
-		
 	},
 	
-	toggleGrouped: function ()
+	/**
+	 * Toggle grouped icons.
+	 * 
+	 * @param   mixed  clicked  False to show all, otherwise DOM node for selected group by
+	 * 
+	 * @return  void
+	 */
+	toggleGrouped: function (clicked)
 	{
+		this.infoWindow.close();
+		document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
+		if (clicked) {
+			clicked.addClass('active');
+			this.toggledGroup = clicked.retrieve('data-groupkey');
+		}
+		
 		this.markers.each(function (marker) {
-			marker.groupkey === this.toggledGroup ? marker.setVisible(true) : marker.setVisible(false);
+			marker.groupkey === this.toggledGroup || clicked === false ? marker.setVisible(true) : marker.setVisible(false);
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			var fn = function () {
 				marker.setAnimation(null);
