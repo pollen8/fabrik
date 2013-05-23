@@ -8352,11 +8352,11 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get a row of data from the table
 	 *
-	 * @param   int   $id        id
-	 * @param   bool  $format    the data
-	 * @param   bool  $loadJoin  load the rows joined data @since 2.0.5 (used in J Content plugin)
+	 * @param   int   $id        Id
+	 * @param   bool  $format    The data
+	 * @param   bool  $loadJoin  Load the rows joined data @since 2.0.5 (used in J Content plugin)
 	 *
-	 * @return  object	row
+	 * @return  object	Row
 	 */
 
 	public function getRow($id, $format = false, $loadJoin = false)
@@ -8409,6 +8409,7 @@ class FabrikFEModelList extends JModelForm
 			$formModel->setJoinData($rows);
 			if ($format == true)
 			{
+				// @TODO this isnt right now - $rows is a 1 dimensional array 3.1
 				$this->formatData($rows);
 				/* $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
 				 /* so can't assume 0 is first key.
@@ -8417,8 +8418,13 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$this->rows[$sig] = JArrayHelper::getValue($rows, 0, array());
+				// Content plugin - rows is 1 dimensional array
+				$this->rows[$sig] = $rows;
 			}
+		}
+		if (is_array($this->rows[$sig]))
+		{
+			$this->rows[$sig] = JArrayHelper::toObject($this->rows[$sig]);
 		}
 		return $this->rows[$sig];
 	}
