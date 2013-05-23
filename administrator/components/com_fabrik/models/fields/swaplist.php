@@ -65,7 +65,7 @@ class JFormFieldSwapList extends JFormFieldList
 				$str =	JText::_('COM_FABRIK_AVAILABLE_GROUPS');
 				$str .= '<br />' . $this->groupList;
 				$str .= '<button class="button btn btn-success btn-small" type="button" id="' . $this->id . '-add"><i class="icon-new"></i>' . JText::_('COM_FABRIK_ADD') . '</button>';
-				$str .='<br />' . JText::_('COM_FABRIK_CURRENT_GROUPS');
+				$str .= '<br />' . JText::_('COM_FABRIK_CURRENT_GROUPS');
 				$str .= '<br />' . $this->currentGroupList;
 				$str .= '<button class="button btn btn-small" type="button" id="' . $this->id . '-up" ><i class="icon-arrow-up"></i> ' . JText::_('COM_FABRIK_UP') . '</button> ';
 				$str .= '<button class="button btn btn-small" type="button" id="' . $this->id . '-down" ><i class="icon-arrow-down"></i> ' . JText::_('COM_FABRIK_DOWN') . '</button> ';
@@ -73,16 +73,16 @@ class JFormFieldSwapList extends JFormFieldList
 			}
 			else
 			{
-			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
-				. JText::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
-			$str .= $this->groupList;
-			$str .= '<input class="button btn" type="button" id="' . $this->id . '-add" value="' . JText::_('COM_FABRIK_ADD') . '" />';
-			$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
-				. JText::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
-			$str .= $this->currentGroupList;
-			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_UP') . '" id="' . $this->id . '-up" />';
-			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_DOWN') . '" id="' . $this->id . '-down" />';
-			$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_REMOVE') . '" id="' . $this->id . '-remove"/>';
+				$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
+					. JText::_('COM_FABRIK_AVAILABLE_GROUPS') . ':" />';
+				$str .= $this->groupList;
+				$str .= '<input class="button btn" type="button" id="' . $this->id . '-add" value="' . JText::_('COM_FABRIK_ADD') . '" />';
+				$str .= '<input type="text" readonly="readonly" class="readonly" style="clear:left" size="44" value="'
+					. JText::_('COM_FABRIK_CURRENT_GROUPS') . ':" />';
+				$str .= $this->currentGroupList;
+				$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_UP') . '" id="' . $this->id . '-up" />';
+				$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_DOWN') . '" id="' . $this->id . '-down" />';
+				$str .= '<input class="button" type="button" value="' . JText::_('COM_FABRIK_REMOVE') . '" id="' . $this->id . '-remove"/>';
 			}
 			return $str;
 		}
@@ -148,8 +148,8 @@ class JFormFieldSwapList extends JFormFieldList
 		$db->setQuery($query);
 		$currentGroups = $db->loadObjectList();
 		$style = FabrikWorker::j3() ? '' : 'style="width:100%;"';
-		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, 'class="inputbox" multiple="multiple" ' . $style . ' size="10" ',
-			'value', 'text', '/', $this->id);
+		$attribs = 'class="inputbox" multiple="multiple" ' . $style . ' size="10" ';
+		$list = JHTML::_('select.genericlist', $currentGroups, $this->name, $attribs, 'value', 'text', '/', $this->id);
 		return array($currentGroups, $list);
 	}
 }

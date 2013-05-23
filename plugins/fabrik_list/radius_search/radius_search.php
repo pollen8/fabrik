@@ -550,6 +550,11 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$app = JFactory::getApplication();
 		list($latitude, $longitude) = $this->getSearchLatLon();
 		$opts = $this->getElementJSOptions($model);
+		$containerOverride = JArrayHelper::getValue($args, 0, '');
+		if (strstr($containerOverride, 'visualization'))
+		{
+			$opts->ref = str_replace('visualization_', '', $containerOverride);
+		}
 		$opts->steps = (int) $params->get('radius_max', 100);
 		$opts->unit = $params->get('radius_unit', 'km');
 		$opts->value = $this->getValue();

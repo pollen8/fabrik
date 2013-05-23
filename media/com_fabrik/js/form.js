@@ -674,16 +674,16 @@ var FbForm = new Class({
 		Browser.exec('oEl.' + task + '()');
 	},
 
-	triggerEvents : function (el) {
+	triggerEvents: function (el) {
 		this.formElements.get(el).fireEvents(arguments[1]);
 	},
 
 	/**
-	 * @param string element id to observe
-	 * @param string event type to add
+	 * @param   string  id            Element id to observe
+	 * @param   string  triggerEvent  Event type to add
 	 */
 	
-	watchValidation : function (id, triggerEvent) {
+	watchValidation: function (id, triggerEvent) {
 		if (this.options.ajaxValidation === false) {
 			return;
 		}

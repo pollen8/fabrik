@@ -568,8 +568,16 @@ var FbGoogleMap = new Class({
 				this.element.getElement('.geocode').addEvent('click', function (e) {
 					this.geoCode(e);
 				}.bind(this));
+				
+				// Stop enter in geocode field submitting the form.
+				this.element.getElement('.geocode_input').addEvent('keypress', function (e) {
+					if (e.key === 'enter') {
+						e.stop();
+					}
+				}.bind(this));
 			} else {
 				this.element.getElement('.geocode_input').addEvent('keyup', function (e) {
+					e.stop();
 					this.geoCode(e);
 				}.bind(this));
 			}

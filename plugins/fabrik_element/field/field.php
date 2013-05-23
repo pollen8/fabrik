@@ -27,8 +27,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -36,15 +36,19 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	public function renderListData($data, &$thisRow)
 	{
 		$params = $this->getParams();
-		$data = $this->numberFormat($data);
+		$data = FabrikWorker::JSONtoData($data, true);
 		$format = $params->get('text_format_string');
-		if ($format != '')
+		foreach ($data as &$d)
 		{
-			$data = sprintf($format, $data);
-		}
-		if ($params->get('password') == "1")
-		{
-			$data = str_pad('', JString::strlen($data), '*');
+			$d = $this->numberFormat($d);
+			if ($format != '')
+			{
+				$d = sprintf($format, $d);
+			}
+			if ($params->get('password') == "1")
+			{
+				$d = str_pad('', JString::strlen($d), '*');
+			}
 		}
 		$this->_guessLinkType($data, $thisRow, 0);
 		return parent::renderListData($data, $thisRow);

@@ -2874,8 +2874,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 		$element = $this->getElement();
-		$formId = $this->getFormModel()->getId();
-		FabrikHelperHTML::autoComplete($selector, $element->id, $formId, $element->plugin, $opts);
+		$formid = $this->getFormModel()->getId();
+		FabrikHelperHTML::autoComplete($selector, $element->id, $formid, $element->plugin, $opts);
 		return $return;
 	}
 

@@ -37,7 +37,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	 *
 	 * @var bol
 	 */
-	protected $_recordInDatabase = false;
+	protected $recordInDatabase = false;
 
 	/**
 	 * Get the element's HTML label

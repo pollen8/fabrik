@@ -124,6 +124,12 @@ class JFormFieldElement extends JFormFieldList
 		return $return;
 	}
 
+	/**
+	 * Build GUI for adding in elements
+	 *
+	 * @return string
+	 */
+
 	private function gui()
 	{
 		$str = array();

@@ -31,14 +31,22 @@ class FabrikFEModelVisualization extends JModelLegacy
 	/** @var object params*/
 	protected $params = null;
 
-	// @var string url for filter form
+	/**
+	 * Url for filter form
+	 *
+	 * @var string
+	 */
 	protected $getFilterFormURL = null;
 
 	public $srcBase = "plugins/fabrik_visualization/";
 
 	public $pathBase = null;
 
-	/** @var string js code to ini list filters */
+	/**
+	 * JS code to ini list filters
+	 *
+	 * @var string
+	 */
 	protected $filterJs = null;
 
 	/**

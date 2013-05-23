@@ -18,7 +18,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/element.php';
  *
  * @package     Joomla
  * @subpackage  Form
- * @since		1.5
+ * @since       3.0
  */
 
 class JFormFieldAutoCreateGroup extends JFormFieldRadio

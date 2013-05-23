@@ -557,7 +557,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('list');
-		$pluginManager->runPlugins('loadJavascriptInstance', $this, 'list', $container);
+		$pluginManager->runPlugins('onLoadJavascriptInstance', $this, 'list', $container);
 		return $pluginManager->data;
 	}
 
@@ -7146,7 +7146,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @param   int  $gid  view access level to check against
 	 *
-	 * @return  bool	must apply filter
+	 * @return  bool  Must apply filter
 	 */
 
 	protected function mustApplyFilter($gid)

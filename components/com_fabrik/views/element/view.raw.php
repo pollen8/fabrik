@@ -1,10 +1,12 @@
 <?php
 
 /**
+ * Single element raw view
+ *
  * @package     Joomla
- * @subpackage	Fabik
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license		GNU/GPL
+ * @subpackage  Fabik
+ * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -12,24 +14,55 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+/**
+ * Single element raw view
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 class FabrikViewElement extends JViewLegacy
 {
 
-	var $id = null;
-	var $isMambot = null;
+	/**
+	 * Element id (not used?)
+	 *
+	 * @var int
+	 */
+	protected $id = null;
 
-	function setId($id)
+	/**
+	 * Is mambot (not used?)
+	 *
+	 * @var bool
+	 */
+	public $isMambot = null;
+
+	/**
+	 * Set id
+	 *
+	 * @param   int  $id  Element id
+	 *
+	 * @deprecated ?
+	 *
+	 * @return  void
+	 */
+
+	public function setId($id)
 	{
 		$this->id = $id;
 	}
 
 	/**
-	 * display the template
+	 * Display the template
 	 *
-* @param sting $tpl
+	 * @param   string  $tpl  Template
+	 *
+	 * @return void
 	 */
 
-	function display($tpl = null)
+	public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;

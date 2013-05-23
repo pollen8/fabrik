@@ -51,6 +51,7 @@ class FabrikViewGooglemap extends JViewLegacy
 		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tpl = $params->get('fb_gm_layout', $tpl);
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl;
+		$srcs[] = 'media/com_fabrik/js/list-plugin.js';
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 
 		$uri = JURI::getInstance();
@@ -66,12 +67,14 @@ class FabrikViewGooglemap extends JViewLegacy
 		{
 			// Pdabot
 			$template = 'static';
-			$this->staticmap = $this->get('StaticMap');
+			$this->staticmap = $model->getStaticMap();
 		}
 		else
 		{
-			$src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
-			$document->addScript($src);
+			//$js .= 'Fabrik.loadGoogleMap(\'' . $params->get('fb_gm_sensor', 'false') . '\');';
+			/* $src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
+			$document->addScript($src); */
+
 			if (FabrikHelperHTML::isDebug())
 			{
 				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
@@ -101,7 +104,7 @@ class FabrikViewGooglemap extends JViewLegacy
 			//FabrikHelperHTML::addScriptDeclaration($js);
 			$template = null;
 		}
-		$js .= $this->get('PluginJsObjects');
+		$js .= $model->getPluginJsObjects();
 		$js .= $model->getFilterJs();
 
 		FabrikHelperHTML::iniRequireJs($model->getShim());
@@ -113,11 +116,12 @@ class FabrikViewGooglemap extends JViewLegacy
 
 		// Check and add a specific viz template css file overrides template css generic table css and generic custom css
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/googlemap/views/googlemap/tmpl/' . $tpl . '/custom.css');
-		$this->filters = $this->get('Filters');
+		$this->filters = $model->getFilters();
 		$this->showFilters = $model->showFilters();
-		$this->filterFormURL = $this->get('FilterFormURL');
+		$this->filterFormURL = $model->getFilterFormURL();
 		$this->sidebarPosition = $params->get('fb_gm_use_overlays_sidebar');
-		if ($this->get('ShowSideBar'))
+		$this->showOverLays = (bool) $params->get('fb_gm_use_overlays');
+		if ($model->getShowSideBar())
 		{
 			$this->showSidebar = 1;
 			$this->overlayUrls = (array) $params->get('fb_gm_overlay_urls');
@@ -128,8 +132,8 @@ class FabrikViewGooglemap extends JViewLegacy
 			$this->showSidebar = 0;
 		}
 		$this->_setPath('template', $tmplpath);
-		$this->containerId = $this->get('ContainerId');
-		$this->groupTemplates = $this->get('GroupTemplates');
+		$this->containerId = $model->getContainerId();
+		$this->groupTemplates = $model->getGroupTemplates();
 		echo parent::display($template);
 	}
 
