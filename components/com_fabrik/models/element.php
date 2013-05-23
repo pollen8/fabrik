@@ -4316,6 +4316,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			{
 				$gById = FabrikString::safeColName($sName);
 			}
+			else
+			{
+				// If its a concat - can we use the key value as the group by name
+				if (method_exists($plugin, 'getJoinValueColumn'))
+				{
+					$sName = $plugin->getJoinValueColumn();
+					$gById = FabrikString::safeColName($sName);
+				}
+			}
 		}
 		return $groupBys;
 	}
