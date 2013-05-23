@@ -883,11 +883,8 @@ EOD;
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
-			// If custom list link - it loads via iframe (so must included &iframe=1 if loading fabrik page) - ensure bootstrap is loaded
-			if ($app->input->getInt('iframe') === 1 && $bootstrapped)
-			{
-				JHtml::_('bootstrap.framework');
-			}
+			// Ensure bootstrap js is loaded - as J template may not load it.
+			JHtml::_('bootstrap.framework');
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
