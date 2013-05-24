@@ -1535,7 +1535,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function addErrorHTML($repeatCounter, $tmpl = '')
 	{
-		$err = $this->_getErrorMsg($repeatCounter);
+		$err = htmlspecialchars($err, ENT_QUOTES);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '')
 		{
