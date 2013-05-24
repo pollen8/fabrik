@@ -130,8 +130,8 @@ class FabrikHelperHTML
 	 * Load up window code - should be run in ajax loaded pages as well (10/07/2012 but not json views)
 	 * might be an issue in that we may be re-observing some links when loading in - need to check
 	 *
-	 * @param   string  $selector  element select to auto create windows for  - was default = a.modal
-	 * @param   array   $params    window parameters
+	 * @param   string  $selector  Element select to auto create windows for  - was default = a.modal
+	 * @param   array   $params    Window parameters
 	 *
 	 * @deprecated use windows() instead
 	 *
@@ -154,14 +154,17 @@ class FabrikHelperHTML
 	 * @return   array  request headers assoc
 	 */
 
-	public static function parseRequestHeaders() {
+	public static function parseRequestHeaders()
+	{
 		if (isset(self::$requestHeaders))
 		{
 			return self::$requestHeaders;
 		}
 		self::$requestHeaders = array();
-		foreach($_SERVER as $key => $value) {
-			if (substr($key, 0, 5) <> 'HTTP_') {
+		foreach($_SERVER as $key => $value)
+		{
+			if (substr($key, 0, 5) <> 'HTTP_')
+			{
 				continue;
 			}
 			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));

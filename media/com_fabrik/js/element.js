@@ -365,6 +365,13 @@ var FbElement =  new Class({
 			}
 			errorElements[0].adopt(a);
 			
+			// If tmpl has additional error message divs (e.g labels above) then set html msg there
+			if (errorElements.length > 1) {
+				for (i = 1; i < errorElements.length; i ++) {
+					errorElements[i].set('html', msg);
+				}
+			}
+			
 			container.removeClass('alert-success').removeClass('alert-info').addClass('alert-error');
 			break;
 		case 'fabrikSuccess':

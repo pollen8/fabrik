@@ -19,7 +19,7 @@ jimport('joomla.application.component.model');
  * @since       3.0
  */
 
-class plgFabrik_Form extends FabrikPlugin
+class PlgFabrik_Form extends FabrikPlugin
 {
 	/**@var array formatted email data */
 	protected $emailData = null;

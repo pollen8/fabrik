@@ -70,9 +70,10 @@ var FbGoogleMapViz = new Class({
 				Mediabox.scanPage();
 			}
 
-			//clear filter list
-			this.container =  document.id(this.options.container);
+			// Clear filter list
+			this.container = document.id(this.options.container);
 			if (typeOf(this.container) !== 'null') {
+				var form = this.container.getElement('form[name=filter]');
 				var c = this.container.getElement('.clearFilters');
 				if (c) {
 					c.addEvent('click', function (e) {
@@ -80,9 +81,23 @@ var FbGoogleMapViz = new Class({
 							f.value = '';
 						});
 						e.stop();
-						this.container.getElement('form[name=filter]').submit();
+						form.submit();
 					}.bind(this));
 				}
+				
+				// Watch filter submit
+				var submit = this.container.getElements('input.fabrik_filter_submit');
+				if (typeOf(submit) !== 'null') {
+					submit.addEvent('click', function (e) {
+						var res = Fabrik.fireEvent('list.filter', [this]).eventResults;
+						if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
+							form.submit();
+						} else {
+							e.stop();
+						}
+					});
+				}
+				
 			}
 		}.bind(this));
 		
@@ -423,7 +438,7 @@ var FbGoogleMapViz = new Class({
 	},
 	
 	renderGroupedSideBar: function () {
-		var a, linkText, c;
+		var a, linkText, c, label = '';
 		if (!this.options.use_groups) {
 			return;
 		}
@@ -442,7 +457,9 @@ var FbGoogleMapViz = new Class({
 				var lookup = i.groupkey.replace(/[^0-9a-zA-Z_]/g, '');
 				
 				// Allow for images as group by text, (Can't have nested <a>'s so parse the label for content inside possible <a>)
-				var label = this.options.groupTemplates[i.listid][lookup];
+				if (typeOf(this.options.groupTemplates[i.listid]) !== 'null') {
+					label = this.options.groupTemplates[i.listid][lookup];
+				}
 				var d = new Element('div').set('html', label);
 				if (d.getElement('a')) {
 					d = d.getElement('a');
@@ -480,21 +497,39 @@ var FbGoogleMapViz = new Class({
 				
 				// Don't follow the link
 				event.preventDefault();
-				this.infoWindow.close();
-				document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
-				clicked.addClass('active');
-				this.toggledGroup = clicked.retrieve('data-groupkey');
-				this.toggleGrouped();
+				this.toggleGrouped(clicked);
 			}.bind(this));
+			
+			// Clear the grouped by icon selection
+			var clear = this.container.getElements('.clear-grouped');
+			if (typeOf(clear) !== 'null') {
+				clear.addEvent('click', function (e) {
+					e.stop();
+					this.toggleGrouped(false);
+				}.bind(this));
+			}
 			this.watchingSideBar = true;
 		}
-		
 	},
 	
-	toggleGrouped: function ()
+	/**
+	 * Toggle grouped icons.
+	 * 
+	 * @param   mixed  clicked  False to show all, otherwise DOM node for selected group by
+	 * 
+	 * @return  void
+	 */
+	toggleGrouped: function (clicked)
 	{
+		this.infoWindow.close();
+		document.id(this.options.container).getElement('.grouped_sidebar').getElements('a').removeClass('active');
+		if (clicked) {
+			clicked.addClass('active');
+			this.toggledGroup = clicked.retrieve('data-groupkey');
+		}
+		
 		this.markers.each(function (marker) {
-			marker.groupkey === this.toggledGroup ? marker.setVisible(true) : marker.setVisible(false);
+			marker.groupkey === this.toggledGroup || clicked === false ? marker.setVisible(true) : marker.setVisible(false);
 			marker.setAnimation(google.maps.Animation.BOUNCE);
 			var fn = function () {
 				marker.setAnimation(null);

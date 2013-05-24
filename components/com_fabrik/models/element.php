@@ -1539,6 +1539,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function addErrorHTML($repeatCounter, $tmpl = '')
 	{
 		$err = $this->_getErrorMsg($repeatCounter);
+		$err = htmlspecialchars($err, ENT_QUOTES);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '')
 		{
@@ -3008,8 +3009,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 		$element = $this->getElement();
-
-		FabrikHelperHTML::autoComplete($selector, $element->id, $element->plugin, $opts);
+		$formid = $this->getFormModel()->getId();
+		FabrikHelperHTML::autoComplete($selector, $element->id, $formid, $element->plugin, $opts);
 		return $return;
 	}
 
@@ -4318,6 +4319,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			if (!stristr($sName, 'CONCAT'))
 			{
 				$gById = FabrikString::safeColName($sName);
+			}
+			else
+			{
+				// If its a concat - can we use the key value as the group by name
+				if (method_exists($plugin, 'getJoinValueColumn'))
+				{
+					$sName = $plugin->getJoinValueColumn();
+					$gById = FabrikString::safeColName($sName);
+				}
 			}
 		}
 		return $groupBys;

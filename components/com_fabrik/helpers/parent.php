@@ -748,7 +748,15 @@ class FabrikWorker
 		{
 			foreach ($data as $k => $v)
 			{
-				$this->_searchData[$k] = $v;
+				/*
+				 * Only replace if we haven't explicitly set the key in _searchData.
+				 * Otherwise, calc element in repeat group uses all repeating groups values rather than the
+				 * current one that the plugin sets when it fire its Ajax request.
+				 */
+				if (!array_key_exists($k, $this->_searchData))
+				{
+					$this->_searchData[$k] = $v;
+				}
 			}
 		}
 
