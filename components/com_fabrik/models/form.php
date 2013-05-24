@@ -3288,7 +3288,9 @@ class FabrikFEModelForm extends FabModelForm
 							}
 						}
 						// $data = array(FArrayHelper::toObject(array_merge(unserialize($srow->data), JArrayHelper::fromObject($data[0]))));
-						$data = array(FArrayHelper::toObject(array_merge($tmp_data, JArrayHelper::fromObject($data[0]))));
+						$bits = JArrayHelper::fromObject($data[0]);
+						$bits = array_merge($tmp_data, $bits);
+						$data = array(FArrayHelper::toObject($bits));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
