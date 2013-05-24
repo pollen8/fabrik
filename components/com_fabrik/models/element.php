@@ -1451,6 +1451,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function addErrorHTML($repeatCounter, $tmpl = '')
 	{
 		$err = $this->getErrorMsg($repeatCounter);
+		$err = htmlspecialchars($err, ENT_QUOTES);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '')
 		{
@@ -4144,6 +4145,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			if (!stristr($sName, 'CONCAT'))
 			{
 				$gById = FabrikString::safeColName($sName);
+			}
+			else
+			{
+				// If its a concat - can we use the key value as the group by name
+				if (method_exists($plugin, 'getJoinValueColumn'))
+				{
+					$sName = $plugin->getJoinValueColumn();
+					$gById = FabrikString::safeColName($sName);
+				}
 			}
 		}
 		return $groupBys;

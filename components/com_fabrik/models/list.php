@@ -2390,6 +2390,7 @@ class FabrikFEModelList extends JModelForm
 		 * we never do a SELECT FOUND_ROWS(), so no need to use SQL_CALC_FOUND_ROWS.
 		 */
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
+
 		// $$$rob added raw as an option to fix issue in saving calendar data
 		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
 		{

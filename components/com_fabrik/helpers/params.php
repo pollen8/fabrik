@@ -216,10 +216,9 @@ class FabrikParams extends JForm
 	 * Render (NOTE when rendering admin settings I *think* the repeat group is set with $this->counter_override)
 	 *
 	 * @param   string  $name             The name of the control, or the default text area if a setup file is not found
-	 * @param   string  $group            group
-	 * @param   bool    $write            write out or return
-	 * @param   int     $repeatSingleVal  if set and group is repeat only return int row from rendered params
-	 * used for form plugin admin pages.
+	 * @param   string  $group            Group
+	 * @param   bool    $write            Write out or return
+	 * @param   int     $repeatSingleVal  If set and group is repeat only return int row from rendered params
 	 *
 	 * @return  string	HTML
 	 *

@@ -182,14 +182,17 @@ class FabrikHelperHTML
 	 * @return   array  request headers assoc
 	 */
 
-	public static function parseRequestHeaders() {
+	public static function parseRequestHeaders()
+	{
 		if (isset(self::$requestHeaders))
 		{
 			return self::$requestHeaders;
 		}
 		self::$requestHeaders = array();
-		foreach($_SERVER as $key => $value) {
-			if (substr($key, 0, 5) <> 'HTTP_') {
+		foreach($_SERVER as $key => $value)
+		{
+			if (substr($key, 0, 5) <> 'HTTP_')
+			{
 				continue;
 			}
 			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));

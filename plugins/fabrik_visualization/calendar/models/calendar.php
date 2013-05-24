@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelCalendar extends FabrikFEModelVisualization
+class FabrikModelCalendar extends FabrikFEModelVisualization
 {
 	/**
 	 * Array of Fabrik lists containing events

@@ -438,7 +438,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model = $this->getModel('form', 'FabrikFEModel');
 		$model->setId($input->getInt('formid', 0));
 		$model->getForm();
-		$model->rowId = $input->get('rowid', '', 'string');
+		$model->setRowId($input->get('rowid', '', 'string'));
 		$model->validate();
 		$data = array('modified' => $model->modifiedValidationData);
 

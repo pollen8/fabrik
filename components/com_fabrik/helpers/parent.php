@@ -742,6 +742,23 @@ class FabrikWorker
 
 	protected function replaceWithFormData($matches)
 	{
+		// Merge any join data key val pairs down into the main data array
+		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
+		foreach ($joins as $k => $data)
+		{
+			foreach ($data as $k => $v)
+			{
+				/*
+				 * Only replace if we haven't explicitly set the key in _searchData.
+				 * Otherwise, calc element in repeat group uses all repeating groups values rather than the
+				 * current one that the plugin sets when it fire its Ajax request.
+				 */
+				if (!array_key_exists($k, $this->_searchData))
+				{
+					$this->_searchData[$k] = $v;
+				}
+			}
+		}
 
 		$match = $matches[0];
 		$orig = $match;
