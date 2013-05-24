@@ -1001,10 +1001,9 @@ class FabrikFEModelGroup extends FabModel
 		$masterInsertId = $this->masterInsertId();
 		$fk = $joinModel->getForeignKey();
 		$fks = array($fk, $fk . '_raw');
-		array_fill(0, count($formData[$fk]), $pk);
 		foreach ($fks as $fk)
 		{
-			if ($this->canRepeat())
+			if ($this->canRepeat() && array_key_exists($fk, $formData))
 			{
 				foreach ($formData[$fk] as $k => $v)
 				{
@@ -1095,7 +1094,6 @@ class FabrikFEModelGroup extends FabModel
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		print_r($usedKeys);
 		$query->delete($list->db_table_name)->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
 		if (!empty($usedKeys))
 		{

@@ -6623,8 +6623,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$parentIds = array_fill(0, count($allJoinValues), $formData[$k]);
 
 		}
-		$allJoinIds = $formData[$idKey];
-		$allParams = array_values($formData[$paramsKey]);
+		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());
+		$allParams = array_values(JArrayHelper::getValue($formData, $paramsKey, array()));
 
 		$i = 0;
 		$idsToKeep = array();
