@@ -10,9 +10,16 @@ var Suboptions = new Class({
 	initialize: function (name, options) {
 		this.setOptions(options);
 		this.element = document.id(this.options.id);
+		
+		if (typeOf(this.element) === 'null') {
+			if (confirm('oh dear - somethings gone wrong with loading the sub-options, do you want to reload?')) {
+				
+				// Force reload from server
+				location.reload(true);
+			}
+		}
 		this.counter = 0;
 		this.name = name;
-		this.watchButtons();
 		Object.each(this.options.sub_values, function (v, x) {
 			var chx = Object.contains(this.options.sub_initial_selection, v) ? "checked='checked'" : '';
 			this.addSubElement(v, this.options.sub_labels[x], chx);

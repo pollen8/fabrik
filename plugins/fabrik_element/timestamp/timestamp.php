@@ -22,8 +22,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 {
 
-	protected $recordInDatabase = false;
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -42,8 +40,8 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	/**
 	 * Get the element's HTML label
 	 *
-	 * @param   int     $repeatCounter  group repeat counter
-	 * @param   string  $tmpl           form template
+	 * @param   int     $repeatCounter  Group repeat counter
+	 * @param   string  $tmpl           Form template
 	 *
 	 * @return  string  label
 	 */
@@ -69,8 +67,8 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -92,8 +90,8 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
