@@ -30,6 +30,7 @@ var FbCalcList = new Class({
 				'plugin': 'calc',
 				'g': 'element',
 				'listid': this.options.listid,
+				'formid': this.options.formid,
 				'method': 'ajax_listUpdate',
 				'element_id': this.options.elid,
 				'rows' : this.list.getRowIds(),
@@ -42,7 +43,7 @@ var FbCalcList = new Class({
 			onSuccess: function (json) {
 				$H(json).each(function (html, id) {
 					var cell = this.list.list.getElement('#' + id + ' .' + this.options.element);
-					if (typeOf(cell) !== 'null') {
+					if (typeOf(cell) !== 'null' && html !== false) {
 						cell.set('html', html);
 					}
 				}.bind(this));

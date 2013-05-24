@@ -222,7 +222,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$form = $this->getForm();
 
-
 		$d = unserialize(serialize($form->formData));
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
@@ -625,6 +624,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
+		$opts->formid = $this->getFormModel()->getId();
 		$opts->elid = $this->getElement()->id;
 		$opts = json_encode($opts);
 		return "new FbCalcList('$id', $opts);\n";
@@ -644,7 +644,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$listId = $input->getInt('listid');
 		$elId = $input->getInt('element_id');
 		$this->setId($elId);
-		$this->getElement();
+		$this->loadMeForAjax();
 		$params = $this->getParams();
 
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
