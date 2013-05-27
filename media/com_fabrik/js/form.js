@@ -919,7 +919,14 @@ var FbForm = new Class({
 		if (this.form.getElement('input[name=delete]')) {
 			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
-					this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
+					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
+						this.form.getElement('input[name=task]').value = this.options.admin ? 'form.delete' : 'delete';
+					} else {
+						e.stop();
+						return false;
+					}
+					
 				} else {
 					return false;
 				}
