@@ -47,7 +47,6 @@ var elementElement = new Class({
 	},
 
 	setUp : function () {
-		debugger;
 		var s = this.el;
 		this.el = document.id(this.el);
 		if (typeOf(this.el) === 'null') {
