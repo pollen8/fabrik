@@ -402,6 +402,7 @@ class FabrikViewListBase extends JView
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
 		$this->limitLength = $model->limitLength;
+		$this->ajax = $model->isAjax();
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
@@ -468,10 +469,10 @@ class FabrikViewListBase extends JView
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$this->groupheadings = $groupHeadings;
 		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
-		$this->isGrouped = !($this->get('groupBy') == '');
+		$this->isGrouped = !($model->getGroupBy() == '');
 		$this->colCount = count($this->headings);
 
-		$this->hasButtons = $this->get('hasButtons');
+		$this->hasButtons = $model->getHasButtons();
 		$this->grouptemplates = $model->groupTemplates;
 
 		$this->params = $params;
@@ -548,6 +549,7 @@ class FabrikViewListBase extends JView
 		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
+		JDEBUG ? $profiler->mark('template loaded') : null;
 		$model = $this->getModel();
 		$params = $model->getParams();
 		if ($params->get('process-jplugins'))

@@ -103,11 +103,15 @@ endforeach;?>
 		endforeach;
 
 		$this->showGroup = false;
-		for ($x = $gCounter; $x < $this->limitLength; $x ++) :
-			$this->groupHeading = 'hidden ' . $x;
-			echo $this->loadTemplate('group_heading');
-			echo '<tbody class="fabrik_groupdata" style="display:none"></tbody>';
-		endfor;
+
+		// If using AJAX then we need to add in enough groupdata containers for additonal rows that may be shown
+		if ($this->ajax) :
+			for ($x = $gCounter; $x < $this->limitLength; $x ++) :
+				$this->groupHeading = 'hidden ' . $x;
+				echo $this->loadTemplate('group_heading');
+				echo '<tbody class="fabrik_groupdata" style="display:none"></tbody>';
+			endfor;
+		endif;
 		?>
 		</table>
 		<?php print_r($this->hiddenFields);?>
