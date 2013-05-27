@@ -251,7 +251,10 @@ class FabrikModelPackage extends FabModelAdmin
 	 * So that form/list dropdowns load the package lists/forms and not the main Fabrik lists/forms
 	 *
 	 * @param   JTable  $row  Package info
+	 *
+	 * @return  void
 	 */
+
 	protected function alterViewXML($row)
 	{
 
@@ -327,7 +330,6 @@ class FabrikModelPackage extends FabModelAdmin
 				exit;
 				JError::raiseError(500, 'Unable to form module zip in ' . $componentZipPath);
 			}
-			//echo "create zip @" . $formModuleZipPath;exit;
 			// Copy that to root
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
 
@@ -647,8 +649,8 @@ class FabrikModelPackage extends FabModelAdmin
 	/**
 	 * Form modules
 	 *
-	 * @param   JTable  $row  Package
-	 * @param   string  $root Root folder
+	 * @param   JTable  $row   Package
+	 * @param   string  $root  Root folder
 	 *
 	 * @return  array
 	 */
@@ -662,8 +664,6 @@ class FabrikModelPackage extends FabModelAdmin
 			JFolder::delete($to);
 		}
 		JFolder::create($to);
-		//JFolder::copy($from, $to, '', true);
-
 		$files = JFolder::files($from);
 
 		$return = array();
@@ -1009,7 +1009,7 @@ class FabrikModelPackage extends FabModelAdmin
 		 * and whether or not to install additional plugins etc.
 		 * Dont want to install a j2.5 plugin in a j3.0 site for example)
 		 */
-		//$jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
+		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
 		$jVersion = $version->RELEASE;
 		return $jversion;
 	}

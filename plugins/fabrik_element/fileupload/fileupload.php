@@ -2432,6 +2432,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
 		$this->getElement();
 		$params = $this->getParams();
 		$url = $input->server->get('HTTP_REFERER', '', 'string');

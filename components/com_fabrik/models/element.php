@@ -1174,6 +1174,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$repeatCounts = JArrayHelper::getValue($post, 'fabrik_repeat_group', array());
 				$c = JArrayHelper::getValue($repeatCounts, $group->getId());
+				/**
+				 * $$$ hugh - this seems to be hosed up on failed validations
+				 */
 				for ($x = 0; $x < $c; $x ++)
 				{
 					$post['join'][$group->getGroup()->join_id][$key][$x] = $data[$x];

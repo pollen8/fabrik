@@ -67,7 +67,6 @@ class FabrikModelList extends FabModelAdmin
 	*/
 	protected $_dbFields = null;
 
-
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
@@ -2428,10 +2427,11 @@ class FabrikModelList extends FabModelAdmin
 	* $$$ hugh - added this to backend, as I need it in some places where we have
 	* a backend list model, and until now only existed in the FE model.
 	*
-	* @param   string  $tbl  table name
-	* @param   string  $key  field to key return array on
+	* @param   string  $tbl       Table name
+	* @param   string  $key       Field to key return array on
+	* @param   bool    $basetype  Deprecated - not used
 	*
-	* @return  array	table fields
+	* @return  array  table fields
 	*/
 
 	public function getDBFields($tbl = null, $key = null, $basetype = false)
@@ -2470,7 +2470,7 @@ class FabrikModelList extends FabModelAdmin
 				 * what I most care about, as this stuff is being written handle being more specific about
 				 * the elements the list PK can be selected from.
 				 */
-				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}

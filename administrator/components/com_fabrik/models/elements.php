@@ -152,7 +152,6 @@ class FabrikModelElements extends FabModelList
 		WHERE (jj.list_id != 0 AND jj.element_id = 0)
 		AND ee.id = e.id AND ee.group_id <> 0 AND ee.id IN (" . implode(',', $elementIds) . ") LIMIT 1)  AS full_element_name";
 
-
 		$query->select('u.name AS editor, ' . $fullname . ', g.name AS group_name, l.db_table_name');
 		return $query;
 	}

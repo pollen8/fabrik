@@ -218,6 +218,7 @@ class Com_FabrikInstallerScript
 
 	/**
 	 * Run after installation or upgrade run
+	 *
 	 * @param   string  $type    discover_install (Install unregistered extensions that have been discovered.)
 	 *  or install (standard install)
 	 *  or update (update)

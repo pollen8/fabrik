@@ -205,7 +205,7 @@ class FabrikFEModelFormsession extends FabModel
 			jimport('joomla.utilities.utility');
 
 			// Create the encryption key, apply extra hardening using the user agent string
-			$key = JUtility::getHash(@$_SERVER['HTTP_USER_AGENT']);
+			$key = JApplication::getHash(@$_SERVER['HTTP_USER_AGENT']);
 			$this->crypt = new JSimpleCrypt($key);
 		}
 		return $this->crypt;

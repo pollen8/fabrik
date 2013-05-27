@@ -164,7 +164,7 @@ class FabrikModelGroup extends FabModelAdmin
 			{
 				$data['is_join'] = 1;
 			}
-			else if ($data['is_join'] == 1)
+			elseif ($data['is_join'] == 1)
 			{
 				/*
 				 * $$$ rob - this was destroying legitimate joins on saving the group
@@ -386,12 +386,12 @@ class FabrikModelGroup extends FabModelAdmin
 	}
 
 	/**
-	 *
 	 * Repeat has been turned off for a group, so we need to remove the join.
 	 * For now, leave the repeat table intact, just remove the join
 	 * and the 'id' and 'parent_id' elements.
 	 *
-	 * @param    array  &$data  jform data
+	 * @param   array  &$data  jform data
+	 *
 	 * @return boolean
 	 */
 	public function unMakeJoinedGroup(&$data)
@@ -413,7 +413,7 @@ class FabrikModelGroup extends FabModelAdmin
 		$elementModel = JModel::getInstance('Element', 'FabrikModel');
 		$return = $elementModel->delete($elids);
 
-		// kinda meaningless return, but ...
+		// Kinda meaningless return, but ...
 		return $return;
 	}
 
