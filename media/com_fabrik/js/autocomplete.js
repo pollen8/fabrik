@@ -220,7 +220,6 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			}
 		} else {
-			console.log(e.key, e.code);
 			if (e.key === 'enter') {
 				window.fireEvent('blur');
 			}

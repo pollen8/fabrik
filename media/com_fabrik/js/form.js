@@ -582,31 +582,41 @@ var FbForm = new Class({
 		});
 	},
 
+	/**
+	 * Add elements into the form
+	 * 
+	 * @param  Hash  a  Elements to add.
+	 */
 	addElements: function (a) {
+		/*
+		 * Store the newly added elements so we can call attachedToForm only on new elements. Avoids issue with cdd in repeat groups
+		 * resetting themselves when you add a new group 
+		 */ 
+		var added = [], i = 0;
 		a = $H(a);
 		a.each(function (elements, gid) {
 			elements.each(function (el) {
 				if (typeOf(el) === 'array') {
 					var oEl = new window[el[0]](el[1], el[2]);
-					this.addElement(oEl, el[1], gid);
+					added.push(this.addElement(oEl, el[1], gid));
 				}
 				else if (typeOf(el) !== 'null') {
-					this.addElement(el, el.options.element, gid);
+					added.push(this.addElement(el, el.options.element, gid));
 				}
 			}.bind(this));
 		}.bind(this));
 		// $$$ hugh - moved attachedToForm calls out of addElement to separate loop, to fix forward reference issue,
 		// i.e. calc element adding events to other elements which come after itself, which won't be in formElements
 		// yet if we do it in the previous loop ('cos the previous loop is where elements get added to formElements)
-		this.formElements.each(function (el, elref) {
-				if (typeOf(el) !== 'null') {
-					try {
-						el.attachedToForm();
-					} catch (err) {
-						fconsole(el.options.element + ' attach to form:' + err);
-					}
+		for (i = 0; i < added.length; i ++) {
+			if (typeOf(added[i]) !== 'null') {
+				try {
+					added[i].attachedToForm();
+				} catch (err) {
+					fconsole(added[i].options.element + ' attach to form:' + err);
 				}
-			}.bind(this));
+			}
+		}
 		Fabrik.fireEvent('fabrik.form.elements.added', [this]);
 	},
 
@@ -625,7 +635,7 @@ var FbForm = new Class({
 			elId = elId.substr(0, elId.length - 3);
 			this.formElements.set(elId, oEl);
 		}
-		return elId;
+		return oEl;
 	},
 
 	// we have to buffer the events in a pop up window as
@@ -1396,9 +1406,13 @@ var FbForm = new Class({
 		return tocheck;
 	},
 
-	/* duplicates the groups sub group and places it at the end of the group */
+	/**
+	 * Duplicates the groups sub group and places it at the end of the group
+	 * 
+	 * @param   event  e  Click event
+	 */
 
-	duplicateGroup : function (e) {
+	duplicateGroup: function (e) {
 		var subElementContainer, container;
 		Fabrik.fireEvent('fabrik.form.group.duplicate', [this, e]);
 		if (this.result === false) {

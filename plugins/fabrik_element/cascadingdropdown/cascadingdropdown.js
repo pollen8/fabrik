@@ -9,10 +9,9 @@ var FbCascadingdropdown = new Class({
 	 
 	Extends: FbDatabasejoin, 
 	initialize: function (element, options) {
-		var o = null;
 		this.ignoreAjax = false;
-		this.plugin = 'cascadingdropdown';
 		this.parent(element, options);
+		this.plugin = 'cascadingdropdown';
 		if (document.id(this.options.watch)) {
 			document.id(this.options.watch).addEvent('change', function (e) {
 				this.dowatch(e);
@@ -46,6 +45,11 @@ var FbCascadingdropdown = new Class({
 		this.change(v, e.target.id);
 	},
 	
+	/**
+	 * Change
+	 * @param   v          Value of observered element
+	 * @param   triggerid  Observed element's HTML id
+	 */
 	change: function (v, triggerid)
 	{
 		/* $$$ rob think this is obsolete:
@@ -144,11 +148,12 @@ var FbCascadingdropdown = new Class({
 			//this.element.disabled = (this.element.options.length === 1 ? true : false);
 			if (this.options.editable && this.options.displayType === 'dropdown') {
 				if (this.element.options.length === 1) {
-					this.element.readonly = true;
+					// SELECTS DONT HAVE READONLY PROPERTIES 
+					//this.element.setProperty('readonly', true);
 					this.element.addClass('readonly');
-				}
-				else {
-					this.element.readonly = false;
+				} else {
+					//this.element.readonly = false;
+					//this.element.removeProperty('readonly');
 					this.element.removeClass('readonly');
 				}
 			}
@@ -191,6 +196,7 @@ var FbCascadingdropdown = new Class({
 		// c is the repeat group count
 		this.myAjax = null;
 		this.parent(c);
+		this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 		// Cloned seems to be called correctly 
 		if (document.id(this.options.watch)) {
 			if (this.options.watchInSameGroup === true) {
@@ -207,10 +213,10 @@ var FbCascadingdropdown = new Class({
 			}
 			if (document.id(this.options.watch)) {
 
-				// Remove and re-attach watch event
-				document.id(this.options.watch).removeEvents('change', function (e) {
-					this.dowatch(e);
-				}.bind(this)); 
+				/**
+				 * Was removing and attaching again, but seems remove removed
+				 * change events in other cloned plug-in instances
+				 */
 				
 				document.id(this.options.watch).addEvent('change', function (e) {
 					this.dowatch(e);
