@@ -201,7 +201,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @var array
 	 */
-	protected $_rowsToDelete = null;
+	public $rowsToDelete = null;
 
 	/**
 	 * Original list data BEFORE form saved - used to ensure uneditable data is stored
@@ -7613,7 +7613,7 @@ $groupBy .= '_raw';
 			$val = implode(",", $val);
 		}
 
-		$this->_rowsToDelete = $rows;
+		$this->rowsToDelete = $rows;
 		$groupModels = $this->getFormGroupElementData();
 		foreach ($groupModels as $groupModel)
 		{
