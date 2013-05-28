@@ -27,7 +27,7 @@ if (!class_exists('TwitterOAuth'))
  * @since       3.0
  */
 
-class plgFabrik_FormTwitter extends plgFabrik_Form
+class PlgFabrik_FormTwitter extends PlgFabrik_Form
 {
 
 	/**

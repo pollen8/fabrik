@@ -22,7 +22,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormRest extends plgFabrik_Form
+class PlgFabrik_FormRest extends PlgFabrik_Form
 {
 
 	/**
@@ -375,6 +375,8 @@ class plgFabrik_FormRest extends plgFabrik_Form
 
 	/**
 	 * Get the OAuth store
+	 *
+	 * @return  void
 	 */
 	protected function getOAuthStore()
 	{

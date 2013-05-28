@@ -23,7 +23,7 @@ JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
  * @since       3.0
  */
 
-class plgFabrik_FormSubscriptions extends plgFabrik_Form
+class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 {
 
 	/**
