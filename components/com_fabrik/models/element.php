@@ -1175,9 +1175,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Element plugin specific method for setting unecrypted values baack into post data
 	 *
-	 * @param   array   &$post  data passed by ref
-	 * @param   string  $key    key
-	 * @param   string  $data   elements unencrypted data
+	 * @param   array   &$post  Data passed by ref
+	 * @param   string  $key    Key
+	 * @param   string  $data   Elements unencrypted data
 	 *
 	 * @return  void
 	 */
@@ -1191,6 +1191,10 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// $$$rob even though $post is passed by reference - by adding in the value
 		// we arent actually modifiying the $_POST var that post was created from
+<<<<<<< HEAD
+=======
+		JRequest::setVar($key, $data);
+>>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$app->input->set($key, $data);
 	}
 

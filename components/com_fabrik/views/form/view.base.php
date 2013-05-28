@@ -712,9 +712,9 @@ class FabrikViewFormBase extends JViewLegacy
 	}
 
 	/**
-	 * Create the fom bottom hidden fields
+	 * Create the form bottom hidden fields
 	 *
-	 * @param   object  &$form  object containg form view properties
+	 * @param   object  &$form  Object containg form view properties
 	 *
 	 * @return  void
 	 */
@@ -876,8 +876,11 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _cryptQueryString(&$fields)
 	{
+<<<<<<< HEAD
 		jimport('joomla.utilities.simplecrypt');
 		jimport('joomla.utilities.utility');
+=======
+>>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$filter = JFilterInput::getInstance();
@@ -922,7 +925,7 @@ class FabrikViewFormBase extends JViewLegacy
 	/**
 	 * Encrypt view only elements
 	 *
-	 * @param   array  &$aHiddenFields  hidden fields
+	 * @param   array  &$aHiddenFields  Hidden fields
 	 *
 	 * @return  void
 	 */

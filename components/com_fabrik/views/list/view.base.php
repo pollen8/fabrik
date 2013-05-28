@@ -385,6 +385,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
 		$this->limitLength = $model->limitLength;
+		$this->ajax = $model->isAjax();
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
@@ -450,11 +451,16 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$this->groupheadings = $groupHeadings;
+<<<<<<< HEAD
 		$this->calculations = $this->_getCalculations($this->headings);
 		$this->isGrouped = !($this->get('groupBy') == '');
+=======
+		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
+		$this->isGrouped = !($model->getGroupBy() == '');
+>>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$this->colCount = count($this->headings);
 
-		$this->hasButtons = $this->get('hasButtons');
+		$this->hasButtons = $model->getHasButtons();
 		$this->grouptemplates = $model->groupTemplates;
 
 		$this->params = $params;
@@ -532,6 +538,7 @@ class FabrikViewListBase extends JViewLegacy
 		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
+		JDEBUG ? $profiler->mark('template loaded') : null;
 		$model = $this->getModel();
 		$params = $model->getParams();
 		if ($params->get('process-jplugins'))

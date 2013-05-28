@@ -1762,42 +1762,40 @@ class FabrikFEModelForm extends FabModelForm
 							 * if ($elementModel->canView())
 							 * $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
 							 */
-							if (true)
+
+							if (is_array($encrypted))
 							{
-								if (is_array($encrypted))
-								{
-									// Repeat groups
-									$v = array();
-									foreach ($encrypted as $e)
-									{
-										// $$$ rob urldecode when posting from ajax form
-										$e = urldecode($e);
-										$e = empty($e) ? '' : $crypt->decrypt($e);
-										$e = FabrikWorker::JSONtoData($e);
-										$v[] = $w->parseMessageForPlaceHolder($e, $post);
-									}
-								}
-								else
+								// Repeat groups
+								$v = array();
+								foreach ($encrypted as $e)
 								{
 									// $$$ rob urldecode when posting from ajax form
-									$encrypted = urldecode($encrypted);
-									$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
-									/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
-									 * their JSON data for encrypted read only vals, need to decode.
-									 */
-									$v = FabrikWorker::JSONtoData($v, true);
-									foreach ($v as &$tmpV)
-									{
-										$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
-									}
+									$e = urldecode($e);
+									$e = empty($e) ? '' : $crypt->decrypt($e);
+									$e = FabrikWorker::JSONtoData($e);
+									$v[] = $w->parseMessageForPlaceHolder($e, $post);
 								}
-								$elementModel->setGroupModel($groupModel);
-								$elementModel->setValuesFromEncryt($post, $key, $v);
-								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
-								 * pick up decrypted value
-								 */
-								$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
 							}
+							else
+							{
+								// $$$ rob urldecode when posting from ajax form
+								$encrypted = urldecode($encrypted);
+								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
+								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
+								 * their JSON data for encrypted read only vals, need to decode.
+								 */
+								$v = FabrikWorker::JSONtoData($v, true);
+								foreach ($v as &$tmpV)
+								{
+									$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
+								}
+							}
+							$elementModel->setGroupModel($groupModel);
+							$elementModel->setValuesFromEncryt($post, $key, $v);
+							/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
+							 * pick up decrypted value
+							 */
+							$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
 						}
 					}
 				}
