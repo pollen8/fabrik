@@ -762,7 +762,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$date = $date->toSql();
 
 		// Put in the correct format
-		list($date, $time) = explode(' ', $date);
+		list($dateOnly, $time) = explode(' ', $date);
 		$data = array('date' => $date, 'time' => $time);
 		parent::setValuesFromEncryt($post, $key, $data);
 	}
@@ -821,9 +821,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
 	 */
