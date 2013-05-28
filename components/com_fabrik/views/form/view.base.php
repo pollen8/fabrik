@@ -647,9 +647,9 @@ class FabrikViewFormBase extends JView
 	}
 
 	/**
-	 * Create the fom bottom hidden fields
+	 * Create the form bottom hidden fields
 	 *
-	 * @param   object  &$form  object containg form view properties
+	 * @param   object  &$form  Object containg form view properties
 	 *
 	 * @return  void
 	 */
@@ -804,9 +804,6 @@ class FabrikViewFormBase extends JView
 
 	protected function _cryptQueryString(&$fields)
 	{
-		jimport('joomla.utilities.simplecrypt');
-		jimport('joomla.utilities.utility');
-		//$crypt = new JSimpleCrypt;
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$get = JRequest::get('get');
@@ -850,20 +847,18 @@ class FabrikViewFormBase extends JView
 	/**
 	 * Encrypt view only elements
 	 *
-	 * @param   array  &$aHiddenFields  hidden fields
+	 * @param   array  &$aHiddenFields  Hidden fields
 	 *
 	 * @return  void
 	 */
 
 	protected function _cryptViewOnlyElements(&$aHiddenFields)
 	{
-		//jimport('joomla.utilities.simplecrypt');
-		jimport('joomla.utilities.utility');
-		//$crypt = new JSimpleCrypt;
+		$model = $this->getModel();
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$fields = array();
-		$ro = $this->get('readOnlyVals');
+		$ro = $model->getReadOnlyVals();
 		foreach ($ro as $key => $pair)
 		{
 			$repeatGroup = $pair['repeatgroup'];

@@ -165,13 +165,6 @@ class FabrikFEModelList extends JModelForm
 	 */
 	var $orderByFields = null;
 
-	/**
-	 * Is the object inside a package?
-	 *
-	 * @bar bool
-	 */
-	// var $_inPackage  = false;
-
 	protected $_joinsToThisKey = null;
 
 	/**
