@@ -78,6 +78,18 @@ var FbGoogleMap = new Class({
 				break;
 			}
 			this.makeMap();
+			
+			// @TODO test google object when offline typeOf(google) isnt working
+			if (this.options.center === 1 && this.options.rowid === 0) {
+				if (geo_position_js.init()) {
+					geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
+						enableHighAccuracy: true
+					});
+				} else {
+					fconsole('Geo locaiton functionality not available');
+				}
+			}
+			
 		}.bind(this);
 		
 		this.radFn = function () {
@@ -88,17 +100,6 @@ var FbGoogleMap = new Class({
 		window.addEvent('google.radius.loaded', this.radFn);
 		
 		this.loadScript();
-		
-		// @TODO test google object when offline typeOf(google) isnt working
-		if (this.options.center === 1 && this.options.rowid === 0) {
-			if (geo_position_js.init()) {
-				geo_position_js.getCurrentPosition(this.geoCenter.bind(this), this.geoCenterErr.bind(this), {
-					enableHighAccuracy: true
-				});
-			} else {
-				fconsole('Geo locaiton functionality not available');
-			}
-		}
 	},
 	
 	/**
@@ -134,6 +135,9 @@ var FbGoogleMap = new Class({
 		// Need to use this.options.element as if loading from ajax popup win in list view for some reason
 		// this.element refers to the first loaded row, which should have been removed from the dom
 		this.element = document.id(this.options.element);
+		if (typeOf(this.element) === 'null') {
+			return;
+		}
 		this.field = this.element.getElement('input.fabrikinput');
 		this.watchGeoCode();
 		if (this.options.staticmap) {
@@ -633,17 +637,17 @@ var FbGoogleMap = new Class({
 		this.map.setCenter(pnt, this.map.getZoom());
 	},
 
-	geoCenter : function (p) {
+	geoCenter: function (p) {
 		var pnt = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt);
 	},
 
-	geoCenterErr : function (p) {
+	geoCenterErr: function (p) {
 		fconsole('geo location error=' + p.message);
 	},
 	
-	redraw : function () {
+	redraw: function () {
 		google.maps.event.trigger(this.map, 'resize');
 		var center = new google.maps.LatLng(this.options.lat, this.options.lon);
 		this.map.setCenter(center);
