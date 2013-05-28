@@ -876,11 +876,6 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _cryptQueryString(&$fields)
 	{
-<<<<<<< HEAD
-		jimport('joomla.utilities.simplecrypt');
-		jimport('joomla.utilities.utility');
-=======
->>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$filter = JFilterInput::getInstance();

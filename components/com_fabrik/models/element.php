@@ -1191,10 +1191,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		// $$$rob even though $post is passed by reference - by adding in the value
 		// we arent actually modifiying the $_POST var that post was created from
-<<<<<<< HEAD
-=======
-		JRequest::setVar($key, $data);
->>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$app->input->set($key, $data);
 	}
 

@@ -158,11 +158,7 @@ class FabrikFEModelList extends JModelForm
 	 */
 	protected $orderByFields = null;
 
-<<<<<<< HEAD
 	protected $joinsToThisKey = null;
-=======
-	protected $_joinsToThisKey = null;
->>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 
 	/**
 	 * Used to determine which filter action to use.
@@ -191,11 +187,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @var array
 	 */
-<<<<<<< HEAD
-	protected $rowsToDelete = null;
-=======
 	public $rowsToDelete = null;
->>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 
 	/**
 	 * Original list data BEFORE form saved - used to ensure uneditable data is stored

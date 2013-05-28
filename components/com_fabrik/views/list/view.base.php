@@ -451,13 +451,8 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->emptyDataMessage = $this->get('EmptyDataMsg');
 		$this->groupheadings = $groupHeadings;
-<<<<<<< HEAD
 		$this->calculations = $this->_getCalculations($this->headings);
-		$this->isGrouped = !($this->get('groupBy') == '');
-=======
-		$this->calculations = $this->_getCalculations($this->headings, $model->actionMethod());
 		$this->isGrouped = !($model->getGroupBy() == '');
->>>>>>> 8af530e21907ad1b41d4f820d7115db1a30c7c4f
 		$this->colCount = count($this->headings);
 
 		$this->hasButtons = $model->getHasButtons();
