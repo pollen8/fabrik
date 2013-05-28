@@ -71,7 +71,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$rowid = $input->getInt('rowid', 0);
 		$fullName = $this->getFullName(false, true, true);
 		$watchName = $this->getWatchFullName();
-		$qsValue = $input->get($fullName, '');
+		$qsValue = $input->get($fullName, '', 'string');
 		$qsWatchValue = $input->get($watchName, '');
 
 		// $$$ hugh - Rob, is there a better way of finding out if validation has failed than looking at _arErrors?
@@ -284,6 +284,21 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			return $defaultLabel . $this->loadingImg;
 		}
 
+		$this->renderDescription($html, $default);
+		return implode("\n", $html);
+	}
+
+	/**
+	 * Add the description to the element's form HTML
+	 *
+	 * @param   array  &$html    Output HTML
+	 * @param   array  $default  Default values
+	 *
+	 * @return  void
+	 */
+	protected function renderDescription(&$html, $default)
+	{
+		$params = $this->getParams();
 		if ($params->get('cdd_desc_column', '') !== '')
 		{
 			$html[] = '<div class="dbjoin-description">';
@@ -296,7 +311,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 			$html[] = '</div>';
 		}
-		return implode("\n", $html);
 	}
 
 	/**
@@ -337,7 +351,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @param   array  $data           From current record (when editing form?)
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we include custom where in query
-	 * @param   array  $opts           Additional optiosn passed intto _getOptionVals()
+	 * @param   array  $opts           Additional options passed into _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
@@ -370,6 +384,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		if (!empty($filterview) && $this->getFilterBuildMethod() == 1)
 		{
+
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
 			$listModel = $this->getListModel();
 			$db = $listModel->getDb();
@@ -519,6 +534,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
 			}
 		}
+		// Remove tags from labels
+		if ($this->canUse() && in_array($this->getDisplayType(), array('multilist', 'dropdown')))
+		{
+			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
+			{
+				$opt->text = strip_tags($opt->text);
+			}
+		}
 		return $this->_optionVals[$sqlKey];
 	}
 
@@ -616,7 +639,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Create the sql query used to get the join data
+	 * Create the sql query used to get the possible selectionable value/labels used to create
+	 * the dropdown/checkboxes
 	 *
 	 * @param   array  $data      data
 	 * @param   bool   $incWhere  include where
@@ -726,7 +750,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')
 		{
-			$whereBits = explode('___', $wherekey);
+			$whereBits = strstr($wherekey, '___') ? explode('___', $wherekey) : explode('.', $wherekey);
 			$wherekey = array_pop($whereBits);
 			if (is_array($whereval))
 			{
@@ -786,7 +810,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$key = $this->queryKey();
 		$orderby = 'text';
 		$tables = $this->getForm()->getLinkedFabrikLists($params->get('join_db_name'));
-		$listModel = JModel::getInstance('List', 'FabrikFEModel');
+		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$val = $params->get('cascadingdropdown_label_concat');
 		if (!empty($val))
 		{
@@ -881,11 +905,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$join = $this->getJoin();
 		if ($params->get('cascadingdropdown_label_concat') == '')
 		{
-			// $$$ rob testing this - if 2 cdd's to same db think we need this change:
-
-			/* $bits = explode('___', $params->get($this->labelParam));
-			return $join->table_join_alias . '___' . $bits[1]; */
-
 			return $this->getLabelParamVal();
 		}
 		else
@@ -912,7 +931,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
-			$this->cn = JModel::getInstance('Connection', 'FabrikFEModel');
+			$this->cn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 			$this->cn->setId($id);
 		}
 		return $this->cn->getConnection();
