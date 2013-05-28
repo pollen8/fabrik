@@ -377,20 +377,25 @@ var FbForm = new Class({
 		}
 	},
 
-	createPages : function () {
+	createPages: function () {
+		var submit, p, firstGroup;
 		if (this.options.pages.getKeys().length > 1) {
-			// wrap each page in its own div
+			
+			// Wrap each page in its own div
 			this.options.pages.each(function (page, i) {
-				var p = new Element('div', {
+				p = new Element('div', {
 					'class' : 'page',
 					'id' : 'page_' + i
 				});
-				p.inject(document.id('group' + page[0]), 'before');
-				page.each(function (group) {
-					p.adopt(document.id('group' + group));
-				});
+				firstGroup = document.id('group' + page[0]);
+				if (typeOf(firstGroup) !== 'null') {
+					p.inject(firstGroup, 'before');
+					page.each(function (group) {
+						p.adopt(document.id('group' + group));
+					});
+				}
 			});
-			var submit = this._getButton('submit');
+			submit = this._getButton('submit');
 			if (submit && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
@@ -541,9 +546,13 @@ var FbForm = new Class({
 	 * Hide all groups except those in the active page
 	 */
 	hideOtherPages : function () {
+		var page;
 		this.options.pages.each(function (gids, i) {
 			if (i.toInt() !== this.currentPage.toInt()) {
-				document.id('page_' + i).setStyle('display', 'none');
+				page = document.id('page_' + i);
+				if (typeOf(page) !== 'null') {
+					page.hide();
+				}
 			}
 		}.bind(this));
 	},
