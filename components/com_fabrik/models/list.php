@@ -1685,7 +1685,7 @@ class FabrikFEModelList extends JModelForm
 		$distinct = $listModel->mergeJoinedData() ? 'DISTINCT ' : '';
 
 		$item = $listModel->getTable();
-		$query->select($k2 . ' AS linkKey, $linkKey AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')->from($item->db_table_name);
+		$query->select($k2 . ' AS linkKey, ' . $linkKey . ' AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')->from($item->db_table_name);
 		$query = $listModel->buildQueryJoin($query);
 		$listModel->set('includeCddInJoin', true);
 		$db->setQuery($query);
@@ -5213,16 +5213,16 @@ class FabrikFEModelList extends JModelForm
 
 	public function getLinksToThisKey()
 	{
-		if (!is_null($this->joinsToThisKey))
+		if (!is_null($this->linksToThisKey))
 		{
-			return $this->joinsToThisKey;
+			return $this->linksToThisKey;
 		}
 		$params = $this->getParams();
-		$this->joinsToThisKey = array();
+		$this->linksToThisKey = array();
 		$facted = $params->get('factedlinks', new stdClass);
 		if (!isset($facted->linkedform))
 		{
-			return $this->joinsToThisKey;
+			return $this->linksToThisKey;
 		}
 		$linkedForms = $facted->linkedform;
 		$aAllJoinsToThisKey = $this->getJoinsToThisKey();
@@ -5231,15 +5231,15 @@ class FabrikFEModelList extends JModelForm
 			$key = "{$join->list_id}-{$join->form_id}-{$join->element_id}";
 			if (isset($linkedForms->$key))
 			{
-				$this->joinsToThisKey[] = $join;
+				$this->linksToThisKey[] = $join;
 			}
 			else
 			{
 				// $$$ rob required for releated form links. otherwise links for forms not listed first in the admin options wherent being rendered
-				$this->joinsToThisKey[] = false;
+				$this->linksToThisKey[] = false;
 			}
 		}
-		return $this->joinsToThisKey;
+		return $this->linksToThisKey;
 	}
 
 	/**
