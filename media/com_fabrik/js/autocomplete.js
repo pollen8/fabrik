@@ -168,7 +168,7 @@ var FbAutocomplete = new Class({
 			this.fireEvent('selection', [this, this.element.value]);
 			// $$$ hugh - need to fire change event, in case it's something like a join element
 			// with a CDD that watches it.
-			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 700);
+			this.element.fireEvent('change', new Event.Mock(this.element, 'change'), 1500);
 			// $$$ hugh - fire a Fabrik event, just for good luck.  :)
 			Fabrik.fireEvent('fabrik.autocomplete.selected', [this, this.element.value]);
 		} else {
