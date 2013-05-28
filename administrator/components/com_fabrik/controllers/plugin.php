@@ -88,7 +88,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 	/**
 	 * Run cron plugin
 	 *
-	 * @param   object  $pluginManager  plugin manager
+	 * @param   object  &$pluginManager  Plugin manager
 	 *
 	 * @return  void
 	 */

@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin.php';
 require_once COM_FABRIK_FRONTEND . '/models/visualization.php';
 
-class plgFabrik_VisualizationNvd3_chart extends FabrikPlugin
+class PlgFabrik_VisualizationNvd3_chart extends FabrikPlugin
 {
 
 }

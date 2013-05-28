@@ -16,9 +16,9 @@ jimport('joomla.form.formfield');
 /**
  * Display a json loaded window with a repeatble set of sub fields
  *
- * @package		Joomla
- * @subpackage	Form
- * @since		1.6
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldFabrikModalrepeat extends JFormField

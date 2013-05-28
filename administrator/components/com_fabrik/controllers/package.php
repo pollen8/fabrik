@@ -19,9 +19,9 @@ require_once 'fabcontrollerform.php';
 /**
  * Package controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerPackage extends FabControllerForm

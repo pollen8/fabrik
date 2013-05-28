@@ -17,9 +17,9 @@ require_once 'fabcontrollerform.php';
 /**
  * Element controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerElement extends FabControllerForm
@@ -38,7 +38,7 @@ class FabrikAdminControllerElement extends FabControllerForm
 	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
 	 * @param   string  $type  Message type. Optional, defaults to 'message'.
 	 *
-	 * @return  JController	This object to support chaining.
+	 * @return	JController	This object to support chaining.
 	 */
 
 	public function setRedirect($url, $msg = null, $type = null)

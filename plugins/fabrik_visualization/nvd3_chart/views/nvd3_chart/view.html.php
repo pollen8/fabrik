@@ -18,9 +18,10 @@ jimport('joomla.application.component.view');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.nvd3_chart
+ * @since       3.1
  */
 
-class fabrikViewNvd3_chart extends JViewLegacy
+class FabrikViewNvd3_Chart extends JViewLegacy
 {
 
 	/**

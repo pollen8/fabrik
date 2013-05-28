@@ -1470,11 +1470,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Add tips on element labels
 	 * does ACL check on element's label in details setting
 	 *
-	 * @param   string  $txt   label
-	 * @param   array   $data  row data
-	 * @param   string  $mode  form/list render context
+	 * @param   string  $txt   Label
+	 * @param   array   $data  Row data
+	 * @param   string  $mode  Form/list render context
 	 *
-	 * @return  string  label with tip
+	 * @return  string  Label with tip
 	 */
 
 	protected function rollover($txt, $data = array(), $mode = 'form')
@@ -1486,7 +1486,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		$rollOver = $this->tipTextAndValidations($mode);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
-		return '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+		if ($rollOver !== '')
+		{
+			$txt = '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+		}
+		return $txt;
 	}
 
 	/**
