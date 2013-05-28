@@ -254,4 +254,18 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		return $this->html;
 	}
 
+	/**
+	 * Does the plugin use session.on
+	 *
+	 * @param   object  $params     Plugin params
+	 * @param   object  $formModel  Form model
+	 *
+	 * @return  void
+	 */
+
+	public function usesSession($params, $formModel)
+	{
+		$this->usesSession = true;
+	}
+
 }
