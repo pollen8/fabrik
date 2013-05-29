@@ -436,7 +436,7 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * @return	bool  session.on
 	 */
 
-	public function usesSession_result($params, $formModel)
+	public function usesSession_result()
 	{
 		return $this->usesSession;
 	}
