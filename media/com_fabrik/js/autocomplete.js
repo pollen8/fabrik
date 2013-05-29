@@ -29,7 +29,7 @@ var FbAutocomplete = new Class({
 		this.cache = {};
 		this.selected = -1;
 		this.mouseinsde = false;
-		document.addEvent('keypress', function (e) {
+		document.addEvent('keydown', function (e) {
 			this.doWatchKeys(e);
 		}.bind(this));
 		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
@@ -63,6 +63,8 @@ var FbAutocomplete = new Class({
 		}
 		if (e.key === 'enter') {
 			e.stop();
+			this.closeMenu();
+			return;
 		}
 		var v = this.getInputElement().get('value');
 		if (v === '') {
@@ -89,10 +91,6 @@ var FbAutocomplete = new Class({
 						this.completeAjax(e, v);
 					}.bind(this)
 				}).send();
-			}
-		} else {
-			if (e.key === 'enter') {
-				this.openMenu();
 			}
 		}
 		this.searchText = v;
