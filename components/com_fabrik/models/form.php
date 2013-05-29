@@ -1528,7 +1528,7 @@ class FabrikFEModelForm extends FabModelForm
 		// COPY function should create new records
 		if (array_key_exists('Copy', $this->_formData))
 		{
-			$this->_rowId = '';
+			$this->setRowId('');
 
 			// $$$ rob dont pass in $item->db_primary_key directly into safeColName as its then
 			// modified permanently by this function
@@ -1636,7 +1636,7 @@ class FabrikFEModelForm extends FabModelForm
 
 			if (array_key_exists('Copy', $this->_formData))
 			{
-				$this->_rowId = '';
+				$this->setRowId('');
 				/* $$$ hugh - nope, this is wrong, builds the wrong element name, we need to use the join's PK, not it's FK,
 				 * so we need the new 'pk' param if available, or build it from first principles.
 				 * So ... moved that code to just above, where we now build the oJoinPk.
@@ -3079,7 +3079,7 @@ class FabrikFEModelForm extends FabModelForm
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->listModel = null;
 		@set_time_limit(300);
-		$this->_rowId = $this->getRowId();
+		$this->setRowId($this->getRowId());
 
 		/*
 		 * $$$ hugh - need to call this here as we set $this->editable here, which is needed by some plugins
@@ -3668,7 +3668,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Get prefilter conditions from table and apply them to the record
 		// the false, ignores any filters set by the table
 		$where = $listModel->_buildQueryWhere(false);
-		if (strstr($sql, 'WHERE') && $this->_rowId != '')
+		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain subquerues which we want to keep the where
 			$firstword = JString::substr($where, 0, 5);
@@ -3680,7 +3680,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Set rowId to -2 to indicate random record
 		if ($random)
 		{
-			$this->_rowId = -2;
+			$this->setRowId(-2);
 		}
 		// $$$ rob ensure that all prefilters are wrapped in brackets so that
 		// only one record is loaded by the query - might need to set $word = and?
