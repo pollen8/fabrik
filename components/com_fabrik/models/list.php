@@ -160,6 +160,7 @@ class FabrikFEModelList extends JModelForm
 
 	protected $joinsToThisKey = null;
 
+	protected $linksToThisKey = null;
 	/**
 	 * Used to determine which filter action to use.
 	 * If a filter is a range then override lists setting with onsubmit
