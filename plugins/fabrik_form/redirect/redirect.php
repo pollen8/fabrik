@@ -319,6 +319,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	protected function _storeInSession(&$formModel)
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
 		if ($this->_data->save_in_session == '1')
