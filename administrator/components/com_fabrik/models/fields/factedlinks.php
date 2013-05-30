@@ -63,7 +63,7 @@ class JFormFieldFactedlinks extends JFormFieldList
 		$listreturn = array();
 		$formreturn = array();
 		$listreturn[] = '<h4>' . JText::_('COM_FABRIK_LISTS')
-			. '</h4><table class="adminlist linkedLists">
+			. '</h4><table class="adminlist linkedLists table table-striped">
 					<thead>
 					<tr>
 						<th></th>
@@ -76,7 +76,7 @@ class JFormFieldFactedlinks extends JFormFieldList
 				</thead>
 				<tbody>';
 		$formreturn[] = '<h4>' . JText::_('COM_FABRIK_FORMS')
-			. '</h4><table class="adminlist linkedForms">
+			. '</h4><table class="adminlist linkedForms table table-striped">
 					<thead>
 					<tr>
 						<th></th>
@@ -109,11 +109,11 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$listreturn[] = '</td>';
 
 			$listreturn[] = '<td>';
-			$listreturn[] = '<input name="' . $this->name . '[linkedlistheader][' . $key . ']" value="' . @$listHeaders[$key] . '" size="16" />';
+			$listreturn[] = '<input type="text" name="' . $this->name . '[linkedlistheader][' . $key . ']" value="' . @$listHeaders[$key] . '" size="16" />';
 			$listreturn[] = '</td>';
 
 			$listreturn[] = '<td>';
-			$listreturn[] = '<input name="' . $this->name . '[linkedlisttext][' . $key . ']" value="' . @$listLinkTexts[$key] . '" size="16" />';
+			$listreturn[] = '<input type="text" name="' . $this->name . '[linkedlisttext][' . $key . ']" value="' . @$listLinkTexts[$key] . '" size="16" />';
 			$listreturn[] = '</td>';
 
 			$yeschecked = JArrayHelper::getValue($listLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';
@@ -141,11 +141,11 @@ class JFormFieldFactedlinks extends JFormFieldList
 			$formreturn[] = '</td>';
 
 			$formreturn[] = '<td>';
-			$formreturn[] = '<input name="' . $this->name . '[linkedformheader][' . $key . ']" value="' . @$formHeaders[$key] . '" size="16" />';
+			$formreturn[] = '<input type="text" name="' . $this->name . '[linkedformheader][' . $key . ']" value="' . @$formHeaders[$key] . '" size="16" />';
 			$formreturn[] = '</td>';
 
 			$formreturn[] = '<td>';
-			$formreturn[] = '<input name="' . $this->name . '[linkedformtext][' . $key . ']" value="' . @$formLinkTexts[$key] . '" size="16" />';
+			$formreturn[] = '<input type="text" name="' . $this->name . '[linkedformtext][' . $key . ']" value="' . @$formLinkTexts[$key] . '" size="16" />';
 			$formreturn[] = '</td>';
 
 			$yeschecked = JArrayHelper::getValue($formLinkTypes, $key, 0) != '0' ? 'checked="checked"' : '';

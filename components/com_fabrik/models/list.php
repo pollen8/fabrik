@@ -1786,6 +1786,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
+		$icon = '<i class="icon-plus"></i> ';
 		if ($popUp)
 		{
 			FabrikHelperHTML::mocha('a.popupwin');
@@ -1794,11 +1795,11 @@ class FabrikFEModelList extends JModelForm
 			$opts->title = JText::_('COM_FABRIK_ADD');
 			$opts->evalScripts = 1;
 			$opts = json_encode($opts);
-			$link = "<a rel='$opts' href=\"$url\" class=\"popupwin\" title=\"$label\">" . $label . "</a>";
+			$link = "<a rel='$opts' href=\"$url\" class=\"popupwin\" title=\"$label\">" . $icon . $label . "</a>";
 		}
 		else
 		{
-			$link = '<a href="' . $url . '" title="' . $label . '">' . $label . '</a>';
+			$link = '<a href="' . $url . '" title="' . $label . '">' . $icon . $label . '</a>';
 		}
 		$url = '<span class="addbutton">' . $link . '</span></a>';
 		return $url;
@@ -1881,7 +1882,7 @@ class FabrikFEModelList extends JModelForm
 		$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
 		if ($count === 0)
 		{
-			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span>';
+			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span><br />';
 		}
 
 		$key .= '_raw';
@@ -1890,6 +1891,7 @@ class FabrikFEModelList extends JModelForm
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
+		$icon = '<i class="icon-list-view"></i> ';
 
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
 		$showRelated = (int) $params->get('show_related_info', 0);
@@ -1903,11 +1905,11 @@ class FabrikFEModelList extends JModelForm
 				$opts->title = JText::_('COM_FABRIK_VIEW');
 				$opts->evalScripts = 1;
 				$opts = str_replace('"', "'", json_encode($opts));
-				$html[] = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $label . '</a>';
+				$html[] = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $icon . $label . '</a>';
 			}
 			else
 			{
-				$html[] = '<a class="related_data" href="' . $url . '">' . $label . "</a>";
+				$html[] = '<a class="related_data" href="' . $url . '">' . $icon . $label . '</a>';
 			}
 		}
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
@@ -1918,6 +1920,8 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Buidl related data URL
+	 *
 	 * @param   string  $key     Releated link key
 	 * @param   string  $val     Related link value
 	 * @param   int     $listid  List id

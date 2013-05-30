@@ -45,7 +45,7 @@ Fabrik.Window = new Class({
 		visible: true,
 		onClose: function () {},
 		onContentLoaded: function () {
-			this.fitToContent();
+			this.fitToContent(false);
 		},
 		destroy: true
 	},
@@ -333,6 +333,8 @@ Fabrik.Window = new Class({
 		this.center();
 		if (!this.options.offset_y && scroll) {
 			var myfx = new Fx.Scroll(window).toElement(this.window);
+		} else {
+			this.window.position();
 		}
 	},
 	

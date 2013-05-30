@@ -281,17 +281,6 @@ class FabrikHelperHTML
       if (opts.id === 'fabwin') {
       	opts.id += i;
       }
-      var t = typeOf(opts.onContentLoaded);
-      if (t !== 'null') {
-      opts.onContentLoaded = function() {
-  			Fabrik.Windows[opts.id].fitToContent();
-			};
-
-		} else {
-			opts.onContentLoaded = function() {
-	  			document.id(opts.id).position();
-			};
-		}
       Fabrik.getWindow(opts);
     });
   });

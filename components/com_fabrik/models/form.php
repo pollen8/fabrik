@@ -2909,7 +2909,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Set in plugins such as confirmation plugin
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->runPlugins('usesSession', $this, 'form');
-		if (in_array(true, $pluginManager->_data))
+		if (in_array(true, $pluginManager->data))
 		{
 			if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
 			{
