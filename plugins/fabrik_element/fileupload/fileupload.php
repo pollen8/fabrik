@@ -2106,6 +2106,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$o = new stdClass;
 		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
 		$groupModel = $this->getGroup();
 
 		if (!$this->validate())
