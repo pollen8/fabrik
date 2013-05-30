@@ -170,7 +170,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$value = is_object($user) ? $user->get('id') : '';
 			if ($element->hidden)
 			{
-				$str = $this->_getHiddenField($name, $value, $html_id);
+				$str = $this->getHiddenField($name, $value, $html_id);
 			}
 			else
 			{
@@ -190,20 +190,6 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		return $str;
-	}
-
-	/**
-	 * get element's hidden field
-	 *
-	 * @access private
-	 * @param string $name
-	 * @param string $value
-	 * @param string $id
-	 * @return strin
-	 */
-	function _getHiddenField($name, $value, $id)
-	{
-		return "<input class='fabrikinput inputbox' type='hidden' name='$name' value='$value' id='$id' />\n";
 	}
 
 	/**
@@ -353,8 +339,6 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 
-		// $$$ rob if in joined data then $data['rowid'] isnt set - use JRequest var instead
-		//if ($data['rowid'] == 0 && !in_array($element->name, $data)) {
 		// $$$ rob also check we aren't importing from CSV - if we are ingore
 		if (JRequest::getInt('rowid') == 0 && JRequest::getCmd('task') !== 'doimport')
 		{
@@ -619,20 +603,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			// When rendering the element to the form
 			$key = '__pk_val';
 		}
-		//empty(data) when you are saving a new record and this element is in a joined group
-		// $$$ hugh - added !array_key_exists(), as ... well, rowid doesn't always exist in the query string
+		/*
+		 * empty(data) when you are saving a new record and this element is in a joined group
+		 * $$$ hugh - added !array_key_exists(), as ... well, rowid doesn't always exist in the query string
+		 */
 
-		// $$$ rob replaced ALL references to rowid with __pk_val as rowid doesnt exists in the data :O
-
-		//$$$ rob
-		//($this->_inRepeatGroup && $this->_inJoin &&  $this->_repeatGroupTotal == $repeatCounter)
-		//is for saying that the last record in a repeated join group should be treated as if it was in a new form
-
-		// $$$ rob - erm why on earth would i want to do that! ?? (see above!) - test case:
-		// form with joined data - make record with on repeated group (containing this element)
-		// edit record and the commented out if statement below meant the user dd reverted
-		// to the current logged in user and not the previously selected one
-		if (empty($data) || !array_key_exists($key, $data) )
+		if (empty($data) || !array_key_exists($key, $data))
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty valdiation failed on user element

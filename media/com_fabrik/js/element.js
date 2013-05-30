@@ -213,6 +213,11 @@ var FbElement =  new Class({
 		}
 	},
 	
+	// Alais to addNewEvent.
+	addEvent: function (action, js) {
+		this.addNewEvent(action, js);
+	},
+	
 	validate: function () {},
 	
 	//store new options created by user in hidden field
@@ -250,6 +255,11 @@ var FbElement =  new Class({
 				this.element.innerHTML = val;
 			}
 		}
+	},
+	
+	// Alias to update()
+	set: function (val) {
+		this.update(val);
 	},
 	
 	getValue: function () {
@@ -539,6 +549,27 @@ var FbElement =  new Class({
 	
 	select: function () {},
 	focus: function () {},
+	
+	hide: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.hide();
+		}
+	},
+	
+	show: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.show();
+		}
+	},
+	
+	toggle: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.toggle();
+		}
+	},
 	
 	/**
 	 * Used to find element when form clones a group

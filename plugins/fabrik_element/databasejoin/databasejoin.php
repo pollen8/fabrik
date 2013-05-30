@@ -1219,7 +1219,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
-		$html[] = '<input type="hidden" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
+		$html[] = '<input type="hidden" tabindex="-1" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
 				. JArrayHelper::getValue($default, 0, '') . '"/>';
 	}
 
