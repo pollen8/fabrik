@@ -23,7 +23,7 @@ require_once 'MCAPI.class.php';
  * @since       3.0
  */
 
-class PlgFabrik_FormMailchimp extends plgFabrik_Form
+class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 {
 
 	protected $html = null;

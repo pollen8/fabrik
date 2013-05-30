@@ -72,12 +72,13 @@ var FbDatabasejoin = new Class({
 			return;
 		}
 		c = this.getContainer();
+		if (typeOf(this.element) === 'null' || typeOf(c) === 'null') {
+			return;
+		}
 		var a = c.getElement('.toggle-addoption');
 		var url = typeOf(a) === 'null' ? e.target.get('href') : a.get('href');
 		
-		if (typeOf(this.element) === 'null') {
-			return;
-		}
+		
 		var id = this.element.id + '-popupwin';
 		this.windowopts = {
 			'id': id,

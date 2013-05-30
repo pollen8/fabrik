@@ -59,7 +59,7 @@ var FbForm = new Class({
 	},
 	
 	_setMozBoxWidths: function () {
-		if (Browser.firefox) {
+		if (Browser.firefox && this.getForm()) {
 			//as firefox treats display:-moz-box as display:-moz-box-inline we have to programatically set their widths
 			this.getForm().getElements('.fabrikElementContainer > .displayBox').each(function (b) {
 				var computed = b.getParent().getComputedSize();
@@ -84,10 +84,13 @@ var FbForm = new Class({
 	setUpAll: function () {
 		this.setUp();
 		this.winScroller = new Fx.Scroll(window);
-		if (this.options.ajax || this.options.submitOnEnter === false) {
-			this.stopEnterSubmitting();
+		if (this.form) {
+			if (this.options.ajax || this.options.submitOnEnter === false) {
+				this.stopEnterSubmitting();
+			}
+			this.watchAddOptions();
 		}
-		this.watchAddOptions();
+		
 		$H(this.options.hiddenGroup).each(function (v, k) {
 			if (v === true && typeOf(document.id('group' + k)) !== 'null') {
 				var subGroup = document.id('group' + k).getElement('.fabrikSubGroup');
@@ -100,62 +103,65 @@ var FbForm = new Class({
 		// dont ever decrease this value when deleteing a group as it will cause all sorts of
 		// reference chaos with cascading dropdowns etc
 		this.repeatGroupMarkers = $H({});
-		this.form.getElements('.fabrikGroup').each(function (group) {
-			var id = group.id.replace('group', '');
-			var c = group.getElements('.fabrikSubGroup').length;
-			//if no joined repeating data then c should be 0 and not 1
-			if (c === 1) {
-				if (group.getElement('.fabrikSubGroupElements').getStyle('display') === 'none') {
-					c = 0;
+		if (this.form) {
+			this.form.getElements('.fabrikGroup').each(function (group) {
+				var id = group.id.replace('group', '');
+				var c = group.getElements('.fabrikSubGroup').length;
+				//if no joined repeating data then c should be 0 and not 1
+				if (c === 1) {
+					if (group.getElement('.fabrikSubGroupElements').getStyle('display') === 'none') {
+						c = 0;
+					}
 				}
-			}
-			this.repeatGroupMarkers.set(id, c);
-		}.bind(this));
-
-		// IE8 if rowid isnt set here its most likely because you are rendering as a J article plugin and have done:
-		// <p>{fabrik view=form id=1}</p> 
-		// form block level elements should not be encased in <p>'s
+				this.repeatGroupMarkers.set(id, c);
+			}.bind(this));
 		
-		// testing prev/next buttons
-		var v = this.options.editable === true ? 'form' : 'details';
-		var rowInput = this.form.getElement('input[name=rowid]');
-		var rowId = typeOf(rowInput) === 'null' ? '' : rowInput.value;
-		var editopts = {
-			option : 'com_fabrik',
-			'view' : v,
-			'controller' : 'form',
-			'fabrik' : this.id,
-			'rowid' : rowId,
-			'format' : 'raw',
-			'task' : 'paginate',
-			'dir' : 1
-		};
-		[ '.previous-record', '.next-record' ].each(function (b, dir) {
-			editopts.dir = dir;
-			if (this.form.getElement(b)) {
 
-				var myAjax = new Request({
-					url : 'index.php',
-					method : this.options.ajaxmethod,
-					data : editopts,
-					onComplete : function (r) {
-						Fabrik.loader.stop(this.getBlock());
-						r = JSON.decode(r);
-						this.update(r);
-						this.form.getElement('input[name=rowid]').value = r.post.rowid;
-					}.bind(this)
-				});
-
-				this.form.getElement(b).addEvent('click', function (e) {
-					myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
-					e.stop();
-					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
-					myAjax.send();
-				}.bind(this));
-			}
-		}.bind(this));
-		
-		this.watchGoBackButton();
+			// IE8 if rowid isnt set here its most likely because you are rendering as a J article plugin and have done:
+			// <p>{fabrik view=form id=1}</p> 
+			// form block level elements should not be encased in <p>'s
+			
+			// testing prev/next buttons
+			var v = this.options.editable === true ? 'form' : 'details';
+			var rowInput = this.form.getElement('input[name=rowid]');
+			var rowId = typeOf(rowInput) === 'null' ? '' : rowInput.value;
+			var editopts = {
+				option : 'com_fabrik',
+				'view' : v,
+				'controller' : 'form',
+				'fabrik' : this.id,
+				'rowid' : rowId,
+				'format' : 'raw',
+				'task' : 'paginate',
+				'dir' : 1
+			};
+			[ '.previous-record', '.next-record' ].each(function (b, dir) {
+				editopts.dir = dir;
+				if (this.form.getElement(b)) {
+	
+					var myAjax = new Request({
+						url : 'index.php',
+						method : this.options.ajaxmethod,
+						data : editopts,
+						onComplete : function (r) {
+							Fabrik.loader.stop(this.getBlock());
+							r = JSON.decode(r);
+							this.update(r);
+							this.form.getElement('input[name=rowid]').value = r.post.rowid;
+						}.bind(this)
+					});
+	
+					this.form.getElement(b).addEvent('click', function (e) {
+						myAjax.options.data.rowid = this.form.getElement('input[name=rowid]').value;
+						e.stop();
+						Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+						myAjax.send();
+					}.bind(this));
+				}
+			}.bind(this));
+			
+			this.watchGoBackButton();
+		}
 	},
 
 	// Go back button in ajax pop up window should close the window
@@ -387,20 +393,25 @@ var FbForm = new Class({
 		}
 	},
 
-	createPages : function () {
+	createPages: function () {
+		var submit, p, firstGroup;
 		if (this.options.pages.getKeys().length > 1) {
-			// wrap each page in its own div
+			
+			// Wrap each page in its own div
 			this.options.pages.each(function (page, i) {
-				var p = new Element('div', {
+				p = new Element('div', {
 					'class' : 'page',
 					'id' : 'page_' + i
 				});
-				p.inject(document.id('group' + page[0]), 'before');
-				page.each(function (group) {
-					p.adopt(document.id('group' + group));
-				});
+				firstGroup = document.id('group' + page[0]);
+				if (typeOf(firstGroup) !== 'null') {
+					p.inject(firstGroup, 'before');
+					page.each(function (group) {
+						p.adopt(document.id('group' + group));
+					});
+				}
 			});
-			var submit = this._getButton('submit');
+			submit = this._getButton('submit');
 			if (submit && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
@@ -551,9 +562,13 @@ var FbForm = new Class({
 	 * Hide all groups except those in the active page
 	 */
 	hideOtherPages : function () {
+		var page;
 		this.options.pages.each(function (gids, i) {
 			if (i.toInt() !== this.currentPage.toInt()) {
-				document.id('page_' + i).setStyle('display', 'none');
+				page = document.id('page_' + i);
+				if (typeOf(page) !== 'null') {
+					page.hide();
+				}
 			}
 		}.bind(this));
 	},
@@ -922,7 +937,10 @@ var FbForm = new Class({
 	},
 	
 	/** @since 3.0 get a form button name */
-	_getButton : function (name) {
+	_getButton: function (name) {
+		if (!this.getForm()) {
+			return;
+		}
 		var b = this.form.getElement('input[type=button][name=' + name + ']');
 		if (!b) {
 			b = this.form.getElement('input[type=submit][name=' + name + ']');

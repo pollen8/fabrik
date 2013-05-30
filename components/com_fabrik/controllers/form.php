@@ -476,7 +476,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$input = $app->input;
 		$sessionModel = $this->getModel('formsession', 'FabrikFEModel');
 		$sessionModel->setFormId($input->getInt('formid', 0));
-		$sessionModel->setRowId($input->getInt('rowid', 0));
+		$sessionModel->setRowId($input->get('rowid', '', 'string'));
 		$sessionModel->remove();
 		$this->display();
 	}

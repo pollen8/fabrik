@@ -32,7 +32,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class PlgFabrik_FormAutofill extends PlgFabrik_Form {
+class PlgFabrik_FormAutofill extends PlgFabrik_Form
+{
 
 	/**
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired

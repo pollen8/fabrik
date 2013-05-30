@@ -21,7 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormFirefox_contacts extends plgFabrik_Form
+class PlgFabrik_FormFirefox_Contacts extends PlgFabrik_Form
 {
 
 	/**

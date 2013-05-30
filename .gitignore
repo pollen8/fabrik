@@ -77,20 +77,12 @@ fabrik_build/docs/
 libraries/dompdf/lib/fonts/log.htm
 /docs
 /uploads
-<<<<<<< HEAD
-=======
 libraries/dompdf/lib/fonts/dompdf_font_family_cache.dist.php
 /t3-assets
 /joomlatools-files
-<<<<<<< HEAD
->>>>>>> b909d010b5321afa5b28cf55e84f0c2b146739b9
 /bin
 /layouts
 =======
 /.externalToolBuilders
-<<<<<<< HEAD
->>>>>>> ea092550e0beef7e273ccadcc4d0e24b2be1d747
-=======
 custom_css.php
 custom.css
->>>>>>> 8beaea6903c65193bd2b8d7cc5c3b00c6e2c98d7

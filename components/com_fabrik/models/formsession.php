@@ -417,7 +417,7 @@ class FabrikFEModelFormsession extends FabModel
 
 	public function setRowId($id)
 	{
-		$this->rowid = $id;
+		$this->rowid = (int) $id;
 	}
 
 	/**

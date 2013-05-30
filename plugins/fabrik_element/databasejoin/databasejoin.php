@@ -1092,6 +1092,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					case 'dropdown':
 					default:
+						// Jaanus: to avoid dropdowns becoming too large because of possible long labels
+						$attribs .= $params->get('max-width', '') != '' ? ' style="max-width:' . $params->get('max-width') . ';"' : '';
 						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
@@ -1243,7 +1245,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '" class="fabrikinput inputbox autocomplete-trigger"/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
-		$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
+		$html[] = '<input type="hidden" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
 				. JArrayHelper::getValue($default, 0, '') . '"/>';
 	}
 

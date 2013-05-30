@@ -614,14 +614,12 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			// When rendering the element to the form
 			$key = '__pk_val';
 		}
-
-		/**
-		 * $$$ rob - erm why on earth would i want to do that! ?? (see above!) - test case:
-		 * form with joined data - make record with on repeated group (containing this element)
-		 * edit record and the commented out if statement below meant the user dd reverted
-		 * to the current logged in user and not the previously selected one
+		/*
+		 * empty(data) when you are saving a new record and this element is in a joined group
+		 * $$$ hugh - added !array_key_exists(), as ... well, rowid doesn't always exist in the query string
 		 */
-		if (empty($data) || !array_key_exists($key, $data) )
+
+		if (empty($data) || !array_key_exists($key, $data))
 		{
 			// $$$ rob - added check on task to ensure that we are searching and not submitting a form
 			// as otherwise not empty valdiation failed on user element

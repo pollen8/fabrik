@@ -1173,6 +1173,8 @@ class FabrikAdminModelList extends FabModelAdmin
 			$type = preg_replace("/\((.*)\)/i", '', $type);
 
 			$element = FabTable::getInstance('Element', 'FabrikTable');
+			$fbConfig = JComponentHelper::getParams('com_fabrik');
+			$default_plg = $fbConfig->get($type);
 			if (array_key_exists($ordering, $elementTypes))
 			{
 				// If importing from a CSV file then we have userselect field definitions
@@ -1190,26 +1192,8 @@ class FabrikAdminModelList extends FabModelAdmin
 					// Otherwise guestimate!
 					switch ($type)
 					{
-						case "int":
-						case "decimal":
-						case "tinyint":
-						case "smallint":
-						case "mediumint":
-						case "bigint":
-						case "varchar":
-							$plugin = 'field';
-							break;
-						case "text":
-						case "tinytext":
-						case "mediumtext":
-						case "longtext":
-							$plugin = 'textarea';
-							break;
-						case "datetime":
-						case "date":
-						case "time":
-						case "timestamp":
-							$plugin = 'date';
+						case $type:
+							$plugin = $default_plg;
 							break;
 						default:
 							$plugin = 'field';

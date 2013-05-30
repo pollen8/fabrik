@@ -194,7 +194,7 @@ var FbElement =  new Class({
 	
 	addNewEventAux: function (action, js) {
 		this.element.addEvent(action, function (e) {
-			e.stop();
+			// Don't stop event - means fx's onchange events wouldnt fire.
 			typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 		}.bind(this));
 	},
@@ -215,6 +215,11 @@ var FbElement =  new Class({
 				this.addNewEventAux(action, js);
 			}
 		}
+	},
+	
+	// Alais to addNewEvent.
+	addEvent: function (action, js) {
+		this.addNewEvent(action, js);
 	},
 	
 	validate: function () {},
@@ -254,6 +259,11 @@ var FbElement =  new Class({
 				this.element.innerHTML = val;
 			}
 		}
+	},
+	
+	// Alias to update()
+	set: function (val) {
+		this.update(val);
 	},
 	
 	getValue: function () {

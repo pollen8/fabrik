@@ -24,7 +24,7 @@ require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
  * @since       3.0
  */
 
-class PlgFabrik_FormSMS extends plgFabrik_Form
+class PlgFabrik_FormSMS extends PlgFabrik_Form
 {
 
 	/**

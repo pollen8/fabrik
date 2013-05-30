@@ -27,7 +27,6 @@ class FabrikTableComment extends FabTable
 	 * Object constructor to set table and key fields.
 	 *
 	 * @param   JDatabase  &$db  JDatabase connector object.
-	 *
 	 */
 
 	public function __construct(&$db)
@@ -783,9 +782,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query->insert('#__{package}_notification_event')
 		->set(array('event = ' . $event, 'user_id = ' . $user_id, 'reference = ' . $ref, 'date_time = ' . $date));
 		$db->setQuery($query);
-		try {
+		try
+		{
 			$db->execute();
-		} catch (RuntimeException $e) {
+		}
+		catch (RuntimeException $e)
+		{
 			JLog::add('Couldnt save fabrik comment notification event: ' + $db->stderr(true), JLog::WARNING, 'fabrik');
 			return false;
 		}
@@ -817,7 +819,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$query->insert('#__{package}_notification')
 		->set(array('reason = ' . $db->quote('commentor'), 'user_id = ' . $user_id, 'reference = ' . $ref, 'label = ' . $label));
 		$db->setQuery($query);
-		try {
+		try
+		{
 			$db->execute();
 		}
 		catch (RuntimeException $e)

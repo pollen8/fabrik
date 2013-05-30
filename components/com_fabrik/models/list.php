@@ -1843,8 +1843,10 @@ class FabrikFEModelList extends JModelForm
 
 	public function viewDataLink($popUp = false, $element = null, $row = null, $key = '', $val = '', $count = 0, $f = null)
 	{
+		$count = (int) $count;
 		$elKey = $element->list_id . '-' . $element->form_id . '-' . $element->element_id;
 		$listid = $element->list_id;
+		$html = array();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
@@ -1858,10 +1860,7 @@ class FabrikFEModelList extends JModelForm
 		$row2 = JArrayHelper::fromObject($row);
 		$label = $this->parseMessageForRowHolder($linkedListText, $row2);
 
-		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
-
 		$action = $app->isAdmin() ? 'task' : 'view';
-		$url = 'index.php?option=com_' . $package . '&';
 
 		if (is_null($listid))
 		{
@@ -1874,21 +1873,67 @@ class FabrikFEModelList extends JModelForm
 			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
 			. '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
-		$tlabel = ($label === '') ? JText::_('COM_FABRIK_NO_RECORDS') : '(0) ' . $label;
 
+		$tlabel = ($count === 0) ? JText::_('COM_FABRIK_NO_RECORDS') : '(0) ' . $label;
+		$showRelatedAdd = (int) $params->get('show_related_add', 0);
+		$aExisitngLinkedForms = (array) $params->get('linkedform');
+		$linkedForm = JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
+		$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
 		if ($count === 0)
 		{
-			$aExisitngLinkedForms = (array) $params->get('linkedform');
-			$linkedForm = JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
-			$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
-			return '<div style="text-align:center" class="related_data_norecords">' . $tlabel . '</div>' . $addLink;
+			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span>';
 		}
+
 		$key .= '_raw';
 		if ($label === '')
 		{
 			$label = JText::_('COM_FABRIK_VIEW');
 		}
 		$label = '<span class="fabrik_related_data_count">(' . $count . ')</span> ' . $label;
+
+		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
+		$showRelated = (int) $params->get('show_related_info', 0);
+		if ($showRelated == 0 || ($showRelated == 2  && $count))
+		{
+			if ($popUp)
+			{
+				FabrikHelperHTML::windows('a.popupwin');
+				$opts = new stdClass;
+				$opts->maximizable = 1;
+				$opts->title = JText::_('COM_FABRIK_VIEW');
+				$opts->evalScripts = 1;
+				$opts = str_replace('"', "'", json_encode($opts));
+				$html[] = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $label . '</a>';
+			}
+			else
+			{
+				$html[] = '<a class="related_data" href="' . $url . '">' . $label . "</a>";
+			}
+		}
+		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
+		{
+			$html[] = '<br />' . $addLink;
+		}
+		return implode("\n", $html);
+	}
+
+	/**
+	 * @param   string  $key     Releated link key
+	 * @param   string  $val     Related link value
+	 * @param   int     $listid  List id
+	 * @param   bool    $popup   Is pop up link
+	 *
+	 * @since   3.0.8
+	 *
+	 * @return  string  URL
+	 */
+
+	protected function releatedDataURL($key, $val, $listid, $popUp)
+	{
+		$app = JFactory::getApplication();
+		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$url = 'index.php?option=com_' . $package . '&';
 		if ($app->isAdmin())
 		{
 			$bits[] = 'task=list.view';
@@ -1931,20 +1976,6 @@ class FabrikFEModelList extends JModelForm
 		$bits[] = '&fabrik_incsessionfilters=0';
 		$url .= implode('&', $bits);
 		$url = JRoute::_($url);
-		if ($popUp)
-		{
-			FabrikHelperHTML::windows('a.popupwin');
-			$opts = new stdClass;
-			$opts->maximizable = 1;
-			$opts->title = JText::_('COM_FABRIK_VIEW');
-			$opts->evalScripts = 1;
-			$opts = str_replace('"', "'", json_encode($opts));
-			$url = '<a rel="' . $opts . '" href="' . $url . '" class="popupwin">' . $label . '</a>';
-		}
-		else
-		{
-			$url = '<a class="related_data" href="' . $url . '">' . $label . "</a>";
-		}
 		return $url;
 	}
 

@@ -19,7 +19,7 @@ jimport('joomla.application.component.model');
  * @since       3.0
  */
 
-class fabrikModelNotification extends JModel
+class FabrikModelNotification extends JModel
 {
 
 	/**

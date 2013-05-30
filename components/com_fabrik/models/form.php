@@ -2082,7 +2082,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session = JFactory::getSession();
 
 		// Store errors in local array as clearErrors() removes $this->errors
@@ -2114,8 +2114,8 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$this->errors = array();
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
@@ -2137,7 +2137,7 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session->set($context . 'errors', $errors);
 		$session->set($context . 'session.on', true);
 	}
@@ -2563,7 +2563,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->listModel = null;
-		$this->rowId = $this->getRowId();
+		$this->setRowId($this->getRowId());
 
 		/*
 		 * $$$ hugh - need to call this here as we set $this->editable here, which is needed by some plugins
@@ -2907,9 +2907,14 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
-		if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('usesSession', $this, 'form');
+		if (in_array(true, $pluginManager->_data))
 		{
-			return true;
+			if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+			{
+				return true;
+			}
 		}
 		$save = (int) $params->get('multipage_save', 0);
 		$user = JFactory::getUser();
@@ -3124,7 +3129,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Get prefilter conditions from table and apply them to the record
 		// the false, ignores any filters set by the table
 		$where = $listModel->buildQueryWhere(false);
-		if (strstr($sql, 'WHERE') && $this->rowId != '')
+		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain subquerues which we want to keep the where
 			$firstword = JString::substr($where, 0, 5);
@@ -3136,7 +3141,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Set rowId to -2 to indicate random record
 		if ($random)
 		{
-			$this->rowId = -2;
+			$this->setRowId(-2);
 		}
 		// $$$ rob ensure that all prefilters are wrapped in brackets so that
 		// only one record is loaded by the query - might need to set $word = and?

@@ -20,7 +20,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
  * @since       3.0
  */
 
-class plgFabrik_Cronemail extends plgFabrik_Cron
+class PlgFabrik_Cronemail extends PlgFabrik_Cron
 {
 
 	/**
@@ -97,7 +97,7 @@ class plgFabrik_Cronemail extends plgFabrik_Cron
 							$thismsg = eval($thismsg);
 						}
 						$thissubject = $w->parseMessageForPlaceHolder($subject, $row);
-						$mail = JFactory::getMailer(); 				
+						$mail = JFactory::getMailer();
 						$res = $mail->sendMail($MailFrom, $FromName, $thisto, $thissubject, $thismsg, true);
 						if (!$res)
 						{

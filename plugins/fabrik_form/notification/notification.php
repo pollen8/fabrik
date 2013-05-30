@@ -21,7 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class plgFabrik_FormNotification extends plgFabrik_Form
+class PlgFabrik_FormNotification extends PlgFabrik_Form
 {
 
 	/**
@@ -40,8 +40,8 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return void
 	 */
@@ -63,7 +63,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 		$opts = new stdClass;
 		$opts->listid = $formModel->getListModel()->getId();
 		$opts->formid = $formModel->getId();
-		$opts->rowid = $formModel->rowId;
+		$opts->rowid = $formModel->getRowId();
 		$opts->senderBlock = $input->get('view') == 'form' ? 'form_' : 'details_';
 		$opts->senderBlock .= $formModel->getId();
 		$opts = json_encode($opts);
@@ -108,7 +108,7 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 	/**
 	 * Get notification reference
 	 *
-	 * @param   int  $listid  default list id
+	 * @param   int  $listid  Default list id
 	 *
 	 * @return string
 	 */
@@ -118,20 +118,20 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		return $db->quote($input->getInt('listid', $listid) . '.' . $app->getInt('formid', 0) . '.' . $app->getInt('rowid', 0));
+		return $db->quote($input->getInt('listid', $listid) . '.' . $input->getInt('formid', 0) . '.' . $input->get('rowid', '', 'string'));
 	}
 
 	/**
 	 * Process the plugin
 	 *
-	 * @param   bool       $add     add or remove notification
-	 * @param   string     $why     reason for notification
-	 * @param   JRegistry  $params  params
+	 * @param   bool       $add     Add or remove notification
+	 * @param   string     $why     Reason for notification
+	 * @param   JRegistry  $params  Params
 	 *
 	 * @return  void
 	 */
 
-	protected function process($add = true, $why = 'author', $params)
+	protected function process($add, $why, $params)
 	{
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
@@ -182,8 +182,8 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 	/**
 	 * Test if the notifications should be fired
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   JRegistry  $params  params
+	 * @param   object     $formModel  Form model
+	 * @param   JRegistry  $params     Params
 	 *
 	 * @return  bool
 	 */
@@ -208,8 +208,8 @@ class plgFabrik_FormNotification extends plgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  $params      Plugin params
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return	bool
 	 */
