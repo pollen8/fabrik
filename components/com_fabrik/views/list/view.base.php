@@ -214,6 +214,7 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
+		$script[] = "window.addEvent('domready', function () {";
 		$script[] = "\tvar list = new FbList('$listid',";
 		$script[] = "\t" . $opts;
 		$script[] = "\t);";
@@ -241,6 +242,9 @@ class FabrikViewListBase extends JViewLegacy
 		// Was seperate but should now load in with the rest of the require js code
 		$model = $this->getModel();
 		$script[] = $model->getElementJs($src);
+
+		// End domredy wrapper
+		$script[] = '})';
 		$script = implode("\n", $script);
 
 		FabrikHelperHTML::iniRequireJS($shim);
@@ -293,7 +297,7 @@ class FabrikViewListBase extends JViewLegacy
 		// Add in some styling short cuts
 		$c = 0;
 		$form = $model->getFormModel();
-		$nav = $this->get('Pagination');
+		$nav = $model->getPagination();
 		foreach ($data as $groupk => $group)
 		{
 			$last_pk = '';
@@ -329,8 +333,8 @@ class FabrikViewListBase extends JViewLegacy
 
 		// Cant use numeric key '0' as group by uses grouped name as key
 		$firstRow = current($this->rows);
-		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
-		$this->advancedSearch = $this->get('AdvancedSearchLink');
+		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
+		$this->advancedSearch = $model->getAdvancedSearchLink();
 		$this->advancedSearchURL = $model->getAdvancedSearchURL();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
@@ -362,7 +366,7 @@ class FabrikViewListBase extends JViewLegacy
 		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
 		$this->table->outro = $w->parseMessageForPlaceHolder($params->get('outro'));
 		$this->table->id = $item->id;
-		$this->table->renderid = $this->get('RenderContext');
+		$this->table->renderid = $model->getRenderContext();
 		$this->table->db_table_name = $item->db_table_name;
 
 		// End deprecated
@@ -371,16 +375,16 @@ class FabrikViewListBase extends JViewLegacy
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
-		$this->renderContext = $this->get('RenderContext');
+		$this->renderContext = $model->getRenderContext();
 		$this->formid = 'listform_' . $this->renderContext;
 		$form = $model->getFormModel();
-		$this->table->action = $this->get('TableAction');
+		$this->table->action = $model->getTableAction();
 		$this->showCSV = $model->canCSVExport();
 		$this->showCSVImport = $model->canCSVImport();
 		$this->canGroupBy = $model->canGroupBy();
 		$this->navigation = $nav;
 		$this->nav = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
-			? $nav->getListFooter($this->renderContext, $this->get('tmpl')) : '';
+			? $nav->getListFooter($this->renderContext, $model->getTmpl()) : '';
 		$this->nav = '<div class="fabrikNav">' . $this->nav . '</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
@@ -438,18 +442,18 @@ class FabrikViewListBase extends JViewLegacy
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 
-		$this->groupByHeadings = $this->get('GroupByHeadings');
-		$this->filter_action = $this->get('FilterAction');
+		$this->groupByHeadings = $model->getGroupByHeadings();
+		$this->filter_action = $model->getFilterAction();
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_' . $this->renderContext);
-		$this->clearFliterLink = $this->get('clearButton');
+		$this->clearFliterLink = $model->getClearButton();
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode = (int) $params->get('show-table-filters');
 		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4;
-		$this->showFilters = $this->get('showFilters');
+		$this->showFilters = $model->getShowFilters();
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 
-		$this->emptyDataMessage = $this->get('EmptyDataMsg');
+		$this->emptyDataMessage = $model->getEmptyDataMsg();
 		$this->groupheadings = $groupHeadings;
 		$this->calculations = $this->_getCalculations($this->headings);
 		$this->isGrouped = !($model->getGroupBy() == '');
@@ -469,7 +473,7 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->buttons();
 
-		$this->pluginTopButtons = $this->get('PluginTopButtons');
+		$this->pluginTopButtons = $model->getPluginTopButtons();
 	}
 
 	/**
@@ -575,7 +579,7 @@ class FabrikViewListBase extends JViewLegacy
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_GROUP_BY');
 		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_FILTER') . '</span>';
+		unset($buttonProperties['title']);
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 

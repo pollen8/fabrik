@@ -1375,7 +1375,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($buttonAction == 'dropdown')
 					{
-						$row->fabrik_actions['delete_divider'] = '<li class="divider"></li>';
+						$row->fabrik_actions['delete_divider'] = $j3 ? '' : '<li class="divider"></li>';
 					}
 					$row->fabrik_actions['fabrik_delete'] = $this->deleteButton();
 				}
@@ -1465,7 +1465,7 @@ class FabrikFEModelList extends JModelForm
 				{
 					if ($buttonAction == 'dropdown')
 					{
-						$row->fabrik_actions[] = '<li class="divider"></li>';
+						$row->fabrik_actions[] = $j3 ? '' : '<li class="divider"></li>';
 					}
 				}
 				foreach ($pluginButtons as $b)
@@ -10045,6 +10045,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$qs = FabrikString::removeQSVar($qs, 'group_by');
 			$qs = FabrikString::ltrimword($qs, '?');
+			$qs = str_replace('&', '&amp;', $qs);
 		}
 		$url = $base;
 		if (!empty($qs))

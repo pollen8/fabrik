@@ -1,4 +1,5 @@
-<div class="fabrikFilterContainer">
+<?php $style = $this->toggleFilters ? 'style="display:none"' : ''; ?>
+<div class="fabrikFilterContainer" <?php echo $style?>>
 <?php
 if ($this->filterMode === 3 || $this->filterMode === 4) :
 ?>
@@ -8,11 +9,6 @@ else:
 <div class="row-fluid">
 	<div class="span6">
 <table class="filtertable table table-striped">
-	<tfoot>
-		<tr>
-		<td colspan="2"></td>
-		</tr>
-	</tfoot>
 	<thead>
 		<tr class="fabrik___heading">
 			<th><?php echo JText::_('COM_FABRIK_SEARCH');?>:</th>
@@ -26,6 +22,11 @@ else:
 			</th>
 		</tr>
 	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="2"></td>
+		</tr>
+	</tfoot>
 	<?php
 	$c = 0;
 	foreach ($this->filters as $key => $filter) :

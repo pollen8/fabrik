@@ -147,7 +147,7 @@ class FabrikHelperHTML
 	/**
 	 * Build a datatoggling dropdown
 	 *
-	 * @param   array   $lis  Array of links to create dropdown from
+	 * @param   array   $lis    Array of links to create dropdown from
 	 * @param   string  $align  Should the drop down be left or right aligned - If right then the dropdown content's end is right algined to the button
 	 *
 	 * @return  string
@@ -163,16 +163,15 @@ class FabrikHelperHTML
 		return '<div class="' . $class . '"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
 				<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
+				<ul class="dropdown-menu"><li>' . implode('</li>' . "\n" . '<li>', $lis) . '</li></ul></div>';
 	}
 
 	public static function bootStrapButtonGroup($items)
 	{
-		return '<div class="btn-group">' . implode(' ' , $items) . '</div>';
+		return '<div class="btn-group">' . implode(' ', $items) . '</div>';
 	}
 
 	/**
-	 *
 	 * Build an array of the request headers by hand.  Replacement for using
 	 * apache_request_headers(), which only works in certain configurations.
 	 * This solution gets them from the $_SERVER array, and re-munges them back
@@ -189,7 +188,7 @@ class FabrikHelperHTML
 			return self::$requestHeaders;
 		}
 		self::$requestHeaders = array();
-		foreach($_SERVER as $key => $value)
+		foreach ($_SERVER as $key => $value)
 		{
 			if (substr($key, 0, 5) <> 'HTTP_')
 			{
@@ -217,9 +216,6 @@ class FabrikHelperHTML
 		$input = $app->input;
 		$script = '';
 
-		// Don't include in an Request.JSON call - for autofill form plugin
-		// $$$ hugh - apache_request_headers() only works for certain server configurations
-		//$headers = apache_request_headers();
 		$headers = self::parseRequestHeaders();
 		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
@@ -407,7 +403,7 @@ EOD;
 		$link = self::printURL($formModel);
 		if ($params->get('icons', true))
 		{
-			$image = FabrikHelperHTML::image('print.png');
+			$image = self::image('print.png');
 		}
 		else
 		{
@@ -840,8 +836,8 @@ EOD;
 	 * Append a js file to the main require.js list of files to load.
 	 * Will use the -min.js or .js file based on debug settings
 	 *
-	 * @param   array   $srcs  Already loaded scripts from framework()
-	 * @param   string  $file  JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'
+	 * @param   array   &$srcs  Already loaded scripts from framework()
+	 * @param   string  $file   JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'
 	 *
 	 * @since   3.0b
 	 *
@@ -910,7 +906,7 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
-				$liveSiteSrc[] = FabrikHelperHTML::tipInt();
+				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc[] = "});";
 				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
@@ -920,11 +916,17 @@ EOD;
 		return self::$framework;
 	}
 
+	/**
+	 * Build JS to initiate tips
+	 *
+	 * @return  string
+	 */
+
 	public static function tipInt()
 	{
 		$tipOpts = self::tipOpts();
 		$tipJs = array();
-		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts). ");";
+		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.list.updaterows', function () {";
 		$tipJs[] = "\t\t// Reattach new tips after list redraw";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
@@ -982,7 +984,6 @@ EOD;
 		$deps->deps[] = 'fab/mootools-ext' . $ext;
 		$deps->deps[] = 'fab/lib/Event.mock';
 
-
 		if ($j3)
 		{
 			$deps->deps[] = 'fab/tipsBootStrapMock' . $ext;
@@ -1005,7 +1006,6 @@ EOD;
 		$deps = new stdClass;
 		$deps->deps = array('fab/fabrik' . $ext, 'fab/element' . $ext);
 		$framework['fab/elementlist' . $ext] = $deps;
-
 
 		$newShim = array_merge($framework, $newShim);
 
@@ -1732,10 +1732,17 @@ EOD;
 			$properties['class'] = 'fabrikImg';
 		}
 
-		$p = FabrikHelperHTML::propertiesFromArray($properties);
+		$p = selft::propertiesFromArray($properties);
 		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
 	}
 
+	/**
+	 * Build HTML properties from an associated array
+	 *
+	 * @param   array  $properties  Properties
+	 *
+	 * @return string
+	 */
 	protected static function propertiesFromArray($properties)
 	{
 		$bits = array();

@@ -43,7 +43,7 @@ $group = $this->group;
 			<div class="pull-right">
 			<?php if ($group->canAddRepeat) :
 				$add = FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));
-			?>
+				?>
 				<a class="addGroup" href="#"><?php echo $add?></a>
 			<?php
 			endif;
