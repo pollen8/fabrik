@@ -550,6 +550,27 @@ var FbElement =  new Class({
 	select: function () {},
 	focus: function () {},
 	
+	hide: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.hide();
+		}
+	},
+	
+	show: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.show();
+		}
+	},
+	
+	toggle: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.toggle();
+		}
+	},
+	
 	/**
 	 * Used to find element when form clones a group
 	 * WYSIWYG text editor needs to return something specific as options.element has to use name 
