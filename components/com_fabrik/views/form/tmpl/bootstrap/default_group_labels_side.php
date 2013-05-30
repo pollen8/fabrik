@@ -16,13 +16,13 @@
 		</div>
 
 		<?php if ($this->tipLocation == 'side') : ?>
-			<p class="help-block"><?php echo $element->tipSide ?></p>
+			<div class="help-block"><?php echo $element->tipSide ?></div>
 		<?php endif ?>
 
 	</div>
 
 	<?php if ($this->tipLocation == 'below') :?>
-		<p class="help-block"><?php echo $element->tipBelow ?></p>
+		<div class="help-block"><?php echo $element->tipBelow ?></div>
 	<?php endif ?>
 
 </div><!--  end span -->

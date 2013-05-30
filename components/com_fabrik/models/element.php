@@ -2156,6 +2156,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getHiddenField($name, $value, $id = '', $class = '')
 	{
+		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		$opts = array('class' => 'fabrikinput inputbox', 'type' => 'hidden', 'name' => $name, 'value' => $value, 'id' => $id);
 		return $this->buildInput('input', $opts);
 	}
@@ -2194,7 +2195,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bits = array();
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$size = $element->width;
+		$size = (int) $element->width < 0 ? 1 : (int) $element->width;
 		if (!isset($type))
 		{
 			$type = $params->get('password') == "1" ? 'password' : 'text';
@@ -2222,8 +2223,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bits['type'] = $type;
 		$bits['id'] = $this->getHTMLId($repeatCounter);
 		$bits['name'] = $this->getHTMLName($repeatCounter);
-		$bits['size'] = $size;
-		$bits['maxlength'] = $maxlength;
+		if (!$element->hidden)
+		{
+			$bits['size'] = $size;
+			$bits['maxlength'] = $maxlength;
+		}
+
+
 		$class[] = 'fabrikinput inputbox';
 		$bits['class'] = implode(' ', $class);
 		if ($params->get('placeholder', '') !== '')
