@@ -8952,9 +8952,17 @@ $groupBy .= '_raw';
 				* Instead they are aded to the filter sessions and reapplied that way
 				* otherwise we ended up with elementname=Array in the query string
 				*/
+				/*
+				 * $$$ hugh ... yeah, but $v is still an array, so we need to deal with it
+				 * if it isn't an element ... like (say) ids[]=1&ids[]=2 in a table plugin, like
+				 * email list
+				 */
 				if ($el === false)
 				{
-					$qs[] = $k . '=' . $v;
+					foreach ($v as $v1)
+					{
+						$qs[] = $k . '[]=' . $v1;
+					}
 				}
 			}
 			else
