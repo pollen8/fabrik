@@ -5693,7 +5693,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$cache = FabrikWorker::getCache();
-		$search = $input->get('value');
+		$search = $input->get('value', '', 'string');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}
 
