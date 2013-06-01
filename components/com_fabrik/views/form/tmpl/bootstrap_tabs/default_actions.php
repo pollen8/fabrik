@@ -14,7 +14,7 @@ if ($this->hasActions) : ?>
 		</div>
 		<div class="span4">
 			<div class="btn-group">
-				<?php echo $form->nextButton . ' ' . $form->prevButton; ?>
+				<?php echo $form->prevButton . ' ' . $form->nextButton; ?>
 			</div>
 		</div>
 
