@@ -75,10 +75,15 @@ echo "
 	padding:5px;
 }
 
-/** link sub elements **/
+/** link sub elements commented **/
 
 .fabrikSubElementContainer > div {
-	clear:left;
+	clear: left;
+}
+
+/** But dbjoin as radios etc can be floated **/
+.fabrikSubElementContainer.databasejoin > div {
+	clear: none;
 }
 
 /* START: align google map sub elements vertically */
