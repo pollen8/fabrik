@@ -1011,10 +1011,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		$join->table_key = str_replace('`', '', $tableKey);
 		$join->join_type = $joinType;
 		$join->group_id = $groupId;
-		if (!$join->store())
-		{
-			return JError::raiseWarning(500, $join->getError());
-		}
+		$join->store();
+
 		// $$$ hugh @TODO - create new 'pk' param
 		$this->createLinkedElements($groupId, $joinTable);
 	}
@@ -1523,9 +1521,13 @@ class FabrikAdminModelList extends FabModelAdmin
 			$joinTable->id = 0;
 			$joinTable->group_id = $groupidmap[$joinTable->group_id];
 			$joinTable->list_id = $toid;
-			if (!$joinTable->store())
+			try
 			{
-				return JError::raiseWarning(500, $join->getError());
+				$joinTable->store();
+			}
+			catch (Exception $e)
+			{
+				return JError::raiseWarning(500, $e->getMessage());
 			}
 		}
 	}
