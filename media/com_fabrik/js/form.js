@@ -901,7 +901,7 @@ var FbForm = new Class({
 		return (classname === 'fabrikSuccess') ? false : true;
 	},
 
-	updateMainError : function () {
+	updateMainError: function () {
 		var myfx, activeValidations;
 		var mainEr = this.form.getElement('.fabrikMainError');
 		mainEr.set('html', this.options.error);
@@ -928,6 +928,10 @@ var FbForm = new Class({
 	},
 	
 	showMainError: function (msg) {
+		// If we are in j3 and ajax validations are on - dont show main error as it makes the form 'jumpy'
+		if (Fabrik.bootstrapped && this.options.ajaxValidation) {
+			return;
+		}
 		var mainEr = this.form.getElement('.fabrikMainError');
 		mainEr.set('html', msg);
 		mainEr.removeClass('fabrikHide');

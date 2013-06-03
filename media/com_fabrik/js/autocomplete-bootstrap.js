@@ -18,40 +18,52 @@ var FbAutocomplete = new Class({
 		url: 'index.php',
 		max: 10,
 		onSelection: Class.empty,
-		autoLoadSingleResult: true
+		autoLoadSingleResult: true,
+		storeMatchedResultsOnly: false // Only store a value if selected from picklist
 	},
 
 	initialize: function (element, options) {
-		this.setOptions(options);
-		element = element.replace('-auto-complete', '');
-		this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
-		this.cache = {};
-		this.selected = -1;
-		this.mouseinsde = false;
-		document.addEvent('keydown', function (e) {
-			this.doWatchKeys(e);
-		}.bind(this));
-		this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
-		this.buildMenu();
-		if (!this.getInputElement()) {
-			fconsole('autocomplete didnt find input element');
-			return;
-		}
-		this.getInputElement().setProperty('autocomplete', 'off');
-		this.getInputElement().addEvent('keyup', function (e) {
-			this.search(e);
-		}.bind(this));
+		window.addEvent('domready', function () {
+			this.matchedResult = false;
+			this.setOptions(options);
+			element = element.replace('-auto-complete', '');
+			this.options.labelelement = typeOf(document.id(element + '-auto-complete')) === "null" ? document.getElement(element + '-auto-complete') : document.id(element + '-auto-complete');
+			this.cache = {};
+			this.selected = -1;
+			this.mouseinsde = false;
+			document.addEvent('keydown', function (e) {
+				this.doWatchKeys(e);
+			}.bind(this));
+			this.element = typeOf(document.id(element)) === "null" ? document.getElement(element) : document.id(element);
+			this.buildMenu();
+			if (!this.getInputElement()) {
+				fconsole('autocomplete didnt find input element');
+				return;
+			}
+			this.getInputElement().setProperty('autocomplete', 'off');
+			this.getInputElement().addEvent('keyup', function (e) {
+				this.search(e);
+			}.bind(this));
 		
+			this.getInputElement().addEvent('blur', function (e) {
+				if (this.options.storeMatchedResultsOnly) {
+					if (!this.matchedResult) {
+						if (!(this.data.length === 1 && this.options.autoLoadSingleResult)) {
+							this.element.value = '';
+						}
+					}
+				}
+			}.bind(this));
+		}.bind(this));
 	},
 	
 	search: function (e) {
-		if (e.key === 'tab') {
+		if (e.key === 'tab' || e.key === 'enter') {
+			e.stop();
 			this.closeMenu();
 			return;
 		}
-		if (e.key === 'enter') {
-			e.stop();
-		}
+		this.matchedResult = false;
 		var v = this.getInputElement().get('value');
 		if (v === '') {
 			this.element.value = '';
@@ -77,10 +89,6 @@ var FbAutocomplete = new Class({
 						this.completeAjax(e, v);
 					}.bind(this)
 				}).send();
-			}
-		} else {
-			if (e.key === 'enter') {
-				this.openMenu();
 			}
 		}
 		this.searchText = v;
@@ -211,7 +219,7 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			}
 		} else {
-			if (e.key === 'enter') {
+			if (e.key === 'enter' || e.key === 'tab') {
 				window.fireEvent('blur');
 			}
 			switch (e.code) {
@@ -221,8 +229,8 @@ var FbAutocomplete = new Class({
 				}
 				if (this.selected + 1 <= max) {
 					this.selected ++;
-					this.highlight();
 				}
+				this.highlight();
 				e.stop();
 				break;
 			case 38: //up
@@ -235,7 +243,8 @@ var FbAutocomplete = new Class({
 			case 13://enter
 			case 9://tab
 				e.stop();
-				this.makeSelection({}, this.getSelected());
+				var selectEvnt = new Event.Mock(this.getSelected(), 'click');
+				this.makeSelection(selectEvnt, this.getSelected());
 				this.closeMenu();
 				break;
 			case 27://escape
@@ -254,6 +263,7 @@ var FbAutocomplete = new Class({
 	},
 	
 	highlight: function () {
+		this.matchedResult = true;
 		this.menu.getElements('li').each(function (li, i) {
 			if (i === this.selected) {
 				li.addClass('selected');

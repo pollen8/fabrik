@@ -4719,7 +4719,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$opts->fullName = $this->getFullName(true, false);
-		$opts->watchElements = $this->validator->jsWatchElements($repeatCounter);;
+		$opts->watchElements = $this->validator->jsWatchElements($repeatCounter);
 		$groupModel = $this->getGroup();
 		$opts->canRepeat = (bool) $groupModel->canRepeat();
 		$opts->isGroupJoin = (bool) $groupModel->isJoin();

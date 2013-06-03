@@ -11,9 +11,9 @@
 			<?php echo $element->element;?>
 		</div>
 
-		<div class="<?php echo $this->class?>">
+		<span class="<?php echo $this->class?>">
 			<?php echo $element->error ?>
-		</div>
+		</span>
 
 		<?php if ($this->tipLocation == 'side') : ?>
 			<div class="help-block"><?php echo $element->tipSide ?></div>

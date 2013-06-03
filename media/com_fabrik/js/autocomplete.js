@@ -56,16 +56,12 @@ var FbAutocomplete = new Class({
 	},
 	
 	search: function (e) {
-		this.matchedResult = false;
-		if (e.key === 'tab') {
-			this.closeMenu();
-			return;
-		}
-		if (e.key === 'enter') {
+		if (e.key === 'tab' || e.key === 'enter') {
 			e.stop();
 			this.closeMenu();
 			return;
 		}
+		this.matchedResult = false;
 		var v = this.getInputElement().get('value');
 		if (v === '') {
 			this.element.value = '';
@@ -218,7 +214,7 @@ var FbAutocomplete = new Class({
 				this.openMenu();
 			}
 		} else {
-			if (e.key === 'enter') {
+			if (e.key === 'enter' || e.key === 'tab') {
 				window.fireEvent('blur');
 			}
 			switch (e.code) {
@@ -247,6 +243,7 @@ var FbAutocomplete = new Class({
 				break;
 			case 27://escape
 				e.stop();
+				this.matchedResult = false;
 				this.closeMenu();
 				break;
 			}
@@ -261,6 +258,7 @@ var FbAutocomplete = new Class({
 	},
 	
 	highlight: function () {
+		this.matchedResult = true;
 		this.menu.getElements('li').each(function (li, i) {
 			if (i === this.selected) {
 				li.addClass('selected');
