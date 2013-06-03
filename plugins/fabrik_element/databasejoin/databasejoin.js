@@ -46,7 +46,7 @@ var FbDatabasejoin = new Class({
 	 * inside
 	 */
 	start: function (e) {
-		if (!this.editable) {
+		if (!this.options.editable) {
 			return;
 		}
 		// First time loading - auto close the hidden loaded popup.
