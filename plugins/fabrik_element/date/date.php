@@ -762,7 +762,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 			$hours = $timeZone->getOffset($date) / (60 * 60);
 			$date->modify('+' . $hours . ' hour');
-
+		}
 		$date = $date->toSql();
 
 		// Put in the correct format
