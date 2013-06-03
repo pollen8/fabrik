@@ -42,10 +42,13 @@ var FbDatabasejoin = new Class({
 	},
 	
 	/**
-	 * add option via a popup form. Opens a window with the releated form
+	 * Add option via a popup form. Opens a window with the releated form
 	 * inside
 	 */
 	start: function (e) {
+		if (!this.options.editable) {
+			return;
+		}
 		// First time loading - auto close the hidden loaded popup.
 		var onContentLoaded = function () {
 			this.close();
