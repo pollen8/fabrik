@@ -1004,6 +1004,8 @@ var idcomments_post_url;");
 
 	protected function _jcomment($params, $formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		$jcomments = JPATH_SITE . '/components/com_jcomments/jcomments.php';
 		if (JFile::exists($jcomments))
 		{
