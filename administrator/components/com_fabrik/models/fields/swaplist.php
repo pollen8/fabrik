@@ -44,9 +44,11 @@ class JFormFieldSwapList extends JFormFieldList
 		$remove = $this->id . '-remove';
 		$up = $this->id . '-up';
 		$down = $this->id . '-down';
-		$script = "swaplist = new SwapList('$from', '$this->id','$add', '$remove', '$up', '$down');";
+		$script[] = "window.addEvent('domready', function () {";
+		$script[] = "\tswaplist = new SwapList('$from', '$this->id','$add', '$remove', '$up', '$down');";
+		$script[] = "});";
 
-		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/swaplist.js', $script);
+		FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/swaplist.js', implode("\n", $script));
 
 		list($this->currentGroups, $this->currentGroupList) = $this->getCurrentGroupList();
 		list($this->groups, $this->groupList) = $this->getGroupList();
