@@ -753,12 +753,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function setValuesFromEncryt(&$post, $key, $data)
 	{
 		$date = $data[0];
-
-		// Seems that if sumbitting encrytped values we need to re-offset the timezone http://fabrikar.com/forums/showthread.php?t=31517
-		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$date = JFactory::getDate($date);
-		$hours = $timeZone->getOffset($date) / (60 * 60);
-		$date->modify('+' . $hours . ' hour');
+		$params = $this->getParams();
+		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
+		if (!$storeAsLocal)
+		{
+			// Seems that if sumbitting encrytped values we need to re-offset the timezone http://fabrikar.com/forums/showthread.php?t=31517
+			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+			$hours = $timeZone->getOffset($date) / (60 * 60);
+			$date->modify('+' . $hours . ' hour');
+
 		$date = $date->toSql();
 
 		// Put in the correct format
