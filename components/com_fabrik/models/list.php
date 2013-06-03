@@ -1686,9 +1686,10 @@ class FabrikFEModelList extends JModelForm
 		$distinct = $listModel->mergeJoinedData() ? 'DISTINCT ' : '';
 
 		$item = $listModel->getTable();
-		$query->select($k2 . ' AS linkKey, ' . $linkKey . ' AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')->from($item->db_table_name);
+		$query->select($linkKey . ' AS linkKey, ' . $linkKey . ' AS id, COUNT(' . $distinct . $item->db_primary_key . ') AS total')->from($item->db_table_name);
 		$query = $listModel->buildQueryJoin($query);
 		$listModel->set('includeCddInJoin', true);
+		$query->group($linkKey);
 		$db->setQuery($query);
 		$this->recordCounts[$k] = $db->loadObjectList('id');
 		$this->recordCounts[$k]['linkKey'] = FabrikString::safeColNameToArrayKey($key);
