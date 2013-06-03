@@ -49,8 +49,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$d = str_pad('', JString::strlen($d), '*');
 			}
+			$this->_guessLinkType($d, $thisRow, 0);
 		}
-		$this->_guessLinkType($data, $thisRow, 0);
 		return parent::renderListData($data, $thisRow);
 	}
 
