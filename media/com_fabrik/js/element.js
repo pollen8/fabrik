@@ -366,8 +366,11 @@ var FbElement =  new Class({
 	 */
 	addTipMsg: function (msg, klass) {
 		// Append notice to tip
-		var klass = klass ? klass : 'error', ul, a,
-		t = this.tips();
+		klass = klass ? klass : 'error';
+		var ul, a, t = this.tips();
+		if (t.length === 0) {
+			return;
+		}
 		t = jQuery(t[0]);
 		
 		if (t.attr(klass) === undefined) {
