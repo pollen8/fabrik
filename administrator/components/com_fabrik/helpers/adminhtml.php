@@ -95,7 +95,6 @@ class FabrikHelperAdminHTML
 		$href = '
 			<a href="#" onclick="return listItemTask(\'cb' . $i . '\',\'' . $prefix . $task . '\')" title="' . $alt . '">'
 			. 'todo mulitstateimg' . '</a>';
-		//JHtml::_('image', 'admin/' . $img, $alt, null, true)
 		return $href;
 	}
 

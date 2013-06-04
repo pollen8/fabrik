@@ -17,9 +17,9 @@ jimport('joomla.application.component.controlleradmin');
 /**
  * List controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabControllerAdmin extends JControllerAdmin

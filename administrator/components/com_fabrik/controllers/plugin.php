@@ -22,7 +22,7 @@ require_once 'fabcontrollerform.php';
  * @package  Fabrik
  * @since    3.0
  */
-echo "plugin controller <br>";
+
 class FabrikAdminControllerPlugin extends FabControllerForm
 {
 

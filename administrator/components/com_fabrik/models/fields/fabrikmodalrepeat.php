@@ -230,7 +230,6 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";
 
-
 		if (FabrikWorker::j3())
 		{
 			$icon = $this->element['icon'] ? '<i class="icon-' . $this->element['icon'] . '"></i> ' : '';

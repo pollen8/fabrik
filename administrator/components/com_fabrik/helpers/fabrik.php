@@ -102,8 +102,7 @@ class FabrikAdminHelper
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_FORMS'), 'index.php?option=com_fabrik&view=forms', $vName == 'forms');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_GROUPS'), 'index.php?option=com_fabrik&view=groups', $vName == 'groups');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_ELEMENTS'), 'index.php?option=com_fabrik&view=elements', $vName == 'elements');
-			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations',
-			$vName == 'visualizations');
+			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations', $vName == 'visualizations');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_PACKAGES'), 'index.php?option=com_fabrik&view=packages', $vName == 'packages');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_CONNECTIONS'), 'index.php?option=com_fabrik&view=connections', $vName == 'connections');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_CRONS'), 'index.php?option=com_fabrik&view=crons', $vName == 'crons');
@@ -114,8 +113,7 @@ class FabrikAdminHelper
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_FORMS'), 'index.php?option=com_fabrik&view=forms', $vName == 'forms');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_GROUPS'), 'index.php?option=com_fabrik&view=groups', $vName == 'groups');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_ELEMENTS'), 'index.php?option=com_fabrik&view=elements', $vName == 'elements');
-			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations',
-			$vName == 'visualizations');
+			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations', $vName == 'visualizations');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_PACKAGES'), 'index.php?option=com_fabrik&view=packages', $vName == 'packages');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_CONNECTIONS'), 'index.php?option=com_fabrik&view=connections', $vName == 'connections');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_CRONS'), 'index.php?option=com_fabrik&view=crons', $vName == 'crons');
@@ -234,8 +232,9 @@ class FabrikAdminHelper
 			if ($blackList)
 			{
 				// Remove the white-listed attributes from the black-list.
-				$filter = JFilterInput::getInstance(array_diff($blackListTags, $whiteListTags),
-					array_diff($blackListAttributes, $whiteListAttributes), 1, 1);
+				$diffTags = array_diff($blackListTags, $whiteListTags);
+				$attribs = array_diff($blackListAttributes, $whiteListAttributes);
+				$filter = JFilterInput::getInstance($diffTags, $attribs, 1, 1);
 			}
 			// White lists take third precedence.
 			elseif ($whiteList)

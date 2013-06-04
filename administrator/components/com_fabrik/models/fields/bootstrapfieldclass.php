@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
  *
  * @package     Joomla
  * @subpackage  Form
- * @since		1.5
+ * @since       1.5
  */
 
 class JFormFieldBootstrapfieldclass extends JFormFieldList
