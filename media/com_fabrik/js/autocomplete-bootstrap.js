@@ -266,9 +266,9 @@ var FbAutocomplete = new Class({
 		this.matchedResult = true;
 		this.menu.getElements('li').each(function (li, i) {
 			if (i === this.selected) {
-				li.addClass('selected');
+				li.addClass('selected').addClass('active');
 			} else {
-				li.removeClass('selected');
+				li.removeClass('selected').removeClass('active');
 			}
 		}.bind(this));
 	}
