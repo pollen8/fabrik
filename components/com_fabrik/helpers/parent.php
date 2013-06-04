@@ -669,6 +669,11 @@ class FabrikWorker
 						$msg = str_replace('{$' . $prefix . '->' . $key . '}', $val, $msg);
 						$msg = str_replace('{$' . $prefix . '-&gt;' . $key . '}', $val, $msg);
 					}
+					elseif (is_array($val))
+					{
+						$msg = str_replace('{$' . $prefix . '->' . $key . '}', implode(',', $val), $msg);
+						$msg = str_replace('{$' . $prefix . '-&gt;' . $key . '}', implode(',', $val), $msg);
+					}
 				}
 			}
 		}
@@ -1572,9 +1577,9 @@ class FabrikWorker
 	 * Get a cachec handler
 	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
-	 * @since   3.0.7
+	 * @param   object  $listModel  List Model
 	 *
-	 * @param   object  listModel
+	 * @since   3.0.7
 	 *
 	 * @return  JCache
 	 */
@@ -1583,8 +1588,9 @@ class FabrikWorker
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60),
-			 'language' => 'en-GB', 'storage' => 'file');
+		$time = ((float) 2 * 60 * 60);
+		$base = JPATH_BASE . '/cache/';
+		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => $base, 'lifetime' => $time, 'language' => 'en-GB', 'storage' => 'file');
 		$cache = JCache::getInstance('callback', $opts);
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
