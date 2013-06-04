@@ -1074,8 +1074,13 @@ class FabrikFEModelGroup extends FabModel
 			{
 				$elementModel->onStoreRow($data, $i);
 			}
-
 			$pk = $canRepeat ? JArrayHelper::getValue($formData[$pkField], $i, '') : $formData[$pkField];
+
+			// Say for some reason the pk was set as a dbjoin!
+			if (is_array($pk))
+			{
+				$pk = array_shift($pk);
+			}
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
 
 			// Update key
