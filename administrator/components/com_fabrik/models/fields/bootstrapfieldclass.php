@@ -11,6 +11,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+JFormHelper::loadFieldClass('list');
+
 /**
  * Renders a list of Bootstrap field class sizes
  *
@@ -37,6 +39,7 @@ class JFormFieldBootstrapfieldclass extends JFormFieldList
 		$sizes[] = JHTML::_('select.option', 'input-large');
 		$sizes[] = JHTML::_('select.option', 'input-xlarge');
 		$sizes[] = JHTML::_('select.option', 'input-xxlarge');
+		$sizes[] = JHTML::_('select.option', 'input-block-level');
 		return $sizes;
 	}
 }

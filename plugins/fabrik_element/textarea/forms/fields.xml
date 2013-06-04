@@ -4,11 +4,17 @@
 	
 		<fieldset label="COM_FABRIK_OPTIONS" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-textarea">
 		
-			<field cols="45" label="PLG_ELEMENT_TEXTAREA_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
+			<field type="textarea"
+				name="default" 
+				cols="45"
+				label="PLG_ELEMENT_TEXTAREA_DEFAULT_LABEL"
+				rows="6" />
 			
-			<field default="0"
+			<field name="eval"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_TEXTAREA_EVAL_LABEL" name="eval" type="radio">
+				label="PLG_ELEMENT_TEXTAREA_EVAL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -20,18 +26,11 @@
 	
 		<fieldset name="plg-textarea-layout" label="COM_FABRIK_LAYOUT">
 		
-		<field name="bootstrap_class"
-				type="list"
+			<field name="bootstrap_class"
+				type="bootstrapfieldclass"
 				default="input-medium"
 				label="PLG_ELEMENT_BOOTSTRAP_CLASS_LABEL"
-				description="PLG_ELEMENT_BOOTSTRAP_CLASS_DESC">
-					<option value="input-mini">input-mini</option>
-					<option value="input-small">input-small</option>
-					<option value="input-medium">input-medium</option>
-					<opton value="input-large">input-large</opton>
-					<option value="input-xlarge">input-xlarge</option>
-					<option value="input-xxlarge">input-xxlarge</option>	
-			</field>
+				description="PLG_ELEMENT_BOOTSTRAP_CLASS_DESC" />
 			
 			<field name="width"
 				type="text"
@@ -52,16 +51,26 @@
 		
 		<fieldset name="plg-textarea-extra" label="COM_FABRIK_ADVANCED">
 			
-			<field default="1" label="PLG_ELEMENT_TEXTAREA_SHOW_LABEL_LABEL" name="textarea_showlabel" type="radio">
+			<field name="textarea_showlabel"
+				type="radio"
+				default="1"
+				label="PLG_ELEMENT_TEXTAREA_SHOW_LABEL_LABEL">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			<field description="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_DESC" label="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_LABEL" name="textarea_placeholder" size="60" type="text"/>
+			
+			<field name="textarea_placeholder"
+				type="text"
+				description="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_DESC"
+				label="PLG_ELEMENT_TEXTAREA_PLACEHOLDER_LABEL"
+				size="60" />
 				
-			<field default="0"
+			<field name="use_wysiwyg"
+				type="radio"
+				default="0"
 				class="btn-group"
 				description="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_DESC"
-				label="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_LABEL" name="use_wysiwyg" type="radio">
+				label="PLG_ELEMENT_TEXTAREA_USE_WYSIWYG_EDITOR_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -75,55 +84,90 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-				
 			
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_TEXTAREA_LIMIT" name="plt-textarea-limit">
 		
-			<field default="0"
+			<field name="textarea-showmax"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_DESC" label="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_LABEL" name="textarea-showmax" type="radio">
+				description="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_DESC"
+				label="PLG_ELEMENT_TEXTAREA_SHOW_MAX_LIMIT_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="255" description="PLG_ELEMENT_TEXTAREA_MAXLENGTH_DESC" label="PLG_ELEMENT_TEXTAREA_MAXLENGTH_LABEL" name="textarea-maxlength" size="5" type="text"/>
+			<field name="textarea-maxlength"
+				type="text" 
+				default="255"
+				description="PLG_ELEMENT_TEXTAREA_MAXLENGTH_DESC"
+				label="PLG_ELEMENT_TEXTAREA_MAXLENGTH_LABEL"
+				size="5" />
 				
-			<field default="char" description="PLG_ELEMENT_TEXTAREA_LIMIT_TYPE_DESC" label="PLG_ELEMENT_TEXTAREA_LIMIT_TYPE_LABEL" name="textarea_limit_type" type="list">
+			<field name="textarea_limit_type"
+				type="list"
+				default="char"
+				description="PLG_ELEMENT_TEXTAREA_LIMIT_TYPE_DESC"
+				label="PLG_ELEMENT_TEXTAREA_LIMIT_TYPE_LABEL" >
 					<option value="char">PLG_ELEMENT_TEXTAREA_CHARACTERS</option>
 					<option value="word">PLG_ELEMENT_TEXTAREA_WORDS</option>
 			</field>
+			
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_TEXTAREA_TAGIFY" name="plt-textarea-tagify">
 		
-			<field default="0"
+			<field name="textarea-tagify"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_TEXTAREA_TAGIFY_DESC" label="PLG_ELEMENT_TEXTAREA_TAGIFY_LABEL" name="textarea-tagify" type="radio">
+				description="PLG_ELEMENT_TEXTAREA_TAGIFY_DESC"
+				label="PLG_ELEMENT_TEXTAREA_TAGIFY_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field description="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_DESC" label="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_LABEL" name="textarea_tagifyurl" size="60" type="text"/>
+			<field name="textarea_tagifyurl"
+				type="text"
+				description="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_DESC"
+				label="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_LABEL"
+				size="60" />
+				
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_TEXTAREA_TRUNCATE" name="plt-textarea-truncate">
-			<field class="input-mini" default="0" description="PLG_ELEMENT_TEXTAREA_TRUNCATE_DESC" label="PLG_ELEMENT_TEXTAREA_TRUNCATE_LABEL" name="textarea-truncate" size="3" type="text"/>
+		
+			<field name="textarea-truncate"
+				type="text"
+				class="input-mini"
+				default="0"
+				description="PLG_ELEMENT_TEXTAREA_TRUNCATE_DESC"
+				label="PLG_ELEMENT_TEXTAREA_TRUNCATE_LABEL"
+				size="3" />
 			
-			<field default="1"
+			<field name="textarea-hover"
+				type="radio"
+				default="1"
 				class="btn-group"
-				description="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_DESC" label="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_LABEL" name="textarea-hover" type="radio">
+				description="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_DESC"
+				label="PLG_ELEMENT_TEXTAREA_SHOW_HOVER_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
-			<field default="top" description="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_DESC" label="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_LABEL" name="textarea_hover_location" type="list">
+			<field name="textarea_hover_location"
+				type="list"
+				default="top"
+				description="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_DESC"
+				label="PLG_ELEMENT_TEXTAREA_HOVER_LOCATION_LABEL">
 					<option value="top">top</option>
 					<option value="right">right</option>
 					<option value="bottom">bottom</option>
 					<option value="left">left</option>
 			</field>
+			
 		</fieldset>
 		
 	</fields>
