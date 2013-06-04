@@ -1875,8 +1875,9 @@ class FabrikFEModelList extends JModelForm
 			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
 			. '"><img src="media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
-
-		$tlabel = ($count === 0) ? JText::_('COM_FABRIK_NO_RECORDS') : '(0) ' . $label;
+		$showRelated = (int) $params->get('show_related_info', 0);
+		$emptyLabel = $showRelated === 1 ? JText::_('COM_FABRIK_NO_RECORDS') : '';
+		$tlabel = ($count === 0) ? $emptyLabel : '(0) ' . $label;
 		$showRelatedAdd = (int) $params->get('show_related_add', 0);
 		$aExisitngLinkedForms = (array) $params->get('linkedform');
 		$linkedForm = JArrayHelper::getValue($aExisitngLinkedForms, $f, false);
@@ -1895,7 +1896,7 @@ class FabrikFEModelList extends JModelForm
 		$icon = '<i class="icon-list-view"></i> ';
 
 		$url = $this->releatedDataURL($key, $val, $listid, $popUp);
-		$showRelated = (int) $params->get('show_related_info', 0);
+
 		if ($showRelated == 0 || ($showRelated == 2  && $count))
 		{
 			if ($popUp)

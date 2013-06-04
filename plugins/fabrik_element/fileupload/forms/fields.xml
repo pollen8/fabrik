@@ -329,7 +329,7 @@
 		
 			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_DESC" label="PLG_ELEMENT_FILEUPLOAD_USE_DOWNLOAD_SCRIPT_LABEL" name="fu_use_download_script" type="list">
 					<option value="0">No</option>
-					<option value="1">Table View Only</option>
+					<option value="1">List View Only</option>
 					<option value="2">Detail View Only</option>
 					<option value="3">Both</option>
 				</field>
