@@ -44,22 +44,29 @@
 		<field default="0"
 			class="btn-group"
 			label="PLG_ELEMENT_BIRTHDAY_DETAILS_DATEANDAGE" name="details_dateandage" type="radio">
-				<option value="0">NO</option>
-				<option value="1">YES</option>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
 		<field label="PLG_ELEMENT_BIRTHDAY_DETAILS_DATEANDAGEDESC" name="dateandagedesc" type="spacer"/>
 
 		<field default="0"
 			class="btn-group"
 			label="PLG_ELEMENT_BIRTHDAY_EMPTYISNULL" name="empty_is_null" type="radio">
-				<option value="0">NO</option>
-				<option value="1">YES</option>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
-		<field label="PLG_ELEMENT_BIRTHDAY_EMPTYISNULLDESC" name="empty_is_null_desc" type="spacer"/>
+		
+		<field name="empty_is_null_desc"
+			type="spacer"
+			label="PLG_ELEMENT_BIRTHDAY_EMPTYISNULLDESC" />
 
-		<field label="PLG_ELEMENT_BIRTHDAY_EXAMPLE" name="bd_tutorial" type="spacer"/>
+		<field name="bd_tutorial"
+			type="spacer"
+			label="PLG_ELEMENT_BIRTHDAY_EXAMPLE" />
 
-		<field label="PLG_ELEMENT_BIRTHDAY_EXAMPLEDESC" name="bd_tutorial_desc" type="spacer"/>
+		<field name="bd_tutorial_desc"
+			type="spacer"
+			label="PLG_ELEMENT_BIRTHDAY_EXAMPLEDESC" />
 
 		</fieldset>
 	</fields>

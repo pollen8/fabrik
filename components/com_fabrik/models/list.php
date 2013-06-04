@@ -1998,16 +1998,16 @@ class FabrikFEModelList extends JModelForm
 	public function _addLink($data, &$elementModel, $row, $repeatCounter = 0)
 	{
 		$element = $elementModel->getElement();
-		if ($this->outPutFormat == 'csv' || $element->link_to_detail == 0)
+		$params = $elementModel->getParams();
+		$customLink = trim($params->get('custom_link', ''));
+		if ($this->outPutFormat == 'csv' || ($element->link_to_detail == 0 && $customLink == ''))
 		{
 			return $data;
 		}
-		$params = $elementModel->getParams();
-		$customLink = $params->get('custom_link');
 
 		// $$$ rob if its a custom link then we aren't linking to the details view so we should
 		// ignore the view details access settings
-		if (!($this->canViewDetails($row) || $this->canEdit()) && trim($customLink) == '')
+		if (!($this->canViewDetails($row) || $this->canEdit()) && $customLink == '')
 		{
 			return $data;
 		}
@@ -9122,10 +9122,19 @@ class FabrikFEModelList extends JModelForm
 				* Instead they are aded to the filter sessions and reapplied that way
 				* otherwise we ended up with elementname=Array in the query string
 				*/
-				/* if ($el === false)
+
+				/*
+				 * $$$ hugh ... yeah, but $v is still an array, so we need to deal with it
+				 * if it isn't an element ... like (say) ids[]=1&ids[]=2 in a table plugin, like
+				 * email list
+				 */
+				if ($el === false)
 				{
-					$qs[] = $k . '=' . $v;
-				} */
+					foreach ($v as $v1)
+					{
+						$qs[] = $k . '[]=' . $v1;
+					}
+				}
 			}
 			else
 			{

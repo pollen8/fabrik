@@ -45,7 +45,7 @@ var FbDatabasejoin = new Class({
 	 * inside
 	 */
 	start: function (e, force) {
-		if (!this.editable) {
+		if (!this.options.editable) {
 			return;
 		}
 		force = force ? true : false;
