@@ -1732,7 +1732,7 @@ EOD;
 			$properties['class'] = 'fabrikImg';
 		}
 
-		$p = selft::propertiesFromArray($properties);
+		$p = self::propertiesFromArray($properties);
 		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
 	}
 
