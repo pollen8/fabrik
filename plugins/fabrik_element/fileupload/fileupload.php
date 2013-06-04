@@ -2592,6 +2592,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (empty($val))
 		{
 			$formModel = $this->getFormModel();
+			$groupModel = $this->getGroupModel();
 			$isjoin = $groupModel->isJoin();
 			$origData = $formModel->getOrigData();
 			$groupModel = $this->getGroup();
