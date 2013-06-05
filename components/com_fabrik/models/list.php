@@ -72,7 +72,7 @@ class FabrikFEModelList extends JModelForm
 	 * Column calculations
 	 * @var array
 	 */
-	protected $_aRunCalculations = array();
+	protected $runCalculations = array();
 
 	/**
 	 * List output format - set to rss to collect correct element data within function getData()
@@ -138,13 +138,6 @@ class FabrikFEModelList extends JModelForm
 	public $ajax = null;
 
 	/**
-	 * Plugin manager
-	 *
-	 * @var FabrikFEModelPluginmanager
-	 */
-	protected $_pluginManager = null;
-
-	/**
 	 * Join sql
 	 *
 	 * @var string
@@ -161,6 +154,7 @@ class FabrikFEModelList extends JModelForm
 	protected $joinsToThisKey = null;
 
 	protected $linksToThisKey = null;
+
 	/**
 	 * Used to determine which filter action to use.
 	 * If a filter is a range then override lists setting with onsubmit
@@ -1884,7 +1878,7 @@ class FabrikFEModelList extends JModelForm
 		$addLink = $linkedForm == '0' ? $this->viewFormLink($popUp, $element, $row, $key, $val, false, $f) : '';
 		if ($count === 0)
 		{
-			$html[] = '<span style="text-align:center" class="related_data_norecords">' . $tlabel . '</span><br />';
+			$html[] = '<div style="text-align:center" class="related_data_norecords">' . $tlabel . '</div>';
 		}
 
 		$key .= '_raw';
@@ -1916,7 +1910,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		if ($addLink != '' && ($showRelatedAdd === 1 || ($showRelatedAdd === 2 && $count === 0)))
 		{
-			$html[] = '<br />' . $addLink;
+			$html[] = '<div>' . $addLink . '</div>';
 		}
 		return implode("\n", $html);
 	}
@@ -1927,7 +1921,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   string  $key     Releated link key
 	 * @param   string  $val     Related link value
 	 * @param   int     $listid  List id
-	 * @param   bool    $popup   Is pop up link
+	 * @param   bool    $popUp   Is pop up link
 	 *
 	 * @since   3.0.8
 	 *
@@ -6435,7 +6429,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function clearCalculations()
 	{
-		unset($this->_aRunCalculations);
+		unset($this->runCalculations);
 	}
 	/**
 	 * return mathematical column calculations (run at doCalculations() on for submission)
@@ -6445,9 +6439,9 @@ class FabrikFEModelList extends JModelForm
 
 	public function getCalculations()
 	{
-		if (!empty($this->_aRunCalculations))
+		if (!empty($this->runCalculations))
 		{
-			return $this->_aRunCalculations;
+			return $this->runCalculations;
 		}
 		$user = JFactory::getUser();
 		$aclGroups = $user->getAuthorisedViewLevels();
@@ -6530,7 +6524,7 @@ class FabrikFEModelList extends JModelForm
 		$aCalculations['medians'] = $aMedians;
 		$aCalculations['count'] = $aCounts;
 		$aCalculations['custom_calc'] = $aCustoms;
-		$this->_aRunCalculations = $aCalculations;
+		$this->runCalculations = $aCalculations;
 		return $aCalculations;
 	}
 
