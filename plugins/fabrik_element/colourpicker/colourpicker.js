@@ -35,7 +35,7 @@ var ColourPicker = new Class({
 	
 	initialize : function (element, options) {
 		this.plugin = 'colourpicker';
-		if (typeOf(options.value) === 'null') {
+		if (typeOf(options.value) === 'null' || options.value[0] === 'undefined') {
 			options.value = [0, 0, 0, 1];
 		}
 		options.callback = function (v, caller) {
