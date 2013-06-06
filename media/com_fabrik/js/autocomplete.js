@@ -306,6 +306,7 @@ var FabCddAutocomplete = new Class({
 				}
 					
 				this.ajax = new Request({
+					method: 'post',
 					url : this.options.url,
 					data: {
 						value: v,
