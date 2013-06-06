@@ -5289,6 +5289,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	 *
 	 * @param   string  $str  submitted form value
 	 *
+	 * @deprecated since 3.1b2 (not used by any plugin)
+	 *
 	 * @return  string	formated value
 	 */
 

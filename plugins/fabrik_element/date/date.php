@@ -222,7 +222,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function render($data, $repeatCounter = 0)
 	{
-
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$j3 = FabrikWorker::j3();
@@ -266,7 +265,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$oDate = JFactory::getDate($value);
 
 			// If we are coming back from a validation then we don't want to re-offset the date
-			if ($input->get('Submit', '') == '' || $params->get('date_defaulttotoday', 0))
+			if (!$this->getFormModel()->hasErrors())
 			{
 				// $$$ rob - date is always stored with time now, so always apply tz unless store_as_local set
 				// or if we are defaulting to today
@@ -377,7 +376,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			return $this->toMySQLGMT(JFactory::getDate($val));
 		}
-
 		// $$$ rob - as the date js code formats to the db format - just return the value.
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$val = JFactory::getDate($val, $timeZone)->toSql($store_as_local);
@@ -863,8 +861,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$store_as_local = (int) $params->get('date_store_as_local', 0);
 			if ($params->get('date_alwaystoday', false))
 			{
-				// $value = JFactory::getDate()->toSql(false);
-				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
 				if ($store_as_local)
 				{
 					$localDate = date('Y-m-d H:i:s');
@@ -898,7 +894,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				else
 				{
-					if ($groupModel->canRepeat())
+					/* if ($groupModel->canRepeat())
 					{
 						// Repeat group NO join
 						if (array_key_exists($name, $data))
@@ -913,11 +909,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 					}
 					else
-					{
+					{ */
 						$value = JArrayHelper::getValue($data, $name, $value);
-					}
+					//}
 				}
-
 				if (is_array($value))
 				{
 					// 'date' should now contain the time, as we include in on js onsubmit() method
@@ -939,32 +934,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$this->defaults[$repeatCounter] = $value;
 		}
 		return $this->defaults[$repeatCounter];
-	}
-
-	/**
-	 * Called on failed form validation.
-	 * Ensures submitted form data is converted back into the format
-	 * that the form would expect to get it in, if the data had been
-	 * draw from the database record
-	 *
-	 * @param   string  $str  submitted form value
-	 *
-	 * @return  string	formated value
-	 */
-
-	public function toDbVal($str)
-	{
-		/**
-		 * Only format if not empty otherwise search forms will filter
-		 * for todays date even when no date entered
-		 */
-		$this->resetToGMT = false;
-		if ($str != '')
-		{
-			$str = $this->storeDatabaseFormat($str, array());
-		}
-		$this->resetToGMT = true;
-		return $str;
 	}
 
 	/**

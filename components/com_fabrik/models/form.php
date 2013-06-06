@@ -1987,11 +1987,11 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						// $$$ rob for repeat groups no join setting to array() menat that $_POST only contained the last repeat group data
 						// $elDbVals = array();
-						$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+						$elDbVals[$c] = $form_data;
 					}
 					else
 					{
-						$elDbVals = $elementModel->toDbVal($form_data, $c);
+						$elDbVals = $form_data;
 					}
 					// Validations plugins attached to elemenets
 					$pluginc = 0;
@@ -2014,7 +2014,7 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if ($groupModel->canRepeat())
 								{
-									$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+									$elDbVals[$c] = $form_data;
 									$testreplace = $plugin->replace($elDbVals[$c], $elementModel, $pluginc, $c);
 									if ($testreplace != $elDbVals[$c])
 									{
@@ -2630,7 +2630,17 @@ class FabrikFEModelForm extends FabModelForm
 	public function hasErrors()
 	{
 		$errorsFound = !empty($this->errors);
-
+		$errorsFound = false;
+		foreach ($this->errors as $field => $errors)
+		{
+			if (!empty($errors))
+			{
+				if (!empty($errors[0]))
+				{
+					$errorsFound = true;
+				}
+			}
+		}
 		if ($this->saveMultiPage(false))
 		{
 			$srow = $this->getSessionData();
