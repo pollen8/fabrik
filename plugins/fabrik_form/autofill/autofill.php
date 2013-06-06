@@ -110,7 +110,6 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
-		$params = $this->getParams();
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
 		$value = $input->get('v', '', 'string');
@@ -147,7 +146,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 				$value = $db->loadResult();
 			}
 			$data = $listModel->getRow($value, true, true);
-			if (!is_null($data))
+			if (is_array($data))
 			{
 				$data = array_shift($data);
 			}

@@ -8427,23 +8427,16 @@ class FabrikFEModelList extends JModelForm
 			{
 				$this->rows[$sig] = $fabrikDb->loadObject();
 			}
-			if ($fabrikDb->getErrorNum())
-			{
-				JError::raiseError(500, $fabrikDb->getErrorMsg());
-			}
 		}
 		else
 		{
 			$rows = $fabrikDb->loadObjectList();
-			if ($fabrikDb->getErrorNum())
-			{
-				JError::raiseError(500, $fabrikDb->getErrorMsg());
-			}
 			$formModel->setJoinData($rows);
 			if ($format == true)
 			{
-				// @TODO this isnt right now - $rows is a 1 dimensional array 3.1
+				$rows = array(JArrayHelper::toObject($rows));
 				$this->formatData($rows);
+				$rows = $rows[0];
 				/* $$$ hugh - if list is grouped, formatData will have re-index as assoc array,
 				 /* so can't assume 0 is first key.
 				*/
