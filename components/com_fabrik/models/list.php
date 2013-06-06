@@ -7464,13 +7464,25 @@ class FabrikFEModelList extends JModelForm
 		}
 
 		$selValue = $isstring ? $selValue[0] : $selValue;
+		$user = JFactory::getUser();
 
 		// Replace {authorisedViewLevels} with array of view levels the user can access
-		if (strstr($selValue, '{authorisedViewLevels}'))
+		if (is_array($selValue))
 		{
-			$isstring = true;
-			$user = JFactory::getUser();
-			$selValue = $user->getAuthorisedViewLevels();
+			foreach ($selValue as &$v)
+			{
+				if (strstr($v, '{authorisedViewLevels}'))
+				{
+					$v = $user->getAuthorisedViewLevels();
+				}
+			}
+		}
+		else
+		{
+			if (strstr($selValue, '{authorisedViewLevels}'))
+			{
+				$selValue = $user->getAuthorisedViewLevels();
+			}
 		}
 		return $selValue;
 	}
