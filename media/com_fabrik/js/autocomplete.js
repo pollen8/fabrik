@@ -294,17 +294,23 @@ var FabCddAutocomplete = new Class({
 				this.openMenu();
 			} else {
 				Fabrik.loader.start(this.getInputElement());
-				//this.spinner.fade('in'); //f3 fx now used
 				if (this.ajax) {
 					this.closeMenu();
 					this.ajax.cancel();
 				}
+				
+				// If you are observing a radio list then u need to get the Element js plugin value
+				var obsValue = document.id(this.options.observerid).get('value');
+				if (typeOf(obsValue) === 'null') {
+					obsValue = Fabrik.blocks[this.options.formRef].formElements.get(this.options.observerid).get('value');
+				}
+					
 				this.ajax = new Request({
 					url : this.options.url,
 					data: {
 						value: v,
 						fabrik_cascade_ajax_update: 1,
-						v: document.id(this.options.observerid).get('value')
+						v: obsValue
 					},
 					
 					onSuccess: function (e) {
