@@ -341,9 +341,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Cache method to populate autocomplete options
 	 *
-	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        search string
-	 * @param   array              $opts          options, 'label' => field to use for label (db join)
+	 * @param   plgFabrik_Element  $elementModel  Element model
+	 * @param   string             $search        Search string
+	 * @param   array              $opts          Options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
@@ -364,6 +364,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				unset($rows[$i]);
 			}
+			$rows[$i]->text = strip_tags($rows[$i]->text);
 		}
 		$rows = array_values($rows);
 		echo json_encode($rows);

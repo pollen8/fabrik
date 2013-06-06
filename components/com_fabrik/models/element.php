@@ -5808,6 +5808,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		foreach ($tmp as &$t)
 		{
 			$elementModel->toLabel($t->text);
+			$t->text = strip_tags($t->text);
 		}
 		return json_encode($tmp);
 	}
