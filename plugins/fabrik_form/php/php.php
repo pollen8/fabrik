@@ -205,6 +205,28 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
+	 * Run from list model when deleting rows
+	 *
+	 * @param   object  $params      Plugin parameters
+	 * @param   object  &$formModel  Form model
+	 * @param   array   &$groups     List data for deletion
+	 *
+	 * @return	bool
+	 */
+
+	public function onDeleteRowsForm($params, &$formModel, &$groups)
+	{
+		if ($params->get('only_process_curl') == 'onDeleteRowsForm')
+		{
+			if ($this->_runPHP($params, $formModel) === false)
+			{
+				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *

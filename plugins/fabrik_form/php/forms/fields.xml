@@ -15,6 +15,7 @@
 					<option value="getTopContent">At top of form (getTopContent)</option>
 					<option value="getBottomContent">At bottom of form (getBottomContent)</option>
 					<option value="getEndContent">After the end of the form (getEndContent)</option>
+					<option value="onDeleteRowsForm">On record deletion (onDeleteRowsForm)</option>
 			</field>
 			
 			<field description="PLG_FORM_PHP_FILE_DESC" directory="plugins/fabrik_form/php/scripts/" hide_default="1" label="PLG_FORM_PHP_FILE_LABEL" name="form_php_file" repeat="true" type="filelist"/>
