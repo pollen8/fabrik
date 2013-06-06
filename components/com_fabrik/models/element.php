@@ -1000,8 +1000,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -1255,6 +1255,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return false;
 	}
+
 	/**
 	 * Determines the value for the element in the form view
 	 *
@@ -1483,7 +1484,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$rollOver = $this->tipTextAndValidations($mode);
+		$rollOver = $this->tipTextAndValidations($mode, $data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
 		if ($rollOver !== '')
@@ -6648,12 +6649,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			}
 			if ($groupModel->canRepeat())
 			{
-				$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
+				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
 			}
 			else
 			{
 				$joinValues = $allJoinValues;
 			}
+			$joinValues = (array) $joinValues;
+
 			// Get existing records
 			if ($parentId == '')
 			{
