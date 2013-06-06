@@ -140,6 +140,25 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	}
 
 	/**
+	 * Manupulates posted form data for insertion into database
+	 *
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
+	 *
+	 * @return  mixed
+	 */
+
+	public function storeDatabaseFormat($val, $data)
+	{
+		// If clear button pressed then store as null.
+		if ($val == '')
+		{
+			$val = null;
+		}
+		return $val;
+	}
+
+	/**
 	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
 	 *
 	 * @param   int  $repeatCounter  Repeat group counter
