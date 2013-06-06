@@ -1284,7 +1284,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->isEditable())
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
-			$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
+			$attribs = 'class="fabrikinput inputbox ' . $params->get('bootstrap_class', '') . '" size="' . $multiSize . '" multiple="true"';
 			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $default, $id);
 		}
 		else
