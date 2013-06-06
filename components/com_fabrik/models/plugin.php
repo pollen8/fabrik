@@ -985,16 +985,14 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @since 3.0
 	 *
+	 * @deprecated use FabrikWorker::getPluginManager()
+	 *
 	 * @return  FabrikFEModelPluginmanager
 	 */
 
 	protected function getPluginManager()
 	{
-		if (!isset($this->_pluginManager))
-		{
-			$this->_pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		}
-		return $this->_pluginManager;
+		return FabrikWorker::getPluginManager();
 	}
 
 	/**

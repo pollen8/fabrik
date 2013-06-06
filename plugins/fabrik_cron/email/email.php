@@ -89,7 +89,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 					}
 					$row = JArrayHelper::fromObject($row);
 					$thisto = $w->parseMessageForPlaceHolder($to, $row);
-					if (JMailHelper::isEmailAddress($thisto))
+					if (FabrikWorker::isEmail($thisto))
 					{
 						$thismsg = $w->parseMessageForPlaceHolder($msg, $row);
 						if ($eval)

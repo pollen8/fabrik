@@ -681,7 +681,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 				{
 					continue;
 				}
-				if (JMailHelper::isEmailAddress($email))
+				if (FabrikWorker::isEmail($email))
 				{
 					$res = JUtility::sendMail($email_from, $email_from, $email, $subject, $email_msg, true);
 				}

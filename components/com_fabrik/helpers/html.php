@@ -121,10 +121,11 @@ class FabrikHelperHTML
 	protected static $printURL = null;
 
 	protected static $requireJS = array();
+
 	/**
 	 * Array of browser request headers.  Starts as null.
 	 * @var array
-	*/
+	 */
 	protected static $requestHeaders = null;
 
 	/**
@@ -165,6 +166,14 @@ class FabrikHelperHTML
 				</a>
 				<ul class="dropdown-menu"><li>' . implode('</li>' . "\n" . '<li>', $lis) . '</li></ul></div>';
 	}
+
+	/**
+	 * Wrap buttons in bootstrap btn-group div
+	 *
+	 * @param   array  $items  Items
+	 *
+	 * @return string
+	 */
 
 	public static function bootStrapButtonGroup($items)
 	{

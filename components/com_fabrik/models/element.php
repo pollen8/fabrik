@@ -6378,6 +6378,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$this->list = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$this->list->loadFromFormId($formId);
 		$table = $this->list->getTable(true);
+		$table->form_id = $formId;
 		$element = $this->getElement(true);
 	}
 

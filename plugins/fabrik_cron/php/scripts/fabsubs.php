@@ -74,13 +74,15 @@ foreach ($res as $row) {
 		$res = JUtility::sendMail( $mailfrom, $fromname, $row->email, $mail->subject, $mail->body, true);
 	}
 
-	if (array_key_exists($row->daysleft, $expiration_mails) && $row->recurring == 0) {
+	if (array_key_exists($row->daysleft, $expiration_mails) && $row->recurring == 0)
+	{
 		$mail = clone($expiration_mails[$row->daysleft]);
-		foreach ($row as $k=>$v) {
+		foreach ($row as $k=>$v)
+		{
 			$mail->subject = str_replace('{'.$k.'}', $v, $mail->subject);
 			$mail->body = str_replace('{'.$k.'}', $v, $mail->body);
 		}
-		$res = JUtility::sendMail( $mailfrom, $fromname, $row->email, $mail->subject, $mail->body, true);
+		$res = JUtility::sendMail($mailfrom, $fromname, $row->email, $mail->subject, $mail->body, true);
 	}
 }
 

@@ -178,7 +178,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			jimport('joomla.mail.helper');
 			$target = $this->guessLinkTarget();
-			if (JMailHelper::isEmailAddress($value))
+			if (FabrikWorker::isEmail($value))
 			{
 				$value = JHTML::_('email.cloak', $value);
 				$guessed = true;

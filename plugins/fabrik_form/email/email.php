@@ -135,7 +135,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			foreach ($emailkey as &$key)
 			{
 				// $$$ rob added strstr test as no point trying to add raw suffix if not placeholder in $emailkey
-				if (!JMailHelper::isEmailAddress($key) && trim($key) !== '' && strstr($key, '}'))
+				if (!FabrikWorker::isEmail($key) && trim($key) !== '' && strstr($key, '}'))
 				{
 					$key = explode('}', $key);
 					if (substr($key[0], -4) !== '_raw')

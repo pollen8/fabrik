@@ -1,0 +1,1 @@
+var FbListJs=new Class({Extends:FbListPlugin,initialize:function(a){this.parent(a)},buttonAction:function(){var ids=this.list.getForm().getElements("input[name^=ids]").filter(function(i){return i.checked});console.log(ids);if(this.options.js_code!==""){if(eval(this.options.js_code)===false){return}}}});
