@@ -163,66 +163,39 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		/**
-		 * $$$ hugh - adding js.new folder to make it easier to test new plupload git releases
-		 * I just copy new stuff into js.new, and un-comment one of these as appropriate
-		 */
-		$js_dir = 'js';
-
-		// $js_dir = 'js.new';
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+		$s = new stdClass;
+		$s->deps = array('fab/element');
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
-			$suffix = FabrikHelperHTML::isDebug() ? '.js' : '.min.js';
 			$runtimes = $params->get('ajax_runtime', 'html5');
-			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
-			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $suffix);
+			$folder = 'element/fileupload/lib/plupload/js/';
+			$s->deps[] = $folder . 'plupload';
 
 			if (strstr($runtimes, 'html5'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $suffix);
+				$s->deps[] = $folder . 'plupload.html5';
 			}
 			if (strstr($runtimes, 'html4'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $suffix);
+				$s->deps[] = $folder . 'plupload.html4';
 			}
-			if (strstr($runtimes, 'gears'))
-			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $suffix);
-			}
-
 			if (strstr($runtimes, 'flash'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $suffix);
+				$s->deps[] = $folder . 'plupload.flash';
 			}
 			if (strstr($runtimes, 'silverlight'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $suffix);
+				$s->deps[] = $folder . 'plupload.silverlight';
 			}
 			if (strstr($runtimes, 'browserplus'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $suffix);
+				$s->deps[] = $folder . 'plupload.browserplus';
 			}
 		}
+		$shim['element/fileupload/fileupload'] = $s;
 		parent::formJavascriptClass($srcs, $script, $shim);
-		static $elementclasses;
 
-		if (!isset($elementclasses))
-		{
-			$elementclasses = array();
-		}
-		// Load up the default scipt
-		if ($script == '')
-		{
-			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . $ext;
-		}
-		if (empty($elementclasses[$script]))
-		{
-			$srcs[] = $script;
-			$elementclasses[$script] = 1;
-		}
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
 		return false;
 	}

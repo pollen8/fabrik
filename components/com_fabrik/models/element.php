@@ -2229,7 +2229,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			$bits['maxlength'] = $maxlength;
 		}
 
-
 		$class[] = 'fabrikinput inputbox';
 		$bits['class'] = implode(' ', $class);
 		if ($params->get('placeholder', '') !== '')
