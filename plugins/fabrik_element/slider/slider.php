@@ -47,8 +47,8 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -62,8 +62,8 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -86,14 +86,23 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
 
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
-		$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
+
 		if ($params->get('slider-shownone'))
 		{
-			$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
-				. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
+			if (FabrikWorker::j3())
+			{
+				$str[] = '<button class="btn btn-mini clearslider pull-left" style="margin-right:10px"><i class="icon-remove"></i></button>';
+			}
+			else
+			{
+				$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
+				$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
+						. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
+			}
+
 		}
 		$str[] = '<div class="slider_cont" style="width:' . $width . 'px;">';
-		if (count($labels) > 0)
+		if (count($labels) > 0 && $labels[0] !== '')
 		{
 			$spanwidth = floor(($width - (2 * count($labels))) / count($labels));
 			$str[] = '<ul class="slider-labels" style="width:' . $width . 'px;">';
