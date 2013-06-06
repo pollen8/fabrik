@@ -689,7 +689,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				}
 				else
 				{
-					$whereval = $watchElement->getValue($formModel->formData, $repeatCounte, $watchOpts);
+					$whereval = $watchElement->getValue($formModel->formData, $repeatCounter, $watchOpts);
 				}
 				/* $$$ hugh - temporary bandaid to fix 'array' issue in view=details
 				 * @TODO fix underlying cause in database join getValue
