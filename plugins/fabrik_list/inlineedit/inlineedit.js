@@ -646,8 +646,8 @@ var FbListInlineEdit = new Class({
 				// Inject error message from header (created by JError::raiseError()...)
 				var err = td.getElement('.inlineedit .fabrikMainError');
 				if (typeOf(err) === 'null') {
-					err = new Element('div.fabrikMainError.fabrikError');
-					err.inject(td.getElement('.inlineedit'), 'top');
+					err = new Element('div.fabrikMainError.fabrikError.alert.alert-error');
+					err.inject(td.getElement('form'), 'top');
 				}
 				this.saving = false;
 				Fabrik.loader.stop(td.getParent());
