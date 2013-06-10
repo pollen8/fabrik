@@ -1133,6 +1133,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$elementModel = new PlgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$elementTypes = $input->get('elementtype', array(), 'array');
 		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toSQL();
@@ -1171,8 +1172,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			$type = preg_replace("/\((.*)\)/i", '', $type);
 
 			$element = FabTable::getInstance('Element', 'FabrikTable');
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$default_plg = $fbConfig->get($type);
 			if (array_key_exists($ordering, $elementTypes))
 			{
 				// If importing from a CSV file then we have userselect field definitions
@@ -1187,17 +1186,37 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 				else
 				{
-					// Otherwise guestimate!
+					// Otherwise set default type
 					switch ($type)
 					{
-						case $type:
-							$plugin = $default_plg;
+						case "int":
+						case "decimal":
+						case "tinyint":
+						case "smallint":
+						case "mediumint":
+						case "bigint":
+						case "varchar":
+							$plugin = 'field';
+							break;
+						case "text":
+						case "tinytext":
+						case "mediumtext":
+						case "longtext":
+							$plugin = 'textarea';
+							break;
+						case "datetime":
+						case "date":
+						case "time":
+						case "timestamp":
+							$plugin = 'date';
 							break;
 						default:
 							$plugin = 'field';
 							break;
 					}
 				}
+				// Then alter if defined in Fabrik global config
+				$plugin = $fbConfig->get($type, $plugin);
 			}
 			$element->plugin = $plugin;
 			$element->hidden = $element->label == 'id' ? '1' : '0';
@@ -1261,7 +1280,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Hack for user element
 			$details = array('group_id' => $element->group_id);
 			$input->set('details', $details);
-			$elementModel->onSave();
+			$elementModel->onSave(array());
 			$ordering++;
 		}
 	}

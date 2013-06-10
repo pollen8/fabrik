@@ -603,11 +603,13 @@ var FbListInlineEdit = new Class({
 		data.fabrik_ignorevalidation = 0;
 		data.join = {};
 		$H(eObj.elements).each(function (el) {
+			
 			el.getElement();
 			var v = el.getValue();
 			var jid = el.options.joinId;
 			this.setTableData(row, el.options.element, v);
 			console.log(el.options);
+		
 			if (el.options.isJoin) {
 				if (typeOf(data.join[jid]) !== 'object') {
 					data.join[jid] = {};
