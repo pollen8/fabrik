@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
 */
 
-class FabrikViewCalendar extends JView
+class FabrikViewCalendar extends JViewLegacy
 {
 
 	/**
