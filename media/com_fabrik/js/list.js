@@ -1359,7 +1359,8 @@ var FbListActions = new Class({
 		}
 		
 		var c = function (el) {
-			return el.getParent('.fabrik___heading').getElement(this.options.selector);
+			var p = el.getParent('.fabrik___heading');
+			return typeOf(p) !== 'null' ? p.getElement(this.options.selector) : '';
 		}.bind(this);
 
 		var tipChxAllOpts = Object.merge(Object.clone(Fabrik.tips.options), {
