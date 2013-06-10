@@ -269,6 +269,7 @@ class FabrikModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', '<=', 'LESS THAN OR EQUALS');
 				$aConditions[] = JHTML::_('select.option', 'in', 'IN');
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
+				$aConditions[] = JHTML::_('select.option', 'exists', 'EXISTS');
 				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
 				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
 
@@ -425,10 +426,9 @@ class FabrikModelList extends FabModelAdmin
 			// Alow for multiline js variables ?
 			$selValue = htmlspecialchars_decode($selValue, ENT_QUOTES);
 			$selValue = json_encode($selValue);
-			if ($selFilter != '')
-			{
-				$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
-			}
+			
+			// No longer check for empty $selFilter as EXISTS prefilter condition doesn't require element to be selected
+			$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 		}
 		$js .= "
 });";

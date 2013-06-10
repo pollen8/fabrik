@@ -125,6 +125,7 @@
 									<option value="lessthanequals">LESS THAN OR EQUALS</option>
 									<option value="in">IN</option>
 									<option value="not_in">NOT IN</option>
+									<option value="exists">EXISTS</option>
 									<option value="earlierthisyear">MOD_FABRIK_LIST_EARLIER_THIS_YEAR</option>
 									<option value="laterthisyear">MOD_FABRIK_LIST_LATER_THIS_YEAR</option>
 									<option value="yesterday">COM_FABRIK_YESTERDAY</option>
