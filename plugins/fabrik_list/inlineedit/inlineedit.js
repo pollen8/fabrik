@@ -607,6 +607,7 @@ var FbListInlineEdit = new Class({
 			var v = el.getValue();
 			var jid = el.options.joinId;
 			this.setTableData(row, el.options.element, v);
+			console.log(el.options);
 			if (el.options.isJoin) {
 				if (typeOf(data.join[jid]) !== 'object') {
 					data.join[jid] = {};
@@ -617,6 +618,7 @@ var FbListInlineEdit = new Class({
 			}
 			
 		}.bind(this));
+		console.log(this.currentRow);
 		$H(this.currentRow.data).each(function (v, k) {
 			if (k.substr(k.length - 4, 4) === '_raw') {
 				currentRow[k.substr(0, k.length - 4)] = v;

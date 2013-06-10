@@ -429,16 +429,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Alow for multiline js variables ?
 			$selValue = htmlspecialchars_decode($selValue, ENT_QUOTES);
 			$selValue = json_encode($selValue);
-<<<<<<< HEAD
-			if ($selFilter != '')
-			{
-				$js[] = "\toAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
-			}
-=======
-			
+
 			// No longer check for empty $selFilter as EXISTS prefilter condition doesn't require element to be selected
-			$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
->>>>>>> 00ecd37cb0e4367e61b53b5ee51dad3be71647fa
+			$js[] = "\toAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 		}
 		$js[] = "});";
 		return implode("\n", $js);

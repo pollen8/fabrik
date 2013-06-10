@@ -882,9 +882,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				{
 					if ($groupModel->canRepeat())
 					{
-						if (array_key_exists($name, $data) && array_key_exists($repeatCounter, $data[$name]))
+						if (array_key_exists($name, $data))
 						{
-							$value = $data[$name][$repeatCounter];
+							$value = is_array($data[$name]) ? JArrayHelper::getValue($data[$name], $repeatCounter, '') : $data[$name];
 						}
 					}
 					elseif (array_key_exists($name, $data))
