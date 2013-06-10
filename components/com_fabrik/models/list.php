@@ -1916,7 +1916,7 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
-	 * Buidl related data URL
+	 * Make related data URL
 	 *
 	 * @param   string  $key     Releated link key
 	 * @param   string  $val     Related link value
@@ -3037,11 +3037,12 @@ class FabrikFEModelList extends JModelForm
 		// $$$ rob keys may no longer be in asc order as we may have filtered out some in buildQueryPrefilterWhere()
 		$vkeys = array_keys(JArrayHelper::getValue($filters, 'key', array()));
 		$last_i = false;
+		$nullElementConditions = array( 'IS NULL', 'IS NOT NULL');
 		while (list($vkey, $i) = each($vkeys))
 		{
 			// $$$rob - prefilter with element that is not published so ignore
 			$condition = JString::strtoupper(JArrayHelper::getValue($filters['condition'], $i, ''));
-			if (JArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && ($condition != 'IS NULL' && $condition != 'IS NOT NULL'))
+			if (JArrayHelper::getValue($filters['sqlCond'], $i, '') == '' && !in_array($condition, $nullElementConditions))
 			{
 				$last_i = $i;
 				continue;
@@ -3064,7 +3065,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			$gstart = '';
 			$gend = '';
-			if ($condition == 'IS NULL' || $condition == 'IS NOT NULL')
+			if (!in_array($condition, $nullElementConditions))
 			{
 				$filters['origvalue'][$i] = 'this is ignoerd i hope';
 			}
@@ -4637,6 +4638,10 @@ class FabrikFEModelList extends JModelForm
 
 			if (!is_a($elementModel, 'PlgFabrik_Element'))
 			{
+				if ($this->filters['condition'][$i] == 'exists')
+				{
+					$this->filters['sqlCond'][$i] = 'EXISTS (' . $this->filters['value'][$i] . ')';
+				}
 				continue;
 			}
 			$elementModel->_rawFilter = $raw;
@@ -4807,7 +4812,7 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 
-		// List prfilter properties
+		// List prefilter properties
 		$elements = $this->getElements('filtername');
 		$afilterFields = (array) $params->get('filter-fields');
 		$afilterConditions = (array) $params->get('filter-conditions');
@@ -4886,7 +4891,7 @@ class FabrikFEModelList extends JModelForm
 				$raw = preg_match("/_raw$/", $filter) > 0;
 				$tmpfilter = $raw ? FabrikString::rtrimword($filter, '_raw') : $filter;
 				$elementModel = JArrayHelper::getValue($elements, FabrikString::safeColName($tmpfilter), false);
-				if ($elementModel === false)
+				if ($elementModel === false && $condition !== 'exists')
 				{
 					// Include the JLog class.
 					jimport('joomla.log.log');

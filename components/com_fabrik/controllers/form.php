@@ -181,6 +181,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 	/**
 	 * Process the form
+	 * Inline edit save routed here (not in raw)
 	 *
 	 * @return  null
 	 */
@@ -221,7 +222,7 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			JSession::checkToken() or die('Invalid Token');
+			//JSession::checkToken() or die('Invalid Token');
 		}
 
 		if (!$model->validate())
@@ -343,6 +344,7 @@ class FabrikControllerForm extends JControllerLegacy
 				}
 				if (!empty($eMsgs))
 				{
+					//throw new Exception('test');
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
 					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit();

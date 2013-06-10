@@ -125,6 +125,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 	public function save($data)
 	{
+		echo "<pre>";print_r($_POST);exit;
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jform = $input->get('jform', array(), 'array');

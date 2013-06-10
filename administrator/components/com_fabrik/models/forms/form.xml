@@ -20,6 +20,7 @@
 			
 		<field name="intro" 
 			type="editor"
+			editor="ace"
 			buttons="false"
 			filter="FabrikAdminHelper::filterText"
 			rows="3" 

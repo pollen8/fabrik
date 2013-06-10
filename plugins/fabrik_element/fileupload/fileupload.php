@@ -584,7 +584,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				if (!$canDownload)
 				{
 					$img = $params->get('fu_download_noaccess_image');
-					$noImg = ($img == '' || !JFile::exists('media/com_fabrik/images/' . $img));
+					$noImg = ($img == '' || !JFile::exists(JPATH_ROOT . '/media/com_fabrik/images/' . $img));
 					$aClass = $noImg ? 'class="btn button"' : '';
 					$a = $params->get('fu_download_noaccess_url') == '' ? ''
 							: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
@@ -625,7 +625,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 			$downloadImg = $params->get('fu_download_access_image');
-			if ($downloadImg !== '' && JFile::exists('media/com_fabrik/images/' . $downloadImg))
+			if ($downloadImg !== '' && JFile::exists(JPATH_ROOT . '/media/com_fabrik/images/' . $downloadImg))
 			{
 				$aClass = '';
 				$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg . '" alt="' . $title . '" />';
