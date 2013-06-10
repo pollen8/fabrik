@@ -426,7 +426,7 @@ class FabrikModelList extends FabModelAdmin
 			// Alow for multiline js variables ?
 			$selValue = htmlspecialchars_decode($selValue, ENT_QUOTES);
 			$selValue = json_encode($selValue);
-			
+
 			// No longer check for empty $selFilter as EXISTS prefilter condition doesn't require element to be selected
 			$js .= "	oAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 		}
@@ -601,7 +601,8 @@ class FabrikModelList extends FabModelAdmin
 			return false;
 		}
 		$filter = new JFilterInput(null, null, 1, 1);
-		$introduction = JArrayHelper::getValue(JRequest::getVar('jform', array(), 'post', 'array', JREQUEST_ALLOWRAW), 'introduction');
+		$jform = JRequest::getVar('jform', array(), 'post', 'array', JREQUEST_ALLOWRAW);
+		$introduction = JArrayHelper::getValue($jform, 'introduction');
 
 		$row->introduction = $filter->clean($introduction);
 
@@ -841,7 +842,7 @@ class FabrikModelList extends FabModelAdmin
 		{
 			return;
 		}
-		$searchElements = json_decode($params->list_search_elements)->search_elements;
+		$searchElements = (array) json_decode($params->list_search_elements)->search_elements;
 		$elementModels = $this->getFEModel()->getElements(0, false, false);
 		foreach ($elementModels as $elementModel)
 		{
@@ -1157,9 +1158,8 @@ class FabrikModelList extends FabModelAdmin
 		$elementModel = new plgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$elementTypes = JRequest::getVar('elementtype', array());
-		/* $fields = $fabrikDb->getTableColumns(array($tableName));
-		$fields = $fields[$tableName]; */
 		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toSQL();
 		$key = $this->getFEModel()->getPrimaryKeyAndExtra($tableName);
@@ -1197,8 +1197,6 @@ class FabrikModelList extends FabModelAdmin
 			$type = preg_replace("/\((.*)\)/i", '', $type);
 
 			$element = FabTable::getInstance('Element', 'FabrikTable');
-			$fbConfig = JComponentHelper::getParams('com_fabrik');
-			$default_plg = $fbConfig->get($type);
 			if (array_key_exists($ordering, $elementTypes))
 			{
 				// If importing from a CSV file then we have userselect field definitions
@@ -1213,17 +1211,37 @@ class FabrikModelList extends FabModelAdmin
 				}
 				else
 				{
-					// Otherwise guestimate!
+					// Otherwise set default type
 					switch ($type)
 					{
-						case $type:
-							$plugin = $default_plg;
+						case "int":
+						case "decimal":
+						case "tinyint":
+						case "smallint":
+						case "mediumint":
+						case "bigint":
+						case "varchar":
+							$plugin = 'field';
+							break;
+						case "text":
+						case "tinytext":
+						case "mediumtext":
+						case "longtext":
+							$plugin = 'textarea';
+							break;
+						case "datetime":
+						case "date":
+						case "time":
+						case "timestamp":
+							$plugin = 'date';
 							break;
 						default:
 							$plugin = 'field';
 							break;
 					}
 				}
+				// Then alter if defined in Fabrik global config
+				$plugin = $fbConfig->get($type, $plugin);
 			}
 			$element->plugin = $plugin;
 			$element->hidden = $element->label == 'id' ? '1' : '0';
@@ -1287,7 +1305,7 @@ class FabrikModelList extends FabModelAdmin
 			// Hack for user element
 			$details = array('group_id' => $element->group_id);
 			JRequest::setVar('details', $details);
-			$elementModel->onSave();
+			$elementModel->onSave(array());
 			$ordering++;
 		}
 	}
