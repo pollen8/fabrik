@@ -124,13 +124,13 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$str = array();
 		$str[] = '<div class="fabrikSubElementContainer">';
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id
-			. '" /><div class="colourpicker_bgoutput" style="float:left;width:20px;height:20px;border:1px solid #333333;background-color:rgb('
+			. '" /><div class="colourpicker_bgoutput img-rounded " style="float:left;width:25px;height:25px;background-color:rgb('
 			. $value . ')"></div>';
 		if ($this->isEditable())
 		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">';
 			$str[] = '<div class="draggable modal-header">';
-			$str[] = '<div class="colourpicker_output" style="width:15px;height:15px;float:left;margin-right:10px;"></div> ';
+			$str[] = '<div class="colourpicker_output img-rounded" style="width:15px;height:15px;float:left;margin-right:10px;"></div> ';
 			$str[] = JText::_('PLG_FABRIK_COLOURPICKER_COLOUR');
 
 			if (FabrikWorker::j3())

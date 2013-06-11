@@ -420,11 +420,13 @@
 
 					// Block browser default drag over
 					plupload.addEvent(dropElm, 'dragover', function(e) {
+						
 						e.preventDefault();
 					}, uploader.id);
 
 					// Attach drop handler and grab files
 					plupload.addEvent(dropElm, 'drop', function(e) {
+						console.log('drag over!');
 						var dataTransfer = e.dataTransfer;
 
 						// Add dropped files
