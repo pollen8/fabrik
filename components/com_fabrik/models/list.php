@@ -2804,6 +2804,10 @@ $groupBy .= '_raw';
 
 	public function _buildQueryWhere($incFilters = true, $query = false)
 	{
+
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBuildQueryWhere', $this, 'list');
+
 		$sig = !$query ? 'string' : 'query';
 		$db = FabrikWorker::getDbo();
 		if (isset($this->_whereSQL[$sig]))
@@ -9017,8 +9021,8 @@ $groupBy .= '_raw';
 	/**
 	 * Allow plugins to add arbitrary WHERE clauses.  Gets checked in buildQueryWhere().
 	 *
-	 * @param   string  $pluginName   plugin name
-	 * @param   string  $whereClause  where clause (WITHOUT prepended where/and etc)
+	 * @param   string  $pluginName   Plugin name
+	 * @param   string  $whereClause  Where clause (WITHOUT prepended where/and etc)
 	 *
 	 * @return  bool
 	 */
@@ -9033,7 +9037,7 @@ $groupBy .= '_raw';
 		if (!array_key_exists($pluginName, $this->_pluginQueryWhere) || $whereClause != $this->_pluginQueryWhere[$pluginName])
 		{
 			// Set the internal data, which will get used in _buildQueryWhere
-			$this->_pluginQueryWhere['chart'] = $whereClause;
+			$this->_pluginQueryWhere[$pluginName] = $whereClause;
 			/* as we are modifying the main getData query, we need to make sure and
 			 * clear table data, forcing next getData() to do the query again, no cache
 			*/
@@ -9046,7 +9050,7 @@ $groupBy .= '_raw';
 	/**
 	 * Plugins sometimes need to clear their where clauses
 	 *
-	 * @param   string  $pluginName  plugin name
+	 * @param   string  $pluginName  Pugin name
 	 *
 	 * @return  bool
 	 */
