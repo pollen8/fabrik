@@ -54,7 +54,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 			$userid = JArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
 			$thisUser = JFactory::getUser($userid);
 		}
-		$selected = $this->getValue($data, $repeatCounter);
+		$selected = (array) $this->getValue($data, $repeatCounter);
 		if ($this->canUse())
 		{
 			return JHtml::_('access.usergroups', $name, $selected);
