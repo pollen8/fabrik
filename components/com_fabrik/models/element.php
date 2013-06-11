@@ -5163,7 +5163,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	public function getFieldDescription()
 	{
-		$plugin = JPluginHelper::getPlugin('fabrik_element', 'dropdown');
+		$element = strtolower(str_ireplace('PlgFabrik_Element', '', get_class($this)));
+		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
 		$fparams = new JRegistry($plugin->params);
 		$p = $this->getParams();
 		if ($this->encryptMe())
