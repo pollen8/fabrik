@@ -230,7 +230,7 @@ var FbGoogleMap = new Class({
 										}
 										else if (type === 'route') {
 											if (this.options.reverse_geocode_fields.route) {
-												document.id(this.options.reverse_geocode_fields.route).value += component.long_name;
+												document.id(this.options.reverse_geocode_fields.route).value = component.long_name;
 											}
 										}
 										else if (type === 'street_address') {
