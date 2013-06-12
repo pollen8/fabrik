@@ -3,6 +3,9 @@
 foreach ($this->elements as $element) :
 	$this->element = $element;
 	$this->class = 'fabrikErrorMessage';
+
+	// Don't display hidden element's as otherwise they wreck multi-column layouts
+	$style = $element->hidden ? 'style="display:none"' : '';
 	if (trim($element->error) !== '') :
 		$element->error = $this->errorIcon . ' ' . $element->error;
 		$element->containerClass .= ' error';
@@ -10,7 +13,7 @@ foreach ($this->elements as $element) :
 	endif;
 
 	if ($element->startRow) : ?>
-			<div class="row-fluid"><!-- start element row -->
+			<div class="row-fluid" <?php echo $style?>><!-- start element row -->
 		<?php
 		endif;
 		if ($this->params->get('labels_above', 0) == 1) :
