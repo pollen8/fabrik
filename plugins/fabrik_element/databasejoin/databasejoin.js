@@ -623,6 +623,8 @@ var FbDatabasejoin = new Class({
 	 * @return  string
 	 */
 	getFormElementsKey: function (elId) {
+		// Needed for events on chx 
+		this.baseElementId = elId;
 		if (this.options.displayType === 'checkbox' || this.options.displayType === 'multilist') {
 			return this.options.listName + '___' + this.options.elementShortName;
 		} else {
@@ -740,6 +742,8 @@ var FbDatabasejoin = new Class({
 				}.bind(this));
 			}
 			break;
+		case 'checkbox':
+		/* falls through */
 		case 'radio':
 			this._getSubElements();
 			this.subElements.each(function (el) {

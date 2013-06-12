@@ -67,6 +67,7 @@ var FbElement =  new Class({
 	 * @return  string
 	 */
 	getFormElementsKey: function (elId) {
+		this.baseElementId = elId;
 		return elId;
 	},
 	
