@@ -289,7 +289,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			{
 				$value = $label;
 			}
-			if (!preg_match('#^\'.*\'$#', $value))
+			if (!preg_match('#^\'.*\'$#', $value) && !strstr($value, 'LOWER'))
 			{
 				$value = $db->quote($value);
 			}
