@@ -295,7 +295,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					if ($elementModel->isJoin())
 					{
 						$join = $elementModel->getJoinModel()->getJoin();
-						$raw = $model->formDataWithTableName[$k][$c];
+						$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 						$this->emailData[$k . '_raw'][$c] = $raw;
 						$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 					}

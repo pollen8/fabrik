@@ -6668,7 +6668,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$query->clear();
 				$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
 				$db->setQuery($query);
-				$ids = $db->loadObjectList($shortName);
+				$ids = (array) $db->loadObjectList($shortName);
 			}
 			foreach ($joinValues as $jIndex => $jid)
 			{
@@ -6678,7 +6678,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$record->$shortName = $fkVal;
 				$record->params = JArrayHelper::getValue($allParams, $jIndex);
 
-				if (array_key_exists($fkVal, $ids))
+				// Stop notice with fileupload where fkVal is an array
+				if (is_string($fkVal) && array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
 					$idsToKeep[$parentId][] = $record->id;

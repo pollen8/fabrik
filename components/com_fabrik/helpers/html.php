@@ -1837,28 +1837,7 @@ EOD;
 		{
 			if (FabrikWorker::j3())
 			{
-				$span = floor(12 / $optionsPerRow);
-				foreach ($items as $i => $s)
-				{
-					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
-					if ($endLine && $optionsPerRow > 1)
-					{
-						$grid[] = '</div><!-- grid close row -->';
-					}
-
-					$newLine = ($i % $optionsPerRow == 0);
-					if ($newLine && $optionsPerRow > 1)
-					{
-						$grid[] = '<div class="row-fluid">';
-					}
-
-					$grid[] =  $optionsPerRow != 1 ? '<div class="span' . $span . '">' . $s . '</div>' : $s;
-				}
-				if ($i + 1 % $optionsPerRow !== 0 && $optionsPerRow > 1)
-				{
-					// Close opened and unfinished row.
-					$grid[] = '</div><!-- grid close end row -->';
-				}
+				$grid = self::bootstrapGrid($items, $optionsPerRow);
 			}
 			else
 			{
@@ -1872,6 +1851,44 @@ EOD;
 			}
 		}
 		return $grid;
+	}
+
+	/**
+	 * Wrap items in bootstrap grid markup
+	 *
+	 * @param   array   $items    Content to wrap
+	 * @param   int     $columns  Number of columns in the grid
+	 * @param   string  $spanClass  Additonal class to add to cells
+	 * @param   bool    $explode    Should the results be exploded to a string or returned as an array
+	 *
+	 * @return mixed  string/array based on $explode parameter
+	 */
+
+	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
+	{
+		$span = floor(12 / $columns);
+		foreach ($items as $i => $s)
+		{
+			$endLine = ($i !== 0 && (($i ) % $columns == 0));
+			if ($endLine && $columns > 1)
+			{
+				$grid[] = '</div><!-- grid close row -->';
+			}
+
+			$newLine = ($i % $columns == 0);
+			if ($newLine && $columns > 1)
+			{
+				$grid[] = '<div class="row-fluid">';
+			}
+
+			$grid[] =  $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+		}
+		if ($i + 1 % $columns !== 0 && $columns > 1)
+		{
+			// Close opened and unfinished row.
+			$grid[] = '</div><!-- grid close end row -->';
+		}
+		return $explode ? implode('', $grid) : $grid;
 	}
 
 	/**
