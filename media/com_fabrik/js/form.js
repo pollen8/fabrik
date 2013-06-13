@@ -1251,6 +1251,9 @@ var FbForm = new Class({
 	 * by the min repeat value.
 	 */
 	duplicateGroupsToMin: function () {
+		if (!this.form) {
+			return;
+		}
 		// Check for new form
 		if (this.options.rowid.toInt() === 0) {
 			// $$$ hugh - added ability to override min count
