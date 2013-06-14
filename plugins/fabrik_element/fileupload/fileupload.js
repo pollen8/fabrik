@@ -166,7 +166,7 @@ var FbFileUpload = new Class({
 		if (typeOf(dropTxt) !== 'null') {
 			dropTxt.show();
 		} else {
-			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="5"><i class="icon-move"></i> Drag files here </td>');
+			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> Drag files here </td>');
 			this.container.getElement('tbody').adopt(tr);
 		}
 		this.container.getElement('thead').hide();
@@ -269,8 +269,9 @@ var FbFileUpload = new Class({
 						}
 					}));
 					if (this.isImage(file)) {
-						a = new Element('a', {
+						a = new Element('a.editImage', {
 							'href' : '#',
+							styles: {'display': 'none'},
 							alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
 							events : {
 								'click': function (e) {
@@ -288,14 +289,11 @@ var FbFileUpload = new Class({
 						a = new Element('span');
 						title = new Element('a', {'href': file.url}).set('text', file.name);
 					}
-					
+					var icon = new Element('td.span1.plupload_resize').adopt(a);
 					var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
 					var filename = new Element('td.span6.plupload_file_name', {
-					}).adopt([new Element('span', {
-						'class' : 'plupload_resize',
-						style : 'display:none'
-					}).adopt(a), title ]);
-					var innerli = [ filename, new Element('td.span5.plupload_file_status', {
+					}).adopt(title); 
+					var innerli = [filename, icon, new Element('td.span5.plupload_file_status', {
 					}).set('html', progress), del ];
 					this.droplist.adopt(new Element('tr', {
 						id : file.id,
@@ -342,9 +340,9 @@ var FbFileUpload = new Class({
 				fconsole('Filuploaded didnt find: ' + file.id);
 				return;
 			}
-			document.id(file.id).getElement('.plupload_resize').show().addClass('pull-left');
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
 			if (resizebutton) {
+				resizebutton.show();
 				resizebutton.href = response.uri;
 				resizebutton.id = 'resizebutton_' + file.id;
 				resizebutton.store('filepath', response.filepath);

@@ -2043,20 +2043,20 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '<div class="plupload" id="' . $id . '_dropList_container">';
 		$pstr[] = '	<table class="table table-striped table-condensed">';
 		$pstr[] = '		<thead style="display:none"><tr>';
-		$pstr[] = '			<th class="span6">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</th>';
+		$pstr[] = '			<th class="span4">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</th>';
+		$pstr[] = '			<th class="span1 plupload_crop">&nbsp;</th>';
 		$pstr[] = '			<th class="span5 plupload_file_status"></th>';
 		$pstr[] = '			<th class="span1 plupload_file_action">&nbsp;</th>';
 		$pstr[] = '		</tr></thead>';
 		$pstr[] = '		<tbody class="plupload_filelist" id="' . $id . '_dropList">';
 		$pstr[] = ' </tbody>';
 
-		$pstr[] = ' <tfoot><tr><td colspan="5">';
+		$pstr[] = ' <tfoot><tr><td colspan="4">';
 
 		$pstr[] = '				<a id="' . $id . '_browseButton" class="btn btn-mini" href="#"><i class="icon-plus-sign icon-plus"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
 		$pstr[] = '				<a class="btn btn-mini disabled" data-action="plupload_start" href="#"><i class="icon-upload"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
-		$pstr[] = '			</div>';
 		$pstr[] = '			<span class="plupload_upload_status"></span>';
 
 		$pstr[] = '</td></tr></tfoot>';

@@ -2116,7 +2116,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * Load a new set of default properites and params for the element
 	 *
-	 * @return object element (id = 0)
+	 * @return object Element (id = 0)
 	 */
 
 	public function getDefaultProperties()
@@ -2129,7 +2129,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	/**
 	 * convert XML format data into fabrik data (used by web services)
 	 *
-	 * @param   mixed  $v  data
+	 * @param   mixed  $v  Data
 	 *
 	 * @return  mixed  data
 	 */
@@ -2143,8 +2143,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * If used as a filter add in some JS code to watch observed filter element's changes
 	 * when it changes update the contents of this elements dd filter's options
 	 *
-	 * @param   bool    $normal     is the filter a normal (true) or advanced filter
-	 * @param   string  $container  container
+	 * @param   bool    $normal     Is the filter a normal (true) or advanced filter
+	 * @param   string  $container  Container
 	 *
 	 * @return  void
 	 */
@@ -2216,14 +2216,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	{
 		$s = new stdClass;
 		$s->deps = array('fab/element');
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$params = $this->getParams();
 		if ($params->get('date_advanced', '0') == '1')
 		{
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/date' . $ext;
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/core' . $ext;
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/parser' . $ext;
-			$s->deps[] = 'media/com_fabrik/js/lib/datejs/extras' . $ext;
+			$s->deps[] = 'fab/lib/datejs/date';
+			$s->deps[] = 'fab/lib/datejs/core';
+			$s->deps[] = 'fab/lib/datejs/parser';
+			$s->deps[] = 'fab/lib/datejs/extras';
 		}
 		$shim['element/date/date'] = $s;
 

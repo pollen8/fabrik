@@ -70,7 +70,8 @@ var FbDateTime = new Class({
 				}.bind(this));
 			}
 			this.makeCalendar();
-			//chrome wierdness where we need to delay the hiding if the date picker is hidden
+			
+			// Chrome wierdness where we need to delay the hiding if the date picker is hidden
 			var h = function () { 
 				this.cal.hide();
 			};
@@ -79,14 +80,13 @@ var FbDateTime = new Class({
 				e.stop();
 				if (!this.cal.params.position) {
 					this.cal.showAtElement(this.cal.params.button || this.cal.params.displayArea || this.cal.params.inputField, this.cal.params.align);
-					this.cal.wrapper.getParent().position({'relativeTo': this.cal.params.inputField, 'position': 'topLeft'});
 				} else {
 					this.cal.showAt(this.cal.params.position[0], params.position[1]);
 				}
 				this.cal.show();
 			}.bind(this));
 			Fabrik.addEvent('fabrik.form.submit.failed', function (form, json) {
-				//fired when form failed after AJAX submit
+				// Fired when form failed after AJAX submit
 				this.afterAjaxValidation();
 			}.bind(this));
 		}
@@ -194,8 +194,7 @@ var FbDateTime = new Class({
 		if (dateEl) {
 			if (this.options.advanced) {
 				params.date = Date.parseExact(dateEl.value || dateEl.innerHTML, Date.normalizeFormat(dateFmt));
-			}
-			else {
+			} else {
 				params.date = Date.parseDate(dateEl.value || dateEl.innerHTML, dateFmt);
 			}
 		}
