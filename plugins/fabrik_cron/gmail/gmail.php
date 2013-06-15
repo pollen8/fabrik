@@ -324,7 +324,7 @@ class PlgFabrik_Crongmail extends PlgFabrik_Cron
  * @return  array
  */
 
-public function create_part_array($structure, $prefix = "")
+function create_part_array($structure, $prefix = "")
 {
 	if (isset($structure->parts) && count($structure->parts) > 0)
 	{ // There some sub parts
