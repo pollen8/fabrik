@@ -2914,7 +2914,6 @@ class FabrikFEModelList extends JModelForm
 
 		if ($incFilters && !$this->gotAllRequiredFilters())
 		{
-			// $this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 			if (!$query)
 			{
 				return 'WHERE 1 = -1 ';
@@ -4777,6 +4776,8 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
+		// If rendering as module then module code updates list params with pre-filters
 		$params = $this->getParams();
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
