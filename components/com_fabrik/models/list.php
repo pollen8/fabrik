@@ -1847,7 +1847,7 @@ $groupBy .= '_raw';
 	 * @param   string  $key     Releated link key
 	 * @param   string  $val     Related link value
 	 * @param   int     $listid  List id
-	 * @param   bool    $popup   Is pop up link
+	 * @param   bool    $popUp   Is pop up link
 	 *
 	 * @since   3.0.8
 	 *
@@ -7556,10 +7556,12 @@ $groupBy .= '_raw';
 	/**
 	 * Deletes records from a table
 	 *
-	 * @param   string  &$ids  key value to delete
-	 * @param   string  $key   key to use (leave empty to default to the table's key)
+	 * @param   mixed   &$ids  Key values to delete (string or array)
+	 * @param   string  $key   Key to use (leave empty to default to the list's key)
 	 *
-	 * @return  string	error message
+	 * @throws  Exception  If no key found or main delete row fails (perhaps due to INNODB foreign constraints)
+	 *
+	 * @return  void
 	 */
 
 	public function deleteRows(&$ids, $key = '')
@@ -7578,7 +7580,7 @@ $groupBy .= '_raw';
 			$key = $table->db_primary_key;
 			if ($key == '')
 			{
-				return JError::raiseWarning(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
+				throw new Exception(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
 			}
 		}
 
@@ -7684,14 +7686,13 @@ $groupBy .= '_raw';
 		$db->setQuery($query);
 		if (!$db->execute())
 		{
-			return JError::raiseWarning($db->getErrorMsg());
+			throw new Exception($db->getErrorMsg());
 		}
 		$this->deleteJoinedRows($val);
 
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
-		return true;
 	}
 
 	/**
