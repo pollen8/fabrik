@@ -1240,7 +1240,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
 		}
-		$class = 'class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
+		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
 		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '"' . $class . '"/>';
