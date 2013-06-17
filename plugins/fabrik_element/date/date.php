@@ -894,24 +894,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 				}
 				else
 				{
-					/* if ($groupModel->canRepeat())
-					{
-						// Repeat group NO join
-						if (array_key_exists($name, $data))
-						{
-							// Occurs on form submission for fields at least : Occurs when getting from the db
-							$a = is_array($data[$name]) ? $a = $data[$name] : FabrikWorker::JSONtoData($data[$name], true);
-							if (array_key_exists($repeatCounter, $a))
-							{
-								$value = $a[$repeatCounter];
-							}
-						}
-
-					}
-					else
-					{ */
-						$value = JArrayHelper::getValue($data, $name, $value);
-					//}
+					$value = JArrayHelper::getValue($data, $name, $value);
 				}
 				if (is_array($value))
 				{
@@ -2214,18 +2197,21 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		$s = new stdClass;
-		$s->deps = array('fab/element');
-		$params = $this->getParams();
-		if ($params->get('date_advanced', '0') == '1')
-		{
-			$s->deps[] = 'fab/lib/datejs/date';
-			$s->deps[] = 'fab/lib/datejs/core';
-			$s->deps[] = 'fab/lib/datejs/parser';
-			$s->deps[] = 'fab/lib/datejs/extras';
-		}
-		$shim['element/date/date'] = $s;
+		$key = 'element/date/date';
 
+		// Ensure that we keep advanced dependancies from previous date elements regarless of current elements settings.
+		$deps = array_key_exists($key, $shim) ? $shim[$key]->deps : array('fab/element');
+		$params = $this->getParams();
+		if ($params->get('date_advanced', '0') == '1' && !in_array('fab/lib/datejs/date', $deps))
+		{
+			$deps[] = 'fab/lib/datejs/date';
+			$deps[] = 'fab/lib/datejs/core';
+			$deps[] = 'fab/lib/datejs/parser';
+			$deps[] = 'fab/lib/datejs/extras';
+		}
+		$s = new stdClass;
+		$s->deps = $deps;
+		$shim[$key] = $s;
 		parent::formJavascriptClass($srcs, $script, $shim);
 
 		// Return false, as we need to be called on per-element (not per-plugin) basis
