@@ -3189,8 +3189,25 @@ class FabrikFEModelForm extends FabModelForm
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->_data = array();
-		$data = JRequest::get('request');
-		$data = array(FArrayHelper::toObject($data));
+		/*
+		 * $$$ hugh - we need to remove any elements from the query string,
+		 * if the user doesn't have access, otherwise ACL's on elements can
+		 * be bypassed by just setting value on form load query string!
+		 */
+		$clean_request = JRequest::get('request');
+		foreach ($clean_request as $key => $value)
+		{
+			$test_key = FabrikString::rtrimword($key, '_raw');
+			$elementModel = $this->getElement($test_key, false, false);
+			if ($elementModel !== false)
+			{
+				if (!$elementModel->canUse())
+				{
+					unset($clean_request[$key]);
+				}
+			}
+		}
+		$data = array(FArrayHelper::toObject($clean_request));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -3332,7 +3349,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->_rowId = isset($row->__pk_val) ? $row->__pk_val : $this->_rowId;
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-								$request = JRequest::get('request');
+								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
 							}
