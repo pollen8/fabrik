@@ -1088,7 +1088,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
-		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update formData which is not yet set
+		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is trying to update formData which is not yet set
 		 * this->setFormData();
 		 */
 
