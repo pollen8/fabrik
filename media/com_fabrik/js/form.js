@@ -1288,7 +1288,7 @@ var FbForm = new Class({
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
-			if (b.getElement('img') === e.target) {
+			if (b.getElement('img') === e.target || b === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));
