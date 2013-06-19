@@ -2897,6 +2897,10 @@ class FabrikFEModelList extends JModelForm
 
 	public function buildQueryWhere($incFilters = true, $query = false)
 	{
+
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('onBuildQueryWhere', $this, 'list');
+
 		$sig = !$query ? 'string' : 'query';
 		$db = FabrikWorker::getDbo();
 		if (isset($this->_whereSQL[$sig]))
@@ -7677,10 +7681,12 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Deletes records from a table
 	 *
-	 * @param   string  &$ids  key value to delete
-	 * @param   string  $key   key to use (leave empty to default to the table's key)
+	 * @param   mixed   &$ids  Key values to delete (string or array)
+	 * @param   string  $key   Key to use (leave empty to default to the list's key)
 	 *
-	 * @return  string	error message
+	 * @throws  Exception  If no key found or main delete row fails (perhaps due to INNODB foreign constraints)
+	 *
+	 * @return  void
 	 */
 
 	public function deleteRows(&$ids, $key = '')
@@ -7699,7 +7705,7 @@ class FabrikFEModelList extends JModelForm
 			$key = $table->db_primary_key;
 			if ($key == '')
 			{
-				return JError::raiseWarning(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
+				throw new Exception(JText::_("COM_FABRIK_NO_KEY_FOUND_FOR_THIS_TABLE"));
 			}
 		}
 
@@ -7805,14 +7811,13 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery($query);
 		if (!$db->execute())
 		{
-			return JError::raiseWarning($db->getErrorMsg());
+			throw new Exception($db->getErrorMsg());
 		}
 		$this->deleteJoinedRows($val);
 
 		// Clean the cache.
 		$cache = JFactory::getCache($app->input->get('option'));
 		$cache->clean();
-		return true;
 	}
 
 	/**
@@ -9186,8 +9191,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Allow plugins to add arbitrary WHERE clauses.  Gets checked in buildQueryWhere().
 	 *
-	 * @param   string  $pluginName   plugin name
-	 * @param   string  $whereClause  where clause (WITHOUT prepended where/and etc)
+	 * @param   string  $pluginName   Plugin name
+	 * @param   string  $whereClause  Where clause (WITHOUT prepended where/and etc)
 	 *
 	 * @return  bool
 	 */
@@ -9202,7 +9207,7 @@ class FabrikFEModelList extends JModelForm
 		if (!array_key_exists($pluginName, $this->pluginQueryWhere) || $whereClause != $this->pluginQueryWhere[$pluginName])
 		{
 			// Set the internal data, which will get used in buildQueryWhere
-			$this->pluginQueryWhere['chart'] = $whereClause;
+			$this->pluginQueryWhere[$pluginName] = $whereClause;
 			/* as we are modifying the main getData query, we need to make sure and
 			 * clear table data, forcing next getData() to do the query again, no cache
 			*/
@@ -9215,7 +9220,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Plugins sometimes need to clear their where clauses
 	 *
-	 * @param   string  $pluginName  plugin name
+	 * @param   string  $pluginName  Pugin name
 	 *
 	 * @return  bool
 	 */

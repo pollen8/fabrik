@@ -45,6 +45,13 @@
       	description="PLG_FABRIK_LIST_PHPEVENTS_ONDELETEROWS_DESC"
       	repeat="true" />
       	
+      <field name="list_phpevents_onbuildquerywhere"
+      	type="textarea"
+      	cols="60" rows="8"
+      	label="PLG_FABRIK_LIST_PHPEVENTS_ONBUILDQUERYWHERE_LABEL"
+      	description="PLG_FABRIK_LIST_PHPEVENTS_ONBUILDQUERYWHERE_DESC"
+      	repeat="true" />
+      	
     </fieldset>
   </fields>
 </form>

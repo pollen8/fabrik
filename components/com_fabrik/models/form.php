@@ -1086,7 +1086,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
-		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update formData which is not yet set
+		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is trying to update formData which is not yet set
 		 * this->setFormData();
 		 */
 
@@ -2687,10 +2687,30 @@ class FabrikFEModelForm extends FabModelForm
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
-		$f = JFilterInput::getInstance();
-		$data = $f->clean($_REQUEST, 'array');
 
-		$data = array(FArrayHelper::toObject($data));
+		$f = JFilterInput::getInstance();
+
+		/*
+		 * $$$ hugh - we need to remove any elements from the query string,
+		 * if the user doesn't have access, otherwise ACL's on elements can
+		 * be bypassed by just setting value on form load query string!
+		 */
+
+		$clean_request = $f->clean($_REQUEST, 'array');
+		foreach ($clean_request as $key => $value)
+		{
+			$test_key = FabrikString::rtrimword($key, '_raw');
+			$elementModel = $this->getElement($test_key, false, false);
+			if ($elementModel !== false)
+			{
+				if (!$elementModel->canUse())
+				{
+					unset($clean_request[$key]);
+				}
+			}
+		}
+
+		$data = array(FArrayHelper::toObject($clean_request));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -2815,8 +2835,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->rowId = isset($row->__pk_val) ? $row->__pk_val : $this->rowId;
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-								$filter = JFilterInput::getInstance();
-								$request = $filter->clean($_REQUEST, 'array');
+								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
 							}

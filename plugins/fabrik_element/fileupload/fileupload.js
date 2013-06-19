@@ -98,6 +98,7 @@ var FbFileUpload = new Class({
 	 */
 
 	getFormElementsKey: function (elId) {
+		this.baseElementId = elId;
 		if (this.options.ajax_upload && this.options.ajax_max > 1) {
 			return this.options.listName + '___' + this.options.elementShortName;
 		} else {

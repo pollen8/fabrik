@@ -425,8 +425,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					}
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
-				$l = $this->rollover($l, $thisRow, 'list');
-				$l = $listModel->_addLink($l, $this, $thisRow, $i);
+				if ($this->renderWithHTML)
+				{
+					$l = $this->rollover($l, $thisRow, 'list');
+					$l = $listModel->_addLink($l, $this, $thisRow, $i);
+				}
 				if (trim($l) !== '')
 				{
 					$lis[] = $multiple || $mergeGroupRepeat ? '<li>' . $l . '</li>' : $l;

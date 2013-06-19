@@ -772,6 +772,8 @@ var FbDatabasejoin = new Class({
 				}.bind(this));
 			}
 			break;
+		case 'checkbox':
+		/* falls through */
 		case 'radio':
 			this._getSubElements();
 			this.subElements.each(function (el) {

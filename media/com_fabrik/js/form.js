@@ -16,7 +16,6 @@ var FbForm = new Class({
 		'primaryKey': null,
 		'error': '',
 		'submitOnEnter': false,
-		'delayedEvents': false,
 		'updatedMsg': 'Form saved',
 		'pages': [],
 		'start_page': 0,
@@ -45,7 +44,6 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
-		this.bufferedEvents = [];
 		this.duplicatedGroups = $H({});
 	
 		this.fx = {};
@@ -324,13 +322,11 @@ var FbForm = new Class({
 				return;
 			}
 		}
-		if (groupfx) {
+		// Seems dropdown element fx.css.element is already the container
+		if (groupfx || fx.css.element.hasClass('fabrikElementContainer')) {
 			fxElement = fx.css.element;
 		} else {
 			fxElement = fx.css.element.getParent('.fabrikElementContainer');
-			if (typeOf(fxElement) === 'null') {
-				fxElement = fx.css.element;
-			}
 		}
 		
 		// For repeat groups rendered as tables we cant apply fx on td so get child
@@ -663,38 +659,31 @@ var FbForm = new Class({
 		return oEl;
 	},
 
-	// we have to buffer the events in a pop up window as
-	// the dom inserted when the window loads appears after the ajax evalscripts
+	/**
+	 * Dispatch an event to an element
+	 * 
+	 * @param   string  elementType  Deprecated
+	 * @param   string  elementId    Element key to look up in this.formElements
+	 * @param   string  action       Event chage/click etc
+	 * @param   mixed   js           String or function
+	 */
 
-	dispatchEvent : function (elementType, elementId, action, js) {
-		if (!this.options.delayedEvents) {
-			var el = this.formElements.get(elementId);
-			if (el && js !== '') {
-				el.addNewEvent(action, js);
-			}
-		} else {
-			this.bufferEvent(elementType, elementId, action, js);
+	dispatchEvent: function (elementType, elementId, action, js) {
+		var el = this.formElements.get(elementId);
+		if (!el) {
+			// E.g. db join rendered as chx
+			var els = Object.each(this.formElements, function (e) {
+				if (elementId === e.baseElementId) {
+					el = e;
+				}
+			});
+		}
+		if (el && js !== '') {
+			el.addNewEvent(action, js);
 		}
 	},
 
-	bufferEvent : function (elementType, elementId, action, js) {
-		this.bufferedEvents.push([ elementType, elementId, action, js ]);
-	},
-
-	// call this after the popup window has loaded
-	processBufferEvents : function () {
-		this.setUp();
-		this.options.delayedEvents = false;
-		this.bufferedEvents.each(function (r) {
-			// refresh the element ref
-			var elementId = r[1];
-			var el = this.formElements.get(elementId);
-			el.element = document.id(elementId);
-			this.dispatchEvent(r[0], elementId, r[2], r[3]);
-		}.bind(this));
-	},
-
-	action : function (task, el) {
+	action: function (task, el) {
 		var oEl = this.formElements.get(el);
 		Browser.exec('oEl.' + task + '()');
 	},
@@ -1271,6 +1260,9 @@ var FbForm = new Class({
 	 * by the min repeat value.
 	 */
 	duplicateGroupsToMin: function () {
+		if (!this.form) {
+			return;
+		}
 		// Check for new form
 		if (this.options.rowid.toInt() === 0) {
 			// $$$ hugh - added ability to override min count
@@ -1304,7 +1296,7 @@ var FbForm = new Class({
 		// Find which repeat group was deleted
 		var delIndex = 0;
 		group.getElements('.deleteGroup').each(function (b, x) {
-			if (b.getElement('img') === e.target || b.getElement('i') === e.target) {
+			if (b.getElement('img') === e.target || b.getElement('i') === e.target || b === e.target) {
 				delIndex = x;
 			}
 		}.bind(this));

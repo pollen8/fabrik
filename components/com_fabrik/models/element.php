@@ -2615,7 +2615,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			if (is_array($default))
 			{
 				// Hidden querystring filters can be using ranged valued though
-				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect')))
+				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect', 'range')))
 				{
 					// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
 					$default = '';
@@ -5008,7 +5008,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	public function getFieldDescription()
 	{
-		$plugin = JPluginHelper::getPlugin('fabrik_element', 'dropdown');
+		$element = strtolower(str_ireplace('PlgFabrik_Element', '', get_class($this)));
+		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
 		$fparams = new JRegistry($plugin->params);
 		$p = $this->getParams();
 		if ($this->encryptMe())
