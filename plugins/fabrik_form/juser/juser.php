@@ -207,7 +207,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			if ($params->get('juser_sync_on_edit', 0) == 1)
 			{
 				$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
-				$userid = (int) JArrayHelper::getValue($formModel->_data, $this->useridfield . '_raw');
+				$userid = JArrayHelper::getValue($formModel->_data, $this->useridfield . '_raw');
+				/**
+				 * $$$ hugh - after a validation failure, userid _raw is an array.
+				 * Trying to work out why, and fix that, but need a bandaid for now.
+				 */
+				if (is_array($userid))
+				{
+					$userid = (int) JArrayHelper::getValue($userid, 0, 0);
+				}
 				if ($userid > 0)
 				{
 					$user = JFactory::getUser($userid);
@@ -305,7 +313,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 */
 
 	public function onBeforeStore($params, &$formModel)
-	{
+	{		
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$config = JFactory::getConfig();
@@ -325,6 +333,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		if ($ftable == $jos_users)
 		{
 			$formModel->storeMainRow = false;
+		}
+		
+		if (!$this->shouldProcess('juser_conditon', null, $formModel))
+		{
+			return true;
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');
