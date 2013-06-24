@@ -4770,6 +4770,27 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get the elements to show in the list view
+	 *
+	 * @since 3.1b2
+	 *
+	 * @return array
+	 */
+	private function showInList()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$showInList = array();
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+		if (isset($listels->show_in_list))
+		{
+			$showInList = $listels->show_in_list;
+		}
+		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+		return $showInList;
+	}
+
+	/**
 	 * Get the prefilter settings from list/module/menu options
 	 * Use in listModel::getPrefilterArray() and formModel::getElementIds()
 	 *
@@ -4781,15 +4802,8 @@ class FabrikFEModelList extends JModelForm
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
-		// If rendering as module then module code updates list params with pre-filters
 		$params = $this->getParams();
-		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
-		if (isset($listels->show_in_list))
-		{
-			$showInList = $listels->show_in_list;
-		}
-		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+		$showInList = $this->showInList();
 
 		// Are we coming from a post request via a module?
 		$moduleid = 0;
@@ -5996,9 +6010,7 @@ class FabrikFEModelList extends JModelForm
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
-		$listels = json_decode($params->get('list_elements'));
-
-		$showInList = array();
+		//$listels = json_decode($params->get('list_elements'));
 
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
@@ -6007,12 +6019,8 @@ class FabrikFEModelList extends JModelForm
 			$listClasses = new stdClass;
 			$listClasses->responsive_elements = array();
 		}
-		// $$$ rob check if empty or if a single empty value was set in the menu/module params
-		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
-		{
-			$showInList = $listels->show_in_list;
-		}
-		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+
+		$showInList = $this->showInList();
 
 		// Set it for use by groupModel->getPublishedListElements()
 		$input->set('fabrik_show_in_list', $showInList);
