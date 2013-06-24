@@ -3963,7 +3963,7 @@ $groupBy .= '_raw';
 
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
-
+		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo();
 		$return = array(false, '', '', '', '', false);
 		$element = $elementModel->getElement();
@@ -4111,7 +4111,8 @@ $groupBy .= '_raw';
 
 		// $$$ rob and this meant that renaming an element created a new column rather than renaming exisiting
 		// if (empty($element->name) || !in_array($element->name, $existingfields)) {
-		if (empty($origColName) || !in_array($origColName, $existingfields))
+
+		if (empty($origColName) || !in_array($origColName, $existingfields) || ($app->input->get('task') === 'save2copy' && $this->canAddFields()))
 		{
 			if (!$altered)
 			{

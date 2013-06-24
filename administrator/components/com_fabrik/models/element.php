@@ -427,7 +427,6 @@ class FabrikModelElement extends JModelAdmin
 		 */
 		if (!$input->get('unlink', false) && (int) $data['id'] === 0)
 		{
-			$row->group_id = (int) $data['group_id'];
 			$query = $db->getQuery(true);
 			$query->select('t.id')->from('#__{package}_joins AS j');
 			$query->join('INNER', '#__{package}_lists AS t ON j.table_join = t.db_table_name');
@@ -510,6 +509,7 @@ class FabrikModelElement extends JModelAdmin
 		$params['validations'] = JArrayHelper::getValue($data, 'validationrule', array());
 		$elementModel = $this->getElementPluginModel($data);
 		$elementModel->getElement()->bind($data);
+		$origId = $input->getInt('id');
 		$row = $elementModel->getElement();
 		if ($new)
 		{
@@ -644,7 +644,7 @@ class FabrikModelElement extends JModelAdmin
 		$origName = $input->get('name_orig', '');
 		list($update, $q, $oldName, $newdesc, $origDesc) = $listModel->shouldUpdateElement($elementModel, $origName);
 
-		if ($update)
+		if ($update && $input->get('task') !== 'save2copy')
 		{
 			$origplugin = $input->get('plugin_orig');
 			$config = JFactory::getConfig();
@@ -676,7 +676,7 @@ class FabrikModelElement extends JModelAdmin
 			$app->setUserState('com_fabrik.origtask', $input->get('task'));
 			$app->setUserState('com_fabrik.plugin', $data['plugin']);
 			$task = $input->get('task');
-			$url = 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $row->id . '&origplugin=' . $origplugin . '&origtask='
+			$url = 'index.php?option=com_fabrik&view=element&layout=confirmupdate&id=' . (int) $origId . '&origplugin=' . $origplugin . '&origtask='
 				. $task . '&plugin=' . $row->plugin;
 			$app->setUserState('com_fabrik.redirect', $url);
 		}
