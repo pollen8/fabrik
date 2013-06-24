@@ -36,8 +36,7 @@ class FabrikViewListBase extends JView
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$listref = $model->getRenderContext();
@@ -354,14 +353,8 @@ class FabrikViewListBase extends JView
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
 		$params = $model->getParams();
 
-		if (!$model->canPublish())
+		if (!$this->access($model))
 		{
-			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
-			return false;
-		}
-		if (!$model->canView())
-		{
-			echo JText::_('JERROR_ALERTNOAUTHOR');
 			return false;
 		}
 
@@ -486,6 +479,28 @@ class FabrikViewListBase extends JView
 		$this->buttons();
 
 		$this->pluginTopButtons = $model->getPluginTopButtons();
+	}
+
+	/**
+	 * Model check for publish/access
+	 *
+	 * @param   JModel  $model  List model
+	 *
+	 * @return boolean
+	 */
+	protected function access($model)
+	{
+		if (!$model->canPublish())
+		{
+			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
+			return false;
+		}
+		if (!$model->canView())
+		{
+			echo JText::_('JERROR_ALERTNOAUTHOR');
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -756,8 +771,7 @@ class FabrikViewListBase extends JView
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 

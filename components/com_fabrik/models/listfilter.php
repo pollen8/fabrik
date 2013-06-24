@@ -803,7 +803,7 @@ class FabrikFEModelListfilter extends FabModel
 					$element = $elementModel->getElement();
 					$elparams = $elementModel->getParams();
 					$grouped = array_key_exists($i, $searchfilters['grouped_to_previous']) ? $searchfilters['grouped_to_previous'][$i] : 0;
-	
+
 					$join = $searchfilters['join'][$i];
 					if ($index === false)
 					{

@@ -1650,10 +1650,7 @@ $groupBy .= '_raw';
 		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		if (!$app->isAdmin())
-		{
-			$Itemid = (int) @$app->getMenu('site')->getActive()->id;
-		}
+		$Itemid = FabrikWorker::itemId();
 		if (is_null($listid))
 		{
 			$list = $this->getTable();
@@ -1857,7 +1854,7 @@ $groupBy .= '_raw';
 	protected function releatedDataURL($key, $val, $listid, $popUp)
 	{
 		$app = JFactory::getApplication();
-		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
+		$Itemid = FabrikWorker::itemId();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$url = 'index.php?option=com_' . $package . '&';
 		if ($app->isAdmin())
@@ -2347,7 +2344,7 @@ $groupBy .= '_raw';
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 
 		// $$$rob added raw as an option to fix issue in saving calendar data
-		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
+		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
@@ -8008,8 +8005,7 @@ $groupBy .= '_raw';
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$params = $this->getParams();
 		$table = $this->getTable();
@@ -8113,8 +8109,7 @@ $groupBy .= '_raw';
 	function editLink(&$row)
 	{
 		$app = JFactory::getApplication();
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$table = $this->getTable();
 		$customLink = $this->getCustomLink('url', 'edit');
@@ -8795,8 +8790,7 @@ $groupBy .= '_raw';
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$params = $this->getParams();
 		$addurl_url = $params->get('addurl', '');
 		$addlabel = $params->get('addlabel', '');

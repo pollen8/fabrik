@@ -347,7 +347,7 @@ class FabrikControllerDetails extends JController
 					// Return to the page that called the form
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
-				$Itemid = $app->getMenu('site')->getActive()->id;
+				$Itemid = FabrikWorker::itemId();
 				if ($url == '')
 				{
 					$url = "index.php?option=com_' . $package . '&Itemid=$Itemid";

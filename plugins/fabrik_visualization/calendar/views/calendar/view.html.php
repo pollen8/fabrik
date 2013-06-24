@@ -37,7 +37,7 @@ class fabrikViewCalendar extends JView
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$Itemid = (int) @$app->getMenu('site')->getActive()->id;
+		$Itemid = FabrikWorker::itemId();
 		$pluginManager = FabrikWorker::getPluginManager();
 
 		// Needed to load the language file!

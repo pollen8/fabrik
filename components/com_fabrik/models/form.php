@@ -5085,7 +5085,7 @@ class FabrikFEModelForm extends FabModelForm
 					// Return to the page that called the form
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
-				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
+				$Itemid = (int) FabrikWorker::itemId();
 				if ($url == '')
 				{
 					if ($Itemid !== 0)
