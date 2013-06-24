@@ -16,22 +16,13 @@ jimport('joomla.application.component.model');
 /**
  * Fabrik Form Group Model
  *
- * @package  Fabrik
- * @since    3.0
- * @deprecated
+ * @package     Fabrik
+ * @since       3.0
+ * @deprecated  Not used
  */
 
 
-class FabrikFEModelFormGroup extends JModel {
+class FabrikFEModelFormGroup extends JModel
+{
 
-	/**
-	 * Constructor
-	 *
-	 * @since       1.5
-	 */
-
-	function __construct()
-	{
-		parent::__construct();
-	}
 }

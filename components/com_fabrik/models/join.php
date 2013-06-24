@@ -21,14 +21,25 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelJoin extends FabModel
 {
-
-	/** @var object join table */
+	/**
+	 * Join table
+	 *
+	 * @var object
+	 */
 	var $_join = null;
 
-	/** @var int id of join to load */
+	/**
+	 * Join id to load
+	 *
+	 * @var int
+	 */
 	var $_id = null;
 
-	/** @var array join data to bind to Join table */
+	/**
+	 * Data to bind to Join table
+	 *
+	 * @var array
+	 */
 	var $_data = null;
 
 	/**
@@ -143,7 +154,7 @@ class FabrikFEModelJoin extends FabModel
 	/**
 	 * Get join table's primary key
 	 *
-	 * @param   string  $glue  between table and field name
+	 * @param   string  $glue  Between table and field name
 	 *
 	 * @return  string
 	 */
@@ -195,7 +206,7 @@ class FabrikFEModelJoin extends FabModel
 			return JError::raiseError(500, $db->getErrorMsg());
 		}
 
-		/* delete all form group records */
+		// Delete all form group records
 		$query->clear();
 		$query->delete(' #__{package}_formgroup')->where('group_id = ' . (int) $groupId);
 		$db->setQuery($query);
