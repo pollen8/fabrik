@@ -266,14 +266,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			// If we are coming back from a validation then we don't want to re-offset the date
 			if ($input->get('Submit', '') == '' || $params->get('date_defaulttotoday', 0))
 			{
-				// If new record and element not editable - dont prefill with todays date: http://fabrikar.com/forums/index.php?threads/date-field-set-to-today-after-validation-failed.34078/
-				if (!$this->isEditable() && $input->getInt('rowid') == 0)
-				{
-					return '';
-				}
 				// $$$ rob - date is always stored with time now, so always apply tz unless store_as_local set
-				// or if we are defaulting to today
-				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getInt('rowid') == 0 || $params->get('date_alwaystoday', false));
+				// or if we are defaulting to today, or a failed validation
+				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getInt('rowid') == 0 || $params->get('date_alwaystoday', false) || $this->getFormModel()->hasErrors());
 				if (!$store_as_local || $showLocale)
 				{
 					$oDate->setTimeZone($timeZone);
