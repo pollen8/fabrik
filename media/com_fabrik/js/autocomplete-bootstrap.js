@@ -48,7 +48,7 @@ var FbAutocomplete = new Class({
 			this.getInputElement().addEvent('blur', function (e) {
 				if (this.options.storeMatchedResultsOnly) {
 					if (!this.matchedResult) {
-						if (!(this.data.length === 1 && this.options.autoLoadSingleResult)) {
+						if (!(this.data.length === 1 && this.options.autoLoadSingleResult) || typeof(this.data) === 'undefined') {
 							this.element.value = '';
 						}
 					}

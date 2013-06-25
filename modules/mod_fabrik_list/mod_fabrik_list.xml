@@ -90,6 +90,34 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+				
+				<field name="show_into"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_INTRO_DESC"
+					label="MOD_FABRIK_LIST_SHOW_INTRO_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="show_outro"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_OUTRO_DESC"
+					label="MOD_FABRIK_LIST_SHOW_OUTRO_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="show_filters"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_FILTERS_DESC"
+					label="MOD_FABRIK_LIST_SHOW_FILTERS_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
 					
 				<field name="list_elements"
 					type="fabrikmodalrepeat"

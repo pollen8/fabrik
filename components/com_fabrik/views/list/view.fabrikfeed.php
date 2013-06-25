@@ -9,7 +9,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 /**
  * PDF Fabrik List view class, including closures
@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class FabrikViewList extends JViewLegacy
+class FabrikViewList extends FabrikViewListBase
 {
 
 	/**
@@ -35,11 +35,14 @@ class FabrikViewList extends JViewLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$Itemid = $app->getMenu('site')->getActive()->id;
-		$config = JFactory::getConfig();
+		$Itemid = FabrikWorker::itemId();
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');
+		if (!parent::access($model))
+		{
+			exit;
+		}
 
 		$document = JFactory::getDocument();
 		$document->_itemTags = array();
