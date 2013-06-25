@@ -13,9 +13,14 @@ var FbCascadingdropdown = new Class({
 		this.parent(element, options);
 		this.plugin = 'cascadingdropdown';
 		if (document.id(this.options.watch)) {
-			document.id(this.options.watch).addEvent('change', function (e) {
-				this.dowatch(e);
-			}.bind(this));
+			/**
+			 * In order to be able to remove specific change event functions when we clone
+			 * the element, we have to bind the call to a variable, can't use inline functions
+			 */
+			this.doChangeEvent = this.doChange.bind(this);
+			document.id(this.options.watch).addEvent('change', this.doChangeEvent);
+			
+
 		}
 		if (this.options.showDesc === true) {
 			this.element.addEvent('change', function (e) {
@@ -45,6 +50,11 @@ var FbCascadingdropdown = new Class({
 	{
 		var v = Fabrik.blocks[this.form.form.id].formElements[this.options.watch].getValue();
 		this.change(v, e.target.id);
+	},
+
+	doChange: function (e)
+	{
+		this.dowatch(e);
 	},
 	
 	/**
@@ -214,15 +224,13 @@ var FbCascadingdropdown = new Class({
 				}
 			}
 			if (document.id(this.options.watch)) {
-
 				/**
-				 * Was removing and attaching again, but seems remove removed
-				 * change events in other cloned plug-in instances
+				 * Remove the previously bound change event function, by name, then re-bind it and re-add it
 				 */
-				
-				document.id(this.options.watch).addEvent('change', function (e) {
-					this.dowatch(e);
-				}.bind(this));
+				document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				this.doChangeEvent = this.doChange.bind(this);
+				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
+
 			}
 			
 		}
