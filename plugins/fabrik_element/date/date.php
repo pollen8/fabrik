@@ -2345,7 +2345,7 @@ class FabDate extends JDate
 		$search = array('%e', '%j', '%u', '%V', '%W', '%h', '%B', '%C', '%g', '%G', '%M', '%P', '%r', '%R', '%T', '%X', '%z', '%Z', '%D', '%F', '%s',
 				'%x', '%A', '%Y', '%m', '%d', '%H', '%S');
 
-		$replace = array(' j', 'z', 'w', 'W', 'W', 'M', 'F', 'Y', 'y', 'Y', 'i', 'a', '"g:i:s a', 'H:i', 'H:i:s', 'H:i:s', 'O', 'O', 'm/d/y"', 'Y-m-d', 'U',
+		$replace = array('j', 'z', 'w', 'W', 'W', 'M', 'F', 'Y', 'y', 'Y', 'i', 'a', '"g:i:s a', 'H:i', 'H:i:s', 'H:i:s', 'O', 'O', 'm/d/y"', 'Y-m-d', 'U',
 				'Y-m-d', 'l', 'Y', 'm', 'd', 'H', 's');
 
 		$format = str_replace($search, $replace, $format);
@@ -2363,12 +2363,13 @@ class FabDate extends JDate
 	{
 		$search = array('d', 'D', 'j', 'l', 'N', 'S', 'w', 'z', 'W', 'F', 'm', 'M', 'n', 't', 'L', 'o', 'Y',
 				'y', 'a', 'A', 'B', 'g', 'G', 'h', 'H', 'i', 's', 'u',
-				'e', 'I', 'O', 'P', 'T', 'Z', 'c', 'r', 'U');
+				'I', 'O', 'P', 'T', 'Z', 'c', 'r', 'U');
 
 		$replace = array('%d', '%a', '%e', '%A', '%u', '', '%w', '%j', '%V', '%B', '%m', '%b', '%m', '', '', '%g', '%Y',
 				'%y', '%P', '%p', '', '%l', '%H', '%I', '%H', '%M', '%S', '',
-				'%z', '', '', '', '%z', '', '%c', '%a, %d %b %Y %H:%M:%S %z', '%s');
+				'', '', '', '%z', '', '%c', '%a, %d %b %Y %H:%M:%S %z', '%s');
 
+		// Removed e => %z as that meant, j => %e => %%z (prob could re-implement with a regex if really needed
 		$format = str_replace($search, $replace, $format);
 	}
 
