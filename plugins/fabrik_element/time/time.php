@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
  * @since       3.0
 */
 
-class plgFabrik_ElementTime extends plgFabrik_Element
+class PlgFabrik_ElementTime extends PlgFabrik_Element
 {
 
 	public $hasSubElements = true;
