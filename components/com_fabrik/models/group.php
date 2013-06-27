@@ -1048,6 +1048,15 @@ class FabrikFEModelGroup extends FabModel
 		$canRepeat = $this->canRepeat();
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
+		/*
+		 * $$$ hugh - test code for new isJoin in join model
+		 */
+		/*
+		if ($joinModel->isView())
+		{
+			return;
+		}
+		*/
 		$pkField = $joinModel->getPrimaryKey();
 
 		$listModel = $this->getListModel();
