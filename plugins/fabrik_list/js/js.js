@@ -2,7 +2,7 @@ var FbListJs = new Class({
 	Extends: FbListPlugin,
 	
 	options: {
-		'statusMsg': 'yipppee'
+		'statusMsg': ''
 	},
 	
 	initialize: function (options) {
@@ -25,6 +25,8 @@ var FbListJs = new Class({
 		if (statusMsg === undefined) {
 			statusMsg = this.options.statusMsg;
 		}
-		alert(statusMsg);
+		if (statusMsg !== '') {
+			alert(statusMsg);
+		}
 	}
 });

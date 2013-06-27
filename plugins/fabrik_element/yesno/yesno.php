@@ -22,7 +22,7 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
  * @since       3.0
  */
 
-class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
+class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 {
 
 	/**
@@ -42,12 +42,12 @@ class plgFabrik_ElementYesno extends plgFabrik_ElementRadiobutton
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  to use as parsemessage for placeholder
+	 * @param   array  $data  form data
 	 *
 	 * @return mixed
 	 */
 
-	function getDefaultValue($data = array())
+	public function getDefaultValue($data = array())
 	{
 		if (!isset($this->_default))
 		{

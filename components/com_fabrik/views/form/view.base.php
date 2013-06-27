@@ -312,7 +312,7 @@ class FabrikViewFormBase extends JView
 		$this->showPrint = $params->get('print', $fbConfig->get('form_print', 0));
 		if ($this->showPrint)
 		{
-			$text = JHTML::_('image.site', 'printButton.png', '/images/', null, null, JText::_('Print'));
+			$text = JHtml::_('image', 'system/printButton.png', JText::_('JGLOBAL_PRINT'), null, true);
 			$this->printLink = '<a href="#" class="printlink" onclick="window.print();return false;">' . $text . '</a>';
 		}
 		if ($input->get('tmpl') != 'component')
