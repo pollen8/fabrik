@@ -620,6 +620,8 @@ class FabrikFEModelList extends JModelForm
 
 	public function setLimits($limitstart_override = null, $limitlength_override = null)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 
 		// Plugins using setLimits - these limits would get overwritten by render() or getData() calls
 		if (isset($this->limitLength) && isset($this->limitStart) && is_null($limitstart_override) && is_null($limitlength_override))
@@ -639,35 +641,33 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$app = JFactory::getApplication();
 			$package = $app->getUserState('com_fabrik.package', 'fabrik');
 			$item = $this->getTable();
 			$params = $this->getParams();
 			$id = $this->getId();
-			$this->randomRecords = JRequest::getVar('fabrik_random', $this->randomRecords);
+			$this->randomRecords = $input->get('fabrik_random', $this->randomRecords);
 
 			// $$$ rob dont make the key list.X as the registry doesnt seem to like keys with just '1' a
 			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
 			$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
 
-			// Deal with the fact that you can have more than one table on a page so limitstart has to be
-			// specfic per table
+			// Deal with the fact that you can have more than one list on a page so limitstart has to be  specfic per table
 
-			// Deal with the fact that you can have more than one table on a page so limitstart has to be  specfic per table
-
-			// If table is rendered as a content plugin dont set the limits in the session
+			// If list is rendered as a content plugin dont set the limits in the session
 			if ($app->scope == 'com_content')
 			{
-				$limitLength = JRequest::getInt('limit' . $id, $item->rows_per_page);
+				$limitLength = $input->getInt('limit' . $id, $item->rows_per_page);
 
 				if (!$this->randomRecords)
 				{
-					$limitStart = JRequest::getInt('limitstart' . $id, $limitStart);
+					$limitStart = $input->getInt('limitstart' . $id, $limitStart);
 				}
 			}
 			else
 			{
-				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
+				// If a list (assoc with a menu item) loads a form, with db join & front end select - dont use the orig menu's rows_per_page value.
+				$mambot = $this->isMambot || ($input->get('tmpl') === 'component' && $input->getInt('ajax') === 1);
+				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $mambot);
 				$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
 				if (!$this->randomRecords)
 				{
@@ -676,7 +676,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($this->outPutFormat == 'feed')
 			{
-				$limitLength = JRequest::getVar('limit', $params->get('rsslimit', 150));
+				$limitLength = $input->getInt('limit', $params->get('rsslimit', 150));
 				$maxLimit = $params->get('rsslimitmax', 2500);
 				if ($limitLength > $maxLimit)
 				{
