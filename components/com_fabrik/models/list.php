@@ -6103,7 +6103,7 @@ $groupBy .= '_raw';
 		{
 			$edit = false;
 		}
-		if ($this->canSelectRows() || $details || $edit)
+		if ($this->canSelectRows() || $this->canEditARow() || $details || $edit)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();
