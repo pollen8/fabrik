@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class PlgFabrik_ElementDate extends PlgFabrik_Element
+class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 {
 
 	/**
@@ -50,22 +50,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 * @var string
 	 */
 	protected $offsetDate = null;
-	/**
-	 * Dates are stored in database as GMT times
-	 * i.e. with no offsets
-	 * This is to allow us in the future of render dates based
-	 * on user tmezone offsets
-	 * Dates are displayed in forms and tables with the global timezone
-	 * offset applied
-	 *
-	 * @return  array
-	 */
 
-	private function getNullDates()
-	{
-		$db = FabrikWorker::getDbo();
-		return array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
-	}
+	/**
+	 * Has subelements - set to false as we need to manaully apply name/time keys to the element html name
+	 */
+	public $hasSubElements = false;
 
 	/**
 	 * Shows the data formatted for the list view
@@ -84,7 +73,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		}
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		$aNullDates = $this->getNullDates();
 		$params = $this->getParams();
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$groupModel = $this->getGroup();
@@ -97,13 +85,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$format = array();
 		foreach ($data as $d)
 		{
-			if (!in_array($d, $aNullDates))
+			if (FabrikWorker::isDate($d))
 			{
 				$date = JFactory::getDate($d);
-				/* $$$ rob - dates always stored with time (and hence timezone offset) so, unless stored_as_local
-				 * we must set the timezone
-				 */
-				if (!$store_as_local)
+				if ($this->shouldApplyTz('list'))
 				{
 					$date->setTimeZone($timeZone);
 				}
@@ -139,7 +124,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		// @TODO: deal with time options (currently can be defined in date_table_format param).
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$db = FabrikWorker::getDbo();
-		$aNullDates = $this->getNullDates();
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
@@ -161,7 +145,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$format = array();
 		foreach ($data as $d)
 		{
-			if (!in_array($d, $aNullDates))
+			if (FabrikWorker::isDate($d))
 			{
 				if ($incRaw)
 				{
@@ -217,6 +201,41 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
+	 * Called by form model to build an array of values to encrypt
+	 *
+	 * Dates should have tz applied if needed - their value should be the
+	 * same as the displayed readonly date.
+	 *
+	 * @param   array  &$values  Previously encrypted values
+	 * @param   array  $data     Form data
+	 * @param   int    $c        Repeat group counter
+	 *
+	 * @return  void
+	 */
+
+	public function getValuesToEncrypt(&$values, $data, $c)
+	{
+		$name = $this->getFullName(false, true, false);
+		$group = $this->getGroup();
+		if ($group->canRepeat())
+		{
+			if (!array_key_exists($name, $values))
+			{
+				$values[$name]['data'] = array();
+			}
+			$gmt = $this->getValue($data, $c);
+			$localDate = $this->displayDate($gmt);
+			$values[$name]['data'][$c] = FabrikWorker::isDate($gmt) ? $localDate->toSql(true) : '';
+		}
+		else
+		{
+			$gmt = $this->getValue($data, $c);
+			$localDate = $this->displayDate($gmt);
+			$values[$name]['data'] = FabrikWorker::isDate($gmt) ? $localDate->toSql(true) : '';
+		}
+	}
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           to preopulate element with
@@ -229,9 +248,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+
 		$this->offsetDate = '';
-		$aNullDates = $this->getNullDates();
 		FabrikHelperHTML::loadcalendar();
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
@@ -240,71 +258,46 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$format = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$timeformat = $params->get('date_time_format');
 
-		// Value is in mySQL format
-		$value = $this->getValue($data, $repeatCounter);
-		$store_as_local = (bool) $params->get('date_store_as_local', 0);
+		// Value is in mySQL format GMT
+		$gmt = $this->getValue($data, $repeatCounter);
+		if (!FabrikWorker::isDate($gmt))
+		{
+			$date = '';
+			$time = '';
+		}
+		else
+		{
+			// Set the date to display local time
+			$localDate = $this->displayDate($gmt);
 
+			// Get the formatted time
+			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->toFormat($timeformat, true) : '';
+
+			// Formatted date
+			$date = $localDate->toFormat($format, true);
+		}
+
+		if (!$this->_editable)
+		{
+			return $date . $time;
+		}
+
+		// Build HTML widget
 		if ($params->get('date_showtime', 0) && !$element->hidden)
 		{
 			// Can't have names as simply [] as json only picks up the last one
 			$timeElName = $name . '[time]';
 			$name .= '[date]';
 		}
-
-		$readonly = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
+		$readonly = '';
 		$calopts = array('class' => 'fabrikinput inputbox', 'size' => $element->width, 'maxlength' => '19');
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{
+			$readonly = ' readonly="readonly" ';
 			$calopts['readonly'] = 'readonly';
 		}
 
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
-		if (!in_array($value, $aNullDates) && FabrikWorker::isDate($value))
-		{
-			$oDate = JFactory::getDate($value);
-
-			// If we are coming back from a validation then we don't want to re-offset the date
-			if ($input->get('Submit', '') == '' || $params->get('date_defaulttotoday', 0))
-			{
-				// $$$ rob - date is always stored with time now, so always apply tz unless store_as_local set
-				// or if we are defaulting to today, or a failed validation
-				$showLocale = ($params->get('date_defaulttotoday', 0) && $input->getInt('rowid') == 0 || $params->get('date_alwaystoday', false) || $this->getFormModel()->hasErrors());
-				if (!$store_as_local || $showLocale)
-				{
-					$oDate->setTimeZone($timeZone);
-				}
-			}
-			// Get the formatted date
-			$local = true;
-			$date = $oDate->toFormat($format, true);
-			$this->offsetDate = $oDate->toSql(true);
-			if (!$this->_editable)
-			{
-				$time = ($params->get('date_showtime', 0)) ? ' ' . $oDate->toFormat($timeformat, true) : '';
-				return $date . $time;
-			}
-
-			// Get the formatted time
-			if ($params->get('date_showtime', 0))
-			{
-				$time = $oDate->toFormat($timeformat, true);
-			}
-		}
-		else
-		{
-			if (!$this->_editable)
-			{
-				return '';
-			}
-			$date = '';
-			$time = '';
-		}
-		$this->formattedDate = $date;
-		/* $$$ hugh - OK, I am, as usual, confused.  We can't hand calendar() a date formatted in the
-		 * form/table format.
-		 * $$$rob - its because the calendar js code takes the formatted value in the field and the $format and builds its date objects from
-		 * the two.
-		 */
 		$str[] = $this->calendar($date, $name, $id . '_cal', $format, $calopts, $repeatCounter);
 		if ($params->get('date_showtime', 0) && !$element->hidden)
 		{
@@ -320,9 +313,91 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
+	 * Create the local datetime
+	 *
+	 * @param   string  $gmt  Datetime
+	 *
+	 * @since  3.0.9
+	 *
+	 * @return  date
+	 */
+
+	protected function displayDate($gmt)
+	{
+		$date = JFactory::getDate($gmt);
+		if ($this->shouldApplyTz())
+		{
+			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+			$date->setTimeZone($timeZone);
+		}
+		$this->offsetDate = $date->toSql(true);
+		return $date;
+	}
+
+	/**
+	 * Should we apply the users timezone offset to the date for display purposes
+	 *
+	 * This is a bit long winded and could be reduced. BUT the logic is such that I think the
+	 * verbositiy maintains the readability of the logic
+	 *
+	 * @param   string  $view  Component view [list/form]
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return  boolean
+	 */
+
+	protected function shouldApplyTz($view = 'form')
+	{
+		$formModel = $this->getFormModel();
+		$params = $this->getParams();
+		$store_as_local = (bool) $params->get('date_store_as_local', 0);
+		$newRecord = $formModel->isNewRecord();
+		$alwaysToday = $params->get('date_alwaystoday', false);
+		$defaultToday = $params->get('date_defaulttotoday');
+
+		if ($store_as_local)
+		{
+			if ($view === 'list') {
+				return false;
+			}
+			if ($newRecord)
+			{
+				if (($alwaysToday || $defaultToday) || $formModel->hasErrors()) {
+					// User supplied defaults should be in GMT, they are only applied if no other default found.
+					return true;
+				}
+			}
+			if (!$newRecord)
+			{
+				if ($alwaysToday)
+				{
+					return true;
+				}
+			}
+		}
+		else
+		{
+			if ($newRecord)
+			{
+				if (($alwaysToday || $defaultToday) || $formModel->hasErrors() || $view === 'list') {
+					// User supplied defaults should be in GMT, they are only applied if no other default found.
+					return true;
+				}
+			}
+			if (!$newRecord)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Individual store database format
 	 *
-	 * @param   string  $val  value
+	 * @param   string  $val  Value
 	 *
 	 * @return  string	mySQL formatted date
 	 */
@@ -333,10 +408,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val))
 		{
-			/* $$$ rob do url decode on time as if its passed from ajax save the : is in format %3C or something
-			 * $val = $val['date'].' '.$this->_fixTime(urldecode($val['time']));
-			 * $$$ rob 'date' should contain the time
-			 */
 			$val = JArrayHelper::getValue($val, 'date', '');
 		}
 		else
@@ -344,7 +415,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 			$val = urldecode($val);
 		}
 
-		if (in_array(trim($val), $this->getNullDates()))
+		if (!FabrikWorker::isDate($val))
 		{
 			return '';
 		}
@@ -376,7 +447,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	 *
 	 * @param   object  $date  date to convert
 	 *
-	 * @return  string	mysql formatted date
+	 * @return  string	mysql formatted GMT date
 	 */
 
 	protected function toMySQLGMT($date)
@@ -517,14 +588,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$params = $this->getParams();
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		$aNullDates = $this->getNullDates();
 		$f = $params->get('date_table_format', '%Y-%m-%d');
 		if ($f == 'Y-m-d')
 		{
 			$f = '%Y-%m-%d';
 		}
 		$tz_date = '';
-		if (!in_array($gmt_date, $aNullDates))
+		if (FabrikWorker::isDate($gmt_date))
 		{
 			$date = JFactory::getDate($gmt_date);
 			if (!$store_as_local)
@@ -557,9 +627,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$store_as_local = (int) $params->get('date_store_as_local', 0);
 		$f = $params->get('date_table_format', '%Y-%m-%d');
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		$aNullDates = $this->getNullDates();
 		$format = array();
-		if (!in_array($v, $aNullDates))
+		if (FabrikWorker::isDate($v))
 		{
 			$date = JFactory::getDate($v);
 			/**
@@ -584,34 +653,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		{
 			$v = '';
 		}
-	}
-
-	/**
-	 * ensure the time is in a full length format
-	 *
-	 * @param   string  $time  time
-	 *
-	 * @return  formatted	time
-	 */
-
-	protected function _fixTime($time)
-	{
-		// If its 5:00 rather than 05:00
-		if (!preg_match("/^[0-9]{2}/", $time))
-		{
-			$time = "0" . $time;
-		}
-		// If no seconds
-		if (preg_match("/[0-9]{2}:[0-9]{2}/", $time) && JString::strlen($time) <= 5)
-		{
-			$time .= ":00";
-		}
-		// If it doesnt match reset it to 0
-		if (!preg_match("/[0-9]{2}:[0-9]{2}:[0-9]{2}/", $time))
-		{
-			$time = "00:00:00";
-		}
-		return $time;
 	}
 
 	/**
@@ -753,73 +794,22 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	public function setValuesFromEncryt(&$post, $key, $data)
 	{
 		$date = $data[0];
-		$date = JFactory::getDate($date);
-		$params = $this->getParams();
-		$storeAsLocal = (int) $params->get('date_store_as_local', 0);
-		if (!$storeAsLocal)
+		if (FabrikWorker::isDate($date))
 		{
-			// Seems that if sumbitting encrytped values we need to re-offset the timezone http://fabrikar.com/forums/showthread.php?t=31517
-			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-			$hours = $timeZone->getOffset($date) / (60 * 60);
-			$date->modify('+' . $hours . ' hour');
-		}
-		$date = $date->toSql();
+			// Only apply date logic to actual date data, if blank for example we should leave blank
+			$date = JFactory::getDate($date);
+			$date = $date->toSql();
 
-		// Put in the correct format
-		list($dateOnly, $time) = explode(' ', $date);
+			// Put in the correct format
+			list($dateOnly, $time) = explode(' ', $date);
+		}
+		else
+		{
+			$date = '';
+			$time = '';
+		}
 		$data = array('date' => $date, 'time' => $time);
 		parent::setValuesFromEncryt($post, $key, $data);
-	}
-
-	/**
-	 * This really does get just the default value (as defined in the element's settings)
-	 *
-	 * @param   array  $data  form data
-	 *
-	 * @return mixed
-	 */
-
-	public function getDefaultValue($data = array())
-	{
-		if (!isset($this->_default))
-		{
-			$params = $this->getParams();
-			$element = $this->getElement();
-			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if ($params->get('date_defaulttotoday', 0))
-			{
-				if ($store_as_local)
-				{
-					$localDate = date('Y-m-d H:i:s');
-					$oTmpDate = JFactory::getDate(strtotime($localDate));
-				}
-				else
-				{
-					$oTmpDate = JFactory::getDate();
-				}
-				$default = $oTmpDate->toSql();
-			}
-			else
-			{
-				// Deafult date should always be entered as gmt date e.g. eval'd default of:
-				$w = new FabrikWorker;
-				$default = $w->parseMessageForPlaceHolder($element->default, $data);
-
-				if ($element->eval == "1")
-				{
-					$default = @eval(stripslashes($default));
-					FabrikWorker::logEval($default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
-				}
-				if (trim($default) != '')
-				{
-					$oTmpDate = JFactory::getDate($default);
-					$default = $oTmpDate->toSql();
-				}
-			}
-			$this->_default = $default;
-		}
-		return $this->_default;
 	}
 
 	/**
@@ -834,111 +824,29 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		// @TODO: allow {now} and {today} to be replaced with current datetime
-		if (!isset($this->defaults) || is_null($this->defaults))
+		$params = $this->getParams();
+		$alwaysToday = $params->get('date_alwaystoday', false);
+		$defaultToday = $params->get('date_defaulttotoday');
+		$newRecord = $this->getFormModel()->isNewRecord();
+
+		$value = parent::getValue($data, $repeatCounter, $opts);
+
+		if (is_array($value))
 		{
-			$this->defaults = array();
+			// Submission posted as array but date & time in date key
+			$value = JArrayHelper::getValue($value, 'date');
 		}
-		if (!array_key_exists($repeatCounter, $this->defaults))
+		if ($alwaysToday)
 		{
-			$groupModel = $this->getGroup();
-			$group = $groupModel->getGroup();
-			$joinid = $group->join_id;
-			$element = $this->getElement();
-			$params = $this->getParams();
-			$store_as_local = (int) $params->get('date_store_as_local', 0);
-			if ($params->get('date_alwaystoday', false))
-			{
-				// $value = JFactory::getDate()->toSql(false);
-				// $$$ rob fix for http://fabrik.unfuddle.com/projects/17220/tickets/by_number/700?cycle=true
-				if ($store_as_local)
-				{
-					$localDate = date('Y-m-d H:i:s');
-					$date = JFactory::getDate(strtotime($localDate));
-				}
-				else
-				{
-					$date = JFactory::getDate();
-				}
-				$value = $date->toSql();
-			}
-			else
-			{
-				$value = $this->getDefaultOnACL($data, $opts);
-
-				// $$$ hugh - as we now run removeTableNameFromSaveData(), I think we just need the short name?
-				$name = $this->getFullName(false, true, false);
-				if ($groupModel->isJoin())
-				{
-					if ($groupModel->canRepeat())
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-						{
-							$value = $data['join'][$joinid][$name][$repeatCounter];
-						}
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]))
-						{
-							$value = $data['join'][$joinid][$name];
-						}
-					}
-				}
-				else
-				{
-					if ($groupModel->canRepeat())
-					{
-						// Repeat group NO join
-						if (array_key_exists($name, $data))
-						{
-							if (is_array($data[$name]))
-							{
-								// Occurs on form submission for fields at least
-								$a = $data[$name];
-
-							}
-							else
-							{
-								// Occurs when getting from the db
-								$a = FabrikWorker::JSONtoData($data[$name], true);
-							}
-							if (array_key_exists($repeatCounter, $a))
-							{
-								$value = $a[$repeatCounter];
-							}
-						}
-
-					}
-					else
-					{
-						$value = JArrayHelper::getValue($data, $name, $value);
-					}
-				}
-
-				if (is_array($value))
-				{
-					// 'date' should now contain the time, as we include in on js onsubmit() method
-					$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
-				}
-				$formModel = $this->getForm();
-
-				// Stops this getting called from form validation code as it messes up repeated/join group validations
-				if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
-				{
-					FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
-				}
-				// For validations (empty time and date element gives ' ')
-				if ($value == ' ')
-				{
-					$value = '';
-				}
-			}
-			$this->defaults[$repeatCounter] = $value;
+			$date = JFactory::getDate();
+			$value = $date->toSQL();
 		}
-		return $this->defaults[$repeatCounter];
+		if ($newRecord && $defaultToday)
+		{
+			$date = JFactory::getDate();
+			$value = $date->toSQL();
+		}
+		return $value;
 	}
 
 	/**
@@ -1005,7 +913,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		/* if its a search all value it may not be a date - so use parent method.
 		 * see http://fabrikar.com/forums/showthread.php?t=25255
 		 */
-		if (!FabrikWorker::isDate($value))
+		if (!is_array($value) && !FabrikWorker::isDate($value))
 		{
 			if (($this->rangeFilterSet))
 			{
@@ -1435,25 +1343,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * Takes a date from the server and applies the timezone offset
-	 * probably not the right way to do this but ive been at it all day
-	 *
-	 * @param   object  &$d  FabDate
-	 *
-	 * @since 3.0
-	 *
-	 * @return  void
-	 */
-
-	protected function toLocalTime(&$d)
-	{
-		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-		$hours = $timeZone->getOffset($d) / (60 * 60);
-		$dateInterval = new DateInterval('PT' . $hours . 'H');
-		$d->add($dateInterval);
-	}
-
-	/**
 	 * Cache method to populate autocomplete options
 	 *
 	 * @param   plgFabrik_Element  $elementModel  element model
@@ -1629,63 +1518,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		return array($value, $condition);
 	}
 
-	/**
-	 * Convert a table formatted date string into a mySQL formatted date string
-	 * (if already in mySQL format returns the date)
-	 *
-	 * @param   string  $v  date in table view format
-	 *
-	 * @deprecated not used
-	 *
-	 * @return  string	date in mySQL format or false if string date could not be converted
-	 */
-
-	protected function tableDateToMySQL($v)
-	{
-		$params = $this->getParams();
-		$store_as_local = (int) $params->get('date_store_as_local', 0);
-		$format = $params->get('date_table_format', '%Y-%m-%d');
-		$b = FabrikWorker::strToDateTime($v, $format);
-		if (!is_array($b))
-		{
-			return false;
-		}
-		$bstr = $b['year'] . '-' . $b['mon'] . '-' . $b['day'] . ' ' . $b['hour'] . ':' . $b['min'] . ':' . $b['sec'];
-		$date = JFactory::getDate($bstr);
-		if (in_array($v, $this->getNullDates()) || $v === $date->toSql())
-		{
-			return $v;
-		}
-		if ($store_as_local)
-		{
-			$this->resetToGMT = false;
-		}
-		$retval = $this->toMySQLGMT($date);
-		$this->resetToGMT = true;
-		return $retval;
-	}
-
-	/**
-	 * Set a dates time to 00:00:00
-	 *
-	 * @param   mixed  $date  The initial time for the FabDate object
-	 *
-	 * @deprecated
-	 *
-	 * @return  string	mysql formatted date
-	 */
-
-	protected function setTimeToZero($date)
-	{
-		$date = JFactory::getDate($date);
-		$PHPDate = getdate($date->toUnix());
-		$PHPDate['hours'] = 0;
-		$PHPDate['minutes'] = 0;
-		$PHPDate['seconds'] = 0;
-		$v = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
-		$date = JFactory::getDate($v);
-		return $date->toSql($v);
-	}
 
 	/**
 	 * simple minded method to set a MySQL formatted date's time to 00:00:00
@@ -1716,40 +1548,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 		$date = JFactory::getDate($date);
 		$PHPDate = getdate($date->toUnix());
 		$PHPDate['mday'] = $PHPDate['mday'] + $add;
-		$v = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
-		$date = JFactory::getDate($v);
-		return $date->toSql($v);
-	}
-
-	/**
-	 * Add hours to a date
-	 *
-	 * @param   mixed    $date  The initial time for the FabDate object
-	 * @param   integer  $add   number of days to add (negtive to remove days)
-	 *
-	 * @depreacted  - not used
-	 *
-	 * @return  string	mysql formatted date
-	 */
-
-	protected function addHours($date, $add = 0)
-	{
-		$date = JFactory::getDate($date);
-		$PHPDate = getdate($date->toUnix());
-		if ($PHPDate['hours'] + $add >= 24)
-		{
-			$PHPDate['hours'] = 0;
-			$PHPDate['mday']++;
-		}
-		elseif ($PHPDate['hours'] + $add < 0)
-		{
-			$PHPDate['hours'] = 0;
-			$PHPDate['mday']--;
-		}
-		else
-		{
-			$PHPDate['hours'] = $PHPDate['hours'] + $add;
-		}
 		$v = mktime($PHPDate['hours'], $PHPDate['minutes'], $PHPDate['seconds'], $PHPDate['mon'], $PHPDate['mday'], $PHPDate['year']);
 		$date = JFactory::getDate($v);
 		return $date->toSql($v);
@@ -1841,7 +1639,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 	}
 
 	/**
-	 * Takes date's time value and turns it into seconds
+	 * Takes date's time value and turns it into seconds. Used in timer
 	 *
 	 * @param   string  $date  object $date
 	 *
@@ -1980,8 +1778,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_Element
 
 	public function onCopyRow($val)
 	{
-		$aNullDates = $this->getNullDates();
-		if (empty($val) || in_array($val, $aNullDates))
+		if (!FabrikWorker::isDate($val))
 		{
 			return $val;
 		}
