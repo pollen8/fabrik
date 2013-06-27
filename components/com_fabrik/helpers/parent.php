@@ -712,7 +712,7 @@ class FabrikWorker
 	public static function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
-		$Itemid = FabrikWorker::itemId();
+		$Itemid = self::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
 		$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
@@ -1385,6 +1385,18 @@ class FabrikWorker
 
 	public static function isDate($d)
 	{
+		$db = FabrikWorker::getDbo();
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
+
+		// catch for ','
+		if (strlen($d) < 2)
+		{
+			return false;
+		}
+		if (in_array($d, $aNullDates))
+		{
+			return false;
+		}
 		try
 		{
 			$dt = new DateTime($d);
