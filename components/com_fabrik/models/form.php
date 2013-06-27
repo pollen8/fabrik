@@ -2487,6 +2487,20 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Are we creating a new record or editing an existing one?
+	 * Put here to ensure compat when we go from 3.0 where rowid = 0 = new, to row id '' = new
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return  boolean
+	 */
+
+	public function isNewRecord()
+	{
+		return $this->getRowId() == 0;
+	}
+
+	/**
 	 * Get the current records row id
 	 * setting a rowid of -1 will load in the current users record (used in
 	 * conjunction wth usekey variable

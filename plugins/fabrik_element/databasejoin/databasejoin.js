@@ -6,7 +6,6 @@ var FbDatabasejoin = new Class({
 		'formid': 0,
 		'key': '',
 		'label': '',
-		'popwiny': 0,
 		'windowwidth': 360,
 		'displayType': 'dropdown',
 		'popupform': 0,
@@ -90,7 +89,6 @@ var FbDatabasejoin = new Class({
 			'loadMethod': 'xhr',
 			'contentURL': url,
 			'height': 320,
-			'y': this.options.popwiny,
 			'minimizable': false,
 			'collapsible': true,
 			'visible': visible,
@@ -463,7 +461,6 @@ var FbDatabasejoin = new Class({
 			'contentURL': url,
 			'width': this.options.windowwidth.toInt(),
 			'height': 320,
-			'y': this.options.popwiny,
 			'minimizable': false,
 			'collapsible': true,
 			'onContentLoaded': function (win) {

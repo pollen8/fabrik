@@ -93,13 +93,13 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$opts = $this->getElementJSOptions($model);
 		$file = $params->get('js_file', '');
-		if ($file !== '')
+		if ($file !== '' && $file !== '-1')
 		{
 			$opts->js_code = JFile::read(JPATH_ROOT . '/plugins/fabrik_list/js/scripts/' . $file);
 		}
 		else
 		{
-			$opts->js_code = $params->get('js_code', 'alert("bo")');
+			$opts->js_code = $params->get('js_code', '');
 		}
 		$opts->statusMsg = $params->get('msg', '');
 		$opts = json_encode($opts);

@@ -1196,6 +1196,7 @@ class FabrikAdminModelList extends FabModelAdmin
 						case "mediumint":
 						case "bigint":
 						case "varchar":
+						case "time":
 							$plugin = 'field';
 							break;
 						case "text":
@@ -1206,7 +1207,6 @@ class FabrikAdminModelList extends FabModelAdmin
 							break;
 						case "datetime":
 						case "date":
-						case "time":
 						case "timestamp":
 							$plugin = 'date';
 							break;

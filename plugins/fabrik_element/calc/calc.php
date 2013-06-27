@@ -210,8 +210,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * run on formModel::setFormData()
+	 * Appends the calculation to the form's data when the form is submitted
 	 *
-	 * @param   int  $c  repeat group counter
+	 * @param   int  $c  Repeat group counter
 	 *
 	 * @return void
 	 */
@@ -262,7 +263,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
 		$data = $d;
-		$calc = @eval($w->parseMessageForPlaceHolder($calc, $d));
+		$calc = eval($w->parseMessageForPlaceHolder($calc, $d));
 		FabrikWorker::logEval($calc, 'Caught exception on eval of ' . $this->getElement()->name . '::preProcess(): %s');
 		$form->updateFormData($key, $calc);
 		$form->updateFormData($rawkey, $calc);

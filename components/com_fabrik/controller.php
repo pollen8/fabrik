@@ -18,9 +18,9 @@ jimport('joomla.application.component.controller');
  * DEPRECIATED - should always get directed to specific controller
  *
  * @static
- * @package		Joomla
- * @subpackage	Fabrik
- * @since 1.5
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       1.5
  */
 
 class FabrikController extends JControllerLegacy
