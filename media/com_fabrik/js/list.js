@@ -1276,7 +1276,8 @@ var FbListActions = new Class({
 				if (trigger.getElement('.fabrikTip')) {
 					trigger = trigger.getElement('.fabrikTip');
 				}
-				var tipOpts = Object.merge(Object.clone(Fabrik.tips.options), {
+				var t = Fabrik.tips ? Fabrik.tips.options : {};
+				var tipOpts = Object.merge(Object.clone(t), {
 					showOn: 'click',
 					hideOn: 'click',
 					position: 'bottom',
@@ -1367,7 +1368,8 @@ var FbListActions = new Class({
 			return typeOf(p) !== 'null' ? p.getElement(this.options.selector) : '';
 		}.bind(this);
 
-		var tipChxAllOpts = Object.merge(Object.clone(Fabrik.tips.options), {
+		var t = Fabrik.tips ? Object.clone(Fabrik.tips.options) : {};
+		var tipChxAllOpts = Object.merge(t, {
 			position: this.options.floatPos,
 			html: true,
 			showOn: 'click',
