@@ -34,7 +34,7 @@ Updating
 
 Once you have installed Fabrik 3.x, if you want to stay up to date with the latest code updates between official releases, you can 'update from GitHub'.
 
-Please see here for instructions on how to update from GitHub - [http://fabrikar.com/forums/index.php?wiki/update-from-github/](http://fabrikar.com/forums/index.php?wiki/update-from-github/)
+Please see here for instructions on how to update from GitHub - [http://fabrikar.com/forums/index.php?wiki/update-from-github/](http://fabrikar.com/forums/index.php?wiki/update-from-github/).
 
 Upgrading
 ================
