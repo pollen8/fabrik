@@ -724,8 +724,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = $menuItem ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$listModel = $model->getListModel();
 		$canDelete = $listModel->canDelete($model->data);

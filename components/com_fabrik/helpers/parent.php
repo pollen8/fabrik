@@ -712,8 +712,7 @@ class FabrikWorker
 	public static function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
 		$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
@@ -1456,6 +1455,26 @@ class FabrikWorker
 		return $gobackaction;
 	}
 
+	/**
+	 * Attempt to find the active menu item id
+	 *
+	 * @return mixed NULL if nothing found, int if menu item found
+	 */
+	public static function itemId()
+	{
+		$app = JFactory::getApplication();
+		if (!$app->isAdmin())
+		{
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
+			if (is_object($menu))
+			{
+				return $menu->id;
+			}
+		}
+		return null;
+
+	}
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *

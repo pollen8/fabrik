@@ -1722,10 +1722,7 @@ class FabrikFEModelList extends JModelForm
 		$label = $this->parseMessageForRowHolder($msg, $row2);
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		if (!$app->isAdmin())
-		{
-			$Itemid = (int) @$app->getMenu('site')->getActive()->id;
-		}
+		$Itemid = FabrikWorker::itemId();
 		if (is_null($listid))
 		{
 			$list = $this->getTable();
@@ -1931,7 +1928,7 @@ class FabrikFEModelList extends JModelForm
 	protected function releatedDataURL($key, $val, $listid, $popUp)
 	{
 		$app = JFactory::getApplication();
-		$Itemid = $app->isAdmin() ? 0 : @$app->getMenu('site')->getActive()->id;
+		$Itemid = FabrikWorker::itemId();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$url = 'index.php?option=com_' . $package . '&';
 		if ($app->isAdmin())
@@ -2424,7 +2421,7 @@ class FabrikFEModelList extends JModelForm
 		$calc_found_rows = $this->mergeJoinedData() ? '' : 'SQL_CALC_FOUND_ROWS';
 
 		// $$$rob added raw as an option to fix issue in saving calendar data
-		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv'))))
+		if (trim($table->db_primary_key) != '' && (in_array($this->outPutFormat, array('raw', 'html', 'feed', 'pdf', 'phocapdf', 'csv', 'word', 'yql'))))
 		{
 			$sfields .= ', ';
 			$strPKey = $pk . ' AS ' . $db->quoteName('__pk_val') . "\n";
@@ -4065,7 +4062,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function shouldUpdateElement(&$elementModel, $origColName = null)
 	{
-
+		$app = JFactory::getApplication();
 		$db = FabrikWorker::getDbo();
 		$return = array(false, '', '', '', '', false);
 		$element = $elementModel->getElement();
@@ -4208,7 +4205,7 @@ class FabrikFEModelList extends JModelForm
 		$tableName = FabrikString::safeColName($tableName);
 		$lastfield = FabrikString::safeColName($lastfield);
 
-		if (empty($origColName) || !in_array($origColName, $existingfields))
+		if (empty($origColName) || !in_array($origColName, $existingfields) || ($app->input->get('task') === 'save2copy' && $this->canAddFields()))
 		{
 			if (!$altered)
 			{
@@ -4770,6 +4767,27 @@ class FabrikFEModelList extends JModelForm
 	}
 
 	/**
+	 * Get the elements to show in the list view
+	 *
+	 * @since 3.1b2
+	 *
+	 * @return array
+	 */
+	private function showInList()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$showInList = array();
+		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
+		if (isset($listels->show_in_list))
+		{
+			$showInList = $listels->show_in_list;
+		}
+		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+		return $showInList;
+	}
+
+	/**
 	 * Get the prefilter settings from list/module/menu options
 	 * Use in listModel::getPrefilterArray() and formModel::getElementIds()
 	 *
@@ -4781,15 +4799,8 @@ class FabrikFEModelList extends JModelForm
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
-		// If rendering as module then module code updates list params with pre-filters
 		$params = $this->getParams();
-		$showInList = array();
-		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
-		if (isset($listels->show_in_list))
-		{
-			$showInList = $listels->show_in_list;
-		}
-		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+		$showInList = $this->showInList();
 
 		// Are we coming from a post request via a module?
 		$moduleid = 0;
@@ -5996,9 +6007,7 @@ class FabrikFEModelList extends JModelForm
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
-		$listels = json_decode($params->get('list_elements'));
-
-		$showInList = array();
+		//$listels = json_decode($params->get('list_elements'));
 
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
@@ -6007,12 +6016,8 @@ class FabrikFEModelList extends JModelForm
 			$listClasses = new stdClass;
 			$listClasses->responsive_elements = array();
 		}
-		// $$$ rob check if empty or if a single empty value was set in the menu/module params
-		if (isset($listels->show_in_list) && !(count($listels->show_in_list) === 1 && $listels->show_in_list[0] == ''))
-		{
-			$showInList = $listels->show_in_list;
-		}
-		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+
+		$showInList = $this->showInList();
 
 		// Set it for use by groupModel->getPublishedListElements()
 		$input->set('fabrik_show_in_list', $showInList);
@@ -8123,8 +8128,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$params = $this->getParams();
 		$table = $this->getTable();
@@ -8229,8 +8233,7 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$table = $this->getTable();
 		$customLink = $this->getCustomLink('url', 'edit');
@@ -8962,8 +8965,7 @@ class FabrikFEModelList extends JModelForm
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$params = $this->getParams();
 		$addurl_url = $params->get('addurl', '');
 		$filters = $this->getRequestData();

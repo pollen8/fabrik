@@ -232,9 +232,9 @@ class FabrikAdminHelper
 			if ($blackList)
 			{
 				// Remove the white-listed attributes from the black-list.
-				$diffTags = array_diff($blackListTags, $whiteListTags);
-				$attribs = array_diff($blackListAttributes, $whiteListAttributes);
-				$filter = JFilterInput::getInstance($diffTags, $attribs, 1, 1);
+				$tags = array_diff($blackListTags, $whiteListTags);
+				$attrs = array_diff($blackListAttributes, $whiteListAttributes);
+				$filter = JFilterInput::getInstance($tags, $attrs, 1, 1);
 			}
 			// White lists take third precedence.
 			elseif ($whiteList)

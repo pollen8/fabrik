@@ -36,8 +36,7 @@ class FabrikViewListBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$listref = $model->getRenderContext();
@@ -62,7 +61,7 @@ class FabrikViewListBase extends JViewLegacy
 		$tmpl = $model->getTmpl();
 		$this->tmpl = $tmpl;
 
-		$this->get('ListCss');
+		$model->getListCss();
 
 		// Check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
@@ -153,7 +152,7 @@ class FabrikViewListBase extends JViewLegacy
 		$csvOpts->custom_qs = $params->get('csv_custom_qs', '');
 		$opts->csvOpts = $csvOpts;
 
-		$opts->csvFields = $this->get('CsvFields');
+		$opts->csvFields = $model->getCsvFields();
 		$csvOpts->incfilters = (int) $params->get('incfilters');
 
 		$opts->data = $data;
@@ -275,20 +274,19 @@ class FabrikViewListBase extends JViewLegacy
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$model = $this->getModel();
 
 		// Force front end templates
-		$tmpl = $this->get('tmpl');
+		$tmpl = $model->getTmpl();
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
-		$app = JFactory::getApplication();
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 
 		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
-		$model = $this->getModel();
 		$document = JFactory::getDocument();
 		$item = $model->getTable();
 		$data = $model->render();
@@ -341,14 +339,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
 		$params = $model->getParams();
 
-		if (!$model->canPublish())
+		if (!$this->access($model))
 		{
-			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
-			return false;
-		}
-		if (!$model->canView())
-		{
-			echo JText::_('JERROR_ALERTNOAUTHOR');
 			return false;
 		}
 
@@ -363,8 +355,8 @@ class FabrikViewListBase extends JViewLegacy
 		// Depreciated (keep in case ppl use them in old tmpls)
 		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
-		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
-		$this->table->outro = $w->parseMessageForPlaceHolder($params->get('outro'));
+		$this->table->intro = $params->get('show_into', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($item->introduction);
+		$this->table->outro = $params->get('show_outro', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($params->get('outro'));
 		$this->table->id = $item->id;
 		$this->table->renderid = $model->getRenderContext();
 		$this->table->db_table_name = $item->db_table_name;
@@ -474,6 +466,28 @@ class FabrikViewListBase extends JViewLegacy
 		$this->buttons();
 
 		$this->pluginTopButtons = $model->getPluginTopButtons();
+	}
+
+	/**
+	 * Model check for publish/access
+	 *
+	 * @param   JModel  $model  List model
+	 *
+	 * @return boolean
+	 */
+	protected function access($model)
+	{
+		if (!$model->canPublish())
+		{
+			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
+			return false;
+		}
+		if (!$model->canView())
+		{
+			echo JText::_('JERROR_ALERTNOAUTHOR');
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -745,8 +759,7 @@ class FabrikViewListBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 

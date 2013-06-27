@@ -42,7 +42,7 @@ class fabrikModelMedia extends FabrikFEModelVisualization
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$Itemid = @$app->getMenu('site')->getActive()->id;
+		$Itemid = FabrikWorker::itemId();
 		$params = $this->getParams();
 		$w = $params->get('media_width');
 		$h = $params->get('media_height');

@@ -21,7 +21,6 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelJoin extends FabModel
 {
-
 	/**
 	 * Join table
 	 *

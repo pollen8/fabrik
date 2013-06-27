@@ -9,23 +9,27 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
-class FabrikViewlist extends JViewLegacy
+class FabrikViewlist extends FabrikViewListBase
 {
 
 	/**
 	 * Display a json object representing the table data.
-	 * Not used for updating fabrik tables, use raw view for that, here in case you want to export the data to another application
+	 * Not used for updating fabrik list, use raw view for that, here in case you want to export the data to another application
 	 *
 	 * @return  void
 	 */
 
-	function display()
+	function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
 		$model->setId($app->input->getInt('listid'));
+		if (!parent::access($model))
+		{
+			exit;
+		}
 		$data = $model->getData();
 		echo json_encode($data);
 	}
