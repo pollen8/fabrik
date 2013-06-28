@@ -213,22 +213,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Builds an array containing the filters value and condition
-	 *
-	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
-	 * @param   string  $eval       how the value should be handled
-	 *
-	 * @return  array	(value condition)
-	 */
-
-	public function getFilterValue($value, $condition, $eval)
-	{
-		$value = $this->prepareFilterVal($value);
-		return parent::getFilterValue($value, $condition, $eval);
-	}
-
-	/**
 	 * Manupulates posted form data for insertion into database
 	 *
 	 * @param   mixed  $val   this elements posted form data

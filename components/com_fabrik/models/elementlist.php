@@ -19,7 +19,7 @@ jimport('joomla.filesystem.file');
  *
  * @package  Fabrik
  * @since    3.0
- */
+*/
 
 class PlgFabrik_ElementList extends PlgFabrik_Element
 {
@@ -153,6 +153,113 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 		}
 		return $this->_default;
+	}
+
+	/**
+	 * Builds an array containing the filters value and condition
+	 *
+	 * @param   string  $value      initial value
+	 * @param   string  $condition  intial $condition
+	 * @param   string  $eval       how the value should be handled
+	 *
+	 * @return  array	(value condition)
+	 */
+
+	public function getFilterValue($value, $condition, $eval)
+	{
+		if (is_array($value))
+		{
+			foreach ($value as &$v)
+			{
+				$v = $this->prepareFilterVal($v);
+			}
+		}
+		else
+		{
+			$value = $this->prepareFilterVal($value);
+		}
+		return parent::getFilterValue($value, $condition, $eval);
+	}
+
+	/**
+	 * Build the filter query for the given element.
+	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
+	 *
+	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $condition      =/like etc
+	 * @param   string  $value          search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  original filter value without quotes or %'s applied
+	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 *
+	 * @return  string	sql query part e,g, "key = value"
+	 */
+
+	public function getFilterQuery($key, $condition, $value, $originalValue, $type = 'normal')
+	{
+		$element = $this->getElement();
+		$db = JFactory::getDbo();
+		$this->encryptFieldName($key);
+		$glue  = $condition == '=' ? 'OR' : 'AND';
+		if ($element->filter_type == 'checkbox')
+		{
+			$originalValue = (array) $originalValue;
+			$str = array();
+			foreach ($originalValue as $v)
+			{
+				$v = str_replace("/", "\\\\/", $v);
+				$str[] = $key . ' LIKE ' .  $db->quote('%"' . $v . '"%') . ' ';
+			}
+			$str =  implode($glue, $str);
+		}
+		else
+		{
+			$originalValue = trim($value, "'");
+
+			/*
+			 * JSON stored values will back slash "/". So wwe need to add "\\\\"
+			* before it to escape it for the query.
+			*/
+			$originalValue = str_replace("/", "\\\\/", $originalValue);
+			switch ($condition)
+			{
+				case '=':
+				case '<>':
+					$condition2 = $condition == '=' ? 'LIKE' : 'NOT LIKE';
+					$db = FabrikWorker::getDbo();
+					$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
+					. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";
+					break;
+				default:
+					$str = " $key $condition $value ";
+					break;
+			}
+		}
+		return $str;
+	}
+
+	/**
+	 * Get the filter name
+	 *
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
+	 *
+	 * @return  string
+	 */
+
+	protected function filterName($counter = 0, $normal = true)
+	{
+		$element = $this->getElement();
+		if ($element->filter_type === 'checkbox')
+		{
+			$listModel = $this->getListModel();
+			$v = 'fabrik___filter[list_' . $listModel->getRenderContext() . '][value]';
+			$v .= '[' . $counter . ']';
+		}
+		else
+		{
+			$v = parent::filterName($counter, $normal);
+		}
+		return $v;
 	}
 
 	/**
@@ -360,11 +467,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)
 		{
+			$rows[$i]->text = strip_tags($rows[$i]->text);
 			if (!preg_match("/$v(.*)/i", $rows[$i]->text))
 			{
 				unset($rows[$i]);
 			}
-			$rows[$i]->text = strip_tags($rows[$i]->text);
 		}
 		$rows = array_values($rows);
 		echo json_encode($rows);
@@ -487,7 +594,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * and I'm not sure if we enforce that.  Problem being that if we just cast directly to
 		 * an array, the array isn't "empty()", as it has a single, empty string entry.  So then
 		 * the array_diff() we're about to do sees that as a diff.
-		 */
+		*/
 		$selected = $this->getValue($data, $repeatCounter);
 		if (!is_array($selected))
 		{
@@ -528,7 +635,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			}
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
 			return ($this->isMultiple() && $this->renderWithHTML)
-				? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
+			? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
 		}
 
 		// Remove the default value
@@ -631,8 +738,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		/*
 		 *  $$$ rob 20/08/2012 - added $data to serialized key
-		 *  Seems that db join _getOptionVals() _autocomplete_where is getting run a couple of times with key and labels being passed in
-		 */
+		*  Seems that db join _getOptionVals() _autocomplete_where is getting run a couple of times with key and labels being passed in
+		*/
 		$valueKey = $repeatCounter . serialize($opts) . serialize($data);
 		if (!array_key_exists($valueKey, $this->defaults))
 		{
@@ -860,17 +967,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
-	* used by elements with suboptions
-	*
-	* $$$ hugh - started working on adding this to elementlist, as we need to handle
-	* JSON-ified options for multiselect elements, which the main element model getLabelForValue()
-	* doesn't do.  But I need to sort out how this gets handled in rendering as well.
-	*
-	* @param   string  $v             value
-	* @param   string  $defaultLabel  default label
-	*
-	* @return  string	label
-	*/
+	 * used by elements with suboptions
+	 *
+	 * $$$ hugh - started working on adding this to elementlist, as we need to handle
+	 * JSON-ified options for multiselect elements, which the main element model getLabelForValue()
+	 * doesn't do.  But I need to sort out how this gets handled in rendering as well.
+	 *
+	 * @param   string  $v             value
+	 * @param   string  $defaultLabel  default label
+	 *
+	 * @return  string	label
+	 */
 
 	public function notreadyyet_getLabelForValue($v, $defaultLabel = '')
 	{
@@ -914,7 +1021,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		/*
 		if ($v === $params->get('sub_default_value'))
 		{
-			$v = $params->get('sub_default_label');
+		$v = $params->get('sub_default_label');
 		}
 		return ($key === false) ? $v : JArrayHelper::getValue($labels, $key, $defaultLabel);
 		*/

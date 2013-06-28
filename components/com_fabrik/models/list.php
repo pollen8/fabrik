@@ -5743,8 +5743,10 @@ $groupBy .= '_raw';
 						}
 						break;
 				}
-
-				$value = trim(trim($value, '"'), "%");
+				if (is_string($value))
+				{
+					$value = trim(trim($value, '"'), "%");
+				}
 				if ($counter == 0)
 				{
 					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
