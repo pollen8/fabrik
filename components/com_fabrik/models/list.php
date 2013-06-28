@@ -645,7 +645,7 @@ class FabrikFEModelList extends JModelForm
 			$context = 'com_' . $package . '.list' . $this->getRenderContext() . '.';
 			$limitStart = $this->randomRecords ? $this->getRandomLimitStart() : 0;
 
-			// Deal with the fact that you can have more than one table on a page so limitstart has to be  specfic per table
+			// Deal with the fact that you can have more than one list on a page so limitstart has to be  specfic per table
 
 			// If list is rendered as a content plugin dont set the limits in the session
 			if ($app->scope == 'com_content')
@@ -659,7 +659,9 @@ class FabrikFEModelList extends JModelForm
 			}
 			else
 			{
-				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $this->isMambot);
+				// If a list (assoc with a menu item) loads a form, with db join & front end select - dont use the orig menu's rows_per_page value.
+				$mambot = $this->isMambot || ($input->get('tmpl') === 'component' && $input->getInt('ajax') === 1);
+				$rowsPerPage = FabrikWorker::getMenuOrRequestVar('rows_per_page', $item->rows_per_page, $mambot);
 				$limitLength = $app->getUserStateFromRequest($context . 'limitlength', 'limit' . $id, $rowsPerPage);
 				if (!$this->randomRecords)
 				{
@@ -668,7 +670,7 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($this->outPutFormat == 'feed')
 			{
-				$limitLength = JRequest::getVar('limit', $params->get('rsslimit', 150));
+				$limitLength = $input->getInt('limit', $params->get('rsslimit', 150));
 				$maxLimit = $params->get('rsslimitmax', 2500);
 				if ($limitLength > $maxLimit)
 				{
@@ -6245,7 +6247,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$edit = false;
 		}
-		if ($this->canSelectRows() || $details || $edit)
+		if ($this->canSelectRows() || $this->canEditARow() || $details || $edit)
 		{
 			// 3.0 actions now go in one column
 			$pluginManager = FabrikWorker::getPluginManager();

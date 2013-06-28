@@ -358,12 +358,14 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if ($store_as_local)
 		{
-			if ($view === 'list') {
+			if ($view === 'list')
+			{
 				return false;
 			}
 			if ($newRecord)
 			{
-				if (($alwaysToday || $defaultToday) || $formModel->hasErrors()) {
+				if (($alwaysToday || $defaultToday) || $formModel->hasErrors())
+				{
 					// User supplied defaults should be in GMT, they are only applied if no other default found.
 					return true;
 				}
@@ -380,7 +382,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		{
 			if ($newRecord)
 			{
-				if (($alwaysToday || $defaultToday) || $formModel->hasErrors() || $view === 'list') {
+				if (($alwaysToday || $defaultToday) || $formModel->hasErrors() || $view === 'list')
+				{
 					// User supplied defaults should be in GMT, they are only applied if no other default found.
 					return true;
 				}
@@ -1109,7 +1112,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Get the table filter for the element
+	 * Get the list filter for the element
 	 * Note: uses FabDate as if date element first to be found in advanced search, and advanced search run on another element
 	 * the list model in getAdvancedSearchElementList() builds the first filter (this element) with the data from the first search
 	 * which was throwing '"500 - DateTime::__construct() ' errors
@@ -1501,7 +1504,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$condition = 'BETWEEN';
 		return array($value, $condition);
 	}
-
 
 	/**
 	 * simple minded method to set a MySQL formatted date's time to 00:00:00

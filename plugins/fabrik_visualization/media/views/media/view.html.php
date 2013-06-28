@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewMedia extends JViewLegacy
+class FabrikViewMedia extends JViewLegacy
 {
 
 	/**
@@ -32,7 +32,7 @@ class fabrikViewMedia extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
