@@ -270,13 +270,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$localDate = $this->displayDate($gmt);
 
 			// Get the formatted time
-			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->toFormat($timeformat, true) : '';
+			$time = ($params->get('date_showtime', 0)) ? ' ' . $localDate->format($timeformat, true) : '';
 
 			// Formatted date
-			$date = $localDate->toFormat($format, true);
+			$date = $localDate->format($format, true);
 		}
 
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			return $date . $time;
 		}
@@ -289,8 +289,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$name .= '[date]';
 		}
 
+		$class = 'fabrikinput inputbox inout ' . $params->get('bootstrap_class', 'input-small');
 		$element->width = (int) $element->width < 0 ? 1 : (int) $element->width;
-		$calopts = array('class' => 'fabrikinput inputbox  input-small', 'size' => $element->width, 'maxlength' => '19');
+		$calopts = array('class' => $class, 'size' => $element->width, 'maxlength' => '19');
+		$readonly = '';
 		if ($params->get('date_allow_typing_in_field', true) == false)
 		{
 			$readonly = ' readonly="readonly" ';
@@ -301,15 +303,48 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$str[] = $this->calendar($date, $name, $id . '_cal', $format, $calopts, $repeatCounter);
 		if ($params->get('date_showtime', 0) && !$element->hidden)
 		{
-			$timelength = JString::strlen($timeformat);
-			FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-			$str[] = '<input class="inputbox fabrikinput timeField span1" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
-				. $timeElName . '" />';
-			$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
-			$str[] = FabrikHelperHTML::image('time.png', 'form', @$this->tmpl, $opts);
+			$this->timeButton($timeElName, $time, $str);
 		}
 		$str[] = '</div>';
 		return implode("\n", $str);
+	}
+
+	/**
+	 * Render time button
+	 *
+	 * @param   string  $timeElName  Element name
+	 * @param   string  $time        Time value
+	 * @param   array   &$str        Markup to append time button to
+	 *
+	 * @since   3.1b2
+	 *
+	 * @return  void
+	 */
+
+	protected function timeButton($timeElName, $time, &$str)
+	{
+
+		$j3 = FabrikWorker::j3();
+		$params = $this->getParams();
+		$timeformat = $params->get('date_time_format', 'H:i');
+		$class = 'inputbox fabrikinput timeField input ' . $params->get('bootstrap_time_class', 'input-mini');
+		$readonly = $params->get('date_allow_typing_in_field', true) == false ? ' readonly="readonly" ' : '';
+		if ($j3)
+		{
+			$str[] = '<div class="input-append">';
+		}
+		$timelength = JString::strlen($timeformat);
+		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
+		$str[] = '<input type="text" class="' . $class .'" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+				. $timeElName . '" />';
+		$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
+		$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
+		$img = '<button class="btn timeButton">' . FabrikHelperHTML::image($file, 'form', @$this->tmpl, $opts) . '</button>';
+		$str[] = $img;
+		if ($j3)
+		{
+			$str[] = '</div>';
+		}
 	}
 
 	/**
