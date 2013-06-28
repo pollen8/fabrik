@@ -84,7 +84,6 @@ class PlgContentFabrik extends JPlugin
 			return true;
 		}
 
-		require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
 		/* $$$ hugh - hacky fix for nasty issue with IE, which (for gory reasons) doesn't like having our JS content
 		 * wrapped in P tags.  But the default WYSIWYG editor in J! will automagically wrap P tags around everything.
 		 * So let's just look for obvious cases of <p>{fabrik ...}</p>, and replace the P's with DIV's.
@@ -129,7 +128,6 @@ class PlgContentFabrik extends JPlugin
 
 		// $$$ hugh - see if we can remove formatting added by WYSIWYG editors
 		$match = strip_tags($match);
-		require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
 		$w = new FabrikWorker;
 		$match = preg_replace('/\s+/', ' ', $match);
 		/* $$$ hugh - only replace []'s in value, not key, so we handle
@@ -754,7 +752,6 @@ class PlgContentFabrik extends JPlugin
 		require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
-		require_once COM_FABRIK_FRONTEND . '/models/parent.php';
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');

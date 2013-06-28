@@ -13,9 +13,6 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
 
-// Required for fabble
-require_once COM_FABRIK_FRONTEND . '/models/parent.php';
-
 /**
  * Base Fabrik Plugin Model
  *

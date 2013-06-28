@@ -432,7 +432,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				if (trim($l) !== '')
 				{
-					$lis[] = $multiple || $mergeGroupRepeat ? '<li>' . $l . '</li>' : $l;
+					$lis[] = ($multiple || $mergeGroupRepeat) && $this->renderWithHTML ? '<li>' . $l . '</li>' : $l;
 				}
 			}
 			if (!empty($lis))

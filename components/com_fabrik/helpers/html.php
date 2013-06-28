@@ -15,10 +15,6 @@ if (!defined('COM_FABRIK_FRONTEND'))
 {
 	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
 }
-require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
-
-// Leave in as for some reason content plugin isnt loading the fabrikworker class
-require_once COM_FABRIK_FRONTEND . '/helpers/parent.php';
 
 /**
  * Fabrik Component HTML Helper
@@ -1031,6 +1027,7 @@ EOD;
 		$config[] = "\tpaths: " . $pathString . ",";
 		$config[] = "\tshim: " . $shim;
 		$config[] = "});";
+		$config[] = "\n";
 		$document->addScriptDeclaration(implode("\n", $config));
 	}
 
@@ -1286,6 +1283,7 @@ EOD;
 		$require[] = 'require(' . ($files) . ', function () {';
 		$require[] = $onLoad;
 		$require[] = '});';
+		$require[] = "\n";
 		$require = implode("\n", $require);
 
 		if ($input->get('format') == 'raw')

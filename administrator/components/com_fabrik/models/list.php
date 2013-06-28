@@ -1730,10 +1730,6 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 		$table = $this->getTable();
 		$table->load($this->getState('list.id'));
-		if (!$autoIncrement)
-		{
-			$type = '';
-		}
 		$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($fieldName) . ' ' . FabrikString::safeColName($fieldName) . ' '
 			. $type . ' NOT NULL';
 

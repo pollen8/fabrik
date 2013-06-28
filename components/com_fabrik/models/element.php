@@ -19,7 +19,7 @@ jimport('joomla.filesystem.file');
  *
  * @package  Fabrik
  * @since    3.0
- */
+*/
 
 class PlgFabrik_Element extends FabrikPlugin
 {
@@ -83,7 +83,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Group model
 	 *
 	 * @var object
-	 */
+	*/
 	protected $group = null;
 
 	/**
@@ -139,7 +139,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Is the element in a detailed view?
 	 *
 	 * @var bool
-	 */
+	*/
 	public $inDetailedView = false;
 
 	/**
@@ -153,7 +153,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * The element's HTML ids based on $repeatCounter
 	 *
 	 * @var array
-	 */
+	*/
 	public $HTMLids = null;
 
 	/**
@@ -626,7 +626,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$table = $this->getListModel()->getTable();
 		$fullElName = $db->quoteName($dbtable . '___' . $this->element->name);
 		$sql = '(SELECT GROUP_CONCAT(' . $jkey . ' SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-			. $table->db_primary_key . ')';
+				. $table->db_primary_key . ')';
 		if ($addAs)
 		{
 			$sql .= ' AS ' . $fullElName;
@@ -655,7 +655,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		$pkField = $this->groupConcactJoinKey();
 		return '(SELECT GROUP_CONCAT(id SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = ' . $pkField
-			. ') AS ' . $fullElName;
+		. ') AS ' . $fullElName;
 	}
 
 	/**
@@ -738,7 +738,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 				$as = $db->quoteName($dbtable . '___' . $this->element->name . '___params');
 				$str = '(SELECT GROUP_CONCAT(params SEPARATOR \'' . GROUPSPLITTER . '\') FROM ' . $jointable . ' WHERE parent_id = '
-					. $pkField . ') AS ' . $as;
+						. $pkField . ') AS ' . $as;
 				$aFields[] = $str;
 				$aAsFields[] = $as;
 			}
@@ -1461,7 +1461,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$usersConfig = JComponentHelper::getParams('com_fabrik');
 			$icon = FabrikWorker::j3() ? $usersConfig->get('error_icon', 'exclamation-sign') . '.png' : 'alert.png';
 			$str .= '<a href="#" class="fabrikTip" title="' . $err . '" opts="{notice:true}">' . FabrikHelperHTML::image($icon, 'form', $tmpl)
-				. '</a>';
+			. '</a>';
 		}
 		$str .= '</span>';
 		return $str;
@@ -1664,7 +1664,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element = $this->getElement();
 
 		$key = $element->id . '.' . $groupModel->get('id') . '_' . $formModel->getId() . '_' . $useStep . '_'
-			. $incRepeatGroup;
+				. $incRepeatGroup;
 		if (isset($this->fullNames[$key]))
 		{
 			return $this->fullNames[$key];
@@ -2200,28 +2200,28 @@ class PlgFabrik_Element extends FabrikPlugin
 		$size = (int) $element->width < 0 ? 1 : (int) $element->width;
 		if (!isset($type))
 		{
-		    // Changes by JF Questiaux - info@betterliving.be
-                    switch ($params->get('password')) // Kept the name 'password' for backward compatibility
-                    {
-                        case '1' : 
-                            $type = 'password';
-                            break;
-                        case '2' :
-                            $type = 'tel';
-                            break;
-                        case '3' :
-                            $type = 'email';
-                            break;
-                        case '4' :
-                            $type = 'search';
-                            break;
-                        case '5' :
-                            $type = 'url';
-                            break;
-                        default :
-                            $type = 'text';
-                    }
-                    // End of changes
+			// Changes by JF Questiaux - info@betterliving.be
+			switch ($params->get('password')) // Kept the name 'password' for backward compatibility
+			{
+				case '1' :
+					$type = 'password';
+					break;
+				case '2' :
+					$type = 'tel';
+					break;
+				case '3' :
+					$type = 'email';
+					break;
+				case '4' :
+					$type = 'search';
+					break;
+				case '5' :
+					$type = 'url';
+					break;
+				default :
+					$type = 'text';
+			}
+			// End of changes
 		}
 		$maxlength = $params->get('maxlength');
 		if ($maxlength == "0" or $maxlength == '')
@@ -2233,6 +2233,32 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($bootstrapClass !== '')
 		{
 			$class[] = $bootstrapClass;
+
+			// Fall back for old 2.5 sites
+			switch ($bootstrapClass)
+			{
+				case 'input-mini':
+					$size = 3;
+					break;
+				case 'input-small':
+					$size = 6;
+					break;
+				case 'input-medium':
+					$size = 10;
+					break;
+				default:
+				case 'input-large':
+					$size = 20;
+					break;
+				case 'input-xlarge':
+					$size = 35;
+					break;
+				case 'input-block-level':
+				case 'input-xxlarge':
+					$size = 60;
+					break;
+
+			}
 		}
 		if ($this->elementError != '')
 		{
@@ -2450,7 +2476,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 * which we should now be doing ... and getParent() causes an extra table lookup for every child
 		 * element on the form.
 		 * $element = $this->getParent();
-		 */
+		*/
 		$jsControllerKey = "Fabrik.blocks['" . $jsControllerKey . "']";
 		$element = $this->getElement();
 		$form = $this->form->getForm();
@@ -2753,11 +2779,11 @@ class PlgFabrik_Element extends FabrikPlugin
 
 			case 'field':
 			default:
-			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
+				// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
-					. $id . '" />';
+						. $id . '" />';
 				break;
 
 			case 'hidden':
@@ -2889,11 +2915,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		/**
 		 * $$$ rob 28/10/2011 using selector rather than element id so we can have n modules with the same filters
 		 * showing and not produce invald html & duplicate js calls
-		 */
+		*/
 		$return = array();
 		$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . ' ' . $id . '" value="' . $default . '" />';
 		$return[] = '<input type="text" name="' . 'auto-complete' . $this->getElement()->id . '" class="' . $class . ' autocomplete-trigger '
-			. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
+				. $id . '-auto-complete" size="' . $size . '" value="' . $labelValue . '" />';
 
 		$opts = array();
 		if ($normal)
@@ -2937,23 +2963,23 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		/*
 		 * takes rows which may be in format :
-		 *
-		 * [0] => stdClass Object
+		*
+		* [0] => stdClass Object
 		(
-		[text] => ["1"]
-		[value] => ["1"]
+				[text] => ["1"]
+				[value] => ["1"]
 		)
 		and converts them into
 		[0] => JObject Object
 		(
-		[_errors:protected] => Array
-		(
+				[_errors:protected] => Array
+				(
+				)
+				[value] => 1
+				[text] => 1
+				[disable] =>
 		)
-		[value] => 1
-		[text] => 1
-		[disable] =>
-		)
-		 */
+		*/
 		$allvalues = array();
 		foreach ($rows as $row)
 		{
@@ -3261,12 +3287,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		if (strstr($joinStr, 'JOIN ' . $fabrikDb->quoteName($fromTable)))
 		{
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
-				. ' FROM ' . $fabrikDb->quoteName($origTable) . ' ' . $joinStr . "\n";
+			. ' FROM ' . $fabrikDb->quoteName($origTable) . ' ' . $joinStr . "\n";
 		}
 		else
 		{
 			$sql = 'SELECT DISTINCT(' . $label . ') AS ' . $fabrikDb->quoteName('text') . ', ' . $id . ' AS ' . $fabrikDb->quoteName('value')
-				. ' FROM ' . $fabrikDb->quoteName($fromTable) . ' ' . $joinStr . "\n";
+			. ' FROM ' . $fabrikDb->quoteName($fromTable) . ' ' . $joinStr . "\n";
 		}
 		if (!$this->isJoin())
 		{
@@ -3408,7 +3434,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		 *
 		 * $condition = JArrayHelper::getValue($filters, 'condition', array());
 		 * $condition = JArrayHelper::getValue($condition, $counter, $this->getFilterCondition());
-		 */
+		*/
 		$condition = $this->getFilterCondition();
 
 		// Need to include class other wise csv export produces incorrect results when exporting
@@ -3641,12 +3667,12 @@ class PlgFabrik_Element extends FabrikPlugin
 					break;
 				case 'ends':
 				case 'ends with':
-				// @TODO test this with subsquery
+					// @TODO test this with subsquery
 					$condition = "LIKE";
 					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value);
 					break;
 				case 'contains':
-				// @TODO test this with subsquery
+					// @TODO test this with subsquery
 					$condition = "LIKE";
 					$value = $eval == FABRIKFILTER_QUERY ? '(' . $value . ')' : $db->quote('%' . $value . '%');
 					break;
@@ -3750,15 +3776,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				break;
 			case 'thismonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 1 MONTH)), INTERVAL 1 DAY)  AND ' . $key
-					. ' <= LAST_DAY(NOW()) ) ';
+				. ' <= LAST_DAY(NOW()) ) ';
 				break;
 			case 'lastmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(DATE_SUB(now(), INTERVAL 2 MONTH)), INTERVAL 1 DAY)  AND ' . $key
-					. ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
+				. ' <= LAST_DAY(DATE_SUB(NOW(), INTERVAL 1 MONTH)) ) ';
 				break;
 			case 'nextmonth':
 				$query = ' (' . $key . ' >= DATE_ADD(LAST_DAY(now()), INTERVAL 1 DAY)  AND ' . $key
-					. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
+				. ' <= DATE_ADD(LAST_DAY(NOW()), INTERVAL 1 MONTH) ) ';
 				break;
 			default:
 				if ($this->isJoin())
@@ -3920,7 +3946,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		/**
 		 * $$$ rob if we allow adding to the dropdown but not recording
 		 * then there will be no $key set to revert to the $val instead
-		 */
+		*/
 		if ($v === $params->get('sub_default_value'))
 		{
 			$v = $params->get('sub_default_label');
@@ -3957,14 +3983,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 			return "SELECT ROUND(AVG($name), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-				. " $joinSQL $whereSQL";
+			. " $joinSQL $whereSQL";
 		}
 		else
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			return "SELECT ROUND(AVG(value), $roundTo) AS value, label
-FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-				. " $joinSQL $whereSQL) AS t";
+			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			. " $joinSQL $whereSQL) AS t";
 
 		}
 	}
@@ -4039,7 +4065,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			// $custom_query = sprintf($custom_query, 'value');
 			$custom_query = str_replace('%s', 'value', $custom_query);
 			return "SELECT $custom_query AS value, label FROM (SELECT DISTINCT " . FabrikString::safeColName($item->db_table_name)
-				. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
+			. ".*, $name AS value, $label AS label FROM " . FabrikString::safeColName($item->db_table_name) . " $joinSQL $whereSQL) AS t";
 		}
 	}
 
@@ -4066,7 +4092,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		return "SELECT {$this->getFullName(false, false, false)} AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-			. " $joinSQL $whereSQL ";
+		. " $joinSQL $whereSQL ";
 	}
 
 	/**
@@ -4118,8 +4144,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		{
 			// Need to do first query to get distinct records as if we are doing left joins the sum is too large
 			$query = "SELECT COUNT(value) AS value, label
-	FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
-				. " $joinSQL $whereSQL) AS t";
+			FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
+			. " $joinSQL $whereSQL) AS t";
 		}
 		return $query;
 	}
@@ -4420,13 +4446,13 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$uberTotal = 0;
 			/*
 			 * Removes values from display when split on used:
-			 * see http://www.fabrikar.com/forums/index.php?threads/calculation-split-on-problem.32035/
-			 foreach ($results2 as $k => &$r)
+			* see http://www.fabrikar.com/forums/index.php?threads/calculation-split-on-problem.32035/
+			foreach ($results2 as $k => &$r)
 			{
-				if ($k == '')
-				{
-					unset($results2[$k]);
-				}
+			if ($k == '')
+			{
+			unset($results2[$k]);
+			}
 			}
 			*/
 			foreach ($results2 as $pair)
@@ -4857,7 +4883,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		/**
 		 * $$$ hugh - added test for empty id, i.e. new element, otherwise we try and delete a crapload of join table rows
 		 * we shouldn't be deleting!  Also adding defensive code to deleteJoins() to test for empty ID.
-		 */
+		*/
 		if (!empty($post['id']) && !$this->isJoin() && !$dbjoinEl)
 		{
 			$this->deleteJoins((int) $post['id']);
@@ -4888,7 +4914,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 		$query->clear();
 		$query->select('j.id AS jid')->from('#__{package}_elements AS e')->join('INNER', ' #__{package}_joins AS j ON j.element_id = e.id')
-			->where('e.parent_id = ' . $id);
+		->where('e.parent_id = ' . $id);
 		$db->setQuery($query);
 		$join_ids = $db->loadColumn();
 		if (!empty($join_ids))
@@ -5082,6 +5108,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			return false;
 		}
 		$element = $this->getElement();
+
 		// We should not process this element if it is unpublished
 		// Unpublished elements may not be in a valid state and may cause an error (white-screen)
 		if (!$element->published)
@@ -6095,7 +6122,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 		// Update linked lists id.
 		$query->update('#__{package}_joins')->set('table_key = ' . $db->quote($newName))
-			->where('join_from_table = ' . $db->quote($item->db_table_name))->where('table_key = ' . $db->quote($oldName));
+		->where('join_from_table = ' . $db->quote($item->db_table_name))->where('table_key = ' . $db->quote($oldName));
 		$db->setQuery($query);
 		$db->execute();
 
@@ -6298,7 +6325,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$listModel->doCalculations();
 		$listRef = 'list_' . $input->get('listref');
 		$doCalcs = "\n
-		Fabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ')';
+				Fabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ')';
 
 		if (!$saving)
 		{
@@ -6308,7 +6335,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			 * wrap in fabriKElement div to ensure element js code works
 			 */
 			$html .= '<div class="floating-tip" style="position:absolute">
-			<ul class="fabrikElementContainer">';
+					<ul class="fabrikElementContainer">';
 			$html .= '<li class="fabrikElement">';
 			$html .= $this->preRenderElement($data, $repeatCounter);
 			$html .= '</li>';
@@ -6322,7 +6349,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 					$html .= '<li class="ajax-controls inline-cancel">';
 					$html .= '<a href="#" class="">';
 					$html .= FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')))
-						. '<span></span></a>';
+					. '<span></span></a>';
 					$html .= '</li>';
 				}
 				if ($input->getBool('inlinesave') == true)
@@ -6339,9 +6366,9 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$html .= '</div>';
 			$elementJS = $this->elementJavascript($repeatCounter);
 			$onLoad = "Fabrik.inlineedit_$elementid = new " . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ");\n"
-				. "Fabrik.inlineedit_$elementid.select();
-			Fabrik.inlineedit_$elementid.focus();
-			Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';\n";
+					. "Fabrik.inlineedit_$elementid.select();
+					Fabrik.inlineedit_$elementid.focus();
+					Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';\n";
 
 			$onLoad .= "Fabrik.fireEvent('fabrik.list.inlineedit.setData');\n";
 			$srcs = array();

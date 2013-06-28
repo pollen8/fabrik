@@ -12,7 +12,6 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
-require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 
 /**
  * CSV Export Model
