@@ -3,8 +3,6 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-field">
 		
-			<field class="input-mini" default="20" label="PLG_ELEMENT_FIELD_WIDTH_LABEL" name="width" size="3" type="text"/>
-			
 			<field default="0" 
 				class="btn-group"
 				description="PLG_ELEMENT_FIELD_HIDDEN_DESC" label="PLG_ELEMENT_FIELD_HIDDEN_LABEL" name="hidden" type="radio">
