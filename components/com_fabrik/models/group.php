@@ -1157,19 +1157,15 @@ class FabrikFEModelGroup extends FabModel
 		$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
 
 		$elementModels = $this->getPublishedElements();
-		$fkFound = false;
 		foreach ($elementModels as $elementModel)
 		{
 			if ($elementModel->getFullName(true, false) === $fullFk)
 			{
-				$fkFound = true;
+				return true;
 			}
 		}
-		if (!$fkFound)
-		{
-			JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
-		}
-		return $fkFound;
+		JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
+		return false;
 	}
 
 	/**
