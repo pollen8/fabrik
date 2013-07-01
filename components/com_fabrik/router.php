@@ -45,7 +45,7 @@ function fabrikBuildRoute(&$query)
 	}
 
 	// Are we dealing with a view that is attached to a menu item https://github.com/Fabrik/fabrik/issues/498?
-	if (($menuItem instanceof stdClass) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
+	if (($menuItem instanceof stdClass) && isset($query['view']) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
 		unset($query['view']);
 
 		if (isset($query['catid'])) {
