@@ -218,6 +218,7 @@ var FbCascadingdropdown = new Class({
 				/**
 				 * Was removing and attaching again, but seems remove removed
 				 * change events in other cloned plug-in instances
+				 * However removing this caused this bug : http://fabrikar.com/forums/index.php?threads/using-cascading-dropdown-with-database-join-and-repeated-groups.34539/#post-173518
 				 */
 				
 				document.id(this.options.watch).addEvent('change', function (e) {

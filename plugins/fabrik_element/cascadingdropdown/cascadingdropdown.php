@@ -72,7 +72,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$fullName = $this->getFullName(false, true, true);
 		$watchName = $this->getWatchFullName();
 		$qsValue = $input->get($fullName, '', 'string');
-		$qsWatchValue = $input->get($watchName, '');
+		$qsWatchValue = $input->get($watchName, '', 'string');
 
 		// $$$ hugh - Rob, is there a better way of finding out if validation has failed than looking at _arErrors?
 		$opts->def = empty($this->getFormModel()->_arErrors) && $this->isEditable() && $rowid == 0 && !empty($qsValue) && !empty($qsWatchValue) ? $qsValue : $this->getValue(array(), $repeatCounter);

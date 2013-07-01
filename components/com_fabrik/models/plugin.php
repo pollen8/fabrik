@@ -142,8 +142,8 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Render the element admin settings
 	 *
-	 * @param   array  $data           admin data
-	 * @param   int    $repeatCounter  repeat plugin counter
+	 * @param   array  $data           Admin data
+	 * @param   int    $repeatCounter  Repeat plugin counter
 	 *
 	 * @return  string	admin html
 	 */

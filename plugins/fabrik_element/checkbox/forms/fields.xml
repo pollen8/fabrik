@@ -3,6 +3,9 @@
 	<fields name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-checkbox">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_CHECKBOX_HELP_SERVER" />
+				
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
 			<field default="1" description="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_DESC" label="PLG_ELEMENT_CHECKBOX_ELEMENT_BEFORE_LABEL_LABEL" name="element_before_label" type="radio">
