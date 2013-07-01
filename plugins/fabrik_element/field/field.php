@@ -92,8 +92,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -123,7 +123,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			$value = $this->unNumberFormat($value);
 		}
 		$value = $this->numberFormat($value);
-		if (!$this->_editable)
+		if (!$this->isEditable())
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
 			$format = $params->get('text_format_string');
@@ -162,9 +162,9 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Format guess link type
 	 *
-	 * @param   string  &$value         original field value
-	 * @param   array   $data           record data
-	 * @param   int     $repeatCounter  repeat counter
+	 * @param   string  &$value         Original field value
+	 * @param   array   $data           Record data
+	 * @param   int     $repeatCounter  Repeat counter
 	 *
 	 * @return  void
 	 */
@@ -313,8 +313,8 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -339,7 +339,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Manupulates individual values posted form data for insertion into database
 	 *
-	 * @param   string  $val  this elements posted form data
+	 * @param   string  $val  This elements posted form data
 	 *
 	 * @return  string
 	 */

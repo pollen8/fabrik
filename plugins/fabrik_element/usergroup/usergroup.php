@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0.6
  */
 
-class plgFabrik_ElementUsergroup extends plgFabrik_Element
+class PlgFabrik_ElementUsergroup extends PlgFabrik_Element
 {
 
 	/**
@@ -32,8 +32,8 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -68,7 +68,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 				$query = $db->getQuery(true);
 				$query->select($db->quoteName('title'));
 				$query->from($db->quoteName('#__usergroups'));
-				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups). ')');
+				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups) . ')');
 				$db->setQuery($query);
 				$selected = $db->loadColumn();
 			}
@@ -102,10 +102,10 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	 * call FabrikModelElement::formJavascriptClass('plugins/fabrik_element/databasejoin/databasejoin.js', true);
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   scripts previously loaded (load order is important as we are loading via head.js
+	 * @param   array   &$srcs   Scripts previously loaded (load order is important as we are loading via head.js
 	 * and in ie these load async. So if you this class extends another you need to insert its location in $srcs above the
 	 * current file
-	 * @param   string  $script  script to load once class has loaded
+	 * @param   string  $script  Script to load once class has loaded
 	 *
 	 * @return void
 	 */
@@ -119,9 +119,9 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	* Determines the value for the element in the form view
 	*
-	* @param   array  $data           form data
-	* @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	* @param   array  $opts           options
+	* @param   array  $data           Form data
+	* @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	* @param   array  $opts           Options
 	*
 	* @return  string	value
 	*/
@@ -236,8 +236,8 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	* Shows the data formatted for the list view
 	*
-	* @param   string  $data      elements data
-	* @param   object  &$thisRow  all the data in the lists current row
+	* @param   string  $data      Elements data
+	* @param   object  &$thisRow  All the data in the lists current row
 	*
 	* @return  string	formatted value
 	*/

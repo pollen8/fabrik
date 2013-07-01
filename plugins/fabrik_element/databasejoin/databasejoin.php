@@ -968,7 +968,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getROValue($data, $repeatCounter = 0)
 	{
 		$v = $this->getValue($data, $repeatCounter);
-		return $this->getLabelForValue($v, $v, $repeatCounter);
+		return $this->getLabelForValue($v, $v);
 	}
 
 	/**
@@ -1212,7 +1212,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 		{
-			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
+			$label = (array) $this->getLabelForValue($label[0], $label[0]);
 		}
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
@@ -1636,7 +1636,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default, $default, $counter);
+			$default = $this->getLabelForValue($default, $default);
 		}
 		return $default;
 	}
@@ -2584,9 +2584,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Used by elements with suboptions
 	 *
-	 * @param   string  $v              value
-	 * @param   string  $defaultLabel   default label
-	 * @param   int     $repeatCounter  repeat group counter (3.0.7 deprecated)
+	 * @param   string  $v              Value
+	 * @param   string  $defaultLabel   Default label
+	 * @param   int     $repeatCounter  Repeat group counter (3.0.7 deprecated)
 	 *
 	 * @return  string	label
 	 */
@@ -2594,6 +2594,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
 	{
 
+		// Band aid - as this is called in listModel::addLabels() lets not bother - requerying the db (label already loaded)
+		if ($v === $defaultLabel)
+		{
+			return $v;
+		}
 		if ($this->isJoin())
 		{
 			$rows = $this->checkboxRows('id');
@@ -2602,7 +2607,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				return $rows[$v]->text;
 			}
 		}
-
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$query = $this->_buildQuery(array(), false);

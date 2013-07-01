@@ -313,7 +313,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 */
 
 	public function onBeforeStore($params, &$formModel)
-	{		
+	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$config = JFactory::getConfig();
@@ -334,7 +334,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$formModel->storeMainRow = false;
 		}
-		
+
 		if (!$this->shouldProcess('juser_conditon', null, $formModel))
 		{
 			return true;
@@ -697,7 +697,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$params = $this->getParams();
 		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		//$groupIds = (array) JArrayHelper::getValue($formModel->_formData, $this->gidfield, $defaultGroup);
 		$groupIds = (array) $this->getFieldValue($params, 'juser_field_usertype', $formModel->_formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]

@@ -911,7 +911,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$thisRow = $data[$i];
 						$coldata = $thisRow->$col;
-						$data[$i]->$col = $elementModel->getLabelForValue($coldata);
+						$data[$i]->$col = $elementModel->getLabelForValue($coldata, $coldata);
 					}
 				}
 			}
@@ -1905,10 +1905,10 @@ $groupBy .= '_raw';
 	/**
 	 * Add a normal/custom link to the element data
 	 *
-	 * @param   string  $data           element data
-	 * @param   object  &$elementModel  element model
-	 * @param   object  $row            of all row data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Element data
+	 * @param   object  &$elementModel  Element model
+	 * @param   object  $row            All row data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	element data with link added if specified
 	 */
@@ -5743,8 +5743,10 @@ $groupBy .= '_raw';
 						}
 						break;
 				}
-
-				$value = trim(trim($value, '"'), "%");
+				if (is_string($value))
+				{
+					$value = trim(trim($value, '"'), "%");
+				}
 				if ($counter == 0)
 				{
 					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
@@ -6801,6 +6803,8 @@ $groupBy .= '_raw';
 		// Get the current record - not that which was posted
 		$formModel = $this->getFormModel();
 		$table = $this->getTable();
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (is_null($this->_origData))
 		{
 			/* $$$ hugh FIXME - doesn't work for rowid=-1 / usekey submissions,
@@ -6835,7 +6839,7 @@ $groupBy .= '_raw';
 		but it certainly breaks things like onCopyRow(), where (for instance) user
 		elements will get reset to 0 by this code.
 		*/
-		$repeatGroupCounts = JRequest::getVar('fabrik_repeat_group', array());
+		$repeatGroupCounts = $input->get('fabrik_repeat_group', array(), 'array');
 		if (!empty($origdata))
 		{
 			$gcounter = 0;
@@ -6893,12 +6897,11 @@ $groupBy .= '_raw';
 				$gcounter++;
 			}
 		}
-		$copy = JRequest::getBool('Copy');
+		$copy = $input->getBool('Copy');
 
 		// Check crypted querystring vars (encrypted in form/view.html.php ) _cryptQueryString
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
-			// $crypt = new JSimpleCrypt;
 			$crypt = FabrikWorker::getCrypt();
 			foreach ($_REQUEST['fabrik_vars']['querystring'] as $key => $encrypted)
 			{

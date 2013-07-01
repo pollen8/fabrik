@@ -23,14 +23,14 @@ defined('_JEXEC') or die('Restricted access');
 	   <thead>
 	  	<tr>
 	  		<th><?php echo $table ?></th>
-	  		<th style="text-align:right"><a href="#" class="clearFilters"><?php echo JText::_('CLEAR'); ?></a></th>
+	  		<th style="text-align:right"><a href="#" class="clearFilters"><?php echo JText::_('PLG_VISUALIZATION_GOOGLEMAP_CLEAR'); ?></a></th>
 	  	</tr>
 	  </thead>
 
 	  <tfoot>
 	  	<tr>
 	  		<th colspan="2" style="text-align:right;">
-	  			<input type="submit" class="fabrik_filter_submit button" value="<?php echo JText::_('GO') ?>" />
+	  			<input type="submit" class="fabrik_filter_submit button" value="<?php echo JText::_('PLG_VISUALIZATION_GOOGLEMAP_GO') ?>" />
 	  		</th>
 	  	</tr>
 	  </tfoot>
