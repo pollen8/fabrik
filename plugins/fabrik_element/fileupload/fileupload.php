@@ -110,7 +110,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			if ($fdata == '')
 			{
-				if ($params->get('fileupload_crop') == false)
+				if ($this->canCrop() == false)
 				{
 					// Was stopping saving of single ajax upload image
 					// return true;
@@ -368,7 +368,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$opts->ajax_flash_path = COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/js/plupload.flash.swf';
 		$opts->max_file_size = $params->get('ul_max_file_size');
 		$opts->ajax_chunk_size = (int) $params->get('ajax_chunk_size', 0);
-		$opts->crop = (int) $params->get('fileupload_crop', 0);
+		$opts->crop = $this->canCrop();
+		$opts->canvasSupport = FabrikHelperHTML::canvasSupport();
 		$opts->elementName = $this->getFullName(true, true, true);
 		$opts->cropwidth = (int) $params->get('fileupload_crop_width');
 		$opts->cropheight = (int) $params->get('fileupload_crop_height');
@@ -390,7 +391,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		JText::script('PLG_ELEMENT_FILEUPLOAD_PREVIEW');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE');
 		JText::script('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE');
+		JText::script('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT');
 		return array('FbFileUpload', $id, $opts);
+	}
+
+	/**
+	 * Can the plug-in crop. Based on parameters and browser check (IE8 or less has no canvas support)
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return boolean
+	 */
+
+	protected function canCrop()
+	{
+		$params = $this->getParams();
+		if (!FabrikHelperHTML::canvasSupport())
+		{
+			return false;
+		}
+		return (bool) $params->get('fileupload_crop', 0);
+
 	}
 
 	/**
@@ -898,7 +919,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
-		if ($params->get('fileupload_crop') == false && $input->get('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
+		if ($this->canCrop() == false && $input->get('task') !== 'pluginAjax' && $params->get('ajax_upload') == true)
 		{
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
@@ -997,7 +1018,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
-		if ($params->get('fileupload_crop') == true && $input->get('task') !== 'pluginAjax')
+		if ($this->canCrop() == true && $input->get('task') !== 'pluginAjax')
 		{
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
@@ -2005,7 +2026,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '<div id="' . $id . '-widgetcontainer">';
 
 		$pstr[] = '<canvas id="' . $id . '-widget" width="' . $winWidth . '" height="' . $winHeight . '"></canvas>';
-		if ($params->get('fileupload_crop', 0))
+		if ($this->canCrop())
 		{
 			$pstr[] = '<div class="zoom" style="float:left;margin-top:10px;padding-right:10x;width:200px">';
 			$pstr[] = '	zoom:';
@@ -2021,11 +2042,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$pstr[] = '	<input name="rotate-val" value="" size="3"  class="input-mini"/>';
 			$pstr[] = '</div>';
 		}
-		$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';
-		$pstr[] = '<input type="button" class="button" name="close-crop" value="' . JText::_('CLOSE') . '" />';
-		$pstr[] = '</div>';
-		$pstr[] = '</div>';
+		if (FabrikHelperHTML::canvasSupport())
+		{
+			$pstr[] = '<div  style="text-align: right;float:right;margin-top:10px; width: 205px">';
+			$pstr[] = '<input type="button" class="button" name="close-crop" value="' . JText::_('CLOSE') . '" />';
+			$pstr[] = '</div>';
+		}
 
+		$pstr[] = '</div>';
 		$pstr[] = '<div class="plupload_container fabrikHide" id="' . $id . '_container" style="width:' . $w . 'px;height:' . $h . 'px">';
 		$pstr[] = '<div class="plupload" id="' . $id . '_dropList_container">';
 		$pstr[] = '	<div class="plupload_header">';
@@ -2762,7 +2786,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$params = $this->getParams();
 			if (is_array($value) && !$params->get('ajax_upload'))
 			{
-				if (!$this->getParams()->get('fileupload_crop'))
+				if (!$this->canCrop())
 				{
 					$value = implode(',', $value);
 				}
@@ -2778,7 +2802,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			if (is_array($value) && !$params->get('ajax_upload'))
 			{
-				if (!$this->getParams()->get('fileupload_crop'))
+				if (!$this->canCrop())
 				{
 
 					$value = implode(',', $value);

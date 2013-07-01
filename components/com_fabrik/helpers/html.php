@@ -1678,6 +1678,20 @@ EOD;
 	}
 
 	/**
+	 * Does the browser support Canvas elements
+	 *
+	 * @since  3.0.9
+	 *
+	 * @return boolean
+	 */
+
+	public static function canvasSupport()
+	{
+		$navigator = JBrowser::getInstance();
+		return !($navigator->getBrowser() == 'msie' && $navigator->getMajor() < 9);
+	}
+
+	/**
 	 * Run Joomla content plugins over text
 	 *
 	 * @param   string  &$text  Content
