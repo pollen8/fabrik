@@ -203,7 +203,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 			$values = $include->put_value;
 			$format = $include->put_type;
 			$i = 0;
-			$fkName = $fkElement->getFullName(true, false, true);
+			$fkName = $fkElement ? $fkElement->getFullName(true, false, true) : '';
 			foreach ($values as &$v)
 			{
 				if ($v === $fkName)
@@ -420,6 +420,10 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		$config = JFactory::getConfig();
 
+		if ($params->get('oauth_consumer_key', '') === '')
+		{
+			return;
+		}
 		define("OAUTH_CALLBACK_URL", JUri::getInstance());
 		define('OAUTH_TMP_DIR', $config->get('tmp_path'));
 		define("OAUTH_AUTHORIZE_URL", $params->get('authorize_uri'));
