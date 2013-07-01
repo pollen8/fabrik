@@ -615,13 +615,15 @@ class FabrikFEModelGroup extends FabModel
 			$this->listQueryElements[$sig] = array();
 			$elements = $this->getMyElements();
 			$joins = $this->getListModel()->getJoins();
-			// $$$ Paul - it is possible that the user has set Include in List Query 
-			// to no for primary or foreign keys used in a join. In which case we 
-			// probably need to include these in the query even though they are not 
-			// needed to be displayed. If the access level does not allow for these 
-			// to be used, then we probably ought to display some sort of warning. 
-			// Unfortunately coding this is beyond my current understanding of how 
-			// Fabrik works. So I need to leave this to Rob or Hugh.
+			/**
+			* $$$ Paul - it is possible that the user has set Include in List Query 
+			* to no for primary or foreign keys used in a join. In which case we 
+			* probably need to include these in the query even though they are not 
+			* needed to be displayed. If the access level does not allow for these 
+			* to be used, then we probably ought to display some sort of warning. 
+			* Unfortunately coding this is beyond my current understanding of how 
+			* Fabrik works. So I need to leave this to Rob or Hugh.
+			**/
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
