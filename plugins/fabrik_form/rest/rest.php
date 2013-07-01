@@ -413,6 +413,10 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		if ($params->get('oauth_consumer_key', '') === '')
+		{
+			return;
+		}
 		$this->formModel = $formModel;
 		require COM_FABRIK_BASE . '/components/com_fabrik/libs/xing/xing.php';
 		//require_once COM_FABRIK_BASE . '/components/com_fabrik/libs/oauth-php/OAuthStore.php';
@@ -420,10 +424,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 
 		$config = JFactory::getConfig();
 
-		if ($params->get('oauth_consumer_key', '') === '')
-		{
-			return;
-		}
+
 		define("OAUTH_CALLBACK_URL", JUri::getInstance());
 		define('OAUTH_TMP_DIR', $config->get('tmp_path'));
 		define("OAUTH_AUTHORIZE_URL", $params->get('authorize_uri'));
