@@ -40,8 +40,6 @@ $usersConfig->set('rowid', $rowid);
 
 $moduleclass_sfx = $params->get('moduleclass_sfx', '');
 
-$model->isMambot = true;
-
 $moduleAjax = $params->get('formmodule_useajax', true);
 
 $origView = $input->get('view');
