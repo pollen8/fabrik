@@ -2,53 +2,92 @@
 <form>
 	<fields>
 		<fieldset name="plg-element-time" label="COM_FABRIK_DATA">
-			<field default="0"
-			       class="btn-group"
-			       description="PLG_ELEMENT_TIME_EVAL_DESC" label="PLG_ELEMENT_TIME_EVAL_LABEL" name="eval" type="radio">
+		
+		<field type="helplink"
+				url="PLG_ELEMENT_TIME_HELP_SERVER" />
+				
+			<field name="eval"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_TIME_EVAL_DESC"
+				label="PLG_ELEMENT_TIME_EVAL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 				
-			<field cols="45" label="PLG_ELEMENT_TIME_DEFAULT_LABEL" description="PLG_ELEMENT_TIME_DEFAULT_DESC" name="default" rows="6" type="textarea"/>
+			<field name="default"
+				type="textarea"
+				cols="45"
+				label="PLG_ELEMENT_TIME_DEFAULT_LABEL"
+				description="PLG_ELEMENT_TIME_DEFAULT_DESC"
+				rows="6"/>
+				
 		</fieldset>
 	</fields>
 	<fields name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-time-params" label="PLG_ELEMENT_TIME_FORMATTING">
 		
-			<field default=""
+			<field name="time_hourlabel"
+				type="text"
+				default=""
 				class="input-small"
-				description="PLG_ELEMENT_TIME_HOUR_LABEL_DESC" label="PLG_ELEMENT_TIME_HOUR_LABEL" name="time_hourlabel" type="text"/>
+				description="PLG_ELEMENT_TIME_HOUR_LABEL_DESC"
+				label="PLG_ELEMENT_TIME_HOUR_LABEL" />
 				
-			<field default=""
+			<field name="time_minlabel"
+				type="text"
+				default=""
 				class="input-small"
-				description="PLG_ELEMENT_TIME_MIN_LABEL_DESC" label="PLG_ELEMENT_TIME_MIN_LABEL" name="time_minlabel" type="text"/>
+				description="PLG_ELEMENT_TIME_MIN_LABEL_DESC"
+				label="PLG_ELEMENT_TIME_MIN_LABEL" />
 				
-			<field default=""
+			<field name="time_seclabel"
+				type="text"
+				default=""
 				class="input-small"
-				description="PLG_ELEMENT_TIME_SEC_LABEL_DESC" label="PLG_ELEMENT_TIME_SEC_LABEL" name="time_seclabel" type="text"/>
+				description="PLG_ELEMENT_TIME_SEC_LABEL_DESC"
+				label="PLG_ELEMENT_TIME_SEC_LABEL" />
 				
-		<field default="H:i:s" description="PLG_ELEMENT_TIME_LIST_FORMAT_DESC" label="PLG_ELEMENT_TIME_LIST_FORMAT" name="list_time_format" type="list">
-			<option value="H:i:s">hh:mm:ss</option>
-			<option value="H:i">hh:mm</option>
-			<option value="i:s">mm:ss</option>
+		<field name="list_time_format"
+			type="list"
+			default="H:i:s"
+			description="PLG_ELEMENT_TIME_LIST_FORMAT_DESC"
+			label="PLG_ELEMENT_TIME_LIST_FORMAT">
+				<option value="H:i:s">hh:mm:ss</option>
+				<option value="H:i">hh:mm</option>
+				<option value="i:s">mm:ss</option>
 		</field>
 
-		<field default="H:i:s" description="PLG_ELEMENT_TIME_DETAILS_FORMAT_DESC" label="PLG_ELEMENT_TIME_DETAILS_FORMAT" name="details_time_format" type="list">
-			<option value="H:i:s">hh:mm:ss</option>
-			<option value="H:i">hh:mm</option>
-			<option value="i:s">mm:ss</option>
+		<field name="details_time_format"
+			type="list"
+			default="H:i:s"
+			description="PLG_ELEMENT_TIME_DETAILS_FORMAT_DESC"
+			label="PLG_ELEMENT_TIME_DETAILS_FORMAT">
+				<option value="H:i:s">hh:mm:ss</option>
+				<option value="H:i">hh:mm</option>
+				<option value="i:s">mm:ss</option>
 		</field>
-		<field default="1" description="PLG_ELEMENT_MINUTES_INCREMENT_DESC" label="PLG_ELEMENT_MINUTES_INCREMENT" name="minutes_increment" type="list">
-			<option value="1">1 min</option>
-			<option value="5">5 min</option>
-			<option value="10">10 min</option>
-			<option value="15">15 min</option>
-			<option value="20">20 min</option>
-			<option value="30">30 min</option>
+		
+		<field name="minutes_increment"
+			type="list"
+			default="1"
+			description="PLG_ELEMENT_MINUTES_INCREMENT_DESC"
+			label="PLG_ELEMENT_MINUTES_INCREMENT">
+				<option value="1">1 min</option>
+				<option value="5">5 min</option>
+				<option value="10">10 min</option>
+				<option value="15">15 min</option>
+				<option value="20">20 min</option>
+				<option value="30">30 min</option>
 		</field>
-		<field default=":"
+		
+		<field name="time_separatorlabel"
+			type="text"
+			default=":"
 			class="input-mini"
-			description="PLG_ELEMENT_TIME_SEPARATOR_LABEL_DESC" label="PLG_ELEMENT_TIME_SEPARATOR_LABEL" name="time_separatorlabel" type="text"/>
+			description="PLG_ELEMENT_TIME_SEPARATOR_LABEL_DESC"
+			label="PLG_ELEMENT_TIME_SEPARATOR_LABEL" />
 
 		</fieldset>
 	</fields>

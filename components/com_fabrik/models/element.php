@@ -1116,14 +1116,14 @@ class PlgFabrik_Element extends FabrikPlugin
 			$w = new FabrikWorker;
 			$element = $this->getElement();
 			$default = $w->parseMessageForPlaceHolder($element->default, $data);
-			if ($element->eval == "1")
+			if ($element->eval == "1" && is_string($default))
 			{
 				/**
 				 * Inline edit with a default eval'd "return FabrikHelperElement::filterValue(290);"
 				 * was causing the default to be eval'd twice (no idea y) - add in check for 'return' into eval string
 				 * see http://fabrikar.com/forums/showthread.php?t=30859
 				 */
-				if (is_string($default) && !stristr($default, 'return'))
+				if (!stristr($default, 'return'))
 				{
 					$this->_default = $default;
 				}

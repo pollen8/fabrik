@@ -2,6 +2,9 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="googlemap" name="plg-element-googlemap">
+		
+			<field type="helplink"
+				url="PLG_ELEMENT_GOOGLE_MAP_HELP_SERVER" />
 				
 			<field name="fb_gm_maptype"
 				type="list"

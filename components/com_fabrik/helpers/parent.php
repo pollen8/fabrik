@@ -89,7 +89,7 @@ class FabrikWorker
 	/**
 	 * Returns true if $file has an image extension type
 	 *
-	 * @param   string  $file  filename
+	 * @param   string  $file  Filename
 	 *
 	 * @deprecated - doesnt seem to be used
 	 *
@@ -105,7 +105,7 @@ class FabrikWorker
 	/**
 	 * Returns true if $file has an image extension type
 	 *
-	 * @param   string  $file  filename
+	 * @param   string  $file  Filename
 	 *
 	 * @deprecated - doesnt seem to be used
 	 *
@@ -121,7 +121,7 @@ class FabrikWorker
 	/**
 	 * Get Audoio Mime type
 	 *
-	 * @param   string  $file  filename
+	 * @param   string  $file  Filename
 	 *
 	 * @deprecated - doesnt seem to be used
 	 *
@@ -141,7 +141,7 @@ class FabrikWorker
 	/**
 	 * Get Video Mime type
 	 *
-	 * @param   string  $file  filename
+	 * @param   string  $file  Filename
 	 *
 	 * @deprecated - doesnt seem to be used
 	 *
@@ -161,7 +161,7 @@ class FabrikWorker
 	/**
 	 * Get Podcast Mime type
 	 *
-	 * @param   string  $file  filename
+	 * @param   string  $file  Filename
 	 *
 	 * @deprecated - doesnt seem to be used
 	 *
@@ -192,8 +192,8 @@ class FabrikWorker
 	 * http://fr.php.net/strftime
 	 * (use as strptime)
 	 *
-	 * @param   string  $date    string date to format
-	 * @param   string  $format  date format strftime format
+	 * @param   string  $date    String date to format
+	 * @param   string  $format  Date format strftime format
 	 *
 	 * @return	array	date info
 	 */
@@ -267,8 +267,8 @@ class FabrikWorker
 	/**
 	 * Check for, and convert, any 'special' formats for strtotime, like 'yesterday', etc
 	 *
-	 * @param   string  $date  date to check
-	 * @param   bool    $gmt   set date to universal time?
+	 * @param   string  $date  Date to check
+	 * @param   bool    $gmt   Set date to universal time?
 	 *
 	 * @return	string	date
 	 */
@@ -315,8 +315,8 @@ class FabrikWorker
 	/**
 	 * String to time
 	 *
-	 * @param   string  $date    date representation
-	 * @param   string  $format  date format
+	 * @param   string  $date    Date representation
+	 * @param   string  $format  Date format
 	 *
 	 * @return	array	date bits keyed on date representations e.g.  m/d/Y
 	 */
@@ -430,7 +430,7 @@ class FabrikWorker
 	 * Removed day of week name from string
 	 *
 	 * @param   string  $date  The string date
-	 * @param   bool    $abrv  abbreviated day?
+	 * @param   bool    $abrv  Abbreviated day?
 	 *
 	 * @return	string	date
 	 */
@@ -463,8 +463,8 @@ class FabrikWorker
 	/**
 	 * Convert a month (could be in any language) into the month number (1 = jan)
 	 *
-	 * @param   string  $date  data to convert
-	 * @param   bool    $abrv  is the month is a short or full name version
+	 * @param   string  $date  Data to convert
+	 * @param   bool    $abrv  Is the month is a short or full name version
 	 *
 	 * @return  string
 	 */
@@ -560,11 +560,11 @@ class FabrikWorker
 	 * Iterates through string to replace every
 	 * {placeholder} with posted data
 	 *
-	 * @param   string  $msg               text to parse
-	 * @param   array   $searchData        data to search for placeholders (default $_REQUEST)
-	 * @param   bool    $keepPlaceholders  if no data found for the place holder do we keep the {...} string in the message
-	 * @param   bool    $addslashes        add slashed to the text?
-	 * @param   object  $theirUser         user to use in replaceWithUserData (defaults to logged in user)
+	 * @param   string  $msg               Text to parse
+	 * @param   array   $searchData        Data to search for placeholders (default $_REQUEST)
+	 * @param   bool    $keepPlaceholders  If no data found for the place holder do we keep the {...} string in the message
+	 * @param   bool    $addslashes        Add slashed to the text?
+	 * @param   object  $theirUser         User to use in replaceWithUserData (defaults to logged in user)
 	 *
 	 * @return  string  parsed message
 	 */
@@ -618,7 +618,7 @@ class FabrikWorker
 	/**
 	 * Replace {varname} with request data (called from J content plugin)
 	 *
-	 * @param   string  &$msg  string to parse
+	 * @param   string  &$msg  String to parse
 	 *
 	 * @return  void
 	 */
@@ -644,9 +644,9 @@ class FabrikWorker
 	 * AND
 	 * {$their->var->email} placeholderse
 	 *
-	 * @param   string  $msg     message to parse
+	 * @param   string  $msg     Message to parse
 	 * @param   object  $user    Joomla user object
-	 * @param   string  $prefix  search string to look for e.g. 'my' to look for {$my->id}
+	 * @param   string  $prefix  Search string to look for e.g. 'my' to look for {$my->id}
 	 *
 	 * @return	string	parsed message
 	 */
@@ -704,7 +704,7 @@ class FabrikWorker
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with global data
 	 *
-	 * @param   string  $msg  message to parse
+	 * @param   string  $msg  Message to parse
 	 *
 	 * @return	string	parsed message
 	 */
@@ -739,7 +739,7 @@ class FabrikWorker
 	 * Called from parseMessageForPlaceHolder to iterate through string to replace
 	 * {placeholder} with posted data
 	 *
-	 * @param   string  $matches  placeholder e.g. {placeholder}
+	 * @param   string  $matches  Placeholder e.g. {placeholder}
 	 *
 	 * @return	string	posted data that corresponds with placeholder
 	 */
@@ -881,10 +881,10 @@ class FabrikWorker
 	 *
 	 * @param   string  $imagePath      Image path
 	 * @param   string  $folderPath     Path to scan
-	 * @param   string  &$folders       root path of this folder
+	 * @param   string  &$folders       Root path of this folder
 	 * @param   array   &$images        Value array of all existing folders
 	 * @param   array   $aFolderFilter  Value array of all existing images
-	 * @param   bool    $makeOptions    make options out for the results
+	 * @param   bool    $makeOptions    Make options out for the results
 	 *
 	 * @return  void
 	 */
@@ -921,8 +921,8 @@ class FabrikWorker
 	 * @param   string  $filter         A filter for the names
 	 * @param   bool    $recurse        Recurse search into sub-directories
 	 * @param   bool    $fullpath       True if to prepend the full path to the file name
-	 * @param   array   $aFolderFilter  folder names not to recurse into
-	 * @param   bool    $foldersOnly    return a list of folders only (true)
+	 * @param   array   $aFolderFilter  Folder names not to recurse into
+	 * @param   bool    $foldersOnly    Return a list of folders only (true)
 	 *
 	 * @return	array	of file/folder names
 	 */
@@ -1145,8 +1145,8 @@ class FabrikWorker
 	/**
 	 * Raise a J Error notice if the eval'd result is false and there is a error
 	 *
-	 * @param   mixed   $val  evaluated result
-	 * @param   string  $msg  error message, should contain %s as we spintf in the error_get_last()'s message property
+	 * @param   mixed   $val  Evaluated result
+	 * @param   string  $msg  Error message, should contain %s as we spintf in the error_get_last()'s message property
 	 *
 	 * @return  void
 	 */
@@ -1171,9 +1171,9 @@ class FabrikWorker
 	/**
 	 * Log  to table jos_fabrik_logs
 	 *
-	 * @param   string  $type        e.g. 'fabrik.fileupload.download'
-	 * @param   mixed   $msg         array/object/string
-	 * @param   bool    $jsonEncode  should we json encode the message?
+	 * @param   string  $type        E.g. 'fabrik.fileupload.download'
+	 * @param   mixed   $msg         Array/object/string
+	 * @param   bool    $jsonEncode  Should we json encode the message?
 	 *
 	 * @return  void
 	 */
@@ -1196,10 +1196,10 @@ class FabrikWorker
 	 * Returns the global {@link JDatabase} object, only creating it
 	 * if it doesn't already exist.
 	 *
-	 * @param   bool   $loadJoomlaDb  force (if true) the loading of the main J database,
+	 * @param   bool   $loadJoomlaDb  Force (if true) the loading of the main J database,
 	 * needed in admin to connect to J db whilst still using fab db drivers "{package}" replacement text
 	 *
-	 * @param   mixed  $cnnId         if null then loads the fabrik default connection, if an int then loads the specified connection by its id
+	 * @param   mixed  $cnnId         If null then loads the fabrik default connection, if an int then loads the specified connection by its id
 	 *
 	 * @return  JDatabase object
 	 */
@@ -1262,7 +1262,7 @@ class FabrikWorker
 	/**
 	 * Helper function get get a connection
 	 *
-	 * @param   mixed  $item  a list table or connection id
+	 * @param   mixed  $item  A list table or connection id
 	 *
 	 * @since 3.0b
 	 *
@@ -1324,8 +1324,8 @@ class FabrikWorker
 	 * Takes a string which may or may not be json and returns either string/array/object
 	 * will also turn valGROUPSPLITTERval2 to array
 	 *
-	 * @param   string  $data     json encoded string
-	 * @param   bool    $toArray  force data to be an array
+	 * @param   string  $data     Json encoded string
+	 * @param   bool    $toArray  Force data to be an array
 	 *
 	 * @return  mixed data
 	 */
@@ -1371,7 +1371,7 @@ class FabrikWorker
 	/**
 	 * Test if a string is a compatible date
 	 *
-	 * @param   string  $d  date to test
+	 * @param   string  $d  Date to test
 	 *
 	 * @return	bool
 	 */
@@ -1404,7 +1404,7 @@ class FabrikWorker
 	/**
 	 * See if data is JSON or not.
 	 *
-	 * @param   mixed  $data  date to test
+	 * @param   mixed  $data  Date to test
 	 *
 	 * @since	3.0.6
 	 *
@@ -1427,7 +1427,7 @@ class FabrikWorker
 	/**
 	 * Is the email really an email (more strict than JMailHelper::isEmailAddress())
 	 *
-	 * @param   string  $email  email address
+	 * @param   string  $email  Email address
 	 *
 	 * @since 3.0.4
 	 *
@@ -1472,6 +1472,7 @@ class FabrikWorker
 	 *
 	 * @return mixed NULL if nothing found, int if menu item found
 	 */
+
 	public static function itemId()
 	{
 		$app = JFactory::getApplication();
@@ -1490,10 +1491,10 @@ class FabrikWorker
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
-	 * @param   string  $name      param name
-	 * @param   mixed   $val       default
-	 * @param   bool    $mambot    if set to true menu params ignored
-	 * @param   string  $priority  defaults that menu priorities override request - set to 'request' to inverse this priority
+	 * @param   string  $name      Param name
+	 * @param   mixed   $val       Default
+	 * @param   bool    $mambot    If set to true menu params ignored
+	 * @param   string  $priority  Defaults that menu priorities override request - set to 'request' to inverse this priority
 	 *
 	 * @return  string
 	 */
@@ -1510,7 +1511,7 @@ class FabrikWorker
 				$menus = $app->getMenu();
 				$menu = $menus->getActive();
 
-				// If there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+				// If there is a menu item available AND the view is not rendered in a content plugin
 				if (is_object($menu) && !$mambot)
 				{
 					$val = $menu->params->get($name, $val);
@@ -1524,7 +1525,7 @@ class FabrikWorker
 				$menus = $app->getMenu();
 				$menu = $menus->getActive();
 
-				// If there is a menu item available AND the form is not rendered in a content plugin or module then check the menu fabriklayout property
+				// If there is a menu item available AND the view is not rendered in a content plugin
 				if (is_object($menu) && !$mambot)
 				{
 					$val = $menu->params->get($name, $val);
@@ -1539,9 +1540,9 @@ class FabrikWorker
 	 * Access control function for determining if the user can perform
 	 * a designated function on a specific row
 	 *
-	 * @param   object  $params  item parasm to test
-	 * @param   object  $row     data
-	 * @param   string  $col     access control setting to compare against
+	 * @param   object  $params  Item parasm to test
+	 * @param   object  $row     Data
+	 * @param   string  $col     Access control setting to compare against
 	 *
 	 * @return	mixed	- if ACL setting defined here return blo, otherwise return -1 to contiune with default acl setting
 	 */
@@ -1629,7 +1630,7 @@ class FabrikWorker
 	/**
 	 * Get the default values for a given JForm
 	 *
-	 * @param   string  $form  form name e.g. list, form etc
+	 * @param   string  $form  Form name e.g. list, form etc
 	 *
 	 * @since   3.0.7
 	 *

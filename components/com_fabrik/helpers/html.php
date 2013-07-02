@@ -221,6 +221,7 @@ class FabrikHelperHTML
 		$input = $app->input;
 		$script = '';
 
+		// Don't include in an Request.JSON call - for autofill form plugin
 		$headers = self::parseRequestHeaders();
 		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
@@ -1812,7 +1813,7 @@ EOD;
 			$sel = in_array($values[$i], $selected);
 			$chx .= $sel ? ' checked="checked" />' : ' />';
 			$labelClass = FabrikWorker::j3() && !$buttonGroup ? $type : '';
-			$item[] = '<label class="fabrikgrid_' . $value .  ' ' . $labelClass . '">';
+			$item[] = '<label class="fabrikgrid_' . $value . ' ' . $labelClass . '">';
 			$item[] = $elementBeforeLabel == '1' ? $chx . $label : $label . $chx;
 			$item[] = '</label>';
 			$items[] = implode("\n", $item);
@@ -1890,6 +1891,20 @@ EOD;
 	}
 
 	/**
+	 * Does the browser support Canvas elements
+	 *
+	 * @since  3.0.9
+	 *
+	 * @return boolean
+	 */
+
+	public static function canvasSupport()
+	{
+		$navigator = JBrowser::getInstance();
+		return !($navigator->getBrowser() == 'msie' && $navigator->getMajor() < 9);
+	}
+
+	/**
 	 * Run Joomla content plugins over text
 	 *
 	 * @param   string  &$text  Content
@@ -1916,14 +1931,14 @@ EOD;
 	}
 
 	/**
-	* get content item template
-	*
-	* @since   3.0.7
-	*
-	* @param   int $contentTemplate
-	*
-	* @return  string  content item html
-	*/
+	 * Get content item template
+	 *
+	 * @param   int  $contentTemplate  Joomla article id
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string  content item html
+	 */
 
 	public function getContentTemplate($contentTemplate)
 	{
@@ -1946,9 +1961,9 @@ EOD;
 	}
 
 	/**
-	* read a template file
+	* Read a template file
 	*
-	* @param   string  path to template
+	* @param   string  $templateFile  Path to template
 	*
 	* @return   string  template content
 	*/
@@ -1959,22 +1974,19 @@ EOD;
 		return JFile::read($templateFile);
 	}
 
-
 	/**
-	* Run a PHP tmeplate as a require.  Return buffered output, or false if require returns false.
-	*
-	* @param   string  path to template
-	*
-	* @param   array  optional element data in standard format, for eval'ed code to use
-	*
-	* @param   object  optional model object, depending on context, for eval'ed code to use
-	*
-	* @return   mixed  email message or false
+	 * Run a PHP tmeplate as a require.  Return buffered output, or false if require returns false.
+	 *
+	 * @param   string  $tmpl   Path to template
+	 * @param   array   $data   Optional element data in standard format, for eval'ed code to use
+	 * @param   object  $model  Optional model object, depending on context, for eval'ed code to use
+	 *
+	 * @return   mixed  email message or false
 	*/
 
 	public function getPHPTemplate($tmpl, $data = array(), $model = null)
 	{
-		// start capturing output into a buffer
+		// Start capturing output into a buffer
 		ob_start();
 		$result = require $tmpl;
 		$message = ob_get_contents();

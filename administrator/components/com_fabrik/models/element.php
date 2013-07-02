@@ -1004,7 +1004,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	/**
 	 * Potentially drop fields then remove element record
 	 *
-	 * @param   array  &$pks  to delete
+	 * @param   array  &$pks  To delete
 	 *
 	 * @return  boolean  True if successful, false if an error occurs.
 	 */
@@ -1015,40 +1015,33 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$drops = $input->get('drop', array(), 'array');
-		foreach ($pks as $id)
+		$elementIds = $app->input->get('elementIds', array(), 'array');
+		foreach ($elementIds as $id)
 		{
-			$drop = array_key_exists($id, $drops) && $drops[$id][0] == '1';
 			if ((int) $id === 0)
 			{
 				continue;
 			}
 			$pluginModel = $pluginManager->getElementPlugin($id);
-			$pluginModel->onRemove($drop);
+			$pluginModel->onRemove($id);
 			$element = $pluginModel->getElement();
-			if ($drop)
+			if ($pluginModel->isRepeatElement())
 			{
-				if ($pluginModel->isRepeatElement())
-				{
-					$listModel = $pluginModel->getListModel();
-					$db = $listModel->getDb();
-					$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
-					$db->setQuery('DROP TABLE ' . $tableName);
-					if (!$db->execute())
-					{
-						JError::raiseNotice(500, 'didnt drop joined db table ' . $tableName);
-					}
-				}
 				$listModel = $pluginModel->getListModel();
-				$item = $listModel->getTable();
+				$db = $listModel->getDb();
+				$tableName = $db->quoteName($this->getRepeatElementTableName($pluginModel));
+				$db->setQuery('DROP TABLE ' . $tableName);
+				$db->execute();
+			}
+			$listModel = $pluginModel->getListModel();
+			$item = $listModel->getTable();
 
-				// $$$ hugh - might be a tableless form!
-				if (!empty($item->id))
-				{
-					$db = $listModel->getDb();
-					$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
-					$db->execute();
-				}
+			// $$$ hugh - might be a tableless form!
+			if (!empty($item->id))
+			{
+				$db = $listModel->getDb();
+				$db->setQuery('ALTER TABLE ' . $db->quoteName($item->db_table_name) . ' DROP ' . $db->quoteName($element->name));
+				$db->execute();
 			}
 		}
 		return parent::delete($pks);

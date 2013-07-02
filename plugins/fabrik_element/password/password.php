@@ -24,7 +24,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 * States if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
 	 *
-	 * @param   array  $data  posted data
+	 * @param   array  $data  Posted data
 	 *
 	 * @return  bool
 	 */
@@ -51,8 +51,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -83,8 +83,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -128,8 +128,8 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	/**
 	 * Internal element validation
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  repeeat group counter
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeeat group counter
 	 *
 	 * @return bool
 	 */
@@ -210,7 +210,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
 	 * @return  array  html ids to watch for validation
 	 */

@@ -58,8 +58,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -112,8 +112,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Prepares the element data for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -185,7 +185,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Used in things like date when its id is suffixed with _cal
 	 * called from getLabel();
 	 *
-	 * @param   string  &$id  initial id
+	 * @param   string  &$id  Initial id
 	 *
 	 * @return  void
 	 */
@@ -233,8 +233,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -482,7 +482,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * reset the date to GMT - inversing the offset
 	 *
-	 * @param   object  $date  date to convert
+	 * @param   object  $date  Date to convert
 	 *
 	 * @return  string	mysql formatted GMT date
 	 */
@@ -521,8 +521,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -564,9 +564,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Used to format the data when shown in the form's email
 	 *
-	 * @param   mixed  $value          element's data
-	 * @param   array  $data           form records data
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   mixed  $value          Element's data
+	 * @param   array  $data           Form records data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	formatted value
 	 */
@@ -608,9 +608,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Determines the label used for the browser title
 	 * in the form/detail views
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	default value
 	 */
@@ -649,7 +649,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Converts a raw value into its label equivalent
 	 *
-	 * @param   string  &$v  raw value
+	 * @param   string  &$v  Raw value
 	 *
 	 * @return  void
 	 */
@@ -699,7 +699,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * @param   string  $id             The id of the text field
 	 * @param   string  $format         The date format (not used)
 	 * @param   array   $attribs        Additional html attributes
-	 * @param   int     $repeatCounter  repeat group counter (not used)
+	 * @param   int     $repeatCounter  Repeat group counter (not used)
+	 *
+	 * @deprecated - don't think its used
 	 *
 	 * @return  string
 	 */
@@ -734,7 +736,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * get the options used for the date elements calendar
 	 *
-	 * @param   int  $id  repeat counter
+	 * @param   int  $id  Repeat counter
 	 *
 	 * @return object ready for js encoding
 	 */
@@ -793,7 +795,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Get database field description
 	 *
-	 * @return  string  db field type
+	 * @return  string  Db field type
 	 */
 
 	public function getFieldDescription()
@@ -811,7 +813,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
 	 * @return  array  html ids to watch for validation
 	 */
@@ -829,9 +831,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Element plugin specific method for setting unecrypted values baack into post data
 	 *
-	 * @param   array   &$post  data passed by ref
-	 * @param   string  $key    key
-	 * @param   string  $data   elements unencrypted data
+	 * @param   array   &$post  Data passed by ref
+	 * @param   string  $key    Key
+	 * @param   string  $data   Elements unencrypted data
 	 *
 	 * @return  void
 	 */
@@ -895,9 +897,35 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
+	 * Called on failed form validation.
+	 * Ensures submitted form data is converted back into the format
+	 * that the form would expect to get it in, if the data had been
+	 * draw from the database record
+	 *
+	 * @param   string  $str  Submitted form value
+	 *
+	 * @return  string	formated value
+	 */
+
+	public function toDbVal($str)
+	{
+		/**
+		 * Only format if not empty otherwise search forms will filter
+		 * for todays date even when no date entered
+		 */
+		$this->resetToGMT = false;
+		if ($str != '')
+		{
+			$str = $this->storeDatabaseFormat($str, array());
+		}
+		$this->resetToGMT = true;
+		return $str;
+	}
+
+	/**
 	 * Does the format string contain time formatting options
 	 *
-	 * @param   string  $format  date format
+	 * @param   string  $format  Date format
 	 *
 	 * @since 2.1.1
 	 *
@@ -920,9 +948,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
-	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
-	 * @param   string  $eval       how the value should be handled
+	 * @param   string  $value      Initial value
+	 * @param   string  $condition  Intial $condition
+	 * @param   string  $eval       How the value should be handled
 	 *
 	 * @return  array	(value condition)
 	 */
@@ -1067,7 +1095,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Is a string a month?
 	 *
-	 * @param   string  $test  string to test
+	 * @param   string  $test  String to test
 	 *
 	 * @return  bool
 	 */
@@ -1085,7 +1113,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Get English name for translated month
 	 *
-	 * @param   string  $test  month name
+	 * @param   string  $test  Month name
 	 *
 	 * @return string|boolean
 	 */
@@ -1154,8 +1182,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 *
 	 * see: http://fabrikar.com/forums/showthread.php?t=28231
 	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
 	 * @return  string	filter html
@@ -1351,7 +1379,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Get 	filter HTML id
 	 *
-	 * @param   int  $range  which ranged filter we are getting
+	 * @param   int  $range  Which ranged filter we are getting
 	 *
 	 * @return  string  html filter id
 	 */
@@ -1367,9 +1395,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Cache method to populate autocomplete options
 	 *
-	 * @param   plgFabrik_Element  $elementModel  element model
-	 * @param   string             $search        search string
-	 * @param   array              $opts          options, 'label' => field to use for label (db join)
+	 * @param   plgFabrik_Element  $elementModel  Element model
+	 * @param   string             $search        Search string
+	 * @param   array              $opts          Options, 'label' => field to use for label (db join)
 	 *
 	 * @since   3.0.7
 	 *
@@ -1410,9 +1438,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * When importing csv data you can run this function on all the data to
 	 * format it into the format that the form would have submitted the date
 	 *
-	 * @param   array   &$data  to prepare
-	 * @param   string  $key    list column heading
-	 * @param   bool    $isRaw  data is raw
+	 * @param   array   &$data  To prepare
+	 * @param   string  $key    List column heading
+	 * @param   bool    $isRaw  Data is raw
 	 *
 	 * @return  array  data
 	 */
@@ -1449,8 +1477,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Does the element conside the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
 	 *
 	 * @return  bool
 	 */
@@ -1464,7 +1492,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   string  $value  initial value
+	 * @param   string  $value  Initial value
 	 *
 	 * @return  array  (value condition)
 	 */
@@ -1543,7 +1571,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * simple minded method to set a MySQL formatted date's time to 00:00:00
 	 *
-	 * @param   string  $date  in MySQL format
+	 * @param   string  $date  In MySQL format
 	 *
 	 * @return  string	mysql formatted date with time set to 0
 	 */
@@ -1559,7 +1587,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Add days to a date
 	 *
 	 * @param   mixed    $date  The initial time for the FabDate object
-	 * @param   integer  $add   number of days to add (negtive to remove days)
+	 * @param   integer  $add   Number of days to add (negtive to remove days)
 	 *
 	 * @return  string	mysql formatted date
 	 */
@@ -1577,8 +1605,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Build the query for the avg calculation
 	 *
-	 * @param   model   &$listModel  list model
-	 * @param   string  $label       the label to apply to each avg
+	 * @param   model   &$listModel  List model
+	 * @param   string  $label       The label to apply to each avg
 	 *
 	 * @return  string	sql statement
 	 */
@@ -1628,7 +1656,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * find an average from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
 	 *
-	 * @param   array  $data  to average
+	 * @param   array  $data  To average
 	 *
 	 * @return  string  average result
 	 */
@@ -1643,7 +1671,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * find the sum from a set of data
 	 * can be overwritten in plugin - see date for example of averaging dates
 	 *
-	 * @param   array  $data  to sum
+	 * @param   array  $data  To sum
 	 *
 	 * @return  string  sum result
 	 */
@@ -1662,7 +1690,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Takes date's time value and turns it into seconds. Used in timer
 	 *
-	 * @param   string  $date  object $date
+	 * @param   string  $date  Object $date
 	 *
 	 * @return  int		seconds
 	 */
@@ -1703,11 +1731,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
-	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $key            Element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
-	 * @param   string  $value          search string - already quoted if specified in filter array options
-	 * @param   string  $originalValue  original filter value without quotes or %'s applied
-	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * @param   string  $value          Search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  Original filter value without quotes or %'s applied
+	 * @param   string  $type           Filter type advanced/normal/prefilter/search/querystring/searchall
 	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
@@ -1792,7 +1820,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Called when copy row list plugin called
 	 *
-	 * @param   mixed  $val  value to copy into new record
+	 * @param   mixed  $val  Value to copy into new record
 	 *
 	 * @return mixed value to copy into new record
 	 */
@@ -1821,9 +1849,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Used by validations
 	 *
-	 * @param   string  $data     this elements data
-	 * @param   string  $cond     what condiion to apply
-	 * @param   string  $compare  data to compare element's data to (if date already set to Y-m-d H:I:S so no need to apply storeDatabaseForm() on it
+	 * @param   string  $data     This elements data
+	 * @param   string  $cond     What condiion to apply
+	 * @param   string  $compare  Data to compare element's data to (if date already set to Y-m-d H:I:S so no need to apply storeDatabaseForm() on it
 	 *
 	 * @return bool
 	 */
@@ -1846,8 +1874,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * Part of horrible hack for translating non-English words back
 	 * to something MySQL will understand.
 	 *
-	 * @param   string  $month  original month name
-	 * @param   bool    $abbr   is the month abbreviated
+	 * @param   string  $month  Original month name
+	 * @param   bool    $abbr   Is the month abbreviated
 	 *
 	 * @return  string  english month name
 	 */
@@ -2110,8 +2138,8 @@ class FabDate extends JDate
 	/**
 	 * Construct
 	 *
-	 * @param   string  $date  date
-	 * @param   mixed   $tz    timezone
+	 * @param   string  $date  Date
+	 * @param   mixed   $tz    Timezone
 	 */
 
 	public function __construct($date = 'now', $tz = null)
@@ -2146,7 +2174,7 @@ class FabDate extends JDate
 	/**
 	 * Remove '-' from string
 	 *
-	 * @param   string  $str  string to remove - from
+	 * @param   string  $str  String to remove - from
 	 *
 	 * @return  string
 	 */
@@ -2160,7 +2188,7 @@ class FabDate extends JDate
 	/**
 	 * Month name to integer
 	 *
-	 * @param   string  $str  month name
+	 * @param   string  $str  Month name
 	 *
 	 * @return  int  month number
 	 */
@@ -2234,7 +2262,7 @@ class FabDate extends JDate
 	/**
 	 * Strip days
 	 *
-	 * @param   string  $str  date string
+	 * @param   string  $str  Date string
 	 *
 	 * @return  string date without days
 	 */

@@ -977,7 +977,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getROValue($data, $repeatCounter = 0)
 	{
 		$v = $this->getValue($data, $repeatCounter);
-		return $this->getLabelForValue($v, $v, $repeatCounter);
+		return $this->getLabelForValue($v, $v);
 	}
 
 	/**
@@ -1057,9 +1057,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
 			$obj = JArrayHelper::toObject($data);
-
-			$default = implode(GROUPSPLITTER, $default);
-			$defaultLabel = $this->renderListData($default, $obj);
+			//$defaultLabel = $this->renderListData($default, $obj);
+			$defaultLabel = $this->renderListData($defaultLabel, $obj);
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
@@ -1087,7 +1086,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$idname = $this->getFullName(true, false) . '_id';
 				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
-				/*if user can access the drop down*/
+
+				// If user can access the drop down
 				switch ($displayType)
 				{
 					case 'dropdown':
@@ -1238,7 +1238,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 		{
-			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
+			$label = (array) $this->getLabelForValue($label[0], $label[0]);
 		}
 		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
 		$placeholder = ' placeholder="' . $params->get('placeholder', '') . '"';
@@ -1559,37 +1559,66 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$groupModel = $this->getGroupModel();
 		$labeldata = array();
 
-		// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
-		$col = $this->getFullName(true, false) . '_raw';
-		$row = JArrayHelper::fromObject($thisRow);
-
-		// $data = JArrayHelper::getValue($row, $col, $data);
-
-		// Rendered as checkbox/mutliselect
-		if (is_string($data) && strstr($data, GROUPSPLITTER))
+		if (!$groupModel->isJoin() && $groupModel->canRepeat())
 		{
-			$labeldata = explode(GROUPSPLITTER, $data);
+			$opts = $this->_getOptionVals();
+			$name = $this->getFullName(false, true, false) . '_raw';
+
+			// If coming from fabrikemail plugin $thisRow is empty
+			if (isset($thisRow->$name))
+			{
+				$data = $thisRow->$name;
+			}
+			if (!is_array($data))
+			{
+				$data = json_decode($data, true);
+			}
+			foreach ($data as $d)
+			{
+				foreach ($opts as $opt)
+				{
+					if ($opt->value == $d)
+					{
+						$labeldata[] = $opt->text;
+						break;
+					}
+				}
+			}
+			$data = json_encode($labeldata);
 		}
 		else
 		{
-			// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
-			if (!FabrikWorker::isJSON($data))
+			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
+		/* 	 $col = $this->getFullName(false, true, false) . '_raw';
+			$row = JArrayHelper::fromObject($thisRow);
+			$data = JArrayHelper::getValue($row, $col, $data);
+
+			// Rendered as checkbox/mutliselect
+			if (is_string($data) && strstr($data, GROUPSPLITTER))
 			{
-				$labeldata = (array) $data;
+				$labeldata = explode(GROUPSPLITTER, $data);
 			}
 			else
 			{
-				// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
-				// should really refactor so encoding goes in this if/else structure!
-				$labeldata = (array) json_decode($data);
+				// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
+				if (!FabrikWorker::isJSON($data))
+				{
+					$labeldata = (array) $data;
+				}
+				else
+				{
+					// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
+					// should really refactor so encoding goes in this if/else structure!
+					$labeldata = (array) json_decode($data);
+				}
 			}
-		}
-		foreach ($labeldata as &$l)
-		{
-			$l = $this->getLabelForValue($l, $l);
+			foreach ($labeldata as &$l)
+			{
+				$l = $this->getLabelForValue($l);
+			} */
 		}
 
-		$data = json_encode($labeldata);
+		//$data = json_encode($labeldata);
 
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
@@ -1612,7 +1641,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default, $default, $counter);
+			$default = $this->getLabelForValue($default, $default);
 		}
 		return $default;
 	}
@@ -2562,9 +2591,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Used by elements with suboptions
 	 *
-	 * @param   string  $v              value
-	 * @param   string  $defaultLabel   default label
-	 * @param   int     $repeatCounter  repeat group counter (3.0.7 deprecated)
+	 * @param   string  $v              Value
+	 * @param   string  $defaultLabel   Default label
+	 * @param   int     $repeatCounter  Repeat group counter (3.0.7 deprecated)
 	 *
 	 * @return  string	label
 	 */
@@ -2572,6 +2601,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
 	{
 
+		// Band aid - as this is called in listModel::addLabels() lets not bother - requerying the db (label already loaded)
+		if ($v === $defaultLabel)
+		{
+			return $v;
+		}
 		if ($this->isJoin())
 		{
 			$rows = $this->checkboxRows('id');
@@ -2586,7 +2620,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				return $rows[$v]->text;
 			}
 		}
-
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$query = $this->buildQuery(array(), false);

@@ -2,9 +2,11 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+error_reporting(E_ALL);
+echo "here";exit;
 jimport('joomla.mail.helper');
-JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabsubs/tables');
-require_once JPATH_ROOT . '/fabrik_plugins/form/paypal/scripts/fabrikar_subs.php';
+//JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabsubs/tables');
+//require_once JPATH_ROOT . '/fabrik_plugins/form/paypal/scripts/fabrikar_subs.php';
 
 $db = FabrikWorker::getDbo();
 
@@ -16,9 +18,10 @@ CASE
 	WHEN timeunit = 'D' THEN time_value
   END
   as emailday
-   FROM fabsubs_emails WHERE event_type = 'auto_renewal'");
+   FROM #__fabrik_subs_cron_emails WHERE event_type = 'auto_renewal'");
 $auto_renewal_mails = $db->loadObjectList('emailday');
-
+echo $db->getQuery();
+echo "<pre>";print_r($auto_renewal_mails);exit;
 
 $db->setQuery("SELECT *,
 CASE
@@ -71,7 +74,7 @@ foreach ($res as $row) {
 			$mail->subject = str_replace('{'.$k.'}', $v, $mail->subject);
 			$mail->body = str_replace('{'.$k.'}', $v, $mail->body);
 		}
-		$res = JUtility::sendMail( $mailfrom, $fromname, $row->email, $mail->subject, $mail->body, true);
+		$res = JUtility::sendMail($mailfrom, $fromname, $row->email, $mail->subject, $mail->body, true);
 	}
 
 	if (array_key_exists($row->daysleft, $expiration_mails) && $row->recurring == 0)

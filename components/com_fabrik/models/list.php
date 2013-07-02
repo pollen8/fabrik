@@ -905,7 +905,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$thisRow = $data[$i];
 						$coldata = $thisRow->$col;
-						$data[$i]->$col = $elementModel->getLabelForValue($coldata);
+						$data[$i]->$col = $elementModel->getLabelForValue($coldata, $coldata);
 					}
 				}
 			}
@@ -1980,10 +1980,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Add a normal/custom link to the element data
 	 *
-	 * @param   string  $data           element data
-	 * @param   object  &$elementModel  element model
-	 * @param   object  $row            of all row data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Element data
+	 * @param   object  &$elementModel  Element model
+	 * @param   object  $row            All row data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	element data with link added if specified
 	 */
@@ -6698,11 +6698,12 @@ class FabrikFEModelList extends JModelForm
 										$val = stripslashes($val);
 									}
 								}
-								if (!$elementModel->dataIsNull($data, $val))
+								if ($elementModel->dataIsNull($data, $val))
 								{
-									$oRecord->$key = $val;
-									$aBindData[$key] = $val;
+									$val = null;
 								}
+								$oRecord->$key = $val;
+								$aBindData[$key] = $val;
 
 								if ($elementModel->isJoin() && $isJoin && array_key_exists('params', $data))
 								{

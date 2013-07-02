@@ -3,6 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-calc" label="COM_FABRIK_OPTIONS">
 			
+			<field type="helplink"
+				url="PLG_ELEMENT_CALC_HELP_SERVER" />
+				
 			<field name="hidden"
 				type="radio"
 				class="btn-group"

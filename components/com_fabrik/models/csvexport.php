@@ -446,7 +446,6 @@ class FabrikFEModelCSVExport
 		{
 			return $g;
 		}
-		$selectedFields = $input->get('fields');
 		$r = current($g);
 		$formModel = $this->model->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
