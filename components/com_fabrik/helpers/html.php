@@ -878,7 +878,10 @@ EOD;
 			JHtml::_('behavior.framework', true);
 
 			// Ensure bootstrap js is loaded - as J template may not load it.
-			JHtml::_('bootstrap.framework');
+			if ($version->RELEASE > 2.5)
+			{
+				JHtml::_('bootstrap.framework');
+			}
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
