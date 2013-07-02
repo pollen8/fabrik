@@ -1046,7 +1046,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
 			$obj = JArrayHelper::toObject($data);
-			$defaultLabel = $this->renderListData($default, $obj);
+			//$defaultLabel = $this->renderListData($default, $obj);
+			$defaultLabel = $this->renderListData($defaultLabel, $obj);
 			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
@@ -1074,7 +1075,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				$idname = $this->getFullName(false, true, false) . '_id';
 				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
-				/*if user can access the drop down*/
+
+				// If user can access the drop down
 				switch ($displayType)
 				{
 					case 'dropdown':
@@ -1580,11 +1582,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 				}
 			}
+			$data = json_encode($labeldata);
 		}
 		else
 		{
 			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
-			$col = $this->getFullName(false, true, false) . '_raw';
+		/* 	 $col = $this->getFullName(false, true, false) . '_raw';
 			$row = JArrayHelper::fromObject($thisRow);
 			$data = JArrayHelper::getValue($row, $col, $data);
 
@@ -1609,11 +1612,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			foreach ($labeldata as &$l)
 			{
-				$l = $this->getLabelForValue($l, $l);
-			}
+				$l = $this->getLabelForValue($l);
+			} */
 		}
 
-		$data = json_encode($labeldata);
+		//$data = json_encode($labeldata);
 
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
