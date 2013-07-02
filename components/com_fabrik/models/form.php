@@ -1087,7 +1087,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return false;
 		}
-		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is tryign to update formData which is not yet set
+		/** $$$ rob 27/10/2011 - moved above _doUpload as code in there is trying to update formData which is not yet set
 		 * this->setFormData();
 		 */
 
@@ -1656,6 +1656,8 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					$listModel->encrypt[] = $elementModel->getElement()->name;
 				}
+				// Following line added to fix importcsv where data from first row is used for every row.
+				$elementModel->defaults = null;
 				$elementModel->onStoreRow($data);
 			}
 		}
@@ -1763,42 +1765,40 @@ class FabrikFEModelForm extends FabModelForm
 							 * if ($elementModel->canView())
 							 * $$$ hugh - testing adding non-viewable, non-editable elements to encrypted vars
 							 */
-							if (true)
+
+							if (is_array($encrypted))
 							{
-								if (is_array($encrypted))
-								{
-									// Repeat groups
-									$v = array();
-									foreach ($encrypted as $e)
-									{
-										// $$$ rob urldecode when posting from ajax form
-										$e = urldecode($e);
-										$e = empty($e) ? '' : $crypt->decrypt($e);
-										$e = FabrikWorker::JSONtoData($e);
-										$v[] = $w->parseMessageForPlaceHolder($e, $post);
-									}
-								}
-								else
+								// Repeat groups
+								$v = array();
+								foreach ($encrypted as $e)
 								{
 									// $$$ rob urldecode when posting from ajax form
-									$encrypted = urldecode($encrypted);
-									$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
-									/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
-									 * their JSON data for encrypted read only vals, need to decode.
-									 */
-									$v = FabrikWorker::JSONtoData($v, true);
-									foreach ($v as &$tmpV)
-									{
-										$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
-									}
+									$e = urldecode($e);
+									$e = empty($e) ? '' : $crypt->decrypt($e);
+									$e = FabrikWorker::JSONtoData($e);
+									$v[] = $w->parseMessageForPlaceHolder($e, $post);
 								}
-								$elementModel->setGroupModel($groupModel);
-								$elementModel->setValuesFromEncryt($post, $key, $v);
-								/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
-								 * pick up decrypted value
-								 */
-								$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
 							}
+							else
+							{
+								// $$$ rob urldecode when posting from ajax form
+								$encrypted = urldecode($encrypted);
+								$v = empty($encrypted) ? '' : $crypt->decrypt($encrypted);
+								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
+								 * their JSON data for encrypted read only vals, need to decode.
+								 */
+								$v = FabrikWorker::JSONtoData($v, true);
+								foreach ($v as &$tmpV)
+								{
+									$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
+								}
+							}
+							$elementModel->setGroupModel($groupModel);
+							$elementModel->setValuesFromEncryt($post, $key, $v);
+							/* $$ rob set both normal and rawvalues to encrypted - otherwise validate method doesn't
+							 * pick up decrypted value
+							 */
+							$elementModel->setValuesFromEncryt($post, $key . '_raw', $v);
 						}
 					}
 				}
@@ -1990,11 +1990,11 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						// $$$ rob for repeat groups no join setting to array() menat that $_POST only contained the last repeat group data
 						// $elDbVals = array();
-						$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+						$elDbVals[$c] = $form_data;
 					}
 					else
 					{
-						$elDbVals = $elementModel->toDbVal($form_data, $c);
+						$elDbVals = $form_data;
 					}
 					// Validations plugins attached to elemenets
 					$pluginc = 0;
@@ -2017,7 +2017,7 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if ($groupModel->canRepeat())
 								{
-									$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+									$elDbVals[$c] = $form_data;
 									$testreplace = $plugin->replace($elDbVals[$c], $elementModel, $pluginc, $c);
 									if ($testreplace != $elDbVals[$c])
 									{
@@ -2085,7 +2085,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session = JFactory::getSession();
 
 		// Store errors in local array as clearErrors() removes $this->errors
@@ -2117,8 +2117,8 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$this->errors = array();
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
@@ -2140,7 +2140,7 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
 		$session->set($context . 'errors', $errors);
 		$session->set($context . 'session.on', true);
 	}
@@ -2488,6 +2488,20 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Are we creating a new record or editing an existing one?
+	 * Put here to ensure compat when we go from 3.0 where rowid = 0 = new, to row id '' = new
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return  boolean
+	 */
+
+	public function isNewRecord()
+	{
+		return $this->getRowId() == 0;
+	}
+
+	/**
 	 * Get the current records row id
 	 * setting a rowid of -1 will load in the current users record (used in
 	 * conjunction wth usekey variable
@@ -2566,7 +2580,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$rob required in paolo's site when rendering modules with ajax option turned on
 		$this->listModel = null;
-		$this->rowId = $this->getRowId();
+		$this->setRowId($this->getRowId());
 
 		/*
 		 * $$$ hugh - need to call this here as we set $this->editable here, which is needed by some plugins
@@ -2633,7 +2647,17 @@ class FabrikFEModelForm extends FabModelForm
 	public function hasErrors()
 	{
 		$errorsFound = !empty($this->errors);
-
+		$errorsFound = false;
+		foreach ($this->errors as $field => $errors)
+		{
+			if (!empty($errors))
+			{
+				if (!empty($errors[0]))
+				{
+					$errorsFound = true;
+				}
+			}
+		}
 		if ($this->saveMultiPage(false))
 		{
 			$srow = $this->getSessionData();
@@ -2680,10 +2704,30 @@ class FabrikFEModelForm extends FabModelForm
 		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('formmodel getData: start') : null;
 		$this->data = array();
-		$f = JFilterInput::getInstance();
-		$data = $f->clean($_REQUEST, 'array');
 
-		$data = array(FArrayHelper::toObject($data));
+		$f = JFilterInput::getInstance();
+
+		/*
+		 * $$$ hugh - we need to remove any elements from the query string,
+		 * if the user doesn't have access, otherwise ACL's on elements can
+		 * be bypassed by just setting value on form load query string!
+		 */
+
+		$clean_request = $f->clean($_REQUEST, 'array');
+		foreach ($clean_request as $key => $value)
+		{
+			$test_key = FabrikString::rtrimword($key, '_raw');
+			$elementModel = $this->getElement($test_key, false, false);
+			if ($elementModel !== false)
+			{
+				if (!$elementModel->canUse())
+				{
+					unset($clean_request[$key]);
+				}
+			}
+		}
+
+		$data = array(FArrayHelper::toObject($clean_request));
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -2762,8 +2806,9 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						$data = array_merge($tmp_data, JArrayHelper::fromObject($data[0]));
-						$data = array(FArrayHelper::toObject($data));
+						$bits = JArrayHelper::fromObject($data[0]);
+						$bits = array_merge($tmp_data, $bits);
+						$data = array(FArrayHelper::toObject($bits));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
 					}
 				}
@@ -2807,8 +2852,7 @@ class FabrikFEModelForm extends FabModelForm
 									$this->rowId = isset($row->__pk_val) ? $row->__pk_val : $this->rowId;
 								}
 								$row = empty($row) ? array() : JArrayHelper::fromObject($row);
-								$filter = JFilterInput::getInstance();
-								$request = $filter->clean($_REQUEST, 'array');
+								$request = $clean_request;
 								$request = array_merge($row, $request);
 								$data[] = FArrayHelper::toObject($request);
 							}
@@ -2909,9 +2953,14 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 
 		// Set in plugins such as confirmation plugin
-		if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+		$pluginManager = FabrikWorker::getPluginManager();
+		$pluginManager->runPlugins('usesSession', $this, 'form');
+		if (in_array(true, $pluginManager->data))
 		{
-			return true;
+			if ($session->get('com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.session.on') == true && $useSessionOn)
+			{
+				return true;
+			}
 		}
 		$save = (int) $params->get('multipage_save', 0);
 		$user = JFactory::getUser();
@@ -3126,7 +3175,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Get prefilter conditions from table and apply them to the record
 		// the false, ignores any filters set by the table
 		$where = $listModel->buildQueryWhere(false);
-		if (strstr($sql, 'WHERE') && $this->rowId != '')
+		if (strstr($sql, 'WHERE'))
 		{
 			// Do it this way as queries may contain subquerues which we want to keep the where
 			$firstword = JString::substr($where, 0, 5);
@@ -3138,7 +3187,7 @@ class FabrikFEModelForm extends FabModelForm
 		// Set rowId to -2 to indicate random record
 		if ($random)
 		{
-			$this->rowId = -2;
+			$this->setRowId(-2);
 		}
 		// $$$ rob ensure that all prefilters are wrapped in brackets so that
 		// only one record is loaded by the query - might need to set $word = and?
@@ -4041,6 +4090,7 @@ class FabrikFEModelForm extends FabModelForm
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
 			$group->columns = $groupParams->get('group_columns', 1);
+			$group->splitPage = $groupParams->get('split_page', 0);
 			if ($groupModel->canRepeat())
 			{
 				$group->tmpl = $groupParams->get('repeat_template', 'repeatgroup');
@@ -4469,7 +4519,7 @@ class FabrikFEModelForm extends FabModelForm
 					// Return to the page that called the form
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
-				$Itemid = (int) @$app->getMenu('site')->getActive()->id;
+				$Itemid = (int) FabrikWorker::itemId();
 				if ($url == '')
 				{
 					if ($Itemid !== 0)

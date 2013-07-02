@@ -35,8 +35,7 @@ class FabrikViewList extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$Itemid = $app->getMenu('site')->getActive()->id;
-		$config = JFactory::getConfig();
+		$Itemid	= FabrikWorker::itemId();
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');

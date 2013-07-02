@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewNotification extends JView
+class FabrikViewNotification extends JView
 {
 
 	/**
@@ -29,9 +29,12 @@ class fabrikViewNotification extends JView
 	 * deletion not routing right yet
 	 * langauge strings not loading either
 	 *
+	 * @param   string  $tpl  Template
+	 *
+	 *   @return  void
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$this->rows = $this->get('UserNotifications');
 

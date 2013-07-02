@@ -3,38 +3,57 @@
 	<fields name="params">
 		<fieldset name="plg-dropdown-mutli" label="COM_FABRIK_DATA">
 		
-			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
+			<field name="sub_options"
+				type="suboptions"
+				label="COM_FABRIK_SUBOPTIONS" />
 			
-			<field default="0"
+			<field name="multiple"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_DROPDOWN_ALLOW_MULTISELECT_LABEL" name="multiple" type="radio">
+				label="PLG_ELEMENT_DROPDOWN_ALLOW_MULTISELECT_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field class="input-mini" default="3" description="PLG_ELEMENT_DROPDOWN_MULTISIZE_DESC" label="PLG_ELEMENT_DROPDOWN_MULTISIZE_LABEL" name="dropdown_multisize" size="3" type="text"/>
+			<field name="dropdown_multisize"
+				type="text"
+				class="input-mini"
+				default="3"
+				description="PLG_ELEMENT_DROPDOWN_MULTISIZE_DESC"
+				label="PLG_ELEMENT_DROPDOWN_MULTISIZE_LABEL"
+				size="3" />
 
 		</fieldset>
 
 		<fieldset label="PLG_ELEMENT_DROPDOWN_FRONT_END_ADDITIONS" name="plg-dropdown-add">
 			
-			<field default="0"
+			<field name="allow_frontend_addtodropdown"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_DROPDOWN_EDIT_DROPDOWN_DESC" label="PLG_ELEMENT_DROPDOWN_EDIT_DROPDOWN_LABEL" name="allow_frontend_addtodropdown" type="radio">
+				description="PLG_ELEMENT_DROPDOWN_EDIT_DROPDOWN_DESC"
+				label="PLG_ELEMENT_DROPDOWN_EDIT_DROPDOWN_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="dd-allowadd-onlylabel"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_DROPDOWN_ONLY_ADD_LABEL_DESC" label="PLG_ELEMENT_DROPDOWN_ONLY_ADD_LABEL_LABEL" name="dd-allowadd-onlylabel" type="radio">
+				description="PLG_ELEMENT_DROPDOWN_ONLY_ADD_LABEL_DESC"
+				label="PLG_ELEMENT_DROPDOWN_ONLY_ADD_LABEL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="dd-savenewadditions"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_DROPDOWN_SAVE_NEW_ADDITIONS_DESC" label="PLG_ELEMENT_DROPDOWN_SAVE_NEW_ADDITIONS_LABEL" name="dd-savenewadditions" type="radio">
+				description="PLG_ELEMENT_DROPDOWN_SAVE_NEW_ADDITIONS_DESC"
+				label="PLG_ELEMENT_DROPDOWN_SAVE_NEW_ADDITIONS_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -42,7 +61,12 @@
 		</fieldset>
 		
 		<fieldset label="Advanced" name="plg-dropdown-advanced">
-			<field default="" description="PLG_ELEMENT_DROPDOWN_SEPARATOR_DESC" label="PLG_ELEMENT_DROPDOWN_SEPARATOR_LABEL" name="options_split_str" size="10" type="text"/>
+			
+			<field name="options_split_str"
+				type="text"
+				default=""
+				description="PLG_ELEMENT_DROPDOWN_SEPARATOR_DESC"
+				label="PLG_ELEMENT_DROPDOWN_SEPARATOR_LABEL" size="10" />
 			
 			<field name="dropdown_populate"
 				type="textarea"
@@ -57,11 +81,17 @@
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-dropdown" label="COM_FABRIK_OPTIONS">
 			
-			<field cols="45" label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
+			<field name="default"
+				type="textarea"
+				cols="45"
+				label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL"
+				rows="6" />
 						
-			<field default="0"
+			<field name="eval"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_DROPDOWN_EVAL_LABEL" name="eval" type="radio">
+				label="PLG_ELEMENT_DROPDOWN_EVAL_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

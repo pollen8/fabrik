@@ -250,8 +250,7 @@ class FabrikControllerForm extends JControllerLegacy
 					// Return to the page that called the form
 					$url = $input->get('fabrik_referrer', "index.php", 'string');
 				}
-				// @TODO this global doesnt exist in j1.6
-				$Itemid = $app->getMenu('site')->getActive()->id;
+				$Itemid = FabrikWorker::itemId();
 				if ($url == '')
 				{
 					$url = 'index.php?option=com_' . $option . '&Itemid=' . $Itemid;

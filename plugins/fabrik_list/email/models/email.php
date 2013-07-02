@@ -542,7 +542,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 					foreach ($mailtos as $mailto)
 					{
 						$thisMailto = $w->parseMessageForPlaceholder($mailto, $row);
-						if (JMailHelper::isEmailAddress($thisMailto))
+						if (FabrikWorker::isEmail($thisMailto))
 						{
 							$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 							$thismessage = $w->parseMessageForPlaceholder($message, $row);
@@ -793,7 +793,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							foreach ($mailtos as $tokey => $thisto)
 							{
 								$thisto = $w->parseMessageForPlaceholder($thisto, $row);
-								if (!JMailHelper::isEmailAddress($thisto))
+								if (!FabrikWorker::isEmail($thisto))
 								{
 									unset($mailtos[$tokey]);
 									$notsent++;
@@ -833,7 +833,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 							foreach ($mailtos as $mailto)
 							{
 								$mailto = $w->parseMessageForPlaceholder($mailto, $row);
-								if (JMailHelper::isEmailAddress($mailto))
+								if (FabrikWorker::isEmail($mailto))
 								{
 									$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 									$thismsg = '';
@@ -906,7 +906,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				foreach ($thistos as $tokey => $thisto)
 				{
 					$thisto = $w->parseMessageForPlaceholder($thisto, $first_row);
-					if (!JMailHelper::isEmailAddress($thisto))
+					if (!FabrikWorker::isEmail($thisto))
 					{
 						unset($thistos[$tokey]);
 						$notsent++;
@@ -930,7 +930,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 			{
 				foreach ($thistos as $thisto)
 				{
-					if (JMailHelper::isEmailAddress($thisto))
+					if (FabrikWorker::isEmail($thisto))
 					{
 						$res = JUTility::sendMail($email_from, $fromname, $thisto, $thissubject, $merged_msg, true, $cc, $bcc, $this->filepath);
 						if ($res)

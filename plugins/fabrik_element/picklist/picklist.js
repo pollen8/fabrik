@@ -10,6 +10,7 @@ var FbPicklist = new Class({
 		var to =  document.id(this.options.element + '_tolist');
 		
 		var dropcolour = from.getStyle('background-color');
+		var that = this;
 		this.sortable = new Sortables([ from, to ], {
 			clone : true,
 			revert : true,
@@ -17,29 +18,24 @@ var FbPicklist = new Class({
 			hovercolor : '#ffddff',
 			onComplete : function () {
 				this.setData();
+				that.fadeOut(from, dropcolour);
+				that.fadeOut(to, dropcolour);
 			}.bind(this),
 			onSort: function (element, clone) {
 				this.showNotices(element, clone);
+				
 			}.bind(this),
 			
 			
 			onStart : function (element, clone) {
 				this.drag.addEvent('onEnter', function (element, droppable) {
 					if (this.lists.contains(droppable)) {
-						var hoverFx = new Fx.Tween(droppable, {
-							wait : false,
-							duration : 600
-						});
-						hoverFx.start('background-color', this.options.hovercolor);
-
+						that.fadeOut(droppable, this.options.hovercolor);
 						if (this.lists.contains(this.drag.overed)) {
 							this.drag.overed.addEvent('mouseleave', function () {
-								var hoverFx = new Fx.Tween(droppable, {
-									wait : false,
-									duration : 600
-								});
-								hoverFx.start('background-color', dropcolour);
-							});
+								that.fadeOut(from, dropcolour);
+								that.fadeOut(to, dropcolour);
+							}.bind(this));
 						}
 					}
 				}.bind(this));
@@ -49,6 +45,14 @@ var FbPicklist = new Class({
 		var notices = [from.getElement('li.emptyplicklist'), to.getElement('li.emptyplicklist')];
 		this.sortable.removeItems(notices);
 		this.showNotices();
+	},
+	
+	fadeOut: function (droppable, colour) {
+		var hoverFx = new Fx.Tween(droppable, {
+			wait : false,
+			duration : 600
+		});
+		hoverFx.start('background-color', colour);
 	},
 	
 	showNotices: function (element, clone) {

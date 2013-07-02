@@ -46,7 +46,7 @@ class JFormFieldPackageList extends JFormFieldList
 	{
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . FabrikString::safeColName('text'));
+		$query->select("id AS value, CONCAT(label, '(', version , ')') AS " . $db->quote('text'));
 		$query->from('#__{package}_packages');
 		$query->order('value DESC');
 		$db->setQuery($query);
@@ -61,7 +61,7 @@ class JFormFieldPackageList extends JFormFieldList
 	/**
 	 * Method to get the field input markup.
 	 *
-	 * @return  string	The field input markup.
+	 * @return	string	The field input markup.
 	 */
 
 	protected function getInput()

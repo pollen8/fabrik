@@ -7,11 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>
 	<authorUrl>www.fabrikar.com</authorUrl>
-<<<<<<< HEAD
 	<version>3.1b</version>
-=======
-	<version>3.0.8</version>
->>>>>>> 8beaea6903c65193bd2b8d7cc5c3b00c6e2c98d7
 	<description>MOD_FABRIK_LIST_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fabrik_list">mod_fabrik_list.php</filename>
@@ -94,6 +90,34 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+				
+				<field name="show_into"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_INTRO_DESC"
+					label="MOD_FABRIK_LIST_SHOW_INTRO_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="show_outro"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_OUTRO_DESC"
+					label="MOD_FABRIK_LIST_SHOW_OUTRO_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
+				<field name="show_filters"
+					type="radio"
+					default="1"
+					description="MOD_FABRIK_LIST_SHOW_FILTERS_DESC"
+					label="MOD_FABRIK_LIST_SHOW_FILTERS_LABEL" >
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+				
 					
 				<field name="list_elements"
 					type="fabrikmodalrepeat"
@@ -175,6 +199,7 @@
 									<option value="lessthanequals">LESS THAN OR EQUALS</option>
 									<option value="in">IN</option>
 									<option value="not_in">NOT IN</option>
+									<option value="exists">EXISTS</option>
 									<option value="earlierthisyear">MOD_FABRIK_LIST_EARLIER_THIS_YEAR</option>
 									<option value="laterthisyear">MOD_FABRIK_LIST_LATER_THIS_YEAR</option>
 									<option value="yesterday">COM_FABRIK_YESTERDAY</option>

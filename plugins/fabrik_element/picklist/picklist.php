@@ -57,18 +57,17 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
-		$attribs = 'class="picklistcontainer' . $errorCSS . "\"";
-		$style = ".frompicklist, .topicklist{\n" . "background-color:#efefef;\n" . "padding:5px !important;\n" . "list-style:none;}\n" . "\n"
-			. "div.picklistcontainer{\n" . "width:40%;\n" . "margin-right:10px;\n" . "margin-bottom:10px;\n" . "float:left;\n" . "}\n" . "\n"
-			. ".frompicklist li, .topicklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
+		$attribs = 'class="span6 ' . $errorCSS . "\"";
+		$style = ".picklist{\n" . "list-style:none;}\n" . "\n"
+			. ".picklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
 			. "cursor:move;\n" . "}\n" . "\n" . "li.emptyplicklist{\n" . "background-color:transparent;\n" . "cursor:pointer;\n" . "}";
 		FabrikHelperHTML::addStyleDeclaration($style);
 		$i = 0;
 		$aRoValues = array();
 		$fromlist = array();
 		$tolist = array();
-		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="frompicklist">';
-		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="topicklist">';
+		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small">';
+		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small">';
 		foreach ($arVals as $v)
 		{
 			//$tmptxt = addslashes(htmlspecialchars($arTxt[$i]));
@@ -82,7 +81,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$lookup = array_flip($arVals);
 		foreach ($arSelected as $v)
 		{
-			if ($v == '' || $v == '-')
+			if ($v == '' || $v == '-' || $v == '[""]')
 			{
 				continue;
 			}
@@ -99,7 +98,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$tolist[] = '</ul>';
 
 		$str = '<div ' . $attribs . '>' . implode("\n", $fromlist) . '</div>';
-		$str .= '<div class="picklistcontainer">' . implode("\n", $tolist) . '</div>';
+		$str .= '<div class="span6">' . implode("\n", $tolist) . '</div>';
 		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
 		if (!$this->isEditable())
 		{

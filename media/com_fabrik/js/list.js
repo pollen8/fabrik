@@ -691,7 +691,9 @@ var FbList = new Class({
 			}
 			this.request.send();
 			
-			history.pushState(data, 'fabrik.list.submit');
+			if (window.history && window.history.pushState) {
+				history.pushState(data, 'fabrik.list.submit');
+			}
 			Fabrik.fireEvent('fabrik.list.submit', [task, this.form.toQueryString().toObject()]);
 		} else {
 			this.form.submit();
@@ -802,7 +804,9 @@ var FbList = new Class({
 		if (typeOf(data) !== 'object') {
 			return;
 		}
-		history.pushState(data, 'fabrik.list.rows');
+		if (window.history && window.history.pushState) {
+			history.pushState(data, 'fabrik.list.rows');
+		}
 		if (data.id === this.id && data.model === 'list') {
 			var header = document.id(this.options.form).getElements('.fabrik___heading').getLast();
 			var headings = new Hash(data.headings);
@@ -1284,7 +1288,8 @@ var FbListActions = new Class({
 				if (trigger.getElement('.fabrikTip')) {
 					trigger = trigger.getElement('.fabrikTip');
 				}
-				var tipOpts = Object.merge(Object.clone(Fabrik.tips.options), {
+				var t = Fabrik.tips ? Fabrik.tips.options : {};
+				var tipOpts = Object.merge(Object.clone(t), {
 					showOn: 'click',
 					hideOn: 'click',
 					position: 'bottom',
@@ -1371,10 +1376,12 @@ var FbListActions = new Class({
 		}
 		
 		var c = function (el) {
-			return el.getParent('.fabrik___heading').getElement(this.options.selector);
+			var p = el.getParent('.fabrik___heading');
+			return typeOf(p) !== 'null' ? p.getElement(this.options.selector) : '';
 		}.bind(this);
 
-		var tipChxAllOpts = Object.merge(Object.clone(Fabrik.tips.options), {
+		var t = Fabrik.tips ? Object.clone(Fabrik.tips.options) : {};
+		var tipChxAllOpts = Object.merge(t, {
 			position: this.options.floatPos,
 			html: true,
 			showOn: 'click',

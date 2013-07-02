@@ -36,8 +36,7 @@ class FabrikViewListBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$listref = $model->getRenderContext();
@@ -62,7 +61,7 @@ class FabrikViewListBase extends JViewLegacy
 		$tmpl = $model->getTmpl();
 		$this->tmpl = $tmpl;
 
-		$this->get('ListCss');
+		$model->getListCss();
 
 		// Check for a custom js file and include it if it exists
 		$aJsPath = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $tmpl . '/javascript.js';
@@ -153,7 +152,7 @@ class FabrikViewListBase extends JViewLegacy
 		$csvOpts->custom_qs = $params->get('csv_custom_qs', '');
 		$opts->csvOpts = $csvOpts;
 
-		$opts->csvFields = $this->get('CsvFields');
+		$opts->csvFields = $model->getCsvFields();
 		$csvOpts->incfilters = (int) $params->get('incfilters');
 
 		$opts->data = $data;
@@ -214,6 +213,7 @@ class FabrikViewListBase extends JViewLegacy
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_DELETE');
 		JText::script('COM_FABRIK_LIST_SHORTCUTS_FILTER');
 
+		$script[] = "window.addEvent('domready', function () {";
 		$script[] = "\tvar list = new FbList('$listid',";
 		$script[] = "\t" . $opts;
 		$script[] = "\t);";
@@ -241,6 +241,9 @@ class FabrikViewListBase extends JViewLegacy
 		// Was seperate but should now load in with the rest of the require js code
 		$model = $this->getModel();
 		$script[] = $model->getElementJs($src);
+
+		// End domredy wrapper
+		$script[] = '})';
 		$script = implode("\n", $script);
 
 		FabrikHelperHTML::iniRequireJS($shim);
@@ -271,20 +274,19 @@ class FabrikViewListBase extends JViewLegacy
 		$profiler = JProfiler::getInstance('Application');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$model = $this->getModel();
 
 		// Force front end templates
-		$tmpl = $this->get('tmpl');
+		$tmpl = $model->getTmpl();
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';
 		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$this->addTemplatePath($this->_basePath . '/' . $this->_name . '/' . $jTmplFolder . '/' . $tmpl);
 
-		$app = JFactory::getApplication();
 		$root = $app->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_SITE;
 		$this->addTemplatePath($root . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $tmpl);
 
 		require_once COM_FABRIK_FRONTEND . '/views/modifiers.php';
 		$user = JFactory::getUser();
-		$model = $this->getModel();
 		$document = JFactory::getDocument();
 		$item = $model->getTable();
 		$data = $model->render();
@@ -293,7 +295,7 @@ class FabrikViewListBase extends JViewLegacy
 		// Add in some styling short cuts
 		$c = 0;
 		$form = $model->getFormModel();
-		$nav = $this->get('Pagination');
+		$nav = $model->getPagination();
 		foreach ($data as $groupk => $group)
 		{
 			$last_pk = '';
@@ -329,22 +331,16 @@ class FabrikViewListBase extends JViewLegacy
 
 		// Cant use numeric key '0' as group by uses grouped name as key
 		$firstRow = current($this->rows);
-		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
-		$this->advancedSearch = $this->get('AdvancedSearchLink');
+		$this->requiredFiltersFound = $model->getRequiredFiltersFound();
+		$this->advancedSearch = $model->getAdvancedSearchLink();
 		$this->advancedSearchURL = $model->getAdvancedSearchURL();
 		$this->nodata = (empty($this->rows) || (count($this->rows) == 1 && empty($firstRow)) || !$this->requiredFiltersFound) ? true : false;
 		$this->tableStyle = $this->nodata ? 'display:none' : '';
 		$this->emptyStyle = $this->nodata ? '' : 'display:none';
 		$params = $model->getParams();
 
-		if (!$model->canPublish())
+		if (!$this->access($model))
 		{
-			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
-			return false;
-		}
-		if (!$model->canView())
-		{
-			echo JText::_('JERROR_ALERTNOAUTHOR');
 			return false;
 		}
 
@@ -359,10 +355,10 @@ class FabrikViewListBase extends JViewLegacy
 		// Depreciated (keep in case ppl use them in old tmpls)
 		$this->table = new stdClass;
 		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
-		$this->table->intro = $w->parseMessageForPlaceHolder($item->introduction);
-		$this->table->outro = $w->parseMessageForPlaceHolder($params->get('outro'));
+		$this->table->intro = $params->get('show_into', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($item->introduction);
+		$this->table->outro = $params->get('show_outro', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($params->get('outro'));
 		$this->table->id = $item->id;
-		$this->table->renderid = $this->get('RenderContext');
+		$this->table->renderid = $model->getRenderContext();
 		$this->table->db_table_name = $item->db_table_name;
 
 		// End deprecated
@@ -371,20 +367,21 @@ class FabrikViewListBase extends JViewLegacy
 		$this->group_by = $item->group_by;
 		$this->form = new stdClass;
 		$this->form->id = $item->form_id;
-		$this->renderContext = $this->get('RenderContext');
+		$this->renderContext = $model->getRenderContext();
 		$this->formid = 'listform_' . $this->renderContext;
 		$form = $model->getFormModel();
-		$this->table->action = $this->get('TableAction');
+		$this->table->action = $model->getTableAction();
 		$this->showCSV = $model->canCSVExport();
 		$this->showCSVImport = $model->canCSVImport();
 		$this->canGroupBy = $model->canGroupBy();
 		$this->navigation = $nav;
 		$this->nav = $input->getInt('fabrik_show_nav', $params->get('show-table-nav', 1))
-			? $nav->getListFooter($this->renderContext, $this->get('tmpl')) : '';
+			? $nav->getListFooter($this->renderContext, $model->getTmpl()) : '';
 		$this->nav = '<div class="fabrikNav">' . $this->nav . '</div>';
 		$this->fabrik_userid = $user->get('id');
 		$this->canDelete = $model->deletePossible() ? true : false;
 		$this->limitLength = $model->limitLength;
+		$this->ajax = $model->isAjax();
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
 		$canPdf = FabrikWorker::canPdf();
@@ -437,24 +434,24 @@ class FabrikViewListBase extends JViewLegacy
 
 		list($this->headings, $groupHeadings, $this->headingClass, $this->cellClass) = $model->getHeadings();
 
-		$this->groupByHeadings = $this->get('GroupByHeadings');
-		$this->filter_action = $this->get('FilterAction');
+		$this->groupByHeadings = $model->getGroupByHeadings();
+		$this->filter_action = $model->getFilterAction();
 		JDEBUG ? $profiler->mark('fabrik getfilters start') : null;
 		$this->filters = $model->getFilters('listform_' . $this->renderContext);
-		$this->clearFliterLink = $this->get('clearButton');
+		$this->clearFliterLink = $model->getClearButton();
 		JDEBUG ? $profiler->mark('fabrik getfilters end') : null;
 		$this->filterMode = (int) $params->get('show-table-filters');
 		$this->toggleFilters = $this->filterMode == 2 || $this->filterMode == 4;
-		$this->showFilters = $this->get('showFilters');
+		$this->showFilters = $model->getShowFilters();
 		$this->showClearFilters = ($this->showFilters || $params->get('advanced-filter')) ? true : false;
 
-		$this->emptyDataMessage = $this->get('EmptyDataMsg');
+		$this->emptyDataMessage = $model->getEmptyDataMsg();
 		$this->groupheadings = $groupHeadings;
 		$this->calculations = $this->_getCalculations($this->headings);
-		$this->isGrouped = !($this->get('groupBy') == '');
+		$this->isGrouped = !($model->getGroupBy() == '');
 		$this->colCount = count($this->headings);
 
-		$this->hasButtons = $this->get('hasButtons');
+		$this->hasButtons = $model->getHasButtons();
 		$this->grouptemplates = $model->groupTemplates;
 
 		$this->params = $params;
@@ -468,7 +465,29 @@ class FabrikViewListBase extends JViewLegacy
 
 		$this->buttons();
 
-		$this->pluginTopButtons = $this->get('PluginTopButtons');
+		$this->pluginTopButtons = $model->getPluginTopButtons();
+	}
+
+	/**
+	 * Model check for publish/access
+	 *
+	 * @param   JModel  $model  List model
+	 *
+	 * @return boolean
+	 */
+	protected function access($model)
+	{
+		if (!$model->canPublish())
+		{
+			echo JText::_('COM_FABRIK_LIST_NOT_PUBLISHED');
+			return false;
+		}
+		if (!$model->canView())
+		{
+			echo JText::_('JERROR_ALERTNOAUTHOR');
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -532,6 +551,7 @@ class FabrikViewListBase extends JViewLegacy
 		$input = $app->input;
 		$profiler = JProfiler::getInstance('Application');
 		$text = $this->loadTemplate();
+		JDEBUG ? $profiler->mark('template loaded') : null;
 		$model = $this->getModel();
 		$params = $model->getParams();
 		if ($params->get('process-jplugins'))
@@ -573,7 +593,7 @@ class FabrikViewListBase extends JViewLegacy
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_GROUP_BY');
 		$this->buttons->groupby = FabrikHelperHTML::image('group_by.png', 'list', $this->tmpl, $buttonProperties);
 
-		$buttonProperties['title'] = '<span>' . JText::_('COM_FABRIK_FILTER') . '</span>';
+		unset($buttonProperties['title']);
 		$buttonProperties['alt'] = JText::_('COM_FABRIK_FILTER');
 		$this->buttons->filter = FabrikHelperHTML::image('filter.png', 'list', $this->tmpl, $buttonProperties);
 
@@ -739,8 +759,7 @@ class FabrikViewListBase extends JViewLegacy
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$item = $model->getTable();
 

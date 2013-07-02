@@ -64,44 +64,6 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		}
 		// $$$ hugh - let's try using new helper func instead of rolling our own.
 		return FabrikWorker::isEmail($email);
-
-		// $$$ keeping this code just in case, but shouldn't be reached.
-
-		// First, we check that there's one symbol, and that the lengths are right
-		if (!preg_match("/[^@]{1,64}@[^@]{1,255}/", $email))
-		{
-			// Email invalid because wrong number of characters in one section, or wrong number of symbols.
-			return false;
-		}
-
-		// Split it into sections to make life easier
-		$email_array = explode("@", $email);
-		$local_array = explode(".", $email_array[0]);
-		for ($i = 0; $i < count($local_array); $i++)
-		{
-			if (!preg_match("/^(([A-Za-z0-9!#$%&'*+\/=?^_`{|}~-][A-Za-z0-9!#$%&'*+\/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$/", $local_array[0]))
-			{
-				return false;
-			}
-		}
-		// Check if domain is IP. If not, it should be valid domain name
-		if (!preg_match("/^\[?[0-9\.]+\]?$/", $email_array[1]))
-		{
-			$domain_array = explode(".", $email_array[1]);
-			if (count($domain_array) < 2)
-			{
-				// Not enough parts to domain
-				return false;
-			}
-			for ($i = 0; $i < count($domain_array); $i++)
-			{
-				if (!preg_match("/^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$/", $domain_array[$i]))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	/**

@@ -106,7 +106,7 @@ class fabrikViewEmailform extends JViewLegacy
 		$subject = $input->get('subject', $subject_default);
 		jimport('joomla.mail.helper');
 
-		if (!$email || !$youremail || (JMailHelper::isEmailAddress($email) == false) || (JMailHelper::isEmailAddress($youremail) == false))
+		if (!$email || !$youremail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($youremail) == false))
 		{
 			JError::raiseError(500, JText::_('EMAIL_ERR_NOINFO'));
 		}

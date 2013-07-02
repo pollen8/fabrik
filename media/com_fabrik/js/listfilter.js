@@ -30,7 +30,7 @@ var FbListFilter = new Class({
 			}.bind(this));
 
 			if (typeOf(this.filterContainer) !== 'null') {
-				this.filterContainer.toggle();
+				this.filterContainer.hide();
 				this.filtersInHeadings.toggle();
 			}
 		}

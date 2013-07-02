@@ -206,6 +206,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			{
 				$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
 				$userid = (int) JArrayHelper::getValue($formModel->data, $this->useridfield . '_raw');
+				/**
+				 * $$$ hugh - after a validation failure, userid _raw is an array.
+				 * Trying to work out why, and fix that, but need a bandaid for now.
+				 */
+				if (is_array($userid))
+				{
+					$userid = (int) JArrayHelper::getValue($userid, 0, 0);
+				}
 				if ($userid > 0)
 				{
 					$user = JFactory::getUser($userid);
@@ -323,6 +331,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		if ($ftable == $jos_users)
 		{
 			$formModel->storeMainRow = false;
+		}
+
+		if (!$this->shouldProcess('juser_conditon', null, $formModel))
+		{
+			return true;
 		}
 
 		$usersConfig = JComponentHelper::getParams('com_users');
@@ -854,7 +867,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$ok = false;
 		}
 
-		if ((trim($post['email']) == "") || !JMailHelper::isEmailAddress($post['email']))
+		if ((trim($post['email']) == "") || !FabrikWorker::isEmail($post['email']))
 		{
 			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;

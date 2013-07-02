@@ -187,7 +187,12 @@ var FabrikModalRepeat = new Class({
 		if (jQuery && typeOf(jQuery('select').chosen) !== 'null') {
 			
 			// Chosen reset 
-			clone.getElements('select').removeClass('chzn-done');
+			clone.getElements('select').removeClass('chzn-done').show();
+			
+			// Assign random id
+			clone.getElements('select').each(function (c) {
+				c.id = c.id + '_' + (Math.random() * 10000000).toInt();
+			});
 			clone.getElements('.chzn-container').destroy();
 			
 			jQuery('select').chosen({

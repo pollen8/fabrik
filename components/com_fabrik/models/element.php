@@ -1000,8 +1000,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -1175,9 +1175,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Element plugin specific method for setting unecrypted values baack into post data
 	 *
-	 * @param   array   &$post  data passed by ref
-	 * @param   string  $key    key
-	 * @param   string  $data   elements unencrypted data
+	 * @param   array   &$post  Data passed by ref
+	 * @param   string  $key    Key
+	 * @param   string  $data   Elements unencrypted data
 	 *
 	 * @return  void
 	 */
@@ -1255,6 +1255,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return false;
 	}
+
 	/**
 	 * Determines the value for the element in the form view
 	 *
@@ -1451,6 +1452,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function addErrorHTML($repeatCounter, $tmpl = '')
 	{
 		$err = $this->getErrorMsg($repeatCounter);
+		$err = htmlspecialchars($err, ENT_QUOTES);
 		$str = '<span class="fabrikErrorMessage">';
 		if ($err !== '')
 		{
@@ -1469,11 +1471,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Add tips on element labels
 	 * does ACL check on element's label in details setting
 	 *
-	 * @param   string  $txt   label
-	 * @param   array   $data  row data
-	 * @param   string  $mode  form/list render context
+	 * @param   string  $txt   Label
+	 * @param   array   $data  Row data
+	 * @param   string  $mode  Form/list render context
 	 *
-	 * @return  string  label with tip
+	 * @return  string  Label with tip
 	 */
 
 	protected function rollover($txt, $data = array(), $mode = 'form')
@@ -1482,10 +1484,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$rollOver = $this->tipTextAndValidations($mode);
+		$rollOver = $this->tipTextAndValidations($mode, $data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
-		return '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+		if ($rollOver !== '')
+		{
+			$txt = '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
+		}
+		return $txt;
 	}
 
 	/**
@@ -1936,6 +1942,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$item = $this->getElement();
 		$c = array('fabrikElementContainer', 'plg-' . $item->plugin);
+		$c[] = $element->className;
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
@@ -2151,6 +2158,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getHiddenField($name, $value, $id = '', $class = '')
 	{
+		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		$opts = array('class' => 'fabrikinput inputbox', 'type' => 'hidden', 'name' => $name, 'value' => $value, 'id' => $id);
 		return $this->buildInput('input', $opts);
 	}
@@ -2189,10 +2197,31 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bits = array();
 		$element = $this->getElement();
 		$params = $this->getParams();
-		$size = $element->width;
+		$size = (int) $element->width < 0 ? 1 : (int) $element->width;
 		if (!isset($type))
 		{
-			$type = $params->get('password') == "1" ? 'password' : 'text';
+		    // Changes by JF Questiaux - info@betterliving.be
+                    switch ($params->get('password')) // Kept the name 'password' for backward compatibility
+                    {
+                        case '1' : 
+                            $type = 'password';
+                            break;
+                        case '2' :
+                            $type = 'tel';
+                            break;
+                        case '3' :
+                            $type = 'email';
+                            break;
+                        case '4' :
+                            $type = 'search';
+                            break;
+                        case '5' :
+                            $type = 'url';
+                            break;
+                        default :
+                            $type = 'text';
+                    }
+                    // End of changes
 		}
 		$maxlength = $params->get('maxlength');
 		if ($maxlength == "0" or $maxlength == '')
@@ -2217,8 +2246,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		$bits['type'] = $type;
 		$bits['id'] = $this->getHTMLId($repeatCounter);
 		$bits['name'] = $this->getHTMLName($repeatCounter);
-		$bits['size'] = $size;
-		$bits['maxlength'] = $maxlength;
+		if (!$element->hidden)
+		{
+			$bits['size'] = $size;
+			$bits['maxlength'] = $maxlength;
+		}
+
 		$class[] = 'fabrikinput inputbox';
 		$bits['class'] = implode(' ', $class);
 		if ($params->get('placeholder', '') !== '')
@@ -2604,7 +2637,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			if (is_array($default))
 			{
 				// Hidden querystring filters can be using ranged valued though
-				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect')))
+				if (!in_array($fType, array('hidden', 'checkbox', 'multiselect', 'range')))
 				{
 					// Wierd thing on meow where when you first load the task list the id element had a date range filter applied to it????
 					$default = '';
@@ -2874,8 +2907,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			$opts['menuclass'] = 'auto-complete-container advanced';
 		}
 		$element = $this->getElement();
-		$formId = $this->getFormModel()->getId();
-		FabrikHelperHTML::autoComplete($selector, $element->id, $formId, $element->plugin, $opts);
+		$formid = $this->getFormModel()->getId();
+		FabrikHelperHTML::autoComplete($selector, $element->id, $formid, $element->plugin, $opts);
 		return $return;
 	}
 
@@ -4145,6 +4178,15 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			{
 				$gById = FabrikString::safeColName($sName);
 			}
+			else
+			{
+				// If its a concat - can we use the key value as the group by name
+				if (method_exists($plugin, 'getJoinValueColumn'))
+				{
+					$sName = $plugin->getJoinValueColumn();
+					$gById = FabrikString::safeColName($sName);
+				}
+			}
 		}
 		return $groupBys;
 	}
@@ -4699,7 +4741,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
 		$opts->fullName = $this->getFullName(true, false);
-		$opts->watchElements = $this->validator->jsWatchElements($repeatCounter);;
+		$opts->watchElements = $this->validator->jsWatchElements($repeatCounter);
 		$groupModel = $this->getGroup();
 		$opts->canRepeat = (bool) $groupModel->canRepeat();
 		$opts->isGroupJoin = (bool) $groupModel->isJoin();
@@ -4988,7 +5030,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 
 	public function getFieldDescription()
 	{
-		$plugin = JPluginHelper::getPlugin('fabrik_element', 'dropdown');
+		$element = strtolower(str_ireplace('PlgFabrik_Element', '', get_class($this)));
+		$plugin = JPluginHelper::getPlugin('fabrik_element', $element);
 		$fparams = new JRegistry($plugin->params);
 		$p = $this->getParams();
 		if ($this->encryptMe())
@@ -5038,7 +5081,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		{
 			return false;
 		}
-		$shortName = $this->getElement()->name;
+		$element = $this->getElement();
+		// We should not process this element if it is unpublished
+		// Unpublished elements may not be in a valid state and may cause an error (white-screen)
+		if (!$element->published)
+		{
+			return false;
+		}
+		$shortName = $element->name;
 		$listModel = $this->getListModel();
 		if ($this->encryptMe())
 		{
@@ -5269,6 +5319,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	 * draw from the database record
 	 *
 	 * @param   string  $str  submitted form value
+	 *
+	 * @deprecated since 3.1b2 (not used by any plugin)
 	 *
 	 * @return  string	formated value
 	 */
@@ -5673,7 +5725,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$cache = FabrikWorker::getCache();
-		$search = $input->get('value');
+		$search = $input->get('value', '', 'string');
 		echo $cache->call(array(get_class($this), 'cacheAutoCompleteOptions'), $this, $search);
 	}
 
@@ -5707,6 +5759,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		foreach ($tmp as &$t)
 		{
 			$elementModel->toLabel($t->text);
+			$t->text = strip_tags($t->text);
 		}
 		return json_encode($tmp);
 	}
@@ -6358,6 +6411,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$this->list = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$this->list->loadFromFormId($formId);
 		$table = $this->list->getTable(true);
+		$table->form_id = $formId;
 		$element = $this->getElement(true);
 	}
 
@@ -6613,8 +6667,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			$parentIds = array_fill(0, count($allJoinValues), $formData[$k]);
 
 		}
-		$allJoinIds = $formData[$idKey];
-		$allParams = array_values($formData[$paramsKey]);
+		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());
+		$allParams = array_values(JArrayHelper::getValue($formData, $paramsKey, array()));
 
 		$i = 0;
 		$idsToKeep = array();
@@ -6626,12 +6680,14 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 			}
 			if ($groupModel->canRepeat())
 			{
-				$joinValues = (array) JArrayHelper::getValue($allJoinValues, $i, array());
+				$joinValues = JArrayHelper::getValue($allJoinValues, $i, array());
 			}
 			else
 			{
 				$joinValues = $allJoinValues;
 			}
+			$joinValues = (array) $joinValues;
+
 			// Get existing records
 			if ($parentId == '')
 			{
@@ -6642,7 +6698,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$query->clear();
 				$query->select('id, ' . $shortName)->from($join->table_join)->where('parent_id = ' . $parentId);
 				$db->setQuery($query);
-				$ids = $db->loadObjectList($shortName);
+				$ids = (array) $db->loadObjectList($shortName);
 			}
 			foreach ($joinValues as $jIndex => $jid)
 			{
@@ -6652,7 +6708,8 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 				$record->$shortName = $fkVal;
 				$record->params = JArrayHelper::getValue($allParams, $jIndex);
 
-				if (array_key_exists($fkVal, $ids))
+				// Stop notice with fileupload where fkVal is an array
+				if (is_string($fkVal) && array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
 					$idsToKeep[$parentId][] = $record->id;

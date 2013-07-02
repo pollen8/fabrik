@@ -17,9 +17,9 @@ jimport('joomla.application.component.controllerform');
 /**
  * Raw Visualization controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminControllerVisualization extends JControllerForm
@@ -73,7 +73,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			}
 
 			$controllerName = 'FabrikControllerVisualization' . $viz->plugin;
-			$controller = new $controllerName();
+			$controller = new $controllerName;
 			$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/views');
 			$controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 

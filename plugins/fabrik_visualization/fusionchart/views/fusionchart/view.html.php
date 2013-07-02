@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewFusionchart extends JViewLegacy
+class FabrikViewFusionchart extends JViewLegacy
 {
 
 	/**

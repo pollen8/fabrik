@@ -50,6 +50,7 @@ $this->headingstmpl =  $this->loadTemplate('headings');
 endforeach;
 ?>
 	<table class="<?php echo $this->list->class;?>" id="list_<?php echo $this->table->renderid;?>" >
+		 <thead><?php echo $this->headingstmpl?></thead>
 		 <tfoot>
 			<tr class="fabrik___heading">
 				<td colspan="<?php echo count($this->headings);?>">
@@ -57,7 +58,6 @@ endforeach;
 				</td>
 			</tr>
 		 </tfoot>
-		 <thead><?php echo $this->headingstmpl?></thead>
 		<?php
 		if ($this->isGrouped && empty($this->rows)) :
 			?>
@@ -91,6 +91,13 @@ endforeach;
 			</tbody>
 			<?php endif ?>
 			<tbody class="fabrik_groupdata">
+				<tr>
+					<td class="groupdataMsg" colspan="<?php echo count($this->headings)?>">
+						<div class="emptyDataMessage" style="<?php echo $this->emptyStyle?>">
+							<?php echo $this->emptyDataMessage; ?>
+						</div>
+					</td>
+				</tr>
 			<?php
 			foreach ($group as $this->_row) :
 				echo $this->loadTemplate('row');

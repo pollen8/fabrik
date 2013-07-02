@@ -2,10 +2,8 @@
 <?php foreach ($this->headings as $key => $heading) :
 	$h = $this->headingClass[$key];
 	$style = empty($h['style']) ? '' : 'style="' . $h['style'] . '"';?>
-	<th class="<?php echo $h['class']?>" <?php echo $style?>>
-		<span class="heading">
+	<th class="heading <?php echo $h['class']?>" <?php echo $style?>>
 			<?php echo  $heading; ?>
-		</span>
 	</th>
 <?php endforeach; ?>
 </tr>

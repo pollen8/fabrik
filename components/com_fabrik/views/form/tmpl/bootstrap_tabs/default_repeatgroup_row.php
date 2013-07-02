@@ -39,18 +39,20 @@ $group = $this->group;
 	<?php
 	endforeach;
  	if ($group->editable) : ?>
-		<td class="fabrikGroupRepeater pull-right">
-			<?php if ($group->canAddRepeat) :?>
-			<a class="addGroup" href="#">
-				<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
-			</a>
+		<td class="fabrikGroupRepeater">
+			<div class="pull-right">
+			<?php if ($group->canAddRepeat) :
+				$add = FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));
+				?>
+				<a class="addGroup" href="#"><?php echo $add?></a>
 			<?php
 			endif;
 			if ($group->canDeleteRepeat) :?>
 			<a class="deleteGroup" href="#">
-				<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
+				<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
 			</a>
 			<?php endif;?>
+			</div>
 		</td>
 	<?php endif; ?>
 </tr>

@@ -10,9 +10,17 @@ var Suboptions = new Class({
 	initialize: function (name, options) {
 		this.setOptions(options);
 		this.element = document.id(this.options.id);
+		
+		if (typeOf(this.element) === 'null') {
+			if (confirm('oh dear - somethings gone wrong with loading the sub-options, do you want to reload?')) {
+				
+				// Force reload from server
+				location.reload(true);
+			}
+		}
+		this.watchButtons();
 		this.counter = 0;
 		this.name = name;
-		this.watchButtons();
 		Object.each(this.options.sub_values, function (v, x) {
 			var chx = Object.contains(this.options.sub_initial_selection, v) ? "checked='checked'" : '';
 			this.addSubElement(v, this.options.sub_labels[x], chx);
@@ -23,7 +31,7 @@ var Suboptions = new Class({
 		}
 		// $$$ rob - could probably do this better with firing an event from the main element page but for now this will do
 		Joomla.submitbutton = function (pressbutton) {
-			if (!this.onSave()) {
+			if (pressbutton !== 'element.cancel' && !this.onSave()) {
 				return false;
 			}
 			Joomla.submitform(pressbutton);
@@ -167,16 +175,23 @@ var Suboptions = new Class({
 	},
 	
 	onSave: function () {
-		var values = []; 
-		var ret = true;
-		var intial_selection = [];
-		$$('.sub_values').each(function (dd) {
-			if (dd.value === '') {
-				alert(Joomla.JText._('COM_FABRIK_SUBOPTS_VALUES_ERROR'));
-				ret = false;
-			}
-			values.push(dd.value);
-		});
+		var values = [],
+		ret = true,
+		intial_selection = [],
+		evalPop = document.id('jform_params_dropdown_populate'),
+		evalAdded = false;
+		if (typeOf(evalPop) !== 'null' && evalPop.get('value') !== '') {
+			evalAdded = true;
+		}
+		if (!evalAdded) {
+			$$('.sub_values').each(function (dd) {
+				if (dd.value === '') {
+					alert(Joomla.JText._('COM_FABRIK_SUBOPTS_VALUES_ERROR'));
+					ret = false;
+				}
+				values.push(dd.value);
+			});
+		}
 		$$('.sub_initial_selection').each(function (dd, c) {
 			dd.value = values[c];
 		});

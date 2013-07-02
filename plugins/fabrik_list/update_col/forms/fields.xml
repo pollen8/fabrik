@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-list-update_col">
+		<fieldset name="plg-list-update_col" label="COM_FABRIK_OPTIONS">
 		
 			<field name="updatecol_access"
 				type="accesslevel"
@@ -101,18 +101,19 @@
 				repeat="true"
 				size="35"/>
 				
-			<field name="eval"
-			 	type="checkbox"
-				default="0"
-				label="COM_FABRIK_EVAL"
-				repeat="true"/>
-				
 			<field name="update_email_msg"
 				type="textarea"
 				cols="30" rows="5"
 				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_DESC"
 				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_MSG_LABEL"
 				repeat="true" />
+				
+			<field name="eval"
+			 	type="checkbox"
+				default="0"
+				description="PLG_LIST_UPDATE_COL_EVAL_DESC"
+				label="COM_FABRIK_EVAL"
+				repeat="true"/>
 
 		</fieldset>
 	</fields>

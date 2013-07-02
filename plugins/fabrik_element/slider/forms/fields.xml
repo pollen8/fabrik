@@ -21,7 +21,7 @@
 	</fields>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 
-		<fieldset label="" name="plg-element-slider-params">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-slider-params">
 		
 			<field name="slider_width"
 				class="input-mini"

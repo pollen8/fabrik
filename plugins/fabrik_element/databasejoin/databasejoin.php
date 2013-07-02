@@ -1092,6 +1092,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					case 'dropdown':
 					default:
+						// Jaanus: to avoid dropdowns becoming too large because of possible long labels
+						$attribs .= $params->get('max-width', '') != '' ? ' style="max-width:' . $params->get('max-width') . ';"' : '';
 						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
@@ -1238,12 +1240,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$label = (array) $this->getLabelForValue($label[0], $label[0], $repeatCounter);
 		}
+		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
+		$placeholder = ' placeholder="' . $params->get('placeholder', '') . '"';
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
-		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '" class="fabrikinput inputbox autocomplete-trigger"/>';
+		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '"/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
-		$html[] = '<input type="hidden" class="fabrikinput" size="20" name="' . $thisElName . '" id="' . $id . '" value="'
+		$html[] = '<input type="hidden" tabindex="-1" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
 				. JArrayHelper::getValue($default, 0, '') . '"/>';
 	}
 
@@ -1281,7 +1285,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->isEditable())
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
-			$attribs = 'class="fabrikinput inputbox" size="' . $multiSize . '" multiple="true"';
+			$attribs = 'class="fabrikinput inputbox ' . $params->get('bootstrap_class', '') . '" size="' . $multiSize . '" multiple="true"';
 			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $default, $id);
 		}
 		else
@@ -2322,7 +2326,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;
-		$opts->popwiny = $params->get('yoffset', 0);
 		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $this->getDisplayType();
 		$opts->show_please_select = $params->get('database_join_show_please_select') === "1";
@@ -2401,7 +2404,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$this->updateFabrikJoins($data, $this->getDbName(), $this->getJoinValueFieldName(), $this->getLabelParamVal());
 
 		}
-		return parent::onSave();
+		return parent::onSave($data);
 	}
 
 	/**

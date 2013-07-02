@@ -114,9 +114,9 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$message = stripslashes($message);
 
 		$editURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=form&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
-			. $input->get('rowid');
+			. $input->get('rowid', '', 'string');
 		$viewURL = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&amp;view=details&amp;fabrik=' . $formModel->get('id') . '&amp;rowid='
-			. $input->get('rowid');
+			. $input->get('rowid', '', 'string');
 		$editlink = '<a href="' . $editURL . '">' . JText::_('EDIT') . '</a>';
 		$viewlink = '<a href="' . $viewURL . '">' . JText::_('VIEW') . '</a>';
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -135,7 +135,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			foreach ($emailkey as &$key)
 			{
 				// $$$ rob added strstr test as no point trying to add raw suffix if not placeholder in $emailkey
-				if (!JMailHelper::isEmailAddress($key) && trim($key) !== '' && strstr($key, '}'))
+				if (!FabrikWorker::isEmail($key) && trim($key) !== '' && strstr($key, '}'))
 				{
 					$key = explode('}', $key);
 					if (substr($key[0], -4) !== '_raw')
@@ -240,7 +240,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 						$attach_fname = '';
 					}
 				}
-				// Get a JMail instance (have to get a new instnace otherwise the receipients are appended to previously added recipients)
+				// Get a JMail instance (have to get a new instance otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
 				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
 

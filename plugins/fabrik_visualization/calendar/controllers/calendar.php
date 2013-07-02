@@ -42,14 +42,11 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$viewName = 'calendar';
 
 		$viewType = $document->getType();
+
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
-		//create a form view as well to render the add event form.
-		//$view$elementModel->getFormModel()View = &$this->getView('Form', $viewType);
-
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		//$view$elementModel->getFormModel()View->setModel($formModel, true);
 
 		parent::display();
 		return $this;

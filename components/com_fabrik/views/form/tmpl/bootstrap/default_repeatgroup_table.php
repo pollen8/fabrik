@@ -11,7 +11,7 @@
 
 $group = $this->group;
 ?>
-<table class="table table-stripped repeatGroupTable">
+<table class="table table-striped repeatGroupTable">
 	<thead>
 		<tr>
 	<?php

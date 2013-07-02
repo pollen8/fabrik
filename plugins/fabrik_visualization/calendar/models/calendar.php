@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelCalendar extends FabrikFEModelVisualization
+class FabrikModelCalendar extends FabrikFEModelVisualization
 {
 	/**
 	 * Array of Fabrik lists containing events
@@ -365,7 +365,7 @@ class fabrikModelCalendar extends FabrikFEModelVisualization
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$Itemid = @(int) $app->getMenu('site')->getActive()->id;
+		$Itemid = FabrikWorker::itemId();
 		$config = JFactory::getConfig();
 		$tzoffset = $config->get('offset');
 		$tz = new DateTimeZone($tzoffset);

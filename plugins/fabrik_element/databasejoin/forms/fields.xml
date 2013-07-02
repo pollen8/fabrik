@@ -47,6 +47,12 @@
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 		</field>
 		
+		<field name="max-width" 
+			type="text" 
+			size="10" 
+			description="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_DESC" 
+			label="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_LABEL"/>
+
 	</fieldset>
 	
 	<fieldset label="Data" name="plg-databasejoin-simple">
@@ -156,14 +162,6 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="yoffset"
-			type="text"
-			size="3" 
-			class="input-mini"
-			deafult="0"
-			description="PLG_ELEMENT_DBJOIN_Y_OFFSET_DESC"
-			label="PLG_ELEMENT_DBJOIN_Y_OFFSET_LABEL" />
-			
 		<field name="join_popupwidth"
 			type="text"
 			size="3"

@@ -67,7 +67,6 @@ class FabrikAdminModelList extends FabModelAdmin
 	*/
 	protected $_dbFields = null;
 
-
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
@@ -270,6 +269,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				$aConditions[] = JHTML::_('select.option', '<=', 'LESS THAN OR EQUALS');
 				$aConditions[] = JHTML::_('select.option', 'in', 'IN');
 				$aConditions[] = JHTML::_('select.option', 'not_in', 'NOT IN');
+				$aConditions[] = JHTML::_('select.option', 'exists', 'EXISTS');
 				$aConditions[] = JHTML::_('select.option', 'earlierthisyear', JText::_('COM_FABRIK_EARLIER_THIS_YEAR'));
 				$aConditions[] = JHTML::_('select.option', 'laterthisyear', JText::_('COM_FABRIK_LATER_THIS_YEAR'));
 
@@ -429,10 +429,9 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Alow for multiline js variables ?
 			$selValue = htmlspecialchars_decode($selValue, ENT_QUOTES);
 			$selValue = json_encode($selValue);
-			if ($selFilter != '')
-			{
-				$js[] = "\toAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
-			}
+
+			// No longer check for empty $selFilter as EXISTS prefilter condition doesn't require element to be selected
+			$js[] = "\toAdminFilters.addFilterOption('$selJoin', '$selFilter', '$selCondition', $selValue, '$selAccess', $filerEval, '$grouped');\n";
 		}
 		$js[] = "});";
 		return implode("\n", $js);
@@ -604,7 +603,8 @@ class FabrikAdminModelList extends FabModelAdmin
 			return false;
 		}
 		$filter = new JFilterInput(null, null, 1, 1);
-		$introduction = JArrayHelper::getValue($input->get('jform', array(), 'array'), 'introduction');
+		$jform = $input->get('jform', array(), 'array');
+		$introduction = JArrayHelper::getValue($jform, 'introduction');
 		$row->introduction = $filter->clean($introduction);
 
 		$row->order_by = json_encode($input->get('order_by', array(), 'array'));
@@ -1011,10 +1011,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		$join->table_key = str_replace('`', '', $tableKey);
 		$join->join_type = $joinType;
 		$join->group_id = $groupId;
-		if (!$join->store())
-		{
-			return JError::raiseWarning(500, $join->getError());
-		}
+		$join->store();
+
 		// $$$ hugh @TODO - create new 'pk' param
 		$this->createLinkedElements($groupId, $joinTable);
 	}
@@ -1135,6 +1133,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$elementModel = new PlgFabrik_Element($dispatcher);
 		$pluginManager = FabrikWorker::getPluginManager();
 		$user = JFactory::getUser();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$elementTypes = $input->get('elementtype', array(), 'array');
 		$fields = $fabrikDb->getTableColumns($tableName, false);
 		$createdate = JFactory::getDate()->toSQL();
@@ -1187,7 +1186,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				}
 				else
 				{
-					// Otherwise guestimate!
+					// Otherwise set default type
 					switch ($type)
 					{
 						case "int":
@@ -1197,6 +1196,7 @@ class FabrikAdminModelList extends FabModelAdmin
 						case "mediumint":
 						case "bigint":
 						case "varchar":
+						case "time":
 							$plugin = 'field';
 							break;
 						case "text":
@@ -1207,7 +1207,6 @@ class FabrikAdminModelList extends FabModelAdmin
 							break;
 						case "datetime":
 						case "date":
-						case "time":
 						case "timestamp":
 							$plugin = 'date';
 							break;
@@ -1216,6 +1215,8 @@ class FabrikAdminModelList extends FabModelAdmin
 							break;
 					}
 				}
+				// Then alter if defined in Fabrik global config
+				$plugin = $fbConfig->get($type, $plugin);
 			}
 			$element->plugin = $plugin;
 			$element->hidden = $element->label == 'id' ? '1' : '0';
@@ -1279,7 +1280,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Hack for user element
 			$details = array('group_id' => $element->group_id);
 			$input->set('details', $details);
-			$elementModel->onSave();
+			$elementModel->onSave(array());
 			$ordering++;
 		}
 	}
@@ -1539,9 +1540,13 @@ class FabrikAdminModelList extends FabModelAdmin
 			$joinTable->id = 0;
 			$joinTable->group_id = $groupidmap[$joinTable->group_id];
 			$joinTable->list_id = $toid;
-			if (!$joinTable->store())
+			try
 			{
-				return JError::raiseWarning(500, $join->getError());
+				$joinTable->store();
+			}
+			catch (Exception $e)
+			{
+				return JError::raiseWarning(500, $e->getMessage());
 			}
 		}
 	}
@@ -2425,10 +2430,11 @@ class FabrikAdminModelList extends FabModelAdmin
 	* $$$ hugh - added this to backend, as I need it in some places where we have
 	* a backend list model, and until now only existed in the FE model.
 	*
-	* @param   string  $tbl  table name
-	* @param   string  $key  field to key return array on
+	* @param   string  $tbl       Table name
+	* @param   string  $key       Field to key return array on
+	* @param   bool    $basetype  Deprecated - not used
 	*
-	* @return  array	table fields
+	* @return  array  table fields
 	*/
 
 	public function getDBFields($tbl = null, $key = null, $basetype = false)
@@ -2467,7 +2473,7 @@ class FabrikAdminModelList extends FabModelAdmin
 				 * what I most care about, as this stuff is being written handle being more specific about
 				 * the elements the list PK can be selected from.
 				 */
-				$row->BaseType = strtoupper( preg_replace('#(\(\d+\))$#', '', $row->Type) );
+				$row->BaseType = strtoupper(preg_replace('#(\(\d+\))$#', '', $row->Type));
 				$row->BaseType = preg_replace('#(\s+SIGNED|\s+UNSIGNED)#', '', $row->BaseType);
 			}
 		}

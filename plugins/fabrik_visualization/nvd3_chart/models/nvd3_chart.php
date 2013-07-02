@@ -218,17 +218,36 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function multiChartData()
 	{
 		$params = $this->getParams();
-		$labelColumns = explode(',', $params->get('label_columns'));
+		//echo "<pre>";print_r($params);echo "</pre>";;
+		if ($params->get('data_mode') == 0)
+		{
+			$labelColumns = $params->get('value_field');
+		}
+		else
+		{
+			$labelColumns = explode(',', $params->get('label_columns'));
+		}
 		$table = $params->get('tbl');
 		$split = $params->get('split', '');
 		$groupBy = $params->get('group_by');
 
-		$db = JFactory::getDbo();
+		$db = FabrikWorker::getDbo(false, $params->get('conn_id'));
 		$query = $db->getQuery(true);
 		$query->select($labelColumns)->from($table);
+
+		//test
+		$split = 'date';
 		if ($split !== '')
 		{
 			$query->select($split . ' AS ' . $db->nameQuote('key'));
+		}
+		else
+		{
+			if ($params->get('data_mode') == 0)
+			{
+				//$query->select($params->get('label_field') . ' AS ' . $db->nameQuote('key'));
+				$query->select('date AS ' . $db->nameQuote('key'));
+			}
 		}
 		$db->setQuery($query);
 		if (!$rows = $db->loadObjectList())
@@ -255,7 +274,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 	/**
 	 * Organise data for showing in a multichart when the columns are used as the labels and no split
-	 * value has been assigned. Will basically group all the data into one record (as no spli supplied)
+	 * value has been assigned. Will basically group all the data into one record (as no split supplied)
 	 *
 	 * @param   array  $rows  Chart data
 	 *
@@ -265,6 +284,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	{
 		$o = new stdClass;
 		$o->values = array();
+		echo "<pre>";print_r($rows);echo "</pre>";
 		foreach ($rows as $d)
 		{
 			foreach ($d as $k => $v)

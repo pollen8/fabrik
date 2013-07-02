@@ -669,6 +669,11 @@ class FabrikWorker
 						$msg = str_replace('{$' . $prefix . '->' . $key . '}', $val, $msg);
 						$msg = str_replace('{$' . $prefix . '-&gt;' . $key . '}', $val, $msg);
 					}
+					elseif (is_array($val))
+					{
+						$msg = str_replace('{$' . $prefix . '->' . $key . '}', implode(',', $val), $msg);
+						$msg = str_replace('{$' . $prefix . '-&gt;' . $key . '}', implode(',', $val), $msg);
+					}
 				}
 			}
 		}
@@ -707,8 +712,7 @@ class FabrikWorker
 	public static function replaceWithGlobals($msg)
 	{
 		$app = JFactory::getApplication();
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = is_object($menuItem) ? $menuItem->id : 0;
+		$Itemid = self::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
 		$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
@@ -742,6 +746,23 @@ class FabrikWorker
 
 	protected function replaceWithFormData($matches)
 	{
+		// Merge any join data key val pairs down into the main data array
+		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
+		foreach ($joins as $k => $data)
+		{
+			foreach ($data as $k => $v)
+			{
+				/*
+				 * Only replace if we haven't explicitly set the key in _searchData.
+				 * Otherwise, calc element in repeat group uses all repeating groups values rather than the
+				 * current one that the plugin sets when it fire its Ajax request.
+				 */
+				if (!array_key_exists($k, $this->_searchData))
+				{
+					$this->_searchData[$k] = $v;
+				}
+			}
+		}
 
 		$match = $matches[0];
 		$orig = $match;
@@ -1357,6 +1378,18 @@ class FabrikWorker
 
 	public static function isDate($d)
 	{
+		$db = FabrikWorker::getDbo();
+		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
+
+		// catch for ','
+		if (strlen($d) < 2)
+		{
+			return false;
+		}
+		if (in_array($d, $aNullDates))
+		{
+			return false;
+		}
 		try
 		{
 			$dt = new DateTime($d);
@@ -1434,6 +1467,26 @@ class FabrikWorker
 		return $gobackaction;
 	}
 
+	/**
+	 * Attempt to find the active menu item id
+	 *
+	 * @return mixed NULL if nothing found, int if menu item found
+	 */
+	public static function itemId()
+	{
+		$app = JFactory::getApplication();
+		if (!$app->isAdmin())
+		{
+			$menus = $app->getMenu();
+			$menu = $menus->getActive();
+			if (is_object($menu))
+			{
+				return $menu->id;
+			}
+		}
+		return null;
+
+	}
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
@@ -1548,9 +1601,9 @@ class FabrikWorker
 	 * Get a cachec handler
 	 * $$$ hugh - added $listModel arg, needed so we can see if they have set "Disable Caching" on the List
 	 *
-	 * @since   3.0.7
+	 * @param   object  $listModel  List Model
 	 *
-	 * @param   object  listModel
+	 * @since   3.0.7
 	 *
 	 * @return  JCache
 	 */
@@ -1559,8 +1612,9 @@ class FabrikWorker
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => JPATH_BASE . '/cache/', 'lifetime' => ((float) 2 * 60 * 60),
-			 'language' => 'en-GB', 'storage' => 'file');
+		$time = ((float) 2 * 60 * 60);
+		$base = JPATH_BASE . '/cache/';
+		$opts = array('defaultgroup' => 'com_' . $package, 'cachebase' => $base, 'lifetime' => $time, 'language' => 'en-GB', 'storage' => 'file');
 		$cache = JCache::getInstance('callback', $opts);
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;

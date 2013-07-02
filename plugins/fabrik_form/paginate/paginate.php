@@ -116,7 +116,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$rows = $db->loadColumn();
 		$keys = array_flip($rows);
 		$o = new stdClass;
-		$o->index = JArrayHelper::getValue($keys, $formModel->rowId, 0);
+		$o->index = JArrayHelper::getValue($keys, $formModel->getRowId(), 0);
 		$o->first = $rows[0];
 		$o->lastKey = count($rows) - 1;
 		$o->last = $rows[$o->lastKey];
@@ -206,7 +206,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
 		$formid = $input->getInt('formid');
-		$rowid = $input->get('rowid');
+		$rowid = $input->get('rowid', '', 'string');
 		$mode = $input->get('mode', 'details');
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formid);

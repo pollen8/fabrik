@@ -33,23 +33,33 @@ echo $this->plugintop;
 	<button class="close" data-dismiss="alert">×</button>
 	<?php echo $form->error?>
 </div>
- <ul class="nav nav-tabs">
+<div class="row-fluid nav"><div class="span12">
+<?php
+echo $this->loadTemplate('buttons');
+echo $this->loadTemplate('relateddata');
+?>
+</div>
+</div>
+<ul class="nav nav-tabs">
 <?php
 $i = 0;
 foreach ($this->groups as $group) :
+// If this ismultipage then groups are consolidated until a group with a page break
+// So we should only show a tab if: it is first tab, or if it is a page break 
+if (!$model->isMultiPage() or ($i == 0 or $group->splitPage)) :
 ?>
 
     <li <?php if ($i == 0) echo 'class="active"'?>><a href="#group-tab<?php echo $group->id;?>" data-toggle="tab"><?php echo $group->title?></a></li>
 
 <?php
+endif;
 $i ++;
 endforeach;
 ?>
 </ul>
 <div class="tab-content">
 <?php
-echo $this->loadTemplate('buttons');
-echo $this->loadTemplate('relateddata');
+
 $i = 0;
 foreach ($this->groups as $group) :
 	$this->group = $group;

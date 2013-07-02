@@ -16,11 +16,10 @@ require_once 'fabcontrollerform.php';
 /**
  * Admin List PDF controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0.7
- */
-
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0.7
+*/
 class FabrikAdminControllerList extends FabControllerForm
 {
 	/**
@@ -53,7 +52,6 @@ class FabrikAdminControllerList extends FabControllerForm
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$viewLayout	= $input->get('layout', 'default');
 		$view = $this->getView($this->view_item, $viewType, 'FabrikView');
-		//$view = $this->getView($this->view_item, $viewType, '');
 		$view->setModel($model, true);
 
 		// Set the layout

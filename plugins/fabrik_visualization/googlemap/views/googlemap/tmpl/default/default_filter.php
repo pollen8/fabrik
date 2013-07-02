@@ -10,7 +10,6 @@
 
 defined('_JEXEC') or die('Restricted access');
 ?>
-filters
 <?php if ($this->showFilters) :
 ?>
 show
@@ -31,7 +30,7 @@ show
 	  <tfoot>
 	  	<tr>
 	  		<th colspan="2" style="text-align:right;">
-	  			<input type="submit" class="button" value="<?php echo JText::_('GO') ?>" />
+	  			<input type="submit" class="fabrik_filter_submit button" value="<?php echo JText::_('GO') ?>" />
 	  		</th>
 	  	</tr>
 	  </tfoot>

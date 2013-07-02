@@ -131,6 +131,12 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 		<div class="tab-pane" id="data-faceted">
 			<fieldset>
 				<legend><?php echo JText::_('COM_FABRIK_RELATED_DATA')?></legend>
+
+				<?php foreach ($this->form->getFieldset('factedlinks2') as $this->field):
+					echo $this->loadTemplate('control_group');
+				endforeach;
+				?>
+
 				<?php
 				foreach ($this->form->getFieldset('factedlinks') as $this->field) :
 					echo $this->loadTemplate('control_group');

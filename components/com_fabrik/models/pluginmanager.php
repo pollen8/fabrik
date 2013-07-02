@@ -316,9 +316,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Unset a form's element plugins
 	 *
-	 * @since   3.1b
-	 *
 	 * @param   JModel  $formModel  Form model
+	 *
+	 * @since   3.1b
 	 *
 	 * @return  void
 	 */

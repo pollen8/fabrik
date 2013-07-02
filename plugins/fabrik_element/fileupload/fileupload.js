@@ -28,8 +28,8 @@ var FbFileUpload = new Class({
 					this.uploader.trigger('FileUploaded', file, {
 						response : JSON.encode(response)
 					});
-					document.id(file.id).getElement('.plupload_file_status').set('text', '100%');
-					document.id(file.id).getElement('.plupload_file_size').set('text', file.size);					
+					document.id(file.id).getElement('.plupload_file_status  .bar').setStyle('width', '100%').addClass('bar-success');
+					//document.id(file.id).getElement('.plupload_file_size').set('text', file.size);					
 				}.bind(this));
 				//this.uploader.trigger('Init'); //no as this creates a second div interface
 				// hack to reposition the hidden input field over the 'ad' button
@@ -98,6 +98,7 @@ var FbFileUpload = new Class({
 	 */
 
 	getFormElementsKey: function (elId) {
+		this.baseElementId = elId;
 		if (this.options.ajax_upload && this.options.ajax_max > 1) {
 			return this.options.listName + '___' + this.options.elementShortName;
 		} else {
@@ -160,6 +161,24 @@ var FbFileUpload = new Class({
 			}
 		}
 	},
+	
+	addDropArea: function () {
+		var dropTxt = this.container.getElement('tr.plupload_droptext');
+		if (typeOf(dropTxt) !== 'null') {
+			dropTxt.show();
+		} else {
+			var tr = new Element('tr.plupload_droptext').set('html', '<td colspan="4"><i class="icon-move"></i> Drag files here </td>');
+			this.container.getElement('tbody').adopt(tr);
+		}
+		this.container.getElement('thead').hide();
+	},
+	
+	removeDropArea: function () {
+		var dropTxt = this.container.getElement('tr.plupload_droptext');
+		if (typeOf(dropTxt) !== 'null') {
+			dropTxt.hide();
+		}
+	},
 
 	watchAjax : function () {
 		if (this.options.editable === false) {
@@ -176,6 +195,7 @@ var FbFileUpload = new Class({
 		if (typeOf(canvas) === 'null') {
 			return;
 		}
+		
 		this.widget = new ImageWidget(canvas, {
 			
 			'imagedim': {
@@ -196,7 +216,7 @@ var FbFileUpload = new Class({
 		this.pluploadContainer = c.getElement('.plupload_container');
 		this.pluploadFallback = c.getElement('.plupload_fallback');
 		this.droplist = c.getElement('.plupload_filelist');
-		this.startbutton = c.getElement('.plupload_start');
+		this.startbutton = c.getElement('*[data-action=plupload_start]');
 		var plupopts = {
 			runtimes: this.options.ajax_runtime,
 			browse_button: this.element.id + '_browseButton',
@@ -208,6 +228,7 @@ var FbFileUpload = new Class({
 			flash_swf_url: this.options.ajax_flash_path,
 			silverlight_xap_url: this.options.ajax_silverlight_path,
 			chunk_size: this.options.ajax_chunk_size + 'kb',
+			dragdrop : true,
 			multipart: true
 		};
 		this.uploader = new plupload.Uploader(plupopts);
@@ -217,6 +238,11 @@ var FbFileUpload = new Class({
 			// FORCEFULLY NUKE GRACEFUL DEGRADING FALLBACK ON INIT
 			this.pluploadFallback.destroy();
 			this.pluploadContainer.removeClass("fabrikHide");
+			
+			if (up.features.dragdrop && up.settings.dragdrop) {
+				this.addDropArea();
+			}
+			
 		}.bind(this));
 
 		this.uploader.bind('FilesRemoved', function (up, files) {
@@ -224,18 +250,19 @@ var FbFileUpload = new Class({
 
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
+			this.removeDropArea();
+			this.container.getElement('thead').show();
 			var count = this.droplist.getElements('li').length;
-			this.startbutton.removeClass('plupload_disabled');
+			this.startbutton.removeClass('disabled');
 			files.each(function (file, idx) {
 				if (count >= this.options.ajax_max) {
 					alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_MAX_UPLOAD_REACHED'));
 				} else {
 					count++;
-					var del = new Element('div', {
-						'class' : 'plupload_file_action'
+					var del = new Element('td.span1.plupload_file_action', {
 					}).adopt(new Element('a', {
 						'href': '#',
-						'style': 'display:block',
+						'class': 'icon-delete',
 						events: {
 							'click': function (e) {
 								this.pluploadRemoveFile(e, file);
@@ -243,8 +270,9 @@ var FbFileUpload = new Class({
 						}
 					}));
 					if (this.isImage(file)) {
-						a = new Element('a', {
+						a = new Element('a.editImage', {
 							'href' : '#',
+							styles: {'display': 'none'},
 							alt : Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_RESIZE'),
 							events : {
 								'click': function (e) {
@@ -262,21 +290,13 @@ var FbFileUpload = new Class({
 						a = new Element('span');
 						title = new Element('a', {'href': file.url}).set('text', file.name);
 					}
-					
-					var filename = new Element('div', {
-						'class' : 'plupload_file_name'
-					}).adopt([ title, new Element('div', {
-						'class' : 'plupload_resize',
-						style : 'display:none'
-					}).adopt(a) ]);
-					var innerli = [ filename, del, new Element('div', {
-						'class' : 'plupload_file_status'
-					}).set('text', '0%'), new Element('div', {
-						'class' : 'plupload_file_size'
-					}).set('text', file.size), new Element('div', {
-						'class' : 'plupload_clearer'
-					}) ];
-					this.droplist.adopt(new Element('li', {
+					var icon = new Element('td.span1.plupload_resize').adopt(a);
+					var progress = '<div class="progress progress-striped"><div class="bar" style="width: 0%;"></div></div>';
+					var filename = new Element('td.span6.plupload_file_name', {
+					}).adopt(title); 
+					var innerli = [filename, icon, new Element('td.span5.plupload_file_status', {
+					}).set('html', progress), del ];
+					this.droplist.adopt(new Element('tr', {
 						id : file.id,
 						'class' : 'plupload_delete'
 					}).adopt(innerli));
@@ -288,7 +308,11 @@ var FbFileUpload = new Class({
 		this.uploader.bind('UploadProgress', function (up, file) {
 			var f = document.id(file.id);
 			if (typeOf(f) !== 'null') {
-				document.id(file.id).getElement('.plupload_file_status').set('text', file.percent + '%');
+				var bar = document.id(file.id).getElement('.plupload_file_status .bar'); 
+				bar.setStyle('width', file.percent + '%');
+				if (file.percent === 100) {
+					bar.addClass('bar-success');
+				}
 			}
 		});
 
@@ -317,9 +341,9 @@ var FbFileUpload = new Class({
 				fconsole('Filuploaded didnt find: ' + file.id);
 				return;
 			}
-			document.id(file.id).getElement('.plupload_resize').show();
 			var resizebutton = document.id(file.id).getElement('.plupload_resize').getElement('a');
 			if (resizebutton) {
+				resizebutton.show();
 				resizebutton.href = response.uri;
 				resizebutton.id = 'resizebutton_' + file.id;
 				resizebutton.store('filepath', response.filepath);
@@ -356,7 +380,7 @@ var FbFileUpload = new Class({
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
-		c.getElement('.plupload_start').addEvent('click', function (e) {
+		this.startbutton.addEvent('click', function (e) {
 			e.stop();
 			this.uploader.start();
 		}.bind(this));
@@ -414,6 +438,10 @@ var FbFileUpload = new Class({
 		}
 		if (document.id('coords_alreadyuploaded_' + this.options.id + '_' + id)) {
 			document.id('coords_alreadyuploaded_' + this.options.id + '_' + id).destroy();
+		}
+		
+		if (this.getContainer().getElements('table tbody tr.plupload_delete').length === 0) {
+			this.addDropArea();
 		}
 	},
 
@@ -489,8 +517,8 @@ var ImageWidget = new Class({
 			'type': 'modal',
 			content: this.canvas.getParent(),
 			loadMethod: 'html',
-			width: this.imageDefault.imagedim.w.toInt() + 20,
-			height: this.imageDefault.imagedim.h.toInt() + 140,
+			width: this.imageDefault.imagedim.w.toInt() + 40,
+			height: this.imageDefault.imagedim.h.toInt() + 150,
 			storeOnClose: true,
 			createShowOverLay: false,
 			crop: opts.crop,
@@ -499,6 +527,9 @@ var ImageWidget = new Class({
 				this.storeActiveImageData();
 			}.bind(this),
 			onContentLoaded : function () {
+				this.center();
+			},
+			onOpen: function () {
 				this.center();
 			}
 		};

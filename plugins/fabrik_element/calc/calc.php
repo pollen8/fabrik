@@ -210,8 +210,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 	/**
 	 * run on formModel::setFormData()
+	 * Appends the calculation to the form's data when the form is submitted
 	 *
-	 * @param   int  $c  repeat group counter
+	 * @param   int  $c  Repeat group counter
 	 *
 	 * @return void
 	 */
@@ -221,7 +222,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$form = $this->getForm();
-
 
 		$d = unserialize(serialize($form->formData));
 		$calc = $params->get('calc_calculation');
@@ -263,7 +263,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
 		$data = $d;
-		$calc = @eval($w->parseMessageForPlaceHolder($calc, $d));
+		$calc = eval($w->parseMessageForPlaceHolder($calc, $d));
 		FabrikWorker::logEval($calc, 'Caught exception on eval of ' . $this->getElement()->name . '::preProcess(): %s');
 		$form->updateFormData($key, $calc);
 		$form->updateFormData($rawkey, $calc);
@@ -322,11 +322,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$format = trim($params->get('calc_format_string'));
+		$element_data = $data;
 		if ($params->get('calc_on_save_only', 0))
 		{
 			if ($format != '')
 			{
-				$element_data = sprintf($format, $data);
+				$element_data = sprintf($format, $element_data);
 			}
 			return parent::preFormatFormJoins($element_data, $row);
 		}
@@ -625,6 +626,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts = new stdClass;
 		$opts->listid = $list->id;
 		$opts->listRef = 'list_' . $this->getlistModel()->getRenderContext();
+		$opts->formid = $this->getFormModel()->getId();
 		$opts->elid = $this->getElement()->id;
 		$opts = json_encode($opts);
 		return "new FbCalcList('$id', $opts);\n";
@@ -644,7 +646,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$listId = $input->getInt('listid');
 		$elId = $input->getInt('element_id');
 		$this->setId($elId);
-		$this->getElement();
+		$this->loadMeForAjax();
 		$params = $this->getParams();
 
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');

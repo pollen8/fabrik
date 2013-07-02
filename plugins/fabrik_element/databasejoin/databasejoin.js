@@ -6,7 +6,6 @@ var FbDatabasejoin = new Class({
 		'formid': 0,
 		'key': '',
 		'label': '',
-		'popwiny': 0,
 		'windowwidth': 360,
 		'displayType': 'dropdown',
 		'popupform': 0,
@@ -41,10 +40,13 @@ var FbDatabasejoin = new Class({
 	},
 	
 	/**
-	 * add option via a popup form. Opens a window with the releated form
+	 * Add option via a popup form. Opens a window with the releated form
 	 * inside
 	 */
 	start: function (e, force) {
+		if (!this.options.editable) {
+			return;
+		}
 		force = force ? true : false;
 		
 		// First time loading - auto close the hidden loaded popup.
@@ -72,12 +74,13 @@ var FbDatabasejoin = new Class({
 			return;
 		}
 		c = this.getContainer();
+		if (typeOf(this.element) === 'null' || typeOf(c) === 'null') {
+			return;
+		}
 		var a = c.getElement('.toggle-addoption');
 		var url = typeOf(a) === 'null' ? e.target.get('href') : a.get('href');
 		
-		if (typeOf(this.element) === 'null') {
-			return;
-		}
+		
 		var id = this.element.id + '-popupwin';
 		this.windowopts = {
 			'id': id,
@@ -86,7 +89,6 @@ var FbDatabasejoin = new Class({
 			'loadMethod': 'xhr',
 			'contentURL': url,
 			'height': 320,
-			'y': this.options.popwiny,
 			'minimizable': false,
 			'collapsible': true,
 			'visible': visible,
@@ -459,7 +461,6 @@ var FbDatabasejoin = new Class({
 			'contentURL': url,
 			'width': this.options.windowwidth.toInt(),
 			'height': 320,
-			'y': this.options.popwiny,
 			'minimizable': false,
 			'collapsible': true,
 			'onContentLoaded': function (win) {
@@ -768,6 +769,8 @@ var FbDatabasejoin = new Class({
 				}.bind(this));
 			}
 			break;
+		case 'checkbox':
+		/* falls through */
 		case 'radio':
 			this._getSubElements();
 			this.subElements.each(function (el) {

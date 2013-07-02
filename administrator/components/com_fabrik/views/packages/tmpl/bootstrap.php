@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
+JHTML::_('script', 'system/multiselect.js', false, true);
 $user = JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder = $this->state->get('list.ordering');
@@ -80,11 +80,11 @@ $listDirn = $this->state->get('list.direction');
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
 			$ordering = ($listOrder == 'ordering');
-			$link = JRoute::_('index.php?option=com_fabrik&task=package.edit&id='.(int) $item->id);
-			$canCreate	= $user->authorise('core.create',		'com_fabrik.package.'.$item->id);
-			$canEdit	= $user->authorise('core.edit',			'com_fabrik.package.'.$item->id);
-			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
-			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.package.'.$item->id) && $canCheckin;
+			$link = JRoute::_('index.php?option=com_fabrik&task=package.edit&id=' . (int) $item->id);
+			$canCreate	= $user->authorise('core.create',		'com_fabrik.package.' . $item->id);
+			$canEdit	= $user->authorise('core.edit',			'com_fabrik.package.' . $item->id);
+			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
+			$canChange	= $user->authorise('core.edit.state',	'com_fabrik.package.' . $item->id) && $canCheckin;
 			?>
 
 			<tr class="row<?php echo $i % 2; ?>">
@@ -96,14 +96,19 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
+						if ($item->checked_out && ($item->checked_out != $user->get('id')))
+						{
 							echo  $item->label;
-						} else {
+						}
+						else
+						{
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->label; ?>
 						</a>
-					<?php } ?>
+					<?php
+						}
+					?>
 					</td>
 					<td>
 						<?php echo $item->file?>

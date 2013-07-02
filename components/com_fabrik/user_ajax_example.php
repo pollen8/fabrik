@@ -1,10 +1,11 @@
 <?php
-
 /**
- * @package  fabrik
- * @version 905 | fabrik_cheesegrits | 2008-05-19 21:21:05 +0200 (Mon, 19 May 2008
- * @Copyright (C) Hugh Messenger
- * @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * User ajax example
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 /**
@@ -39,7 +40,7 @@
  *				refocus.focus();
  *			}
  *		}
- *	 }).request();
+ *	 }).send();
  *}
  *
  * In this case, the above code is called from the 'onchange' trigger
@@ -64,7 +65,7 @@
  *	 new Request({url:url,
  *		method: 'get',
  *		update: document.id('jos_fabrik_formdata_13___states')
- *	 }).request();
+ *	 }).send();
  * }
  *
  * The important note here is the 'update' parameter, which tells Mootools the ID of the
@@ -75,9 +76,23 @@
 /* MOS Intruder Alerts */
 defined('_JEXEC') or die('Restricted access');
 
-class userAjax
+/**
+ * Define your userAjax class
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
+class UserAjax
 {
-	function userExists()
+	/**
+	 * This is the method that is run. You should echo out the result you which to return to the browser
+	 *
+	 * @return  void
+	 */
+
+	public function userExists()
 	{
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);

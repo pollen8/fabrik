@@ -2,10 +2,10 @@
 /**
  * Slideshow vizualization: view
  *
-* @package		Joomla.Plugin
-* @subpackage	Fabrik.visualization.slideshow
-* @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
-* @license		GNU General Public License version 2 or later; see LICENSE.txt
+* @package     Joomla.Plugin
+* @subpackage  Fabrik.visualization.slideshow
+* @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+* @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
 // Check to ensure this file is included in Joomla!
@@ -32,7 +32,7 @@ class FabrikViewSlideshow extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;

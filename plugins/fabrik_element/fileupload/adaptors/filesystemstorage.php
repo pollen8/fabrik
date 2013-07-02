@@ -27,14 +27,17 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	/**
 	 * Does a file exist
 	 *
-	 * @param   string  $filepath  file path to test
+	 * @param   string  $filepath  File path to test
 	 *
 	 * @return bool
 	 */
 
 	public function exists($filepath)
 	{
-		$filepath = JPath::clean($filepath);
+		if ($filepath == '\\')
+		{
+			return false;
+		}
 		return JFile::exists($filepath);
 	}
 

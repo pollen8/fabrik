@@ -138,7 +138,7 @@ class FabrikFEModelFormsession extends FabModel
 		$row->form_id = $this->getFormId();
 		$row->row_id = $this->getRowId();
 		$row->last_page = $input->get('page');
-		$row->referring_url = $input->server->get('HTTP_REFERER', '');
+		$row->referring_url = $input->server->get('HTTP_REFERER', '', 'string');
 		$row->data = $data;
 		$this->setCookie($hash);
 		if (!$row->store())
@@ -417,7 +417,7 @@ class FabrikFEModelFormsession extends FabModel
 
 	public function setRowId($id)
 	{
-		$this->rowid = $id;
+		$this->rowid = (int) $id;
 	}
 
 	/**

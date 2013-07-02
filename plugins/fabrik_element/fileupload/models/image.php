@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0
  */
 
-class imageRender
+class ImageRender
 {
 
 	/**
@@ -32,6 +32,8 @@ class imageRender
 	var $inTableView = false;
 
 	/**
+	 * Render list data
+	 *
 	 * @param   object  &$model   Element model
 	 * @param   object  &$params  Element params
 	 * @param   string  $file     Row data for this element
@@ -50,7 +52,7 @@ class imageRender
 	 * Render uploaded image
 	 *
 	 * @param   object  &$model   Element model
-	 * @param   object  &$parmas  Element params
+	 * @param   object  &$params  Element params
 	 * @param   string  $file     Row data for this element
 	 * @param   object  $thisRow  All row's data
 	 *
@@ -62,9 +64,11 @@ class imageRender
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		// $$$ hugh - added this hack to let people use elementname__title as a title element
-		// for the image, to show in the lightbox popup.
-		// So we have to work out if we're being called from a table or form
+		/*
+		 * $$$ hugh - added this hack to let people use elementname__title as a title element
+		 * for the image, to show in the lightbox popup.
+		 * So we have to work out if we're being called from a table or form
+		 */
 		$formModel = $model->getFormModel();
 		$title = basename($file);
 		if ($params->get('fu_title_element') == '')
@@ -121,7 +125,7 @@ class imageRender
 		}
 		$file = $model->storage->preRenderPath($file);
 		$fullSize = $model->storage->preRenderPath($fullSize);
-		if ($params->get('fu_show_image') == 0)
+		if ($params->get('fu_show_image') == 0 && !$this->inTableView)
 		{
 			$fileName = explode("/", $file);
 			$fileName = array_pop($fileName);
@@ -172,4 +176,3 @@ class imageRender
 	}
 
 }
-

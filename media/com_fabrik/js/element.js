@@ -67,6 +67,7 @@ var FbElement =  new Class({
 	 * @return  string
 	 */
 	getFormElementsKey: function (elId) {
+		this.baseElementId = elId;
 		return elId;
 	},
 	
@@ -194,7 +195,7 @@ var FbElement =  new Class({
 	
 	addNewEventAux: function (action, js) {
 		this.element.addEvent(action, function (e) {
-			e.stop();
+			// Don't stop event - means fx's onchange events wouldnt fire.
 			typeOf(js) === 'function' ? js.delay(0, this, this) : eval(js);
 		}.bind(this));
 	},
@@ -215,6 +216,11 @@ var FbElement =  new Class({
 				this.addNewEventAux(action, js);
 			}
 		}
+	},
+	
+	// Alais to addNewEvent.
+	addEvent: function (action, js) {
+		this.addNewEvent(action, js);
 	},
 	
 	validate: function () {},
@@ -254,6 +260,11 @@ var FbElement =  new Class({
 				this.element.innerHTML = val;
 			}
 		}
+	},
+	
+	// Alias to update()
+	set: function (val) {
+		this.update(val);
 	},
 	
 	getValue: function () {
@@ -338,6 +349,71 @@ var FbElement =  new Class({
 		return this.validationFX;
 	},
 	
+	/**
+	 * Get all tips attached to the element
+	 * 
+	 * @return array of tips
+	 */
+	tips: function () {
+		return Fabrik.tips.elements.filter(function (t) {
+			if (t === this.getContainer()) {
+				return true;
+			}
+		}.bind(this));
+	},
+	
+	/**
+	 * In 3.1 show error messages in tips - avoids jumpy pages with ajax validations
+	 */
+	addTipMsg: function (msg, klass) {
+		// Append notice to tip
+		klass = klass ? klass : 'error';
+		var ul, a, t = this.tips();
+		if (t.length === 0) {
+			return;
+		}
+		t = jQuery(t[0]);
+		
+		if (t.attr(klass) === undefined) {
+			t.data('popover').show();
+			t.attr(klass, msg);
+			a = t.data('popover').tip().find('.popover-content');
+			
+			var d = new Element('div');
+			d.set('html', a.html());
+			var li = new Element('li.' + klass);
+			li.set('html', msg);
+			new Element('i.' + this.form.options.images.alert).inject(li, 'top');
+			d.getElement('ul').adopt(li);
+			t.attr('data-content', unescape(d.get('html')));
+			t.data('popover').setContent();
+			t.data('popover').hide();
+		}
+	},
+	
+	/**
+	 * In 3.1 show/hide error messages in tips - avoids jumpy pages with ajax validations
+	 */
+	removeTipMsg: function (index) {
+		var klass = klass ? klass : 'error',
+		t = this.tips();
+		t = jQuery(t[0]);
+		if (t.attr(klass) !== undefined) {
+			t.data('popover').show();
+			a = t.data('popover').tip().find('.popover-content');
+			var d = new Element('div');
+			d.set('html', a.html());
+			var li = d.getElement('li.error');
+			if (li) {
+				li.destroy();
+			}
+			t.attr('data-content', d.get('html'));
+			t.data('popover').setContent();
+			t.data('popover').hide();
+			t.removeAttr(klass);
+		}
+	},
+	
 	setErrorMessage: function (msg, classname) {
 		var a, m;
 		var classes = ['fabrikValidating', 'fabrikError', 'fabrikSuccess'];
@@ -355,9 +431,9 @@ var FbElement =  new Class({
 		});
 		switch (classname) {
 		case 'fabrikError':
+			Fabrik.loader.stop(this.element);
 			if (Fabrik.bootstrapped) {
-				m = new Element('div').set('html', msg).getChildren()[0];
-				a = new Element('div').adopt([this.alertImage, m]);
+				this.addTipMsg(msg);
 			} else {
 				a = new Element('a', {'href': '#', 'title': msg, 'events': {
 					'click': function (e) {
@@ -370,19 +446,34 @@ var FbElement =  new Class({
 			errorElements[0].adopt(a);
 			
 			container.removeClass('success').removeClass('info').addClass('error');
+
+			// If tmpl has additional error message divs (e.g labels above) then set html msg there
+			if (errorElements.length > 1) {
+				for (i = 1; i < errorElements.length; i ++) {
+					errorElements[i].set('html', msg);
+				}
+			}
+			
 			break;
 		case 'fabrikSuccess':
 			container.addClass('success').removeClass('info').removeClass('error');
-			errorElements[0].adopt(this.successImage);
-			var delFn = function () {
-				errorElements[0].addClass('fabrikHide');
-				container.removeClass('success');
-			};
-			delFn.delay(700);
+			if (Fabrik.bootstrapped) {
+				Fabrik.loader.stop(this.element);
+				this.removeTipMsg();
+			} else {
+				
+				errorElements[0].adopt(this.successImage);
+				var delFn = function () {
+					errorElements[0].addClass('fabrikHide');
+					container.removeClass('success');
+				};
+				delFn.delay(700);
+			}
 			break;
 		case 'fabrikValidating':
 			container.removeClass('success').addClass('info').removeClass('error');
-			errorElements[0].adopt(this.loadingImage);
+			//errorElements[0].adopt(this.loadingImage);
+			Fabrik.loader.start(this.element, msg);
 			break;
 		}
 
@@ -536,6 +627,27 @@ var FbElement =  new Class({
 	
 	select: function () {},
 	focus: function () {},
+	
+	hide: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.hide();
+		}
+	},
+	
+	show: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.show();
+		}
+	},
+	
+	toggle: function () {
+		var c = this.getContainer();
+		if (c) {
+			c.toggle();
+		}
+	},
 	
 	/**
 	 * Used to find element when form clones a group

@@ -17,9 +17,9 @@ require_once 'fabmodeladmin.php';
 /**
  * Fabrik Admin Visualization Model
  *
- * @package      Joomla.Administrator
- * @subpackage   Fabrik
- * @since        3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminModelVisualization extends FabModelAdmin

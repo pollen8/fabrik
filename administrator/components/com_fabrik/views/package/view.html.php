@@ -16,9 +16,9 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a package.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.5
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.5
 */
 
 class FabrikAdminViewPackage extends JViewLegacy
@@ -141,6 +141,8 @@ class FabrikAdminViewPackage extends JViewLegacy
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  void
 	 */
 
 	protected function addToolbar()
@@ -176,6 +178,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 				{
 					JToolBarHelper::apply('package.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('package.save', 'JTOOLBAR_SAVE');
+
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{

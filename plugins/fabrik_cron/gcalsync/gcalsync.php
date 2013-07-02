@@ -13,7 +13,6 @@ defined('_JEXEC') or die();
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 /**
- *
  * Fabrik Cron Job:
  * Syncs events from a Google Calendar into a Fabrik List
  *
@@ -22,7 +21,7 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
  * @since       3.0
  */
 
-class plgFabrik_CronGcalsync extends plgFabrik_Cron
+class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 {
 
 	/**
@@ -191,7 +190,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 			}
 			else
 			{
-				$gdataCal = new Zend_Gdata_Calendar();
+				$gdataCal = new Zend_Gdata_Calendar;
 			}
 
 			// Set up and execute the call to grab the feed from google
@@ -238,7 +237,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 			{
 				if (!array_key_exists($id, $our_event_ids))
 				{
-					// we don't have the ID, so add the event to our table
+					// We don't have the ID, so add the event to our table
 					$row = array();
 					$row[$gcal_start_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->startTime));
 					$row[$gcal_end_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->endTime));
@@ -258,7 +257,7 @@ class plgFabrik_CronGcalsync extends plgFabrik_Cron
 			{
 				// Grab the tzOffset.  Note that gcal want +/-XX (like -06)
 
-				// but J! gives us +/-X (like -6) so we sprintf it to the right format
+				// But J! gives us +/-X (like -6) so we sprintf it to the right format
 				$config = JFactory::getConfig();
 				$tzOffset = (int) $config->get('offset');
 				$tzOffset = sprintf('%+03d', $tzOffset);

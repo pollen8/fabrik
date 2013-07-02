@@ -231,7 +231,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				{
 					$to = $emailTo;
 				}
-				if (JMailHelper::cleanAddress($to) && JMailHelper::isEmailAddress($to))
+				if (JMailHelper::cleanAddress($to) && FabrikWorker::isEmail($to))
 				{
 					// $tofull = '"' . JMailHelper::cleanLine($toname) . '" <' . $to . '>';
 					// $$$servantek added an eval option and rearranged placeholder call

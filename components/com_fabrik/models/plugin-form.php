@@ -295,7 +295,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					if ($elementModel->isJoin())
 					{
 						$join = $elementModel->getJoinModel()->getJoin();
-						$raw = $model->formDataWithTableName[$k][$c];
+						$raw = JArrayHelper::getValue($model->formDataWithTableName[$k], $c, '');
 						$this->emailData[$k . '_raw'][$c] = $raw;
 						$this->emailData[$k][$c] = $elementModel->getEmailValue($raw, $model->formDataWithTableName, $c);
 					}
@@ -386,6 +386,35 @@ class PlgFabrik_Form extends FabrikPlugin
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		return $rows;
+	}
+
+	/**
+	 * Does the plugin use session.on
+	 *
+	 * @param   object  $params     plugin params
+	 * @param   object  $formModel  form model
+	 *
+	 * @since  3.0.8
+	 *
+	 * @return  void
+	 */
+
+	public function usesSession($params, $formModel)
+	{
+		$this->usesSession = false;
+	}
+
+	/**
+	 * Does the plugin use session.on - returned results
+	 *
+	 * @since  3.0.8
+	 *
+	 * @return	bool  session.on
+	 */
+
+	public function usesSession_result()
+	{
+		return $this->usesSession;
 	}
 
 }

@@ -32,7 +32,8 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
  * @since       3.0
  */
 
-class PlgFabrik_FormAutofill extends PlgFabrik_Form {
+class PlgFabrik_FormAutofill extends PlgFabrik_Form
+{
 
 	/**
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
@@ -109,7 +110,6 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = JModelLegacy::getInstance('form', 'FabrikFEModel');
-		$params = $this->getParams();
 		$cnn = (int) $input->getInt('cnn');
 		$element = $input->get('observe');
 		$value = $input->get('v', '', 'string');
@@ -146,7 +146,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form {
 				$value = $db->loadResult();
 			}
 			$data = $listModel->getRow($value, true, true);
-			if (!is_null($data))
+			if (is_array($data))
 			{
 				$data = array_shift($data);
 			}

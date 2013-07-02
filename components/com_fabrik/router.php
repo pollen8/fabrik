@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // Check to ensure this file is included in Joomla!
@@ -33,7 +33,34 @@ function fabrikBuildRoute(&$query)
 	$segments = array();
 	$app = JFactory::getApplication();
 	$menu = $app->getMenu();
-	$menuItem = $menu->getItem(@$query['Itemid']);
+
+	if (empty($query['Itemid']))
+	{
+		$menuItem = $menu->getActive();
+		$menuItemGiven = false;
+	}
+	else {
+		$menuItem = $menu->getItem($query['Itemid']);
+		$menuItemGiven = true;
+	}
+
+	// Are we dealing with a view that is attached to a menu item https://github.com/Fabrik/fabrik/issues/498?
+	if (($menuItem instanceof stdClass) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
+		unset($query['view']);
+
+		if (isset($query['catid'])) {
+			unset($query['catid']);
+		}
+
+		if (isset($query['layout'])) {
+			unset($query['layout']);
+		}
+
+		unset($query['id']);
+		return $segments;
+	}
+
+
 	if (isset($query['c']))
 	{
 		// $segments[] = $query['c'];//remove from sef url
@@ -132,6 +159,7 @@ function fabrikBuildRoute(&$query)
 		$segments[] = $query['fabriklayout'];
 		unset($query['fabriklayout']);
 	}
+
 	return $segments;
 }
 

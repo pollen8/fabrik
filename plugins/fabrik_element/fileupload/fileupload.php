@@ -163,66 +163,49 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-		/**
-		 * $$$ hugh - adding js.new folder to make it easier to test new plupload git releases
-		 * I just copy new stuff into js.new, and un-comment one of these as appropriate
-		 */
-		$js_dir = 'js';
+		$s = new stdClass;
+		$s->deps = array('fab/element');
 
-		// $js_dir = 'js.new';
-		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$params = $this->getParams();
 		if ($params->get('ajax_upload'))
 		{
-			$suffix = FabrikHelperHTML::isDebug() ? '.js' : '.min.js';
 			$runtimes = $params->get('ajax_runtime', 'html5');
-			$folder = 'plugins/fabrik_element/fileupload/lib/plupload/';
-			parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload' . $suffix);
+			$folder = 'element/fileupload/lib/plupload/js/';
+			$plupShim = new stdClass;
+			$plupShim->deps = array($folder . 'plupload');
+			$s->deps[] = $folder . 'plupload';
 
 			if (strstr($runtimes, 'html5'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html5' . $suffix);
+				$s->deps[] = $folder . 'plupload.html5';
+				$shim[$folder . 'plupload.html5'] = $plupShim;
 			}
 			if (strstr($runtimes, 'html4'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.html4' . $suffix);
+				$s->deps[] = $folder . 'plupload.html4';
+				$shim[$folder . 'plupload.html4'] = $plupShim;
 			}
-			if (strstr($runtimes, 'gears'))
-			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/gears_init.js');
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.gears' . $suffix);
-			}
-
 			if (strstr($runtimes, 'flash'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.flash' . $suffix);
+				$s->deps[] = $folder . 'plupload.flash';
+				$shim[$folder . 'plupload.flash'] = $plupShim;
 			}
 			if (strstr($runtimes, 'silverlight'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.silverlight' . $suffix);
+				$s->deps[] = $folder . 'plupload.silverlight';
+				$shim[$folder . 'plupload.silverlight'] = $plupShim;
 			}
 			if (strstr($runtimes, 'browserplus'))
 			{
-				parent::formJavascriptClass($srcs, $folder . $js_dir . '/plupload.browserplus' . $suffix);
+				$s->deps[] = $folder . 'plupload.browserplus';
+				$shim[$folder . 'plupload.browserplus'] = $plupShim;
 			}
-		}
-		parent::formJavascriptClass($srcs, $script, $shim);
-		static $elementclasses;
 
-		if (!isset($elementclasses))
-		{
-			$elementclasses = array();
 		}
-		// Load up the default scipt
-		if ($script == '')
-		{
-			$script = 'plugins/fabrik_element/' . $this->getElement()->plugin . '/' . $this->getElement()->plugin . $ext;
-		}
-		if (empty($elementclasses[$script]))
-		{
-			$srcs[] = $script;
-			$elementclasses[$script] = 1;
-		}
+		$shim['element/fileupload/fileupload'] = $s;
+
+		parent::formJavascriptClass($srcs, $script, $shim);
+
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
 		return false;
 	}
@@ -611,7 +594,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				if (!$canDownload)
 				{
 					$img = $params->get('fu_download_noaccess_image');
-					$noImg = ($img == '' || !JFile::exists('media/com_fabrik/images/' . $img));
+					$noImg = ($img == '' || !JFile::exists(JPATH_ROOT . '/media/com_fabrik/images/' . $img));
 					$aClass = $noImg ? 'class="btn button"' : '';
 					$a = $params->get('fu_download_noaccess_url') == '' ? ''
 							: '<a href="' . $params->get('fu_download_noaccess_url') . '" ' . $aClass . '>';
@@ -652,7 +635,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 			$downloadImg = $params->get('fu_download_access_image');
-			if ($downloadImg !== '' && JFile::exists('media/com_fabrik/images/' . $downloadImg))
+			if ($downloadImg !== '' && JFile::exists(JPATH_ROOT . '/media/com_fabrik/images/' . $downloadImg))
 			{
 				$aClass = '';
 				$title = '<img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/' . $downloadImg . '" alt="' . $title . '" />';
@@ -663,8 +646,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 			}
 			$link = COM_FABRIK_LIVESITE
-			. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;element_id='
-					. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
+				. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=fileupload&amp;method=ajax_download&amp;format=raw&amp;element_id='
+				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=' . $i;
 			$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 			return $url;
 		}
@@ -1047,7 +1030,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$oImage = FabimageHelper::loadLib($params->get('image_library'));
 			$oImage->setStorage($storage);
 			$fileCounter = 0;
-			echo "crop <br>";print_r($crop);
 			foreach ($crop as $filepath => $json)
 			{
 				$imgData = $cropData[$filepath];
@@ -1231,7 +1213,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 
-		//echo "do stuff here";exit;
 		if ($groupModel->canRepeat())
 		{
 			if ($isjoin)
@@ -1983,10 +1964,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$aClass = 'class="btn btn-primary button"';
 			$title = '<i class="icon-download icon-white"></i> ' . JText::_('PLG_ELEMENT_FILEUPLOAD_DOWNLOAD');
 		}
-
-
-		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&element_id='
-				. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
+		$link = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&plugin=fileupload&method=ajax_download&format=raw&element_id='
+			. $elementid . '&formid=' . $formid . '&rowid=' . $rowid . '&repeatcount=' . $repeatCounter;
 		$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 		return $url;
 	}
@@ -2007,13 +1986,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * Create the html plupload widget plus css
+	 * Create the html for Ajax upload widget
 	 *
-	 * @param   array  $str            current html output
-	 * @param   int    $repeatCounter  repeat group counter
-	 * @param   array  $values         existing files
+	 * @param   array  $str            Current html output
+	 * @param   int    $repeatCounter  Repeat group counter
+	 * @param   array  $values         Existing files
 	 *
-	 * @return	array	modified fileupload html
+	 * @return	array	Modified fileupload html
 	 */
 
 	protected function plupload($str, $repeatCounter, $values)
@@ -2023,9 +2002,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$params = $this->getParams();
 		$winWidth = $params->get('win_width', 400);
 		$winHeight = $params->get('win_height', 400);
-		$runtimes = $params->get('ajax_runtime', 'html5');
-		$w = (int) $params->get('ajax_dropbox_width', 300);
+		$runtimes = $params->get('ajax_runtime', 'html5,html4');
+		$w = (int) $params->get('ajax_dropbox_width', 0);
 		$h = (int) $params->get('ajax_dropbox_hight', 200);
+		$dropBoxStyle = 'height:' . $h . 'px';
+		if ($w !== 0)
+		{
+			$dropBoxStyle .= 'width:' . $w . 'px;';
+		}
 
 		// Add span with id so that element fxs work.
 		$pstr = array();
@@ -2054,50 +2038,29 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$pstr[] = '</div>';
 		$pstr[] = '</div>';
 
-		$pstr[] = '<div class="plupload_container fabrikHide" id="' . $id . '_container" style="width:' . $w . 'px;height:' . $h . 'px">';
+		$pstr[] = '<div class="plupload_container fabrikHide" id="' . $id . '_container" style="' . $dropBoxStyle . '">';
 		$pstr[] = '<div class="plupload" id="' . $id . '_dropList_container">';
-		$pstr[] = '	<div class="plupload_header">';
-		$pstr[] = '		<div class="plupload_header_content">';
-		$pstr[] = '			<div class="plupload_header_title">' . JText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_HEADING') . '</div>';
-		$pstr[] = '			<div class="plupload_header_text">' . JText::_('PLG_ELEMENT_FILEUPLOAD_PLUP_SUB_HEADING') . '</div>';
-		$pstr[] = '		</div>';
-		$pstr[] = '	</div>';
-		$pstr[] = '	<div class="plupload_content">';
-		$pstr[] = '		<div class="plupload_filelist_header">';
-		$pstr[] = '			<div class="plupload_file_name">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</div>';
-		$pstr[] = '			<div class="plupload_file_action">&nbsp;</div>';
-		$pstr[] = '			<div class="plupload_file_status"><span>' . JText::_('PLG_ELEMENT_FILEUPLOAD_STATUS') . '</span></div>';
-		$pstr[] = '			<div class="plupload_file_size">' . JText::_('PLG_ELEMENT_FILEUPLOAD_SIZE') . '</div>';
-		$pstr[] = '			<div class="plupload_clearer">&nbsp;</div>';
-		$pstr[] = '		</div>';
-		$pstr[] = '		<ul class="plupload_filelist" id="' . $id . '_dropList">';
-		$pstr[] = '		</ul>';
-		$pstr[] = '		<div class="plupload_filelist_footer">';
-		$pstr[] = '		<div class="plupload_file_name">';
-		$pstr[] = '			<div class="plupload_buttons">';
-		$pstr[] = '				<a id="' . $id . '_browseButton" class="plupload_button plupload_add" href="#">'
+		$pstr[] = '	<table class="table table-striped table-condensed">';
+		$pstr[] = '		<thead style="display:none"><tr>';
+		$pstr[] = '			<th class="span4">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FILENAME') . '</th>';
+		$pstr[] = '			<th class="span1 plupload_crop">&nbsp;</th>';
+		$pstr[] = '			<th class="span5 plupload_file_status"></th>';
+		$pstr[] = '			<th class="span1 plupload_file_action">&nbsp;</th>';
+		$pstr[] = '		</tr></thead>';
+		$pstr[] = '		<tbody class="plupload_filelist" id="' . $id . '_dropList">';
+		$pstr[] = ' </tbody>';
+
+		$pstr[] = ' <tfoot><tr><td colspan="4">';
+
+		$pstr[] = '				<a id="' . $id . '_browseButton" class="btn btn-mini" href="#"><i class="icon-plus-sign icon-plus"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
-		$pstr[] = '				<a class="plupload_button plupload_start plupload_disabled" href="#">'
+		$pstr[] = '				<a class="btn btn-mini disabled" data-action="plupload_start" href="#"><i class="icon-upload"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';
-		$pstr[] = '			</div>';
 		$pstr[] = '			<span class="plupload_upload_status"></span>';
-		$pstr[] = '		</div>';
-		$pstr[] = '		<div class="plupload_file_action"></div>';
-		$pstr[] = '			<div class="plupload_file_status">';
-		$pstr[] = '				<span class="plupload_total_status"></span>';
-		$pstr[] = '			</div>';
-		$pstr[] = '		<div class="plupload_file_size">';
-		$pstr[] = '			<span class="plupload_total_file_size"></span>';
-		$pstr[] = '		</div>';
-		$pstr[] = '		<div class="plupload_progress">';
-		$pstr[] = '			<div class="plupload_progress_container">';
-		$pstr[] = '			<div class="plupload_progress_bar"></div>';
-		$pstr[] = '		</div>';
+
+		$pstr[] = '</td></tr></tfoot>';
+		$pstr[] = '	</table>';
 		$pstr[] = '	</div>';
-		$pstr[] = '	<div class="plupload_clearer">&nbsp;</div>';
-		$pstr[] = '	</div>';
-		$pstr[] = '</div>';
-		$pstr[] = '</div>';
 		$pstr[] = '</div>';
 		$pstr[] = '<!-- FALLBACK; SHOULD LOADING OF PLUPLOAD FAIL -->';
 		$pstr[] = '<div class="plupload_fallback">' . JText::_('PLG_ELEMENT_FILEUPLOAD_FALLBACK_MESSAGE');
@@ -2105,8 +2068,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		array_merge($pstr, $str);
 		$pstr[] = '</div>';
-
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/fileupload/lib/plupload/css/plupload.queue.css');
 		return $pstr;
 	}
 
@@ -2135,6 +2096,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$o = new stdClass;
 		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
 		$groupModel = $this->getGroup();
 
 		if (!$this->validate())
@@ -2462,6 +2424,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$input = $app->input;
 		$this->loadMeForAjax();
 		$this->setId($input->getInt('element_id'));
+		$this->loadMeForAjax();
 		$this->getElement();
 		$params = $this->getParams();
 		$url = $input->server->get('HTTP_REFERER', '', 'string');
@@ -2620,6 +2583,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		if (empty($val))
 		{
 			$formModel = $this->getFormModel();
+			$groupModel = $this->getGroupModel();
 			$isjoin = $groupModel->isJoin();
 			$origData = $formModel->getOrigData();
 			$groupModel = $this->getGroup();

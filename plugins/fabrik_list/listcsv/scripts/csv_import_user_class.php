@@ -101,8 +101,10 @@ class ImportCSVCreateUser {
 		$userdata['email'] = $data[$this->email_element];
 		$userdata['name'] = $data[$this->name_element];
 
-		if (!JMailHelper::isEmailAddress($userdata['email'])) {
-			if ($app->isAdmin()) {
+		if (!FabrikWorker::isEmail($userdata['email']))
+		{
+			if ($app->isAdmin())
+			{
 				$app->enqueueMessage("No email for {$userdata['username']}");
 			}
 			$log->message_type='plg.table.tablecsv.csv_import_user.warning';

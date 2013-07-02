@@ -121,10 +121,11 @@ class FabrikHelperHTML
 	protected static $printURL = null;
 
 	protected static $requireJS = array();
+
 	/**
 	 * Array of browser request headers.  Starts as null.
 	 * @var array
-	*/
+	 */
 	protected static $requestHeaders = null;
 
 	/**
@@ -147,7 +148,7 @@ class FabrikHelperHTML
 	/**
 	 * Build a datatoggling dropdown
 	 *
-	 * @param   array   $lis  Array of links to create dropdown from
+	 * @param   array   $lis    Array of links to create dropdown from
 	 * @param   string  $align  Should the drop down be left or right aligned - If right then the dropdown content's end is right algined to the button
 	 *
 	 * @return  string
@@ -163,16 +164,23 @@ class FabrikHelperHTML
 		return '<div class="' . $class . '"><a class="dropdown-toggle btn btn-mini" data-toggle="dropdown" href="#">
 				<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu"><li>' . implode('</li><li>', $lis) . '</li></ul></div>';
-	}
-
-	public static function bootStrapButtonGroup($items)
-	{
-		return '<div class="btn-group">' . implode(' ' , $items) . '</div>';
+				<ul class="dropdown-menu"><li>' . implode('</li>' . "\n" . '<li>', $lis) . '</li></ul></div>';
 	}
 
 	/**
+	 * Wrap buttons in bootstrap btn-group div
 	 *
+	 * @param   array  $items  Items
+	 *
+	 * @return string
+	 */
+
+	public static function bootStrapButtonGroup($items)
+	{
+		return '<div class="btn-group">' . implode(' ', $items) . '</div>';
+	}
+
+	/**
 	 * Build an array of the request headers by hand.  Replacement for using
 	 * apache_request_headers(), which only works in certain configurations.
 	 * This solution gets them from the $_SERVER array, and re-munges them back
@@ -182,14 +190,17 @@ class FabrikHelperHTML
 	 * @return   array  request headers assoc
 	 */
 
-	public static function parseRequestHeaders() {
+	public static function parseRequestHeaders()
+	{
 		if (isset(self::$requestHeaders))
 		{
 			return self::$requestHeaders;
 		}
 		self::$requestHeaders = array();
-		foreach($_SERVER as $key => $value) {
-			if (substr($key, 0, 5) <> 'HTTP_') {
+		foreach ($_SERVER as $key => $value)
+		{
+			if (substr($key, 0, 5) <> 'HTTP_')
+			{
 				continue;
 			}
 			$header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
@@ -214,9 +225,6 @@ class FabrikHelperHTML
 		$input = $app->input;
 		$script = '';
 
-		// Don't include in an Request.JSON call - for autofill form plugin
-		// $$$ hugh - apache_request_headers() only works for certain server configurations
-		//$headers = apache_request_headers();
 		$headers = self::parseRequestHeaders();
 		if (JArrayHelper::getValue($headers, 'X-Request') === 'JSON')
 		{
@@ -278,17 +286,6 @@ class FabrikHelperHTML
       if (opts.id === 'fabwin') {
       	opts.id += i;
       }
-      var t = typeOf(opts.onContentLoaded);
-      if (t !== 'null') {
-      opts.onContentLoaded = function() {
-  			Fabrik.Windows[opts.id].fitToContent();
-			};
-
-		} else {
-			opts.onContentLoaded = function() {
-	  			document.id(opts.id).position();
-			};
-		}
       Fabrik.getWindow(opts);
     });
   });
@@ -415,7 +412,7 @@ EOD;
 		$link = self::printURL($formModel);
 		if ($params->get('icons', true))
 		{
-			$image = FabrikHelperHTML::image('print.png');
+			$image = self::image('print.png');
 		}
 		else
 		{
@@ -848,8 +845,8 @@ EOD;
 	 * Append a js file to the main require.js list of files to load.
 	 * Will use the -min.js or .js file based on debug settings
 	 *
-	 * @param   array   $srcs  Already loaded scripts from framework()
-	 * @param   string  $file  JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'
+	 * @param   array   &$srcs  Already loaded scripts from framework()
+	 * @param   string  $file   JS File path relative to root without .js extension e.g. 'media/com_fabrik/js/list'
 	 *
 	 * @since   3.0b
 	 *
@@ -883,11 +880,8 @@ EOD;
 			$src = array();
 			JHtml::_('behavior.framework', true);
 
-			// If custom list link - it loads via iframe (so must included &iframe=1 if loading fabrik page) - ensure bootstrap is loaded
-			if ($app->input->getInt('iframe') === 1 && $bootstrapped)
-			{
-				JHtml::_('bootstrap.framework');
-			}
+			// Ensure bootstrap js is loaded - as J template may not load it.
+			JHtml::_('bootstrap.framework');
 
 			// Require js test - list with no cal loading ajax form with cal
 			JHTML::_('behavior.calendar');
@@ -921,7 +915,7 @@ EOD;
 					$liveSiteSrc[] = "\tFabrik.iconGen = new IconGenerator({scale: 0.5});";
 					$liveSiteSrc[] = "\tFabrik.bootstrapped = false;";
 				}
-				$liveSiteSrc[] = FabrikHelperHTML::tipInt();
+				$liveSiteSrc[] = self::tipInt();
 				$liveSiteSrc[] = "});";
 				self::addScriptDeclaration(implode("\n", $liveSiteSrc));
 
@@ -931,11 +925,17 @@ EOD;
 		return self::$framework;
 	}
 
+	/**
+	 * Build JS to initiate tips
+	 *
+	 * @return  string
+	 */
+
 	public static function tipInt()
 	{
 		$tipOpts = self::tipOpts();
 		$tipJs = array();
-		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts). ");";
+		$tipJs[] = "\tFabrik.tips = new FloatingTips('.fabrikTip', " . json_encode($tipOpts) . ");";
 		$tipJs[] = "\tFabrik.addEvent('fabrik.list.updaterows', function () {";
 		$tipJs[] = "\t\t// Reattach new tips after list redraw";
 		$tipJs[] = "\t\tFabrik.tips.attach('.fabrikTip');";
@@ -993,7 +993,6 @@ EOD;
 		$deps->deps[] = 'fab/mootools-ext' . $ext;
 		$deps->deps[] = 'fab/lib/Event.mock';
 
-
 		if ($j3)
 		{
 			$deps->deps[] = 'fab/tipsBootStrapMock' . $ext;
@@ -1016,7 +1015,6 @@ EOD;
 		$deps = new stdClass;
 		$deps->deps = array('fab/fabrik' . $ext, 'fab/element' . $ext);
 		$framework['fab/elementlist' . $ext] = $deps;
-
 
 		$newShim = array_merge($framework, $newShim);
 
@@ -1535,6 +1533,7 @@ EOD;
 		{
 			$json->$k = $v;
 		}
+		$json->formRef = 'form_' . $formid;
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 		return $json;
@@ -1743,10 +1742,17 @@ EOD;
 			$properties['class'] = 'fabrikImg';
 		}
 
-		$p = FabrikHelperHTML::propertiesFromArray($properties);
+		$p = self::propertiesFromArray($properties);
 		return $src == '' ? '' : '<img src="' . $src . '" ' . $p . '/>';
 	}
 
+	/**
+	 * Build HTML properties from an associated array
+	 *
+	 * @param   array  $properties  Properties
+	 *
+	 * @return string
+	 */
 	protected static function propertiesFromArray($properties)
 	{
 		$bits = array();
@@ -1831,28 +1837,7 @@ EOD;
 		{
 			if (FabrikWorker::j3())
 			{
-				$span = floor(12 / $optionsPerRow);
-				foreach ($items as $i => $s)
-				{
-					$endLine = ($i !== 0 && (($i ) % $optionsPerRow == 0));
-					if ($endLine && $optionsPerRow > 1)
-					{
-						$grid[] = '</div><!-- grid close row -->';
-					}
-
-					$newLine = ($i % $optionsPerRow == 0);
-					if ($newLine && $optionsPerRow > 1)
-					{
-						$grid[] = '<div class="row-fluid">';
-					}
-
-					$grid[] =  $optionsPerRow != 1 ? '<div class="span' . $span . '">' . $s . '</div>' : $s;
-				}
-				if ($i + 1 % $optionsPerRow !== 0 && $optionsPerRow > 1)
-				{
-					// Close opened and unfinished row.
-					$grid[] = '</div><!-- grid close end row -->';
-				}
+				$grid = self::bootstrapGrid($items, $optionsPerRow);
 			}
 			else
 			{
@@ -1866,6 +1851,44 @@ EOD;
 			}
 		}
 		return $grid;
+	}
+
+	/**
+	 * Wrap items in bootstrap grid markup
+	 *
+	 * @param   array   $items    Content to wrap
+	 * @param   int     $columns  Number of columns in the grid
+	 * @param   string  $spanClass  Additonal class to add to cells
+	 * @param   bool    $explode    Should the results be exploded to a string or returned as an array
+	 *
+	 * @return mixed  string/array based on $explode parameter
+	 */
+
+	public static function bootstrapGrid($items, $columns, $spanClass = '', $explode = false)
+	{
+		$span = floor(12 / $columns);
+		foreach ($items as $i => $s)
+		{
+			$endLine = ($i !== 0 && (($i ) % $columns == 0));
+			if ($endLine && $columns > 1)
+			{
+				$grid[] = '</div><!-- grid close row -->';
+			}
+
+			$newLine = ($i % $columns == 0);
+			if ($newLine && $columns > 1)
+			{
+				$grid[] = '<div class="row-fluid">';
+			}
+
+			$grid[] =  $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+		}
+		if ($i + 1 % $columns !== 0 && $columns > 1)
+		{
+			// Close opened and unfinished row.
+			$grid[] = '</div><!-- grid close end row -->';
+		}
+		return $explode ? implode('', $grid) : $grid;
 	}
 
 	/**

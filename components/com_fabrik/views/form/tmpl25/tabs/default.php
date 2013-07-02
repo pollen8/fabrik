@@ -43,6 +43,7 @@ echo $this->loadTemplate('relateddata');
 $display = 0;
 $c = 0;
 foreach ($this->groups as $group) :
+$this->group = $group;
 	$errorstyle = '';
 	foreach ($group->elements as $element) :
 		if ($element->error !== '') :
@@ -65,6 +66,12 @@ foreach ($this->groups as $group) :
 		<legend><span><?php echo $group->title;?></span></legend>
 	<?php
 	endif;
+
+	// Show the group intro
+	if ($group->intro !== '') :?>
+		<div class="groupintro"><?php echo $group->intro ?></div>
+	<?php
+	endif;
 	?>
 	<div style="<?php echo $group->css?>">
 	<?php if ($group->canRepeat) :
@@ -74,7 +81,7 @@ foreach ($this->groups as $group) :
 				<div class="fabrikSubGroupElements">
 					<?php
 					$this->elements = $subgroup;
-					echo $this->loadTemplate('group');
+					echo $this->loadTemplate($group->tmpl);
 					?>
 				</div>
 				<?php if ($group->editable) : ?>
@@ -102,7 +109,7 @@ foreach ($this->groups as $group) :
 		endforeach;
 	else:
 		$this->elements = $group->elements;
-		echo $this->loadTemplate('group');
+		echo $this->loadTemplate($group->tmpl);
 	endif;
 	?>
 	</div>

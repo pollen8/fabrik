@@ -257,7 +257,7 @@ class FabrikViewFormBase extends JViewLegacy
 			// If there is a menu item available AND the form is not rendered in a content plugin or module
 			if (is_object($menu) && !$this->isMambot)
 			{
-				$menu_params = new JRegistry($menu->params);
+				$menu_params = is_a($menu->params, 'JRegistry') ? $menu->params : new JRegistry($menu->params);
 				$params->set('page_heading', $menu_params->get('page_heading', ''));
 				$params->set('show_page_heading', $menu_params->get('show_page_heading', 0));
 			}
@@ -712,9 +712,9 @@ class FabrikViewFormBase extends JViewLegacy
 	}
 
 	/**
-	 * Create the fom bottom hidden fields
+	 * Create the form bottom hidden fields
 	 *
-	 * @param   object  &$form  object containg form view properties
+	 * @param   object  &$form  Object containg form view properties
 	 *
 	 * @return  void
 	 */
@@ -724,8 +724,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
-		$menuItem = $app->getMenu('site')->getActive();
-		$Itemid = $menuItem ? $menuItem->id : 0;
+		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$listModel = $model->getListModel();
 		$canDelete = $listModel->canDelete($model->data);
@@ -876,8 +875,6 @@ class FabrikViewFormBase extends JViewLegacy
 
 	protected function _cryptQueryString(&$fields)
 	{
-		jimport('joomla.utilities.simplecrypt');
-		jimport('joomla.utilities.utility');
 		$crypt = FabrikWorker::getCrypt();
 		$formModel = $this->getModel();
 		$filter = JFilterInput::getInstance();
@@ -922,7 +919,7 @@ class FabrikViewFormBase extends JViewLegacy
 	/**
 	 * Encrypt view only elements
 	 *
-	 * @param   array  &$aHiddenFields  hidden fields
+	 * @param   array  &$aHiddenFields  Hidden fields
 	 *
 	 * @return  void
 	 */

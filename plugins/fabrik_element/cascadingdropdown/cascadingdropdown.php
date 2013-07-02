@@ -255,12 +255,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					break;
 				default:
 				case 'dropdown':
-					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"';
+				// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full lenght
+					$maxwidth = $params->get('max-width', '') === '' ? '' : ' style="max-width:' . $params->get('max-width') . ';"';
+					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"' . $maxwidth;
 					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 					break;
 			}
 			$html[] = $this->loadingImg;
-			$html[] = ($displayType == "radio") ? "</div>" : '';
+			$html[] = ($displayType == 'radio') ? '</div>' : '';
 		}
 
 		if (!$this->isEditable())
@@ -348,7 +350,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	 * @param   array  $data           From current record (when editing form?)
 	 * @param   int    $repeatCounter  Repeat group counter
 	 * @param   bool   $incWhere       Do we include custom where in query
-	 * @param   array  $opts           Additional optiosn passed into _getOptionVals()
+	 * @param   array  $opts           Additional options passed into _getOptionVals()
 	 *
 	 * @return  array	option objects
 	 */
@@ -531,6 +533,14 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				array_unshift($this->_optionVals[$sqlKey], JHTML::_('select.option', '', $this->_getSelectLabel()));
 			}
 		}
+		// Remove tags from labels
+		if ($this->canUse() && in_array($this->getDisplayType(), array('multilist', 'dropdown')))
+		{
+			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
+			{
+				$opt->text = strip_tags($opt->text);
+			}
+		}
 		return $this->_optionVals[$sqlKey];
 	}
 
@@ -679,7 +689,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 				}
 				else
 				{
-					$whereval = $watchElement->getValue($formModel->formData, $repeatCounte, $watchOpts);
+					$whereval = $watchElement->getValue($formModel->formData, $repeatCounter, $watchOpts);
 				}
 				/* $$$ hugh - temporary bandaid to fix 'array' issue in view=details
 				 * @TODO fix underlying cause in database join getValue
@@ -730,7 +740,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$wherekey = $params->get('cascadingdropdown_key');
 		if (!is_null($whereval) && $wherekey != '')
 		{
-			$whereBits = strstr('___', $wherekey) ? explode('___', $wherekey) : explode('.', $wherekey);
+			$whereBits = strstr($wherekey, '___') ? explode('___', $wherekey) : explode('.', $wherekey);
 			$wherekey = array_pop($whereBits);
 			if (is_array($whereval))
 			{

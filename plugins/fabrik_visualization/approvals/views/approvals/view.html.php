@@ -18,10 +18,10 @@ jimport('joomla.application.component.view');
  *
  * @package		Joomla.Plugin
  * @subpackage	Fabrik.visualization.slideshow
- * @since        3.0.6
+ * @since       3.0.6
 */
 
-class fabrikViewApprovals extends JViewLegacy
+class FabrikViewApprovals extends JView
 {
 
 	/**

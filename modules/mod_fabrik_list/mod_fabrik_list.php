@@ -102,6 +102,10 @@ if ($params->get('show_nav', '') !== '')
 {
 	$listParams->set('show-table-nav', $params->get('show_nav'));
 }
+$listParams->set('show_into', $params->get('show_into', 1));
+$listParams->set('show_outro', $params->get('show_outro', 1));
+$origShowFilters = $app->input->get('showfilters', 1);
+$app->input->set('showfilters', $params->get('show_filters', 1));
 
 if ($showTitle !== '')
 {
@@ -123,6 +127,7 @@ $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array) $prefilters['filter-conditions'];
 if (!empty($conditions))
 {
+	$listParams->set('filter-join', $prefilters['filter-join']);
 	$listParams->set('filter-fields', $prefilters['filter-fields']);
 	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 	$listParams->set('filter-value', $prefilters['filter-value']);
@@ -142,6 +147,7 @@ $view->error = $controller->getError();
 echo $view->display();
 
 $input->set('layout', $origLayout);
+$input->set('showfilters', $origShowFilters);
 
 // Set the package back to what it was before rendering the module
 $app->setUserState('com_fabrik.package', $prevUserState);

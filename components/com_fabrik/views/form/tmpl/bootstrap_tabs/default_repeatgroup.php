@@ -19,12 +19,13 @@ foreach ($group->subgroups as $subgroup) :
 			<div class="fabrikGroupRepeater pull-right">
 				<?php if ($group->canAddRepeat) :?>
 				<a class="addGroup" href="#">
-					<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?></a>
+					<?php echo FabrikHelperHTML::image('plus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'opts' => '{trigger: "hover"}', 'title' => JText::_('COM_FABRIK_ADD_GROUP')));?>
+				</a>
 				<?php
 				endif;
 				if ($group->canDeleteRepeat) :?>
 				<a class="deleteGroup" href="#">
-					<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
+					<?php echo FabrikHelperHTML::image('minus.png', 'form', $this->tmpl, array('class' => 'fabrikTip tip-small', 'opts' => '{trigger: "hover"}', 'title' => JText::_('COM_FABRIK_DELETE_GROUP')));?>
 				</a>
 				<?php endif;?>
 			</div>
@@ -38,7 +39,7 @@ foreach ($group->subgroups as $subgroup) :
 			$this->elements = $subgroup;
 			echo $this->loadTemplate('group');
 			?>
-		</div>
-	</div>
+		</div><!-- end fabrikSubGroupElements -->
+	</div><!-- end fabrikSubGroup -->
 	<?php
 endforeach;

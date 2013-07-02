@@ -151,4 +151,19 @@ class PlgFabrik_ElementDisplay extends PlgFabrik_Element
 		return $value;
 	}
 
+	/**
+	 * Returns javascript which creates an instance of the class defined in formJavascriptClass()
+	 *
+	 * @param   int  $repeatCounter  Repeat group counter
+	 *
+	 * @return  array
+	 */
+
+	public function elementJavascript($repeatCounter)
+	{
+		$id = $this->getHTMLId($repeatCounter);
+		$opts = $this->getElementJSOptions($repeatCounter);
+		return array('FbDisplay', $id, $opts);
+	}
+
 }

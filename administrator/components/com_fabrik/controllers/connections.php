@@ -17,9 +17,9 @@ require_once 'fabcontrolleradmin.php';
 /**
  * Connections list controller class.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
  */
 
 class FabrikAdminControllerConnections extends FabControllerAdmin

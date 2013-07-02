@@ -133,10 +133,6 @@ class FabrikPlugin extends JPlugin
 			$type = str_replace('fabrik_', '', $this->_type);
 			$formType = $type . '-options';
 			$formName = 'com_fabrik.' . $formType;
-			//$controlName = 'jform[plugin-options]';
-			// $$$ rob - NO! the params option should be set in the plugin fields.xml file <fields name="params">
-			// allows for params which update actual db fields
-			//$controlName = 'jform[params]';
 			$controlName = 'jform';
 			$this->jform = new JForm($formName, array('control' => $controlName));
 		}
@@ -567,6 +563,15 @@ class FabrikPlugin extends JPlugin
 		return $ok;
 	}
 
+	/**
+	 * Custom process plugin result
+	 *
+	 * @param   string  $method      Method
+	 * @param   JModel  &$formModel  Form Model
+	 *
+	 * @return boolean
+	 */
+
 	public function customProcessResult($method, &$formModel)
 	{
 		return true;
@@ -980,16 +985,14 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @since 3.0
 	 *
+	 * @deprecated use FabrikWorker::getPluginManager()
+	 *
 	 * @return  FabrikFEModelPluginmanager
 	 */
 
 	protected function getPluginManager()
 	{
-		if (!isset($this->_pluginManager))
-		{
-			$this->_pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		}
-		return $this->_pluginManager;
+		return FabrikWorker::getPluginManager();
 	}
 
 	/**

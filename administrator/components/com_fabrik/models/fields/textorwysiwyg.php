@@ -72,10 +72,10 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 
 		// Get an editor object.
 		$editor = $this->getEditor();
-		return $editor
-			->display($this->name, htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8'), $width, $height, $cols, $rows,
-				$buttons ? (is_array($buttons) ? array_merge($buttons, $hide) : $hide) : false, $this->id, $asset,
-				$this->form->getValue($authorField));
+		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		$btns = $buttons ? (is_array($buttons) ? array_merge($buttons, $hide) : $hide) : false;
+		$auth = $this->form->getValue($authorField);
+		return $editor->display($this->name, $value, $width, $height, $cols, $rows, $btns, $this->id, $asset, $auth);
 	}
 
 	/**

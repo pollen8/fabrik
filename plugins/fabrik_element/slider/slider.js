@@ -3,51 +3,61 @@ var FbSlider = new Class({
 	initialize: function (element, options) {
 		this.parent(element, options);
 		this.plugin = 'slider';
-		if (typeOf(this.options.value) === 'null') {
-			this.options.value = 0;
+		var isNull = false;
+		if (typeOf(this.options.value) === 'null' || this.options.value === '') {
+			this.options.value = '';
+			isNull = true;
 		}
-		this.options.value = this.options.value.toInt();
+		this.options.value = this.options.value === '' ? '' : this.options.value.toInt();
 		var v = this.options.value;
 		if (this.options.editable === true) {
 			if (typeOf(this.element) === 'null') {
 				fconsole('no element found for slider');
 				return;
 			}
-			var output = this.element.getElement('.fabrikinput');
-			var output2 = this.element.getElement('.slider_output');
+			this.output = this.element.getElement('.fabrikinput');
+			this.output2 = this.element.getElement('.slider_output');
+			
+			this.output.value = this.options.value;
+			this.output2.set('text', this.options.value);
+			
 			this.mySlide = new Slider(
 				this.element.getElement('.fabrikslider-line'),
 				this.element.getElement('.knob'), 
 				{
-					onChange : function (pos) {
-						output.value = pos;
+					onChange: function (pos) {
+						this.output.value = pos;
 						this.options.value = pos;
-						output2.set('text', pos);
-						output.fireEvent('blur', new Event.Mock(output, 'blur'));
+						this.output2.set('text', pos);
+						this.output.fireEvent('blur', new Event.Mock(this.output, 'blur'));
 						this.callChange();
 					}.bind(this),
 					onComplete: function (pos) {
-						//fire for validations
-						output.fireEvent('blur', new Event.Mock(output, 'change'));
+						// Fire for validations
+						this.output.fireEvent('blur', new Event.Mock(this.output, 'change'));
 						this.element.fireEvent('change', new Event.Mock(this.element, 'change'));
 					}.bind(this),
 					steps : this.options.steps
 				}
 			).set(v);
-			this.mySlide.set(this.options.value);
-			output.value = this.options.value;
-			output2.set('text', this.options.value);
-			var clear = this.element.getElement('.clearslider');
-			if (typeOf(clear) !== 'null') {
-				clear.addEvent('click', function (e) {
-					this.mySlide.set(0);
-					output.value = '';
-					output.fireEvent('blur', new Event.Mock(output, 'change'));
-					output2.set('text', '');
-					e.stop();
-				}.bind(this));
+			
+			if (isNull) {
+				this.output.value = '';
+				this.output2.set('text', '');
+				this.options.value = '';
 			}
+			this.watchClear();
 		}
+	},
+	
+	watchClear: function () {
+		this.element.addEvent('click:relay(.clearslider)', function (e, target) {
+			e.preventDefault();
+			this.mySlide.set(0);
+			this.output.value = '';
+			this.output.fireEvent('blur', new Event.Mock(this.output, 'change'));
+			this.output2.set('text', '');
+		}.bind(this));
 	},
 	
 	getValue: function () {

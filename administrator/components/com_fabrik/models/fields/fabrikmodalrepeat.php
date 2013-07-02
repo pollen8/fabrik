@@ -16,9 +16,9 @@ jimport('joomla.form.formfield');
 /**
  * Display a json loaded window with a repeatble set of sub fields
  *
- * @package		Joomla
- * @subpackage	Form
- * @since		1.6
+ * @package     Joomla
+ * @subpackage  Form
+ * @since       1.6
  */
 
 class JFormFieldFabrikModalrepeat extends JFormField
@@ -192,7 +192,12 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			{
 				if (FabrikWorker::j3())
 				{
-					$j3pane = strtoupper($option) . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
+					$context = strtoupper($option);
+					if ($context === 'COM_ADVANCEDMODULES')
+					{
+						$context = 'COM_MODULES';
+					}
+					$j3pane = $context . '_' . str_replace('jform_params_', '', $modalid) . '_FIELDSET_LABEL';
 
 					$script = "window.addEvent('domready', function() {
 				var a = jQuery(\"a:contains('$j3pane')\");
@@ -229,7 +234,6 @@ class JFormFieldFabrikModalrepeat extends JFormField
 			}
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";
-
 
 		if (FabrikWorker::j3())
 		{

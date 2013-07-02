@@ -2,8 +2,7 @@
 <form>
 	<fields>
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-date" label="COM_FABRIK_OPTIONS">
-			<field class="input-mini" label="PLG_ELEMENT_WIDTH_LABEL" name="width" size="3" type="text"/>
-				
+			
 			<field default="0"
 				class="btn-group"
 				label="PLG_ELEMENT_DATE_HIDDEN_LABEL" name="hidden" type="radio">
@@ -13,9 +12,11 @@
 			
 			<field cols="45" label="PLG_ELEMENT_DATE_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
 				
-			<field default="0"
+			<field name="eval"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_DATE_EVAL_LABEL" name="eval" type="radio">
+				label="PLG_ELEMENT_DATE_EVAL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -24,14 +25,51 @@
 	</fields>
 		
 	<fields name="params">
+	
+		<fieldset name="plg-element-date-options" label="PLG_ELEMENT_DATE_FORMATTING_HEADING">
 		
-		<fieldset label="PLG_ELEMENT_DATE_FORMATTING_HEADING" name="plg-element-date-extra">
+			<field name="bootstrap_class"
+				type="bootstrapfieldclass"
+				default="input-medium"
+				label="PLG_ELEMENT_BOOTSTRAP_CLASS_LABEL"
+				description="PLG_ELEMENT_BOOTSTRAP_CLASS_DESC" />
+				
+			<field name="date_showtime"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_DATE_SHOW_TIME_DESC"
+				label="PLG_ELEMENT_DATE_SHOW_TIME_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 			
-			<field default="0"
+			<field name="date_time_format"
+				type="text"
+				default="H:i"
+				class="input-mini"
+				description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC"
+				label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL"
+				length="20"/>
+			
+			<field name="bootstrap_time_class"
+				type="bootstrapfieldclass"
+				default="input-medium"
+				label="PLG_ELEMENT_DATE_BOOTSTRAP_TIME_CLASS_LABEL"
+				description="PLG_ELEMENT_DATE_BOOTSTRAP_TIME_CLASS_DESC" />
+				
+		</fieldset>
+		
+		<fieldset label="PLG_ELEMENT_DATE_DATE_FORMATS_HEADING" name="plg-element-date-extra">
+			
+			<field name="date_store_as_local"
+				type="list"
+				default="0"
 				class="input-small"
-				description="PLG_ELEMENT_DATE_STORE_AS_DESC" label="PLG_ELEMENT_DATE_STORE_AS_LABEL" name="date_store_as_local" type="list">
-				<option value="0">PLG_ELEMENT_DATE_UTC</option>
-				<option value="1">PLG_ELEMENT_DATE_LOCAL_TIME</option>
+				description="PLG_ELEMENT_DATE_STORE_AS_DESC"
+				label="PLG_ELEMENT_DATE_STORE_AS_LABEL">
+					<option value="0">PLG_ELEMENT_DATE_UTC</option>
+					<option value="1">PLG_ELEMENT_DATE_LOCAL_TIME</option>
 			</field>
 			
 			<field default="Y-m-d"
@@ -74,19 +112,6 @@
 					<option value="1">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_GMT</option>
 					<option value="2">PLG_ELEMENT_DATE_CSV_FORMAT_MYSQL_LOCAL</option>
 			</field>
-		</fieldset>
-		
-		<fieldset label="PLG_ELEMENT_DATE_TIME_HEADING" name="plg-element-date-time">
-			<field default="0"
-				class="btn-group"
-				description="PLG_ELEMENT_DATE_SHOW_TIME_DESC" label="PLG_ELEMENT_DATE_SHOW_TIME_LABEL" name="date_showtime" type="radio">
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-			</field>
-			
-			<field default="H:i"
-				class="input-mini"
-				description="PLG_ELEMENT_DATE_TIME_FORMAT_DESC" label="PLG_ELEMENT_DATE_TIME_FORMAT_LABEL" length="20" name="date_time_format" type="text"/>
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_DATE_ADVANCED_HEADING" name="plg-element-date-advanced">

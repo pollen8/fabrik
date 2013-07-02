@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class fabrikViewApprovals extends JViewLegacy
+class FabrikViewApprovals extends JView
 {
 
 	/**
@@ -31,7 +31,7 @@ class fabrikViewApprovals extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-	function display($tmpl = 'default')
+	public function display($tmpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;

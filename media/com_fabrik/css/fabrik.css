@@ -633,6 +633,7 @@ fieldset.row-fluid:before {
 }
 
 
-select.fabrikinput[multiple] {
+select.fabrikinput[multiple],
+select.fabrik_filter[multiple] {
 	height: auto;
 }
