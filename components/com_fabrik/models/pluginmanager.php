@@ -309,6 +309,11 @@ class FabrikFEModelPluginmanager extends JModel
 		$folder = 'fabrik_' . $group;
 		$langFile = 'plg_' . $folder . '_' . $className;
 		$langPath = $client->path . '/plugins/' . $folder . '/' . $className;
+
+		$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
+
+		// Load system ini file
+		$langFile .= '.sys';
 		$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 		return $plugIn;
 	}

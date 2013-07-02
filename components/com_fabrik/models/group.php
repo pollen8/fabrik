@@ -611,6 +611,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements[$sig] = array();
 			$elements = $this->getMyElements();
+			$joins = $this->getListModel()->getJoins();
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -632,6 +633,21 @@ class FabrikFEModelGroup extends FabModel
 						continue;
 					}
 
+					/**
+					 * $$$ hugh - if the eleent is an FK in a list join, ignore the include_in_list setting,
+					 * and just incude it.  Technically we could check to see if any of the elements from the joined
+					 * list are being incuded before making this decision, but it's such a corner case, I vote for
+					 * just including list join FK's, period.
+					 */
+					foreach ($joins as $join)
+					{
+						if (!empty($join->list_id) && $element->id == $join->element_id)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+							continue;
+						}
+					}
+					
 					if (empty($showInList))
 					{
 						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)
