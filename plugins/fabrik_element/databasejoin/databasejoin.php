@@ -1639,7 +1639,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default, $default);
+			$default = $this->getLabelForValue($default);
 		}
 		return $default;
 	}
@@ -2355,7 +2355,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->popupform = $popupform;
-		$opts->windowwidth = (string) $params->get('join_popupwidth', '360');
+		$opts->windowwidth = $params->get('join_popupwidth', 360);
 		$opts->displayType = $this->getDisplayType();
 		$opts->show_please_select = $params->get('database_join_show_please_select') === "1";
 		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
