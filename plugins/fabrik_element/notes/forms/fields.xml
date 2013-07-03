@@ -3,16 +3,24 @@
 	<fields>
 		<fieldset name="plg-element-note" label="COM_FABRIK_DEFAULT">
 			
-			<field cols="6" label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" name="default" rows="5" type="textarea"/>
-					
-			<field default="0"
-				class="btn-group"
-				label="PLG_ELEMENT_NOTES_EVAL_LABEL" name="eval" type="radio">
+			<field type="helplink"
+				url="PLG_ELEMENT_NOTES_HELP_SERVER" />
+				
+			<field name="default"
+				type="textarea"
+				cols="6"
+				label="PLG_ELEMENT_NOTES_DEFAULT_LABEL"
+				rows="5" />
+				
+			<field name="eval"
+				type="radio"
+				default="0"
+				label="PLG_ELEMENT_NOTES_EVAL_LABEL" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-					
-			</fieldset>
+			
+		</fieldset>
 	</fields>
 	
 	<fields name="params">

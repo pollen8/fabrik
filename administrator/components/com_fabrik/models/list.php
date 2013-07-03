@@ -1730,10 +1730,6 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 		$table = $this->getTable();
 		$table->load($this->getState('list.id'));
-		if (!$autoIncrement)
-		{
-			$type = '';
-		}
 		$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . FabrikString::safeColName($fieldName) . ' ' . FabrikString::safeColName($fieldName) . ' '
 			. $type . ' NOT NULL';
 
@@ -2385,16 +2381,24 @@ class FabrikAdminModelList extends FabModelAdmin
 					$objname = $obj->name;
 					if (!in_array($objname, $existingfields))
 					{
-						/* make sure that the object is not already in the table*/
+						// Make sure that the object is not already in the table
 						if (!in_array($objname, $arAddedObj))
 						{
-							/* any elements that are names the same (eg radio buttons) can not be entered twice into the database*/
+							// Any elements that are names the same (eg radio buttons) can not be entered twice into the database
 							$arAddedObj[] = $objname;
 							$objtypeid = $obj->plugin;
+							echo $objtypeid;
 							$pluginClassName = $obj->plugin;
 							$plugin = $pluginManager->getPlugIn($pluginClassName, 'element');
-							$plugin->setId($obj->id);
-							$objtype = $plugin->getFieldDescription();
+							if (is_object($plugin))
+							{
+								$plugin->setId($obj->id);
+								$objtype = $plugin->getFieldDescription();
+							}
+							else
+							{
+								$objtype = 'VARCHAR(255)';
+							}
 							if ($objname != "" && !is_null($objtype))
 							{
 								$ammend = true;

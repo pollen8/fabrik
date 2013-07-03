@@ -63,4 +63,20 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 		}
 		return true;
 	}
+
+	/**
+	 * Gets the hover/alt text that appears over the validation rule icon in the form
+	 *
+	 * @param   object  $elementModel  Element model
+	 * @param   int     $pluginc       Validation render order
+	 *
+	 * @return  string	label
+	 */
+
+	protected function getLabel($elementModel, $pluginc)
+	{
+		$params = $this->getParams();
+		$isnot = $params->get('isnot-isnot');
+		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isnot[$pluginc]);
+	}
 }

@@ -2,6 +2,10 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-fileupload" label="COM_FABRIK_OPTIONS">
+		
+			<field type="helplink"
+				url="PLG_ELEMENT_FILEUPLOAD_HELP_SERVER" />
+				
 			<field name="ul_max_file_size"
 				type="uploadsize"
 				size="30"

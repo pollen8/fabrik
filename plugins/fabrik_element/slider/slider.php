@@ -18,6 +18,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.slider
+ * @since       3.0
  */
 
 class PlgFabrik_ElementSlider extends PlgFabrik_Element

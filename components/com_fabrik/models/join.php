@@ -151,7 +151,7 @@ class FabrikFEModelJoin extends FabModel
 
 	public function clearJoin()
 	{
-		unset($this->join);
+		unset($this->_join);
 	}
 
 	/**

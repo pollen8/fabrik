@@ -3,6 +3,9 @@
 	<fields name="params">
 		<fieldset name="plg-birthday">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_BIRTHDAY_HELP_SERVER" />
+		
 			<field default="" description="PLG_ELEMENT_BIRTHDAY_DAY_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_DAY_LABEL" name="birthday_daylabel" type="text"/>
 				
 			<field default="" description="PLG_ELEMENT_BIRTHDAY_MONTH_LABEL_DESC" label="PLG_ELEMENT_BIRTHDAY_MONTH_LABEL" name="birthday_monthlabel" type="text"/>

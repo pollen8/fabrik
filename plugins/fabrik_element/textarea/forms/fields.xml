@@ -4,6 +4,9 @@
 	
 		<fieldset label="COM_FABRIK_OPTIONS" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-textarea">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_TEXTAREA_HELP_SERVER" />
+				
 			<field type="textarea"
 				name="default" 
 				cols="45"

@@ -35,7 +35,6 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 
 	public function render()
 	{
-		require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$config = JFactory::getConfig();

@@ -63,8 +63,6 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 		$document->addScript($lib . 'src/models/multiBar.js');
 		$document->addScript($lib . 'src/models/multiBarChart.js');
 
-		require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
-
 		$this->row = $model->getVisualization();
 		if ($this->row->published == 0)
 		{

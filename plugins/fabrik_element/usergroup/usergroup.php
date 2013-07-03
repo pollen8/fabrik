@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0.6
  */
 
-class plgFabrik_ElementUsergroup extends plgFabrik_Element
+class PlgFabrik_ElementUsergroup extends PlgFabrik_Element
 {
 
 	/**
@@ -32,8 +32,8 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -68,7 +68,7 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 				$query = $db->getQuery(true);
 				$query->select($db->quoteName('title'));
 				$query->from($db->quoteName('#__usergroups'));
-				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups). ')');
+				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups) . ')');
 				$db->setQuery($query);
 				$selected = $db->loadColumn();
 			}
@@ -99,8 +99,8 @@ class plgFabrik_ElementUsergroup extends plgFabrik_Element
 	/**
 	* Shows the data formatted for the list view
 	*
-	* @param   string  $data      elements data
-	* @param   object  &$thisRow  all the data in the lists current row
+	* @param   string  $data      Elements data
+	* @param   object  &$thisRow  All the data in the lists current row
 	*
 	* @return  string	formatted value
 	*/
