@@ -158,9 +158,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
-	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
-	 * @param   string  $eval       how the value should be handled
+	 * @param   string  $value      Initial value
+	 * @param   string  $condition  Intial $condition
+	 * @param   string  $eval       How the value should be handled
 	 *
 	 * @return  array	(value condition)
 	 */
@@ -185,11 +185,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Build the filter query for the given element.
 	 * Can be overwritten in plugin - e.g. see checkbox element which checks for partial matches
 	 *
-	 * @param   string  $key            element name in format `tablename`.`elementname`
+	 * @param   string  $key            Element name in format `tablename`.`elementname`
 	 * @param   string  $condition      =/like etc
-	 * @param   string  $value          search string - already quoted if specified in filter array options
-	 * @param   string  $originalValue  original filter value without quotes or %'s applied
-	 * @param   string  $type           filter type advanced/normal/prefilter/search/querystring/searchall
+	 * @param   string  $value          Search string - already quoted if specified in filter array options
+	 * @param   string  $originalValue  Original filter value without quotes or %'s applied
+	 * @param   string  $type           Filter type advanced/normal/prefilter/search/querystring/searchall
 	 *
 	 * @return  string	sql query part e,g, "key = value"
 	 */
@@ -200,7 +200,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
 		$glue  = $condition == '=' ? 'OR' : 'AND';
-		if ($element->filter_type == 'checkbox')
+		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$originalValue = (array) $originalValue;
 			$str = array();
