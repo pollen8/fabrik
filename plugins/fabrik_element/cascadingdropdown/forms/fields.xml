@@ -91,8 +91,8 @@
 			
 			<field name="placeholder"
 				type="text"
-				description="PLG_ELEMENT_CSS_PLACEHOLDER_DESC"
-				label="PLG_ELEMENT_CSS_PLACEHOLDER_LABEL" />
+				description="PLG_ELEMENT_CDD_PLACEHOLDER_DESC"
+				label="PLG_ELEMENT_CDD_PLACEHOLDER_LABEL" />
 			
 			<field name="max-width" 
 				type="text" 
@@ -164,6 +164,12 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="bootstrap_class"
+				default="input-large"
+				type="bootstrapfieldclass"
+				description="PLG_ELEMENT_CDD_CLASS_DESC"
+				label="PLG_ELEMENT_CDD_CLASS_LABEL" />
 			
 		</fieldset>
 
