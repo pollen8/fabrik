@@ -511,11 +511,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Replace labels shown in table view with icons (if found)
+	 * Replace labels shown in list view with icons (if found)
 	 *
-	 * @param   string  $data  data
-	 * @param   string  $view  list/details
-	 * @param   string  $tmpl  template
+	 * @param   string  $data  Data
+	 * @param   string  $view  List/details
+	 * @param   string  $tmpl  Template
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
@@ -2858,6 +2858,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			case 'field':
 			default:
 			// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
+				$default = (string) $default;
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'

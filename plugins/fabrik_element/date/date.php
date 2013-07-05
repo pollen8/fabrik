@@ -836,8 +836,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		if (is_array($value))
 		{
-			// Submission posted as array but date & time in date key
-			$value = JArrayHelper::getValue($value, 'date');
+			// Submission posted as array but date & time in date key. Can be key'd to 0 if parent class casts string to array.
+			$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
 		}
 		if ($alwaysToday)
 		{

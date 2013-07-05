@@ -229,11 +229,18 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Can the user view the group
 	 *
+	 * @param   string  $mode  View mode list|form
+	 *
 	 * @return   bool
 	 */
 
-	public function canView()
+	public function canView($mode = 'form')
 	{
+		// No ACL option for list view.
+		if ($mode === 'list')
+		{
+			return true;
+		}
 		if (!is_null($this->canView))
 		{
 			return $this->canView;
@@ -653,7 +660,7 @@ class FabrikFEModelGroup extends FabModel
 							}
 						}
 					}
-					
+
 					if (empty($showInList))
 					{
 						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)

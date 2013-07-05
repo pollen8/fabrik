@@ -26,6 +26,9 @@ var FloatingTips = new Class({
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
 		//any tip (not necessarily in this instance has asked for all other tips to be hidden.
 		window.addEvent('tips.hideall', function (e, trigger) {
+			if (typeOf(e) === 'element') {
+				trigger = e;
+			}
 			this.hideOthers(trigger);
 		}.bind(this));
 		if (elements) {
@@ -236,14 +239,16 @@ var FloatingTips = new Class({
 	},
 	
 	hideOthers: function (except) {
-		this.elements.each(function (element) {
-			if (element !== except) {
-				var tips = element.retrieve('tip');
-				$H(tips).each(function (tip) {
-					tip.hide();
-				});
-			}
-		});
+		if (this.element) {
+			this.elements.each(function (element) {
+				if (element !== except) {
+					var tips = element.retrieve('tip');
+					$H(tips).each(function (tip) {
+						tip.hide();
+					});
+				}
+			});
+		}
 	},
 	
 	hideAll: function () {
