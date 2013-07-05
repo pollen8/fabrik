@@ -3152,7 +3152,7 @@ $groupBy .= '_raw';
 		foreach ($gkeys as $x)
 		{
 			$groupModel = $groups[$x];
-			if ($groupModel->canView() !== false)
+			if ($groupModel->canView($mode) !== false)
 			{
 				$elementModels = $mode === 'list' ? $groupModel->getListQueryElements() : $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
