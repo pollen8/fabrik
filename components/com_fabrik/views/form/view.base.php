@@ -605,29 +605,6 @@ class FabrikViewFormBase extends JView
 		// Placholder test
 		$script[] = "new Form.Placeholder('.fabrikForm input');";
 
-		$script[] = "function submit_form() {";
-		if (!empty($aWYSIWYGNames))
-		{
-			jimport('joomla.html.editor');
-			$editor = JFactory::getEditor();
-			$script[] = $editor->save('label');
-			foreach ($aWYSIWYGNames as $parsedName)
-			{
-				$script[] = $editor->save($parsedName);
-			}
-		}
-		$script[] = "\treturn false;";
-		$script[] = "}";
-
-		$script[] = "function submitbutton(button) {";
-		$script[] = "\tif (button==\"cancel\") {";
-		$script[] = "\t\tdocument.location = '" . JRoute::_('index.php?option=com_' . $package . '&task=viewTable&cid=' . $listId) . "';";
-		$script[] = "\t}";
-		$script[] = "\tif (button == \"cancelShowForm\") {";
-		$script[] = "\t\treturn false;";
-		$script[] = "\t}";
-		$script[] = "}";
-
 		if (FabrikHelperHTML::inAjaxLoadedPage())
 		{
 			$tipOpts = FabrikHelperHTML::tipOpts();
