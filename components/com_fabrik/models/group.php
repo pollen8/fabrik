@@ -641,10 +641,16 @@ class FabrikFEModelGroup extends FabModel
 					 */
 					foreach ($joins as $join)
 					{
-						if (!empty($join->list_id) && $element->id == $join->element_id)
+						if (!empty($join->list_id))
 						{
-							$this->listQueryElements[$sig][] = $elementModel;
-							continue;
+							$fullname = $elementModel->getFullName(false, true, false);
+							list($tablename, $shortname) = explode('___', $fullname);
+							if (($tablename == $join->join_from_table && $shortname == $join->table_key)
+								|| ($tablename == $join->table_join && $shortname == $join->table_join_key))
+							{
+								$this->listQueryElements[$sig][] = $elementModel;
+								continue;
+							}
 						}
 					}
 					
