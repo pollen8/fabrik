@@ -32,7 +32,7 @@ $input->set('layout', $origLayout);
 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
-$formId	= (int) $params->get('form_id', 1);
+$formId	= (int) $params->get('formid', 1);
 $rowid = (int) $params->get('row_id', 0);
 $layout = $params->get('template', '');
 $usersConfig = JComponentHelper::getParams('com_fabrik');
