@@ -142,7 +142,7 @@ var FbDatabasejoin = new Class({
 			if (autoCompleteUpdate) {
 				labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
 				this.element.value = v;
-				labelfield.value = l;
+				labelfield.value = Encoder.htmlDecode(l);
 			}
 			break;
 		case 'checkbox':
