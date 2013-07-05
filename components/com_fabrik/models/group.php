@@ -641,15 +641,19 @@ class FabrikFEModelGroup extends FabModel
 					}
 
 					/**
-					 * $$$ hugh - if the eleent is an FK in a list join, ignore the include_in_list setting,
-					 * and just incude it.  Technically we could check to see if any of the elements from the joined
-					 * list are being incuded before making this decision, but it's such a corner case, I vote for
-					 * just including list join FK's, period.
+					 * $$$ hugh - if the eleent is an FK or a PK in a list join, ignore the include_in_list setting,
+					 * and just include it.  Technically we could check to see if any of the elements from the joined
+					 * list are being included before making this decision, but it's such a corner case, I vote for
+					 * just including list join PK/FK's, period.
 					 */
 					foreach ($joins as $join)
 					{
 						if (!empty($join->list_id))
 						{
+							/*
+							 * Bit of a hack, just grab the fullname, bust it up into table and element name,
+							 * then compare it against PK and FK table/field names.
+							 */
 							$fullname = $elementModel->getFullName(false, true, false);
 							list($tablename, $shortname) = explode('___', $fullname);
 							if (($tablename == $join->join_from_table && $shortname == $join->table_key)
