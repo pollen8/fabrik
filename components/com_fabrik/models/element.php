@@ -511,11 +511,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Replace labels shown in table view with icons (if found)
+	 * Replace labels shown in list view with icons (if found)
 	 *
-	 * @param   string  $data  data
-	 * @param   string  $view  list/details
-	 * @param   string  $tmpl  template
+	 * @param   string  $data  Data
+	 * @param   string  $view  List/details
+	 * @param   string  $tmpl  Template
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
