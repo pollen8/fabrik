@@ -9503,14 +9503,15 @@ $groupBy .= '_raw';
 	/**
 	 * Update a series of rows with a key = val , works across joined tables
 	 *
-	 * @param   array   $ids  pk values to update
-	 * @param   string  $col  key to update should be in format 'table.element'
-	 * @param   string  $val  val to set to
+	 * @param   array   $ids     Pk values to update
+	 * @param   string  $col     Key to update should be in format 'table.element'
+	 * @param   string  $val     Val to set to
+	 * @param   string  $update  Optional update statement, overides $col = $val
 	 *
 	 * @return  void
 	 */
 
-	public function updateRows($ids, $col, $val)
+	public function updateRows($ids, $col, $val, $update = '')
 	{
 		if ($col == '')
 		{
@@ -9528,7 +9529,7 @@ $groupBy .= '_raw';
 		// $data = array_shift($data);
 		$table = $this->getTable();
 
-		$update = $col . ' = ' . $db->quote($val);
+		$update = $update == '' ? $col . ' = ' . $db->quote($val) : $update;
 		$colbits = explode('.', $col);
 		$tbl = array_shift($colbits);
 
