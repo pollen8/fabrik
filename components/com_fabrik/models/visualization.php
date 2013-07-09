@@ -60,6 +60,9 @@ class FabrikFEModelVisualization extends JModelLegacy
 	public function __construct($config = array())
 	{
 		$this->pathBase = JPATH_SITE . '/plugins/fabrik_visualization/';
+
+		// 3.0 compat
+		$this->_row =& $this->row;
 		parent::__construct($config);
 	}
 

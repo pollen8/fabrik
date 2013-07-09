@@ -26,6 +26,7 @@ var FbGoogleMapViz = new Class({
 		'zoom' : 1,
 		'zoomStyle': 0,
 		'radius_fill_colors': [],
+		'streetView': false,
 		'styles': []
 	},
 	
@@ -136,6 +137,7 @@ var FbGoogleMapViz = new Class({
 			overviewMapControl: this.options.overviewcontrol,
 			scrollwheel: this.options.scrollwheel,
 			zoomControl: this.options.zoom,
+			streetViewControl: this.options.streetView,
 			zoomControlOptions: {style: this.options.zoomStyle} 
 		};
 		this.map = new google.maps.Map(document.id(this.element_map), mapOpts);
