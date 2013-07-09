@@ -344,15 +344,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		else
 		{
 			$plugin = $pluginManager->getPlugIn($plugin, 'Element');
-			if (!is_object($plugin))
-			{
-				JError::raiseNotice(500, 'Could not load plugin:' . $plugin);
-			}
-			else
-			{
-				$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
-				$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
-			}
+			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
+			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
 		return $str;
 	}

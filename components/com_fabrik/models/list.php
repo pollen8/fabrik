@@ -4166,7 +4166,7 @@ class FabrikFEModelList extends JModelForm
 			// Give a notice if the user cant alter the field type but selections he has made would normally do so:
 			if ($this->canAlterFields() === false && trim($base_existingDef) !== $newObjectType)
 			{
-				JError::raiseNotice(301, JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'));
+				$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'), 'notice');
 			}
 
 			return $return;
@@ -4292,7 +4292,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				catch (Exception $e)
 				{
-					JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
+					throw new RuntimeException('alter structure: ' . $e->getMessage());
 				}
 			}
 			else
@@ -4311,7 +4311,7 @@ class FabrikFEModelList extends JModelForm
 					}
 					catch (Exception $e)
 					{
-						JError::raiseNotice(500, 'alter structure: ' . $e->getMessage());
+						throw new RuntimeException('alter structure: ' . $e->getMessage());
 					}
 				}
 			}
@@ -8609,6 +8609,7 @@ class FabrikFEModelList extends JModelForm
 
 	public function getColumnData($col, $distinct = true, $opts = array())
 	{
+		$app = JFactory::getApplication();
 		if (!array_key_exists($col, $this->columnData))
 		{
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
@@ -8616,17 +8617,13 @@ class FabrikFEModelList extends JModelForm
 			$res = $cache->call(array(get_class($this), 'columnData'), $this->getId(), $col, $distinct, $opts);
 			if (is_null($res))
 			{
-				JError::raiseNotice(500, 'list model getColumn Data for ' . $col . ' failed');
+				$app->enqueueMessage('list model getColumn Data for ' . $col . ' failed', 'notice');
+				$res = array();
 			}
 			if ((int) $fbConfig->get('filter_list_max', 100) == count($res))
 			{
-				JError::raiseNotice(500, JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col));
+				$app->enqueueMessage(JText::sprintf('COM_FABRIK_FILTER_LIST_MAX_REACHED', $col), 'notice');
 			}
-			if (is_null($res))
-			{
-				$res = array();
-			}
-
 			$this->columnData[$col] = $res;
 		}
 		return $this->columnData[$col];

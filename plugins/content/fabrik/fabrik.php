@@ -349,8 +349,7 @@ class PlgContentFabrik extends JPlugin
 			// $$$ hugh in case they have a typo in their elementname
 			if (empty($activeEl))
 			{
-				JError::raiseNotice(500, 'You are trying to embed an element called ' . $element . ' which is not present in the list');
-				return;
+				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list');
 			}
 			$row = $model->getRow($rowid, false, true);
 
@@ -617,7 +616,7 @@ class PlgContentFabrik extends JPlugin
 			$modelpaths = JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', $prefix);
 			if (!$controller->_model = $controller->getModel($viewName, $prefix))
 			{
-				JError::raiseNotice(500, 'Fabrik Content Plug-in: could not create model');
+				throw new RuntimeException('Fabrik Content Plug-in: could not create model');
 				return false;
 			}
 		}

@@ -1162,7 +1162,7 @@ class FabrikWorker
 				// or null, when there hasn't been an eror.
 				if ($error !== true)
 				{
-					JError::raiseNotice(500, sprintf($msg, $error['message']));
+					$app->enqueueMessage(sprintf($msg, $error['message']), 'notice');
 				}
 			}
 		}
@@ -1587,13 +1587,19 @@ class FabrikWorker
 	/**
 	 * Can Fabrik render PDF - required the DOMPDF library to be installed in Joomla libraries folder
 	 *
+	 * @throws RuntimeException
+	 *
 	 * @return bool
 	 */
 
 	public static function canPdf()
 	{
 		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
-		return JFile::exists($file);
+		if (!JFile::exists($file))
+		{
+			throw new RuntimeException(JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+		}
+		return true;
 	}
 
 	/**

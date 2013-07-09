@@ -85,8 +85,7 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 							$element = $model->getFormModel()->getElement($val);
 							if (!$element)
 							{
-								JError::raiseNotice(500, 'could not load group by element ' . $val);
-								continue;
+								throw new RuntimeException('could not load group by element ' . $val);
 							}
 							$aFields = array();
 							$aAsFields = array();

@@ -77,20 +77,13 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 			$query->where(str_replace('___', '.', $approveEls[$x]) . ' = 0');
 			$db->setQuery($query, 0, 5);
 			$rows = $db->loadObjectList();
-			if ($rows === null)
+			foreach ($rows as &$row)
 			{
-				JError::raiseNotice(400, $db->getErrorMsg());
+				$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
+				$row->rowid = $row->pk;
+				$row->listid = $ids[$x];
 			}
-			else
-			{
-				foreach ($rows as &$row)
-				{
-					$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
-					$row->rowid = $row->pk;
-					$row->listid = $ids[$x];
-				}
-				$this->rows = array_merge($this->rows, $rows);
-			}
+			$this->rows = array_merge($this->rows, $rows);
 		}
 		return $this->rows;
 	}

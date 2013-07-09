@@ -506,7 +506,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$mapelement = $this->getMapElement();
 		if (!is_object($mapelement))
 		{
-			JError::raiseNotice(500, JText::_('Radius search plug-in active but map element unpublished'));
+			throw new RuntimeException('Radius search plug-in active but map element unpublished');
 			return;
 		}
 		$opts = array();

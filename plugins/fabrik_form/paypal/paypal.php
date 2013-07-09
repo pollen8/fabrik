@@ -274,7 +274,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$query->clear();
 			if (empty($shipping_select) || $shipping_table == '')
 			{
-				JError::raiseNotice(500, 'No shipping lookup table or shipping fields selected');
+				$app->enqueueMessage('No shipping lookup table or shipping fields selected');
 			}
 			else
 			{

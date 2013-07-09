@@ -382,12 +382,13 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 	protected function getRequireFilterMsg()
 	{
+		$app = JFactory::getApplication();
 		$listModels = $this->getlistModels();
 		foreach ($listModels as $model)
 		{
 			if (!$model->gotAllRequiredFilters())
 			{
-				JError::raiseNotice(500, $model->getRequiredMsg());
+				$app->enqueueMessage($model->getRequiredMsg(), 'notice');
 			}
 		}
 	}

@@ -112,8 +112,6 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		if (empty($ftp_filename))
 		{
 			$ftp_filename = 'fabrik_ftp_' . md5(uniqid()) . '.txt';
-
-			// JError::raiseNotice(500, JText::sprintf('PLG_FTP_NO_FILENAME', $email));
 		}
 
 		$ftp_host = $w->parseMessageForPlaceholder($params->get('ftp_host', ''), $this->data, false);
@@ -140,21 +138,21 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 					{
 						if (!ftp_chdir($conn_id, $ftp_chdir))
 						{
-							JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'));
+							$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
 							JFile::delete($tmp_file);
 							return false;
 						}
 					}
 					if (!ftp_put($conn_id, $ftp_filename, $tmp_file, FTP_ASCII))
 					{
-						JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'));
+						$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
 						JFile::delete($tmp_file);
 						return false;
 					}
 				}
 				else
 				{
-					JError::raiseNotice(500, JText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'));
+					$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
 					JFile::delete($tmp_file);
 					return false;
 				}

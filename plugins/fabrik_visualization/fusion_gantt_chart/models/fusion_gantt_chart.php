@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
+class FabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 {
 
 	/**
@@ -34,6 +34,8 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 
 	public function getChart()
 	{
+		$app = JFactory::getApplication();
+
 		// Include PHP Class
 		if (!class_exists('FusionCharts'))
 		{
@@ -95,7 +97,7 @@ class fabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 		$data = $listModel->getData();
 		if (empty($data))
 		{
-			JError::raiseNotice(500, 'No data found for gantt chart');
+			$app->enqueueMessage('No data found for gantt chart');
 			return;
 		}
 		$groupByKeys = array_keys($data);

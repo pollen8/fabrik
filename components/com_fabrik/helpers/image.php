@@ -347,12 +347,13 @@ class FabimageGD extends Fabimage
 	public function rotate($source, $dest = '', $degrees = 0)
 	{
 		$source = $this->imageCreateFrom($source);
+		$app = JFactory::getApplication();
 
 		// Rotates the image
 		$rotate = imagerotate($source, $degrees, 0);
 		if ($rotate === false)
 		{
-			JError::raiseNotice(500, 'Image rotation failed');
+			$app->enqueueMessage('Image rotation failed', 'notice');
 		}
 		if ($dest != '')
 		{

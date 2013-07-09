@@ -90,10 +90,9 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		{
 			if (!self::$warned)
 			{
-				JError::raiseNotice(500, 'Your list needs to have viewable details records for the FB Like button to work');
+				$app->enqueueMessage('Your list needs to have viewable details records for the FB Like button to work');
 				self::$warned = true;
 			}
-
 			return '';
 		}
 

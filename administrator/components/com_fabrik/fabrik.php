@@ -59,7 +59,7 @@ $query->select('COUNT(extension_id)')->from('#__extensions')->where('enabled = 1
 $db->setQuery($query);
 if (count($db->loadResult()) === 0)
 {
-	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
+	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
 }
 
 $controller->execute($input->get('task', 'home.display'));

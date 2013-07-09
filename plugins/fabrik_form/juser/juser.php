@@ -129,6 +129,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	{
 		if ($params->get('synchro_users') == 1)
 		{
+			$app = JFactory::getApplication();
 			$listModel = $formModel->getlistModel();
 			$fabrikDb = $listModel->getDb();
 			$tableName = $listModel->getTable()->db_table_name;
@@ -141,53 +142,45 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$count = (int) $fabrikDb->loadResult();
 			if ($count === 0)
 			{
-				// Load the list of users from #__users
-				$query->clear();
-				$query->select('DISTINCT u.*, ug.group_id')->from($fabrikDb->quoteName('#__users') . 'AS u')
-					->join('LEFT', '#__user_usergroup_map AS ug ON ug.user_id = u.id')->group('u.id')->order('u.id ASC');
-				$fabrikDb->setQuery($query);
-				$origUsers = $fabrikDb->loadObjectList();
-				$count = 0;
-				$import = true;
 
-				// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
-				foreach ($origUsers as $o_user)
+				try
 				{
-					// Insert into our F! table
+					// Load the list of users from #__users
 					$query->clear();
-					$fields = array($this->getFieldName($params, 'juser_field_userid', true) => $o_user->id,
-						$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
-						$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
-						$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
-						$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
-						$this->getFieldName($params, 'juser_field_username', true) => $o_user->username);
-					if (!FabrikWorker::j3())
-					{
-						$fields[$this->getFieldName($params, 'juser_field_usertype', true)] = $o_user->group_id;
-					}
-					$query->insert($tableName);
-					foreach ($fields as $key => $val)
-					{
-						$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
-					}
-
+					$query->select('DISTINCT u.*, ug.group_id')->from($fabrikDb->quoteName('#__users') . 'AS u')
+						->join('LEFT', '#__user_usergroup_map AS ug ON ug.user_id = u.id')->group('u.id')->order('u.id ASC');
 					$fabrikDb->setQuery($query);
-					if (!$fabrikDb->execute())
+					$origUsers = $fabrikDb->loadObjectList();
+					$count = 0;
+
+					// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
+					foreach ($origUsers as $o_user)
 					{
-						JError::raiseNotice(400, $fabrikDb->getErrorMsg());
-						$import = false;
+						// Insert into our F! table
+						$query->clear();
+						$fields = array($this->getFieldName($params, 'juser_field_userid', true) => $o_user->id,
+							$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
+							$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
+							$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
+							$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
+							$this->getFieldName($params, 'juser_field_username', true) => $o_user->username);
+						if (!FabrikWorker::j3())
+						{
+							$fields[$this->getFieldName($params, 'juser_field_usertype', true)] = $o_user->group_id;
+						}
+						$query->insert($tableName);
+						foreach ($fields as $key => $val)
+						{
+							$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
+						}
+
+						$fabrikDb->setQuery($query);
+						$fabrikDb->execute();
+						$count++;
 					}
-					// $import = $fabrikDb->execute();
-					$count++;
-				}
-				// @TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
-				// Display synchonization result
-				$app = JFactory::getApplication();
-				if ($import)
-				{
 					$app->enqueueMessage(JText::sprintf('PLG_FABRIK_FORM_JUSER_MSG_SYNC_OK', $count, $tableName));
 				}
-				else
+				catch (Exception $e)
 				{
 					$app->enqueueMessage(JText::_('PLG_FABRIK_FORM_JUSER_MSG_SYNC_ERROR'));
 				}
@@ -718,7 +711,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					}
 					else
 					{
-						JError::raiseNotice(500, "could not alter user group to $groupId as you are not assigned to that group");
+						throw new RuntimeException("could not alter user group to $groupId as you are not assigned to that group");
 					}
 				}
 			}
@@ -926,9 +919,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 	protected function raiseError(&$err, $field, $msg)
 	{
-		if (JFactory::getApplication()->isAdmin())
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
 		{
-			JError::raiseNotice(500, $msg);
+			$app->enqueueMessage($msg, 'notice');
 		}
 		else
 		{

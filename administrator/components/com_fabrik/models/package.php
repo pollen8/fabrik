@@ -349,7 +349,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($packageZipPath, $files);
 			if (!$ok)
 			{
-				throw new RuntimeException(Unable to create zip in ' . $componentZipPath, 500);
+				throw new RuntimeException('Unable to create zip in ' . $componentZipPath, 500);
 			}
 			// $this->triggerDownload($pkgName, $packageZipPath);
 			// $this->cleanUp($pkgName);
@@ -637,7 +637,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$data = JFile::read($fpath);
 				if ($data === false)
 				{
-					JError::raiseNotice(500, 'could not read ' . $fpath);
+					JFactory::getApplication->>enqueueMessage('could not read ' . $fpath, 'notice');
 				}
 				$files[] = array('name' => $zippath, 'data' => $data);
 			}

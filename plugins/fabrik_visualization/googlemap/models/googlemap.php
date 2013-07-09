@@ -179,22 +179,15 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$db->setQuery($query);
 			$data = $db->loadObjectList();
 			$points = array();
-			if (is_null($data))
+			foreach ($data as $d)
 			{
-				JError::raiseNotice(500, $db->getErrorMsg());
-			}
-			else
-			{
-				foreach ($data as $d)
+				$d = $this->getCordsFromData($d->coords);
+				if ($d == array(0, 0))
 				{
-					$d = $this->getCordsFromData($d->coords);
-					if ($d == array(0, 0))
-					{
-						// Don't show icons with no data
-						continue;
-					}
-					$points[] = $d;
+					// Don't show icons with no data
+					continue;
 				}
+				$points[] = $d;
 			}
 			$lines[] = $points;
 			$c++;

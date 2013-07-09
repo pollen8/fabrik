@@ -147,7 +147,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if ($content->remaining_hits <= 0)
 		{
-			JError::raiseNotice(500, JText::_('TWITTER_ACCOUNT_LIMIT_REACHED'));
+			$app->enqueueMessage(JText::_('TWITTER_ACCOUNT_LIMIT_REACHED'));
 		} */
 
 		// Get logged in user to help with tests
@@ -169,7 +169,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 				}
 				break;
 			default:
-				JError::raiseNotice(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
+				$app->enqueueMessage(JText::_('PLG_FORM_TWITTER_ERR'), "$connection->http_code : $status->error");
 		}
 		$url = $input->get('fabrik_referrer', '');
 		$context = $this->formModel->getRedirectContext();
@@ -249,7 +249,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 				header('Location: ' . $url);
 				break;
 			default: /* Show notification if something went wrong. */
-				JError::raiseNotice(500, $connection->http_code . ': Could not connect to Twitter. Refresh the page or try again later.');
+				throw new RuntimeException($connection->http_code . ': Could not connect to Twitter. Refresh the page or try again later.');
 		}
 	}
 
@@ -304,7 +304,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			$return_url = $this->bitly->shorten($url[1]);
 			if ($this->bitly->getError() > 0)
 			{
-				JError::raiseNotice(500, 'Error with bit.ly: ' . $this->bitly->getErrorMsg());
+				throw new RuntimeException('Error with bit.ly: ' . $this->bitly->getErrorMsg());
 			}
 		}
 		return $return_url;
@@ -421,13 +421,13 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		switch ($connection->http_code)
 		{
 			case 200:
-			// Build authorize URL and redirect user to Twitter.
+				// Build authorize URL and redirect user to Twitter.
 				$url = $connection->getAuthorizeURL($token);
 				$app->redirect($url);
 				break;
 			default:
-			// Show notification if something went wrong.
-				JError::raiseNotice(500, $connection->http_code . ': Could not connect to Twitter. Refresh the page or try again later.');
+				// Show notification if something went wrong.
+				throw new RuntimeException($connection->http_code . ': Could not connect to Twitter. Refresh the page or try again later.');
 		}
 	}
 

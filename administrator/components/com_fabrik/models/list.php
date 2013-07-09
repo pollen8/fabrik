@@ -797,11 +797,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$db = $feModel->getDb();
 			$item = $feModel->getTable();
 			$db->setQuery('ALTER TABLE ' . $item->db_table_name . ' COLLATE  ' . $newCollation);
-			if (!$db->execute())
-			{
-				JError::raiseNotice(500, $db->getErrorMsg());
-				return false;
-			}
+			$db->execute();
 		}
 		return true;
 	}

@@ -496,7 +496,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 						$res = JFile::write($logs_file, $htmlMsg);
 						if (!$res)
 						{
-							JError::raiseNotice(E_NOTICE, "error writing html to log file: " . $logs_file);
+							$app->enqueueMessage("error writing html to log file: " . $logs_file, 'notice');
 						}
 					}
 				}
@@ -687,7 +687,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 				}
 				else
 				{
-					JError::raiseNotice(500, JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+					$app->enqueueMessage(JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 				}
 			}
 		}

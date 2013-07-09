@@ -384,13 +384,8 @@ class FabrikViewListBase extends JViewLegacy
 		$this->ajax = $model->isAjax();
 
 		// 3.0 observed in list.js & html moved into fabrik_actions rollover
-		$canPdf = FabrikWorker::canPdf();
+		FabrikWorker::canPdf();
 		$this->showPDF = $params->get('pdf', $fbConfig->get('list_pdf', false));
-
-		if (!$canPdf && $this->showPDF)
-		{
-			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
-		}
 		$this->emptyLink = $model->canEmpty() ? '#' : '';
 		$this->csvImportLink = $this->showCSVImport ? JRoute::_('index.php?option=com_' . $package . '&view=import&filetype=csv&listid=' . $item->id) : '';
 		$this->showAdd = $model->canAdd();

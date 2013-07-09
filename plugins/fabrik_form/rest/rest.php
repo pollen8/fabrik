@@ -367,7 +367,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		}
 		if (curl_errno($chandle))
 		{
-			JError::raiseNotice($httpCode, curl_error($chandle));
+			throw new RuntimeException(curl_error($chandle));
 			return false;
 		}
 		return true;

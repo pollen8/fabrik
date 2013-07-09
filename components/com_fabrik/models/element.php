@@ -3861,7 +3861,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function addToDBTable($origColName = null)
 	{
-		JError::raiseNotice(500, 'addTODBTable called but we are not using it');
 	}
 
 	/**
@@ -3877,8 +3876,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		if (!$this->canEncrypt() && $params->get('encrypt'))
 		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
-			return false;
+			throw new RuntimeException('The encryption option is only available for field and text area plugins');
 		}
 		// Overridden in element plugin if needed
 		return true;
@@ -3900,10 +3898,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$id = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
 		$db->setQuery($query);
-		if (!$db->execute())
+		try
 		{
-			JError::raiseNotice(500, 'didnt delete js actions for element ' . $id);
-			return false;
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+			throw new RuntimeException('didnt delete js actions for element ' . $id);
 		}
 		return true;
 	}

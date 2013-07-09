@@ -63,6 +63,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 	protected function backUp()
 	{
 		$db = JFactory::getDbo(true);
+		$app = JFactory::getApplication();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name, connection_id')->from('#__fabrik_tables');
 		$db->setQuery($query);
@@ -89,7 +90,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 			// Test table exists
 			if (!in_array($item->db_table_name, $cnnTables[$item->connection_id]))
 			{
-				JError::raiseNotice(500, 'backup: table not found: ' . $item->db_table_name);
+				$app->enqueueMessage('backup: table not found: ' . $item->db_table_name, 'notice');
 				continue;
 			}
 			// Create the bkup table (this method will also correctly copy table indexes
@@ -175,10 +176,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$db->setQuery($q);
 			if (trim($q) !== '')
 			{
-				if (!$db->execute())
-				{
-					JError::raiseNotice(500, $db->getErrorMsg());
-				}
+				$db->execute();
 			}
 		}
 
@@ -189,10 +187,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$fabrate = "SHOW TABLES LIKE '" . $prefix . "fabrik_ratings'";
 		$db->setQuery($fabrate);
 		$rateresult = $db->loadObjectList();
-		if (!count($rateresult))
-		{
-		}
-		else
+		if (count($rateresult))
 		{
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
 			$db->execute();

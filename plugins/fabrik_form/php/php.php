@@ -404,8 +404,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 			if (!JFile::exists($php_file))
 			{
-				JError::raiseNotice(500, 'Mssing PHP form plugin file');
-				return false;
+				throw new RuntimeException('Mssing PHP form plugin file');
 			}
 
 			// If it's a form load method, needs to be handled thisaway

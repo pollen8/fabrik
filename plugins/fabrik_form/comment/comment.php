@@ -995,10 +995,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * prepare JComment system
+	 * Prepare JComment system
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Plugin params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  void
 	 */
@@ -1017,7 +1017,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 		else
 		{
-			JError::raiseNotice(500, JText::_('JComment is not installed on your system'));
+			throw new RuntimeException('JComment is not installed on your system');
 		}
 	}
 

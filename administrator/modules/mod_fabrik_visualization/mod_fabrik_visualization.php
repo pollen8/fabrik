@@ -63,11 +63,11 @@ if (file_exists($path))
 }
 else
 {
-	JError::raiseNotice(400, 'could not load viz:' . $name);
+	$app->enqueueMessage('could not load viz:' . $name, 'notice');
 	return;
 }
 $controllerName = 'FabrikControllerVisualization' . $name;
-$controller = new $controllerName();
+$controller = new $controllerName;
 $controller->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $name . '/views');
 $controller->addViewPath(COM_FABRIK_FRONTEND . '/views');
 

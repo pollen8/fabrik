@@ -199,7 +199,7 @@ class PlgSystemFabrik extends JPlugin
 				$diff = $usage[count($usage) - 1] - $usage[count($usage) - 2];
 				if ($diff + $usage[count($usage) - 1] > $memory - $memSafety)
 				{
-					JError::raiseNotice(500, 'Some records were not searched due to memory limitations');
+					$app->enqueueMessage('Some records were not searched due to memory limitations');
 					break;
 				}
 			}

@@ -180,7 +180,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			if (($data['params']['repeat_group_button'] == 1))
 			{
 				$data['params']['repeat_group_button'] = 0;
-				JError::raiseNotice(500, 'You can not set the group containing the list primary key to be repeatable');
+				JFactory::getApplication()->enqueueMessage('You can not set the group containing the list primary key to be repeatable', 'notice');
 			}
 		}
 		$data['params'] = json_encode($data['params']);

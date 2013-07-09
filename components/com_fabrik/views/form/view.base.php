@@ -333,22 +333,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->showPDF)
 		{
-			if (!FabrikWorker::canPdf())
+			FabrikWorker::canPdf();
+			if ($app->isAdmin())
 			{
-				JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
 			}
 			else
 			{
-				if ($app->isAdmin())
-				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
-				}
-				else
-				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf');
-				}
-				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf');
 			}
+			$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 		}
 	}
 

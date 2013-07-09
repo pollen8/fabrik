@@ -2415,7 +2415,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = json_decode($data['params']);
 		if (!$this->canEncrypt() && !empty($params->encrypt))
 		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
+			throw new RuntimeException('The encryption option is only available for field and text area plugins');
 			return false;
 		}
 		if (!$this->isJoin())

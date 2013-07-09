@@ -14,8 +14,7 @@ $app = JFactory::getApplication();
 $input = $app->input;
 $pageClass = $this->params->get('pageclass_sfx', '');
 if (!$app->isAdmin()) :
-	JError::raiseNotice(500, JText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
-	return;
+	throw new RuntimeException(JText::_('COM_FABRIK_ERR_ADMIN_LIST_TMPL_IN_FRONTEND'));
 endif;
 if ($pageClass !== '') :
 echo '<div class="' . $pageClass . '">';
