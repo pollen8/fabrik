@@ -94,7 +94,6 @@ class FabrikAdminModelGroups extends FabModelList
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		$this->filterByFormQuery($query, 'fg');
-		echo $query;
 		return $query;
 	}
 
