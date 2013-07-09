@@ -1288,15 +1288,11 @@ class PlgFabrik_Element extends FabrikPlugin
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
-			/*@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			 *stops this getting called from form validation code as it messes up repeated/join group validations
-			*/
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			if (JArrayHelper::getValue($opts, 'runplugins', false))
 			{
 				$formModel = $this->getFormModel();
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-
 			$this->defaults[$key] = $values;
 		}
 		return $this->defaults[$key];
