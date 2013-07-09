@@ -322,7 +322,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * set the url for the filter form's action
+	 * Set the url for the filter form's action
 	 *
 	 * @return  string	action url
 	 */
@@ -424,7 +424,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * should be overwritten in plugin viz model
+	 * Should be overwritten in plugin viz model
 	 *
 	 * @return  bool
 	 */
@@ -444,7 +444,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * load in any table plugin classes
+	 * Load in any table plugin classes
 	 * needed for radius search filter
 	 *
 	 * @param   array  &$srcs  existing src file
@@ -463,7 +463,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get the js code to create instances of js list plugin classes
+	 * Get the js code to create instances of js list plugin classes
 	 * needed for radius search filter
 	 *
 	 * @return  string
@@ -479,7 +479,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 			$tmp = $model->getPluginJsObjects($this->getContainerId());
 			foreach ($tmp as $t)
 			{
-				$str[] = $t;
+				$str[] = $t . ';';
 			}
 		}
 		return implode("\n", $str);

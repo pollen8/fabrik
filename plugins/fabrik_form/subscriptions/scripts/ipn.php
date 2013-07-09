@@ -40,7 +40,7 @@ class fabrikSubscriptionsIPN
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
 		$this->log('fabrik.ipn.payment_status_Completed', $msg);
-		return $this->activateSubscription($listModel, $request, &$set_list, &$err_msg, false);
+		return $this->activateSubscription($listModel, $request, $set_list, $err_msg, false);
 	}
 
 	/**

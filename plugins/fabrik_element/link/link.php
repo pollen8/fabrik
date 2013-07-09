@@ -186,8 +186,8 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 		}
 		if (!$this->isEditable())
 		{
-			$_lbl = trim($value['label']);
-			$_lnk = trim($value['link']);
+			$_lbl = trim(JArrayHelper::getValue($value, 'label'));
+			$_lnk = trim(JArrayHelper::getValue($value, 'link'));
 			$w = new FabrikWorker;
 			$_lnk = is_array($data) ? $w->parseMessageForPlaceHolder($_lnk, $data) : $w->parseMessageForPlaceHolder($_lnk);
 			if (empty($_lnk) || JString::strtolower($_lnk) == 'http://' || JString::strtolower($_lnk) == 'https://')

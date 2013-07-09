@@ -3,6 +3,9 @@
 	<fields>
 		<fieldset label="COM_FABRIK_DEFAULT" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-link">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_LINK_HELP_SERVER" />
+				
 			<field name="width"
 				type="text"
 				class="input-mini" 

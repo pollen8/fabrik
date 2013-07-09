@@ -3,6 +3,9 @@
 	<fields name="params">
 		<fieldset name="plg-dropdown-mutli" label="COM_FABRIK_DATA">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_DROPDOWN_HELP_SERVER" />
+
 			<field name="sub_options"
 				type="suboptions"
 				label="COM_FABRIK_SUBOPTIONS" />

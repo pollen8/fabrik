@@ -13,7 +13,6 @@ defined('_JEXEC') or die();
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/html.php';
 
 /**
  *  Determines if a row is deleteable

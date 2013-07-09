@@ -127,14 +127,14 @@ class JFormFieldElement extends JFormFieldList
 	/**
 	 * Build GUI for adding in elements
 	 *
-	 * @return string
+	 * @return  string  Textarea GUI
 	 */
 
 	private function gui()
 	{
 		$str = array();
 		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
-		$str[] = '<button class="button btn">Add</button>';
+		$str[] = '<button class="button btn">' . JText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
 		return implode("\n", $str);
 	}

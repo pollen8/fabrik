@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
  * @param   int the total number of records in the table
  * @param   int number of records to show per page
  * @param   int which record number to start at
- */
+*/
 
 jimport('joomla.html.pagination');
 
@@ -26,7 +26,7 @@ jimport('joomla.html.pagination');
  *
  * @package  Fabrik
  * @since    3.0
- */
+*/
 
 class FPagination extends JPagination
 {
@@ -83,7 +83,7 @@ class FPagination extends JPagination
 	/**
 	 * Set the pagination ID
 	 *
-	 * @param  int  $id id
+	 * @param   int  $id  id
 	 *
 	 * @return  void
 	 */
@@ -165,9 +165,8 @@ class FPagination extends JPagination
 		}
 		$selected = $this->viewAll ? '-1' : $this->limit;
 		$js = '';
-		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, 'class="inputbox input-mini" size="1" onchange="' . $js . '"', 'value', 'text',
-			$selected
-		);
+		$attribs = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
+		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attribs, 'value', 'text', $selected);
 		return $html;
 	}
 
@@ -250,7 +249,7 @@ class FPagination extends JPagination
 		{
 			$list['previous']['active'] = true;
 			$list['previous']['data'] = $itemOverride ? fabrik_pagination_item_active($data->previous, $this->listRef)
-				: $this->_item_active($data->previous);
+			: $this->_item_active($data->previous);
 		}
 		else
 		{
@@ -381,9 +380,8 @@ class FPagination extends JPagination
 			$data->start->link = $admin ? "{$sepchar}limitstart{$this->id}=0" : JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=0");
 
 			$data->previous->base = $page;
-			$data->previous->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $page : JRoute::_(
-				$this->url . "{$sepchar}limitstart{$this->id}=" . $page
-			);
+			$data->previous->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $page
+			: JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $page);
 
 			$data->start->link = str_replace('resetfilters=1', '', $data->start->link);
 			$data->previous->link = str_replace('resetfilters=1', '', $data->previous->link);

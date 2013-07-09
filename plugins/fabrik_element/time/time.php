@@ -166,14 +166,17 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	 *
 	 * @param   mixed  $val  (array normally but string on csv import or copy rows)
 	 *
-	 * @return  string  yyyy-mm-dd
+	 * @return  string  hh-mm-ss
 	 */
 
 	private function _indStoreDBFormat($val)
 	{
 		if (is_array($val) && implode($val) != '')
 		{
-			return rtrim(str_replace('', '00', $val[0]) . ':' . str_replace('', '00', $val[1]) . ':' . str_replace('', '00', $val[2]), ':');
+			$h = JArrayHelper::getValue($val, 0, '00');
+			$m = JArrayHelper::getValue($val, 1, '00');
+			$s = JArrayHelper::getValue($val, 2, '00');
+			return $h . ':' . $m . ':' . $s;
 		}
 		return $val;
 	}

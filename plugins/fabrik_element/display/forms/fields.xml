@@ -3,11 +3,20 @@
 	<fields>
 		<fieldset name="plg-element-display" label="COM_FABRIK_OPTIONS">
 		
-			<field cols="45" label="PLG_ELEMENT_DISPLAY_DEFAULT_LABEL" name="default" rows="6" type="textarea"/>
+			<field type="helplink"
+				url="PLG_ELEMENT_DISPLAY_HELP_SERVER" />
 		
-			<field default="0"
+			<field name="default"
+				type="textarea"
+				cols="45"
+				label="PLG_ELEMENT_DISPLAY_DEFAULT_LABEL"
+				rows="6" />
+		
+			<field name="eval"
+				type="radio"
+				default="0"
 				class="btn-group"
-				label="PLG_ELEMENT_DISPLAY_EVAL_LABEL" name="eval" type="radio">
+				label="PLG_ELEMENT_DISPLAY_EVAL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -17,12 +26,16 @@
 	
 	<fields name="params">
 		<fieldset name="extra" label="COM_FABRIK_MORE">
-			<field default="1"
+		
+			<field name="display_showlabel"
+				type="radio"
+				default="1"
 				class="btn-group"
-				label="PLG_ELEMENT_DISPLAY_SHOW_LABEL_LABEL" name="display_showlabel" type="radio">
+				label="PLG_ELEMENT_DISPLAY_SHOW_LABEL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
 		</fieldset>
 	</fields>
 </form>

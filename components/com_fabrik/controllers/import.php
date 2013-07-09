@@ -94,7 +94,8 @@ class FabrikControllerImport extends JControllerLegacy
 		else
 		{
 			$input->set('fabrik_list', $id);
-			$msg = $model->insertData();
+			$model->insertData();
+			$msg = $model->updateMessage();
 			$this->setRedirect('index.php?option=com_fabrik&view=list&listid=' . $id . "&resetfilters=1&Itemid=" . $Itemid, $msg);
 		}
 	}

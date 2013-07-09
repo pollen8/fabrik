@@ -227,12 +227,6 @@ var Loader = new Class({
 	}
 });
 
-/*require(['fab/icons', 'fab/icongen'], function () {
-	// Was in head.ready but that cause js error for fileupload in admin when it wanted to 
-	// build its window.
-	Fabrik.iconGen = new IconGenerator({scale: 0.5});
-});*/
-
 /**
  * Create the Fabrik name space
  */

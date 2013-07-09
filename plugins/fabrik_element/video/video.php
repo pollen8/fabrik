@@ -20,6 +20,7 @@ jimport('joomla.application.component.model');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.video
+ * @since       3.0
  */
 
 class PlgFabrik_ElementVideo extends PlgFabrik_Element
@@ -97,7 +98,7 @@ class PlgFabrik_ElementVideo extends PlgFabrik_Element
 		echo "</script>";
 
 		$params = $this->getParams();
-		$value = $input->get('data');
+		$value = $input->get('data', '', 'string');
 		$loop = ($params->get('fbVideoLoop', 0) == 1) ? 'true' : 'false';
 		$autoplay = ($params->get('fbVideoAutoPlay', 0) == 1) ? 'true' : 'false';
 		$controller = ($params->get('fbVideoController', 0) == 1) ? 'true' : 'false';

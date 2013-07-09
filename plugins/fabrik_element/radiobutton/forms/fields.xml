@@ -3,7 +3,12 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-radiobutton">
 		
-			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
+			<field type="helplink"
+				url="PLG_ELEMENT_RADIO_HELP_SERVER" />
+				
+			<field name="sub_options"
+				type="suboptions"
+				label="COM_FABRIK_SUBOPTIONS"/>
 				
 			<field name="options_per_row"
 				default="4"

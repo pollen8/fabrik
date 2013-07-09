@@ -502,17 +502,11 @@ var FbGoogleMap = new Class({
 		var address = '';
 		if (this.options.geocode === '2') {
 			this.options.geocode_fields.each(function (field) {
-				var f = document.id(field);
-				var v;
-				if (f.get('tag') === 'select') {
-					// Hack - if select list then presuming that they want to geocode on the label and not the value
-					// if empty value though use that as you dont want to geocode on 'please select'
-					v = f.value === '' ? '' : f.options[f.selectedIndex].get('text');
-				} else {
-					v = f.value;
+				var f = this.form.formElements.get(field);
+				if (f) {
+					address += f.get('value') + ',';
 				}
-				address += v + ',';
-			});
+			}.bind(this));
 			address = address.slice(0, -1);
 		} else {
 			address = this.element.getElement('.geocode_input').value;

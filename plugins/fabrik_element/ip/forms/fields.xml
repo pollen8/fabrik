@@ -4,9 +4,14 @@
 <fields>
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-ip" label="COM_FABRIK_OPTIONS">
 			
-			<field default="0"
-				class="btn-group"
-				label="PLG_ELEMENT_IP_HIDDEN_LABEL" name="hidden" type="radio">
+		<field type="helplink"
+				url="PLG_ELEMENT_IP_HELP_SERVER" />
+				
+		<field name="hidden"
+			type="radio"
+			default="0"
+			class="btn-group"
+			label="PLG_ELEMENT_IP_HIDDEN_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -17,9 +22,12 @@
 	<fields name="params">
 		<fieldset name="plg-ip-extra" label="COM_FABRIK_ADVANCED">
 			
-			<field default="0"
+			<field name="ip_update_on_edit"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_ELEMENT_IP_UPDATE_ON_EDIT_DESC" label="PLG_ELEMENT_IP_UPDATE_ON_EDIT_LABEL" name="ip_update_on_edit" type="radio">
+				description="PLG_ELEMENT_IP_UPDATE_ON_EDIT_DESC"
+				label="PLG_ELEMENT_IP_UPDATE_ON_EDIT_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>

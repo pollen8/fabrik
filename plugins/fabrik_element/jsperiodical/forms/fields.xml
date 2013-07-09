@@ -3,11 +3,25 @@
 	<fields name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-jsperiodical">
 		
-			<field class="input-mini" default="100" description="PLG_ELEMENT_JSPERIODICAL_TIME_DESC" label="PLG_ELEMENT_JSPERIODICAL_TIME_LABEL" name="jsperiod_period" size="3" type="text"/>
+			<field type="helplink"
+				url="PLG_ELEMENT_JSPERIODICAL_HELP_SERVER" />
 				
-			<field cols="50" description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC" label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL" name="jsperiod_code" rows="10" type="textarea"/>
+			<field name="jsperiod_period"
+				type="text" 
+				class="input-mini"
+				default="100"
+				description="PLG_ELEMENT_JSPERIODICAL_TIME_DESC"
+				label="PLG_ELEMENT_JSPERIODICAL_TIME_LABEL"
+				size="3" />
+				
+			<field name="jsperiod_code"
+				type="textarea"
+				cols="50"
+				description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC"
+				label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL"
+				rows="10" />
 					
 		</fieldset>
 
-		</fields>
+	</fields>
 </form>

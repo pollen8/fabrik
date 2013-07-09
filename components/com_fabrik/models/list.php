@@ -14,7 +14,6 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.modelform');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/pagination.php';
-require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
 require_once COM_FABRIK_FRONTEND . '/helpers/list.php';
 
 /**
@@ -906,7 +905,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$thisRow = $data[$i];
 						$coldata = $thisRow->$col;
-						$data[$i]->$col = $elementModel->getLabelForValue($coldata);
+						$data[$i]->$col = $elementModel->getLabelForValue($coldata, $coldata);
 					}
 				}
 			}
@@ -1981,10 +1980,10 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Add a normal/custom link to the element data
 	 *
-	 * @param   string  $data           element data
-	 * @param   object  &$elementModel  element model
-	 * @param   object  $row            of all row data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Element data
+	 * @param   object  &$elementModel  Element model
+	 * @param   object  $row            All row data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	element data with link added if specified
 	 */
@@ -5889,8 +5888,10 @@ class FabrikFEModelList extends JModelForm
 						}
 						break;
 				}
-
-				$value = trim(trim($value, '"'), "%");
+				if (is_string($value))
+				{
+					$value = trim(trim($value, '"'), "%");
+				}
 				if ($counter == 0)
 				{
 					$join = JText::_('COM_FABRIK_WHERE') . '<input type="hidden" value="WHERE" name="' . $prefix . 'join][]" />';
@@ -6697,11 +6698,12 @@ class FabrikFEModelList extends JModelForm
 										$val = stripslashes($val);
 									}
 								}
-								if (!$elementModel->dataIsNull($data, $val))
+								if ($elementModel->dataIsNull($data, $val))
 								{
-									$oRecord->$key = $val;
-									$aBindData[$key] = $val;
+									$val = null;
 								}
+								$oRecord->$key = $val;
+								$aBindData[$key] = $val;
 
 								if ($elementModel->isJoin() && $isJoin && array_key_exists('params', $data))
 								{

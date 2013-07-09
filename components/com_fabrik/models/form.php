@@ -435,6 +435,7 @@ class FabrikFEModelForm extends FabModelForm
 		$item = $this->getForm();
 		$tmpl = '';
 		$default = FabrikWorker::j3() ? 'bootstrap' : 'default';
+		$jTmplFolder = FabrikWorker::j3() ? 'tmpl' : 'tmpl25';
 		$document = JFactory::getDocument();
 		if ($document->getType() === 'pdf')
 		{
@@ -467,7 +468,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Test it exists - otherwise revert to baseTmpl tmpl
 		$folder = $this->isEditable() ? 'form' : 'details';
-		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/' . $folder . '/tmpl/' . $tmpl))
+		if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/' . $folder . '/' . $jTmplFolder . '/' . $tmpl))
 		{
 			$tmpl = $baseTmpl;
 		}

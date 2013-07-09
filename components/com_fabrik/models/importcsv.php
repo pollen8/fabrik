@@ -105,6 +105,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$this->readCSV($this->getCSVFileName());
 		$this->findExistingElements();
+		$this->setSession();
 		return true;
 	}
 
@@ -490,7 +491,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					{
 						if (!array_key_exists($hkey, $this->matchedHeadings))
 						{
-							/** heading found in table */
+							// Heading found in table
 							$this->matchedHeadings[$hkey] = $element->name;
 							$this->aUsedElements[strtolower($heading)] = $elementModel;
 							$elementMap[$intKey] = clone ($elementModel);
@@ -506,7 +507,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					{
 						if (!array_key_exists($hkey, $this->matchedHeadings))
 						{
-							/** heading found in table */
+							// Heading found in table
 							$this->matchedHeadings[$hkey] = $element->name . '_raw';
 							$this->aUsedElements[strtolower($heading) . '_raw'] = $elementModel;
 							$found = true;
@@ -578,18 +579,18 @@ class FabrikFEModelImportcsv extends JModelForm
 	 *
 	 * @deprecated use insertData instead
 	 *
-	 * @return unknown
+	 * @return null
 	 */
 
 	public function makeTableFromCSV()
 	{
-		return $this->insertData();
+		$this->insertData();
 	}
 
 	/**
 	 * Insert data into a Fabrik list
 	 *
-	 * @return unknown
+	 * @return null
 	 */
 
 	public function insertData()
@@ -753,17 +754,60 @@ class FabrikFEModelImportcsv extends JModelForm
 			$this->insertJoinedData($joindata);
 		}
 		$this->removeCSVFile();
-		$elementsCreated = count($this->newHeadings);
 		$this->updatedCount = $updatedCount;
+	}
+
+	/**
+	 * Get the update message to show the user, # elements added, rows update and rows added
+	 *
+	 * @since   3.0.8
+	 *
+	 * @return  string
+	 */
+
+	public function updateMessage()
+	{
+		$elementsCreated = $this->countElementsCreated();
 		if ($elementsCreated == 0)
 		{
-			$msg = JText::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $updatedCount);
+			$msg = JText::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $this->updatedCount);
 		}
 		else
 		{
-			$msg = JText::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $updatedCount);
+			$msg = JText::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $this->updatedCount);
 		}
 		return $msg;
+	}
+
+	/**
+	 * Calculate the number of elements that have been added during the import
+	 *
+	 * @since  3.0.8
+	 *
+	 * @return number
+	 */
+	protected function countElementsCreated()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$listid = $input->getInt('fabrik_list', $input->get('listid'));
+		if ($listid == 0)
+		{
+			$elementsCreated = count($this->newHeadings);
+		}
+		else
+		{
+			$elementsCreated = 0;
+			$newElements = $input->get('createElements', array(), 'array');
+			foreach ($newElements as $k => $v)
+			{
+				if ($v == 1)
+				{
+					$elementsCreated ++;
+				}
+			}
+		}
+		return $elementsCreated;
 	}
 
 	/**
@@ -843,10 +887,10 @@ class FabrikFEModelImportcsv extends JModelForm
 	 * then insert data into the row
 	 * NOTE: will probably only work for a 1:1 join result
 	 *
-	 * @param   array   $joindata    merged join data
-	 * @param   array   $aRow        row
-	 * @param   mixed   $pkVal       primary key value
-	 * @param   object  &$formModel  form model
+	 * @param   array   $joindata    Merged join data
+	 * @param   array   $aRow        Row
+	 * @param   mixed   $pkVal       Primary key value
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return  array	updated join data
 	 */

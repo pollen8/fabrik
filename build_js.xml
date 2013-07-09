@@ -119,7 +119,7 @@
 	<!--  delete min files first - seems that sometimes they arent updated after a merge with master -->
 	
 		<delete>
-			<fileset dir="${dir}" includes="**/*-min.js" exclude="**/lib/" />
+			<fileset dir="${dir}" includes="**/*-min.js" excludes="**/lib/" />
 		</delete>
 		<echo>${dir}</echo>
 		<apply executable="java" parallel="false" dest="${dir}" failonerror="true" >

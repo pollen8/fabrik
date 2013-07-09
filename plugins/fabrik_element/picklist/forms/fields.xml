@@ -3,6 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-picklist">
 		
+			<field type="helplink"
+				url="PLG_ELEMENT_PICKLIST_HELP_SERVER" />
+				
 			<field label="COM_FABRIK_SUBOPTIONS" name="sub_options" type="suboptions"/>
 				
 			<field default="0"
