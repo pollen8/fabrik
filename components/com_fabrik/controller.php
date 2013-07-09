@@ -74,8 +74,7 @@ class FabrikController extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model = $this->getModel($modelName);
-		if (!JError::isError($model) && is_object($model))
+		if ($model = $this->getModel($modelName))
 		{
 			$view->setModel($model, true);
 		}

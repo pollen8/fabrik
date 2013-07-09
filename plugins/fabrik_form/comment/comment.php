@@ -706,27 +706,11 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		// Attempt to create the db table?
 		$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
 		$db->setQuery($sql);
-		if (!$db->execute())
-		{
-		JError::raiseError(500, $db->getErrorMsg());
-		exit;
-		}
-		$res = $row->store();
-		if ($res === false)
-		{
-		JError::raiseError(500, $row->getError());
-		exit;
-		}
-
+		!$db->execute();
+		$row->store();
 		} */
 
 		// $$$ rob 16/10/2012 db queries run when element/plugin selected in admin, so just return false if error now
-		if ($res === false)
-		{
-			JError::raiseError(500, $row->getError());
-			exit;
-		}
-
 		$obj = new stdClass;
 
 		// Do this to get the depth of the comment

@@ -75,7 +75,7 @@ class FabrikAdminViewLists extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			JError::raiseError(500, implode("\n", $errors));
+			throw new RuntimeException(implode("\n", $errors), 500);
 			return false;
 		}
 		$this->table_groups = $this->get('TableGroups');

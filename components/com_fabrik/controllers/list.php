@@ -64,10 +64,8 @@ class FabrikControllerList extends JControllerLegacy
 		{
 			$model = $this->getModel($modelName, 'FabrikFEModel');
 		}
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+		$view->setModel($model, true);
+
 		// Display the view
 		$view->error = $this->getError();
 
@@ -87,7 +85,7 @@ class FabrikControllerList extends JControllerLegacy
 		{
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');

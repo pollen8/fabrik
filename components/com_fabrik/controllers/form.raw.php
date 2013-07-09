@@ -61,7 +61,11 @@ class FabrikControllerForm extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model = $this->getModel($modelName, 'FabrikFEModel');
+		if ($model = $this->getModel($modelName, 'FabrikFEModel'))
+		{
+			$view->setModel($model, true);
+		}
+
 		/**
 		 * If errors made when submitting from a J plugin they are stored in the session
 		 * lets get them back and insert them into the form model
@@ -72,10 +76,7 @@ class FabrikControllerForm extends JControllerLegacy
 			$model->errors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+
 		$view->isMambot = $this->isMambot;
 
 		// Display the view
@@ -111,8 +112,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
-		$model = $this->getModel('form', 'FabrikFEModel');
-		if (!JError::isError($model))
+		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

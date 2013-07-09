@@ -23,7 +23,7 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 // Test if the system plugin is installed and published
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 $app = JFactory::getApplication();
@@ -45,7 +45,7 @@ jimport('joomla.application.component.controller');
 // System plugin check
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 // Execute the task.

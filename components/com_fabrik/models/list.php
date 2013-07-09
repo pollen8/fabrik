@@ -570,7 +570,7 @@ class FabrikFEModelList extends JModelForm
 		$id = $this->getId();
 		if (is_null($id) || $id == '0')
 		{
-			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
+			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
 		$this->outPutFormat = $input->get('format', 'html');
 		if ($this->outPutFormat == 'fabrikfeed')
@@ -580,7 +580,7 @@ class FabrikFEModelList extends JModelForm
 		$item = $this->getTable();
 		if ($item->db_table_name == '')
 		{
-			return JError::raiseError(500, JText::_('COM_FABRIK_INCORRECT_LIST_ID'));
+			throw new RuntimeException(JText::_('COM_FABRIK_INCORRECT_LIST_ID'), 500);
 		}
 
 		// Cant set time limit in safe mode so suppress warning
@@ -833,10 +833,7 @@ class FabrikFEModelList extends JModelForm
 		* $$$ rob 26/09/2011 note Joomfish not currently released for J1.7
 		*/
 		$listModel->data = $fabrikDb->loadObjectList('', 'stdClass', false);
-		if ($fabrikDb->getErrorNum() != 0)
-		{
-			jexit('getData:' . $fabrikDb->getErrorMsg());
-		}
+
 		// $$$ rob better way of getting total records
 		if ($listModel->mergeJoinedData())
 		{
@@ -855,10 +852,6 @@ class FabrikFEModelList extends JModelForm
 
 		JDEBUG ? $profiler->mark('query run and data loaded') : null;
 		$listModel->translateData($listModel->data);
-		if ($fabrikDb->getErrorNum() != 0)
-		{
-			JError::raiseNotice(500, 'getData: ' . $fabrikDb->getErrorMsg());
-		}
 
 		// Add labels before preformatting - otherwise calc elements on dropdown elements show raw data for {list___element}
 		$listModel->addLabels($listModel->data);
@@ -1237,10 +1230,6 @@ class FabrikFEModelList extends JModelForm
 		$query->select('id, label, db_table_name')->from('#__{package}_lists');
 		$db->setQuery($query);
 		$aTableNames = $db->loadObjectList('label');
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		$cx = count($data);
 		$viewLinkAdded = false;
 
@@ -2244,12 +2233,6 @@ class FabrikFEModelList extends JModelForm
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
-
-			// $$$ hugh - can't use simple !$idRows, as empty array is false!
-			if (!is_array($idRows))
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 			$maxPossibleIds = count($idRows);
 
 			// An array of the lists pk values
@@ -3796,10 +3779,6 @@ class FabrikFEModelList extends JModelForm
 			$query->order('id');
 			$db->setQuery($query);
 			$this->_joinsNoCdd = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->stderr());
-			}
 			$this->_makeJoinAliases($this->_joinsNoCdd);
 		}
 		return $this->_joinsNoCdd;
@@ -3834,10 +3813,6 @@ class FabrikFEModelList extends JModelForm
 			$query->order('id');
 			$db->setQuery($query);
 			$this->_aJoins = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->stderr());
-			}
 			$this->_makeJoinAliases($this->_aJoins);
 			foreach ($this->_aJoins as &$join)
 			{
@@ -3921,8 +3896,6 @@ class FabrikFEModelList extends JModelForm
 					* so at least I'll know what the problem is when they post in the forums!
 					*/
 
-					// The user element relies on canUse returning false, when used in a non-default connection so we can't raise an error so commenting out
-					// JError::raiseError(500, JText::_('COM_FABRIK_ERR_JOIN_TO_OTHER_DB'));
 					$join->canUse = false;
 				}
 			}
@@ -4686,7 +4659,7 @@ class FabrikFEModelList extends JModelForm
 			$originalValue = $this->filters['value'][$i];
 			if ($value == '' && $eval == FABRIKFILTER_QUERY)
 			{
-				JError::raiseError(500, JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'));
+				throw new RuntimeException(JText::_('COM_FABRIK_QUERY_PREFILTER_WITH_NO_VALUE'), 500);
 			}
 			list($value, $condition) = $elementModel->getFilterValue($value, $condition, $eval);
 			if ($fullWordsOnly == '1')
@@ -5243,17 +5216,21 @@ class FabrikFEModelList extends JModelForm
 				}
 
 				$db->setQuery($query);
-				$this->joinsToThisKey = $db->loadObjectList();
-				if ($db->getErrorNum())
+
+				try
 				{
-					$this->joinsToThisKey = array();
-					JError::raiseWarning(500, 'getJoinsToThisKey: ' . $db->getErrorMsg());
+					$this->joinsToThisKey = $db->loadObjectList();
+					foreach ($this->joinsToThisKey as $join)
+					{
+						$element_params = json_decode($join->element_params);
+						$join->join_key_column = $element_params->join_key_column;
+					}
 				}
-				foreach ($this->joinsToThisKey as $join)
+				catch (RuntimeException $e)
 				{
-					$element_params = json_decode($join->element_params);
-					$join->join_key_column = $element_params->join_key_column;
+					throw new ErrorException('getJoinsToThisKey: ' . $e->getMessage(), 500);
 				}
+
 			}
 		}
 		return $this->joinsToThisKey;

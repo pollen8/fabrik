@@ -94,17 +94,9 @@ class FabrikModelUpgrade extends FabModelAdmin
 			}
 			// Create the bkup table (this method will also correctly copy table indexes
 			$cDb->setQuery("CREATE TABLE IF NOT EXISTS " . $qTable . " LIKE " . $qItemTable);
-			if (!$cDb->execute())
-			{
-				JError::raiseError(500, $cDb->getErrorMsg());
-				return false;
-			}
+			$cDb->execute();
 			$cDb->setQuery("INSERT INTO " . $qTable . " SELECT * FROM " . $qItemTable);
-			if (!$cDb->execute())
-			{
-				JError::raiseError(500, $cDb->getErrorMsg());
-				return false;
-			}
+			$cDb->execute();
 		}
 		return true;
 	}
@@ -124,10 +116,6 @@ class FabrikModelUpgrade extends FabModelAdmin
 		{
 			$db->setQuery("SELECT * FROM $update");
 			$rows = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 			foreach ($rows as $row)
 			{
 				$json = json_decode($row->attribs);

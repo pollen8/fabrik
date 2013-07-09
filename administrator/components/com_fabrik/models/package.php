@@ -316,7 +316,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($componentZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create component zip in ' . $componentZipPath);
+				throw new RuntimeException('Unable to create component zip in ' . $componentZipPath, 500);
 			}
 
 			// Make form module
@@ -327,8 +327,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($formModuleZipPath, $formModuleFiles);
 			if (!$ok)
 			{
-				exit;
-				JError::raiseError(500, 'Unable to form module zip in ' . $componentZipPath);
+				throw new RuntimeException('Unable to form module zip in ' . $componentZipPath, 500);
 			}
 			// Copy that to root
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
@@ -350,7 +349,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($packageZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $componentZipPath);
+				throw new RuntimeException(Unable to create zip in ' . $componentZipPath, 500);
 			}
 			// $this->triggerDownload($pkgName, $packageZipPath);
 			// $this->cleanUp($pkgName);
@@ -562,7 +561,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$path = $this->outputPath . $this->manifestClassFileName($row);
 		if (!JFile::write($path, $return))
 		{
-			JError::raiseError(500, 'didnt write to ' . $path);
+			throw new RuntimeException('didnt write to ' . $path, 500);
 		}
 		return $path;
 	}
@@ -1106,7 +1105,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$plugin->fullfile = $pluginZipPath;
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $pluginZipPath);
+				throw new RuntimeException('Unable to create zip in ' . $pluginZipPath, 500);
 			}
 		}
 	}

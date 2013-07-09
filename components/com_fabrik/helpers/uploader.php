@@ -117,7 +117,7 @@ class FabrikUploader extends JObject
 		{
 			if (!JFolder::create($folderPath, $mode))
 			{
-				return JError::raiseError(21, "Could not make dir $folderPath ");
+				throw new RuntimeException("Could not make dir $folderPath ");
 			}
 		}
 	}

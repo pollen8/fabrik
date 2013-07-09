@@ -386,11 +386,6 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 
 			$elements = $db->loadObjectList();
 
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
-
 			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			$dispatcher = new JDispatcher;
 			$groupModels = $form->getGroups();

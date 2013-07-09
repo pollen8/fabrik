@@ -45,7 +45,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.smile.class.php';
 		if (!JFile::exists($define))
 		{
-			return JError::raiseError(500, 'could not find the Kunena component');
+			throw new RuntimeException('could not find the Kunena component', 404);
 		}
 		require_once $define;
 		foreach ($files as $file)

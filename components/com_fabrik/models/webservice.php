@@ -73,38 +73,13 @@ abstract class FabrikWebService
 				// If it doesn't exist we are at an impasse so throw an exception.
 				else
 				{
-					// Legacy error handling switch based on the JError::$legacy switch.
-					// @deprecated  12.1
-
-					if (JError::$legacy)
-					{
-						// Deprecation warning.
-						JLog::add('JError is deprecated.', JLog::WARNING, 'deprecated');
-						JError::setErrorHandling(E_ERROR, 'die');
-						return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
-					}
-					else
-					{
-						throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
-					}
+					throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
 				}
 			}
 			// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 			if (!class_exists($class))
 			{
-				// Legacy error handling switch based on the JError::$legacy switch.
-				// @deprecated  12.1
-				if (JError::$legacy)
-				{
-					// Deprecation warning.
-					JLog::add('JError() is deprecated.', JLog::WARNING, 'deprecated');
-					JError::setErrorHandling(E_ERROR, 'die');
-					return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
-				}
-				else
-				{
-					throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
-				}
+				throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
 			}
 			// Create our new FabrikWebService connector based on the options given.
 			try
@@ -113,22 +88,7 @@ abstract class FabrikWebService
 			}
 			catch (Exception $e)
 			{
-
-				// Legacy error handling switch based on the JError::$legacy switch.
-				// @deprecated  12.1
-
-				if (JError::$legacy)
-				{
-					// Deprecation warning.
-					JLog::add('JError() is deprecated.', JLog::WARNING, 'deprecated');
-
-					JError::setErrorHandling(E_ERROR, 'ignore');
-					return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_CONNECT_DATABASE', $e->getMessage()));
-				}
-				else
-				{
-					throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_CONNECT_DATABASE', $e->getMessage()));
-				}
+				throw new Exception(JText::sprintf('JLIB_DATABASE_ERROR_CONNECT_DATABASE', $e->getMessage()));
 			}
 
 			// Set the new connector to the global instances based on signature.

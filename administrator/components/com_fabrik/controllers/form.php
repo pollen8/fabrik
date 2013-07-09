@@ -83,7 +83,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		else
 		{
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
@@ -108,7 +108,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	public function process()
 	{
 		$this->name = 'Fabrik';
-		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$document = JFactory::getDocument();
@@ -116,7 +115,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$view = $this->getView($viewName, $viewType);
-		if (!JError::isError($model))
+		if ($model = JModelLegacy::getInstance('Form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

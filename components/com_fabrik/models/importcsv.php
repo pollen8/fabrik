@@ -181,8 +181,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$allowed = array('txt', 'csv', 'tsv');
 		if (!in_array(JFile::getExt($userfile['userfile']['name']), $allowed))
 		{
-			JError::raiseError(500, 'File must be a csv file');
-			return false;
+			throw new RuntimeException('File must be a csv file', 500);
 		}
 
 		$tmp_name = $this->getCSVFileName();

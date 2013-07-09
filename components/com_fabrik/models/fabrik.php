@@ -71,7 +71,7 @@ if ($version->RELEASE == '1.6')
 			{
 				return $table;
 			}
-			JError::raiseError(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
+			throw new RuntimeException(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
 			return null;
 		}
 	}
@@ -132,7 +132,7 @@ else
 			{
 				return $table;
 			}
-			JError::raiseError(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
+			throw new RuntimeException(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
 			return null;
 		}
 	}

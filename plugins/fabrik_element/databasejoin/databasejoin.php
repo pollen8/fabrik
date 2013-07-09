@@ -376,7 +376,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			* but the list model is calling getAsFields() and loading up the db join element.
 			* so test case would be an inline edit list with a database join element and editing anything but the db join element
 			*/
-			JError::raiseError(500, 'unable to process db join element id:' . $element->id);
+			throw new RuntimeException('unable to process db join element id:' . $element->id, 500);
 		}
 		return false;
 	}
@@ -474,10 +474,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($sql);
 		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
-		if ($db->getErrorNum() != 0)
-		{
-			JError::raiseNotice(500, $db->getErrorMsg());
-		}
 		FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
 		if (!is_array($this->_optionVals[$sqlKey]))
 		{
@@ -1409,12 +1405,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$db->setQuery($query);
 
 			$this->_linkedForms = $db->loadObjectList('value');
-
-			// Check for a database error.
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		return $this->_linkedForms;
 	}
@@ -1683,7 +1673,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
 				 * http://fabrikar.com/forums/showthread.php?p=100466#post100466
 				* JError::raiseWarning(500, 'database join filter query incorrect');
-				* Moved warning to element model filterValueList_Exact(), with a test for $fabrikDb->getErrorNum()
+				* Moved warning to element model filterValueList_Exact()
 				* So we'll just return an otherwise empty menu with just the 'select label'
 				*/
 				$rows = array();

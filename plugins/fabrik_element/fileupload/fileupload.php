@@ -1095,7 +1095,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					if (!$storage->write($destCropFile, $imgData))
 					{
-						return JError::raiseError(500, 'couldnt write image, ' . $destCropFile);
+						throw new RuntimeException('couldnt write image, ' . $destCropFile, 500);
 					}
 				}
 
@@ -1619,7 +1619,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					if (!$storage->createFolder($thumbPath))
 					{
-						JError::raiseError(21, "Could not make dir $thumbPath ");
+						throw new RuntimeException("Could not make dir $thumbPath");
 					}
 				}
 			}

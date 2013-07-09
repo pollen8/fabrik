@@ -373,6 +373,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$filterOpts = json_encode($filterOpts);
 
 		$formModel = $this->getFormModel();
+
 		$filterfields = $formModel->getElementList('jform[params][filter-fields][]', '', false, false, true, 'name', 'class="inputbox input-small" size="1"');
 		$filterfields = addslashes(str_replace(array("\n", "\r"), '', $filterfields));
 
@@ -597,11 +598,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		$info = $db->loadObject();
 		$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
 
-		if (!$row->bind($data))
-		{
-			$this->setError($row->getError());
-			return false;
-		}
+		$row->bind($data);
+
 		$filter = new JFilterInput(null, null, 1, 1);
 		$jform = $input->get('jform', array(), 'array');
 		$introduction = JArrayHelper::getValue($jform, 'introduction');
@@ -610,11 +608,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$row->order_by = json_encode($input->get('order_by', array(), 'array'));
 		$row->order_dir = json_encode($input->get('order_dir', array(), 'array'));
 
-		if (!$row->check())
-		{
-			$this->setError($row->getError());
-			return false;
-		}
+		$row->check();
 
 		$this->collation($feModel, $origCollation, $row);
 
@@ -637,13 +631,13 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Check the entered database table doesnt already exist
 			if ($newtable != '' && $this->databaseTableExists($newtable))
 			{
-				$this->setError(JText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
+				throw new RuntimeException(JText::_('COM_FABRIK_DATABASE_TABLE_ALREADY_EXISTS'));
 				return false;
 			}
 
 			if (!$this->canCreateDbTable())
 			{
-				$this->setError(Jtext::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
+				throw new RuntimeException(Jtext::_('COM_FABRIK_INSUFFICIENT_RIGHTS_TO_CREATE_TABLE'));
 				return false;
 			}
 			// Create fabrik form
@@ -702,11 +696,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$row->auto_inc = JString::stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
 		}
 
-		if (!$row->store())
-		{
-			$this->setError($row->getError());
-			return false;
-		}
+		$row->store();
 		$pk = $row->db_primary_key;
 		$this->updateJoins($data);
 
@@ -771,17 +761,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			}
 		}
 
-		/* $$$rob - joomfish not available for j1.7
-		 if (JFolder::exists(JPATH_ADMINISTRATOR . '/components/com_joomfish/contentelements')) {
-		if ($params->get('allow-data-translation')) {
-		if (!$this->makeJoomfishXML()) {
-		$this->setError(JTEXT::_( "Unable to make Joomfish XML file"));
-		return false;
-		}
-		} else {
-		$this->removeJoomfishXML();
-		}
-		} */
 		$pkName = $row->getKeyName();
 		if (isset($row->$pkName))
 		{
@@ -1090,10 +1069,7 @@ class FabrikAdminModelList extends FabModelAdmin
 					$ecount++;
 					$element = $elementModel->getElement();
 					$copy = $elementModel->copyRow($element->id, $element->label, $groupId);
-					if (!Jerror::isError($copy))
-					{
-						$newElements[$element->id] = $copy->id;
-					}
+					$newElements[$element->id] = $copy->id;
 				}
 
 			}
@@ -1268,11 +1244,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$element->params = json_encode($p);
 			$element->label = JArrayHelper::getValue($elementLabels, $ordering, str_replace("_", " ", $label));
 
-			if (!$element->store())
-			{
-				return JError::raiseError(500, $element->getError());
-			}
-
+			$element->store();
 			$elementModel = $pluginManager->getPlugIn($element->plugin, 'element');
 			$elementModel->setId($element->id);
 			$elementModel->element = $element;
@@ -1331,10 +1303,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$form->form_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
 			$form->view_only_template = version_compare($version->RELEASE, '3.0') >= 0 ? 'bootstrap' : 'default';
 
-			if (!$form->store())
-			{
-				return JError::raiseError(500, $form->getError());
-			}
+			$form->store();
 			$this->setState('list.form_id', $form->id);
 			$this->formModel->setId($form->id);
 		}
@@ -1343,10 +1312,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$this->setState('list.form_id', $formid);
 			$this->formModel->setId($formid);
 			$this->formModel->getTable();
-			if (!$this->formModel->copy())
-			{
-				return JError::raiseError(500, $form->getError());
-			}
+			$this->formModel->copy();
 		}
 		$this->formModel->getForm();
 		return $this->formModel;
@@ -1382,10 +1348,8 @@ class FabrikAdminModelList extends FabModelAdmin
 		$group->params = json_encode($opts);
 		$group->is_join = ($isJoin == true) ? 1 : 0;
 		$group->store();
-		if (!$group->store())
-		{
-			JError::raiseError(500, $group->getError());
-		}
+		$group->store();
+
 		// Create form group
 		$formid = $this->getState('list.form_id');
 		$formGroup = $this->getTable('FormGroup');
@@ -1393,10 +1357,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
-		if (!$formGroup->store())
-		{
-			JError::raiseError(500, $formGroup->getError());
-		}
+		$formGroup->store();
 		$formGroup->reorder(" form_id = '$formid'");
 		return $group->id;
 	}
@@ -1662,10 +1623,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			// Add the autoinc
 			$sql = 'ALTER TABLE ' . $tableName . ' CHANGE ' . $fieldName . ' ' . $fieldName . ' ' . $type . ' NOT NULL AUTO_INCREMENT';
 			$db->setQuery($sql);
-			if (!$db->execute())
-			{
-				return JError::raiseError(500, 'add key: ' . $db->getErrorMsg());
-			}
+			$db->execute();
 		}
 		return true;
 	}
@@ -2253,11 +2211,7 @@ class FabrikAdminModelList extends FabModelAdmin
 		}
 		$sql .= ' ENGINE = MYISAM ';
 		$fabrikDb->setQuery($sql);
-		if (!$fabrikDb->execute())
-		{
-			JError::raiseError(500, $fabrikDb->getErrorMsg());
-			return false;
-		}
+		$fabrikDb->execute();
 		return $keys;
 	}
 
@@ -2355,10 +2309,6 @@ class FabrikAdminModelList extends FabModelAdmin
 			$query->select('group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $this->getFormModel()->getId());
 			$db->setQuery($query);
 			$groups = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseWarning(500, 'ammendTable: ' . $db->getErrorMsg());
-			}
 			$arGroups = array();
 			foreach ($groups as $g)
 			{
@@ -2387,7 +2337,6 @@ class FabrikAdminModelList extends FabModelAdmin
 							// Any elements that are names the same (eg radio buttons) can not be entered twice into the database
 							$arAddedObj[] = $objname;
 							$objtypeid = $obj->plugin;
-							echo $objtypeid;
 							$pluginClassName = $obj->plugin;
 							$plugin = $pluginManager->getPlugIn($pluginClassName, 'element');
 							if (is_object($plugin))
@@ -2460,11 +2409,7 @@ class FabrikAdminModelList extends FabModelAdmin
 			$tbl = FabrikString::safeColName($tbl);
 			$db->setQuery("DESCRIBE " . $tbl);
 			$this->_dbFields[$sig] = $db->loadObjectList($key);
-			if ($db->getErrorNum())
-			{
-				JError::raiseWarning(500, $db->getErrorMsg());
-				$this->_dbFields[$sig] = array();
-			}
+
 			/**
 			 * $$$ hugh - added BaseType, which strips (X) from things like INT(6) OR varchar(32)
 			 * Also converts it to UPPER, just to make things a little easier.

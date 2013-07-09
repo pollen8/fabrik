@@ -67,8 +67,7 @@ class FabrikControllerImport extends JControllerLegacy
 
 		if (!$listModel->canCSVImport())
 		{
-			JError::raiseError(400, 'Naughty naughty!');
-			jexit();
+			throw new RuntimeException('Naughty naughty!', 400);
 		}
 
 		if (!$model->checkUpload())
@@ -88,7 +87,7 @@ class FabrikControllerImport extends JControllerLegacy
 		if (!empty($model->newHeadings))
 		{
 			// As opposed to admin you can't alter table structure with a CSV import from the front end
-			JError::raiseNotice(500, $model->makeError());
+			$app->enqueueMessage($model->makeError(), 'notice');
 			$this->setRedirect('index.php?option=com_fabrik&view=import&fietype=csv&listid=' . $id . '&Itemid=' . $Itemid);
 		}
 		else

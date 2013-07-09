@@ -108,7 +108,7 @@ class PlgFabrik_FormRest extends PlgFabrik_Form
 		$w = new FabrikWorker;
 		if (!function_exists('curl_init'))
 		{
-			JError::raiseError(500, 'CURL NOT INSTALLED');
+			throw new RuntimeException('CURL NOT INSTALLED', 500);
 			return;
 		}
 		// The username/password

@@ -389,7 +389,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		if ($isNew && $usersConfig->get('allowUserRegistration') == '0' && !$bypassRegistration)
 		{
-			JError::raiseError(403, JText::_('Access Forbidden - Registration not enabled'));
+			throw new RuntimeException(JText::_('Access Forbidden - Registration not enabled'), 400);
 			return false;
 		}
 		$data = array();

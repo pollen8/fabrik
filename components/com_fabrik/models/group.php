@@ -334,10 +334,7 @@ class FabrikFEModelGroup extends FabModel
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
 			$this->formsIamIn = $db->loadColumn();
-			if (!$db->execute())
-			{
-				return JError::raiseError(500, $db->getErrorMsg());
-			}
+			$db->execute();
 		}
 		return $this->formsIamIn;
 	}
@@ -974,10 +971,7 @@ class FabrikFEModelGroup extends FabModel
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
-		if (!$formGroup->store())
-		{
-			JError::raiseError(500, $formGroup->getError());
-		}
+		$formGroup->store();
 		$formGroup->reorder(" form_id = '$formid'");
 		return $newElements;
 	}

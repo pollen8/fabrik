@@ -167,14 +167,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$c++;
 				continue;
 			}
-			try
-			{
-				$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
-			}
-			catch (Exception $e)
-			{
-				JError::raiseError(500, $e->getMessage());
-			}
+			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(false, false);
 			$table = $listModel->getTable();
 
@@ -303,14 +296,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 			$table = $listModel->getTable();
 
-			try
-			{
-				$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
-			}
-			catch (Exception $e)
-			{
-				JError::raiseError(500, $e->getMessage());
-			}
+			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
 			// Are we using random start location for icons?

@@ -62,7 +62,7 @@ class FabrikViewForm extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			JError::raiseError(500, implode("\n", $errors));
+			throw new RuntimeException(implode("\n", $errors), 500);
 			return false;
 		}
 		$this->addToolbar();

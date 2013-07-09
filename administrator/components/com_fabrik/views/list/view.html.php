@@ -62,19 +62,14 @@ class FabrikAdminViewList extends JViewLegacy
 	{
 		// Initialiase variables.
 		$model = $this->getModel();
+
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$formModel = $this->get('FormModel');
 		$formModel->setId($this->item->form_id);
-		$this->state = $this->get('State');
-		$this->js = $this->get('Js');
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode("\n", $errors));
-			return false;
-		}
+		$this->state = $this->get('State');
+		$this->js = $model->getJs();
 
 		$this->addToolbar();
 		if ($this->item->id == 0)
@@ -127,8 +122,6 @@ class FabrikAdminViewList extends JViewLegacy
 		$shim['adminfields/tables'] = $dep;
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
-
-
 		parent::display($tpl);
 	}
 

@@ -219,11 +219,6 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			// Do this  query so that table view only needs one query to load up all ratings
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
-			if ($db->getErrorNum() != 0)
-			{
-				return false;
-				JError::raiseNotice(500, $db->getErrorMsg());
-			}
 		}
 		return array_key_exists($row_id, $this->creatorIds) ? $this->creatorIds[$row_id]->user_id : 0;
 	}

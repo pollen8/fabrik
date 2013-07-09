@@ -77,7 +77,6 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 							$event = new stdClass;
 							if (!method_exists($imageElement, 'getStorage'))
 							{
-								// JError::raiseError(500, 'Looks like you selected a element other than a fileupload element for the coverflows image element');
 								switch (get_class($imageElement))
 								{
 									case 'FabrikModelFabrikImage':

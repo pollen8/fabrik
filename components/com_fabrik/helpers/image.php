@@ -14,10 +14,10 @@ defined('_JEXEC') or die();
 /**
  * Image manipulation class
  *
- * @package		Joomla
- * @subpackage	Fabrik.helpers
- * @copyright	Copyright (C) 2005 Fabrik. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @since       1.0
  */
 
@@ -70,7 +70,7 @@ class FabimageHelper
 		}
 		else
 		{
-			return JError::raiseError(500, "can't load class: $class");
+			throw new RuntimeException("Fabrik: can't load image class: $class");
 		}
 	}
 
@@ -248,6 +248,7 @@ class FabimageGD extends Fabimage
 
 	public function imageFromFile($file)
 	{
+		$img = false;
 		$ext = JString::strtolower(end(explode('.', $file)));
 		if ($ext == 'jpg' || $ext == 'jpeg')
 		{
@@ -269,7 +270,7 @@ class FabimageGD extends Fabimage
 			}
 			else
 			{
-				$img = JError::raiseWarning(21, "imagecreate from gif not available");
+				throw new Exception("imagecreate from gif not available");
 			}
 		}
 		return array($img, $header);
@@ -406,56 +407,60 @@ class FabimageGD extends Fabimage
 
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
 	{
-		/* check if the file exists*/
+		// Check if the file exists
 		if (!$this->storage->exists($origFile))
 		{
-			return JError::raiseError(500, "no file found for $origFile");
+			throw new RuntimeException("Fabrik: no file found for $origFile");
 		}
-		/* Load image*/
+		// Load image
 		list($img, $header) = $this->imageFromFile($origFile);
-		if (JError::isError($img))
+		if (!$img)
 		{
 			return $img;
 		}
 		$ext = JString::strtolower(end(explode('.', $origFile)));
-		/* If an image was successfully loaded, test the image for size*/
+
+		// If an image was successfully loaded, test the image for size
 		if ($img)
 		{
-			/* handle image transpacency for original image */
+			// Handle image transpacency for original image
 			if (function_exists('imagealphablending'))
 			{
 				imagealphablending($img, false);
 				imagesavealpha($img, true);
 			}
-			/* Get image size and scale ratio*/
+			// Get image size and scale ratio
 			$width = imagesx($img);
 			$height = imagesy($img);
 			$scale = min($maxWidth / $width, $maxHeight / $height);
-			/* If the image is larger than the max shrink it*/
+
+			// If the image is larger than the max shrink it
 			if ($scale < 1)
 			{
 				$new_width = floor($scale * $width);
 				$new_height = floor($scale * $height);
-				/* Create a new temporary image*/
+
+				// Create a new temporary image
 				$tmp_img = imagecreatetruecolor($new_width, $new_height);
-				/* handle image transparency for resized image */
+
+				// handle image transparency for resized image
 				if (function_exists('imagealphablending'))
 				{
 					imagealphablending($tmp_img, false);
 					imagesavealpha($tmp_img, true);
 				}
-				/* Copy and resize old image into new image*/
+				// Copy and resize old image into new image
 				imagecopyresampled($tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 				imagedestroy($img);
 				$img = $tmp_img;
 			}
 		}
-		/* Create error image if necessary*/
+		// Create error image if necessary
 		if (!$img)
 		{
-			return JError::raiseWarning(21, "resize: no image created for $origFile, extension = $ext, destination = $destFile  ");
+			throw new Error("resize: no image created for $origFile, extension = $ext, destination = $destFile");
 		}
-		/* save the file */
+		// Save the file
 		$this->writeImg($img, $destFile, $header);
 
 		$this->thumbPath = $destFile;
@@ -597,7 +602,7 @@ class FabimageGD2 extends FabimageGD
 		/* check if the file exists*/
 		if (!$this->storage->exists($origFile))
 		{
-			return JError::raiseError(500, "no file found for $origFile");
+			throw new RuntimeException("no file found for $origFile");
 		}
 
 		/* Load image*/

@@ -549,7 +549,7 @@ class FabrikWorker
 		$secret = $config->get('secret', '');
 		if (trim($secret) == '')
 		{
-			JError::raiseError(500, 'You must supply a secret code in your Joomla configuration.php file');
+			throw new RuntimeException('You must supply a secret code in your Joomla configuration.php file');
 		}
 		$key = new JCryptKey('simple', $secret, $secret);
 		$crypt = new JCrypt(new JCryptCipherSimple, $key);
@@ -1239,7 +1239,9 @@ class FabrikWorker
 			$debug = $conf->get('debug');
 			$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database,
 				'prefix' => $dbprefix);
-			self::$database[$sig] = JDatabase::getInstance($options);
+
+			$version = new JVersion;
+			self::$database[$sig] = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 
 			/*
 			 *  $$$ hugh - testing doing bigSelects stuff here
@@ -1295,10 +1297,6 @@ class FabrikWorker
 			}
 			$connection = $connectionModel->getConnection();
 			self::$connection[$connId] = $connectionModel;
-			if (JError::isError(self::$connection[$connId]))
-			{
-				JError::handleEcho(self::$connection[$connId]);
-			}
 		}
 		return self::$connection[$connId];
 	}
@@ -1378,10 +1376,10 @@ class FabrikWorker
 
 	public static function isDate($d)
 	{
-		$db = FabrikWorker::getDbo();
+		$db = self::getDbo();
 		$aNullDates = array('0000-00-000000-00-00', '0000-00-00 00:00:00', '0000-00-00', '', $db->getNullDate());
 
-		// catch for ','
+		// Catch for ','
 		if (strlen($d) < 2)
 		{
 			return false;

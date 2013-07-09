@@ -465,7 +465,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$params = $this->getParams();
 		if (!array_key_exists($params->get('radius_placeelement'), $elements))
 		{
-			JError::raiseError(500, 'No place element found for radius search plugin');
+			throw new RuntimeException('No place element found for radius search plugin', 500);
 		}
 		else
 		{
@@ -488,7 +488,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$this->mapElement = JArrayHelper::getValue($elements, $params->get('radius_mapelement'), false);
 		if ($this->mapElement === false)
 		{
-			JError::raiseError(500, 'Radius Search Plugin: no map element selected');
+			throw new RuntimeException('Radius Search Plugin: no map element selected', 500);
 		}
 		return $this->mapElement;
 	}

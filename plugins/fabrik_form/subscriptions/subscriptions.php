@@ -222,7 +222,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			}
 			else
 			{
-				JError::raiseError(500, 'Could not determine subscription period, please check your settings');
+				throw new RuntimeException('Could not determine subscription period, please check your settings', 500);
 			}
 		}
 	}
@@ -812,7 +812,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		else
 		{
-			JError::raiseError(404, 'Missing subs IPN file');
+			throw new RuntimeException('Missing subs IPN file', 404);
 		}
 
 	}

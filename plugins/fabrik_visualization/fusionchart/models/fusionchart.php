@@ -413,7 +413,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 
 		if ($chartType == '')
 		{
-			JError::raiseError(501, 'Not chart type selected');
+			throw new InvalidArgumentException('Not chart type selected');
 		}
 		// Create new chart
 		$this->FC = new FusionCharts($chartType, $w, $h);

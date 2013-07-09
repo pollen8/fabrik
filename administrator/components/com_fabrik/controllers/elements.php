@@ -133,12 +133,13 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 
 	public function delete()
 	{
-		$model = $this->getModel('Elements');
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('confirmdelete');
-		if (!JError::isError($model))
+
+		if ($model = $this->getModel('Elements'))
 		{
+			// Push the model into the view (as default)
 			$view->setModel($model, true);
 		}
 
@@ -167,11 +168,10 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 	public function copySelectGroup()
 	{
 		JSession::checkToken() or die('Invalid Token');
-		$model = $this->getModel('Elements');
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('copyselectgroup');
-		if (!JError::isError($model))
+		if ($model = $this->getModel('Elements'))
 		{
 			$view->setModel($model, true);
 		}

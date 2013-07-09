@@ -55,11 +55,6 @@ class JFormFieldTables extends JFormFieldList
 			$db->setQuery($query);
 			$items = $db->loadColumn();
 
-			// Check for a database error.
-			if ($db->getErrorNum())
-			{
-				JError::raiseWarning(500, $db->getErrorMsg());
-			}
 			foreach ($items as $l)
 			{
 				$options[] = JHTML::_('select.option', $l, $l);

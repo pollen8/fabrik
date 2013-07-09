@@ -16,7 +16,7 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
@@ -42,7 +42,7 @@ require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 $listId = intval($params->get('list_id', 0));
 if ($listId === 0)
 {
-	JError::raiseError(500, 'no list specified');
+	throw RuntimeException('Fabrik Module: No list specified', 500);
 }
 $listels = json_decode($params->get('list_elements'));
 if (isset($listels->show_in_list))
@@ -106,10 +106,7 @@ if (!empty($conditions))
 }
 
 $model->randomRecords = $random;
-if (!JError::isError($model))
-{
-	$view->setModel($model, true);
-}
+$view->setModel($model, true);
 $view->isMambot = true;
 
 // Display the view
@@ -117,7 +114,7 @@ $view->error = $controller->getError();
 
 // Build unique cache id on url, post and user id
 $user = JFactory::getUser();
-$uri = JFactory::getURI();
+$uri = JURI::getInstance();
 $uri = $uri->toString(array('path', 'query'));
 $cacheid = serialize(array($uri, $_POST, $user->get('id'), get_class($view), 'display', $listId));
 $cache = JFactory::getCache('com_fabrik', 'view');

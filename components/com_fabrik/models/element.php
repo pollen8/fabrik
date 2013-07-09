@@ -3310,10 +3310,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
-		$rows = $fabrikDb->loadObjectList();
-		if ($fabrikDb->getErrorNum() != 0)
+
+		try
 		{
-			JError::raiseNotice(500, 'filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg());
+			$rows = $fabrikDb->loadObjectList();
+		}
+		catch (RuntimeException $e)
+		{
+			throw new ErrorException('filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg(), 500);
 		}
 		return $rows;
 
@@ -5411,10 +5415,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$query->update('#__{package}_elements')->set('params = ' . $db->quote($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
 		$res = $db->execute();
-		if (!$res)
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		return $res;
 	}
 

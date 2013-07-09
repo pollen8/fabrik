@@ -656,10 +656,6 @@ class FabrikFEModelForm extends FabModelForm
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $aElIds) . ')');
 			$db->setQuery($query);
 			$res = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		else
 		{
@@ -713,10 +709,6 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
 		}
 		return $this->_publishedformGroups;
@@ -857,10 +849,6 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		$this->elements = $groups;
 		return $groups;
 	}
@@ -3676,11 +3664,6 @@ class FabrikFEModelForm extends FabModelForm
 			$form->label = $input->get('newFormLabel');
 		}
 		$res = $form->store();
-		if (!$res)
-		{
-			JError::raiseError(500, $form->getErrorMsg());
-			return false;
-		}
 		$newElements = array();
 		foreach ($groupModels as $groupModel)
 		{
@@ -3888,7 +3871,7 @@ class FabrikFEModelForm extends FabModelForm
 			$page = 'index.php?';
 
 			// Get array of all querystring vars
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 
 			/**
 			 * Was $router->parse($uri);
@@ -4284,10 +4267,6 @@ class FabrikFEModelForm extends FabModelForm
 				$db->setQuery($query);
 			}
 			$this->linkedFabrikLists[$table] = $db->loadColumn();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		return $this->linkedFabrikLists[$table];
 	}

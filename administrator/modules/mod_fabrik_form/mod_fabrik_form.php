@@ -19,7 +19,7 @@ $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 FabrikHelperHTML::framework();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/controllers/form.php';

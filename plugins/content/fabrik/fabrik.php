@@ -66,7 +66,7 @@ class PlgContentFabrik extends JPlugin
 
 		if (!defined('COM_FABRIK_FRONTEND'))
 		{
-			JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+			throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 		}
 
 		// Get plugin info
@@ -403,13 +403,7 @@ class PlgContentFabrik extends JPlugin
 		$viewType = $document->getType();
 		$controller = $this->getController($viewName, $id);
 		$view = $this->getView($controller, $viewName, $id);
-		$model = $this->getModel($controller, $viewName, $id);
-		if (!$model)
-		{
-			return;
-		}
-
-		if (!JError::isError($model))
+		if ($model = $this->getModel($controller, $viewName, $id))
 		{
 			$view->setModel($model, true);
 		}
@@ -761,7 +755,7 @@ class PlgContentFabrik extends JPlugin
 		}
 		if ($view == '')
 		{
-			JError::raiseError(500, 'Please specify a view in your fabrik {} code');
+			throw new RuntimeException('Please specify a view in your fabrik {} code', 500);
 		}
 
 		// $$$rob looks like including the view does something to the layout variable

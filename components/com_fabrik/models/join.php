@@ -241,26 +241,17 @@ class FabrikFEModelJoin extends FabModel
 		$query = $db->getQuery(true);
 		$query->delete(' #__{package}_elements')->where('group_id = ' . (int) $groupId);
 		$db->setQuery($query);
-		if (!$db->execute())
-		{
-			return JError::raiseError(500, $db->getErrorMsg());
-		}
+		$db->execute();
 		$query->clear();
 		$query->delete(' #__{package}_groups')->where('id = ' . (int) $groupId);
 		$db->setQuery($query);
-		if (!$db->execute())
-		{
-			return JError::raiseError(500, $db->getErrorMsg());
-		}
+		$db->execute();
 
 		// Delete all form group records
 		$query->clear();
 		$query->delete(' #__{package}_formgroup')->where('group_id = ' . (int) $groupId);
 		$db->setQuery($query);
-		if (!$db->execute())
-		{
-			return JError::raiseError(500, $db->getErrorMsg());
-		}
+		$db->execute();
 		$this->getJoin()->delete();
 	}
 

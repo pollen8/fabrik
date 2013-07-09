@@ -165,10 +165,6 @@ class PlgSystemFabrik extends JPlugin
 
 		$list = array();
 		$ids = $db->loadColumn();
-		if ($db->getErrorNum() != 0)
-		{
-			jexit('search:' . $db->getErrorMsg());
-		}
 		$section = $this->params->get('search_section_heading');
 		$urls = array();
 

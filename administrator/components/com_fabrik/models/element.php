@@ -757,13 +757,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		$db->setQuery($query);
 
-		// $$$ rob load keyed on table id to avoid creating element in every one of the table's group
-		$othertables = $db->loadObjectList('id');
-		if ($db->getErrorNum() != 0)
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
-
 		/**
 		 * $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
 		 * Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
@@ -1114,10 +1107,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				'CREATE TABLE IF NOT EXISTS ' . $db->quoteName($tableName) . ' ( id INT( 6 ) NOT NULL AUTO_INCREMENT PRIMARY KEY, parent_id INT(6), '
 					. $name . ' ' . $desc . ', ' . $db->quoteName('params') . ' TEXT );');
 		$db->execute();
-		if ($db->getErrorNum() != 0)
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
+
 		// Remove previous join records if found
 		if ((int) $row->id !== 0)
 		{

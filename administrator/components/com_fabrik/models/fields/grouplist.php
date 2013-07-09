@@ -65,12 +65,6 @@ class JFormFieldGroupList extends JFormFieldList
 		$db->setQuery($query);
 
 		$options = $db->loadObjectList();
-
-		// Check for a database error.
-		if ($db->getErrorNum())
-		{
-			JError::raiseWarning(500, $db->getErrorMsg());
-		}
 		array_unshift($options, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
 		return $options;
 	}

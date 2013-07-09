@@ -497,10 +497,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(501, $db->getErrorMsg());
-		}
 
 		$eval = $params->get('cdd_join_label_eval', '');
 		if (trim($eval) !== '')
@@ -613,7 +609,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$watch = $this->getParams()->get('cascadingdropdown_observe');
 			if ($watch == '')
 			{
-				JError::raiseError(500, 'No watch element set up for cdd' . $this->getElement()->id);
+				throw new RuntimeException('No watch element set up for cdd' . $this->getElement()->id, 500);
 			}
 
 			$this->watchElement = $this->getFormModel()->getElement($watch, true);

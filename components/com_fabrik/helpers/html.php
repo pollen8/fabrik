@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.filesystem.file');
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 /**
@@ -532,7 +532,7 @@ EOD;
 		{
 			$url .= '&usekey=' . $input->get('usekey');
 		}
-		$url .= '&referrer=' . urlencode(JFactory::getURI()->toString());
+		$url .= '&referrer=' . urlencode(JURI::getInstance()->toString());
 		self::$emailURL = $url;
 		return self::$emailURL;
 	}
@@ -570,10 +570,6 @@ EOD;
 		$query->select('id, label')->from('#__{package}_lists')->where('published = 1');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		return JHTML::_('select.genericlist', $rows, 'fabrik__swaptable', 'class="inputbox" size="1" ', 'id', 'label', $sel);
 	}
 

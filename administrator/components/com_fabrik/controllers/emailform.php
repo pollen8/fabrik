@@ -42,12 +42,8 @@ class FabrikAdminControllerEmailform extends JControllerLegacy
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
-		// Push a model into the view (may have been set in content plugin already
-		$model = JModelLegacy::getInstance($modelName, 'FabrikFEModel');
-
-		// Test for failed validation then page refresh
-		$model->getErrors();
-		if (!JError::isError($model) && is_object($model))
+		// Push a model into the view (may have been set in content plugin already)
+		if ($model = JModelLegacy::getInstance($modelName, 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

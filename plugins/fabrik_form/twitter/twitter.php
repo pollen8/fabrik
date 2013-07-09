@@ -204,12 +204,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if ($params->get('twitter_oauth_token') == '')
 		{
-			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'));
+			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_TOKEN'), 500);
 		}
 
 		if ($params->get('twitter_oauth_token_secret') == '')
 		{
-			return JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'));
+			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_NO_OAUTH_SECRET_TOKEN'), 500);
 		}
 
 		if ($params->get('twitter_oauth_token_secret') !== '')
@@ -403,8 +403,7 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		if (!function_exists('curl_init'))
 		{
-			JError::raiseError(500, JText::_('PLG_FORM_TWITTER_ERR_CURL'));
-			return;
+			throw new RuntimeException(JText::_('PLG_FORM_TWITTER_ERR_CURL'), 500);
 		}
 
 		// Build TwitterOAuth object with client credentials.
