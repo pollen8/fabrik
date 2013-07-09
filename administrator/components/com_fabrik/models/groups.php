@@ -71,9 +71,30 @@ class FabrikAdminModelGroups extends FabModelList
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
+		// Filter by published state
+		$published = $this->getState('filter.published');
+		if (is_numeric($published))
+		{
+			$query->where('g.published = ' . (int) $published);
+		}
+		elseif ($published === '')
+		{
+			$query->where('(g.published IN (0, 1))');
+		}
+
+		// Filter by search in title
+		$search = $this->getState('filter.search');
+		if (!empty($search))
+		{
+			$search = $db->quote('%' . $db->escape($search, true) . '%');
+			$query->where('(g.name LIKE ' . $search . ' OR g.label LIKE ' . $search . ')');
+		}
+
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		$this->filterByFormQuery($query, 'fg');
+		echo $query;
 		return $query;
 	}
 
