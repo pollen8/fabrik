@@ -4778,11 +4778,6 @@ class FabrikFEModelList extends JModelForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-<<<<<<< HEAD
-=======
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$params = $this->getParams();
->>>>>>> a8d5b49f01c9b83bcba666dca568468058730873
 		$showInList = array();
 		$listels = json_decode(FabrikWorker::getMenuOrRequestVar('list_elements', '', $this->isMambot));
 		if (isset($listels->show_in_list))
@@ -4790,7 +4785,6 @@ class FabrikFEModelList extends JModelForm
 			$showInList = $listels->show_in_list;
 		}
 		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
-<<<<<<< HEAD
 		return $showInList;
 	}
 
@@ -4808,8 +4802,6 @@ class FabrikFEModelList extends JModelForm
 
 		$params = $this->getParams();
 		$showInList = $this->showInList();
-=======
->>>>>>> a8d5b49f01c9b83bcba666dca568468058730873
 
 		// Are we coming from a post request via a module?
 		$moduleid = 0;
@@ -6027,12 +6019,7 @@ class FabrikFEModelList extends JModelForm
 			$listClasses = new stdClass;
 			$listClasses->responsive_elements = array();
 		}
-<<<<<<< HEAD
-
 		$showInList = $this->showInList();
-=======
-		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
->>>>>>> a8d5b49f01c9b83bcba666dca568468058730873
 
 		// Set it for use by groupModel->getPublishedListElements()
 		$input->set('fabrik_show_in_list', $showInList);
