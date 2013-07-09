@@ -4669,6 +4669,7 @@ $groupBy .= '_raw';
 	public function prefilterSetting()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$params = $this->getParams();
 		$showInList = array();
@@ -4677,7 +4678,7 @@ $groupBy .= '_raw';
 		{
 			$showInList = $listels->show_in_list;
 		}
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', $showInList);
+		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
 
 		// Are we coming from a post request via a module?
 		$moduleid = 0;
@@ -5885,10 +5886,10 @@ $groupBy .= '_raw';
 		{
 			$showInList = $listels->show_in_list;
 		}
-		$showInList = (array) JRequest::getVar('fabrik_show_in_list', $showInList);
+		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
 
 		// Set it for use by groupModel->getPublishedListElements()
-		JRequest::setVar('fabrik_show_in_list', $showInList);
+		$input->set('fabrik_show_in_list', $showInList);
 
 		if (!in_array($this->outPutFormat, array('pdf', 'csv')))
 		{
@@ -9503,14 +9504,15 @@ $groupBy .= '_raw';
 	/**
 	 * Update a series of rows with a key = val , works across joined tables
 	 *
-	 * @param   array   $ids  pk values to update
-	 * @param   string  $col  key to update should be in format 'table.element'
-	 * @param   string  $val  val to set to
+	 * @param   array   $ids     Pk values to update
+	 * @param   string  $col     Key to update should be in format 'table.element'
+	 * @param   string  $val     Val to set to
+	 * @param   string  $update  Optional update statement, overides $col = $val
 	 *
 	 * @return  void
 	 */
 
-	public function updateRows($ids, $col, $val)
+	public function updateRows($ids, $col, $val, $update = '')
 	{
 		if ($col == '')
 		{
@@ -9528,7 +9530,7 @@ $groupBy .= '_raw';
 		// $data = array_shift($data);
 		$table = $this->getTable();
 
-		$update = $col . ' = ' . $db->quote($val);
+		$update = $update == '' ? $col . ' = ' . $db->quote($val) : $update;
 		$colbits = explode('.', $col);
 		$tbl = array_shift($colbits);
 
