@@ -19,7 +19,7 @@ defined('_JEXEC') or die();
  * @since       3.0.6
  */
 
-class PlgFabrik_ElementUsergroup extends PlgFabrik_Element
+class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 {
 
 	/**
@@ -52,9 +52,19 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_Element
 		{
 			$data = $formModel->getData();
 			$userid = JArrayHelper::getValue($data, $userEl->getFullName(true, false) . '_raw', 0);
+
+			// Failed validation
+			if (is_array($userid))
+			{
+				$userid = JArrayHelper::getValue($userid, 0);
+			}
 			$thisUser = JFactory::getUser($userid);
 		}
-		$selected = (array) $this->getValue($data, $repeatCounter);
+		$selected = $this->getValue($data, $repeatCounter);
+		if (is_string($selected))
+		{
+			$selected = json_decode($selected);
+		}
 		if ($this->canUse())
 		{
 			return JHtml::_('access.usergroups', $name, $selected);
@@ -119,6 +129,35 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_Element
 		}
 		$data = json_encode($data);
 		return parent::renderListData($data, $thisRow);
+	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns all possible options
+	 *
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
+	 *
+	 * @return  array	Filter value and labels
+	 */
+
+	protected function filterValueList_All($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('id, title');
+		$query->from($db->quoteName('#__usergroups'));
+		$db->setQuery($query);
+		$selected = $db->loadObjectList();
+
+		for ($i = 0; $i < count($selected); $i++)
+		{
+			$return[] = JHTML::_('select.option', $selected[$i]->id, $selected[$i]->title);
+		}
+		return $return;
 	}
 
 }

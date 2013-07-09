@@ -875,13 +875,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$alwaysToday = $params->get('date_alwaystoday', false);
 		$defaultToday = $params->get('date_defaulttotoday');
 		$newRecord = $this->getFormModel()->isNewRecord();
-
 		$value = parent::getValue($data, $repeatCounter, $opts);
-
 		if (is_array($value))
 		{
-			// Submission posted as array but date & time in date key
-			$value = JArrayHelper::getValue($value, 'date');
+			// Submission posted as array but date & time in date key. Can be key'd to 0 if parent class casts string to array.
+			$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
 		}
 		if ($alwaysToday)
 		{
@@ -909,6 +907,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function toDbVal($str)
 	{
+		echo "str = $str";exit;
 		/**
 		 * Only format if not empty otherwise search forms will filter
 		 * for todays date even when no date entered

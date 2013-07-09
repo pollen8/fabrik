@@ -1282,15 +1282,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			$default = (array) FArrayHelper::getNestedValue($data, $idname, 'not found');
 		}
+		$class = 'fabrikinput inputbox ' . $params->get('bootstrap_class', '');
 		if ($this->isEditable())
 		{
 			$multiSize = (int) $params->get('dbjoin_multilist_size', 6);
-			$attribs = 'class="fabrikinput inputbox ' . $params->get('bootstrap_class', '') . '" size="' . $multiSize . '" multiple="true"';
+			$attribs = 'class="' . $class . '" size="' . $multiSize . '" multiple="true"';
 			$html[] = JHTML::_('select.genericlist', $tmp, $elName, $attribs, 'value', 'text', $default, $id);
 		}
 		else
 		{
-			$attribs = 'class="fabrikinput inputbox" size="1" id="' . $id . '"';
+			$attribs = 'class="' . $class . '" size="1" id="' . $id . '"';
 			$html[] = FabrikHelperHTML::aList('multilist', $tmp, $elName, $attribs, $default, 'value', 'text', $optsPerRow, $this->isEditable());
 		}
 	}
@@ -1641,7 +1642,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default, $default);
+			$default = $this->getLabelForValue($default);
 		}
 		return $default;
 	}

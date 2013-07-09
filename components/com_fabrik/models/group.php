@@ -228,11 +228,18 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Can the user view the group
 	 *
+	 * @param   string  $mode  View mode list|form
+	 *
 	 * @return   bool
 	 */
 
-	public function canView()
+	public function canView($mode = 'form')
 	{
+		// No ACL option for list view.
+		if ($mode === 'list')
+		{
+			return true;
+		}
 		if (!is_null($this->canView))
 		{
 			return $this->canView;
@@ -610,6 +617,7 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements[$sig] = array();
 			$elements = $this->getMyElements();
+			$joins = $this->getListModel()->getJoins();
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -629,6 +637,21 @@ class FabrikFEModelGroup extends FabModel
 					if ($input->get('view') == 'list' && !$elementModel->canView('list'))
 					{
 						continue;
+					}
+
+					/**
+					 * $$$ hugh - if the eleent is an FK in a list join, ignore the include_in_list setting,
+					 * and just incude it.  Technically we could check to see if any of the elements from the joined
+					 * list are being incuded before making this decision, but it's such a corner case, I vote for
+					 * just including list join FK's, period.
+					 */
+					foreach ($joins as $join)
+					{
+						if (!empty($join->list_id) && $element->id == $join->element_id)
+						{
+							$this->listQueryElements[$sig][] = $elementModel;
+							continue;
+						}
 					}
 
 					if (empty($showInList))

@@ -45,7 +45,7 @@ echo $this->loadTemplate('relateddata');
 $i = 0;
 foreach ($this->groups as $group) :
 // If this ismultipage then groups are consolidated until a group with a page break
-// So we should only show a tab if: it is first tab, or if it is a page break 
+// So we should only show a tab if: it is first tab, or if it is a page break
 if (!$model->isMultiPage() or ($i == 0 or $group->splitPage)) :
 ?>
 
@@ -64,15 +64,15 @@ $i = 0;
 foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
-		<div class="tab-pane <?php  if ($i == 0) echo "active"?>" id="group-tab<?php echo $group->id;?>">
-		<<?php echo $form->fieldsetTag ?> class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+	<div class="tab-pane <?php  if ($i == 0) echo "active"?>" id="group-tab<?php echo $group->id;?>">
+		<fieldset class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 		<?php if (trim($group->title) !== '') :
 		?>
 
-			<<?php echo $form->legendTag ?> class="legend">
+			<legend class="legend">
 				<span><?php echo $group->title;?></span>
-			</<?php echo $form->legendTag ?>>
+			</legend>
 
 		<?php endif;
 
@@ -90,7 +90,7 @@ foreach ($this->groups as $group) :
 		echo $this->loadTemplate($group->tmpl);
 
 		 ?>
-	</<?php echo $form->fieldsetTag ?>>
+		</fieldset>
 	</div>
 <?php
 $i++;
@@ -104,7 +104,9 @@ endif;
 
 echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
-echo $form->endTag;
+?>
+</form>
+<?php
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

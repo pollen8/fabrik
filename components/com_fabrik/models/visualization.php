@@ -126,6 +126,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 			$this->row = FabTable::getInstance('Visualization', 'FabrikTable');
 			$this->row->load($this->getState('id'));
 			$this->setListIds();
+
+			// Needed to load the language file!
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getPlugIn($this->_row->plugin, 'visualization');
+
 		}
 		return $this->row;
 	}

@@ -97,7 +97,7 @@ var FbDatabasejoin = new Class({
 		};
 		var winWidth = this.options.windowwidth;
 		if (winWidth !== '') {
-			this.windowopts.width = winWidth.toInt();
+			this.windowopts.width = winWidth;
 			this.windowopts.onContentLoaded = onContentLoaded;
 		}
 		
@@ -144,7 +144,7 @@ var FbDatabasejoin = new Class({
 			if (autoCompleteUpdate) {
 				labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
 				this.element.value = v;
-				labelfield.value = l;
+				labelfield.value = Encoder.htmlDecode(l);
 			}
 			break;
 		case 'checkbox':
@@ -452,6 +452,7 @@ var FbDatabasejoin = new Class({
 		url += "&triggerElement=" + this.element.id;
 		url += "&resetfilters=1";
 		url += '&c=' + this.options.listRef;
+		
 		this.windowopts = {
 			'id': id,
 			'title': Joomla.JText._('PLG_ELEMENT_DBJOIN_SELECT'),
@@ -459,7 +460,7 @@ var FbDatabasejoin = new Class({
 			'loadMethod': 'xhr',
 			'evalScripts': true,
 			'contentURL': url,
-			'width': this.options.windowwidth.toInt(),
+			'width': this.options.windowwidth,
 			'height': 320,
 			'minimizable': false,
 			'collapsible': true,

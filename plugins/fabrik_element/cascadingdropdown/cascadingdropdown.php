@@ -216,7 +216,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			}
 		}
 		$id = $this->getHTMLId($repeatCounter);
-		$class = "fabrikinput inputbox";
+		$class = 'fabrikinput inputbox ' . $params->get('bootstrap_class', '');
 		$disabled = '';
 		if (count($tmp) == 1)
 		{
@@ -255,7 +255,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					break;
 				default:
 				case 'dropdown':
-				// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full lenght
+				// Jaanus: $maxwidth to avoid dropdowns become too large (when choosing options they would still be of their full length
 					$maxwidth = $params->get('max-width', '') === '' ? '' : ' style="max-width:' . $params->get('max-width') . ';"';
 					$attribs = 'class="' . $class . '" ' . $disabled . ' size="1"' . $maxwidth;
 					$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);

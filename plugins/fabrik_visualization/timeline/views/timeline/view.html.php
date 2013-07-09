@@ -35,17 +35,12 @@ class FabrikViewTimeline extends JViewLegacy
 	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
-		$input = $app->input
+		$input = $app->input;
 		$j3 = FabrikWorker::j3();
 		$srcs = FabrikHelperHTML::framework();
 
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model = $this->getModel();
-
-		// Needed to load the language file!
-		$pluginManager = FabrikWorker::getPluginManager();
-		$plugin = $pluginManager->getPlugIn('timeline', 'visualization');
-
 		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();

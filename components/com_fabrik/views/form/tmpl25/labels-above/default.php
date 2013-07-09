@@ -13,7 +13,6 @@
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
-//echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
 <h1><?php echo $form->label;?></h1>
 <?php }?>
@@ -21,8 +20,8 @@ if ($this->params->get('show-title', 1)) {?>
 <?php if ($form->intro !== '') {?>
 <div class="formintro"><?php echo $form->intro; ?></div>
 <?php }?>
+<form method="post" <?php echo $form->attribs?>>
 <?php
-echo $form->startTag;
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">";
@@ -93,11 +92,8 @@ echo "$form->error</div>";?>
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 	</div>
-
+</form>
 <?php
-
-echo $form->endTag;
 echo $form->outro;
-
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();?>

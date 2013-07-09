@@ -76,7 +76,7 @@ endforeach;
 		foreach ($this->rows as $groupedby => $group) :
 			if ($this->isGrouped) : ?>
 			<tbody>
-				<tr class="fabrik_groupheading fabrik_groupheading info">
+				<tr class="fabrik_groupheading info">
 					<td colspan="<?php echo $this->colCount;?>">
 					<?php if ($this->emptyDataMessage != '') : ?>
 					<a href="#" class="toggle">
