@@ -524,9 +524,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				{
 					if (!is_a($this, 'plgFabrik_ElementDatabasejoin'))
 					{
-						// Data is label form - lets try for raw placeholder
-						$rawName = $this->getFullName(false, true, false) . '_raw';
-						$l = $thisRow->$rawName;
+						$l = $this->getLabelForValue($val);
 					}
 					else
 					{
