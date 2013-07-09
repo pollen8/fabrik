@@ -41,6 +41,13 @@ class FabrikFEModelJoin extends FabModel
 	 * @var array
 	 */
 	protected $data = null;
+	
+	/**
+	 * Whether the joined table is a MySQL view
+	 *
+	 * @var bool
+	 */
+	protected $isView = null;
 
 	/**
 	 * Constructor
@@ -144,7 +151,7 @@ class FabrikFEModelJoin extends FabModel
 
 	public function clearJoin()
 	{
-		unset($this->_join);
+		unset($this->join);
 	}
 
 	/**
@@ -279,6 +286,44 @@ class FabrikFEModelJoin extends FabModel
 		}
 		$this->_error = '';
 		return true;
+	}
+	
+	/**
+	 * Tests if the table is in fact a view
+	 * NOTE - not working yet, just committed so I can pull other changes
+	 *
+	 * @return  bool	true if table is a view
+	 */
+	
+	public function isView()
+	{
+		$join = $this->getJoin();
+		$params = $$join->params;
+		$isView = $params->get('isview', null);
+	
+		if (!is_null($isView) && (int) $isView >= 0)
+		{
+			return $isView;
+		}
+	
+		if (isset($this->isView))
+		{
+			return $this->isView;
+		}
+		$db = FabrikWorker::getDbo();
+		$dbname = $join->table_join;
+		$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables " . "WHERE table_name = " . $db->quote($table->db_table_name)
+		. " AND table_type = 'view' AND table_schema = " . $db->quote($dbname);
+		$db->setQuery($sql);
+		$row = $db->loadObjectList();
+		$this->isView = empty($row) ? 0 : 1;
+	
+		// Store and save param for following tests
+		$params->set('isview', $this->isView);
+		$join->params = (string) $params;
+		$this->save($join);
+		return $this->isView;
+	
 	}
 
 }
