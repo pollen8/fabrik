@@ -21,7 +21,9 @@ if ($this->params->get('show-title', 1)) {?>
 	</h1>
 <?php }
 echo $form->intro;
-echo $form->startTag;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
@@ -127,11 +129,9 @@ echo $this->hiddenFields;
  <?php echo $form->applyButton;?>
 <?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 </div>
-
+</form>
 <?php
 $document = JFactory::getDocument();
-
-echo $form->endTag;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

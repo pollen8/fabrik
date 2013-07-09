@@ -2,7 +2,9 @@
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
-echo $form->startTag;
+?>
+<div class="fabrikForm fabrikDetails" id="<?php echo $form->formid; ?>">
+<?php
 if ($this->params->get('show-title', 1)) {?>
 <h1><?php echo $form->label;?></h1>
 <?php }
@@ -64,7 +66,7 @@ echo "<div class='fabrikMainError fabrikError$active'>" . $form->error . "</div>
 	<div class="fabrikActions"><?php echo $form->resetButton;?> <?php echo $form->submitButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $this->message?>
 	</div>
-
+</form>
 <?php
-echo $form->endTag;
-echo FabrikHelperHTML::keepalive();?>
+echo FabrikHelperHTML::keepalive();
+?>

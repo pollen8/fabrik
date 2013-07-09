@@ -21,7 +21,7 @@
 
  You probably won't need to touch anything in this file, as it's all stuff which is
  either controlled by settings on the backend (like 'show title', etc), or you shouldn't touch because
- the form won't work without it (like $form->startTag), or can be more appropriately changed/styled using
+ the form won't work without it, or can be more appropriately changed/styled using
  the template_css.php.
 
 */
@@ -30,12 +30,13 @@
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php } ?>
 <?php $form = $this->form;
-//echo $form->startTag;
 if ($this->params->get('show-title', 1)) {?>
 <h1><?php echo $form->label;?></h1>
 <?php }
 echo $form->intro;
-echo $form->startTag;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
@@ -60,11 +61,8 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 	 <?php echo $form->applyButton;?>
 	<?php echo $form->copyButton  . " " . $form->gobackButton . ' ' .$this->message ?>
 	</div>
-
+</form>
 <?php
-
-echo $form->endTag;
 echo $form->outro;
-
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();?>

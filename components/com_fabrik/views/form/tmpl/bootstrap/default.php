@@ -29,19 +29,14 @@ if ($this->params->get('show-title', 1)) :?>
 endif;
 
 echo $form->intro;
-
-if ($model->editable) :
-echo '<form action="' . $form->action . '" class="' . $form->class . '" method="post" name="' . $form->name . '" id="' . $form->formid
-				. '" enctype="' . $model->getFormEncType() . '">';
-else:
-	echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-endif;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 ?>
-
 <div class="fabrikMainError alert alert-error fabrikError<?php echo $active?>">
 	<button class="close" data-dismiss="alert">×</button>
-	<?php echo $form->error?>
+	<?php echo $form->error; ?>
 </div>
 
 <?php
@@ -51,14 +46,14 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
 
-		<<?php echo $form->fieldsetTag ?> class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+		<fieldset class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 		<?php if (trim($group->title) !== '') :
 		?>
 
-			<<?php echo $form->legendTag ?> class="legend">
+			<legend class="legend">
 				<span><?php echo $group->title;?></span>
-			</<?php echo $form->legendTag ?>>
+			</legend>
 
 		<?php endif;
 
@@ -67,16 +62,17 @@ foreach ($this->groups as $group) :
 		<?php
 		endif;
 
-		// Load the group template - this can be :
-		//  * default_group.php - standard group non-repeating rendered as an unordered list
-		//  * default_repeatgroup.php - repeat group rendered as an unordered list
-		//  * default_repeatgroup.table.php - repeat group rendered in a table.
+		/* Load the group template - this can be :
+		 *  * default_group.php - standard group non-repeating rendered as an unordered list
+		 *  * default_repeatgroup.php - repeat group rendered as an unordered list
+		 *  * default_repeatgroup.table.php - repeat group rendered in a table.
+		 */
 
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
 
-		 ?>
-	</<?php echo $form->fieldsetTag ?>>
+?>
+	</fieldset>
 <?php
 endforeach;
 if ($model->editable) :
@@ -85,7 +81,9 @@ endif;
 
 echo $this->pluginbottom;
 echo $this->loadTemplate('actions');
-echo $form->endTag;
+?>
+</form>
+<?php
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

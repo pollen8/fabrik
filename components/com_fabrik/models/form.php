@@ -3837,7 +3837,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormClass()
 	{
 		$params = $this->getParams();
-		$class = array('');
+		$class = array('fabrikForm');
 		$horiz = true;
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $gkey => $groupModel)

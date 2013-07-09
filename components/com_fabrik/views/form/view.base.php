@@ -144,21 +144,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->_loadTmplBottom($form);
 		JDEBUG ? $profiler->mark('form view: after tmpl bottom loaded') : null;
 
-		if ($model->isEditable())
-		{
-			$form->startTag = '<form action="' . $form->action . '" class="fabrikForm" method="post" name="' . $form->name . '" id="' . $form->formid
-			. '" enctype="' . $model->getFormEncType() . '">';
-			$form->endTag = '</form>';
-			$form->fieldsetTag = 'fieldset';
-			$form->legendTag = 'legend';
-		}
-		else
-		{
-			$form->startTag = '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-			$form->endTag = '</div>';
-			$form->fieldsetTag = 'div';
-			$form->legendTag = 'h3';
-		}
+		$form->attribs = ' class="' . $form->class . '" name="' . $form->name . '" id="' . $form->formid . '" enctype="' . $model->getFormEncType() . '"';
+
 		$this->form = $form;
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass;
