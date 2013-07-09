@@ -207,9 +207,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			foreach ($originalValue as $v)
 			{
 				$v = str_replace("/", "\\\\/", $v);
-				$str[] = $key . ' LIKE ' .  $db->quote('%"' . $v . '"%') . ' ';
+				$str[] = $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' ';
 			}
-			$str =  implode($glue, $str);
+			$str = implode($glue, $str);
 		}
 		else
 		{

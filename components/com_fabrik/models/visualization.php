@@ -97,8 +97,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 	 * Deprecated use getParams() insteead
 	 *
 	 * @deprecated  since 3.1b
+	 *
+	 * @return  JRegistry
 	 */
-	function getPluginParams()
+
+	public function getPluginParams()
 	{
 		return $this->getParams();
 	}

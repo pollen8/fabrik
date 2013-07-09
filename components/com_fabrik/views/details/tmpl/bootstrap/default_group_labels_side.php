@@ -12,7 +12,7 @@
 $element = $this->element; ?>
 <div class=" <?php echo $element->containerClass . $element->span; ?>" <?php echo $element->containerProperties?>>
 	<div class="span4">
-		<?php echo $element->label;?>
+		<?php echo $element->label_raw;?>
 	</div>
 	<div class="span8">
 		<?php if ($this->tipLocation == 'above') : ?>

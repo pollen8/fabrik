@@ -588,7 +588,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				}
 				$c++;
 			}
-			if ($params->get('fb_gm_center')  != 'middle')
+			if ($params->get('fb_gm_center') != 'middle')
 			{
 				$i = array_pop($icons);
 				$lat = $i[0];

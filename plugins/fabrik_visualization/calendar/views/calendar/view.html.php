@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class FabrikViewCalendar extends JView
+class FabrikViewCalendar extends JViewLegacy
 {
 
 	/**
@@ -249,10 +249,10 @@ class FabrikViewCalendar extends JView
 		{
 			foreach ($arr as $ar)
 			{
-				$script[] = "if(".$ar['formid']." == fid)	{";
-				$script[] = "o.datefield = '".$ar['startdate'] . "'";
-				$script[] = "o.datefield2 = '".$ar['enddate'] . "'";
-				$script[] = "o.labelfield = '".$ar['label'] . "'";
+				$script[] = "if(" . $ar['formid'] . " == fid)	{";
+				$script[] = "o.datefield = '" . $ar['startdate'] . "'";
+				$script[] = "o.datefield2 = '" . $ar['enddate'] . "'";
+				$script[] = "o.labelfield = '" . $ar['label'] . "'";
 				$script[] = "}\n";
 			}
 		}

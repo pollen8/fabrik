@@ -457,8 +457,8 @@ class FabrikFEModelGroup extends FabModel
 		}
 		else
 		{
-			$element->startRow = 0;
-			$element->endRow = 0;
+			$element->startRow = 1;
+			$element->endRow = 1;
 			$element->span = '';
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
