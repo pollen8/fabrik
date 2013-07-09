@@ -57,6 +57,7 @@ var FbFileUpload = new Class({
 		var b = c.getElement('[data-file]');
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
+				debugger;
 				e.stop();
 				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
 					new Request({
@@ -256,7 +257,7 @@ var FbFileUpload = new Class({
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('disabled');
 			files.each(function (file, idx) {
-				if (file.size > this.options.max_file_size) {
+				if (file.size > this.options.max_file_size * 1000) {
 					alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE_SHORT'));
 				} else {
 					if (count >= this.options.ajax_max) {

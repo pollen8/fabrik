@@ -80,10 +80,10 @@ Fabrik.Window = new Class({
 	},
 	
 	center: function () {
-		var w = this.window.getStyle('width') === null ? this.options.width : this.window.getStyle('width');
-		var h = this.window.getStyle('height') === null ? this.options.height + 10 : this.window.getStyle('width');
-		var d = {'width': w + 'px', 'height': h + 'px'};
-		d.margin = 0;
+		var pxWidth = this.windowWidthInPx();
+		var w = this.window.getStyle('width') === null ? pxWidth : this.window.getStyle('width');
+		var h = this.window.getStyle('height') === null ? this.options.height + 10 : this.window.getStyle('height');
+		var d = {'width': w + 'px', 'height': h + 'px', 'margin': 0};
 		if (!(Fabrik.bootstrapped && this.modal)) {
 			var yy = window.getSize().y / 2 + window.getScroll().y - (h.toInt() / 4);
 			d.top = typeOf(this.options.offset_y) !== 'null' ? window.getScroll().y + this.options.offset_y : yy;
@@ -93,18 +93,27 @@ Fabrik.Window = new Class({
 		this.window.setStyles(d);
 	},
 	
+	/**
+	 * Work out the window width either from px or % variable
+	 * 
+	 * @return  int  Px widht of window
+	 */
+	
+	windowWidthInPx: function () {
+		var w = this.options.width + '';
+		if (w.indexOf('%') !== -1) {
+			return Math.floor(window.getSize().x * (w.toFloat() / 100));
+		}
+		return w.toInt();
+	},
+	
 	makeWindow: function ()
 	{
-		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label;
-		var handleParts = [];
+		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [];
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'});
-		
 		this.center();
-		
-
 		this.contentWrapperEl = this.window;
-		
-		del = this.deleteButton();
+		var del = this.deleteButton();
 		
 		var hclass = 'handlelabel';
 		if (!this.modal) {
@@ -296,7 +305,6 @@ Fabrik.Window = new Class({
 	},
 	
 	drawWindow: function () {
-		
 		var titleHeight = this.window.getElement('.' + this.handleClass());
 		titleHeight = titleHeight ? titleHeight.getSize().y : 25;
 		var footer = this.window.getElement('.bottomBar').getSize().y;
