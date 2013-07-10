@@ -121,7 +121,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		$session->set('com_' . $package . '.form.' . $formModel->getId() . '.session.hash', $sessionModel->getHash());
 
 		// Set an error so we can reshow the same form for confirmation purposes
-		$formModel->errors['confirmation_required'] = true;
+		$formModel->errors['confirmation_required'] = array(JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS'));
 		$form->error = JText::_('PLG_FORM_CONFIRMATION_PLEASE_CONFIRM_YOUR_DETAILS');
 		$formModel->setEditable(false);
 
@@ -230,7 +230,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
 
 			// Add in a button to allow you to go back to the form and edit your data
-			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button\" value=\"" . JText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
+			$fields[] = "<input type=\"button\" id=\"fabrik_redoconfirmation\" class=\"button btn\" value=\"" . JText::_('PLG_FORM_CONFIRMATION_RE_EDIT')
 				. "\" />";
 
 			// Unset the task otherwise we will submit the form to be processed.
