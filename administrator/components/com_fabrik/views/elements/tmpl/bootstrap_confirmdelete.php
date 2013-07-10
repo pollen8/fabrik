@@ -12,9 +12,8 @@
 // No direct access
 defined('_JEXEC') or die;
 ?>
-
-<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="fabrik-form" class="form-validate">
-	<table class="adminlist">
+<form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th style="width:2%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>

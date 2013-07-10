@@ -57,6 +57,10 @@ class FabrikAdminViewElements extends JViewLegacy
 	{
 		if ($this->getLayout() == 'confirmdelete')
 		{
+			if (FabrikWorker::j3())
+			{
+				$this->setLayout('bootstrap_confirmdelete');
+			}
 			$this->confirmdelete();
 			return;
 		}
@@ -91,7 +95,6 @@ class FabrikAdminViewElements extends JViewLegacy
 		}
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
-
 	}
 
 	/**
