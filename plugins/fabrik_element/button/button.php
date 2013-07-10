@@ -36,7 +36,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
-		$str = '<input type="button" class="fabrikinput button" id="' . $id . '" name="' . $name . '" value="' . $element->label . '" />';
+		$str = '<input type="button" class="fabrikinput button btn" id="' . $id . '" name="' . $name . '" value="' . $element->label . '" />';
 		return $str;
 	}
 
