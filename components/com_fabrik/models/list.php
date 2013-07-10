@@ -2822,7 +2822,6 @@ $groupBy .= '_raw';
 
 		if ($incFilters && !$this->gotAllRequiredFilters())
 		{
-			// $this->emptyMsg = JText::_('COM_FABRIK_SELECT_AT_LEAST_ONE_FILTER');
 			if (!$query)
 			{
 				return 'WHERE 1 = -1 ';
