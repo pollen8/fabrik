@@ -828,6 +828,7 @@ EOD;
 			$src = array('media/com_fabrik/js/lib/mcl/CANVAS.js', 'media/com_fabrik/js/lib/mcl/CanvasItem.js',
 					'media/com_fabrik/js/lib/mcl/Cmorph.js', 'media/com_fabrik/js/lib/mcl/Layer.js', 'media/com_fabrik/js/lib/mcl/LayerHash.js',
 					'media/com_fabrik/js/lib/mcl/Thread.js');
+
 			// , 'media/com_fabrik/js/canvas-extra.js'
 			self::script($src);
 			self::$mcl = true;
@@ -947,6 +948,10 @@ EOD;
 
 	/**
 	 * Ini the require JS conifguration
+	 * Stores the shim and config to the session, which Fabrik system plugin
+	 * then uses to inject scripts into document.
+	 *
+	 * @param   array  $shim  Shim js files
 	 *
 	 * @since   3.1
 	 *
@@ -955,16 +960,18 @@ EOD;
 
 	public static function iniRequireJs($shim = array())
 	{
+		$session = JFactory::getSession();
 		$document = JFactory::getDocument();
 		$requirePaths = self::requirePaths();
 		$pathBits = array();
-
 		$framework = array();
 		$deps = new stdClass;
 		$deps->deps = array();
 		$j3 = FabrikWorker::j3();
 		$ext = self::isDebug() ? '' : '-min';
-		$newShim = array();
+
+		// Load any previously created shim (e.g form which then renders list in outro text
+		$newShim = $session->get('fabrik.js.shim', array());
 		foreach ($shim as $k => &$s)
 		{
 			$k .= $ext;
@@ -978,6 +985,10 @@ EOD;
 						$f .= $ext;
 					}
 				}
+			}
+			if (array_key_exists($k, $newShim))
+			{
+				$s->deps = array_merge($s->deps, $newShim[$k]->deps);
 			}
 			$newShim[$k] = $s;
 		}
@@ -1028,7 +1039,10 @@ EOD;
 		$config[] = "\tshim: " . $shim;
 		$config[] = "});";
 		$config[] = "\n";
-		$document->addScriptDeclaration(implode("\n", $config));
+
+		// Store in session - included in fabrik system plugin
+		$session->set('fabrik.js.shim', $newShim);
+		$session->set('fabrik.js.config', $config);
 	}
 
 	/**
@@ -1088,24 +1102,16 @@ EOD;
 	}
 
 	/**
-	 * Add a script declaration, either to the head or inline if format=raw
+	 * Add a script declaration to the session. Inserted into doc via system plugin
 	 *
-	 * @param   string  $script  js code to add
+	 * @param   string  $script  Js code to add
 	 *
 	 * @return  null
 	 */
 
 	public static function addScriptDeclaration($script)
 	{
-		$app = JFactory::getApplication();
-		if ($app->input->get('format') == 'raw')
-		{
-			echo '<script type="text/javascript">' . $script . '</script>';
-		}
-		else
-		{
-			JFactory::getDocument()->addScriptDeclaration($script);
-		}
+		self::addToSessionScripts($script);
 	}
 
 	/**
@@ -1194,8 +1200,9 @@ EOD;
 	 * Wrapper for JHTML::Script() loading with require.js
 	 * If not debugging will replace file names .js => -min.js
 	 *
-	 * @param   mixed   $file    string or array of files to load (relative path to root for local files - e.g. 'administrator/components/com_fabrik/models/fields/tables.js')
-	 * @param   string  $onLoad  optional js to run if format=raw (as we first load the $file via Asset.Javascript()
+	 * @param   mixed   $file    String or array of files to load, relative path to root for local files
+	 * 							 e.g. 'administrator/components/com_fabrik/models/fields/tables.js'
+	 * @param   string  $onLoad  Optional js to run if format=raw (as we first load the $file via Asset.Javascript()
 	 *
 	 * @return  void
 	 */
@@ -1286,14 +1293,30 @@ EOD;
 		$require[] = "\n";
 		$require = implode("\n", $require);
 
-		if ($input->get('format') == 'raw')
+		self::addToSessionScripts($require);
+	}
+
+	/**
+	 * Add script to session - will then be added via Fabrik System plugin
+	 *
+	 * @param   string  $js  JS code
+	 *
+	 * @return  void
+	 */
+
+	protected static function addToSessionScripts($js)
+	{
+		$session = JFactory::getSession();
+		if ($session->has('fabrik.js.scripts'))
 		{
-			echo '<script type="text/javascript">' . $require . '</script>';
+			$scripts = $session->get('fabrik.js.scripts');
 		}
 		else
 		{
-			$document->addScriptDeclaration($require);
+			$scripts = array();
 		}
+		$scripts[] = $js;
+		$session->set('fabrik.js.scripts', $scripts);
 	}
 
 	/**
@@ -1497,10 +1520,11 @@ EOD;
 		JText::script('COM_FABRIK_NO_RECORDS');
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
 		$jsFile = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
-		self::addScriptDeclaration("
-				requirejs(['fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
+		self::addScriptDeclaration(
+				"requirejs(['fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
 				new $class('$htmlid', $str);
-	});");
+	});"
+			);
 	}
 
 	/**
@@ -1854,8 +1878,8 @@ EOD;
 	/**
 	 * Wrap items in bootstrap grid markup
 	 *
-	 * @param   array   $items    Content to wrap
-	 * @param   int     $columns  Number of columns in the grid
+	 * @param   array   $items      Content to wrap
+	 * @param   int     $columns    Number of columns in the grid
 	 * @param   string  $spanClass  Additonal class to add to cells
 	 * @param   bool    $explode    Should the results be exploded to a string or returned as an array
 	 *
@@ -1879,7 +1903,7 @@ EOD;
 				$grid[] = '<div class="row-fluid">';
 			}
 
-			$grid[] =  $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
+			$grid[] = $columns != 1 ? '<div class="' . $spanClass . ' span' . $span . '">' . $s . '</div>' : $s;
 		}
 		if ($i + 1 % $columns !== 0 && $columns > 1)
 		{
@@ -1967,7 +1991,7 @@ EOD;
 	* @return   string  template content
 	*/
 
-	function getTemplateFile($templateFile)
+	public static function getTemplateFile($templateFile)
 	{
 		jimport('joomla.filesystem.file');
 		return JFile::read($templateFile);

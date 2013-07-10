@@ -2089,7 +2089,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$key = 'element/date/date';
 
-		// Ensure that we keep advanced dependancies from previous date elements regarless of current elements settings.
+		// Ensure that we keep advanced dependancies from previous date elements regardless of current elements settings.
 		$deps = array_key_exists($key, $shim) ? $shim[$key]->deps : array('fab/element');
 		$params = $this->getParams();
 		if ($params->get('date_advanced', '0') == '1' && !in_array('fab/lib/datejs/date', $deps))

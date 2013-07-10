@@ -54,6 +54,26 @@ class PlgSystemFabrik extends JPlugin
 		parent::__construct($subject, $config);
 	}
 
+	public function onAfterRender()
+	{
+		$document = JFactory::getDocument();
+		$session = JFactory::getSession();
+		$shim = $session->get('fabrik.js.config', array());
+		$shim = implode("\n", $shim);
+		$js = $session->get('fabrik.js.scripts', array());
+		$js = implode("\n", $js);
+
+		$script = '<script type="text/javascript">' . $shim . "\n" . $js . '</script>';
+
+		$session->clear('fabrik.js.scripts');
+		$session->clear('fabrik.js.config');
+		$session->clear('fabrik.js.shim');
+
+		$content = JResponse::getBody();
+		$content = preg_replace('#(</head>)#', $script . " $1", $content);
+		JResponse::setBody($content);
+	}
+
 	/**
 	 * Need to call this here otherwise you get class exists error
 	 *
