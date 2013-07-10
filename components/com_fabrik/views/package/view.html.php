@@ -38,7 +38,7 @@ class fabrikViewPackage extends JViewLegacy
 		$layout = JArrayHelper::getValue($canvas, 'layout', $d);
 
 		$layout = json_encode(JArrayHelper::getValue($canvas, 'layout', $d));
-		$id =$this->get('State')->get('package.id');
+		$id = $this->get('State')->get('package.id');
 		$script = "window.addEvent('fabrik.loaded', function() {
 			new FrontPackage({
 		tabs : $tabs,
@@ -49,7 +49,7 @@ class fabrikViewPackage extends JViewLegacy
 		'package':'$item->component_name'
 	});
 		});";
-		$document->addScriptDeclaration($script);
+		FabrikHelperHTML::addScriptDeclaration($script);
 
 		// Force front end templates
 		$this->_basePath = COM_FABRIK_FRONTEND . '/views';

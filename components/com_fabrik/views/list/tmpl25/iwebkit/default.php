@@ -23,7 +23,7 @@ defined('_JEXEC') or die;
 		$script = "window.addEvent('fabrik.loaded', function() {
 			document.getElement('body').addClass('list');
 		});";
-		$document->addScriptDeclaration($script);
+		FabrikHelperHTML::addScriptDeclaration($script);
 
 		?>
 		<div id="topbar">
@@ -71,10 +71,10 @@ if ($this->showFilters) {
 </form>
 <?php echo $this->table->outro;?>
 
-<?php $doc = JFactory::getDocument();
+<?php
 //$style = $this->params->get('mobile_image') == '' ? 'musiclist' : 'list';
 $style = 'list';
-$doc->addScriptDeclaration("window.addEvent('fabrik.loaded', function() {
+$FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.loaded', function() {
 document.body.addClass('$style');
 })");
 

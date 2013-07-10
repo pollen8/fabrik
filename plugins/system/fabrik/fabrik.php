@@ -54,6 +54,13 @@ class PlgSystemFabrik extends JPlugin
 		parent::__construct($subject, $config);
 	}
 
+	/**
+	 * Insert require.js config an app ini script into head.
+	 * Clears out js.config, js.scripts and js.shim from session
+	 *
+	 * @return  void
+	 */
+
 	public function onAfterRender()
 	{
 		$document = JFactory::getDocument();
@@ -63,14 +70,17 @@ class PlgSystemFabrik extends JPlugin
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
 
-		$script = '<script type="text/javascript">' . $shim . "\n" . $js . '</script>';
+		// In preg_replace \\ is replaced with \, doubling up the quotes keeps \\ as \\.
+		$js = str_replace("\\", "\\\\", $js);
+		$script = '<script type="text/javascript">' . "\n" . '<![CDATA[' . "\n" . $shim . "\n" . $js . "\n" . ']]>' . "\n" . '</script>';
+		$script = '<script type="text/javascript">' . "\n" .  "\n" . $shim . "\n" . $js . "\n" . '</script>';
 
 		$session->clear('fabrik.js.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
 
 		$content = JResponse::getBody();
-		$content = preg_replace('#(</head>)#', $script . " $1", $content);
+		$content = preg_replace('#(</head>)#', $script, $content);
 		JResponse::setBody($content);
 	}
 

@@ -504,6 +504,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$script = implode("\n", $js) . "
 		(function() {window.close()}).delay(4000);
 		";
-		$document->addScriptDeclaration($script);
+		FabrikHelperHTML::addScriptDeclaration($script);
 	}
 }

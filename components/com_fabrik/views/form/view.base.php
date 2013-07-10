@@ -464,15 +464,17 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$groups = $model->getGroupsHiarachy();
 
-		$script[] = "\t{$bkey}.addElements({";
-		$gs = array();
+		$script[] = "\t{$bkey}.addElements(";
+		$groupedJs = new stdClass;
 		foreach ($groups as $groupModel)
 		{
+			$groupId = $groupModel->getGroup()->id ;
+			$groupedJs->$groupId = array();
 			if (!$groupModel->canView())
 			{
 				continue;
 			}
-			$aObjs = array();
+			$elementJs= array();
 			$elementModels = $groupModel->getPublishedElements();
 
 			// $$$ rob if repeatTotal is 0 we still want to add the js objects as the els are only hidden
@@ -496,7 +498,7 @@ class FabrikViewFormBase extends JViewLegacy
 						$ref = $elementModel->elementJavascript($c);
 						if (!empty($ref))
 						{
-							$aObjs[] = json_encode($ref);
+							$elementJs[] = $ref;
 						}
 						$validations = $elementModel->validator->findAll();
 						if (!empty($validations) && $elementModel->isEditable())
@@ -510,10 +512,10 @@ class FabrikViewFormBase extends JViewLegacy
 					}
 				}
 			}
-			$gs[] = "\t" . $groupModel->getGroup()->id . ":[\t" . implode(",\n\t\t", $aObjs) . ']';
+			$groupedJs->$groupId = $elementJs;
 		}
-		$script[] = implode(",\n\t", $gs);
-		$script[] = "\t});";
+		$script[] = json_encode($groupedJs);
+		$script[] = "\t);";
 		$script[] = $actions;
 		$script[] = $vstr;
 
@@ -1036,7 +1038,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$script = "window.addEvent('fabrik.loaded', function() {
 			new adminCCK($opts);
 		});";
-			$document->addScriptDeclaration($script);
+			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 	}
 

@@ -73,7 +73,7 @@ class FabrikViewNvd3_Chart extends JViewLegacy
 
 		$params = $model->getParams();
 		$js = $model->js();
-		$document->addScriptDeclaration($js);
+		FabrikHelperHTML::addScriptDeclaration($js);
 
 		$this->params = $params;
 		$viewName = $this->getName();
