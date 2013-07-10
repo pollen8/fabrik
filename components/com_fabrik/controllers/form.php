@@ -338,7 +338,6 @@ class FabrikControllerForm extends JControllerLegacy
 				}
 				if (!empty($eMsgs))
 				{
-					//throw new Exception('test');
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
 					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit();

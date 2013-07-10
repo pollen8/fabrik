@@ -68,4 +68,3 @@ echo $this->loadTemplate('actions');
 echo '</div>';
 echo $form->outro;
 echo $this->pluginend;
-

@@ -878,7 +878,7 @@ class FabrikFEModelGroup extends FabModel
 		$params = $this->getParams();
 		if (!isset($this->editable))
 		{
-			$this->editable =  $formModel->isEditable();
+			$this->editable = $formModel->isEditable();
 		}
 		if ($this->editable)
 		{
