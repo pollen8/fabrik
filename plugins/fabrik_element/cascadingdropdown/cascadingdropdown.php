@@ -390,15 +390,28 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
 			$listModel = $this->getListModel();
 			$db = $listModel->getDb();
-			$query = $db->getQuery(true);
 			$obs = $this->getWatchElement();
-			$obsName = $obs->getElement()->name;
-			$obsValue = $input->get($obs->getFullName(false, true, false) . '_raw');
-			$element = $this->getElement();
-			$tblName = $listModel->getTable()->db_table_name;
-			$query->select('DISTINCT ' . $element->name)->from($tblName)->where($obsName . ' = ' . $db->quote($obsValue));
-			$db->setQuery($query);
-			$ids = $db->loadColumn();
+			$obsName = $obs->getFullName(false, false, false);
+
+			// From a filter...
+			if ($input->get('fabrik_cascade_ajax_update') == 1)
+			{
+				$obsValue = $input->get('v', array(), 'array');
+			}
+			else
+			{
+				// Standard
+				$obsValue = (array) $input->get($obs->getFullName(false, true, false) . '_raw');
+
+			}
+			foreach ($obsValue as &$v)
+			{
+				$v = $db->quote($v);
+			}
+
+			$where = $obsName . ' IN (' . implode(',', $obsValue) . ')';
+			$opts = array('where' => $where);
+			$ids = $listModel->getColumnData($this->getId(), true, $opts);
 			$key = $this->queryKey();
 			if (is_array($ids))
 			{
