@@ -1268,6 +1268,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -1283,8 +1285,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				$name .= '_raw';
 			}
 			$values = JArrayHelper::getValue($data, $name, $default);
+
+			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
+			if (empty($values))
+			{
+				$values = $input->get($name, '', 'string');
+			}
 			if ($groupRepeat)
 			{
+				$values = (array) $values;
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
