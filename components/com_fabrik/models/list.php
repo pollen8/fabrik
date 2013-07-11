@@ -8063,6 +8063,12 @@ $groupBy .= '_raw';
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$row = JArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
+		
+		if(strstr($link, 'rowid='))
+		{
+			$this->rowIdentifierAdded = true;
+		}
+		
 		if ($this->rowIdentifierAdded === false)
 		{
 			if (strstr($link, '?'))
