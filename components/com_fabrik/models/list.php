@@ -4169,7 +4169,7 @@ class FabrikFEModelList extends JModelForm
 		elseif ($this->canAlterFields() === false)
 		{
 			// Give a notice if the user cant alter the field type but selections he has made would normally do so:
-			JError::raiseNotice(301, JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'));
+			$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_ELEMENT_SAVED_BUT_STRUCTUAL_CHANGES_NOT_APPLIED'), 'notice');
 			return $return;
 		}
 
