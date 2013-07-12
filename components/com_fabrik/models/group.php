@@ -1115,7 +1115,6 @@ class FabrikFEModelGroup extends FabModel
 		$canRepeat = $this->canRepeat();
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
-<<<<<<< HEAD
 		/*
 		 * $$$ hugh - test code for new isJoin in join model
 		 */
@@ -1126,9 +1125,6 @@ class FabrikFEModelGroup extends FabModel
 		}
 		*/
 		$pkField = $joinModel->getPrimaryKey();
-=======
-		$pkField = $joinModel->getForeignID();
->>>>>>> Force inclusion of PK/FK in certain circumstances
 
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();

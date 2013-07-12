@@ -2970,6 +2970,8 @@ class FabrikFEModelForm extends FabModelForm
 					$names = $elementModel->getJoinDataNames();
 					foreach ($data as $row)
 					{
+						// Might be a string if new record ?
+						$row = (object) $row;
 						for ($i = 0; $i < count($names); $i ++)
 						{
 							$name = $names[$i];
@@ -3000,8 +3002,8 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		// Remove the additional rows - they should have been merged into [0] above.
-		$data = JArrayHelper::fromObject($data[0]);
+		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
+		$data = JArrayHelper::fromObject(JArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
