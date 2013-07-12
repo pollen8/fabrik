@@ -19,6 +19,8 @@
 			<field description="PLG_FABRIK_FORM_EMAIL_TEMPLATE_DESC" directory="/plugins/fabrik_form/email/tmpl/" hide_default="1" label="PLG_FABRIK_FORM_EMAIL_TEMPLATE_LABEL" name="email_template" repeat="true" type="filelist"/>
 						
 			<field add_select="true" description="PLG_FABRIK_FORM_EMAIL_OR_CONTENT_TEMTEMPLATE_DESC" label="PLG_FABRIK_FORM_EMAIL_OR_CONTENT_TEMTEMPLATE_LABEL" name="email_template_content" query="SELECT id AS value, title AS text FROM #__content WHERE state != -2 " repeat="true" type="sql2"/>
+
+			<field cols="55" description="PLG_FABRIK_FORM_EMAIL_MESSAGE_TEXT_DESC" label="PLG_FABRIK_FORM_EMAIL_MESSAGE_TEXT_LABEL" name="email_message_text" repeat="true" rows="5" type="textarea"/>
 			
 			<field description="PLG_FABRIK_FORM_EMAIL_ATTACHTYPE_DESC" label="PLG_FABRIK_FORM_EMAIL_ATTACHTYPE_LABEL" name="email_attach_type" repeat="true" size="5" type="text"/>
 			
