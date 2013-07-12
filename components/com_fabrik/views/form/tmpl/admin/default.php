@@ -73,7 +73,7 @@ echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";?>
 		}
 	// Show the group outro
 	if ($group->outro !== '') :?>
-		<div class="groupintro"><?php echo $group->outro ?></div>
+		<div class="groupoutro"><?php echo $group->outro ?></div>
 	<?php
 	endif;
 	?>	
