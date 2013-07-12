@@ -57,7 +57,6 @@ var FbFileUpload = new Class({
 		var b = c.getElement('[data-file]');
 		if (typeOf(b) !== 'null') {
 			b.addEvent('click', function (e) {
-				debugger;
 				e.stop();
 				if (confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_SOFT_DELETE'))) {
 					new Request({
