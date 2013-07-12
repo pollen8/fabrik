@@ -2712,7 +2712,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		$data = array(FArrayHelper::toObject($clean_request));
+		$data = $clean_request;
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -2879,35 +2879,7 @@ class FabrikFEModelForm extends FabModelForm
 					$this->setJoinData($data);
 				}
 			}
-			// Set the main part of the form's default data
-			/* if ($this->rowId != '')
-			{
-			}
-			else
-			{
-				// Could be a view
-				if ($listModel->isView())
-				{
-					// @TODO test for new records from views
-					$data = JArrayHelper::fromObject($data[0]);
-				}
-				else
-				{
-					if (($this->isMambot || $this->saveMultiPage()) && (!empty($data) && is_object($data[0])))
-					{
-						$data = JArrayHelper::fromObject($data[0]);
-					}
-					else
-					{
-						// $$$ rob was causing notices when adding record with joined groups as $data[0]->join unset if we just use request
-						$data = JArrayHelper::fromObject($data[0]);
-					}
-				}
-			}
-
-*/
 		}
-//		$this->listModel = $listModel;
 
 		// Test to allow {$my->id}'s to be evald from query strings
 		$w = new FabrikWorker;
