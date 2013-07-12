@@ -1039,7 +1039,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 						$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
-						$this->renderRadioList($data, $repeatCounter, $html, $tmp, JAarrayHelper::getValue($default, 0));
+						$this->renderRadioList($data, $repeatCounter, $html, $tmp, JArrayHelper::getValue($default, 0));
 						break;
 					case 'checkbox':
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
