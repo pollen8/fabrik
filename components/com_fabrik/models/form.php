@@ -1012,6 +1012,24 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		return $this->_origData;
 	}
+	
+	/**
+	 * test if orig data is empty.  Made this a function, as it's not a simple test
+	 * for empty(), and code outside thie model shouldn't need to know it'll be a one
+	 * entry array with an empty stdClass in it.
+	 *
+	 * @return  bool
+	 */
+	
+	public function origDataIsEmpty()
+	{
+		if (!isset($this->_origData))
+		{
+			$this->setOrigData();
+		}
+		return (empty($this->_origData) || (count($this->_origData) == 1 && count((array)$this->_origData[0]) == 0));
+		
+	}
 
 	/**
 	 * Are we copying a row?  Usually set in controller process().
