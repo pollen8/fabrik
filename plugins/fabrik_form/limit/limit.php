@@ -69,7 +69,7 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 		{
 			$msg = $params->get('limit_reached_message', JText::sprintf('PLG_FORM_LIMIT_LIMIT_REACHED', $limit));
 			$msg = str_replace('{limit}', $limit, $msg);
-			app->enqueueMessage($msg, 'notice');
+			$app->enqueueMessage($msg, 'notice');
 			return false;
 		}
 		else
