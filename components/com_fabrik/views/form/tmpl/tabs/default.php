@@ -114,11 +114,12 @@ $this->group = $group;
 	else:
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
-	// Show the group outro
-	if ($group->outro !== '') :?>		<div class="groupoutro"><?php echo $group->outro ?></div>
-	<?php
+		// Show the group outro
+		if ($group->outro !== '') :?>
+			<div class="groupoutro"><?php echo $group->outro ?></div>
+<?php
+		endif;
 	endif;
-	?>	endif;
 	?>
 	</div>
 	<div style="clear:left;"></div>
