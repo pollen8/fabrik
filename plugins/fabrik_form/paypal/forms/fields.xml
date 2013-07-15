@@ -35,8 +35,8 @@
 				repeat="true" />
 			
 			<field name="paypal_conditon"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_FORM_PAYPAL_CONDITION_DESC"
 				label="PLG_FORM_PAYPAL_CONDITION_LABEL"
 				repeat="true"/>
@@ -45,7 +45,13 @@
 		
 		<fieldset name="plg-form-paypal-price" label="PLG_FORM_PAYPAL_PRICE">
 		
-			<field cols="30" default="" description="PLG_FORM_PAYPAL_COST_DESC" label="PLG_FORM_PAYPAL_COST_LABEL" name="paypal_cost" repeat="true" rows="5" type="textarea"/>
+			<field name="paypal_cost" 
+				type="fabrikeditor"
+				mode="php"
+				default=""
+				description="PLG_FORM_PAYPAL_COST_DESC"
+				label="PLG_FORM_PAYPAL_COST_LABEL"
+				repeat="true" />
 				
 			<field default="0"
 				class="btn-group"
@@ -59,12 +65,17 @@
 		
 		<fieldset name="plg-form-paypal-item" label="PLG_FORM_PAYPAL_ITEM">
 		
-			<field cols="30" description="PLG_FORM_PAYPAL_PURCHASE_ITEM_DESC"
-				label="PLG_FORM_PAYPAL_PURCHASE_ITEM_LABEL" name="paypal_item" repeat="true" rows="5" type="textarea"/>
+			<field name="paypal_item"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_FORM_PAYPAL_PURCHASE_ITEM_DESC"
+				label="PLG_FORM_PAYPAL_PURCHASE_ITEM_LABEL"
+				repeat="true" />
 				
 			<field default="0"
 				class="btn-group"
-				description="PLG_FORM_PAYPAL_EVAL_ITEM_DESC" label="PLG_FORM_PAYPAL_EVAL_ITEM_LABEL" name="paypal_item_eval" repeat="true" type="radio">
+				description="PLG_FORM_PAYPAL_EVAL_ITEM_DESC"
+				label="PLG_FORM_PAYPAL_EVAL_ITEM_LABEL" name="paypal_item_eval" repeat="true" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
@@ -75,7 +86,13 @@
 		
 		<fieldset name="plg-form-paypal-shipping" label="PLG_FORM_PAYPAL_SHIPPING">
 			
-			<field cols="30" default="" description="PLG_FORM_PAYPAL_SHIPPING_COST_DESC" label="PLG_FORM_PAYPAL_SHIPPING_COST_LABEL" name="paypal_shipping_cost" repeat="true" rows="5" type="textarea"/>
+			<field name="paypal_shipping_cost" 
+				type="fabrikeditor"
+				mode="php"
+				default=""
+				description="PLG_FORM_PAYPAL_SHIPPING_COST_DESC"
+				label="PLG_FORM_PAYPAL_SHIPPING_COST_LABEL"
+				repeat="true" />
 				
  			<field default="0"
  				class="btn-group"
@@ -136,8 +153,12 @@
 			<field description="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_DESC" label="PLG_FORM_PAYPAL_SUBS_DATA_RECURRING_LABEL" name="paypal_subs_recurring" repeat="true" type="text">
 			</field>
 			
-			<field cols="30" description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC" label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" name="paypal_subscription_switch" rows="5" type="textarea">
-			</field>
+			<field name="paypal_subscription_switch" 
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_FORM_PAYPAL_GATEWAY_SWITCH_DESC"
+				label="PLG_FORM_PAYPAL_GATEWAY_SWITCH_LABEL" />
+				
 		</fieldset>
 		
 		<fieldset name="plg-form-paypal-return" label="PLG_FORM_PAYPAL_AFTER_PAYMENT">
@@ -149,8 +170,8 @@
 				repeat="true" />
 				
 			<field name="paypal_return_msg"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_FORM_PAYPAL_RETURN_MSG_DESC"
 				label="PLG_FORM_PAYPAL_RETURN_MSG_LABEL"
 				repeat="true"/>

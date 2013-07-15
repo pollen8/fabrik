@@ -34,11 +34,10 @@
 		<fieldset name="plg-calc-extra" label="COM_FABRIK_MORE">
 			
 			<field name="calc_calculation"
-				type="textarea"
-				cols="60"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_ELEMENT_CALC_CALCULATION_DESC"
-				label="PLG_ELEMENT_CALC_CALCULATION_LABEL"
-				rows="10"/>
+				label="PLG_ELEMENT_CALC_CALCULATION_LABEL" />
 				
 			<field name="calc_format_string"
 				type="text"

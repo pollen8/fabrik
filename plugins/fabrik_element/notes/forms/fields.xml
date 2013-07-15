@@ -7,10 +7,9 @@
 				url="PLG_ELEMENT_NOTES_HELP_SERVER" />
 				
 			<field name="default"
-				type="textarea"
-				cols="6"
-				label="PLG_ELEMENT_NOTES_DEFAULT_LABEL"
-				rows="5" />
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_NOTES_DEFAULT_LABEL" />
 				
 			<field name="eval"
 				type="radio"

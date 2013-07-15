@@ -14,10 +14,9 @@
 				</field>
 			
 			<field name="default"
-				type="textarea"
-				cols="45"
-				label="PLG_ELEMENT_DATE_DEFAULT_LABEL"
-				rows="6" />
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_DATE_DEFAULT_LABEL" />
 				
 			<field name="eval"
 				type="radio"
@@ -159,7 +158,8 @@
 			</field>		
 			
 			<field name="date_allow_func"
-				type="textarea"
+				type="fabrikeditor"
+				mode="javascript"
 				description="PLG_ELEMENT_DATE_ALLOW_FUNC_DESC"
 				label="PLG_ELEMENT_DATE_ALLOW_FUNC_LABEL" />
 				

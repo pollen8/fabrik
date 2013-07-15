@@ -7,11 +7,10 @@
 			<field type="helplink"
 				url="PLG_ELEMENT_TEXTAREA_HELP_SERVER" />
 				
-			<field type="textarea"
-				name="default" 
-				cols="45"
-				label="PLG_ELEMENT_TEXTAREA_DEFAULT_LABEL"
-				rows="6" />
+			<field name="default" 
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_TEXTAREA_DEFAULT_LABEL" />
 			
 			<field name="eval"
 				type="radio"

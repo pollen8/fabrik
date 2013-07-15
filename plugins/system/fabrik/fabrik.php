@@ -80,7 +80,14 @@ class PlgSystemFabrik extends JPlugin
 		$session->clear('fabrik.js.shim');
 
 		$content = JResponse::getBody();
-		$content = preg_replace('#(</head>)#', $script . '</head>', $content);
+		if (stristr($content, '</head>'))
+		{
+			$content = preg_replace('#(</head>)#', $script . '</head>', $content);
+		}
+		else
+		{
+			$content .= $script;
+		}
 		JResponse::setBody($content);
 	}
 

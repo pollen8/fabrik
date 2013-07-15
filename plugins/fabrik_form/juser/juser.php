@@ -312,7 +312,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$mail = JFactory::getMailer();
 
 		// Load up com_users lang - used in email text
-		$lang->load('com_users');
+		$lang->load('com_users', JPATH_SITE);
 		/*
 		 * If the fabrik table is set to be #__users and the this plugin is used
 		 * we need to alter the form model to tell it not to store the main row
@@ -355,15 +355,28 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			/*
 			 * This test would cause a fail if you were editing a record which contained hte user data in a join
 			 * E.g. Fabrikar.com/subscribe - user logged in but adding a new subscription
+			 * $$$ hugh - AOOOOGA!  Removing the rowId test means that when an admin creates a new
+			 * user when logged in, the admin's row in #__users will get overwritten with the new user
+			 * details, because the user element has set itself to the currently logged in ID.
+			 * Going to try looking at orig data instead, don't know if that'll cause the issue outlined above
+			 * but have to do SOMETHING to fix this issue.
 			 */
 			//if (!empty($formModel->rowId))
 			//{
-				$original_id = $formModel->formData[$this->useridfield];
-
-				// $$$ hugh - if it's a user element, it'll be an array
-				if (is_array($original_id))
+			
+				if ($formModel->origDataIsEmpty())
 				{
-					$original_id = JArrayHelper::getValue($original_id, 0, 0);
+					$original_id = 0;
+				}
+				else
+				{
+					$original_id = $formModel->formData[$this->useridfield];
+	
+					// $$$ hugh - if it's a user element, it'll be an array
+					if (is_array($original_id))
+					{
+						$original_id = JArrayHelper::getValue($original_id, 0, 0);
+					}
 				}
 			//}
 		}
@@ -836,7 +849,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$input = $app->input;
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
 		$userElName = $userElement === false ? false : $userElement->getFullName();
-		$userId = $input->get($userElName);
+		$userId = (int) $post['id'];
 		$db = FabrikWorker::getDbo(true);
 		$ok = true;
 		jimport('joomla.mail.helper');
@@ -867,8 +880,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		if (empty($post['password']))
 		{
-			// $$$tom added a new/edit test
-			if ((int) $userId === 0)
+			if ($userId === 0)
 			{
 				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;

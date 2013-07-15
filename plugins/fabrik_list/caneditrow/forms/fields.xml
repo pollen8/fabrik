@@ -46,12 +46,11 @@
 				size="20" />
 				
 			<field name="caneditrow_eval"
-				type="textarea"
-				cols="30"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_LIST_CANEDITROW_EVAL_DESC"
 				label="PLG_LIST_CANEDITROW_EVAL_LABEL"
-				repeat="true"
-				rows="5" />
+				repeat="true" />
 				
 		</fieldset>
 	</fields>

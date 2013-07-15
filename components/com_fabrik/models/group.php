@@ -616,15 +616,15 @@ class FabrikFEModelGroup extends FabModel
 			$elements = $this->getMyElements();
 			$joins = $this->getListModel()->getJoins();
 			/**
-			* $$$ Paul - it is possible that the user has set Include in List Query 
-			* to No for table primary key or join foreign key. If List is then set  
-			* to Merge and Reduce, this causes a problem because the pk/fk 
-			* placeholder is not set. We therefor include the table PK and join FK 
-			* regardless of Include in List Query settings if any elements in the 
+			* $$$ Paul - it is possible that the user has set Include in List Query
+			* to No for table primary key or join foreign key. If List is then set
+			* to Merge and Reduce, this causes a problem because the pk/fk
+			* placeholder is not set. We therefor include the table PK and join FK
+			* regardless of Include in List Query settings if any elements in the
 			* group have Include in List Query = Yes.
-			* In order to avoid iterating over the elements twice, we save the  
+			* In order to avoid iterating over the elements twice, we save the
 			* PK / FK elementModel and include it as soon as it is needed.
-			* If the access level does not allow for these to be used, then we should 
+			* If the access level does not allow for these to be used, then we should
 			* display some sort of warning - though this is not included in this fix.
 			**/
 			$repeating = $this->canRepeat();
@@ -633,13 +633,13 @@ class FabrikFEModelGroup extends FabModel
 			{
 				$join_id = "";
 				$join_fk = "";
-			} 
-			else 
+			}
+			else
 			{
 				$join_id = $join->getForeignID();
 				$join_fk = $join->getForeignKey();
 			}
-			
+
 			$element_included = false;
 			$table_pk_included = $join_fk_included = false;
 			$table_pk_element = $join_fk_element = null;
@@ -665,10 +665,8 @@ class FabrikFEModelGroup extends FabModel
 					}
 
 					$full_name = $elementModel->getFullName(true, false);
-					if (($params->get('include_in_list_query', 1) == 1) // Include in List Query
-					 || (empty($showInList) && $element->show_in_list_summary) // Element show in list
-					 || (in_array($element->id, $showInList)) // Menu items explicitly defines the list
-					 || ($element->primary_key)) // Master primary key always included
+					$showThisInList = $element->primary_key || $params->get('include_in_list_query', 1) == 1 || (empty($showInList) && $element->show_in_list_summary) || in_array($element->id, $showInList);
+					if ($showThisInList)
 					{
 						if ($element->primary_key || $full_name == $join_id)
 						{
@@ -1115,16 +1113,7 @@ class FabrikFEModelGroup extends FabModel
 		$canRepeat = $this->canRepeat();
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
-		/*
-		 * $$$ hugh - test code for new isJoin in join model
-		 */
-		/*
-		if ($joinModel->isView())
-		{
-			return;
-		}
-		*/
-		$pkField = $joinModel->getPrimaryKey();
+		$pkField = $joinModel->getForeignID();
 
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
@@ -1157,6 +1146,7 @@ class FabrikFEModelGroup extends FabModel
 			{
 				$pk = array_shift($pk);
 			}
+
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
 
 			// Update key

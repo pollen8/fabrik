@@ -15,11 +15,10 @@
 				size="3" />
 				
 			<field name="jsperiod_code"
-				type="textarea"
-				cols="50"
+				type="fabrikeditor"
+				mode="javascript"
 				description="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_DESC"
-				label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL"
-				rows="10" />
+				label="PLG_ELEMENT_JSPERIODICAL_OBSERVER_CODE_LABEL" />
 					
 		</fieldset>
 
