@@ -1260,15 +1260,28 @@ var FbForm = new Class({
 			// http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
 			Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
 			Object.each(this.options.minRepeat, function (min, groupId) {
-				
-				// Create mock event
-				var btn = this.form.getElement('#group' + groupId + ' .addGroup');
-				if (typeOf(btn) !== 'null') {
-					var e = new Event.Mock(btn, 'click');
-					
-					// Duplicate group
-					for (var i = 0; i < min - 1; i ++) {
-						this.duplicateGroup(e);
+				// $$$ hugh - trying out min of 0 for Troester
+				// http://fabrikar.com/forums/index.php?threads/how-to-start-a-new-record-with-empty-repeat-group.34666/#post-175408
+				if (min === 0) {
+					// Create mock event
+					var del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
+					if (typeOf(del_btn) !== 'null') {
+						var del_e = new Event.Mock(del_btn, 'click');
+						
+						// remove group
+						this.deleteGroup(del_e);
+					}				
+				}
+				else {
+					// Create mock event
+					var add_btn = this.form.getElement('#group' + groupId + ' .addGroup');
+					if (typeOf(add_btn) !== 'null') {
+						var add_e = new Event.Mock(add_btn, 'click');
+						
+						// Duplicate group
+						for (var i = 0; i < min - 1; i ++) {
+							this.duplicateGroup(add_e);
+						}
 					}
 				}
 			}.bind(this));
