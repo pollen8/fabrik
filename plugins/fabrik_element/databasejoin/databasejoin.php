@@ -263,8 +263,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			$this->joinLabelCols[(int) $useStep] = 'CONCAT(' . $val . ')';
-			return 'CONCAT(' . $val . ')';
+			$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
 
@@ -887,7 +887,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			return 'CONCAT(' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 	}
 

@@ -22,22 +22,38 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field label="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_LABEL" name="length_random_filename" size="10" type="text"/>
+			<field name="length_random_filename"
+				type="text"
+				description="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_LABEL"
+				size="3" />
 				
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_DESC" label="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_LABEL" name="ul_file_increment" type="list">
+			<field name="ul_file_increment"
+				type="list"
+				default="0"
+				description="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_INCREMENTAL_UPLOAD_LABEL">
 					<option value="0">PLG_ELEMENT_FILEUPLOAD_LEAVE_ORIGINAL</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_INCREMENT_NEW_FILENAME</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_DELETE_EXISTING_IMAGE</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_DESC" label="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_LABEL" name="upload_allow_folderselect" type="radio">
+			<field name="upload_allow_folderselect"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_DESC" label="PLG_ELEMENT_FILEUPLOAD_SELECT_FOLDER_LABEL">
 					<option value="0">PLG_ELEMENT_FILEUPLOAD_HIDE</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_SHOW</option>
 			</field>
 			 
-			<field default="1" description="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_DESC" label="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_LABEL" name="upload_delete_image" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+			<field name="upload_delete_image"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_DESC" label="PLG_ELEMENT_FILEUPLOAD_DELETE_IMAGE_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 		</fieldset>
 		
@@ -50,6 +66,7 @@
 				
 			<field name="make_link"
 				type="radio"
+				class="btn-group"
 				default="1"
 				description="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_DESC" 
 				label="PLG_ELEMENT_FILEUPLOAD_MAKE_LINK_IN_TABLE_LABEL" >
@@ -59,6 +76,7 @@
 			
 			<field name="fu_show_image_in_table"
 				type="radio"
+				class="btn-group"
 				default="1"
 				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_LABEL">
@@ -78,6 +96,7 @@
 			
 			<field name="fu_show_image_in_email"
 				type="radio"
+				class="btn-group"
 				default="1"
 				description="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_EMAIL_LABEL" >
@@ -92,6 +111,7 @@
 				
 			<field name="fu_main_max_width"
 				type="text"
+				class="input-mini"
 				default=""
 				description="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_MAX_WIDTH_LABEL"
@@ -99,6 +119,7 @@
 				
 			<field name="fu_main_max_height"
 				type="text"
+				class="input-mini"
 				default=""
 				description="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_MAX_HEIGHT_LABEL"
@@ -142,10 +163,22 @@
 		<fieldset name="plg-fileupload-crop-opts">
 			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_DIR_LABEL" name="fileupload_crop_dir" size="35" type="text"/>
 
-			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL" name="fileupload_crop_width" size="3" type="text"/>
+			<field name="fileupload_crop_width"
+				type="text"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_WIDTH_LABEL"
+				default="200"
+				size="3" />
 
-			<field description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL" name="fileupload_crop_height" size="3" type="text"/>
-
+			<field name="fileupload_crop_height"
+				type="text"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_CROP_HEIGHT_LABEL"
+				default="100"
+				size="3"/>
+			
 			<field name="win_width"
 				type="text"
 				default="400"
@@ -179,14 +212,18 @@
 					<option value="ap-southeast-1">APAC (Singapore)</option>
 			</field>
 			
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_SSL_DESC" label="PLG_ELEMENT_FILEUPLOAD_SSL_LABEL" name="fileupload_ssl" type="radio">
+			<field default="0"
+				class="btn-group"
+				description="PLG_ELEMENT_FILEUPLOAD_SSL_DESC" label="PLG_ELEMENT_FILEUPLOAD_SSL_LABEL" name="fileupload_ssl" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
 			
 			<field description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_BUCKET_NAME_LABEL" name="fileupload_aws_bucketname" size="40" type="text"/>
 			
-			<field default="1" description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_LABEL" name="fileupload_s3_serverpath" type="radio">
+			<field default="1"
+				class="btn-group"
+				description="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AMAZONS3_INCLUDE_SERVER_PATH_LABEL" name="fileupload_s3_serverpath" type="radio">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
@@ -223,13 +260,19 @@
 				description="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_AJAX_RUNTIME_LABEL" />
 			
-			<field default="4" description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL" name="ajax_max" size="2" type="text"/>
+			<field name="ajax_max"
+				type="text"
+				default="4"
+				class="input-mini"
+				description="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_AJAX_MAX_LABEL"
+				size="2"/>
 				
-			<field default="400" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL" name="ajax_dropbox_width" type="text"/>
+			<field default="400" class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_WIDTH_LABEL" name="ajax_dropbox_width" type="text"/>
 			
-			<field default="200" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_LABEL" name="ajax_dropbox_height" type="text"/>
+			<field default="200" class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_DROPBOX_HEIGHT_LABEL" name="ajax_dropbox_height" type="text"/>
 				
-			<field default="0" description="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_LABEL" name="ajax_chunk_size" size="4" type="text"/>
+			<field default="0" class="input-mini" description="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_DESC" label="PLG_ELEMENT_FILEUPLOAD_AJAX_CHUNK_SIZE_LABEL" name="ajax_chunk_size" size="4" type="text"/>
 				
 		</fieldset>
 		
@@ -252,7 +295,9 @@
 				
 				<field description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_HIT_COUNTER_LABEL" name="fu_download_hit_counter" type="listfields" valueformat="tableelement"/>
 					
-				<field default="0" description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_LABEL" name="fu_download_log" type="radio">
+				<field default="0"
+					class="btn-group"
+					description="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_DESC" label="PLG_ELEMENT_FILEUPLOAD_DOWNLOAD_LOG_LABEL" name="fu_download_log" type="radio">
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
