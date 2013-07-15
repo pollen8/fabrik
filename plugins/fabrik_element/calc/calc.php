@@ -40,8 +40,16 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$default = $w->parseMessageForPlaceHolder($element->default, $data, true, true);
 			if ($element->eval == '1')
 			{
-				$default = @eval($default);
-				FabrikWorker::logEval($default, 'Caught exception on eval of ' . $element->name . ': %s');
+				if (FabrikHelperHTML::isDebug())
+				{
+					$res = eval($default);
+				}
+				else
+				{
+					$res = @eval($default);
+				}
+				FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::getDefaultValue() : ' . $default . ' : %s');
+				$default = $res;
 			}
 			$this->default = $default;
 		}
@@ -111,9 +119,16 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				$data_copy = $data;
 			}
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
-			$default = @eval($default);
-			FabrikWorker::logEval($default, 'Caught exception on eval of ' . $this->getElement()->name . '::_getV(): %s');
-			return $default;
+			if (FabrikHelperHTML::isDebug())
+			{
+				$res = eval($default);
+			}
+			else
+			{
+				$res = @eval($default);
+			}
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
+			return $res;
 		}
 		$rawname = $name . '_raw';
 		if ($groupModel->isJoin())
@@ -261,10 +276,18 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
 		$data = $d;
-		$calc = eval($w->parseMessageForPlaceHolder($calc, $d));
-		FabrikWorker::logEval($calc, 'Caught exception on eval of ' . $this->getElement()->name . '::preProcess(): %s');
-		$form->updateFormData($key, $calc);
-		$form->updateFormData($rawkey, $calc);
+		$calc = $w->parseMessageForPlaceHolder($calc, $d);
+		if (FabrikHelperHTML::isDebug())
+		{
+			$res = eval($calc);
+		}
+		else
+		{
+			$res = @eval($calc);
+		}
+		FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::preProcess() : ' . $calc . ' : %s');
+		$form->updateFormData($key, $res);
+		$form->updateFormData($rawkey, $res);
 	}
 
 	/**
@@ -343,9 +366,16 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			 *  need $d here for backward compat
 			 */
 			$d = $data;
-			$res = $listModel->parseMessageForRowHolder($cal, $data, true);
-			$res = @eval($res);
-			FabrikWorker::logEval($res, 'Caught exception on eval in ' . $element->name . '::renderListData() : %s');
+			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
+			if (FabrikHelperHTML::isDebug())
+			{
+				$res = eval($cal);
+			}
+			else
+			{
+				$res = @eval($cal);
+			}
+			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : '. $cal .' : %s');
 			if ($format != '')
 			{
 				$res = sprintf($format, $res);
@@ -491,7 +521,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		$c = @eval($calc);
+		if (FabrikHelperHTML::isDebug())
+		{
+			$c = eval($calc);
+		}
+		else
+		{
+			$c = @eval($calc);
+		}
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
 	}
@@ -661,7 +698,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$key = $listRef . $row->__pk_val;
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
-				$return->$key = @eval($default);
+				if (FabrikHelperHTML::isDebug())
+				{
+					$return->$key = eval($default);
+				}
+				else
+				{
+					$return->$key = @eval($default);
+				}
 				if ($store)
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
