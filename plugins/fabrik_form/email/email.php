@@ -102,7 +102,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
 		}
-		
+
 		$messageText = $params->get('email_message_text', '');
 		if (!empty($messageText))
 		{
@@ -110,7 +110,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$messageText = str_replace('{content}', $content, $messageText);
 			$messageText = str_replace('{template}', $messageTemplate, $messageText);
 		}
-		
+
 		$message = '';
 		if (!empty($messageText))
 		{
@@ -128,7 +128,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			$message = $this->_getTextEmail();
 		}
-		
+
 		$this->addAttachments($params);
 
 		$cc = null;
@@ -414,8 +414,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	protected function _getTemplateEmail($emailTemplate)
 	{
-		jimport('joomla.filesystem.file');
-		return JFile::read($emailTemplate);
+		return file_get_contents($emailTemplate);
 	}
 
 	/**

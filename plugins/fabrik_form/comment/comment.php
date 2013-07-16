@@ -704,7 +704,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		/* if ($res === false)
 		 {
 		// Attempt to create the db table?
-		$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
+		$sql = file_get_contents(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
 		$db->setQuery($sql);
 		!$db->execute();
 		$row->store();

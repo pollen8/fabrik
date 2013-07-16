@@ -21,14 +21,17 @@ if (!defined('COM_FABRIK_FRONTEND'))
 
 jimport('joomla.log.log');
 
-// Add the logger.
-JLog::addLogger(array('text_file' => 'fabrik.log.php'));
 
-// Start logging...
-JLog::add(
-'your message here',
-JLog::NOTICE, 'com_fabrik');
+if (JDEBUG)
+{
+	// Add the logger.
+	JLog::addLogger(array('text_file' => 'fabrik.log.php'));
 
+	// Start logging...
+	JLog::add(
+	'your message here',
+	JLog::NOTICE, 'com_fabrik');
+}
 require_once JPATH_COMPONENT . '/controller.php';
 $app = JFactory::getApplication();
 $input = $app->input;

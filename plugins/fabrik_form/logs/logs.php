@@ -426,7 +426,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		 * each time you add a line in the file */
 		$labels = (!JFile::exists($logs_file) || $logs_mode == 'w') ? 1 : 0;
 
-		$buffer = ($logs_mode == 'a' && JFile::exists($logs_file)) ? JFile::read($logs_file) : '';
+		$buffer = ($logs_mode == 'a' && JFile::exists($logs_file)) ? file_get_contents($logs_file) : '';
 
 		$send_email = $params->get('log_send_email') == '1';
 		$make_file = $params->get('make_file') == '1';

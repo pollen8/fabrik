@@ -189,7 +189,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 
 	public function read($filepath)
 	{
-		return JFile::read($filepath);
+		return file_get_contents($filepath);
 	}
 
 	/**

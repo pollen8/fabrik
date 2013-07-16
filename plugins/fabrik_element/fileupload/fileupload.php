@@ -498,10 +498,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				return COM_FABRIK_LIVESITE . str_replace('\\', '/', $file);
 				break;
 			case 'base64':
-				return base64_encode(JFile::read($path));
+				return base64_encode(file_get_contents($path));
 				break;
 			case 'raw':
-				return JFile::read($path);
+				return file_get_contents($path);
 				break;
 			case 'relative':
 				return $file;

@@ -1033,7 +1033,7 @@ class FabrikPlugin extends JPlugin
 		$file = COM_FABRIK_BASE . '/plugins/' . $this->_type . '/' . $this->_name . '/sql/install.mysql.uft8.sql';
 		if (JFile::exists($file))
 		{
-			$sql = JFile::read($file);
+			$sql = file_get_contents($file);
 			$sqls = explode(";", $sql);
 			if (!empty($sqls))
 			{

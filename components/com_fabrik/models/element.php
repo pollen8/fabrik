@@ -6798,7 +6798,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$parentId = $formData[$k];
 			$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		foreach ($idsToKeep as $parentId => $ids)
 		{
@@ -6809,7 +6809,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
 			}
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 

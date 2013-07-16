@@ -95,7 +95,7 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 		$file = $params->get('js_file', '');
 		if ($file !== '' && $file !== '-1')
 		{
-			$opts->js_code = JFile::read(JPATH_ROOT . '/plugins/fabrik_list/js/scripts/' . $file);
+			$opts->js_code = file_get_contents(JPATH_ROOT . '/plugins/fabrik_list/js/scripts/' . $file);
 		}
 		else
 		{

@@ -1997,8 +1997,7 @@ EOD;
 
 	public static function getTemplateFile($templateFile)
 	{
-		jimport('joomla.filesystem.file');
-		return JFile::read($templateFile);
+		return file_get_contents($templateFile);
 	}
 
 	/**

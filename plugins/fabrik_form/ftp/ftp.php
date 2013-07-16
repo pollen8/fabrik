@@ -225,8 +225,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 
 	protected function _getTemplateFtp($ftpTemplate)
 	{
-		jimport('joomla.filesystem.file');
-		return JFile::read($ftpTemplate);
+		return file_get_contents($ftpTemplate);
 	}
 
 	/**

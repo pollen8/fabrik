@@ -257,13 +257,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 	protected function alterViewXML($row)
 	{
-
 		$views = array();
 		$views[] = $this->outputPath . 'site/views/form/tmpl/default.xml';
 		$views[] = $this->outputPath . 'site/views/list/tmpl/default.xml';
 		foreach ($views as $view)
 		{
-			$str = JFile::read($view);
+			$str = file_get_contents($view);
 			$str = str_replace('{component_name}', $row->component_name, $str);
 			JFile::write($view, $str);
 		}
@@ -371,7 +370,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$size = filesize($filepath);
 
 		$document->setMimeEncoding('application/zip');
-		$str = JFile::read($filepath);
+		$str = file_get_contents($filepath);
 
 		// Set the response to indicate a file download
 		JResponse::setHeader('Content-Type', 'application/force-download');
@@ -551,7 +550,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		 */
 		$xmlname = str_replace('com_', '', $row->component_name);
 		$return[] = "\t\t\$path = JPATH_ROOT . '/components/com_" . "$row->component_name/$xmlname.php';";
-		$return[] = "\t\t\$buffer = JFile::read(\$path);";
+		$return[] = "\t\t\$buffer = file_get_contents(\$path);";
 		$return[] = "\t\t\$buffer = str_replace('{packageid}', \$package_id, \$buffer);";
 		$return[] = "\t\tJFile::write(\$path, \$buffer);";
 		$return[] = "\t}";
@@ -634,7 +633,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			}
 			else
 			{
-				$data = JFile::read($fpath);
+				$data = file_get_contents($fpath);
 				if ($data === false)
 				{
 					JFactory::getApplication()->enqueueMessage('could not read ' . $fpath, 'notice');
@@ -668,7 +667,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return = array();
 		foreach ($files as $file)
 		{
-			$str = JFile::read($from . '/' . $file);
+			$str = file_get_contents($from . '/' . $file);
 			$str = str_replace('{component_name}', $row->component_name, $str);
 
 			$file = str_replace('_fabrik_', '_' . $row->component_name . '_', $file);

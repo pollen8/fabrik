@@ -102,7 +102,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$opts->value = $vars;
 		$swatch = $params->get('colourpicker-swatch', 'default.js');
 		$swatchFile = JPATH_SITE . '/plugins/fabrik_element/colourpicker/swatches/' . $swatch;
-		$opts->swatch = json_decode(JFile::read($swatchFile));
+		$opts->swatch = json_decode(file_get_contents($swatchFile));
 
 		return array('ColourPicker', $id, $opts);
 	}
