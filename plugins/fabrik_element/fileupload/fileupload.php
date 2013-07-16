@@ -283,7 +283,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$iCounter++;
 						}
 					}
-					 else
+					else
 					{
 						if (is_object($value[$x]))
 						{
@@ -1163,7 +1163,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					}
 					else
 					{
-						$imagesToKeep[] = $origData[$j]->$key;
+						$imagesToKeep[$j] = $origData[$j]->$key;
 					}
 				}
 			}
