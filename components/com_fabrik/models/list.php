@@ -9135,7 +9135,7 @@ class FabrikFEModelList extends JModelForm
 				 * if it isn't an element ... like (say) ids[]=1&ids[]=2 in a table plugin, like
 				 * email list
 				 */
-				if ($el === false)
+				if ($el === false && $k !== 'fabrik___filter')
 				{
 					foreach ($v as $v1)
 					{
@@ -9463,7 +9463,7 @@ class FabrikFEModelList extends JModelForm
 					$shortkey = FabrikString::rtrimword($key, '_raw');
 					if ($can_repeats[$shortkey])
 					{
-						if ($merge == 2 
+						if ($merge == 2
 						&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
 						&& isset($data[$i]->$can_repeats_keys[$shortkey]))
 						{
@@ -9537,7 +9537,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						$origKey = $key;
 						$shortkey = FabrikString::rtrimword($key, '_raw');
-						if ($can_repeats[$shortkey] 
+						if ($can_repeats[$shortkey]
 						&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
 						&& isset($data[$i]->$can_repeats_keys[$shortkey]))
 						{

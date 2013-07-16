@@ -1012,7 +1012,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		return $this->_origData;
 	}
-	
+
 	/**
 	 * test if orig data is empty.  Made this a function, as it's not a simple test
 	 * for empty(), and code outside thie model shouldn't need to know it'll be a one
@@ -1020,7 +1020,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @return  bool
 	 */
-	
+
 	public function origDataIsEmpty()
 	{
 		if (!isset($this->_origData))
@@ -1028,7 +1028,7 @@ class FabrikFEModelForm extends FabModelForm
 			$this->setOrigData();
 		}
 		return (empty($this->_origData) || (count($this->_origData) == 1 && count((array)$this->_origData[0]) == 0));
-		
+
 	}
 
 	/**
@@ -2974,6 +2974,11 @@ class FabrikFEModelForm extends FabModelForm
 			return;
 		}
 
+		if (!array_key_exists(0, $data))
+		{
+			$data[0] = new stdClass;
+		}
+
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
@@ -2997,6 +3002,12 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								$v = $row->$name;
 								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
+
+								// New record or csv export
+								if (!isset($data[0]->$name))
+								{
+									$data[0]->$name = $v;
+								}
 								if (!is_array($data[0]->$name))
 								{
 									if ($groupModel->isJoin() && $groupModel->canRepeat())
