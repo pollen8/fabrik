@@ -12,6 +12,18 @@
  *  
  */
 
+/**
+ * Console.log wrapper
+ */
+
+function fconsole(thing) {
+	if (typeof(window.console) !== "undefined") {
+		console.log(thing);
+	}
+}
+
+console.log('fabrikjs');
+
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects

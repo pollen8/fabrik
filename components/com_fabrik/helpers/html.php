@@ -1525,7 +1525,7 @@ EOD;
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
 		$jsFile = FabrikWorker::j3() ? 'autocomplete-bootstrap' : 'autocomplete';
 		self::addScriptDeclaration(
-				"requirejs(['fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
+				"requirejs(['fab/fabrik', 'fab/$jsFile', 'fab/encoder', 'fab/lib/Event.mock'], function () {
 				new $class('$htmlid', $str);
 	});"
 			);
