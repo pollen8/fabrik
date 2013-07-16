@@ -735,22 +735,22 @@ var FbList = new Class({
 	/**
 	 * Get a single row's data
 	 * 
-	 * @param   int  id  ID
+	 * @param   string  id  ID
 	 * 
 	 * @since  3.0.8
 	 * 
 	 * @return object
 	 */
 	getRow: function (id) {
-		var row = $H(this.options.data).filter(function (group) {
+		$H(this.options.data).each(function (group) {
 			for (var i = 0; i < group.length; i ++) {
 				var row = group[i];
 				if (row && row.data.__pk_val === id) {
-					return true;
+					return row;
 				}
 			}
 		});
-		return row[0][0].data;
+		return {};
 	},
 
 	fabrikNavOrder: function (orderby, orderdir) {

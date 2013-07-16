@@ -47,8 +47,9 @@
 			
 			<field name="length_random_filename"
 				type="text"
+				description="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_DESC"
 				label="PLG_ELEMENT_FILEUPLOAD_LENGTH_RANDOM_FILENAME_LABEL"
-				size="10"/>
+				size="3" />
 				
 			<field name="ul_file_increment"
 				type="list"

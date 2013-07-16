@@ -8613,6 +8613,7 @@ class FabrikFEModelList extends JModelForm
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
 	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
+	 *                                     where - additional where filter to apply to query (@since 3.0.8)
 	 *
 	 * @return  array  Values for the column - empty array if no results found
 	 */
@@ -8646,10 +8647,11 @@ class FabrikFEModelList extends JModelForm
 	 * @param   mixed  $col       Column to grab. Element full name or id
 	 * @param   bool   $distinct  Select distinct values only
 	 * @param   array  $opts      Options: filterLimit bool - should limit to filter_list_max global param (default true)
+	 *                                     where - additional where filter to apply to query (@since 3.0.8)
 	 *
 	 * @since   3.0.7
 	 *
-	 * @return  array  column's values
+	 * @return  array  Column's values
 	 */
 
 	public static function columnData($listId, $col, $distinct = true, $opts = array())
@@ -8670,6 +8672,11 @@ class FabrikFEModelList extends JModelForm
 		$query = $listModel->buildQueryWhere(false, $query);
 		$query = $listModel->pluginQuery($query);
 		$filterLimit = JArrayHelper::getValue($opts, 'filterLimit', true);
+		$where = JArrayHelper::getValue($opts, 'where', '');
+		if ($where != '')
+		{
+			$query->where($where);
+		}
 		if ($filterLimit)
 		{
 			$db->setQuery($query, 0, $fbConfig->get('filter_list_max', 100));

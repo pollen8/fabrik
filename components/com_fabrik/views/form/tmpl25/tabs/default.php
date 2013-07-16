@@ -84,7 +84,11 @@ $this->group = $group;
 					<?php
 					$this->elements = $subgroup;
 					echo $this->loadTemplate($group->tmpl);
-					?>
+	// Show the group outro
+	if ($group->outro !== '') :?>		<div class="groupoutro"><?php echo $group->outro ?></div>
+	<?php
+	endif;
+	?>					?>
 				</div>
 				<?php if ($group->editable) : ?>
 					<div class="fabrikGroupRepeater">
@@ -112,6 +116,11 @@ $this->group = $group;
 	else:
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
+		// Show the group outro
+		if ($group->outro !== '') :?>
+			<div class="groupoutro"><?php echo $group->outro ?></div>
+<?php
+		endif;
 	endif;
 	?>
 	</div>

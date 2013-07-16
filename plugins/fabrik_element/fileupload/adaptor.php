@@ -266,4 +266,36 @@ abstract class FabrikStorageAdaptor
 	{
 		return true;
 	}
+
+	/**
+	 * Randomize file name
+	 *
+	 * @since 3.0.8
+	 *
+	 * @param string   &$filename  File name
+	 */
+
+	protected function randomizeName(&$filename)
+	{
+		$params = $this->getParams();
+		if ($params->get('random_filename') == 1)
+		{
+			$length = (int) $params->get('length_random_filename');
+			if ($length < 6)
+			{
+				$length = 6;
+			}
+			$key = "";
+			$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
+			$i = 0;
+			while ($i < $length)
+			{
+				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
+				$key .= $char;
+				$i++;
+			}
+			$ext = JFile::getExt($filename);
+			$filename = $key . '.' . $ext;
+		}
+	}
 }

@@ -199,7 +199,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$element = $this->getElement();
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
-		$glue  = $condition == '=' ? 'OR' : 'AND';
+		$glue = $this->getElement()->filter_exact_match ? 'AND' : 'OR';
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$originalValue = (array) $originalValue;

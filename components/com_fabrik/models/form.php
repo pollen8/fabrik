@@ -4060,6 +4060,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
+			$group->outro = $groupParams->get('outro');
 			$group->columns = $groupParams->get('group_columns', 1);
 			$group->splitPage = $groupParams->get('split_page', 0);
 			if ($groupModel->canRepeat())

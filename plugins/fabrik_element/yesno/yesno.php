@@ -42,7 +42,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */
@@ -60,8 +60,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -92,8 +92,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 * Shows the data formatted for the table view with format = pdf
 	 * note pdf lib doesnt support transparent pngs hence this func
 	 *
-	 * @param   string  $data     cell data
-	 * @param   object  $thisRow  row data
+	 * @param   string  $data     Cell data
+	 * @param   object  $thisRow  Row data
 	 *
 	 * @return string formatted value
 	 */
@@ -119,8 +119,8 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Prepares the element data for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -158,7 +158,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Run after unmergeFilterSplits to ensure filter dropdown labels are correct
 	 *
-	 * @param   array  &$rows  filter options
+	 * @param   array  &$rows  Filter options
 	 *
 	 * @return  null
 	 */
@@ -279,11 +279,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	/**
 	 * Get the table filter for the element
 	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
-	 * @return  string	filter html
+	 * @return  string	Filter html
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -322,11 +322,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns only data found in the table you are filtering on
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array	filter value and labels
 	 */
@@ -357,11 +357,11 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	 * Create an array of label/values which will be used to populate the elements filter dropdown
 	 * returns all possible options
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array	filter value and labels
 	 */

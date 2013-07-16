@@ -611,13 +611,13 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * recurisive function to add files and folders into the zip
+	 * Recurisive function to add files and folders into the zip
 	 *
-	 * @param   array   $filenames  list of file names to add $filenames
-	 * @param   array   &$files     list of already added files files
-	 * @param   string  $root       root path
+	 * @param   array   $filenames  List of file names to add $filenames
+	 * @param   array   &$files     List of already added files files
+	 * @param   string  $root       Root path
 	 *
-	 * @return  array  files
+	 * @return  array  Files
 	 */
 
 	protected function addFiles($filenames, &$files, $root = '')
@@ -637,7 +637,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$data = JFile::read($fpath);
 				if ($data === false)
 				{
-					JFactory::getApplication->>enqueueMessage('could not read ' . $fpath, 'notice');
+					JFactory::getApplication()->enqueueMessage('could not read ' . $fpath, 'notice');
 				}
 				$files[] = array('name' => $zippath, 'data' => $data);
 			}

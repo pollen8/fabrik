@@ -1175,11 +1175,11 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
+				// Ensure the array is indexed starting at 0.
+				$value = array_values($value);
 
 				// Empty ranged data test
-
-				// $$$ hugh - was getting single value array when testing AJAX nav, so 'undefined index 1' warning.
-				if (is_array($value) && $value[0] == '' && (!isset($value[1]) || $value[1] == ''))
+				if (JArrayHelper::getValue($value, 0) == '' && JArrayHelper::getValue($value, 1) == '')
 				{
 					continue;
 				}
