@@ -239,10 +239,10 @@ class FabrikUploader extends JObject
 	 * @param   string  $newFileName   This recursions file name
 	 * @param   int     $version       File version
 	 *
-	 * @return  string  new file name
+	 * @return  string  New file name
 	 */
 
-	public function incrementFileName($origFileName, $newFileName, $version)
+	public static function incrementFileName($origFileName, $newFileName, $version)
 	{
 		if (JFile::exists($newFileName))
 		{

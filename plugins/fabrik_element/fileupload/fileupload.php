@@ -710,10 +710,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * Manupulates posted form data for insertion into database
+	 * Manipulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -728,8 +728,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * Checks the posted form data against elements INTERNAL validataion rule
 	 * e.g. file upload size / type
 	 *
-	 * @param   string  $data           elements data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Elements data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool	true if passes / false if falise validation
 	 */
@@ -739,76 +739,27 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$params = $this->getParams();
-		$groupModel = $this->getGroupModel();
-		$group = $groupModel->getGroup();
 		$this->_validationErr = '';
 		$errors = array();
-		$elName = $this->getFullName();
 
-		// Remove any repeat group labels
-		$elName = str_replace('[]', '', $elName);
-		if ($groupModel->isJoin())
-		{
-			$joinArray = array();
-			if (!preg_match('#join\[(\d+)\]\[(\S+)\]#', $elName, $joinArray))
-			{
-				return true;
-			}
-			if (!array_key_exists('join', $_FILES))
-			{
-				return true;
-			}
-			$aFile = $_FILES['join'];
-			$myFileName = $aFile['name'][$joinArray[1]][$joinArray[2]];
-			$myFileSize = $aFile['size'][$joinArray[1]][$joinArray[2]];
-			if (is_array($myFileSize))
-			{
-				$myFileSize = $myFileSize[$repeatCounter];
-			}
-			if (is_array($myFileName))
-			{
-				$myFileName = $myFileName[$repeatCounter];
-			}
-		}
-		else
-		{
-
-			if ($input->get('method') === 'ajax_upload')
-			{
-				$aFile = $_FILES['file'];
-			}
-			else
-			{
-				if (!array_key_exists($elName, $_FILES))
-				{
-					return true;
-				}
-				$aFile = $_FILES[$elName];
-			}
-
-			if ($groupModel->canRepeat())
-			{
-				$myFileName = $aFile['name'][$repeatCounter];
-				$myFileSize = $aFile['size'][$repeatCounter];
-			}
-			else
-			{
-				$myFileName = $aFile['name'];
-				$myFileSize = $aFile['size'];
-			}
-		}
+		$name = $this->getFullName(true, false);
 		$ok = true;
+		$files = $input->files->get($name, array(), 'array');
 
-		if (!$this->_fileUploadFileTypeOK($myFileName))
+		$file = JArrayHelper::getValue($files, $repeatCounter);
+		$fileName = $file['name'];
+		$fileSize = $file['size'];
+
+		if (!$this->_fileUploadFileTypeOK($fileName))
 		{
 			$errors[] = JText::_('PLG_ELEMENT_FILEUPLOAD_FILE_TYPE_NOT_ALLOWED');
 			$ok = false;
 		}
-		if (!$this->_fileUploadSizeOK($myFileSize))
+		if (!$this->_fileUploadSizeOK($fileSize))
 		{
 			$ok = false;
-			$mySize = $myFileSize / 1000;
-			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $mySize);
+			$size = $fileSize / 1000;
+			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $size);
 		}
 		$filepath = $this->_getFilePath($repeatCounter);
 		jimport('joomla.filesystem.file');
@@ -1172,24 +1123,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-
-		// @TODO: test in joins
 		$params = $this->getParams();
-		$filter = JFilterInput::getInstance();
-		$request = $filter->clean($_REQUEST, 'array');
 		$groupModel = $this->getGroup();
-		$isjoin = $groupModel->isJoin();
 		$formModel = $this->getFormModel();
 		$origData = $formModel->getOrigData();
-		if ($isjoin)
-		{
-			$name = $this->getFullName(true, false);
-			$joinid = $groupModel->getGroup()->join_id;
-		}
-		else
-		{
-			$name = $this->getFullName(true, false);
-		}
+		$name = $this->getFullName(true, false);
+		$myFileDirs = $input->get($name, array(), 'array');
 
 		if ($this->processAjaxUploads($name))
 		{
@@ -1211,7 +1150,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		$files = array();
 		$deletedImages = $input->get('fabrik_fileupload_deletedfile', array(), 'array');
-		$gid = $groupModel->getGroup()->id;
+		$gid = $groupModel->getId();
 
 		$deletedImages = JArrayHelper::getValue($deletedImages, $gid, array());
 		$imagesToKeep = array();
@@ -1233,119 +1172,39 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				}
 			}
 		}
-
-		if ($groupModel->canRepeat())
+		$fdata = $_FILES[$name]['name'];
+		foreach ($fdata as $i => $f)
 		{
-			if ($isjoin)
-			{
-				$fdata = $_FILES['join']['name'][$joinid][$name];
-			}
-			else
-			{
-				$fdata = $_FILES[$name]['name'];
-			}
-			foreach ($fdata as $i => $f)
-			{
-				if ($isjoin)
-				{
-					$myFileDir = (is_array($request['join'][$joinid][$name]) && array_key_exists($i, $request['join'][$joinid][$name]))
-					? $request['join'][$joinid][$name][$i] : '';
-				}
-				else
-				{
-					$myFileDir = (is_array($request[$name]) && array_key_exists($i, $request[$name])) ? $request[$name][$i] : '';
-				}
-
-				$file = array('name' => $isjoin ? $_FILES['join']['name'][$joinid][$name][$i] : $_FILES[$name]['name'][$i],
-						'type' => $isjoin ? $_FILES['join']['type'][$joinid][$name][$i] : $_FILES[$name]['type'][$i],
-						'tmp_name' => $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name][$i] : $_FILES[$name]['tmp_name'][$i],
-						'error' => $isjoin ? $_FILES['join']['error'][$joinid][$name][$i] : $_FILES[$name]['error'][$i],
-						'size' => $isjoin ? $_FILES['join']['size'][$joinid][$name][$i] : $_FILES[$name]['size'][$i]);
-				if ($file['name'] != '')
-				{
-					$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
-				}
-				else
-				{
-					$files[$i] = $imagesToKeep[$i];
-				}
-			}
-			foreach ($imagesToKeep as $k => $v)
-			{
-				if (!array_key_exists($k, $files))
-				{
-					$files[$k] = $v;
-				}
-			}
-		}
-		else
-		{
-			$file = array('name' => '');
-			if ($isjoin)
-			{
-				$myFileDir = $request['join'][$joinid][$name];
-				if (array_key_exists('join', $_FILES) && array_key_exists('name', $_FILES['join'])
-					&& array_key_exists($joinid, $_FILES['join']['name']) && array_key_exists($name, $_FILES['join']['name'][$joinid]))
-				{
-					$file['name'] = $_FILES['join']['name'][$joinid][$name];
-					$file['type'] = $_FILES['join']['type'][$joinid][$name];
-					$file['tmp_name'] = $_FILES['join']['tmp_name'][$joinid][$name];
-					$file['error'] = $_FILES['join']['error'][$joinid][$name];
-					$file['size'] = $_FILES['join']['size'][$joinid][$name];
-				}
-			}
-			else
-			{
-				$myFileDir = JArrayHelper::getValue($request, $name);
-				if (array_key_exists($name, $_FILES))
-				{
-					$file['name'] = $_FILES[$name]['name'];
-					$file['type'] = $_FILES[$name]['type'];
-					$file['tmp_name'] = $_FILES[$name]['tmp_name'];
-					$file['error'] = $_FILES[$name]['name'];
-					$file['size'] = $_FILES[$name]['size'];
-				}
-			}
-			/*
-			 $file = array(
-			 		'name' 			=> $isjoin ? $_FILES['join']['name'][$joinid][$name] : $_FILES[$name]['name'],
-			 		'type' 			=> $isjoin ? $_FILES['join']['type'][$joinid][$name] : $_FILES[$name]['type'],
-			 		'tmp_name' 	=> $isjoin ? $_FILES['join']['tmp_name'][$joinid][$name] : $_FILES[$name]['tmp_name'],
-			 		'error' 		=> $isjoin ? $_FILES['join']['error'][$joinid][$name] : $_FILES[$name]['error'],
-			 		'size' 			=> $isjoin ? $_FILES['join']['size'][$joinid][$name] : $_FILES[$name]['size']
-			 );
-			*/
+			$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
+			$file = array('name' => $_FILES[$name]['name'][$i],
+					'type' => $_FILES[$name]['type'][$i],
+					'tmp_name' => $_FILES[$name]['tmp_name'][$i],
+					'error' => $_FILES[$name]['error'][$i],
+					'size' => $_FILES[$name]['size'][$i]);
 
 			if ($file['name'] != '')
 			{
-				$files[] = $this->_processIndUpload($file, $myFileDir);
+				$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
 			}
 			else
 			{
-				/* $$$ hugh - fixing nasty bug where existing upload was getting wiped when editing an existing row and not uploading anything.
-				 * I think this should work.  if we're not in a repeat group, then it doesn't matter how many rows were in origData, and hence
-				* how many rows are in $imagesToKeep ... if $imagesToKeep isn't empty, then we can assume a) it occurs at least once, and
-				* b) it'll at least be in [0]
-				*/
-				if (!empty($imagesToKeep))
-				{
-					$files[] = $origData[0]->$name;
-				}
+				$files[$i] = $imagesToKeep[$i];
 			}
 		}
-		$files = array_flip(array_flip($files));
+
+		foreach ($imagesToKeep as $k => $v)
+		{
+			if (!array_key_exists($k, $files))
+			{
+				$files[$k] = $v;
+			}
+		}
 
 		foreach ($files as &$f)
 		{
 			$f = str_replace('\\', '/', $f);
 		}
 
-		/* $$$ hugh - if we have multiple repeat joined groups, the data won't have been merged / reduced,
-		 * so the double array_flip will have made 'holes' in the array, by removign duplicates.
-		* So, we need to re-index, otherwise the _formData['join'] data
-		* structure will end up havign holes in it in processToDb, and we drop data.
-		*/
-		$files = array_values($files);
 		if ($params->get('upload_delete_image'))
 		{
 			foreach ($deletedImages as $filename)
@@ -1353,24 +1212,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$this->deleteFile($filename);
 			}
 		}
-		// $$$ rob dont alter the request array as we should be inserting into the form models
-		// ->_formData array using updateFormData();
-
-		if ($isjoin)
-		{
-			if (!$groupModel->canRepeat())
-			{
-				$files = JArrayHelper::getValue($files, 0, '');
-			}
-			$formModel->updateFormData("join.{$joinid}.{$name}", $files);
-			$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
-		}
-		else
-		{
-			$strfiles = implode(GROUPSPLITTER, $files);
-			$formModel->updateFormData($name . '_raw', $strfiles);
-			$formModel->updateFormData($name, $strfiles);
-		}
+		// Update form model with file data
+		$formModel->updateFormData($name . '_raw', $files);
+		$formModel->updateFormData($name, $files);
 	}
 
 	/**
@@ -1419,8 +1263,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * Does the element conside the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
 	 *
 	 * @return  bool
 	 */
@@ -1510,11 +1354,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Process the upload (can be called via ajax from pluploader)
 	 *
-	 * @param   array   &$file               file info
-	 * @param   string  $myFileDir           user selected upload folder
-	 * @param   int     $repeatGroupCounter  repeat group counter
+	 * @param   array   &$file               File info
+	 * @param   string  $myFileDir           User selected upload folder
+	 * @param   int     $repeatGroupCounter  Repeat group counter
 	 *
-	 * @return	string	location of uploaded file
+	 * @return	string	Location of uploaded file
 	 */
 
 	protected function _processIndUpload(&$file, $myFileDir = '', $repeatGroupCounter = 0)
@@ -1580,9 +1424,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$oImage = FabimageHelper::loadLib($params->get('image_library'));
 		$oImage->setStorage($storage);
 
-		/* $$$ hugh - removing default of 200, otherwise we ALWAYS resize, whereas
-		 * tooltip on these options say 'leave blank for no resizing'
-		*/
 		$mainWidth = $params->get('fu_main_max_width', '');
 		$mainHeight = $params->get('fu_main_max_height', '');
 
@@ -1656,9 +1497,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Get the full server file path for the upload, including the file name
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return	string	path
+	 * @return	string	Path
 	 */
 
 	protected function _getFilePath($repeatCounter = 0)
@@ -1679,37 +1520,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
-		if ($groupModel->isJoin())
-		{
-			$joinid = $groupModel->getGroup()->join_id;
-			$elNameNoJoinstr = $this->getFullName(true, false);
-			if ($groupModel->canRepeat())
-			{
-				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr][$repeatCounter]
-				: @$_FILES['file']['name'];
-				$myFileDir = JArrayHelper::getValue($aData['join'][$joinid][$elNameNoJoinstr], 'ul_end_dir', array());
-				$myFileDir = JArrayHelper::getValue($myFileDir, $repeatCounter, '');
-			}
-			else
-			{
-				$myFileName = array_key_exists('join', $_FILES) ? @$_FILES['join']['name'][$joinid][$elNameNoJoinstr] : @$_FILES['file']['name'];
-				$myFileDir = JArrayHelper::getValue($aData['join'][$joinid][$elNameNoJoinstr], 'ul_end_dir', '');
-			}
-		}
-		else
-		{
-			if ($groupModel->canRepeat())
-			{
-				$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'][$repeatCounter] : @$_FILES['file']['name'];
-				$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'][$repeatCounter]
-				: '';
-			}
-			else
-			{
-				$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'] : @$_FILES['file']['name'];
-				$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'] : '';
 
-			}
+		$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'] : @$_FILES['file']['name'];
+		if (is_array($myFileName))
+		{
+			$myFileName = JArrayHelper::getValue($myFileName, $repeatCounter, '');
+		}
+		$myFileDir = array_key_exists($elNameRaw, $aData) && is_array($aData[$elNameRaw]) ? @$aData[$elNameRaw]['ul_end_dir'] : '';
+		if (is_array($myFileDir))
+		{
+			$myFileDir = JArrayHelper::getValue($myFileDir, $repeatCounter, '');
 		}
 
 		$storage = $this->getStorage();
@@ -2682,132 +2502,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		// @TODO rename $this->defaults to $this->values
-		if (!isset($this->defaults))
-		{
-			$this->defaults = array();
-		}
-		if (!array_key_exists($repeatCounter, $this->defaults))
-		{
-			$groupModel = $this->getGroup();
-			$group = $groupModel->getGroup();
-			$joinid = $this->isJoin() ? $this->getJoinModel()->getJoin()->id : $group->join_id;
-			$formModel = $this->getFormModel();
-			$element = $this->getElement();
+		$value = parent::getValue($data, $repeatCounter, $opts);
+		return $value;
 
-			$value = $this->getDefaultOnACL($data, $opts);
-			$name = $this->getFullName(true, false);
-			$rawname = $name . '_raw';
-			if ($groupModel->isJoin() || $this->isJoin())
-			{
-				/* $$$ rob 22/02/2011 this test barfed on fileuploads which weren't repeating
-				 * if ($groupModel->canRepeat() || !$this->isJoin()) {
-				*/
-				if ($groupModel->canRepeat())
-				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-					{
-						$value = $data['join'][$joinid][$name][$repeatCounter];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($name, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-						{
-							$value = $data['join'][$joinid][$name][$repeatCounter];
-						}
-					}
-				}
-				else
-				{
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-						&& array_key_exists($name, $data['join'][$joinid]))
-					{
-						$value = $data['join'][$joinid][$name];
-					}
-					else
-					{
-						if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid])
-							&& array_key_exists($rawname, $data['join'][$joinid]))
-						{
-							$value = $data['join'][$joinid][$rawname];
-						}
-					}
-					/* $$$ rob if you have 2 tbl joins, one repeating and one not
-					 * the none repeating one's values will be an array of duplicate values
-					* but we only want the first value
-					*/
-					if (is_array($value) && !$this->isJoin())
-					{
-						$value = array_shift($value);
-					}
-				}
-			}
-			else
-			{
-				if ($groupModel->canRepeat())
-				{
-					// Repeat group NO join
-					$thisname = $name;
-					if (!array_key_exists($name, $data))
-					{
-						$thisname = $rawname;
-					}
-					if (array_key_exists($thisname, $data))
-					{
-						if (is_array($data[$thisname]))
-						{
-							// Occurs on form submission for fields at least
-							$a = $data[$thisname];
-						}
-						else
-						{
-							// Occurs when getting from the db
-							$a = json_decode($data[$thisname]);
-						}
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
+		// @TODO test crop data
 
-				}
-				else
-				{
-					$value = !is_array($data) ? $data : JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
-				}
-			}
-			$params = $this->getParams();
-			if (is_array($value) && !$params->get('ajax_upload'))
-			{
-				if (!$this->canCrop())
-				{
-					$value = implode(',', $value);
-				}
-			}
-			/* $$$ hugh - don't know what this is for, but was breaking empty fields in repeat
-			 * groups, by rendering the //..*..// seps.
-			* if ($value === '') { //query string for joined data
-			*/
-			if ($value === '' && !$groupModel->canRepeat())
-			{
-				// Query string for joined data
-				$value = JArrayHelper::getValue($data, $name);
-			}
-			if (is_array($value) && !$params->get('ajax_upload'))
-			{
-				if (!$this->canCrop())
-				{
-
-					$value = implode(',', $value);
-				}
-			}
-			// @TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			// stops this getting called from form validation code as it messes up repeated/join group validations
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
-			{
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
-			}
-			$this->defaults[$repeatCounter] = $value;
-		}
-		return $this->defaults[$repeatCounter];
 	}
 }

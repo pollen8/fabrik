@@ -93,7 +93,6 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 
 		$editor = parent::getInput();
 		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace">' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '</div>' . $editor . '</div>';
-
 	}
 
 }

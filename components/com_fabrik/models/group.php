@@ -1146,7 +1146,6 @@ class FabrikFEModelGroup extends FabModel
 			{
 				$pk = array_shift($pk);
 			}
-
 			$insertId = $listModel->storeRow($data, $pk, true, $item);
 
 			// Update key

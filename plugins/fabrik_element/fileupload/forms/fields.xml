@@ -246,7 +246,12 @@
 		</fieldset>
 		
 		<fieldset label="PLG_ELEMENT_FILEUPLOAD_STORAGE" name="plg-fileupload-storage">
-			<field default="filesystemstorage" description="PLG_ELEMENT_FILEUPLOAD_FILESTORAGE_TYPE_DESC" label="PLG_ELEMENT_FILEUPLOAD_FILESTORAGE_TYPE_LABEL" name="fileupload_storage_type" type="list">
+		
+			<field name="fileupload_storage_type"
+				type="list"
+				default="filesystemstorage"
+				description="PLG_ELEMENT_FILEUPLOAD_FILESTORAGE_TYPE_DESC"
+				label="PLG_ELEMENT_FILEUPLOAD_FILESTORAGE_TYPE_LABEL">
 					<option value="filesystemstorage">PLG_ELEMENT_FILEUPLOAD_FILE_SYSTEM</option>
 					<option value="amazons3storage">PLG_ELEMENT_FILEUPLOAD_AMAZONS3</option>	
 			</field>
