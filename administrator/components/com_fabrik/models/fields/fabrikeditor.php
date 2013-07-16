@@ -44,7 +44,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 	protected function getInput()
 	{
 		$mode = $this->element['mode'] ? $this->element['mode'] : 'html';
-		$theme = $this->element['theme'] ? $this->element['theme'] : 'Clouds';
+		$theme = $this->element['theme'] ? $this->element['theme'] : 'clouds';
 		$height = $this->element['height'] ? $this->element['height'] : '200px';
 		$width = $this->element['width'] ? $this->element['width'] : '300px';
 		FabrikHelperHTML::framework();
@@ -61,11 +61,18 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
    			});
 			';
 
+		$shim = array();
+		$deps = new stdClass;
+		$deps->deps = array();
+
 		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
 		if ($mode !== 'javascript')
 		{
-			$src[] = 'media/com_fabrik/js/lib/ace/src-min-noconflict/mode-' . $mode . '.js';
+			$deps->deps[] = 'fabrik/lib/ace/src-min-noconflict/mode-' . $mode;
 		}
+
+		$shim['fabrik/lib/ace/src-min-noconflict/ace'] = $deps;
+		FabrikHelperHTML::iniRequireJs($shim);
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
