@@ -283,7 +283,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 							$iCounter++;
 						}
 					}
-					else
+					 else
 					{
 						if (is_object($value[$x]))
 						{
@@ -415,7 +415,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 
-		// $$$ hugh - have to run thru rendering even if data is empty, iin case default image is being used.
+		// $$$ hugh - have to run thru rendering even if data is empty, in case default image is being used.
 		if (empty($data))
 		{
 			$data[0] = $this->_renderListData('', $thisRow, 0);
@@ -672,7 +672,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$url = '<a href="' . $link . '"' . $aClass . '>' . $title . '</a>';
 			return $url;
 		}
-
 		if ($params->get('fu_show_image_in_table') == '0')
 		{
 			$render = $this->loadElement('default');
@@ -862,6 +861,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$filter = JFilterInput::getInstance();
 			$post = $filter->clean($_POST, 'array');
 			$raw = $this->getValue($post);
+
 			if ($raw == '')
 			{
 				return true;
@@ -876,12 +876,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				return true;
 			}
-			// $$$ hugh - no longer seems to be in $raw[0] ?
 
-			/*
-			 $crop = (array)JArrayHelper::getValue($raw[0], 'crop');
-			$ids = (array)JArrayHelper::getValue($raw[0], 'id');
-			*/
 			$crop = (array) JArrayHelper::getValue($raw, 'crop');
 			$ids = (array) JArrayHelper::getValue($raw, 'id');
 			$ids = array_values($ids);
@@ -897,6 +892,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				{
 					$files = $files[0];
 				}
+
 				$joinid = $groupModel->getGroup()->join_id;
 				if ($this->isJoin())
 				{
@@ -909,14 +905,14 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 				$name = $this->getFullName(true, false);
 
-				$formModel->updateFormData("join.{$joinid}.{$name}", $files);
-				$formModel->updateFormData("join.{$joinid}.{$name}_raw", $files);
+				$formModel->updateFormData($name, $files);
+				$formModel->updateFormData($name . '_raw', $files);
 
-				$formModel->updateFormData("join.{$joinid}.{$joinsid}", $ids);
-				$formModel->updateFormData("join.{$joinid}.{$joinsid}_raw", $ids);
+				$formModel->updateFormData($joinsid, $ids);
+				$formModel->updateFormData($joinsid . '_raw', $ids);
 
-				$formModel->updateFormData("join.{$joinid}.{$joinsparam}", $saveParams);
-				$formModel->updateFormData("join.{$joinid}.{$joinsparam}_raw", $saveParams);
+				$formModel->updateFormData($joinsparam, $saveParams);
+				$formModel->updateFormData($joinsparam . '_raw', $saveParams);
 			}
 			else
 			{
@@ -1600,6 +1596,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$use_download_script = $params->get('fu_use_download_script', '0');
 
 		// $$$ rob - explode as it may be grouped data (if element is a repeating upload)
+
 		$values = is_array($value) ? $value : FabrikWorker::JSONtoData($value, true);
 
 		if (!$this->isEditable() && ($use_download_script == FU_DOWNLOAD_SCRIPT_DETAIL || $use_download_script == FU_DOWNLOAD_SCRIPT_BOTH))

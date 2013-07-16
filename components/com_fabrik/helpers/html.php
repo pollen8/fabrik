@@ -890,10 +890,6 @@ EOD;
 				JHtml::_('script', 'media/com_fabrik/js/lib/Event.mock.js');
 			}
 
-			if (self::inAjaxLoadedPage())
-			{
-				echo '<script type="text/javascript" src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js"></script>';
-			}
 			if (!self::inAjaxLoadedPage())
 			{
 				$document->addScript(COM_FABRIK_LIVESITE . 'media/com_fabrik/js/lib/require/require.js');
