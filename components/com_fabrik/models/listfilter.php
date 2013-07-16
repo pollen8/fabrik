@@ -1173,13 +1173,17 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
-				// Ensure the array is indexed starting at 0.
-				$value = array_values($value);
-
-				// Empty ranged data test
-				if (JArrayHelper::getValue($value, 0) == '' && JArrayHelper::getValue($value, 1) == '')
+				
+				if (is_array($value))
 				{
-					continue;
+					// Ensure the array is indexed starting at 0.
+					$value = array_values($value);
+	
+					// Empty ranged data test
+					if (JArrayHelper::getValue($value, 0) == '' && JArrayHelper::getValue($value, 1) == '')
+					{
+						continue;
+					}
 				}
 				$eval = is_array($value) ? JArrayHelper::getValue($value, 'eval', FABRIKFILTER_TEXT) : FABRIKFILTER_TEXT;
 				if (!is_a($elementModel, 'plgFabrik_ElementDatabasejoin'))
