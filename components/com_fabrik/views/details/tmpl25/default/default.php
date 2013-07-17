@@ -61,7 +61,9 @@ endif;
 
 // Form intro and start
 echo $form->intro;
-echo $form->startTag;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 
 // Error message
@@ -89,17 +91,17 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 
 	// Create the group fieldset ?>
-	<<?php echo $form->fieldsetTag ?> class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+	<div class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 	<?php
 	// Do we add a legend?
 	if (trim($group->title) !== '') :
 	?>
-		<<?php echo $form->legendTag ?> class="legend">
+		<h3 class="legend">
 			<span>
 				<?php echo $group->title;?>
 			</span>
-		</<?php echo $form->legendTag ?>>
+		</h3>
 	<?php
 	endif;
 	?>
@@ -118,8 +120,13 @@ foreach ($this->groups as $group) :
 
 	$this->elements = $group->elements;
 	echo $this->loadTemplate($group->tmpl);
+	// Show the group outro
+	if ($group->outro !== '') :?>
+		<div class="groupoutro"><?php echo $group->outro ?></div>
+	<?php
+	endif;
 	?>
-</<?php echo $form->fieldsetTag ?>>
+</div>
 <?php
 endforeach;
 
@@ -138,7 +145,9 @@ if ($this->hasActions) :?>
 	</div>
 <?php
 endif;
-echo $form->endTag;
+?>
+</div>
+<?php
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

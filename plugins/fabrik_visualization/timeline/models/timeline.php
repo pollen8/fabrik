@@ -208,7 +208,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 			if (!array_key_exists($startKey, $elements))
 			{
-				JError::raiseError(500, $startdate2 . " not found in the list, is it published?");
+				throw new RuntimeException($startdate2 . " not found in the list, is it published?", 500);
 			}
 			$startElement = $elements[$startKey];
 			$endParams = $endElement->getParams();

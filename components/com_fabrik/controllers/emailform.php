@@ -44,11 +44,8 @@ class FabrikControllerEmailform extends JControllerLegacy
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 
-		$model = $this->getModel($modelName, 'FabrikFEModel');
-
 		// Test for failed validation then page refresh
-		$model->getErrors();
-		if (!JError::isError($model) && is_object($model))
+		if ($model = $this->getModel($modelName, 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

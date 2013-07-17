@@ -54,21 +54,34 @@
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="synchro_users"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL" name="synchro_users" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_DESC"
+				label="PLG_FABRIK_FORM_JUSER_SYNCRONIZE_USERS_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="juser_sync_on_edit"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_DESC" label="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_LABEL" name="juser_sync_on_edit" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_DESC"
+				label="PLG_FABRIK_FORM_JUSER_JUSERSYNCONEDIT_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field cols="55" description="PLG_FABRIK_FORM_JUSER_CONDITION_DESC" label="PLG_FABRIK_FORM_JUSER_CONDITION_LABEL" name="juser_conditon" repeat="true" rows="5" type="textarea"/>
+			<field name="juser_conditon"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_FABRIK_FORM_JUSER_CONDITION_DESC"
+				label="PLG_FABRIK_FORM_JUSER_CONDITION_LABEL"
+				repeat="true"/>
 			
 		</fieldset>
 	</fields>

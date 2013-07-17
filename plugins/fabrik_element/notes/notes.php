@@ -375,20 +375,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			}
 			$db->setQuery($query);
 
-			if (!$db->execute())
-			{
-				JError::raiseError(500, 'db insert failed');
-			}
-			else
-			{
-				$this->loadRow = $db->quote($db->insertid());
-				$opts = $this->_getOptions();
-				$row = $opts[0];
-				$return->msg = 'note added';
-				$return->data = $row;
-				$return->label = $this->getDisplayLabel($row);
-				echo json_encode($return);
-			}
+			$db->execute();
+			$this->loadRow = $db->quote($db->insertid());
+			$opts = $this->_getOptions();
+			$row = $opts[0];
+			$return->msg = 'note added';
+			$return->data = $row;
+			$return->label = $this->getDisplayLabel($row);
+			echo json_encode($return);
 		}
 	}
 

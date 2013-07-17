@@ -72,9 +72,8 @@
 				label="PLG_ELEMENT_DROPDOWN_SEPARATOR_LABEL" size="10" />
 			
 			<field name="dropdown_populate"
-				type="textarea"
-				cols="45"
-				rows="6"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_ELEMENT_DROPDOWN_POPULATE_DESC"
 				label="PLG_ELEMENT_DROPDOWN_POPULATE_LABEL" />
 				
@@ -85,10 +84,9 @@
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-dropdown" label="COM_FABRIK_OPTIONS">
 			
 			<field name="default"
-				type="textarea"
-				cols="45"
-				label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL"
-				rows="6" />
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_DROPDOWN_DEFAULT_LABEL" />
 						
 			<field name="eval"
 				type="radio"

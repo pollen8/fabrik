@@ -56,8 +56,12 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		if ($domatch)
 		{
 			$formModel = $elementModel->getFormModel();
-			$php_code = $params->get('php-code');
-			$retval = eval($php_code[$pluginc]);
+			$formData = $formModel->formData;
+			$w = new FabrikWorker;
+			$phpCode = $params->get('php-code');
+			$php_code = $w->parseMessageForPlaceHolder($phpCode[$pluginc], $formData, true, true);
+			$retval = @eval($php_code);
+			FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false,false) . '::_getV(): %s');
 			return $retval;
 		}
 		return true;
@@ -83,8 +87,13 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		if (!$domatch)
 		{
 			$formModel = $elementModel->getFormModel();
-			$php_code = $params->get('php-code');
-			return eval($php_code[$pluginc]);
+			$formData = $formModel->formData;
+			$w = new FabrikWorker;
+			$phpCode = $params->get('php-code');
+			$php_code = $w->parseMessageForPlaceHolder($phpCode[$pluginc], $formData, true, true);
+			$retval = @eval($php_code);
+			FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false,false) . '::_getV(): %s');			$retval = eval($php_code[$pluginc]);
+			return $retval;
 		}
 		return $data;
 	}

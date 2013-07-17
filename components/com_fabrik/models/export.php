@@ -358,23 +358,24 @@ class FabrikFEModelExport
 	function writeExportBuffer($str)
 	{
 		$filename = $this->_bufferFile;
+
 		// Let's make sure the file exists and is writable first.
 		if (JFile::exists($filename))
 		{
 			if (!is_writable($filename))
 			{
-				return JError::raiseError(500, JText::sprintf("FILE NOT WRITABLE", $filename));
+				throw new RuntimeException(JText::sprintf("FILE NOT WRITABLE", $filename), 500);
 			}
 		}
 		if (!$handle = fopen($filename, 'a'))
 		{
-			return JError::raiseError(500, JText::sprintf("CANT OPEN FILES", $filename));
+			throw new RuntimeException(JText::sprintf("CANT OPEN FILES", $filename), 500);
 		}
 
 		// Write $somecontent to our opened file.
-		if (fwrite($handle, $str) === FALSE)
+		if (fwrite($handle, $str) === false)
 		{
-			return JError::raiseError(500, JText::sprintf("CANT WRITE TO FILES", $filename));
+			throw new RuntimeException(JText::sprintf("CANT WRITE TO FILES", $filename), 500);
 		}
 		fclose($handle);
 	}

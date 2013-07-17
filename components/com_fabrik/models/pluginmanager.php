@@ -259,6 +259,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	 * @param   string  $className  plugin name e.g. fabrikfield
 	 * @param   string  $group      plugin type element/ form or list
 	 *
+	 * @throws RuntimeException
+	 *
 	 * @return  mixed	false if not loaded - otherwise plugin object
 	 */
 
@@ -292,8 +294,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 				}
 				else
 				{
-					JError::raiseNotice(500, 'plugin manager: did not load ' . $group . '.' . $className);
-					return false;
+					throw new RuntimeException('plugin manager: did not load ' . $file);
 				}
 			}
 		}
@@ -315,6 +316,10 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 		// Load system ini file
 		$langFile .= '.sys';
 		$lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
+		if (!is_object($plugIn))
+		{
+			throw new RuntimeException('plugin manager: did not load ' . $group . '.' . $className);
+		}
 		return $plugIn;
 	}
 
@@ -385,11 +390,6 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 			$db->setQuery($query);
 
 			$elements = $db->loadObjectList();
-
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 
 			// Don't assign the elements into Joomla's main dispatcher as this causes out of memory errors in J1.6rc1
 			$dispatcher = new JDispatcher;

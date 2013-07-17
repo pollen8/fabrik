@@ -24,12 +24,11 @@
 			</field>
 			
 			<field name="thanks_message"
-				type="textarea"
-				cols="60"
+				type="fabrikeditor"
+				mode="html"
 				description="PLG_FORM_REDIRECT_THANKSMSG_DESC"
 				label="PLG_FORM_REDIRECT_THANKSMSG_LABEL"
-				repeat="true"
-				rows="8" />
+				repeat="true" />
 				
 			<field name="save_insession"
 				type="radio"
@@ -43,12 +42,10 @@
 			</field>
 			
 			<field name="redirect_conditon"
-				type="textarea"
-				cols="60"
+				type="fabrikeditor"
+				mode="php"
 				description="PLG_FORM_REDIRECT_CONDITION_DESC"
-				label="PLG_FORM_REDIRECT_CONDITION_LABEL"
-				repeat="true"
-				rows="5"/>
+				label="PLG_FORM_REDIRECT_CONDITION_LABEL" />
 				
 		</fieldset>
 		

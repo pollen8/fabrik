@@ -509,11 +509,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Replace labels shown in table view with icons (if found)
+	 * Replace labels shown in list view with icons (if found)
 	 *
-	 * @param   string  $data  data
-	 * @param   string  $view  list/details
-	 * @param   string  $tmpl  template
+	 * @param   string  $data  Data
+	 * @param   string  $view  List/details
+	 * @param   string  $tmpl  Template
 	 *
 	 * @since 3.0 - icon_folder is a bool - search through template folders for icons
 	 *
@@ -832,7 +832,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	public function canView($view = 'form')
 	{
 		// As list view acl is new we should inherit from the details view setting which was being applied to the list view.
-		$default = ($view === 'list') ? $this->canView() : 1;
+		//$default = ($view === 'list') ? $this->canView() : 1;
+		$default = 1;
 		$key = $view == 'form' ? 'view' : 'listview';
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
 		$params = $this->getParams();
@@ -1268,6 +1269,8 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (!isset($this->defaults))
 		{
 			$this->defaults = array();
@@ -1283,20 +1286,23 @@ class PlgFabrik_Element extends FabrikPlugin
 				$name .= '_raw';
 			}
 			$values = JArrayHelper::getValue($data, $name, $default);
+
+			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
+			if ((is_array($values) && empty($values)) || $values === '')
+			{
+				$values = $input->get($name, '', 'string');
+			}
 			if ($groupRepeat)
 			{
+				$values = (array) $values;
 				$values = JArrayHelper::getValue($values, $repeatCounter, '');
 			}
 
-			/*@TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			 *stops this getting called from form validation code as it messes up repeated/join group validations
-			*/
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
+			if (JArrayHelper::getValue($opts, 'runplugins', false))
 			{
 				$formModel = $this->getFormModel();
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
-
 			$this->defaults[$key] = $values;
 		}
 		return $this->defaults[$key];
@@ -2780,6 +2786,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			case 'field':
 			default:
 				// $$$ rob - if searching on "O'Fallon" from querystring filter the string has slashes added regardless
+				$default = (string) $default;
 				$default = stripslashes($default);
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
@@ -3313,10 +3320,14 @@ class PlgFabrik_Element extends FabrikPlugin
 		$sql = $listModel->pluginQuery($sql);
 		$fabrikDb->setQuery($sql, 0, $fbConfig->get('filter_list_max', 100));
 		FabrikHelperHTML::debug($fabrikDb->getQuery(), 'element filterValueList_Exact:');
-		$rows = $fabrikDb->loadObjectList();
-		if ($fabrikDb->getErrorNum() != 0)
+
+		try
 		{
-			JError::raiseNotice(500, 'filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg());
+			$rows = $fabrikDb->loadObjectList();
+		}
+		catch (RuntimeException $e)
+		{
+			throw new ErrorException('filter query error: ' . $this->getElement()->name . ' ' . $fabrikDb->getErrorMsg(), 500);
 		}
 		return $rows;
 
@@ -3860,7 +3871,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function addToDBTable($origColName = null)
 	{
-		JError::raiseNotice(500, 'addTODBTable called but we are not using it');
 	}
 
 	/**
@@ -3876,8 +3886,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$params = $this->getParams();
 		if (!$this->canEncrypt() && $params->get('encrypt'))
 		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
-			return false;
+			throw new RuntimeException('The encryption option is only available for field and text area plugins');
 		}
 		// Overridden in element plugin if needed
 		return true;
@@ -3899,10 +3908,13 @@ class PlgFabrik_Element extends FabrikPlugin
 		$id = (int) $this->getElement()->id;
 		$query->delete()->from('#__{package}_jsactions')->where('element_id =' . $id);
 		$db->setQuery($query);
-		if (!$db->execute())
+		try
 		{
-			JError::raiseNotice(500, 'didnt delete js actions for element ' . $id);
-			return false;
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+			throw new RuntimeException('didnt delete js actions for element ' . $id);
 		}
 		return true;
 	}
@@ -5414,10 +5426,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$query->update('#__{package}_elements')->set('params = ' . $db->quote($element->params))->where('id = ' . (int) $element->id);
 		$db->setQuery($query);
 		$res = $db->execute();
-		if (!$res)
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		return $res;
 	}
 
@@ -6790,7 +6798,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$parentId = $formData[$k];
 			$query->delete($join->table_join)->where('parent_id = ' . $db->quote($parentId));
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 		foreach ($idsToKeep as $parentId => $ids)
 		{
@@ -6801,7 +6809,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$query->where('id NOT IN ( ' . implode($ids, ',') . ')');
 			}
 			$db->setQuery($query);
-			$db->query();
+			$db->execute();
 		}
 	}
 

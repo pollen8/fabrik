@@ -16,9 +16,22 @@ jimport('joomla.filesystem.file');
 
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
+jimport('joomla.log.log');
+
+
+if (JDEBUG)
+{
+	// Add the logger.
+	JLog::addLogger(array('text_file' => 'fabrik.log.php'));
+
+	// Start logging...
+	JLog::add(
+	'your message here',
+	JLog::NOTICE, 'com_fabrik');
+}
 require_once JPATH_COMPONENT . '/controller.php';
 $app = JFactory::getApplication();
 $input = $app->input;

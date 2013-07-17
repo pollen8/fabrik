@@ -69,8 +69,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
-			JError::raiseError(500, implode("\n", $errors));
-			return false;
+			throw new RuntimeException(implode("\n", $errors), 500);
 		}
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
@@ -97,7 +96,6 @@ class FabrikAdminViewVisualization extends JViewLegacy
 ";
 
 		FabrikHelperHTML::script($srcs, $js);
-
 		parent::display($tpl);
 	}
 
@@ -105,6 +103,8 @@ class FabrikAdminViewVisualization extends JViewLegacy
 	 * Add the page title and toolbar.
 	 *
 	 * @since	1.6
+	 *
+	 * @return  null
 	 */
 
 	protected function addToolbar()
@@ -138,6 +138,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 				{
 					JToolBarHelper::apply('visualization.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('visualization.save', 'JTOOLBAR_SAVE');
+
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{

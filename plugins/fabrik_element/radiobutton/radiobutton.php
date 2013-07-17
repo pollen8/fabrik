@@ -24,7 +24,7 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	 * Does the element have a label
 	 * @var bool
 	 */
-	protected $hasLabel = false;
+	protected $hasLabel = true;
 
 	/**
 	* Method to set the element id
@@ -196,9 +196,9 @@ class PlgFabrik_ElementRadiobutton extends PlgFabrik_ElementList
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
 	 */

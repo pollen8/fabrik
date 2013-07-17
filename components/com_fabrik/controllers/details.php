@@ -85,10 +85,7 @@ class FabrikControllerDetails extends JControllerLegacy
 			$model->errors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
 		// Get data as it will be needed for ACL when testing if current row is editable.
@@ -104,7 +101,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		else
 		{
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
@@ -128,8 +125,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
-		$model = $this->getModel('form', 'FabrikFEModel');
-		if (!JError::isError($model))
+		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

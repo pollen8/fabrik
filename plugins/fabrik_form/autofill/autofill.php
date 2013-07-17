@@ -57,17 +57,7 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 		$opts->map = $params->get('autofill_map');
 		$opts->cnn = $params->get('autofill_cnn');
 		$opts->table = $params->get('autofill_table', '');
-		/**
-		 * $$$ hugh - removed this notice, as we support not selecting a list,
-		 * as per the tooltips on the settings, and if not selected we will just
-		 * use "this" list for the lookup.
-		 */
-		/*
-		if ($opts->table === '')
-		{
-			JError::raiseNotice(500, 'Autofill plugin - no list selected');
-		}
-		*/
+
 		$opts->editOrig = $params->get('autofill_edit_orig', 0) == 0 ? false : true;
 		$opts->confirm = (bool) $params->get('autofill_confirm', true);
 		$opts->autofill_lookup_field = $params->get('autofill_lookup_field');
@@ -173,12 +163,12 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 							$to2_raw = $to2 . '_raw';
 							if (!array_key_exists($from, $data))
 							{
-								JError::raiseError(500, 'autofill map json not correctly set?');
+								throw new RuntimeException('autofill map json not correctly set', 500);
 							}
 							$newdata->$to2 = isset($data->$from) ? $data->$from : '';
 							if (!array_key_exists($fromraw, $data))
 							{
-								JError::raiseError(500, 'autofill toraw map json not correctly set?');
+								throw new RuntimeException('autofill toraw map json not correctly set?', 500);
 							}
 							$newdata->$to2_raw = isset($data->$fromraw) ? $data->$fromraw : '';
 						}
@@ -188,13 +178,12 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 						// $$$ hugh - key may exist, but be null
 						if (!array_key_exists($from, $data))
 						{
-							exit;
-							JError::raiseError(500, 'Couln\'t find from value in record data, is the element published?');
+							throw new RuntimeException('Couln\'t find from value in record data, is the element published?', 500);
 						}
 						$newdata->$to = isset($data->$from) ? $data->$from : '';
 						if (!array_key_exists($fromraw, $data))
 						{
-							JError::raiseError(500, 'autofill toraw map json not correctly set?');
+							throw new RuntimeException('autofill toraw map json not correctly set?', 500);
 						}
 						$newdata->$toraw = isset($data->$fromraw) ? $data->$fromraw : '';
 					}

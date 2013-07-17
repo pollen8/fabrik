@@ -395,8 +395,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		JArrayHelper::toInteger($ids);
 		if (empty($ids))
 		{
-			JError::raiseError(400, JText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'));
-			jexit();
+			throw new RuntimeException(JText::_('PLG_LIST_EMAIL_ERR_NO_RECORDS_SELECTED'), 400);
 		}
 		$renderOrder = $input->getInt('renderOrder');
 		$params = $this->getParams();
@@ -496,8 +495,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 
 		if ($toType == 'list' && $to == '')
 		{
-			JError::raiseError(500, JText::_('PLG_LIST_EMAIL_ERR_NO_TO_ELEMENT_SELECTED'));
-			exit;
+			throw new RuntimeException(JText::_('PLG_LIST_EMAIL_ERR_NO_TO_ELEMENT_SELECTED'), 500);
 		}
 		$subject = $input->get('subject', '', 'string');
 		$message = $input->get('message', '', 'html');

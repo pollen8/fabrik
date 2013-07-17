@@ -228,9 +228,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 				// Wont work when rendering in admin module page
 				// @TODO test this now that the list and form pages are loading plugins via ajax (18/08/2012)
-				JHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', true);
-				$document
-					->addScriptDeclaration($script);
+				FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/fabrikmodalrepeat.js', $script);
 			}
 		}
 		$close = "function(c){" . $modalid . ".onClose(c);}";
@@ -256,6 +254,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		$str[] = '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '" value="' . $value . '" />';
 
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 		return implode("\n", $str);
 	}
 }

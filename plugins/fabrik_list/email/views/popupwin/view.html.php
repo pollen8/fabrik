@@ -48,7 +48,7 @@ class FabrikViewPopupwin extends JViewLegacy
 		$records = $this->get('records');
 		if (count($records) == 0)
 		{
-			JError::raiseNotice(500, 'None of the selected records can be emailed');
+			$app->enqueueMessage('None of the selected records can be emailed', 'notice');
 			return;
 		}
 		$this->recordcount = count($records);

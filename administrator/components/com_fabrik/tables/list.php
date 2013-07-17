@@ -150,19 +150,9 @@ class FabrikTableList extends FabTable
 		$this->_db->setQuery($query);
 		$row = $this->_db->loadAssoc();
 
-		// Check for a database error.
-		if ($this->_db->getErrorNum())
-		{
-			$e = new JException($this->_db->getErrorMsg());
-			$this->setError($e);
-			return false;
-		}
-
 		// Check that we have a result.
 		if (empty($row))
 		{
-			$e = new JException(JText::_('JLIB_DATABASE_ERROR_EMPTY_ROW_RETURNED'));
-			$this->setError($e);
 			return false;
 		}
 

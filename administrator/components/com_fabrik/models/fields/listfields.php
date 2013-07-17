@@ -138,7 +138,7 @@ class JFormFieldListfields extends JFormFieldList
 					if (!in_array($controller, array('item', 'module')))
 					{
 						// Seems to work anyway in the admin module page - so lets not raise notice
-						JError::raiseNotice(500, 'Model not set in listfields field ' . $this->id);
+						$app->enqueueMessage('Model not set in listfields field ' . $this->id, 'notice');
 					}
 					return;
 				}
@@ -158,7 +158,7 @@ class JFormFieldListfields extends JFormFieldList
 			case 'form':
 				if (!isset($this->form->model))
 				{
-					JError::raiseNotice(500, 'Model not set in listfields field ' . $this->id);
+					throw new RuntimeException('Model not set in listfields field ' . $this->id);
 					return;
 				}
 				$formModel = $this->form->model;
@@ -225,6 +225,8 @@ class JFormFieldListfields extends JFormFieldList
 			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
 		}
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 		return $return;
 	}
 

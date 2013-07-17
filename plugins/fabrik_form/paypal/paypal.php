@@ -178,7 +178,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 			else
 			{
-				JError::raiseError(500, 'Could not determine subscription period, please check your settings');
+				throw new RuntimeException('Could not determine subscription period, please check your settings', 500);
 			}
 		}
 		/* $$$ rob 03/02/2011
@@ -274,7 +274,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			$query->clear();
 			if (empty($shipping_select) || $shipping_table == '')
 			{
-				JError::raiseNotice(500, 'No shipping lookup table or shipping fields selected');
+				$app->enqueueMessage('No shipping lookup table or shipping fields selected');
 			}
 			else
 			{

@@ -11,6 +11,9 @@
 
 // No direct access
 defined('_JEXEC') or die;
+
+JHtml::_('behavior.framework', true);
+
 ?>
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">

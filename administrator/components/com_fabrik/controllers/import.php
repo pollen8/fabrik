@@ -171,10 +171,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 				'rows_per_page' => 10, 'template' => 'default', 'published' => 1, 'access' => 1, 'label' => $input->getString('label'),
 				'jform' => array('id' => 0, '_database_name' => $dbname, 'db_table_name' => ''));
 			$input->set('jform', $data['jform']);
-			if (!$listModel->save($data))
-			{
-				JError::raiseError(500, $listModel->getError());
-			}
+			$listModel->save($data);
 			$model->listModel = null;
 			$input->set('listid', $listModel->getItem()->id);
 		}
@@ -205,8 +202,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
-		$model = $this->getModel();
-		if (!JError::isError($model) && $model !== false)
+		if ($model = $this->getModel())
 		{
 			$view->setModel($model, true);
 		}

@@ -269,8 +269,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			$this->joinLabelCols[(int) $useStep] = 'CONCAT(' . $val . ')';
-			return 'CONCAT(' . $val . ')';
+			$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 		$label = $this->getJoinLabel();
 
@@ -376,7 +376,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			* but the list model is calling getAsFields() and loading up the db join element.
 			* so test case would be an inline edit list with a database join element and editing anything but the db join element
 			*/
-			JError::raiseError(500, 'unable to process db join element id:' . $element->id);
+			throw new RuntimeException('unable to process db join element id:' . $element->id, 500);
 		}
 		return false;
 	}
@@ -474,10 +474,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$db->setQuery($sql);
 		FabrikHelperHTML::debug((string) $db->getQuery(), $this->getElement()->name . 'databasejoin element: get options query');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
-		if ($db->getErrorNum() != 0)
-		{
-			JError::raiseNotice(500, $db->getErrorMsg());
-		}
 		FabrikHelperHTML::debug($this->_optionVals, 'databasejoin elements');
 		if (!is_array($this->_optionVals[$sqlKey]))
 		{
@@ -896,14 +892,14 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
 			$w = new FabrikWorker;
 			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			return 'CONCAT(' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 	}
 
 	/**
 	 * Get the database object
 	 *
-	 * @return  object	database
+	 * @return  object	Database
 	 */
 
 	public function getDb()
@@ -1003,88 +999,36 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$formModel = $this->getForm();
 		$groupModel = $this->getGroup();
-		$element = $this->getElement();
-		$aGroupRepeats[$element->group_id] = $groupModel->canRepeat();
 		$displayType = $this->getDisplayType();
 		$db = $this->getDb();
-		if (!$db)
-		{
-			JError::raiseWarning(JText::sprintf('PLG_ELEMENT_DBJOIN_DB_CONN_ERR', $element->name));
-			return '';
-		}
-		if (isset($formModel->aJoinGroupIds[$groupModel->getId()]))
-		{
-			$joinId = $formModel->aJoinGroupIds[$groupModel->getId()];
-			$joinGroupId = $groupModel->getId();
-		}
-		else
-		{
-			$joinId = '';
-			$joinGroupId = '';
-		}
 		$default = (array) $this->getValue($data, $repeatCounter, array('raw' => true));
+		$defaultLabels = (array) $this->getValue($data, $repeatCounter, array('raw' => false));
 
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		$w = new FabrikWorker;
-		foreach ($default as &$d)
-		{
-			$d = $w->parseMessageForPlaceHolder($d);
-		}
-		$thisElName = $this->getHTMLName($repeatCounter);
-
-		// Get the default label for the drop down (use in read only templates)
-		$defaultLabel = '';
-		$defaultValue = '';
-		foreach ($tmp as $obj)
-		{
-			if ($obj->value == JArrayHelper::getValue($default, 0, ''))
-			{
-				$defaultValue = $obj->value;
-				$defaultLabel = $obj->text;
-				break;
-			}
-		}
-
+		$default = $w->parseMessageForPlaceHolder($default);
+		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 
-		// $$$ rob 24/05/2011 - add options per row
-		$optsPerRow = intval($params->get('dbjoin_options_per_row', 0));
+		$optsPerRow = (int) $params->get('dbjoin_options_per_row', 0);
 		$html = array();
 
-		// $$$ hugh - still need to check $this->editable, as content plugin sets it to false,
-		// as no point rendering editable view for {fabrik view=element ...} in an article.
 		if (!$formModel->isEditable() || !$this->isEditable())
 		{
-			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
-			$obj = JArrayHelper::toObject($data);
-			//$defaultLabel = $this->renderListData($default, $obj);
-			$defaultLabel = $this->renderListData($defaultLabel, $obj);
-			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
+			// Read only element formatting...
+			if (JArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
-				$defaultLabel = '';
+				unset($defaultLabels[0]);
 			}
-			if ($params->get('databasejoin_readonly_link') == 1)
-			{
-				$popupformid = (int) $params->get('databasejoin_popupform');
-				if ($popupformid !== 0)
-				{
-					$query = $db->getQuery(true);
-					$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
-					$db->setQuery($query);
-					$listid = $db->loadResult();
-					$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
-					$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
-				}
-			}
-			$html[] = $defaultLabel;
+			$this->addReadOnlyLinks($defaultLabels, $default);
+			$html[] = count($defaultLabels) < 2 ? implode(' ', $defaultLabels) : '<ul><li>' . implode('<li>', $defaultLabels) . '</li></ul>';
 		}
 		else
 		{
 			// $$$rob should be canUse() otherwise if user set to view but not use the dd was shown
 			if ($this->canUse())
 			{
-				$idname = $this->getFullName(true, false) . '_id';
 				$attribs = 'class="fabrikinput inputbox input ' . $params->get('bootstrap_class', 'input-large') . '" size="1"';
 
 				// If user can access the drop down
@@ -1092,20 +1036,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				{
 					case 'dropdown':
 					default:
-						// Jaanus: to avoid dropdowns becoming too large because of possible long labels
-						$attribs .= $params->get('max-width', '') != '' ? ' style="max-width:' . $params->get('max-width') . ';"' : '';
-						$html[] = JHTML::_('select.genericlist', $tmp, $thisElName, $attribs, 'value', 'text', $default, $id);
+						$html[] = JHTML::_('select.genericlist', $tmp, $name, $attribs, 'value', 'text', $default, $id);
 						break;
 					case 'radio':
-						$this->renderRadioList($data, $repeatCounter, $html, $tmp, $defaultValue);
+						$this->renderRadioList($data, $repeatCounter, $html, $tmp, JArrayHelper::getValue($default, 0));
 						break;
 					case 'checkbox':
 						$this->renderCheckBoxList($data, $repeatCounter, $html, $tmp, $default);
-						$defaultLabel = implode("\n", $html);
 						break;
 					case 'multilist':
 						$this->renderMultiSelectList($data, $repeatCounter, $html, $tmp, $default);
-						$defaultLabel = implode("\n", $html);
 						break;
 					case 'auto-complete':
 						$this->renderAutoComplete($data, $repeatCounter, $html, $default);
@@ -1134,7 +1074,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					{
 						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
 					}
-					$html[] = '<a href="' . ($chooseUrl) . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
+					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 
@@ -1146,7 +1086,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					$addURL .= $app->isAdmin() ? '&task=form.view' : '&view=form';
 					$addURL .= '&tmpl=component&ajax=1&formid=' . $popupform;
 					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
-					$html[] = FabrikHelperHTML::image('new.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
+					$html[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
 				// If add and select put them in a button group.
 				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
@@ -1175,6 +1115,54 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$html[] = '</div>';
 		}
 		return implode("\n", $html);
+	}
+
+	/**
+	 * Add read only links
+	 *
+	 * @param   array  &$defaultLabels  Default labels
+	 * @param   array  $defaultValues   Default values
+	 *
+	 * @return  void
+	 */
+	protected function addReadOnlyLinks(&$defaultLabels, $defaultValues)
+	{
+		$params = $this->getParams();
+		if ($params->get('databasejoin_readonly_link') == 1)
+		{
+			if ($popUrl = $this->popUpFormUrl())
+			{
+				for ($i = 0; $i < count($defaultLabels); $i++)
+				{
+					$url = $popUrl . $defaultValues[$i];
+					$defaultLabels[$i] = '<a href="' . JRoute::_($url) . '">' . $defaultLabels[$i] . '</a>';
+				}
+			}
+		}
+	}
+
+	/**
+	 * Build Pop up form URL
+	 *
+	 * @return boolean|string
+	 */
+
+	protected function popUpFormUrl()
+	{
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$params = $this->getParams();
+		$popupformid = (int) $params->get('databasejoin_popupform');
+		if ($popupformid === 0)
+		{
+			return false;
+		}
+		$db = $this->getDb();
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
+		$db->setQuery($query);
+		$listid = $db->loadResult();
+		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&rowid=' ;
 	}
 
 	/**
@@ -1350,12 +1338,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * called from within function getValue
+	 * Called from within function getValue
 	 * needed so we can append _raw to the name for elements such as db joins
 	 *
-	 * @param   array  $opts  options
+	 * @param   array  $opts  Options
 	 *
-	 * @return  string  element name inside data array
+	 * @return  string  Element name inside data array
 	 */
 
 	protected function getValueFullName($opts)
@@ -1373,16 +1361,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * Determines the label used for the browser title
 	 * in the form/detail views
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
-	 * @return  string	default value
+	 * @return  string	Default value
 	 */
 
 	public function getTitlePart($data, $repeatCounter = 0, $opts = array())
 	{
-		// $$$ rob set ths to label otherwise we get the value/key and not label
+		// $$$ rob set this to label otherwise we get the value/key and not label
 		$opts['valueFormat'] = 'label';
 		return $this->getValue($data, $repeatCounter, $opts);
 	}
@@ -1409,12 +1397,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$db->setQuery($query);
 
 			$this->_linkedForms = $db->loadObjectList('value');
-
-			// Check for a database error.
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		return $this->_linkedForms;
 	}
@@ -1485,11 +1467,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Used to format the data when shown in the form's email
 	 *
-	 * @param   mixed  $value          element's data
-	 * @param   array  $data           form records data
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   mixed  $value          Element's data
+	 * @param   array  $data           Form records data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -1548,10 +1530,10 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -1587,39 +1569,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			}
 			$data = json_encode($labeldata);
 		}
-		else
-		{
-			// Wierd one http://fabrikar.com/forums/showpost.php?p=153789&postcount=16, so lets try to ensure we have a value before using getLabelForValue()
-		/* 	 $col = $this->getFullName(false, true, false) . '_raw';
-			$row = JArrayHelper::fromObject($thisRow);
-			$data = JArrayHelper::getValue($row, $col, $data);
-
-			// Rendered as checkbox/mutliselect
-			if (is_string($data) && strstr($data, GROUPSPLITTER))
-			{
-				$labeldata = explode(GROUPSPLITTER, $data);
-			}
-			else
-			{
-				// $$$ hugh - $data may already be JSON encoded, so we don't want to double-encode.
-				if (!FabrikWorker::isJSON($data))
-				{
-					$labeldata = (array) $data;
-				}
-				else
-				{
-					// $$$ hugh - yeah, I know, kinda silly to decode right before we encode,
-					// should really refactor so encoding goes in this if/else structure!
-					$labeldata = (array) json_decode($data);
-				}
-			}
-			foreach ($labeldata as &$l)
-			{
-				$l = $this->getLabelForValue($l);
-			} */
-		}
-
-		//$data = json_encode($labeldata);
 
 		// $$$ rob add links and icons done in parent::renderListData();
 		return parent::renderListData($data, $thisRow);
@@ -1642,7 +1591,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// Related data will pass a raw value in the query string but if the element filter is a field we need to change that to its label
 		if ($element->filter_type == 'field')
 		{
-			$default = $this->getLabelForValue($default, $default);
+			$default = $this->getLabelForValue($default);
 		}
 		return $default;
 	}
@@ -1683,7 +1632,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				/* $$$ hugh - let's not raise a warning, as there are valid cases where a join may not yield results, see
 				 * http://fabrikar.com/forums/showthread.php?p=100466#post100466
 				* JError::raiseWarning(500, 'database join filter query incorrect');
-				* Moved warning to element model filterValueList_Exact(), with a test for $fabrikDb->getErrorNum()
+				* Moved warning to element model filterValueList_Exact()
 				* So we'll just return an otherwise empty menu with just the 'select label'
 				*/
 				$rows = array();
@@ -2425,7 +2374,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = json_decode($data['params']);
 		if (!$this->canEncrypt() && !empty($params->encrypt))
 		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
+			throw new RuntimeException('The encryption option is only available for field and text area plugins');
 			return false;
 		}
 		if (!$this->isJoin())

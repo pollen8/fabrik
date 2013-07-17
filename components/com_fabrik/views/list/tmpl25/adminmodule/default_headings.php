@@ -32,7 +32,7 @@ defined('_JEXEC') or die;
 </tr>
 <?php $doc = JFactory::getDocument();
 $doc->addScript(JURI::root(true).'/media/com_fabrik/js/filtertoggle.js');
-$doc->addScriptDeclaration("
+FabrikHelperHTML::addScriptDeclaration("
 window.addEvent('fabrik.loaded', function() {
 	new FabFilterToggle('".$this->list->renderid."');
 });

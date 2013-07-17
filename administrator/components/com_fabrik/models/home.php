@@ -228,15 +228,9 @@ class FabrikAdminModelHome extends FabModelAdmin
 		$list->params = $listModel->getDefaultParams();
 		$list->template = 'default';
 
-		if (!$list->store())
-		{
-			JError::raiseWarning(500, $list->getError());
-		}
+		$list->store();
 		echo "<li>Table for 'Contact Us' created</li></div>";
-		if (!$form->store())
-		{
-			JError::raiseError(500, $form->getError());
-		}
+		$form->store();
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$formModel->setId($form->id);
 		$formModel->form = $form;
@@ -269,10 +263,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 		foreach ($tables as $table)
 		{
 			$db->setQuery("TRUNCATE TABLE " . $prefix . $table);
-			if (!$db->execute())
-			{
-				return JError::raiseError(500, $db->getErrorMsg() . ": " . $db->getQuery());
-			}
+			$db->execute();
 		}
 	}
 
@@ -296,15 +287,7 @@ class FabrikAdminModelHome extends FabModelAdmin
 			$connModel->setId($row->connection_id);
 			$c = $connModel->getConnection($row->connection_id);
 			$fabrikDb = $connModel->getDb();
-			if (!JError::isError($fabrikDb))
-			{
-				$fabrikDb->dropTable($row->db_table_name);
-			}
-			else
-			{
-				jexit("error with getting connection id " . $row->connection_id . " for " . $row->db_table_name);
-			}
-
+			$fabrikDb->dropTable($row->db_table_name);
 		}
 	}
 

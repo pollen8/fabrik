@@ -65,8 +65,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName);
-		if (!JError::isError($model))
+		if ($model = $this->getModel($viewName))
 		{
 			$view->setModel($model, true);
 		}
@@ -82,7 +81,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 		{
 			// Build unique cache id on url, post and user id
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');

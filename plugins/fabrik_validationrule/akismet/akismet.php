@@ -56,7 +56,7 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 			$akismet = new Akismet(JURI::base(), $params->get('akismet-key'), $akismet_comment);
 			if ($akismet->errorsExist())
 			{
-				JError::raiseNotice(JText::_("Couldn't connected to Akismet server!"));
+				throw new RuntimeException("Couldn't connected to Akismet server!");
 			}
 			else
 			{

@@ -17,10 +17,9 @@
 			</field>
 			
 			<field name="default"
-				type="textarea"
-				cols="45"
-				label="PLG_ELEMENT_FIELD_DEFAULT_LABEL"
-				rows="6" />
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_FIELD_DEFAULT_LABEL" />
 							
 			<field name="eval"
 				type="radio"

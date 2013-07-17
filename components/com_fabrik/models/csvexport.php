@@ -77,7 +77,7 @@ class FabrikFEModelCSVExport
 			}
 			else
 			{
-				$str = JFile::read($filepath);
+				$str = file_get_contents($filepath);
 			}
 		}
 		else
@@ -288,7 +288,7 @@ class FabrikFEModelCSVExport
 		$document->setMimeEncoding('application/zip');
 		if (JFile::exists($filepath))
 		{
-			$str = JFile::read($filepath);
+			$str = file_get_contents($filepath);
 		}
 		else
 		{

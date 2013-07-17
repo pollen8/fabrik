@@ -228,11 +228,18 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Can the user view the group
 	 *
+	 * @param   string  $mode  View mode list|form
+	 *
 	 * @return   bool
 	 */
 
-	public function canView()
+	public function canView($mode = 'form')
 	{
+		// No ACL option for list view.
+		if ($mode === 'list')
+		{
+			return true;
+		}
 		if (!is_null($this->canView))
 		{
 			return $this->canView;
@@ -327,10 +334,7 @@ class FabrikFEModelGroup extends FabModel
 			$query->select('form_id')->from('#__{package}_formgroup')->where('group_id = ' . (int) $this->getId());
 			$db->setQuery($query);
 			$this->formsIamIn = $db->loadColumn();
-			if (!$db->execute())
-			{
-				return JError::raiseError(500, $db->getErrorMsg());
-			}
+			$db->execute();
 		}
 		return $this->formsIamIn;
 	}
@@ -453,8 +457,8 @@ class FabrikFEModelGroup extends FabModel
 		}
 		else
 		{
-			$element->startRow = 0;
-			$element->endRow = 0;
+			$element->startRow = 1;
+			$element->endRow = 1;
 			$element->span = '';
 			$element->column .= ' style="clear:both;width:100%;"';
 		}
@@ -610,6 +614,35 @@ class FabrikFEModelGroup extends FabModel
 		{
 			$this->listQueryElements[$sig] = array();
 			$elements = $this->getMyElements();
+			$joins = $this->getListModel()->getJoins();
+			/**
+			* $$$ Paul - it is possible that the user has set Include in List Query
+			* to No for table primary key or join foreign key. If List is then set
+			* to Merge and Reduce, this causes a problem because the pk/fk
+			* placeholder is not set. We therefor include the table PK and join FK
+			* regardless of Include in List Query settings if any elements in the
+			* group have Include in List Query = Yes.
+			* In order to avoid iterating over the elements twice, we save the
+			* PK / FK elementModel and include it as soon as it is needed.
+			* If the access level does not allow for these to be used, then we should
+			* display some sort of warning - though this is not included in this fix.
+			**/
+			$repeating = $this->canRepeat();
+			$join = $this->getJoinModel();
+			if (is_null($join->getJoin()->params))
+			{
+				$join_id = "";
+				$join_fk = "";
+			}
+			else
+			{
+				$join_id = $join->getForeignID();
+				$join_fk = $join->getForeignKey();
+			}
+
+			$element_included = false;
+			$table_pk_included = $join_fk_included = false;
+			$table_pk_element = $join_fk_element = null;
 			foreach ($elements as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -631,18 +664,53 @@ class FabrikFEModelGroup extends FabModel
 						continue;
 					}
 
-					if (empty($showInList))
+					$full_name = $elementModel->getFullName(true, false);
+					$showThisInList = $element->primary_key || $params->get('include_in_list_query', 1) == 1 || (empty($showInList) && $element->show_in_list_summary) || in_array($element->id, $showInList);
+					if ($showThisInList)
 					{
-						if ($element->show_in_list_summary || $params->get('include_in_list_query', 1) == 1)
+						if ($element->primary_key || $full_name == $join_id)
 						{
-							$this->listQueryElements[$sig][] = $elementModel;
+							$table_pk_included = true;
+						}
+						elseif (!$table_pk_included && !is_null($table_pk_element))
+						{ // Add primary key before other element
+							$this->listQueryElements[$sig][] = $table_pk_element;
+							$table_pk_included = true;
+						}
+						if ($full_name == $join_fk)
+						{
+							$join_fk_included = true;
+						}
+						elseif (!$join_fk_included && !is_null($join_fk_element))
+						{ // Add foreign key before other element
+							$this->listQueryElements[$sig][] = $join_fk_element;
+							$join_fk_included = true;
+						}
+						$this->listQueryElements[$sig][] = $elementModel;
+						$element_included = true;
+					}
+					elseif ($element->primary_key || $full_name == $join_id)
+					{
+						if ($element_included)
+						{ // Add primary key after other element
+						$this->listQueryElements[$sig][] = $elementModel;
+							$table_pk_included = true;
+						}
+						else
+						{ // Save primary key for future use
+							$table_pk_element = $elementModel;
 						}
 					}
-					else
+					elseif ($elementModel->getFullName(true, false) == $join_fk)
 					{
-						if (in_array($element->id, $showInList) || $params->get('include_in_list_query', 1) == 1)
-						{
+						if ($element_included)
+						{ // Add foreign key after other element
 							$this->listQueryElements[$sig][] = $elementModel;
+							$join_fk_included = true;
+						}
+						else
+						{ // Save foreign key for future use
+							$join_fk_element = $elementModel;
 						}
 					}
 				}
@@ -858,7 +926,7 @@ class FabrikFEModelGroup extends FabModel
 		$params = $this->getParams();
 		if (!isset($this->editable))
 		{
-			$this->editable =  $formModel->isEditable();
+			$this->editable = $formModel->isEditable();
 		}
 		if ($this->editable)
 		{
@@ -951,10 +1019,7 @@ class FabrikFEModelGroup extends FabModel
 		$formGroup->form_id = $formid;
 		$formGroup->group_id = $group->id;
 		$formGroup->ordering = 999999;
-		if (!$formGroup->store())
-		{
-			JError::raiseError(500, $formGroup->getError());
-		}
+		$formGroup->store();
 		$formGroup->reorder(" form_id = '$formid'");
 		return $newElements;
 	}
@@ -1048,7 +1113,7 @@ class FabrikFEModelGroup extends FabModel
 		$canRepeat = $this->canRepeat();
 		$repeats = $this->repeatTotals();
 		$joinModel = $this->getJoinModel();
-		$pkField = $joinModel->getPrimaryKey();
+		$pkField = $joinModel->getForeignID();
 
 		$listModel = $this->getListModel();
 		$item = $this->getGroup();
@@ -1131,19 +1196,15 @@ class FabrikFEModelGroup extends FabModel
 		$fullFk = $joinTable->table_join . '___' . $joinTable->table_join_key;
 
 		$elementModels = $this->getPublishedElements();
-		$fkFound = false;
 		foreach ($elementModels as $elementModel)
 		{
 			if ($elementModel->getFullName(true, false) === $fullFk)
 			{
-				$fkFound = true;
+				return true;
 			}
 		}
-		if (!$fkFound)
-		{
-			JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
-		}
-		return $fkFound;
+		JError::raiseWarning(E_ERROR, JText::sprintf('COM_FABRIK_JOINED_DATA_BUT_FK_NOT_PUBLISHED', $fullFk));
+		return false;
 	}
 
 	/**

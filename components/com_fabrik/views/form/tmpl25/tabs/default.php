@@ -21,7 +21,9 @@ if ($this->params->get('show-title', 1)) {?>
 	</h1>
 <?php }
 echo $form->intro;
-echo $form->startTag;
+?>
+<form method="post" <?php echo $form->attribs?>>
+<?php
 echo $this->plugintop;
 $active = ($form->error != '') ? '' : ' fabrikHide';
 echo "<div class=\"fabrikMainError fabrikError$active\">$form->error</div>";
@@ -82,7 +84,11 @@ $this->group = $group;
 					<?php
 					$this->elements = $subgroup;
 					echo $this->loadTemplate($group->tmpl);
-					?>
+	// Show the group outro
+	if ($group->outro !== '') :?>		<div class="groupoutro"><?php echo $group->outro ?></div>
+	<?php
+	endif;
+	?>					?>
 				</div>
 				<?php if ($group->editable) : ?>
 					<div class="fabrikGroupRepeater">
@@ -110,6 +116,11 @@ $this->group = $group;
 	else:
 		$this->elements = $group->elements;
 		echo $this->loadTemplate($group->tmpl);
+		// Show the group outro
+		if ($group->outro !== '') :?>
+			<div class="groupoutro"><?php echo $group->outro ?></div>
+<?php
+		endif;
 	endif;
 	?>
 	</div>
@@ -127,11 +138,9 @@ echo $this->hiddenFields;
  <?php echo $form->applyButton;?>
 <?php echo $form->copyButton  . " " . $form->gobackButton . ' ' . $form->deleteButton . ' ' . $this->message ?>
 </div>
-
+</form>
 <?php
 $document = JFactory::getDocument();
-
-echo $form->endTag;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();

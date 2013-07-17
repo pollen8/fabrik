@@ -55,11 +55,6 @@ class JFormFieldTables extends JFormFieldList
 			$db->setQuery($query);
 			$items = $db->loadColumn();
 
-			// Check for a database error.
-			if ($db->getErrorNum())
-			{
-				JError::raiseWarning(500, $db->getErrorMsg());
-			}
 			foreach ($items as $l)
 			{
 				$options[] = JHTML::_('select.option', $l, $l);
@@ -115,6 +110,8 @@ class JFormFieldTables extends JFormFieldList
 		$html = parent::getInput();
 		$html .= "<img style='margin-left:10px;display:none' id='" . $this->id . "_loader' src='components/com_fabrik/images/ajax-loader.gif' alt='"
 			. JText::_('LOADING') . "' />";
+		FabrikHelperHTML::framework();
+		FabrikHelperHTML::iniRequireJS();
 		return $html;
 	}
 

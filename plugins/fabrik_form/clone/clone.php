@@ -81,8 +81,7 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 				return true;
 			}
 		}
-		JError::raiseNotice(JText::_('CLONEERR'), "Couldn't find a valid number of times to clone!");
-		return true;
+		throw new RuntimeException("Couldn't find a valid number of times to clone!");
 	}
 
 }

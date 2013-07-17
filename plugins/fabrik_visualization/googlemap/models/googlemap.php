@@ -88,6 +88,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 		$opts->scalecontrol = (bool) $params->get('fb_gm_scalecontrol');
 		$opts->maptypecontrol = (bool) $params->get('fb_gm_maptypecontrol');
 		$opts->overviewcontrol = (bool) $params->get('fb_gm_overviewcontrol');
+		$opts->streetView = (bool) $params->get('street_view');
 		$opts->center = $params->get('fb_gm_center');
 		if ($opts->center == 'querystring')
 		{
@@ -167,14 +168,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				$c++;
 				continue;
 			}
-			try
-			{
-				$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
-			}
-			catch (Exception $e)
-			{
-				JError::raiseError(500, $e->getMessage());
-			}
+			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(false, false);
 			$table = $listModel->getTable();
 
@@ -186,22 +180,15 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$db->setQuery($query);
 			$data = $db->loadObjectList();
 			$points = array();
-			if (is_null($data))
+			foreach ($data as $d)
 			{
-				JError::raiseNotice(500, $db->getErrorMsg());
-			}
-			else
-			{
-				foreach ($data as $d)
+				$d = $this->getCordsFromData($d->coords);
+				if ($d == array(0, 0))
 				{
-					$d = $this->getCordsFromData($d->coords);
-					if ($d == array(0, 0))
-					{
-						// Don't show icons with no data
-						continue;
-					}
-					$points[] = $d;
+					// Don't show icons with no data
+					continue;
 				}
+				$points[] = $d;
 			}
 			$lines[] = $points;
 			$c++;
@@ -303,14 +290,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 
 			$table = $listModel->getTable();
 
-			try
-			{
-				$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
-			}
-			catch (Exception $e)
-			{
-				JError::raiseError(500, $e->getMessage());
-			}
+			$mapsElements = FabrikHelperList::getElements($listModel, array('plugin' => 'googlemap', 'published' => 1));
 			$coordColumn = $mapsElements[0]->getFullName(true, false) . "_raw";
 
 			// Are we using random start location for icons?
@@ -608,7 +588,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 				}
 				$c++;
 			}
-			if ($params->get('fb_gm_center')  != 'middle')
+			if ($params->get('fb_gm_center') != 'middle')
 			{
 				$i = array_pop($icons);
 				$lat = $i[0];

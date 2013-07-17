@@ -64,11 +64,9 @@ class FabrikControllerPackage extends JControllerLegacy
 		$view->formView->setModel($formModel, true);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName, 'FabrikFEModel');
-		$model->setDbo(FabrikWorker::getDbo());
-
-		if (!JError::isError($model))
+		if ($model = $this->getModel($viewName, 'FabrikFEModel'))
 		{
+			$model->setDbo(FabrikWorker::getDbo());
 			$view->setModel($model, true);
 		}
 		// Display the view

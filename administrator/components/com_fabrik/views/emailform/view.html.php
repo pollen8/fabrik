@@ -70,14 +70,14 @@ class fabrikViewEmailform extends JViewLegacy
 		// other than requests from a browser:
 		if (!isset($_SERVER['HTTP_USER_AGENT']))
 		{
-			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
 
 		// Make sure the form was indeed POST'ed:
 		//  (requires your html form to use: action="post")
 		if (!$_SERVER['REQUEST_METHOD'] == 'POST')
 		{
-			JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
 		}
 
 		// Attempt to defend against header injections:
@@ -91,7 +91,7 @@ class fabrikViewEmailform extends JViewLegacy
 			{
 				if (JString::strpos($v, $v2) !== false)
 				{
-					JError::raiseError(500, JText::_('JERROR_ALERTNOAUTHOR'));
+					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
 				}
 			}
 		}
@@ -108,7 +108,7 @@ class fabrikViewEmailform extends JViewLegacy
 
 		if (!$email || !$youremail || (FabrikWorker::isEmail($email) == false) || (FabrikWorker::isEmail($youremail) == false))
 		{
-			JError::raiseError(500, JText::_('EMAIL_ERR_NOINFO'));
+			throw new RuntimeException(JText::_('EMAIL_ERR_NOINFO'), 500);
 		}
 
 		$config = JFactory::getConfig();
@@ -120,7 +120,7 @@ class fabrikViewEmailform extends JViewLegacy
 		// Message text
 		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
 
-		// mail function
+		// Mail function
 		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
 

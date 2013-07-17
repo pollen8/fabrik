@@ -72,7 +72,7 @@ class Itagg extends JObject
 			$ch = curl_init();
 			if (!$ch)
 			{
-				JError::raiseError(500, "cant ini curl session");
+				throw new RuntimeException("cant ini curl session", 500);
 				exit;
 			}
 			curl_setopt($ch, CURLOPT_URL, $itaggapi);

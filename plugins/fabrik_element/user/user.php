@@ -546,8 +546,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		$params = json_decode($data['params']);
 		if (!$this->canEncrypt() && !empty($params->encrypt))
 		{
-			JError::raiseNotice(500, 'The encryption option is only available for field and text area plugins');
-			return false;
+			throw new InvalidArgumentException('The encryption option is only available for field and text area plugins');
 		}
 		$label = (isset($params->my_table_data) && $params->my_table_data !== '') ? $params->my_table_data : 'username';
 		$this->updateFabrikJoins($data, '#__users', 'id', $label);
@@ -977,6 +976,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	protected function getLabelOrConcatVal()
 	{
 		static $displayMessage;
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$displayParam = $params->get('my_table_data', 'username');
 		if ($displayParam == 'gid')
@@ -984,7 +984,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 			$displayParam == 'username';
 			if (!isset($displayMessage))
 			{
-				JError::raiseNotice(200, JText::sprintf('PLG_ELEMENT_USER_NOTICE_GID', $this->getElement()->id));
+				$app->enqueueMessage(JText::sprintf('PLG_ELEMENT_USER_NOTICE_GID', $this->getElement()->id), 'notice');
 				$displayMessage = true;
 			}
 		}

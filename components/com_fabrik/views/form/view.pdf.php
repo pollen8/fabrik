@@ -35,7 +35,7 @@ class FabrikViewForm extends FabrikViewFormBase
 	{
 		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
 		{
-			JError::raiseError(404, 'Please install the dompdf library');
+			throw new RuntimeException('Please install the dompdf library', 404);
 			return;
 		}
 		if (parent::display($tpl) !== false)

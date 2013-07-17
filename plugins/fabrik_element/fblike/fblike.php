@@ -66,6 +66,11 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 
 	public function renderListData($data, &$thisRow)
 	{
+		$app = JFactory::getApplication();
+		if ($app->input->get('format') === 'raw')
+		{
+			return $data;
+		}
 		$params = $this->getParams();
 		$meta = array();
 		$config = JFactory::getConfig();
@@ -85,10 +90,9 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		{
 			if (!self::$warned)
 			{
-				JError::raiseNotice(500, 'Your list needs to have viewable details records for the FB Like button to work');
+				$app->enqueueMessage('Your list needs to have viewable details records for the FB Like button to work');
 				self::$warned = true;
 			}
-
 			return '';
 		}
 
@@ -156,9 +160,10 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
 
-		// $$$tom placeholder option for URL params
 		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
+
+		$this->getElement()->hidden = true;
 		return $str . $this->_render($url);
 	}
 
@@ -211,7 +216,32 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+		$opts->listid = $this->getListModel()->getId();
+		$opts->elid = $this->getElement()->id;
+		$opts->row_id = $this->getFormModel()->getRowId();
 		return array('FbLike', $id, $opts);
+	}
+
+	/**
+	 * Called via Facebook event subscription (useful for odering)
+	 *
+	 *  @return  null
+	 */
+
+	public function onAjax_rate()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$this->loadMeForAjax();
+		$listid = $input->getInt('listid');
+		$list = JModelLegacy::getInstance('list', 'FabrikFEModel');
+		$list->setId($listid);
+		$rowId = $input->get('row_id');
+		$direction = $input->get('direction', '+');
+		$field = $this->getFullName(false, false, false);
+		$update = $field . ' = ' . $field . ' ' . $direction . ' 1';
+		$list->updateRows(array($rowId), $field, null, $update);
+
 	}
 
 }

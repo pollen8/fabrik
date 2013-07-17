@@ -52,8 +52,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$model = $this->getModel('connections');
 		if (count($model->activeConnections()) == 0)
 		{
-			JError::raiseError(500, JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
-			return;
+			throw new RuntimeException(JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 		}
 		parent::edit($key, $urlVar);
 	}
@@ -142,7 +141,7 @@ class FabrikAdminControllerList extends FabControllerForm
 
 		// Build unique cache id on url, post and user id
 		$user = JFactory::getUser();
-		$uri = JFactory::getURI();
+		$uri = JURI::getInstance();
 		$uri = $uri->toString(array('path', 'query'));
 		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');

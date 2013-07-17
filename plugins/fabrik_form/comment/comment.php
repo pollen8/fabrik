@@ -704,29 +704,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		/* if ($res === false)
 		 {
 		// Attempt to create the db table?
-		$sql = JFile::read(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
+		$sql = file_get_contents(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
 		$db->setQuery($sql);
-		if (!$db->execute())
-		{
-		JError::raiseError(500, $db->getErrorMsg());
-		exit;
-		}
-		$res = $row->store();
-		if ($res === false)
-		{
-		JError::raiseError(500, $row->getError());
-		exit;
-		}
-
+		!$db->execute();
+		$row->store();
 		} */
 
 		// $$$ rob 16/10/2012 db queries run when element/plugin selected in admin, so just return false if error now
-		if ($res === false)
-		{
-			JError::raiseError(500, $row->getError());
-			exit;
-		}
-
 		$obj = new stdClass;
 
 		// Do this to get the depth of the comment
@@ -1011,10 +995,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
-	 * prepare JComment system
+	 * Prepare JComment system
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
+	 * @param   object  $params     Plugin params
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  void
 	 */
@@ -1033,7 +1017,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		}
 		else
 		{
-			JError::raiseNotice(500, JText::_('JComment is not installed on your system'));
+			throw new RuntimeException('JComment is not installed on your system');
 		}
 	}
 

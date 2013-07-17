@@ -67,7 +67,7 @@ class PlgFabrik_Crongmail extends PlgFabrik_Cron
 
 			if (!$mbox)
 			{
-				JError::raiseNotice(400, JText::_("PLG_CRON_GMAIL_ERROR_CONNECT") . imap_last_error());
+				throw new RuntimeException(JText::_("PLG_CRON_GMAIL_ERROR_CONNECT") . imap_last_error());
 				continue;
 			}
 

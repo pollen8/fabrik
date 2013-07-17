@@ -157,13 +157,11 @@
 			</field>
 			
 			<field name="emailtable_condition"
-				cols="60"
+				type="fabrikeditor"
 				description="PLG_LIST_EMAIL_CONDITION_DESC"
 				label="PLG_LIST_EMAIL_CONDITION_LABEL"
 				repeat="true"
-				rows="4"
-				type="textarea"
-			/>
+				mode="mysql" />
 
 			<field name="emailtable_mergemessages" 
 				type="radio"

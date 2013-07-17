@@ -46,8 +46,7 @@ class FabrikViewCsv extends JView
 		$this->form = $this->get('Form');
 		if (!$listModel->canCSVExport())
 		{
-			JError::raiseError(400, 'Naughty naughty!');
-			jexit();
+			throw new RuntimeException(('Naughty naughty!', 400);
 		}
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
 		return parent::display($tpl);

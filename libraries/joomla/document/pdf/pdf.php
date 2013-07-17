@@ -55,7 +55,7 @@ class JDocumentpdf extends JDocumentHTML
 		}
 		if (!$this->iniDomPdf())
 		{
-			JError::raiseError(JText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'));
+			throw new RuntimeException(JText::_('COM_FABRIK_ERR_NO_PDF_LIB_FOUND'), 500);
 		}
 	}
 

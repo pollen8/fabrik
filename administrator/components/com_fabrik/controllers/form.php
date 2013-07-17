@@ -83,7 +83,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		else
 		{
 			$user = JFactory::getUser();
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_fabrik', 'view');
@@ -108,7 +108,6 @@ class FabrikAdminControllerForm extends FabControllerForm
 	public function process()
 	{
 		$this->name = 'Fabrik';
-		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$document = JFactory::getDocument();
@@ -116,7 +115,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$viewType = $document->getType();
 		$this->setPath('view', COM_FABRIK_FRONTEND . '/views');
 		$view = $this->getView($viewName, $viewType);
-		if (!JError::isError($model))
+		if ($model = JModelLegacy::getInstance('Form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
@@ -306,9 +305,7 @@ class FabrikAdminControllerForm extends FabControllerForm
 		$id = $db->loadResult();
 		if (!$id)
 		{
-			FabrikHelperHTML::stylesheet('system.css', 'administrator/templates/system/css/');
-			echo "<a target=\"_blank\" href=\"index.php?option=com_fabrik&c=form\">" . JText::_('VIEW_FORMS') . "</a>";
-			return JError::raiseNotice(500, JText::_('SET_FORM_CCK_CATEGORY'));
+			throw new RuntimeException(JText::_('SET_FORM_CCK_CATEGORY'));
 		}
 		$input->set('formid', $id);
 

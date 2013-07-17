@@ -115,12 +115,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$model->isMambot = $this->isMambot;
 		$model->packageId = $app->input->getInt('packageId');
 
-		// Test for failed validation then page refresh
-		$model->getErrors();
-		if (!JError::isError($model) && is_object($model))
-		{
-			$view->setModel($model, true);
-		}
+		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
 		// Get data as it will be needed for ACL when testing if current row is editable.
@@ -161,7 +156,7 @@ class FabrikControllerForm extends JControllerLegacy
 		}
 		else
 		{
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 			$uri = $uri->toString(array('path', 'query'));
 			$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 			$cache = JFactory::getCache('com_' . $package, 'view');
@@ -195,11 +190,10 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		}
-		$model = $this->getModel('form', 'FabrikFEModel');
 		$viewName = $input->get('view', 'form');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
-		if (!JError::isError($model))
+		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
@@ -222,7 +216,7 @@ class FabrikControllerForm extends JControllerLegacy
 		// Check for request forgeries
 		if ($model->spoofCheck())
 		{
-			//JSession::checkToken() or die('Invalid Token');
+			JSession::checkToken() or die('Invalid Token');
 		}
 
 		if (!$model->validate())
@@ -344,7 +338,6 @@ class FabrikControllerForm extends JControllerLegacy
 				}
 				if (!empty($eMsgs))
 				{
-					//throw new Exception('test');
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
 					header('HTTP/1.1 500 ' . JText::_('COM_FABRIK_FAILED_VALIDATION') . $eMsgs);
 					jexit();

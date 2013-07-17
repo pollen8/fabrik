@@ -29,7 +29,7 @@ $db->setQuery($query, 0, 1);
 $id = $db->loadResult();
 if ($id == '')
 {
-	JError::raiseError(500, 'Could not load package');
+	throw new RuntimeException('Fabrik: Could not load package', 500);
 }
 // Not 100% sure we need to set packageId now - most urls are now converted to com_{packagename}
 $input->set('packageId', $id);

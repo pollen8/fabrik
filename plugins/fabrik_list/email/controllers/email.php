@@ -74,10 +74,7 @@ class FabrikControllerListemail extends JControllerLegacy
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
 		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
-		if (!JError::isError($model))
-		{
-			$view->setModel($model, true);
-		}
+		$view->setModel($model, true);
 		$view->setModel($listModel);
 		$view->setModel($formModel);
 

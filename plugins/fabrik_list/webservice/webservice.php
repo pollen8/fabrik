@@ -137,12 +137,6 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$driver = $params->get('webservice_driver');
 		$opts = array('driver' => $driver, 'endpoint' => $params->get('webservice_url'), 'credentials' => $credentials);
 		$service = FabrikWebService::getInstance($opts);
-		if (JError::isError($service))
-		{
-			echo $service->getMessage();
-			JError::raiseError(500, $service->getMessage());
-			jexit();
-		}
 		$filters = $this->getServiceFilters($service);
 		$service->setMap($this->getMap($formModel));
 		$filters = array_merge($opts['credentials'], $filters);

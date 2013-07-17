@@ -77,20 +77,13 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 			$query->where(str_replace('___', '.', $approveEls[$x]) . ' = 0');
 			$db->setQuery($query, 0, 5);
 			$rows = $db->loadObjectList();
-			if ($rows === null)
+			foreach ($rows as &$row)
 			{
-				JError::raiseNotice(400, $db->getErrorMsg());
+				$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
+				$row->rowid = $row->pk;
+				$row->listid = $ids[$x];
 			}
-			else
-			{
-				foreach ($rows as &$row)
-				{
-					$row->view = 'index.php?option=com_' . $package . '&task=form.view&formid=' . $formModel->getId() . '&rowid=' . $row->pk;
-					$row->rowid = $row->pk;
-					$row->listid = $ids[$x];
-				}
-				$this->rows = array_merge($this->rows, $rows);
-			}
+			$this->rows = array_merge($this->rows, $rows);
 		}
 		return $this->rows;
 	}
@@ -144,17 +137,11 @@ class FabrikModelApprovals extends FabrikFEModelVisualization
 				$db = $listModel->getDbo();
 				$query = $db->getQuery(true);
 				$el = FabrikString::safeColName($approveEls[$key]);
-				try
-				{
-					$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
-						->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
-					$db->setQuery($query);
-					$db->execute();
-				}
-				catch (JException $e)
-				{
-					JError::raiseError(500, $e->getMessage());
-				}
+				$query->update($db->quoteName($item->db_table_name))->set($el . ' = ' . $db->quote($v))
+					->where($item->db_primary_key . ' = ' . $db->quote($input->get('rowid')));
+				$db->setQuery($query);
+				$db->execute();
+
 			}
 		}
 	}

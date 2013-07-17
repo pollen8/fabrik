@@ -129,6 +129,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	{
 		if ($params->get('synchro_users') == 1)
 		{
+			$app = JFactory::getApplication();
 			$listModel = $formModel->getlistModel();
 			$fabrikDb = $listModel->getDb();
 			$tableName = $listModel->getTable()->db_table_name;
@@ -141,53 +142,45 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$count = (int) $fabrikDb->loadResult();
 			if ($count === 0)
 			{
-				// Load the list of users from #__users
-				$query->clear();
-				$query->select('DISTINCT u.*, ug.group_id')->from($fabrikDb->quoteName('#__users') . 'AS u')
-					->join('LEFT', '#__user_usergroup_map AS ug ON ug.user_id = u.id')->group('u.id')->order('u.id ASC');
-				$fabrikDb->setQuery($query);
-				$origUsers = $fabrikDb->loadObjectList();
-				$count = 0;
-				$import = true;
 
-				// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
-				foreach ($origUsers as $o_user)
+				try
 				{
-					// Insert into our F! table
+					// Load the list of users from #__users
 					$query->clear();
-					$fields = array($this->getFieldName($params, 'juser_field_userid', true) => $o_user->id,
-						$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
-						$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
-						$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
-						$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
-						$this->getFieldName($params, 'juser_field_username', true) => $o_user->username);
-					if (!FabrikWorker::j3())
-					{
-						$fields[$this->getFieldName($params, 'juser_field_usertype', true)] = $o_user->group_id;
-					}
-					$query->insert($tableName);
-					foreach ($fields as $key => $val)
-					{
-						$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
-					}
-
+					$query->select('DISTINCT u.*, ug.group_id')->from($fabrikDb->quoteName('#__users') . 'AS u')
+						->join('LEFT', '#__user_usergroup_map AS ug ON ug.user_id = u.id')->group('u.id')->order('u.id ASC');
 					$fabrikDb->setQuery($query);
-					if (!$fabrikDb->execute())
+					$origUsers = $fabrikDb->loadObjectList();
+					$count = 0;
+
+					// @TODO really should batch this stuff up, maybe 100 at a time, rather than an insert for every user!
+					foreach ($origUsers as $o_user)
 					{
-						JError::raiseNotice(400, $fabrikDb->getErrorMsg());
-						$import = false;
+						// Insert into our F! table
+						$query->clear();
+						$fields = array($this->getFieldName($params, 'juser_field_userid', true) => $o_user->id,
+							$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
+							$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
+							$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
+							$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
+							$this->getFieldName($params, 'juser_field_username', true) => $o_user->username);
+						if (!FabrikWorker::j3())
+						{
+							$fields[$this->getFieldName($params, 'juser_field_usertype', true)] = $o_user->group_id;
+						}
+						$query->insert($tableName);
+						foreach ($fields as $key => $val)
+						{
+							$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
+						}
+
+						$fabrikDb->setQuery($query);
+						$fabrikDb->execute();
+						$count++;
 					}
-					// $import = $fabrikDb->execute();
-					$count++;
-				}
-				// @TODO - $$$rob - the $import test below only checks if the LAST query ran ok - should check ALL
-				// Display synchonization result
-				$app = JFactory::getApplication();
-				if ($import)
-				{
 					$app->enqueueMessage(JText::sprintf('PLG_FABRIK_FORM_JUSER_MSG_SYNC_OK', $count, $tableName));
 				}
-				else
+				catch (Exception $e)
 				{
 					$app->enqueueMessage(JText::_('PLG_FABRIK_FORM_JUSER_MSG_SYNC_ERROR'));
 				}
@@ -319,7 +312,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$mail = JFactory::getMailer();
 
 		// Load up com_users lang - used in email text
-		$lang->load('com_users');
+		$lang->load('com_users', JPATH_SITE);
 		/*
 		 * If the fabrik table is set to be #__users and the this plugin is used
 		 * we need to alter the form model to tell it not to store the main row
@@ -362,15 +355,28 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			/*
 			 * This test would cause a fail if you were editing a record which contained hte user data in a join
 			 * E.g. Fabrikar.com/subscribe - user logged in but adding a new subscription
+			 * $$$ hugh - AOOOOGA!  Removing the rowId test means that when an admin creates a new
+			 * user when logged in, the admin's row in #__users will get overwritten with the new user
+			 * details, because the user element has set itself to the currently logged in ID.
+			 * Going to try looking at orig data instead, don't know if that'll cause the issue outlined above
+			 * but have to do SOMETHING to fix this issue.
 			 */
 			//if (!empty($formModel->rowId))
 			//{
-				$original_id = $formModel->formData[$this->useridfield];
-
-				// $$$ hugh - if it's a user element, it'll be an array
-				if (is_array($original_id))
+			
+				if ($formModel->origDataIsEmpty())
 				{
-					$original_id = JArrayHelper::getValue($original_id, 0, 0);
+					$original_id = 0;
+				}
+				else
+				{
+					$original_id = $formModel->formData[$this->useridfield];
+	
+					// $$$ hugh - if it's a user element, it'll be an array
+					if (is_array($original_id))
+					{
+						$original_id = JArrayHelper::getValue($original_id, 0, 0);
+					}
 				}
 			//}
 		}
@@ -389,7 +395,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		if ($isNew && $usersConfig->get('allowUserRegistration') == '0' && !$bypassRegistration)
 		{
-			JError::raiseError(403, JText::_('Access Forbidden - Registration not enabled'));
+			throw new RuntimeException(JText::_('Access Forbidden - Registration not enabled'), 400);
 			return false;
 		}
 		$data = array();
@@ -718,7 +724,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					}
 					else
 					{
-						JError::raiseNotice(500, "could not alter user group to $groupId as you are not assigned to that group");
+						throw new RuntimeException("could not alter user group to $groupId as you are not assigned to that group");
 					}
 				}
 			}
@@ -843,7 +849,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$input = $app->input;
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);
 		$userElName = $userElement === false ? false : $userElement->getFullName();
-		$userId = $input->get($userElName);
+		$userId = (int) $post['id'];
 		$db = FabrikWorker::getDbo(true);
 		$ok = true;
 		jimport('joomla.mail.helper');
@@ -874,8 +880,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		if (empty($post['password']))
 		{
-			// $$$tom added a new/edit test
-			if ((int) $userId === 0)
+			if ($userId === 0)
 			{
 				$this->raiseError($formModel->errors, $this->passwordfield, JText::_('Please enter a password'));
 				$ok = false;
@@ -926,9 +931,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 	protected function raiseError(&$err, $field, $msg)
 	{
-		if (JFactory::getApplication()->isAdmin())
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
 		{
-			JError::raiseNotice(500, $msg);
+			$app->enqueueMessage($msg, 'notice');
 		}
 		else
 		{

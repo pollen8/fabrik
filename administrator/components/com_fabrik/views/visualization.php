@@ -63,9 +63,6 @@ class FabrikViewVisualization
 		$app = JFactory::getApplication();
 		$app->input->set('hidemainmenu', true);
 		FabrikViewVisualization::setVisualizationToolbar();
-		$document = JFactory::getDocument();
-		//FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-		//FabrikHelperHTML::script('administrator/components/com_fabrik/views/adminvisualization.js');
 		FabrikHelperHTML::tips();
 		JFilterOutput::objectHTMLSafe($row);
 		jimport('joomla.html.pane');
@@ -93,7 +90,7 @@ class FabrikViewVisualization
 				submitform( pressbutton);
 			}
 		}";
-		$document->addScriptDeclaration($js);
+		FabrikHelperHTML::addScriptDeclaration($js);
 ?>
 		<form action="index.php" method="post" name="adminForm">
 			<table style="width:100%;">

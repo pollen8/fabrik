@@ -115,7 +115,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
-			return 'CONCAT(' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 		$label = FabrikString::shortColName($join->params->get('join-label'));
 
@@ -226,10 +226,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 
 		$w = new FabrikWorker;
-		foreach ($default as &$d)
-		{
-			$d = $w->parseMessageForPlaceHolder($d);
-		}
+		$default = $w->parseMessageForPlaceHolder($default);
+
 		// Not yet implemented always going to use dropdown for now
 		$displayType = $params->get('cdd_display_type', 'dropdown');
 		$html = array();
@@ -387,15 +385,28 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			// Get distinct records which have already been selected: http://fabrikar.com/forums/showthread.php?t=30450
 			$listModel = $this->getListModel();
 			$db = $listModel->getDb();
-			$query = $db->getQuery(true);
 			$obs = $this->getWatchElement();
-			$obsName = $obs->getElement()->name;
-			$obsValue = $input->get($obs->getFullName(true, false) . '_raw');
-			$element = $this->getElement();
-			$tblName = $listModel->getTable()->db_table_name;
-			$query->select('DISTINCT ' . $element->name)->from($tblName)->where($obsName . ' = ' . $db->quote($obsValue));
-			$db->setQuery($query);
-			$ids = $db->loadColumn();
+			$obsName = $obs->getFullName(false, false, false);
+
+			// From a filter...
+			if ($input->get('fabrik_cascade_ajax_update') == 1)
+			{
+				$obsValue = $input->get('v', array(), 'array');
+			}
+			else
+			{
+				// Standard
+				$obsValue = (array) $input->get($obs->getFullName(true, false) . '_raw');
+
+			}
+			foreach ($obsValue as &$v)
+			{
+				$v = $db->quote($v);
+			}
+
+			$where = $obsName . ' IN (' . implode(',', $obsValue) . ')';
+			$opts = array('where' => $where);
+			$ids = $listModel->getColumnData($this->getId(), true, $opts);
 			$key = $this->queryKey();
 			if (is_array($ids))
 			{
@@ -497,10 +508,6 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 
 		FabrikHelperHTML::debug($db->getQuery(), 'cascadingdropdown _getOptionVals');
 		$this->_optionVals[$sqlKey] = $db->loadObjectList();
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(501, $db->getErrorMsg());
-		}
 
 		$eval = $params->get('cdd_join_label_eval', '');
 		if (trim($eval) !== '')
@@ -613,7 +620,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 			$watch = $this->getParams()->get('cascadingdropdown_observe');
 			if ($watch == '')
 			{
-				JError::raiseError(500, 'No watch element set up for cdd' . $this->getElement()->id);
+				throw new RuntimeException('No watch element set up for cdd' . $this->getElement()->id, 500);
 			}
 
 			$this->watchElement = $this->getFormModel()->getElement($watch, true);
@@ -806,7 +813,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $val);
 			$val = $w->parseMessageForPlaceHolder($val, $data);
-			$val = 'CONCAT(' . $val . ')';
+			$val = 'CONCAT_WS(\'\', ' . $val . ')';
 			$orderby = $val;
 		}
 		else
@@ -900,7 +907,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		else
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
-			return 'CONCAT(' . $val . ')';
+			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 	}
 

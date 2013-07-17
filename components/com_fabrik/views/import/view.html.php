@@ -42,8 +42,7 @@ class fabrikViewImport extends JViewLegacy
 		$this->form = $this->get('Form');
 		if (!$listModel->canCSVImport())
 		{
-			JError::raiseError(400, 'Naughty naughty!');
-			jexit();
+			throw new RuntimeException('Naughty naughty!', 400);
 		}
 		$layout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$this->setLayout($layout);

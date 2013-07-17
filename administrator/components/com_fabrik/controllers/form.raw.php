@@ -73,17 +73,15 @@ class FabrikAdminControllerForm extends JControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$viewName = $input->get('view', 'form');
-		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$viewType = $document->getType();
 
 		// For now lets route this to the html view.
 		$view = $this->getView($viewName, 'html');
-		if (!JError::isError($model))
+		if ($model = JModelLegacy::getInstance('Form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}

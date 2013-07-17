@@ -27,6 +27,7 @@ JHtml::_('behavior.keepalive');
 			return false;
 		}
 		if (task == 'list.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+			window.fireEvent('form.save');
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		} else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');

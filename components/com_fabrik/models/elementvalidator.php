@@ -35,7 +35,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	/**
 	 * Set the element model - an instance of this class is linked to one element model
 	 *
-	 * @param   JModel  $elementModel  Element model
+	 * @param   JModel  &$elementModel  Element model
 	 *
 	 * @return  void
 	 */

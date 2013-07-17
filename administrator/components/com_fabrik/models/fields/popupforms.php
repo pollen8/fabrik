@@ -58,11 +58,6 @@ class JFormFieldPopupforms extends JFormFieldList
 		$db->setQuery($query);
 		$options = $db->loadObjectList('value');
 
-		// Check for a database error.
-		if ($db->getErrorNum())
-		{
-			JError::raiseWarning(500, $db->getErrorMsg());
-		}
 		if (empty($options))
 		{
 			$options[] = JHTML::_('select.option', '', JText::_('COM_FABRIK_NO_POPUP_FORMS_AVAILABLE'));

@@ -117,7 +117,7 @@ class FabrikUploader extends JObject
 		{
 			if (!JFolder::create($folderPath, $mode))
 			{
-				return JError::raiseError(21, "Could not make dir $folderPath ");
+				throw new RuntimeException("Could not make dir $folderPath ");
 			}
 		}
 	}
@@ -210,7 +210,7 @@ class FabrikUploader extends JObject
 			}
 		}
 
-		$xss_check = JFile::read($file['tmp_name'], false, 256);
+		$xss_check = file_get_contents($file['tmp_name'], false, null, 0, 256);
 		$html_tags = array('abbr', 'acronym', 'address', 'applet', 'area', 'audioscope', 'base', 'basefont', 'bdo', 'bgsound', 'big', 'blackface',
 			'blink', 'blockquote', 'body', 'bq', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'comment', 'custom', 'dd',
 			'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'fn', 'font', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4',
@@ -239,10 +239,10 @@ class FabrikUploader extends JObject
 	 * @param   string  $newFileName   This recursions file name
 	 * @param   int     $version       File version
 	 *
-	 * @return  string  new file name
+	 * @return  string  New file name
 	 */
 
-	public function incrementFileName($origFileName, $newFileName, $version)
+	public static function incrementFileName($origFileName, $newFileName, $version)
 	{
 		if (JFile::exists($newFileName))
 		{

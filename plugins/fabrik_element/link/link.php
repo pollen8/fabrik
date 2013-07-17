@@ -180,7 +180,7 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			$value = array('label' => '', 'link' => '');
 		}
 
-		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0)
+		if (FabrikWorker::getMenuOrRequestVar('rowid') == 0 && $value['link'] === '')
 		{
 			$value['link'] = $params->get('link_default_url');
 		}
@@ -543,6 +543,15 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
+		if (is_array($data))
+		{
+			foreach ($data as &$d)
+			{
+				$d = strip_tags($d);
+			}
+			$link = JArrayHelper::getValue($data, 'link', '');
+			return $link === '' || $link === 'http://';
+		}
 		$data = strip_tags($data);
 		if (trim($data) == '' || $data == '<a target="_self" href=""></a>')
 		{

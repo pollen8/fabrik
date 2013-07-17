@@ -378,11 +378,14 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 					date_created = " . $db->Quote($strDate) . ",
 					thumb = " . $db->quote($thumb)
 		);
-		$db->execute();
-		if ($db->getErrorNum())
+		try
+		{
+			$db->execute();
+		}
+		catch (RuntimeException $e)
 		{
 			$err = new stdClass;
-			$err->error = $db->getErrorMsg();
+			$err->error = $e->getMessage();
 			echo json_encode($err);
 			exit;
 		}
@@ -414,11 +417,14 @@ class PlgFabrik_ElementThumbs extends PlgFabrik_Element
 					. " AND thumb = 'down'))
                     WHERE " . $this->getlistModel()->getTable()->db_primary_key . " = " . $db->quote($row_id) . "
                         LIMIT 1");
-		$db->execute();
-		if ($db->getErrorNum())
+		try
+		{
+			$db->execute();
+		}
+		catch (RuntimeException $e)
 		{
 			$err = new stdClass;
-			$err->error = $db->getErrorMsg();
+			$err->error = $e->getMessage();
 			echo json_encode($err);
 			exit;
 		}

@@ -2089,7 +2089,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$key = 'element/date/date';
 
-		// Ensure that we keep advanced dependancies from previous date elements regarless of current elements settings.
+		// Ensure that we keep advanced dependancies from previous date elements regardless of current elements settings.
 		$deps = array_key_exists($key, $shim) ? $shim[$key]->deps : array('fab/element');
 		$params = $this->getParams();
 		if ($params->get('date_advanced', '0') == '1' && !in_array('fab/lib/datejs/date', $deps))
@@ -2143,6 +2143,7 @@ class FabDate extends JDate
 
 	public function __construct($date = 'now', $tz = null)
 	{
+		$app = JFactory::getApplication();
 		$orig = $date;
 		$date = $this->stripDays($date);
 		/* not sure if this one needed?
@@ -2155,7 +2156,7 @@ class FabDate extends JDate
 		}
 		catch (Exception $e)
 		{
-			JDEBUG ? JError::raiseNotice(500, 'date format unknown for ' . $orig . ' replacing with todays date') : '';
+			JDEBUG ? $app->enqueueMessage('date format unknown for ' . $orig . ' replacing with todays date', 'notice') : '';
 			$date = 'now';
 			/* catches 'Failed to parse time string (ublingah!) at position 0 (u)' exception.
 			 * don't use this object
@@ -2222,9 +2223,11 @@ class FabDate extends JDate
 
 	static public function strftimeFormatToDateFormat(&$format)
 	{
+		$app = JFactory::getApplication();
 		if (strstr($format, '%C'))
 		{
-			JError::raiseNotice(200, 'Cant convert %C strftime date format to date format, substituted with Y');
+			$app->enqueueMessage('Cant convert %C strftime date format to date format, substituted with Y', 'notice');
+			return;
 		}
 
 		$search = array('%e', '%j', '%u', '%V', '%W', '%h', '%B', '%C', '%g', '%G', '%M', '%P', '%r', '%R', '%T', '%X', '%z', '%Z', '%D', '%F', '%s',

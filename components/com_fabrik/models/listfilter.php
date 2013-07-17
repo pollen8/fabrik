@@ -360,6 +360,8 @@ class FabrikFEModelListfilter extends FabModel
 	 *
 	 * @since 3.0.6
 	 *
+	 * @throws UnexpectedValueException
+	 *
 	 * @return  bool	search string long enough?
 	 */
 
@@ -368,7 +370,11 @@ class FabrikFEModelListfilter extends FabModel
 		$db = JFactory::getDbo();
 		$db->setQuery('SHOW VARIABLES LIKE \'ft_min_word_len\'');
 		$res = $db->loadObject();
-		return JString::strlen($s) >= $res->Value;
+		if (!JString::strlen($s) >= $res->Value)
+		{
+			throw new UnexpectedValueException(JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
+		}
+		return true;
 	}
 
 	/**
@@ -389,11 +395,7 @@ class FabrikFEModelListfilter extends FabModel
 		{
 			return;
 		}
-		if (!$this->testBooleanSearchLength($search))
-		{
-			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_STRING_TOO_SHORT'));
-			return;
-		}
+		$this->testBooleanSearchLength($search);
 		$search = explode(' ', $search);
 		switch ($mode)
 		{
@@ -537,6 +539,7 @@ class FabrikFEModelListfilter extends FabModel
 
 	private function insertSearchAllIntoFilters(&$filters, $search)
 	{
+		$app = JFactory::getApplication();
 		$elements = $this->listModel->getElements('id', false);
 		$keys = array_keys($elements);
 		$i = 0;
@@ -666,7 +669,7 @@ class FabrikFEModelListfilter extends FabModel
 		}
 		if (!$searchable)
 		{
-			JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
+			$app->enqueueMessage(JText::_('COM_FABRIK_NOTICE_SEARCH_ALL_BUT_NO_ELEMENTS'));
 		}
 	}
 
@@ -1172,11 +1175,11 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
+				// Ensure the array is indexed starting at 0.
+				$value = array_values($value);
 
 				// Empty ranged data test
-
-				// $$$ hugh - was getting single value array when testing AJAX nav, so 'undefined index 1' warning.
-				if (is_array($value) && $value[0] == '' && (!isset($value[1]) || $value[1] == ''))
+				if (JArrayHelper::getValue($value, 0) == '' && JArrayHelper::getValue($value, 1) == '')
 				{
 					continue;
 				}

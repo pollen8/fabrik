@@ -257,13 +257,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 	protected function alterViewXML($row)
 	{
-
 		$views = array();
 		$views[] = $this->outputPath . 'site/views/form/tmpl/default.xml';
 		$views[] = $this->outputPath . 'site/views/list/tmpl/default.xml';
 		foreach ($views as $view)
 		{
-			$str = JFile::read($view);
+			$str = file_get_contents($view);
 			$str = str_replace('{component_name}', $row->component_name, $str);
 			JFile::write($view, $str);
 		}
@@ -316,7 +315,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($componentZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create component zip in ' . $componentZipPath);
+				throw new RuntimeException('Unable to create component zip in ' . $componentZipPath, 500);
 			}
 
 			// Make form module
@@ -327,8 +326,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($formModuleZipPath, $formModuleFiles);
 			if (!$ok)
 			{
-				exit;
-				JError::raiseError(500, 'Unable to form module zip in ' . $componentZipPath);
+				throw new RuntimeException('Unable to form module zip in ' . $componentZipPath, 500);
 			}
 			// Copy that to root
 			$ok = JFile::copy($componentZipPath, $this->outputPath . 'com_' . $this->getComponentName($row) . '.zip');
@@ -350,7 +348,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$ok = $archive->create($packageZipPath, $files);
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $componentZipPath);
+				throw new RuntimeException('Unable to create zip in ' . $componentZipPath, 500);
 			}
 			// $this->triggerDownload($pkgName, $packageZipPath);
 			// $this->cleanUp($pkgName);
@@ -372,7 +370,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$size = filesize($filepath);
 
 		$document->setMimeEncoding('application/zip');
-		$str = JFile::read($filepath);
+		$str = file_get_contents($filepath);
 
 		// Set the response to indicate a file download
 		JResponse::setHeader('Content-Type', 'application/force-download');
@@ -552,7 +550,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		 */
 		$xmlname = str_replace('com_', '', $row->component_name);
 		$return[] = "\t\t\$path = JPATH_ROOT . '/components/com_" . "$row->component_name/$xmlname.php';";
-		$return[] = "\t\t\$buffer = JFile::read(\$path);";
+		$return[] = "\t\t\$buffer = file_get_contents(\$path);";
 		$return[] = "\t\t\$buffer = str_replace('{packageid}', \$package_id, \$buffer);";
 		$return[] = "\t\tJFile::write(\$path, \$buffer);";
 		$return[] = "\t}";
@@ -562,7 +560,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$path = $this->outputPath . $this->manifestClassFileName($row);
 		if (!JFile::write($path, $return))
 		{
-			JError::raiseError(500, 'didnt write to ' . $path);
+			throw new RuntimeException('didnt write to ' . $path, 500);
 		}
 		return $path;
 	}
@@ -612,13 +610,13 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	}
 
 	/**
-	 * recurisive function to add files and folders into the zip
+	 * Recurisive function to add files and folders into the zip
 	 *
-	 * @param   array   $filenames  list of file names to add $filenames
-	 * @param   array   &$files     list of already added files files
-	 * @param   string  $root       root path
+	 * @param   array   $filenames  List of file names to add $filenames
+	 * @param   array   &$files     List of already added files files
+	 * @param   string  $root       Root path
 	 *
-	 * @return  array  files
+	 * @return  array  Files
 	 */
 
 	protected function addFiles($filenames, &$files, $root = '')
@@ -635,10 +633,10 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			}
 			else
 			{
-				$data = JFile::read($fpath);
+				$data = file_get_contents($fpath);
 				if ($data === false)
 				{
-					JError::raiseNotice(500, 'could not read ' . $fpath);
+					JFactory::getApplication()->enqueueMessage('could not read ' . $fpath, 'notice');
 				}
 				$files[] = array('name' => $zippath, 'data' => $data);
 			}
@@ -669,7 +667,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return = array();
 		foreach ($files as $file)
 		{
-			$str = JFile::read($from . '/' . $file);
+			$str = file_get_contents($from . '/' . $file);
 			$str = str_replace('{component_name}', $row->component_name, $str);
 
 			$file = str_replace('_fabrik_', '_' . $row->component_name . '_', $file);
@@ -1106,7 +1104,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$plugin->fullfile = $pluginZipPath;
 			if (!$ok)
 			{
-				JError::raiseError(500, 'Unable to create zip in ' . $pluginZipPath);
+				throw new RuntimeException('Unable to create zip in ' . $pluginZipPath, 500);
 			}
 		}
 	}

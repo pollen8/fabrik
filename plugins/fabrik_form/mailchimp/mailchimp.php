@@ -60,13 +60,11 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$apiKey = $params->get('mailchimp_apikey');
 		if ($apiKey == '')
 		{
-			JError::raiseNotice(500, 'Mailchimp: no api key specified');
-			return false;
+			throw new RuntimeException('Mailchimp: no api key specified');
 		}
 		if ($listId == '')
 		{
-			JError::raiseNotice(500, 'Mailchimp: no list id specified');
-			return false;
+			throw new RuntimeException('Mailchimp: no list id specified');
 		}
 
 		$api = new MCAPI($params->get('mailchimp_apikey'));
@@ -98,7 +96,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 	public function onAfterProcess($params, &$formModel)
 	{
-
+		$app = JFactory::getApplication();
 		$this->formModel = $formModel;
 		$emailData = $this->getEmailData();
 		$filter = JFilterInput::getInstance();
@@ -111,13 +109,11 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$apiKey = $params->get('mailchimp_apikey');
 		if ($apiKey == '')
 		{
-			JError::raiseNotice(500, 'Mailchimp: no api key specified');
-			return false;
+			throw new RuntimeException('Mailchimp: no api key specified');
 		}
 		if ($listId == '')
 		{
-			JError::raiseNotice(500, 'Mailchimp: no list id specified');
-			return false;
+			throw new RuntimeException('Mailchimp: no list id specified');
 		}
 
 		$api = new MCAPI($params->get('mailchimp_apikey'));
@@ -177,16 +173,16 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$retval = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
 		if ($api->errorCode)
 		{
-			JError::raiseNotice($api->errorCode, 'Mailchimp: ' . $api->errorMessage);
+			$app->enqueueMessage($api->errorCode, 'Mailchimp: ' . $api->errorMessage, 'notice');
 
 			if ((bool) $params->get('mailchimp_fail_on_error', true) === true)
 			{
 				$formModel->errors['mailchimp_error'] = true;
-				 false;
+				return false;
 			}
 			else
 			{
-			return true;
+				return true;
 			}
 		}
 		else

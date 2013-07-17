@@ -144,21 +144,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$this->_loadTmplBottom($form);
 		JDEBUG ? $profiler->mark('form view: after tmpl bottom loaded') : null;
 
-		if ($model->isEditable())
-		{
-			$form->startTag = '<form action="' . $form->action . '" class="fabrikForm" method="post" name="' . $form->name . '" id="' . $form->formid
-			. '" enctype="' . $model->getFormEncType() . '">';
-			$form->endTag = '</form>';
-			$form->fieldsetTag = 'fieldset';
-			$form->legendTag = 'legend';
-		}
-		else
-		{
-			$form->startTag = '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
-			$form->endTag = '</div>';
-			$form->fieldsetTag = 'div';
-			$form->legendTag = 'h3';
-		}
+		$form->attribs = ' class="' . $form->class . '" name="' . $form->name . '" id="' . $form->formid . '" enctype="' . $model->getFormEncType() . '"';
+
 		$this->form = $form;
 		JDEBUG ? $profiler->mark('form view: form assigned as ref') : null;
 		$list = new stdClass;
@@ -346,22 +333,16 @@ class FabrikViewFormBase extends JViewLegacy
 
 		if ($this->showPDF)
 		{
-			if (!FabrikWorker::canPdf())
+			FabrikWorker::canPdf();
+			if ($app->isAdmin())
 			{
-				JError::raiseNotice(500, JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
+				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
 			}
 			else
 			{
-				if ($app->isAdmin())
-				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&task=details.view&format=pdf&formid=' . $model->getId() . '&rowid=' . $model->getRowId());
-				}
-				else
-				{
-					$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf');
-				}
-				$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
+				$this->pdfURL = JRoute::_('index.php?option=com_' . $package . '&view=details&formid=' . $model->getId() . '&rowid=' . $model->getRowId() . '&format=pdf');
 			}
+			$this->pdfLink = '<a href="' . $this->pdfURL . '">' . FabrikHelperHTML::image('pdf.png', 'list', $this->tmpl, $buttonProperties) . '</a>';
 		}
 	}
 
@@ -483,15 +464,17 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$groups = $model->getGroupsHiarachy();
 
-		$script[] = "\t{$bkey}.addElements({";
-		$gs = array();
+		$script[] = "\t{$bkey}.addElements(";
+		$groupedJs = new stdClass;
 		foreach ($groups as $groupModel)
 		{
+			$groupId = $groupModel->getGroup()->id ;
+			$groupedJs->$groupId = array();
 			if (!$groupModel->canView())
 			{
 				continue;
 			}
-			$aObjs = array();
+			$elementJs= array();
 			$elementModels = $groupModel->getPublishedElements();
 
 			// $$$ rob if repeatTotal is 0 we still want to add the js objects as the els are only hidden
@@ -515,7 +498,7 @@ class FabrikViewFormBase extends JViewLegacy
 						$ref = $elementModel->elementJavascript($c);
 						if (!empty($ref))
 						{
-							$aObjs[] = json_encode($ref);
+							$elementJs[] = $ref;
 						}
 						$validations = $elementModel->validator->findAll();
 						if (!empty($validations) && $elementModel->isEditable())
@@ -529,10 +512,10 @@ class FabrikViewFormBase extends JViewLegacy
 					}
 				}
 			}
-			$gs[] = "\t" . $groupModel->getGroup()->id . ":[\t" . implode(",\n\t\t", $aObjs) . ']';
+			$groupedJs->$groupId = $elementJs;
 		}
-		$script[] = implode(",\n\t", $gs);
-		$script[] = "\t});";
+		$script[] = json_encode($groupedJs);
+		$script[] = "\t);";
 		$script[] = $actions;
 		$script[] = $vstr;
 
@@ -1055,7 +1038,7 @@ class FabrikViewFormBase extends JViewLegacy
 			$script = "window.addEvent('fabrik.loaded', function() {
 			new adminCCK($opts);
 		});";
-			$document->addScriptDeclaration($script);
+			FabrikHelperHTML::addScriptDeclaration($script);
 		}
 	}
 

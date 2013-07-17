@@ -180,7 +180,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 
 		// Making complete path + filename + extension
 		$w = new FabrikWorker;
-		$logs_file = $logs_path . DS . $w->parseMessageForPlaceHolder($params->get('logs_file')) . $random_filename . '.' . $ext;
+		$logs_file = $logs_path . '/' . $w->parseMessageForPlaceHolder($params->get('logs_file')) . $random_filename . '.' . $ext;
 		$logs_mode = $params->get('logs_append_or_overwrite');
 		$date_element = $params->get('logs_date_field');
 		$date_now = $params->get('logs_date_now');
@@ -426,7 +426,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		 * each time you add a line in the file */
 		$labels = (!JFile::exists($logs_file) || $logs_mode == 'w') ? 1 : 0;
 
-		$buffer = ($logs_mode == 'a' && JFile::exists($logs_file)) ? JFile::read($logs_file) : '';
+		$buffer = ($logs_mode == 'a' && JFile::exists($logs_file)) ? file_get_contents($logs_file) : '';
 
 		$send_email = $params->get('log_send_email') == '1';
 		$make_file = $params->get('make_file') == '1';
@@ -496,7 +496,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 						$res = JFile::write($logs_file, $htmlMsg);
 						if (!$res)
 						{
-							JError::raiseNotice(E_NOTICE, "error writing html to log file: " . $logs_file);
+							$app->enqueueMessage("error writing html to log file: " . $logs_file, 'notice');
 						}
 					}
 				}
@@ -642,7 +642,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			else
 			{
 				$create_custom_table = "CREATE TABLE IF NOT EXISTS $rdb (" . $db->quoteName('id')
-					. " int(11) NOT NULL auto_increment PRIMARY KEY, $clabels_createdb);";
+					. " int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, $clabels_createdb);";
 				$db->setQuery($create_custom_table);
 				$db->execute();
 
@@ -687,7 +687,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 				}
 				else
 				{
-					JError::raiseNotice(500, JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+					$app->enqueueMessage(JText::sprintf('DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
 				}
 			}
 		}

@@ -23,7 +23,7 @@ $lang->load('com_fabrik', JPATH_SITE . '/components/com_fabrik');
 // Test if the system plugin is installed and published
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 $app = JFactory::getApplication();
@@ -45,7 +45,7 @@ jimport('joomla.application.component.controller');
 // System plugin check
 if (!defined('COM_FABRIK_FRONTEND'))
 {
-	JError::raiseError(400, JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'));
+	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
 // Execute the task.
@@ -59,7 +59,7 @@ $query->select('COUNT(extension_id)')->from('#__extensions')->where('enabled = 1
 $db->setQuery($query);
 if (count($db->loadResult()) === 0)
 {
-	JError::raiseNotice(E_WARNING, JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'));
+	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
 }
 
 $controller->execute($input->get('task', 'home.display'));

@@ -657,10 +657,6 @@ class FabrikFEModelForm extends FabModelForm
 			$query->select('*')->from('#__{package}_jsactions')->where('element_id IN (' . implode(',', $aElIds) . ')');
 			$db->setQuery($query);
 			$res = $db->loadObjectList();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		else
 		{
@@ -714,10 +710,6 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$db->setQuery($query);
 			$groups = $db->loadObjectList('group_id');
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 			$this->_publishedformGroups = $this->mergeGroupsWithJoins($groups);
 		}
 		return $this->_publishedformGroups;
@@ -858,10 +850,6 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		$db->setQuery($query);
 		$groups = $db->loadObjectList();
-		if ($db->getErrorNum())
-		{
-			JError::raiseError(500, $db->getErrorMsg());
-		}
 		$this->elements = $groups;
 		return $groups;
 	}
@@ -1024,6 +1012,24 @@ class FabrikFEModelForm extends FabModelForm
 			$this->setOrigData();
 		}
 		return $this->_origData;
+	}
+
+	/**
+	 * test if orig data is empty.  Made this a function, as it's not a simple test
+	 * for empty(), and code outside thie model shouldn't need to know it'll be a one
+	 * entry array with an empty stdClass in it.
+	 *
+	 * @return  bool
+	 */
+
+	public function origDataIsEmpty()
+	{
+		if (!isset($this->_origData))
+		{
+			$this->setOrigData();
+		}
+		return (empty($this->_origData) || (count($this->_origData) == 1 && count((array)$this->_origData[0]) == 0));
+
 	}
 
 	/**
@@ -1789,10 +1795,7 @@ class FabrikFEModelForm extends FabModelForm
 								 * their JSON data for encrypted read only vals, need to decode.
 								 */
 								$v = FabrikWorker::JSONtoData($v, true);
-								foreach ($v as &$tmpV)
-								{
-									$tmpV = $w->parseMessageForPlaceHolder($tmpV, $post);
-								}
+								$v = $w->parseMessageForPlaceHolder($v, $post);
 							}
 							$elementModel->setGroupModel($groupModel);
 							$elementModel->setValuesFromEncryt($post, $key, $v);
@@ -2728,7 +2731,7 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		$data = array(FArrayHelper::toObject($clean_request));
+		$data = $clean_request;
 		$form = $this->getForm();
 
 		$aGroups = $this->getGroupsHiarachy();
@@ -2877,8 +2880,7 @@ class FabrikFEModelForm extends FabModelForm
 								if (empty($usekey) && !$this->isMambot)
 								{
 									$this->rowId = 0;
-									JError::raiseNotice(500, JText::sprintf('COULD NOT FIND RECORD IN DATABASE', $this->rowId));
-									return;
+									throw new RuntimeException(JText::sprintf('COULD NOT FIND RECORD IN DATABASE', $this->rowId));
 								}
 								else
 								{
@@ -2896,35 +2898,7 @@ class FabrikFEModelForm extends FabModelForm
 					$this->setJoinData($data);
 				}
 			}
-			// Set the main part of the form's default data
-			/* if ($this->rowId != '')
-			{
-			}
-			else
-			{
-				// Could be a view
-				if ($listModel->isView())
-				{
-					// @TODO test for new records from views
-					$data = JArrayHelper::fromObject($data[0]);
-				}
-				else
-				{
-					if (($this->isMambot || $this->saveMultiPage()) && (!empty($data) && is_object($data[0])))
-					{
-						$data = JArrayHelper::fromObject($data[0]);
-					}
-					else
-					{
-						// $$$ rob was causing notices when adding record with joined groups as $data[0]->join unset if we just use request
-						$data = JArrayHelper::fromObject($data[0]);
-					}
-				}
-			}
-
-*/
 		}
-//		$this->listModel = $listModel;
 
 		// Test to allow {$my->id}'s to be evald from query strings
 		$w = new FabrikWorker;
@@ -3001,6 +2975,11 @@ class FabrikFEModelForm extends FabModelForm
 			return;
 		}
 
+		if (!array_key_exists(0, $data))
+		{
+			$data[0] = new stdClass;
+		}
+
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
@@ -3015,6 +2994,8 @@ class FabrikFEModelForm extends FabModelForm
 					$names = $elementModel->getJoinDataNames();
 					foreach ($data as $row)
 					{
+						// Might be a string if new record ?
+						$row = (object) $row;
 						for ($i = 0; $i < count($names); $i ++)
 						{
 							$name = $names[$i];
@@ -3022,6 +3003,12 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								$v = $row->$name;
 								$v = FabrikWorker::JSONtoData($v, $elementModel->isJoin());
+
+								// New record or csv export
+								if (!isset($data[0]->$name))
+								{
+									$data[0]->$name = $v;
+								}
 								if (!is_array($data[0]->$name))
 								{
 									if ($groupModel->isJoin() && $groupModel->canRepeat())
@@ -3045,8 +3032,8 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		// Remove the additional rows - they should have been merged into [0] above.
-		$data = JArrayHelper::fromObject($data[0]);
+		// Remove the additional rows - they should have been merged into [0] above. if no [0] then use main array
+		$data = JArrayHelper::fromObject(JArrayHelper::getValue($data, 0, $data));
 	}
 
 	/**
@@ -3677,11 +3664,6 @@ class FabrikFEModelForm extends FabModelForm
 			$form->label = $input->get('newFormLabel');
 		}
 		$res = $form->store();
-		if (!$res)
-		{
-			JError::raiseError(500, $form->getErrorMsg());
-			return false;
-		}
 		$newElements = array();
 		foreach ($groupModels as $groupModel)
 		{
@@ -3838,7 +3820,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function getFormClass()
 	{
 		$params = $this->getParams();
-		$class = array('');
+		$class = array('fabrikForm');
 		$horiz = true;
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $gkey => $groupModel)
@@ -3889,7 +3871,7 @@ class FabrikFEModelForm extends FabModelForm
 			$page = 'index.php?';
 
 			// Get array of all querystring vars
-			$uri = JFactory::getURI();
+			$uri = JURI::getInstance();
 
 			/**
 			 * Was $router->parse($uri);
@@ -4090,6 +4072,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
 			$group->intro = $groupParams->get('intro');
+			$group->outro = $groupParams->get('outro');
 			$group->columns = $groupParams->get('group_columns', 1);
 			$group->splitPage = $groupParams->get('split_page', 0);
 			if ($groupModel->canRepeat())
@@ -4285,10 +4268,6 @@ class FabrikFEModelForm extends FabModelForm
 				$db->setQuery($query);
 			}
 			$this->linkedFabrikLists[$table] = $db->loadColumn();
-			if ($db->getErrorNum())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
 		}
 		return $this->linkedFabrikLists[$table];
 	}

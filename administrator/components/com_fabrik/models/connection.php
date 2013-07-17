@@ -176,12 +176,7 @@ class FabrikAdminModelConnection extends FabModelAdmin
 		$data['password'] = $crypt->encrypt($data['password']);
 
 		$options = $model->getConnectionOptions(JArrayHelper::toObject($data));
-		$db = JDatabase::getInstance($options);
-		if (JError::isError($db))
-		{
-			$this->setError(JText::_('COM_FABRIK_UNABLE_TO_CONNECT'));
-			return false;
-		}
+		$db = $model->getDriverInstance($options);
 		$key = 'fabrik.connection.' . $data['id'];
 		/**
 		 * erm yeah will remove the session connection for the admin user, but not any other user whose already using the site

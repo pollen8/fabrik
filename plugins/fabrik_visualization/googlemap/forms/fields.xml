@@ -421,6 +421,16 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
+			<field name="street_view"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_VISUALIZATION_GOOGLE_MAP_STREET_VIEW_DESC"
+				label="PLG_VISUALIZATION_GOOGLE_MAP_STREET_VIEW_LABEL">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 		

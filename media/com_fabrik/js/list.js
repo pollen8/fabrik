@@ -731,6 +731,27 @@ var FbList = new Class({
 		});
 		return keys;
 	},
+	
+	/**
+	 * Get a single row's data
+	 * 
+	 * @param   string  id  ID
+	 * 
+	 * @since  3.0.8
+	 * 
+	 * @return object
+	 */
+	getRow: function (id) {
+		$H(this.options.data).each(function (group) {
+			for (var i = 0; i < group.length; i ++) {
+				var row = group[i];
+				if (row && row.data.__pk_val === id) {
+					return row;
+				}
+			}
+		});
+		return {};
+	},
 
 	fabrikNavOrder: function (orderby, orderdir) {
 		this.form.orderby.value = orderby;

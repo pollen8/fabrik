@@ -81,12 +81,11 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		$view->formView->setModel($formModel, true);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName, 'FabrikFEModel');
-		$model->setDbo(FabrikWorker::getDbo());
-		if (!JError::isError($model))
+		if ($this->getModel($viewName, 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
+		$model->setDbo(FabrikWorker::getDbo());
 
 		// @TODO check for cached version
 		$view->display();
@@ -105,12 +104,11 @@ class FabrikAdminControllerPackage extends FabControllerForm
 		$view = $this->getView('package', $viewType, '');
 
 		// Push a model into the view
-		$model = $this->getModel();
-		$db = FabrikWorker::getDbo();
-		$model->setDbo($db);
-		if (!JError::isError($model))
+		if ($model = $this->getModel())
 		{
 			$view->setModel($model, true);
+			$db = FabrikWorker::getDbo();
+			$model->setDbo($db);
 		}
 		$view->listform();
 	}

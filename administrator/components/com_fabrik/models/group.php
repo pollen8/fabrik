@@ -180,7 +180,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			if (($data['params']['repeat_group_button'] == 1))
 			{
 				$data['params']['repeat_group_button'] = 0;
-				JError::raiseNotice(500, 'You can not set the group containing the list primary key to be repeatable');
+				JFactory::getApplication()->enqueueMessage('You can not set the group containing the list primary key to be repeatable', 'notice');
 			}
 		}
 		$data['params'] = json_encode($data['params']);
@@ -326,10 +326,8 @@ class FabrikAdminModelGroup extends FabModelAdmin
 			// No existing repeat group table found so lets create it
 			$query = "CREATE TABLE IF NOT EXISTS " . $db->quoteName($newTableName) . " (" . implode(",", $names) . ")";
 			$db->setQuery($query);
-			if (!$db->execute())
-			{
-				JError::raiseError(500, $db->getErrorMsg());
-			}
+			$db->execute();
+
 			// Create id and parent_id elements
 			$listModel->makeIdElement($data['id']);
 			$listModel->makeFkElement($data['id']);
@@ -355,10 +353,7 @@ class FabrikAdminModelGroup extends FabModelAdmin
 				{
 					$info = $names[$newField];
 					$db->setQuery("ALTER TABLE " . $db->quoteName($newTableName) . " ADD COLUMN $info AFTER $lastfield");
-					if (!$db->execute())
-					{
-						JError::raiseError(500, $db->getErrorMsg());
-					}
+					$db->execute();
 				}
 			}
 		}

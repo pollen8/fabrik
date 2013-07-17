@@ -51,12 +51,6 @@
 				<option value="multilist">PLG_ELEMENT_DBJOIN_MULTILIST</option>
 		</field>
 		
-		<field name="max-width" 
-			type="text" 
-			size="10" 
-			description="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_DESC" 
-			label="PLG_ELEMENT_DBJOIN_DROPDOWN_MAXWIDTH_LABEL"/>
-
 	</fieldset>
 	
 	<fieldset label="Data" name="plg-databasejoin-simple">
@@ -94,8 +88,8 @@
 			rows="6"/>
 			
 		<field name="database_join_where_sql"
-			type="textarea"
-			cols="40" rows="8"
+			type="fabrikeditor"
+			mode="mysql"
 			description="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_DESC"
 			label="PLG_ELEMENT_DBJOIN_WHERE_STATEMENT_LABEL" />
 			
@@ -116,8 +110,8 @@
 		</field>
 		
 		<field name="database_join_join_sql"
-			type="textarea"
-			cols="40" rows="8"
+			type="fabrikeditor"
+			mode="mysql"
 			description="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_DESC"
 			label="PLG_ELEMENT_DBJOIN_JOIN_STATEMENT_LABEL" />
 			
@@ -199,11 +193,10 @@
 	<fieldset label="Advanced" name="plg-databasejoin-advanced">
 	
 		<field name="dabase_join_label_eval"
-			type="textarea"
-			cols="40"
+			type="fabrikeditor"
+			mode="php"
 			description="PLG_ELEMENT_DBJOIN_OPTIONS_EVAL_DESC"
-			label="PLG_ELEMENT_DBJOIN_OPTIONS_EVAL_LABEL"
-			rows="8"/>
+			label="PLG_ELEMENT_DBJOIN_OPTIONS_EVAL_LABEL" />
 			
 		<field name="join_desc_column"
 			type="listfields"

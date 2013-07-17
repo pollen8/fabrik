@@ -60,6 +60,9 @@ class FabrikFEModelVisualization extends JModelLegacy
 	public function __construct($config = array())
 	{
 		$this->pathBase = JPATH_SITE . '/plugins/fabrik_visualization/';
+
+		// 3.0 compat
+		$this->_row =& $this->row;
 		parent::__construct($config);
 	}
 
@@ -94,8 +97,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 	 * Deprecated use getParams() insteead
 	 *
 	 * @deprecated  since 3.1b
+	 *
+	 * @return  JRegistry
 	 */
-	function getPluginParams()
+
+	public function getPluginParams()
 	{
 		return $this->getParams();
 	}
@@ -126,6 +132,11 @@ class FabrikFEModelVisualization extends JModelLegacy
 			$this->row = FabTable::getInstance('Visualization', 'FabrikTable');
 			$this->row->load($this->getState('id'));
 			$this->setListIds();
+
+			// Needed to load the language file!
+			$pluginManager = FabrikWorker::getPluginManager();
+			$plugin = $pluginManager->getPlugIn($this->_row->plugin, 'visualization');
+
 		}
 		return $this->row;
 	}
@@ -377,12 +388,13 @@ class FabrikFEModelVisualization extends JModelLegacy
 
 	protected function getRequireFilterMsg()
 	{
+		$app = JFactory::getApplication();
 		$listModels = $this->getlistModels();
 		foreach ($listModels as $model)
 		{
 			if (!$model->gotAllRequiredFilters())
 			{
-				JError::raiseNotice(500, $model->getRequiredMsg());
+				$app->enqueueMessage($model->getRequiredMsg(), 'notice');
 			}
 		}
 	}

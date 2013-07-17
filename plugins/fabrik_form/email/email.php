@@ -69,6 +69,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$user = JFactory::getUser();
 		$config = JFactory::getConfig();
 		$db = JFactory::getDbo();
+		$w = new FabrikWorker;
 		$this->formModel = $formModel;
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
@@ -88,27 +89,50 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		// Always send as html as even text email can contain html from wysiwg editors
 		$htmlEmail = true;
 
+		$messageTemplate = '';
 		if (JFile::exists($emailTemplate))
 		{
-			$message = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
+			$messageTemplate = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
 				->_getTemplateEmail($emailTemplate);
 
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
-			if ($message === false)
+			if ($messageTemplate === false)
 			{
 				return;
 			}
-			$message = str_replace('{content}', $content, $message);
+			$messageTemplate = str_replace('{content}', $content, $messageTemplate);
+		}
+
+		$messageText = $params->get('email_message_text', '');
+		if (!empty($messageText))
+		{
+			$messageText = $w->parseMessageForPlaceholder($messageText, $this->data, false);
+			$messageText = str_replace('{content}', $content, $messageText);
+			$messageText = str_replace('{template}', $messageTemplate, $messageText);
+		}
+
+		$message = '';
+		if (!empty($messageText))
+		{
+			$message = $messageText;
+		}
+		else if (!empty($messageTemplate))
+		{
+			$message = $messageTemplate;
+		}
+		else if (!empty($content))
+		{
+			$message = $content;
 		}
 		else
 		{
-			$message = $contentTemplate != '' ? $content : $this->_getTextEmail();
+			$message = $this->_getTextEmail();
 		}
+
 		$this->addAttachments($params);
 
 		$cc = null;
 		$bcc = null;
-		$w = new FabrikWorker;
 
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
@@ -250,7 +274,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				 */
 				if ($res !== true)
 				{
-					JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+					$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 				}
 				if (JFile::exists($attach_fname))
 				{
@@ -259,7 +283,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			}
 			else
 			{
-				JError::raiseNotice(500, JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email));
+				$app->enqueueMessage(JText::sprintf('PLG_FORM_EMAIL_DID_NOT_SEND_EMAIL_INVALID_ADDRESS', $email), 'notice');
 			}
 		}
 		return true;
@@ -390,8 +414,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	protected function _getTemplateEmail($emailTemplate)
 	{
-		jimport('joomla.filesystem.file');
-		return JFile::read($emailTemplate);
+		return file_get_contents($emailTemplate);
 	}
 
 	/**

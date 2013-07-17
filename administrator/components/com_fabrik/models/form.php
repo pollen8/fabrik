@@ -301,10 +301,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$db->setQuery($query);
 
 		// Delete the old form groups
-		if (!$db->execute())
-		{
-			JError::raiseError(500, $db->stderr());
-		}
+		!$db->execute();
 
 		// Get previously saved form groups
 		$query->clear()->select('id, group_id')->from('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
@@ -326,14 +323,11 @@ class FabrikAdminModelForm extends FabModelAdmin
 				}
 				else
 				{
-				$query->insert('#__{package}_formgroup')
+					$query->insert('#__{package}_formgroup')
 					->set(array('form_id =' . (int) $formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
 				}
 				$db->setQuery($query);
-				if (!$db->execute())
-				{
-					JError::raiseError(500, $db->stderr());
-				}
+				$db->execute();
 				$orderid++;
 			}
 		}

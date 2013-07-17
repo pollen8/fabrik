@@ -46,9 +46,7 @@ class FabrikControllerCroncronnotification extends JController
 		$view = $this->getView($viewName, $viewType);
 
 		// Push a model into the view
-		$model = $this->getModel($viewName);
-
-		if (!JError::isError($model))
+		if ($model = $this->getModel($viewName))
 		{
 			$view->setModel($model, true);
 		}

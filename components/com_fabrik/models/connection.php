@@ -118,6 +118,22 @@ class FabrikFEModelConnection extends JModelLegacy
 	}
 
 	/**
+	 * Get driver instance based on J version
+	 *
+	 * @param  array  $options  Connection options
+	 *
+	 * @since  3.1b2
+	 *
+	 * @return  JDatabaseDriver|JDatabase
+	 */
+
+	public function getDriverInstance($options)
+	{
+		$version = new JVersion;
+		return $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+	}
+
+	/**
 	 * Creates a html dropdown box for the current connection
 	 *
 	 * @param   string  $javascript  to add to select box
@@ -141,7 +157,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				// Ensure db files are included
 				jimport('joomla.database.database');
 				$options = $this->getConnectionOptions($cn);
-				$fabrikDb = JDatabase::getInstance($options);
+				$fabrikDb = $this->getDriverInstance($options);
 				$tables = $fabrikDb->getTableList();
 				$tableOptions[] = JHTML::_('select.option', '', '-');
 				if (is_array($tables))
@@ -206,27 +222,6 @@ class FabrikFEModelConnection extends JModelLegacy
 		}
 		if (!is_object($this->connection))
 		{
-			$session = JFactory::getSession();
-			$key = 'fabrik.connection.' . $this->id;
-			if ($session->has($key))
-			{
-				$connProperties = unserialize($session->get($key));
-
-				// $$$ rob since J1.6 - connection properties stored as an array (in f2 it was an object)
-				if (is_a($connProperties, '__PHP_Incomplete_Class') || JArrayHelper::getValue($connProperties, 'id') == '')
-				{
-					$session->clear($key);
-				}
-				else
-				{
-					$this->connection = FabTable::getInstance('connection', 'FabrikTable');
-					$this->connection->bind($connProperties);
-
-					// Dont' decrypt as already decrypted before storing in session
-					return $this->connection;
-				}
-
-			}
 			if ($this->id == -1 || $this->id == '')
 			{
 				$this->connection = $this->loadDefaultConnection();
@@ -237,9 +232,6 @@ class FabrikFEModelConnection extends JModelLegacy
 				$this->connection->load($this->id);
 			}
 			$this->decryptPw($this->connection);
-
-			// $$$ rob store the connection for later use as it may be required by modules/plugins
-			$session->set($key, serialize($this->connection->getProperties()));
 		}
 		return $this->connection;
 	}
@@ -258,12 +250,10 @@ class FabrikFEModelConnection extends JModelLegacy
 		}
 		$error = false;
 		$cn = $this->getConnection();
-		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		if ($input->get('task') == 'test')
 		{
-			$session->clear('fabrik.connection.' . $cn->id);
 			self::$dbs = array();
 			$this->connection = null;
 			$cn = $this->getConnection();
@@ -277,9 +267,8 @@ class FabrikFEModelConnection extends JModelLegacy
 			}
 			else
 			{
-				$version = new JVersion;
 				$options = $this->getConnectionOptions($cn);
-				$db = $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
+				$db = $this->getDriverInstance($options);
 			}
 
 			try
@@ -312,8 +301,7 @@ class FabrikFEModelConnection extends JModelLegacy
 					$app = JFactory::getApplication();
 					if (!$app->isAdmin())
 					{
-						JError::raiseError(E_ERROR, 'Could not connection to database', $deafult_options);
-						jexit('Could not connection to database - possibly a menu item which doesn\'t link to a fabrik table');
+						throw new RuntimeException('Could not connection to database', E_ERROR);
 					}
 					else
 					{
@@ -321,7 +309,6 @@ class FabrikFEModelConnection extends JModelLegacy
 						// in the test connection link informing the user that the changed connection properties are now correct
 						if ($input->get('task') == 'test')
 						{
-							$session->clear('fabrik.connection.' . $cn->id);
 							$this->connection = null;
 							$level = E_NOTICE;
 						}
@@ -329,7 +316,7 @@ class FabrikFEModelConnection extends JModelLegacy
 						{
 							$level = E_ERROR;
 						}
-						return JError::raise($level, 500, 'Could not connection to database cid = ' . $cn->id);
+						throw new RuntimeException('Could not connection to database cid = ' . $cn->id, $level);
 					}
 				}
 			}
@@ -489,25 +476,10 @@ class FabrikFEModelConnection extends JModelLegacy
 			if ($cn->host and $cn->published == '1')
 			{
 				$options = $this->getConnectionOptions($cn);
-				$fabrikDb = JDatabase::getInstance($options);
-
-				if (JError::isError($fabrikDb))
-				{
-					$connectionTableFields[$cn->value][$key] = "unable to connect to $cn->text<br />";
-				}
-				else
-				{
-					if ($fabrikDb->getErrorNum() == 0)
-					{
-						$tables = $fabrikDb->getTableList();
-						$fields = $fabrikDb->getTableColumns($tables);
-						$connectionTableFields[$cn->value][$key] = $fields;
-					}
-					else
-					{
-						$connectionTableFields[$cn->value][$key] = "unable to connect to $cn->text<br />";
-					}
-				}
+				$fabrikDb = $this->getDriverInstance($options);
+				$tables = $fabrikDb->getTableList();
+				$fields = $fabrikDb->getTableColumns($tables);
+				$connectionTableFields[$cn->value][$key] = $fields;
 			}
 		}
 		return $connectionTableFields;
@@ -536,29 +508,16 @@ class FabrikFEModelConnection extends JModelLegacy
 				$this->connection = null;
 				$this->id = $cn->id;
 				$fabrikDb = $this->getDb();
-				if (JError::isError($fabrikDb))
+				$tables = $fabrikDb->getTableList();
+				$connectionTables[$cn->value][] = JHTML::_('select.option', '', '- Please select -');
+				if (is_array($tables))
 				{
-					$connectionTables[$cn->value][] = JHTML::_('select.option', '', "unable to connect to $cn->description");
-				}
-				else
-				{
-					if ($fabrikDb->getErrorNum() == 0)
+					foreach ($tables as $table)
 					{
-						$tables = $fabrikDb->getTableList();
-						$connectionTables[$cn->value][] = JHTML::_('select.option', '', '- Please select -');
-						if (is_array($tables))
-						{
-							foreach ($tables as $table)
-							{
-								$connectionTables[$cn->value][] = JHTML::_('select.option', $table, $table);
-							}
-						}
-					}
-					else
-					{
-						$connectionTables[$cn->value][] = JHTML::_('select.option', '', "unable to connect to $cn->description");
+						$connectionTables[$cn->value][] = JHTML::_('select.option', $table, $table);
 					}
 				}
+
 			}
 		}
 		return $connectionTables;
@@ -599,8 +558,15 @@ class FabrikFEModelConnection extends JModelLegacy
 
 	public function testConnection()
 	{
-		$db = $this->getDb();
-		return JError::isError($db) ? false : true;
+		try
+		{
+			$db = $this->getDb();
+		}
+		catch (RuntimeException $e)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
