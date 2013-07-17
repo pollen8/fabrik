@@ -88,7 +88,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		 *  If viewing form or details view and calc set to always run then return the $default
 		 *  which has had the calculation run on it.
 		 */
-		if (!$params->get('calc_on_save_only', true))
+		$task = JFactory::getApplication()->input->get('task', '');
+		if (!$params->get('calc_on_save_only', true) || $task == 'form.process' || $task == 'process')
 		{
 			// $default = $this->getDefaultValue($data, $repeatCounter);
 			$this->swapValuesForLabels($data);
