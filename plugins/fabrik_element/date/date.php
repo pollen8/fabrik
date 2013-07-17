@@ -1445,7 +1445,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   string  $value  Initial value
+	 * @param   array  $value  Initial value
 	 *
 	 * @return  array  (value condition)
 	 */

@@ -844,6 +844,7 @@ EOD;
 				 * removes previously added window.events (17/10/2011 we're now using Fabrik.events - so this may no longer be an issue)
 				 */
 				JHtml::_('behavior.framework', true);
+				JHtml::script('media/com_fabrik/js/lib/art.js');
 
 				JDEBUG ? JHtml::_('script', 'media/com_fabrik/js/lib/head/head.js') : JHtml::_('script', 'media/com_fabrik/js/lib/head/head.min.js');
 
@@ -856,7 +857,7 @@ EOD;
 					$src[] = 'media/com_fabrik/js/lib/flexiejs/flexie.js';
 				}
 				$src[] = 'media/com_fabrik/js/mootools-ext.js';
-				$src[] = 'media/com_fabrik/js/lib/art.js';
+				//$src[] = 'media/com_fabrik/js/lib/art.js';
 				$src[] = 'media/com_fabrik/js/icons.js';
 				$src[] = 'media/com_fabrik/js/icongen.js';
 				$src[] = 'media/com_fabrik/js/fabrik.js';
