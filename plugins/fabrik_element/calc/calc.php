@@ -101,24 +101,17 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				{
 					foreach ($data as $name => $values)
 					{
-						if (is_array($data[$name]))
+						// $$$ Paul - Because $data contains stuff other than placeholders, we have to exclude e.g. fabrik_repeat_group
+						if (is_array($values) && count($values) > 1 & isset($values[$repeatCounter]) && $name != 'fabrik_repeat_group')
 						{
-							foreach ($data[$name] as $key => $val)
-							{
-								if ($key != $repeatCounter)
-								{
-									unset($data[$name][$key]);
-								}
-							}
+							$data[$name] = $data[$name][$repeatCounter];
 						}
 					}
 				}
 			}
-			else
-			{
-				$data_copy = $data;
-			}
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
+			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
+			$d = $data;
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($default);
@@ -236,7 +229,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$form = $this->getForm();
 
-		$d = unserialize(serialize($form->formData));
+		$data = unserialize(serialize($form->formData));
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
 
@@ -248,46 +241,32 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$key = $this->getFullName(true, false);
 		$shortkey = $this->getFullName(true, false);
 		$rawkey = $key . '_raw';
-		if ($group->canRepeat())
+		$this->swapValuesForLabels($data);
+		$res = $this->_getV($data, $c);
+		// Create arrays for calc values as needed
+		if (is_array($data[$key]))
 		{
-			if ($group->isJoin())
+			$data[$key][$c] = $res;
+		}
+		elseif (!isset($data[$key]) && $c == 0)
+		{
+			$data[$key] = $res;
+		}
+		else
+		{
+			if (!isset($data[$key]))
 			{
-				$key = str_replace("][", '.', $key);
-				$key = str_replace(array('[', ']'), '.', $key) . $c;
-				$rawkey = str_replace($shortkey, $shortkey . '_raw', $key);
+				$data[$key] = array();
 			}
 			else
 			{
-				$key = $key . '.' . $c;
-				$rawkey = $rawkey . '.' . $c;
+				$data[$key] = array($data[$key]);
 			}
+			$data[$key][$c] = $res;
 		}
-		else
-		{
-			if ($group->isJoin())
-			{
-				$key = str_replace('][', '.', $key);
-				$key = str_replace(array('[', ']'), '.', $key);
-				$key = rtrim($key, '.');
-				$rawkey = str_replace($shortkey, $shortkey . '_raw', $key);
-			}
-		}
-		$this->swapValuesForLabels($d);
-
-		// $$$ hugh - add $data same-same as $d, for consistency so user scripts know where data is
-		$data = $d;
-		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		if (FabrikHelperHTML::isDebug())
-		{
-			$res = eval($calc);
-		}
-		else
-		{
-			$res = @eval($calc);
-		}
-		FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::preProcess() : ' . $calc . ' : %s');
-		$form->updateFormData($key, $res);
-		$form->updateFormData($rawkey, $res);
+			
+		$form->updateFormData($key, $data[$key]);
+		$form->updateFormData($rawkey, $data[$key]);
 	}
 
 	/**
@@ -361,10 +340,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$data = JArrayHelper::fromObject($row);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
-			/**
-			 *  $$$ hugh - trying to standardize on $data so scripts know where data is,
-			 *  need $d here for backward compat
-			 */
+			//  $$$ Paul - Because this is run on List rows before repeat-group merges, repeat group placeholders are OK.
+			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
 			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
 			if (FabrikHelperHTML::isDebug())
@@ -730,7 +707,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	* @return  string  email formatted value
 	*/
 
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
 		if (!$params->get('calc_on_save_only', true))
