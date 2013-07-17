@@ -129,7 +129,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected $hasLabel = true;
 
-	/** Does the element contain sub elements e.g checkboxes radiobuttons
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
 	 * @var bool
 	 */
@@ -1080,7 +1081,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */

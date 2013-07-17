@@ -564,7 +564,7 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */
