@@ -749,7 +749,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$query->where("db_table_name = " . $db->quote($dbname) . " AND l.id !=" . (int) $list->id . " AND is_join = 0");
 
 		$db->setQuery($query);
-
+		$othertables = $db->loadObjectList('id');
+		
 		/**
 		 * $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
 		 * Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
