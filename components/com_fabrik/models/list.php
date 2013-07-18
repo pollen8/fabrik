@@ -6067,7 +6067,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						case "desc":
 							$orderDir = "-";
-							$class = 'class="fabrikorder-desc' . $responsiveClass . '"';
+							$class = 'class="fabrikorder-desc"';
 							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
