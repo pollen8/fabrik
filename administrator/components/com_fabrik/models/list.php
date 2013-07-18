@@ -600,11 +600,6 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$row->bind($data);
 
-		$filter = new JFilterInput(null, null, 1, 1);
-		$jform = $input->get('jform', array(), 'array');
-		$introduction = JArrayHelper::getValue($jform, 'introduction');
-		$row->introduction = $filter->clean($introduction);
-
 		$row->order_by = json_encode($input->get('order_by', array(), 'array'));
 		$row->order_dir = json_encode($input->get('order_dir', array(), 'array'));
 
