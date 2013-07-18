@@ -270,9 +270,16 @@ var FbDateTime = new Class({
 		}
 		this.getElement();
 		if (this.cal) {
-			if (this.getDateField().value === '') {
+			var dateFieldValue = this.getDateField().value;
+			if (dateFieldValue === '') {
 				return '';
 			}
+			// User can press back button in which case date may already be in correct format and calendar date incorrect
+			var re = new RegExp('\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}');
+			if (dateFieldValue.match(re) !== null) {
+				return dateFieldValue;
+			} 
+			
 			v = this.cal.date;
 		} else {
 			if (this.options.value === '' || this.options.value === null) {
