@@ -2539,20 +2539,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Used by elements with suboptions
+	 * Used by elements with suboptions, given a value, return its label
 	 *
 	 * @param   string  $v              Value
 	 * @param   string  $defaultLabel   Default label
-	 * @param   int     $repeatCounter  Repeat group counter (3.0.7 deprecated)
+	 * @param   bool    $forceCheck     Force check even if $v === $defaultLabel
 	 *
-	 * @return  string	label
+	 * @return  string	Label
 	 */
 
-	public function getLabelForValue($v, $defaultLabel = null, $repeatCounter = 0)
+	public function getLabelForValue($v, $defaultLabel = null, $forceCheck = false)
 	{
 
 		// Band aid - as this is called in listModel::addLabels() lets not bother - requerying the db (label already loaded)
-		if ($v === $defaultLabel)
+		if ($v === $defaultLabel && !$forceCheck)
 		{
 			return $v;
 		}

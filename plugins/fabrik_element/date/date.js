@@ -104,7 +104,7 @@ var FbDateTime = new Class({
 	},
 	
 	/**
-	 * run when calendar poped up - goes over each date and should return true if you dont want the date to be 
+	 * Run when calendar poped up - goes over each date and should return true if you dont want the date to be 
 	 * selectable 
 	 */
 	dateSelect: function (date)
@@ -116,18 +116,25 @@ var FbDateTime = new Class({
 		}
 	},
 	
+	/**
+	 * Run when a button is pressed on the calendar - may not be a date though (could be 'next month' button)
+	 */
 	calSelect: function (calendar, date) {
-		var d = this.setTimeFromField(calendar.date);
-		this.update(d.format('db'));
-		if (this.cal.dateClicked) {
-			this.getDateField().fireEvent('change');
-			if (this.timeButton) {
-				this.getTimeField().fireEvent('change');
+		
+		// Test the date is selectable...
+		if (!this.dateSelect(date)) {
+			var d = this.setTimeFromField(calendar.date);
+			this.update(d.format('db'));
+			if (this.cal.dateClicked) {
+				this.getDateField().fireEvent('change');
+				if (this.timeButton) {
+					this.getTimeField().fireEvent('change');
+				}
+				this.cal.callCloseHandler();
 			}
-			this.cal.callCloseHandler();
+			window.fireEvent('fabrik.date.select', this);
+			Fabrik.fireEvent('fabrik.date.select', this);
 		}
-		window.fireEvent('fabrik.date.select', this);
-		Fabrik.fireEvent('fabrik.date.select', this);
 	},
 	
 	calClose: function (calendar) {
@@ -274,9 +281,16 @@ var FbDateTime = new Class({
 		}
 		this.getElement();
 		if (this.cal) {
-			if (this.getDateField().value === '') {
+			var dateFieldValue = this.getDateField().value;
+			if (dateFieldValue === '') {
 				return '';
 			}
+			// User can press back button in which case date may already be in correct format and calendar date incorrect
+			var re = new RegExp('\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}');
+			if (dateFieldValue.match(re) !== null) {
+				return dateFieldValue;
+			} 
+			
 			v = this.cal.date;
 		} else {
 			if (this.options.value === '' || this.options.value === null) {

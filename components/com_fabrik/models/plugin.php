@@ -873,9 +873,9 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   string             $paramName  param name which contains the PHP code to eval
-	 * @param   array              $data       data
-	 * @param   FabrikFEModelForm  $formModel  form model
+	 * @param   string             $paramName  Param name which contains the PHP code to eval
+	 * @param   array              $data       Data
+	 * @param   FabrikFEModelForm  $formModel  Form model
 	 *
 	 * @return  bool
 	 */

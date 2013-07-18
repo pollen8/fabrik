@@ -385,10 +385,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	 * @return  string  email formatted value
 	 */
 
-	protected function _getEmailValue($value, $data = array(), $repeatCounter = 0)
+	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
-		$sep = $params->get('time_separatorlabel', JText::_(':'));
+		$sep = $params->get('time_separatorlabel', ':');
 		$value = implode($sep, $value);
 		return $value;
 	}

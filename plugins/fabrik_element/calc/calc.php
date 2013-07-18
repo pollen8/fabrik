@@ -26,7 +26,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */
@@ -59,8 +59,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Get value
 	 *
-	 * @param   string  $data           value
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   string  $data           Value
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string
 	 */
@@ -182,9 +182,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
 	 */
@@ -296,12 +296,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					foreach (array_keys($v) as $x)
 					{
 						$origval = JArrayHelper::getValue($origdata, $x);
-						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, $d);
+						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true);
 					}
 				}
 				else
 				{
-					$d[$elkey] = $elementModel->getLabelForValue($v, JArrayHelper::getValue($d, $elkey), $d);
+					$d[$elkey] = $elementModel->getLabelForValue($v, JArrayHelper::getValue($d, $elkey), true);
 				}
 			}
 		}
@@ -489,6 +489,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$filter = JFilterInput::getInstance();
 		$d = $filter->clean($_REQUEST, 'array');
+
 
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);

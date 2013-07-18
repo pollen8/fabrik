@@ -77,9 +77,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Get an element name
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   string  $pname   params property name to look up
-	 * @param   bool    $short   short (true) or full (false) element name, default false/full
+	 * @param   object  $params  Plugin params
+	 * @param   string  $pname   Params property name to look up
+	 * @param   bool    $short   Short (true) or full (false) element name, default false/full
 	 *
 	 * @return	string	element full name
 	 */
@@ -326,6 +326,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$formModel->storeMainRow = false;
 		}
 
+		// Needed for shouldProcess...
+		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 		if (!$this->shouldProcess('juser_conditon', null, $formModel))
 		{
 			return true;
@@ -759,8 +761,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   object  $params      Plugin params
+	 * @param   object  &$formModel  Form model
 	 *
 	 * @return	bool
 	 */
@@ -781,7 +783,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Auto login in the user
 	 *
-	 * @param   object  $formModel  form model
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  bool
 	 */
@@ -836,9 +838,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Check if the submitted details are ok
 	 *
-	 * @param   array   $post        posted data
-	 * @param   object  &$formModel  form model
-	 * @param   object  $params      plugin params
+	 * @param   array   $post        Posted data
+	 * @param   object  &$formModel  Form model
+	 * @param   object  $params      Plugin params
 	 *
 	 * @return	bool
 	 */
@@ -922,9 +924,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Raise an error - depends on whether ur in admin or not as to what to do
 	 *
-	 * @param   array   &$err   form models error array
-	 * @param   string  $field  name
-	 * @param   string  $msg    message
+	 * @param   array   &$err   Form models error array
+	 * @param   string  $field  Name
+	 * @param   string  $msg    Message
 	 *
 	 * @return  void
 	 */

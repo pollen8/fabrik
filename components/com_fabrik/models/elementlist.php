@@ -213,6 +213,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		}
 		else
 		{
+			// Glue = AND will never return any results?!
+			$glue = 'OR';
 			$originalValue = trim($value, "'");
 
 			/*

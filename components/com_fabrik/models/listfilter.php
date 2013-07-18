@@ -1175,9 +1175,10 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
-				// Ensure the array is indexed starting at 0.
+
 				if (is_array($value))
 				{
+					// Ensure the array is indexed starting at 0.
 					$value = array_values($value);
 
 					// Empty ranged data test

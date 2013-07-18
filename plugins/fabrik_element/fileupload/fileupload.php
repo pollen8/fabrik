@@ -545,11 +545,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	}
 
 	/**
-	 * Display the file in the table
+	 * Display the file in the list
 	 *
-	 * @param   string  $data      current cell data
-	 * @param   array   &$thisRow  current row data
-	 * @param   int     $i         repeat group count
+	 * @param   string  $data      Current cell data
+	 * @param   array   &$thisRow  Current row data
+	 * @param   int     $i         Repeat group count
 	 *
 	 * @return	string
 	 */

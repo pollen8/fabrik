@@ -144,6 +144,21 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 	}
 
 	/**
+	 * Prepares the element data for CSV export
+	 *
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
+	 *
+	 * @return  string	Formatted CSV export value
+	 */
+
+	public function renderListData_csv($data, &$thisRow)
+	{
+		$o = json_decode($data);
+		return $o->link;
+	}
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           to preopulate element with

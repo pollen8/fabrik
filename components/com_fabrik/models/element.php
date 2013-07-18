@@ -122,7 +122,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 */
 	protected $hasLabel = true;
 
-	/** Does the element contain sub elements e.g checkboxes radiobuttons
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
 	 * @var bool
 	 */
@@ -1105,7 +1106,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */
@@ -3537,7 +3538,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * This builds an array containing the filters value and condition
 	 * when using a ranged search
 	 *
-	 * @param   string  $value  initial value
+	 * @param   array  $value  Initial values
 	 *
 	 * @return  array  (value condition)
 	 */
@@ -3639,9 +3640,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
-	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
-	 * @param   string  $eval       how the value should be handled
+	 * @param   string  $value      Initial value
+	 * @param   string  $condition  Intial $condition
+	 * @param   string  $eval       How the value should be handled
 	 *
 	 * @return  array	(value condition)
 	 */
@@ -3934,15 +3935,16 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Used by elements with suboptions
+	 * Used by elements with suboptions, given a value, return its label
 	 *
-	 * @param   string  $v             value
-	 * @param   string  $defaultLabel  default label
+	 * @param   string  $v              Value
+	 * @param   string  $defaultLabel   Default label
+	 * @param   bool    $forceCheck     Force check even if $v === $defaultLabel
 	 *
-	 * @return  string	label
+	 * @return  string	Label
 	 */
 
-	public function getLabelForValue($v, $defaultLabel = '')
+	public function getLabelForValue($v, $defaultLabel = null, $forceCheck = false)
 	{
 		/**
 		 * $$$ hugh - only needed getParent when we weren't saving changes to parent params to child

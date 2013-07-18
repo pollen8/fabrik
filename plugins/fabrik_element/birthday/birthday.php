@@ -632,11 +632,11 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
 	 * @return  array  text/value objects
 	 */
@@ -653,5 +653,53 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 		}
 		return $rows;
+	}
+
+	/**
+	 * This builds an array containing the filters value and condition
+	 * when using a ranged search
+	 *
+	 * @param   array  $value  Initial values
+	 *
+	 * @return  array  (value condition)
+	 */
+
+	protected function getRangedFilterValue($value)
+	{
+		$db = FabrikWorker::getDbo();
+		$element = $this->getElement();
+		if ($element->filter_type === 'range')
+		{
+			if (strtotime($value[0]) > strtotime($value[1]))
+			{
+				$tmp_value = $value[0];
+				$value[0] = $value[1];
+				$value[1] = $tmp_value;
+			}
+
+
+			if (is_numeric($value[0]) && is_numeric($value[1]))
+			{
+				$value = $value[0] . ' AND ' . $value[1];
+			}
+			else
+			{
+				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
+			}
+			$condition = 'BETWEEN';
+		}
+		else
+		{
+			if (is_array($value) && !empty($value))
+			{
+				foreach ($value as &$v)
+				{
+					$v = $db->quote($v);
+				}
+				$value = ' (' . implode(',', $value) . ')';
+			}
+			$condition = 'IN';
+		}
+		return array($value, $condition);
 	}
 }

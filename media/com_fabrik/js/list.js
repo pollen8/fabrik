@@ -742,15 +742,16 @@ var FbList = new Class({
 	 * @return object
 	 */
 	getRow: function (id) {
+		var found = {};
 		$H(this.options.data).each(function (group) {
 			for (var i = 0; i < group.length; i ++) {
 				var row = group[i];
 				if (row && row.data.__pk_val === id) {
-					return row;
+					found = row.data;
 				}
 			}
 		});
-		return {};
+		return found;
 	},
 
 	fabrikNavOrder: function (orderby, orderdir) {

@@ -4074,15 +4074,16 @@ class FabrikFEModelList extends JModelForm
 		if ($group->isJoin())
 		{
 			$tableName = $group->getJoinModel()->getJoin()->table_join;
-			$keydata = $keydata[0];
-			$primaryKey = $keydata['colname'];
+			$keydata = $this->getPrimaryKeyAndExtra($tableName);
+			$keydata = $keydata;
+			$primaryKey = $keydata[0]['colname'];
 		}
 		else
 		{
+			$keydata = $this->getPrimaryKeyAndExtra($tableName);
 			$tableName = $table->db_table_name;
 			$primaryKey = $table->db_primary_key;
 		}
-		$keydata = $this->getPrimaryKeyAndExtra($tableName);
 
 		// $$$ rob base plugin needs to know group info for date fields in non-join repeat groups
 		$basePlugIn->setGroupModel($elementModel->getGroupModel());
@@ -4161,11 +4162,11 @@ class FabrikFEModelList extends JModelForm
 		* we would do something like $base_existingDef = $elementModel->baseFieldDescription($existingDef), and (say) the
 		* field element, if passed "TINYINT(3) UNSIGNED" would return "INT(3)".  But for now, just tweak it here.
 		*/
-		$objtypeUpper = ' '.JString::strtoupper(trim($objtype)).' ';
+		$objtypeUpper = ' ' . JString::strtoupper(trim($objtype)) . ' ';
 		$objtypeUpper = str_replace(' NOT NULL ', ' ', $objtypeUpper);
 		$objtypeUpper = str_replace(' UNSIGNED ', ' ', $objtypeUpper);
 		$objtypeUpper = trim($objtypeUpper);
-		$existingDef = ' '.JString::strtoupper(trim($existingDef)).' ';
+		$existingDef = ' ' . JString::strtoupper(trim($existingDef)) . ' ';
 		$existingDef = str_replace(' UNSIGNED ', ' ', $existingDef);
 		$existingDef = str_replace(array(' INTEGER', ' TINYINT', ' SMALLINT', ' MEDIUMINT', ' BIGINT'), ' INT', $existingDef);
 		$existingDef = trim($existingDef);
