@@ -2432,9 +2432,9 @@ class FabrikFEModelList extends JModelForm
 	 * Get the part of the sql statement that orders the table data
 	 * Since 3.0.7 caches the results as calling orderBy twice when using single ordering in admin module anules the user selected order by
 	 *
-	 * @param   mixed  $query  false or a query object
+	 * @param   mixed  $query  False or a query object
 	 *
-	 * @return  string	ordering part of sql statement
+	 * @return  string	Ordering part of sql statement
 	 */
 
 	public function buildQueryOrder($query = false)
