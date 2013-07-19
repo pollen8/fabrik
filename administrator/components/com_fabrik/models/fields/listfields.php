@@ -66,7 +66,7 @@ class JFormFieldListfields extends JFormFieldList
 		 * 27/08/2011 - changed from default tableelement to id - for juser form plugin - might cause havock
 		 * else where but loading elements by id as default seems more robust (and is the default behaviour in f2.1
 		 */
-		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
+		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$showRaw = (bool) JArrayHelper::getValue($this->element, 'raw', false);
 		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
@@ -246,7 +246,7 @@ class JFormFieldListfields extends JFormFieldList
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$controller = $input->get('view', $input->get('task'));
-		$valueformat = JArrayHelper::getValue($this->element, 'valueformat', 'id');
+		$valueformat = (string) JArrayHelper::getValue($this->element, 'valueformat', 'id');
 		$onlylistfields = (int) JArrayHelper::getValue($this->element, 'onlylistfields', 0);
 		$pluginFilters = trim($this->element['filter']) == '' ? array() : explode('|', $this->element['filter']);
 		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');

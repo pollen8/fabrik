@@ -1753,12 +1753,10 @@ class FabrikFEModelForm extends FabModelForm
 		if (array_key_exists('fabrik_vars', $_REQUEST) && array_key_exists('querystring', $_REQUEST['fabrik_vars']))
 		{
 			$groups = $this->getGroupsHiarachy();
-			$gkeys = array_keys($groups);
 			$crypt = FabrikWorker::getCrypt();
 			$w = new FabrikWorker;
-			foreach ($gkeys as $g)
+			foreach ($groups as $g => $groupModel)
 			{
-				$groupModel = $groups[$g];
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
 				{
@@ -2386,10 +2384,8 @@ class FabrikFEModelForm extends FabModelForm
 		$groups = $this->getGroupsHiarachy();
 		$aEls = array();
 		$step = $useStep ? '___' : '.';
-		$gkeys = array_keys($groups);
-		foreach ($gkeys as $gid)
+		foreach ($groups as $gid => $groupModel)
 		{
-			$groupModel = $groups[$gid];
 			if ($noJoins && $groupModel->isJoin())
 			{
 				continue;
@@ -2440,7 +2436,8 @@ class FabrikFEModelForm extends FabModelForm
 				$aEls[] = JHTML::_('select.option', $val, $label);
 			}
 		}
-		asort($aEls);
+		// Paul - Sort removed so that list is presented in group/id order regardless of whether $key is name or id
+		// asort($aEls);
 		return $aEls;
 	}
 
