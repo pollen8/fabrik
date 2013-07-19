@@ -103,12 +103,16 @@
 
 		<div class="tab-pane" id="details-link">
 			<div class="row-fluid">
-				<div class="span7">
+				<div class="span8">
 					<fieldset class="form-horizontal">
 						<?php foreach ($this->form->getFieldset('links') as $this->field) :
 							echo $this->loadTemplate('control_group');
 						endforeach;
 						?>
+					</fieldset>
+				</div>
+				<div class="span4">
+					<fieldset class="form-horizontal">
 						<?php foreach ($this->form->getFieldset('links2') as $this->field) :
 							echo $this->loadTemplate('control_group');
 						endforeach;
