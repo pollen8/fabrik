@@ -125,7 +125,7 @@ class FlashRender
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 			$this->output .= "<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
 		}
-		elseif ($model->inDetailedView)
+		elseif ($model->_inDetailedView)
 		{
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 			$this->output = "<object width=\"$w\" height=\"$h\">
