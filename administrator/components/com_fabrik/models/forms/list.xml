@@ -369,6 +369,7 @@
 				label="COM_FABRIK_FIELD_SEARCH_ELEMENTS_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_ELEMENTS_DESC"
 			>
+			
 				<fields name="params">
 					<fieldset modal="true" name="list_search_elements_modal" repeat="true">
 						<field name="search_elements"
