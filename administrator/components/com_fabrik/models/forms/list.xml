@@ -165,14 +165,14 @@
 		
 		<field name="created_by"
 			type="user"
-			label="COM_FABRIK_FIELD_AUTHOR_LABEL"
-			description="COM_FABRIK_FIELD_AUTHOR_DESC"
+			label="JGLOBAL_FIELD_CREATED_BY_LABEL"
+			description="JGLOBAL_FIELD_CREATED_BY_DESC"
 		/>
 			
 		<field name="created"
 			type="calendar"
 			class="input-medium"
-			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL"
+			label="JGLOBAL_CREATED_DATE"
 		/>
 			
 		<field name="publish_up"

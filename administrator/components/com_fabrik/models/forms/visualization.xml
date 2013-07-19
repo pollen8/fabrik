@@ -25,14 +25,19 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field description="COM_FABRIK_FIELD_AUTHOR_DESC" label="COM_FABRIK_FIELD_AUTHOR_LABEL" name="created_by" type="user"/>
+		<field 
+			name="created_by" 
+			type="user"
+			label="JGLOBAL_FIELD_CREATED_BY_LABEL" 
+			description="JGLOBAL_FIELD_CREATED_BY_DESC" 
+		/>
 			
 		<field description="JFIELD_ACCESS_DESC" label="JFIELD_ACCESS_LABEL" name="access" type="accesslevel"/>
 
 		<field name="created"
 			type="calendar"
 			class="input-medium"
-			label="COM_FABRIK_FIELD_CREATE_DATE_LABEL" />
+			label="JGLOBAL_CREATED_DATE" />
 			
 		<field name="publish_up"
 			type="calendar"
