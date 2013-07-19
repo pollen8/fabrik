@@ -53,7 +53,9 @@
 		<field name="created"
 			type="calendar"
 			class="input-medium"
-			label="JGLOBAL_CREATED_DATE" />
+			label="JGLOBAL_FIELD_CREATED_LABEL"
+			description="JGLOBAL_FIELD_CREATED_DESC" 
+		/>
 			
 		<field name="publish_up"
 			type="calendar"
