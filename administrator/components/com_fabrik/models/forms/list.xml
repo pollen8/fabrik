@@ -912,7 +912,7 @@
 				
 			<field name="detailurl"
 				type="text"
-				class="input-xxlarge"
+				class="input-xlarge"
 				size="50"
 				label="COM_FABRIK_FIELD_DETAIL_URL_LABEL"
 				description="COM_FABRIK_FIELD_DETAIL_URL_DESC"
@@ -920,7 +920,7 @@
 		
 			<field name="detaillabel"
 				type="text"
-				class="input-xlarge"
+				class="input-large"
 				size="30"
 				label="COM_FABRIK_DETAIL_LABEL"
 				description="COM_FABRIK_DETAIL_DESC"
@@ -928,14 +928,16 @@
 				
 			<field name="editurl" 
 				type="text"
-				class="input-xxlarge"
+				class="input-xlarge"
 				size="50"
 				label="COM_FABRIK_EDIT_URL_LABEL" 
 				description="COM_FABRIK_EDIT_URL_DESC"
 			/>
 				
 			<field name="editlabel"
-				type="text" size="30"
+				type="text" 
+				class="input-large"
+				size="30"
 				label="COM_FABRIK_EDIT_LABEL" 
 				description="COM_FABRIK_EDIT_DESC"
 			/>
@@ -953,8 +955,8 @@
 			
 			<field name="addurl"
 				type="text"
-				class="input-xxlarge"
-				size="100" 
+				class="input-xlarge"
+				size="50" 
 				label="COM_FABRIK_FIELD_ADD_URL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_URL_DESC"
 			/>
@@ -962,7 +964,7 @@
 			<field name="addlabel"
 				type="text"
 				class="input-large"
-				size="20" 
+				size="30" 
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
 			/>
@@ -1012,7 +1014,7 @@
 			<field name="addlabel"
 				type="text"
 				class="input-large"
-				size="20"
+				size="30"
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
 			/>
