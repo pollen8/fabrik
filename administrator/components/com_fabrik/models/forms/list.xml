@@ -2,7 +2,7 @@
 <form>
 	
 	<fieldset name="main_filter">
-
+		
 		<field name="filter_action"
 			type="list"
 			label="COM_FABRIK_FILTER_ACTION_LABEL"
@@ -11,18 +11,18 @@
 			<option value="onchange">COM_FABRIK_ON_CHANGE</option>
 			<option value="submitform">COM_FABRIK_SUBMIT_FORM</option>
 		</field>
-			
+		
 	</fieldset>
-
+	
 	<fieldset name="access">
-
+		
 		<field name="access"
 			type="accesslevel"
 			default="1"
 			label="COM_FABRIK_FIELD_VIEW_LIST_LABEL"
 			description="COM_FABRIK_FIELD_VIEW_LIST_DESC" 
 		/>
-	
+		
 	</fieldset>
 	
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="main">
@@ -45,7 +45,7 @@
 			description="COM_FABRIK_FIELD_LABEL_DESC"
 			required="true" 
 		/>
-
+		
 		<field name="introduction"
 			type="editor"
 			filter="FabrikAdminHelper::filterText"
@@ -53,7 +53,7 @@
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC"
 		/>
-	
+		
 		<field name="asset_id" type="hidden" filter="unset" />
 		
 	</fieldset>
@@ -69,7 +69,7 @@
 			label="COM_FABRIK_FIELD_ROWS_PER_PAGE_LABEL"
 			description="COM_FABRIK_FIELD_ROWS_PER_PAGE_DESC" 
 		/>
-	
+		
 	</fieldset>
 	
 	<fieldset name="main_template">
@@ -82,7 +82,7 @@
 			label="COM_FABRIK_FIELD_TEMPLATE_LABEL"
 			description="COM_FABRIK_FIELD_TEMPLATE_DESC"
 		/>
-	
+		
 	</fieldset>
 	
 	<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping">
@@ -95,7 +95,7 @@
 		/>
 			
 		</fieldset>
-	
+		
 	<fieldset name="main_data">
 		
 		<field name="connection_id"
@@ -115,7 +115,7 @@
 		/>
 		
 		<field name="or" type="spacer" size="20" label="Or" />
-		 
+		
 		<field name="db_table_name"
 		 	type="tables"
 		 	observe="connection_id"
@@ -148,7 +148,7 @@
 	</fieldset>
 	
 	<fieldset name="publishing-details">
-
+		
 		<field name="published"
 			type="list"
 			class="inputbox"
@@ -168,34 +168,33 @@
 			label="JGLOBAL_FIELD_CREATED_BY_LABEL"
 			description="JGLOBAL_FIELD_CREATED_BY_DESC"
 		/>
-			
+		
 		<field name="created"
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_CREATED_LABEL"
 			description="JGLOBAL_FIELD_CREATED_DESC" 
 		/>
-			
+		
 		<field name="publish_up"
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
 		/>
-			
+		
 		<field name="publish_down"
 			type="calendar"
 			class="input-medium"
 			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
 			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
 		/>
-			
+		
 	</fieldset>
 	
 	<fields name="params">
-	
 		<fieldset name="main">
-		
+			
 			<field name="outro"
 				type="editor"
 				filter="FabrikAdminHelper::filterText"
@@ -203,36 +202,36 @@
 				label="COM_FABRIK_FIELD_OUTRO_LABEL"
 				description="COM_FABRIK_FIELD_OUTRO_DESC"
 			/>
-				
+			
 		</fieldset>
-
+		
 		<fieldset name="details2">
 			
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="grouping2">
-				
+			
 			<field name="group_by_access"
 				type="accesslevel"
 				default="1"
 				label="COM_FABRIK_FIELD_GROUP_BY_ACCESS_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_ACCESS_DESC"
 			/>
-				
+			
 			<field name="group_by_order"
 				type="listfields"
 				valueformat="id"
 				label="COM_FABRIK_FIELD_ORDER_BY_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_ORDER_BY_LABEL"
 			/>
-				
+			
 			<field name="group_by_template"
 				type="textarea"
 				cols="30" rows="4"
 				label="COM_FABRIK_FIELD_TEMPLATE_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_TEMPLATE_DESC"
 			/>
-				
+			
 			<field name="group_by_order_dir"
 				type="ascendingdescending"
 				label="COM_FABRIK_FIELD_ORDER_DIRECTION_LABEL"
@@ -246,8 +245,8 @@
 				label="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_START_COLLAPSED_DESC"
 			>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>	
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
 			</field>
 			
 			<field name="group_by_collapse_others"
@@ -257,49 +256,49 @@
 				label="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_COLLAPSE_OTHERS_DESC"
 			>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>	
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>	
 			</field>
 			
 		</fieldset>
-	
+		
 		<fieldset name="access2">
-	
+			
 			<field name="allow_view_details"
 				type="accesslevel"
 				default="1"
 				label="COM_FABRIK_FIELD_VIEW_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_VIEW_RECORDS_DESC"
 			/>
-				
+			
 			<field name="allow_edit_details"
 				type="accesslevel"
 				default="1"
 				label="COM_FABRIK_FIELD_EDIT_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_EDIT_RECORDS_DESC"
 			/>
-				
+			
 			<field name="allow_edit_details2"
 				type="listfields"
 				valueformat="id"
 				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_OR_USE_FIELD_DESC"
 			/>
-				
+			
 			<field name="allow_add"
 				type="accesslevel"
 				default="1"
 				label="COM_FABRIK_FIELD_ADD_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_ADD_RECORDS_DESC"
 			/>
-				
+			
 			<field name="allow_delete"
 				type="accesslevel"
 				default="2"
 				label="COM_FABRIK_FIELD_DELETE_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_DELETE_RECORDS_DESC"
 			/>
-				
+			
 			<field name="allow_delete2"
 				type="listfields"
 				valueformat="id"
@@ -313,11 +312,11 @@
 				label="COM_FABRIK_FIELD_DROP_RECORDS_LABEL"
 				description="COM_FABRIK_FIELD_DROP_RECORDS_DESC"
 			/>
-				
+			
 		</fieldset>
-	
-		<fieldset name="filters">
 		
+		<fieldset name="filters">
+			
 			<field name="show-table-filters"
 				type="list"
 				default="1"
@@ -391,7 +390,7 @@
 	 			label="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_LABEL"
 	 			description="COM_FABRIK_FIELD_SEARCH_ALL_LABEL_DESC"
 			/>
-		
+			
 			<field name="require-filter"
 				type="radio"
 				class="btn-group"
@@ -428,7 +427,6 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-				
 			
 			<field name="show-table-add"
 				type="radio"
@@ -492,7 +490,7 @@
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC"
 			/>
-				
+			
 		</fieldset>
 		
 		<fieldset name="rss">
@@ -512,12 +510,12 @@
 				type="listfields"
 				label="COM_FABRIK_FIELD_FEED_TITLE_LABEL"
 			/>
-				
+			
 			<field name="feed_date"
 				type="listfields"
 				label="COM_FABRIK_FIELD_FEED_DATE_LABEL"
 			/>
-				
+			
 			<field name="rsslimit"
 				type="text"
 				default="150"
@@ -527,7 +525,7 @@
 				label="COM_FABRIK_FIELD_RSS_LIMIT_LABEL"
 				description="COM_FABRIK_FIELD_RSS_LIMIT_DESC"
 			/>
-				
+			
 			<field name="rsslimitmax"
 				type="text"
 				default="2500"
@@ -536,8 +534,8 @@
 				size="6"
 				label="COM_FABRIK_FIELD_RSS_LIMIT_MAX_LABEL"
 				description="COM_FABRIK_FIELD_RSS_LIMIT_MAX_DESC"
-				/>
-				
+			/>
+			
 		</fieldset>
 		
 		<fieldset name="csv">
@@ -555,7 +553,7 @@
 				label="COM_FABRIK_FIELD_CSV_EXPORT_LABEL" 
 				description="COM_FABRIK_FIELD_CSV_EXPORT_DESC"
 			/>
-	
+			
 			<field name="csvfullname"
 				type="list"
 				class="input-xlarge"
@@ -577,7 +575,7 @@
 				label="COM_FABRIK_FIELD_CSV_EXPORT_STEP_LABEL"
 				description="COM_FABRIK_FIELD_CSV_EXPORT_STEP_DESC"
 			/>
-	
+			
 			<field name="newline_csv_export"
 				type="list"
 				default="nl2br"
@@ -588,7 +586,7 @@
 				<option value="nl">COM_FABRIK_LEAVE_CR_LF</option>
 				<option value="remove">COM_FABRIK_REMOVE</option>
 			</field>
-				
+			
 			<field name="csv_custom_qs"
 				type="text"
 				class="input-xxlarge"
@@ -600,7 +598,7 @@
 		</fieldset>
 		
 		<fieldset name="csvauto">
-		
+			
 			<field name="csv_frontend_selection"
 				type="radio"
 				class="btn-group"
@@ -693,9 +691,9 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-				
-		</fieldset>
 			
+		</fieldset>
+		
 		<fieldset name="search">
 			
 			<field name="search_use"
@@ -713,15 +711,15 @@
 				label="COM_FABRIK_FIELD_SEARCH_TITLE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_TITLE_FIELD_DESC"
 			/>
-				
+			
 			<field name="search_description"
 				type="listfields"
 				label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC"
 			/>
-				
+			
 		</fieldset>
-	
+		
 		<fieldset name="layout">
 			
 			<field name="admin_template"
@@ -731,14 +729,14 @@
 				label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL"
 				description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC"
 			/>
-				
+			
 			<field name="empty_data_msg"
 				type="text"
 				size="70"
 				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL"
 				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC"
 			/>
-				
+			
 		 	<field name="pdf"
 		 		type="list"
 		 		label="COM_FABRIK_FIELD_PDF_ICON_LABEL"
@@ -887,7 +885,7 @@
 		</fieldset>
 		
 		<fieldset name="links">
-	
+			
 			<field name="list_ajax_links"
 				type="radio"
 				class="btn-group"
@@ -909,7 +907,7 @@
 				<option value="inline">COM_FABRIK_FIELD_ACTION_METHOD_INLINE</option>
 				<option value="dropdown">COM_FABRIK_FIELD_ACTION_METHOD_DROPDOWN</option>
 			</field>
-				
+			
 			<field name="detailurl"
 				type="text"
 				class="input-xlarge"
@@ -917,7 +915,7 @@
 				label="COM_FABRIK_FIELD_DETAIL_URL_LABEL"
 				description="COM_FABRIK_FIELD_DETAIL_URL_DESC"
 			/>
-		
+			
 			<field name="detaillabel"
 				type="text"
 				class="input-large"
@@ -925,7 +923,7 @@
 				label="COM_FABRIK_DETAIL_LABEL"
 				description="COM_FABRIK_DETAIL_DESC"
 			/>
-				
+			
 			<field name="editurl" 
 				type="text"
 				class="input-xlarge"
@@ -933,7 +931,7 @@
 				label="COM_FABRIK_EDIT_URL_LABEL" 
 				description="COM_FABRIK_EDIT_URL_DESC"
 			/>
-				
+			
 			<field name="editlabel"
 				type="text" 
 				class="input-large"
@@ -968,11 +966,11 @@
 				label="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_LABEL"
 				description="COM_FABRIK_FIELD_ADD_BUTTON_LABEL_DESC"
 			/>
-				
+			
 		</fieldset>
 		
 		<fieldset name="links-fabrik30x">
-		
+			
 			<field name="detaillink"
 				type="radio"
 				class="btn-group"
@@ -1045,6 +1043,7 @@
 		</fieldset>
 		
 		<fieldset name="links2">
+			
 			<field name="popup_width"
 				type="text"
 				class="input-mini"
@@ -1052,7 +1051,7 @@
 				label="COM_FABRIK_FIELD_POPUP_WIDTH_LABEL"
 				description="COM_FABRIK_FIELD_POPUP_WIDTH_DESC"
 			/>
-
+			
 			<field name="popup_height"
 				type="text"
 				class="input-mini"
@@ -1060,7 +1059,7 @@
 				label="COM_FABRIK_FIELD_POPUP_HEIGHT_LABEL"
 				description="COM_FABRIK_FIELD_POPUP_HEIGHT_DESC"
 			/>
-
+			
 			<field name="popup_offset_x"
 				type="text"
 				class="input-mini"
@@ -1068,7 +1067,7 @@
 				label="COM_FABRIK_FIELD_POPUP_OFFSET_X_LABEL"
 				description="COM_FABRIK_FIELD_POPUP_OFFSET_X_DESC"
 			/>
-
+			
 			<field name="popup_offset_y"
 				type="text"
 				class="input-mini"
@@ -1076,7 +1075,7 @@
 				label="COM_FABRIK_FIELD_POPUP_OFFSET_Y_LABEL"
 				description="COM_FABRIK_FIELD_POPUP_OFFSET_Y_DESC"
 			/>
-		
+			
 		</fieldset>
 		
 		<fieldset name="prefilter">
@@ -1088,7 +1087,7 @@
 				label="COM_FABRIK_PREFILTER_QUERY_LABEL"
 				description="COM_FABRIK_PREFILTER_QUERY_DESC"
 			/>
-				
+			
 		</fieldset>
 		
 		<fieldset name="notes">
@@ -1100,7 +1099,7 @@
 				label="COM_FABRIK_FIELD_NOTE_LABEL"
 				description="COM_FABRIK_FIELD_NOTE_DESC"
 			/>
-				
+			
 		</fieldset>
 		
 		<fieldset name="advanced">
@@ -1145,7 +1144,7 @@
 				description="COM_FABRIK_FIELD_COLLATION_DESC"
 				label="COM_FABRIK_FIELD_COLLATION_LABEL"
 			/>
-				
+			
 			<field name="list_disable_caching"
 				type="radio"
 				class="btn-group"
@@ -1160,7 +1159,7 @@
 		</fieldset>
 		
 		<fieldset name="joins">
-		
+			
 			<field name="join-display"
 				type="list"
 				default="default"
@@ -1186,7 +1185,7 @@
 		</fieldset>
 		
 		<fieldset name="prefilters2">
-		
+			
 			<field name="filter-grouped" type="text"/>
 			<field name="filter-join" type="text"/>
 			<field name="filter-fields" type="text"/>
@@ -1206,7 +1205,7 @@
 		</fieldset>
 		
 		<fieldset name="factedlinks2">
-		
+			
 			<field name="show_related_add"
 				type="list"
 				default="0"
@@ -1234,8 +1233,9 @@
 		<fieldset name="factedlinks">
 		
 			<field name="factedlinks"
-				type="factedlinks"/>
-				
+				type="factedlinks"
+			/>
+			
 		</fieldset>
 	</fields>
 </form>
