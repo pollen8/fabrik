@@ -44,7 +44,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId($input->getInt('listid'));
 		$item = $listModel->getTable();
-		$adminListModel = $this->getModel('List', 'FabrikModel');
+		$adminListModel = $this->getModel('List', 'FabrikAdminModel');
 		$adminListModel->loadFromFormId($item->form_id);
 
 		$formModel = $listModel->getFormModel();

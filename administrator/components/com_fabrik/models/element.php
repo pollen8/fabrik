@@ -749,17 +749,18 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$query->where("db_table_name = " . $db->quote($dbname) . " AND l.id !=" . (int) $list->id . " AND is_join = 0");
 
 		$db->setQuery($query);
+		$othertables = $db->loadObjectList('id');
 
 		/**
 		 * $$$ rob 20/02/2012 if you have 2 lists, countres, regions and then you join regions to countries to get a new group "countries - [regions]"
 		 * Then add elements to the regions list, the above query wont find the group "countries - [regions]" to add the elements into
 		 */
 
-		$query = $db->getQuery(true);
+		$query->clear();
 		$query->select('DISTINCT(l.id) AS id, l.db_table_name, l.label, l.form_id, l.label AS form_label, fg.group_id AS group_id')
 			->from('#__{package}_joins AS j')->join('LEFT', '#__{package}_formgroup AS fg ON fg.group_id = j.group_id')
 			->join('LEFT', '#__{package}_forms AS f ON fg.form_id = f.id')->join('LEFT', '#__{package}_lists AS l ON l.form_id = f.id')
-			->where('j.table_join = ' . $db->quote($dbname) . ' AND j.list_id <> 0 AND list_id <> ' . (int) $list->id);
+			->where('j.table_join = ' . $db->quote($dbname) . ' AND j.list_id <> 0 AND j.element_id = 0 AND list_id <> ' . (int) $list->id);
 		$db->setQuery($query);
 		$joinedLists = $db->loadObjectList('id');
 		$othertables = array_merge($joinedLists, $othertables);

@@ -2432,9 +2432,9 @@ class FabrikFEModelList extends JModelForm
 	 * Get the part of the sql statement that orders the table data
 	 * Since 3.0.7 caches the results as calling orderBy twice when using single ordering in admin module anules the user selected order by
 	 *
-	 * @param   mixed  $query  false or a query object
+	 * @param   mixed  $query  False or a query object
 	 *
-	 * @return  string	ordering part of sql statement
+	 * @return  string	Ordering part of sql statement
 	 */
 
 	public function buildQueryOrder($query = false)
@@ -4074,15 +4074,16 @@ class FabrikFEModelList extends JModelForm
 		if ($group->isJoin())
 		{
 			$tableName = $group->getJoinModel()->getJoin()->table_join;
-			$keydata = $keydata[0];
-			$primaryKey = $keydata['colname'];
+			$keydata = $this->getPrimaryKeyAndExtra($tableName);
+			$keydata = $keydata;
+			$primaryKey = $keydata[0]['colname'];
 		}
 		else
 		{
+			$keydata = $this->getPrimaryKeyAndExtra($tableName);
 			$tableName = $table->db_table_name;
 			$primaryKey = $table->db_primary_key;
 		}
-		$keydata = $this->getPrimaryKeyAndExtra($tableName);
 
 		// $$$ rob base plugin needs to know group info for date fields in non-join repeat groups
 		$basePlugIn->setGroupModel($elementModel->getGroupModel());
@@ -4161,11 +4162,11 @@ class FabrikFEModelList extends JModelForm
 		* we would do something like $base_existingDef = $elementModel->baseFieldDescription($existingDef), and (say) the
 		* field element, if passed "TINYINT(3) UNSIGNED" would return "INT(3)".  But for now, just tweak it here.
 		*/
-		$objtypeUpper = ' '.JString::strtoupper(trim($objtype)).' ';
+		$objtypeUpper = ' ' . JString::strtoupper(trim($objtype)) . ' ';
 		$objtypeUpper = str_replace(' NOT NULL ', ' ', $objtypeUpper);
 		$objtypeUpper = str_replace(' UNSIGNED ', ' ', $objtypeUpper);
 		$objtypeUpper = trim($objtypeUpper);
-		$existingDef = ' '.JString::strtoupper(trim($existingDef)).' ';
+		$existingDef = ' ' . JString::strtoupper(trim($existingDef)) . ' ';
 		$existingDef = str_replace(' UNSIGNED ', ' ', $existingDef);
 		$existingDef = str_replace(array(' INTEGER', ' TINYINT', ' SMALLINT', ' MEDIUMINT', ' BIGINT'), ' INT', $existingDef);
 		$existingDef = trim($existingDef);
@@ -6066,7 +6067,7 @@ class FabrikFEModelList extends JModelForm
 					{
 						case "desc":
 							$orderDir = "-";
-							$class = 'class="fabrikorder-desc' . $responsiveClass . '"';
+							$class = 'class="fabrikorder-desc"';
 							$img = FabrikHelperHTML::image('arrow-up.png', 'list', $tmpl, array('alt' => JText::_('COM_FABRIK_ORDER')));
 							break;
 						case "asc":
@@ -9864,10 +9865,10 @@ class FabrikFEModelList extends JModelForm
 			}
 			if ($app->scope !== 'mod_fabrik_list')
 			{
-				$this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
 				/* $$$ rob 10/03/2012 changed menu param to listlayout to avoid the list menu item
 				 * options also being used for the form/details view template
 				*/
+				// $this->tmpl = FabrikWorker::getMenuOrRequestVar('fabriklayout', $this->tmpl, $this->isMambot);
 				$this->tmpl = FabrikWorker::getMenuOrRequestVar('listlayout', $this->tmpl, $this->isMambot);
 			}
 			if ($document->getType() === 'pdf')

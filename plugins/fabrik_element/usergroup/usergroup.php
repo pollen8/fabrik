@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
- */
+*/
 
 class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 {
@@ -28,6 +28,20 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	 * @var string
 	 */
 	protected $fieldDesc = 'TEXT';
+
+	/**
+	 * Array of id, label's queried from #__usergroups
+	 *
+	 * @var array
+	 */
+	protected $allOpts = null;
+
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
+	public $hasSubElements = false;
 
 	/**
 	 * Draws the html form element
@@ -65,30 +79,126 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		{
 			$selected = json_decode($selected);
 		}
-		if ($this->canUse())
+		if ($this->isEditable())
 		{
 			return JHtml::_('access.usergroups', $name, $selected);
 		}
 		else
 		{
-			if ($userEl && !empty($thisUser->groups))
+			if ($userEl)
 			{
-				// Get the titles for the user groups.
+				$selected = $thisUser->groups;
+			}
+
+			// Get the titles for the user groups.
+			if (count($selected) > 0)
+			{
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
 				$query->select($db->quoteName('title'));
 				$query->from($db->quoteName('#__usergroups'));
-				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $thisUser->groups) . ')');
+				$query->where($db->quoteName('id') . ' IN ( ' . implode(' , ', $selected) . ')');
 				$db->setQuery($query);
 				$selected = $db->loadColumn();
-			}
-			else
-			{
-				$selected = array();
 			}
 		}
 
 		return implode(', ', $selected);
+	}
+
+	/**
+	 * Get sub option values
+	 *
+	 * @return  array
+	 */
+
+	protected function getSubOptionValues()
+	{
+		$opts = $this->allOpts();
+		$return = array();
+		foreach ($opts as $opt)
+		{
+			$return[] = $opt->id;
+		}
+		return $return;
+	}
+
+	/**
+	 * Get sub option labels
+	 *
+	 * @return  array
+	 */
+
+	protected function getSubOptionLabels()
+	{
+		$opts = $this->allOpts();
+		$return = array();
+		foreach ($opts as $opt)
+		{
+			$return[] = $opt->title;
+		}
+		return $return;
+	}
+
+	/**
+	 * Create an array of label/values which will be used to populate the elements filter dropdown
+	 * returns only data found in the table you are filtering on
+	 *
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
+	 *
+	 * @return  array	Filter value and labels
+	 */
+
+	protected function filterValueList_Exact($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
+	{
+		$listModel = $this->getListModel();
+		$table = $listModel->getTable();
+		$elName2 = $this->getFullName(false, false, false);
+		$tmpIds = $listModel->getColumnData($elName2);
+		$ids = array();
+		foreach ($tmpIds as $tmpId)
+		{
+			$tmpId = FabrikWorker::JSONtoData($tmpId, true);
+			$ids = array_merge($ids, $tmpId);
+		}
+		$ids = array_unique($ids);
+		$opts = $this->allOpts();
+		$return = array();
+		foreach ($ids as $id)
+		{
+			if (array_key_exists($id, $opts))
+			{
+				// 3.0 its an array - 3.1 its an object
+				$opt = new stdClass;
+				$opt->value = $id;
+				$opt->text = $opts[$id]->title;
+				$return[] = $opt;
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Get all user groups (id/title)
+	 *
+	 * @return  array
+	 */
+	private function allOpts()
+	{
+		if (!isset($this->allOpts))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('id, title');
+			$query->from($db->quoteName('#__usergroups'));
+			$db->setQuery($query);
+			$this->allOpts = $db->loadObjectList('id');
+		}
+		return $this->allOpts;
 	}
 
 	/**
@@ -107,28 +217,46 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	}
 
 	/**
-	* Shows the data formatted for the list view
-	*
-	* @param   string  $data      Elements data
-	* @param   object  &$thisRow  All the data in the lists current row
-	*
-	* @return  string	formatted value
-	*/
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
+	 *
+	 * @return  string	value
+	 */
 
-	public function renderListData($data, &$thisRow)
+	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
-		$data = FabrikWorker::JSONtoData($data, true);
-		JArrayHelper::toInteger($data);
-		$db = FabrikWorker::getDbo(true);
-		$query = $db->getQuery(true);
-		if (!empty($data))
+		$value = parent::getValue($data, $repeatCounter, $opts);
+		$value = FabrikWorker::JSONtoData($value);
+		if (is_string($value))
 		{
-			$query->select('title')->from('#__usergroups')->where('id IN (' . implode(',', $data) . ')');
-			$db->setQuery($query);
-			$data = $db->loadColumn();
+			// New record or failed validation
+			$value = trim($value);
+			$value = $value === '' ? array() : explode(',', $value);
 		}
-		$data = json_encode($data);
-		return parent::renderListData($data, $thisRow);
+		return $value;
+	}
+
+	/**
+	 * This really does get just the default value (as defined in the element's settings)
+	 *
+	 * @param   array  $data  Form data
+	 *
+	 * @return mixed
+	 */
+
+	public function getDefaultValue($data = array())
+	{
+		if (!isset($this->_default))
+		{
+			$user = JFactory::getUser();
+			$this->_default = $user->get('groups');
+			$this->_default = array_values($this->_default);
+			$this->_default = json_encode($this->_default);
+		}
+		return $this->_default;
 	}
 
 	/**
