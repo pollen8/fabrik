@@ -126,7 +126,7 @@
 		
 		<field name="db_primary_key"
 			type="listfields"
-			valueformat="tableelement"
+			valueformat="id"
 			nojoins="true"
 			filter="internalid|field" 
 			label="COM_FABRIK_FIELD_PRIMARY_KEY_LABEL"
@@ -221,7 +221,7 @@
 				
 			<field name="group_by_order"
 				type="listfields"
-				valueformat="tableelement"
+				valueformat="id"
 				label="COM_FABRIK_FIELD_ORDER_BY_LABEL"
 				description="COM_FABRIK_FIELD_GROUP_BY_ORDER_BY_LABEL"
 			/>
@@ -281,7 +281,7 @@
 				
 			<field name="allow_edit_details2"
 				type="listfields"
-				valueformat="tableelement"
+				valueformat="id"
 				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_OR_USE_FIELD_DESC"
 			/>
@@ -302,7 +302,7 @@
 				
 			<field name="allow_delete2"
 				type="listfields"
-				valueformat="tableelement"
+				valueformat="id"
 				label="COM_FABRIK_FIELD_OR_USE_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_OR_USE_FIELD_DELETE_LABEL"
 			/>
@@ -488,7 +488,7 @@
 			<field name="sef-slug" 
 				type="listfields"
 				raw="1"
-				valueformat="tableelement"
+				valueformat="id"
 				label="COM_FABRIK_FIELD_SEF_SLUG_LABEL"
 				description="COM_FABRIK_FIELD_SEF_SLUG_DESC"
 			/>
