@@ -37,12 +37,16 @@
 		<field name="publish_up"
 			type="calendar"
 			class="input-medium"
-			label="COM_FABRIK_FIELD_START_PUBLISHING_LABEL" />
+			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			/>
 			
 		<field name="publish_down"
 			type="calendar"
 			class="input-medium"
-			label="COM_FABRIK_FIELD_FINISH_PUBLSHING_LABEL" />
+			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+			/>
 			
 	</fieldset>
 	
