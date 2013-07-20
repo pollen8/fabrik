@@ -2299,8 +2299,9 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$aEls = array();
 		$aEls = $this->getElementOptions($useStep, $key, false, $incRaw);
-		$aEls[] = JHTML::_('select.option', '', '-');
 		asort($aEls);
+		// Paul - Prepend rather than append "none" option.
+		array_unshift($aEls,JHTML::_('select.option', '', '-'));
 		return JHTML::_('select.genericlist', $aEls, $name, $attribs, 'value', 'text', $default);
 	}
 

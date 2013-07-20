@@ -208,7 +208,8 @@ class JFormFieldListfields extends JFormFieldList
 				}
 				$aEls = $res;
 			}
-			$aEls[] = JHTML::_('select.option', '', '-');
+			// Paul - Prepend rather than append "none" option.
+			array_unshift($aEls, JHTML::_('select.option', '', '-'));
 
 			// For pk fields - we are no longer storing the key with '`' as thats mySQL specific
 			$this->value = str_replace('`', '', $this->value);
