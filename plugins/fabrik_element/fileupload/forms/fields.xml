@@ -105,6 +105,7 @@
 				label="PLG_ELEMENT_FILEUPLOAD_SHOW_IN_LIST_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
+					<option value="2">PLG_ELEMENT_FILEUPLOAD_SLIDESHOW</option>
 			</field>
 			
 			<field name="fu_show_image"
@@ -115,6 +116,7 @@
 					<option value="0">JNO</option>
 					<option value="1">PLG_ELEMENT_FILEUPLOAD_THUMBNAIL</option>
 					<option value="2">PLG_ELEMENT_FILEUPLOAD_FULL_SIZED</option>	
+					<option value="3">PLG_ELEMENT_FILEUPLOAD_SLIDESHOW</option>
 			</field>
 			
 			<field name="fu_show_image_in_email"
