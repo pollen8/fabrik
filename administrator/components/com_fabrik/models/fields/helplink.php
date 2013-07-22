@@ -20,8 +20,6 @@ defined('JPATH_BASE') or die();
  * @since    3.0.9
  */
 
-//JFormHelper::loadFieldClass('spacer');
-
 class JFormFieldHelpLink extends JFormField
 {
 
@@ -46,7 +44,7 @@ class JFormFieldHelpLink extends JFormField
 	{
 		$url = $this->element['url'] ? (string) $this->element['url'] : '';
 		$label = '<ul><li class="button icon-32-help" style="float:right;width:32px;height:32px">
-<a class="toolbar" rel="help" style="display:block;width:32px;padding-top:32px;text-align:center;" onclick="Joomla.popupWindow(\'' .  JText::_($url). '\', \'Help\', 700, 500, 1);return false" href="#">
+<a class="toolbar" rel="help" style="display:block;width:32px;padding-top:32px;text-align:center;" onclick="Joomla.popupWindow(\'' . JText::_($url) . '\', \'Help\', 700, 500, 1);return false" href="#">
 <span class="icon-32-help">
 </span>
 Help

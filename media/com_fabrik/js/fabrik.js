@@ -22,8 +22,6 @@ function fconsole(thing) {
 	}
 }
 
-console.log('fabrikjs');
-
 RequestQueue = new Class({
 	
 	queue: {}, // object of xhr objects
