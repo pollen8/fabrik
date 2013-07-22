@@ -1173,12 +1173,12 @@ class FabrikFEModelListfilter extends FabModel
 						}
 					}
 				}
-				
+
 				if (is_array($value))
 				{
 					// Ensure the array is indexed starting at 0.
 					$value = array_values($value);
-	
+
 					// Empty ranged data test
 					if (JArrayHelper::getValue($value, 0) == '' && JArrayHelper::getValue($value, 1) == '')
 					{
