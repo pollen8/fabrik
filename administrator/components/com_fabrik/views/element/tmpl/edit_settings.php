@@ -24,22 +24,22 @@ $panels = array(
 		'fieldset' => array('icons')),
 
 	array('heading' => JText::_('COM_FABRIK_ELEMENT_LABEL_FILTERS_DETAILS'),
-		'id'=>'filters',
-		'fieldset'=> array('filters', 'filters2')),
+		'id' => 'filters',
+		'fieldset' => array('filters', 'filters2')),
 
 	array('heading' => JText::_('COM_FABRIK_ELEMENT_LABEL_CSS_DETAILS'),
-		'id'=>'viewcss',
-		'fieldset'=>'viewcss'),
+		'id' => 'viewcss',
+		'fieldset' => 'viewcss'),
 
 	array('heading' => JText::_('COM_FABRIK_ELEMENT_LABEL_CALCULATIONS_DETAILS'),
-		'id'=>'calculations',
-		'fieldset'=> array('calculations-sum', 'calculations-avg', 'calculations-median', 'calculations-count', 'calculations-custom'))
+		'id' => 'calculations',
+		'fieldset' => array('calculations-sum', 'calculations-avg', 'calculations-median', 'calculations-count', 'calculations-custom'))
 );
 
-echo JHtml::_('sliders.start','element-sliders-viewsettings-'.$this->item->id, array('useCookie'=>1));
+echo JHtml::_('sliders.start', 'element-sliders-viewsettings-' . $this->item->id, array('useCookie' => 1));
 
-foreach ($panels as $panel) {
-	echo JHtml::_('sliders.panel',$panel['heading'], $panel['id'].-'details');
+foreach ($panels as $panel) :
+	echo JHtml::_('sliders.panel', $panel['heading'], $panel['id'] . '-details');
 			?>
 			<fieldset class="adminform">
 				<ul class="adminformlist">
@@ -48,11 +48,13 @@ foreach ($panels as $panel) {
 					foreach ($fieldsets as $fieldset) :
 						foreach ($this->form->getFieldset($fieldset) as $field) :?>
 						<li>
-							<?php echo $field->label; ?><?php echo $field->input; ?>
+							<?php echo $field->label;
+							echo $field->input; ?>
 						</li>
 						<?php endforeach;
 					endforeach;?>
 				</ul>
 			</fieldset>
-<?php }
-echo JHtml::_('sliders.end'); ?>
+<?php
+endforeach;
+echo JHtml::_('sliders.end');

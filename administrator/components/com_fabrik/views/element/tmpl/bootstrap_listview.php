@@ -1,3 +1,17 @@
+<?php
+/**
+ * Admin Element Edit - List view Tmpl
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.0
+ */
+
+// No direct access
+defined('_JEXEC') or die;
+?>
 <div class="tab-pane" id="tab-listview">
 
 	<ul class="nav nav-tabs">
@@ -80,7 +94,7 @@
 				$fieldsets = $this->form->getFieldsets();
 				$cals = array('calculations-sum', 'calculations-avg', 'calculations-median');
 				foreach ($cals as $cal) :?>
-					<legend><?php echo JText::_($fieldsets[$cal]->label) ;?></legend>
+					<legend><?php echo JText::_($fieldsets[$cal]->label); ?></legend>
 					<?php foreach ($this->form->getFieldset($cal) as $this->field) :
 						echo $this->loadTemplate('control_group');
 					endforeach;
@@ -91,7 +105,7 @@
 				<?php
 				$cals = array('calculations-count', 'calculations-custom');
 				foreach ($cals as $cal) :?>
-					<legend><?php echo JText::_($fieldsets[$cal]->label) ;?></legend>
+					<legend><?php echo JText::_($fieldsets[$cal]->label); ?></legend>
 					<?php foreach ($this->form->getFieldset($cal) as $this->field) :
 						echo $this->loadTemplate('control_group');
 					endforeach;
