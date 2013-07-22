@@ -1,41 +1,48 @@
 <?php
-
 /**
- * Optional script for extending the Fabrik PayPal form plugin
- * @package fabrikar
- * @author Hugh Messenger
- * @copyright (C) Hugh Messenger
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * Subscription IPN return code
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 JTable::addIncludePath(JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables');
 
-class fabrikSubscriptionsIPN
+/**
+ * Subscription IPN return code
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.subscriptions
+ * @since       3.0
+*/
+
+class FabrikSubscriptionsIPN
 {
-	function __construct()
+	/**
+	 * Construct
+	 */
+	public function __construct()
 	{
 		// Include the JLog class.
 		jimport('joomla.log.log');
-
-		// Add the logger.
-		//JLog::addLogger(array('logger' => 'database'));
-
 	}
 
 	/**
 	 * Completed payment
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function payment_status_Completed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -46,11 +53,11 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Activate a subscription
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
-	 * @param   bool    $recurring  is it a recurring subscription
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
+	 * @param   bool    $recurring  Is it a recurring subscription
 	 *
 	 * @return  bool
 	 */
@@ -136,9 +143,9 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Set the users groups based on the subscription
 	 *
-	 * @param   JTable  $sub  subscription table
+	 * @param   JTable  $sub  Subscription table
 	 *
-	 * @return  JUser  subscription user
+	 * @return  JUser  Subscription user
 	 */
 
 	protected function setUserGroup($sub)
@@ -160,7 +167,9 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Expire all but the most recent subs
 	 *
-	 * @param   int  $userid  user id
+	 * @param   int  $userid  User id
+	 *
+	 * @return  void
 	 */
 	protected function expireOldSubs($userid)
 	{
@@ -169,7 +178,7 @@ class fabrikSubscriptionsIPN
 
 		// Don't load up active accounts with no eot_date!
 		$query->select('id')->from('#__fabrik_subs_subscriptions')->where('userid = ' . (int) $userid)
-			->where('status = "Active" AND date(format(eot_date, "%Y") = "000"')->order('lastpay_date DESC');
+		->where('status = "Active" AND date(format(eot_date, "%Y") = "000"')->order('lastpay_date DESC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 
@@ -187,7 +196,7 @@ class fabrikSubscriptionsIPN
 				}
 			}
 		}
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->subscriptionids = $rows;
 		$msg = json_encode($msg);
 		$this->log('fabrik.ipn.expireOldSubs', $msg);
@@ -196,10 +205,10 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Pending payment
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
@@ -235,17 +244,17 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Reversed payment
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function payment_status_Reversed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -256,17 +265,17 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Cancelled reversed payment
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function payment_status_Cancelled_Reversal($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -277,17 +286,17 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Refunded payment and cancel subscription
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function payment_status_Refunded($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -307,7 +316,7 @@ class fabrikSubscriptionsIPN
 	 * If user subs changed then this fn will work out and set the correct
 	 * access levels for the user
 	 *
-	 * @param   int  $userId  user id
+	 * @param   int  $userId  User id
 	 *
 	 * @return  JUser
 	 */
@@ -340,17 +349,17 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Transcation web accept
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_web_accept($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -363,17 +372,17 @@ class fabrikSubscriptionsIPN
 	 * you should get a subscr_payment about 3 seconds afterwards.
 	 * So again i dont think we need to do anything here
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_signup($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -384,17 +393,17 @@ class fabrikSubscriptionsIPN
 	/**
 	 * The user has cancelled a subscription in Paypal,
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_cancel($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -420,17 +429,17 @@ class fabrikSubscriptionsIPN
 	 * this occurs when a user upgrades their account in Paypal
 	 * We don't allow this in fabrik so nothing should need to be done here
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_modify($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -441,22 +450,22 @@ class fabrikSubscriptionsIPN
 	/**
 	 * A subscription payment has been successfully made
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_payment($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
 		$this->log('fabrik.ipn.txn_type_subscr_payment', $msg);
-		return $this->activateSubscription($tableModel, $request, &$set_list, &$err_msg, true);
+		return $this->activateSubscription($tableModel, $request, $set_list, $err_msg, true);
 	}
 
 	/**
@@ -468,17 +477,17 @@ class fabrikSubscriptionsIPN
 	 * Once the max number of failures has occurred Paypal sends out a thx_type_subscr_cancel call
 	 * Its there that we need to do something
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_failed($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -491,17 +500,17 @@ class fabrikSubscriptionsIPN
 	 * but as it occurs before anything else (eg. form.paypal.ipn.Completed the expired invoice doesnt
 	 * rest expired but shows as active
 	 *
-	 * @param   object  $listModel  list model
-	 * @param   array   $request    request data
-	 * @param   array   &$set_list  new invoice properties
-	 * @param   array   &$err_msg   error message
+	 * @param   object  $listModel  List model
+	 * @param   array   $request    Request data
+	 * @param   array   &$set_list  New invoice properties
+	 * @param   array   &$err_msg   Error message
 	 *
 	 * @return bool
 	 */
 
 	public function txn_type_subscr_eot($listModel, $request, &$set_list, &$err_msg)
 	{
-		$msg = new stdClass();
+		$msg = new stdClass;
 		$msg->request = $request;
 		$msg->set_list = $set_list;
 		$msg = json_encode($msg);
@@ -509,7 +518,7 @@ class fabrikSubscriptionsIPN
 		$invoice = $this->checkInvoice($request);
 		if (!$invoice)
 		{
-			$this->log('fabrik.ipn.txn_type_subscr_eot', 'no invoice found for :'. json_encode($request));
+			$this->log('fabrik.ipn.txn_type_subscr_eot', 'no invoice found for :' . json_encode($request));
 			return false;
 		}
 		$sub = $this->getSubscriptionFromInvoice($invoice);
@@ -518,7 +527,7 @@ class fabrikSubscriptionsIPN
 			$this->log('fabrik.ipn.txn_type_subscr_eot', 'not expiring as sub is not recurring (so eot is triggered on sub signup)');
 			/*
 			 * $$$ rob 09/06/2011 added cos I think if user has one sub non recurring
-			 * and that expires and they sign up for a new one (possibly before the
+			* and that expires and they sign up for a new one (possibly before the
 			 * end of the first subs term, both subs are expired if we don't return here
 			 */
 			return true;
@@ -531,7 +540,7 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Get subscription row from a given invoice number
 	 *
-	 * @param   string  $inv  invoice id
+	 * @param   string  $inv  Invoice id
 	 *
 	 * @return  JTable object
 	 */
@@ -555,7 +564,7 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Get an invoice JTable object from its invoice number
 	 *
-	 * @param   string  $inv  invoice number
+	 * @param   string  $inv  Invoice number
 	 *
 	 * @return JTable
 	 */
@@ -570,9 +579,9 @@ class fabrikSubscriptionsIPN
 	/**
 	 *Report an error by email and to fabrik.subs.log.php
 	 *
-	 * @param   string  $msg   message
-	 * @param   string  $to    to
-	 * @param   array   $data  data to log
+	 * @param   string  $msg   Message
+	 * @param   string  $to    To
+	 * @param   array   $data  Data to log
 	 *
 	 * @return unknown_type
 	 */
@@ -586,7 +595,7 @@ class fabrikSubscriptionsIPN
 		{
 			$to = $FromName;
 		}
-		$body = "\n\n\\";
+		$body = $msg . "\n\n\\";
 		foreach ($data as $k => $v)
 		{
 			$body .= "$k = $v \n";
@@ -608,8 +617,8 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Log something
 	 *
-	 * @param   string  $subject  log subject
-	 * @param   string  $body     log message
+	 * @param   string  $subject  Log subject
+	 * @param   string  $body     Log message
 	 *
 	 * @return  void
 	 */
@@ -623,7 +632,7 @@ class fabrikSubscriptionsIPN
 	/**
 	 * Ensures that an invoice num was found in the request data.
 	 *
-	 * @param   array  $request  data to check
+	 * @param   array  $request  Data to check
 	 *
 	 * @return  mixed	false if not found, otherwise returns invoice id
 	 */
@@ -647,7 +656,7 @@ class fabrikSubscriptionsIPN
 	 * e.g. original subscription was broze, updates to silver and silver expires - should fall back to bronze
 	 * we want to change the user type
 	 *
-	 * @param   object  $sub  subscription
+	 * @param   object  $sub  Subscription
 	 *
 	 * @deprecated - should use recalibrateUser();
 	 *
@@ -663,39 +672,46 @@ class fabrikSubscriptionsIPN
 		$plan = JTable::getInstance('Plan', 'FabrikTable');
 		$newPlan = JTable::getInstance('Plan', 'FabrikTable');
 		$plan->load((int) $sub->plan);
-		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan .' = ' . (int) $plan->fall_back_plan);
+		$this->log('fabrik.ipn. fallback', ' getting fallback sub plan :  ' . (int) $sub->plan . ' = ' . (int) $plan->fall_back_plan);
 		$fallback = false;
-		if ($plan->fall_back_plan != 0) {
+		if ($plan->fall_back_plan != 0)
+		{
 			$fallback = true;
-			$newPlan->load((int)$plan->fall_back_plan);
-			$gid = (int)$newPlan->usergroup;
-			if ($gid <18) {
+			$newPlan->load((int) $plan->fall_back_plan);
+			$gid = (int) $newPlan->usergroup;
+			if ($gid < 18)
+			{
 				$gid = 18;
 			}
-		} else {
+		}
+		else
+		{
 			$gid = 18;
 		}
 		$subUser = JFactory::getUser($sub->userid);
 		$subUser->gid = $gid;
-		$this->log('fabrik.ipn. fallback', $subUser->get('id') .' gid set to ' . $gid);
+		$this->log('fabrik.ipn. fallback', $subUser->get('id') . ' gid set to ' . $gid);
 		$subUser->save();
 
-		if ($fallback) {
-			//create new subscription for fall back plan
+		if ($fallback)
+		{
+			// Create new subscription for fall back plan
 
-			//get the expration date (length of new plan - that of previous plan)
+			// Get the expration date (length of new plan - that of previous plan)
 			$newLength = $this->charToPeriod($newPlan->period_unit);
 			$oldLength = $this->charToPeriod($plan->period_unit);
 			$expDate = strtotime("+{$newPlan->duration} $newLength	");
 
 			$minus = strtotime("-{$plan->duration} $oldLength");
 
-			$this->log('fabrik.ipn. fallback', 'expiration date = strtotime(+'.$newPlan->duration.' '.$newLength.")\n minus = strtotime(-" .$plan->duration.' '.$oldLength.") \n =: $expDate - $minus"	);
+			$this->log('fabrik.ipn. fallback', 'expiration date = strtotime(+' . $newPlan->duration . ' ' . $newLength . ")\n minus = strtotime(-" . $plan->duration . ' ' . $oldLength . ") \n =: $expDate - $minus");
 			$expDate = JFactory::getDate()->toUnix() - ( $expDate - $minus);
 
 			$sub = JTable::getInstance('Subscriptions', 'Table');
 			$sub->userid = $subUser->get('id');
-			$sub->type = 1; //paypal payment - no recurring
+
+			// Paypal payment - no recurring
+			$sub->type = 1;
 			$sub->status = 'Active';
 			$sub->signup_date = JFactory::getDate()->toSQL();
 			$sub->plan = $newPlan->id;
@@ -705,19 +721,18 @@ class fabrikSubscriptionsIPN
 			$this->log('fabrik.ipn. fallback', 'new sub expiration set to ' . $sub->expiration);
 			$sub->store();
 			$msg = "<h3>new sub expiration set to $sub->expiration</h3>";
-			foreach ($sub as $k=>$v)
+			foreach ($sub as $k => $v)
 			{
 				$msg .= "$k = $v <br>";
 			}
 			$mail->sendMail('rob@pollen-8.co.uk', 'fabrikar subs', 'rob@pollen-8.co.uk', 'fabrikar sub: fall back plan created', $msg, true);
 		}
-
 	}
 
 	/**
 	 * Turn a time period character into its full name
 	 *
-	 *  @param   string  $p  period character
+	 *  @param   string  $p  Period character
 	 *
 	 *  @return  string  name
 	 */
