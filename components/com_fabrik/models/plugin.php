@@ -401,7 +401,7 @@ class FabrikPlugin extends JPlugin
 	 * @return   object  params
 	 */
 
-	function setParams(&$params, $repeatCounter)
+	public function setParams(&$params, $repeatCounter)
 	{
 		$opts = $params->toArray();
 		$data = array();
@@ -580,7 +580,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  void
 	 */
 
-	function onAjax_tables()
+	public function onAjax_tables()
 	{
 		$this->ajax_tables();
 	}
@@ -592,7 +592,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  void
 	 */
 
-	function ajax_tables()
+	public function ajax_tables()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -635,7 +635,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  void
 	 */
 
-	function onAjax_fields()
+	public function onAjax_fields()
 	{
 		$this->ajax_fields();
 	}
@@ -646,7 +646,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  string  json encoded list of fields
 	 */
 
-	function ajax_fields()
+	public function ajax_fields()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -662,162 +662,169 @@ class FabrikPlugin extends JPlugin
 		// Only used if showall = false, includes validations as separate entries
 		$incCalculations = $input->get('calcs', false);
 		$arr = array();
-		if ($showAll)
+		try
 		{
-			// Show all db columns
-			$cid = $input->get('cid', -1);
-			$cnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
-			$cnn->setId($cid);
-			$db = $cnn->getDb();
-			if ($tid != '')
+			if ($showAll)
 			{
-				if (is_numeric($tid))
+				// Show all db columns
+				$cid = $input->get('cid', -1);
+				$cnn = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
+				$cnn->setId($cid);
+				$db = $cnn->getDb();
+				if ($tid != '')
 				{
-					// If loading on a numeric list id get the list db table name
-					$jDb = FabrikWorker::getDbo(true);
-					$query = $jDb->getQuery(true);
-					$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
-					$jDb->setQuery($query);
-					$tid = $jDb->loadResult();
-				}
-				$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
-				$rows = $db->loadObjectList();
-				if (is_array($rows))
-				{
-					foreach ($rows as $r)
+					if (is_numeric($tid))
 					{
+						// If loading on a numeric list id get the list db table name
+						$jDb = FabrikWorker::getDbo(true);
+						$query = $jDb->getQuery(true);
+						$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $tid);
+						$jDb->setQuery($query);
+						$tid = $jDb->loadResult();
+					}
+					$db->setQuery('DESCRIBE ' . $db->quoteName($tid));
+					$rows = $db->loadObjectList();
+					if (is_array($rows))
+					{
+						foreach ($rows as $r)
+						{
+							$c = new stdClass;
+							$c->value = $r->Field;
+							$c->label = $r->Field;
+							if ($highlightpk && $r->Key === 'PRI')
+							{
+								$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
+								array_unshift($arr, $c);
+							}
+							else
+							{
+								$arr[$r->Field] = $c;
+							}
+						}
+						ksort($arr);
+						$arr = array_values($arr);
+					}
+				}
+			}
+			else
+			{
+				/*
+				 * show fabrik elements in the table
+				 * $keyType 1 = $element->id;
+				 * $keyType 2 = tablename___elementname
+				 */
+				$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
+				$model->setId($tid);
+				$table = $model->getTable();
+				$db = $model->getDb();
+				$groups = $model->getFormGroupElementData();
+				$published = $input->get('published', false);
+				$showintable = $input->get('showintable', false);
+				foreach ($groups as $g => $groupModel)
+				{
+					if ($groupModel->isJoin())
+					{
+						if ($input->get('excludejoined') == 1)
+						{
+							continue;
+						}
+						$joinModel = $groupModel->getJoinModel();
+						$join = $joinModel->getJoin();
+					}
+					if ($published == true)
+					{
+						$elementModels = $groups[$g]->getPublishedElements();
+					}
+					else
+					{
+						$elementModels = $groups[$g]->getMyElements();
+					}
+					foreach ($elementModels as $e => $eVal)
+					{
+						$element = $eVal->getElement();
+						if ($showintable == true && $element->show_in_list_summary == 0)
+						{
+							continue;
+						}
+						if ($keyType == 1)
+						{
+							$v = $element->id;
+						}
+						else
+						{
+							/*
+							 * @TODO if in repeat group this is going to add [] to name - is this really
+							 * what we want? In timeline viz options i've simply stripped out the [] off the end
+							 * as a temp hack
+							 */
+							$v = $eVal->getFullName(false);
+						}
 						$c = new stdClass;
-						$c->value = $r->Field;
-						$c->label = $r->Field;
-						if ($highlightpk && $r->Key === 'PRI')
+						$c->value = $v;
+						$label = FabrikString::getShortDdLabel($element->label);
+						if ($groupModel->isJoin())
+						{
+							$label = $join->table_join . '.' . $label;
+						}
+						$c->label = $label;
+
+						// Show hightlight primary key and shift to top of options
+						if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false)))
 						{
 							$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
 							array_unshift($arr, $c);
 						}
 						else
 						{
-							$arr[$r->Field] = $c;
+							$arr[] = $c;
+						}
+
+						if ($incCalculations)
+						{
+							$params = $eVal->getParams();
+							if ($params->get('sum_on', 0))
+							{
+								$c = new stdClass;
+								$c->value = 'sum___' . $v;
+								$c->label = JText::_('COM_FABRIK_SUM') . ': ' . $label;
+								$arr[] = $c;
+							}
+							if ($params->get('avg_on', 0))
+							{
+								$c = new stdClass;
+								$c->value = 'avg___' . $v;
+								$c->label = JText::_('COM_FABRIK_AVERAGE') . ': ' . $label;
+								$arr[] = $c;
+							}
+							if ($params->get('median_on', 0))
+							{
+								$c = new stdClass;
+								$c->value = 'med___' . $v;
+								$c->label = JText::_('COM_FABRIK_MEDIAN') . ': ' . $label;
+								$arr[] = $c;
+							}
+							if ($params->get('count_on', 0))
+							{
+								$c = new stdClass;
+								$c->value = 'cnt___' . $v;
+								$c->label = JText::_('COM_FABRIK_COUNT') . ': ' . $label;
+								$arr[] = $c;
+							}
+							if ($params->get('custom_calc_on', 0))
+							{
+								$c = new stdClass;
+								$c->value = 'cnt___' . $v;
+								$c->label = JText::_('COM_FABRIK_CUSTOM') . ': ' . $label;
+								$arr[] = $c;
+							}
 						}
 					}
-					ksort($arr);
-					$arr = array_values($arr);
 				}
 			}
 		}
-		else
+		catch (RuntimeException $err)
 		{
-			/*
-			 * show fabrik elements in the table
-			 * $keyType 1 = $element->id;
-			 * $keyType 2 = tablename___elementname
-			 */
-			$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
-			$model->setId($tid);
-			$table = $model->getTable();
-			$db = $model->getDb();
-			$groups = $model->getFormGroupElementData();
-			$published = $input->get('published', false);
-			$showintable = $input->get('showintable', false);
-			foreach ($groups as $g => $groupModel)
-			{
-				if ($groupModel->isJoin())
-				{
-					if ($input->get('excludejoined') == 1)
-					{
-						continue;
-					}
-					$joinModel = $groupModel->getJoinModel();
-					$join = $joinModel->getJoin();
-				}
-				if ($published == true)
-				{
-					$elementModels = $groups[$g]->getPublishedElements();
-				}
-				else
-				{
-					$elementModels = $groups[$g]->getMyElements();
-				}
-				foreach ($elementModels as $e => $eVal)
-				{
-					$element = $eVal->getElement();
-					if ($showintable == true && $element->show_in_list_summary == 0)
-					{
-						continue;
-					}
-					if ($keyType == 1)
-					{
-						$v = $element->id;
-					}
-					else
-					{
-						/*
-						 * @TODO if in repeat group this is going to add [] to name - is this really
-						 * what we want? In timeline viz options i've simply stripped out the [] off the end
-						 * as a temp hack
-						 */
-						$v = $eVal->getFullName(false);
-					}
-					$c = new stdClass;
-					$c->value = $v;
-					$label = FabrikString::getShortDdLabel($element->label);
-					if ($groupModel->isJoin())
-					{
-						$label = $join->table_join . '.' . $label;
-					}
-					$c->label = $label;
-
-					// Show hightlight primary key and shift to top of options
-					if ($highlightpk && $table->db_primary_key === $db->quoteName($eVal->getFullName(false, false)))
-					{
-						$c->label .= ' [' . JText::_('COM_FABRIK_RECOMMENDED') . ']';
-						array_unshift($arr, $c);
-					}
-					else
-					{
-						$arr[] = $c;
-					}
-
-					if ($incCalculations)
-					{
-						$params = $eVal->getParams();
-						if ($params->get('sum_on', 0))
-						{
-							$c = new stdClass;
-							$c->value = 'sum___' . $v;
-							$c->label = JText::_('COM_FABRIK_SUM') . ': ' . $label;
-							$arr[] = $c;
-						}
-						if ($params->get('avg_on', 0))
-						{
-							$c = new stdClass;
-							$c->value = 'avg___' . $v;
-							$c->label = JText::_('COM_FABRIK_AVERAGE') . ': ' . $label;
-							$arr[] = $c;
-						}
-						if ($params->get('median_on', 0))
-						{
-							$c = new stdClass;
-							$c->value = 'med___' . $v;
-							$c->label = JText::_('COM_FABRIK_MEDIAN') . ': ' . $label;
-							$arr[] = $c;
-						}
-						if ($params->get('count_on', 0))
-						{
-							$c = new stdClass;
-							$c->value = 'cnt___' . $v;
-							$c->label = JText::_('COM_FABRIK_COUNT') . ': ' . $label;
-							$arr[] = $c;
-						}
-						if ($params->get('custom_calc_on', 0))
-						{
-							$c = new stdClass;
-							$c->value = 'cnt___' . $v;
-							$c->label = JText::_('COM_FABRIK_CUSTOM') . ': ' . $label;
-							$arr[] = $c;
-						}
-					}
-				}
-			}
+			// Ignore errors as you could be swapping between connections, with old db table name selected.
 		}
 		array_unshift($arr, JHTML::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT'), 'value', 'label'));
 		echo json_encode($arr);

@@ -55,5 +55,4 @@ class FabrikTableJoin extends FabTable
 		parent::store($updateNulls);
 	}
 
-
 }

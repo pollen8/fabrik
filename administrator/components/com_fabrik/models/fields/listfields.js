@@ -94,7 +94,7 @@ var ListFieldsElement = new Class({
 				}
 				var els = document.getElementsByName(this.el.name);
 				
-				var opts = eval(r);
+				var opts = eval(r); 
 				this.el.empty();
 				Array.each(els, function (el) {
 					document.id(el).empty();
@@ -113,6 +113,7 @@ var ListFieldsElement = new Class({
 					document.id(this.el.id + '_loader').hide();
 				}
 			}.bind(this)
-		}).send();
+		});
+		Fabrik.requestQueue.add(myAjax);
 	}
 });

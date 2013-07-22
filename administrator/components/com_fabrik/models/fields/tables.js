@@ -96,6 +96,7 @@ var tablesElement = new Class({
 				}
 				alert(r.status + ': ' + r.statusText);
 			}.bind(this)
-		}).send();
+		});
+		Fabrik.requestQueue.add(myAjax);
 	}
 });
