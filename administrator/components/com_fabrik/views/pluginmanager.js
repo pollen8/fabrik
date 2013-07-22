@@ -44,6 +44,11 @@ var PluginManager = new Class({
 		}
 	},
 	
+	/**
+	 * Has the form finished loading and are there any outstanding ajax requests
+	 * 
+	 * @return  bool
+	 */
 	canSaveForm: function () 
 	{
 		if (document.readyState !== 'complete') {

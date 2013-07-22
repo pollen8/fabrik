@@ -55,14 +55,7 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
-			$formModel = $elementModel->getFormModel();
-			$formData = $formModel->formData;
-			$w = new FabrikWorker;
-			$phpCode = $params->get('php-code');
-			$php_code = $w->parseMessageForPlaceHolder($phpCode[$pluginc], $formData, true, true);
-			$retval = @eval($php_code);
-			FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false,false) . '::_getV(): %s');
-			return $retval;
+			return $this->_eval($elementModel, $pluginc);
 		}
 		return true;
 	}
@@ -86,15 +79,30 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		$domatch = $domatch[$pluginc];
 		if (!$domatch)
 		{
-			$formModel = $elementModel->getFormModel();
-			$formData = $formModel->formData;
-			$w = new FabrikWorker;
-			$phpCode = $params->get('php-code');
-			$php_code = $w->parseMessageForPlaceHolder($phpCode[$pluginc], $formData, true, true);
-			$retval = @eval($php_code);
-			FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false,false) . '::_getV(): %s');			$retval = eval($php_code[$pluginc]);
-			return $retval;
+			return $this->_eval($elementModel, $pluginc);
 		}
 		return $data;
+	}
+
+	/**
+	 * Run eval
+	 *
+	 * @param   model  $elementModel  Element model
+	 * @param   int    $pluginc       Validation plugin counter
+	 *
+	 * @return  string	Evaluated PHP function
+	 */
+
+	private function _eval($elementModel, $pluginc)
+	{
+		$params = $this->getParams();
+		$formModel = $elementModel->getFormModel();
+		$formData = $formModel->formData;
+		$w = new FabrikWorker;
+		$phpCodes = $params->get('php-code');
+		$phpCode = $w->parseMessageForPlaceHolder($phpCodes[$pluginc], $formData, true, true);
+		$retval = @eval($phpCode);
+		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false, false) . '::_getV(): %s');
+		return $retval;
 	}
 }

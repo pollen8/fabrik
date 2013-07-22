@@ -115,17 +115,11 @@ var fabriktablesElement = new Class({
 			}.bind(this)
 		});
 		
-		// $$$ rob tmp fix (at least until https://github.com/joomla/joomla-platform/pull/1209/files is 
-		// contained in the CMS. Issue in J2.5.6 at least. Once resolved uncomment:
-		// myAjax.send()
-		//
-		// and remove:
-		// Fabrik.requestQueue.add(myAjax);
-		
-		//myAjax.send();
-		//Fabrik.requestQueue.add(myAjax);
-		
-		myAjax.send();
+		/*
+		 * Use Fabrik.requestQueue rather than myAjax.send()
+		 * as it is polled on form save to ensure that elements are not in a loading state
+		 */ 
+		Fabrik.requestQueue.add(myAjax);
 	},
 
 	updateElements : function () {
