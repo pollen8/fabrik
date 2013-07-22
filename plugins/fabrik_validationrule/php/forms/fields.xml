@@ -10,15 +10,17 @@
 				repeat="true" size="30" />
 				
 			<field name="php-validation_condition"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
 				description="PLG_VALIDATIONRULE_PHP_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_PHP_CONDITION_LABEL"
 				repeat="true"/>
 				
 			<field name="php-code"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
 				description="PLG_VALIDATIONRULE_PHP_CODE_DESC"
 				label="PLG_VALIDATIONRULE_PHP_CODE_LABEL"
 				repeat="true"/>
