@@ -36,16 +36,14 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
-		$ok = $elementModel->dataConsideredEmpty($data, $repeatCounter);
+		$ok = $this->elementModel->dataConsideredEmpty($data, $repeatCounter);
 		return !$ok;
 	}
 

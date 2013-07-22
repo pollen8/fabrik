@@ -42,8 +42,9 @@
 							
 			<field 
 				name="isgreaterorlessthan-validation_condition"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
 				description="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_ISGREATERORLESSTHAN_CONDITION_LABEL"
 				repeat="true" />

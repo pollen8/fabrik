@@ -46,7 +46,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	}
 
 	/**
-	 * Loads in elements validation objects
+	 * Loads in elements published validation objects
 	 *
 	 * @return  array	validation objects
 	 */
@@ -86,6 +86,10 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 					$plugIn->elementModel = $this->elementModel;
 					$this->validations[] = $plugIn;
+
+					// Set params relative to plugin render order
+					$plugIn->setParams($params, $i);
+
 					$plugIn->getParams()->set('show_icon', JArrayHelper::getValue($showIcon, $i, true));
 					$c++;
 				}

@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		// For multiselect elements
 		if (is_array($data))
@@ -52,12 +50,10 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('regex-match');
-		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
 			$matches = array();
-			$v = (array) $params->get('regex-expression');
-			$v = JArrayHelper::getValue($v, $pluginc);
+			$v = $params->get('regex-expression');
 			$v = trim($v);
 			$found = empty($v) ? true : preg_match($v, $data, $matches);
 			return $found;
@@ -70,25 +66,21 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
 	 * @param   string  $data           Original data
-	 * @param   model   &$elementModel  Element model
-	 * @param   int     $pluginc        Validation plugin counter
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */
 
-	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$domatch = (array) $params->get('regex-match');
-		$domatch = JArrayHelper::getValue($domatch, $pluginc);
+		$domatch = $params->get('regex-match');
 		if (!$domatch)
 		{
-			$v = (array) $params->get($this->pluginName . '-expression');
-			$v = JArrayHelper::getValue($v, $pluginc);
+			$v = $params->get($this->pluginName . '-expression');
 			$v = trim($v);
-			$replace = (array) $params->get('regex-replacestring');
-			$return = empty($v) ? $data : preg_replace($v, JArrayHelper::getValue($replace, $pluginc), $data);
+			$replace = $params->get('regex-replacestring');
+			$return = empty($v) ? $data : preg_replace($v, $replace, $data);
 			return $return;
 		}
 		return $data;

@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		// For multiselect elements
 		if (is_array($data))
@@ -52,11 +50,10 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
-		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$pluginc]);
+			$v = explode(',', $v);
 			foreach ($v as $c)
 			{
 				if (strstr($data, $c))
@@ -73,29 +70,25 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
 	 * @param   string  $data           Original data
-	 * @param   model   &$elementModel  Element model
-	 * @param   int     $pluginc        Validation plugin counter
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */
 
-	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$domatch = (array) $params->get('specialchars-match');
-		$domatch = $domatch[$pluginc];
+		$domatch = $params->get('specialchars-match');
 		if (!$domatch)
 		{
 			$v = $params->get($this->pluginName . '-expression');
 			$replace = $params->get('specialchars-replacestring');
-			$replace = $replace[$pluginc];
 			if ($replace === '_default')
 			{
 				$replace = '';
 			}
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$pluginc]);
+			$v = explode(',', $v);
 			foreach ($v as $c)
 			{
 				$data = str_replace($c, $replace, $data);

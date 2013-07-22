@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		$email = $data;
 
@@ -57,7 +55,6 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		$email = urldecode($email);
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
-		$allow_empty = $allow_empty[$pluginc];
 		if ($allow_empty == '1' and empty($email))
 		{
 			return true;
@@ -70,17 +67,13 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Validation plugin order
-	 *
 	 * @return  bool
 	 */
 
-	protected function allowEmpty($elementModel, $pluginc)
+	protected function allowEmpty()
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
-		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';
 	}
 

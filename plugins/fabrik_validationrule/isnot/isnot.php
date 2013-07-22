@@ -37,14 +37,12 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		if (is_array($data))
 		{
@@ -52,7 +50,6 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
-		$isnot = $isnot[$pluginc];
 		$isnot = explode('|', $isnot);
 		foreach ($isnot as $i)
 		{
@@ -67,16 +64,13 @@ class PlgFabrik_ValidationruleIsNot extends PlgFabrik_Validationrule
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Validation render order
-	 *
 	 * @return  string	label
 	 */
 
-	protected function getLabel($elementModel, $pluginc)
+	protected function getLabel()
 	{
 		$params = $this->getParams();
 		$isnot = $params->get('isnot-isnot');
-		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isnot[$pluginc]);
+		return JText::sprintf('PLG_VALIDATIONRULE_ISNOT_LABEL', $isnot);
 	}
 }

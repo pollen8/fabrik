@@ -1550,9 +1550,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$lines = array();
 				$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-				foreach ($validations as $pluginc => $validation)
+
+				foreach ($validations as $validation)
 				{
-					$lines[] = '<li>' . $validation->getHoverText($this, $pluginc, $tmpl) . '</li>';
+					$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
 				}
 				$lines = array_unique($lines);
 				$validationHovers = array_merge($validationHovers, $lines);
@@ -5542,13 +5543,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Do we need to include the slideshow js code
 	 *
 	 * @return  bool
 	 */
-	
+
 	public function requiresSlideshow()
 	{
 		return false;

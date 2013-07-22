@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		// Could be a dropdown with multivalues
 		if (is_array($data))
@@ -51,9 +49,9 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
+		$elementModel = $this->elementModel;
 		$formdata = $elementModel->getForm()->formData;
 		$cond = $params->get('isgreaterorlessthan-greaterthan');
-		$cond = $cond[$pluginc];
 		switch ($cond)
 		{
 			case '0':
@@ -73,10 +71,10 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 				$cond = '==';
 				break;
 		}
-		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
+		$otherElementModel = $this->getOtherElement();
 		$otherFullName = $otherElementModel->getFullName(true, false);
 		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
-		if ($this->allowEmpty($elementModel, $pluginc) && ($data === '' || $compare === ''))
+		if ($this->allowEmpty() && ($data === '' || $compare === ''))
 		{
 			return true;
 		}
@@ -88,34 +86,26 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 	 * Does the validation allow empty value?
 	 * Default is false, can be overrideen on per-validation basis (such as isnumeric)
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Validation render order
-	 *
 	 * @return	bool
 	 */
 
-	protected function allowEmpty($elementModel, $pluginc)
+	protected function allowEmpty()
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isgreaterorlessthan-allow_empty');
-		$allow_empty = $allow_empty[$pluginc];
 		return $allow_empty == '1';
 	}
 
 	/**
 	 * Get the other element to compare this elements data against
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Validation render order
-	 *
 	 * @return  object element model
 	 */
 
-	private function getOtherElement($elementModel, $pluginc)
+	private function getOtherElement()
 	{
 		$params = $this->getParams();
-		$otherfield = (array) $params->get('isgreaterorlessthan-comparewith', array());
-		$otherfield = $otherfield[$pluginc];
+		$otherfield = $params->get('isgreaterorlessthan-comparewith');
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
