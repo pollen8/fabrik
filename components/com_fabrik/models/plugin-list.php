@@ -356,7 +356,9 @@ class PlgFabrik_List extends FabrikPlugin
 	 * @return  void
 	 */
 
-	public function requireJSShim(){}
+	public function requireJSShim()
+	{
+	}
 
 	/**
 	 * Get the shim require.js logic for loading the list class.

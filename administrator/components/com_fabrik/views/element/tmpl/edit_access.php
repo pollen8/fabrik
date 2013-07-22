@@ -18,14 +18,16 @@ defined('_JEXEC') or die;
 	<?php
 		foreach ($this->form->getFieldset('access') as $field) :?>
 		<li>
-			<?php echo $field->label; ?><?php echo $field->input; ?>
+			<?php echo $field->label;
+			echo $field->input;?>
 		</li>
 		<?php endforeach;
 		?>
 		<?php
 		foreach ($this->form->getFieldset('access2') as $field) :?>
 		<li>
-			<?php echo $field->label; ?><?php echo $field->input; ?>
+			<?php echo $field->label;
+			echo $field->input; ?>
 		</li>
 		<?php endforeach; ?>
 	</ul>

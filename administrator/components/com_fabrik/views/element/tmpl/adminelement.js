@@ -66,7 +66,8 @@ var fabrikAdminElement = new Class({
 				this.updateBootStrap();
 				FabrikAdmin.reTip();
 			}.bind(this)
-		}).send();
+		});
+		Fabrik.requestQueue.add(myAjax);
 	},
 	
 	deleteJS: function (e) {

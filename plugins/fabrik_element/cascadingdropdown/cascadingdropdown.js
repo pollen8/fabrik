@@ -113,7 +113,6 @@ var FbCascadingdropdown = new Class({
 			c;
 			this.spinner.hide();
 			this.setValue(this.getValue());
-			console.log('cdd request ok current value = ', this.getValue(), this.element);
 			
 			json = JSON.decode(json);
 			if (this.options.editable) {
@@ -126,7 +125,6 @@ var FbCascadingdropdown = new Class({
 				c = this.getContainer().getElement('.dbjoin-description');
 				c.empty();
 			}
-			console.log('cdd request ok current value = ', this.options.value, this.element);
 			this.myAjax = null;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {

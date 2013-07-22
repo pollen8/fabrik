@@ -40,8 +40,9 @@ class FabrikTableInvoice extends JTable
 	 *
 	 * @param   array  $request  posted invoice data
 	 *
-	 * @param unknown_type $request
+	 * @return  void
 	 */
+
 	public function update($request)
 	{
 		$now = JFactory::getDate()->toSQL();
