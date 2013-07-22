@@ -133,23 +133,34 @@ class ImageRender
 		}
 		else
 		{
-			if ($model->isJoin())
+			if (($this->inTableView && $params->get('fu_show_image_in_table', '0') == '2')
+				|| (!$this->inTableView && !$formModel->isEditable() && $params->get('fu_show_image', '0') == '3'))
 			{
-				$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
-					. 'px; vertical-align: middle;text-align: center;">';
-			}
-			$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . $title . '" />';
-			if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
-			{
-				$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+				/*
+				 * We're building a Cycle2 slideshow, just a simple img tag
+				 */
+				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" />';
 			}
 			else
 			{
-				$this->output .= $img;
-			}
-			if ($model->isJoin())
-			{
-				$this->output .= '</div>';
+				if ($model->isJoin())
+				{
+					$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
+						. 'px; vertical-align: middle;text-align: center;">';
+				}
+				$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . $title . '" />';
+				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
+				{
+					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
+				}
+				else
+				{
+					$this->output .= $img;
+				}
+				if ($model->isJoin())
+				{
+					$this->output .= '</div>';
+				}
 			}
 		}
 	}

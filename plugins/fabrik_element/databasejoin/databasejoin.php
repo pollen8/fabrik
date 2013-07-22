@@ -1015,11 +1015,38 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 
 		if (!$formModel->isEditable() || !$this->isEditable())
 		{
+
 			// Read only element formatting...
 			if (JArrayHelper::getValue($defaultLabels, 0) === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 			{
 				// No point showing 'please select' for read only
 				unset($defaultLabels[0]);
+			}
+			/*
+			 * if it's a new form, labels won't be set for any defaults.
+			 */
+			if ($formModel->getRowId() == 0)
+			{
+				foreach($defaultLabels as $key => $val)
+				{
+					/*
+					 * Calling getLabelForVaue works, but it generates a database query for each one.
+					 * We should already have what we need in $tmp (the result of _getOptions), so lets
+					 * grab it from there.
+					 */
+					//$defaultLabels[$key] = $this->getLabelForValue($default[$key], $default[$key], true);
+					if (!empty($val))
+					{
+						foreach ($tmp as $t)
+						{
+							if ($t->value == $val)
+							{
+								$defaultLabels[$key] = $t->text;
+								break;
+							}
+						}
+					}
+				}
 			}
 			$this->addReadOnlyLinks($defaultLabels, $default);
 			$html[] = count($defaultLabels) < 2 ? implode(' ', $defaultLabels) : '<ul><li>' . implode('<li>', $defaultLabels) . '</li></ul>';

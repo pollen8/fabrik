@@ -204,6 +204,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		$shim['element/fileupload/fileupload'] = $s;
 
+		if ($this->requiresSlideshow())
+		{
+			FabrikHelperHTML::slideshow();
+		}
+		
 		parent::formJavascriptClass($srcs, $script, $shim);
 
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
@@ -427,8 +432,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
 			}
 		}
-		$data = json_encode($data);
-		return parent::renderListData($data, $thisRow);
+		$rendered = '';
+		if ($params->get('fu_show_image_in_table', '0') == '2')
+		{
+			$rendered = '<div class="cycle-slideshow">';
+			$rendered .= implode(' ', $data);
+			$rendered .= '</div>';
+		}
+		else
+		{
+			$data = json_encode($data);
+			$rendered = parent::renderListData($data, $thisRow);
+		}
+		return $rendered;
 	}
 
 	/**
@@ -706,6 +722,21 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function requiresLightBox()
 	{
 		return true;
+	}
+	
+	/**
+	 * Do we need to include the slideshow js code
+	 *
+	 * @return	bool
+	 */
+	
+	public function requiresSlideshow()
+	{
+		/*
+		 * $$$ - testing slideshow, @TODO finish this!  Check for view type
+		 */
+		$params = $this->getParams();
+		return $params->get('fu_show_image_in_table', '0') === '2' || $params->get('fu_show_image', '0') === '3';
 	}
 
 	/**
@@ -1169,22 +1200,49 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 		$fdata = $_FILES[$name]['name'];
-		foreach ($fdata as $i => $f)
+		/*
+		 * $$$ hugh - monkey patch to get simple upload working again after this commit:
+		 * https://github.com/Fabrik/fabrik/commit/5970a1845929c494c193b9227c32c983ff30fede
+		 * I don't think $fdata is ever going to be an array, after the above changes, but for now
+		 * I'm just patching round it.  Rob will fix it properly with his hammer.  :)
+		 */
+		if (is_array($fdata))
 		{
-			$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
-			$file = array('name' => $_FILES[$name]['name'][$i],
-					'type' => $_FILES[$name]['type'][$i],
-					'tmp_name' => $_FILES[$name]['tmp_name'][$i],
-					'error' => $_FILES[$name]['error'][$i],
-					'size' => $_FILES[$name]['size'][$i]);
-
+			foreach ($fdata as $i => $f)
+			{
+				$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
+				$file = array('name' => $_FILES[$name]['name'][$i],
+						'type' => $_FILES[$name]['type'][$i],
+						'tmp_name' => $_FILES[$name]['tmp_name'][$i],
+						'error' => $_FILES[$name]['error'][$i],
+						'size' => $_FILES[$name]['size'][$i]);
+	
+				if ($file['name'] != '')
+				{
+					$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
+				}
+				else
+				{
+					$files[$i] = $imagesToKeep[$i];
+				}
+			}
+		}
+		else
+		{
+			$myFileDir = JArrayHelper::getValue($myFileDirs, 0, '');
+			$file = array('name' => $_FILES[$name]['name'],
+					'type' => $_FILES[$name]['type'],
+					'tmp_name' => $_FILES[$name]['tmp_name'],
+					'error' => $_FILES[$name]['error'],
+					'size' => $_FILES[$name]['size']);
+			
 			if ($file['name'] != '')
 			{
-				$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
+				$files[0] = $this->_processIndUpload($file, $myFileDir, $i);
 			}
 			else
 			{
-				$files[$i] = $imagesToKeep[$i];
+				$files[0] = $imagesToKeep[0];
 			}
 		}
 
@@ -1209,8 +1267,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 		// Update form model with file data
+		/*
+		 * $$$ hugh - another monkey patch just to get simple upload going again
+		 */
+		/*
 		$formModel->updateFormData($name . '_raw', $files);
 		$formModel->updateFormData($name, $files);
+		*/	
+		$strfiles = implode(GROUPSPLITTER, $files);
+		$formModel->updateFormData($name . '_raw', $strfiles);
+		$formModel->updateFormData($name, $strfiles);
 	}
 
 	/**
@@ -1616,6 +1682,42 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$render = new stdClass;
 		$render->output = '';
 		$allRenders = array();
+		
+		/*
+		 * $$$ hugh testing slideshow display
+		 */
+		if ($params->get('fu_show_image') === '3' && !$this->isEditable())
+		{
+			// Failed validations - format different!
+			if (array_key_exists('id', $values))
+			{
+				$values = array_keys($values['id']);
+			}
+			// End failed validations
+			
+			foreach ($values as $value)
+			{
+				if (is_object($value))
+				{
+					$value = $value->file;
+				}
+				$render = $this->loadElement($value);
+			
+				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
+				{
+					$render->render($this, $params, $value);
+				}
+				if ($render->output != '')
+				{
+					$allRenders[] = $render->output;
+				}
+			}
+			$rendered = '<div class="cycle-slideshow">';
+			$rendered .= implode(' ', $allRenders);
+			$rendered .= '</div>';
+			return $rendered;	
+		}
+		
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 

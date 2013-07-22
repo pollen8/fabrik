@@ -5542,6 +5542,17 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		return false;
 	}
+	
+	/**
+	 * Do we need to include the slideshow js code
+	 *
+	 * @return  bool
+	 */
+	
+	public function requiresSlideshow()
+	{
+		return false;
+	}
 
 	/**
 	 * Get Joomfish options

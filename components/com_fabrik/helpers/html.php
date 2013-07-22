@@ -1357,6 +1357,19 @@ EOD;
 			self::$modal = true;
 		}
 	}
+	
+	/**
+	 * Load the slimbox / media box css and js files
+	 *
+	 * @return  void
+	 */
+	
+	public static function slideshow()
+	{
+		$folder = 'components/com_fabrik/libs/cycle2/';
+		$ext = self::isDebug() ? '.js' : '.min.js';
+		self::script($folder . 'jquery.cycle2' . $ext);
+	}
 
 	/**
 	 * Attach tooltips to document

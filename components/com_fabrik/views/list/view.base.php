@@ -47,6 +47,10 @@ class FabrikViewListBase extends JViewLegacy
 		{
 			FabrikHelperHTML::slimbox();
 		}
+		if ($model->requiresSlideshow())
+		{
+			FabrikHelperHTML::slideshow();
+		}
 		$src = FabrikHelperHTML::framework();
 		$shim = array();
 

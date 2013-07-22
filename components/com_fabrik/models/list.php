@@ -8852,6 +8852,32 @@ class FabrikFEModelList extends JModelForm
 		}
 		return false;
 	}
+	
+	/**
+	 * Does the list need to include the slimbox js code
+	 *
+	 * @return  bool
+	 */
+	
+	public function requiresSlideshow()
+	{
+		$form = $this->getFormModel();
+		$groups = $form->getGroupsHiarachy();
+		foreach ($groups as $group)
+		{
+			$elements = $group->getPublishedElements();
+			foreach ($elements as $elementModel)
+			{
+				$element = $elementModel->getElement();
+				if ($element->show_in_list_summary && $elementModel->requiresSlideshow())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 
 	/**
 	 * Get pluginmanager (get reference to form's plugin manager
