@@ -30,22 +30,12 @@ var FbCalc = new Class({
 					
 					// @TODO:  this needs updating as we dont store as join.x.element any more?
 					if (this.options.canRepeat) {
-						if (this.options.isGroupJoin) {
-							o2 = 'join___' + this.options.joinid + '___' + o + '_' + this.options.repeatCounter;
-							if (this.form.formElements[o2]) {
-								this.form.formElements[o2].addNewEventAux('change', function (e) {
-									this.calc(e);
-								}.bind(this));
-							}
-						}
-						else {
-							o2 = o + '_' + this.options.repeatCounter;
-							if (this.form.formElements[o2]) {
-								this.form.formElements[o2].addNewEventAux('change', function (e) {
-									this.calc(e);
-								}.bind(this));
-							}							
-						}
+						o2 = o + '_' + this.options.repeatCounter;
+						if (this.form.formElements[o2]) {
+							this.form.formElements[o2].addNewEventAux('change', function (e) {
+								this.calc(e);
+							}.bind(this));
+						}							
 					}
 					else {
 						this.form.repeatGroupMarkers.each(function (v, k) {
@@ -78,12 +68,20 @@ var FbCalc = new Class({
 		}.bind(this));
 		
 		$H(formdata).each(function (v, k) {
+			/*
 			if (k.test(/join___/)) {
 				var bits = k.split('_');
 				if (bits.getLast().toInt() === this.options.repeatCounter) {
 					var elname = k.split('_').slice(6, -1).join('_');
 					formdata[elname] = v;
 				}
+			}
+			*/
+			var el = this.form.formElements.get(k);
+			if (el && el.options.inRepeatGroup && el.options.joinid === this.options.joinid && el.options.repeatCounter === this.options.repeatCounter)
+			{
+				formdata[el.options.fullName] = v;
+				formdata[el.options.fullName + '_raw'] = formdata[k + '_raw'];
 			}
 		}.bind(this));
 		
