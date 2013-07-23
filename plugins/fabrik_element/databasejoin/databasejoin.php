@@ -2809,6 +2809,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		// If rendering as mulit/checkbox then {thistable} should not refer to the joining repeat table, but the end table.
 		if ($this->isJoin())
 		{
+			/*
+			 * $$$ hugh
+			 * @TODO - needs to be more selective, prolly a regex with word breaks, so a $jointable of 'foo' doesn't match
+			 * (say) a field name 'foobar', etc.
+			 * Also ... I think we need to NOT do this inside a subquery!
+			*/
 			$jkey = str_replace($jointable, $dbName, $jkey);
 		}
 		$parentKey = $this->buildQueryParentKey();
