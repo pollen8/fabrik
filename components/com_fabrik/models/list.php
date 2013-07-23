@@ -669,7 +669,7 @@ class FabrikFEModelList extends JModelForm
 			if ($app->scope == 'com_content')
 			{
 				$limitLength = $input->getInt('limit' . $id, $item->rows_per_page);
-
+				
 				if (!$this->randomRecords)
 				{
 					$limitStart = $input->getInt('limitstart' . $id, $limitStart);
@@ -1710,7 +1710,7 @@ class FabrikFEModelList extends JModelForm
 		$db->setQuery($query);
 		$this->recordCounts[$k] = $db->loadObjectList('id');
 		$this->recordCounts[$k]['linkKey'] = FabrikString::safeColNameToArrayKey($key);
-		FabrikHelperHTML::debug($db->getQuery(), 'getRecordCounts query: ' . $linkKey);
+		FabrikHelperHTML::debug($db->getQuery()->dump(), 'getRecordCounts query: ' . $linkKey);
 		FabrikHelperHTML::debug($this->recordCounts[$k], 'getRecordCounts data: ' . $linkKey);
 		$input->set('fabrik_incsessionfilters', $origIncSesssionFilters);
 		return $this->recordCounts[$k];
@@ -2263,7 +2263,7 @@ class FabrikFEModelList extends JModelForm
 			// $db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$db->setQuery($squery);
 			$this->mergeQuery = $db->getQuery();
-			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
+			FabrikHelperHTML::debug($db->getQuery()->dump(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
@@ -5010,7 +5010,7 @@ class FabrikFEModelList extends JModelForm
 		$totalSql .= ' ' . $this->buildQueryGroupBy();
 		$totalSql = $this->pluginQuery($totalSql);
 		$db->setQuery($totalSql);
-		FabrikHelperHTML::debug($db->getQuery(), 'table getJoinMergeTotalRecords');
+		FabrikHelperHTML::debug($db->getQuery()->dump(), 'table getJoinMergeTotalRecords');
 		$total = $db->loadResult();
 		return $total;
 	}
@@ -10510,7 +10510,7 @@ class FabrikFEModelList extends JModelForm
 		// $app = JFactory::getApplication();
 		// $this->buildQueryWhere($app->input->getInt('incfilters', 1), $query, false);
 		$db->setQuery($query);
-		FabrikHelperHTML::debug($db->getQuery(), 'list getTabCategories query:' . $table->label);
+		FabrikHelperHTML::debug($db->getQuery()->dump(), 'list getTabCategories query:' . $table->label);
 		JDEBUG ? $profiler->mark('before fabrik list tabs query run') : null;
 		$db->execute();
 		$counts = $db->loadRowList();
