@@ -208,7 +208,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			FabrikHelperHTML::slideshow();
 		}
-		
+
 		parent::formJavascriptClass($srcs, $script, $shim);
 
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
@@ -435,9 +435,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rendered = '';
 		if ($params->get('fu_show_image_in_table', '0') == '2')
 		{
-			$rendered = '<div class="cycle-slideshow">';
-			$rendered .= implode(' ', $data);
-			$rendered .= '</div>';
+			//JHtml::_('bootstrap.carousel', 'myCarousel');
+			$rendered = $this->buildCarousel('foo', $data);
 		}
 		else
 		{
@@ -723,13 +722,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Do we need to include the slideshow js code
 	 *
 	 * @return	bool
 	 */
-	
+
 	public function requiresSlideshow()
 	{
 		/*
@@ -1216,7 +1215,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 						'tmp_name' => $_FILES[$name]['tmp_name'][$i],
 						'error' => $_FILES[$name]['error'][$i],
 						'size' => $_FILES[$name]['size'][$i]);
-	
+
 				if ($file['name'] != '')
 				{
 					$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
@@ -1235,7 +1234,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					'tmp_name' => $_FILES[$name]['tmp_name'],
 					'error' => $_FILES[$name]['error'],
 					'size' => $_FILES[$name]['size']);
-			
+
 			if ($file['name'] != '')
 			{
 				$files[0] = $this->_processIndUpload($file, $myFileDir, $i);
@@ -1273,7 +1272,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		/*
 		$formModel->updateFormData($name . '_raw', $files);
 		$formModel->updateFormData($name, $files);
-		*/	
+		*/
 		$strfiles = implode(GROUPSPLITTER, $files);
 		$formModel->updateFormData($name . '_raw', $strfiles);
 		$formModel->updateFormData($name, $strfiles);
@@ -1682,7 +1681,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$render = new stdClass;
 		$render->output = '';
 		$allRenders = array();
-		
+
 		/*
 		 * $$$ hugh testing slideshow display
 		 */
@@ -1694,7 +1693,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$values = array_keys($values['id']);
 			}
 			// End failed validations
-			
+
 			foreach ($values as $value)
 			{
 				if (is_object($value))
@@ -1702,7 +1701,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$value = $value->file;
 				}
 				$render = $this->loadElement($value);
-			
+
 				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
 				{
 					$render->render($this, $params, $value);
@@ -1712,12 +1711,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$allRenders[] = $render->output;
 				}
 			}
-			$rendered = '<div class="cycle-slideshow">';
-			$rendered .= implode(' ', $allRenders);
-			$rendered .= '</div>';
-			return $rendered;	
+
+			$rendered = $this->buildCarousel('foo', $allRenders);
+			return $rendered;
 		}
-		
+
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 
@@ -2606,5 +2604,63 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// @TODO test crop data
 
+	}
+
+	public function buildCarousel($id = 'carousel', $imgs = array())
+	{
+		/*
+		$rendered = '<div class="cycle-slideshow">';
+		$rendered .= implode(' ', $data);
+		$rendered .= '</div>';
+		*/
+
+		/*
+		 * Don't seem to need this for now
+		 * JHtml::_('bootstrap.carousel', 'myCarousel');
+		 */
+
+		$numImages = count($imgs);
+
+		$rendered = '
+<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="3000" data-pause="hover">
+';
+		/*
+		 * Current version of J! bootstrap doesn't seem to have the indicators
+		 */
+		/*
+		$rendered .= '
+    <ol class="carousel-indicators">
+	';
+
+		if ($numImages > 0)
+		{
+			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
+			for ($x=1; $x < $numImages; $x++)
+			{
+				$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
+	    	}
+	    	$rendered .= '</li>
+			';
+		}
+		$rendered .= '
+	</ol>
+		';
+		*/
+
+		$rendered .= '
+    <!-- Carousel items -->
+	<div class="carousel-inner">
+		<div class="active item">
+';
+		$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
+		$rendered .= '
+		</div>
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
+</div>
+';
+		return $rendered;
 	}
 }

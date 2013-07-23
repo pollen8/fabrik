@@ -1357,18 +1357,23 @@ EOD;
 			self::$modal = true;
 		}
 	}
-	
+
 	/**
-	 * Load the slimbox / media box css and js files
+	 * Load the slideshow css and js files
 	 *
 	 * @return  void
 	 */
-	
+
 	public static function slideshow()
 	{
+		/*
+		 * switched from cycle2, to bootstrap, so for now don't need anything
+		 */
+		/*
 		$folder = 'components/com_fabrik/libs/cycle2/';
 		$ext = self::isDebug() ? '.js' : '.min.js';
 		self::script($folder . 'jquery.cycle2' . $ext);
+		*/
 	}
 
 	/**
