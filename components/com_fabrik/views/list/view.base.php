@@ -784,8 +784,8 @@ class FabrikViewListBase extends JView
 
 		// $$$ rob 28/12/2011 but when using com_content as a value you cant filter!
 		// $this->hiddenFields[] = '<input type="hidden" name="option" value="com_fabrik" />';
-		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="" />';
-		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderdir" value="' . $input->get('orderdir') . '" />';
+		$this->hiddenFields[] = '<input type="hidden" name="orderby" value="' . $input->get('orderby') . '" />';
 
 		// $$$ rob if the content plugin has temporarily set the view to list then get view from origview var, if that doesn't exist
 		// revert to view var. Used when showing table in article/blog layouts

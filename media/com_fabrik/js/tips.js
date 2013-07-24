@@ -41,7 +41,7 @@ var FloatingTips = new Class({
 		this.elements.each(function (trigger) {
 			var tmpOpts = {};
 			// Tip text in gmap viz bubble not decodable so test if json is valid first
-			if (JSON.validate(trigger.get('opts', '{}').opts)) {
+			if (trigger.get('opts', '{}').opts && JSON.validate(trigger.get('opts', '{}').opts)) {
 				tmpOpts = JSON.decode(trigger.get('opts', '{}').opts);
 			}
 			 
