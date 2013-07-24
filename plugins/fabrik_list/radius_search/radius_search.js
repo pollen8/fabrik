@@ -281,7 +281,12 @@ var FbListRadiusSearch = new Class({
 			}).getLast().checked = true;
 			
 			this.listform.getElements('input[value=mylocation]').checked = true;
-			this.list.submit('filter');
+			if (!this.list) {
+				// In a viz
+				this.listform.getParent('form').submit();
+			} else {
+				this.getList().submit('filter');
+			}
 		}
 	},
 

@@ -1264,7 +1264,7 @@ var FbForm = new Class({
 			return;
 		}
 		// Check for new form
-		if (this.options.rowid.toInt() === 0) {
+		if (this.options.rowid === '') {
 			// $$$ hugh - added ability to override min count
 			// http://fabrikar.com/forums/index.php?threads/how-to-initially-show-repeat-group.32911/#post-170147
 			Fabrik.fireEvent('fabrik.form.group.duplicate.min', [this]);
@@ -1277,7 +1277,7 @@ var FbForm = new Class({
 					if (typeOf(del_btn) !== 'null') {
 						var del_e = new Event.Mock(del_btn, 'click');
 						
-						// remove group
+						// Remove group
 						this.deleteGroup(del_e);
 					}				
 				}

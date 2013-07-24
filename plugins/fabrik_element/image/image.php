@@ -247,6 +247,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$rootFolder = $this->rootFolder($value);
+		$value = str_replace($rootFolder, '', $value);
 
 		// $$$ rob - 30/06/2011 can only select an image if its not a remote image
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
@@ -269,7 +270,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$str[] = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>';
 			if (array_key_exists($name, $data))
 			{
-				if (trim($value) == '')
+				if (trim($value) == '' && $rootFolder === '')
 				{
 					$path = "/";
 				}

@@ -743,7 +743,7 @@ var FbList = new Class({
 	 */
 	getRow: function (id) {
 		var found = {};
-		$H(this.options.data).each(function (group) {
+		Object.each(this.options.data, function (group) {
 			for (var i = 0; i < group.length; i ++) {
 				var row = group[i];
 				if (row && row.data.__pk_val === id) {

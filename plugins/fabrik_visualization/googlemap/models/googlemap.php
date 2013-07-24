@@ -609,7 +609,7 @@ class FabrikModelGooglemap extends FabrikFEModelVisualization
 			$w = 640;
 		}
 		// Max allowed static map size
-		if ($w > 640)
+		if ($h > 640)
 		{
 			$h = 640;
 		}

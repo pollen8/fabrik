@@ -989,11 +989,34 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
+			
+			/*
+			 * $$$ hugh - when loading origdata on editing of a rowid=-1/usekey form,
+			 * the rowid will be set to the actual form tables's rowid, not the userid,
+			 * so we need to unset 'usekey', otherwise we end up with the wrong row.
+			 * I thought we used to take care of this elsewhere?
+			 */
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
+			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
+	
+			if ($menu_rowid == '-1')
+			{
+				$orig_usekey = $input->get('usekey', '');
+				$input->set('usekey', '');
+			}
+				
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			$sql = $this->buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
+			
+			if ($menu_rowid == '-1')
+			{
+				$input->set('usekey', $orig_usekey);
+			}
 		}
 	}
 

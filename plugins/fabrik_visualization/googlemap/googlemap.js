@@ -379,9 +379,13 @@ var FbGoogleMapViz = new Class({
 			this.setCookies();
 			//end
 			this.infoWindow.setContent(html);
+			
 			this.infoWindow.open(this.map, marker);
 			this.periodCounter = 0;
 			this.timer = this.slimboxFunc.periodical(1000, this); //adds the number of seconds at the Site.
+			
+			// Create tips in bubble text
+			Fabrik.tips.attach('.fabrikTip');
 		}.bind(this));
 		if (this.options.clustering) {
 			this.clusterMarkers.push(marker);

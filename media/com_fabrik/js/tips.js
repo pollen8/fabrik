@@ -39,7 +39,13 @@ var FloatingTips = new Class({
 	attach: function (elements) {
 		this.elements = $$(elements);
 		this.elements.each(function (trigger) {
-			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
+			var tmpOpts = {};
+			// Tip text in gmap viz bubble not decodable so test if json is valid first
+			if (trigger.get('opts', '{}').opts && JSON.validate(trigger.get('opts', '{}').opts)) {
+				tmpOpts = JSON.decode(trigger.get('opts', '{}').opts);
+			}
+			 
+			var opts = Object.merge(Object.clone(this.options), tmpOpts);
 			var optStore = trigger.retrieve('opts', {});
 			trigger.erase('opts');
 			if (!optStore[opts.showOn]) {
