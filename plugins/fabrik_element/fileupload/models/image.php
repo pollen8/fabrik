@@ -137,7 +137,7 @@ class ImageRender
 				|| (!$this->inTableView && !$formModel->isEditable() && $params->get('fu_show_image', '0') == '3'))
 			{
 				/*
-				 * We're building a Cycle2 slideshow, just a simple img tag
+				 * We're building a Bootstrap slideshow, just a simple img tag
 				 */
 				$this->output = '<img src="' . $fullSize . '" alt="' . $title . '" />';
 			}
