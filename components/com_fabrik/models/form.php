@@ -991,7 +991,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			
+
 			/*
 			 * $$$ hugh - when loading origdata on editing of a rowid=-1/usekey form,
 			 * the rowid will be set to the actual form tables's rowid, not the userid,
@@ -1002,19 +1002,19 @@ class FabrikFEModelForm extends FabModelForm
 			$input = $app->input;
 			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
 			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
-	
+
 			if ($menu_rowid == '-1')
 			{
 				$orig_usekey = $input->get('usekey', '');
 				$input->set('usekey', '');
 			}
-				
+
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			$sql = $this->_buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
-			
+
 			if ($menu_rowid == '-1')
 			{
 				$input->set('usekey', $orig_usekey);
@@ -4696,9 +4696,11 @@ class FabrikFEModelForm extends FabModelForm
 									if ($this->sessionModel->row->data === '')
 									{
 										$startHidden = true;
-										foreach ($origData['join'][$joinTable->id] as $jData)
+										foreach ($origData['join'][$joinTable->id] as $key => $jData)
 										{
-											if (!empty($jData[0]))
+											// Only check _raw data plugins may have altered label data.
+											$raw = JString::substr($key, 0, JString::strlen($key) - 4) === '_raw';
+											if ($raw && !empty($jData[0]))
 											{
 												$startHidden = false;
 												continue;
