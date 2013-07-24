@@ -1469,7 +1469,8 @@ class FabrikWorker
 		}
 		else
 		{
-			$gobackaction = 'onclick=\'history.back();\'';
+			//$gobackaction = 'onclick=\'history.back();\'';
+			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		return $gobackaction;
 	}
