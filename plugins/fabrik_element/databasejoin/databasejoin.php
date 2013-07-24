@@ -2543,10 +2543,18 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $keyCol;
 		$join->join_from_table = '';
+		
+		$pk = $this->getListModel()->getPrimaryKeyAndExtra($join->table_join);
+		$join_pk = $join->table_join;
+		$join_pk .= '.' . $pk[0]['colname'];
+		$db = FabrikWorker::getDbo(true);
+		$join_pk = $db->quoteName($join_pk);
+		
 		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $label;
 		$o->type = 'element';
+		$o->pk = $join_pk;
 		$join->params = json_encode($o);
 		$join->store();
 	}
