@@ -35,7 +35,7 @@ class FabrikViewList extends FabrikViewListBase
 	public function display($tpl = null)
 	{
 		$this->loadTabs();
-		
+
 		if (parent::display($tpl) !== false)
 		{
 			$app = JFactory::getApplication();
@@ -70,24 +70,28 @@ class FabrikViewList extends FabrikViewListBase
 
 	protected function loadTabs()
 	{
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$this->tabs = array();
 		$model = $this->getModel();
 		$this->rows = $model->getData();
+		$tabs = $model->tabs;
+		if (!is_array($tabs) || empty($tabs))
+		{
+			return;
+		}
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$listid = $model->getId();
 		$tabsField = $model->tabsField;
-		$tabs = $model->tabs;
-		$this->tabs = array();
 		$uri = JURI::getInstance();
 		$urlBase = $uri->toString(array('path'));
 		$urlBase .= "?option=com_" . $package . "&";
 		if ($app->isAdmin())
 		{
-			$urlBase .= "task=list.view&"; 
+			$urlBase .= "task=list.view&";
 		}
 		else
 		{
-			$urlBase .= "view=list&"; 
+			$urlBase .= "view=list&";
 		}
 		$urlBase .= "listid=" . $listid . "&resetfilters=1";
 		$urlEquals = $urlBase . "&" . $tabsField . "=%s";
