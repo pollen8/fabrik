@@ -1001,7 +1001,6 @@ class FabrikFEModelForm extends FabModelForm
 			$app = JFactory::getApplication();
 			$input = $app->input;
 			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
-			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
 
 			if ($menu_rowid == '-1')
 			{
@@ -4842,10 +4841,6 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
-			if (JRequest::getVar('test') === 1) {
-				echo "group hidden $startHidden <br>";
-			}
-
 			$group->startHidden = $startHidden;
 
 			// Only create the group if there are some element inside it
