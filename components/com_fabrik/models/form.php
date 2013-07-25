@@ -4636,8 +4636,8 @@ class FabrikFEModelForm extends FabModelForm
 			$groupTable = $groupModel->getGroup();
 			$group = $groupModel->getGroupProperties($this);
 			$groupParams = $groupModel->getParams();
-			$group->intro = $groupParams->get('intro');
-			$group->outro = $groupParams->get('outro');
+			$group->intro = (string) $groupParams->get('intro', '');
+			$group->outro = (string) $groupParams->get('outro', '');
 			$group->columns = $groupParams->get('group_columns', 1);
 			if ($groupModel->canRepeat())
 			{
