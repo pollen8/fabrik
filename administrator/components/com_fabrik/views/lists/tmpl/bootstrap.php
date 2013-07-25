@@ -109,7 +109,7 @@ $listDirn	= $this->state->get('list.direction');
 					<span class="editlinktip hasTip"
 						title="<?php echo $item->label . "::" . $params->get('note'); ?>"> <?php echo $item->label; ?>
 					</span>
-					<?php else ; ?>
+					<?php else : ?>
 					<a href="<?php echo $link;?>">
 						<span class="editlinktip hasTip" title="<?php echo $item->label . "::" . $params->get('note'); ?>">
 							<?php echo $item->label; ?>
