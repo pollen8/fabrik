@@ -437,8 +437,7 @@ var FbDateTime = new Class({
 		}
 		if (!this.options.editable) {
 			if (typeOf(this.element) !== 'null') {
-				//this.element.set('html', val);
-				this.element.set('html', date.format(f));
+				this.element.set('html', date.print(f));
 			}
 			return;
 		}
@@ -446,7 +445,7 @@ var FbDateTime = new Class({
 		if (this.options.hidden) {
 			//if hidden but form set to show time format dont split up the time as we don't 
 			// have a time field to put it into
-			date = date.format(f);
+			date = date.print(f);
 			this.getDateField().value = date;
 			return;
 		} else {
@@ -460,7 +459,7 @@ var FbDateTime = new Class({
 			this.stateTime();
 		}
 		this.cal.date = date;
-		this.getDateField().value = date.format(this.options.calendarSetup.ifFormat);
+		this.getDateField().value = date.print(this.options.calendarSetup.ifFormat);
 	},
 	
 	/**
