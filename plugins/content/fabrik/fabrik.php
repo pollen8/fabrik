@@ -579,24 +579,16 @@ class PlgContentFabrik extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
+		/*
+		 * These are values set by a previous plugin - I think we should unset all of them
+		 * otherwise, filters are cumlative
+		 */
 		foreach ($this->origRequestVars as $k => $v)
 		{
-			if (!is_null($v))
-			{
-				$input->set($k, $v);
-				if ($v === '')
-				{
-					// See/fixes https://github.com/Fabrik/fabrik/issues/781
-					unset($_GET[$k]);
-				}
-			}
-			else
-			{
-				// $$$ rob 13/04/2012 clear rather than setting to '' as subsequent list plugins with fewer filters
-				// will contain the previous plugins filter, even if not included in the current plugin declaration
-				unset($_GET[$k]);
-				unset($_REQUEST[$k]);
-			}
+			$input->set($k, null);
+			unset($_GET[$k]);
+			unset($_REQUEST[$k]);
 		}
 	}
 
