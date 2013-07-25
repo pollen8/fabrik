@@ -336,6 +336,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Needed for shouldProcess...
+		$this->formModel = $formModel;
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 		if (!$this->shouldProcess('juser_conditon', null, $formModel))
 		{
