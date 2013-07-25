@@ -5244,6 +5244,21 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	}
 
 	/**
+	 * Does the element require other elements to be successfully used
+	 * E.g. calc element in csv export must have its calc elements included
+	 *
+	 * @param   array  &$fields  Existing list of fields
+	 *
+	 * @since 3.0.8
+	 *
+	 * @return  void
+	 */
+	public function requiresOtherAsFields(&$fields)
+	{
+
+	}
+
+	/**
 	 * Final prepare data function called from renderListData(), converts data to string and if needed
 	 * encases in <ul> (for repeating data)
 	 *

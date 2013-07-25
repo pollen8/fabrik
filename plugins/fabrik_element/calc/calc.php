@@ -417,6 +417,34 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
+	 * Does the element require other elements to be successfully used
+	 * E.g. calc element in csv export must have its calc elements included
+	 *
+	 * @param   array  &$fields  Existing list of fields
+	 *
+	 * @since 3.0.8
+	 *
+	 * @return  void
+	 */
+	public function requiresOtherAsFields(&$fields)
+	{
+		$params = $this->getParams();
+		$calc = $params->get('calc_calculation', '');
+		$formModel = $this->getFormModel();
+		preg_match("/{[^}\s]+}/i", $calc, $matches);
+		$f = array();
+		foreach ($matches as $m)
+		{
+			$m = str_replace(array('{', '}'), '', $m);
+			$elementModel = $formModel->getElement($m);
+			if ($elementModel !== false)
+			{
+				$elementModel->getAsField_html($fields, $f);
+			}
+		}
+	}
+
+	/**
 	 * Prepares the element data for CSV export
 	 *
 	 * @param   string  $data      Element data
@@ -538,7 +566,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$d = JRequest::get('request');
-
 
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);
