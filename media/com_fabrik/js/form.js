@@ -15,6 +15,7 @@ var FbForm = new Class({
 		'ajax': false,
 		'primaryKey': null,
 		'error': '',
+		'failed_validation': false,
 		'submitOnEnter': false,
 		'updatedMsg': 'Form saved',
 		'pages': [],
@@ -1262,7 +1263,7 @@ var FbForm = new Class({
 			Object.each(this.options.minRepeat, function (min, groupId) {
 				// $$$ hugh - trying out min of 0 for Troester
 				// http://fabrikar.com/forums/index.php?threads/how-to-start-a-new-record-with-empty-repeat-group.34666/#post-175408
-				if (min === 0) {
+				if (!this.options.failed_validation && min === 0) {
 					// Create mock event
 					var del_btn = this.form.getElement('#group' + groupId + ' .deleteGroup');
 					if (typeOf(del_btn) !== 'null') {

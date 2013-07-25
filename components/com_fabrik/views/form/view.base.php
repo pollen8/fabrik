@@ -460,6 +460,7 @@ class FabrikViewFormBase extends JView
 		$opts->ajaxValidation = (bool) $params->get('ajax_validations');
 		$opts->primaryKey = $key;
 		$opts->error = @$form->origerror;
+		$opts->failed_validation = $model->hasErrors();
 		$opts->pages = $model->getPages();
 		$opts->plugins = array();
 		$opts->multipage_save = (int) $model->saveMultiPage();
