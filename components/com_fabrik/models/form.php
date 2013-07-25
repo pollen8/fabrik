@@ -4699,11 +4699,11 @@ class FabrikFEModelForm extends FabModelForm
 										foreach ($origData['join'][$joinTable->id] as $key => $jData)
 										{
 											// Only check _raw data plugins may have altered label data.
-											$raw = JString::substr($key, 0, JString::strlen($key) - 4) === '_raw';
+											$raw = JString::substr($key, - 4) === '_raw';
 											if ($raw && !empty($jData[0]))
 											{
 												$startHidden = false;
-												continue;
+												break;
 											}
 										}
 									}
@@ -4842,6 +4842,10 @@ class FabrikFEModelForm extends FabModelForm
 			}
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
+			if (JRequest::getVar('test') === 1) {
+				echo "group hidden $startHidden <br>";
+			}
+
 			$group->startHidden = $startHidden;
 
 			// Only create the group if there are some element inside it
