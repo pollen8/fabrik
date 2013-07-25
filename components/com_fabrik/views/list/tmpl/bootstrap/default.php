@@ -53,7 +53,7 @@ endif;
 //template causes an error as $this->_path['template'] doesnt cotain the correct
 // path to this template - go figure!
 $headingsHtml = $this->loadTemplate('headings');
-$this->loadTemplate('tabs');
+echo $this->loadTemplate('tabs');
 ?>
 
 <div class="fabrikDataContainer">

@@ -669,7 +669,7 @@ class FabrikFEModelList extends JModelForm
 			if ($app->scope == 'com_content')
 			{
 				$limitLength = $input->getInt('limit' . $id, $item->rows_per_page);
-				
+
 				if (!$this->randomRecords)
 				{
 					$limitStart = $input->getInt('limitstart' . $id, $limitStart);
@@ -2949,7 +2949,7 @@ class FabrikFEModelList extends JModelForm
 		$groups = $this->getFormModel()->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
-			if ($doJoins OR (!$doJoins AND $groupModel->isJoin()))
+			if ($doJoins || (!$doJoins && $groupModel->isJoin()))
 			{
 				$elementModels = $groupModel->getPublishedElements();
 				foreach ($elementModels as $elementModel)
@@ -10481,6 +10481,7 @@ class FabrikFEModelList extends JModelForm
 		 * use a calc field with the first character of a surname.
 		 * To prevent a list of
 		 **/
+		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$tabsField = $params->get('tabs_field', '');
 		if (empty($tabsField))
@@ -10488,16 +10489,16 @@ class FabrikFEModelList extends JModelForm
 			return;
 		}
 		$this->tabsField = FabrikString::safeColNameToArrayKey($tabsField);
-		list($tableName, $tabsField) = explode('.',$tabsField);
+		list($tableName, $tabsField) = explode('.', $tabsField);
 		$table = $this->getTable();
 		if ($tableName != $table->db_table_name)
 		{
-			$app = JFactory::getApplication();
 			$app->enqueueMessage(sprintf(JText::_('COM_FABRIK_LIST_TABS_TABLE_ERROR'), $tableName, $table->db_table_name), 'error');
 			return;
 		}
 		$tabsMax = (int) $params->get('tabs_max', 10);
 		$tabsAll = (bool) $params->get('tabs_all', '1');
+
 		// Get values and count in the tab field
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
@@ -10505,10 +10506,12 @@ class FabrikFEModelList extends JModelForm
 		      ->from($db->quoteName($table->db_table_name))
 		      ->group($tabsField)
 		      ->order($tabsField);
-		// Filters include any existing tab filters - so we cannot calculate tabs based on any user set filters
-		// or pre-filters, until we can exclude them from being used here.
-		// $app = JFactory::getApplication();
-		// $this->buildQueryWhere($app->input->getInt('incfilters', 1), $query, false);
+
+		/**
+		 * Filters include any existing tab filters - so we cannot calculate tabs based on any user set filters
+		 * or pre-filters, until we can exclude them from being used here.
+		 $this->buildQueryWhere($app->input->getInt('incfilters', 1), $query, false);
+		 **/
 		$db->setQuery($query);
 		FabrikHelperHTML::debug($db->getQuery()->dump(), 'list getTabCategories query:' . $table->label);
 		JDEBUG ? $profiler->mark('before fabrik list tabs query run') : null;
@@ -10524,7 +10527,6 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		if (count($counts) - $tabsMax > 100)
 		{
-			$app = JFactory::getApplication();
 			$app->enqueueMessage(sprintf(JText::_('COM_FABRIK_LIST_TABS_MERGE_ERROR'), count($counts), $tabsMax), 'notice');
 			return;
 		}
@@ -10556,6 +10558,7 @@ class FabrikFEModelList extends JModelForm
 					$minIndex = $i;
 				}
 			}
+
 			// Merge mins
 			$counts[$minIndex-1][0] = (array) $counts[$minIndex-1][0];
 			$counts[$minIndex][0] = (array) $counts[$minIndex][0];
