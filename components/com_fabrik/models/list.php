@@ -8064,8 +8064,7 @@ $groupBy .= '_raw';
 		$row = JArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
 		
-		
-		if(preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link))){
+		if(preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
 		{
 			$this->rowIdentifierAdded = true;
 		}
