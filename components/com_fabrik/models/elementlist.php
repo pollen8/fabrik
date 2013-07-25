@@ -465,7 +465,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$listModel = $elementModel->getListModel();
 		$label = JArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
-		$v = addslashes($app->input->get('value'));
+		$v = addslashes($app->input->getString('value'));
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)
 		{
