@@ -5782,7 +5782,7 @@ $groupBy .= '_raw';
 	}
 
 	/**
-	 * Fet the headings that should be shown in the csv export file
+	 * Set the headings that should be shown in the csv export file
 	 *
 	 * @param   array  $headings  to use (key is element name value must be 1 for it to be added)
 	 *
@@ -5820,7 +5820,7 @@ $groupBy .= '_raw';
 							$newfields[] = $f;
 						}
 					}
-
+					$elModel->requiresOtherAsFields($newfields);
 				}
 			}
 			$this->asfields = $newfields;
@@ -8063,6 +8063,12 @@ $groupBy .= '_raw';
 		$keyIdentifier = $this->getKeyIndetifier($row);
 		$row = JArrayHelper::fromObject($row);
 		$link = $this->parseMessageForRowHolder($link, $row);
+
+		if(preg_match('/([\?&]rowid=)/', htmlspecialchars_decode($link)))
+		{
+			$this->rowIdentifierAdded = true;
+		}
+
 		if ($this->rowIdentifierAdded === false)
 		{
 			if (strstr($link, '?'))
