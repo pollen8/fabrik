@@ -206,7 +206,9 @@ class PlgContentFabrik extends JPlugin
 
 			// $$$ hugh - deal with %20 as space in arguments
 			$m[1] = urldecode($m[1]);
-			switch ($m[0])
+
+			$paramKey = str_replace('&nbsp;', '', trim($m[0]));
+			switch ($paramKey)
 			{
 				case 'view':
 					$viewName = JString::strtolower($m[1]);
@@ -582,6 +584,11 @@ class PlgContentFabrik extends JPlugin
 			if (!is_null($v))
 			{
 				$input->set($k, $v);
+				if ($v === '')
+				{
+					// See/fixes https://github.com/Fabrik/fabrik/issues/781
+					unset($_GET[$k]);
+				}
 			}
 			else
 			{
