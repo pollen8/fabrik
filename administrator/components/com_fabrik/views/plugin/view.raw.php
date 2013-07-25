@@ -61,6 +61,7 @@ class FabrikAdminViewPlugin extends JViewLegacy
 		$model->setState('c', $input->getInt('c'));
 		$model->setState('id', $input->getInt('id', 0));
 		$model->setState('plugin_published', $input->get('plugin_published'));
+		$model->setState('show_icon', $input->get('show_icon'));
 	}
 
 }

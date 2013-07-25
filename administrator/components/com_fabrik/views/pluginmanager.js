@@ -129,6 +129,7 @@ var PluginManager = new Class({
 		} else {
 			// Validation plugins 
 			published = plugin ? plugin.published : 1;
+			show_icon = plugin ? plugin.show_icon : 1;
 			plugin = plugin ? plugin.plugin : '';
 		}
 		var div = new Element('div.actionContainer.panel.accordion-group');
@@ -153,6 +154,7 @@ var PluginManager = new Class({
 				'type': this.type,
 				'plugin': plugin,
 				'plugin_published': published,
+				'show_icon': show_icon,
 				'c': this.topTotal,
 				'id': this.id
 			},
