@@ -1,8 +1,16 @@
 <?php
-// Bootstrap form template: Used for showing elements in details view
+/**
+ * Bootstrap Tabs Form Template - group details
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.1
+ */
 
 foreach ($this->elements as $element) :
-	 if (!$element->hidden) {
+	 if (!$element->hidden) :
 		if ($element->startRow) :?>
 			<div class="row-fluid">
 		<?php
@@ -16,11 +24,11 @@ foreach ($this->elements as $element) :
 			</div>
 		</div>
 
-	<?php
-	if ($element->endRow) :
-	?>
+<?php
+		if ($element->endRow) :
+?>
 		</div>
 	<?php
+		endif;
 	endif;
-	}
-endforeach; ?>
+endforeach;

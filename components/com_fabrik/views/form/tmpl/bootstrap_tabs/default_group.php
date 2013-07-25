@@ -1,4 +1,13 @@
 <?php
+/**
+ * Bootstrap Tabs Form Template - group details
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.1
+ */
 
 foreach ($this->elements as $element) :
 	$this->element = $element;
@@ -35,5 +44,4 @@ endforeach;
 // If the last element was not closing the row add an additional div (only if elements are in columns
 if (!$element->endRow && !($element->span == 'span12' || $element->span == '')) :?>
 </div><!-- end row-fluid for open row -->
-<?php endif;?>
-
+<?php endif;
