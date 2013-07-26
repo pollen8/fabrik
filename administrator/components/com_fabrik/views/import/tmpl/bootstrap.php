@@ -72,8 +72,9 @@ window.addEvent('domready', function () {
 		?>
 	</fieldset>
 	<?php endforeach;?>
-
-	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="jform[drop_data]" value="0" />
+	<input type="hidden" name="jform[overwrite]" value="0" />
+ 	<input type="hidden" name="task" value="" />
   	<?php echo JHTML::_('form.token');
 	echo JHTML::_('behavior.keepalive'); ?>
 	</div>
