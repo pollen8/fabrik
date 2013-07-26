@@ -271,8 +271,8 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->data
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   JRegistry  $params      Plugin params
+	 * @param   JModel     &$formModel  Form model
 	 *
 	 * @return	bool
 	 */

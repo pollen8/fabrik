@@ -1,4 +1,16 @@
-	<?php $element = $this->element; ?>
+<?php
+/**
+ * Bootstrap Tabs Form Template - group labels to side
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @since       3.1
+ */
+
+$element = $this->element;
+?>
 <div class="control-group <?php echo $element->containerClass . $element->span; ?>" <?php echo $element->containerProperties?>>
 	<?php echo $element->label;?>
 

@@ -2,11 +2,28 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-isnot">
-			<field description="PLG_VALIDATIONRULE_ISNOT_ERROR_DESC" label="PLG_VALIDATIONRULE_ISNOT_ERROR_LABEL" name="isnot-message" repeat="true" size="30" type="text"/>
+		
+			<field name="isnot-message"
+				type="text" 
+				description="PLG_VALIDATIONRULE_ISNOT_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_ISNOT_ERROR_LABEL"
+				repeat="true"
+				size="30" />
 				
-			<field cols="30" description="PLG_VALIDATIONRULE_ISNOT_CONDITION_DESC" label="PLG_VALIDATIONRULE_ISNOT_CONDITION_LABEL" name="isnot-validation_condition" repeat="true" rows="5" type="textarea"/>
+			<field name="isnot-validation_condition"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
+				description="PLG_VALIDATIONRULE_ISNOT_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_ISNOT_CONDITION_LABEL"
+				repeat="true" />
 				
-			<field description="PLG_VALIDATIONRULE_ISNOT_VALIDATION_DESC" label="PLG_VALIDATIONRULE_ISNOT_VALIDATION_LABEL" name="isnot-isnot" repeat="true" size="30" type="text"/>
+			<field name="isnot-isnot"
+				type="text"
+				description="PLG_VALIDATIONRULE_ISNOT_VALIDATION_DESC"
+				label="PLG_VALIDATIONRULE_ISNOT_VALIDATION_LABEL"
+				repeat="true"
+				size="30" />
 			
 			<field name="tip_text"
 				type="textarea"

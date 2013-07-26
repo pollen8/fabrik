@@ -989,11 +989,34 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
+			
+			/*
+			 * $$$ hugh - when loading origdata on editing of a rowid=-1/usekey form,
+			 * the rowid will be set to the actual form tables's rowid, not the userid,
+			 * so we need to unset 'usekey', otherwise we end up with the wrong row.
+			 * I thought we used to take care of this elsewhere?
+			 */
+			$app = JFactory::getApplication();
+			$input = $app->input;
+			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
+			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
+	
+			if ($menu_rowid == '-1')
+			{
+				$orig_usekey = $input->get('usekey', '');
+				$input->set('usekey', '');
+			}
+				
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			$sql = $this->buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
+			
+			if ($menu_rowid == '-1')
+			{
+				$input->set('usekey', $orig_usekey);
+			}
 		}
 	}
 
@@ -1027,7 +1050,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$this->setOrigData();
 		}
-		return (empty($this->_origData) || (count($this->_origData) == 1 && count((array)$this->_origData[0]) == 0));
+		return (empty($this->_origData) || (count($this->_origData) == 1 && count((array) $this->_origData[0]) == 0));
 
 	}
 
@@ -1998,7 +2021,6 @@ class FabrikFEModelForm extends FabModelForm
 						$elDbVals = $form_data;
 					}
 					// Validations plugins attached to elemenets
-					$pluginc = 0;
 					if (!$elementModel->mustValidate())
 					{
 						continue;
@@ -2007,11 +2029,11 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$plugin->formModel = $this;
 
-						if ($plugin->shouldValidate($form_data, $pluginc))
+						if ($plugin->shouldValidate($form_data))
 						{
-							if (!$plugin->validate($form_data, $elementModel, $pluginc, $c))
+							if (!$plugin->validate($form_data, $c))
 							{
-								$this->errors[$elName][$c][] = $w->parseMessageForPlaceHolder($plugin->getMessage($pluginc));
+								$this->errors[$elName][$c][] = $w->parseMessageForPlaceHolder($plugin->getMessage());
 								$ok = false;
 							}
 							if (method_exists($plugin, 'replace'))
@@ -2019,7 +2041,7 @@ class FabrikFEModelForm extends FabModelForm
 								if ($groupModel->canRepeat())
 								{
 									$elDbVals[$c] = $form_data;
-									$testreplace = $plugin->replace($elDbVals[$c], $elementModel, $pluginc, $c);
+									$testreplace = $plugin->replace($elDbVals[$c], $c);
 									if ($testreplace != $elDbVals[$c])
 									{
 										$elDbVals[$c] = $testreplace;
@@ -2030,7 +2052,7 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								else
 								{
-									$testreplace = $plugin->replace($elDbVals, $elementModel, $pluginc, $c);
+									$testreplace = $plugin->replace($elDbVals, $c);
 									if ($testreplace != $elDbVals)
 									{
 										$elDbVals = $testreplace;
@@ -2041,7 +2063,6 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						$pluginc++;
 					}
 				}
 				if ($groupModel->isJoin() || $elementModel->isJoin())
@@ -2300,8 +2321,9 @@ class FabrikFEModelForm extends FabModelForm
 		$aEls = array();
 		$aEls = $this->getElementOptions($useStep, $key, false, $incRaw);
 		asort($aEls);
+
 		// Paul - Prepend rather than append "none" option.
-		array_unshift($aEls,JHTML::_('select.option', '', '-'));
+		array_unshift($aEls, JHTML::_('select.option', '', '-'));
 		return JHTML::_('select.genericlist', $aEls, $name, $attribs, 'value', 'text', $default);
 	}
 

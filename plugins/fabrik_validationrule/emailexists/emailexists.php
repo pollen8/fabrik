@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		if (empty($data))
 		{
@@ -54,13 +52,10 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 			$data = $data[0];
 		}
 		$params = $this->getParams();
+		$elementModel = $this->elementModel;
+		$ornot = $params->get('emailexists_or_not', 'fail_if_exists');
 
-		// As ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = (object) $params->get('emailexists_or_not');
-		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
-
-		$user_field = (array) $params->get('emailexists_user_field', array());
-		$user_field = $user_field[$pluginc];
+		$user_field = $params->get('emailexists_user_field');
 		$user_id = 0;
 		if ((int) $user_field !== 0)
 		{
@@ -137,34 +132,20 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Plugin render order
-	 *
 	 * @return	string	label
 	 */
 
-	protected function getLabel($elementModel, $pluginc)
+	protected function getLabel()
 	{
 		$params = $this->getParams();
-
-		// As ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = (object) $params->get('emailexists_or_not');
-		$pluginc = (int) $pluginc;
-		$cond = '';
-		foreach ($ornot as $k => $v)
-		{
-			if ($k == $pluginc)
-			{
-				$cond = $v;
-			}
-		}
+		$cond = $params->get('emailexists_or_not');
 		if ($cond == 'fail_if_not_exists')
 		{
 			return JText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
 		}
 		else
 		{
-			return parent::getLabel($elementModel, $pluginc);
+			return parent::getLabel();
 		}
 	}
 

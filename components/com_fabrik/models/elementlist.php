@@ -513,6 +513,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
+		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
 		$useIcon = $params->get('icon_folder', 0);
 		foreach ($gdata as $i => $d)
@@ -541,17 +542,46 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				if (trim($l) !== '')
 				{
-					$lis[] = ($multiple || $mergeGroupRepeat) && $this->renderWithHTML ? '<li>' . $l . '</li>' : $l;
+					$lis[] = $l;
 				}
 			}
 			if (!empty($lis))
 			{
-				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
+				$uls[] = $lis;
 			}
 		}
-		// $$$rob if only one repeat group data then dont bother encasing it in a <ul>
-		return ((count($gdata) !== 1 || $mergeGroupRepeat) && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $uls) . '</ul>'
-			: implode(' ', $uls);
+
+		// Do all uls only contain one record, if so condense to 1 ul (avoids nested <ul>'s each with one <li>
+		$condense = true;
+		foreach ($uls as $ul)
+		{
+			if (count($ul) > 1)
+			{
+				$condense = false;
+			}
+		}
+		$consdenced = array();
+		if ($condense)
+		{
+			foreach ($uls as $ul)
+			{
+				$consdenced[] = $ul[0];
+			}
+			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $consdenced) . '</li></ul>' : implode(' ', $consdenced);
+		}
+		else
+		{
+			$html = array();
+			$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
+			foreach ($uls as $ul)
+			{
+				$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
+				$html[] = $addHtml ? implode('</li><li>', $ul) : implode(' ', $ul);
+				$html[] = $addHtml ? '</li></ul>' : '';
+			}
+			$html[] = $addHtml ? '</li></ul>' : '';
+			return $addHtml ? implode('', $html) : implode(' ', $html);
+		}
 	}
 
 	/**

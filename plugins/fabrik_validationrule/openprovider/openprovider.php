@@ -39,20 +39,16 @@ class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$username = (array) $params->get('openprovider_username', array());
-		$username = $username[$pluginc];
-		$password = (array) $params->get('openprovider_password', array());
-		$password = $password[$pluginc];
+		$username = $params->get('openprovider_username');
+		$password = $params->get('openprovider_password');
 		$data = strtolower($data);
 
 		// Strip www. from front

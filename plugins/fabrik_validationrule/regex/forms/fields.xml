@@ -2,19 +2,44 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-validationrule-regex">
-			<field description="PLG_VALIDATIONRULE_REGEX_ERROR_DESC" label="PLG_VALIDATIONRULE_REGEX_ERROR_LABEL" name="regex-message" repeat="true" size="30" type="text"/>
+		
+			<field name="regex-message"
+				type="text"
+				description="PLG_VALIDATIONRULE_REGEX_ERROR_DESC"
+				label="PLG_VALIDATIONRULE_REGEX_ERROR_LABEL"
+				repeat="true"
+				size="30" />
 				
-			<field cols="30" description="PLG_VALIDATIONRULE_REGEX_CONDITION_DESC" label="PLG_VALIDATIONRULE_REGEX_CONDITION_LABEL" name="regex-validation_condition" repeat="true" rows="5" type="textarea"/>
+			<field name="regex-validation_condition"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
+				description="PLG_VALIDATIONRULE_REGEX_CONDITION_DESC"
+				label="PLG_VALIDATIONRULE_REGEX_CONDITION_LABEL"
+				repeat="true" />
 				
-			<field description="PLG_VALIDATIONRULE_REGEX_EXPRESSION_DESC" label="PLG_VALIDATIONRULE_REGEX_EXPRESSION_LABEL" name="regex-expression" repeat="true" size="50" type="text"/>
+			<field name="regex-expression"
+				type="text"
+				description="PLG_VALIDATIONRULE_REGEX_EXPRESSION_DESC"
+				label="PLG_VALIDATIONRULE_REGEX_EXPRESSION_LABEL"
+				repeat="true"
+				size="50"/>
 				
-			<field default="1" description="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_DESC" label="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_LABEL" name="regex-match" repeat="true" type="list">
-				
+			<field name="regex-match"
+				type="list" 
+				default="1"
+				description="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_DESC"
+				label="PLG_VALIDATIONRULE_REGEX_MATCH_OR_REPLACE_LABEL"
+				repeat="true">
 					<option value="0">PLG_VALIDATIONRULE_REGEX_REPLACE</option>
 					<option value="1">PLG_VALIDATIONRULE_REGEX_MATCH</option>
 			</field>
 			
-			<field description="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_DESC" label="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_LABEL" name="regex-replacestring" repeat="true" type="text"/>
+			<field name="regex-replacestring"
+				type="text"
+				description="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_DESC"
+				label="PLG_VALIDATIONRULE_REGEX_REPLACE_STRING_LABEL"
+				repeat="true" />
 			
 			<field name="tip_text"
 				type="textarea"

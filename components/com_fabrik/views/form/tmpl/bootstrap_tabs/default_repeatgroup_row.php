@@ -10,7 +10,7 @@
  */
 
 $group = $this->group;
- ?>
+?>
 <tr class="fabrikSubGroupElements fabrikSubGroup">
 <?php foreach ($this->elements as $element) :
 	?>

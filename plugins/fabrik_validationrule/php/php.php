@@ -36,14 +36,12 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		// For multiselect elements
 		if (is_array($data))
@@ -52,10 +50,9 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
-		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
-			return $this->_eval($elementModel, $pluginc);
+			return $this->_eval($data);
 		}
 		return true;
 	}
@@ -65,21 +62,18 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
 	 * @param   string  $data           Original data
-	 * @param   model   &$elementModel  Element model
-	 * @param   int     $pluginc        Validation plugin counter
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */
 
-	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
-		$domatch = $domatch[$pluginc];
 		if (!$domatch)
 		{
-			return $this->_eval($elementModel, $pluginc);
+			return $this->_eval($data);
 		}
 		return $data;
 	}
@@ -87,22 +81,22 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 	/**
 	 * Run eval
 	 *
-	 * @param   model  $elementModel  Element model
-	 * @param   int    $pluginc       Validation plugin counter
+	 * @param   string  $data  Original data
 	 *
 	 * @return  string	Evaluated PHP function
 	 */
 
-	private function _eval($elementModel, $pluginc)
+	private function _eval($data)
 	{
 		$params = $this->getParams();
+		$elementModel = $this->elementModel;
 		$formModel = $elementModel->getFormModel();
 		$formData = $formModel->formData;
 		$w = new FabrikWorker;
-		$phpCodes = $params->get('php-code');
-		$phpCode = $w->parseMessageForPlaceHolder($phpCodes[$pluginc], $formData, true, true);
+		$phpCode = $params->get('php-code');
+		$phpCode = $w->parseMessageForPlaceHolder($phpCode, $formData, true, true);
 		$retval = @eval($phpCode);
-		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(false, false) . '::_getV(): %s');
+		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(true, false) . ': %s');
 		return $retval;
 	}
 }
