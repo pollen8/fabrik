@@ -8,7 +8,7 @@
   	<table name="fabrik_elements">
   		<field name="id" translate="0" type="referenceid">ID</field>
 		<field name="name" translate="1" type="titletext">Name</field>
-  		<field name="label" translate="1" type="titletext">Label</field>  		
+  		<field name="label" translate="1" type="text">Label</field>
 	 	</table>
   </reference>
    <translationfilters>
