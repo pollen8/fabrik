@@ -126,6 +126,7 @@ var PluginManager = new Class({
 		if (typeOf(plugin) === 'string') {
 			published = 1;
 			plugin = plugin ? plugin : '';
+			show_icon = false;
 		} else {
 			// Validation plugins 
 			published = plugin ? plugin.published : 1;
