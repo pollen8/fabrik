@@ -1,24 +1,34 @@
 <?php
 /**
- * @package     Joomla
- * @subpackage	Fabik
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license		GNU/GPL
+ * @package     Joomla.Plugin
+ * @subpackage  Serach.fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-class plgSearchFabrik extends JPlugin
+/**
+ * Content Search plugin
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Serach.fabrik
+ * @since       3.0
+ */
+
+class PlgSearchFabrik extends JPlugin
 {
 
 	/**
-	 * @return array An array of search areas
+	 * Get the search areas
+	 *
+	 * @return  array  Search areas
 	 */
 
-	function onContentSearchAreas()
+	public function onContentSearchAreas()
 	{
-		// load plugin params info
+		// Load plugin params info
 		$section = $this->params->get('search_section_heading');
 		$areas = array('fabrik' => $section);
 		return $areas;
@@ -30,13 +40,16 @@ class plgSearchFabrik extends JPlugin
 	 * The sql must return the following fields that are
 	 * used in a common display routine: href, title, section, created, text,
 	 * browsernav
-	 * @param string Target search string
-	 * @param string mathcing option, exact|any|all
-	 * @param string ordering option, newest|oldest|popular|alpha|category
-	 * @param mixed An array if restricted to areas, null if search all
+	 *
+	 * @param   string  $text      Target search string
+	 * @param   string  $phrase    Mathcing option, exact|any|all
+	 * @param   string  $ordering  Ordering option, newest|oldest|popular|alpha|category
+	 * @param   mixed   $areas     An array if restricted to areas, null if search all
+	 *
+	 * @return  array
 	 */
 
-	function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
+	public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
 		if (is_array($areas))
 		{
