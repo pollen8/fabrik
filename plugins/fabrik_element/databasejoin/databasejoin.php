@@ -1214,7 +1214,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 		{
-			$label = (array) $this->getLabelForValue($label[0], $label[0]);
+			$label = (array) $this->getLabelForValue($label[0], $label[0], true);
 		}
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
@@ -2543,13 +2543,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $keyCol;
 		$join->join_from_table = '';
-		
+
 		$pk = $this->getListModel()->getPrimaryKeyAndExtra($join->table_join);
 		$join_pk = $join->table_join;
 		$join_pk .= '.' . $pk[0]['colname'];
 		$db = FabrikWorker::getDbo(true);
 		$join_pk = $db->quoteName($join_pk);
-		
+
 		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $label;
