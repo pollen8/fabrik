@@ -264,13 +264,20 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		 * $$$ hugh - bandaid for inlineedit, problem where $join isn't loaded, as per comments in getJoin().
 		 * for now, just avoid this code if $join isn't an object.
 		 */
-		if (is_object($join) && ($params->get($this->concatLabelParam) != '') && $app->input->get('overide_join_val_column_concat') != 1)
+		if (is_object($join) && ($params->get($this->concatLabelParam) != ''))
 		{
-			$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
-			$w = new FabrikWorker;
-			$val = $w->parseMessageForPlaceHolder($val, array(), false);
-			$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
-			return 'CONCAT_WS(\'\', ' . $val . ')';
+			if ($app->input->get('overide_join_val_column_concat') != 1)
+			{
+				$val = str_replace("{thistable}", $join->table_join_alias, $params->get($this->concatLabelParam));
+				$w = new FabrikWorker;
+				$val = $w->parseMessageForPlaceHolder($val, array(), false);
+				$this->joinLabelCols[(int) $useStep] = 'CONCAT_WS(\'\', ' . $val . ')';
+				return 'CONCAT_WS(\'\', ' . $val . ')';
+			}
+			else
+			{
+				// A boolean search is in progress - we can't use concat might need to do something else here (http://fabrikar.com/forums/index.php?threads/search-plugin-sql-error.35177/)
+			}
 		}
 		$label = $this->getJoinLabel();
 
@@ -2524,13 +2531,13 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$join->table_key = str_replace('`', '', $element->name);
 		$join->table_join_key = $keyCol;
 		$join->join_from_table = '';
-		
+
 		$pk = $this->getListModel()->getPrimaryKeyAndExtra($join->table_join);
 		$join_pk = $join->table_join;
 		$join_pk .= '.' . $pk[0]['colname'];
 		$db = FabrikWorker::getDbo(true);
 		$join_pk = $db->quoteName($join_pk);
-		
+
 		$o = new stdClass;
 		$l = 'join-label';
 		$o->$l = $label;
