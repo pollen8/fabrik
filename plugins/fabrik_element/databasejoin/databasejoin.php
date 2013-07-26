@@ -1260,7 +1260,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		*/
 		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
 		{
-			$label = (array) $this->getLabelForValue($label[0], $label[0]);
+			$label = (array) $this->getLabelForValue($label[0], $label[0], true);
 		}
 		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
 		$placeholder = ' placeholder="' . $params->get('placeholder', '') . '"';
