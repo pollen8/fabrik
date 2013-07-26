@@ -478,7 +478,12 @@ var FbFileUpload = new Class({
 				// $$$ rob - seems reloading ajax fileupload element in ajax form (e.g. from db join add record)
 				// is producing odd effects where old fileupload object constains info to previously uploaded image?
 				if (typeOf(f) !== 'null') {
+					
+					// Avoid circular reference in chrome when saving in ajax form
+					var i = image.img;
+					delete(image.img);
 					f.value = JSON.encode(image);
+					image.img = i;
 				}
 			});
 		}
