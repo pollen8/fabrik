@@ -1046,24 +1046,30 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			// $$$ rob 19/03/2012 uncommented line below - needed for checkbox rendering
 			$obj = JArrayHelper::toObject($data);
-			//$defaultLabel = $this->renderListData($default, $obj);
-			$defaultLabel = $this->renderListData($defaultLabel, $obj);
-			if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
+			if ($this->isJoin())
 			{
-				// No point showing 'please select' for read only
-				$defaultLabel = '';
+				$defaultLabel = $this->renderListData($default, $obj);
 			}
-			if ($params->get('databasejoin_readonly_link') == 1)
+			else
 			{
-				$popupformid = (int) $params->get('databasejoin_popupform');
-				if ($popupformid !== 0)
+				$defaultLabel = $this->renderListData($defaultLabel, $obj);
+				if ($defaultLabel === $params->get('database_join_noselectionlabel', JText::_('COM_FABRIK_PLEASE_SELECT')))
 				{
-					$query = $db->getQuery(true);
-					$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
-					$db->setQuery($query);
-					$listid = $db->loadResult();
-					$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
-					$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
+					// No point showing 'please select' for read only
+					$defaultLabel = '';
+				}
+				if ($params->get('databasejoin_readonly_link') == 1)
+				{
+					$popupformid = (int) $params->get('databasejoin_popupform');
+					if ($popupformid !== 0)
+					{
+						$query = $db->getQuery(true);
+						$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
+						$db->setQuery($query);
+						$listid = $db->loadResult();
+						$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid =' . $listid . '&rowid=' . $defaultValue;
+						$defaultLabel = '<a href="' . JRoute::_($url) . '">' . $defaultLabel . '</a>';
+					}
 				}
 			}
 			$html[] = $defaultLabel;
