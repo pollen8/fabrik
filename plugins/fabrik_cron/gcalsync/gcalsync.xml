@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_cron" method="upgrade" type="plugin" version="30">
-	<name>plg_fabrik_cron_gcalsync</name>
+	<name>PLG_FABRIK_CRON_GCALSYNC</name>
 	<author>Hugh Messenger</author>
 	<creationDate>February 2013</creationDate>
 	<copyright>(C) 2005-2013 fabrikar.com</copyright>
@@ -16,5 +16,5 @@
 		<filename>index.html</filename>
 		<folder>language</folder>
 	</files>
-	
+
 </extension>
