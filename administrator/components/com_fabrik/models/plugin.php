@@ -135,7 +135,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$class = $j3 ? 'form-horizontal ' : 'adminform ';
 		$str = array();
 		$str[] = '<div class="pane-slider content pane-down accordion-inner">';
-		$str[] = '<fieldset class="' . $class . 'pluginContanier" id="formAction_' . $c . '"><ul>';
+		$str[] = '<fieldset class="' . $class . 'pluginContainer" id="formAction_' . $c . '"><ul>';
 		$formName = 'com_fabrik.' . $this->getState('type') . '-plugin';
 		$topForm = new JForm($formName, array('control' => 'jform'));
 		$topForm->repeatCounter = $c;
