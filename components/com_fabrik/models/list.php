@@ -2489,7 +2489,7 @@ $groupBy .= '_raw';
 						 * which get converted form names to ids above have already been run through
 						 * getOrderByName().  So first check here ...
 						 */
-						if (!JString::stristr($orderbyRaw, 'CONCAT('))
+						if (!JString::stristr($orderbyRaw, 'CONCAT(') && !JString::stristr($orderbyRaw, 'CONCAT_WS('))
 						{
 							$orderbyRaw = FabrikString::safeColName($orderbyRaw);
 							if (array_key_exists($orderbyRaw, $els))
@@ -2500,7 +2500,7 @@ $groupBy .= '_raw';
 								 * $$$ @TODO why don't we just embed this logic in safeColName(), so
 								 * it recognizes a CONCAT and treats it accordingly?
 								 */
-								if (!JString::stristr($field, 'CONCAT('))
+								if (!JString::stristr($field, 'CONCAT(') && !JString::stristr($field, 'CONCAT_WS('))
 								{
 									$field = FabrikString::safeColName($field);
 								}
