@@ -45,10 +45,7 @@ class JFormFieldHelpLink extends JFormField
 	public function getInput()
 	{
 		$url = $this->element['url'] ? (string) $this->element['url'] : '';
-		$label = '
-<button class="btn btn-small btn-info" style="float:right;" rel="help" onclick="Joomla.popupWindow(\'' .  JText::_($url). '\', \'Help\', 800, 600, 1);return false">
-<span class="icon-help icon-32-help icon-question-sign"></span> ' . JText::_('JHELP') .
-'</button>';
+		$label = '<div style="float:right;"><a class="btn btn-small btn-info" href="#" rel="help" onclick="Joomla.popupWindow(\'' .  JText::_($url). '\', \'Help\', 800, 600, 1);return false"><i class="icon-help icon-32-help icon-question-sign"></i> ' . JText::_('JHELP') . '</a></div>';
 		return $label;
 	}
 }
