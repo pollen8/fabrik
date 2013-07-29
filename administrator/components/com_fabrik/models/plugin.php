@@ -146,7 +146,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 
 		$topForm->bind($data);
 
-		// Filer the forms fieldsets for those starting with the correct $serachName prefix
+		// Filter the forms fieldsets for those starting with the correct $searchName prefix
 		foreach ($topForm->getFieldsets() as $fieldset)
 		{
 			if ($fieldset->label != '')
@@ -158,7 +158,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 			{
 				if (!$j3)
 				{
-				$str[] = '<li>' . $field->label . $field->input . '</li>';
+					$str[] = '<li>' . $field->label . $field->input . '</li>';
 				}
 				else
 				{
