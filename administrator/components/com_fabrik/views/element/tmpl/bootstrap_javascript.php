@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="tab-pane" id="tab-javascript">
+	<legend><?php echo JText::_('COM_FABRIK_JAVASCRIPT'); ?></legend>
 	<fieldset>
-		<legend><?php echo JText::_('COM_FABRIK_JAVASCRIPT'); ?></legend>
 		<div id="javascriptActions"></div>
 		<a class="btn btn-success" href="#" id="addJavascript">
 			<i class="icon-plus"></i>

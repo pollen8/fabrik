@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="tab-pane" id="tab-publishing">
-
+	<legend><?php echo JText::_('COM_FABRIK_PUBLISHING');?></legend>
 	<ul class="nav nav-tabs">
 		<li class="active">
 	    	<a data-toggle="tab" href="#publishing-details">

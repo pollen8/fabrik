@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="tab-pane" id="tab-validations">
+	<legend><?php echo JText::_('COM_FABRIK_VALIDATIONS'); ?></legend>
 	<fieldset>
-		<legend><?php echo JText::_('COM_FABRIK_VALIDATIONS'); ?></legend>
 			<div id="plugins" class="accordion">
 			</div>
 		<div class="fluid-row">

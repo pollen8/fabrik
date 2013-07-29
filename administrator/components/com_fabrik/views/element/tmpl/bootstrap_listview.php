@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="tab-pane" id="tab-listview">
-
+	<legend><?php echo JText::_('COM_FABRIK_LIST_VIEW_SETTINGS');?></legend>
 	<ul class="nav nav-tabs">
 		<li class="active">
 	    	<a data-toggle="tab" href="#listview-details">
