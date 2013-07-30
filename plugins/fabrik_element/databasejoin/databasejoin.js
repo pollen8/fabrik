@@ -688,7 +688,7 @@ var FbDatabasejoin = new Class({
 	init: function () {
 		
 		// Could be in a popup add record form, in which case we don't want to ini on a main page load
-		if (typeOf(this.element === 'null')) {
+		if (typeOf(this.element) === 'null') {
 			return;
 		}
 		if (this.options.editable) {
