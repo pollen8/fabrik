@@ -88,8 +88,13 @@ echo $this->plugintop;
 		?>
 		<div class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $group->id;?>">
 			<fieldset class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
-
-				<?php if (trim($group->title) !== '') :?>
+				<?php
+				$allHidden = true;
+				foreach ($group->elements as $element)
+				{
+					$allHidden &= $element->hidden;
+				}
+				if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') :?>
 					<legend class="legend">
 						<span><?php echo $group->title;?></span>
 					</legend>
