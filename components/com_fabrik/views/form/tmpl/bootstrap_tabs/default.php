@@ -109,9 +109,7 @@ echo $this->plugintop;
 				endif;
 
 				if (!empty($group->intro)) : ?>
-				<div class="groupintro">
-						<?php echo $group->intro ?>
-					</div>
+					<div class="groupintro"><?php echo $group->intro ?></div>
 				<?php
 				endif;
 
