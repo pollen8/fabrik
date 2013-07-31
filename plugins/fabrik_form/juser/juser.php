@@ -365,7 +365,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			 */
 			//if (!empty($formModel->rowId))
 			//{
-			
+
 				if ($formModel->origDataIsEmpty())
 				{
 					$original_id = 0;
@@ -373,7 +373,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				else
 				{
 					$original_id = $formModel->formData[$this->useridfield];
-	
+
 					// $$$ hugh - if it's a user element, it'll be an array
 					if (is_array($original_id))
 					{
@@ -646,9 +646,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$messages = array();
 						foreach ($sendEmail as $userid)
 						{
-							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', '"
-								. JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT') . "', '"
-								. JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']) . "')";
+							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
+								. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
+								. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
+
 						}
 						$q .= implode(',', $messages);
 						$db->setQuery($q);
