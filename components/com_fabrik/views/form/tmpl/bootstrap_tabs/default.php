@@ -87,10 +87,8 @@ echo $this->plugintop;
 				<?php
 				endif;
 
-				if ($group->intro !== '') : ?>
-					<div class="groupintro">
-						<?php echo $group->intro ?>
-					</div>
+				if (!empty($group->intro)) : ?>
+					<div class="groupintro"><?php echo $group->intro ?></div>
 				<?php
 				endif;
 
