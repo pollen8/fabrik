@@ -49,6 +49,7 @@ class FabrikViewList extends FabrikViewListBase
 		$this->nav = '';
 		$this->showPDF = false;
 		$this->showRSS = false;
+		$this->emptyLink = false;
 		$this->filters = array();
 		$this->showFilters = false;
 		$this->hasButtons = false;
