@@ -48,7 +48,7 @@
 		
 		<field name="tabdelimited" 
 			type="checkbox"
-			default="false"
+			default="0"
 			description="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_DESC"
 			label="COM_FABRIK_FIELD_CSV_IMPORT_TAB_DELIMITER_LABEL" />
 			
