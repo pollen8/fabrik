@@ -58,15 +58,24 @@ echo $this->plugintop;
 		// If this ismultipage then groups are consolidated until a group with a page break
 		// So we should only show a tab if: it is first tab, or if it is a page break
 		if (!$model->isMultiPage() or ($i == 0 or $group->splitPage)) :
-		?>
-			<li <?php if ($i == 0) echo 'class="active"'?>>
-				<a href="#group-tab<?php echo $group->id;?>" data-toggle="tab">
-					<?php echo $group->title?>
-				</a>
-			</li>
-		<?php
+			?>
+				<li <?php if ($i == 0) echo 'class="active"'?>>
+					<a href="#group-tab<?php echo $group->id;?>" data-toggle="tab">
+						<?php
+							if (!empty($group->title))
+							{
+								echo $group->title;
+							}
+							else
+							{
+								echo $group->name;
+							}
+						?>
+					</a>
+				</li>
+			<?php
+			$i ++;
 		endif;
-		$i ++;
 	endforeach;
 	?>
 </ul>
@@ -77,7 +86,7 @@ echo $this->plugintop;
 	foreach ($this->groups as $group) :
 		$this->group = $group;
 		?>
-		<div class="tab-pane <?php  if ($i == 0) echo "active"?>" id="group-tab<?php echo $group->id;?>">
+		<div class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $group->id;?>">
 			<fieldset class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 
 				<?php if (trim($group->title) !== '') :?>
@@ -88,7 +97,9 @@ echo $this->plugintop;
 				endif;
 
 				if (!empty($group->intro)) : ?>
-					<div class="groupintro"><?php echo $group->intro ?></div>
+				<div class="groupintro">
+						<?php echo $group->intro ?>
+					</div>
 				<?php
 				endif;
 
