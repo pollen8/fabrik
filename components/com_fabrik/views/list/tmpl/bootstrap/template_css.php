@@ -28,7 +28,8 @@ ul.fabrikRepeatData {
 	overflow:hidden;
 	text-overflow: ellipsis;
 }
-td.repeat-merge p, td.repeat-reduce p {
+td.repeat-merge div, td.repeat-reduce div,
+td.repeat-merge i, td.repeat-reduce i {
 padding: 5px !important;
 }
 
