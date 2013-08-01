@@ -270,7 +270,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 		if (empty($queryvars))
 		{
-			return $jumpPage;
+			return FabrikString::encodeurl($jumpPage);
 		}
 		$jumpPage .= (!strstr($jumpPage, "?")) ? "?" : "&";
 		$jumpPage .= implode('&', $queryvars);
