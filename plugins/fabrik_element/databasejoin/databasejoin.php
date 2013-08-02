@@ -208,8 +208,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// Autocomplete with concat label was not working if we called the parent method
 			if ($app->input->get('method') === 'autocomplete_options')
 			{
-				$listModel = $this->getListModel();
-				$db = $listModel->getDb();
 				$data = array();
 				$opts = array();
 				$v = $app->input->get('value', '', 'string');
@@ -220,14 +218,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				 * http://fabrikar.com/forums/showthread.php?p=165192&posted=1#post165192
 				 */
 				$params = $this->getParams();
-				if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
-				{
-					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote('%' . $v . '%');
-				}
-				else
-				{
-					$this->_autocomplete_where = $label . ' LIKE ' . $db->quote($v . '%');
-				}
+				$this->_autocomplete_where = $this->_autocompleteWhere($params->get('dbjoin_autocomplete_how', 'contains'), $label, $v);
 				$rows = $this->_getOptionVals($data, 0, true, $opts);
 			}
 			else
@@ -2667,7 +2658,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
 	{
 		$params = $elementModel->getParams();
-		$db = FabrikWorker::getDbo();
 		$c = $elementModel->getLabelOrConcatVal();
 		if (!strstr($c, 'CONCAT'))
 		{
@@ -2690,17 +2680,43 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
 		// default to "contains" for backward compat.
-		if ($params->get('dbjoin_autocomplete_how', 'contains') == 'contains')
-		{
-			$elementModel->_autocomplete_where = $c . ' LIKE ' . $db->quote('%' . $search . '%');
-		}
-		else
-		{
-			$elementModel->_autocomplete_where = $c . ' LIKE ' . $db->quote($search . '%');
-		}
+		$elementModel->_autocomplete_where = $this->_autocompleteWhere($params->get('dbjoin_autocomplete_how', 'contains'), $c, $search);
 		$opts = array('mode' => 'filter');
 		$tmp = $elementModel->_getOptions(array(), 0, true, $opts);
 		return json_encode($tmp);
+	}
+
+	/**
+	 * Get the autocomplete Where clause based on the parameter
+	 *
+	 * @param   string  $how            dbjoin_autocomplete_how setting - contains, words, starts_with
+	 * @param   string  $label          Field
+	 * @param   string  $search         Search string
+	 *
+	 * @return  string  with required where clause based upon dbjoin_autocomplete_how setting
+	 */
+
+	private function _autocompleteWhere($how, $field, $search)
+	{
+		$db = FabrikWorker::getDbo();
+		switch ($how)
+		{
+			case 'contains':
+			default:
+				$where = $field . ' LIKE ' . $db->quote('%' . $search . '%');
+				break;
+			case 'words':
+				$words = array_filter(explode(' ', $search));
+				foreach ($words as &$word) {
+					$word = $db->quote('%' . $word . '%');
+				}
+				$where = $field . ' LIKE ' . implode(' AND ' . $field . ' LIKE ', $words);
+				break;
+			case 'starts_with':
+				$where = $field . ' LIKE ' . $db->quote($search . '%');
+				break;
+		}
+		return $where;
 	}
 
 	/**

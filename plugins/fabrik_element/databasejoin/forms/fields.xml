@@ -244,6 +244,7 @@
 			description="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_DESC"
 			label="PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_LABEL" >
 				<option value="contains">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_CONTAINS</option>
+				<option value="words">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_WORDS</option>
 				<option value="starts_with">PLG_ELEMENT_DBJOIN_AUTOCOMPLETE_HOW_STARTS_WITH</option>
 		</field>
 
