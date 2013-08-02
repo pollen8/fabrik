@@ -989,7 +989,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			
+
 			/*
 			 * $$$ hugh - when loading origdata on editing of a rowid=-1/usekey form,
 			 * the rowid will be set to the actual form tables's rowid, not the userid,
@@ -1000,19 +1000,19 @@ class FabrikFEModelForm extends FabModelForm
 			$input = $app->input;
 			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
 			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
-	
+
 			if ($menu_rowid == '-1')
 			{
 				$orig_usekey = $input->get('usekey', '');
 				$input->set('usekey', '');
 			}
-				
+
 			$listModel = $this->getListModel();
 			$fabrikDb = $listModel->getDb();
 			$sql = $this->buildQuery();
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
-			
+
 			if ($menu_rowid == '-1')
 			{
 				$input->set('usekey', $orig_usekey);
@@ -1216,6 +1216,19 @@ class FabrikFEModelForm extends FabModelForm
 			$ns = $val;
 
 			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
+			$ns_table = &$this->formDataWithTableName;
+			for ($i = 0; $i <= $pathNodes; $i++)
+			{
+			// If any node along the registry path does not exist, create it
+				if (!isset($ns_table[$nodes[$i]]))
+				{
+				$ns_table[$nodes[$i]] = array();
+				}
+				$ns_table = &$ns_table[$nodes[$i]];
+			}
+			$ns_table = $val;
+
+			// $$$ hugh - changed name of $ns, as re-using after using it to set by reference was borking things up!
 			$ns_full = &$this->fullFormData;
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
@@ -1277,6 +1290,7 @@ class FabrikFEModelForm extends FabModelForm
 			if (isset($this->formData))
 			{
 				$this->formData[$key] = $val;
+				$this->formDataWithTableName[$key] = $val;
 			}
 			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
 			if (isset($this->_fullFormData))
@@ -1313,6 +1327,7 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				$key .= '_raw';
 				$this->formData[$key] = $val;
+				$this->formDataWithTableName[$key] = $val;
 				if (isset($this->_fullFormData))
 				{
 					$this->_fullFormData[$key] = $val;
@@ -3000,21 +3015,72 @@ class FabrikFEModelForm extends FabModelForm
 		}
 
 		$groups = $this->getGroupsHiarachy();
-		foreach ($groups as $groupModel)
+		/**
+		 * $$$ hugh - adding the "PK's seen" stuff, otherwise we end up adding multiple
+		 * rows when we have multiple repeat groups.  For instance, if we had two repeated
+		 * groups, one with 2 repeats and one with 3, we ended up with 6 repeats for each
+		 * group, with 3 and 2 copies of each respectively.  So we need to track which
+		 * instances of each repeat we have already copied into the main row.
+		 *
+		 * So $join_pks_seen will be indexed by $join_pks_seen[groupid][elementid]
+		 */
+		$join_pks_seen = array();
+		/**
+		 * Have to copy the data for the PK's seen stuff, as we're modifying the original $data
+		 * as we go, which screws up the PK logic once we've modifed the PK value itself in the
+		 * original $data.  Probably only needed for $data[0], as that's the only row we actualy
+		 * modify, but for now I'm just copying the whole thing, which then gets used for doing the ...
+		 * $join_pk_val = $data_copy[$row_index]->$join_pk;
+		 * ... inside the $data iteration below.
+		 *
+		 * PS, could probably just do a $data_copy = $data, as our usage of the copy isn't going to
+		 * involve nested arrays (which get copied by reference when using =), but I've been burned
+		 * so many times with array copying, I'm going to do a "deep copy" using serialize/unserialize!
+		 */
+		$data_copy = unserialize(serialize($data));
+		foreach ($groups as $groupID => $groupModel)
 		{
 
 			$group = $groupModel->getGroup();
-
+			$join_pks_seen[$groupID] = array();
 			$elementModels = $groupModel->getMyElements();
-			foreach ($elementModels as $elementModel)
+			foreach ($elementModels as $elementModelID => $elementModel)
 			{
 				if ($groupModel->isJoin() || $elementModel->isJoin())
 				{
+					if ($groupModel->isJoin())
+					{
+						$joinModel = $groupModel->getJoinModel();
+						$join_pk = $joinModel->getForeignID();
+						$join_pks_seen[$groupID][$elementModelID] = array();
+					}
+
 					$names = $elementModel->getJoinDataNames();
-					foreach ($data as $row)
+					foreach ($data as $row_index => $row)
 					{
 						// Might be a string if new record ?
 						$row = (object) $row;
+						if ($groupModel->isJoin())
+						{
+							/**
+							 * If the join's PK element isn't published or for any other reason not
+							 * in $data, we're hosed!
+							 */
+							if (!isset($data_copy[$row_index]->$join_pk))
+							{
+								continue;
+							}
+							$join_pk_val = $data_copy[$row_index]->$join_pk;
+							/**
+							 * if we've seen the PK value for this element's row before, skip it.
+							 * Check for empty as well, just in case - as we're loading existing data,
+							 * it darn well should have a value!
+							 */
+							if (empty($join_pk_val) || in_array($join_pk_val, $join_pks_seen[$groupID][$elementModelID]))
+							{
+								continue;
+							}
+						}
 						for ($i = 0; $i < count($names); $i ++)
 						{
 							$name = $names[$i];
@@ -3038,13 +3104,22 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								else
 								{
-									if ($groupModel->isJoin())
+									//if ($groupModel->isJoin())
+									if ($groupModel->isJoin() && $groupModel->canRepeat())
 									{
 										$n =& $data[0]->$name;
 										$n[] = $v;
 									}
 								}
 							}
+						}
+						if ($groupModel->isJoin())
+						{
+							/**
+							 * Make a Note To Self that we've now handled the data for this element's row,
+							 * and can skip it from now on.
+							 */
+							$join_pks_seen[$groupID][$elementModelID][] = $join_pk_val;
 						}
 					}
 				}
