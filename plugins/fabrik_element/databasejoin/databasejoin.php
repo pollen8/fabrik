@@ -848,7 +848,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 
 			$mode = JArrayHelper::getValue($opts, 'mode', 'form');
-			$displayType = $params->get('database_join_display_type');
+			$displayType = $params->get('database_join_display_type', 'dropdown');
 			$filterType = $element->filter_type;
 			if (($mode == 'filter' && $filterType == 'auto-complete')
 				|| ($mode == 'form' && $displayType == 'auto-complete')
@@ -2278,11 +2278,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function elementJavascript($repeatCounter)
 	{
 		$id = $this->getHTMLId($repeatCounter);
-		if ($this->getParams()->get('database_join_display_type') == 'auto-complete')
+		if ($this->getParams()->get('database_join_display_type', 'dropdown') == 'auto-complete')
 		{
 			$autoOpts = array();
+			$maxRows = $this->getParams()->get('autocomplete_rows', '10');
 			$autoOpts['storeMatchedResultsOnly'] = true;
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin', $autoOpts);
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin', $autoOpts, $maxRows);
 		}
 		$opts = $this->elementJavascriptOpts($repeatCounter);
 		return array('FbDatabasejoin', $id, $opts);
@@ -2344,7 +2345,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$opts->show_please_select = $params->get('database_join_show_please_select') === "1";
 		$opts->showDesc = $params->get('join_desc_column', '') === '' ? false : true;
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
-				? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin') : null;
+				? FabrikHelperHTML::autoCompleteOptions($opts->id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin') : null;
 		$opts->allowadd = $params->get('fabrikdatabasejoin_frontend_add', 0) == 0 ? false : true;
 		$opts->listName = $this->getListModel()->getTable()->db_table_name;
 		$this->elementJavascriptJoinOpts($opts);
@@ -2574,7 +2575,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function getValidationWatchElements($repeatCounter)
 	{
 		$params = $this->getParams();
-		$trigger = $params->get('database_join_display_type') == 'dropdown' ? 'change' : 'click';
+		$trigger = $params->get('database_join_display_type', 'dropdown') == 'dropdown' ? 'change' : 'click';
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => $trigger);
 		return array($ar);
@@ -2771,7 +2772,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	public function isJoin()
 	{
 		$params = $this->getParams();
-		if (in_array($params->get('database_join_display_type'), array('checkbox', 'multilist')))
+		if (in_array($params->get('database_join_display_type', 'dropdown'), array('checkbox', 'multilist')))
 		{
 			return true;
 		}
