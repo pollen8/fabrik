@@ -140,7 +140,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
 
@@ -153,6 +152,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$name = $this->getFullName(true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
 		$this->setFullName($check_name, true, false);
+		$this->reset();
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
 		if ($checkvalue != $value)
