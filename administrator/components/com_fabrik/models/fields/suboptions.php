@@ -55,7 +55,7 @@ class JFormFieldSuboptions extends JFormField
 		{
 			$delButton  = '<div class="btn-group">';
 			$delButton .= '<a class="btn btn-success" href="#" data-button="addSuboption"><i class="icon-plus-2"></i> </a>';
-			$delButton .= '<a class="btn btn-danger" href="#" data-button="deleteSuboption"><i class="icon-remove"></i> </a>';
+			$delButton .= '<a class="btn btn-danger" href="#" data-button="deleteSuboption"><i class="icon-minus-2"></i> </a>';
 			$delButton .= '</div>';
 		}
 		else
