@@ -54,6 +54,9 @@ var FbForm = new Class({
 		(function () {
 			this.duplicateGroupsToMin();
 		}.bind(this)).delay(1000);
+		
+		// Delegated element events
+		this.events = {};
 	},
 
 	_setMozBoxWidths: function () {

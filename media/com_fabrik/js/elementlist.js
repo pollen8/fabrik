@@ -48,21 +48,27 @@ FbElementList = new Class({
 			c = this.form.form;
 			
 			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
-			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.strElement + '])';
-			c.addEvent(delegate, function (event, target) {
+			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
+			if (typeOf(this.form.events[event]) === 'null') {
+				this.form.events[event] = {};
+			}
+			if (typeOf(this.form.events[event][delegate]) === 'null') {
+				this.form.events[event][delegate] = true;
 				
-				// As we are delegating the event, and reference to 'this' in the js will refer to the first element
-				// When in a repeat group we want to replace that with a reference to the current element.
-				var elid = target.getParent('.fabrikSubElementContainer').id;
-				var that = this.form.formElements[elid];
-				var subEls = that._getSubElements();
-				if (subEls.contains(target)) {
-					
-					// Replace this with that so that the js code runs on the correct element
-					js = js.replace(/this/g, 'that');
-					typeOf(js) === 'function' ? js.delay(0) : eval(js);
-				}
-			}.bind(this));
+				c.addEvent(delegate, function (event, target) {
+					// As we are delegating the event, and reference to 'this' in the js will refer to the first element
+					// When in a repeat group we want to replace that with a reference to the current element.
+					var elid = target.getParent('.fabrikSubElementContainer').id;
+					var that = this.form.formElements[elid];
+					var subEls = that._getSubElements();
+					if (subEls.contains(target)) {
+						
+						// Replace this with that so that the js code runs on the correct element
+						js = js.replace(/this/g, 'that');
+						typeOf(js) === 'function' ? js.delay(0) : eval(js);
+					}
+				}.bind(this));
+			}
 		}
 	},
 	
