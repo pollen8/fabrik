@@ -108,7 +108,7 @@ AdvancedSearch = new Class({
 			update.set('html', '');
 			return;
 		}
-		var url = Fabrik.liveSite + "index.php?option=com_fabrik&task=list.elementFilter&format=raw";
+		var url = 'index.php?option=com_fabrik&task=list.elementFilter&format=raw';
 		var eldata = this.options.elementMap[v];
 		new Request.HTML({'url': url, 
 			'update': update, 

@@ -467,7 +467,7 @@ if (typeof(Fabrik) === "undefined") {
 		list.setActive(row);
 		var rowid = row.id.split('_').getLast();
 		if (list.options.links.edit === '') {
-			url = Fabrik.liveSite + "index.php?option=com_fabrik&view=form&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+			url = 'index.php?option=com_fabrik&task=form.view&formid=' + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 			loadMethod = 'xhr';
 		} else {
 			if (e.target.get('tag') === 'a') {
@@ -520,6 +520,7 @@ if (typeof(Fabrik) === "undefined") {
 	
 	Fabrik.watchView = function (e, target) {
 		var listRef = target.get('data-list');
+		var a;
 		var list = Fabrik.blocks[listRef];
 		if (!list.options.ajax_links) {
 			return;
@@ -532,7 +533,7 @@ if (typeof(Fabrik) === "undefined") {
 		list.setActive(row);
 		var rowid = row.id.split('_').getLast();
 		if (list.options.links.detail === '') {
-			url = Fabrik.liveSite + "index.php?option=com_fabrik&view=details&formid=" + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
+			url = 'index.php?option=com_fabrik&task=details.view&formid=' + list.options.formid + '&rowid=' + rowid + '&tmpl=component&ajax=1';
 			loadMethod = 'xhr';
 		} else {
 			if (e.target.get('tag') === 'a') {

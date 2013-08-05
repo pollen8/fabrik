@@ -332,7 +332,7 @@ var FbDatabasejoin = new Class({
 		var formid = this.options.formid;
 		var key = this.options.key;
 		var label = this.options.label;
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&view=form&format=raw';
+		var url = 'index.php?option=com_fabrik&view=form&format=raw';
 		var post = {
 			'formid': this.options.popupform,
 			'rowid': rowid
@@ -711,7 +711,7 @@ var FbDatabasejoin = new Class({
 						// Need to get v if autocomplete and updating from posted popup form as we only want to get ONE 
 						// option back inside update();
 						var myajax = new Request.JSON({
-							'url': Fabrik.liveSite + 'index.php?option=com_fabrik&view=form&format=raw',
+							'url': 'index.php?option=com_fabrik&view=form&format=raw',
 							'data': {
 								'formid': this.options.popupform,
 								'rowid': json.rowid

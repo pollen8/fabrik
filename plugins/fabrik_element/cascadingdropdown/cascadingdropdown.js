@@ -54,6 +54,10 @@ var FbCascadingdropdown = new Class({
 
 	doChange: function (e)
 	{
+		if (this.options.displayType === 'auto-complete') {
+			this.element.value = '';
+			this.getAutoCompleteLabelField().value = '';
+		}
 		this.dowatch(e);
 	},
 	
@@ -110,6 +114,7 @@ var FbCascadingdropdown = new Class({
 		onSuccess: function (json) {
 			var origvalue = this.options.def,
 			opts = {},
+			updateField,
 			c;
 			this.spinner.hide();
 			this.setValue(this.getValue());
@@ -136,7 +141,8 @@ var FbCascadingdropdown = new Class({
 						item.text = item.text.replace(/\n/g, '<br />');
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
-						this.addOption(item.value, item.text);
+						updateField = (item.value !== '' && item.value === this.getValue());
+						this.addOption(item.value, item.text, updateField);
 					}
 					
 					if (this.options.showDesc === true && item.description) {
@@ -150,7 +156,8 @@ var FbCascadingdropdown = new Class({
 					if (this.options.editable === false) {
 						new Element('div').set('text', item.text).inject(this.element);
 					} else {
-						this.addOption(item.value, item.text);
+						updateField = (item.value !== '' && item.value === this.getValue());
+						this.addOption(item.value, item.text, updateField);
 						new Element('option', {'value': item.value, 'selected': 'selected'}).set('text', item.text).inject(this.element);
 					}
 				}

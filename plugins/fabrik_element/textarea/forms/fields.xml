@@ -56,9 +56,10 @@
 			<field name="textarea_showlabel"
 				type="radio"
 				default="1"
+				class="btn-group"
 				label="PLG_ELEMENT_TEXTAREA_SHOW_LABEL_LABEL">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 			</field>
 			
 			<field name="textarea_placeholder"
@@ -103,6 +104,7 @@
 			
 			<field name="textarea-maxlength"
 				type="text" 
+				class="input-mini"
 				default="255"
 				description="PLG_ELEMENT_TEXTAREA_MAXLENGTH_DESC"
 				label="PLG_ELEMENT_TEXTAREA_MAXLENGTH_LABEL"
@@ -133,6 +135,7 @@
 			
 			<field name="textarea_tagifyurl"
 				type="text"
+				class="input-xxlarge"
 				description="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_DESC"
 				label="PLG_ELEMENT_TEXTAREA_TAGIFY_URL_LABEL"
 				size="60" />

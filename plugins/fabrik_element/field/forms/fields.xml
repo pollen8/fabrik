@@ -95,6 +95,7 @@
 			<field name="speech"
 				type="radio"
 				default="0"
+				class="btn-group"
 				description="PLG_ELEMENT_FIELD_SPEECH_DESC"
 				label="PLG_ELEMENT_FIELD_SPEECH_LABEL">
 					<option value="0">JNO</option>

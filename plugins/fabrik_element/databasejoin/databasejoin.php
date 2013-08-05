@@ -2680,7 +2680,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		// $$$ hugh - added 'autocomplete_how', currently just "starts_with" or "contains"
 		// default to "contains" for backward compat.
-		$elementModel->_autocomplete_where = $this->_autocompleteWhere($params->get('dbjoin_autocomplete_how', 'contains'), $c, $search);
+		$elementModel->_autocomplete_where = $elementModel->_autocompleteWhere($params->get('dbjoin_autocomplete_how', 'contains'), $c, $search);
 		$opts = array('mode' => 'filter');
 		$tmp = $elementModel->_getOptions(array(), 0, true, $opts);
 		return json_encode($tmp);

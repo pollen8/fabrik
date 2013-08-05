@@ -235,4 +235,26 @@ class FabrikAdminControllerForm extends JControllerForm
 		}
 		$this->setRedirect($page, $msg);
 	}
+
+	/**
+	 * Validate via ajax
+	 *
+	 * @return  null
+	 */
+
+	public function ajax_validate()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$model = $this->getModel('form', 'FabrikFEModel');
+		$model->setId($input->getInt('formid', 0));
+		$model->getForm();
+		$model->setRowId($input->get('rowid', '', 'string'));
+		$model->validate();
+		$data = array('modified' => $model->modifiedValidationData);
+
+		// Validating entire group when navigating form pages
+		$data['errors'] = $model->errors;
+		echo json_encode($data);
+	}
 }
