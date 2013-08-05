@@ -194,6 +194,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 
 	public function onLoadJavascriptInstance($params, $model, $args)
 	{
+		JFactory::getApplication()->enqueueMessage('test', 'errr');
 		parent::onLoadJavascriptInstance($params, $model, $args);
 		$j3 = FabrikWorker::j3();
 		list($srcs, $els, $shim) = $this->loadElementJS($params);
