@@ -401,9 +401,12 @@ var FbForm = new Class({
 				});
 				firstGroup = document.id('group' + page[0]);
 				if (typeOf(firstGroup) !== 'null') {
+
 					// Paul - Don't use pages if this is a bootstrap_tab form
 					tabDiv = firstGroup.getParent('div');
-					if (typeOf(tabDiv) == 'null' || tabDiv.hasClass('tab-pane')) return;
+					if (typeOf(tabDiv) === 'null' || tabDiv.hasClass('tab-pane')) {
+						return;
+					}
 					p.inject(firstGroup, 'before');
 					page.each(function (group) {
 						p.adopt(document.id('group' + group));
@@ -446,7 +449,9 @@ var FbForm = new Class({
 			if (typeOf(document.getElement('.tool-tip')) !== 'null') {
 				document.getElement('.tool-tip').setStyle('top', 0);
 			}
-			var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
+			// Don't prepend with Fabrik.liveSite, as it can create cross origin browser errors if you are on www and livesite is not on www. 
+			var url = 'index.php?option=com_fabrik&format=raw&task=form.ajax_validate&form_id=' + this.id;
+			
 			Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATING'));
 
 			// Only validate the current groups elements, otherwise validations on
@@ -468,6 +473,7 @@ var FbForm = new Class({
 				onComplete: function (r) {
 					Fabrik.loader.stop(this.getBlock());
 					r = JSON.decode(r);
+
 					// Don't show validation errors if we are going back a page
 					if (dir === -1 || this._showGroupError(r, d) === false) {
 						this.changePage(dir);
@@ -497,7 +503,7 @@ var FbForm = new Class({
 		this.form.getElement('input[name=format]').value = 'raw';
 		this.form.getElement('input[name=task]').value = 'form.savepage';
 
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
+		var url = 'index.php?option=com_fabrik&format=raw&page=' + this.currentPage;
 		Fabrik.loader.start(this.getBlock(), 'saving page');
 		var data = this.getFormData();
 		data.fabrik_ajax = 1;
@@ -790,7 +796,7 @@ var FbForm = new Class({
 		}
 		//var origid = el.origId ? el.origId : id;
 		el.options.repeatCounter = el.options.repeatCounter ? el.options.repeatCounter : 0;
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&form_id=' + this.id;
+		var url = 'index.php?option=com_fabrik&form_id=' + this.id;
 		var myAjax = new Request({
 			url: url,
 			method: this.options.ajaxmethod,

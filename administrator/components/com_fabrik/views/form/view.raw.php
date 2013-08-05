@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since		3.0
 */
 
-class FabrikViewForm extends JViewLegacy
+class FabrikAdminViewForm extends JViewLegacy
 {
 	/**
 	 * Form
@@ -54,19 +54,112 @@ class FabrikViewForm extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		// Initialiase variables.
-		$this->form = $this->get('Form');
-		$this->item = $this->get('Item');
-		$this->state = $this->get('State');
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$w = new FabrikWorker;
+		$config = JFactory::getConfig();
+		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
+		$model->render();
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
+		if (!$model->canPublish())
 		{
-			throw new RuntimeException(implode("\n", $errors), 500);
-			return false;
+			if (!$app->isAdmin())
+			{
+				echo JText::_('COM_FABRIK_FORM_NOT_PUBLISHED');
+				return false;
+			}
 		}
-		$this->addToolbar();
-		parent::display($tpl);
+
+		$this->access = $model->checkAccessFromListSettings();
+		if ($this->access == 0)
+		{
+			return JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
+		$model->getJoinGroupIds();
+		$groups = $model->getGroupsHiarachy();
+		$gkeys = array_keys($groups);
+		$JSONarray = array();
+		$JSONHtml = array();
+
+		for ($i = 0; $i < count($gkeys); $i++)
+		{
+			$groupModel = $groups[$gkeys[$i]];
+			$groupTable = $groupModel->getGroup();
+			$group = new stdClass;
+			$groupParams = $groupModel->getParams();
+			$aElements = array();
+
+			// Check if group is acutally a table join
+			$repeatGroup = 1;
+			$foreignKey = null;
+
+			if ($groupModel->canRepeat())
+			{
+				if ($groupModel->isJoin())
+				{
+					$joinModel = $groupModel->getJoinModel();
+					$joinTable = $joinModel->getJoin();
+					$foreignKey = '';
+					if (is_object($joinTable))
+					{
+						$foreignKey = $joinTable->table_join_key;
+
+						// $$$ rob test!!!
+						if (!$groupModel->canView())
+						{
+							continue;
+						}
+						$elementModels = $groupModel->getPublishedElements();
+						reset($elementModels);
+						$tmpElement = current($elementModels);
+						$smallerElHTMLName = $tmpElement->getFullName(true, false);
+						$repeatGroup = count($model->data[$smallerElHTMLName]);
+					}
+				}
+			}
+			$groupModel->repeatTotal = $repeatGroup;
+			$aSubGroups = array();
+			for ($c = 0; $c < $repeatGroup; $c++)
+			{
+				$aSubGroupElements = array();
+				$elCount = 0;
+				$elementModels = $groupModel->getPublishedElements();
+				foreach ($elementModels as $elementModel)
+				{
+					if (!$model->isEditable())
+					{
+						/* $$$ rob 22/03/2011 changes element keys by appending "_id" to the end, means that
+						 * db join add append data doesn't work if for example the popup form is set to allow adding,
+						 * but not editing records
+						 * $elementModel->inDetailedView = true;
+						 */
+						$elementModel->setEditable(false);
+					}
+
+					// Force reload?
+					$elementModel->HTMLids = null;
+					$elementHTMLId = $elementModel->getHTMLId($c);
+					if (!$model->isEditable())
+					{
+						$JSONarray[$elementHTMLId] = $elementModel->getROValue($model->data, $c);
+					}
+					else
+					{
+						$JSONarray[$elementHTMLId] = $elementModel->getValue($model->data, $c);
+					}
+					// Test for paginate plugin
+					if (!$model->isEditable())
+					{
+						$elementModel->HTMLids = null;
+						$elementModel->inDetailedView = true;
+					}
+					$JSONHtml[$elementHTMLId] = htmlentities($elementModel->render($model->data, $c), ENT_QUOTES, 'UTF-8');
+				}
+			}
+		}
+		$data = array("id" => $model->getId(), 'model' => 'table', "errors" => $model->errors, "data" => $JSONarray, 'html' => $JSONHtml,
+			'post' => $_REQUEST);
+		echo json_encode($data);
 	}
 
 	/**

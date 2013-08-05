@@ -601,8 +601,13 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return	array	array(group_id =>join_id)
 	 */
 
-	public function getJoinGroupIds($joins)
+	public function getJoinGroupIds($joins = null)
 	{
+		$listModel = $this->getlistModel();
+		if (is_null($joins))
+		{
+			$joins = $listModel->getJoins();
+		}
 		$arJoinGroupIds = array();
 		$groups = $this->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
