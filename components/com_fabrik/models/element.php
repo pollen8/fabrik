@@ -1515,7 +1515,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pos = $params->get('tiplocation', 'top');
 		$opts->formTip = true;
 		$opts->position = $pos;
-		$opts->trigger = 'hover';
+		$opts->trigger = 'hover focus';
 		$opts->notice = true;
 
 		if ($this->editable)
