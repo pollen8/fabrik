@@ -334,15 +334,22 @@ class FabrikPlugin extends JPlugin
 				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
 			}
 			$form->repeat = $repeat;
+			$j3 = FabrikWorker::j3();
 			if ($repeat)
 			{
-				$bClass = $j3 ? 'btn' : 'addButton';
-				$str[] = '<a class="' . $bClass . '" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
 				if ($j3)
 				{
-					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
-					. '</a>';
+					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus-2"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-2"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a>';
 				}
+				else
+				{
+					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+				}
+			}
+			if (is_null($mode))
+			{
+				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
 			}
 			for ($r = 0; $r < $repeatDataMax; $r++)
 			{

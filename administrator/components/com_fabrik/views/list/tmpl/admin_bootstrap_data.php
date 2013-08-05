@@ -75,8 +75,8 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 				if ((int) $this->item->id !== 0) :
 					echo JArrayHelper::getValue($this->order_dir, $o)?>
 					<div class="btn-group pull-<?php echo $rtlDir; ?>">
-						<a class="btn btn-success addOrder" href="#"><i class="icon-plus"></i> </a>
-						<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus"></i> </a>
+						<a class="btn btn-success addOrder" href="#"><i class="icon-plus-2"></i> </a>
+						<a class="btn btn-danger deleteOrder" href="#"><i class="icon-minus-2"></i> </a>
 					</div>
 				<?php endif; ?>
 			</div>
@@ -103,7 +103,7 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 			<legend><?php echo JText::_('COM_FABRIK_PREFILTERS')?></legend>
 
 			 <a class="btn" href="#" onclick="oAdminFilters.addFilterOption(); return false;">
-				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
+				<i class="icon-plus-2"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
 			<div id="prefilters" style="padding-top:20px">
 				<table class="table table-striped" width="100%">
@@ -125,7 +125,7 @@ $rtlDirInv = $doc->direction === 'rtl' ? 'right' : 'left';
 			</legend>
 			<?php if ($this->item->id != 0) { ?>
 			<a href="#" id="addAJoin" class="btn">
-				<i class="icon-plus"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
+				<i class="icon-plus-2"></i>  <?php echo JText::_('COM_FABRIK_ADD'); ?>
 			</a>
 			<div id="joindtd" style="margin-top:20px"></div>
 			<?php

@@ -18,7 +18,7 @@ defined('_JEXEC') or die('Restricted access');
 	<fieldset>
 		<div id="javascriptActions"></div>
 		<a class="btn btn-success" href="#" id="addJavascript">
-			<i class="icon-plus"></i>
+			<i class="icon-plus-2"></i>
 			<?php echo JText::_('COM_FABRIK_ADD'); ?>
 		</a>
 	</fieldset>
