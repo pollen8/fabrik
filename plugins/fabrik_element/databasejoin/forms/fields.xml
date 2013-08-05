@@ -18,10 +18,9 @@
 				</field>
 
 			<field name="default"
-				type="textarea"
-				cols="45"
-				label="PLG_ELEMENT_DBJOIN_DEFAULT_LABEL"
-				rows="6"/>
+				type="fabrikeditor"
+				mode="php"
+				label="PLG_ELEMENT_DBJOIN_DEFAULT_LABEL" />
 
 			<field name="hidden"
 				type="radio"
