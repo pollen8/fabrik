@@ -1522,10 +1522,10 @@ EOD;
 	/**
 	 * Add autocomplete JS code to head
 	 *
-	 * @param   string  $htmlid     of element to turn into autocomplete
-	 * @param   int     $elementid  element id
-	 * @param   int     $formid     form id
-	 * @param   string  $plugin     plugin name
+	 * @param   string  $htmlid     Of element to turn into autocomplete
+	 * @param   int     $elementid  Element id
+	 * @param   int     $formid     Form id
+	 * @param   string  $plugin     Plugin name
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  void
@@ -1577,7 +1577,7 @@ EOD;
 		{
 			$json->$k = $v;
 		}
-		$json->formRef = 'form_' . $formid;
+		$json->formRef = JArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 		return $json;
