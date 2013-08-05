@@ -44,6 +44,7 @@
 			<field name="redirect_conditon"
 				type="fabrikeditor"
 				mode="php"
+				repeat="true"
 				description="PLG_FORM_REDIRECT_CONDITION_DESC"
 				label="PLG_FORM_REDIRECT_CONDITION_LABEL" />
 				

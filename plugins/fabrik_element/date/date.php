@@ -210,7 +210,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 		if ($group->canRepeat())
 		{

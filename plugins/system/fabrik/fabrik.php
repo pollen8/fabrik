@@ -70,14 +70,8 @@ class PlgSystemFabrik extends JPlugin
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
 
-		// In preg_replace \\ is replaced with \, doubling up the quotes keeps \\ as \\.
-		$js = str_replace("\\", "\\\\", $js);
-
 		$script = '';
-		if ($shim !== '' && $js !== '')
-		{
-			$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
-		}
+
 		$session->clear('fabrik.js.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
@@ -85,10 +79,20 @@ class PlgSystemFabrik extends JPlugin
 		$content = JResponse::getBody();
 		if (stristr($content, '</head>'))
 		{
+			// In preg_replace \\ is replaced with \, doubling up the quotes keeps \\ as \\.
+			$js = str_replace("\\", "\\\\", $js);
+			if ($shim !== '' && $js !== '')
+			{
+				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+			}
 			$content = preg_replace('#(</head>)#', $script . '</head>', $content);
 		}
 		else
 		{
+			if ($shim !== '' && $js !== '')
+			{
+				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+			}
 			$content .= $script;
 		}
 		JResponse::setBody($content);

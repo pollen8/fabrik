@@ -69,8 +69,13 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
 		if ($file == -1 || $file == '')
 		{
-			$code = @eval($params->get('listcsv_import_php_code'));
-			FabrikWorker::logEval($code, 'Caught exception on eval in onImportCSVRow : %s');
+			$code = $params->get('listcsv_import_php_code', '');
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+			if ($ret === false)
+			{
+				return false;
+			}
 		}
 		else
 		{
