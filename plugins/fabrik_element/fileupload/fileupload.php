@@ -1993,7 +1993,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		$pstr[] = ' <tfoot><tr><td colspan="4">';
 
-		$pstr[] = '				<a id="' . $id . '_browseButton" class="btn btn-mini" href="#"><i class="icon-plus-sign icon-plus-2"></i>'
+		$pstr[] = '				<a id="' . $id . '_browseButton" class="btn btn-mini" href="#"><i class="icon-plus-sign icon-plus"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_ADD_FILES') . '</a>';
 		$pstr[] = '				<a class="btn btn-mini disabled" data-action="plupload_start" href="#"><i class="icon-upload"></i>'
 				. JText::_('PLG_ELEMENT_FILEUPLOAD_START_UPLOAD') . '</a>';

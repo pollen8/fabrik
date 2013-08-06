@@ -1778,8 +1778,7 @@ class FabrikFEModelList extends JModelForm
 		{
 			$label = JText::_('COM_FABRIK_LINKED_FORM_ADD');
 		}
-		$j3 = FabrikWorker::j3();
-		$icon = $j3 ? '<i class="icon-plus-2"></i> ' : '<i class="icon-plus"></i> ';
+		$icon = '<i class="icon-plus"></i> ';
 		if ($popUp)
 		{
 			FabrikHelperHTML::mocha('a.popupwin');

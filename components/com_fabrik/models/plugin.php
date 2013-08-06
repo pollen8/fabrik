@@ -340,17 +340,13 @@ class FabrikPlugin extends JPlugin
 			{
 				if ($j3)
 				{
-					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus-2"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
-					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus-2"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
+					$str[] = '<a class="btn" href="#" data-button="deleteButton"><i class="icon-minus"></i> ' . JText::_('COM_FABRIK_REMOVE') . '</a>';
 				}
 				else
 				{
 					$str[] = '<a class="addButton" href="#" data-button="addButton"><i class="icon-plus"></i> ' . JText::_('COM_FABRIK_ADD') . '</a>';
 				}
-			}
-			if (is_null($mode))
-			{
-				$str[] = '<legend>' . JText::_($fieldset->label) . '</legend>';
 			}
 			for ($r = 0; $r < $repeatDataMax; $r++)
 			{

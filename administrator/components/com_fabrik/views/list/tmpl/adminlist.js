@@ -199,10 +199,9 @@ var ListForm = new Class({
 			}
 		});
 
+		var delHtml = '<i class="icon-minus"></i> ';
 		if (!this.options.j3) {
-			var delHtml = '<i class="icon-minus"></i> ' + Joomla.JText._('COM_FABRIK_DELETE');
-		} else {
-			var delHtml = '<i class="icon-minus-2"></i> ';
+			delHtml += Joomla.JText._('COM_FABRIK_DELETE');
 		}
 		delButton.set('html', delHtml);
 
@@ -592,8 +591,7 @@ var adminFilters = new Class({
 
 		var deleteText = this.options.j3 ? '' : Joomla.JText._('COM_FABRIK_DELETE');
 		var bClass = this.options.j3 ? 'btn btn-danger' : 'removeButton';
-		var iClass = this.options.j3 ? 'icon-minus-2' : 'icon-minus';
-		var a = '<button id="' + delId + '" class="' + bClass + '"><i class="' + iClass + '"></i> ' + deleteText + '</button>';
+		var a = '<button id="' + delId + '" class="' + bClass + '"><i class="icon-minus"></i> ' + deleteText + '</button>';
 		td5.set('html', a);
 		tr.appendChild(td);
 

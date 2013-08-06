@@ -130,7 +130,7 @@ class JFormFieldFabrikModalrepeat extends JFormField
 		}
 		if (FabrikWorker::j3())
 		{
-			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus-2"></i> </a></th>';
+			$str[] = '<th><a href="#" class="add btn button btn-success"><i class="icon-plus"></i> </a></th>';
 		}
 		else
 		{
@@ -148,8 +148,8 @@ class JFormFieldFabrikModalrepeat extends JFormField
 
 		if (FabrikWorker::j3())
 		{
-			$str[] = '<div class="btn-group"><a class="add btn button btn-success"><i class="icon-plus-2"></i> </a>';
-			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus-2"></i> </a></div>';
+			$str[] = '<div class="btn-group"><a class="add btn button btn-success"><i class="icon-plus"></i> </a>';
+			$str[] = '<a class="remove btn button btn-danger"><i class="icon-minus"></i> </a></div>';
 		}
 		else
 		{

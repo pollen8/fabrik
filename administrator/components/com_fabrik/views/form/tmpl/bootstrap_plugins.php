@@ -17,7 +17,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	    <fieldset class="form-horizontal">
 			<div id="plugins"></div>
-			<a href="#" class="btn btn-success" id="addPlugin">
-				<i class="icon-plus-2"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?></a>
+			<a href="#" class="btn" id="addPlugin">
+				<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD'); ?></a>
 		</fieldset>
 </div>

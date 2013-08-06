@@ -31,7 +31,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	<?php if ($this->showAdd) {?>
 		<a class="addbutton btn addRecord" href="<?php echo $this->addRecordLink;?>">
-			<i class="icon-plus-2"></i>
+			<i class="icon-plus"></i>
 			<?php echo $this->addLabel?>
 		</a>
 	<?php }?>
