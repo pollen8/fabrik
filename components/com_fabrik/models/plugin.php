@@ -193,7 +193,8 @@ class FabrikPlugin extends JPlugin
 	public function onRenderAdminSettings($data = array(), $repeatCounter = null, $mode = null)
 	{
 		$this->makeDbTable();
-		$j3 = FabrikWorker::j3();
+		$version = new JVersion;
+		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
 		$document = JFactory::getDocument();
 		$type = str_replace('fabrik_', '', $this->_type);
 		JForm::addFormPath(JPATH_SITE . '/plugins/' . $this->_type . '/' . $this->_name);
