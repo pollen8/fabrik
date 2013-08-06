@@ -244,7 +244,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 						$thismessage = @eval($thismessage);
 						FabrikWorker::logEval($thismessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
-					$res = JUtility::sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
+					$mail = JFactory::getMailer();
+					$res = $mail->sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
 					if ($res)
 					{
 						$this->_sent++;
@@ -296,7 +297,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Get the message generated in process()
 	 *
-	 * @param   int  $c  plugin render order
+	 * @param   int  $c  Plugin render order
 	 *
 	 * @return  string
 	 */
@@ -309,9 +310,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Process the update column
 	 *
-	 * @param   object  &$model  list model
-	 * @param   string  $col     update column
-	 * @param   string  $val     update val
+	 * @param   object  &$model  List model
+	 * @param   string  $col     Update column
+	 * @param   string  $val     Update val
 	 *
 	 * @return  void
 	 */
@@ -326,9 +327,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  $model   List model
+	 * @param   array   $args    Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */

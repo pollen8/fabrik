@@ -3,6 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-list-candeleterow">
 		
+			<field type="helplink"
+				url="PLG_LIST_CANDELETEROW_HELP_SERVER" />
+				
 			<field name="candeleterow_access"
 				type="accesslevel"
 				default="1"

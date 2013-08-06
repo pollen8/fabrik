@@ -67,7 +67,7 @@ $controllerName = $input->getCmd('view');
 // Check for a plugin controller
 
 // Call a plugin controller via the url :
-// &c=visualization.calendar
+// &controller=visualization.calendar
 
 $isplugin = false;
 $cName = $input->getCmd('controller');
