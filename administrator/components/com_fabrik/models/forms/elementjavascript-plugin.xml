@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<form addfieldpath="/administrator/components/com_fabrik/models/fields">
+	<name>Element Javascript Options</name>
+	
+	<fields >
+		<fieldset name="params">
+		
+			<field name="js_published"
+				type="radio"
+				class="btn-group"
+				repeat="true"
+				default="1"
+				label="COM_FABRIK_PUBLISHED">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
+			<field name="action"
+				type="list"
+				class="input-small"
+				repeat="true"
+				label="COM_FABRIK_ACTION">
+					<option value="focus">focus</option>
+					<option value="blur">blur</option>
+					<option value="abort">abort</option>
+					<option value="click">click</option>
+					<option value="change">change</option>
+					<option value="dblclick">dblclick</option>
+					<option value="keydown">keydown</option>
+					<option value="keypress">keypress</option>
+					<option value="keyup">keyup</option>
+					<option value="mouseup">mouseup</option>
+					<option value="mousedown">mousedown</option>
+					<option value="mouseover">mouseover</option>
+					<option value="select">select</option>
+					<option value="load">load</option>
+					<option value="unload">unload</option>
+			</field>
+			
+			<field name="code"
+				type="fabrikeditor"
+				width="100"
+				repeat="true"
+				label="COM_FABRIK_CODE" />
+				
+			
+			<field name="js_e_event"
+				type="list"
+				repeat="true"
+				label="COM_FABRIK_OR">
+					<option value="hide">hide</option>
+					<option value="show">show</option>
+					<option value="fadeout">fadeout</option>
+					<option value="fadein">fadein</option>
+					<option value="slide in">slide in</option>
+					<option value="slide out">slide out</option>
+					<option value="slide toggle">slide toggle</option>
+					<option value="clear">clear</option>
+			</field>
+			
+			<field name="js_e_trigger"
+				type="groupelements"
+				repeat="true"
+				label="COM_FABRIK_ELEMENT" />
+			
+			
+			<field name="js_e_condition"
+				type="list"
+				repeat="true"
+				label="COM_FABRIK_WHERE_THIS">
+					<option value="&lt;">&lt;</option>
+					<option value="&lt;=">&lt;=</option>
+					<option value="==">==</option>
+					<option value="&gt;=">&gt;=</option>
+					<option value="&gt;">&gt;</option>
+					<option value="!=">!=</option>
+					<option value="hidden">hidden</option>
+					<option value="shown">shown</option>
+					<option value="CONTAINS">contains</option>
+					<option value="!CONTAINS">does not contain</option>
+			</field>
+			
+			<field name="js_e_value"
+				type="text"
+				repeat="true"
+				label="COM_FABRIK_VALUE" />
+			
+		</fieldset>
+	</fields>
+	
+</form>

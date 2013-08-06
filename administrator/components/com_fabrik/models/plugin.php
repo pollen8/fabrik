@@ -58,17 +58,24 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	protected function getData()
 	{
 		$type = $this->getState('type');
+		$data = array();
 		if ($type === 'validationrule')
 		{
 			$item = FabTable::getInstance('Element', 'FabrikTable');
 			$item->load($this->getState('id'));
+		}
+		elseif ($type === 'elementjavascript')
+		{
+			$item = FabTable::getInstance('Jsaction', 'FabrikTable');
+			$item->load($this->getState('id'));
+			$data = $item->getProperties();
 		}
 		else
 		{
 			$feModel = $this->getPluginModel();
 			$item = $feModel->getTable();
 		}
-		$data = (array) json_decode($item->params);
+		$data = $data + (array) json_decode($item->params);
 		$data['plugin'] = $this->getState('plugin');
 		$data['params'] = (array) JArrayHelper::getValue($data, 'params', array());
 		$data['params']['plugins'] = $this->getState('plugin');
@@ -100,6 +107,10 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	{
 		$feModel = null;
 		$type = $this->getState('type');
+		if ($type === 'elementjavascript')
+		{
+			return null;
+		}
 		if ($type !== 'validationrule')
 		{
 			// Set the parent model e.g. form/list
@@ -121,7 +132,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$c = $this->getState('c') + 1;
 		$version = new JVersion;
 		$j3 = version_compare($version->RELEASE, '3.0') >= 0 ? true : false;
-		$class = $j3 ? '' : 'adminform ';
+		$class = $j3 ? 'form-horizontal ' : 'adminform ';
 		$str = array();
 		$str[] = '<div class="pane-slider content pane-down accordion-inner">';
 		$str[] = '<fieldset class="' . $class . 'pluginContanier" id="formAction_' . $c . '"><ul>';

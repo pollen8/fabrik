@@ -5,7 +5,7 @@
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-//this array contains all the javascript element plugin objects
+// Contains all the javascript element plugin objects
 var pluginControllers = [];
 
 var fabrikAdminElement = new Class({
@@ -26,11 +26,7 @@ var fabrikAdminElement = new Class({
 		this.setOptions(options);
 		this.setParentViz();
 
-		this.jsCounter = 0;
-		this.jsactions = ['focus', 'blur', 'abort', 'click', 'change', 'dblclick', 'keydown', 'keypress', 'keyup', 'mouseup', 'mousedown', 'mouseover', 'select', 'load', 'unload'];
-		this.eEvents = ['hide', 'show', 'fadeout', 'fadein', 'slide in', 'slide out', 'slide toggle', 'clear'];
-		this.eTrigger = this.options.elements;
-		this.eConditions = ['<', '<=', '==', '>=', '>', '!=', 'hidden', 'shown', 'CONTAINS', '!CONTAINS'];
+		this.jsCounter = -1;
 		if (typeOf(document.id('addJavascript')) === false) {
 			fconsole('add js button not found');
 		} else {
@@ -45,6 +41,11 @@ var fabrikAdminElement = new Class({
 
 		document.id('jform_plugin').addEvent('change', function (e) {
 			this.changePlugin(e);
+		}.bind(this));
+		
+		document.id('javascriptActions').addEvent('click:relay(a[data-button=removeButton])', function (e, target) {
+			e.stop();
+			this.deleteJS(target);
 		}.bind(this));
 
 	},
@@ -77,114 +78,44 @@ var fabrikAdminElement = new Class({
 		Fabrik.requestQueue.add(myAjax);
 	},
 
-	deleteJS: function (e) {
-		e.stop();
-		e.target.up(3).dispose();
+	deleteJS: function (target) {
+		target.getParent('fieldset').dispose();
+		this.jsCounter --;
 	},
 
 	addJavascript: function (opt) {
-		if (typeOf(opt) !== 'object') {
-			opt = {'params': {
-				js_code: '',
-				js_action: '',
-				js_e_event: '',
-				js_e_trigger: '',
-				js_e_condition: '',
-				js_e_value: '',
-				code: '',
-				js_published: 1
-			}};
-		}
-		opt.code = opt.code ? opt.code : '';
-		code = new Element('textarea', {
-			'rows': 8,
-			'cols': 40,
-			'name': 'jform[js_code][]',
-			'class': 'inputbox'
-		}).set('text', opt.code);
-
-		var published = opt.params.js_published ? opt.params.js_published : '1';
-		var yesno = [];
-		var yesOpts = {'value': 1};
-		var noOpts = {'value': 0};
-		if (published.toInt() === 0) {
-			noOpts.selected = 'selected';
-		} else {
-			yesOpts.selected = 'selected';
-		}
-		yesno.push(new Element('option', noOpts).set('text', Joomla.JText._('JNO')));
-		yesno.push(new Element('option', yesOpts).set('text', Joomla.JText._('JYES')));
-
-		published = new Element('select.inputbox.elementtype', {'name': 'jform[js_publised][]'}).adopt(yesno);
-
-		action = this._makeSel(this.jsCounter + ' input-small', 'jform[js_action][]', this.jsactions, opt.action, ' - On - ');
-		var evs = this._makeSel(this.jsCounter + ' input-mini', 'js_e_event[]', this.eEvents, opt.params.js_e_event, Joomla.JText._('COM_FABRIK_SELECT_DO'));
-		var triggers = this._makeSel(this.jsCounter, 'js_e_trigger[]', this.eTrigger, opt.params.js_e_trigger, Joomla.JText._('COM_FABRIK_SELECT_ON'));
-		var condition = this._makeSel(this.jsCounter + ' input-mini', 'js_e_condition[]', this.eConditions, opt.params.js_e_condition, Joomla.JText._('COM_FABRIK_IS'));
-
-		var td = new Element('td', {'colspan': 2});
-		td.set('html', this.options.deleteButton);
-
-		var content = new Element('table', {
-			'class': 'paramlist admintable adminform',
-			'id': 'jsAction_' + this.jsCounter
-		}).adopt(
-			new Element('tbody', {'class': 'adminform', 'id': 'jsAction_' + this.jsCounter}).adopt([
-				new Element('tr').adopt(new Element('td', {'colspan': 2})),
-				new Element('tr').adopt([new Element('td', {'class': 'paramlist_key'}).appendText(Joomla.JText._('COM_FABRIK_ACTION')), new Element('td').adopt(action)]),
-				new Element('tr').adopt([new Element('td', {'class': 'paramlist_key'}).appendText(Joomla.JText._('COM_FABRIK_PUBLISHED')), new Element('td').adopt(published)]),
-				new Element('tr').adopt([new Element('td', {'class': 'paramlist_key'}).appendText(Joomla.JText._('COM_FABRIK_CODE')), new Element('td').adopt(code)]),
-				new Element('tr').adopt(new Element('td', {
-					'colspan': 2,
-					'class': 'paramlist_key',
-					'styles': {
-						'text-align': 'left'
-					}
-				}).appendText(Joomla.JText._('COM_FABRIK_OR'))),
-				new Element('tr').adopt(new Element('td', {'colspan': 2}).adopt([
-					evs, triggers,
-					new Element('input', {
-						'value': Joomla.JText._('COM_FABRIK_WHERE_THIS'),
-						'class': 'readonly input-mini',
-						'disabled': 'disabled',
-						'size': Joomla.JText._('COM_FABRIK_WHERE_THIS').length
-					}),
-					condition,
-					new Element('input', {
-						'name': 'js_e_value[]',
-						'class': 'inputbox',
-						'value': opt.params.js_e_value
-					})
-				])),
-				new Element('tr').adopt(td)
-			])
-
-
-		);
-		td.getElement('a').addEvent('click', function (e) {
-			this.deleteJS(e);
-		}.bind(this));
-		var div = new Element('div');
-		content.inject(div);
-		div.inject(document.id('javascriptActions'));
-		this.jsCounter ++;
-	},
-
-	watchPluginDd: function () {
-		/*document.id('jform_plugin').addEvent('change', function (e) {
-			e.stop();
-			var opt = e.target.get('value');
-			$$('.elementSettings').each(function (tab) {
-				if (opt === tab.id.replace('page-', '')) {
-					tab.setStyles({display: 'block'});
-				} else {
-					tab.setStyles({display: 'none'});
-				}
-			});
+		var jsId = opt && opt.id ? opt.id : 0;
+		// Ajax request to load the first part of the plugin form (do[plugin] in, on)
+		var request = new Request.HTML({
+			url: 'index.php',
+			data: {
+				'option': 'com_fabrik',
+				'view': 'plugin',
+				'task': 'top',
+				'format': 'raw',
+				'type': 'elementjavascript',
+				'plugin': null,
+				'plugin_published': true,
+				'c': this.jsCounter,
+				'id': jsId,
+				'elementid': this.id
+			},
+			append: document.id('javascriptActions'),
+			onSuccess: function (res) {
+				this.updateBootStrap();
+				FabrikAdmin.reTip();
+			}.bind(this),
+			onFailure: function (xhr) {
+				console.log('fail', xhr);
+			},
+			onException: function (headerName, value) {
+				console.log('exception', headerName, value);
+			}
 		});
-		if (document.id('page-' + this.options.plugin)) {
-			document.id('page-' + this.options.plugin).setStyles({display: 'block'});
-		}*/
+		Fabrik.requestQueue.add(request);
+		this.updateBootStrap();
+		FabrikAdmin.reTip();
+		this.jsCounter ++;
 	},
 
 	setParentViz: function () {
@@ -209,44 +140,5 @@ var fabrikAdminElement = new Class({
 				f.submit();
 			});
 		}
-	},
-
-	// deprecated???
-
-	getPluginTop: function (plugin, opts) {
-		return new Element('tr').adopt(
-			new Element('td').adopt([
-				new Element('input', {'value': Joomla.JText._('COM_FABRIK_ACTION'), 'size': 3, 'readonly': true, 'class': 'readonly'}),
-				this._makeSel('inputbox elementtype', 'jform[validationrule][plugin][]', this.plugins, plugin)
-			]));
 	}
 });
-
-function setAllCheckBoxes(elName, val) {
-	var els = document.getElementsByName(elName);
-	var c = els.length;
-	for (var i = 0; i < c; i++) {
-		els[i].checked = val;
-	}
-}
-
-function setAllDropDowns(elName, selIndex) {
-	els = document.getElementsByName(elName);
-	c = els.length;
-	for (var i = 0; i < c; i++) {
-		els[i].selectedIndex = selIndex;
-	}
-}
-
-function setAll(t, elName) {
-	els = document.getElementsByName(elName);
-	c = els.length;
-	for (var i = 0; i < c; i++) {
-		els[i].value = t;
-	}
-}
-
-function deleteSubElements(sTagId) {
-	var oNode = document.id(sTagId);
-	oNode.parentNode.removeChild(oNode);
-}

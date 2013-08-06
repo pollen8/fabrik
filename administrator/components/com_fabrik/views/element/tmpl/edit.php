@@ -30,7 +30,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			return false;
 		}
 		var msg = '';
-		var jsEvents = document.getElements('select[name*=js_action]').get('value');
+		var jsEvents = document.getElements('select[name*=action]').get('value');
 		if (jsEvents.length > 0 && jsEvents.contains('')) {
 			msg += '\n ' + Joomla.JText._('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 		}

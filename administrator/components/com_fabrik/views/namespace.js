@@ -10,6 +10,7 @@
 		return;
 	}
 	FabrikAdmin = {};
+
 	// Various Joomla element plugins used to control JForm elements
 	FabrikAdmin.model = {'fields': {'fabriktable': {}, 'element': {}}};
 
@@ -30,6 +31,7 @@
 }());
 
 if (typeof(jQuery) !== 'undefined') {
+
 	// Relay radio button group clicks for content added via ajax calls
 	(function ($) {
 		$(document).on('click', '.btn-group label:not(.active)', null, function (event) {

@@ -4080,7 +4080,7 @@ class FabrikFEModelList extends JModelForm
 		}
 		else
 		{
-			$keydata = $this->getPrimaryKeyAndExtra($tableName);
+			$keydata = $this->getPrimaryKeyAndExtra();
 			$tableName = $table->db_table_name;
 			$primaryKey = $table->db_primary_key;
 		}

@@ -64,50 +64,6 @@ var PluginManager = new Class({
 		return Fabrik.requestQueue.empty();
 	},
 
-	/**
-	 * @TODO - now only used by element js code - would be nice to remove and use the same code as form/list/validation rule plugins
-	 */
-
-	_makeSel: function (c, name, pairs, sel, selectTxt) {
-		var v, l;
-		selectTxt = selectTxt ? selectTxt : Joomla.JText._('COM_FABRIK_PLEASE_SELECT');
-		var opts = [];
-		this.sel = sel;
-		opts.push(new Element('option', {'value': ''}).appendText(selectTxt));
-		if (typeOf(pairs) === 'object') {
-			$H(pairs).each(function (group, key) {
-				opts.push(new Element('optgroup', {'label': key}));
-				group.each(function (pair) {
-					opts = this._addSelOpt(opts, pair);
-				}.bind(this));
-			}.bind(this));
-		} else {
-			pairs.each(function (pair) {
-				opts = this._addSelOpt(opts, pair);
-			}.bind(this));
-		}
-		return new Element('select', {'class': c, 'name': name}).adopt(opts);
-	},
-
-	/**
-	 * @TODO - now only used by element js code - would be nice to remove and use the same code as form/list/validation rule plugins
-	 */
-
-	_addSelOpt: function (opts, pair) {
-		if (typeOf(pair) === 'object') {
-			v = pair.value ? pair.value : pair.name; //plugin list should be keyed on plugin name
-			l = pair.label ? pair.label : v;
-		} else {
-			v = l = pair;
-		}
-		if (v === this.sel) {
-			opts.push(new Element('option', {'value': v, 'selected': 'selected'}).set('text', l));
-		} else {
-			opts.push(new Element('option', {'value': v}).set('text', l));
-		}
-		return opts;
-	},
-
 	watchDelete: function () {
 		document.id('adminForm').addEvent('click:relay(a.removeButton, a[data-button=removeButton])', function (event, target) {
 			event.preventDefault();
