@@ -39,9 +39,9 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	/**
 	 * Can the row be deleteed
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $listModel  list model
-	 * @param   object  $row        current row to test
+	 * @param   object  $params     Plugin params
+	 * @param   object  $listModel  List model
+	 * @param   object  $row        Current row to test
 	 *
 	 * @return boolean
 	 */
@@ -91,6 +91,10 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 			}
 			$value = $params->get('candeleterow_value');
 			$operator = $params->get('operator', '=');
+			if (!isset($data->$field))
+			{
+				return false;
+			}
 			switch ($operator)
 			{
 				case '=':
@@ -101,7 +105,6 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 					return $data->$field != $value;
 					break;
 			}
-
 		}
 	}
 
