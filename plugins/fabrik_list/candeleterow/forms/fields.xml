@@ -52,6 +52,7 @@
 			<field name="candeleterow_eval"
 				type="fabrikeditor"
 				mode="php"
+				width="100"
 				description="PLG_LIST_CANDELETEROW_EVAL_DESC"
 				label="PLG_LIST_CANDELETEROW_EVAL_LABEL"
 				repeat="true" />
