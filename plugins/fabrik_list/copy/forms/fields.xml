@@ -2,7 +2,16 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-copy">
-			<field default="1" label="PLG_FABRIK_LIST_COPY_ACCESS_LABEL" name="copytable_access" repeat="true" type="accesslevel"/>
+
+			<field type="helplink"
+				url="PLG_LIST_COPY_HELP_SERVER" />
+
+			<field name="copytable_access"
+				type="accesslevel"
+				default="1"
+				label="PLG_FABRIK_LIST_COPY_ACCESS_LABEL"
+				repeat="true" />
+				
 		</fieldset>
 	</fields>
 </form>

@@ -49,7 +49,8 @@ foreach($rows as $r) {
  }
  $message .= "</ul>
 <p><a href='".COM_FABRIK_LIVESITE."'>".COM_FABRIK_LIVESITE."</a></p>";
-	$res = JUtility::sendMail( $MailFrom, $FromName, $MailFrom, $subject, $message, true);
+	$mail = JFactory::getMailer();
+	$res = $mail->sendMail( $MailFrom, $FromName, $MailFrom, $subject, $message, true);
 $msg = "Spam report sent";
 
 ?>

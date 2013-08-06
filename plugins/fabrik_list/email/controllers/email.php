@@ -38,7 +38,7 @@ class FabrikControllerListemail extends JControllerLegacy
 	 * @return unknown
 	 */
 
-	function display()
+	public function display($cachable = false, $urlparams = array())
 	{
 		echo "display";
 	}
@@ -50,7 +50,7 @@ class FabrikControllerListemail extends JControllerLegacy
 	 * @return string html
 	 */
 
-	function popupwin()
+	public function popupwin()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -73,7 +73,8 @@ class FabrikControllerListemail extends JControllerLegacy
 
 		$model->formModel = $formModel;
 		$model->listModel = $listModel;
-		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
+		$listParams = $listModel->getParams();
+		$model->setParams($listParams, $input->getInt('renderOrder'));
 		$view->setModel($model, true);
 		$view->setModel($listModel);
 		$view->setModel($formModel);
@@ -89,7 +90,7 @@ class FabrikControllerListemail extends JControllerLegacy
 	 * @return  void
 	 */
 
-	function doemail()
+	public function doemail()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -97,7 +98,8 @@ class FabrikControllerListemail extends JControllerLegacy
 		$model = $pluginManager->getPlugIn('email', 'list');
 		$listModel = $this->getModel('List', 'FabrikFEModel');
 		$listModel->setId($input->getInt('id'));
-		$model->setParams($listModel->getParams(), $input->getInt('renderOrder'));
+		$listParams = $listModel->getParams();
+		$model->setParams($listParams, $input->getInt('renderOrder'));
 		$model->listModel = $listModel;
 		/*
 		 * $$$ hugh - for some reason have to do this here, if we don't, it'll

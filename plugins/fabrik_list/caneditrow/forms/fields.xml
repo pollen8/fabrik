@@ -2,7 +2,10 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="COM_FABRIK_OPTIONS" name="plg-list-caneditrow">
-		
+
+			<field type="helplink"
+				url="PLG_LIST_CANEDITROW_HELP_SERVER" />
+
 			<field name="caneditrow_access"
 				type="accesslevel"
 				default="1"
