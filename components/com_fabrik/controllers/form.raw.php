@@ -187,7 +187,9 @@ class FabrikControllerForm extends JControllerLegacy
 		if ($input->getInt('elid') !== 0)
 		{
 			// Inline edit show the edited element
-			echo $model->inLineEditResult();
+			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
+			$inlineModel->setFormModel($model);
+			echo $inlineModel->showResults();
 			return;
 		}
 

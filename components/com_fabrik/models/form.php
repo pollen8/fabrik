@@ -4419,48 +4419,6 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Inline edit show the edited element
-	 *
-	 * @return string
-	 */
-
-	/* public function inLineEditResult()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$listModel = $this->getListModel();
-		$listid = $listModel->getId();
-		$listModel->clearCalculations();
-		$listModel->doCalculations();
-		$elementid = $input->getInt('elid');
-		if ($elementid === 0)
-		{
-			return;
-		}
-		$elmentModel = $this->getElement($elementid, true);
-		if (!$elmentModel)
-		{
-			return;
-		}
-		$rowid = $input->get('rowid');
-		$listModel->setId($listid);
-
-		// If the inline edit stored a element join we need to reset back the table
-		$listModel->clearTable();
-		$listModel->getTable();
-		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
-		$key = $input->get('element');
-		$html = '';
-		$html .= $elmentModel->renderListData($data[$key], $data);
-		$listRef = 'list_' . $input->get('listref');
-		$doCalcs = "\nFabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ")";
-		$html .= '<script type="text/javasript">';
-		$html .= $doCalcs;
-		$html .= "</script>\n";
-		return $html;
-	} */
-
-	/**
 	 * Is the form editable
 	 *
 	 * @return  bool
