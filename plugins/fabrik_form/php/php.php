@@ -294,6 +294,8 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	private function _runPHP($params, &$formModel, &$groupModel = null)
 	{
+		$pluginModel = $this;
+		$pluginModel->formModel = $formModel;
 		/**
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
