@@ -1168,6 +1168,11 @@ class FabrikWorker
 			}
 			else
 			{
+				if (is_null($error))
+				{
+					// No error set (eval could have actually returned false as a correct value)
+					return;
+				}
 				$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
 			}
 		}
