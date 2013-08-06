@@ -1765,7 +1765,7 @@ EOD;
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
+			$query->select($db->quoteName('title'))->from('#__content')->where('id = ' . (int) $contentTemplate);
 			$db->setQuery($query);
 			$res = $db->loadObject();
 		}
