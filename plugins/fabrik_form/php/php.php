@@ -294,12 +294,18 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	private function _runPHP($params, &$formModel, &$groupModel = null)
 	{
-		$pluginModel = $this;
-		$pluginModel->formModel = $formModel;
 		/**
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
+
+		/**
+		 * Added $pluginModel so scripts can access things like $pluginModel->getEmailData()
+		 * (don't know why formModel isn't already set at this point, though!)
+		 */
+		$pluginModel = $this;
+		$pluginModel->formModel = $formModel;
+
 		$method = $params->get('only_process_curl');
 		/*
 		 *  $$$ rob this is poor when submitting the form the data is stored in _formData, when editing its stored in _data -
