@@ -14,8 +14,8 @@ defined('_JEXEC') or die('Restricted access');
 
 ?>
 <div class="tab-pane active" id="tab-details">
-	<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
 	<fieldset class="form-horizontal">
+		<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
 		<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
 		<input type="hidden" id="plugin_orig" name="plugin_orig" value="<?php echo $this->item->plugin; ?>" />
 
