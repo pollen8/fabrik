@@ -4,10 +4,13 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
+
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 $group = $this->group;
 foreach ($group->subgroups as $subgroup) :
@@ -25,7 +28,7 @@ foreach ($group->subgroups as $subgroup) :
 				endif;
 				if ($group->canDeleteRepeat) :?>
 					<a class="deleteGroup btn btn-small btn-danger" href="#">
-						<i class="icon-remove fabrikTip tip-small" opts="{trigger: 'hover'}" title="<?php echo JText::_('COM_FABRIK_DELETE_GROUP'); ?>"></i>
+						<i class="icon-minus fabrikTip tip-small" opts="{trigger: 'hover'}" title="<?php echo JText::_('COM_FABRIK_DELETE_GROUP'); ?>"></i>
 					</a>
 				<?php endif;?>
 			</div>

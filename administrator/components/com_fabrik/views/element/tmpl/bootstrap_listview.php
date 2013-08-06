@@ -4,43 +4,46 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
+
 ?>
 <div class="tab-pane" id="tab-listview">
-
-	<ul class="nav nav-tabs">
-		<li class="active">
-	    	<a data-toggle="tab" href="#listview-details">
-	    		<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_LIST_SETTINGS_DETAILS'); ?>
-	    	</a>
-	    </li>
-	    <li>
-	    	<a data-toggle="tab" href="#listview-icons">
-	    		<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_ICONS_SETTINGS_DETAILS')?>
-	    	</a>
-	    </li>
-	    <li>
-	    	<a data-toggle="tab" href="#listview-filters">
-	    		<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_FILTERS_DETAILS')?>
-	    	</a>
-	    </li>
-	    <li>
-	    	<a data-toggle="tab" href="#listview-css">
-	    		<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_CSS_DETAILS')?>
-	    	</a>
-	    </li>
-	    <li>
-	    	<a data-toggle="tab" href="#listview-calculations">
-	    		<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_CALCULATIONS_DETAILS')?>
-	    	</a>
-	    </li>
-	</ul>
+	<fieldset class="form-horizontal">
+		<legend><?php echo JText::_('COM_FABRIK_LIST_VIEW_SETTINGS');?></legend>
+		<ul class="nav nav-tabs">
+			<li class="active">
+					<a data-toggle="tab" href="#listview-details">
+						<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_LIST_SETTINGS_DETAILS'); ?>
+					</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#listview-icons">
+						<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_ICONS_SETTINGS_DETAILS')?>
+					</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#listview-filters">
+						<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_FILTERS_DETAILS')?>
+					</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#listview-css">
+						<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_CSS_DETAILS')?>
+					</a>
+				</li>
+				<li>
+					<a data-toggle="tab" href="#listview-calculations">
+						<?php echo JText::_('COM_FABRIK_ELEMENT_LABEL_CALCULATIONS_DETAILS')?>
+					</a>
+				</li>
+		</ul>
+	</fieldset>
 
 	<div class="tab-content">
 		<div class="tab-pane active" id="listview-details">

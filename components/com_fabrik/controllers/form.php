@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
@@ -66,20 +66,8 @@ class FabrikControllerForm extends JControllerLegacy
 
 	public function inlineedit()
 	{
-		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-		$viewType = $document->getType();
-		$viewLayout = $input->get('layout', 'default');
-		$view = $this->getView('form', $viewType, '');
-		$view->setModel($model, true);
-
-		// Set the layout
-		$view->setLayout($viewLayout);
-
-		// @TODO check for cached version
-		$view->inlineEdit();
+		$model = JModelLegacy::getInstance('FormInlineEdit', 'FabrikFEModel');
+		$model->render();
 	}
 
 	/**
@@ -239,7 +227,9 @@ class FabrikControllerForm extends JControllerLegacy
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
-			echo $model->inLineEditResult();
+			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
+			$inlineModel->setFormModel($model);
+			echo $inlineModel->showResults();
 			return;
 		}
 

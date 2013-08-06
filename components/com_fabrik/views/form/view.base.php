@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -710,7 +710,8 @@ class FabrikViewFormBase extends JViewLegacy
 		$Itemid = FabrikWorker::itemId();
 		$model = $this->getModel();
 		$listModel = $model->getListModel();
-		$canDelete = $listModel->canDelete($model->data);
+		$row = JArrayHelper::toObject($model->data);
+		$canDelete = $listModel->canDelete($row);
 		$params = $model->getParams();
 		$task = 'form.process';
 		$reffer = $input->server->get('HTTP_REFERER', '', 'string');
@@ -770,7 +771,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
 		? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
-		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != 0
+		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != ''
 		? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button btn-danger" name="delete" />' : '';
 		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
 		$form->gobackButton = $params->get('goback_button', 0) == "1"

@@ -1,16 +1,15 @@
 <?php
-
 /**
  * Single element raw view
  *
  * @package     Joomla
  * @subpackage  Fabik
- * @copyright   Copyright (C) 2005 - 2008 Pollen 8 Design Ltd. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -72,12 +71,6 @@ class FabrikViewElement extends JViewLegacy
 		{
 			$plugin = $pluginManager->getElementPlugin($id);
 		}
-/* 		$elementid = $input->get('elid');
-		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
-		$className = $input->get('plugin');
-		$plugin = $pluginManager->getPlugIn($className, 'element');
-		$plugin->setId($elementid);
-		$plugin->inLineEdit(); */
 	}
 
 }
