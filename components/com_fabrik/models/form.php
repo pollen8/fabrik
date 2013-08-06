@@ -4424,7 +4424,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * @return string
 	 */
 
-	public function inLineEditResult()
+	/* public function inLineEditResult()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -4458,7 +4458,7 @@ class FabrikFEModelForm extends FabModelForm
 		$html .= $doCalcs;
 		$html .= "</script>\n";
 		return $html;
-	}
+	} */
 
 	/**
 	 * Is the form editable

@@ -39,7 +39,7 @@ defined('_JEXEC') or die('Restricted access');
 
 	<fieldset class="form-horizontal">
 		<div id="plugin-container">
-		<?php echo $this->pluginFields?>
+		<?php echo $this->pluginFields; ?>
 		</div>
 	</fieldset>
 </div>

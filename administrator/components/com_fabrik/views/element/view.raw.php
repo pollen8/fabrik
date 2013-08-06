@@ -20,7 +20,7 @@ jimport('joomla.application.component.view');
  * @subpackage  Fabrik
  * @since       3.0
  */
-class FabrikAdminViewElement extends JViewLegacy
+/* class FabrikAdminViewElement extends JViewLegacy
 {
 
 	/**
@@ -32,7 +32,7 @@ class FabrikAdminViewElement extends JViewLegacy
 	 * @return  void
 	 */
 
-	public function display($tpl = null)
+	/*public function display($tpl = null)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -41,4 +41,4 @@ class FabrikAdminViewElement extends JViewLegacy
 		$formModel->inLineEdit();
 	}
 
-}
+} */

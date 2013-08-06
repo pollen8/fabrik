@@ -204,7 +204,9 @@ class FabrikAdminControllerForm extends FabControllerForm
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
-			echo $model->inLineEditResult();
+			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
+			$inlineModel->setFormModel($model);
+			echo $inlineModel->showResults();
 			return;
 		}
 

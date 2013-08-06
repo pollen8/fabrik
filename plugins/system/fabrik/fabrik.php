@@ -89,7 +89,7 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			if ($shim !== '' && $js !== '')
+			if ($js !== '')
 			{
 				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
 			}
