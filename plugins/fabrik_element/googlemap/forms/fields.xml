@@ -2,8 +2,7 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset label="googlemap" name="plg-element-googlemap">
-<<<<<<< HEAD
-			
+
 			<field type="helplink"
 				url="PLG_ELEMENT_GOOGLE_MAP_HELP_SERVER"
 			/>
@@ -37,7 +36,7 @@
 				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_WIDTH_DESC"
 			/>
-			
+
 			<field name="fb_gm_mapheight"
 				type="text"
 				class="input-mini"
@@ -46,8 +45,8 @@
 				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_DESC"
 			/>
-			
-			<field name="gmap_styles"	
+
+			<field name="gmap_styles"
 				type="fabrikmodalrepeat"
 				label="PLG_ELEMENT_GOOGLE_MAP_STYLE_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_STYLE_DESC"
@@ -405,7 +404,7 @@
 				label="PLG_ELEMENT_GOOGLE_MAP_WIDTH_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_WIDTH_DESC"
 			/>
-				
+
 			<field name="fb_gm_table_mapheight"
 				type="text"
 				class="input-mini"
@@ -414,7 +413,7 @@
 				label="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_HEIGHT_DESC"
 			/>
-				
+
 			<field name="fb_gm_table_zoomlevel"
 				type="text"
 				class="input-mini"
@@ -423,7 +422,7 @@
 				label="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_LABEL"
 				description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC"
 			/>
-			
+
 		</fieldset>
 	</fields>
 </form>
