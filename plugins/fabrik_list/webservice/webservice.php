@@ -25,7 +25,11 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListWebservice extends PlgFabrik_List
 {
 
-	/**@var	string	button prefix name */
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'webservice';
 
 	/**
@@ -60,9 +64,9 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -120,9 +124,9 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  list model
-	 * @param   array   $opts    custom options
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  &$model  List model
+	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
@@ -154,7 +158,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Get the data map to transform web service data into list data
 	 *
-	 * @param   object  $formModel  form model
+	 * @param   object  $formModel  Form model
 	 *
 	 * @return  array  data map
 	 */
@@ -180,7 +184,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Get an array of key/value filters to send to the web serive
 	 *
-	 * @param   FabrikWebService  $service  the current web service being used
+	 * @param   FabrikWebService  $service  The current web service being used
 	 *
 	 * @return  array  key/val pairs
 	 */
@@ -204,7 +208,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Get sign in credentials to the service
 	 *
-	 * @return  array  login credentials
+	 * @return  array  Login credentials
 	 */
 
 	protected function getCredentials()
@@ -225,7 +229,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Get the message generated in process()
 	 *
-	 * @param   int  $c  plugin render order
+	 * @param   int  $c  Plugin render order
 	 *
 	 * @return  string
 	 */
@@ -238,9 +242,9 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  $model   List model
+	 * @param   array   $args    Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */

@@ -1004,7 +1004,6 @@ class FabrikFEModelForm extends FabModelForm
 			$app = JFactory::getApplication();
 			$input = $app->input;
 			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
-			//$request_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'request');
 
 			if ($menu_rowid == '-1')
 			{
@@ -3109,7 +3108,6 @@ class FabrikFEModelForm extends FabModelForm
 								}
 								else
 								{
-									//if ($groupModel->isJoin())
 									if ($groupModel->isJoin() && $groupModel->canRepeat())
 									{
 										$n =& $data[0]->$name;
@@ -3685,6 +3683,12 @@ class FabrikFEModelForm extends FabModelForm
 		if ($jplugins === 0 || ($jplugins === 2 && $this->isEditable()))
 		{
 			$text = preg_replace("/{\s*.*?}/i", '', $text);
+		}
+		$plain = strip_tags($text);
+		$translated = JText::_($plain);
+		if ($translated !== $plain)
+		{
+			$text = str_replace($plain, $translated, $text);
 		}
 		return $text;
 	}

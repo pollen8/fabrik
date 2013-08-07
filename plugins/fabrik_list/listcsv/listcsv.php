@@ -25,8 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListListcsv extends PlgFabrik_List
 {
 
-	var $_counter = null;
-
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
 	 *

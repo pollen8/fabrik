@@ -2,6 +2,10 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-radius_search">
+
+			<field type="helplink"
+				url="PLG_LIST_RADIUS_SEARCH_HELP_SERVER" />
+
 			<field name="radius_mapelement"
 				type="listfields"
 				description="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_DESC"

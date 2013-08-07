@@ -25,18 +25,11 @@ class FabrikPlugin extends JPlugin
 {
 
 	/**
-	 * If the admin settings are visible or hidden when rendered
-	 *
-	 * @var bool
-	 */
-	var $_adminVisible = false;
-
-	/**
 	 * path to xml file
 	 *
 	 * @var string
 	 */
-	var $_xmlPath = null;
+	public $_xmlPath = null;
 
 	/**
 	 * Params (must be public)
@@ -45,10 +38,18 @@ class FabrikPlugin extends JPlugin
 	 */
 	public $params = null;
 
-	var $attribs = null;
-
+	/**
+	 * Plugin id
+	 *
+	 * @var int
+	 */
 	protected $id = null;
 
+	/**
+	 * Plugin data
+	 *
+	 * @var JTable
+	 */
 	protected $row = null;
 
 	/**
@@ -56,11 +57,7 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @var int
 	 */
-	var $renderOrder = null;
-
-	protected $_counter;
-
-	protected $_pluginManager = null;
+	public $renderOrder = null;
 
 	/**
 	 * Form
@@ -258,22 +255,23 @@ class FabrikPlugin extends JPlugin
 		if ($inistr != $inival)
 		{
 			$inival2 = '';
+
 			// Handle strings with HTML
 			if (substr($inival, 0, 3) == '<p>' || substr($inival, 0, 3) == '<p ')
 			{
 				// Split by paras, use first para for legend and put remaining paras back.
-				$lines = preg_split('/<p.*>|</p>/',$inival,PREG_SPLIT_NO_EMPTY);
+				$lines = preg_split('/<p.*>|</p>/', $inival, PREG_SPLIT_NO_EMPTY);
 				$inival = $lines[0];
 				unset($lines[0]);
-				$inival2 = '<b><p>' . implode('</p>\n<p>',$lines) . '<br/><br/></p></b>';
+				$inival2 = '<b><p>' . implode('</p>\n<p>', $lines) . '<br/><br/></p></b>';
 			}
-			elseif (substr($inival, 0, 1) != '<' && strpos($inival, '<br') >0)
+			elseif (substr($inival, 0, 1) != '<' && strpos($inival, '<br') > 0)
 			{
 				// Separate first part for legend and convert rest to paras
-				$lines = preg_split('/<br\s*\/\s*>/',$inival,PREG_SPLIT_NO_EMPTY);
+				$lines = preg_split('/<br\s*\/\s*>/', $inival, PREG_SPLIT_NO_EMPTY);
 				$inival = $lines[0];
 				unset($lines[0]);
-				$inival2 = '<b><p>' . implode('</p>\n<p>',$lines) . '<br/><br/></p></b>';
+				$inival2 = '<b><p>' . implode('</p>\n<p>', $lines) . '<br/><br/></p></b>';
 			}
 			$str[] = '<legend>' . $inival . '</legend>';
 			if ($inival2 != '')
@@ -452,34 +450,8 @@ class FabrikPlugin extends JPlugin
 	{
 		if (!isset($this->params))
 		{
-			return $this->_loadParams();
-		}
-		else
-		{
-			return $this->params;
-		}
-	}
-
-	/**
-	 * Private load params
-	 *
-	 * @return JRegistry
-	 */
-
-	protected function _loadParams()
-	{
-		if (!isset($this->attribs))
-		{
 			$row = $this->getRow();
-			$a = $row->params;
-		}
-		else
-		{
-			$a = $this->params;
-		}
-		if (!isset($this->params))
-		{
-			$this->params = new JRegistry($a);
+			$this->params = new JRegistry($row->params);
 		}
 		return $this->params;
 	}
@@ -490,7 +462,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  JTable
 	 */
 
-	function getRow()
+	protected function getRow()
 	{
 		if (!isset($this->row))
 		{

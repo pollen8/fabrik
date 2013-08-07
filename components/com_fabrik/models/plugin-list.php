@@ -23,10 +23,18 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_List extends FabrikPlugin
 {
-	/** @var string button prefix*/
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = '';
 
-	/** @var string js code to ini js object */
+	/**
+	 * JavaScript code to ini js object
+	 *
+	 * @var string
+	 */
 	protected $jsInstance = null;
 
 	/**

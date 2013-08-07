@@ -710,8 +710,11 @@ var FbDatabasejoin = new Class({
 
 				// Fired when form submitted - enables element to update itself with any new submitted data
 				if (this.options.popupform === form.id) {
-					this.options.value = json.rowid;
-
+					
+					// Only set the value if this element has triggered the pop up (ie could not be if in a repeat group)
+					if (this.activePopUp) {
+						this.options.value = json.rowid;
+					}
 					// rob previously we we doing appendInfo() but that didnt get the concat labels for the database join
 					if (this.options.displayType === 'auto-complete') {
 

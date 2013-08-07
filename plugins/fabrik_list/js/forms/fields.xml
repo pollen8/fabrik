@@ -2,7 +2,10 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-php">
-		
+
+			<field type="helplink"
+				url="PLG_LIST_JS_HELP_SERVER" />
+
 			<field name="access"
 				default="1"
 				label="PLG_FABRIK_LIST_JS_ACCESS_LABEL"
@@ -33,8 +36,9 @@
 				repeat="true" />
 				
 			<field name="js_code"
-				type="textarea"
-				cols="60"
+				type="fabrikeditor"
+				mode="javascript"
+				width="100"
 				description="PLG_FABRIK_LIST_JS_CODE_DESC"
 				label="PLG_FABRIK_LIST_JS_CODE_LABEL"
 				repeat="true"

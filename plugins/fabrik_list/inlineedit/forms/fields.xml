@@ -3,7 +3,10 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 	
 		<fieldset name="plg-list-inlineedit">
-		
+
+			<field type="helplink"
+				url="PLG_LIST_INLINEEDIT_HELP_SERVER" />
+
 			<field name="inline_access"
 				type="accesslevel"
 				default="1"
