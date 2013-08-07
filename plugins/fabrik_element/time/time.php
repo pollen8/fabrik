@@ -23,6 +23,11 @@ defined('_JEXEC') or die('Restricted access');
 class PlgFabrik_ElementTime extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = true;
 
 	/**

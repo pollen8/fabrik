@@ -51,7 +51,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	protected $offsetDate = null;
 
 	/**
-	 * Has subelements - set to false as we need to manaully apply name/time keys to the element html name
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
 	 */
 	public $hasSubElements = false;
 

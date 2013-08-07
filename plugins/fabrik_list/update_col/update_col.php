@@ -401,18 +401,22 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$listRef = $model->getRenderContext();
 		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
 		$elements = '<select class="inputbox key" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
-		$add = '<a class="add button button-primary" href="#">
-		' . FabrikHelperHTML::image('add.png', 'list', $model->getTmpl()) . '</a>';
-		$del = '<a class="button delete" href="#">' . FabrikHelperHTML::image('del.png', 'list', $model->getTmpl()) . '</a>';
+		$j3 = FabrikWorker::j3();
+		$addImg = $j3 ? 'plus.png' : 'add.png';
+		$removeImg = $j3 ? 'remove.png' : 'del.png';
+		$add = '<a class="btn add button btn-primary" href="#">
+		' . FabrikHelperHTML::image($addImg, 'list', $model->getTmpl()) . '</a>';
+		$del = '<a class="btn button delete" href="#">' . FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl()) . '</a>';
 		$html[] = '<form id="update_col' . $listRef . '">';
 
-		$html[] = '<table class="fabrikList table table-striped" style="width:100%">';
+		$class = $j3 ? 'table table-striped' : 'fabrikList';
+		$html[] = '<table class="' . $class . '" style="width:100%">';
 		$html[] = '<thead>';
 		$html[] = '<tr><th>' . JText::_('COM_FABRIK_ELEMENT') . '</th><th>' . JText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
 		$html[] = '</thead>';
 
 		$html[] = '<tbody>';
-		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td>' . $add . $del . '</td></tr>';
+		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td><div class="btn-group">' . $add . $del . '</div></td></tr>';
 		$html[] = '</tbody>';
 		$html[] = '</table>';
 		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';

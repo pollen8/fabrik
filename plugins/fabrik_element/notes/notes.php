@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to enable users to make notes on a give record
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.notes
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
@@ -22,7 +24,11 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
 
-	/** @var int last row id to be inserted via ajax call */
+	/**
+	 * Last row id to be inserted via ajax call
+	 *
+	 * @var int
+	 */
 	protected $loadRow = null;
 
 	/**

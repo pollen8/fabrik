@@ -1,5 +1,7 @@
 <?php
 /**
+ * Plugin element to render an image already located on the server
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.image
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
@@ -20,7 +22,12 @@ defined('_JEXEC') or die('Restricted access');
 class PlgFabrik_ElementImage extends PlgFabrik_Element
 {
 
-	var $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
+	/**
+	 * Ignored folders
+	 *
+	 * @var array
+	 */
+	protected $ignoreFolders = array('cache', 'lib', 'install', 'modules', 'themes', 'upgrade', 'locks', 'smarty', 'tmp');
 
 	/**
 	 * Db table field type
