@@ -665,9 +665,12 @@ class FabrikFEModelForm extends FabModelForm
 			{
 				// Merge the js attribs back into the array
 				$a = json_decode($r->params);
-				foreach ($a as $k => $v)
+				if ($a)
 				{
-					$r->$k = $v;
+					foreach ($a as $k => $v)
+					{
+						$r->$k = $v;
+					}
 				}
 				unset($r->params);
 				if (!isset($r->js_published) || (int) $r->js_published === 1)

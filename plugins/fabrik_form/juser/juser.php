@@ -336,6 +336,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Needed for shouldProcess...
+		$this->formModel = $formModel;
 		$this->data = array_merge($formModel->_formData, $this->getEmailData());
 		if (!$this->shouldProcess('juser_conditon', null, $formModel))
 		{
@@ -641,9 +642,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$messages = array();
 						foreach ($sendEmail as $userid)
 						{
-							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', '"
-								. JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT') . "', '"
-								. JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']) . "')";
+							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
+								. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
+								. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
 						}
 						$q .= implode(',', $messages);
 						$db->setQuery($q);

@@ -265,7 +265,8 @@ class PlgContentFabrik extends JPlugin
 					$clearfilters = $input->get('clearfilters', $m[1]);
 					break;
 				case 'resetfilters':
-					$resetfilters = $input->get('resetfilters', $m[1]);
+					//$resetfilters = $input->get('resetfilters', $m[1]);
+					$resetfilters = $m[1];
 					break;
 				default:
 					if (array_key_exists(1, $m))
@@ -555,7 +556,7 @@ class PlgContentFabrik extends JPlugin
 		$this->origRequestVars = array();
 		foreach ($qs_arr as $k => $v)
 		{
-			$origVar = $input->get($k, '', 'string');
+			$origVar = $input->get($k, null, 'string');
 			$this->origRequestVars[$k] = $origVar;
 			$_GET[$k] = $v;
 			$input->set($k, $v);

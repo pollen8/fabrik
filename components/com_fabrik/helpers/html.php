@@ -1749,6 +1749,37 @@ EOD;
 	}
 
 	/**
+	 * Get content item title
+	 *
+	 * @param   int  $contentTemplate  Joomla article id
+	 *
+	 * @since   3.0.7
+	 *
+	 * @return  string  content item title
+	 */
+
+	public function getContentTitle($contentTemplate)
+	{
+		$app = JFactory::getApplication();
+		if ($app->isAdmin())
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('introtext, ' . $db->quoteName('fulltext'))->from('#__content')->where('id = ' . (int) $contentTemplate);
+			$db->setQuery($query);
+			$res = $db->loadObject();
+		}
+		else
+		{
+			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			$articleModel = JModel::getInstance('Article', 'ContentModel');
+			$res = $articleModel->getItem($contentTemplate);
+		}
+		return $res->title;
+	}
+
+
+	/**
 	* Read a template file
 	*
 	* @param   string  $templateFile  Path to template

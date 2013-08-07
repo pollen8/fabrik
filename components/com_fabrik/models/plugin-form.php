@@ -27,6 +27,8 @@ class PlgFabrik_Form extends FabrikPlugin
 	/** @var string html to return from plugin rendering */
 	protected $html = '';
 
+	protected $formModel = null;
+
 	/**
 	 * Run from list model when deleting rows
 	 *

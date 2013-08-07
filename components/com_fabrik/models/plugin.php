@@ -72,6 +72,13 @@ class FabrikPlugin extends JPlugin
 	 */
 	public $jform = null;
 
+	/*
+	 * Plugin data
+	 *
+	 * @var array
+	 */
+	public $data = null;
+
 	/**
 	 * Set the plugin id
 	 *
