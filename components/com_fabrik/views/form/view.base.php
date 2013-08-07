@@ -108,10 +108,7 @@ class FabrikViewFormBase extends JViewLegacy
 		{
 			$form->formid .= '_' . $this->rowid;
 		}
-		if ($form->error === '')
-		{
-			$form->error = JText::_('COM_FABRIK_FAILED_VALIDATION');
-		}
+		$form->error = $form->error === '' ? JText::_('COM_FABRIK_FAILED_VALIDATION') : JText::_($form->error);
 		$form->origerror = $form->error;
 		$form->error = $model->hasErrors() ? $form->error : '';
 
@@ -764,25 +761,31 @@ class FabrikViewFormBase extends JViewLegacy
 		}
 		$fields[] = JHTML::_('form.token');
 
+		$resetLabel = JText::_($params->get('reset_button_label'));
+		$copyLabel = JText::_($params->get('copy_button_label'));
+		$applyLabel = JText::_($params->get('apply_button_label'));
+		$deleteLabel = JText::_($params->get('delete_button_label', 'Delete'));
+		$goBackLabel = JText::_($params->get('goback_button_label'));
+
 		$form->resetButton = $params->get('reset_button', 0) && $this->editable == "1"
-				? '<input type="reset" class="btn button" name="Reset" value="' . $params->get('reset_button_label') . '" />' : '';
+				? '<input type="reset" class="btn button" name="Reset" value="' .$resetLabel  . '" />' : '';
 		$form->copyButton = $params->get('copy_button', 0) && $this->editable && $model->getRowId() != ''
-				? '<input type="submit" class="btn button" name="Copy" value="' . $params->get('copy_button_label') . '" />' : '';
+				? '<input type="submit" class="btn button" name="Copy" value="' . $copyLabel . '" />' : '';
 		$applyButtonType = $model->isAjax() ? 'button' : 'submit';
 		$form->applyButton = $params->get('apply_button', 0) && $this->editable
-		? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $params->get('apply_button_label') . '" />' : '';
+		? '<input type="' . $applyButtonType . '" class="btn button" name="apply" value="' . $applyLabel . '" />' : '';
 		$form->deleteButton = $params->get('delete_button', 0) && $canDelete && $this->editable && $this_rowid != ''
-		? '<input type="submit" value="' . $params->get('delete_button_label', 'Delete') . '" class="btn button btn-danger" name="delete" />' : '';
+		? '<input type="submit" value="' . $deleteLabel . '" class="btn button btn-danger" name="delete" />' : '';
 		$goBack = $model->isAjax() ? '' : FabrikWorker::goBackAction();
 		$form->gobackButton = $params->get('goback_button', 0) == "1"
-				? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $params->get('goback_button_label')
+				? '<input type="button" class="btn button" name="Goback" ' . $goBack . ' value="' . $goBackLabel
 				. '" />' : '';
 		if ($model->isEditable() && $params->get('submit_button', 1))
 		{
 			$button = $model->isAjax() ? "button" : "submit";
 			$submitClass = FabrikString::clean($form->submit_button_label);
 			$submitIcon = $params->get('save_icon', '');
-			$submitLabel = $form->submit_button_label;
+			$submitLabel = JText::_($form->submit_button_label);
 			if ($submitIcon !== '')
 			{
 				$submitIcon = '<i class="' . $submitIcon . '"></i>';

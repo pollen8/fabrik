@@ -832,8 +832,6 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function canView($view = 'form')
 	{
-		// As list view acl is new we should inherit from the details view setting which was being applied to the list view.
-		//$default = ($view === 'list') ? $this->canView() : 1;
 		$default = 1;
 		$key = $view == 'form' ? 'view' : 'listview';
 		$prop = $view == 'form' ? 'view_access' : 'list_view_access';
@@ -1140,7 +1138,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
-			$this->default = $default;
+			$this->default = JText::_($default);
 		}
 		return $this->default;
 	}
@@ -1432,7 +1430,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
-			$l .= $j3 ? $element->label : '';
+			$l .= $j3 ? JText::_($element->label) : '';
 			$model = $this->getFormModel();
 			$str .= $l;
 			if ($bLabel && !$this->isHidden())
@@ -3100,6 +3098,10 @@ class PlgFabrik_Element extends FabrikPlugin
 				$opts[] = $phpOpt->text;
 			}
 		}
+		foreach ($opts as &$opt)
+		{
+			$opt = JText::_($opt);
+		}
 		return $opts;
 	}
 
@@ -3938,9 +3940,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Used by elements with suboptions, given a value, return its label
 	 *
-	 * @param   string  $v              Value
-	 * @param   string  $defaultLabel   Default label
-	 * @param   bool    $forceCheck     Force check even if $v === $defaultLabel
+	 * @param   string  $v             Value
+	 * @param   string  $defaultLabel  Default label
+	 * @param   bool    $forceCheck    Force check even if $v === $defaultLabel
 	 *
 	 * @return  string	Label
 	 */
