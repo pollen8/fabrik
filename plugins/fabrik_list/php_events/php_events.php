@@ -27,8 +27,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * onFiltersGot method - run after the list has created filters
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List
 	 *
 	 * @return bol currently ignored
 	 */
@@ -41,8 +41,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Called when the list HTML filters are loaded
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
 	 *
 	 * @return  void
 	 */
@@ -55,9 +55,9 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  list model
-	 * @param   array   $opts    custom options
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  &$model  List model
+	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
@@ -70,8 +70,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Run before the list loads its data
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
 	 *
 	 * @return  void
 	 */
@@ -84,8 +84,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * onGetData method
 	 *
-	 * @param   object  $params  calling the plugin table/form
-	 * @param   object  &$model  list model
+	 * @param   object  $params  Calling the plugin table/form
+	 * @param   object  &$model  List model
 	 *
 	 * @return bol currently ignored
 	 */
@@ -98,8 +98,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Called when the model deletes rows
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
 	 *
 	 * @return  bool  false if fail
 	 */
@@ -112,9 +112,9 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -140,9 +140,9 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	 * Determine if we use the plugin or not
 	 * both location and event criteria have to be match when form plug-in
 	 *
-	 * @param   object  &$model    calling the plugin table/form
-	 * @param   string  $location  location to trigger plugin on
-	 * @param   string  $event     event to trigger plugin on
+	 * @param   object  &$model    Calling the plugin table/form
+	 * @param   string  $location  Location to trigger plugin on
+	 * @param   string  $event     Event to trigger plugin on
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
@@ -166,9 +166,9 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  $model   List model
+	 * @param   array   $args    Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
@@ -186,8 +186,8 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Evaluate supplied PHP
 	 *
-	 * @param   string  $code    php code
-	 * @param   object  &$model  list model
+	 * @param   string  $code    Php code
+	 * @param   object  &$model  List model
 	 *
 	 * @return bool
 	 */

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-  <fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-    <fieldset name="plg-list-php_events">
-    
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+		<fieldset name="plg-list-php_events">
+		
+		<field type="helplink"
+			url="PLG_LIST_PHP_EVENTS_HELP_SERVER" />
+
       <field name="list_phpevents_onfiltersgot"
       	type="fabrikeditor"
 		mode="php"

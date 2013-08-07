@@ -25,14 +25,39 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 {
 
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'update_col';
 
+	/**
+	 * Number of send email notifications
+	 *
+	 * @var int
+	 */
 	protected $_sent = 0;
 
+	/**
+	 * Number of NOT send email notifications
+	 *
+	 * @var int
+	 */
 	protected $_notsent = 0;
 
+	/**
+	 * Number rows updated
+	 *
+	 * @var int
+	 */
 	protected $_row_count = 0;
 
+	/**
+	 * Update message
+	 *
+	 * @var string
+	 */
 	protected $msg = null;
 
 	/**
@@ -261,7 +286,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				}
 			}
 		}
-		//$$$servantek reordered the update process in case the email routine wants to kill the updates
+		// $$$servantek reordered the update process in case the email routine wants to kill the updates
 		if (!empty($dateCol))
 		{
 			$date = JFactory::getDate();

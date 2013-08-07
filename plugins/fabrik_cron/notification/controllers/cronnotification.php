@@ -1,12 +1,12 @@
 <?php
 /**
- * Cron Notification
+ * Cron Notification Controller
  *
- * @package Joomla
- * @subpackage Fabrik
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.cron.notification
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
-*/
+ */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
@@ -27,8 +27,11 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 {
 	/**
 	 * Display the view
+	 *
+	 * @return  void
 	 */
-	function display()
+
+	public function display()
 	{
 		$document = JFactory::getDocument();
 
@@ -49,12 +52,17 @@ class FabrikControllerCroncronnotification extends JControllerLegacy
 		return $view->display();
 	}
 
-	function delete()
+	/**
+	 * Delee a notification
+	 *
+	 * @return false
+	 */
+
+	public function delete()
 	{
-		$model	= $this->getModel('cronnotification');
+		$model = $this->getModel('cronnotification');
 		$model->delete();
 		$this->setRedirect('index.php?option=com_fabrik&view=cron&controller=cron.cronnotification', JText::_('NOTIFICATIONS_REMOVED'));
 	}
 
 }
-

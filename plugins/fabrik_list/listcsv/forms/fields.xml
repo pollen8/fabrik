@@ -3,6 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-listcsv">
 		
+			<field type="helplink"
+				url="PLG_LIST_PHP_HELP_SERVER" />
+			
 			<field name="listcsv_import_php_file"
 				type="filelist"
 				description="PLG_FABRIK_LIST_LISTCSV_IMPORT_FILE_DESC"
