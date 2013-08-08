@@ -121,7 +121,6 @@ class FabimageHelper
 
 	protected static function testImagemagick()
 	{
-
 		if (function_exists("NewMagickWand"))
 		{
 			$im["IM"] = "Magick wand";
@@ -146,10 +145,13 @@ class FabimageHelper
 }
 
 /**
- * base image lib class
+ * Base image manipulation class
  *
- * @package  Fabrik
- * @since    3.0
+ * @package     Joomla
+ * @subpackage  Fabrik.helpers
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @since       1.0
  */
 
 class Fabimage
@@ -222,6 +224,51 @@ class Fabimage
 	public function resize($maxWidth, $maxHeight, $origFile, $destFile)
 	{
 
+	}
+
+	/**
+	 * Grab an image from a remote URI and store in cache, then servered cached image
+	 *
+	 * @param   string  $src       Remote URI to image
+	 * @param   string  $path      Local folder to store the image in e.g. 'cache/com_fabrik/images'
+	 * @param   string  $file      Local filename
+	 * @param   number  $lifeTime  Number of days to cache the image for
+	 *
+	 * @return  string  Local URI to cached image
+	 */
+	public static function cacheRemote($src, $path, $file, $lifeTime = 29)
+	{
+		$folder = JPATH_SITE . $path;
+		if (!JFolder::exists($folder))
+		{
+			JFolder::create($folder);
+		}
+		$cacheFile = $folder . $file;
+
+		// Check for cached version
+		if (JFile::exists($cacheFile))
+		{
+			// Check its age- Google T&C allow you to store for no more than 30 days.
+			$createDate = JFactory::getDate(filemtime($cacheFile));
+			$now = JFactory::getDate();
+			$interval = $now->diff($createDate);
+			$daysOld = (float) $interval->format('%R%a');
+			if ($daysOld < - $lifeTime)
+			{
+				// Remove out of date
+				JFile::delete($cacheFile);
+
+				// Grab image from Google and store
+				file_put_contents($cacheFile, file_get_contents($src));
+			}
+		}
+		else
+		{
+			// No cached image, grab image from remote URI and store locally
+			file_put_contents($cacheFile, file_get_contents($src));
+		}
+		$src = COM_FABRIK_LIVESITE . $path . $file;
+		return $src;
 	}
 }
 

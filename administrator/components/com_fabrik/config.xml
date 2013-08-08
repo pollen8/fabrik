@@ -11,34 +11,75 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+
+		<field name="google_api_key"
+			type="text"
+			label="COM_FABRIK_GOOGLE_API_KEY_LABEL"
+			description="COM_FABRIK_GOOGLE_API_KEY_DESC" />
+		
+		<field name="google_buisness_client_id"
+			type="text"
+			label="COM_FABRIK_GOOGLE_BUSINESS_CLIENT_ID_LABEL"
+			description="COM_FABRIK_GOOGLE_BUSINESS_CLIENT_ID_DESC" />
+			
+		<field name="google_buisness_signature"
+			type="text"
+			label="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_LABEL"
+			description="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_DESC" />
 			
 	</fieldset>
 	<fieldset label="COM_FABRIK_LISTS" name="lists">
 
-		<field default="1" description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC" label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL" menu="hide" name="fbConf_alter_existing_db_cols" type="list">
+		<field name="fbConf_alter_existing_db_cols"
+			default="1"
+			description="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_DESC"
+			label="COM_FABRIK_ALERT_EXISTING_FIELD_TYPES_LABEL"
+			menu="hide"
+			type="list">
 				<option value="1">JYES</option>
 				<option value="addonly">COM_FABRIK_ALTER_EXISTING_FIELD_ADD_NEW_FIELDS_ONLY</option>
 				<option value="0">JNO</option>
 		</field>
 
-		<field default="1" description="COM_FABRIK_FILTER_BUILD_METHOD_DESC" label="COM_FABRIK_FILTER_BUILD_METHOD_LABEL" name="filter_build_method" type="list">
+		<field name="filter_build_method"
+			default="1"
+			description="COM_FABRIK_FILTER_BUILD_METHOD_DESC"
+			label="COM_FABRIK_FILTER_BUILD_METHOD_LABEL"
+			type="list">
 				<option value="1">COM_FABRIK_SHOW_DATA_RECORDED_IN_TABLE</option>
 				<option value="2">COM_FABRIK_SHOW_ALL_OPTIONS</option>
 		</field>
 		
-		<field default="100" description="COM_FABRIK_FILTER_LIST_MAX_DESC" label="COM_FABRIK_FILTER_LIST_MAX_LABEL" name="filter_list_max" type="text"/>
+		<field name="filter_list_max"
+			default="100"
+			description="COM_FABRIK_FILTER_LIST_MAX_DESC"
+			label="COM_FABRIK_FILTER_LIST_MAX_LABEL"
+			type="text"/>
 		
-		<field default="0" description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC" label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL" name="enable_single_sorting" type="radio" class="radio btn-group">
+		<field name="enable_single_sorting"
+			default="0"
+			description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC"
+			label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL"
+			type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
 
-		<field default="0" description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC" label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL" name="user_elements_as_related_data" type="radio" class="radio btn-group">
+		<field name="user_elements_as_related_data"
+			default="0"
+			description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC"
+			label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL"
+			type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
 		
-		<field default="0" description="COM_FABRIK_FIELD_LIST_PDF_ICON_DESC" label="COM_FABRIK_FIELD_LIST_PDF_ICON_LABEL" menu="hide" name="list_pdf" type="radio" class="radio btn-group">
+		<field name="list_pdf" 
+			default="0"
+			description="COM_FABRIK_FIELD_LIST_PDF_ICON_DESC"
+			label="COM_FABRIK_FIELD_LIST_PDF_ICON_LABEL"
+			menu="hide"
+			type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
@@ -290,17 +331,33 @@
 				<option value="Elastic">Elastic</option>
 		</field>
 		
-		<field default="easeIn" description="COM_FABRIK_TIP_EASE_DESC" label="COM_FABRIK_TIP_EASE_LABEL" name="tipfx_ease" type="list">
+		<field name="tipfx_ease"
+			default="easeIn"
+			description="COM_FABRIK_TIP_EASE_DESC"
+			label="COM_FABRIK_TIP_EASE_LABEL"
+			type="list">
 				<option value="easeIn">In</option>
 				<option value="easeOut">Out</option>
 				<option value="easeInOut">InOut</option>
 		</field>
 		
-		<field default="500" description="COM_FABRIK_TIP_FX_DURATION_DESC" label="COM_FABRIK_TIP_FX_DURATION_LABEL" name="tipfx_duration" size="3"/>
+		<field name="tipfx_duration"
+			size="3"
+			description="COM_FABRIK_TIP_FX_DURATION_DESC"
+			label="COM_FABRIK_TIP_FX_DURATION_LABEL"
+			default="500" />
 			
-		<field default="50" description="COM_FABRIK_TIP_FX_DISTANCE_DESC" label="COM_FABRIK_TIP_FX_DISTANCE_LABEL" name="tipfx_distance" size="3"/>
+		<field name="tipfx_distance"
+			size="3"
+			default="50"
+			description="COM_FABRIK_TIP_FX_DISTANCE_DESC"
+			label="COM_FABRIK_TIP_FX_DISTANCE_LABEL" />
 		
-		<field default="0" description="COM_FABRIK_TIP_FX_FADEIN_DESC" label="COM_FABRIK_TIP_FX_FADEIN_LABEL" name="tipfx_fadein" type="radio" class="radio btn-group">
+		<field name="tipfx_fadein"
+			default="0"
+			label="COM_FABRIK_TIP_FX_FADEIN_LABEL"
+			description="COM_FABRIK_TIP_FX_FADEIN_DESC"
+			type="radio">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
@@ -308,13 +365,21 @@
 
 	<fieldset label="COM_FABRIK_DEBUGGING" name="debug">
 
-		<field default="0" description="COM_FABRIK_FABRIK_DEBUG_DESC" label="COM_FABRIK_FABRIK_DEBUG_LABEL" name="use_fabrikdebug" type="list">
+		<field name="use_fabrikdebug"
+			default="0"
+			description="COM_FABRIK_FABRIK_DEBUG_DESC"
+			label="COM_FABRIK_FABRIK_DEBUG_LABEL"
+			type="list">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 				<option value="2">COM_FABRIK_FABRIK_DEBUG_JS</option>
 		</field>
 		
-		<field default="0" description="COM_FABRIK_PDF_DEBUG_DESC" label="COM_FABRIK_PDF_DEBUG_LABEL" name="pdf_debug" type="radio" class="radio btn-group">
+		<field name="pdf_debug"
+			type="radio"
+			default="0"
+			description="COM_FABRIK_PDF_DEBUG_DESC"
+			label="COM_FABRIK_PDF_DEBUG_LABEL">
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>	
 		</field>
@@ -362,6 +427,13 @@
 	
 	<fieldset description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL" name="permissions">
 
-		<field class="inputbox" component="com_fabrik" filter="rules" label="JCONFIG_PERMISSIONS_LABEL" name="rules" section="component" type="rules" validate="rules"/>
+		<field name="rules"
+			class="inputbox"
+			component="com_fabrik"
+			filter="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			section="component"
+			type="rules"
+			validate="rules"/>
 	</fieldset>
 </config>
