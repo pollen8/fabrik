@@ -310,6 +310,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$config = JFactory::getConfig();
 		$lang = JFactory::getLanguage();
 		$mail = JFactory::getMailer();
+		$this->formModel =& $formModel;
 
 		// Load up com_users lang - used in email text
 		$lang->load('com_users', JPATH_SITE);
@@ -327,7 +328,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Needed for shouldProcess...
-		$this->data = array_merge($formModel->_formData, $this->getEmailData());
+		$this->data = array_merge($formModel->formData, $this->getEmailData());
 		if (!$this->shouldProcess('juser_conditon', null, $formModel))
 		{
 			return true;
