@@ -1,11 +1,14 @@
 <?php
 /**
- * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2008 Pollen 8 Design Ltd
- * @license		GNU/GPL, see LICENSE.php
+ * Fabrik tag cloud module helper
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  */
 
-/** ensure this file is being included by a parent file */
+// No direct access
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 class modTagcloudHelper
@@ -17,17 +20,17 @@ class modTagcloudHelper
 		$column = $params->get('column', '');
 		$filter = $params->get('filter', '');
 		$url = $params->get('url', '');
-
 		$splitter = $params->get('splitter', '');
 		$alphabetically = $params->get('alphabetically', '');
-		$min = (int)$params->get('min', 1);
-		$max = (int)$params->get('max', 20);
+		$min = (int) $params->get('min', 1);
+		$max = (int) $params->get('max', 20);
 		$seperator = $params->get('seperator', '');
 		$document = JFactory::getDocument();
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($column)->from($table);
-		if ($filter != '') {
+		if ($filter != '')
+		{
 			$query->wher($filter);
 		}
 		$db->setQuery($query);
@@ -65,14 +68,20 @@ class tagCloud{
 		$this->maxRecords  = $maxRecords;
 		$this->splitter = $splitter;
 		$this->seperator = ' ' . $seperator . ' ';
-		foreach ($this->rows as $row) {
+		foreach ($this->rows as $row)
+		{
 			$bits = explode( $this->splitter, $row );
-			foreach ($bits as $bit) {
+			foreach ($bits as $bit)
+			{
 				$bit = trim($bit);
-				if ($bit != '') {
-					if (array_key_exists($bit, $this->countedRows)) {
+				if ($bit != '')
+				{
+					if (array_key_exists($bit, $this->countedRows))
+					{
 						$this->countedRows[$bit] = $this->countedRows[$bit] + 1;
-					} else {
+					}
+					else
+					{
 						$this->countedRows[$bit] = 1;
 					}
 				}
@@ -81,41 +90,54 @@ class tagCloud{
 
 	}
 
-	function render($order = 0)
+	/**
+	 * Render
+	 *
+	 * @param   number  $order  Order type
+	 *
+	 * @return multitype:string
+	 */
+
+	public function render($order = 0)
 	{
 		arsort($this->countedRows);
-		//remove any that are less than min
-		foreach ($this->countedRows as $key => $val) {
-			if ($val < $this->min) {
+
+		// Rremove any that are less than min
+		foreach ($this->countedRows as $key => $val)
+		{
+			if ($val < $this->min)
+			{
 				unset($this->countedRows[$key]);
 			}
 		}
-		//trim to the top records
+		// Trim to the top records
 		$this->countedRows = array_slice( $this->countedRows, 0, $this->maxRecords);
-		switch ($order) {
+		switch ($order)
+		{
 			case 0:
 			default:
-				//order size - asc
+				// Order size - asc
 				asort($this->countedRows);
 				break;
 			case 1:
-				//oder size dec
+				// Oder size dec
 				arsort($this->countedRows);
 				break;
 			case 2:
-				//order alphabetically - asc
+				// Order alphabetically - asc
 				ksort($this->countedRows);
 				break;
 			case 3:
-				//order alphabetically - desc
+				// Order alphabetically - desc
 				krsort($this->countedRows);
 				break;
 		}
 
 		$cloud = array();
-		foreach ($this->countedRows as $bit=>$count) {
+		foreach ($this->countedRows as $bit => $count)
+		{
 			$url = strstr($this->url, '%s') ? str_replace('%s', $bit, $this->url) : $this->url . $bit;
-			$cloud[] = "<a href='" . $url . "'><span class='cloud_" . $count . "'>". $bit . "</span></a>" . $this->seperator;
+			$cloud[] = "<a href='" . $url . "'><span class='cloud_" . $count . "'>" . $bit . "</span></a>" . $this->seperator;
 		}
 		return $cloud;
 	}
