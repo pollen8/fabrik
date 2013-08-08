@@ -2806,6 +2806,7 @@ $groupBy .= '_raw';
 		$pluginManager->runPlugins('onBuildQueryWhere', $this, 'list');
 
 		$sig = !$query ? 'string' : 'query';
+		$sig .= (int) $incFilters;
 		$db = FabrikWorker::getDbo();
 		if (isset($this->_whereSQL[$sig]))
 		{

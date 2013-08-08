@@ -10,6 +10,21 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
+
+		<field name="google_api_key"
+			type="text"
+			label="COM_FABRIK_GOOGLE_API_KEY_LABEL"
+			description="COM_FABRIK_GOOGLE_API_KEY_DESC" />
+		
+		<field name="google_buisness_client_id"
+			type="text"
+			label="COM_FABRIK_GOOGLE_BUSINESS_CLIENT_ID_LABEL"
+			description="COM_FABRIK_GOOGLE_BUSINESS_CLIENT_ID_DESC" />
+			
+		<field name="google_buisness_signature"
+			type="text"
+			label="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_LABEL"
+			description="COM_FABRIK_GOOGLE_BUSINESS_SIGNATURE_DESC" />
 			
 	</fieldset>
 	<fieldset label="COM_FABRIK_LISTS" name="lists">

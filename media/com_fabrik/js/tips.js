@@ -34,6 +34,18 @@ var FloatingTips = new Class({
 		if (elements) {
 			this.attach(elements);
 		}
+		
+		// Hide tips on esc key press
+		window.addEvent('keyup', function (e) {
+			if (e.key === 'esc') {
+				this.hideAll();
+			}
+		}.bind(this));
+		
+		// Remove old tips if you use ajax edit and update a record
+		Fabrik.addEvent('fabrik.list.update', function () {
+			this.hideAll();
+		}.bind(this));
 	},
 	
 	attach: function (elements) {
