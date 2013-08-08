@@ -4,13 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.listcsv
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -25,8 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListListcsv extends PlgFabrik_List
 {
-
-	var $_counter = null;
 
 	/**
 	 * determine if the table plugin is a button and can be activated only when rows are selected
@@ -69,8 +66,13 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
 		if ($file == -1 || $file == '')
 		{
-			$code = @eval($params->get('listcsv_import_php_code'));
-			FabrikWorker::logEval($code, 'Caught exception on eval in onImportCSVRow : %s');
+			$code = $params->get('listcsv_import_php_code', '');
+			$ret = @eval($code);
+			FabrikWorker::logEval($ret, 'Caught exception on eval in onImportCSVRow : %s');
+			if ($ret === false)
+			{
+				return false;
+			}
 		}
 		else
 		{

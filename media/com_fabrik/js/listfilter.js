@@ -1,3 +1,10 @@
+/**
+ * List Filter
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FbListFilter = new Class({
 
 	Implements: [Options, Events],
@@ -83,7 +90,6 @@ var FbListFilter = new Class({
 			advancedSearchButton.addEvent('click', function (e) {
 				e.stop();
 				var a = e.target;
-				//var url = Fabrik.liveSite + "index.php?option=com_fabrik&view=list&tmpl=component&layout=_advancedsearch&listid=" + this.options.id;
 				if (a.get('tag') !== 'a') {
 					a = a.getParent('a');
 				}

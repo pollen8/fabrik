@@ -5,12 +5,24 @@
 	<fields name="params">
 		<fieldset name="params">
 		
-			<field default="1" label="COM_FABRIK_PUBLISHED" name="plugin_state" repeat="true" type="radio">
+			<field name="plugin_state"
+				type="radio"
+				class="btn-group"
+				default="1"
+				label="COM_FABRIK_PUBLISHED"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
-			<field class="inputbox elementtype" label="COM_FABRIK_SELECT_DO" name="plugins" plugin="fabrik_list" repeat="true" required="true" type="pluginlist"/>
+
+			<field name="plugins"
+				type="pluginlist"
+				plugin="fabrik_list"
+				class="inputbox elementtype"
+				label="COM_FABRIK_SELECT_DO"
+				repeat="true"
+				required="true" />
+
 		</fieldset>
 	</fields>
 	

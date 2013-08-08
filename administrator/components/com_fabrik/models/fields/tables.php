@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Form
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is within the rest of the framework
-defined('JPATH_BASE') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -103,6 +103,7 @@ class JFormFieldTables extends JFormFieldList
 			$opts->value = $this->value;
 			$opts = json_encode($opts);
 			$script[] = "FabrikAdmin.model.fields.fabriktable['$this->id'] = new tablesElement('$this->id', $opts);\n";
+			$src[] = 'media/com_fabrik/js/fabrik.js';
 			$src[] = 'administrator/components/com_fabrik/views/namespace.js';
 			$src[] = 'administrator/components/com_fabrik/models/fields/tables.js';
 			FabrikHelperHTML::script($src, implode("\n", $script));

@@ -1,6 +1,13 @@
+/**
+ * Tooltips
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FloatingTips = new Class({
 	Implements: [Options, Events],
-	
+
 	options: {
 		fxProperties: {transition: Fx.Transitions.linear, duration: 500},
 		position: 'top',
@@ -20,7 +27,7 @@ var FloatingTips = new Class({
 			return true;
 		}
 	},
-	
+
 	initialize: function (elements, options) {
 		this.setOptions(options);
 		this.options.fxProperties = {transition: eval(this.options.tipfx), duration: this.options.duration};
@@ -35,11 +42,17 @@ var FloatingTips = new Class({
 			this.attach(elements);
 		}
 	},
-	
+
 	attach: function (elements) {
 		this.elements = $$(elements);
 		this.elements.each(function (trigger) {
-			var opts = Object.merge(Object.clone(this.options), JSON.decode(trigger.get('opts', '{}').opts));
+			var tmpOpts = {};
+			// Tip text in gmap viz bubble not decodable so test if json is valid first
+			if (trigger.get('opts', '{}').opts && JSON.validate(trigger.get('opts', '{}').opts)) {
+				tmpOpts = JSON.decode(trigger.get('opts', '{}').opts);
+			}
+
+			var opts = Object.merge(Object.clone(this.options), tmpOpts);
 			var optStore = trigger.retrieve('opts', {});
 			trigger.erase('opts');
 			if (!optStore[opts.showOn]) {
@@ -61,11 +74,11 @@ var FloatingTips = new Class({
 						tip.hide();
 					}
 				}.bind(this));
-				
+
 				var store = trigger.retrieve('tip', {});
 				store[opts.showOn] = tip;
 				trigger.store('tip', store);
-				
+
 				var complete = {
 						'onComplete': function (e) {
 							if (this.hideMe) {
@@ -76,7 +89,7 @@ var FloatingTips = new Class({
 							this.hideMe = false;
 						}
 					};
-				
+
 				var fxOpts = Object.merge(complete, Object.clone(this.options.fxProperties));
 				var fx = new Fx.Morph(tip, fxOpts);
 				fx.tip = tip;
@@ -88,16 +101,16 @@ var FloatingTips = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	addStartEvent: function (trigger, evnt) {
 		var opts = trigger.retrieve('opts');
 		opts = opts[evnt];
 		trigger.addEvent(opts.showOn, function (e) {
-			
+
 			/*
 			 * Think this if statement may not be needed - I believe it was trying to fix the issue where in IE 8 the checkbox
 			 * was not checked with a click event - now in list.js I've changed the showOn option to 'change' works
-			 */ 
+			 */
 			if (opts.showOn === 'click') {
 				//toggling
 				var active = trigger.retrieve('active', false);
@@ -113,7 +126,7 @@ var FloatingTips = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	addEndEvent: function (trigger, evnt) {
 		var opts = trigger.retrieve('opts');
 		opts = opts[evnt];
@@ -125,7 +138,7 @@ var FloatingTips = new Class({
 			}
 		}.bind(this));
 	},
-	
+
 	getTipContent: function (trigger, evnt) {
 		var c;
 		var opts = trigger.retrieve('opts');
@@ -141,11 +154,11 @@ var FloatingTips = new Class({
 			break;
 		default:
 			c = content(trigger);
-			break;	
+			break;
 		}
 		return c;
 	},
-	
+
 	show: function (trigger, evnt) {
 		var tips = trigger.retrieve('tip');
 		var opts = trigger.retrieve('opts');
@@ -184,7 +197,7 @@ var FloatingTips = new Class({
 			edge = 'right';
 			break;
 		}
-		
+
 		var pos = {relativeTo: trigger,
 				position: opts.position,
 				edge: edge,
@@ -218,14 +231,14 @@ var FloatingTips = new Class({
 			morph.left = [l, l + offsetDistance ];
 			break;
 		}
-		
+
 		var fxs = trigger.retrieve('fxs');
 		var mover = fxs[opts.showOn];
 		if (!mover.isRunning()) {
 			mover.start(morph);
 		}
 	},
-	
+
 	hide: function (trigger, evnt) {
 		var opts = trigger.retrieve('opts');
 		opts = opts[evnt];
@@ -241,7 +254,7 @@ var FloatingTips = new Class({
 		tip.hide();
 		trigger.store('active', false);
 	},
-	
+
 	hideOthers: function (except) {
 		if (this.element) {
 			this.elements.each(function (element) {
@@ -254,7 +267,7 @@ var FloatingTips = new Class({
 			});
 		}
 	},
-	
+
 	hideAll: function () {
 		this.elements.each(function (element) {
 			var tips = element.retrieve('tip');

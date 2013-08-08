@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -46,7 +46,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	}
 
 	/**
-	 * Loads in elements validation objects
+	 * Loads in elements published validation objects
 	 *
 	 * @return  array	validation objects
 	 */
@@ -86,6 +86,10 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$oPlugin = JPluginHelper::getPlugin('fabrik_validationrule', $usedPlugin);
 					$plugIn->elementModel = $this->elementModel;
 					$this->validations[] = $plugIn;
+
+					// Set params relative to plugin render order
+					$plugIn->setParams($params, $i);
+
 					$plugIn->getParams()->set('show_icon', JArrayHelper::getValue($showIcon, $i, true));
 					$c++;
 				}

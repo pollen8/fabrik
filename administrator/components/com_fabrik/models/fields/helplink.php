@@ -4,14 +4,13 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0.9
  */
 
-// Check to ensure this file is within the rest of the framework
-defined('JPATH_BASE') or die();
-
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Renders a Fabrik Help link
@@ -45,13 +44,7 @@ class JFormFieldHelpLink extends JFormField
 	public function getInput()
 	{
 		$url = $this->element['url'] ? (string) $this->element['url'] : '';
-		$label = '<ul><li class="button icon-32-help" style="float:right;width:32px;height:32px">
-<a class="toolbar" rel="help" style="display:block;width:32px;padding-top:32px;text-align:center;" onclick="Joomla.popupWindow(\'' .  JText::_($url). '\', \'Help\', 700, 500, 1);return false" href="#">
-<span class="icon-32-help">
-</span>
-Help
-</a>
-</li></ul>';
+		$label = '<div style="float:right;"><a class="btn btn-small btn-info" href="#" rel="help" onclick="Joomla.popupWindow(\'' .  JText::_($url). '\', \'Help\', 800, 600, 1);return false"><i class="icon-help icon-32-help icon-question-sign"></i> ' . JText::_('JHELP') . '</a></div>';
 		return $label;
 	}
 }

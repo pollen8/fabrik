@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.candeleterow
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -39,9 +39,9 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	/**
 	 * Can the row be deleteed
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $listModel  list model
-	 * @param   object  $row        current row to test
+	 * @param   object  $params     Plugin params
+	 * @param   object  $listModel  List model
+	 * @param   object  $row        Current row to test
 	 *
 	 * @return boolean
 	 */
@@ -91,6 +91,10 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 			}
 			$value = $params->get('candeleterow_value');
 			$operator = $params->get('operator', '=');
+			if (!isset($data->$field))
+			{
+				return false;
+			}
 			switch ($operator)
 			{
 				case '=':
@@ -101,7 +105,6 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 					return $data->$field != $value;
 					break;
 			}
-
 		}
 	}
 

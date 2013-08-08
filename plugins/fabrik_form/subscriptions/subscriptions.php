@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.subscriptions
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -83,7 +83,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	{
 		if (!isset($this->billingCycle))
 		{
-			try {
+			try
+			{
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
 				$data = $this->getEmailData();
@@ -273,7 +274,17 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		return $this->html;
 	}
 
-	public function onBeforeLoad($params, $formModel)
+	/**
+	 * Run when the form is loaded - before its data has been created
+	 * data found in $formModel->data
+	 *
+	 * @param   JRegistry  $params      Plugin params
+	 * @param   JModel     &$formModel  Form model
+	 *
+	 * @return	bool
+	 */
+
+	public function onBeforeLoad($params, &$formModel)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -285,6 +296,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			$formModel->setRowId($pendingSub->id); */
 			$app->enqueueMessage('We found an existing pending subscription from ' . $pendingSub->signup_date);
 		}
+		return true;
 	}
 /*
 	public function onLoad($params, $formModel)
@@ -301,6 +313,15 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			$formModel->data['jos_fabrik_subs_users___billing_cycle_raw'] = $pendingSub->billing_cycle_id;
 		}
 	} */
+
+	/**
+	 * Test if the subscription is pending
+	 *
+	 * @param   JModel  $formModel  Form model
+	 * @param   bool    $newRow     Is it a  new subscription
+	 *
+	 * @return  bool
+	 */
 
 	protected function pendingSub($formModel, $newRow = true)
 	{
@@ -573,7 +594,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 		// For
 		$fake = $input->getInt('fakeit');
-		if ($fake == 1) {
+		if ($fake == 1)
+		{
 			$request = $_GET;
 		}
 		else
@@ -593,7 +615,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$header .= $sandBox ? "Host: www.sandbox.paypal.com:443\r\n" : "Host: www.paypal.com:443\r\n";
 		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$header .= "Content-Length: " . JString::strlen($req) . "\r\n\r\n";
-
 
 		$subscriptionsurl = $sandBox ? 'ssl://www.sandbox.paypal.com' : 'ssl://www.paypal.com';
 
@@ -842,7 +863,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 				if ($error = $db->getErrorMsg())
 				{
-					echo "err!";exit;
 					throw new Exception($error);
 				}
 
@@ -909,6 +929,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	/**
 	 * Create an invoice for a subscription
 	 *
+	 * @param   JTable  $sub  Subscription row
+	 *
 	 * @return  JTable Invoice
 	 */
 
@@ -924,13 +946,20 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$invoice->invoice_number = uniqid('', true);
 		$input->setVar('invoice_number', $invoice->invoice_number);
 
-
 		$this->setInvoicePaymentOptions($invoice);
 		$invoice->created_date = $date->toSql();
 		$invoice->subscr_id = $sub->id;
 		$invoice->store();
 		return $invoice;
 	}
+
+	/**
+	 * Set the Invoice payment options
+	 *
+	 * @param   JTable  &$invoice  Invoice
+	 *
+	 * @return  void
+	 */
 
 	protected function setInvoicePaymentOptions(&$invoice)
 	{

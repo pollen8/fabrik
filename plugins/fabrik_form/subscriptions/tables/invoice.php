@@ -4,8 +4,8 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.subscriptions
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
@@ -40,8 +40,9 @@ class FabrikTableInvoice extends JTable
 	 *
 	 * @param   array  $request  posted invoice data
 	 *
-	 * @param unknown_type $request
+	 * @return  void
 	 */
+
 	public function update($request)
 	{
 		$now = JFactory::getDate()->toSQL();

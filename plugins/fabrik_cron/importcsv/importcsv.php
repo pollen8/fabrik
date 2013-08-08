@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.importcsv
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -25,8 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
 
 class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 {
-
-	protected $db = null;
 
 	/**
 	 * Check if the user can use the active element
@@ -69,14 +67,11 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 	protected function getListIdFromFileName($tableName)
 	{
 		// Get site's database
-		if (!isset($this->db))
-		{
-			$this->db = FabrikWorker::getDbo(true);
-		}
-		$query = $this->db->getQuery(true);
-		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $this->db->quote($tableName));
-		$this->db->setQuery($query);
-		$id = $this->db->loadResult();
+		$db = FabrikWorker::getDbo(true);
+		$query = $db->getQuery(true);
+		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($tableName));
+		$db->setQuery($query);
+		$id = $db->loadResult();
 		return $id;
 	}
 

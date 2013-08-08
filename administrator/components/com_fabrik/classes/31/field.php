@@ -7,7 +7,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-defined('JPATH_PLATFORM') or die;
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Abstract Form Field class for the Joomla Platform.
@@ -520,7 +521,7 @@ abstract class JFormField
 		$text = $this->translateLabel ? JText::_($text) : $text;
 
 		// Build the class for the label.
-		$class = !empty($this->description) ? 'hasTip' : '';
+		$class = !empty($this->description) ? 'hasTooltip' : '';
 		$class = $this->required == true ? $class . ' required' : $class;
 		$class = !empty($this->labelClass) ? $class . ' ' . $this->labelClass : $class;
 

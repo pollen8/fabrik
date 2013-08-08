@@ -4,11 +4,12 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-defined('_JEXEC') or die;
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_fabrik'))
@@ -32,11 +33,6 @@ $input = $app->input;
 jimport('joomla.filesystem.file');
 FabrikHelperHTML::framework();
 
-// Raw test for submitting forms via dbjoin add form.
-/* if (!in_array($input->get('task'), array('plugin.pluginAjax', 'form.process')) && $input->get('format') !== 'raw')
-{
-	FabrikHelperHTML::script('administrator/components/com_fabrik/views/namespace.js');
-} */
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
 // Include dependancies
@@ -48,9 +44,35 @@ if (!defined('COM_FABRIK_FRONTEND'))
 	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
 
-// Execute the task.
-// $controller	= JControllerLegacy::getInstance('FabrikAdmin', array('name' => 'fabrik'));
-$controller	= JControllerLegacy::getInstance('FabrikAdmin');
+// Check for plugin views (e.g. list email plugin's "email form"
+$cName = $input->getCmd('controller');
+if (JString::strpos($cName, '.') != false)
+{
+	list($type, $name) = explode('.', $cName);
+	if ($type == 'visualization')
+	{
+		require_once JPATH_COMPONENT . '/controllers/visualization.php';
+	}
+	$path = JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/controllers/' . $name . '.php';
+	if (JFile::exists($path))
+	{
+		require_once $path;
+		$controller = $type . $name;
+
+		$classname = 'FabrikController' . JString::ucfirst($controller);
+		$controller = new $classname;
+
+		// Add in plugin view
+		$controller->addViewPath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/views');
+
+		// Add the model path
+		$modelpaths = JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/models');
+	}
+}
+else
+{
+	$controller	= JControllerLegacy::getInstance('FabrikAdmin');
+}
 
 // Test that they've published some element plugins!
 $db = JFactory::getDbo();
@@ -62,5 +84,6 @@ if (count($db->loadResult()) === 0)
 	$app->enqueueMessage(JText::_('COM_FABRIK_PUBLISH_AT_LEAST_ONE_ELEMENT_PLUGIN'), 'notice');
 }
 
+// Execute the task.
 $controller->execute($input->get('task', 'home.display'));
 $controller->redirect();

@@ -22,8 +22,9 @@
 				label="PLG_VALIDATIONRULE_OPENPROVIDER_ERROR_LABEL" />
 
 			<field  name="openprovider-validation_condition"
-				type="textarea"
-				cols="30" rows="5"
+				type="fabrikeditor"
+				mode="php"
+				width="400px"
 				description="PLG_VALIDATIONRULE_OPENPROVIDER_CONDITION_DESC"
 				label="PLG_VALIDATIONRULE_OPENPROVIDER_CONDITION_LABEL"/>
 		

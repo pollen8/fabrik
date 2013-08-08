@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik List Filter Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * List filter model
@@ -750,7 +752,7 @@ class FabrikFEModelListfilter extends FabModel
 			$lookupkeys = JArrayHelper::getValue($filters, 'key', array());
 			if ($fromFormId != $formModel->get('id'))
 			{
-				$fromForm = JModel::getInstance('Form', 'FabrikFEModel');
+				$fromForm = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 				$fromForm->setId($fromFormId);
 				$fromFormParams = $fromForm->getParams();
 				/**

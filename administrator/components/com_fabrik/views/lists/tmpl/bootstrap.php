@@ -4,17 +4,17 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
+JHTML::_('script','system/multiselect.js', false, true);
 $user	= JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder	= $this->state->get('list.ordering');
@@ -91,12 +91,12 @@ $listDirn	= $this->state->get('list.direction');
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item) :
-				$ordering	= ($listOrder == 'ordering');
-				$link = JRoute::_('index.php?option=com_fabrik&task=list.edit&id='. $item->id);
+				$ordering = ($listOrder == 'ordering');
+				$link = JRoute::_('index.php?option=com_fabrik&task=list.edit&id=' . $item->id);
 				$params = new JRegistry($item->params);
 				$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $this->table_groups[$item->id]->group_id);
- 				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id=' . $item->form_id);
- 				$canChange= true;
+				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id=' . $item->form_id);
+				$canChange = true;
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
 				<td>
@@ -105,24 +105,24 @@ $listDirn	= $this->state->get('list.direction');
 				<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
 				<td>
 					<?php
-					if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {?>
-					<span class="editlinktip hasTip"
+					if ($item->checked_out && ( $item->checked_out != $user->get('id'))) : ?>
+					<span class="editlinktip hasTooltip"
 						title="<?php echo $item->label . "::" . $params->get('note'); ?>"> <?php echo $item->label; ?>
 					</span>
-					<?php } else {?>
+					<?php else : ?>
 					<a href="<?php echo $link;?>">
-						<span class="editlinktip hasTip" title="<?php echo $item->label . "::" . $params->get('note'); ?>">
+						<span class="editlinktip hasTooltip" title="<?php echo $item->label . "::" . $params->get('note'); ?>">
 							<?php echo $item->label; ?>
 						</span>
 					</a>
-					<?php } ?>
+					<?php endif; ?>
 				</td>
 				<td>
 					<?php echo $item->db_table_name;?>
 				</td>
 				<td>
 					<a href="<?php echo $elementLink?>">
-						<i class="icon-plus-2"></i> <?php echo JText::_('COM_FABRIK_ADD');?>
+						<i class="icon-plus"></i> <?php echo JText::_('COM_FABRIK_ADD');?>
 					</a>
 				</td>
 				<td>

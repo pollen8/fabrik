@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 
@@ -203,6 +203,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		}
 		$shim['element/fileupload/fileupload'] = $s;
+
+		if ($this->requiresSlideshow())
+		{
+			FabrikHelperHTML::slideshow();
+		}
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 
@@ -427,8 +432,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$data[$i] = $this->_renderListData($data[$i], $thisRow, $i);
 			}
 		}
-		$data = json_encode($data);
-		return parent::renderListData($data, $thisRow);
+		$rendered = '';
+		if ($params->get('fu_show_image_in_table', '0') == '2')
+		{
+			//JHtml::_('bootstrap.carousel', 'myCarousel');
+			$rendered = $this->buildCarousel('foo', $data);
+		}
+		else
+		{
+			$data = json_encode($data);
+			$rendered = parent::renderListData($data, $thisRow);
+		}
+		return $rendered;
 	}
 
 	/**
@@ -706,6 +721,21 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	public function requiresLightBox()
 	{
 		return true;
+	}
+
+	/**
+	 * Do we need to include the slideshow js code
+	 *
+	 * @return	bool
+	 */
+
+	public function requiresSlideshow()
+	{
+		/*
+		 * $$$ - testing slideshow, @TODO finish this!  Check for view type
+		 */
+		$params = $this->getParams();
+		return $params->get('fu_show_image_in_table', '0') === '2' || $params->get('fu_show_image', '0') === '3';
 	}
 
 	/**
@@ -1169,22 +1199,49 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 		$fdata = $_FILES[$name]['name'];
-		foreach ($fdata as $i => $f)
+		/*
+		 * $$$ hugh - monkey patch to get simple upload working again after this commit:
+		 * https://github.com/Fabrik/fabrik/commit/5970a1845929c494c193b9227c32c983ff30fede
+		 * I don't think $fdata is ever going to be an array, after the above changes, but for now
+		 * I'm just patching round it.  Rob will fix it properly with his hammer.  :)
+		 */
+		if (is_array($fdata))
 		{
-			$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
-			$file = array('name' => $_FILES[$name]['name'][$i],
-					'type' => $_FILES[$name]['type'][$i],
-					'tmp_name' => $_FILES[$name]['tmp_name'][$i],
-					'error' => $_FILES[$name]['error'][$i],
-					'size' => $_FILES[$name]['size'][$i]);
+			foreach ($fdata as $i => $f)
+			{
+				$myFileDir = JArrayHelper::getValue($myFileDirs, $i, '');
+				$file = array('name' => $_FILES[$name]['name'][$i],
+						'type' => $_FILES[$name]['type'][$i],
+						'tmp_name' => $_FILES[$name]['tmp_name'][$i],
+						'error' => $_FILES[$name]['error'][$i],
+						'size' => $_FILES[$name]['size'][$i]);
+
+				if ($file['name'] != '')
+				{
+					$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
+				}
+				else
+				{
+					$files[$i] = $imagesToKeep[$i];
+				}
+			}
+		}
+		else
+		{
+			$myFileDir = JArrayHelper::getValue($myFileDirs, 0, '');
+			$file = array('name' => $_FILES[$name]['name'],
+					'type' => $_FILES[$name]['type'],
+					'tmp_name' => $_FILES[$name]['tmp_name'],
+					'error' => $_FILES[$name]['error'],
+					'size' => $_FILES[$name]['size']);
 
 			if ($file['name'] != '')
 			{
-				$files[$i] = $this->_processIndUpload($file, $myFileDir, $i);
+				$files[0] = $this->_processIndUpload($file, $myFileDir, $i);
 			}
 			else
 			{
-				$files[$i] = $imagesToKeep[$i];
+				$files[0] = $imagesToKeep[0];
 			}
 		}
 
@@ -1209,8 +1266,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 		}
 		// Update form model with file data
+		/*
+		 * $$$ hugh - another monkey patch just to get simple upload going again
+		 */
+		/*
 		$formModel->updateFormData($name . '_raw', $files);
 		$formModel->updateFormData($name, $files);
+		*/
+		$strfiles = implode(GROUPSPLITTER, $files);
+		$formModel->updateFormData($name . '_raw', $strfiles);
+		$formModel->updateFormData($name, $strfiles);
 	}
 
 	/**
@@ -1616,6 +1681,41 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$render = new stdClass;
 		$render->output = '';
 		$allRenders = array();
+
+		/*
+		 * $$$ hugh testing slideshow display
+		 */
+		if ($params->get('fu_show_image') === '3' && !$this->isEditable())
+		{
+			// Failed validations - format different!
+			if (array_key_exists('id', $values))
+			{
+				$values = array_keys($values['id']);
+			}
+			// End failed validations
+
+			foreach ($values as $value)
+			{
+				if (is_object($value))
+				{
+					$value = $value->file;
+				}
+				$render = $this->loadElement($value);
+
+				if ($value != '' && ($storage->exists(COM_FABRIK_BASE . $value) || JString::substr($value, 0, 4) == 'http'))
+				{
+					$render->render($this, $params, $value);
+				}
+				if ($render->output != '')
+				{
+					$allRenders[] = $render->output;
+				}
+			}
+
+			$rendered = $this->buildCarousel('foo', $allRenders);
+			return $rendered;
+		}
+
 		if (($params->get('fu_show_image') !== '0' && !$params->get('ajax_upload')) || !$this->isEditable())
 		{
 
@@ -2504,5 +2604,63 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 
 		// @TODO test crop data
 
+	}
+
+	public function buildCarousel($id = 'carousel', $imgs = array())
+	{
+		/*
+		$rendered = '<div class="cycle-slideshow">';
+		$rendered .= implode(' ', $data);
+		$rendered .= '</div>';
+		*/
+
+		/*
+		 * Don't seem to need this for now
+		 * JHtml::_('bootstrap.carousel', 'myCarousel');
+		 */
+
+		$numImages = count($imgs);
+
+		$rendered = '
+<div id="' . $id . '" class="carousel slide mootools-noconflict" data-interval="3000" data-pause="hover">
+';
+		/*
+		 * Current version of J! bootstrap doesn't seem to have the indicators
+		 */
+		/*
+		$rendered .= '
+    <ol class="carousel-indicators">
+	';
+
+		if ($numImages > 0)
+		{
+			$rendered .= '<li data-target="#' . $id . '" data-slide-to="0" class="active">';
+			for ($x=1; $x < $numImages; $x++)
+			{
+				$rendered .= '</li> <li data-target="#' . $id . '" data-slide-to="' . $x . '">';
+	    	}
+	    	$rendered .= '</li>
+			';
+		}
+		$rendered .= '
+	</ol>
+		';
+		*/
+
+		$rendered .= '
+    <!-- Carousel items -->
+	<div class="carousel-inner">
+		<div class="active item">
+';
+		$rendered .= implode("\n		</div>\n" . '		<div class="item">', $imgs);
+		$rendered .= '
+		</div>
+    </div>
+    <!-- Carousel nav -->
+    <a class="carousel-control left" href="#' . $id . '" data-slide="prev">&lsaquo;</a>
+    <a class="carousel-control right" href="#' . $id . '" data-slide="next">&rsaquo;</a>
+</div>
+';
+		return $rendered;
 	}
 }

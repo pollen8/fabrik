@@ -1,11 +1,19 @@
+/**
+ * Admin Namespace
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 (function () {
 	if (typeOf(window.FabrikAdmin) === 'object') {
 		return;
 	}
 	FabrikAdmin = {};
+
 	// Various Joomla element plugins used to control JForm elements
 	FabrikAdmin.model = {'fields': {'fabriktable': {}, 'element': {}}};
-	
+
 	// Function to apply tips to page, after ajax call has loaded a plugin's form
 	FabrikAdmin.reTip = function () {
 		$$('.hasTip').each(function (el) {
@@ -18,11 +26,12 @@
 		});
 		var JTooltips = new Tips($$('.hasTip'), { maxTitleChars: 50, fixed: false});
 	};
-	
+
 	window.fireEvent('fabrik.admin.namespace');
 }());
 
 if (typeof(jQuery) !== 'undefined') {
+
 	// Relay radio button group clicks for content added via ajax calls
 	(function ($) {
 		$(document).on('click', '.btn-group label:not(.active)', null, function (event) {
@@ -32,7 +41,7 @@ if (typeof(jQuery) !== 'undefined') {
 				label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
 				if (input.val() === '') {
 					label.addClass('active btn-primary');
-				} else if (input.val() === 0) {
+				} else if (input.val().toInt() === 0) {
 					label.addClass('active btn-danger');
 				} else {
 					label.addClass('active btn-success');

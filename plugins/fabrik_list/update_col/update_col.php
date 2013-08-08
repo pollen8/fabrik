@@ -1,13 +1,15 @@
 <?php
 /**
+ * Add an action button to the list to update selected columns to a given value
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.updatecol
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -23,14 +25,39 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 {
 
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = 'update_col';
 
+	/**
+	 * Number of send email notifications
+	 *
+	 * @var int
+	 */
 	protected $_sent = 0;
 
+	/**
+	 * Number of NOT send email notifications
+	 *
+	 * @var int
+	 */
 	protected $_notsent = 0;
 
+	/**
+	 * Number rows updated
+	 *
+	 * @var int
+	 */
 	protected $_row_count = 0;
 
+	/**
+	 * Update message
+	 *
+	 * @var string
+	 */
 	protected $msg = null;
 
 	/**
@@ -242,7 +269,8 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 						$thismessage = @eval($thismessage);
 						FabrikWorker::logEval($thismessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
-					$res = JUtility::sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
+					$mail = JFactory::getMailer();
+					$res = $mail->sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
 					if ($res)
 					{
 						$this->_sent++;
@@ -258,7 +286,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				}
 			}
 		}
-		//$$$servantek reordered the update process in case the email routine wants to kill the updates
+		// $$$servantek reordered the update process in case the email routine wants to kill the updates
 		if (!empty($dateCol))
 		{
 			$date = JFactory::getDate();
@@ -294,7 +322,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Get the message generated in process()
 	 *
-	 * @param   int  $c  plugin render order
+	 * @param   int  $c  Plugin render order
 	 *
 	 * @return  string
 	 */
@@ -307,9 +335,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Process the update column
 	 *
-	 * @param   object  &$model  list model
-	 * @param   string  $col     update column
-	 * @param   string  $val     update val
+	 * @param   object  &$model  List model
+	 * @param   string  $col     Update column
+	 * @param   string  $val     Update val
 	 *
 	 * @return  void
 	 */
@@ -324,9 +352,9 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  $model   List model
+	 * @param   array   $args    Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
@@ -373,18 +401,22 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$listRef = $model->getRenderContext();
 		$prefix = 'fabrik___update_col[list_' . $listRef . '][';
 		$elements = '<select class="inputbox key" size="1" name="' . $prefix . 'key][]">' . implode("\n", $options) . '</select>';
-		$add = '<a class="add button button-primary" href="#">
-		' . FabrikHelperHTML::image('add.png', 'list', $model->getTmpl()) . '</a>';
-		$del = '<a class="button delete" href="#">' . FabrikHelperHTML::image('del.png', 'list', $model->getTmpl()) . '</a>';
+		$j3 = FabrikWorker::j3();
+		$addImg = $j3 ? 'plus.png' : 'add.png';
+		$removeImg = $j3 ? 'remove.png' : 'del.png';
+		$add = '<a class="btn add button btn-primary" href="#">
+		' . FabrikHelperHTML::image($addImg, 'list', $model->getTmpl()) . '</a>';
+		$del = '<a class="btn button delete" href="#">' . FabrikHelperHTML::image($removeImg, 'list', $model->getTmpl()) . '</a>';
 		$html[] = '<form id="update_col' . $listRef . '">';
 
-		$html[] = '<table class="fabrikList table table-striped" style="width:100%">';
+		$class = $j3 ? 'table table-striped' : 'fabrikList';
+		$html[] = '<table class="' . $class . '" style="width:100%">';
 		$html[] = '<thead>';
 		$html[] = '<tr><th>' . JText::_('COM_FABRIK_ELEMENT') . '</th><th>' . JText::_('COM_FABRIK_VALUE') . '</th><th>' . $add . '</th><tr>';
 		$html[] = '</thead>';
 
 		$html[] = '<tbody>';
-		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td>' . $add . $del . '</td></tr>';
+		$html[] = '<tr><td>' . $elements . '</td><td class="update_col_value"></th><td><div class="btn-group">' . $add . $del . '</div></td></tr>';
 		$html[] = '</tbody>';
 		$html[] = '</table>';
 		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';

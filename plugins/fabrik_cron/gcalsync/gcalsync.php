@@ -1,13 +1,16 @@
 <?php
 /**
+ * Fabrik Cron Job:
+ * Syncs events from a Google Calendar into a Fabrik List
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.cron.gcalsync
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
@@ -27,9 +30,9 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the plugin
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   object  &$model    Calling the plugin list/form
+	 * @param   string  $location  To trigger plugin on
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
@@ -37,9 +40,9 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the plugin
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   object  &$model    Calling the plugin list/form
+	 * @param   string  $location  To trigger plugin on
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
@@ -52,7 +55,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	/**
 	 * Get a GCal short id from a long id
 	 *
-	 * @param   string  $long_id  long id
+	 * @param   string  $long_id  Long id
 	 *
 	 * @return  string
 	 */
@@ -73,8 +76,8 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	/**
 	 * Do the plugin action
 	 *
-	 * @param   array   &$data       selected data
-	 * @param   object  &$listModel  list model
+	 * @param   array   &$data       Selected data
+	 * @param   object  &$listModel  List model
 	 *
 	 * @return number of records updated
 	 */

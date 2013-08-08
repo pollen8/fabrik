@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 JHtml::_('behavior.formvalidation');
 $db = FabrikWorker::getDbo(true);
@@ -17,7 +17,7 @@ $db = FabrikWorker::getDbo(true);
 
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<ul style="list-style:none;font-weight:bold;color:#0055BB;background:#C3D2E5 url(templates/khepri/images/notice-info.png) no-repeat scroll 4px center;padding:10px;margin-bottom:10px;border-top:3px solid #84A7DB;border-bottom:3px solid #84A7DB">
-	<?php if($db->quoteName($this->item->name) !== $this->oldName) : ?>
+	<?php if ($db->quoteName($this->item->name) !== $this->oldName) : ?>
 		<li style="padding-left:30px">
 			<?php echo JText::sprintf('COM_FABRIK_UPDATE_ELEMENT_NAME', $this->oldName, $db->quoteName($this->item->name)); ?>
 		</li>
@@ -34,6 +34,8 @@ $db = FabrikWorker::getDbo(true);
 	<input type="hidden" name="origtask" value="<?php echo $this->origtask?>" />
   	<input type="hidden" name="oldname" value="<?php echo $this->oldName?>" />
 	<input type="hidden" name="origplugin" value="<?php echo $this->origPlugin?>" />
-  	<?php echo JHTML::_( 'form.token');
-	echo JHTML::_('behavior.keepalive'); ?>
+  	<?php
+	echo JHTML::_('form.token');
+	echo JHTML::_('behavior.keepalive');
+	?>
 </form>

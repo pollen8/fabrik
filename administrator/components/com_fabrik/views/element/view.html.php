@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -59,7 +59,7 @@ class FabrikAdminViewElement extends JViewLegacy
 	/**
 	 * Display the view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */
@@ -81,8 +81,6 @@ class FabrikAdminViewElement extends JViewLegacy
 
 		$this->js = $model->getJs();
 
-		$this->jsevents = $model->getJsEvents();
-
 		// Check for errors.
 		if (count($errors = $model->getErrors()))
 		{
@@ -90,16 +88,6 @@ class FabrikAdminViewElement extends JViewLegacy
 		}
 
 		$this->addToolbar();
-
-		// Used for js part of form
-		if ($this->item->id == 0)
-		{
-			$this->elements = array(JText::_('COM_FABRIK_AVAILABLE_AFTER_SAVE'));
-		}
-		else
-		{
-			$this->elements = $model->getElements();
-		}
 		$this->parent = $model->getParent();
 		FabrikAdminHelper::setViewLayout($this);
 		JText::script('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
@@ -121,16 +109,13 @@ class FabrikAdminViewElement extends JViewLegacy
 		$shim['admin/pluginmanager'] = $plugManagerDeps;
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, $this->js);
-		JText::script('JNO');
-		JText::script('JYES');
-		JText::script('COM_FABRIK_PUBLISHED');
 		parent::display($tpl);
 	}
 
 	/**
 	 * Ask the user if they really want to alter the element fields structure/name
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */

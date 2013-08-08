@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -465,12 +465,20 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$listModel = $elementModel->getListModel();
 		$label = JArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
-		$v = addslashes($app->input->get('value'));
+		// Paul 20130802 Fix bugette
+		// $v = $app->input->get('value');
+		$v = $app->input->get('value', '', 'string');
+		// Search for every word separately in the result rather than the single string (of multiple words)
+		$regex  = "/(?=.*" .
+			implode(")(?=.*",
+				array_filter(explode(" ",addslashes($v)))
+			) . ").*/i";
 		$start = count($rows) - 1;
 		for ($i = $start; $i >= 0; $i--)
 		{
 			$rows[$i]->text = strip_tags($rows[$i]->text);
-			if (!preg_match("/$v(.*)/i", $rows[$i]->text))
+			// Check that search strings are not in the HTML we just stripped
+			if (!preg_match($regex, $rows[$i]->text))
 			{
 				unset($rows[$i]);
 			}
@@ -513,6 +521,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
+		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
 		$useIcon = $params->get('icon_folder', 0);
 		foreach ($gdata as $i => $d)
@@ -541,17 +550,46 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 				if (trim($l) !== '')
 				{
-					$lis[] = ($multiple || $mergeGroupRepeat) && $this->renderWithHTML ? '<li>' . $l . '</li>' : $l;
+					$lis[] = $l;
 				}
 			}
 			if (!empty($lis))
 			{
-				$uls[] = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
+				$uls[] = $lis;
 			}
 		}
-		// $$$rob if only one repeat group data then dont bother encasing it in a <ul>
-		return ((count($gdata) !== 1 || $mergeGroupRepeat) && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $uls) . '</ul>'
-			: implode(' ', $uls);
+
+		// Do all uls only contain one record, if so condense to 1 ul (avoids nested <ul>'s each with one <li>
+		$condense = true;
+		foreach ($uls as $ul)
+		{
+			if (count($ul) > 1)
+			{
+				$condense = false;
+			}
+		}
+		$consdenced = array();
+		if ($condense)
+		{
+			foreach ($uls as $ul)
+			{
+				$consdenced[] = $ul[0];
+			}
+			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $consdenced) . '</li></ul>' : implode(' ', $consdenced);
+		}
+		else
+		{
+			$html = array();
+			$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
+			foreach ($uls as $ul)
+			{
+				$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
+				$html[] = $addHtml ? implode('</li><li>', $ul) : implode(' ', $ul);
+				$html[] = $addHtml ? '</li></ul>' : '';
+			}
+			$html[] = $addHtml ? '</li></ul>' : '';
+			return $addHtml ? implode('', $html) : implode(' ', $html);
+		}
 	}
 
 	/**

@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Plugin From Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Rob Clayburn. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -21,10 +23,18 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_List extends FabrikPlugin
 {
-	/** @var string button prefix*/
+	/**
+	 * Button prefix
+	 *
+	 * @var string
+	 */
 	protected $buttonPrefix = '';
 
-	/** @var string js code to ini js object */
+	/**
+	 * JavaScript code to ini js object
+	 *
+	 * @var string
+	 */
 	protected $jsInstance = null;
 
 	/**
@@ -356,7 +366,9 @@ class PlgFabrik_List extends FabrikPlugin
 	 * @return  void
 	 */
 
-	public function requireJSShim(){}
+	public function requireJSShim()
+	{
+	}
 
 	/**
 	 * Get the shim require.js logic for loading the list class.

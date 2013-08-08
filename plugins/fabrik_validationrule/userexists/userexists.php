@@ -5,11 +5,11 @@
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.validationrule.userexists
  * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
@@ -36,21 +36,18 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$pluginc = trim((string) $pluginc);
+		$elementModel = $this->elementModel;
 
 		// As ornot is a radio button it gets json encoded/decoded as an object
-		$ornot = (object) $params->get('userexists_or_not');
-		$ornot = isset($ornot->$pluginc) ? $ornot->$pluginc : 'fail_if_exists';
+		$ornot = $params->get('userexists_or_not', 'fail_if_exists');
 		$user = JFactory::getUser();
 		jimport('joomla.user.helper');
 		$result = JUserHelper::getUserId($data);
@@ -83,8 +80,7 @@ class PlgFabrik_ValidationruleUserExists extends PlgFabrik_Validationrule
 			}
 			else
 			{
-				$user_field = (array) $params->get('userexists_user_field', array());
-				$user_field = $user_field[$pluginc];
+				$user_field = $params->get('userexists_user_field');
 				$user_id = 0;
 				if ((int) $user_field !== 0)
 				{

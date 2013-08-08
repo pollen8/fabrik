@@ -4,12 +4,13 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik.helpers
- * @copyright   Copyright (C) 2005 Pollen 8 Design Ltd. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
 jimport('joomla.filesystem.file');
 if (!defined('COM_FABRIK_FRONTEND'))
 {
@@ -602,8 +603,7 @@ EOD;
 		// $$$ hugh - moved this to top of function, as we now apply livesite in either usage cases below.
 		if (!strstr($file, COM_FABRIK_LIVESITE))
 		{
-			$ls = JString::substr(COM_FABRIK_LIVESITE, -1) == '/' ? COM_FABRIK_LIVESITE : COM_FABRIK_LIVESITE . '/';
-			$file = $ls . $file;
+			$file = COM_FABRIK_LIVESITE . $file;
 		}
 		if (self::cssAsAsset())
 		{
@@ -1359,6 +1359,24 @@ EOD;
 	}
 
 	/**
+	 * Load the slideshow css and js files
+	 *
+	 * @return  void
+	 */
+
+	public static function slideshow()
+	{
+		/*
+		 * switched from cycle2, to bootstrap, so for now don't need anything
+		 */
+		/*
+		$folder = 'components/com_fabrik/libs/cycle2/';
+		$ext = self::isDebug() ? '.js' : '.min.js';
+		self::script($folder . 'jquery.cycle2' . $ext);
+		*/
+	}
+
+	/**
 	 * Attach tooltips to document
 	 *
 	 * @param   string  $selector        string class name of tips
@@ -1504,18 +1522,18 @@ EOD;
 	/**
 	 * Add autocomplete JS code to head
 	 *
-	 * @param   string  $htmlid     of element to turn into autocomplete
-	 * @param   int     $elementid  element id
-	 * @param   int     $formid     form id
-	 * @param   string  $plugin     plugin name
+	 * @param   string  $htmlid     Of element to turn into autocomplete
+	 * @param   int     $elementid  Element id
+	 * @param   int     $formid     Form id
+	 * @param   string  $plugin     Plugin name
 	 * @param   array   $opts       (currently only takes 'onSelection')
 	 *
 	 * @return  void
 	 */
 
-	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array(), $max = null)
 	{
-		$json = self::autoCompletOptions($htmlid, $elementid, $formid, $plugin, $opts);
+		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts, $max);
 		$str = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
@@ -1539,13 +1557,17 @@ EOD;
 	 * @return  array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public static function autoCompletOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
+	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array(), $max = null)
 	{
 		$json = new stdClass;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
 			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
+		if (!empty($max))
+		{
+			$json->max = $max;
+		}
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{
@@ -1555,7 +1577,7 @@ EOD;
 		{
 			$json->$k = $v;
 		}
-		$json->formRef = 'form_' . $formid;
+		$json->formRef = JArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
 		return $json;
@@ -1729,7 +1751,7 @@ EOD;
 		{
 			unset($properties['alt']);
 			$class = JArrayHelper::getValue($properties, 'icon-class', '');
-			$class = 'icon-' . JFile::stripExt($file) . ' ' . $class;
+			$class = 'icon-' . JFile::stripExt($file) . ($class ? ' ' . $class : '');
 			unset($properties['icon-class']);
 
 			$class .= ' ' . JArrayHelper::getValue($properties, 'class', '');

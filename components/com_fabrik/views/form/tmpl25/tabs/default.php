@@ -4,13 +4,15 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
- ?>
- <?php
- if ($this->params->get('show_page_heading', 1)) : ?>
+
+// No direct access
+defined('_JEXEC') or die('Restricted access');
+
+if ($this->params->get('show_page_heading', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>"><?php echo $this->escape($this->params->get('page_heading')); ?></div>
 <?php
 endif;
@@ -52,7 +54,7 @@ $this->group = $group;
 			if ($display === 0) :
 				$display = $c;
 			endif;
-			$errorstyle = 'style="background:#EFE7B8 url('.COM_FABRIK_LIVESITE.'/media/com_fabrik/images/alert.png) no-repeat scroll left 7px !important;padding-left:40px;"';
+			$errorstyle = 'style="background:#EFE7B8 url(' . COM_FABRIK_LIVESITE .'media/com_fabrik/images/alert.png) no-repeat scroll left 7px !important;padding-left:40px;"';
 			break;
 		endif;
 	endforeach;

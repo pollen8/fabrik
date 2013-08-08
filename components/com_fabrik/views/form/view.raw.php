@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Raw Form View
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -28,176 +30,6 @@ class FabrikViewForm extends JViewLegacy
 	 * @var  int
 	 */
 	public $access = null;
-
-	/**
-	 * Inline edit view
-	 *
-	 * @return  void
-	 */
-
-	public function inlineEdit()
-	{
-		$model = $this->getModel('form');
-		$document = JFactory::getDocument();
-		$app = JFactory::getApplication();
-		$input = $app->input;
-		$j3 = FabrikWorker::j3();
-
-		// Need to render() with all element ids in case canEditRow plugins etc use the row data.
-		$elids = $input->get('elementid', array(), 'array');
-		$input->set('elementid', null);
-
-		$form = $model->getForm();
-		if ($model->render() === false)
-		{
-			return false;
-		}
-		// Set back to original input so we only show the requested elements
-		$input->set('elementid', $elids);
-		$this->groups = $this->get('GroupView');
-
-		// Main trigger element's id
-		$elementid = $input->getInt('elid');
-
-		$html = $j3 ? $this->inlineEditMarkUp() : $this->inlineEditMarkupJ25();
-		echo implode("\n", $html);
-
-		$srcs = array();
-		$repeatCounter = 0;
-		$elementids = (array) $input->get('elementid', array(), 'array');
-		$eCounter = 0;
-		$onLoad = array();
-		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
-		foreach ($elementids as $id)
-		{
-			$elementModel = $model->getElement($id, true);
-			$elementModel->getElement();
-			$elementModel->setEditable(true);
-			$elementModel->formJavascriptClass($srcs);
-			$elementJS = $elementModel->elementJavascript($repeatCounter);
-			$onLoad[] = 'var o = new ' . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ');';
-			if ($eCounter === 0)
-			{
-				$onLoad[] = "o.select();";
-				$onLoad[] = "o.focus();";
-				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
-			}
-			$eCounter++;
-			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
-		}
-		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
-		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
-	}
-
-	/**
-	 * Create markup for boostrap inline editor
-	 *
-	 * @since   3.1b
-	 *
-	 * @return  array
-	 */
-	protected function inlineEditMarkUp()
-	{
-
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
-		$html = array();
-		$html[] = '<div class="modal">';
-		$html[] = ' <div class="modal-header"><h3>' . JText::_('COM_FABRIK_EDIT') . '</h3></div>';
-		$html[] = '<div class="modal-body">';
-		$html[] = '<form>';
-		foreach ($this->groups as $group)
-		{
-			foreach ($group->elements as $element)
-			{
-				$html[] = '<div class="control-group fabrikElementContainer ' . $element->id . '">';
-				$html[] = '<label>' . $element->label . '</label>';
-				$html[] = '<div class="fabrikElement">';
-				$html[] = $element->element;
-				$html[] = '</div>';
-				$html[] = '</div>';
-			}
-		}
-		$html[] = '</form>';
-		$html[] = '</div>';
-		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
-		{
-			$html[] = '<div class="modal-footer">';
-			if ($input->getBool('inlinecancel') == true)
-			{
-				$html[] = '<a href="#" class="btn inline-cancel">';
-				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
-				$html[] = '<span>' . JText::_('COM_FABRIK_CANCEL') . '</span></a>';
-			}
-
-			if ($input->getBool('inlinesave') == true)
-			{
-				$html[] = '<a href="#" class="btn btn-primary inline-save">';
-				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
-				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
-			}
-			$html[] = '</div>';
-		}
-
-		$html[] = '</div>';
-		return $html;
-	}
-
-	/**
-	 * Create markup for old skool 2.5 inline editor
-	 *
-	 * @since   3.1b
-	 *
-	 * @return  array
-	 */
-	protected function inlineEditMarkupJ25()
-	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
-
-		$html = array();
-		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
-		$html[] = '<div class="floating-tip" >';
-		$html[] = '<ul class="fabrikElementContainer">';
-		foreach ($this->groups as $group)
-		{
-			foreach ($group->elements as $element)
-			{
-				$html[] = '<li class="' . $element->id . '">' . $element->label . '</li>';
-				$html[] = '<li class="fabrikElement">';
-				$html[] = $element->element;
-				$html[] = '</li>';
-			}
-		}
-		$html[] = '</ul>';
-
-		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
-		{
-			$html[] = '<ul class="">';
-			if ($input->getBool('inlinecancel') == true)
-			{
-				$html[] = '<li class="ajax-controls inline-cancel">';
-				$html[] = '<a href="#" class="">';
-				$html[] = FabrikHelperHTML::image('delete.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_CANCEL')));
-				$html[] = '<span>' . JText::_('COM_FABRIK_CANCEL') . '</span></a>';
-				$html[] = '</li>';
-			}
-
-			if ($input->getBool('inlinesave') == true)
-			{
-				$html[] = '<li class="ajax-controls inline-save">';
-				$html[] = '<a href="#" class="">';
-				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
-				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
-				$html[] = '</li>';
-			}
-			$html[] = '</ul>';
-		}
-		$html[] = '</div>';
-		$html[] = '</div>';
-		return $html;
-	}
 
 	/**
 	 * Execute and display a template script.

@@ -1,13 +1,15 @@
 <?php
 /**
+ * Run some php when the form is submitted
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.php
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -271,8 +273,8 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->data
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * @param   JRegistry  $params      Plugin params
+	 * @param   JModel     &$formModel  Form model
 	 *
 	 * @return	bool
 	 */

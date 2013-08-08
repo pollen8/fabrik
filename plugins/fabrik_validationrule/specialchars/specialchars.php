@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.validationrule.specialchars
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
@@ -36,14 +36,12 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		// For multiselect elements
 		if (is_array($data))
@@ -52,11 +50,10 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 		}
 		$params = $this->getParams();
 		$domatch = $params->get('specialchars-match');
-		$domatch = $domatch[$pluginc];
 		if ($domatch)
 		{
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$pluginc]);
+			$v = explode(',', $v);
 			foreach ($v as $c)
 			{
 				if (strstr($data, $c))
@@ -73,29 +70,25 @@ class PlgFabrik_ValidationruleSpecialChars extends PlgFabrik_Validationrule
 	 * if so then the replaced data is returned otherwise original data returned
 	 *
 	 * @param   string  $data           Original data
-	 * @param   model   &$elementModel  Element model
-	 * @param   int     $pluginc        Validation plugin counter
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	original or replaced data
 	 */
 
-	public function replace($data, &$elementModel, $pluginc, $repeatCounter)
+	public function replace($data, $repeatCounter)
 	{
 		$params = $this->getParams();
-		$domatch = (array) $params->get('specialchars-match');
-		$domatch = $domatch[$pluginc];
+		$domatch = $params->get('specialchars-match');
 		if (!$domatch)
 		{
 			$v = $params->get($this->pluginName . '-expression');
 			$replace = $params->get('specialchars-replacestring');
-			$replace = $replace[$pluginc];
 			if ($replace === '_default')
 			{
 				$replace = '';
 			}
 			$v = $params->get('specalchars');
-			$v = explode(',', $v[$pluginc]);
+			$v = explode(',', $v);
 			foreach ($v as $c)
 			{
 				$data = str_replace($c, $replace, $data);

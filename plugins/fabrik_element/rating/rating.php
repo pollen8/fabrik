@@ -1,13 +1,15 @@
 <?php
 /**
+ * Plugin element to render rating widget
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.rating
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -38,13 +40,25 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	protected $fieldSize = '1';
 
-	/** @var array average ratings */
+	/**
+	 * Average ratings
+	 *
+	 * @var array
+	 */
 	protected $avgs = null;
 
-	/** @bool can the rating element be used by the current user*/
+	/**
+	 * Can the rating element be used by the current user
+	 *
+	 * @var bool
+	 */
 	protected $canRate = null;
 
-	/** @var array creator id */
+	/**
+	 * creator id
+	 *
+	 * @var array
+	 */
 	protected $creatorIds = null;
 
 	/**

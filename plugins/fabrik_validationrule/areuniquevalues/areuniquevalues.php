@@ -4,13 +4,13 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.validationrule.areuniquevalues
- * @author      Lieven Gryp <dont@know.com>
- * @copyright   Copyright (C) 2005 Fabrik & Lieven Gryp. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @author      Lieven Gryp
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com & Lieven Gryp - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
@@ -37,17 +37,16 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
-	 * @param   object  &$elementModel  Element Model
-	 * @param   int     $pluginc        Plugin sequence ref
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  bool  true if validation passes, false if fails
 	 */
 
-	public function validate($data, &$elementModel, $pluginc, $repeatCounter)
+	public function validate($data, $repeatCounter)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$elementModel = $this->elementModel;
 
 		// Could be a dropdown with multivalues
 		if (is_array($data))
@@ -55,14 +54,13 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 			$data = implode('', $data);
 		}
 		$params = $this->getParams();
-		$otherfield = (array) $params->get('areuniquevalues-otherfield', array());
-		$otherfield = $otherfield[$pluginc];
+		$otherfield = $params->get('areuniquevalues-otherfield', '');
 		$element = $elementModel->getElement();
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
 		if ((int) $otherfield !== 0)
 		{
-			$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
+			$otherElementModel = $this->getOtherElement();
 			$otherFullName = $otherElementModel->getFullName(true, false);
 			$otherfield = $otherElementModel->getFullName(false, false);
 		}
@@ -110,42 +108,34 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	/**
 	 * Gets the other element model to compare this plugins element data against
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Plugin render order
-	 *
 	 * @return	object element model
 	 */
 
-	private function getOtherElement($elementModel, $pluginc)
+	private function getOtherElement()
 	{
 		$params = $this->getParams();
-		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$pluginc];
+		$otherfield = $params->get('areuniquevalues-otherfield');
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
 	/**
 	 * Gets the hover/alt text that appears over the validation rule icon in the form
 	 *
-	 * @param   object  $elementModel  Element model
-	 * @param   int     $pluginc       Plugin render order
-	 *
 	 * @return	string	label
 	 */
 
-	protected function getLabel($elementModel, $pluginc)
+	protected function getLabel()
 	{
-		$otherElementModel = $this->getOtherElement($elementModel, $pluginc);
+		$otherElementModel = $this->getOtherElement();
 		$params = $this->getParams();
-		$otherfield = (array) $params->get('areuniquevalues-otherfield');
-		$otherfield = $otherfield[$pluginc];
+		$otherfield = $params->get('areuniquevalues-otherfield');
 		if ((int) $otherfield !== 0)
 		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);
 		}
 		else
 		{
-			return parent::getLabel($elementModel, $pluginc);
+			return parent::getLabel();
 		}
 	}
 }

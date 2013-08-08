@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -153,7 +153,7 @@ class FabrikViewCalendar extends JViewLegacy
 		}
 		else
 		{
-			$options->buttons = '<img src="' . COM_FABRIK_LIVESITE + '/plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png"
+			$options->buttons = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png"
 				alt = "del" class="fabrikDeleteEvent" />' . JText::_('PLG_VISUALIZATION_CALENDAR_DELETE');
 		}
 		$json = json_encode($options);

@@ -1,13 +1,15 @@
 <?php
 /**
+ * Plugin element to render two fields to capture a link (url/label)
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.link
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Plugin element to render two fields to capture a link (url/label)
@@ -20,6 +22,11 @@ defined('_JEXEC') or die();
 class PlgFabrik_ElementLink extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = true;
 
 	/**

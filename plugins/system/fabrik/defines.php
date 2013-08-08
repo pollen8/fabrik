@@ -5,8 +5,8 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
@@ -20,9 +20,9 @@ if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/'))
 	return;
 }
 
-define("COM_FABRIK_BASE", str_replace(DIRECTORY_SEPARATOR . 'administrator', '', JPATH_BASE) . DIRECTORY_SEPARATOR);
+define("COM_FABRIK_BASE", JPATH_SITE . DIRECTORY_SEPARATOR);
 define("COM_FABRIK_FRONTEND", COM_FABRIK_BASE . 'components/com_fabrik');
-define("COM_FABRIK_LIVESITE", str_replace('/administrator', '', JURI::base()));
+define("COM_FABRIK_LIVESITE", JURI::root());
 define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme', 'host', 'port')));
 define("FABRIKFILTER_TEXT", 0);
 define("FABRIKFILTER_EVAL", 1);

@@ -4,13 +4,13 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
@@ -120,7 +120,7 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					<td>
 						<a href="index.php?option=com_fabrik&view=element&layout=edit&filter_groupId=<?php echo $item->id ?>">
-							<i class="icon-plus-2"></i>
+							<i class="icon-plus"></i>
 							<?php echo JText::_('COM_FABRIK_ADD')?>
 						</a>
 						<span class="badge badge-info"><?php echo $item->_elementCount; ?></span>

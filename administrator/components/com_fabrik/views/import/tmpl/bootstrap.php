@@ -4,13 +4,14 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
+
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 $app = JFactory::getApplication();
@@ -72,8 +73,9 @@ window.addEvent('domready', function () {
 		?>
 	</fieldset>
 	<?php endforeach;?>
-
-	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="drop_data" value="0" />
+	<input type="hidden" name="overwrite" value="0" />
+ 	<input type="hidden" name="task" value="" />
   	<?php echo JHTML::_('form.token');
 	echo JHTML::_('behavior.keepalive'); ?>
 	</div>

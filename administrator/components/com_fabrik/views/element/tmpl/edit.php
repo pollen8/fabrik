@@ -4,13 +4,13 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       3.0
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHTML::stylesheet('administrator/components/com_fabrik/views/fabrikadmin.css');
@@ -30,7 +30,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			return false;
 		}
 		var msg = '';
-		var jsEvents = document.getElements('select[name*=js_action]').get('value');
+		var jsEvents = document.getElements('select[name*=action]').get('value');
 		if (jsEvents.length > 0 && jsEvents.contains('')) {
 			msg += '\n ' + Joomla.JText._('COM_FABRIK_ERR_ELEMENT_JS_ACTION_NOT_DEFINED');
 		}
@@ -44,7 +44,8 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 </script>
 <form action="<?php JRoute::_('index.php?option=com_fabrik'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 
-<?php if ($this->item->parent_id != 0) {
+<?php if ($this->item->parent_id != 0)
+{
 	?>
 	<div id="system-message">
 	<dl>
@@ -63,7 +64,8 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 		</dd>
 	</dl>
 	</div>
-<?php }?>
+<?php
+}?>
 <div id="elementFormTable">
 	<div class="width-50 fltlft">
 		<fieldset class="adminform">
@@ -72,31 +74,32 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 			<input type="hidden" id="plugin_orig" name="plugin_orig" value="<?php echo $this->item->plugin; ?>" />
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel('css'). $this->form->getInput('css'); ?>
+					<?php echo $this->form->getLabel('css') . $this->form->getInput('css'); ?>
 				</li>
 
 				<li>
-					<?php echo $this->form->getLabel('name'). $this->form->getInput('name'); ?>
+					<?php echo $this->form->getLabel('name') . $this->form->getInput('name'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel('label'). $this->form->getInput('label'); ?>
+					<?php echo $this->form->getLabel('label') . $this->form->getInput('label'); ?>
 				</li>
 
 				<?php foreach ($this->form->getFieldset('details2') as $field) :?>
 				<li>
-					<?php echo $field->label; ?><?php echo $field->input; ?>
+					<?php echo $field->label;
+					echo $field->input; ?>
 				</li>
 				<?php endforeach;?>
 
 				<li>
-					<?php echo $this->form->getLabel('plugin'). $this->form->getInput('plugin'); ?>
+					<?php echo $this->form->getLabel('plugin') . $this->form->getInput('plugin'); ?>
 				</li>
 			</ul>
 			<div class="clr"> </div>
 		</fieldset>
 
 		<div style="margin:10px">
-			<?php echo JHtml::_('sliders.start','element-sliders-options', array('useCookie'=>1));
+			<?php echo JHtml::_('sliders.start', 'element-sliders-options', array('useCookie' => 1));
 			echo JHtml::_('sliders.panel', JText::_('COM_FABRIK_OPTIONS'), 'options-details');
 			echo "<div id=\"plugin-container\">$this->pluginFields</div>";
 			echo JHtml::_('sliders.end'); ?>
@@ -104,7 +107,7 @@ JText::script('COM_FABRIK_SUBOPTS_VALUES_ERROR');
 	</div>
 
 	<div class="width-50 fltrt">
-		<?php echo JHtml::_('tabs.start', 'element', array('useCookie'=>1));
+		<?php echo JHtml::_('tabs.start', 'element', array('useCookie' => 1));
 			echo $this->loadTemplate('publishing');
 			echo $this->loadTemplate('access');
 			echo $this->loadTemplate('settings');

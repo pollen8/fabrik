@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.juser
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
@@ -365,7 +365,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			 */
 			//if (!empty($formModel->rowId))
 			//{
-			
+
 				if ($formModel->origDataIsEmpty())
 				{
 					$original_id = 0;
@@ -373,7 +373,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				else
 				{
 					$original_id = $formModel->formData[$this->useridfield];
-	
+
 					// $$$ hugh - if it's a user element, it'll be an array
 					if (is_array($original_id))
 					{
@@ -646,9 +646,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$messages = array();
 						foreach ($sendEmail as $userid)
 						{
-							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', '"
-								. JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT') . "', '"
-								. JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']) . "')";
+							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
+								. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
+								. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
+
 						}
 						$q .= implode(',', $messages);
 						$db->setQuery($q);

@@ -26,7 +26,7 @@
  */
 defined('_JEXEC') or die();
 
-require_once(COM_FABRIK_FRONTEND.DS.'plugins'.DS.'table'.DS.'tablecsv'.DS.'scripts'.DS.'csv_import_user_class.php');
+require_once JPATH_SITE . '/plugins/fabrik_list/listcsv/scripts/csv_import_user_class.php';
 
 $csv_user = new ImportCSVCreateUser;
 
@@ -69,4 +69,3 @@ $csv_user->user_created_value = '1';
 
 $csv_user->createUser($tableModel);
 
-?>

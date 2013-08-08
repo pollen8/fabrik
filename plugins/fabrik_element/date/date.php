@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.date
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Plugin element to render date picker
@@ -51,7 +51,9 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	protected $offsetDate = null;
 
 	/**
-	 * Has subelements - set to false as we need to manaully apply name/time keys to the element html name
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
 	 */
 	public $hasSubElements = false;
 
@@ -210,7 +212,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function getValuesToEncrypt(&$values, $data, $c)
 	{
-		$name = $this->getFullName(false, true, false);
+		$name = $this->getFullName(true, false);
 		$group = $this->getGroup();
 		if ($group->canRepeat())
 		{

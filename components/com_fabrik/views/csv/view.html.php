@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewCsv extends JView
+class FabrikViewCsv extends JViewLegacy
 {
 
 	/**
@@ -46,7 +46,7 @@ class FabrikViewCsv extends JView
 		$this->form = $this->get('Form');
 		if (!$listModel->canCSVExport())
 		{
-			throw new RuntimeException(('Naughty naughty!', 400);
+			throw new RuntimeException('Naughty naughty!', 400);
 		}
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
 		return parent::display($tpl);

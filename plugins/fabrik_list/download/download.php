@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.list.download
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 // Require the abstract plugin class
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
@@ -42,9 +42,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   object  $params  Plugin params
+	 * @param   object  &$model  List model
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -91,9 +91,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  list model
-	 * @param   array   $opts    custom options
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  &$model  List model
+	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
@@ -135,13 +135,16 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		else
 		{
 			$db = FabrikWorker::getDbo();
-			$ids_string = implode(',', $ids);
-			$query = "SELECT $download_file FROM $download_table WHERE $download_fk IN ($ids_string)";
+			JArrayHelper::toInteger($ids);
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName($download_file))
+			->from($db->quoteName($download_table))
+			->where($db->quoteName($download_fk) . ' IN (' . implode(',', $ids) . ')');
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
 			foreach ($results AS $result)
 			{
-				$this_file = JPATH_SITE . DS . $result->$download_file;
+				$this_file = JPATH_SITE . '/' . $result->$download_file;
 				if (is_file($this_file))
 				{
 					$filelist[] = $this_file;
@@ -242,7 +245,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Get the message generated in process()
 	 *
-	 * @param   int  $c  plugin render order
+	 * @param   int  $c  Plugin render order
 	 *
 	 * @return  string
 	 */
@@ -255,9 +258,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   object  $params  Plugin parameters
+	 * @param   object  $model   List model
+	 * @param   array   $args    Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
@@ -274,7 +277,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Get fileystem storage class
 	 *
-	 * @return  object filesystem storage
+	 * @return  object  Filesystem storage
 	 */
 
 	protected function getStorage()

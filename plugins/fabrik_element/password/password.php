@@ -1,13 +1,15 @@
 <?php
 /**
+ * Plugin element to render 2 fields to capture and confirm a password
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.password
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 /**
  * Plugin element to render 2 fields to capture and confirm a password
@@ -140,7 +142,6 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
 		$k = FabrikString::safeColNameToArrayKey($k);
-		$this->defaults = null;
 		$element = $this->getElement();
 		$origname = $element->name;
 
@@ -153,6 +154,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$name = $this->getFullName(true, false);
 		$check_name = str_replace($element->name, $element->name . '_check', $name);
 		$this->setFullName($check_name, true, false);
+		$this->reset();
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
 		if ($checkvalue != $value)

@@ -4,13 +4,13 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  * @since       1.6
  */
 
-// No direct access.
-defined('_JEXEC') or die;
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.modeladmin');
 
@@ -126,55 +126,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 	/**
 	 * Get elements
 	 *
-	 * @return StdClass
+	 * @deprecated since 3.1b2
+	 *
+	 * @return array
 	 */
 
 	public function getElements()
 	{
-		$db = FabrikWorker::getDbo(true);
-		$item = $this->getItem();
-		$aEls = array();
-		$aGroups = array();
-		$query = $db->getQuery(true);
-		$query->select('form_id');
-		$query->from($db->quoteName('#__{package}_formgroup') . ' AS fg');
-		$query->where('fg.group_id = ' . (int) $item->group_id);
-		$db->setQuery($query);
-		$formrow = $db->loadObject();
-		if (is_null($formrow))
-		{
-			$aEls[] = $aGroups[] = JText::_('COM_FABRIK_GROUP_MUST_BE_IN_A_FORM');
-		}
-		else
-		{
-			$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-			$formModel->setId($formrow->form_id);
-
-			// Get available element types
-			$groups = $formModel->getGroupsHiarachy();
-
-			foreach ($groups as $groupModel)
-			{
-				$group = $groupModel->getGroup();
-				$o = new stdClass;
-				$o->label = $group->name;
-				$o->value = 'fabrik_trigger_group_group' . $group->id;
-				$aGroups[] = $o;
-				$elementModels = $groupModel->getMyElements();
-				foreach ($elementModels as $elementModel)
-				{
-					$o = new stdClass;
-					$o->label = $elementModel->getFullName(false, false);
-					$o->value = 'fabrik_trigger_element_' . $elementModel->getFullName(true, false);
-					$aEls[] = $o;
-				}
-			}
-		}
-		asort($aEls);
-		$o = new stdClass;
-		$o->groups = $aGroups;
-		$o->elements = array_values($aEls);
-		return $o;
+		return array();
 	}
 
 	/**
@@ -292,19 +251,10 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$opts->plugin = $item->plugin;
 		$opts->parentid = (int) $item->parent_id;
 		$opts->jsevents = $this->getJsEvents();
-		$opts->elements = $this->getElements();
 		$opts->id = (int) $item->id;
 		$opts->deleteButton = FabrikWorker::j3() ? '<a class="btn btn-danger"><i class="icon-delete"></i> ' : '<a class="removeButton">';
 		$opts->deleteButton .= JText::_('COM_FABRIK_DELETE') . '</a>';
 		$opts = json_encode($opts);
-
-		JText::script('COM_FABRIK_ACTION');
-		JText::script('COM_FABRIK_CODE');
-		JText::script('COM_FABRIK_OR');
-		JText::script('COM_FABRIK_DELETE');
-		JText::script('COM_FABRIK_SELECT_ON');
-		JText::script('COM_FABRIK_SELECT_DO');
-		JText::script('COM_FABRIK_WHERE_THIS');
 		JText::script('COM_FABRIK_PLEASE_SELECT');
 		$js[] = "window.addEvent('domready', function () {";
 		$js[] = "\tvar opts = $opts;";
@@ -927,40 +877,39 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$db->setQuery($query);
 		$db->execute();
 		$jform = $input->get('jform', array(), 'array');
-		$eEvent = $input->get('js_e_event', array(), 'array');
-		$eTrigger = $input->get('js_e_trigger', array(), 'array');
-		$eCond = $input->get('js_e_condition', array(), 'array');
-		$eVal = $input->get('js_e_value', array(), 'array');
-		$ePublished = JArrayHelper::getValue($jform, 'js_publised');
-		if (array_key_exists('js_action', $jform) && is_array($jform['js_action']))
+		$eEvent = JArrayHelper::getValue($jform, 'js_e_event', array());
+		$eTrigger = JArrayHelper::getValue($jform, 'js_e_trigger', array());
+		$eCond = JArrayHelper::getValue($jform, 'js_e_condition', array());
+		$eVal = JArrayHelper::getValue($jform, 'js_e_value', array());
+		$ePublished = JArrayHelper::getValue($jform, 'js_published', array());
+		$action = (array) JArrayHelper::getValue($jform, 'action', array());
+
+		foreach ($action as $c => $jsAction)
 		{
-			for ($c = 0; $c < count($jform['js_action']); $c++)
+			if ($jsAction === '')
 			{
-				$jsAction = $jform['js_action'][$c];
-				$params = new stdClass;
-				$params->js_e_event = $eEvent[$c];
-				$params->js_e_trigger = $eTrigger[$c];
-				$params->js_e_condition = $eCond[$c];
-				$params->js_e_value = htmlspecialchars($eVal[$c]);
-				$params->js_published = $ePublished[$c];
-				$params = json_encode($params);
-				if ($jsAction != '')
-				{
-					$code = $jform['js_code'][$c];
-					$code = str_replace("}", "}\n", $code);
-					$code = str_replace('"', "'", $code);
-					foreach ($ids as $id)
-					{
-						$query = $db->getQuery(true);
-						$query->insert('#__{package}_jsactions');
-						$query->set('element_id = ' . (int) $id);
-						$query->set('action = ' . $db->quote($jsAction));
-						$query->set('code = ' . $db->quote($code));
-						$query->set('params = \'' . $params . "'");
-						$db->setQuery($query);
-						$db->execute();
-					}
-				}
+				continue;
+			}
+			$params = new stdClass;
+			$params->js_e_event = $eEvent[$c];
+			$params->js_e_trigger = $eTrigger[$c];
+			$params->js_e_condition = $eCond[$c];
+			$params->js_e_value = htmlspecialchars($eVal[$c]);
+			$params->js_published = $ePublished[$c];
+			$params = json_encode($params);
+			$code = $jform['code'][$c];
+			$code = str_replace("}", "}\n", $code);
+			$code = str_replace('"', "'", $code);
+			foreach ($ids as $id)
+			{
+				$query = $db->getQuery(true);
+				$query->insert('#__{package}_jsactions');
+				$query->set('element_id = ' . (int) $id);
+				$query->set('action = ' . $db->quote($jsAction));
+				$query->set('code = ' . $db->quote($code));
+				$query->set('params = \'' . $params . "'");
+				$db->setQuery($query);
+				$db->execute();
 			}
 		}
 	}

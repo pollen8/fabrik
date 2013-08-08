@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.cascadingdropdown
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php';
 
@@ -93,7 +93,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$opts->showDesc = $params->get('cdd_desc_column', '') === '' ? false : true;
 		$formId = $this->getFormModel()->getId();
 		$opts->autoCompleteOpts = $opts->displayType == 'auto-complete'
-				? FabrikHelperHTML::autoCompletOptions($opts->id, $this->getElement()->id, $formId, 'cascadingdropdown') : null;
+				? FabrikHelperHTML::autoCompleteOptions($opts->id, $this->getElement()->id, $formId, 'cascadingdropdown') : null;
 		$this->elementJavascriptJoinOpts($opts);
 		return array('FbCascadingdropdown', $id, $opts);
 	}
@@ -976,28 +976,18 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		$element = $this->getElement();
 		$observerid = $this->getWatchId();
 		$observerid .= 'value';
-		if ($element->filter_type == 'auto-complete')
-		{
-			$htmlid = $this->getHTMLId() . 'value';
-			$opts = new stdClass;
-			$opts->observerid = $observerid;
-			$app = JFactory::getApplication();
-			$package = $app->getUserState('com_fabrik.package', 'com_fabrik');
-			$opts->url = COM_FABRIK_LIVESITE . '/index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id='
-				. $element->id . '&plugin=cascadingdropdown&method=autocomplete_options&package=' . $package;
-			$opts = json_encode($opts);
+		$formModel = $this->getFormModel();
+		$formId = $formModel->get('id');
 
-			FabrikHelperHTML::addScriptDeclaration("window.addEvent('fabrik.loaded', function() { new FabCddAutocomplete('$htmlid', $opts); });");
-		}
+		// 3.1 Cdd filter set up eleswhere
 		if ($element->filter_type == 'dropdown')
 		{
 			$default = $this->getDefaultFilterVal($normal);
 			$observed = $this->_getObserverElement();
 			$filterid = $this->getHTMLId() . 'value';
-			$formModel = $this->getForm();
 			FabrikHelperHTML::script('plugins/fabrik_element/cascadingdropdown/filter.js');
 			$opts = new stdClass;
-			$opts->formid = $formModel->get('id');
+			$opts->formid = $formId;
 			$opts->filterid = $filterid;
 			$opts->elid = $this->getId();
 			$opts->def = $default;

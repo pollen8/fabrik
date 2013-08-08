@@ -5,28 +5,48 @@
 	<fields name="params">
 		<fieldset name="params">
 		
-			<field default="1" label="COM_FABRIK_PUBLISHED" name="plugin_state" repeat="true" type="radio">
+			<field name="plugin_state"
+				type="radio"
+				class="btn-group"
+				default="1"
+				label="COM_FABRIK_PUBLISHED"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
+			
 		</fieldset>
 	</fields>
 	
 	<fieldset name="details">
 		
-		<field class="inputbox elementtype" label="COM_FABRIK_SELECT_DO" name="plugin" plugin="fabrik_form" repeat="true" required="true" type="pluginlist"/>
+		<field name="plugin"
+			type="pluginlist"
+			class="inputbox elementtype"
+			label="COM_FABRIK_SELECT_DO"
+			plugin="fabrik_form"
+			repeat="true"
+			required="true" />
 		
-		<field default="both" label="COM_FABRIK_IN" name="plugin_locations" repeat="true" type="list">
+		<field name="plugin_locations"
+			type="list"
+			default="both"
+			label="COM_FABRIK_IN"
+			repeat="true">
 				<option value="front">COM_FABRIK_FRONT_END</option>
 				<option value="back">COM_FABRIK_BACK_END</option>
 				<option value="both">COM_FABRIK_BOTH</option>	
 		</field>
 			
-		<field default="both" label="COM_FABRIK_ON" name="plugin_events" repeat="true" type="list">
+		<field name="plugin_events"
+			type="list"
+			default="both"
+			label="COM_FABRIK_ON"
+			repeat="true">
 				<option value="new">COM_FABRIK_NEW</option>
 				<option value="edit">COM_FABRIK_EDIT</option>
 				<option value="both">COM_FABRIK_BOTH</option>
-		</field>	
+		</field>
 	</fieldset>
 	
 </form>

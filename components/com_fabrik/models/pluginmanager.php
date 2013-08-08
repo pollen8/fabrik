@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Plugin Manager Class
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
@@ -57,10 +59,10 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Get a html drop down list of the elment types with this objs element type selected as default
 	 *
-	 * @param   string  $default       selected option
-	 * @param   string  $name          html name for drop down
-	 * @param   string  $extra         extra info for drop down
-	 * @param   string  $defaultlabel  html element type list
+	 * @param   string  $default       Selected option
+	 * @param   string  $name          Html name for drop down
+	 * @param   string  $extra         Extra info for drop down
+	 * @param   string  $defaultlabel  Html element type list
 	 *
 	 * @return  string
 	 */
@@ -98,8 +100,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Get an unordered list (<ul>) of plugins
 	 *
-	 * @param   string  $group  plugin group
-	 * @param   string  $id     ul id
+	 * @param   string  $group  Plugin group
+	 * @param   string  $id     Ul id
 	 *
 	 * @return  string  <ul>
 	 */
@@ -120,9 +122,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	 * Get a list of plugin ids/names for usin in a drop down list
 	 * if no group set defaults to element list
 	 *
-	 * @param   object  $query       query
-	 * @param   int     $limitstart  limit start
-	 * @param   int     $limit       # of records to retunr
+	 * @param   object  $query       Query
+	 * @param   int     $limitstart  Limit start
+	 * @param   int     $limit       # of records to return
 	 *
 	 * @return  array	plugin list
 	 */
@@ -145,9 +147,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Get a certain group of plugins
 	 *
-	 * @param   string  $group  plugin group to load
+	 * @param   string  $group  Plugin group to load
 	 *
-	 * @return  array	plugins
+	 * @return  array	Plugins
 	 */
 
 	public function &getPlugInGroup($group)
@@ -191,7 +193,7 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Loads ABSTRACT version of a plugin group
 	 *
-	 * @param   string  $group  plugin type - element/form/list/cron/validationrule supported
+	 * @param   string  $group  Plugin type - element/form/list/cron/validationrule supported
 	 *
 	 * @return  array
 	 */
@@ -213,10 +215,10 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Load an indivdual plugin
 	 *
-	 * @param   string  $className  plugin name e.g. fabrikfield
-	 * @param   string  $group      plugin type element/ form or list
+	 * @param   string  $className  Plugin name e.g. fabrikfield
+	 * @param   string  $group      Plugin type element/ form or list
 	 *
-	 * @return  object	plugin
+	 * @return  object	Plugin
 	 */
 
 	public function getPlugIn($className = '', $group = '')
@@ -237,9 +239,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Load in the actual plugin objects for a given group
 	 *
-	 * @param   string  $group  plugin group
+	 * @param   string  $group  Plugin group
 	 *
-	 * @return  array	plugins
+	 * @return  array	Plugins
 	 */
 
 	public function getPlugInGroupPlugins($group)
@@ -256,12 +258,12 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Load plugin
 	 *
-	 * @param   string  $className  plugin name e.g. fabrikfield
-	 * @param   string  $group      plugin type element/ form or list
+	 * @param   string  $className  Plugin name e.g. fabrikfield
+	 * @param   string  $group      Plugin type element/ form or list
 	 *
 	 * @throws RuntimeException
 	 *
-	 * @return  mixed	false if not loaded - otherwise plugin object
+	 * @return  mixed	False if not loaded - otherwise plugin object
 	 */
 
 	public function loadPlugIn($className = '', $group = '')
@@ -344,9 +346,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Load all the forms element plugins
 	 *
-	 * @param   object  &$form  form model
+	 * @param   object  &$form  Form model
 	 *
-	 * @return  array	of group objects with plugin objects loaded in group->elements
+	 * @return  array	Group objects with plugin objects loaded in group->elements
 	 */
 
 	public function getFormPlugins(&$form)
@@ -430,9 +432,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Short cut to get an element plugin
 	 *
-	 * @param   int  $id  element id
+	 * @param   int  $id  Element id
 	 *
-	 * @return object  element plugin
+	 * @return object  Element plugin
 	 */
 
 	public function getElementPlugin($id)
@@ -443,8 +445,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Get a plugin based on its id
 	 *
-	 * @param   int     $id    plugin id
-	 * @param   string  $type  plugin type
+	 * @param   int     $id    Plugin id
+	 * @param   string  $type  Plugin type
 	 *
 	 * @return object  plugin
 	 */
@@ -470,9 +472,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * not used
 	 *
-	 * @param   string  $group          name of plugin group to load
-	 * @param   array   $lists          list of default element lists
-	 * @param   array   &$elementModel  list of default and plugin element lists
+	 * @param   string  $group          Name of plugin group to load
+	 * @param   array   $lists          List of default element lists
+	 * @param   array   &$elementModel  List of default and plugin element lists
 	 *
 	 * @deprecated
 	 *
@@ -486,9 +488,9 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Run form & element plugins - yeah!
 	 *
-	 * @param   string  $method        to check and call - corresponds to stage of form processing
-	 * @param   object  &$parentModel  model calling the plugin form/list
-	 * @param   string  $type          plugin type to call form/list
+	 * @param   string  $method        To check and call - corresponds to stage of form processing
+	 * @param   object  &$parentModel  Model calling the plugin form/list
+	 * @param   string  $type          Plugin type to call form/list
 	 *
 	 * @return  array	of bools: false if error found and processed, otherwise true
 	 */
@@ -614,8 +616,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 	/**
 	 * Test if a plugin is installed
 	 *
-	 * @param   string  $group   plugin group
-	 * @param   string  $plugin  plguin name
+	 * @param   string  $group   Plugin group
+	 * @param   string  $plugin  Plguin name
 	 *
 	 * @return  bool
 	 */

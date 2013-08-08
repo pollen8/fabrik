@@ -4,12 +4,12 @@
  *
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
-defined('_JEXEC') or die;
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
@@ -61,6 +61,7 @@ class FabrikAdminViewPlugin extends JViewLegacy
 		$model->setState('c', $input->getInt('c'));
 		$model->setState('id', $input->getInt('id', 0));
 		$model->setState('plugin_published', $input->get('plugin_published'));
+		$model->setState('show_icon', $input->get('show_icon'));
 	}
 
 }

@@ -1,13 +1,21 @@
+/**
+ * List Email
+ *
+ * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
+ * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
+
 var FbListEmail = new Class({
-	
+
 	Extends : FbListPlugin,
-	
+
 	initialize: function (options) {
 		this.parent(options);
 	},
 
 	buttonAction: function () {
-		var url = Fabrik.liveSite + 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&ajax=1&iframe=1&id=' + this.listid + '&renderOrder=' + this.options.renderOrder;
+		var url = 'index.php?option=com_fabrik&controller=list.email&task=popupwin&tmpl=component&ajax=1&iframe=1&id=' + this.listid + '&renderOrder=' + this.options.renderOrder;
+		console.log(url);
 		this.listform.getElements('input[name^=ids]').each(function (id) {
 			if (id.get('value') !== false && id.checked !== false) {
 				url += "&ids[]=" + id.get('value');

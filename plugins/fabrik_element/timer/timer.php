@@ -1,13 +1,15 @@
 <?php
 /**
+ * Plugin element to render a user controllable stopwatch timer
+ *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.timer
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -25,6 +27,11 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = false;
 
 	/**
@@ -41,7 +48,6 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function isReceiptElement()
 	{
 		return true;

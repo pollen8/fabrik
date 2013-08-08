@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-list-radius_search">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-list-radius_search">
+
+			<field type="helplink"
+				url="PLG_LIST_RADIUS_SEARCH_HELP_SERVER" />
+
 			<field name="radius_mapelement"
 				type="listfields"
 				description="PLG_LIST_RADIUS_SEARCH_MAP_ELEMENT_DESC"
@@ -11,6 +15,7 @@
 				
 			<field name="radius_unit"
 				type="list"
+				class="input-small"				
 				default="km"
 				label="PLG_LIST_RADIUS_SEARCH_RADIUS_UNIT_LABEL"
 				repeat="true">
@@ -20,6 +25,7 @@
 			
 			<field name="radius_max"
 				type="text"
+				class="input-mini"
 				default="100"
 				label="PLG_LIST_RADIUS_SEARCH_MAX_LABEL"
 				repeat="true"
@@ -55,6 +61,7 @@
 			
 			<field name="start_active"
 				type="radio"
+				class="btn-group"
 				default="0"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_START_ACTIVE_DESC"
@@ -69,6 +76,7 @@
 		
 			<field name="myloc"
 				type="radio"
+				class="btn-group"
 				default="1"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_MYLOC_DESC"
@@ -79,6 +87,7 @@
 			
 			<field name="place"
 				type="radio"
+				class="btn-group"
 				default="1"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_PLACE_DESC"
@@ -89,6 +98,7 @@
 			
 			<field name="coords"
 				type="radio"
+				class="btn-group"
 				default="1"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_COORDS_DESC"
@@ -99,6 +109,7 @@
 			
 			<field name="geocode"
 				type="radio"
+				class="btn-group"
 				default="1"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_DESC"
@@ -109,6 +120,7 @@
 			
 			<field name="geocode_as_type"
 				type="radio"
+				class="btn-group"
 				default="0"
 				repeat="true"
 				description="PLG_LIST_RADIUS_SEARCH_GEOCODE_AS_TYPE_DESC"

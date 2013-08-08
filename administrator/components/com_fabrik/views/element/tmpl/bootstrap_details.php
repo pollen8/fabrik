@@ -1,8 +1,22 @@
-<div class="tab-pane active" id="tab-details">
+<?php
+/**
+ * Admin Element Edit - Details Tmpl
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @since       3.0
+ */
 
-    <fieldset class="form-horizontal">
-    	<legend><?php echo JText::_('COM_FABRIK_DETAILS')?></legend>
-    	<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
+// No direct access
+defined('_JEXEC') or die('Restricted access');
+
+?>
+<div class="tab-pane active" id="tab-details">
+	<fieldset class="form-horizontal">
+		<legend><?php echo JText::_('COM_FABRIK_DETAILS');?></legend>
+		<input type="hidden" id="name_orig" name="name_orig" value="<?php echo $this->item->name; ?>" />
 		<input type="hidden" id="plugin_orig" name="plugin_orig" value="<?php echo $this->item->plugin; ?>" />
 
 		<div class="span6">
@@ -20,13 +34,11 @@
 		?>
 		</div>
 
-
-
 	</fieldset>
 
 	<fieldset class="form-horizontal">
 		<div id="plugin-container">
-		<?php echo $this->pluginFields?>
+		<?php echo $this->pluginFields; ?>
 		</div>
 	</fieldset>
 </div>
