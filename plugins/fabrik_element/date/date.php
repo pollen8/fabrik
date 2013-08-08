@@ -890,8 +890,10 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 		if ($newRecord && $defaultToday)
 		{
-			$date = JFactory::getDate();
-			$value = $date->toSQL();
+			// Set to local time as its then converted to correct utc/local time in _indStoreDBFormat
+			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+			$date = JFactory::getDate('now', $timeZone);
+			$value = $date->toSQL(true);
 		}
 		return $value;
 	}
