@@ -3,6 +3,9 @@
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		<fieldset name="plg-list-update_col" label="COM_FABRIK_OPTIONS">
 		
+			<field type="helplink"
+				url="PLG_LIST_UPDATE_COL_HELP_SERVER" />
+				
 			<field name="updatecol_access"
 				type="accesslevel"
 				default="1"
@@ -17,7 +20,7 @@
 			
 			<field name="list_update_col_image_name"
 				type="text"
-				default="update_col.png"
+				default="arrow-up.png"
 				description="PLG_LIST_UPDATE_COL_IMAGE_DESC"
 				label="PLG_LIST_UPDATE_COL_IMAGE_LABEL"
 				repeat="true"
@@ -25,6 +28,7 @@
 			
 			<field name="update_user_select"
 				type="radio"
+				class="btn-group"
 				repeat="true"
 				default="0"
 				label="PLG_LIST_UPDATE_COL_USER_SELECT_LABEL"
@@ -32,7 +36,11 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>	
 			</field>
-						
+			
+		</fieldset>
+		
+		<fieldset label="PLG_LIST_UPDATE_COL_UPDATE_OPTIONS" name="plg-list-update_col-update">
+					
 			<field name="update_col_updates"
 				type="fabrikmodalrepeat"
 				description="PLG_LIST_UPDATE_COL_VIEW_SETTINGS_DESC"
@@ -79,7 +87,11 @@
 				label="PLG_LIST_UPDATE_COL_UPDATE_USER_LABEL"
 				repeat="true"
 				valueformat="tableelement"/>
-				
+		
+		</fieldset>
+		
+		<fieldset label="PLG_LIST_UPDATE_COL_EMAIL_NOTIFICATION" name="plg-list-update_col-email">
+		
 			<field name="update_email_element"
 				description="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_DESC"
 				label="PLG_LIST_UPDATE_COL_UPDATE_EMAIL_LABEL"

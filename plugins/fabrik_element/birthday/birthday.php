@@ -22,6 +22,11 @@ defined('_JEXEC') or die();
 class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = true;
 
 	/**
@@ -29,7 +34,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	 *
 	 * @return  string
 	 */
-
 	public function getFieldDescription()
 	{
 		return 'DATE';

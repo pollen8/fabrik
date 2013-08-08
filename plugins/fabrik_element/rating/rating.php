@@ -40,13 +40,25 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	 */
 	protected $fieldSize = '1';
 
-	/** @var array average ratings */
+	/**
+	 * Average ratings
+	 *
+	 * @var array
+	 */
 	protected $avgs = null;
 
-	/** @bool can the rating element be used by the current user*/
+	/**
+	 * Can the rating element be used by the current user
+	 *
+	 * @var bool
+	 */
 	protected $canRate = null;
 
-	/** @var array creator id */
+	/**
+	 * creator id
+	 *
+	 * @var array
+	 */
 	protected $creatorIds = null;
 
 	/**

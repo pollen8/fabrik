@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0.6
  */
 
-class FabrikViewCsv extends JView
+class FabrikViewCsv extends JViewLegacy
 {
 
 	/**
@@ -46,7 +46,7 @@ class FabrikViewCsv extends JView
 		$this->form = $this->get('Form');
 		if (!$listModel->canCSVExport())
 		{
-			throw new RuntimeException(('Naughty naughty!', 400);
+			throw new RuntimeException('Naughty naughty!', 400);
 		}
 		$this->addTemplatePath(JPATH_SITE . '/components/com_fabrik/views/csv/tmpl');
 		return parent::display($tpl);

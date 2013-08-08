@@ -27,6 +27,11 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
 
+	/**
+	 * Does the element contain sub elements e.g checkboxes radiobuttons
+	 *
+	 * @var bool
+	 */
 	public $hasSubElements = false;
 
 	/**
@@ -43,7 +48,6 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	 *
 	 * @return  bool
 	 */
-
 	public function isReceiptElement()
 	{
 		return true;

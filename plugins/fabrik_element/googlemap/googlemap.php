@@ -25,19 +25,34 @@ require_once JPATH_SITE . '/components/com_fabrik/helpers/googlemap.php';
 class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 {
 
+	/**
+	 * Has the geoJS been loaded
+	 *
+	 * @var bool
+	 */
 	protected static $geoJs = null;
 
+	/**
+	 * Has the radius js been loaded
+	 *
+	 * @var bool
+	 */
 	protected static $radiusJs = null;
 
+	/**
+	 * Determine if we use a google static map
+	 *
+	 * @var bool
+	 */
 	protected static $usestatic = null;
 
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData($data, &$thisRow)
@@ -78,7 +93,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 * @param   string  $data      Elements data
 	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData_feed($data, &$thisRow)
@@ -97,7 +112,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 *
 	 * @param   string  $data  Data
 	 *
-	 * @return string html microformat markup
+	 * @return string Html microformat markup
 	 */
 
 	protected function _georss($data)
@@ -121,7 +136,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 *
 	 * @param   string  $data  Data
 	 *
-	 * @return string html microformat markup
+	 * @return string Html microformat markup
 	 */
 
 	protected function _microformat($data)
@@ -144,7 +159,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	 *
 	 * @param   string  $data  Data
 	 *
-	 * @return  string  html DMS markup
+	 * @return  string  Html DMS markup
 	 */
 
 	protected function _dmsformat($data)
@@ -393,10 +408,10 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Util function to turn the saved string into coordinate array
 	 *
-	 * @param   string  $v          coordinates
-	 * @param   int     $zoomlevel  default zoom level
+	 * @param   string  $v          Coordinates
+	 * @param   int     $zoomlevel  Default zoom level
 	 *
-	 * @return  object  coords array and zoomlevel int
+	 * @return  object  Coords array and zoomlevel int
 	 */
 
 	protected function _strToCoords($v, $zoomlevel = 0)
@@ -422,9 +437,9 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Util function to turn the saved string into DMS coordinate array
 	 *
-	 * @param   string  $v  coordinates
+	 * @param   string  $v  Coordinates
 	 *
-	 * @return  object  coords array and zoomlevel int
+	 * @return  object  Coords array and zoomlevel int
 	 */
 
 	protected function _strToDMS($v)

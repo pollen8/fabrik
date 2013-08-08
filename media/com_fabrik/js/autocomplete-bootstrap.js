@@ -107,7 +107,7 @@ var FbAutocomplete = new Class({
 
 	buildMenu: function ()
 	{
-		this.menu = new Element('ul.dropdown-menu', {'role': 'menu'});
+		this.menu = new Element('ul.dropdown-menu', {'role': 'menu', 'styles': {'z-index': 1056}});
 		this.menu.inject(document.body);
 		this.menu.addEvent('mouseenter', function () {
 			this.mouseinsde = true;
