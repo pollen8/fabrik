@@ -878,7 +878,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$defaultToday = $params->get('date_defaulttotoday');
 		$newRecord = $this->getFormModel()->isNewRecord();
 		$value = parent::getValue($data, $repeatCounter, $opts);
-		print_r($value);
 		if (is_array($value))
 		{
 			// Submission posted as array but date & time in date key. Can be key'd to 0 if parent class casts string to array.
