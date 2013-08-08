@@ -3769,6 +3769,7 @@ class FabrikFEModelForm extends FabModelForm
 	public function hasElement($searchName, $checkInt = false, $checkShort = true)
 	{
 		$groups = $this->getGroupsHiarachy();
+		$form = $this->getForm();
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getMyElements();
@@ -3811,6 +3812,17 @@ class FabrikFEModelForm extends FabModelForm
 				{
 					$this->currentElement = $elementModel;
 					return true;
+				}
+
+				// 3.0 test for repeat elements (e.g. multi file upload)
+				if ($form->record_in_database == '1')
+				{
+					$fullName = $this->getListModel()->getTable()->db_table_name . '___' . $elementModel->getElement()->name;
+					if ($searchName == $fullName)
+					{
+						$this->currentElement = $elementModel;
+						return true;
+					}
 				}
 			}
 		}
