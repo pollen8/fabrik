@@ -5141,6 +5141,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$formModel = $this->getFormModel();
 		$name = $this->getFullName(true, false);
 
+		/**
+		 * @TODO - fix this to use formData instead of formDataWithTableName,
+		 * which we need to deprecate.
+		 */
 		if (!array_key_exists($name, $formModel->formDataWithTableName))
 		{
 			$this->getEmptyDataValue($data);
