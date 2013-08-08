@@ -295,6 +295,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$data = array();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		if ($input->get('format') === 'pdf')
+		{
+			return '';
+		}
 		$user = JFactory::getUser();
 		$anonymous = $params->get('comment-internal-anonymous');
 		if ($user->get('id') == 0 && $anonymous == 0)
