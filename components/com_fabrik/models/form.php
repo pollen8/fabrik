@@ -1288,7 +1288,7 @@ class FabrikFEModelForm extends FabModelForm
 				}
 				$ns_raw = $val;
 
-				$ns_raw_full = $this->_fullFormData;
+				$ns_raw_full = $this->fullFormData;
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
@@ -1309,9 +1309,9 @@ class FabrikFEModelForm extends FabModelForm
 				$this->formDataWithTableName[$key] = $val;
 			}
 			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
-			if (isset($this->_fullFormData))
+			if (isset($this->fullFormData))
 			{
-				$this->_fullFormData[$key] = $val;
+				$this->fullFormData[$key] = $val;
 			}
 			/*
 			 * Need to allow RO (encrypted) elements to be updated.  Consensus is that
@@ -1344,9 +1344,9 @@ class FabrikFEModelForm extends FabModelForm
 				$key .= '_raw';
 				$this->formData[$key] = $val;
 				$this->formDataWithTableName[$key] = $val;
-				if (isset($this->_fullFormData))
+				if (isset($this->fullFormData))
 				{
-					$this->_fullFormData[$key] = $val;
+					$this->fullFormData[$key] = $val;
 				}
 				if ($override_ro)
 				{
@@ -1384,11 +1384,11 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		/* Maybe we are being called from onAfterProcess hook, or somewhere else
 		 * running after store, when non-joined data names have been reduced to short
-		 * names in formData, so peek in _fullFormData
+		 * names in formData, so peek in fullFormData
 		 */
-		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
+		elseif (isset($this->fullFormData) && array_key_exists($fullName, $this->fullFormData))
 		{
-			$value = $this->_fullFormData[$fullName];
+			$value = $this->fullFormData[$fullName];
 		}
 
 		// If we didn't find it, set to default
@@ -1429,7 +1429,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Set here so element can call formModel::updateFormData()
 		$this->formData = $data;
-		$this->_fullFormData = $this->formData;
+		$this->fullFormData = $this->formData;
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.data', $this->formData);
 		return $this->formData;
