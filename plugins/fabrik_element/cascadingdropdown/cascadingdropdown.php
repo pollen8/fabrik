@@ -1011,7 +1011,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
 		$s = new stdClass;
-		$s->deps = array('fab/element', 'element/databasejoin/databasejoin');
+		$s->deps = array('fab/element', 'element/databasejoin/databasejoin', 'fab/encoder');
 		$shim['element/cascadingdropdown/cascadingdropdown'] = $s;
 
 		parent::formJavascriptClass($srcs, $script, $shim);
