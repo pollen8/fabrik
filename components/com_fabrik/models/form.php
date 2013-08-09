@@ -1833,7 +1833,11 @@ class FabrikFEModelForm extends FabModelForm
 								/* $$$ hugh - things like elementlist elements (radios, etc) seem to use
 								 * their JSON data for encrypted read only vals, need to decode.
 								 */
-								$v = FabrikWorker::JSONtoData($v, true);
+								$class_name = get_parent_class($elementModel);
+								if ($class_name === 'PlgFabrik_ElementList')
+								{
+									$v = FabrikWorker::JSONtoData($v, true);
+								}
 								$v = $w->parseMessageForPlaceHolder($v, $post);
 							}
 							$elementModel->setGroupModel($groupModel);
