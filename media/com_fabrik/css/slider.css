@@ -30,3 +30,11 @@ ul.slider-labels li{
 .slider_cont{
 	float:left;
 }
+
+.slider_output {
+	position:absolute;
+}
+
+.slider_cont {
+	margin-right: 20px;
+}

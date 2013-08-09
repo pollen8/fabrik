@@ -55,8 +55,10 @@ FbElementList = new Class({
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
-			if (typeOf(this.form.events[action][delegate]) === 'null') {
-				this.form.events[action][delegate] = true;
+			var r = new RegExp('[^a-z]', 'gi');
+			var uid = delegate + js.replace(r, '');
+			if (typeOf(this.form.events[action][uid]) === 'null') {
+				this.form.events[action][uid] = true;
 				
 				c.addEvent(delegate, function (event, target) {
 					// As we are delegating the event, and reference to 'this' in the js will refer to the first element

@@ -1007,11 +1007,12 @@ EOD;
 		else
 		{
 			$deps->deps[] = 'fab/lib/art';
-			$deps->deps[] = 'fab/encoder' . $ext;
+
 			$deps->deps[] = 'fab/tips' . $ext;
 			$deps->deps[] = 'fab/icons' . $ext;
 			$deps->deps[] = 'fab/icongen' . $ext;
 		}
+		$deps->deps[] = 'fab/encoder' . $ext;
 
 		$framework['fab/fabrik' . $ext] = $deps;
 
