@@ -1419,12 +1419,16 @@ class FabrikFEModelForm extends FabModelForm
 
 		$this->ajaxPost = $app->input->getBool('fabrik_ajax');
 
-		// Was POST but needs to be request for qs inserts to work
-		$aData = $_REQUEST;
-		array_walk_recursive($aData, array($this, '_clean'));
+		// Set up post data, and copy values to raw (for failed form submisstions)
+		$data = $_POST;
+		$this->copyToRaw($data);
+
+		// Apply querystring values if not already in post (so qs values dont overwrite the submitted values for dbjoin elements)
+		$data = array_merge($data, $_REQUEST);
+		array_walk_recursive($data, array($this, '_clean'));
 
 		// Set here so element can call formModel::updateFormData()
-		$this->formData = $aData;
+		$this->formData = $data;
 		$this->_fullFormData = $this->formData;
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.data', $this->formData);
@@ -2878,7 +2882,7 @@ class FabrikFEModelForm extends FabModelForm
 					 * Unlike 3.0 rowId does equal '' if using rowid=-1 and user not logged in
 					 */
 					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
-					if (!empty($usekey) || $this->rowId !== '')
+					if (!empty($usekey) && $this->rowId !== '')
 					{
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
