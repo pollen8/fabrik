@@ -5216,7 +5216,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$r = empty($data) ? '' : '<div>' . array_shift($data) . '</div>';
+			$r = empty($data) ? '' : array_shift($data);
 		}
 		return $r;
 	}
