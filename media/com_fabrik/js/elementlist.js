@@ -52,11 +52,11 @@ FbElementList = new Class({
 
 			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
 			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
-			if (typeOf(this.form.events[event]) === 'null') {
-				this.form.events[event] = {};
+			if (typeOf(this.form.events[action]) === 'null') {
+				this.form.events[action] = {};
 			}
-			if (typeOf(this.form.events[event][delegate]) === 'null') {
-				this.form.events[event][delegate] = true;
+			if (typeOf(this.form.events[action][delegate]) === 'null') {
+				this.form.events[action][delegate] = true;
 				
 				c.addEvent(delegate, function (event, target) {
 					// As we are delegating the event, and reference to 'this' in the js will refer to the first element
