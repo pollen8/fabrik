@@ -97,7 +97,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$value = '';
 		if (!$this->isEditable())
 		{
-			return $value;
+			return '***********';
 		}
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
