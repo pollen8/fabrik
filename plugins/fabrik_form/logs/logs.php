@@ -63,7 +63,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		{
 			return 'form.details';
 		}
-		if (($rowid == "=") || ($rowid == '&') || ($rowid == '') || $rowid == 0)
+		if ($rowid == '')
 		{
 			return 'form.add';
 		}

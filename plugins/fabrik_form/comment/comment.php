@@ -127,7 +127,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	public function getEndContent($params, $formModel)
 	{
 		$rowid = $formModel->getRowId();
-		if ($rowid == 0 || $rowid == '')
+		if ($rowid == '')
 		{
 			return;
 		}

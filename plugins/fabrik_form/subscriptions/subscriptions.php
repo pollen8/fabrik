@@ -328,7 +328,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		// Check if the user has pending subscriptions
 		$user = JFactory::getUser();
 		$rowid = $formModel->getRowId();
-		if (((int) $rowid === 0 || !$newRow) && $user->get('id') !== 0)
+		if (($rowid === '' || !$newRow) && $user->get('id') !== 0)
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
