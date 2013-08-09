@@ -524,7 +524,7 @@ class FabrikModelFusionchart extends FabrikFEModelVisualization
 				{
 					foreach ($caldata as $k => $o)
 					{
-						if ($k !== 'Total')
+						if ($k !== JText::_('COM_FABRIK_TOTAL'))
 						{
 							$calculationData[] = (float) $o->value;
 							$calculationLabels[] = trim(strip_tags($o->label));
