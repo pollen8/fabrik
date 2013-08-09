@@ -2612,10 +2612,11 @@ class FabrikFEModelForm extends FabModelForm
 		switch ($this->rowId)
 		{
 			case '-1':
-				$this->rowId = (int) $user->get('id');
+				// New rows (no logged in user) should be ''
+				$this->rowId = $user->get('id') == 0 ? '' : $user->get('id');
 				break;
 			case '-2':
-			// Set rowid to -2 to load in the last recorded record
+				// Set rowid to -2 to load in the last recorded record
 				$this->rowId = $this->getMaxRowId();
 				break;
 		}
@@ -2873,12 +2874,11 @@ class FabrikFEModelForm extends FabModelForm
 				if (!$sessionLoaded)
 				{
 					/* Only try and get the row data if its an active record
-					 * use !== 0 as rowid may be alphanumeric
-					 * $$$ hugh - when 'usekey', rowid can actually be 0 (like if using userid and this is guest access)
-					 * so go ahead and try and load the row, if it doesn't exist, we'll supress the warning
+					 * use !== '' as rowid may be alphanumeric.
+					 * Unlike 3.0 rowId does equal '' if using rowid=-1 and user not logged in
 					 */
 					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
-					if (!empty($usekey) || $this->rowId != '')
+					if (!empty($usekey) && $this->rowId !== '')
 					{
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
@@ -3752,7 +3752,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		if (JString::stristr($label, "{Add/Edit}"))
 		{
-			$replace = ((int) $this->rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = $this->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$label = str_replace("{Add/Edit}", $replace, $label);
 		}
 		return $label;
