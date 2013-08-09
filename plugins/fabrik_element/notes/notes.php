@@ -356,8 +356,8 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$v = $db->quote($input->get('v'));
 		$rowid = $this->getFormModel()->getRowId();
 
-		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == 0)
-		if ($rowid > 0)
+		// Jaanus - avoid inserting data when the form is 'new' not submitted ($rowid == '')
+		if ($rowid !== '')
 		{
 			$query->insert($table)->set($col . ' = ' . $v);
 

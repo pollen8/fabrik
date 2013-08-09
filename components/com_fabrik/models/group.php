@@ -966,7 +966,7 @@ class FabrikFEModelGroup extends FabModel
 
 		if (JString::stristr($groupTable->label, "{Add/Edit}"))
 		{
-			$replace = ((int) $formModel->rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = $formModel->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);

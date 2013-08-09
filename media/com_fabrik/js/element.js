@@ -158,7 +158,7 @@ var FbElement =  new Class({
 		this.options.element = id;
 	},
 	
-	runLoadEvent : function (js, delay) {
+	runLoadEvent: function (js, delay) {
 		delay = delay ? delay : 0;
 		//should use eval and not Browser.exec to maintain reference to 'this'
 		if (typeOf(js) === 'function') {
@@ -168,6 +168,7 @@ var FbElement =  new Class({
 				eval(js);
 			} else {
 				(function () {
+					consolde.log('delayed.....');
 					eval(js);
 				}.bind(this)).delay(delay);
 			}

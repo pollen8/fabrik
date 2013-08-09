@@ -6738,7 +6738,7 @@ class FabrikFEModelList extends JModelForm
 				}
 			}
 		}
-		if ($origRowId == '' || $origRowId == 0)
+		if ($origRowId == '')
 		{
 			// $$$ rob added test for auto_inc as sugarid key is set from storeDatabaseFormat() and needs to be maintained
 			// $$$ rob don't do this when importing via CSV as we want to maintain existing keys (hence check on task var
@@ -6764,7 +6764,7 @@ class FabrikFEModelList extends JModelForm
 			JFactory::getCache('com_' . $package)->clean();
 
 			// $$$ rob new as if you update a record the insertid() returns 0
-			$this->lastInsertId = ($rowId == '' || $rowId == 0) ? $fabrikDb->insertid() : $rowId;
+			$this->lastInsertId = ($rowId == '') ? $fabrikDb->insertid() : $rowId;
 			return $this->lastInsertId;
 		}
 	}

@@ -1409,7 +1409,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($bLabel && !$this->isHidden())
 			{
-				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '">';
+				$tip = $this->tipHtml();
+				if ($tip !== '')
+				{
+					$labelClass .= ' fabrikTip';
+				}
+				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $this->tipHtml() . '>';
 			}
 			elseif (!$bLabel && !$this->isHidden())
 			{
@@ -1926,12 +1931,24 @@ class PlgFabrik_Element extends FabrikPlugin
 				$element->tipSide = $tip;
 				break;
 		}
+		// Did contain tip html but that was just to intrusive as tips appeared all ove the place
+		$element->containerProperties = '';
+		return $element;
+	}
 
+	/**
+	 * Buidl the tip HTML
+	 *
+	 * @return string
+	 */
+
+	protected function tipHtml()
+	{
+		$model = $this->getFormModel();
 		$title = $this->tipTextAndValidations('form', $model->data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
-		$element->containerProperties = $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
-		return $element;
+		return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
 	}
 
 	/**
@@ -1971,11 +1988,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		if ($element->error != '')
 		{
 			$c[] = 'fabrikError';
-		}
-		$title = $this->tipTextAndValidations('form');
-		if ($title !== '')
-		{
-			$c[] = 'fabrikTip';
 		}
 		return implode(' ', $c);
 	}
@@ -2493,71 +2505,76 @@ class PlgFabrik_Element extends FabrikPlugin
 			$elId = $this->getHTMLId($repeatCount);
 			foreach ($allJsActions[$element->id] as $jsAct)
 			{
-				$js = addslashes($jsAct->code);
+				$js = $jsAct->code;
 				$js = str_replace(array("\n", "\r"), "", $js);
 				if ($jsAct->action == 'load')
 				{
-					$js = preg_replace('#\bthis\b#', "\$(\\'$elId\\')", $js);
+					// JS code is already stored in the db as htmlspecialchars() 09/08/2013
+					$quote = '&#039;';
+					$js = preg_replace('#\bthis\b#', 'document.id(' . $quote . $elId . $quote . ')', $js);
 				}
 				if ($jsAct->action != '' && $js !== '')
 				{
 					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 				}
-
-				// Build wysiwyg code
-				if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '')
+				else
 				{
-					// $$$ rob get the correct element id based on the repeat counter
-					$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
-					$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
-					if (!array_key_exists($jsAct->js_e_trigger, $fxadded))
-					{
-						$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
-						$fxadded[$jsAct->js_e_trigger] = true;
-					}
-					$f = JFilterInput::getInstance();
-					$post = $f->clean($_POST, 'array');
-					$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
 
-					if ($jsAct->js_e_condition == 'hidden')
+					// Build wysiwyg code
+					if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '')
 					{
-						$js = "if (this.getContainer().getStyle('display') === 'none') {";
-					}
-					elseif ($jsAct->js_e_condition == 'shown')
-					{
-						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
-					}
-					elseif ($jsAct->js_e_condition == 'CONTAINS')
-					{
-						$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
-					}
-					elseif ($jsAct->js_e_condition == '!CONTAINS')
-					{
-						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
-					}
-					// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
-					// So let's assume if they use <, <=, > or >= they mean numbers.
-					elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
-						$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
-					}
-					else
-					{
-						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
-					}
+						// $$$ rob get the correct element id based on the repeat counter
+						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
+						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
+						if (!array_key_exists($jsAct->js_e_trigger, $fxadded))
+						{
+							$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
+							$fxadded[$jsAct->js_e_trigger] = true;
+						}
+						$f = JFilterInput::getInstance();
+						$post = $f->clean($_POST, 'array');
+						$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
 
-					// Need to use corrected triggerid here as well
-					if (preg_match('#^fabrik_trigger#', $triggerid))
-					{
-						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+						if ($jsAct->js_e_condition == 'hidden')
+						{
+							$js = "if (this.getContainer().getStyle('display') === 'none') {";
+						}
+						elseif ($jsAct->js_e_condition == 'shown')
+						{
+							$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+						}
+						elseif ($jsAct->js_e_condition == 'CONTAINS')
+						{
+							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+						}
+						elseif ($jsAct->js_e_condition == '!CONTAINS')
+						{
+							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+						}
+						// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
+						// So let's assume if they use <, <=, > or >= they mean numbers.
+						elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
+							$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
+						}
+						else
+						{
+							$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+						}
+
+						// Need to use corrected triggerid here as well
+						if (preg_match('#^fabrik_trigger#', $triggerid))
+						{
+							$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+						}
+						else
+						{
+							$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
+						}
+						$js .= "}";
+						$js = addslashes($js);
+						$js = str_replace(array("\n", "\r"), "", $js);
+						$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 					}
-					else
-					{
-						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
-					}
-					$js .= "}";
-					$js = addslashes($js);
-					$js = str_replace(array("\n", "\r"), "", $js);
-					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 				}
 			}
 		}
