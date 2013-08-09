@@ -44,6 +44,11 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 
 	protected function getInput()
 	{
+		$version = new JVersion;
+		if ($version->RELEASE == 2.5)
+		{
+			return parent::getInput();
+		}
 		$mode = $this->element['mode'] ? $this->element['mode'] : 'html';
 		$theme = $this->element['theme'] ? $this->element['theme'] : 'clouds';
 		$height = $this->element['height'] ? $this->element['height'] : '200px';
