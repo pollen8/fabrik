@@ -2882,7 +2882,7 @@ class FabrikFEModelForm extends FabModelForm
 					 * Unlike 3.0 rowId does equal '' if using rowid=-1 and user not logged in
 					 */
 					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
-					if (!empty($usekey) && $this->rowId !== '')
+					if (!empty($usekey) || $this->rowId !== '')
 					{
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
