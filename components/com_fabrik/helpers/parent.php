@@ -1155,28 +1155,36 @@ class FabrikWorker
 		{
 			return;
 		}
+		$error = error_get_last();
+		if (is_null($error))
+		{
+			// No error set (eval could have actually returned false as a correct value)
+			return;
+		}
 		$enqMsgType = 'error';
 		$indentHTML = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Debug:&nbsp;';
 		$app = JFactory::getApplication();
 		$errString = JText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
+
+		// Give a technical error message to the developer
+		if (version_compare(phpversion(), '5.2.0', '>=') && $error && is_array($error))
+		{
+			$errString .= $indentHTML . sprintf($msg, $error['message']);
+		}
+		else
+		{
+			$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
+		}
+
 		if (FabrikHelperHTML::isDebug())
 		{
-			// Give a technical error message to the developer
-			if (version_compare(phpversion(), '5.2.0', '>=') and $error = error_get_last() and is_array($error))
-			{
-				$errString .= $indentHTML . sprintf($msg, $error['message']);
-			}
-			else
-			{
-				if (is_null($error))
-				{
-					// No error set (eval could have actually returned false as a correct value)
-					return;
-				}
-				$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
-			}
+
+			$app->enqueueMessage($errString, $enqMsgType);
 		}
-		$app->enqueueMessage($errString, $enqMsgType);
+		else
+		{
+			JLog::add($errString, JLog::ERROR, 'com_fabrik');
+		}
 	}
 
 	/**
