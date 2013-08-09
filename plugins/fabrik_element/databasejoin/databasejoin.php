@@ -1025,16 +1025,16 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			/*
 			 * if it's a new form, labels won't be set for any defaults.
 			 */
-			if ($formModel->getRowId() == 0)
+			if ($formModel->getRowId() == '')
 			{
-				foreach($defaultLabels as $key => $val)
+				foreach ($defaultLabels as $key => $val)
 				{
 					/*
 					 * Calling getLabelForVaue works, but it generates a database query for each one.
 					 * We should already have what we need in $tmp (the result of _getOptions), so lets
 					 * grab it from there.
 					 */
-					//$defaultLabels[$key] = $this->getLabelForValue($default[$key], $default[$key], true);
+					// $defaultLabels[$key] = $this->getLabelForValue($default[$key], $default[$key], true);
 					if (!empty($val))
 					{
 						foreach ($tmp as $t)
@@ -1251,7 +1251,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		 * $$$ rob 18/06/2012 if form submitted with errors - reshowing the auto-complete wont have access to the submitted values label
 		* 02/11/2012 if new form then labels not present either.
 		*/
-		if ($formModel->hasErrors() || $formModel->getRowId() == 0)
+		if ($formModel->hasErrors() || $formModel->getRowId() === '')
 		{
 			$label = (array) $this->getLabelForValue($label[0], $label[0], true);
 		}
