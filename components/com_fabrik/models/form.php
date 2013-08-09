@@ -359,6 +359,20 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Should the form load up rowid=-1 usekey=foo
+	 *
+	 * @param   string  $priority  Request priority menu or request
+	 *
+	 * @return boolean
+	 */
+
+	protected function isUserRowId($priority = 'menu')
+	{
+		$rowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot, $priority);
+		return $rowid === '-1' || $rowid === ':1';
+	}
+
+	/**
 	 * Makes sure that the form is not viewable based on the list's access settings
 	 *
 	 * Also sets the form's editable state, if it can record in to a db table
@@ -385,10 +399,10 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$ret = 1;
 		}
-		$pRowid = FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot);
+		$isUserRowId = $this->isUserRowId();
 
 		// New form can we add?
-		if ($this->rowId == 0 || $pRowid == '-1')
+		if ($this->rowId === '' || $isUserRowId)
 		{
 			// If they can edit can they also add
 			if ($listModel->canAdd())
@@ -396,7 +410,7 @@ class FabrikFEModelForm extends FabModelForm
 				$ret = 3;
 			}
 			// $$$ hugh - corner case for rowid=-1, where they DON'T have add perms, but DO have edit perms
-			elseif ($pRowid == '-1' && $listModel->canEdit($data))
+			elseif ($isUserRowId && $listModel->canEdit($data))
 			{
 				$ret = 2;
 			}
@@ -988,24 +1002,22 @@ class FabrikFEModelForm extends FabModelForm
 	protected function setOrigData()
 	{
 		$app = JFactory::getApplication();
-		if ($app->input->getString('rowid', '', 'string') == '')
+		$input = $app->input;
+		if ($this->isNewRecord())
 		{
 			$this->_origData = array(new stdClass);
 		}
 		else
 		{
-
 			/*
 			 * $$$ hugh - when loading origdata on editing of a rowid=-1/usekey form,
 			 * the rowid will be set to the actual form tables's rowid, not the userid,
 			 * so we need to unset 'usekey', otherwise we end up with the wrong row.
 			 * I thought we used to take care of this elsewhere?
 			 */
-			$app = JFactory::getApplication();
-			$input = $app->input;
-			$menu_rowid = FabrikWorker::getMenuOrRequestVar('rowid', '0', $this->isMambot, 'menu');
 
-			if ($menu_rowid == '-1')
+			$isUserRow = $this->isUserRowId();
+			if ($isUserRow)
 			{
 				$orig_usekey = $input->get('usekey', '');
 				$input->set('usekey', '');
@@ -1017,7 +1029,7 @@ class FabrikFEModelForm extends FabModelForm
 			$fabrikDb->setQuery($sql);
 			$this->_origData = $fabrikDb->loadObjectList();
 
-			if ($menu_rowid == '-1')
+			if ($isUserRow)
 			{
 				$input->set('usekey', $orig_usekey);
 			}
@@ -1676,12 +1688,12 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Saves the form data to the database
 	 *
-	 * @param   int  $rowId  if 0 then insert a new row - otherwise update this row id
+	 * @param   int  $rowId  if '' then insert a new row - otherwise update this row id
 	 *
 	 * @return	mixed	insert id (or rowid if updating existing row) if ok , else string error message
 	 */
 
-	protected function submitToDatabase($rowId = '0')
+	protected function submitToDatabase($rowId = '')
 	{
 		$app = JFactory::getApplication();
 		$this->getGroupsHiarachy();
@@ -1721,7 +1733,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		else
 		{
-			return ($rowId == 0) ? $listModel->lastInsertId : $rowId;
+			return ($rowId == '') ? $listModel->lastInsertId : $rowId;
 		}
 	}
 
@@ -2130,7 +2142,7 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session = JFactory::getSession();
 
 		// Store errors in local array as clearErrors() removes $this->errors
@@ -2163,7 +2175,7 @@ class FabrikFEModelForm extends FabModelForm
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->errors = array();
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session->clear($context . 'errors');
 		/* $$$ rob this was commented out, but putting back in to test issue that if we have ajax validations on
 		 * and a field is validated, then we dont submit the form, and go back to add the form, the previously validated
@@ -2185,7 +2197,7 @@ class FabrikFEModelForm extends FabModelForm
 		$session = JFactory::getSession();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . (int) $this->getRowId() . '.';
+		$context = 'com_' . $package . '.form.' . $this->getId() . '.' . $this->getRowId() . '.';
 		$session->set($context . 'errors', $errors);
 		$session->set($context . 'session.on', true);
 	}
@@ -2509,7 +2521,7 @@ class FabrikFEModelForm extends FabModelForm
 		$rowid = $input->getString('rowid', '', 'string');
 		$query = $db->getQuery(true);
 		$query->select($item->db_primary_key . ' AS ' . FabrikString::safeColNameToArrayKey($item->db_primary_key))->from($item->db_table_name)
-			->where($item->db_primary_key . ' ' . $c . ' ' . $rowid);
+			->where($item->db_primary_key . ' ' . $c . ' ' . $db->quote($rowid));
 		$query = $listModel->buildQueryOrder($query);
 		$db->setQuery($query, 0, $intLimit);
 		$ids = $db->loadColumn();
@@ -2544,7 +2556,7 @@ class FabrikFEModelForm extends FabModelForm
 
 	public function isNewRecord()
 	{
-		return $this->getRowId() == 0;
+		return $this->getRowId() === '';
 	}
 
 	/**
@@ -2592,7 +2604,7 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		// $$$ hugh - for some screwed up reason, when using SEF, rowid=-1 ends up as :1
 		// $$$ rob === compare as otherwise 0 == ":1" which menat that the users record was  loaded
-		if ((string) $this->rowId === ':1')
+		if ($this->isUserRowId())
 		{
 			$this->rowId = '-1';
 		}
@@ -2866,7 +2878,7 @@ class FabrikFEModelForm extends FabModelForm
 					 * so go ahead and try and load the row, if it doesn't exist, we'll supress the warning
 					 */
 					$usekey = FabrikWorker::getMenuOrRequestVar('usekey', '', $this->isMambot);
-					if (!empty($usekey) || (int) $this->rowId !== 0 || (!is_numeric($this->rowId) && $this->rowId != ''))
+					if (!empty($usekey) || $this->rowId != '')
 					{
 						// $$$ hugh - once we have a few join elements, our select statements are
 						// getting big enough to hit default select length max in MySQL.
@@ -2885,7 +2897,7 @@ class FabrikFEModelForm extends FabModelForm
 						}
 						JDEBUG ? $profiler->mark('formmodel getData: rows data loaded') : null;
 
-						// $$$ rob Ack above didnt work for joined data where there would be n rows rerutned frho "this rowid = $this->rowId  \n";
+						// $$$ rob Ack above didnt work for joined data where there would be n rows returned for "this rowid = $this->rowId  \n";
 						if (!empty($rows))
 						{
 							// Only do this if the query returned some rows (it wont if usekey on and userid = 0 for example)
@@ -2912,7 +2924,7 @@ class FabrikFEModelForm extends FabModelForm
 						if (empty($rows) && $this->rowId != '')
 						{
 							// $$$ hugh - special case when using -1, if user doesn't have a record yet
-							if (FabrikWorker::getMenuOrRequestVar('rowid', '', $this->isMambot) == '-1')
+							if ($this->isUserRowId())
 							{
 								return;
 							}
@@ -2921,14 +2933,14 @@ class FabrikFEModelForm extends FabModelForm
 								// If no key found set rowid to 0 so we can insert a new record.
 								if (empty($usekey) && !$this->isMambot)
 								{
-									$this->rowId = 0;
+									$this->rowId = '';
 									throw new RuntimeException(JText::sprintf('COULD NOT FIND RECORD IN DATABASE', $this->rowId));
 								}
 								else
 								{
 									// If we are using usekey then theres a good possiblity that the record
 									// won't yet exists- so in this case suppress this error message
-									$this->rowId = 0;
+									$this->rowId = '';
 								}
 							}
 						}
@@ -3661,8 +3673,8 @@ class FabrikFEModelForm extends FabModelForm
 
 	protected function parseIntroOutroPlaceHolders($text)
 	{
-		$match = ((int) $this->rowId === 0) ? 'new' : 'edit';
-		$remove = ((int) $this->rowId === 0) ? 'edit' : 'new';
+		$match = $this->isNewRecord() ? 'new' : 'edit';
+		$remove = $this->isNewRecord()  ? 'edit' : 'new';
 		$match = "/{" . $match . ":\s*.*?}/i";
 		$remove = "/{" . $remove . ":\s*.*?}/i";
 		$text = preg_replace_callback($match, array($this, '_getIntroOutro'), $text);
