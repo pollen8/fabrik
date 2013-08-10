@@ -70,9 +70,11 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		if ($domatch)
 		{
 			$formModel = $elementModel->getFormModel();
+			$formData = $formModel->_formData;
+			$w = new FabrikWorker;
 			$php_code = $params->get('php-code');
-			$retval = eval($php_code[$pluginc]);
-			return $retval;
+			$php_code = $w->parseMessageForPlaceHolder($php_code, $formData, true, true);
+			return eval($php_code[$pluginc]);
 		}
 		return true;
 	}
@@ -97,7 +99,10 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		if (!$domatch)
 		{
 			$formModel = $elementModel->getFormModel();
+			$formData = $formModel->_formData;
+			$w = new FabrikWorker;
 			$php_code = $params->get('php-code');
+			$php_code = $w->parseMessageForPlaceHolder($php_code, $formData, true, true);
 			return eval($php_code[$pluginc]);
 		}
 		return $data;
