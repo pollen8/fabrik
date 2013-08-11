@@ -73,8 +73,9 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 			$formData = $formModel->_formData;
 			$w = new FabrikWorker;
 			$php_code = $params->get('php-code');
+			$php_code = JArrayHelper::getValue($php_code, $pluginc, '');
 			$php_code = $w->parseMessageForPlaceHolder($php_code, $formData, true, true);
-			return eval($php_code[$pluginc]);
+			return eval($php_code);
 		}
 		return true;
 	}
@@ -102,8 +103,9 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 			$formData = $formModel->_formData;
 			$w = new FabrikWorker;
 			$php_code = $params->get('php-code');
+			$php_code = JArrayHelper::getValue($php_code, $pluginc, '');
 			$php_code = $w->parseMessageForPlaceHolder($php_code, $formData, true, true);
-			return eval($php_code[$pluginc]);
+			return eval($php_code);
 		}
 		return $data;
 	}
