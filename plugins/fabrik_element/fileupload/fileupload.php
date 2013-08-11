@@ -251,6 +251,19 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			$rawvalues = explode(GROUPSPLITTER, $rawvalues);
 		}
+		else
+		{
+			/*
+			 * $$$ hugh - nasty hack for now, if repeat group with simple
+			 * uploads, all raw values are in an array in $rawvalues[0]
+			 */
+
+			if (is_array($rawvalues[0]))
+			{
+				$rawvalues = $rawvalues[0];
+			}
+
+		}
 		if (!is_array($imgParams))
 		{
 			$imgParams = explode(GROUPSPLITTER, $imgParams);
@@ -902,7 +915,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			}
 			// $$$ hugh - for some reason, we're now getting $raw[] with a single, uninitialized entry back
 			// from getvalue() when no files are uploaded
-			if (count($raw) == 1 && empty($raw[0]))
+			if (count($raw) == 1 && array_key_exists(0, $raw) && empty($raw[0]))
 			{
 				return true;
 			}
@@ -1195,6 +1208,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					{
 						$imagesToKeep[$j] = $origData[$j]->$key;
 					}
+					break;
 				}
 			}
 		}
@@ -1204,6 +1218,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		 * https://github.com/Fabrik/fabrik/commit/5970a1845929c494c193b9227c32c983ff30fede
 		 * I don't think $fdata is ever going to be an array, after the above changes, but for now
 		 * I'm just patching round it.  Rob will fix it properly with his hammer.  :)
+		 * UPDATE - yes, it will be an array, if we have a repeat group with simple uploads.
+		 * Continuing to hack around with this!
 		 */
 		if (is_array($fdata))
 		{
@@ -1225,6 +1241,30 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$files[$i] = $imagesToKeep[$i];
 				}
 			}
+			foreach ($imagesToKeep as $k => $v)
+			{
+				if (!array_key_exists($k, $files))
+				{
+					$files[$k] = $v;
+				}
+			}
+
+			foreach ($files as &$f)
+			{
+				$f = str_replace('\\', '/', $f);
+			}
+
+			if ($params->get('upload_delete_image'))
+			{
+				foreach ($deletedImages as $filename)
+				{
+					$this->deleteFile($filename);
+				}
+			}
+
+			$formModel->updateFormData($name . '_raw', $files);
+			$formModel->updateFormData($name, $files);
+
 		}
 		else
 		{
@@ -1243,39 +1283,45 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			{
 				$files[0] = $imagesToKeep[0];
 			}
-		}
-
-		foreach ($imagesToKeep as $k => $v)
-		{
-			if (!array_key_exists($k, $files))
+			foreach ($imagesToKeep as $k => $v)
 			{
-				$files[$k] = $v;
+				if (!array_key_exists($k, $files))
+				{
+					$files[$k] = $v;
+				}
 			}
-		}
 
-		foreach ($files as &$f)
-		{
-			$f = str_replace('\\', '/', $f);
-		}
-
-		if ($params->get('upload_delete_image'))
-		{
-			foreach ($deletedImages as $filename)
+			foreach ($files as &$f)
 			{
-				$this->deleteFile($filename);
+				$f = str_replace('\\', '/', $f);
 			}
+
+			if ($params->get('upload_delete_image'))
+			{
+				foreach ($deletedImages as $filename)
+				{
+					$this->deleteFile($filename);
+				}
+			}
+			// Update form model with file data
+			/*
+			 * $$$ hugh - another monkey patch just to get simple upload going again
+			* We don't ever want to actually end up with the old GROUPSPLITTER arrangement,
+			* but if we've got repeat groups on the form, we'll have multiple entries in
+			* $files for the same single, simple upload.  So boil it down with an array_unique()
+			* HORRIBLE hack .. really need to fix this whole chunk of code.
+			*/
+			/*
+			$formModel->updateFormData($name . '_raw', $files);
+			$formModel->updateFormData($name, $files);
+			*/
+			$files = array_unique($files);
+			$strfiles = implode(GROUPSPLITTER, $files);
+			$formModel->updateFormData($name . '_raw', $strfiles);
+			$formModel->updateFormData($name, $strfiles);
 		}
-		// Update form model with file data
-		/*
-		 * $$$ hugh - another monkey patch just to get simple upload going again
-		 */
-		/*
-		$formModel->updateFormData($name . '_raw', $files);
-		$formModel->updateFormData($name, $files);
-		*/
-		$strfiles = implode(GROUPSPLITTER, $files);
-		$formModel->updateFormData($name . '_raw', $strfiles);
-		$formModel->updateFormData($name, $strfiles);
+
+
 	}
 
 	/**
