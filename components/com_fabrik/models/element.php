@@ -1138,7 +1138,18 @@ class PlgFabrik_Element extends FabrikPlugin
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
-			$this->default = JText::_($default);
+			if (is_array($default))
+			{
+				foreach ($default as &$d)
+				{
+					$d = JText::_($d);
+				}
+				$this->default = $default;
+			}
+			else
+			{
+				$this->default = JText::_($default);
+			}
 		}
 		return $this->default;
 	}
