@@ -61,14 +61,14 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
 				$id_element = $id_elementModel->getElement(true);
-				$formModel->formData[$id_element->name] = $formModel->_fullFormData['rowid'];
-				$formModel->formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
+				$formModel->formData[$id_element->name] = $formModel->fullFormData['rowid'];
+				$formModel->formData[$id_element->name . '_raw'] = $formModel->fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();
 				$listModel->setFormModel($formModel);
 				$primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
-				$formModel->formData[$primaryKey] = $formModel->_fullFormData['rowid'];
-				$formModel->formData[$primaryKey . '_raw'] = $formModel->_fullFormData['rowid'];
-				$listModel->storeRow($formModel->formData, $formModel->_fullFormData['rowid']);
+				$formModel->formData[$primaryKey] = $formModel->fullFormData['rowid'];
+				$formModel->formData[$primaryKey . '_raw'] = $formModel->fullFormData['rowid'];
+				$listModel->storeRow($formModel->formData, $formModel->fullFormData['rowid']);
 			}
 
 			$clone_times = $formModel->formData[$element->name];

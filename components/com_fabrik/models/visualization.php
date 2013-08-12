@@ -154,7 +154,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get the visualizations list models
+	 * Get the visualizations list models
 	 *
 	 * @return array table objects
 	 */
@@ -179,7 +179,7 @@ class FabrikFEModelVisualization extends JModelLegacy
 	}
 
 	/**
-	 * get a list model
+	 * Get a list model
 	 *
 	 * @param   int  $id  list model id
 	 *

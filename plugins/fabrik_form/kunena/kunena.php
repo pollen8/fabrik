@@ -77,10 +77,10 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$func = 'post';
 		$contentURL = 'empty';
 		$input->set('catid', $catid);
-		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->_fullFormData);
+		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->fullFormData);
 		$subject = $params->get('kunena_title');
 		$input->set('message', $msg);
-		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->_fullFormData);
+		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->fullFormData);
 
 		// Added subject in request
 		$input->set('subject', $subject);

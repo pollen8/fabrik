@@ -365,7 +365,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$this->formModel = $formModel;
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$this->data = $formModel->_fullFormData;
+		$this->data = $formModel->fullFormData;
 		if (!$this->shouldProcess('subscriptions_conditon'))
 		{
 			return true;
