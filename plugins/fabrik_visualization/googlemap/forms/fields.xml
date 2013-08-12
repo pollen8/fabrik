@@ -52,6 +52,7 @@
 						<field name="filter-fields"
 							type="listfields"
 							repeat="true"
+							showall="0"
 							valueformat="tableelement"
 							connection="params_googlemap_connection"
 							connection_in_repeat="true"

@@ -95,7 +95,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		foreach ($fields as $f)
 		{
 			$name = $f->name;
-			foreach ($formModel->_fullFormData as $key => $val)
+			foreach ($formModel->fullFormData as $key => $val)
 			{
 				if (is_array($val))
 				{
@@ -121,7 +121,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		$customkey = $params->get('salesforce_customid') . '__c';
 		if ($params->get('salesforce_allowupsert', 0))
 		{
-			$submission[$customkey] = $formModel->_fullFormData[$key];
+			$submission[$customkey] = $formModel->fullFormData[$key];
 		}
 		$sObjects = array();
 		$sObject = new sObject;

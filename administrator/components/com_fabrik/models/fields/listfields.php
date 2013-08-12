@@ -103,6 +103,7 @@ class JFormFieldListfields extends JFormFieldList
 					$opts->conn = 'jform_' . $connectionDd;
 					$opts->value = $this->value;
 					$opts->repeat = $repeat;
+					$opts->showAll = (int) JArrayHelper::getValue($this->element, 'showall', '1');
 					$opts->highlightpk = (int) $highlightpk;
 					$opts = json_encode($opts);
 					$script = array();
