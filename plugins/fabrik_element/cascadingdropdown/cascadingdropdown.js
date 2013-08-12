@@ -227,7 +227,7 @@ var FbCascadingdropdown = new Class({
 				/**
 				 * Remove the previously bound change event function, by name, then re-bind it and re-add it
 				 */
-				document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				// document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
 				this.doChangeEvent = this.doChange.bind(this);
 				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 
