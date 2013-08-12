@@ -239,7 +239,13 @@ var FbCascadingdropdown = new Class({
 				/**
 				 * Remove the previously bound change event function, by name, then re-bind it and re-add it
 				 */
-				document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				/**
+				 * Actually, we don't want to remove it, as this stops the element we got copied from
+				 * being updated on a change.  This issue only surfaced when we changed this code to use
+				 * a bound function, so it actually started removing the event, which it never did before
+				 * when we referenced an inline function().
+				 */
+				// document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
 				this.doChangeEvent = this.doChange.bind(this);
 				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 
