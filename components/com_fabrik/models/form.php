@@ -402,7 +402,7 @@ class FabrikFEModelForm extends FabModelForm
 		$isUserRowId = $this->isUserRowId();
 
 		// New form can we add?
-		if ($this->rowId === '' || $isUserRowId)
+		if ($this->getRowId() === '' || $isUserRowId)
 		{
 			// If they can edit can they also add
 			if ($listModel->canAdd())
@@ -2625,7 +2625,7 @@ class FabrikFEModelForm extends FabModelForm
 				break;
 		}
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
-		return $this->rowId;
+		return (string) $this->rowId;
 	}
 
 	/**
