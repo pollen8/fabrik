@@ -157,7 +157,7 @@ var FbListRadiusSearch = new Class({
 					this.toggleFields(e);
 				}.bind(this));
 				
-				this.listform.getElements('input.cancel').addEvent('click', function() {
+				this.listform.getElements('input.cancel').addEvent('click', function () {
 					this.win.close();
 				}.bind(this));
 				
