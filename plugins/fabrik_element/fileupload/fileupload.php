@@ -422,13 +422,13 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      data to show
-	 * @param   object  &$thisRow  all the data in the tables current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
-	 * @return	string	formatted value
+	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
@@ -448,7 +448,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		$rendered = '';
 		if ($params->get('fu_show_image_in_table', '0') == '2')
 		{
-			//JHtml::_('bootstrap.carousel', 'myCarousel');
+			// JHtml::_('bootstrap.carousel', 'myCarousel');
 			$rendered = $this->buildCarousel('foo', $data);
 		}
 		else

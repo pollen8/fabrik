@@ -118,20 +118,6 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 	}
 
 	/**
-	 * Shows the data formatted for the list view
-	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
-	 *
-	 * @return  string	formatted value
-	 */
-
-	public function renderListData($data, &$thisRow)
-	{
-		return parent::renderListData($data, $thisRow);
-	}
-
-	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
 	 * @param   array  $data  form data

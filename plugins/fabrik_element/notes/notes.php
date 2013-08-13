@@ -50,20 +50,6 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	}
 
 	/**
-	 * Shows the data formatted for the list view
-	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
-	 *
-	 * @return  string	formatted value
-	 */
-
-	public function renderListData($data, &$thisRow)
-	{
-		return parent::renderListData($data, $thisRow);
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           To preopulate element with

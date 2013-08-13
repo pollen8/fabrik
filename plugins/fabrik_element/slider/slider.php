@@ -48,21 +48,6 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	protected $fieldSize = '6';
 
 	/**
-	 * Shows the data formatted for the list view
-	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
-	 *
-	 * @return  string	formatted value
-	 */
-
-	public function renderListData($data, &$thisRow)
-	{
-		$params = $this->getParams();
-		return parent::renderListData($data, $thisRow);
-	}
-
-	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           To preopulate element with
