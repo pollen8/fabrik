@@ -402,7 +402,7 @@ class FabrikFEModelForm extends FabModelForm
 		$isUserRowId = $this->isUserRowId();
 
 		// New form can we add?
-		if ($this->getRowId() === '' || $isUserRowId)
+		if ($this->rowId === '' || $isUserRowId)
 		{
 			// If they can edit can they also add
 			if ($listModel->canAdd())
@@ -1288,7 +1288,7 @@ class FabrikFEModelForm extends FabModelForm
 				}
 				$ns_raw = $val;
 
-				$ns_raw_full = $this->fullFormData;
+				$ns_raw_full = $this->_fullFormData;
 				for ($i = 0; $i <= $pathNodes; $i++)
 				{
 					// If any node along the registry path does not exist, create it
@@ -1309,9 +1309,9 @@ class FabrikFEModelForm extends FabModelForm
 				$this->formDataWithTableName[$key] = $val;
 			}
 			// Check if set - for case where you have a fileupload element & confirmation plugin - when plugin is trying to update none existant data
-			if (isset($this->fullFormData))
+			if (isset($this->_fullFormData))
 			{
-				$this->fullFormData[$key] = $val;
+				$this->_fullFormData[$key] = $val;
 			}
 			/*
 			 * Need to allow RO (encrypted) elements to be updated.  Consensus is that
@@ -1344,9 +1344,9 @@ class FabrikFEModelForm extends FabModelForm
 				$key .= '_raw';
 				$this->formData[$key] = $val;
 				$this->formDataWithTableName[$key] = $val;
-				if (isset($this->fullFormData))
+				if (isset($this->_fullFormData))
 				{
-					$this->fullFormData[$key] = $val;
+					$this->_fullFormData[$key] = $val;
 				}
 				if ($override_ro)
 				{
@@ -1384,11 +1384,11 @@ class FabrikFEModelForm extends FabModelForm
 		}
 		/* Maybe we are being called from onAfterProcess hook, or somewhere else
 		 * running after store, when non-joined data names have been reduced to short
-		 * names in formData, so peek in fullFormData
+		 * names in formData, so peek in _fullFormData
 		 */
-		elseif (isset($this->fullFormData) && array_key_exists($fullName, $this->fullFormData))
+		elseif (isset($this->_fullFormData) && array_key_exists($fullName, $this->_fullFormData))
 		{
-			$value = $this->fullFormData[$fullName];
+			$value = $this->_fullFormData[$fullName];
 		}
 
 		// If we didn't find it, set to default
@@ -1429,7 +1429,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// Set here so element can call formModel::updateFormData()
 		$this->formData = $data;
-		$this->fullFormData = $this->formData;
+		$this->_fullFormData = $this->formData;
 		$session = JFactory::getSession();
 		$session->set('com_' . $package . '.form.data', $this->formData);
 		return $this->formData;
@@ -2625,7 +2625,7 @@ class FabrikFEModelForm extends FabModelForm
 				break;
 		}
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
-		return (string) $this->rowId;
+		return $this->rowId;
 	}
 
 	/**
@@ -3238,7 +3238,7 @@ class FabrikFEModelForm extends FabModelForm
 
 		// $$$ hugh - changed this to !==, as in rowid=-1/usekey situations, we can have a rowid of 0
 		// I don't THINK this will have any untoward side effects, but ...
-		if (!$random && !$emptyRowId)
+		if ((!$random && !$emptyRowId) || !empty($usekey))
 		{
 			$sql .= ' WHERE ';
 			if (!empty($usekey))
