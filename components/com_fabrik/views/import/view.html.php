@@ -32,7 +32,8 @@ class FabrikViewImport extends JView
 
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$this->listid = JRequest::getVar('listid', 0);
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);
