@@ -337,7 +337,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 		$timelength = JString::strlen($timeformat);
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-		$str[] = '<input type="text" class="' . $class .'" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+		$str[] = '<input type="text" class="' . $class . '" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 		$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
@@ -888,7 +888,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$date = JFactory::getDate();
 			$value = $date->toSQL();
 		}
-		if ($newRecord && $defaultToday)
+		if ($newRecord && $defaultToday && $value == '')
 		{
 			// Set to local time as its then converted to correct utc/local time in _indStoreDBFormat
 			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
