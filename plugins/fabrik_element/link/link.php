@@ -190,7 +190,17 @@ class PlgFabrik_ElementLink extends PlgFabrik_Element
 			if (!is_array($value))
 			{
 				$value = FabrikWorker::JSONtoData($value, true);
-				if (array_key_exists(0, $value))
+				/**
+				 * In some legacy case, data is like ...
+				 * [{"label":"foo","link":"bar"}]
+				 * ... I think if it came from 2.1.  So lets check to see if we need
+				 * to massage that into the right format
+				 */
+				if (array_key_exists(0, $value) && is_object($value[0]))
+				{
+					$value = JArrayHelper::fromObject($value[0]);
+				}
+				else if (array_key_exists(0, $value))
 				{
 					$value['label'] = $value[0];
 				}
