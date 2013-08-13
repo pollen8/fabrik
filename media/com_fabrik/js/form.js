@@ -692,7 +692,9 @@ var FbForm = new Class({
 	 */
 
 	dispatchEvent: function (elementType, elementId, action, js) {
-		js = Encoder.htmlDecode(js);
+		if (typeOf(js) === 'string') {
+			js = Encoder.htmlDecode(js);
+		}
 		var el = this.formElements.get(elementId);
 		if (!el) {
 			// E.g. db join rendered as chx

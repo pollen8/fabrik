@@ -39,29 +39,26 @@ class PlgFabrik_ListListcsv extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return false;
 	}
 
 	/**
 	 * Called when we import a csv row
 	 *
-	 * @param   object  &$params     Plugin parameters
-	 * @param   JModel  &$listModel  List model
+	 * @param   object  &$params  Plugin parameters
 	 *
 	 * @return boolean
 	 */
 
-	public function onImportCSVRow(&$params, &$listModel)
+	public function onImportCSVRow(&$params)
 	{
 		$file = JFilterInput::clean($params->get('listcsv_import_php_file'), 'CMD');
 		if ($file == -1 || $file == '')

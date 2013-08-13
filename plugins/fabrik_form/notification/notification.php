@@ -27,7 +27,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -40,15 +40,14 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     Params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		$user = JFactory::getUser();
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		if ($user->get('id') == 0)
@@ -101,8 +100,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		// $$$ rob yes this looks odd but its right - as the js mouseup event is fired before the checkbox checked value changes
 		$app = JFactory::getApplication();
 		$notify = $app->input->get('notify') == 'true' ? false : true;
-		$params = $this->getParams();
-		$this->process($notify, 'observer', $params);
+		$this->process($notify, 'observer');
 	}
 
 	/**
@@ -124,15 +122,15 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	/**
 	 * Process the plugin
 	 *
-	 * @param   bool       $add     Add or remove notification
-	 * @param   string     $why     Reason for notification
-	 * @param   JRegistry  $params  Params
+	 * @param   bool    $add  Add or remove notification
+	 * @param   string  $why  Reason for notification
 	 *
 	 * @return  void
 	 */
 
-	protected function process($add, $why, $params)
+	protected function process($add, $why)
 	{
+		$params = $this->getParams();
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$userid = (int) $user->get('id');
@@ -182,14 +180,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	/**
 	 * Test if the notifications should be fired
 	 *
-	 * @param   object     $formModel  Form model
-	 * @param   JRegistry  $params     Params
-	 *
 	 * @return  bool
 	 */
 
-	protected function triggered($formModel, $params)
+	protected function triggered()
 	{
+		$formModel = $this->getModel();
+		$params = $this->getParams();
 		if ($params->get('send_mode', 0) == 0)
 		{
 			$user = JFactory::getUser();
@@ -208,15 +205,14 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      Plugin params
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$input = $app->input;
 		if ($params->get('notification_ajax', 0) == 1)
 		{
@@ -226,13 +222,13 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$userid = $user->get('id');
 		$notify = $input->getInt('fabrik_notification', 0);
 
-		if (!$this->triggered($formModel, $params))
+		if (!$this->triggered())
 		{
 			return;
 		}
 		$rowId = $input->getString('rowid', '', 'string');
 		$why = $rowId == '' ? 'author' : 'editor';
-		$this->process($notify, $why, $params);
+		$this->process($notify, $why);
 
 		// Add entry indicating the form has been updated this record will then be used by the cron plugin to
 		// see which new events have been generated and notify subscribers of said events.

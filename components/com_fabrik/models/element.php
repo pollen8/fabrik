@@ -867,14 +867,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * If location is 'list' then we don't check the group canEdit() option - causes inline edit plugin not to work
 	 * when followed by a update_col plugin.
 	 *
-	 * @param   object  &$model    Calling the plugin list/form
 	 * @param   string  $location  To trigger plugin on form/list for elements
 	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		$element = $this->getElement();
 

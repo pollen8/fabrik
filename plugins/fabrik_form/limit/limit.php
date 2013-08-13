@@ -26,39 +26,35 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 	/**
 	 * Process the plugin, called when form is loaded
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   JModel  &$formModel  Form model
-	 *
 	 * @return  void
 	 */
 
-	public function onLoad($params, &$formModel)
+	public function onLoad()
 	{
-		return $this->_process($params, $formModel);
+		return $this->_process();
 	}
 
 	/**
 	 * Process the plugin
 	 *
-	 * @param   object  $params      Plugin params
-	 * @param   JModel  &$formModel  Form model
-	 *
 	 * @return  bool
 	 */
-	private function _process($params, &$formModel)
+	private function _process()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		if ($params->get('limit_allow_anonymous'))
 		{
 			return true;
 		}
-		if (JFactory::getApplication()->input->get('view') === 'details' || $formModel->getRowId() > 0)
+		if (JFactory::getApplication()->input->get('view') === 'details' || $formModel->getRowId() !== '')
 		{
 			return true;
 		}
 
 		$limit = $this->limit();
-		$c = $this->count($formModel);
+		$c = $this->count();
 
 		// Allow for unlimited
 		if ($limit == -1)
@@ -82,12 +78,11 @@ class PlgFabrik_FormLimit extends PlgFabrik_Form
 	/**
 	 * Count the number of records the user has already submitted
 	 *
-	 * @param   JModel  $formModel  Form model
-	 *
 	 * @return  int
 	 */
-	protected function count($formModel)
+	protected function count()
 	{
+		$formModel = $this->getModel();
 		$user = JFactory::getUser();
 		$params = $this->getParams();
 		$field = $params->get('limit_userfield');

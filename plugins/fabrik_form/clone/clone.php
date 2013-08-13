@@ -29,28 +29,24 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
-		return $this->_process($params, $formModel);
+		return $this->_process();
 	}
 
 	/**
 	 * Clone the record
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	private function _process($params, &$formModel)
+	private function _process()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
 		if ($clone_times_field_id != '')

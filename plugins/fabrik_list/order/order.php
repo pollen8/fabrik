@@ -63,23 +63,22 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
 		if (!$this->canUse())
 		{
 			return;
 		}
-
+		$model = $this->getModel();
+		$params = $this->getParams();
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
 		$form_id = $model->getFormModel()->getId();
-		$opts = $this->getElementJSOptions($model);
+		$opts = $this->getElementJSOptions();
 		$opts->enabled = (count($model->orderEls) === 1
 			&& FabrikString::safeColNameToArrayKey($model->orderEls[0]) == FabrikString::safeColNameToArrayKey($orderEl->getOrderByName())) ? true
 			: false;

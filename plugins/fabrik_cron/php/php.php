@@ -28,14 +28,13 @@ class PlgFabrik_Cronphp extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the active element
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   string  $location  To trigger plugin on
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		return true;
 	}

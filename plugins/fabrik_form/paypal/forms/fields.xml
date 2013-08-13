@@ -37,6 +37,7 @@
 			<field name="paypal_conditon"
 				type="fabrikeditor"
 				mode="php"
+				width="100"
 				description="PLG_FORM_PAYPAL_CONDITION_DESC"
 				label="PLG_FORM_PAYPAL_CONDITION_LABEL"
 				repeat="true"/>

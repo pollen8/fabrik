@@ -52,14 +52,13 @@ class PlgFabrik_List extends FabrikPlugin
 	 * Determine if we use the plugin or not
 	 * both location and event criteria have to be match when form plug-in
 	 *
-	 * @param   object  &$model    calling the plugin table/form
-	 * @param   string  $location  location to trigger plugin on
-	 * @param   string  $event     event to trigger plugin on
+	 * @param   string  $location  Location to trigger plugin on
+	 * @param   string  $event     Event to trigger plugin on
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		$aclParam = $this->getAclParam();
 		if ($aclParam == '')
@@ -97,17 +96,16 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   array   &$args  Arguements
 	 *
 	 * @since  3.0.6.2
 	 *
 	 * @return  bool;
 	 */
 
-	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
+		$model = $this->getModel();
 		$listParams = $model->getParams();
 		$this->buttonAction = $listParams->get('actionMethod');
 		$this->context = $model->getRenderContext();
@@ -153,14 +151,13 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Build an array of properties to ini the plugins JS objects
 	 *
-	 * @param   object  $model  list model
-	 *
 	 * @return  array
 	 */
 
-	public function getElementJSOptions($model)
+	public function getElementJSOptions()
 	{
 		$opts = new stdClass;
+		$model = $this->getModel();
 		$opts->ref = $model->getRenderContext();
 		$opts->name = $this->_getButtonName();
 		$opts->listid = $model->getId();
@@ -170,14 +167,12 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    [0] => string table's form id to contain plugin
+	 * @param   array  $args  [0] => string table's form id to contain plugin
 	 *
 	 * @return	bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
 		JText::script('COM_FABRIK_PLEASE_SELECT_A_ROW');
 		return true;
@@ -186,13 +181,12 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * onGetData method
 	 *
-	 * @param   object  $params  list params
-	 * @param   object  &$model  list model
+	 * @param   object  $params  List params
 	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onLoadData($params, &$model)
+	public function onLoadData($params)
 	{
 		return true;
 	}
@@ -200,13 +194,12 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * onFiltersGot method - run after the list has created filters
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list
+	 * @param   object  $params  Plugin params
 	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onFiltersGot($params, &$model)
+	public function onFiltersGot($params)
 	{
 		return true;
 	}
@@ -241,13 +234,10 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * Prefilght check to ensure that the list plugin should process
 	 *
-	 * @param   object  $params  params
-	 * @param   object  &$model  list model
-	 *
 	 * @return	string|boolean
 	 */
 
-	public function process_preflightCheck($params, &$model)
+	public function process_preflightCheck()
 	{
 		if ($this->buttonPrefix == '')
 		{
@@ -318,7 +308,6 @@ class PlgFabrik_List extends FabrikPlugin
 	 * Allows to to alter the table's select query
 	 *
 	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
 	 * @param   array   &$args   arguements - first value is an object with a JQuery object
 	 * contains the current query:
 	 * $args[0]->query
@@ -326,7 +315,7 @@ class PlgFabrik_List extends FabrikPlugin
 	 * @return  void;
 	 */
 
-	public function onQueryBuilt($params, &$model, &$args)
+	public function onQueryBuilt(&$args)
 	{
 
 	}

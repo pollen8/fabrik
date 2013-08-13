@@ -35,16 +35,14 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return true;
 	}
 
@@ -73,16 +71,16 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  list model
-	 * @param   array   $opts    custom options
+	 * @param   object  $params  Plugin parameters
+	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, &$model, $opts = array())
+	public function process($params, $opts = array())
 	{
 		$app = JFactory::getApplication();
+		$model = $this->getModel();
 		$ids = $app->input->get('ids', array(), 'array');
 		$formModel = $model->getFormModel();
 		return $model->copyRows($ids);
@@ -106,17 +104,15 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = $this->getElementJSOptions($model);
+		parent::onLoadJavascriptInstance($args);
+		$opts = $this->getElementJSOptions();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListCopy($opts)";
 		return true;

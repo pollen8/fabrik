@@ -45,29 +45,26 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	 * Get the buisiness email either based on the accountemail field or the value
 	 * found in the selected accoutnemail_element
 	 *
-	 * @param   object  $params  plugin params
-	 *
 	 * @return  string  email
 	 */
 
-	protected function getBusinessEmail($params)
+	protected function getBusinessEmail()
 	{
 		$w = $this->getWorker();
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
+		$params = $this->getParams();
 		$field = $params->get('subscriptions_testmode') == 1 ? 'subscriptions_sandbox_email' : 'subscriptions_accountemail';
-		return $w->parseMessageForPlaceHolder($this->params->get($field), $data);
+		return $w->parseMessageForPlaceHolder($params->get($field), $data);
 	}
 
 	/**
 	 * Get transaction amount based on the cost field or the value
 	 * found in the selected cost_element
 	 *
-	 * @param   object  $params  plugin params
-	 *
 	 * @return  string  cost
 	 */
 
-	protected function getAmount($params)
+	protected function getAmount()
 	{
 		$billingCycle = $this->getBillingCycle();
 		return $billingCycle->cost;
@@ -87,7 +84,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			{
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
-				$data = $this->getEmailData();
+				$data = $this->getProcessData();
 				$cycleField = $db->replacePrefix('#__fabrik_subs_users___billing_cycle');
 				$cycleId = (int) $data[$cycleField . '_raw'][0];
 				if ($cycleId === 0)
@@ -130,7 +127,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			{
 				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
-				$data = $this->getEmailData();
+				$data = $this->getProcessData();
 				$gatewayField = $db->replacePrefix('#__fabrik_subs_users___gateway');
 
 				$id = (int) $data[$gatewayField . '_raw'][0];
@@ -166,7 +163,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 	protected function getItemName()
 	{
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
 
 		// @TODO replace with look up of plan name and billing cycle
 		return array($data['jos_fabrik_subs_users___plan_id_raw'], $data['jos_fabrik_subs_users___plan_id'][0]);
@@ -184,7 +181,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	{
 		$w = $this->getWorker();
 		$config = JFactory::getConfig();
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
 
 		$gateWay = $this->getGateway();
 
@@ -246,15 +243,12 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	/**
 	 * Set up the html to be injected into the bottom of the form
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
-		$pendingSub = $this->pendingSub($formModel);
+		$pendingSub = $this->pendingSub();
 		if ($pendingSub !== false)
 		{
 			$this->html = '<input type="hidden" name="subscription_id" value="' . (int) $pendingSub->id . '" />';
@@ -264,7 +258,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -278,17 +272,14 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->data
 	 *
-	 * @param   JRegistry  $params      Plugin params
-	 * @param   JModel     &$formModel  Form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeLoad($params, &$formModel)
+	public function onBeforeLoad()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$pendingSub = $this->pendingSub($formModel);
+		$pendingSub = $this->pendingSub();
 		if ($pendingSub !== false)
 		{
 			/* $input->set('usekey', false);
@@ -299,8 +290,10 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		return true;
 	}
 /*
-	public function onLoad($params, $formModel)
+	public function onLoad()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$pendingSub = $this->pendingSub($formModel, false);
 		if ($pendingSub !== false)
@@ -317,15 +310,15 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	/**
 	 * Test if the subscription is pending
 	 *
-	 * @param   JModel  $formModel  Form model
-	 * @param   bool    $newRow     Is it a  new subscription
+	 * @param   bool    $newRow  Is it a  new subscription
 	 *
 	 * @return  bool
 	 */
 
-	protected function pendingSub($formModel, $newRow = true)
+	protected function pendingSub($newRow = true)
 	{
 		// Check if the user has pending subscriptions
+		$formModel = $this->getModel();
 		$user = JFactory::getUser();
 		$rowid = $formModel->getRowId();
 		if (($rowid === '' || !$newRow) && $user->get('id') !== 0)
@@ -352,17 +345,13 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
-
-		$this->params = $params;
-		$this->formModel = $formModel;
+		$formModel = $this->getModel();
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->data = $formModel->fullFormData;
@@ -372,14 +361,14 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		$w = $this->getWorker();
 		$ipn = $this->getIPNHandler();
-		$testMode = $this->params->get('subscriptions_testmode', false);
+		$testMode = $params->get('subscriptions_testmode', false);
 		$url = $testMode == 1 ? 'https://www.sandbox.paypal.com/us/cgi-bin/webscr?' : 'https://www.paypal.com/cgi-bin/webscr?';
 		$opts = array();
 		$gateway = $this->getGateway();
 		$opts['cmd'] = $gateway->subscription ? '_xclick-subscriptions' : '_xclick';
-		$opts['business'] = $this->getBusinessEmail($params);
-		$opts['amount'] = $this->getAmount($params);
-		list($item_raw, $item) = $this->getItemName($params);
+		$opts['business'] = $this->getBusinessEmail();
+		$opts['amount'] = $this->getAmount();
+		list($item_raw, $item) = $this->getItemName();
 		$opts['item_name'] = $item;
 		$this->setSubscriptionValues($opts);
 		$opts['currency_code'] = $this->getCurrencyCode();
@@ -436,7 +425,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	protected function getCurrencyCode()
 	{
 		$cycle = $this->getBillingCycle();
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
 		return $this->getWorker()->parseMessageForPlaceHolder($cycle->currency, $data);
 	}
 
@@ -449,12 +438,14 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	protected function getNotifyUrl()
 	{
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
+		$params = $this->getParams();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$testSite = $this->params->get('subscriptions_test_site', '');
-		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
-		$testMode = $this->params->get('subscriptions_testmode', false);
+		$testSite = $params->get('subscriptions_test_site', '');
+		$testSiteQs = $params->get('subscriptions_test_site_qs', '');
+		$testMode = $params->get('subscriptions_testmode', false);
 		$ppurl = ($testMode == 1 && !empty($testSite)) ? $testSite : COM_FABRIK_LIVESITE;
-		$ppurl .= '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
+		$ppurl .= '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 		. '&g=form&plugin=subscriptions&method=ipn';
 		if ($testMode == 1 && !empty($testSiteQs))
 		{
@@ -473,13 +464,15 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	protected function getReturnUrl()
 	{
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$url = '';
-		$testSite = $this->params->get('subscriptions_test_site', '');
-		$testSiteQs = $this->params->get('subscriptions_test_site_qs', '');
-		$testMode = (bool) $this->params->get('subscriptions_testmode', false);
+		$params = $this->getParams();
+		$testSite = $params->get('subscriptions_test_site', '');
+		$testSiteQs = $params->get('subscriptions_test_site_qs', '');
+		$testMode = (bool) $params->get('subscriptions_testmode', false);
 
-		$qs = 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $this->formModel->get('id')
+		$qs = 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 		. '&g=form&plugin=subscriptions&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 
 		if ($testMode)

@@ -89,14 +89,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Determine if you can add new comments
 	 *
-	 * @param   object  $params     Plugin params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return  bool
 	 */
 
-	protected function commentsLocked($params, $formModel)
+	protected function commentsLocked()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		if (is_null($this->commentsLocked))
 		{
 			$this->commentsLocked = false;
@@ -118,35 +117,34 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Sets up any end html (after form close tag)
 	 *
-	 * @param   object  $params     Plugin params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return  void
 	 */
 
-	public function getEndContent($params, $formModel)
+	public function getEndContent()
 	{
+		$formModel = $this->getModel();
 		$rowid = $formModel->getRowId();
 		if ($rowid == '')
 		{
 			return;
 		}
-		$this->commentsLocked($params, $formModel);
+		$params = $this->getParams();
+		$this->commentsLocked();
 		$method = $params->get('comment_method', 'disqus');
 		switch ($method)
 		{
 			default:
 			case 'disqus':
-				$this->_disqus($params);
+				$this->_disqus();
 				break;
 			case 'intensedebate':
-				$this->_intensedebate($params);
+				$this->_intensedebate();
 				break;
 			case 'internal':
-				$this->_internal($params, $formModel);
+				$this->_internal();
 				break;
 			case 'jcomment':
-				$this->_jcomment($params, $formModel);
+				$this->_jcomment();
 				break;
 		}
 		return true;
@@ -181,14 +179,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Prepare local comment system
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	protected function _internal($params, $formModel)
+	protected function _internal()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$data = array();
@@ -248,7 +245,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			{
 				$data[] = '<h3>' . JText::_('PLG_FORM_COMMENT_ADD_COMMENT') . '</h3>';
 			}
-			$data[] = $this->getAddCommentForm($params, 0, true);
+			$data[] = $this->getAddCommentForm(0, true);
 		}
 
 		// Form
@@ -289,15 +286,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Build the html for the internal comment form
 	 *
-	 * @param   object  $params    plugin params
-	 * @param   int     $reply_to  comment id that we are replying to
-	 * @param   bool    $master    is it the master comment
+	 * @param   int     $reply_to  Comment id that we are replying to
+	 * @param   bool    $master    Is it the master comment
 	 *
 	 * @return  string
 	 */
 
-	private function getAddCommentForm($params, $reply_to = 0, $master = false)
+	private function getAddCommentForm($reply_to = 0, $master = false)
 	{
+		$params = $this->getParams();
 		$data = array();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -330,7 +327,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 			$data[] = '</tr>';
 		}
 
-		if ($this->notificationPluginInstalled($this->formModel))
+		if ($this->notificationPluginInstalled())
 		{
 			if ($params->get('comment-plugin-notify') == 1)
 			{
@@ -528,8 +525,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$name = (int) $comment->annonymous == 0 ? $comment->name : JText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$data = array();
 		$data[] = '<div class="metadata">';
-		$data[] = '<i class="icon-user"></i> ';
-		$data[] = $name . ' ' . JText::_('PLG_FORM_COMMENT_WROTE_ON');
+		$data[] = '<small><i class="icon-user"></i> ';
+		$data[] = $name . ' </small>' . JText::_('PLG_FORM_COMMENT_WROTE_ON');
 		$data[] = '<i class="icon-calendar"></i> ';
 		$data[] = ' <small>' . JHTML::date($comment->time_date) . '</small>';
 
@@ -567,19 +564,20 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$data[] = '<div class="reply">';
 		if (!$this->commentsLocked)
 		{
-			$data[] = '<a href="#" class="replybutton">' . JText::_('PLG_FORM_COMMENT_REPLY') . '</a>';
+			$data[] = '<a href="#" class="replybutton btn btn-small">' . JText::_('PLG_FORM_COMMENT_REPLY') . '</a>';
 		}
 		if ($user->authorise('core.delete', 'com_fabrik'))
 		{
-			$data[] = '<div class="admin">';
-			$data[] = '<a href="#" class="del-comment">' . JText::_('PLG_FORM_COMMENT_DELETE') . '</a>';
-			$data[] = '</div>';
+			//$data[] = '<div class="admin">';
+			$data[] = '<a href="#" class="del-comment btn btn-danger btn-small">' . JText::_('PLG_FORM_COMMENT_DELETE') . '</a>';
+			//$data[] = '</div>';
 		}
+		$data[] = '</div>';
 		$data[] = '</div>';
 		$data[] = '</div>';
 		if (!$this->commentsLocked)
 		{
-			$data[] = $this->getAddCommentForm($params, $comment->id);
+			$data[] = $this->getAddCommentForm($comment->id);
 		}
 		return implode("\n", $data);
 	}
@@ -659,8 +657,8 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$input = $app->input;
 		$formModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$formModel->setId($input->getInt('formid'));
-		$this->formModel = $formModel;
-		return $this->formModel;
+		$this->model = $formModel;
+		return $this->model;
 	}
 
 	/**
@@ -703,14 +701,6 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		// Then map that data (for correct render order) onto this plugins params
 		$params = $this->setParams($params, $this->renderOrder);
 		$res = $row->store();
-		/* if ($res === false)
-		 {
-		// Attempt to create the db table?
-		$sql = file_get_contents(COM_FABRIK_BASE . '/plugins/fabrik_form/comment/sql/install.mysql.uft8.sql');
-		$db->setQuery($sql);
-		!$db->execute();
-		$row->store();
-		} */
 
 		// $$$ rob 16/10/2012 db queries run when element/plugin selected in admin, so just return false if error now
 		$obj = new stdClass;
@@ -721,11 +711,11 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$obj->content = $this->writeComment($params, $row);
 		$obj->depth = (int) $row->depth;
 		$obj->id = $row->id;
-		$notificationPlugin = $this->notificationPluginInstalled($formModel);
+		$notificationPlugin = $this->notificationPluginInstalled();
 
 		if ($notificationPlugin)
 		{
-			$this->addNotificationEvent($row, $formModel);
+			$this->addNotificationEvent($row);
 		}
 		$comment_plugin_notify = $input->get('comment-plugin-notify');
 
@@ -734,11 +724,11 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		{
 			if ($notificationPlugin)
 			{
-				$this->saveNotificationToPlugin($row, $comments, $formModel);
+				$this->saveNotificationToPlugin($row, $comments);
 			}
 			else
 			{
-				$this->sentNotifications($row, $comments, $formModel);
+				$this->sentNotifications($row, $comments);
 			}
 		}
 		echo json_encode($obj);
@@ -748,13 +738,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 * Add notification event
 	 *
 	 * @param   object  $row        row?
-	 * @param   object  $formModel  form model
 	 *
 	 * @return  void
 	 */
 
-	protected function addNotificationEvent($row, $formModel)
+	protected function addNotificationEvent($row)
 	{
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$db = FabrikWorker::getDbo();
@@ -786,13 +776,13 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	 *
 	 * @param   object  $row        row (not used?)
 	 * @param   array   $comments   objects
-	 * @param   object  $formModel  form model
 	 *
 	 * @return  void
 	 */
 
-	protected function saveNotificationToPlugin($row, $comments, $formModel)
+	protected function saveNotificationToPlugin($row, $comments)
 	{
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$db = FabrikWorker::getDbo();
@@ -842,12 +832,10 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Test if the notification plugin is installed
 	 *
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  unknown_type
 	 */
 
-	protected function notificationPluginInstalled($formModel)
+	protected function notificationPluginInstalled()
 	{
 		return FabrikWorker::getPluginManager()->pluginExists('cron', 'notification');
 	}
@@ -867,15 +855,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Default send notifcations code (sends to all people who have commented PLUS all admins)
 	 *
-	 * @param   object  $row        notification
-	 * @param   array   $comments   objects
-	 * @param   object  $formModel  form model
+	 * @param   object  $row        Notification
+	 * @param   array   $comments   Objects
 	 *
 	 * @return  void
 	 */
 
-	protected function sentNotifications($row, $comments, $formModel)
+	protected function sentNotifications($row, $comments)
 	{
+		$formModel = $this->getModel();
 		$db = FabrikWorker::getDbo();
 		$user = JFactory::getUser();
 		$app = JFactory::getApplication();
@@ -943,13 +931,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Prepate intense debate comment system
 	 *
-	 * @param   objec  $params  plugin params
-	 *
 	 * @return  void
 	 */
 
-	protected function _intensedebate($params)
+	protected function _intensedebate()
 	{
+		$params = $this->getParams();
 		FabrikHelperHTML::addScriptDeclaration(
 		"
 				var idcomments_acct = '" . $params->get('comment-intesedebate-code') . "';
@@ -963,13 +950,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Prepate diqus comment system
 	 *
-	 * @param   object  $params  plugin params
-	 *
 	 * @return  void
 	 */
 
-	protected function _disqus($params)
+	protected function _disqus()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		if ($input->get('ajax') == 1)
@@ -999,14 +985,12 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	/**
 	 * Prepare JComment system
 	 *
-	 * @param   object  $params     Plugin params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return  void
 	 */
 
-	protected function _jcomment($params, $formModel)
+	protected function _jcomment()
 	{
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jcomments = JPATH_SITE . '/components/com_jcomments/jcomments.php';

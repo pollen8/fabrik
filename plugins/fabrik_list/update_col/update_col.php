@@ -63,16 +63,14 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return true;
 	}
 
@@ -116,15 +114,15 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 * If user select the get them from the app's input else take from plug-in parameters
 	 *
 	 * @param   JParameters  $params  Plugin parameters
-	 * @param   object       $model   List model
 	 *
 	 * @since   3.0.7
 	 *
 	 * @return  object|false
 	 */
 
-	protected function getUpdateCols($params, $model)
+	protected function getUpdateCols($params)
 	{
+		$model = $this->getModel();
 		if ($params->get('update_user_select', 0))
 		{
 			$formModel = $model->getFormModel();
@@ -163,19 +161,19 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 * Do the plug-in action
 	 *
 	 * @param   object  $params  plugin parameters
-	 * @param   object  &$model  List model
 	 * @param   array   $opts    custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, &$model, $opts = array())
+	public function process($params, $opts = array())
 	{
 		$db = $model->getDb();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
-		$update = $this->getUpdateCols($params, $model);
+		$update = $this->getUpdateCols($params);
 
 		if (!$update)
 		{
@@ -352,19 +350,17 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  Plugin parameters
-	 * @param   object  $model   List model
-	 * @param   array   $args    Array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
 		$params = $this->getParams();
-		$opts = $this->getElementJSOptions($model);
+		$opts = $this->getElementJSOptions();
 		$opts->userSelect = (bool) $params->get('update_user_select', 0);
-		$opts->form = $this->userSelectForm($model);
+		$opts->form = $this->userSelectForm();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListUpdateCol($opts)";
 		return true;
@@ -373,13 +369,12 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Build the form which allows the user to select which elements to update
 	 *
-	 * @param   FabrikFEModelList  $model  List model
-	 *
 	 * @return  string  HTML Form
 	 */
 
-	protected function userSelectForm($model)
+	protected function userSelectForm()
 	{
+		$model = $this->getModel();
 		JText::script('PLG_LIST_UPDATE_COL_UPDATE');
 		$html = array();
 		$fieldNames = array();

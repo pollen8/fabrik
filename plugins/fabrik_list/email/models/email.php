@@ -62,16 +62,14 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  plugin params
-	 * @param   object  &$model  list model
-	 * @param   array   &$args   arguements
+	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
- 	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return true;
 	}
 
@@ -89,18 +87,16 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
 		FabrikHelperHTML::slimbox();
-		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = $this->getElementJSOptions($model);
+		parent::onLoadJavascriptInstance($args);
+		$opts = $this->getElementJSOptions();
 		$opts->renderOrder = $this->renderOrder;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListEmail($opts)";
@@ -197,7 +193,7 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 				$html .= '</div>';
 				$html .= '<div class="span6">';
 				$html .= JHTML::_('select.genericlist', $empty, 'list_email_to[]', 'class="fabrikinput inputbox input-small" multiple="multiple" size="5"', 'email', 'name', '', 'list_email_to');
-				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; ' . JText::_('COM_FABRIK_DELETE'). ' <i class="icon-delete"></i></a>';
+				$html .= '<br /><a href="#" class="btn btn-small" id="email_remove">&lt;&lt; ' . JText::_('COM_FABRIK_DELETE') . ' <i class="icon-delete"></i></a>';
 				$html .= '</div>';
 				$html .= '<div style="clear:both"></div>';
 			}

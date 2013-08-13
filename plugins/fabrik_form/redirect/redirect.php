@@ -26,16 +26,15 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
 
 	/**
-	 * process the plugin, called afer form is submitted
-	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
+	 * Process the plugin, called afer form is submitted
 	 *
 	 * @return  bool
 	 */
 
-	public function onLastProcess($params, &$formModel)
+	public function onLastProcess()
 	{
+		$formModel = $this->getModel();
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$session = JFactory::getSession();
@@ -52,7 +51,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 		$form = $formModel->getForm();
 
-		$this->data = array_merge($formModel->formData, $this->getEmailData());
+		$this->data = $this->getProcessData();
 
 		$this->data['append_jump_url'] = $params->get('append_jump_url');
 		$this->data['save_in_session'] = $params->get('save_insession');
@@ -72,12 +71,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			$session->set($context . 'showsystemmsg', $sshowsystemmsg);
 			return true;
 		}
-		$this->_storeInSession($formModel);
+		$this->_storeInSession();
 		$sshowsystemmsg[$this->renderOrder] = true;
 		$session->set($context . 'showsystemmsg', $sshowsystemmsg);
 		if ($this->data['jump_page'] != '')
 		{
-			$this->data['jump_page'] = $this->buildJumpPage($formModel);
+			$this->data['jump_page'] = $this->buildJumpPage();
 
 			// 3.0 ajax/module redirect logic handled in form controller not in plugin
 			$surl[$this->renderOrder] = $this->data['jump_page'];
@@ -165,16 +164,16 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	/**
 	 * Alter the returned plugin manager's result
 	 *
-	 * @param   string  $method      plugin method
-	 * @param   object  &$formModel  form model
+	 * @param   string  $method  Plugin method
 	 *
 	 * @return bol
 	 */
 
-	public function customProcessResult($method, &$formModel)
+	public function customProcessResult($method)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$formModel = $this->getModel();
 
 		// If we are applying the form don't run redirect
 		if (is_array($formModel->formData) && array_key_exists('apply', $formModel->formData))
@@ -215,12 +214,10 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	/**
 	 * Takes the forms data and merges it with the jump page
 	 *
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return new jump page
 	 */
 
-	protected function buildJumpPage(&$formModel)
+	protected function buildJumpPage()
 	{
 		/* $$$rob - I've tested the issue reported in rev 1268
 		 * where Hugh added a force call to getTable() in elementModel->getFullName() to stop the wrong table name
@@ -228,6 +225,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		 *  if there is still an issue it would make a lot more sense to manually set the element's table model rather than calling
 		 * force in the getFullName() code - as doing so increases the table query count by a magnitude of 2
 		 */
+		$formModel = $this->getModel();
 		$jumpPage = $this->data['jump_page'];
 		$reserved = array('format', 'view', 'layout', 'task');
 		$queryvars = array();
@@ -237,7 +235,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
-				$tmpData = $formModel->_fullFormData;
+				$tmpData = $formModel->fullFormData;
 				foreach ($elements as $elementModel)
 				{
 
@@ -301,13 +299,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 * (they are however stored in the session so behave like normal filters afterwards)
 	 * If the listfilter does find the com_fabrik.searchform.fromForm var it won't use any session filters
 	 *
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return unknown_type
 	 */
 
-	protected function _storeInSession(&$formModel)
+	protected function _storeInSession()
 	{
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -321,7 +318,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				foreach ($elements as $element)
 				{
 
-					$tmpData = $formModel->_fullFormData;
+					$tmpData = $formModel->fullFormData;
 					if ($element->getElement()->name == 'fabrik_list_filter_all')
 					{
 						continue;

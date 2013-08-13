@@ -28,100 +28,92 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	 * onFiltersGot method - run after the list has created filters
 	 *
 	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List
 	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onFiltersGot($params, &$model)
+	public function onFiltersGot($params)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'));
 	}
 
 	/**
 	 * Called when the list HTML filters are loaded
 	 *
 	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List model
 	 *
 	 * @return  void
 	 */
 
-	public function onMakeFilters($params, &$model)
+	public function onMakeFilters($params)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'));
 	}
 
 	/**
 	 * Do the plug-in action
 	 *
 	 * @param   object  $params  Plugin parameters
-	 * @param   object  &$model  List model
 	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, &$model, $opts = array())
+	public function process($params, $opts = array())
 	{
-		return $this->doEvaluate($params->get('list_phpevents_process'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_process'));
 	}
 
 	/**
 	 * Run before the list loads its data
 	 *
 	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List model
 	 *
 	 * @return  void
 	 */
 
-	public function onPreLoadData($params, &$model)
+	public function onPreLoadData($params)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'));
 	}
 
 	/**
 	 * onGetData method
 	 *
 	 * @param   object  $params  Calling the plugin table/form
-	 * @param   object  &$model  List model
 	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onLoadData($params, &$model)
+	public function onLoadData($params)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onloaddata'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_onloaddata'));
 	}
 
 	/**
 	 * Called when the model deletes rows
 	 *
 	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List model
 	 *
 	 * @return  bool  false if fail
 	 */
 
-	public function onDeleteRows($params, &$model)
+	public function onDeleteRows($params)
 	{
-		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'));
 	}
 
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List model
 	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	public function button($params, &$model, &$args)
+	public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return true;
 	}
 
@@ -140,14 +132,13 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	 * Determine if we use the plugin or not
 	 * both location and event criteria have to be match when form plug-in
 	 *
-	 * @param   object  &$model    Calling the plugin table/form
 	 * @param   string  $location  Location to trigger plugin on
 	 * @param   string  $event     Event to trigger plugin on
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		return true;
 	}
@@ -166,34 +157,32 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  Plugin parameters
-	 * @param   object  $model   List model
-	 * @param   array   $args    Array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
 		return true;
 	}
 
-	public function onBuildQueryWhere($params, $model)
+	public function onBuildQueryWhere()
 	{
-		return $this->doEvaluate($params->get('list_phpevents_onbuildquerywhere'), $model);
+		return $this->doEvaluate($params->get('list_phpevents_onbuildquerywhere'));
 	}
 
 	/**
 	 * Evaluate supplied PHP
 	 *
 	 * @param   string  $code    Php code
-	 * @param   object  &$model  List model
 	 *
 	 * @return bool
 	 */
 
-	protected function doEvaluate($code, &$model)
+	protected function doEvaluate($code)
 	{
+		$model = $this->getModel();
 		$w = new FabrikWorker;
 		$code = $w->parseMessageForPlaceHolder($code);
 		if ($code != '')

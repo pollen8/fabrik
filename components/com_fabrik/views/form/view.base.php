@@ -55,7 +55,6 @@ class FabrikViewFormBase extends JViewLegacy
 		$config = JFactory::getConfig();
 		$model = $this->getModel('form');
 		$document = JFactory::getDocument();
-
 		$model->isMambot = $this->isMambot;
 		$form = $model->getForm();
 		if ($model->render() === false)

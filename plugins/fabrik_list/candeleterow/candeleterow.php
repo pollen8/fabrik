@@ -39,14 +39,13 @@ class PlgFabrik_ListCandeleterow extends PlgFabrik_List
 	/**
 	 * Can the row be deleteed
 	 *
-	 * @param   object  $params     Plugin params
-	 * @param   object  $listModel  List model
-	 * @param   object  $row        Current row to test
+	 * @param   object  $params  Plugin params
+	 * @param   object  $row     Current row to test
 	 *
 	 * @return boolean
 	 */
 
-	public function onCanDelete($params, $listModel, $row)
+	public function onCanDelete($params, $row)
 	{
 		// If $row is null, we were called from the table's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table delete permissions, so just return true.

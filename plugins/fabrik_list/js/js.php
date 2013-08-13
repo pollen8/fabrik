@@ -34,16 +34,14 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   object  $params  Plugin params
-	 * @param   object  &$model  List model
 	 * @param   array   &$args   Arguements
 	 *
 	 * @return  bool;
 	 */
 
-	 public function button($params, &$model, &$args)
+	 public function button(&$args)
 	{
-		parent::button($params, $model, $args);
+		parent::button($args);
 		return true;
 	}
 
@@ -83,17 +81,16 @@ class PlgFabrik_ListJs extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  Plugin parameters
-	 * @param   object  $model   List model
-	 * @param   array   $args    Array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = $this->getElementJSOptions($model);
+		parent::onLoadJavascriptInstance($args);
+		$params = $this->getParams();
+		$opts = $this->getElementJSOptions();
 		$file = $params->get('js_file', '');
 		if ($file !== '' && $file !== '-1')
 		{

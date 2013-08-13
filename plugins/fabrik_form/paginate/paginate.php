@@ -28,7 +28,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -41,15 +41,14 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
-		if (!$this->show($params, $formModel))
+		$params = $this->getParams();
+		$formModel = $this->getModel();
+		if (!$this->show())
 		{
 			return;
 		}
@@ -96,13 +95,12 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	/**
 	 * Get the first last, prev and next record ids
 	 *
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  object
 	 */
 
-	protected function getNavIds($formModel)
+	protected function getNavIds()
 	{
+		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
@@ -130,19 +128,18 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	/**
 	 * Show we show the pagination
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	protected function show($params, $formModel)
+	protected function show()
 	{
 		/* Nobody except form model constuctor sets editable property yet -
 		 * it sets in view.html.php only and after render() - too late I think
 		 * so no pagination output for frontend details veiw for example.
 		 * Let's set it here before use it
 		 */
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$formModel->checkAccessFromListSettings();
 
 		$where = $params->get('paginate_where');
@@ -164,15 +161,14 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 *
-	 * @param   object  &$params     plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function onAfterJSLoad(&$params, &$formModel)
+	public function onAfterJSLoad()
 	{
-		if (!$this->show($params, $formModel))
+		$formModel = $this->getModel();
+		$params = $this->getParams();
+		if (!$this->show())
 		{
 			return;
 		}
@@ -213,7 +209,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$model = JModelLegacy::getInstance('Form', 'FabrikFEModel');
 		$model->setId($formid);
 		$model->rowId = $rowid;
-		$ids = $this->getNavIds($model);
+		$ids = $this->getNavIds();
 		$url = COM_FABRIK_LIVESITE
 			. 'index.php?option=com_' . $package . '&format=raw&controller=plugin&g=form&task=pluginAjax&plugin=paginate&method=xRecord&formid=' . $formid
 			. '&rowid=' . $rowid;
