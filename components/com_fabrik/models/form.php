@@ -3247,6 +3247,16 @@ class FabrikFEModelForm extends FabModelForm
 				$parts = array();
 				for ($k = 0; $k < count($usekey); $k++)
 				{
+					/**
+					 *
+					 * For gory reasons, we have to assume that an empty string cannot be a valid rowid
+					 * when using usekey, so just create a 1=-1 if it is.
+					 */
+					if ($aRowIds[$k] === '')
+					{
+						$parts[] = ' 1=-1';
+						continue;
+					}
 					// Ensure that the key value is not quoted as we Quote() afterwards
 					if ($comparison == '=')
 					{
