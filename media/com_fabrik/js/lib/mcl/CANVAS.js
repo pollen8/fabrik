@@ -21,7 +21,7 @@ var FbCanvas = new Class({
 	dragTarget : null,
 	threads : null,
 	ctxPos : null,
-	cacheCtxPos : true,
+	cacheCtxPos : false,
 	
 	initialize : function (options) {
 		this.setOptions(options);
