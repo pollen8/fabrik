@@ -928,7 +928,6 @@ class FabrikPlugin extends JPlugin
 			$origData = array();
 		}
 		$condition = trim($w->parseMessageForPlaceHolder($condition, $data));
-		echo $condition;
 		$res = @eval($condition);
 		if (is_null($res))
 		{
