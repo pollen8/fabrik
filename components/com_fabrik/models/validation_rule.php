@@ -40,6 +40,13 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	public $elementModel = null;
 
 	/**
+	 * Error message
+	 *
+	 * @var string
+	 */
+	protected $errorMsg = null;
+
+	/**
 	 * Validate the elements data against the rule
 	 *
 	 * @param   string  $data           To check
@@ -104,21 +111,41 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getMessage()
 	{
+		if (isset($this->errorMsg))
+		{
+			return $this->errorMsg;
+		}
 		$params = $this->getParams();
 		$v = $params->get($this->pluginName . '-message');
 		if ($v === '')
 		{
 			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
-		return JText::_($v);
+		$this->errorMsg = JText::_($v);
+		return $this->errorMsg;
+	}
+
+	/**
+	 * Set the error message
+	 *
+	 * @param   string  $msg  New error message
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return  void
+	 */
+
+	public function setMessage($msg)
+	{
+		$this->errorMsg = $msg;
 	}
 
 	/**
 	 * Now show only on validation icon next to the element name and put icons and text inside hover text
 	 * gets the validation rule icon
 	 *
-	 * @param   int     $c             Repeat group counter
-	 * @param   string  $tmpl          Template folder name
+	 * @param   int     $c     Repeat group counter
+	 * @param   string  $tmpl  Template folder name
 	 *
 	 * @deprecated @since 3.0.5
 	 *
@@ -149,7 +176,7 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	/**
 	 * Get hover text with icon
 	 *
-	 * @param   string  $tmpl          Template folder name
+	 * @param   string  $tmpl  Template folder name
 	 *
 	 * @return  string
 	 */
