@@ -195,6 +195,14 @@
 	<fields name="params">
 		<fieldset name="main">
 			
+			<field name="empty_data_msg"
+				type="text"
+				class="input-xxlarge"
+				size="70"
+				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL"
+				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC"
+			/>
+			
 			<field name="outro"
 				type="editor"
 				filter="FabrikAdminHelper::filterText"
@@ -720,16 +728,8 @@
 			
 		</fieldset>
 		
-		<fieldset name="layout">
-			
-			<field name="admin_template"
-				type="fabriktemplate"
-				view="list"
-				hide_default="0" hide_none="1"
-				label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL"
-				description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC"
-			/>
-			
+		<fieldset name="tabs">
+		
 			<field name="tabs_field"
 				type="listfields"
 				valueformat="tableelement"
@@ -760,15 +760,10 @@
 				<option value="1">JYES</option>
 			</field>
 			
-			<field name="empty_data_msg"
-				type="text"
-				class="input-xxlarge"
-				size="70"
-				label="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_LABEL"
-				description="COM_FABRIK_FIELD_EMPTY_DATA_MESSAGE_DESC"
-			/>
-			
-		 	<field name="pdf"
+		</fieldset>
+		
+		<fieldset name="pdf">
+			<field name="pdf"
 		 		type="list"
 		 		label="COM_FABRIK_FIELD_PDF_ICON_LABEL"
 		 		description="COM_FABRIK_FIELD_PDF_ICON_DESC"
@@ -825,6 +820,17 @@
 				<option value="executive">executive</option>
 				<option value="folio">folio</option>
 			</field>
+		</fieldset>
+		
+		<fieldset name="layout">
+			
+			<field name="admin_template"
+				type="fabriktemplate"
+				view="list"
+				hide_default="0" hide_none="1"
+				label="COM_FABRIK_FIELD_ADMIN_TEMPLATE_LABEL"
+				description="COM_FABRIK_FIELD_ADMIN_TEMPLATE_DESC"
+			/>
 			
 			<field name="show-title"
 				type="radio"

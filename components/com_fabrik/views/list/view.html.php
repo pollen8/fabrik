@@ -34,10 +34,10 @@ class FabrikViewList extends FabrikViewListBase
 
 	public function display($tpl = null)
 	{
-		$this->loadTabs();
-
 		if (parent::display($tpl) !== false)
 		{
+			$model = $this->getModel();
+			$this->tabs = $model->loadTabs();
 			$app = JFactory::getApplication();
 			if (!$app->isAdmin() && isset($this->params))
 			{
@@ -62,56 +62,5 @@ class FabrikViewList extends FabrikViewListBase
 		}
 	}
 
-	/**
-	 * Set the List's tab HTML
-	 *
-	 * @return  null
-	 */
 
-	protected function loadTabs()
-	{
-		$this->tabs = array();
-		$model = $this->getModel();
-		$this->rows = $model->getData();
-		$tabs = $model->tabs;
-		if (!is_array($tabs) || empty($tabs))
-		{
-			return;
-		}
-		$app = JFactory::getApplication();
-		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$listid = $model->getId();
-		$tabsField = $model->tabsField;
-		$uri = JURI::getInstance();
-		$urlBase = $uri->toString(array('path'));
-		$urlBase .= "?option=com_" . $package . "&";
-		if ($app->isAdmin())
-		{
-			$urlBase .= "task=list.view&";
-		}
-		else
-		{
-			$urlBase .= "view=list&";
-		}
-		$urlBase .= "listid=" . $listid . "&resetfilters=1";
-		$urlEquals = $urlBase . "&" . $tabsField . "=%s";
-		$urlRange = $urlBase . "&" . $tabsField . "[value][]=%s&" . $tabsField . "[value][]=%s&" . $tabsField . "[condition]=BETWEEN";
-		foreach ($tabs as $i => $tabArray)
-		{
-			list($label, $range) = $tabArray;
-			if (empty($range))
-			{
-				$this->tabs[] = array($label, $urlBase);
-			}
-			elseif (!is_array($range))
-			{
-				$this->tabs[] = array($label, sprintf($urlEquals, $range));
-			}
-			else
-			{
-				list($low, $high) = $range;
-				$this->tabs[] = array($label, sprintf($urlRange, $low, $high));
-			}
-		}
-	}
 }

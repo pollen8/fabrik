@@ -98,21 +98,53 @@ defined('_JEXEC') or die('Restricted access');
 		<div class="tab-pane" id="details-layout">
 			 <fieldset class="form-horizontal">
 				<?php
-				foreach ($this->form->getFieldset('main_template') as $this->field) :
+
+				?>
+			</fieldset>
+
+			<fieldset class="form-horizontal">
+				<div class="row-fluid">
+					<div class="span6">
+						<legend><?php echo JText::_('COM_FABRIK_TEMPLATES')?></legend>
+						<?php
+						foreach ($this->form->getFieldset('main_template') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
 				foreach ($this->form->getFieldset('layout') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;
-				?>
+						?>
+					</div>
+					<div class="span6">
+						<legend><?php echo JText::_('COM_FABRIK_PDF')?></legend>
+						<?php
+						foreach ($this->form->getFieldset('pdf') as $this->field) :
+							echo $this->loadTemplate('control_group');
+						endforeach;
+						?>
+					</div>
+				</div>
 			</fieldset>
+
 			<fieldset class="form-horizontal">
-				<legend><?php echo JText::_('COM_FABRIK_BOOTSTRAP_LIST_OPTIONS')?></legend>
-				<?php
-				foreach ($this->form->getFieldset('layout-bootstrap') as $this->field) :
-				echo $this->loadTemplate('control_group');
-				endforeach;
-				?>
+				<div class="row-fluid">
+					<div class="span6">
+						<legend><?php echo JText::_('COM_FABRIK_BOOTSTRAP_LIST_OPTIONS')?></legend>
+						<?php
+						foreach ($this->form->getFieldset('layout-bootstrap') as $this->field) :
+							echo $this->loadTemplate('control_group');
+						endforeach;
+						?>
+					</div>
+					<div class="span6">
+						<legend><?php echo JText::_('COM_FABRIK_TABS')?></legend>
+						<?php
+						foreach ($this->form->getFieldset('tabs') as $this->field) :
+							echo $this->loadTemplate('control_group');
+						endforeach;
+						?>
+					</div>
+				</div>
 			</fieldset>
 		</div>
 

@@ -425,7 +425,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @var string
 	 */
-	public $tabsField = null;
+	protected $tabsField = null;
 
 	/**
 	 * Tabs to display
@@ -434,7 +434,7 @@ class FabrikFEModelList extends JModelForm
 	 *
 	 * @var array
 	 */
-	public $tabs = null;
+	protected $tabs = null;
 
 	/**
 	 * Load form
@@ -790,9 +790,6 @@ class FabrikFEModelList extends JModelForm
 		$pluginManager = FabrikWorker::getPluginManager();
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$pluginManager->runPlugins('onPreLoadData', $this, 'list');
-
-		// Get tab settings
-		$this->getTabCategories();
 
 		// Needs to be off for FOUND_ROWS() to work
 		ini_set('mysql.trace_mode', 'off');
@@ -1887,7 +1884,7 @@ class FabrikFEModelList extends JModelForm
 		if (!$facetTable->canView())
 		{
 			return '<div style="text-align:center"><a title="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN')
-			. '"><img src="' . COM_FABRIK_LIVESITE  . 'media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
+			. '"><img src="' . COM_FABRIK_LIVESITE . 'media/com_fabrik/images/login.png" alt="' . JText::_('COM_FABRIK_NO_ACCESS_PLEASE_LOGIN') . '" /></a></div>';
 		}
 		$showRelated = (int) $params->get('show_related_info', 0);
 		$emptyLabel = $showRelated === 1 ? JText::_('COM_FABRIK_NO_RECORDS') : '';
@@ -4748,6 +4745,7 @@ class FabrikFEModelList extends JModelForm
 					$readOnlyValues[$key] = array();
 				}
 				$readOnlyValues[$key][] = $elementModel->getFilterRO($tmpData);
+
 				// Set it back to null again so that in form view we dont return this value.
 				$elementModel->defaults = null;
 
@@ -5564,9 +5562,10 @@ class FabrikFEModelList extends JModelForm
 		$filters = $this->getFilterArray();
 
 		$params = $this->getParams();
+
 		// Paul Switch to 0/1 for NO/YES from AND/OR so that bootstrap classes work but support legacy values
 		if (($params->get('search-mode', '0') == '1')
-		 || ($params->get('search-mode', '0') == 'OR'))
+			|| ($params->get('search-mode', '0') == 'OR'))
 		{
 			// One field to search them all (and in the darkness bind them)
 			$requestKey = $this->getFilterModel()->getSearchAllRequestKey();
@@ -6027,7 +6026,6 @@ class FabrikFEModelList extends JModelForm
 		$groupHeadings = array();
 
 		$orderbys = json_decode($item->order_by, true);
-		//$listels = json_decode($params->get('list_elements'));
 
 		// Responsive element classes
 		$listClasses = json_decode($params->get('list_responsive_elements'));
@@ -9094,11 +9092,7 @@ class FabrikFEModelList extends JModelForm
 			{
 				$qs_args[] = $key . '=' . $val;
 			}
-/*			elseif (count($val) == 1)
-			{
-				$qs_args[] = $key . '=' . array_shift($val);
-			}
-*/			else
+			else
 			{
 				// Rob says do nothing if a multi-value array
 			}
@@ -10467,11 +10461,22 @@ class FabrikFEModelList extends JModelForm
 		return !empty($alwaysRender);
 	}
 
+	private function getTabField()
+	{
+		if (!isset($this->tabsField))
+		{
+			$params = $this->getParams();
+			$tabsField = $params->get('tabs_field', '');
+			$this->tabsField = FabrikString::safeColNameToArrayKey($tabsField);
+		}
+		return $this->tabsField;
+	}
+
 	/**
 	 * Get tab categories and merge as necessary to get down to tab limit
 	 *
-	 * @return   null
-	 **/
+	 * @return   array  Tabs
+	 */
 
 	private function getTabCategories()
 	{
@@ -10483,13 +10488,12 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
-		$tabsField = $params->get('tabs_field', '');
+		$tabsField = $this->getTabField();
 		if (empty($tabsField))
 		{
 			return;
 		}
-		$this->tabsField = FabrikString::safeColNameToArrayKey($tabsField);
-		list($tableName, $tabsField) = explode('.', $tabsField);
+		list($tableName, $tabsField) = explode('___', $tabsField);
 		$table = $this->getTable();
 		if ($tableName != $table->db_table_name)
 		{
@@ -10503,9 +10507,9 @@ class FabrikFEModelList extends JModelForm
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
 		$query->select(array($tabsField, 'Count(' . $tabsField . ') as count'))
-		      ->from($db->quoteName($table->db_table_name))
-		      ->group($tabsField)
-		      ->order($tabsField);
+			->from($db->quoteName($table->db_table_name))
+			->group($tabsField)
+			->order($tabsField);
 
 		/**
 		 * Filters include any existing tab filters - so we cannot calculate tabs based on any user set filters
@@ -10514,6 +10518,7 @@ class FabrikFEModelList extends JModelForm
 		 **/
 		$db->setQuery($query);
 		FabrikHelperHTML::debug($db->getQuery()->dump(), 'list getTabCategories query:' . $table->label);
+		$profiler = JProfiler::getInstance('Application');
 		JDEBUG ? $profiler->mark('before fabrik list tabs query run') : null;
 		$db->execute();
 		$counts = $db->loadRowList();
@@ -10530,10 +10535,11 @@ class FabrikFEModelList extends JModelForm
 			$app->enqueueMessage(sprintf(JText::_('COM_FABRIK_LIST_TABS_MERGE_ERROR'), count($counts), $tabsMax), 'notice');
 			return;
 		}
-		$this->tabs = array();
+		$tabs = array();
 		if ($tabsAll)
 		{
-			$this->tabs[] = array(JText::_('COM_FABRIK_LIST_TABS_ALL'),'');
+			// Set value to null to differentiate between all and empty string values
+			$tabs[] = array(JText::_('COM_FABRIK_LIST_TABS_ALL'), null);
 		}
 		while (count($counts) > $tabsMax)
 		{
@@ -10551,7 +10557,7 @@ class FabrikFEModelList extends JModelForm
 			$minIndex = 0;
 			for ($i = 1; $i < count($counts); $i++)
 			{
-				$totCount = $counts[$i-1][1] + $counts[$i][1];
+				$totCount = $counts[$i - 1][1] + $counts[$i][1];
 				if ($totCount < $minCount)
 				{
 					$minCount = $totCount;
@@ -10560,11 +10566,12 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// Merge mins
-			$counts[$minIndex-1][0] = (array) $counts[$minIndex-1][0];
+			$counts[$minIndex - 1][0] = (array) $counts[$minIndex - 1][0];
 			$counts[$minIndex][0] = (array) $counts[$minIndex][0];
-			$counts[$minIndex-1][0] = array($counts[$minIndex-1][0][0], end($counts[$minIndex][0]));
-			$counts[$minIndex-1][1] += $counts[$minIndex][1];
-			// array_splice not working as advertised - working like array_slice for some reason!!
+			$counts[$minIndex - 1][0] = array($counts[$minIndex - 1][0][0], end($counts[$minIndex][0]));
+			$counts[$minIndex - 1][1] += $counts[$minIndex][1];
+
+			// Array_splice not working as advertised - working like array_slice for some reason!!
 			// $counts = array_splice($counts, $minIndex, 1);
 			unset($counts[$minIndex]);
 			$counts = array_values($counts);
@@ -10576,12 +10583,75 @@ class FabrikFEModelList extends JModelForm
 		{
 			if (is_array($counts[$i][0]))
 			{
-				$this->tabs[] = array($counts[$i][0][0] . '-' . $counts[$i][0][1], $counts[$i][0]);
+				$tabs[] = array($counts[$i][0][0] . '-' . $counts[$i][0][1], $counts[$i][0]);
 			}
 			else
 			{
-				$this->tabs[] = array($counts[$i][0],$counts[$i][0]);
+				$tabLabel = empty($counts[$i][0]) ? '-' : $counts[$i][0];
+				$tabs[] = array($tabLabel, $counts[$i][0]);
 			}
 		}
+		return $tabs;
+	}
+
+	/**
+	 * Set the List's tab HTML
+	 *
+	 * @return  array  Tabs
+	 */
+
+	public function loadTabs()
+	{
+		$this->tabs = array();
+		$tabs = $this->getTabCategories();
+		if (!is_array($tabs) || empty($tabs))
+		{
+			return;
+		}
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		$listid = $this->getId();
+		$tabsField = $this->getTabField();
+		$uri = JURI::getInstance();
+		$urlBase = $uri->toString(array('path'));
+		$urlBase .= '?option=com_' . $package . '&';
+		if ($app->isAdmin())
+		{
+			$urlBase .= 'task=list.view&';
+		}
+		else
+		{
+			$urlBase .= 'view=list&';
+		}
+		$urlBase .= 'listid=' . $listid . '&resetfilters=1';
+		$urlEquals = $urlBase . '&' . $tabsField . '=%s';
+		$urlRange = $urlBase . '&' . $tabsField . '[value][]=%s&' . $tabsField . '[value][]=%s&' . $tabsField . '[condition]=BETWEEN';
+
+		$uri = JURI::getInstance();
+		$thisUri = rawurldecode($uri->toString(array('path', 'query')));
+
+		foreach ($tabs as $i => $tabArray)
+		{
+			$row = new stdClass;
+			list($label, $range) = $tabArray;
+			$row->label = $label;
+			if (is_null($range))
+			{
+				$row->url = $urlBase;
+			}
+			elseif (!is_array($range))
+			{
+				$row->url = sprintf($urlEquals, $range);
+			}
+			else
+			{
+				list($low, $high) = $range;
+				$row->url = sprintf($urlEquals, sprintf($urlRange, $low, $high));
+			}
+
+			$row->class = ($thisUri == $row->url) ? 'class="active"' : '';
+			$this->tabs[] = $row;
+		}
+		return $this->tabs;
 	}
 }

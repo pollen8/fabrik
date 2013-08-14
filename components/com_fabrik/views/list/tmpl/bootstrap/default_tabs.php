@@ -1,14 +1,11 @@
 <?php
-if (is_array($this->tabs) && !empty($this->tabs)) :
-	$uri = JURI::getInstance();
-	$thisUri = $uri->toString(array('path', 'query'));
+if (!empty($this->tabs)) :
 ?>
 <div>
 	<ul class="nav nav-tabs">
-	<?php foreach ($this->tabs as $i => $value) :
-		list($label, $url) = $value;
+	<?php foreach ($this->tabs as $tab) :
 	?>
-    <li <?php if ($thisUri == $url) echo 'class="active"' ?>><a href="<?php echo $url?>"><?php echo $label?></a></li>
+    <li <?php echo $tab->class ?>><a href="<?php echo $tab->url?>"><?php echo $tab->label?></a></li>
 	<?php endforeach; ?>
 	</ul>
 </div>

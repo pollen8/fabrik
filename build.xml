@@ -772,6 +772,7 @@
 			  		<fileset dir="${basedir}">
 			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
 						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+			  			<include name="**/modules/mod_fabrik_list/mod_tagcloud.xml"/>
 						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
 						<include name="**/plugins/fabrik**/**/*.xml"/>
 						<exclude name="**/FusionCharts/**" />
@@ -788,6 +789,7 @@
 			  		<fileset dir="${basedir}">
 			  			<include name="**/administrator/components/com_fabrik/*.xml"/>
 						<include name="**/modules/mod_fabrik_list/mod_fabrik_*.xml"/>
+			  			<include name="**/modules/mod_fabrik_list/mod_tagcloud.xml"/>
 						<include name="**/modules/mod_fabrik*/mod_fabrik_*.xml"/>
 						<include name="**/plugins/fabrik**/**/*.xml"/>
 						<exclude name="**/FusionCharts/**" />
