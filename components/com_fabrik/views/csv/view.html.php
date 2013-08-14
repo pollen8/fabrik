@@ -34,7 +34,7 @@ class FabrikViewCsv extends JView
 
 	public function display($tpl = null)
 	{
-
+		$srcs = FabrikHelperHTML::framework();
 		$this->listid = JRequest::getVar('listid', 0);
 		$listModel = JModel::getInstance('List', 'FabrikFEModel');
 		$listModel->setId($this->listid);

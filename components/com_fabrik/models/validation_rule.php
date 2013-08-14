@@ -1,13 +1,15 @@
 <?php
 /**
+ * Fabrik Validation Rule Model
+ *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -30,6 +32,13 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 	var $pluginParams = null;
 
 	var $_rule = null;
+
+	/**
+	 * Error message
+	 *
+	 * @var string
+	 */
+	protected $errorMsg = null;
 
 	/**
 	 * If true uses icon of same name as validation, otherwise uses png icon specified by $icon
@@ -160,6 +169,10 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 
 	public function getMessage($c = 0)
 	{
+		if (isset($this->errorMsg))
+		{
+			return $this->errorMsg;
+		}
 		$params = $this->getParams();
 		$v = (array) $params->get($this->_pluginName . '-message');
 		$v = JArrayHelper::getValue($v, $c, '');
@@ -167,7 +180,23 @@ class PlgFabrik_Validationrule extends FabrikPlugin
 		{
 			$v = 'COM_FABRIK_FAILED_VALIDATION';
 		}
-		return JText::_($v);
+		$this->errorMsg = JText::_($v);
+		return $this->errorMsg;
+	}
+
+	/**
+	 * Set the error message
+	 *
+	 * @param   string  $msg  New error message
+	 *
+	 * @since   3.0.9
+	 *
+	 * @return  void
+	 */
+
+	public function setMessage($msg)
+	{
+		$this->errorMsg = $msg;
 	}
 
 	/**

@@ -219,13 +219,15 @@ var FbDateTime = new Class({
 		this.cal.create();
 		this.cal.refresh();
 		this.cal.hide();
-		/*
-		if (!params.position) {
-			this.cal.showAtElement(params.button || params.displayArea || params.inputField, params.align);
-		} else {
-			this.cal.showAt(params.position[0], params.position[1]);
-		}
-		*/
+		
+		var c = this.cal;
+		var posTarget = params.button || params.displayArea || params.inputField;
+		
+		// Fixes issue in IE with JAPurity Template when date element below page fold - picker offset not right.
+		this.cal.show = function () {
+			Calendar.prototype.show.call(c);
+			this.cal.element.position({relativeTo: posTarget, 'position': 'upperRight', edge: 'bottomLeft'});
+		}.bind(this);
 	},
 
 	disableTyping : function () {
@@ -262,7 +264,6 @@ var FbDateTime = new Class({
 		} else {
 			this.options.calendarSetup.inputField = e.target.id;
 			this.options.calendarSetup.button = this.element.id + "_img";
-			//this.addEventToCalOpts();
 			this.cal.showAtElement(f, this.cal.params.align);
 		}
 	},
@@ -379,21 +380,6 @@ var FbDateTime = new Class({
 		}.bind(this));	
 	},
 	
-	/*addNewEvent : function (action, js) {
-		if (action === 'load') {
-			this.loadEvents.push(js);
-			this.runLoadEvent(js);
-		} else {
-			if (!this.element) {
-				this.element = document.id(this.strElement);
-			}
-			if (action === 'change') {
-				this.changeEvents.push(js);
-			}
-			this.addNewEventAux(action, js);
-		}
-	},*/
-
 	/**
 	 * takes a date object or string
 	 */
@@ -463,14 +449,14 @@ var FbDateTime = new Class({
 	},
 	
 	/**
-	 * get the date field input
+	 * Get the date field input
 	 */
 	getDateField: function () {
 		return this.element.getElement('.fabrikinput');
 	},
 	
 	/**
-	 * get time time field input
+	 * Get time time field input
 	 */
 	getTimeField: function () {
 		this.timeElement = this.getContainer().getElement('.timeField');
@@ -478,27 +464,14 @@ var FbDateTime = new Class({
 	},
 	
 	/**
-	 * get time time button img
+	 * Get time time button img
 	 */
 	getTimeButton: function () {
 		this.timeButton = this.getContainer().getElement('.timeButton');
 		return this.timeButton;
 	},
 
-	showCalendar : function (format, e) {
-		/*if (window.ie) {
-			// when scrolled down the page the offset of the calendar is wrong - this
-			// fixes it
-			var calHeight = document.id(window.calendar.element).getStyle('height').toInt();
-			var u = ie ? event.clientY + document.documentElement.scrollTop : e.pageY;
-			u = u.toInt();
-			document.id(window.calendar.element).setStyles({
-				'top' : u - calHeight + 'px'
-			});
-		}*/
-	},
-
-	getAbsolutePos : function (el) {
+	getAbsolutePos: function (el) {
 		var r = {
 			x : el.offsetLeft,
 			y : el.offsetTop
@@ -511,7 +484,7 @@ var FbDateTime = new Class({
 		return r;
 	},
 
-	setAbsolutePos : function (el) {
+	setAbsolutePos: function (el) {
 		var r = this.getAbsolutePos(el);
 		this.dropdown.setStyles({
 			position : 'absolute',
@@ -520,7 +493,7 @@ var FbDateTime = new Class({
 		});
 	},
 
-	makeDropDown : function () {
+	makeDropDown: function () {
 		var h = null;
 		var handle = new Element('div', {
 			styles : {
@@ -737,6 +710,9 @@ var FbDateTime = new Class({
 			this.calClose(calendar);
 		}.bind(this);
 
+		this.options.calendarSetup.onSelected = function (calendar) {
+			console.log('open');
+		}.bind(this);
 		
 	},
 

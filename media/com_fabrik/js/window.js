@@ -344,9 +344,6 @@ Fabrik.Window = new Class({
 	
 	close: function (e)
 	{
-		if (this.modal) {
-			document.body.setStyle('overflow', 'auto');
-		}
 		if (e) {
 			e.stop();
 		}
@@ -365,10 +362,6 @@ Fabrik.Window = new Class({
 	},
 	
 	open: function (e) {
-		// Crop fileupload interface doesnt like window scrolling when open, so stop it
-		if (this.modal) {
-			document.body.setStyle('overflow', 'hidden');
-		}
 		if (e) {
 			e.stop();
 		}
