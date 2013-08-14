@@ -258,7 +258,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * uploads, all raw values are in an array in $rawvalues[0]
 			 */
 
-			if (is_array($rawvalues[0]))
+			if (is_array(JArrayHelper::getValue($rawvalues, 0)))
 			{
 				$rawvalues = $rawvalues[0];
 			}
