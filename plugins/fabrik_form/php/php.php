@@ -163,6 +163,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 	public function onBeforeStore()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onBeforeStore')
 		{
 			if ($this->_runPHP() === false)
