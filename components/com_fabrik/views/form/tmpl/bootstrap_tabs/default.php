@@ -19,7 +19,7 @@ $active = ($form->error != '') ? '' : ' fabrikHide';
 
 if ($this->params->get('show_page_heading', 1)) : ?>
 	<div class="componentheading<?php echo $this->params->get('pageclass_sfx')?>">
-		<?php echo $this->escape($this->params->get('page_heading')); ?>
+	<?php echo $this->escape($this->params->get('page_heading')); ?>
 	</div>
 <?php
 endif;
@@ -34,10 +34,9 @@ endif;
 echo $form->intro;
 
 if ($model->editable) :
-	echo '<form action="' . $form->action . '" class="' . $form->class . '" method="post" name="' . $form->name . '" id="' . $form->formid
-					. '" enctype="' . $model->getFormEncType() . '">';
+		echo '<form method="post" action="' . $form->action . '" ' . $form->attribs . '>';
 	else:
-		echo '	<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
+		echo '<div class="fabrikForm fabrikDetails" id="' . $form->formid . '">';
 endif;
 echo $this->plugintop;
 ?>
@@ -46,6 +45,7 @@ echo $this->plugintop;
 	<button class="close" data-dismiss="alert">×</button>
 	<?php echo $form->error?>
 </div>
+
 <div class="row-fluid nav">
 	<div class="span12">
 		<?php
@@ -105,9 +105,7 @@ echo $this->plugintop;
 					$allHidden &= $element->hidden;
 				}
 				if ((!$allHidden || !empty($group->intro)) && trim($group->title) !== '') :?>
-					<legend class="legend">
-						<span><?php echo $group->title;?></span>
-					</legend>
+					<legend class="legend"><?php echo $group->title;?></legend>
 				<?php
 				endif;
 
@@ -116,11 +114,11 @@ echo $this->plugintop;
 				<?php
 				endif;
 
-				// Load the group template - this can be :
-				//  * default_group.php - standard group non-repeating rendered as an unordered list
-				//  * default_repeatgroup.php - repeat group rendered as an unordered list
-				//  * default_repeatgroup.table.php - repeat group rendered in a table.
-
+				/* Load the group template - this can be :
+				 *  * default_group.php - standard group non-repeating rendered as an unordered list
+				 *  * default_repeatgroup.php - repeat group rendered as an unordered list
+				 *  * default_repeatgroup.table.php - repeat group rendered in a table.
+				 */
 				$this->elements = $group->elements;
 				echo $this->loadTemplate($group->tmpl);
 				?>
@@ -144,6 +142,11 @@ echo $this->loadTemplate('actions');
 ?>
 </form>
 <?php
+if ($model->editable) :
+		echo '</form>';
+	else:
+		echo '</div>';
+endif;
 echo $form->outro;
 echo $this->pluginend;
 echo FabrikHelperHTML::keepalive();
