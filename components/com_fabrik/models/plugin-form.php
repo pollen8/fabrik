@@ -198,7 +198,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		{
 			return $this->emailData;
 		}
-		$model = $this->formModel;
+		$model = $this->getModel();
 		if (is_null($model->formDataWithTableName))
 		{
 			return array();
