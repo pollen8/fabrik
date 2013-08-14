@@ -7860,6 +7860,9 @@ class FabrikFEModelList extends JModelForm
 		{
 			return JError::raiseWarning(JText::_($db->getErrorMsg()));
 		}
+		// Clean the cache.
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		JFactory::getCache('com_' . $package)->clean();
 		return true;
 	}
 
@@ -7939,6 +7942,11 @@ class FabrikFEModelList extends JModelForm
 
 		// 3.0 clear filters (resets limitstart so that subsequently added records are shown)
 		$this->getFilterModel()->clearFilters();
+
+		// Clean the cache.
+		$app = JFactory::getApplication();
+		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+		JFactory::getCache('com_' . $package)->clean();
 	}
 
 	/**

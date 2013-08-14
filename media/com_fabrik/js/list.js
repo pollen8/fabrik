@@ -451,7 +451,7 @@ var FbList = new Class({
 	},
 
 	watchEmpty: function (e) {
-		var b = document.id(this.options.form).getElement('.doempty', this.options.form);
+		var b = document.id(this.options.form).getElement('.doempty');
 		if (b) {
 			b.addEvent('click', function (e) {
 				e.stop();
