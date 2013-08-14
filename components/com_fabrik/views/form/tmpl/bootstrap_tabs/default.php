@@ -97,7 +97,7 @@ echo $this->plugintop;
 			<div class="tab-pane<?php if ($i == 0) echo " active"?>" id="group-tab<?php echo $group->id;?>">
 		<?php
 		endif; ?>
-			<fieldset class="fabrikGroup row-fluid" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+			<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 				<?php
 				$allHidden = true;
 				foreach ($group->elements as $element)
