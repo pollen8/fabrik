@@ -238,7 +238,7 @@ class Fabimage
 	 */
 	public static function cacheRemote($src, $path, $file, $lifeTime = 29)
 	{
-		$folder = JPATH_SITE . $path;
+		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 		if (!JFolder::exists($folder))
 		{
 			JFolder::create($folder);
