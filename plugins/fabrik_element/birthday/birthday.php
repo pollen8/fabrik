@@ -75,9 +75,9 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		 * _form_data was not set to no readonly value was returned
 		 * added little test to see if the data was actually an array before using it
 		 */
-		if (is_array($this->_form->_data))
+		if (is_array($this->getFormModel()->data))
 		{
-			$data = $this->_form->_data;
+			$data = $this->getFormModel()->data;
 		}
 		$value = $this->getValue($data, $repeatCounter);
 		$fd = $params->get('details_date_format', 'd.m.Y');
