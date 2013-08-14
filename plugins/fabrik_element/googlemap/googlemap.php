@@ -588,7 +588,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$attribs[] = 'markers=' . $markers;
 		$attribs[] = 'sensor=false';
 
-
 		$config = JComponentHelper::getParams('com_fabrik');
 		$apiKey = $config->get('google_api_key', '');
 		$client = $config->get('google_buisness_client_id', '');
@@ -602,7 +601,7 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$attribs[] = 'client=' . $client;
 			$attribs[] = 'signature=' . $signature;
 		}
-		else if ($apiKey !== '')
+		elseif ($apiKey !== '')
 		{
 			$attribs[] = 'key=' . $apiKey;
 		}

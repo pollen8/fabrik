@@ -18,8 +18,9 @@ jimport('joomla.application.component.controller');
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.nvd3_chart
+ * @since       3.0
  */
 
-class FabrikControllerVisualizationNvd3_chart extends FabrikControllerVisualization
+class FabrikControllerVisualizationNvd3_Chart extends FabrikControllerVisualization
 {
 }

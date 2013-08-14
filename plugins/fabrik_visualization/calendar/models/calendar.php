@@ -60,7 +60,6 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	 */
 	var $canAdd = null;
 
-
 	/**
 	 * Set an array of list id's whose data is used inside the visualaziation
 	 *

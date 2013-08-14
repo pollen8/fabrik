@@ -23,7 +23,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
  * @since       3.0
  */
 
-class FabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
+class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 {
 
 	/**
@@ -131,7 +131,7 @@ class FabrikModelFusion_gantt_chart extends FabrikFEModelVisualization
 				$strParam .= "id={$d->__pk_val};color=99cc00;alpha=60;topPadding=19;hoverText={$hovertext};";
 				$strParam .= "link={$d->fabrik_view_url};";
 
-				$l =  isset($d->$label) ? $this->prepData($d->$label) : '';
+				$l = isset($d->$label) ? $this->prepData($d->$label) : '';
 				$this->fc->addGanttTask($l, $strParam);
 
 				if ($milestone !== '' && $d->$milestoneraw == 1)

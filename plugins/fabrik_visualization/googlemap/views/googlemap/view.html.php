@@ -71,10 +71,6 @@ class FabrikViewGooglemap extends JViewLegacy
 		}
 		else
 		{
-			//$js .= 'Fabrik.loadGoogleMap(\'' . $params->get('fb_gm_sensor', 'false') . '\');';
-			/* $src = $uri->getScheme() . '://maps.google.com/maps/api/js?sensor=' . $params->get('fb_gm_sensor', 'false');
-			$document->addScript($src); */
-
 			if (FabrikHelperHTML::isDebug())
 			{
 				$srcs[] = 'plugins/fabrik_visualization/googlemap/googlemap.js';
@@ -101,7 +97,6 @@ class FabrikViewGooglemap extends JViewLegacy
 				// FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/markermanager.js');
 			}
 
-			//FabrikHelperHTML::addScriptDeclaration($js);
 			$template = null;
 		}
 		$js .= $model->getPluginJsObjects();

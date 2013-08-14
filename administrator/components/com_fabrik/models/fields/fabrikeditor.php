@@ -108,12 +108,12 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
     	 	height: ' . $height . ';
     }
 </style>';
-
+		$this->element['cols'] = 1;
+		$this->element['rows'] = 1;
 		$editor = parent::getInput();
 
 		// For element js event code.
 		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace">' . $this->value . '</div>' . $editor . '</div>';
-		//return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace">' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '</div>' . $editor . '</div>';
 	}
 
 }

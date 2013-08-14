@@ -218,7 +218,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function multiChartData()
 	{
 		$params = $this->getParams();
-		//echo "<pre>";print_r($params);echo "</pre>";;
 		if ($params->get('data_mode') == 0)
 		{
 			$labelColumns = $params->get('value_field');
@@ -235,7 +234,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$query = $db->getQuery(true);
 		$query->select($labelColumns)->from($table);
 
-		//test
+		// Test
 		$split = 'date';
 		if ($split !== '')
 		{
@@ -245,7 +244,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			if ($params->get('data_mode') == 0)
 			{
-				//$query->select($params->get('label_field') . ' AS ' . $db->nameQuote('key'));
 				$query->select('date AS ' . $db->nameQuote('key'));
 			}
 		}
@@ -280,11 +278,10 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 *
 	 * @return stdClass
 	 */
-	protected function  multiChartLabelsNoSplit($rows)
+	protected function multiChartLabelsNoSplit($rows)
 	{
 		$o = new stdClass;
 		$o->values = array();
-		echo "<pre>";print_r($rows);echo "</pre>";
 		foreach ($rows as $d)
 		{
 			foreach ($d as $k => $v)
@@ -531,8 +528,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			case 'stackedAreaChart':
 			case 'lineWithFocusChart':
 				$str[] = '.x(function(d) { return d[0] })';
-
-
 				$str[] = '.y(function(d) { return d[1] })';
 				$str[] = '.clipEdge(true)';
 				break;
@@ -575,7 +570,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str[] = 'return chart;';
 		$str[] = '});';
 		$str[] = '});';
-		// $str[] = 'console.log(' . $data . ');';
 		return implode("\n", $str);
 		/**
 
