@@ -340,7 +340,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	 * On Ajax files?
+	 * On Ajax files
 	 *
 	 * @return  void
 	 */
@@ -350,7 +350,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$this->loadMeForAjax();
 		$app = JFactory::getApplication();
 		$folder = $app->input->get('folder', '', 'string');
-		$pathA = JPath::clean(JPATH_SITE . '/' . $folder);
+		if (!strstr($folder, JPATH_SITE))
+		{
+			$folder = JPATH_SITE . '/' . $folder;
+		}
+		$pathA = JPath::clean($folder);
 		$folder = array();
 		$files = array();
 		$images = array();
