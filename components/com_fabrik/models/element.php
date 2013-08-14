@@ -5549,7 +5549,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$o->view_access = 1;
 		$o->show_in_rss_feed = 0;
 		$o->show_label_in_rss_feed = 0;
-		$o->use_as_fake_key = 0;
 		$o->icon_folder = -1;
 		$o->use_as_row_class = 0;
 		$o->filter_access = 1;
