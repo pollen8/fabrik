@@ -402,7 +402,8 @@ class FabrikFEModelForm extends FabModelForm
 		$isUserRowId = $this->isUserRowId();
 
 		// New form can we add?
-		if ($this->rowId === '' || $isUserRowId)
+		//if ($this->rowId === '' || $isUserRowId)
+		if ($this->getRowId() === '' || $isUserRowId)
 		{
 			// If they can edit can they also add
 			if ($listModel->canAdd())
@@ -2623,6 +2624,17 @@ class FabrikFEModelForm extends FabModelForm
 				// Set rowid to -2 to load in the last recorded record
 				$this->rowId = $this->getMaxRowId();
 				break;
+		}
+		/**
+		 * $$$ hugh - added this as a Hail Mary sanity check, make sure
+		 * rowId is an empty string if for whatever reason it's still null,
+		 * as we have code in various place that checks for $this->rowId === ''
+		 * to detect adding new form.  So if at this point rowid is null, we have
+		 * to assume it's a new form, and set rowid to empty string.
+		 */
+		if (is_null($this->rowId))
+		{
+			$this->rowId = '';
 		}
 		FabrikWorker::getPluginManager()->runPlugins('onSetRowId', $this);
 		return $this->rowId;
