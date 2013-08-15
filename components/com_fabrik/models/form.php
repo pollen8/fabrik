@@ -2881,7 +2881,7 @@ class FabrikFEModelForm extends FabModelForm
 								}
 							}
 						}
-						$bits = JArrayHelper::fromObject($data[0]);
+						$bits = $data;
 						$bits = array_merge($tmp_data, $bits);
 						$data = array(FArrayHelper::toObject($bits));
 						FabrikHelperHTML::debug($data, 'form:getData from session (form not in Mambot and no errors');
@@ -2970,9 +2970,11 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
+		// $$$ rob - don't see how this could work? $data is an array.
+
 		// Test to allow {$my->id}'s to be evald from query strings
-		$w = new FabrikWorker;
-		$data = $w->parseMessageForPlaceHolder($data);
+		/* $w = new FabrikWorker;
+		$data = $w->parseMessageForPlaceHolder($data); */
 		$this->data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
 		JDEBUG ? $profiler->mark('queryselect: getData() end') : null;
