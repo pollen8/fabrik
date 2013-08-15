@@ -14,6 +14,7 @@
 					<option value="lineWithFocusChart">line With Focus Chart</option>
 					<option value="multiBarChart">multi Bar Chart</option>
 					<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
+					<option value="lineChart">Line Chart</option>
 			</field>
 			
 			<field name="conn_id"

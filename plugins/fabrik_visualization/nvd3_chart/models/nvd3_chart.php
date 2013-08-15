@@ -99,6 +99,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$this->data = $this->multiChartData();
 				return $this->data;
 			}
+			else
+			{
+				$this->data = $this->singleLineData();
+				return $this->data;
+			}
 			$this->data = new stdClass;
 			$this->data->key = 'todo2';
 			$db = JFactory::getDbo();
@@ -206,6 +211,72 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			}
 		}
 		return $data;
+	}
+
+	protected function singleLineData()
+	{
+		$params = $this->getParams();
+		if ($params->get('data_mode') == 0)
+		{
+			$labelColumns = $params->get('value_field');
+		}
+		else
+		{
+			$labelColumns = explode(',', $params->get('label_columns'));
+		}
+		$table = $params->get('tbl');
+		$split = $params->get('split', '');
+		$groupBy = $params->get('group_by');
+
+		$db = FabrikWorker::getDbo(false, $params->get('conn_id'));
+		$query = $db->getQuery(true);
+		$query->select($labelColumns)->from($table);
+
+		if ($split !== '')
+		{
+			$query->select($split . ' AS ' . $db->nameQuote('key'));
+		}
+		else
+		{
+			if ($params->get('data_mode') == 0)
+			{
+				$query->select('date AS ' . $db->nameQuote('key'));
+			}
+		}
+		$db->setQuery($query);
+		$rows = $db->loadObjectList();
+
+		$keys = array_keys(JArrayHelper::fromObject($rows[0]));
+
+		$colors = explode(',', $params->get('colours', '#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C'));
+
+		$return = array();
+
+		$i = 0;
+		foreach ($keys as $key)
+		{
+			if ($key != 'key')
+			{
+				$values = array();
+				foreach ($rows as $row)
+				{
+					$o = new stdClass;
+
+					// Key needs to be a numeric value.
+					$o->x = (float) $row->key;
+					$o->y = (float) $row->$key;
+					$values[] = $o;
+					$a ++;
+				}
+				$entry = new stdClass;
+				$entry->values = $values;
+				$entry->key = $key;
+				$entry->color = $colors[$i];
+				$return[] = $entry;
+				$i ++;
+			}
+		}
+		return $return;
 	}
 
 	/**
@@ -553,7 +624,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			case 'multiBarChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
-				$str[] = $this->margins();
+				//$str[] = $this->margins();
 				break;
 			case 'stackedAreaChart':
 			case 'lineWithFocusChart':
@@ -566,6 +637,15 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$str[] = '.y(function(d) { return d.value })';
 				break;
 
+		}
+
+		switch ($chart)
+		{
+			// @TODO add line chart axis label options.
+			case 'lineChart':
+				//$str[] = 'chart.xAxis.axisLabel(\'Time (ms)\');';
+				//$str[] = 'chart.yAxis.axisLabel(\'Voltage (v)\');';
+				break;
 		}
 		$str[] = $this->margins();
 
