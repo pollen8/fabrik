@@ -182,7 +182,14 @@ class FabrikFEModelListfilter extends FabModel
 		$properties = array_keys($filters);
 		foreach ($properties as $property)
 		{
-			$filters[$property] = array_values($filters[$property]);
+			if (is_array($filters[$property]))
+			{
+				$filters[$property] = array_values($filters[$property]);
+			}
+			else
+			{
+				$filters[$property] = array();
+			}
 		}
 	}
 
@@ -1309,7 +1316,7 @@ class FabrikFEModelListfilter extends FabModel
 		$postkeys = JArrayHelper::getValue($request, 'key', array());
 		for ($i = 0; $i < count($sessionfilters['key']); $i++)
 		{
-			$elid = $sessionfilters['elementid'][$i];
+			$elid = JArrayHelper::getValue($sessionfilters['elementid'], $i);
 			$key = JArrayHelper::getValue($sessionfilters['key'], $i, null);
 			$index = JArrayHelper::getValue($filters['elementid'], $key, false);
 

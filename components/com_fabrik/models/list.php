@@ -2260,7 +2260,7 @@ class FabrikFEModelList extends JModelForm
 			// $db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$db->setQuery($squery);
 			$this->mergeQuery = $db->getQuery();
-			FabrikHelperHTML::debug($db->getQuery()->dump(), 'table:mergeJoinedData get ids');
+			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
 			$maxPossibleIds = count($idRows);
@@ -5008,7 +5008,7 @@ class FabrikFEModelList extends JModelForm
 		$totalSql .= ' ' . $this->buildQueryGroupBy();
 		$totalSql = $this->pluginQuery($totalSql);
 		$db->setQuery($totalSql);
-		FabrikHelperHTML::debug($db->getQuery()->dump(), 'table getJoinMergeTotalRecords');
+		FabrikHelperHTML::debug($db->getQuery(), 'table getJoinMergeTotalRecords');
 		$total = $db->loadResult();
 		return $total;
 	}
@@ -5650,7 +5650,7 @@ class FabrikFEModelList extends JModelForm
 				*$o->filter = $value;
 				*/
 				$elementModel = $this->getFormModel()->getElement(str_replace('`', '', $key));
-				$o->filter = $filters['filter'][$i];
+				$o->filter = JArrayHelper::getValue($filters['filter'], $i);
 				if ($elementModel)
 				{
 					$elementModel->getElement()->filter_type = 'hidden';

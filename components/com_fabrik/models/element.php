@@ -2681,7 +2681,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						if ($searchType != 'prefilter')
 						{
-							$default = $filters['origvalue'][$k];
+							$default = JArrayHelper::getValue($filters['origvalue'], $k);
 						}
 					}
 				}
