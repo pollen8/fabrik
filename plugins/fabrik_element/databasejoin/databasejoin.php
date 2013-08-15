@@ -2611,7 +2611,15 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query = $this->buildQuery(array(), false);
 		$key = $this->getJoinValueColumn();
 		$query->clear('where');
-		$query->where($key . ' = ' . $db->quote($v));
+		if (is_array($v))
+		{
+			array_map(array($db, 'quote'), $v);
+			$query->where($key . ' IN (' . implode(',', $v) . ')');
+		}
+		else
+		{
+			$query->where($key . ' = ' . $db->quote($v));
+		}
 		$db->setQuery($query);
 		$r = $db->loadObject();
 		if (!$r)
