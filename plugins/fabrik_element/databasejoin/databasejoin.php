@@ -2613,8 +2613,22 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query->clear('where');
 		if (is_array($v))
 		{
+			/**
+			 * $$$ hugh - tweaked this a little, as IN () pitches an error in
+			 * MySQL, so we need to make sure we don't end up with that.  So as
+			 * IN (), if it worked, would produce no rows, just replace with 1=-1
+			 * Can't just count($v), as sometimes it's an array with a single null entry.
+			 */
 			array_map(array($db, 'quote'), $v);
-			$query->where($key . ' IN (' . implode(',', $v) . ')');
+			$ins = implode(',', $v);
+			if (trim($ins) === '')
+			{
+				$query->where('1=-1');
+			}
+			else
+			{
+				$query->where($key . ' IN (' . $ins . ')');
+			}
 		}
 		else
 		{
