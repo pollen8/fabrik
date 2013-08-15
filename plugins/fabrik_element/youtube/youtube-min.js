@@ -1,0 +1,1 @@
+var FbYouTube=new Class({Extends:FbElement,initialize:function(b,a){this.plugin="fabrikyoutube";this.parent(b,a)}});

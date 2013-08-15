@@ -235,7 +235,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$query->select($labelColumns)->from($table);
 
 		// Test
-		$split = 'date';
+		//$split = '';
 		if ($split !== '')
 		{
 			$query->select($split . ' AS ' . $db->nameQuote('key'));
@@ -450,12 +450,42 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			$str[] = 'chart.xAxis.rotateLabels(-' . $rotate . ');';
 		}
-		// Additonal margin needed for rotated labels
+		return implode("\n", $str);
+	}
+
+	/**
+	 * Add chart marings
+	 *
+	 * @return  string  chart.margn option
+	 */
+
+	protected function margins()
+	{
+		$str = '';
+		$params = $this->getParams();
 		if ($params->get('margin', '') !== '')
 		{
-			$str[] = 'chart.margin({bottom: 160, left: 60});';
+			$margins = explode(',', $params->get('margin', ''));
+			$marg = new stdClass;
+			$marg->top = 10;
+			$marg->bottom = 160;
+			$marg->right = 10;
+			$marg->left = 80;
+			if (count($margins) == 2)
+			{
+				$marg->top = $marg->bottom = $margins[0];
+				$marg->left = $marg->right = $margins[1];
+			}
+			elseif (count($margins) == 4)
+			{
+				$marg->top = $margins[0];
+				$marg->right = $margins[1];
+				$marg->bottom = $margins[2];
+				$marg->left = $margins[3];
+			}
+			$str = 'chart.margin(' . json_encode($marg) . ');';
 		}
-		return implode("\n", $str);
+		return $str;
 	}
 
 	/**
@@ -517,13 +547,13 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
-				$str[] = $this->discreteBarChartOpts();
 				break;
 
 				// Test: was the same as stackedAreaChart (was the same as stackedAreaChart)
 			case 'multiBarChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
+				$str[] = $this->margins();
 				break;
 			case 'stackedAreaChart':
 			case 'lineWithFocusChart':
@@ -537,16 +567,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				break;
 
 		}
-
-		$margin = $params->get('margin', '');
-		if ($margin !== '')
-		{
-			$margin = explode(',', $margin);
-			if (count($margin) == 4)
-			{
-				$str[] = 'chart.margin({top: ' . (int) $margin[0] . ',right: ' . (int) $margin[1] . ', bottom: ' . (int) $margin[2] . ', left: ' . (int) $margin[3] . '});';
-			}
-		}
+		$str[] = $this->margins();
 
 		$this->showControls($str);
 
