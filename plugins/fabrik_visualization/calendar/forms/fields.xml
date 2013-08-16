@@ -59,7 +59,12 @@
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar" label="COM_FABRIK_OPTIONS">
-			<field directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/" label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" name="calendar_layout" type="folderlist"/>
+			
+			<field name="calendar_layout"
+				type="folderlist"
+				directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/"
+				default="bootstrap"
+				label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" />
 				
 			<field name="show_calendar_legend"
 				type="radio"

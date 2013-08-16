@@ -879,7 +879,7 @@ var fabrikCalendar = new Class({
 			this.openChooseEventTypeForm(this.doubleclickdate, rawd);
 		} else {
 			var o = {};
-			o.rowid = 0;
+			o.rowid = '';
 			o.id = '';
 			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
 			o.listid = this.options.eventLists[0].value;
@@ -889,7 +889,7 @@ var fabrikCalendar = new Class({
 
 	openChooseEventTypeForm: function (d, rawd)
 	{
-		// rowid is the record to load if editing
+		// Rowid is the record to load if editing
 		var url = 'index.php?option=com_fabrik&tmpl=component&view=visualization&controller=visualization.calendar&task=chooseaddevent&id=' + this.options.calendarId + '&d=' + d + '&rawd=' + rawd;
 
 		// Fix for renderContext when rendered in content plugin
@@ -906,6 +906,7 @@ var fabrikCalendar = new Class({
 
 	addEvForm: function (o)
 	{
+		console.log(o);
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;

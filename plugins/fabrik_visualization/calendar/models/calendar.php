@@ -143,7 +143,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	/**
 	 * Save the calendar
 	 *
-	 * @return  boolean false if not saved, otherwise id of saved calendar
+	 * @return  boolean False if not saved, otherwise id of saved calendar
 	 */
 
 	function save()
@@ -334,7 +334,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	/**
 	 * Get an arry of list ids for which the current user has delete records rights
 	 *
-	 * @return  array	list ids.
+	 * @return  array	List ids.
 	 */
 
 	public function getDeleteAccess()
@@ -503,7 +503,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	/**
 	 * Get calendar js name
 	 *
-	 * @deprecated  use getJSRenderContext() instead
+	 * @deprecated  Use getJSRenderContext() instead
 	 *
 	 * @return NULL
 	 */
@@ -518,7 +518,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Update an event - not working/used!
+	 * Update an event - Not working/used!
 	 *
 	 * @return  void
 	 */
