@@ -66,9 +66,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Determines if the data in the form element is used when updating a record
 	 *
-	 * @param   mixed  $val  element forrm data
+	 * @param   mixed  $val  Element forrm data
 	 *
-	 * @return  bool  true if ignored on update, default = false
+	 * @return  bool  True if ignored on update, default = false
 	 */
 
 	public function ignoreOnUpdate($val)
@@ -422,10 +422,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData($data, stdClass &$thisRow)
@@ -462,10 +462,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the CSV export view
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the tables current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the tables current row
 	 *
-	 * @return	string	formatted value
+	 * @return	string	Formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -504,10 +504,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Encodes the file
 	 *
-	 * @param   string  $file    relative file path
-	 * @param   mixed   $format  encode the file full|url|base64|raw|relative
+	 * @param   string  $file    Relative file path
+	 * @param   mixed   $format  Encode the file full|url|base64|raw|relative
 	 *
-	 * @return  string	encoded file for export
+	 * @return  string	Encoded file for export
 	 */
 
 	protected function encodeFile($file, $format = 'relative')
@@ -541,9 +541,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * Examine the file being displayed and load in the corresponding
 	 * class that deals with its display
 	 *
-	 * @param   string  $file  file
+	 * @param   string  $file  File
 	 *
-	 * @return  object  element renderer
+	 * @return  object  Element renderer
 	 */
 
 	protected function loadElement($file)
@@ -773,7 +773,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * @param   string  $data           Elements data
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
-	 * @return  bool	true if passes / false if falise validation
+	 * @return  bool	True if passes / false if falise validation
 	 */
 
 	public function validate($data = array(), $repeatCounter = 0)
@@ -845,9 +845,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * This checks the uploaded file type against the csv specified in the upload
 	 * element
 	 *
-	 * @param   string  $myFileName  filename
+	 * @param   string  $myFileName  Filename
 	 *
-	 * @return	bool	true if upload file type ok
+	 * @return	bool	True if upload file type ok
 	 */
 
 	protected function _fileUploadFileTypeOK($myFileName)
@@ -870,9 +870,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * This checks that thte fileupload size is not greater than that specified in
 	 * the upload element
 	 *
-	 * @param   string  $myFileSize  file size
+	 * @param   string  $myFileSize  File size
 	 *
-	 * @return	bool	true if upload file type ok
+	 * @return	bool	True if upload file type ok
 	 */
 
 	protected function _fileUploadSizeOK($myFileSize)
@@ -889,9 +889,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * if we are using plupload but not with crop
 	 *
-	 * @param   string  $name  element
+	 * @param   string  $name  Element
 	 *
-	 * @return	bool	if processed or not
+	 * @return	bool	If processed or not
 	 */
 
 	protected function processAjaxUploads($name)
@@ -985,9 +985,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * If an image has been uploaded with ajax upload then we may need to crop it
 	 * Since 3.0.7 crop data is posted as base64 encoded info from the actual canvas element - much simpler and more accurate cropping
 	 *
-	 * @param   string  $name  element
+	 * @param   string  $name  Element
 	 *
-	 * @return	bool	if processed or not
+	 * @return	bool	If processed or not
 	 */
 
 	protected function crop($name)
@@ -1321,13 +1321,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$formModel->updateFormData($name, $strfiles);
 		}
 
-
 	}
 
 	/**
 	 * Delete the file
 	 *
-	 * @param   string  $filename  file name (not including JPATH)
+	 * @param   string  $filename  File name (not including JPATH)
 	 *
 	 * @return  void
 	 */
@@ -1667,10 +1666,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string	Elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
@@ -1852,7 +1851,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Check if a single crop iamge has been uploaded and set the value accordingly
 	 *
-	 * @param   array  $value  uploaded files
+	 * @param   array  $value  Uploaded files
 	 *
 	 * @return mixed
 	 */
@@ -1880,11 +1879,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Make download link
 	 *
-	 * @param   string  $value          file path
-	 * @param   array   $data           row
-	 * @param   int     $repeatCounter  repeat counter
+	 * @param   string  $value          File path
+	 * @param   array   $data           Row
+	 * @param   int     $repeatCounter  Repeat counter
 	 *
-	 * @return	string	download link
+	 * @return	string	Download link
 	 */
 
 	protected function downloadLink($value, $data, $repeatCounter = 0)
@@ -1957,7 +1956,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Load the required plupload runtime engines
 	 *
-	 * @param   string  $runtimes  runtimes
+	 * @param   string  $runtimes  Runtimes
 	 *
 	 * @depreciated
 	 *
@@ -2156,9 +2155,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Attach documents to the email
 	 *
-	 * @param   string  $data  data
+	 * @param   string  $data  Data
 	 *
-	 * @return  string  formatted value
+	 * @return  string  Formatted value
 	 */
 
 	public function addEmailAttachement($data)
@@ -2195,12 +2194,12 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * E.g. if the database join element points to a file upload element then you can replace
 	 * the file path that is the standard $val with the html to create the image
 	 *
-	 * @param   string  $val   value
-	 * @param   string  $view  form or list
+	 * @param   string  $val   Value
+	 * @param   string  $view  Form or list
 	 *
 	 * @deprecated - doesn't seem to be used
 	 *
-	 * @return  string	modified val
+	 * @return  string	Modified val
 	 */
 
 	protected function modifyJoinQuery($val, $view = 'form')
@@ -2239,7 +2238,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Trigger called when a row is deleted
 	 *
-	 * @param   array  $groups  grouped data of rows to delete
+	 * @param   array  $groups  Grouped data of rows to delete
 	 *
 	 * @return  void
 	 */
@@ -2304,9 +2303,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Return the number of bytes
 	 *
-	 * @param   string  $val  e.g. 3m
+	 * @param   string  $val  E.g. 3m
 	 *
-	 * @return  int  bytes
+	 * @return  int  Bytes
 	 */
 
 	protected function _return_bytes($val)
@@ -2385,10 +2384,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
 	 *
-	 * @return  string	value
+	 * @return  string	Value
 	 */
 
 	public function getROValue($data, $repeatCounter = 0)
@@ -2501,8 +2500,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Update downloads hits table
 	 *
-	 * @param   int|string  $rowid        update table's primary key
-	 * @param   int         $repeatCount  repeat group counter
+	 * @param   int|string  $rowid        Update table's primary key
+	 * @param   int         $repeatCount  Repeat group counter
 	 *
 	 * @return  void
 	 */
@@ -2527,8 +2526,8 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Log the download
 	 *
-	 * @param   object  $row       log download row
-	 * @param   string  $filepath  downloaded file's path
+	 * @param   object  $row       Log download row
+	 * @param   string  $filepath  Downloaded file's path
 	 *
 	 * @since 2.0.5
 	 *
@@ -2560,9 +2559,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Called when save as copy form button clicked
 	 *
-	 * @param   mixed  $val  value to copy into new record
+	 * @param   mixed  $val  Value to copy into new record
 	 *
-	 * @return  mixed  value to copy into new record
+	 * @return  mixed  Value to copy into new record
 	 */
 
 	public function onSaveAsCopy($val)
@@ -2636,11 +2635,11 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           element value
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Element value
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
-	 * @return	string	value
+	 * @return	string	Value
 	 */
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
@@ -2651,6 +2650,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// @TODO test crop data
 
 	}
+
+	/**
+	 * Build Carousel HTML
+	 *
+	 * @param   string  $id    Widget HTML id
+	 * @param   array   $imgs  Images to add to the carousel
+	 *
+	 * @return  string  HTML
+	 */
 
 	public function buildCarousel($id = 'carousel', $imgs = array())
 	{

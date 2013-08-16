@@ -3338,9 +3338,9 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Attempts to determine if the form contains the element
 	 *
-	 * @param   string  $searchName  element name to search for
-	 * @param   bool    $checkInt    check search name against element id
-	 * @param   bool    $checkShort  check short element name
+	 * @param   string  $searchName  Element name to search for
+	 * @param   bool    $checkInt    Check search name against element id
+	 * @param   bool    $checkShort  Check short element name
 	 *
 	 * @return  bool  true if found, false if not found
 	 */
@@ -3389,9 +3389,9 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get an element
 	 *
-	 * @param   string  $searchName  name to search for
-	 * @param   bool    $checkInt    check search name against element id
-	 * @param   bool    $checkShort  check short element name
+	 * @param   string  $searchName  Name to search for
+	 * @param   bool    $checkInt    Check search name against element id
+	 * @param   bool    $checkShort  Check short element name
 	 *
 	 * @return  mixed  ok: element model not ok: false
 	 */
@@ -3404,7 +3404,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Set the list model
 	 *
-	 * @param   object  &$listModel  list model
+	 * @param   object  &$listModel  List model
 	 *
 	 * @return  void
 	 */
@@ -3692,7 +3692,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Parse into and outro text
 	 *
-	 * @param   string  $text  text to parse
+	 * @param   string  $text  Text to parse
 	 *
 	 * @since   3.0.7
 	 *
@@ -3741,7 +3741,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * Used from getIntro as preg_replace_callback function to strip
 	 * undeisred text from form label intro
 	 *
-	 * @param   array  $match  preg matched strings
+	 * @param   array  $match  Preg matched strings
 	 *
 	 * @return  string  intro text
 	 */
@@ -3755,7 +3755,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 *  Jaanus: see text above about intro
 	 *
-	 *  @return  string  outro
+	 *  @return  string  Outro
 	 */
 
 	public function getOutro()
@@ -3768,7 +3768,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the form's label
 	 *
-	 * @return  string  label
+	 * @return  string  Label
 	 */
 
 	public function getLabel()
@@ -3791,7 +3791,7 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * @TODO should move this to the admin model
 	 *
-	 * @return  object  form table
+	 * @return  object  Form table
 	 */
 
 	public function copy()
@@ -3841,7 +3841,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the related lists (relations defined by db join foreign keys)
 	 *
-	 * @return  array  of links to view the related lists
+	 * @return  array  Links to view the related lists
 	 */
 
 	public function getRelatedTables()
@@ -3988,7 +3988,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get the url to use as the form's action property
 	 *
-	 * @return	string	url
+	 * @return	string	Url
 	 */
 
 	public function getAction()
@@ -4086,9 +4086,9 @@ class FabrikFEModelForm extends FabModelForm
 	 * If the group is a joined group we want to ensure that
 	 * its id field is contained with in the group's elements
 	 *
-	 * @param   object  &$groupTable  group table
+	 * @param   object  &$groupTable  Group table
 	 *
-	 * @return	string	html hidden field
+	 * @return	string	HTML hidden field
 	 */
 
 	protected function _makeJoinIdElement(&$groupTable)
@@ -4170,7 +4170,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Prepare the elements for rendering
 	 *
-	 * @param   string  $tmpl  form template
+	 * @param   string  $tmpl  Form template
 	 *
 	 * @since   3.0
 	 *
@@ -4390,7 +4390,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get any fabrik tables that link to the join table
 	 *
-	 * @param   string  $table  table name
+	 * @param   string  $table  Table name
 	 *
 	 * @return  array
 	 */
@@ -4425,8 +4425,8 @@ class FabrikFEModelForm extends FabModelForm
 	 *
 	 * If $value is set, then this method additionally adds the modified value to the updated array.
 	 *
-	 * @param   string  $fullname  full element name
-	 * @param   mixed   $value     optional value, states that a plugin update the readonly value of $fullname
+	 * @param   string  $fullname  Full element name
+	 * @param   mixed   $value     Optional value, states that a plugin update the readonly value of $fullname
 	 *
 	 * @return bool
 	 */
@@ -4441,7 +4441,7 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
-	 * Populate the model state
+	 * Populate the Model state
 	 *
 	 * @return  void
 	 */
@@ -4480,7 +4480,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Set editable state
 	 *
-	 * @param   bool  $editable  editable state
+	 * @param   bool  $editable  Editable state
 	 *
 	 * @since 3.0.7
 	 *
@@ -4497,7 +4497,7 @@ class FabrikFEModelForm extends FabModelForm
 	 * other form plugins such as twitter or paypal may need to query the session to perform the final redirect
 	 * once the user has returned from those sites.
 	 *
-	 * @return  string  the session key to store redirect information (note: ends in '.')
+	 * @return  string  Session key to store redirect information (note: ends in '.')
 	 */
 
 	public function getRedirectContext()
@@ -4510,7 +4510,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Resets cached form data.
 	 *
-	 * @param   bool  $unset_groups  also reset group and element model cached data
+	 * @param   bool  $unset_groups  Also reset group and element model cached data
 	 *
 	 * @return  void
 	 */
@@ -4559,10 +4559,10 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get redirect URL
 	 *
-	 * @param   bool  $incSession  set url in session?
-	 * @param   bool  $isMambot    is Mambot
+	 * @param   bool  $incSession  Set url in session?
+	 * @param   bool  $isMambot    Is Mambot
 	 *
-	 * @return   array  url: string  redirect url, baseRedirect (True: default redirect, False: plugin redirect)
+	 * @return   array  url: string  Redirect url, baseRedirect (True: default redirect, False: plugin redirect)
 	 *
 	 * @since 3.0.6 (was in form controller)
 	 */
@@ -4706,7 +4706,7 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * Get redirect message
 	 *
-	 * @return  string  redirect message
+	 * @return  string  Redirect message
 	 *
 	 * @since   3.0.6 (was in form controller)
 	 */
