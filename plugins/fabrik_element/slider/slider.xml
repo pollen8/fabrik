@@ -13,7 +13,6 @@
 	<files>
 		<filename plugin="slider">slider.php</filename>
 		<filename>index.html</filename>
-		<filename>slider.css</filename>
 		<filename>slider.js</filename>
 		<filename>slider-min.js</filename>
 		<folder>forms</folder>
