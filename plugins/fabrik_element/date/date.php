@@ -831,9 +831,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$alwaysToday = $params->get('date_alwaystoday', false);
 		$defaultToday = $params->get('date_defaulttotoday');
 		$newRecord = $this->getFormModel()->isNewRecord();
-
 		$value = parent::getValue($data, $repeatCounter, $opts);
-
 		if (is_array($value))
 		{
 			// Submission posted as array but date & time in date key. Can be key'd to 0 if parent class casts string to array.
@@ -844,10 +842,19 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			$date = JFactory::getDate();
 			$value = $date->toSQL();
 		}
-		if ($newRecord && $defaultToday)
+		if ($newRecord && $defaultToday && $value == '')
 		{
-			$date = JFactory::getDate();
-			$value = $date->toSQL();
+			// Set to local time as its then converted to correct utc/local time in _indStoreDBFormat
+			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+			$date = JFactory::getDate('now', $timeZone);
+
+			$value = $date->toSQL(true);
+
+			// If we aren't showing the time then remove the time from $value
+			if (!$params->get('date_showtime', 0))
+			{
+				$value = $this->setMySQLTimeToZero($value);
+			}
 		}
 		return $value;
 	}
