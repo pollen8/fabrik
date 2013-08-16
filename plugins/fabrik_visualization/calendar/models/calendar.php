@@ -386,15 +386,21 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 			foreach ($record as $data)
 			{
 				$db = $listModel->getDb();
-				$startdate = trim($data['startdate']) !== '' ? FabrikString::safeColName($data['startdate']) : "''";
-				$enddate = trim($data['enddate']) !== '' ? FabrikString::safeColName($data['enddate']) : "''";
-				$label = trim($data['label']) !== '' ? FabrikString::safeColName($data['label']) : "''";
+				$startdate = trim($data['startdate']) !== '' ? $db->quoteName($data['startdate']) : '\'\'';
+				if ($data['startdate'] == '')
+				{
+					throw new RuntimeException('No start date selected ', 500);
+					return;
+				}
+
+				$enddate = trim($data['enddate']) !== '' ? $db->quoteName($data['enddate']) : "''";
+				$label = trim($data['label']) !== '' ? $db->quoteName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
-				$qlabel = FabrikString::safeColName($label);
+				$qlabel = $db->quoteName($label);
 				if (array_key_exists($qlabel, $els))
 				{
 					// If db join selected for the label we need to get the label element and not the value
-					$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
+					$label = $db->quoteName($els[$qlabel]->getOrderByName());
 
 					// $$$ hugh @TODO doesn't seem to work for join elements, so adding hack till I can talk
 					// to rob about this one.
@@ -404,16 +410,21 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 					}
 					else
 					{
-						$label = FabrikString::safeColName($els[$qlabel]->getOrderByName());
+						$label = $db->quoteName($els[$qlabel]->getOrderByName());
 					}
 				}
 				$pk = $listModel->getTable()->db_primary_key;
-				$where = $listModel->buildQueryWhere();
-				$join = $listModel->buildQueryJoin();
+
 
 				// @TODO JQuery this
-				$sql = "SELECT $pk AS id, $startdate AS startdate, $enddate AS enddate, '' AS link, $label AS 'label', '{$data['colour']}' AS colour, 0 AS formid FROM $table->db_table_name $join $where ORDER BY $startdate ASC";
-				$db->setQuery($sql);
+				$query = $db->getQuery(true);
+				$query->select($pk . ' AS id, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate, "" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
+				->from($table->db_table_name)
+				->order($startdate . ' ASC');
+				$query = $listModel->buildQueryJoin($query);
+				$query = $listModel->buildQueryWhere(true, $query);
+
+				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
 				if (is_array($formdata))
 				{

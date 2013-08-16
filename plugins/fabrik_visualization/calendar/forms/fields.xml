@@ -18,6 +18,7 @@
 				
 			<field name="calendar_startdate_element"
 				type="element"
+				required="true"
 				table="params_calendar_table" 
 				connection="params_calendar_connection"
 				connection_in_repeat="false"
@@ -130,7 +131,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field name="time_format"
+				type="text"
+				class="input-small"
+				default="%X"
+				description="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_DESC"
+				label="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_LABEL" />
+
 		</fieldset>
 	
 		<fieldset label="PLG_VISUALIZATION_CALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-calendar-monthview">
