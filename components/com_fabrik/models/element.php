@@ -1941,8 +1941,6 @@ class PlgFabrik_Element extends FabrikPlugin
 				$element->tipSide = $tip;
 				break;
 		}
-		// Did contain tip html but that was just to intrusive as tips appeared all ove the place
-		$element->containerProperties = '';
 		return $element;
 	}
 

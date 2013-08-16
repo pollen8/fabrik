@@ -30,7 +30,7 @@ foreach ($this->elements as $element) :
 	$style = $element->hidden ? 'style="display:none"' : '';
 	$span = $element->hidden ? '' : ' ' . $element->span;
 	?>
-			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $element->containerProperties?> <?php echo $style?>>
+			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
 	<?php
 	if ($this->params->get('labels_above', 0) == 1)
 	{

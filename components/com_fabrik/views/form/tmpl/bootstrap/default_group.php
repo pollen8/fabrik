@@ -24,15 +24,15 @@ foreach ($this->elements as $element) :
 	endif;
 
 	if ($element->startRow) : ?>
-		<div class="row-fluid"><!-- start element row -->
+		<div class="row-fluid">
 	<?php
 	endif;
 	$style = $element->hidden ? 'style="display:none"' : '';
 	$span = $element->hidden ? '' : ' ' . $element->span;
 	?>
-			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $element->containerProperties?> <?php echo $style?>>
+			<div class="control-group <?php echo $element->containerClass . $span; ?>" <?php echo $style?>>
 	<?php
-		if ($this->params->get('labels_above', 0) == 1)
+	if ($this->params->get('labels_above', 0) == 1)
 	{
 		echo $this->loadTemplate('group_labels_above');
 	}
