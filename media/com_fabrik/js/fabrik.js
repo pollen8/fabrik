@@ -201,6 +201,20 @@ Element.implement({
 });
 
 /**
+ * Extend the Array object
+ * @param candid The string to search for
+ * @returns Returns the index of the first match or -1 if not found
+*/
+Array.prototype.searchFor = function (candid) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i].indexOf(candid) === 0) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+/**
  * Loading aninimation class, either inline next to an element or
  * full screen
  */
@@ -270,6 +284,35 @@ if (typeof(Fabrik) === "undefined") {
 		Fabrik.blocks[blockid] = block;
 		Fabrik.fireEvent('fabrik.block.added', [block, blockid]);
 	};
+	
+	/**
+	 * Search for a block
+	 * 
+	 * @param   string  blockid  Block id 
+	 * @param   bool    exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+	 * 
+	 * @return  mixed  false if not found | Fabrik block 
+	 */
+	Fabrik.getBlock = function (blockid, exact) {
+		exact = exact ? exact : false;
+		if (Fabrik.blocks[blockid] !== undefined) {
+			
+			// Exact match
+			return Fabrik.blocks[blockid];
+		} else {
+			if (exact) {
+				return false;
+			}
+			// Say we're editing a form (blockid = form_1_2) - but have simply asked for form_1
+			var keys = Object.keys(Fabrik.blocks),
+			i = keys.searchFor(blockid);
+			if (i === -1) {
+				return false;
+			}
+			return Fabrik.blocks[keys[i]];
+		}
+	};
+
 	document.addEvent('click:relay(.fabrik_delete a, .fabrik_action a.delete, .btn.delete)', function (e, target) {
 		if (e.rightClick) {
 			return;
