@@ -36,6 +36,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	 * Build the select list which enables users to determine how the search is performed
 	 *
 	 * @param   array  $type  Selected search type
+	 *
 	 * @return mixed
 	 */
 	protected function searchSelectList($type)
@@ -63,6 +64,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 			$options[] = JHtml::_('select.option', 'geocode', JText::_('PLG_VIEW_RADIUS_GEOCODE'));
 		}
 		$selectName = 'radius_search_type' . $this->renderOrder . '[]';
+		echo" type= ";print_r($type);
 		$select = JHtml::_('select.genericlist', $options, $selectName, '', 'value', 'text', $type[0]);
 		return $select;
 	}
@@ -156,7 +158,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$str .=	'</tbody>
 		</table>';
 		$str .= '<div style="padding-top:5px;float:right">';
-		$str .= '<input type="button" class="btn btn-link cancel" value="' . JText::_('COM_FABRIK_CANCEL') . '" /> ';
+		$str .= '<input type="button" class="button btn btn-link cancel" value="' . JText::_('COM_FABRIK_CANCEL') . '" /> ';
 		$str .= '<input type="button" name="filter" value="Go" class="fabrik_filter_submit button btn btn-primary"></div>';
 		$str .= '</div>';
 		$str .= '<input type="hidden" name="radius_prefilter" value="1" />';
@@ -178,7 +180,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	/**
 	 * Create the geocode widget to determine search center.
 	 *
-	 * @param   array  $type     Search type
+	 * @param   array  $type  Search type
 	 *
 	 * @since   3.0.8
 	 *

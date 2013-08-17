@@ -156,7 +156,10 @@ var FbListRadiusSearch = new Class({
 				select.addEvent('change', function (e) {
 					this.toggleFields(e);
 				}.bind(this));
-				
+
+				// Load the selected search view
+				select.fireEvent('change', new Event.Mock(select, 'change'));
+
 				this.listform.getElements('input.cancel').addEvent('click', function () {
 					this.win.close();
 				}.bind(this));
@@ -307,8 +310,11 @@ var FbListRadiusSearch = new Class({
 
 	toggleFields: function (e) {
 		var c = e.target.getParent('.radius_search_options');
-
-		switch (e.target.get('value')) {
+		var v = e.target.get('value');
+		if (typeOf(v) === 'array') {
+			v = v[0];
+		}
+		switch (v) {
 		case 'latlon':
 			c.getElement('.radius_search_place_container').hide();
 			c.getElement('.radius_search_coords_container').show();
