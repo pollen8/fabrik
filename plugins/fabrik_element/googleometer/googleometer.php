@@ -58,13 +58,9 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$range = $this->getRange();
 		$fullName = $this->getDataElementFullName();
-		if ($input->get('task') === 'details')
-		{
-			$data = $data[$fullName];
-			$str = $this->_renderListData($data, $range);
-			return $str;
-		}
-		return '';
+		$data = $data[$fullName];
+		$str = $this->_renderListData($data, $range);
+		return $str;
 	}
 
 	/**
@@ -104,14 +100,14 @@ class PlgFabrik_ElementGoogleometer extends PlgFabrik_Element
 	private function getRange()
 	{
 		$listModel = $this->getlistModel();
-		$fabrikdb = $listModel->getDb();
-		$db = FabrikWorker::getDbo();
+		$db = $listModel->getDb();
 		$element = $this->getDataElement();
-		$elementShortName = $element->getElement()->name;
-
-		$fabrikdb->setQuery("SELECT MIN(`$elementShortName`) AS min, MAX(`$elementShortName`) AS max FROM " . $listModel->getTable()->db_table_name);
-		$range = $fabrikdb->loadObject();
-		$fullName = $element->getFullName();
+		$name = $db->quoteName($element->getElement()->name);
+		$query = $db->getQuery(true);
+		$query->select('MIN(' . $name . ') AS min, MAX(' . $name . ') AS max')
+		->from($listModel->getTable()->db_table_name);
+		$db->setQuery($query);
+		$range = $db->loadObject();
 		return $range;
 	}
 
