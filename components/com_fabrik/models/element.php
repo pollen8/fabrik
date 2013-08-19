@@ -1278,13 +1278,16 @@ class PlgFabrik_Element extends FabrikPlugin
 			$values = JArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
-			if ((is_array($values) && empty($values)) || $values === '')
+			if (JArrayHelper::getValue($opts, 'use_querystring', true))
 			{
-				// Trying to avoid errors if value is an array
-				$values = $input->get($name, null, 'array');
-				if (is_null($values))
+				if ((is_array($values) && empty($values)) || $values === '')
 				{
-					$values = $input->get($name, '', 'string');
+					// Trying to avoid errors if value is an array
+					$values = $input->get($name, null, 'array');
+					if (is_null($values) || (count($values) === 1 && $values[0] == ''))
+					{
+						$values = $input->get($name, '', 'string');
+					}
 				}
 			}
 			if ($groupRepeat)

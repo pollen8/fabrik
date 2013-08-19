@@ -2012,7 +2012,7 @@ class FabrikFEModelForm extends FabModelForm
 					$this->errors[$elName][$c] = array();
 
 					// $$$ rob $this->formData was $_POST, but failed to get anything for calculation elements in php 5.2.1
-					$form_data = $elementModel->getValue($this->formData, $c, array('runplugins' => 0, 'use_default' => false));
+					$form_data = $elementModel->getValue($this->formData, $c, array('runplugins' => 0, 'use_default' => false, 'use_querystring' => false));
 					if (get_magic_quotes_gpc())
 					{
 						if (is_array($form_data))
