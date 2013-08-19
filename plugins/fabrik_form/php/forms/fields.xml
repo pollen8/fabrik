@@ -33,6 +33,7 @@
 			
 			<field name="curl_code"
 		      	type="fabrikeditor"
+		      	width="100"
 				mode="php"
 				description="PLG_FORM_PHP_CODE_DESC"
 				label="PLG_FORM_PHP_CODE_LABEL"
