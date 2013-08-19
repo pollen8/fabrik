@@ -2129,7 +2129,6 @@ class FabrikFEModelList extends JModelForm
 		$input = $app->input;
 		JDEBUG ? $profiler->mark('buildQuery: start') : null;
 		$query = array();
-		$this->mergeQuery = '';
 		$table = $this->getTable();
 		if ($this->mergeJoinedData())
 		{
@@ -2259,7 +2258,6 @@ class FabrikFEModelList extends JModelForm
 			// Can't limit the query here as this gives incorrect _data array.
 			// $db->setQuery($squery, $this->limitStart, $this->limitLength);
 			$db->setQuery($squery);
-			$this->mergeQuery = $db->getQuery();
 			FabrikHelperHTML::debug($db->getQuery(), 'table:mergeJoinedData get ids');
 			$ids = array();
 			$idRows = $db->loadObjectList();
@@ -2275,7 +2273,7 @@ class FabrikFEModelList extends JModelForm
 			$mainKeys = array_slice(array_unique($mainKeys), $this->limitStart, $this->limitLength);
 			/**
 			 * $$$ rob get an array containing the PRIMARY key values for each joined tables data.
-			 * Stop as soon as we have a set of ids totaling the sum of records contained in $this->mergeQuery / $idRows
+			 * Stop as soon as we have a set of ids totaling the sum of records contained in $idRows
 			*/
 
 			while (count($ids) < $maxPossibleIds && $lookupC >= 0)
