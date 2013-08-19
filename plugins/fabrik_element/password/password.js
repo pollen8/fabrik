@@ -17,6 +17,10 @@ var FbPassword = new Class({
 		if (!this.options.editable) {
 			return;
 		}
+		this.ini();
+	},
+	
+	ini: function () {
 		if (this.element) {
 			this.element.addEvent('keyup', function (e) {
 				this.passwordChanged(e);
@@ -35,6 +39,12 @@ var FbPassword = new Class({
 
 	callvalidation: function (e) {
 		this.form.doElementValidation(e, false, '_check');
+	},
+	
+	cloned: function (c) {
+		console.log('cloned');
+		this.parent(c);
+		this.ini();
 	},
 
 	passwordChanged: function () {
@@ -87,7 +97,6 @@ var FbPassword = new Class({
 	},
 
 	getConfirmationField: function () {
-		var name = this.element.name + '_check';
-		return this.element.getParent('.fabrikElement').getElement('input[name=' + name + ']');
+		return this.getContainer().getElement('input[name*=check]');
 	}
 });
