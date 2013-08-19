@@ -529,7 +529,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$params = $this->getParams();
-		if ((int) $params->get('icon_folder', 0) === 0)
+
+		$iconFile = $params->get('icon_file', '');
+		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
 		{
 			$this->iconsSet = false;
 			return $data;
@@ -541,13 +543,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 
-		/**
-		 * Jaanus added this and following if/else; sometimes we need permanent image
-		 * (e.g logo of the website where the link always points, like Wikipedia's W)
-		 */
-		$iconfile = $params->get('icon_file', '');
-
-		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
+		$cleanData = $iconFile === '' ? FabrikString::clean(strip_tags($data)) : $iconFile;
 		foreach ($this->imageExtensions as $ex)
 		{
 			$f = JPath::clean($cleanData . '.' . $ex);
@@ -583,24 +579,30 @@ class PlgFabrik_Element extends FabrikPlugin
 					$data = htmlspecialchars($data, ENT_QUOTES);
 					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 				}
-				elseif (!empty($iconfile))
-				{
-					/**
-					 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
-					 * we'll need to replace the text in the link with the image
-					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
-					 */
 
-					if (class_exists('DOMDocument') && $as->length)
-					{
-						$img = $html->createElement('img');
-						$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
-						$as->item(0)->nodeValue = '';
-						$as->item(0)->appendChild($img);
-						return $html->saveHTML();
-					}
-				}
 				return $img;
+			}
+		}
+		/**
+		 * Don't think we need this any more, as it's now handled above
+		 */
+		//if (!empty($iconFilile))
+		if (false)
+		{
+			/**
+			 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+			 * we'll need to replace the text in the link with the image
+			 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+			 */
+
+			if (class_exists('DOMDocument') && $as->length)
+			{
+				$img = $html->createElement('img');
+				$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+				$as->item(0)->nodeValue = '';
+				$as->item(0)->appendChild($img);
+				$this->iconsSet = true;
+				return $html->saveHTML();
 			}
 		}
 		$this->iconsSet = false;

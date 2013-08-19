@@ -360,7 +360,7 @@ var FbElement =  new Class({
 	 */
 	tips: function () {
 		return Fabrik.tips.elements.filter(function (t) {
-			if (t === this.getContainer()) {
+			if (t === this.getContainer() || t.getParent() === this.getContainer()) {
 				return true;
 			}
 		}.bind(this));

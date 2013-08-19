@@ -180,6 +180,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $value === '')
 			{
+				/**
+				 * Why are we using .= here, but nowhere else?
+				 */
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
 			}
