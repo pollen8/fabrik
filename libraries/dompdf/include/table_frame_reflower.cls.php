@@ -4,6 +4,7 @@
  * @link    http://www.dompdf.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: table_frame_reflower.cls.php 465 2012-01-30 21:58:11Z fabien.menager $
  */
 
 /**
@@ -13,12 +14,6 @@
  * @package dompdf
  */
 class Table_Frame_Reflower extends Frame_Reflower {
-  /**
-   * Frame for this reflower
-   *
-   * @var Table_Frame_Decorator
-   */
-  protected $_frame;
 
   /**
    * Cache of results between call to get_min_max_width and assign_widths
@@ -152,15 +147,12 @@ class Table_Frame_Reflower extends Frame_Reflower {
       //
       // 4. Both absolute and percentage widths have been specified.
 
-      $increment = 0;
-
       // Case 1:
       if ( $absolute_used == 0 && $percent_used == 0 ) {
         $increment = $width - $min_width;
 
-        foreach (array_keys($columns) as $i) {
+        foreach (array_keys($columns) as $i)
           $cellmap->set_column_width($i, $columns[$i]["min-width"] + $increment * ($columns[$i]["max-width"] / $max_width));
-        }
         return;
       }
 
@@ -363,10 +355,7 @@ class Table_Frame_Reflower extends Frame_Reflower {
   }
   //........................................................................
 
-  /**
-   * @param Block_Frame_Decorator $block
-   */
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(Frame_Decorator $block = null) {
     /**
      * @var Table_Frame_Decorator
      */

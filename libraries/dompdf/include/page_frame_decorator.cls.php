@@ -4,6 +4,7 @@
  * @link    http://www.dompdf.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: page_frame_decorator.cls.php 457 2012-01-22 11:48:20Z fabien.menager $
  */
 
 /**
@@ -54,8 +55,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
   /**
    * Class constructor
    *
-   * @param Frame  $frame the frame to decorate
-   * @param DOMPDF $dompdf
+   * @param Frame $frame the frame to decorate
    */
   function __construct(Frame $frame, DOMPDF $dompdf) {
     parent::__construct($frame, $dompdf);
@@ -152,7 +152,7 @@ class Page_Frame_Decorator extends Frame_Decorator {
       
     // Skip check if page is already split
     if ( $this->_page_full )
-      return null;
+      return;
 
     $block_types = array("block", "list-item", "table", "inline");
     $page_breaks = array("always", "left", "right");
@@ -501,11 +501,6 @@ class Page_Frame_Decorator extends Frame_Decorator {
         else if ( !$next->is_table() && $iter->is_table() )
           $this->_in_table--;
 
-        // Avoid bug with whitespace after blocks
-        while ( $next = $iter->get_last_child() ) {
-          // Already selected last child, do nothing more
-        }
-
         $iter = $next;
         $flg = false;
         continue;
@@ -554,23 +549,21 @@ class Page_Frame_Decorator extends Frame_Decorator {
 
   //........................................................................
 
-  function split(Frame $frame = null, $force_pagebreak = false) {
+  function split($frame = null, $force_pagebreak = false) {
     // Do nothing
   }
-
+  
   /**
    * Add a floating frame
-   *
-   * @param Frame $frame
-   *
-   * @return void
+   * 
+   * @param $child Frame
    */
   function add_floating_frame(Frame $frame) {
     array_unshift($this->_floating_frames, $frame);
   }
   
   /**
-   * @return Frame[]
+   * @return array
    */
   function get_floating_frames() { 
     return $this->_floating_frames; 
