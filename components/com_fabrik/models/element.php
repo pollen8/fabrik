@@ -1299,7 +1299,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
 			if ((is_array($values) && empty($values)) || $values === '')
 			{
-				$values = $input->get($name, '', 'string');
+				// Trying to avoid errors if value is an array
+				$values = $input->get($name, null, 'array');
+				if (is_null($values))
+				{
+					$values = $input->get($name, '', 'string');
+				}
 			}
 			if ($groupRepeat)
 			{
