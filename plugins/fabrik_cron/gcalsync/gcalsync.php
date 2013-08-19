@@ -147,6 +147,11 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			$path = JPATH_SITE . '/libraries';
 			set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 			$path = get_include_path();
+			if (!file_exists(JPATH_SITE . '/libraries/Zend/Loader.php'))
+			{
+				throw new RuntimeException('Please install the Zend gdata from library http://framework.zend.com/download/gdata', 500);
+				return;
+			}
 			require_once 'Zend/Loader.php';
 			Zend_Loader::loadClass('Zend_Gdata');
 
