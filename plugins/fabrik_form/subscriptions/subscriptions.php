@@ -41,6 +41,17 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	 */
 	protected $billingCycle = null;
 
+
+	public function __construct(&$subject, $config = array())
+	{
+		// Include the JLog class.
+		jimport('joomla.log.log');
+
+		// Add the logger.
+		JLog::addLogger(array('text_file' => 'fabrik.subs.log.php'));
+		parent::__construct($subject, $config);
+	}
+
 	/**
 	 * Get the buisiness email either based on the accountemail field or the value
 	 * found in the selected accoutnemail_element
@@ -550,11 +561,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$config = JFactory::getConfig();
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		$log = FabTable::getInstance('log', 'FabrikTable');
-		$log->referring_url = $_SERVER['REQUEST_URI'];
-		$log->message_type = 'fabrik.ipn.start';
-		$log->message = json_encode($_REQUEST);
-		$log->store();
+		JLog::add($_SERVER['REQUEST_URI'] . ' ' . http_build_query($_REQUEST), JLog::INFO, 'fabrik.ipn.start');
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
 		$custom = $input->get('custom', '', 'string');
@@ -597,8 +604,10 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		foreach ($request as $key => $value)
 		{
-			$value = urlencode(stripslashes($value));
-			$req .= '&' . $key . '=' . $value;
+			if ($key !== 'fakeit') {
+				$value = urlencode(stripslashes($value));
+				$req .= '&' . $key . '=' . $value;
+			}
 		}
 
 		$sandBox = $input->get('test_ipn') == 1;
@@ -625,18 +634,22 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$status = true;
 		$res = 'IPN never fired';
 		$err_msg = '';
+		$err_title = '';
 		if (empty($formid) || empty($invoiceId))
 		{
-			$status = 'form.subscriptions.ipnfailure.custom_error';
+			$status = false;
+			$err_title = 'form.subscriptions.ipnfailure.custom_error';
 			$err_msg = "formid or rowid empty in custom: $custom";
 		}
 		else
 		{
+
 			// @TODO implement a curl alternative as fsockopen is not always available
 			$fp = fsockopen($subscriptionsurl, 443, $errno, $errstr, 30);
 			if (!$fp)
 			{
-				$status = 'form.subscriptions.ipnfailure.fsock_error';
+				$status = false;
+				$err_title = 'form.subscriptions.ipnfailure.fsock_error';
 				$err_msg = "fsock error: $errno;$errstr";
 			}
 			else
@@ -674,7 +687,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 								{
 									if ($payment_status != 'Reversed' && $payment_status != 'Refunded')
 									{
-										$status = 'form.subscriptions.ipnfailure.txn_seen';
+										$status = false;
+										$err_title = 'form.subscriptions.ipnfailure.txn_seen';
 										$err_msg = "transaction id already seen as Completed, new payment status makes no sense: $txn_id, $payment_status"
 										. (string) $query;
 									}
@@ -683,7 +697,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 								{
 									if ($payment_status != 'Canceled_Reversal')
 									{
-										$status = 'form.subscriptions.ipnfailure.txn_seen';
+										$status = false;
+										$err_title = 'form.subscriptions.ipnfailure.txn_seen';
 										$err_msg = "transaction id already seen as Reversed, new payment status makes no sense: $txn_id, $payment_status";
 									}
 								}
@@ -739,7 +754,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 									$db->setQuery($query);
 									if (!$db->execute())
 									{
-										$status = 'form.subscriptions.ipnfailure.query_error';
+										$status = false;
+										$err_title = 'form.subscriptions.ipnfailure.query_error';
 										$err_msg = 'sql query error: ' . $db->getErrorMsg();
 									}
 								}
@@ -748,7 +764,8 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 					}
 					elseif (JString::strcmp($res, "INVALID") == 0)
 					{
-						$status = 'form.subscriptions.ipnfailure.invalid';
+						$status = false;
+						$err_title = 'form.subscriptions.ipnfailure.invalid';
 						$err_msg = 'subscriptions postback failed with INVALID';
 					}
 				}
@@ -763,19 +780,21 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$emailtext .= $key . " = " . $value . "\n\n";
 		}
-		$log->message = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res
+		$logLevel = JLog::INFO;
+		$logMessage = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res
 		. "\n//////////////\n" . $req . "\n//////////////\n";
 		if ($status == false)
 		{
+			$logLevel = JLog::CRITICAL;
 			$subject = $config->get('sitename') . ": Error with Fabrik Subscriptions IPN";
-			$log->message_type = $status;
-			$log->message .= $err_msg;
+			$logMessageTitle = $err_title;
+			$logMessage .= $err_msg;
 			$payer_emailtext = "There was an error processing your Subscriptions payment.  The administrator of this site has been informed.";
 		}
 		else
 		{
 			$subject = $config->get('sitename') . ': IPN ' . $payment_status;
-			$log->message_type = 'form.subscriptions.ipn.' . $payment_status;
+			$logMessageTitle = 'form.subscriptions.ipn.' . $payment_status;
 
 			$payer_subject = "Subscriptions success";
 			$payer_emailtext = "Your Subscriptions payment was succesfully processed.  The Subscriptions transaction id was $txn_id";
@@ -792,21 +811,21 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		if (isset($ipn_function))
 		{
-			$log->message .= "\n IPN custom function = $ipn_function";
+			$logMessage .= "\n IPN custom function = $ipn_function";
 		}
 		else
 		{
-			$log->message .= "\n No IPN custom function";
+			$logMessage .= "\n No IPN custom function";
 		}
 		if (isset($txn_type_function))
 		{
-			$log->message .= "\n IPN custom transaction function = $txn_type_function";
+			$logMessage .= "\n IPN custom transaction function = $txn_type_function";
 		}
 		else
 		{
-			$log->message .= "\n No IPN custom transaction function ";
+			$logMessage .= "\n No IPN custom transaction function ";
 		}
-		$log->store();
+		JLog::add($logMessage, $logLevel, $logMessageTitle);
 		jexit();
 	}
 

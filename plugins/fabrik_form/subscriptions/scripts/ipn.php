@@ -30,6 +30,9 @@ class FabrikSubscriptionsIPN
 	{
 		// Include the JLog class.
 		jimport('joomla.log.log');
+
+		// Add the logger.
+		JLog::addLogger(array('text_file' => 'fabrik.subs.log.php'));
 	}
 
 	/**
@@ -132,11 +135,14 @@ class FabrikSubscriptionsIPN
 		$msgbuyer = 'Your ' . $type . ' on %s has successfully completed. (Paypal transaction ID: %s)<br /><br />%s';
 		$msgbuyer = sprintf($msgbuyer, $siteName, $txn_id, $siteName);
 		$msgbuyer = html_entity_decode($msgbuyer, ENT_QUOTES);
+
+		JLog::add('fabrik.ipn.activateSubscription', JLog::INFO, $payer_email . ', ' . $msgbuyer);
 		$mail->sendMail($mailFrom, $fromName, $payer_email, $subject, $msgbuyer, true);
 
 		$msgseller = $type . ' success on %s. (Paypal transaction ID: %s)<br /><br />%s';
 		$msgseller = sprintf($msgseller, $siteName, $txn_id, $siteName);
 		$msgseller = html_entity_decode($msgseller, ENT_QUOTES);
+
 
 		$mail->sendMail($mailFrom, $fromName, $receiver_email, $subject, $msgseller, true);
 		$this->expireOldSubs($subUser->get('id'));
@@ -176,6 +182,7 @@ class FabrikSubscriptionsIPN
 	 */
 	protected function expireOldSubs($userid)
 	{
+		JLog::add('fabrik.ipn.expireOldSubs.start', JLog::INFO, 'expired old subs for ' . $subUser->get('id'));
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -202,7 +209,7 @@ class FabrikSubscriptionsIPN
 		$msg = new stdClass;
 		$msg->subscriptionids = $rows;
 		$msg = json_encode($msg);
-		$this->log('fabrik.ipn.expireOldSubs', $msg);
+		$this->log('fabrik.ipn.expireOldSubs.end', $msg);
 	}
 
 	/**
@@ -605,12 +612,6 @@ class FabrikSubscriptionsIPN
 		}
 		$subject = 'fabrik.ipn.fabrikar_subs error';
 		JFactory::getMailer()->sendMail($MailFrom, $FromName, $to, $subject, $body);
-
-		// Include the JLog class.
-		jimport('joomla.log.log');
-
-		// Add the logger.
-		JLog::addLogger(array('text_file' => 'fabrik.subs.log.php'));
 
 		// Start logging...
 		JLog::add($body, JLog::ERROR, $subject);
