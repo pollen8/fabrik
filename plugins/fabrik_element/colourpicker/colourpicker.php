@@ -39,8 +39,8 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -59,8 +59,8 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	/**
 	 * Manupulates posted form data for insertion into database
 	 *
-	 * @param   mixed  $val   this elements posted form data
-	 * @param   array  $data  posted form data
+	 * @param   mixed  $val   This elements posted form data
+	 * @param   array  $data  Posted form data
 	 *
 	 * @return  mixed
 	 */
@@ -110,10 +110,27 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	}
 
 	/**
+	 * Determines the value for the element in the form view. Ensure its set to be a r,g,b string
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
+	 * @param   array  $opts           Options, 'raw' = 1/0 use raw value
+	 *
+	 * @return  string	value
+	 */
+
+	public function getValue($data, $repeatCounter = 0, $opts = array())
+	{
+		$value = parent::getValue($data, $repeatCounter, $opts);
+		$value = strstr($value, '#') ? FabrikString::hex2rgb($value) : $value;
+		return $value;
+	}
+
+	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  string	elements html
 	 */
@@ -125,9 +142,8 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 		$value = $this->getValue($data, $repeatCounter);
 		$str = array();
 		$str[] = '<div class="fabrikSubElementContainer">';
-		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id
-			. '" /><div class="colourpicker_bgoutput img-rounded " style="float:left;width:25px;height:25px;background-color:rgb('
-			. $value . ')"></div>';
+		$str[] = '<input class="fabrikinput" type="hidden" name="' . $name . '" id="' . $id
+			. '" /><div class="colourpicker_bgoutput img-rounded " style="float:left;width:25px;height:25px;background-color:rgb(' . $value . ')"></div>';
 		if ($this->isEditable())
 		{
 			$str[] = '<div class="colourPickerBackground colourpicker-widget fabrikWindow" style="display:none;min-width:350px;min-height:250px;">';
@@ -149,12 +165,12 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 			$str[] = '<div class="row-fluid">';
 			$str[] = '  <div class="span7">';
 			$str[] = '    <ul class="nav nav-tabs">';
-			$str[] = '      <li class="active"><a href="#' . $name . '-picker" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_PICKER') . '</a></li>';
-			$str[] = '      <li><a href="#' . $name . '-swatch" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_SWATCH') . '</a></li>';
+			$str[] = '      <li class="active"><a href="#' . $id . '-picker" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_PICKER') . '</a></li>';
+			$str[] = '      <li><a href="#' . $id . '-swatch" data-toggle="tab">' . JText::_('PLG_FABRIK_COLOURPICKER_SWATCH') . '</a></li>';
 			$str[] = '    </ul>';
 			$str[] = '    <div class="tab-content">';
-			$str[] = '      <div class="tab-pane active" id="' . $name . '-picker"></div>';
-			$str[] = '      <div class="tab-pane" id="' . $name . '-swatch"></div>';
+			$str[] = '      <div class="tab-pane active" id="' . $id . '-picker"></div>';
+			$str[] = '      <div class="tab-pane" id="' . $id . '-swatch"></div>';
 			$str[] = '    </div>';
 			$str[] = '  </div>';
 			$str[] = '  <div class="span5 sliders" style="margin-top:50px">';
@@ -171,7 +187,7 @@ class PlgFabrik_ElementColourpicker extends PlgFabrik_Element
 	/**
 	 * Get database field description
 	 *
-	 * @return  string  db field type
+	 * @return  string  Bb field type
 	 */
 
 	public function getFieldDescription()

@@ -722,6 +722,18 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$defaultURL = $storage->getFileUrl(str_replace(COM_FABRIK_BASE, '', $params->get('default_image')));
 			$render->output = '<img src="' . $defaultURL . '" alt="image" />';
 		}
+		else
+		{
+			/*
+			 * If a static 'icon file' has been specified, we need to call the main
+			 * element model replaceWithIcons() to make it happen.
+			 */
+			if ($params->get('icon_file', '') !== '')
+			{
+				$listModel = $this->getListModel();
+				$render->output = $this->replaceWithIcons($render->output, 'list', $listModel->getTmpl());
+			}
+		}
 		return $render->output;
 	}
 
@@ -803,6 +815,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$size = $fileSize / 1000;
 			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $size);
 		}
+		/**
+		 * @FIXME - need to check for Amazon S3 storage?
+		 */
 		$filepath = $this->_getFilePath($repeatCounter);
 		jimport('joomla.filesystem.file');
 		if (JFile::exists($filepath))
@@ -813,7 +828,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 				$ok = false;
 			}
 		}
-		$this->_validationErr = implode('<br />', $errors);
+		$this->validationError = implode('<br />', $errors);
 		return $ok;
 	}
 

@@ -99,12 +99,12 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$str = "<input class=\"fabrikinput inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
+		$str[] = '<input class="fabrikinput inputbox ' . $type . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
 		if (!$params->get('timer_readonly'))
 		{
-			$str .= "<input type=\"button\" id=\"{$id}_button\" value=\"" . JText::_('PLG_ELEMENT_TIMER_START') . "\" />";
+			$str[] .= '<button class="btn" id="' . $id . '_button"><i class="icon-time"></i> <span>' .  JText::_('PLG_ELEMENT_TIMER_START') . '</span></button>';
 		}
-		return $str;
+		return implode("\n", $str);
 	}
 
 	/**
