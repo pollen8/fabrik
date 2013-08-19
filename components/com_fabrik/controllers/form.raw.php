@@ -182,8 +182,7 @@ class FabrikControllerForm extends JControllerLegacy
 			return;
 		}
 
-		$msg = $model->showSuccessMsg() ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
-
+		$msg = $model->getSuccessMsg();
 		if ($input->getInt('elid') !== 0)
 		{
 			// Inline edit show the edited element

@@ -1365,6 +1365,19 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get list heading label
+	 *
+	 * @return  string
+	 */
+	public function getListHeading()
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+		return JText::_($label);
+	}
+
+	/**
 	 * Get the element's HTML label
 	 *
 	 * @param   int     $repeatCounter  Group repeat counter
@@ -4436,7 +4449,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$res = sprintf($format, $res);
 			}
 			$o->value = $res;
-			$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+			$label = $this->getListHeading();
 			$o->elLabel = $label;
 			$o->calLabel = $calcLabel;
 			$o->label = 'calc';
@@ -4697,10 +4710,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$res[] = $split ? '<dl>' : '<ul class="fabrikRepeatData">';
 		$l = '<span class="calclabel">' . $calcLabel . '</span>';
 		$res[] = $split ? '<dt>' . $l . '</dt>' : '<li>' . $l;
-		$params = $this->getParams();
 		$element = $this->getElement();
 		$format = $this->getFormatString();
-		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+		$label = $this->getListHeading();
 		foreach ($results as $key => $o)
 		{
 			$o->label = ($o->label == 'calc') ? '' : $o->label;

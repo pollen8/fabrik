@@ -965,6 +965,7 @@ class FabrikFEModelGroup extends FabModel
 			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
+		$group->title = JText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
@@ -972,6 +973,18 @@ class FabrikFEModelGroup extends FabModel
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
+		$group->intro = $text = FabrikString::translate($params->get('intro'));
+		$group->outro = JText::_($params->get('outro'));
+		$group->columns = $params->get('group_columns', 1);
+		$group->splitPage = $params->get('split_page', 0);
+		if ($this->canRepeat())
+		{
+			$group->tmpl = $params->get('repeat_template', 'repeatgroup');
+		}
+		else
+		{
+			$group->tmpl = 'group';
+		}
 		return $group;
 	}
 

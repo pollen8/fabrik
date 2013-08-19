@@ -1111,6 +1111,13 @@ class FabrikFEModelList extends JModelForm
 
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
 							$rawCol = $col . '_raw';
+							//$trans_tbl =get_html_translation_table (HTML_ENTITIES );
+							//echo "<pre>";print_r($trans_tbl);exit;
+
+							$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
+
+							//$data[$i]->$col = htmlentities(iconv('UTF-8', 'UTF-8//IGNORE', '<p>home page  Angoulême</p>'), ENT_QUOTES, 'UTF-8');
+
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
 							 * the element model hasn't explicitly done anything with it (except mayeb unsetting it?)
 							* For instance, the calc element needs to set _raw.  For now, I changed $thisRow above to
@@ -1121,6 +1128,7 @@ class FabrikFEModelList extends JModelForm
 							if (!array_key_exists($rawCol, $thisRow))
 							{
 								$data[$i]->$rawCol = $elementModel->renderRawListData($coldata, $thisRow);
+								$data[$i]->$rawCol = htmlspecialchars_decode(htmlentities($data[$i]->$rawCol, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
 							}
 						}
 					}
@@ -5624,8 +5632,7 @@ class FabrikFEModelList extends JModelForm
 						$o->filter = $elementModel->getFilter($counter, true);
 						$fscript .= $elementModel->filterJS(true, $container);
 						$o->required = $elementModel->getParams()->get('filter_required');
-						$o->label = $elementModel->getParams()->get('alt_list_heading') == '' ? $element->label
-						: $elementModel->getParams()->get('alt_list_heading');
+						$o->label = $elementModel->getListHeading();
 						$aFilters[] = $o;
 						$counter++;
 					}
@@ -6074,11 +6081,7 @@ class FabrikFEModelList extends JModelForm
 				$compsitKey = !empty($showInList) ? array_search($element->id, $showInList) . ':' . $key : $key;
 				$orderKey = $elementModel->getOrderbyFullName(false);
 				$elementParams = $elementModel->getParams();
-				$label = $elementParams->get('alt_list_heading');
-				if ($label == '')
-				{
-					$label = $element->label;
-				}
+				$label = $elementModel->getListHeading();
 				$label = $w->parseMessageForPlaceHolder($label, array());
 				if ($elementParams->get('can_order') == '1' && $this->outputFormat != 'csv')
 				{

@@ -468,7 +468,6 @@ class FabrikViewListBase extends JViewLegacy
 		$this->tablePicker = $app->isAdmin() && $app->input->get('format') !== 'pdf' ? FabrikHelperHTML::tableList($this->table->id) : '';
 
 		$this->buttons();
-
 		$this->pluginTopButtons = $model->getPluginTopButtons();
 	}
 

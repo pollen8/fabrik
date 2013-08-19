@@ -283,7 +283,8 @@ class FabrikString extends JString
 
 			// Replace accented characters with ascii equivalent e.g. é => e
 			$str1 = (@iconv($fromEnc, $toEnc, $str));
-			if($str1) {
+			if ($str1)
+			{
 				$str = $str1;
 			}
 			$str = (str_replace("'", '', $str));
@@ -520,9 +521,9 @@ class FabrikString extends JString
 
 		if (strlen($hex) === 3)
 		{
-			$r = hexdec(substr($hex, 0, 1).substr($hex, 0, 1));
-			$g = hexdec(substr($hex, 1, 1).substr($hex, 1, 1));
-			$b = hexdec(substr($hex, 2, 1).substr($hex, 2, 1));
+			$r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+			$g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+			$b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
 		}
 		else
 		{
@@ -531,6 +532,26 @@ class FabrikString extends JString
 			$b = hexdec(substr($hex, 4, 2));
 		}
 		return $r . ',' . $g . ',' . $b;
+	}
+
+	/**
+	 * Translator JText wrapper - removes tags and compares raw text
+	 * so "<p>STRING_TO_TRANLATE</p>" is tranlated even if wrapped in a <p> tag.
+	 *
+	 * @param   string  $text  Text to translate
+	 *
+	 * @return  string
+	 */
+
+	public static function translate($text)
+	{
+		$plain = strip_tags($text);
+		$translated = JText::_($plain);
+		if ($translated !== $plain)
+		{
+			$text = str_replace($plain, $translated, $text);
+		}
+		return $text;
 	}
 
 }

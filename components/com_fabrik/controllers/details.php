@@ -210,8 +210,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$listModel = $model->getListModel();
 		$listModel->set('_table', null);
 
-		$msg = $model->showSuccessMsg() ? $model->getParams()->get('submit-success-msg', JText::_('COM_FABRIK_RECORD_ADDED_UPDATED')) : '';
-
+		$msg = $model->getSuccessMsg();
 		if ($input->getInt('packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
