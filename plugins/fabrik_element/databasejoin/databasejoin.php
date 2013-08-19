@@ -819,14 +819,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$whereaccess = $params->get('database_join_where_access', 26);
-		if ($this->mustApplyWhere($whereaccess, $element->id) && $incWhere)
-		{
-			$where = $params->get('database_join_where_sql');
-		}
-		else
-		{
-			$where = '';
-		}
+		$where = ($this->mustApplyWhere($whereaccess, $element->id) && $incWhere) ? $params->get('database_join_where_sql') : '';
 		$join = $this->getJoin();
 		$thisTableAlias = is_null($thisTableAlias) ? $join->table_join_alias : $thisTableAlias;
 
@@ -857,7 +850,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		$where = str_replace("{thistable}", $thisTableAlias, $where);
 		$w = new FabrikWorker;
+		$lang = JFactory::getLanguage();
 		$data = is_array($data) ? $data : array();
+		if (!isset($data['lang']))
+		{
+			$data['lang'] = $lang->getTag();
+		}
 		$where = $w->parseMessageForPlaceHolder($where, $data, false);
 		if (!$query)
 		{
