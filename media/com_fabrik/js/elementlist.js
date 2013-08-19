@@ -52,7 +52,10 @@ var FbElementList =  new Class({
 			c = this.form.form;
 
 			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
-			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
+			/* Changed to name*= - http://www.fabrikar.com/forums/index.php?threads/a-recent-github-update-broke-javascript-actions-for-radio-buttons.35451/
+			 * Wasn't picking up joined elements 
+			 */
+			var delegate = action + ':relay(input[type=' + this.type + '][name*=' + this.options.fullName + '])';
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
@@ -60,7 +63,6 @@ var FbElementList =  new Class({
 			var uid = delegate + js.replace(r, '');
 			if (typeOf(this.form.events[action][uid]) === 'null') {
 				this.form.events[action][uid] = true;
-				
 				c.addEvent(delegate, function (event, target) {
 					// As we are delegating the event, and reference to 'this' in the js will refer to the first element
 					// When in a repeat group we want to replace that with a reference to the current element.

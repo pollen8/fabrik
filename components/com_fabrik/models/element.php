@@ -4888,7 +4888,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 		$opts->label = $element->label;
 		$opts->defaultVal = $this->getDefaultValue($data);
 		$opts->inRepeatGroup = $this->getGroup()->canRepeat() == 1;
-		$opts->fullName = $this->getFullName(true, false);
+		$opts->fullName = $this->getFullName(false, true, false);
 		$validationEls = array();
 		$validations = $this->getValidations();
 		if (!empty($validations) && $this->isEditable())
