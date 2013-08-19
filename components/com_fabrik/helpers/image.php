@@ -245,6 +245,12 @@ class Fabimage
 		}
 		$cacheFile = $folder . $file;
 
+		/**
+		 * $$$ @FIXME we may need to find something other than file_get_contents()
+		 * to use for this, as it requires allow_url_fopen to be enabled in PHP, which
+		 * most shared hosts don't allow.
+		 */
+
 		// Check for cached version
 		if (JFile::exists($cacheFile))
 		{
