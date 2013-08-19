@@ -3211,6 +3211,51 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Build a mock array of the data as it would be submitted by the form
+	 *
+	 * @return  array
+	 */
+	public function mockPostData()
+	{
+		$data = $this->getData();
+		if (!array_key_exists('join', $data))
+		{
+			$data['join'] = array();
+		}
+
+		$elements = $this->getListModel()->getElements();
+
+		// Shunt db join element data in to their own join array
+		foreach ($elements as $element)
+		{
+			if ($element->isJoin())
+			{
+				$join = $element->getJoin();
+				if (!array_key_exists($join->id, $data['join']))
+				{
+					$data['join'][$join->id] = array();
+				}
+
+				$name = $element->getFullName(false, true, false);
+				$idname = $element->getFullName(false, true, false) . '_id';
+				$rawname = $element->getFullName(false, true, false) . '_raw';
+
+				if (array_key_exists($name, $data))
+				{
+					$values = explode(GROUPSPLITTER, $data[$idname]);
+					$data['join'][$join->id][$name] = $values;
+					$pk = FabrikString::safeColNameToArrayKey($join->params->get('pk'));
+					$data['join'][$join->id][$pk] = array_fill(0, count($values), 0);
+					unset($data[$name]);
+					unset($data[$idname]);
+					unset($data[$rawname]);
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
 	 * Main method to get the data to insert into the form
 	 *
 	 * @return  array  form's data

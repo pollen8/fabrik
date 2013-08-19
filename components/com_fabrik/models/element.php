@@ -5156,7 +5156,7 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	 * @return  object	join table or false if not loaded
 	 */
 
-	protected function getJoin()
+	public function getJoin()
 	{
 		return null;
 	}

@@ -10123,7 +10123,7 @@ $groupBy .= '_raw';
 		{
 			$formModel->_rowId = $id;
 			$formModel->unsetData();
-			$row = $formModel->getData();
+			$row = $formModel->mockPostData();
 			$row['Copy'] = '1';
 			$row['fabrik_copy_from_table'] = '1';
 			$formModel->_formData = $row;
