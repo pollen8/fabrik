@@ -64,7 +64,6 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 			$options[] = JHtml::_('select.option', 'geocode', JText::_('PLG_VIEW_RADIUS_GEOCODE'));
 		}
 		$selectName = 'radius_search_type' . $this->renderOrder . '[]';
-		echo" type= ";print_r($type);
 		$select = JHtml::_('select.genericlist', $options, $selectName, '', 'value', 'text', $type[0]);
 		return $select;
 	}

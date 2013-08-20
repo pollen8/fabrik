@@ -323,7 +323,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	 * @return  object	join table or false if not loaded
 	 */
 
-	protected function getJoin()
+	public function getJoin()
 	{
 		$app = JFactory::getApplication();
 		if (isset($this->join))

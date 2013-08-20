@@ -16,7 +16,8 @@ var FbElement =  new Class({
 		label: '',
 		editable: false,
 		isJoin: false,
-		joinId: 0
+		joinId: 0,
+		fullName: '' // tablename___elementname (regardless of join / repeat etc)
 	},
 	
 	/**
