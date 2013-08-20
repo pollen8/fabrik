@@ -59,38 +59,30 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 
 			return '<textarea name="' . $this->name . '" id="' . $this->id . '"' . $columns . $rows . $class . $disabled . $onchange . $required . '>'
 				. $this->value . '</textarea>';
-
 		}
-		$mode = $this->element['mode'] ? $this->element['mode'] : 'html';
-		$theme = $this->element['theme'] ? $this->element['theme'] : 'clouds';
-		$height = $this->element['height'] ? $this->element['height'] : '200px';
-		$width = $this->element['width'] ? $this->element['width'] : '300px';
+		$mode = $this->element['mode'] ? (string) $this->element['mode'] : 'html';
+		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'crimson_editor';
+		$height = $this->element['height'] ? (string) $this->element['height'] : '200px';
+		$width = $this->element['width'] ? (string) $this->element['width'] : '300px';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 
 		$script = '
 			var MyEditor = ace.edit("' . $this->id . '-ace");
 			MyEditor.setTheme("ace/theme/' . $theme . '");
-   			MyEditor.getSession().setMode("ace/mode/' . $mode . '");
-			window.addEvent("form.save", function () {
-   				if (typeOf(document.id("' . $this->id . '")) !== "null") {
-   					document.id("' . $this->id . '").value = MyEditor.getValue();
-   				}
-   			});
+			MyEditor.getSession().setMode("ace/mode/' . $mode . '");
+			MyEditor.setValue(document.id("' . $this->id . '").value);
+			MyEditor.setAnimatedScroll(true);
+			MyEditor.setBehavioursEnabled(true);
+			MyEditor.setDisplayIndentGuides(true);
+			MyEditor.setHighlightGutterLine(true);
+			MyEditor.setHighlightSelectedWord(true);
+			MyEditor.setShowFoldWidgets(true);
+			MyEditor.setWrapBehavioursEnabled(true);
+			MyEditor.getSession().setUseWrapMode(true);
 			';
 
-		$shim = array();
-		$deps = new stdClass;
-		$deps->deps = array();
-
 		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
-		if ($mode !== 'javascript')
-		{
-			$deps->deps[] = 'fabrik/lib/ace/src-min-noconflict/mode-' . $mode;
-		}
-
-		$shim['fabrik/lib/ace/src-min-noconflict/ace'] = $deps;
-		FabrikHelperHTML::iniRequireJs($shim);
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
