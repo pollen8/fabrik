@@ -127,7 +127,8 @@ $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array) $prefilters['filter-conditions'];
 if (!empty($conditions))
 {
-	$listParams->set('filter-join', $prefilters['filter-join']);
+	// sometimes filter-join isn't set, so avoid PHP notice
+	$listParams->set('filter-join', JArrayHelper::getValue($prefilters, 'filter-join', array()));
 	$listParams->set('filter-fields', $prefilters['filter-fields']);
 	$listParams->set('filter-conditions', $prefilters['filter-conditions']);
 	$listParams->set('filter-value', $prefilters['filter-value']);
