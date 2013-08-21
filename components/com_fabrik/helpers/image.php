@@ -238,6 +238,12 @@ class Fabimage
 	 */
 	public static function cacheRemote($src, $path, $file, $lifeTime = 29)
 	{
+		/**
+		 * $$$ @FIXME we may need to find something other than file_get_contents($src)
+		 * to use for this, as it requires allow_url_fopen to be enabled in PHP to fetch a URL,
+		 * which a lot of shared hosts don't allow.
+		 */
+
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 		if (!JFolder::exists($folder))
 		{
