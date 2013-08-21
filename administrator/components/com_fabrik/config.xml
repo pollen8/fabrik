@@ -58,6 +58,7 @@
 		
 		<field name="enable_single_sorting"
 			default="0"
+			class="radio btn-group"
 			description="COM_FABRIK_ENABLE_SINGLE_ORDERING_DESC"
 			label="COM_FABRIK_ENABLE_SINGLE_ORDERING_LABEL"
 			type="radio">
@@ -67,6 +68,7 @@
 
 		<field name="user_elements_as_related_data"
 			default="0"
+			class="radio btn-group"
 			description="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_DESC"
 			label="COM_FABRIK_USER_ELEMENTS_AS_RELATED_DATA_LABEL"
 			type="radio">
@@ -74,12 +76,13 @@
 				<option value="1">JYES</option>
 		</field>
 		
-		<field name="list_pdf" 
+		<field name="list_pdf"
+			type="radio"
 			default="0"
+			class="radio btn-group"
 			description="COM_FABRIK_FIELD_LIST_PDF_ICON_DESC"
 			label="COM_FABRIK_FIELD_LIST_PDF_ICON_LABEL"
-			menu="hide"
-			type="radio">
+			menu="hide" >
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 		</field>
@@ -355,6 +358,7 @@
 		
 		<field name="tipfx_fadein"
 			default="0"
+			class="radio btn-group"
 			label="COM_FABRIK_TIP_FX_FADEIN_LABEL"
 			description="COM_FABRIK_TIP_FX_FADEIN_DESC"
 			type="radio">
@@ -387,42 +391,82 @@
 	</fieldset>
 
 	<fieldset label="COM_FABRIK_SEF404" name="sef">
-		<field default="0" description="COM_FABRIK_SEF_PREPEND_MENU_TITLE_DESC" label="COM_FABRIK_SEF_PREPEND_MENU_TITLE_LABEL" name="fabrik_sef_prepend_menu_title" type="radio">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+
+		<field name="fabrik_sef_prepend_menu_title"
+			type="radio"
+			default="0"
+			class="radio btn-group"
+			description="COM_FABRIK_SEF_PREPEND_MENU_TITLE_DESC"
+			label="COM_FABRIK_SEF_PREPEND_MENU_TITLE_LABEL" >
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
-		<field default="0" description="COM_FABRIK_SEF_TABLENAME_ON_FORMS_DESC" label="COM_FABRIK_SEF_TABLENAME_ON_FORMS_LABEL" name="fabrik_sef_tablename_on_forms" type="radio" class="radio btn-group">
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
+
+		<field name="fabrik_sef_tablename_on_forms"
+			type="radio"
+			default="0"
+			description="COM_FABRIK_SEF_TABLENAME_ON_FORMS_DESC"
+			label="COM_FABRIK_SEF_TABLENAME_ON_FORMS_LABEL"
+			class="radio btn-group">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
 		</field>
-		<field default="param_id" description="COM_FABRIK_SEF_FORMAT_RECORDS_DESC" label="COM_FABRIK_SEF_FORMAT_RECORDS_LABEL" name="fabrik_sef_format_records" type="list">
-			<option value="param_id">COM_FABRIK_FIELD_ID</option>
-			<option value="id_only">COM_FABRIK_ID_ONLY</option>
-			<option value="id_slug">COM_FABRIK_ID-SLUG</option>
-			<option value="slug_id">COM_FABRIK_SLUG-ID</option>
-			<option value="slug_only">COM_FABRIK_SLUG_ONLY</option>
+
+		<field name="fabrik_sef_format_records"
+			type="list"
+			default="param_id"
+			description="COM_FABRIK_SEF_FORMAT_RECORDS_DESC"
+			label="COM_FABRIK_SEF_FORMAT_RECORDS_LABEL">
+				<option value="param_id">COM_FABRIK_FIELD_ID</option>
+				<option value="id_only">COM_FABRIK_ID_ONLY</option>
+				<option value="id_slug">COM_FABRIK_ID-SLUG</option>
+				<option value="slug_id">COM_FABRIK_SLUG-ID</option>
+				<option value="slug_only">COM_FABRIK_SLUG_ONLY</option>
 		</field>
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_FORM_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_FORM_LABEL" name="fabrik_sef_customtxt_form" type="text"/>
+
+		<field name="fabrik_sef_customtxt_form"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_FORM_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_FORM_LABEL" />
 			
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_NEW_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_NEW_LABEL" name="fabrik_sef_customtxt_new" type="text"/>
+		<field name="fabrik_sef_customtxt_new"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_NEW_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_NEW_LABEL" />
+
+		<field name="fabrik_sef_customtxt_edit"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_EDIT_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_EDIT_LABEL" />
 			
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_EDIT_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_EDIT_LABEL" name="fabrik_sef_customtxt_edit" type="text"/>
+		<field name="fabrik_sef_customtxt_details"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_LABEL" />
 			
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_DETAILS_LABEL" name="fabrik_sef_customtxt_details" type="text"/>
-			
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_OWN_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_OWN_LABEL" name="fabrik_sef_customtxt_own" type="text"/>
-			
-		<field default="param_id" description="COM_FABRIK_SEF_FORMAT_VIZ_DESC" label="COM_FABRIK_SEF_FORMAT_VIZ_LABEL" name="fabrik_sef_format_viz" type="list">
-			<option value="param_id">COM_FABRIK_PARAM_ID</option>
-			<option value="viz-id">COM_FABRIK_VIZ-ID</option>
-			<option value="id-viz">COM_FABRIK_ID-VIZ</option>
-			<option value="label-id">COM_FABRIK_LABEL-ID</option>
-			<option value="id-label">COM_FABRIK_ID-LABEL</option>
-			<option value="label_only">COM_FABRIK_LABEL_ONLY</option>
+		<field name="fabrik_sef_customtxt_own"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_OWN_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_OWN_LABEL" />
+
+		<field name="fabrik_sef_format_viz"
+			type="list"
+			default="param_id"
+			description="COM_FABRIK_SEF_FORMAT_VIZ_DESC"
+			label="COM_FABRIK_SEF_FORMAT_VIZ_LABEL" >
+				<option value="param_id">COM_FABRIK_PARAM_ID</option>
+				<option value="viz-id">COM_FABRIK_VIZ-ID</option>
+				<option value="id-viz">COM_FABRIK_ID-VIZ</option>
+				<option value="label-id">COM_FABRIK_LABEL-ID</option>
+				<option value="id-label">COM_FABRIK_ID-LABEL</option>
+				<option value="label_only">COM_FABRIK_LABEL_ONLY</option>
 		</field>
-		
-		<field description="COM_FABRIK_SEF_CUSTOMTXT_VIZ_DESC" label="COM_FABRIK_SEF_CUSTOMTXT_VIZ_LABEL" name="fabrik_sef_customtxt_viz" type="text"/>
-			
+
+		<field name="fabrik_sef_customtxt_viz"
+			type="text"
+			description="COM_FABRIK_SEF_CUSTOMTXT_VIZ_DESC"
+			label="COM_FABRIK_SEF_CUSTOMTXT_VIZ_LABEL" />
+
 	</fieldset>
 	
 	<fieldset description="JCONFIG_PERMISSIONS_DESC" label="JCONFIG_PERMISSIONS_LABEL" name="permissions">

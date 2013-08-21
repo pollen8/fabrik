@@ -181,12 +181,10 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * onGetData method
 	 *
-	 * @param   object  $params  List params
-	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onLoadData($params)
+	public function onLoadData()
 	{
 		return true;
 	}
@@ -194,12 +192,10 @@ class PlgFabrik_List extends FabrikPlugin
 	/**
 	 * onFiltersGot method - run after the list has created filters
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onFiltersGot($params)
+	public function onFiltersGot()
 	{
 		return true;
 	}

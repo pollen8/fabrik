@@ -2,7 +2,7 @@
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
 		
-		<fieldset name="options">
+		<fieldset name="options" label="COM_FABRIK_OPTIONS">
 			
 			<field name="chart"
 				type="list"
@@ -15,6 +15,7 @@
 					<option value="multiBarChart">multi Bar Chart</option>
 					<option value="multiBarHorizontalChart">Multi bar Chart - horizontal</option>
 					<option value="lineChart">Line Chart</option>
+					<option value="scatterChart">Scatter Chart</option>
 			</field>
 			
 			<field name="conn_id"
@@ -96,11 +97,13 @@
 		
 			<field name="width"
 				default="350"
+				class="input-mini"
 				label="PLG_FABRIK_VIZ_NVD3_WIDTH_LABEL"
 				description="PLG_FABRIK_VIZ_NVD3_WIDTH_DESC" />
 				
 			<field name="height"
 				default="350"
+				class="input-mini"
 				label="PLG_FABRIK_VIZ_NVD3_HEIGHT_LABEL"
 				description="PLG_FABRIK_VIZ_NVD3_HEIGHT_DESC" />
 				
@@ -118,6 +121,7 @@
 				
 			<field name="controls"
 				type="radio"
+				class="btn-group"
 				default="1"
 				description="PLG_FABRIK_VIZ_NV3D_CONTROLS_DESC"
 				label="PLG_FABRIK_VIZ_NV3D_CONTROLS_LABEL">
@@ -128,6 +132,7 @@
 			<field name="rotate_labels"
 				type="text"
 				default="45"
+				class="input-mini"
 				label="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_LABEL"
 				description="PLG_FABRIK_VIZ_NV3D_ROTATE_LABELS_DESC" />
 					
@@ -137,6 +142,7 @@
 					
 				<field name="pie_labels"
 					type="radio"
+					class="btn-group"
 					default="1"
 					description="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_DESC"
 					label="PLG_FABRIK_VIZ_NVD3_PIE_LABELS_LABEL">
@@ -146,6 +152,7 @@
 					
 				<field name="donut"
 					type="radio"
+					class="btn-group"
 					default="0"
 					description="PLG_FABRIK_VIZ_NVD3_DONUT_DESC"
 					label="PLG_FABRIK_VIZ_NVD3_DONUT_LABEL">

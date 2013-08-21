@@ -27,79 +27,74 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	/**
 	 * onFiltersGot method - run after the list has created filters
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onFiltersGot($params)
+	public function onFiltersGot()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'));
 	}
 
 	/**
 	 * Called when the list HTML filters are loaded
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return  void
 	 */
 
-	public function onMakeFilters($params)
+	public function onMakeFilters()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'));
 	}
 
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  Plugin parameters
 	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, $opts = array())
+	public function process($opts = array())
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_process'));
 	}
 
 	/**
 	 * Run before the list loads its data
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return  void
 	 */
 
-	public function onPreLoadData($params)
+	public function onPreLoadData()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'));
 	}
 
 	/**
 	 * onGetData method
 	 *
-	 * @param   object  $params  Calling the plugin table/form
-	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onLoadData($params)
+	public function onLoadData()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_onloaddata'));
 	}
 
 	/**
 	 * Called when the model deletes rows
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return  bool  false if fail
 	 */
 
-	public function onDeleteRows($params)
+	public function onDeleteRows()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'));
 	}
 
@@ -169,6 +164,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 
 	public function onBuildQueryWhere()
 	{
+		$params = $this->getParams();
 		return $this->doEvaluate($params->get('list_phpevents_onbuildquerywhere'));
 	}
 

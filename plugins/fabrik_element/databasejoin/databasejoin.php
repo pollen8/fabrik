@@ -1082,7 +1082,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// If add and select put them in a button group.
 				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
 				{
-					$html[] = '<div class="btn-group">';
+					// Set position inherit otherwise btn-group blocks selection of checkboxes
+					$html[] = '<div class="btn-group" style="position:inherit">';
 				}
 				if ($frontEndSelect && $this->isEditable())
 				{
@@ -1953,9 +1954,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Builds an array containing the filters value and condition
 	 *
-	 * @param   string  $value      initial value
-	 * @param   string  $condition  intial $condition
-	 * @param   string  $eval       how the value should be handled
+	 * @param   string  $value      Initial value
+	 * @param   string  $condition  Intial $condition
+	 * @param   string  $eval       How the value should be handled
 	 *
 	 * @since   3.0.6
 	 *
@@ -1967,8 +1968,12 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$fType = $this->getElement()->filter_type;
 		if ($fType == 'auto-complete')
 		{
-			// Searching on value so set to equals
-			$condition = '=';
+			$stringComparisons = array('begins', 'contains', 'equals', 'ends');
+			if (in_array($condition, $stringComparisons))
+			{
+				// Searching on value so set to equals
+				$condition = '=';
+			}
 		}
 		return parent::getFilterValue($value, $condition, $eval);
 	}

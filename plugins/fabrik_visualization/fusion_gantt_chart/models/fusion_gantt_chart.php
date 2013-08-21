@@ -70,16 +70,23 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 		$db = $listModel->getDB();
 		$table = $listModel->getTable()->db_table_name;
 		$process = (string) $params->get('fusion_gantt_chart_process');
+		$process = FabrikString::safeColNameToArrayKey($process);
 		$processraw = $process . '_raw';
 		$start = $params->get('fusion_gantt_chart_startdate');
+		$start = FabrikString::safeColNameToArrayKey($start);
 		$startraw = $start . '_raw';
 		$end = $params->get('fusion_gantt_chart_enddate');
+		$end = FabrikString::safeColNameToArrayKey($end);
 		$endraw = $end . '_raw';
 		$label = $params->get('fusion_gantt_chart_label');
+		$label = FabrikString::safeColNameToArrayKey($label);
 		$hover = $params->get('fusion_gantt_chart_hover');
+		$hover = FabrikString::safeColNameToArrayKey($hover);
 		$milestone = $params->get('fusion_gantt_chart_milestone');
+		$milestone = FabrikString::safeColNameToArrayKey($milestone);
 		$milestoneraw = $milestone . '_raw';
 		$connector = $params->get('fusion_gantt_chart_connector');
+		$connector = FabrikString::safeColNameToArrayKey($connector);
 		$connectorraw = $connector . '_raw';
 		$fields = array();
 		$names = array();
@@ -136,7 +143,7 @@ class FabrikModelFusion_Gantt_Chart extends FabrikFEModelVisualization
 
 				if ($milestone !== '' && $d->$milestoneraw == 1)
 				{
-					$thisEndD = $enddate->toFormat('%Y/%m/%d');
+					$thisEndD = $enddate->format('Y/m/d');
 					$mileStone = "date=" . $thisEndD . ";radius=10;color=333333;shape=Star;numSides=5;borderThickness=1";
 					$this->fc->addGanttMilestone($d->__pk_val, $mileStone);
 				}

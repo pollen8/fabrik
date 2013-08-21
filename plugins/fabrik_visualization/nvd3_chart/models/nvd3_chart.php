@@ -94,6 +94,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		else
 		{
 			$chartType = $params->get('chart');
+			if ($chartType === 'scatterChart')
+			{
+				$this->data = $this->scatterChartData();
+				return $this->data;
+			}
 			if ($chartType === 'multiBarHorizontalChart' || $chartType === 'multiBarChart')
 			{
 				$this->data = $this->multiChartData();
@@ -279,14 +284,32 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		return $return;
 	}
 
-	/**
-	 * Build data for the mutli Chart types
-	 * Current only works
-	 *
-	 * @return stdClass
-	 */
+	protected function scatterChartData()
+	{
+		$rows = $this->mulitLines();
 
-	protected function multiChartData()
+		$data = array();
+		$o = new stdClass;
+		$o->values = array();
+		foreach ($rows as $d)
+		{
+			if (!array_key_exists($d->key, $data))
+			{
+				$data[$d->key] = new stdClass;
+				$data[$d->key]->key = $d->key;
+				$data[$d->key]->values = array();
+			}
+			$point = new stdClass;
+			$point->x = (float) $d->x;
+			$point->y = (float) $d->y;
+			$point->size = is_null($d->size) ? 0.5 : (float) $d->size;
+			$data[$d->key]->values[] = $point;
+		}
+		$data = array_values($data);
+		return $data;
+	}
+
+	protected function mulitLines()
 	{
 		$params = $this->getParams();
 		if ($params->get('data_mode') == 0)
@@ -309,13 +332,13 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		//$split = '';
 		if ($split !== '')
 		{
-			$query->select($split . ' AS ' . $db->nameQuote('key'));
+			$query->select($split . ' AS ' . $db->quoteName('key'));
 		}
 		else
 		{
 			if ($params->get('data_mode') == 0)
 			{
-				$query->select('date AS ' . $db->nameQuote('key'));
+				$query->select('date AS ' . $db->quoteName('key'));
 			}
 		}
 		$db->setQuery($query);
@@ -323,6 +346,19 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			throw new RuntimeException('Fabrik: nv3d viz data load error: ' . $db->getErrorMsg());
 		}
+		return $rows;
+	}
+	/**
+	 * Build data for the mutli Chart types
+	 * Current only works
+	 *
+	 * @return stdClass
+	 */
+
+	protected function multiChartData()
+	{
+		$params = $this->getParams();
+		$rows = $this->mulitLines();
 		$labelAxisValues = $params->get('label_axis_values', 'label_columns');
 		if ($labelAxisValues === 'label_columns')
 		{
@@ -609,6 +645,16 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		switch ($chart)
 		{
+			case 'scatterChart':
+				$str[] = '.showDistX(true)';
+                $str[] = '.showDistY(true)';
+                 $str[] = ".tooltipContent(function(key, x, y, obj) {
+                	// console.log(arguments);
+      return '<h3><a href=\"http://fabrikar.com\">test</a></h3>';
+  });";
+
+
+                break;
 			case 'pieChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
@@ -659,6 +705,18 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str[] = '.transition().duration(1200)';
 		$str[] = '.call(chart);';
 
+		$str[] = 'console.log(d3.selectAll("circle"));';
+
+		$str[] = 'd3.selectAll("circle").on("mousedown", function(d, i) {
+			console.log(arguments);
+		});';
+
+		$str[] = 'd3.selectAll("circle.nv-point").on("mouseover", function(d, i) {
+			console.log(d.data);
+			console.log(arguments);
+		});';
+
+
 		$rotate = (int) $params->get('rotate_labels', 45);
 		if ($rotate !== 0)
 		{
@@ -671,6 +729,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str[] = 'return chart;';
 		$str[] = '});';
 		$str[] = '});';
+
+
+
 		return implode("\n", $str);
 		/**
 
