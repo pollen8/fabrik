@@ -39,6 +39,7 @@
 			
 			<field name="code"
 				type="fabrikeditor"
+				mode="javascript"
 				width="100"
 				repeat="true"
 				label="COM_FABRIK_CODE" />
