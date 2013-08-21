@@ -24,7 +24,7 @@
 *
 * For more on custom CSS, see the Wiki at:
 *
-* http://fabrikar.com/wiki/index.php/3.x_Form_Templates#Custom_CSS
+* http://www.fabrikar.com/forums/index.php?wiki/form-and-details-templates/#the-custom-css-file
 *
 */
 

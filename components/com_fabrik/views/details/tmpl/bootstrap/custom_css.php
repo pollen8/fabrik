@@ -42,10 +42,6 @@ echo "
 
 /* BEGIN - Your CSS styling starts here */
 
-#{$view}_$c .foobar {
-	display: none;
-}
-
 /* END - Your CSS styling ends here */
 
 ";
