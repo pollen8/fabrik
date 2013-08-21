@@ -1082,7 +1082,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				// If add and select put them in a button group.
 				if ($frontEndSelect && $frontEndAdd && $this->isEditable())
 				{
-					$html[] = '<div class="btn-group">';
+					// Set position inherit otherwise btn-group blocks selection of checkboxes
+					$html[] = '<div class="btn-group" style="position:inherit">';
 				}
 				if ($frontEndSelect && $this->isEditable())
 				{
