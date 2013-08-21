@@ -1111,12 +1111,9 @@ class FabrikFEModelList extends JModelForm
 
 							$data[$i]->$col = $elementModel->renderListData($coldata, $thisRow);
 							$rawCol = $col . '_raw';
-							//$trans_tbl =get_html_translation_table (HTML_ENTITIES );
-							//echo "<pre>";print_r($trans_tbl);exit;
 
+							// Rendering of accented characters in DomPDF
 							$data[$i]->$col = htmlspecialchars_decode(htmlentities($data[$i]->$col, ENT_NOQUOTES, 'UTF-8'), ENT_NOQUOTES);
-
-							//$data[$i]->$col = htmlentities(iconv('UTF-8', 'UTF-8//IGNORE', '<p>home page  Angoulême</p>'), ENT_QUOTES, 'UTF-8');
 
 							/* Not sure if this works, as far as I can tell _raw will always exist, even if
 							 * the element model hasn't explicitly done anything with it (except mayeb unsetting it?)
@@ -9860,10 +9857,12 @@ class FabrikFEModelList extends JModelForm
 		unset($this->searchAllAsFields);
 		unset($this->_joinsSQL);
 		unset($this->_aJoins);
+		unset($this->orderBy);
 		unset($this->_joinsNoCdd);
 		unset($this->elements);
 		unset($this->data);
 		unset($this->tmpl);
+		unset($this->selectedOrderFields);
 	}
 
 	/**
