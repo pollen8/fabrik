@@ -80,6 +80,11 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			MyEditor.setShowFoldWidgets(true);
 			MyEditor.setWrapBehavioursEnabled(true);
 			MyEditor.getSession().setUseWrapMode(true);
+			window.addEvent("form.save", function () {
+				if (typeOf(document.id("' . $this->id . '")) !== "null") {
+					document.id("' . $this->id . '").value = MyEditor.getValue();
+				}
+			});
 			';
 
 		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
@@ -105,7 +110,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		$editor = parent::getInput();
 
 		// For element js event code.
-		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace">' . $this->value . '</div>' . $editor . '</div>';
+		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace"></div>' . $editor . '</div>';
 	}
 
 }
