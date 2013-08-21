@@ -514,23 +514,24 @@ class FabrikFEModelForm extends FabModelForm
 			/* $$$ need &amp; for pdf output which is parsed through xml parser otherwise fails
 			 * If FabrikHelperHTML::styleSheetajax loaded then dont do &amp;
 			 */
+			$view = $this->isEditable() ? 'form' : 'details';
 			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
-			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/template_css.php' . $qs;
+			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/template_css.php' . $qs;
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
+				$ok = FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
 			 * custom_css.php - what we'll recommend people use for custom css moving foward.
 			 */
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/custom.css' . $qs))
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
 			}
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/form/' . $tmpl . '/custom_css.php' . $qs))
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/custom_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/form/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
 			}
 		}
 		if ($app->isAdmin() && $input->get('tmpl') === 'components')
