@@ -61,16 +61,25 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 				. $this->value . '</textarea>';
 		}
 		$mode = $this->element['mode'] ? (string) $this->element['mode'] : 'html';
-		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'crimson_editor';
+		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'github';
 		$height = $this->element['height'] ? (string) $this->element['height'] : '200px';
 		$width = $this->element['width'] ? (string) $this->element['width'] : '300px';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 
+		if ($mode === 'php')
+		{
+			$aceMode = '{path:"ace/mode/php", inline:true}';
+		}
+		else
+		{
+			$aceMode = '"ace/mode/' . $mode . '"';
+		}
+
 		$script = '
 			var MyEditor = ace.edit("' . $this->id . '-ace");
 			MyEditor.setTheme("ace/theme/' . $theme . '");
-			MyEditor.getSession().setMode("ace/mode/' . $mode . '");
+			MyEditor.getSession().setMode(' . $aceMode . ');
 			MyEditor.setValue(document.id("' . $this->id . '").value);
 			MyEditor.setAnimatedScroll(true);
 			MyEditor.setBehavioursEnabled(true);
@@ -80,6 +89,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			MyEditor.setShowFoldWidgets(true);
 			MyEditor.setWrapBehavioursEnabled(true);
 			MyEditor.getSession().setUseWrapMode(true);
+			MyEditor.getSession().setTabSize(2);
 			window.addEvent("form.save", function () {
 				if (typeOf(document.id("' . $this->id . '")) !== "null") {
 					document.id("' . $this->id . '").value = MyEditor.getValue();
@@ -91,19 +101,21 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
-    #' . $this->id . '-ace {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
+	#' . $this->id . '-ace {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		border: 1px solid #c0c0c0;
+		border-radius: 3px;
+	}
 
-    	 #' . $this->id . '-container {
-        position: relative;
-       	width: ' . $width . ';
-    	 	height: ' . $height . ';
-    }
+	#' . $this->id . '-container {
+		position: relative;
+		width: ' . $width . ';
+		height: ' . $height . ';
+	}
 </style>';
 		$this->element['cols'] = 1;
 		$this->element['rows'] = 1;
