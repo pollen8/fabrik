@@ -103,20 +103,37 @@ Fabrik.Window = new Class({
 	/**
 	 * Work out the window width either from px or % variable
 	 * 
+	 * @deprecated use this.windowDimenionInPx('width') instead
+	 *  
 	 * @return  int  Px widht of window
 	 */
 	
 	windowWidthInPx: function () {
-		var w = this.options.width + '';
-		if (w.indexOf('%') !== -1) {
-			return Math.floor(window.getSize().x * (w.toFloat() / 100));
-		}
-		return w.toInt();
+		return this.windowDimenionInPx('width');
 	},
 	
+	/**
+	 * Work out the window width or height either from px or % variable
+	 * 
+	 * @param   string  dir  Width or height.
+	 * 
+	 * @return  int  Px widht of window
+	 */
+	windowDimenionInPx: function (dir) {
+		var coord = dir === 'height' ? 'y' : 'x'; 
+		var dim = this.options[dir] + '';
+		if (dim.indexOf('%') !== -1) {
+			return Math.floor(window.getSize()[coord] * (dim.toFloat() / 100));
+		}
+		return dim.toInt();
+	},
+	
+	/**
+	 * Build the window HTML
+	 */
 	makeWindow: function ()
 	{
-		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, handleParts = [];
+		var draggerC, dragger, expandButton, expandIcon, resizeIcon, label, cw, ch, handleParts = [];
 		this.window = new Element('div', {'id': this.options.id, 'class': 'fabrikWindow ' + this.classSuffix + ' modal'});
 		this.center();
 		this.contentWrapperEl = this.window;
@@ -184,10 +201,10 @@ Fabrik.Window = new Class({
 		this.contentEl = new Element('div', {'class': 'itemContentPadder'});
 		itemContent.adopt(this.contentEl);
 		this.contentWrapperEl.adopt(itemContent);
+		cw = this.windowWidthInPx();
+		ch = this.windowDimenionInPx('height');
+		this.contentWrapperEl.setStyles({'height': ch, 'width': cw + 'px'});
 		if (this.modal) {
-			var ch = this.options.height - 30;
-			cw = this.options.width;
-			this.contentWrapperEl.setStyles({'height': ch + 'px', 'width': cw + 'px'});
 			this.window.adopt([this.handle, this.contentWrapperEl]);
 		} else {
 			this.window.adopt([this.handle, this.contentWrapperEl, draggerC]);

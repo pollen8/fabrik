@@ -123,16 +123,10 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->formels = $formEls;
 		$opts->fabrik_show_in_list = $input->get('fabrik_show_in_list', array(), 'array');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
-		$popUpWidth = $params->get('popup_width', '');
-		if ($popUpWidth !== '')
-		{
-			$opts->popup_width = (int) $popUpWidth;
-		}
-		$popUpHeight = $params->get('popup_height', '');
-		if ($popUpHeight !== '')
-		{
-			$opts->popup_height = (int) $popUpHeight;
-		}
+		$opts->popup_width = $params->get('popup_width', '');
+
+		$opts->popup_height = $params->get('popup_height', '');
+
 		$xOffset = $params->get('popup_offset_x', '');
 		if ($xOffset !== '')
 		{
