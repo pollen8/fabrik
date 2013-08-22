@@ -1078,9 +1078,19 @@ class FabrikFEModelGroup extends FabModel
 		{
 			if ($this->canRepeat() && array_key_exists($fk, $formData))
 			{
-				foreach ($formData[$fk] as $k => $v)
+				if (array_key_exists($fk, $formData))
 				{
-					$formData[$fk][$k] = $masterInsertId;
+					if (is_array($formData[$fk]))
+					{
+						foreach ($formData[$fk] as $k => $v)
+						{
+							$formData[$fk][$k] = $masterInsertId;
+						}
+					}
+					else
+					{
+						$formData[$fk] = $masterInsertId;
+					}
 				}
 			}
 			else
