@@ -103,7 +103,17 @@ class FPagination extends JPagination
 		$list['limit'] = $this->limit;
 		$list['limitstart'] = $this->limitstart;
 		$list['total'] = $this->total;
-		$list['limitfield'] = $this->showDisplayNum ? $this->getLimitBox() : '';
+		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
+		$list['limitfield'] = '';
+		$chromePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_pagination.php';
+		if (JFile::exists($chromePath))
+		{
+			require_once $chromePath;
+		}
+		if ($this->showDisplayNum)
+		{
+			$list['limitfield'] = function_exists('fabrik_pagination_limitBox') ?  fabrik_pagination_limitBox($this, $this->_viewall) : $this->getLimitBox();
+		}
 		$list['pagescounter'] = $this->getPagesCounter();
 		if ($this->showTotal)
 		{
@@ -111,11 +121,9 @@ class FPagination extends JPagination
 		}
 		$list['pageslinks'] = $this->getPagesLinks($listRef, $tmpl);
 
-		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
-
 		if (file_exists($chromePath))
 		{
-			require_once $chromePath;
+
 			if (function_exists('pagination_list_footer'))
 			{
 				// Cant allow for it to be overridden
