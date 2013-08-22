@@ -128,7 +128,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	 * @return  bool
 	 */
 
-	public function process($params, $opts = array())
+	public function process($opts = array())
 	{
 		JLoader::import('webservice', JPATH_SITE . '/components/com_fabrik/models/');
 		$params = $this->getParams();
