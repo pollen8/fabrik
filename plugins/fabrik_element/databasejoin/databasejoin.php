@@ -332,6 +332,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function getJoin()
 	{
 		$app = JFactory::getApplication();
+		$input = $app->input;
 		if (isset($this->join))
 		{
 			return $this->join;
@@ -354,6 +355,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$listModel = $this->getlistModel();
 
+
 			$table = $listModel->getTable();
 			$joins = $listModel->getJoins();
 			foreach ($joins as $join)
@@ -369,7 +371,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				}
 			}
 		}
-		if (!in_array($app->input->get('task'), array('inlineedit', 'form.inlineedit')))
+		if (!in_array($input->get('task'), array('inlineedit', 'form.inlineedit')) && $input->get('format') !== 'raw')
 		{
 			/*
 			 * Suppress error for inlineedit, something not quiet right as groupModel::getPublishedElements() is limited by the elementid request va
