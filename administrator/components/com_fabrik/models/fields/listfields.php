@@ -72,6 +72,7 @@ class JFormFieldListfields extends JFormFieldList
 		$labelMethod = (string) JArrayHelper::getValue($this->element, 'label_method');
 		$highlightpk = (bool) JArrayHelper::getValue($this->element, 'highlightpk', false);
 		$nojoins = (bool) JArrayHelper::getValue($this->element, 'nojoins', false);
+		$mode = (string) JArrayHelper::getValue($this->element, 'mode', false);
 
 		switch ($controller)
 		{
@@ -105,6 +106,7 @@ class JFormFieldListfields extends JFormFieldList
 					$opts->repeat = $repeat;
 					$opts->showAll = (int) JArrayHelper::getValue($this->element, 'showall', '1');
 					$opts->highlightpk = (int) $highlightpk;
+					$opts->mode = $mode;
 					$opts = json_encode($opts);
 					$script = array();
 					$script[] = "if (typeOf(FabrikAdmin.model.fields.listfields) === 'null') {";
@@ -224,13 +226,37 @@ class JFormFieldListfields extends JFormFieldList
 					$this->value = $elementModel ? $elementModel->getId() : $this->value;
 				}
 			}
-			$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
-			$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
+
+			if ($mode === 'gui')
+			{
+				$return = $this->gui();
+			}
+			else
+			{
+				$return = JHTML::_('select.genericlist', $aEls, $this->name, 'class="inputbox" size="1" ', 'value', 'text', $this->value, $this->id);
+				$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
+			}
+
 		}
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 		return $return;
+	}
+
+	/**
+	 * Build GUI for adding in elements
+	 *
+	 * @return  string  Textarea GUI
+	 */
+
+	private function gui()
+	{
+		$str = array();
+		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
+		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . JText::_('COM_FABRIK_ADD') . '</button>';
+		$str[] = '<select class="elements"></select>';
+		return implode("\n", $str);
 	}
 
 	/**

@@ -668,12 +668,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
-		$desc = $params->get('join_desc_column', '');
-		if ($desc !== '')
-		{
-			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
-			$query->select($desc . ' AS description');
-		}
+		$this->buildQueryDescription($query, $data);
+
 		$additionalFields = $this->getAdditionalQueryFields();
 		if ($additionalFields != '')
 		{
@@ -690,6 +686,35 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query = $this->getOrderBy('', $query);
 		$this->_sql[$sig] = $query;
 		return $this->_sql[$sig];
+	}
+
+	/**
+	 * Add the description field to the buildQuery select statement
+	 *
+	 * @param   JQuery  $query  BuildQuery
+	 * @param   array   $data   BuildQuery data
+	 *
+	 * @return  void
+	 */
+	protected function buildQueryDescription(&$query, $data)
+	{
+		$params = $this->getParams();
+		$desc = $params->get('join_desc_column', '');
+		if ($desc !== '')
+		{
+			$db = FabrikWorker::getDbo();
+			$w = new FabrikWorker;
+			$lang = JFactory::getLanguage();
+			$data = is_array($data) ? $data : array();
+			if (!isset($data['lang']))
+			{
+				$data['lang'] = $lang->getTag();
+				$data['lang'] = str_replace('-', '_', $data['lang']);
+			}
+			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
+			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
+			$query->select($desc . ' AS description');
+		}
 	}
 
 	/**
@@ -1188,7 +1213,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$query->select('id')->from('#__{package}_lists')->where('form_id =' . $popupformid);
 		$db->setQuery($query);
 		$listid = $db->loadResult();
-		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&rowid=' ;
+		return 'index.php?option=com_' . $package . '&view=details&formid=' . $popupformid . '&listid=' . $listid . '&rowid=';
 	}
 
 	/**
@@ -2580,9 +2605,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Used by elements with suboptions, given a value, return its label
 	 *
-	 * @param   string  $v              Value
-	 * @param   string  $defaultLabel   Default label
-	 * @param   bool    $forceCheck     Force check even if $v === $defaultLabel
+	 * @param   string  $v             Value
+	 * @param   string  $defaultLabel  Default label
+	 * @param   bool    $forceCheck    Force check even if $v === $defaultLabel
 	 *
 	 * @return  string	Label
 	 */
@@ -2716,9 +2741,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Get the autocomplete Where clause based on the parameter
 	 *
-	 * @param   string  $how            dbjoin_autocomplete_how setting - contains, words, starts_with
-	 * @param   string  $label          Field
-	 * @param   string  $search         Search string
+	 * @param   string  $how     Dbjoin_autocomplete_how setting - contains, words, starts_with
+	 * @param   string  $field   Field
+	 * @param   string  $search  Search string
 	 *
 	 * @return  string  with required where clause based upon dbjoin_autocomplete_how setting
 	 */
@@ -2734,7 +2759,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 				break;
 			case 'words':
 				$words = array_filter(explode(' ', $search));
-				foreach ($words as &$word) {
+				foreach ($words as &$word)
+				{
 					$word = $db->quote('%' . $word . '%');
 				}
 				$where = $field . ' LIKE ' . implode(' AND ' . $field . ' LIKE ', $words);
