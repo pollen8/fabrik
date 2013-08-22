@@ -71,14 +71,14 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  Plugin parameters
 	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, $opts = array())
+	public function process($opts = array())
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$model = $this->getModel();
 		$ids = $app->input->get('ids', array(), 'array');

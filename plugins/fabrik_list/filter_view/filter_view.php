@@ -39,15 +39,15 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	/**
 	 * Get the content to show before the list
 	 *
-	 * @param   object  $params  List parameters
-	 * @param   JModel  $model   List model
 	 * @param   array   $args    Options
 	 *
 	 * @return  void
 	 */
 
-	public function onGetContentBeforeList($params, $model, $args)
+	public function onGetContentBeforeList($args)
 	{
+		$params = $this->getParams();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$opts = json_decode($params->get('filter_view_settings'));
