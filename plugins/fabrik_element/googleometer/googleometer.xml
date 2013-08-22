@@ -13,6 +13,8 @@
 	<files>
 		<filename plugin="googleometer">googleometer.php</filename>
 		<filename>index.html</filename>
+		<filename>googleometer.js</filename>
+		<filename>googleometer-min.js</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
 	</files>
