@@ -40,15 +40,14 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	/**
 	 * Can the row be edited
 	 *
-	 * @param   object  $params     Plugin params
 	 * @param   object  $row        Current row to test
 	 *
 	 * @return boolean
 	 */
 
-	public function onCanEdit($params, $row)
+	public function onCanEdit($row)
 	{
-
+		$params = $this->getParams();
 		// If $row is null, we were called from the list's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
 		if (is_null($row) || is_null($row[0]))
