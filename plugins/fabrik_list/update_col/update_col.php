@@ -160,16 +160,16 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  plugin parameters
 	 * @param   array   $opts    custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, $opts = array())
+	public function process($opts = array())
 	{
-		$db = $model->getDb();
+		$params = $this->getParams();
 		$model = $this->getModel();
+		$db = $model->getDb();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
