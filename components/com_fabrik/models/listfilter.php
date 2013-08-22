@@ -1279,7 +1279,7 @@ class FabrikFEModelListfilter extends FabModel
 		$elements = $this->listModel->getElements('id');
 		$item = $this->listModel->getTable();
 		$identifier = $app->input->get('listref', $this->listModel->getRenderContext());
-		$identifier = $this->listModel->getRenderContext();
+		//$identifier = $this->listModel->getRenderContext();
 		$key = 'com_' . $package . '.list' . $identifier . '.filter';
 		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
 		$filterkeys = array_keys($filters);
