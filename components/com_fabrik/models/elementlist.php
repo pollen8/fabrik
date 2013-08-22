@@ -496,7 +496,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
+	 * @param   string  $data      Elements formatted data (not raw)
 	 * @param   object  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
@@ -510,12 +510,29 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
 		$sLabels = array();
+		$useIcon = $params->get('icon_folder', 0);
+
+		// Give priority to raw value icons (podion)
+		$raw = $this->getFullName(false, true, false) . '_raw';
+		if (isset($thisRow->$raw))
+		{
+			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+			foreach ($rawData as &$val)
+			{
+				$val = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
+			}
+			if ($this->iconsSet)
+			{
+				// Use raw icons
+				$data = $rawData;
+				$useIcon = false;
+			}
+		}
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
-		$useIcon = $params->get('icon_folder', 0);
 		foreach ($gdata as $i => $d)
 		{
 			$lis = array();
