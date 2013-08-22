@@ -97,14 +97,14 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  Plugin parameters
 	 * @param   array   $opts    Custom options
 	 *
 	 * @return  bool
 	 */
 
-	public function process($params, $opts = array())
+	public function process($opts = array())
 	{
+		$params = $this->getParams();
 		$f = JFilterInput::getInstance();
 		$file = $f->clean($params->get('table_php_file'), 'CMD');
 		if ($file == -1 || $file == '')
