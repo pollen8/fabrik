@@ -154,6 +154,10 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			if (!empty($map))
 			{
 				$newdata = new stdClass;
+				/*
+				 * need __pk_val if 'edit original row'
+				 */
+				$newdata->__pk_val = $data->__pk_val;
 				foreach ($map as $from => $to)
 				{
 					$toraw = $to . '_raw';
