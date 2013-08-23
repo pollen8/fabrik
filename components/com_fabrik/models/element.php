@@ -1420,7 +1420,8 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($bLabel && !$this->isHidden())
 			{
-				$tip = $this->tipHtml();
+				$model = $this->getFormModel();
+				$tip = $this->tipHtml($model->data);
 				if ($tip !== '')
 				{
 					$labelClass .= ' fabrikTip';
@@ -1505,14 +1506,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$rollOver = $this->tipTextAndValidations($mode, $data);
-		$opts = $this->tipOpts();
-		$opts = json_encode($opts);
-		if ($rollOver !== '')
-		{
-			$txt = '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
-		}
-		return $txt;
+		$rollOver = $this->tipHtml($data, $mode);
+		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : '';
 	}
 
 	/**
@@ -1554,36 +1549,32 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function tipTextAndValidations($mode, $data = array())
 	{
-		$rollOver = '';
-		$validationTip = '';
+		$lines = array();
+		$validations = array();
 		$tmpl = $this->getFormModel()->getTmpl();
 		if ($this->isEditable() && $mode === 'form')
 		{
 			$validations = array_unique($this->validator->findAll());
-			if (count($validations) > 0)
-			{
-				$lines = array();
-				$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-
-				foreach ($validations as $validation)
-				{
-					$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
-				}
-				$lines = array_unique($lines);
-				$validationHovers = array_merge($validationHovers, $lines);
-				$validationHovers[] = '</ul></div>';
-				$validationTip = implode('', $validationHovers);
-			}
 		}
+		if (count($validations) > 0 || $this->isTipped($mode))
+		{
+			$lines[] = '<div><ul class="validation-notices" style="list-style:none">';
+		}
+
 		if ($this->isTipped($mode))
 		{
-			$rollOver = $this->getTipText($data);
+			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
-		$rollOver .= $validationTip;
-		if ($rollOver != '')
+
+		foreach ($validations as $validation)
 		{
-			$rollOver = '<span>' . $rollOver . '</span>';
+			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
 		}
+
+		$lines[] = '</ul></div>';
+		$lines = array_unique($lines);
+		$rollOver = implode('', $lines);
+
 		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 		return $rollOver;
@@ -1950,10 +1941,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * @return string
 	 */
 
-	protected function tipHtml()
+	protected function tipHtml($data = array(), $mode = 'form')
 	{
-		$model = $this->getFormModel();
-		$title = $this->tipTextAndValidations('form', $model->data);
+		$title = $this->tipTextAndValidations($mode, $data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
 		return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
@@ -3092,6 +3082,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
+			/**
+			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
+			 * This is an array of objects with properties text and value.
+			 * If user has mis-specified this we should tell them.
+			 **/
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			{
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				return array();
+			}
+
 			$opts = array();
 			foreach ($phpOpts as $phpOpt)
 			{
@@ -3118,6 +3119,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
+			/**
+			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
+			 * This is an array of objects with properties text and value.
+			 * If user has mis-specified this we should tell them.
+			 **/
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			{
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				return array();
+			}
+
 			$opts = array();
 			foreach ($phpOpts as $phpOpt)
 			{
@@ -3145,7 +3157,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pop = $params->get('dropdown_populate', '');
 		if ($pop !== '')
 		{
-			return eval($pop);
+			if (FabrikHelperHTML::isDebug())
+			{
+				$res = eval($pop);
+			}
+			else
+			{
+				$res = @eval($pop);
+			}
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
+			return $res;
 		}
 		return false;
 	}
