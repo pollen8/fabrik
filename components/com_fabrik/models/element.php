@@ -748,7 +748,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function groupConcactJoinKey()
 	{
 		$table = $this->getListModel()->getTable();
-		if ($this->getGroupModel()->isJoin())
+		if ($this->getGroupModel()->isJoin() && !$this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
 			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;

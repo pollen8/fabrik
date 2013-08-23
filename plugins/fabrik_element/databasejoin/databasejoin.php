@@ -354,8 +354,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		else
 		{
 			$listModel = $this->getlistModel();
-
-
 			$table = $listModel->getTable();
 			$joins = $listModel->getJoins();
 			foreach ($joins as $join)
@@ -693,8 +691,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	/**
 	 * Add the description field to the buildQuery select statement
 	 *
-	 * @param   JQuery  $query  BuildQuery
-	 * @param   array   $data   BuildQuery data
+	 * @param   JQuery  &$query  BuildQuery
+	 * @param   array   $data    BuildQuery data
 	 *
 	 * @return  void
 	 */
@@ -2925,9 +2923,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			if ($groupModel->isJoin())
 			{
 				// Need to set the joinTable to be the group's table
-				$groupJoin = $groupModel->getJoinModel()->getJoin();
-				$parentKey = $groupJoin->table_join . '.' . $groupJoin->table_key;
-
+				$groupJoin = $groupModel->getJoinModel();
+				$parentKey = $groupJoin->getForeignKey();
 			}
 		}
 		return $parentKey;
