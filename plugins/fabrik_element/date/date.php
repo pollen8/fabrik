@@ -845,8 +845,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		if ($newRecord && $defaultToday && $value == '')
 		{
 			// Set to local time as its then converted to correct utc/local time in _indStoreDBFormat
-			$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
-			$date = JFactory::getDate('now', $timeZone);
+			/**
+			 * $$$ hugh - the above comment seems to be incorrect, probably due to refactoring of the code
+			 * so we no longer need to convert to local at this point.
+			 * $timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+			 * $date = JFactory::getDate('now', $timeZone);
+			 */
+			$date = JFactory::getDate('now');
 
 			$value = $date->toSQL(true);
 
