@@ -77,6 +77,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 		}
 
 		$script = '
+			window.addEvent(\'domready\', function () {
 			var MyEditor = ace.edit("' . $this->id . '-ace");
 			MyEditor.setTheme("ace/theme/' . $theme . '");
 			MyEditor.getSession().setMode(' . $aceMode . ');
@@ -92,6 +93,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			MyEditor.getSession().setTabSize(2);
 			MyEditor.on("blur", function () {
 				document.id("' . $this->id . '").value = MyEditor.getValue();
+			});
 			});
 			';
 
