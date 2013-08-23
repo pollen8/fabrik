@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
 	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
-		<fieldset label="PLG_ELEMENT_SLIDER" name="plg-element-slider">
+		<fieldset name="plg-element-slider" label="COM_FABRIK_DEFAULT">
 
 			<field type="helplink"
 				url="PLG_ELEMENT_SLIDER_HELP_SERVER" />
 
+			<field name="default"
+				type="fabrikeditor"
+				mode="php"
+				width="100"
+				cols="45"
+				label="PLG_ELEMENT_SLIDER_DEFAULT_LABEL"
+				rows="6"/>
+				
 			<field name="eval"
 				type="radio"
+				class="radio btn-group"
 				default="0"
 				label="PLG_ELEMENT_SLIDER_EVAL_LABEL">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-
-			<field name="default"
-				type="textarea"
-				cols="45"
-				label="PLG_ELEMENT_SLIDER_DEFAULT_LABEL"
-				rows="6"/>
 
 		</fieldset>
 	</fields>
