@@ -10470,6 +10470,12 @@ class FabrikFEModelList extends JModelForm
 		return !empty($alwaysRender);
 	}
 
+	/**
+	 * Get the name of the tab field
+	 *
+	 * @return string  tablename___elementname
+	 */
+
 	private function getTabField()
 	{
 		if (!isset($this->tabsField))
