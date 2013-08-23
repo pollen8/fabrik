@@ -143,7 +143,7 @@ var FbListInlineEdit = new Class({
 			}
 			break;
 		case 9:
-			//tab
+			//tab - don't navigate with tab - moofs form field tab ordering if we do
 			if (this.inedit) {
 				if (this.options.tabSave) {
 					if (typeOf(this.editing) === 'element') {
@@ -152,24 +152,7 @@ var FbListInlineEdit = new Class({
 						this.edit(e, this.td);
 					}
 				}
-				//var next = e.shift ? this.td.getPrevious() : this.td.getNext();
-				var next = e.shift ? this.getPreviousEditable(this.td) : this.getNextEditable(this.td);
-				if (typeOf(next) === 'element') {
-					e.stop();
-					this.select(e, next);
-					this.edit(e, this.td);
-				}
 				return;
-			}
-			e.stop();
-			if (e.shift) {
-				if (typeOf(this.td.getPrevious()) === 'element') {
-					this.select(e, this.td.getPrevious());
-				}
-			} else {
-				if (typeOf(this.td.getNext()) === 'element') {
-					this.select(e, this.td.getNext());
-				}
 			}
 			break;
 		case 37: //left
