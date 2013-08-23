@@ -227,6 +227,14 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$callback .= '&renderOrder=' . $this->renderOrder;
 
 		// Build TwitterOAuth object with client credentials
+		if ($consumer_key == '')
+		{
+			throw new RuntimeException('Please enter your consumer key. You may need to save the form first before continuing');
+		}
+		if ($consumer_secret == '')
+		{
+			throw new RuntimeException('Please enter your consumer secret. You may need to save the form first before continuing');
+		}
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
 
 		// Get temporary credentials.
@@ -443,13 +451,12 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 		$formModel = $this->buildModel($input->getInt('formid'));
 		$params = $formModel->getParams();
 
-		$renderOrder = $input->getInt('renderOrder');
+		$renderOrder = $input->getInt('repeatCounter');
 
 		$consumer_key = $params->get('twitter_consumer_key');
 		$consumer_key = $consumer_key[$renderOrder];
 		$consumer_secret = $params->get('twitter_consumer_secret');
 		$consumer_secret = $consumer_secret[$renderOrder];
-
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret, $_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
 
 		/* Request access tokens from twitter */
@@ -467,7 +474,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			'twitter_oauth_user' => 'screen_name');
 
 		$js = array();
-
 		foreach ($pairs as $paramname => $requestname)
 		{
 			$tokens = (array) JArrayHelper::getValue($opts, $paramname);
@@ -481,7 +487,6 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 			}
 			$opts[$paramname] = $newtokens;
 		}
-
 		$row->params = json_encode($opts);
 
 		if (!$row->store())
@@ -495,11 +500,11 @@ class PlgFabrik_FormTwitter extends PlgFabrik_Form
 
 		// If we had already authorized the app then we will still be in the admin page - so update the fields:
 		echo JText::_('PLG_FORM_TWITTER_CREDITIALS_SAVED');
-		JHTML::_('behavior.mootools');
+		//JHTML::_('behavior.mootools');
 		$document = JFactory::getDocument();
 		$script = implode("\n", $js) . "
 		(function() {window.close()}).delay(4000);
 		";
-		FabrikHelperHTML::addScriptDeclaration($script);
+		$document->addScriptDeclaration($script);
 	}
 }
