@@ -72,6 +72,7 @@ defined('_JEXEC') or die('Restricted access');
 
 		<div class="tab-pane" id="publishing-search">
 			<fieldset class="form-horizontal">
+				<div class="alert"><?php echo JText::_('COM_FABRIK_SPECIFY_ELEMENTS_IN_DETAILS_FILTERS'); ?></div>
 				<?php foreach ($this->form->getFieldset('search') as $this->field) :
 					echo $this->loadTemplate('control_group');
 				endforeach;

@@ -723,6 +723,16 @@
 				label="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_LABEL"
 				description="COM_FABRIK_FIELD_SEARCH_DESCRIPTION_FIELD_DESC"
 			/>
+			
+			<field name="search_link_type"
+				type="radio"
+				class="btn-group"
+				default="details"
+				label="COM_FABRIK_FIELD_SEARCH_LINK_TYPE_LABEL"
+				description="COM_FABRIK_FIELD_SEARCH_LINK_TYPE_DESC">
+					<option value="details">COM_FABRIK_DETAILS</option>
+					<option value="form">COM_FABRIK_FORM</option>	
+			</field>
 
 		</fieldset>
 

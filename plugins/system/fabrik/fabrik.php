@@ -143,9 +143,9 @@ class PlgSystemFabrik extends JPlugin
 	 * browsernav
 	 *
 	 * @param   string     $text      Target search string
-	 * @param   JRegistry  $params     Search plugin params
-	 * @param   string     $phrase    mathcing option, exact|any|all
-	 * @param   string     $ordering  option, newest|oldest|popular|alpha|category
+	 * @param   JRegistry  $params    Search plugin params
+	 * @param   string     $phrase    Mathcing option, exact|any|all
+	 * @param   string     $ordering  Option, newest|oldest|popular|alpha|category
 	 *
 	 * @return  array
 	 */
@@ -232,11 +232,6 @@ class PlgSystemFabrik extends JPlugin
 			$key = 'com_' . $package . '.list' . $id . '.filter.searchall';
 			$app->setUserState($key, null);
 
-			unset($table);
-			unset($elementModel);
-			unset($params);
-			unset($query);
-			unset($allrows);
 			$used = memory_get_usage();
 			$usage[] = memory_get_usage();
 			if (count($usage) > 2)
@@ -253,18 +248,23 @@ class PlgSystemFabrik extends JPlugin
 			$input->set('listid', $id);
 
 			$listModel->setId($id);
+			$searchFields = $listModel->getSearchAllFields();
+			if (empty($searchFields))
+			{
+				continue;
+			}
 			$filterModel = $listModel->getFilterModel();
 			$requestKey = $filterModel->getSearchAllRequestKey();
 
 			// Set the request variable that fabrik uses to search all records
 			$input->set($requestKey, $text, 'post');
 
-			$table = $listModel->getTable(true);
+			$table = $listModel->getTable();
 			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
 
 			// Test for swap too boolean mode
-			$mode = $input->get('searchphraseall', 'all');
+			$mode = $input->get('searchphrase', '') === 'all' ? 0 : 1;
 
 			// $params->set('search-mode-advanced', true);
 			$params->set('search-mode-advanced', $mode);
@@ -292,7 +292,7 @@ class PlgSystemFabrik extends JPlugin
 				foreach ($group as $oData)
 				{
 					$pkval = $oData->__pk_val;
-					if ($app->isAdmin())
+					if ($app->isAdmin() || $params->get('search_link_type') === 'form')
 					{
 						$href = $oData->fabrik_edit_url;
 					}
