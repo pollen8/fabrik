@@ -1404,7 +1404,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return '';
 		}
 		$params = $this->getParams();
-		$elementid = 'fb_el_' . $elementHTMLId;
 		$str = '';
 		$j3 = FabrikWorker::j3();
 		if ($this->canView() || $this->canUse())
@@ -1426,7 +1425,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$labelClass .= ' fabrikTip';
 				}
-				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $this->tipHtml() . '>';
+				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $tip . '>';
 			}
 			elseif (!$bLabel && !$this->isHidden())
 			{
@@ -1884,7 +1883,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->plugin = $elementTable->plugin;
 		$element->hidden = $this->isHidden();
 		$element->id = $this->getHTMLId($c);
-		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
 		$element->label_raw = $this->element->label;
@@ -1974,8 +1972,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function containerClass($element)
 	{
 		$item = $this->getElement();
-		$c = array('fabrikElementContainer', 'plg-' . $item->plugin);
-		$c[] = $element->className;
+		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $item->name . '_' . $item->group_id);
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
