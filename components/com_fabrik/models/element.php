@@ -1,4 +1,3 @@
-'fabrik
 <?php
 /**
  * Fabrik Element Model
