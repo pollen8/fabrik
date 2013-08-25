@@ -1963,7 +1963,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function containerClass($element)
 	{
 		$item = $this->getElement();
-		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $element->className, $item->name . '_' . $item->group_id);
+		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $element->className, $item->name, $item->name . '_' . $item->group_id);
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
