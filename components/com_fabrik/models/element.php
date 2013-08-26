@@ -1575,10 +1575,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$validations = array_unique($this->validator->findAll());
 		}
-		if (count($validations) > 0 || $this->isTipped($mode))
+		if (count($validations) == 0 && !$this->isTipped($mode))
 		{
-			$lines[] = '<div><ul class="validation-notices" style="list-style:none">';
+			return '';
 		}
+
+		$lines[] = '<ul class="validation-notices" style="list-style:none">';
 
 		if ($this->isTipped($mode))
 		{
@@ -1591,7 +1593,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		if (count($lines) > 0)
 		{
-			$lines[] = '</ul></div>';
+			$lines[] = '</ul>';
 		}
 		$lines = array_unique($lines);
 		$rollOver = implode('', $lines);
