@@ -244,8 +244,15 @@ var FbCascadingdropdown = new Class({
 				 * being updated on a change.  This issue only surfaced when we changed this code to use
 				 * a bound function, so it actually started removing the event, which it never did before
 				 * when we referenced an inline function().
+				 * 
+				 * Update ... if the watched element is in the repeat group, we do want to remove it,
+				 * but if the watch is on the main form, we don't.  In other words, if the watch is on the main
+				 * form, then every CDD in this repeat is watching it.  If it's in the repeat group, then each repeat
+				 * CDD only watches the one in it's own group.
 				 */
-				// document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				if (this.options.watchInSameGroup) {
+					document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				}
 				this.doChangeEvent = this.doChange.bind(this);
 				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 
