@@ -592,6 +592,13 @@ class FabrikWorker
 				// Enable users to use placeholder to insert session token
 				$this->_searchData['JSession::getFormToken'] = JSession::getFormToken();
 
+				if (!isset($this->_searchData['lang']))
+				{
+					$lang = JFactory::getLanguage();
+					$this->_searchData['lang'] = $lang->getTag();
+					$this->_searchData['lang'] = str_replace('-', '_', $this->_searchData['lang']);
+				}
+
 				// Replace with the user's data
 				$msg = self::replaceWithUserData($msg);
 				if (!is_null($theirUser))
