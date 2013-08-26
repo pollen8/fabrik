@@ -115,6 +115,8 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		if (($params->get('cascadingdropdown_label_concat') != '') && $app->input->get('overide_join_val_column_concat') != 1)
 		{
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
+			$w = new FabrikWorker;
+			$val = $w->parseMessageForPlaceHolder($val, array());
 			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 		$label = FabrikString::shortColName($join->params->get('join-label'));
@@ -906,7 +908,9 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 		}
 		else
 		{
+			$w = new FabrikWorker;
 			$val = str_replace("{thistable}", $join->table_join_alias, $params->get('cascadingdropdown_label_concat'));
+			$val = $w->parseMessageForPlaceHolder($val, array());
 			return 'CONCAT_WS(\'\', ' . $val . ')';
 		}
 	}
