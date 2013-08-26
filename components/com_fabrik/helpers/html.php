@@ -1175,7 +1175,7 @@ EOD;
 	 * Use this for things like choosing whether to include compressed or uncompressed JS, etc.
 	 * Do NOT use for actual debug output.
 	 *
-	 * @param   bool  $enabled  set to true if Fabrik debug global option must be set to true
+	 * @param   bool  $enabled  Set to true if Fabrik debug global option must be set to true
 	 *
 	 * @return  bool
 	 */
@@ -1380,9 +1380,9 @@ EOD;
 	/**
 	 * Attach tooltips to document
 	 *
-	 * @param   string  $selector        string class name of tips
-	 * @param   array   $params          array paramters
-	 * @param   string  $selectorPrefix  limit the tips selection to those contained within an id
+	 * @param   string  $selector        String class name of tips
+	 * @param   array   $params          Array paramters
+	 * @param   string  $selectorPrefix  Limit the tips selection to those contained within an id
 	 *
 	 * @return  void
 	 */
@@ -1421,8 +1421,8 @@ EOD;
 	/**
 	 * Add a debug out put section
 	 *
-	 * @param   mixed   $content  string/object
-	 * @param   string  $title    debug title
+	 * @param   mixed   $content  String/object
+	 * @param   string  $title    Debug title
 	 *
 	 * @return  void
 	 */
@@ -1453,7 +1453,7 @@ EOD;
 		else
 		{
 			// Remove any <pre> tags provided by e.g. JQuery::dump
-			$content = preg_replace('/(^\s*<pre( .*)?>)|(<\/pre>\s*$)/i','',$content);
+			$content = preg_replace('/(^\s*<pre( .*)?>)|(<\/pre>\s*$)/i', '', $content);
 			echo htmlspecialchars($content);
 		}
 		echo '</div>';
@@ -1529,14 +1529,15 @@ EOD;
 	 * @param   int     $elementid  Element id
 	 * @param   int     $formid     Form id
 	 * @param   string  $plugin     Plugin name
-	 * @param   array   $opts       (currently only takes 'onSelection')
+	 * @param   array   $opts       * onSelection - function to run when option selected
+	 *                              * max - max number of items to show in selection list
 	 *
 	 * @return  void
 	 */
 
-	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array(), $max = null)
+	public static function autoComplete($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
-		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts, $max);
+		$json = self::autoCompleteOptions($htmlid, $elementid, $formid, $plugin, $opts);
 		$str = json_encode($json);
 		JText::script('COM_FABRIK_NO_RECORDS');
 		$class = $plugin === 'cascadingdropdown' ? 'FabCddAutocomplete' : 'FbAutocomplete';
@@ -1551,26 +1552,23 @@ EOD;
 	/**
 	 * Gets auto complete js options (needed separate from autoComplete as db js class needs these values for repeat group duplication)
 	 *
-	 * @param   string  $htmlid     element to turn into autocomplete
-	 * @param   int     $elementid  element id
-	 * @param   int     $formid     form id
-	 * @param   string  $plugin     plugin type
-	 * @param   array   $opts       (currently only takes 'onSelection')
+	 * @param   string  $htmlid     Element to turn into autocomplete
+	 * @param   int     $elementid  Element id
+	 * @param   int     $formid     Form id
+	 * @param   string  $plugin     Plugin type
+	 * @param   array   $opts       * onSelection - function to run when option selected
+	 *                              * max - max number of items to show in selection list
 	 *
-	 * @return  array	autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
+	 * @return  array	Autocomplete options (needed for elements so when duplicated we can create a new FabAutocomplete object
 	 */
 
-	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array(), $max = null)
+	public static function autoCompleteOptions($htmlid, $elementid, $formid, $plugin = 'field', $opts = array())
 	{
 		$json = new stdClass;
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$json->url = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&format=raw&view=plugin&task=pluginAjax&g=element&element_id=' . $elementid
 			. '&formid=' . $formid . '&plugin=' . $plugin . '&method=autocomplete_options&package=' . $package;
-		if (!empty($max))
-		{
-			$json->max = $max;
-		}
 		$c = JArrayHelper::getValue($opts, 'onSelection');
 		if ($c != '')
 		{
