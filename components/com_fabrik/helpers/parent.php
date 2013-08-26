@@ -1175,14 +1175,14 @@ class FabrikWorker
 			$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
 		}
 
-		FabrikWorker::logError($errString, $enqMsgType);
+		self::logError($errString, $enqMsgType);
 	}
 
 	/**
 	 * Raise a J Error notice if in dev mode or log a J error otherwise
 	 *
-	 * @param   string  $errorString  Message to display / log
-	 * @param   string  $msgType      Joomla enqueueMessage message type e.g. 'error', 'warning' etc.
+	 * @param   string  $errString  Message to display / log
+	 * @param   string  $msgType    Joomla enqueueMessage message type e.g. 'error', 'warning' etc.
 	 *
 	 * @return  void
 	 */
@@ -1196,7 +1196,20 @@ class FabrikWorker
 		}
 		else
 		{
-			JLog::add($errString, JLog::ERROR, 'com_fabrik');
+			switch ($msgType)
+			{
+				case 'message':
+					$priority = JLog::INFO;
+					break;
+				case 'warning':
+					$priority = JLog::WARNING;
+					break;
+				case 'error':
+				default:
+					$priority = JLog::ERROR;
+					break;
+			}
+			JLog::add($errString, $priority, 'com_fabrik');
 		}
 	}
 
@@ -1492,7 +1505,7 @@ class FabrikWorker
 		}
 		else
 		{
-			//$gobackaction = 'onclick=\'history.back();\'';
+			// $gobackaction = 'onclick=\'history.back();\'';
 			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		return $gobackaction;
