@@ -704,13 +704,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$db = FabrikWorker::getDbo();
 			$w = new FabrikWorker;
-			$lang = JFactory::getLanguage();
 			$data = is_array($data) ? $data : array();
-			if (!isset($data['lang']))
-			{
-				$data['lang'] = $lang->getTag();
-				$data['lang'] = str_replace('-', '_', $data['lang']);
-			}
 			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
 			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
 			$query->select($desc . ' AS description');

@@ -592,13 +592,6 @@ class FabrikWorker
 				// Enable users to use placeholder to insert session token
 				$this->_searchData['JSession::getFormToken'] = JSession::getFormToken();
 
-				if (!isset($this->_searchData['lang']))
-				{
-					$lang = JFactory::getLanguage();
-					$this->_searchData['lang'] = $lang->getTag();
-					$this->_searchData['lang'] = str_replace('-', '_', $this->_searchData['lang']);
-				}
-
 				// Replace with the user's data
 				$msg = self::replaceWithUserData($msg);
 				if (!is_null($theirUser))
@@ -734,6 +727,11 @@ class FabrikWorker
 				$msg = str_replace('{$_SERVER-&gt;' . $key . '}', $val, $msg);
 			}
 		}
+
+		$lang = JFactory::getLanguage()->getTag();
+		$lang = str_replace('-', '_', $lang);
+		$msg = str_replace('{lang}', $lang, $msg);
+
 		$session = JFactory::getSession();
 		$token = $session->get('session.token');
 		$msg = str_replace('{session.token}', $token, $msg);
@@ -800,14 +798,13 @@ class FabrikWorker
 			}
 		}
 
-		// $$$ hugh - NOOOOOOO!!  Screws up where people actually have mixed case element names
-		// $match = JString::strtolower($match);
 		$match = preg_replace("/ /", "_", $match);
 		if (!strstr($match, '.'))
 		{
-			/* for some reason array_key_exists wasnt working for nested arrays?? */
+			// For some reason array_key_exists wasnt working for nested arrays??
 			$aKeys = array_keys($this->_searchData);
-			/* remove the table prefix from the post key */
+
+			// Remove the table prefix from the post key
 			$aPrefixFields = array();
 			for ($i = 0; $i < count($aKeys); $i++)
 			{
@@ -823,11 +820,12 @@ class FabrikWorker
 			{
 				$match = $aPrefixFields[$match] . '___' . $match;
 			}
+
 			// Test to see if the made match is in the post key arrays
 			$found = in_array($match, $aKeys, true);
 			if ($found)
 			{
-				/* get the post data */
+				// Get the post data
 				$match = $this->_searchData[$match];
 				if (is_array($match))
 				{
@@ -855,7 +853,7 @@ class FabrikWorker
 		}
 		else
 		{
-			/* could be looking for URL field type eg for $_POST[url][link] the match text will be url.link */
+			// Could be looking for URL field type eg for $_POST[url][link] the match text will be url.link
 			$aMatch = explode(".", $match);
 			$aPost = $this->_searchData;
 			foreach ($aMatch as $sPossibleArrayKey)

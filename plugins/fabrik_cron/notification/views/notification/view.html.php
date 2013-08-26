@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class FabrikViewNotification extends JView
+class FabrikViewNotification extends JViewLegacy
 {
 
 	/**
@@ -29,7 +29,6 @@ class FabrikViewNotification extends JView
 	 * http://localhost/fabrik30x/index.php?option=com_fabrik&task=cron.display&id=3
 	 *
 	 * deletion not routing right yet
-	 * langauge strings not loading either
 	 *
 	 * @param   string  $tpl  Template
 	 *
@@ -38,20 +37,16 @@ class FabrikViewNotification extends JView
 
 	public function display($tpl = 'default')
 	{
-		$this->rows = $this->get('UserNotifications');
-
+		$model = $this->getModel();
+		$model->loadLang();
+		$this->rows = $model->getUserNotifications();
+		$this->id = $model->getId();
+		$j3 = FabrikWorker::j3();
 		$viewName = $this->getName();
-
+		$tpl = $j3 ? 'bootstrap' : 'default';
 		$tmplpath = JPATH_ROOT . '/plugins/fabrik_cron/notification/views/notification/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
-
-		$ab_css_file = $tmplpath . '/template.css';
-
-		if (JFile::exists($ab_css_file))
-		{
-			JHTML::stylesheet('template.css', '/plugins/fabrik_cron/notification/views/notification/tmpl/' . $tpl . '/', true);
-		}
-
+		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_cron/notification/views/notification/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
 
