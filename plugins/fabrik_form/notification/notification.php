@@ -142,15 +142,26 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		{
 			$fields[] = 'user_id = ' . $userid;
 
-			// Was using ON DUPLICATE KEY but that is mySQL specific and I couldn't see how an update could have occurred
 			if ($add)
 			{
-				echo JText::_('PLG_CRON_NOTIFICATION_ADDED');
+
 				$fields[] = 'reason = ' . $db->quote($why);
 				$query->insert('#__{package}_notification')->set($fields);
 				$db->setQuery($query);
-				$db->execute();
-
+				$ok = true;
+				try
+				{
+					$db->execute();
+				}
+				catch (Exception $e)
+				{
+					$ok = false;
+					// Supress notice if duplicate
+				}
+				if ($ok)
+				{
+					echo JText::_('PLG_CRON_NOTIFICATION_ADDED');
+				}
 			}
 			else
 			{
@@ -230,8 +241,10 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$why = $rowId == '' ? 'author' : 'editor';
 		$this->process($notify, $why);
 
-		// Add entry indicating the form has been updated this record will then be used by the cron plugin to
-		// see which new events have been generated and notify subscribers of said events.
+		/*
+		 * Add entry indicating the form has been updated this record will then be used by the cron plugin to
+		 * see which new events have been generated and notify subscribers of said events.
+		 */
 		$db = FabrikWorker::getDbo();
 		$event = $rowId == '' ? $db->quote(JText::_('RECORD_ADDED')) : $db->quote(JText::_('RECORD_UPDATED'));
 		$date = JFactory::getDate();
@@ -244,7 +257,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$fields = array('reference = ' . $ref, 'event = ' . $event, 'date_time = ' . $date);
 		if ($params->get('send_mode') == '0')
 		{
-			$fields = array('user_id = ' . $userid);
+			$fields[] = 'user_id = ' . (int) $userid;
 			$query->insert('#__{package}_notification_event')->set($fields);
 			$db->setQuery($query);
 			$db->execute();
