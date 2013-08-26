@@ -63,7 +63,7 @@ echo "
 }
 
 #main #{$view}_$c h1{
-	paddiing-left:10px;
+	padding-left:10px;
 	margin:0;
 }
 
