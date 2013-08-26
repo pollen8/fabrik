@@ -63,9 +63,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Determines the label used for the browser title
 	 * in the form/detail views
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	default value
 	 */
@@ -95,7 +95,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Get sub elements initial selection
 	 *
-	 * @return  array  initially selected values
+	 * @return  array  Initially selected values
 	 */
 
 	public function getSubInitialSelection()
@@ -110,8 +110,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Does the element conside the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
 	 *
 	 * @return  bool
 	 */
@@ -132,7 +132,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
-	 * @param   array  $data  form data
+	 * @param   array  $data  Form data
 	 *
 	 * @return mixed
 	 */
@@ -199,7 +199,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$element = $this->getElement();
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
-		$glue = $this->getElement()->filter_exact_match ? 'AND' : 'OR';
+		$glue = 'OR';
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$originalValue = (array) $originalValue;
@@ -213,8 +213,6 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		}
 		else
 		{
-			// Glue = AND will never return any results?!
-			$glue = 'OR';
 			$originalValue = trim($value, "'");
 
 			/*
@@ -267,11 +265,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Get the table filter for the element
 	 *
-	 * @param   int   $counter  filter order
-	 * @param   bool  $normal   do we render as a normal filter or as an advanced search filter
+	 * @param   int   $counter  Filter order
+	 * @param   bool  $normal   Do we render as a normal filter or as an advanced search filter
 	 * if normal include the hidden fields as well (default true, use false for advanced filter rendering)
 	 *
-	 * @return  string	filter html
+	 * @return  string	Filter HTML
 	 */
 
 	public function getFilter($counter = 0, $normal = true)
@@ -359,9 +357,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
-	 * @return  array  html ids to watch for validation
+	 * @return  array  HTML ids to watch for validation
 	 */
 
 	public function getValidationWatchElements($repeatCounter)
@@ -374,11 +372,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Turn form value into email formatted value
 	 *
-	 * @param   mixed  $value          element value
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  group repeat counter
+	 * @param   mixed  $value          Element value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Group repeat counter
 	 *
-	 * @return  string  email formatted value
+	 * @return  string  Email formatted value
 	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
@@ -430,13 +428,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * Used by radio and dropdown elements to get a dropdown list of their unique
 	 * unique values OR all options - basedon filter_build_method
 	 *
-	 * @param   bool    $normal     do we render as a normal filter or as an advanced search filter
-	 * @param   string  $tableName  table name to use - defaults to element's current table
-	 * @param   string  $label      field to use, defaults to element name
-	 * @param   string  $id         field to use, defaults to element name
-	 * @param   bool    $incjoin    include join
+	 * @param   bool    $normal     Do we render as a normal filter or as an advanced search filter
+	 * @param   string  $tableName  Table name to use - defaults to element's current table
+	 * @param   string  $label      Field to use, defaults to element name
+	 * @param   string  $id         Field to use, defaults to element name
+	 * @param   bool    $incjoin    Include join
 	 *
-	 * @return  array  text/value objects
+	 * @return  array  Text/value objects
 	 */
 
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
@@ -456,7 +454,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 *
 	 * @since   3.0.7
 	 *
-	 * @return string  json encoded search results
+	 * @return string  Json encoded search results
 	 */
 
 	public static function cacheAutoCompleteOptions($elementModel, $search, $opts = array())
@@ -504,8 +502,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
@@ -595,10 +593,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Prepares the element data for CSV export
 	 *
-	 * @param   string  $data      element data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Element data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData_csv($data, &$thisRow)
@@ -612,10 +610,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Draws the html form element
 	 *
-	 * @param   array  $data           to preopulate element with
-	 * @param   int    $repeatCounter  repeat group counter
+	 * @param   array  $data           To preopulate element with
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
-	 * @return  string	elements html
+	 * @return  string	Elements html
 	 */
 
 	public function render($data, $repeatCounter = 0)
@@ -748,9 +746,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * called from within function getValue
 	 * needed so we can append _raw to the name for elements such as db joins
 	 *
-	 * @param   array  $opts  options
+	 * @param   array  $opts  Options
 	 *
-	 * @return  string  element name inside data array
+	 * @return  string  Element name inside data array
 	 */
 
 	protected function getValueFullName($opts)
@@ -761,9 +759,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	value
 	 */
@@ -792,8 +790,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	/**
 	 * format the read only output for the page
 	 *
-	 * @param   string  $value  initial value
-	 * @param   string  $label  label
+	 * @param   string  $value  Initial value
+	 * @param   string  $label  Label
 	 *
 	 * @return  string  read only value
 	 */
@@ -898,8 +896,8 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	 * JSON-ified options for multiselect elements, which the main element model getLabelForValue()
 	 * doesn't do.  But I need to sort out how this gets handled in rendering as well.
 	 *
-	 * @param   string  $v             value
-	 * @param   string  $defaultLabel  default label
+	 * @param   string  $v             Value
+	 * @param   string  $defaultLabel  Default label
 	 *
 	 * @return  string	label
 	 */
