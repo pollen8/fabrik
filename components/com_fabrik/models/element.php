@@ -1874,6 +1874,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->plugin = $elementTable->plugin;
 		$element->hidden = $this->isHidden();
 		$element->id = $this->getHTMLId($c);
+		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
 		$element->label_raw = $this->element->label;
@@ -1962,7 +1963,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function containerClass($element)
 	{
 		$item = $this->getElement();
-		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $item->name . '_' . $item->group_id);
+		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $element->className, $item->name, $item->name . '_' . $item->group_id);
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
