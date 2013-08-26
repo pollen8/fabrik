@@ -704,13 +704,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$db = FabrikWorker::getDbo();
 			$w = new FabrikWorker;
-			$lang = JFactory::getLanguage();
 			$data = is_array($data) ? $data : array();
-			if (!isset($data['lang']))
-			{
-				$data['lang'] = $lang->getTag();
-				$data['lang'] = str_replace('-', '_', $data['lang']);
-			}
 			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
 			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
 			$query->select($desc . ' AS description');
@@ -2302,9 +2296,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($this->getParams()->get('database_join_display_type', 'dropdown') == 'auto-complete')
 		{
 			$autoOpts = array();
-			$maxRows = $this->getParams()->get('autocomplete_rows', '10');
+			$autoOpts['max'] = $this->getParams()->get('autocomplete_rows', '10');
 			$autoOpts['storeMatchedResultsOnly'] = true;
-			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin', $autoOpts, $maxRows);
+			FabrikHelperHTML::autoComplete($id, $this->getElement()->id, $this->getFormModel()->getId(), 'databasejoin', $autoOpts);
 		}
 		$opts = $this->elementJavascriptOpts($repeatCounter);
 		return array('FbDatabasejoin', $id, $opts);

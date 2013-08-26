@@ -95,6 +95,7 @@ var FbListInlineEdit = new Class({
 	watchCells: function () {
 		var firstLoaded = false;
 		this.getList().getForm().getElements('.fabrik_element').each(function (td, x) {
+			
 			if (this.canEdit(td)) {
 				if (!firstLoaded && this.options.loadFirst) {
 					firstLoaded = this.edit(null, td);
@@ -251,9 +252,16 @@ var FbListInlineEdit = new Class({
 		}
 	},
 
+	/**
+	 * Parse the td class name to grab the element name
+	 * 
+	 * @param   DOM node  td  Cell to parse.
+	 * 
+	 * @return  string  Element name
+	 */
 	getElementName: function (td) {
 		var c = td.className.trim().split(' ').filter(function (item, index) {
-			return item !== 'fabrik_element' && item !== 'fabrik_row';
+			return item !== 'fabrik_element' && item !== 'fabrik_row' && !item.contains('hidden');
 		});
 		var element = c[0].replace('fabrik_row___', '');
 		return element;

@@ -119,7 +119,26 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 </style>';
 		$this->element['cols'] = 1;
 		$this->element['rows'] = 1;
-		$editor = parent::getInput();
+
+		// Initialize some field attributes.
+		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+		$columns = $this->element['cols'] ? ' cols="' . (int) $this->element['cols'] . '"' : '';
+		$rows = $this->element['rows'] ? ' rows="' . (int) $this->element['rows'] . '"' : '';
+		$required = $this->required ? ' required="required" aria-required="true"' : '';
+
+		// Initialize JavaScript field attributes.
+		$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
+
+		// JS events are saved as encoded html - so we don't want to double encode them
+		$encoded = JArrayHelper::getValue($this->element, 'encoded', false);
+		if (!$encoded)
+		{
+			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		}
+
+		$editor = '<textarea name="' . $this->name . '" id="' . $this->id . '"' . $columns . $rows . $class . $disabled . $onchange . $required . '>'
+			. $this->value . '</textarea>';
 
 		// For element js event code.
 		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace"></div>' . $editor . '</div>';

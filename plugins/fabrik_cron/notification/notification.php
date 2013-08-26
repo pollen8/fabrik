@@ -49,7 +49,6 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 
 	public function process(&$data)
 	{
-
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('n.*, e.event AS event, e.id AS event_id,
@@ -100,7 +99,8 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 		foreach ($usermsgs as $email => $messages)
 		{
 			$msg = implode(' ', $messages);
-			if (JUtility::sendMail($email_from, $email_from, $email, $subject, $msg, true))
+			$mailer = JFactory::getMailer();
+			if ($mailer->sendMail($email_from, $email_from, $email, $subject, $msg, true))
 			{
 				$successMails[] = $email;
 			}
@@ -122,6 +122,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 		{
 			$this->log .= 'Failed emails: <ul><li>' . implode('</li><li>', $failedMails) . '</li></ul>';
 		}
+		return count($successMails);
 	}
 
 }

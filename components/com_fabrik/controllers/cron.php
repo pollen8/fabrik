@@ -23,7 +23,7 @@ jimport('joomla.application.component.controller');
  * @since       3.0.7
  */
 
-class FabrikControllerCron extends JController
+class FabrikControllerCron extends JControllerLegacy
 {
 
 	/**
@@ -43,11 +43,16 @@ class FabrikControllerCron extends JController
 	/**
 	 * Display the view
 	 *
-	 * @return  null
+	 * @param   boolean  $cachable   If true, the view output will be cached
+	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 *
+	 * @return  JController  A JController object to support chaining.
 	 */
 
-	public function display()
+	public function display($cachable = false, $urlparams = false)
 	{
+
+		//http://localhost/fabrik31x/index.php?option=com_fabrik&task=cron.delete&id=3
 		$document = JFactory::getDocument();
 		$viewName = $this->getViewName();
 		$viewType = $document->getType();
@@ -64,11 +69,19 @@ class FabrikControllerCron extends JController
 		$view->error = $this->getError();
 
 		$jinput = JFactory::getApplication()->input;
+		$task = $jinput->getCmd('task');
+		if (!strstr($task, '.'))
+		{
+			$task = 'display';
+		} else {
+			$task = explode('.', $task);
+			$task = array_pop($task);
+		}
 
 		// F3 cache with raw view gives error
 		if (in_array($jinput->getCmd('format'), array('raw', 'csv')))
 		{
-			$view->display();
+			$view->$task();
 		}
 		else
 		{

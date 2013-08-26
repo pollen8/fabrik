@@ -242,6 +242,10 @@ class Fabimage
 		 * $$$ @FIXME we may need to find something other than file_get_contents($src)
 		 * to use for this, as it requires allow_url_fopen to be enabled in PHP to fetch a URL,
 		 * which a lot of shared hosts don't allow.
+		 *
+		 * -Rob - well JFile::read is deprecated and in the code it says to use file_get_contents
+		 * The Joomla updater won't work with out file_get_contents so I think we should make it a requirement
+		 * Wiki updated here - http://fabrikar.com/forums/index.php?wiki/prerequisites/
 		 */
 
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');

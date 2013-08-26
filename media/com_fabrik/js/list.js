@@ -557,6 +557,7 @@ var FbList = new Class({
 			if (submit) {
 				submit.removeEvents();
 				submit.addEvent('click', function (e) {
+					e.stop();
 					this.doFilter();
 				}.bind(this));
 			}

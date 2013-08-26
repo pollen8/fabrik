@@ -31,7 +31,10 @@ $app = JFactory::getApplication();
 $input = $app->input;
 
 jimport('joomla.filesystem.file');
-FabrikHelperHTML::framework();
+if ($input->get('format', 'html') === 'html')
+{
+	FabrikHelperHTML::framework();
+}
 
 JHTML::stylesheet('administrator/components/com_fabrik/headings.css');
 
