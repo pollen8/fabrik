@@ -62,8 +62,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		$element = $this->getElement();
 		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
 			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
-		$monthlabels = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
-			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
 		$monthnumbers = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$daysys = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
 		$daysimple = array('1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -101,7 +99,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				if (FabrikWorker::isDate($value))
 				{
 					$date = JFactory::getDate($value);
-					$detailvalue = $date->toFormat($fd);
+					$detailvalue = $date->format($fd);
 				}
 				if (date('m-d') < $month . '-' . $day)
 				{
@@ -223,7 +221,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$years[] = JHTML::_('select.option', $i);
 			}
 			$errorCSS = (isset($this->_elementError) && $this->_elementError != '') ? " elementErrorHighlight" : '';
-			$attribs = 'class="fabrikinput inputbox' . $errorCSS . '"';
+			$attribs = 'class="input-small fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
 			$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
@@ -236,129 +234,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			$str[] = '</div>';
 			return implode("\n", $str);
 		}
-	}
-
-	/**
-	 * Determines the value for the element in the form view
-	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
-	 *
-	 * @return  string	value
-	 */
-
-	public function getValue($data, $repeatCounter = 0, $opts = array())
-	{
-		// @TODO rename $this->defaults to $this->values
-		if (!isset($this->defaults))
-		{
-			$this->defaults = array();
-		}
-		if (!array_key_exists($repeatCounter, $this->defaults))
-		{
-			$groupModel = $this->getGroup();
-			$joinid = $groupModel->getGroup()->join_id;
-			$formModel = $this->getForm();
-
-			$value = $this->getDefaultOnACL($data, $opts);
-
-			$name = $this->getFullName(false, true, false);
-			$rawname = $name . "_raw";
-			if ($groupModel->isJoin())
-			{
-				if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]))
-				{
-					if ($groupModel->canRepeat())
-					{
-
-						if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$rawname]))
-						{
-							$value = $data['join'][$joinid][$rawname][$repeatCounter];
-						}
-						else
-						{
-							if (array_key_exists($rawname, $data['join'][$joinid]) && array_key_exists($repeatCounter, $data['join'][$joinid][$name]))
-							{
-								$value = $data['join'][$joinid][$name][$repeatCounter];
-							}
-						}
-					}
-					else
-					{
-						$joinDefault = JArrayHelper::getValue($data['join'][$joinid], $name, $value);
-						$value = JArrayHelper::getValue($data['join'][$joinid], $rawname, $joinDefault);
-						/**
-						 * $$$ rob if you have 2 tbl joins, one repeating and one not
-						 * the none repeating one's values will be an array of duplicate values
-						 * but we only want the first value
-						 */
-						if (is_array($value))
-						{
-							$value = array_shift($value);
-						}
-					}
-				}
-			}
-			else
-			{
-				if ($groupModel->canRepeat())
-				{
-					// Repeat group NO join
-					$thisname = $rawname;
-					if (!array_key_exists($name, $data))
-					{
-						$thisname = $name;
-					}
-					if (array_key_exists($thisname, $data))
-					{
-						if (is_array($data[$thisname]))
-						{
-							// Occurs on form submission for fields at least
-							$a = $data[$thisname];
-						}
-						else
-						{
-							// Occurs when getting from the db
-							$a = FabrikWorker::JSONtoData($data[$thisname], true);
-						}
-						$value = JArrayHelper::getValue($a, $repeatCounter, $value);
-					}
-
-				}
-				else
-				{
-					if (!is_array($data))
-					{
-						$value = $data;
-					}
-					else
-					{
-						$value = JArrayHelper::getValue($data, $name, JArrayHelper::getValue($data, $rawname, $value));
-					}
-				}
-			}
-
-			if (is_array($value))
-			{
-				$value = implode(',', $value);
-			}
-			if ($value === '')
-			{
-				// Query string for joined data
-				$value = JArrayHelper::getValue($data, $name, $value);
-			}
-			/**
-			 * @TODO perhaps we should change this to $element->value and store $element->default as the actual default value
-			 * stops this getting called from form validation code as it messes up repeated/join group validations
-			 */
-			if (array_key_exists('runplugins', $opts) && $opts['runplugins'] == 1)
-			{
-				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
-			}
-			$this->defaults[$repeatCounter] = $value;
-		}
-		return $this->defaults[$repeatCounter];
 	}
 
 	/**
@@ -470,7 +345,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 		*/
 		$data = $groupModel->isJoin() ? FabrikWorker::JSONtoData($data, true) : array($data);
 		$data = (array) $data;
-
 		$format = array();
 		foreach ($data as $d)
 		{
