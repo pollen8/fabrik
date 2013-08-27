@@ -26,7 +26,7 @@
 			cols="6" 
 			label="COM_FABRIK_FIELD_INTRODUCTION_LABEL"
 			description="COM_FABRIK_FIELD_INTRODUCTION_DESC" />
-			
+		
 		<field name="error" 
 			type="text"
 			size="40" 
@@ -81,7 +81,7 @@
 	</fieldset>
 	
 	<fields name="params">
-		
+	
 		<fieldset name="details2">
 		
 			<field name="outro" 
@@ -93,6 +93,7 @@
 				description="COM_FABRIK_FIELD_OUTRO_DESC" />
 				
 		</fieldset>
+
 		<fieldset name="buttons">
 		
 			<field name="reset_button" 
