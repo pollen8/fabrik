@@ -227,7 +227,7 @@ var FabrikComment = new Class({
 		this.ajax.addComment.options.data.reply_to = replyto;
 		this.ajax.addComment.options.data.comment = v;
 		this.ajax.addComment.send();
-		this.element.getElement('textarea').value = '';
+		replyform.getElement('textarea').value = '';
 	},
 
 	saveComment : function (div) {

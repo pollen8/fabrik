@@ -284,6 +284,19 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 	}
 
 	/**
+	 * Can we add internal comments
+	 *
+	 * @return boolean
+	 */
+	private function canAddComment()
+	{
+		$user = JFactory::getUser();
+		$params = $this->getParams();
+		$anonymous = $params->get('comment-internal-anonymous');
+		return $user->get('id') == 0 && $anonymous == 0 ? false : true;
+	}
+
+	/**
 	 * Build the html for the internal comment form
 	 *
 	 * @param   int     $reply_to  Comment id that we are replying to
@@ -300,14 +313,14 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$anonymous = $params->get('comment-internal-anonymous');
-		if ($user->get('id') == 0 && $anonymous == 0)
+		if (!$this->canAddComment())
 		{
 			return;
 		}
 		$m = $master ? " id='master-comment-form' " : '';
 		$data[] = '<form action="index.php" ' . $m . ' class="replyform">';
-		$data[] = '<p><textarea style="width:95%" rows="6" cols="3">';
-		$data[] = JText::_('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE') . '</textarea></p>';
+		$data[] = '<p><textarea style="width:95%" rows="6" cols="3" placeholder="' . JText::_('PLG_FORM_COMMENT_TYPE_A_COMMENT_HERE') . '">';
+		$data[] =  '</textarea></p>';
 		$data[] = '<table class="adminForm" style="width:350px" summary="comments">';
 		if ($user->get('id') == 0)
 		{
@@ -524,9 +537,9 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$j3 = FabrikWorker::j3();
 		$name = (int) $comment->annonymous == 0 ? $comment->name : JText::_('PLG_FORM_COMMENT_ANONYMOUS_SHORT');
 		$data = array();
-		$data[] = '<div class="metadata">';
+		$data[] = '<div class="metadata muted">';
 		$data[] = '<small><i class="icon-user"></i> ';
-		$data[] = $name . ' </small>' . JText::_('PLG_FORM_COMMENT_WROTE_ON');
+		$data[] = $name . ', ' . JText::_('PLG_FORM_COMMENT_WROTE_ON') . ' </small>';
 		$data[] = '<i class="icon-calendar"></i> ';
 		$data[] = ' <small>' . JHTML::date($comment->time_date) . '</small>';
 
@@ -561,25 +574,34 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$data[] = '</div>';
 		$data[] = '<div class="comment" id="comment-' . $comment->id . '">';
 		$data[] = '<div class="comment-content">' . $comment->comment . '</div>';
-		$data[] = '<div class="reply">';
-		if (!$this->commentsLocked)
-		{
-			$data[] = '<a href="#" class="replybutton btn btn-small">' . JText::_('PLG_FORM_COMMENT_REPLY') . '</a>';
-		}
-		if ($user->authorise('core.delete', 'com_fabrik'))
-		{
-			//$data[] = '<div class="admin">';
-			$data[] = '<a href="#" class="del-comment btn btn-danger btn-small">' . JText::_('PLG_FORM_COMMENT_DELETE') . '</a>';
-			//$data[] = '</div>';
-		}
-		$data[] = '</div>';
-		$data[] = '</div>';
+		$this->commentActions($data);
 		$data[] = '</div>';
 		if (!$this->commentsLocked)
 		{
 			$data[] = $this->getAddCommentForm($comment->id);
 		}
 		return implode("\n", $data);
+	}
+
+	/**
+	 * Add reply/delete links to the comment form
+	 *
+	 * @param   array  &$data  HTML
+	 */
+
+	protected function commentActions(&$data)
+	{
+		$user = JFactory::getUser();
+		$data[] = '<div class="reply">';
+		if (!$this->commentsLocked && $this->canAddComment())
+		{
+			$data[] = '<a href="#" class="replybutton btn btn-small btn-link">' . JText::_('PLG_FORM_COMMENT_REPLY') . '</a>';
+		}
+		if ($user->authorise('core.delete', 'com_fabrik'))
+		{
+			$data[] = '<a href="#" class="del-comment btn btn-danger btn-small">' . JText::_('PLG_FORM_COMMENT_DELETE') . '</a>';
+		}
+		$data[] = '</div>';
 	}
 
 	/**
@@ -640,7 +662,7 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 		$id = $input->getInt('comment_id');
 		$comment = $db->quote($input->get('comment', '', 'string'));
 		$query = $db->getQuery(true);
-		$query->update('UPDATE #__{package}_comments')->set('comment = ' . $comment)->where('id = ' . $id);
+		$query->update('#__{package}_comments')->set('comment = ' . $comment)->where('id = ' . $id);
 		$db->setQuery($query);
 		$db->execute();
 	}
