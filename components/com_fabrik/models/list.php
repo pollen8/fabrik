@@ -1792,10 +1792,6 @@ class FabrikFEModelList extends JModelForm
 			$bits[] = 'usekey=' . FabrikString::shortColName($key);
 			$bits[] = 'rowid=' . $row->slug;
 		}
-		else
-		{
-			$bits[] = 'rowid=0';
-		}
 
 		$url = 'index.php?option=com_' . $package . '&' . implode('&', $bits);
 		$url = JRoute::_($url);
