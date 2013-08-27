@@ -694,16 +694,16 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 					$arrloc[1] = array_key_exists(1, $arrloc) ? str_replace(")", "", array_shift(explode(":", $arrloc[1]))) : '';
 					$edit = $this->isEditable() ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
-					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat"/>
-					<input ' . $edit . ' size="23" value="' . $arrloc[1] . ' ° E"  class="inputbox lng"/></div>';
+					<input ' . $edit . ' size="23" value="' . $arrloc[0] . ' ° N" style="margin-right:5px" class="inputbox lat fabrikinput"/>
+					<input ' . $edit . ' size="23" value="' . $arrloc[1] . ' ° E"  class="inputbox lng fabrikinput"/></div>';
 				}
 				if (($this->isEditable() || $params->get('fb_gm_staticmap') == '2') && $params->get('fb_gm_latlng_dms') == '1')
 				{
 					$dms = $this->_strToDMS($val);
 					$edit = $this->isEditable() ? '' : 'disabled="true"';
 					$str .= '<div class="coord" style="margin-top:5px;">
-					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[0] . '" style="margin-right:5px" class="latdms"/>
-					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[1] . '"  class="lngdms"/></div>';
+					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[0] . '" style="margin-right:5px" class="latdms fabrikinput"/>
+					<input ' . $edit . ' size=\"23\" value="' . $dms->coords[1] . '"  class="lngdms fabrikinput"/></div>';
 				}
 				$str .= '</div>';
 			}
