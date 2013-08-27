@@ -479,7 +479,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		// Remove tags from labels
-		if ($this->canUse())
+		if ($this->canUse() && !in_array($displayType, array('radio', 'checkbox')))
 		{
 			foreach ($this->_optionVals[$sqlKey] as $key => &$opt)
 			{
@@ -534,6 +534,9 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			// For values like '1"'
 			// $$$ hugh - added second two params so we set double_encode false
 			$o->text = htmlspecialchars($o->text, ENT_NOQUOTES, 'UTF-8', false);
+
+			// Option text may have tags (if radio or chx)
+			$o->text = str_replace(array('&lt;', '&gt;'), array('<', '>'), $o->text);
 		}
 		$table = $this->getlistModel()->getTable()->db_table_name;
 		if (is_array($aDdObjs))
@@ -1015,6 +1018,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 		$default = (array) $this->getValue($data, $repeatCounter);
 		$tmp = $this->_getOptions($data, $repeatCounter);
+
 		$w = new FabrikWorker;
 		foreach ($default as &$d)
 		{
