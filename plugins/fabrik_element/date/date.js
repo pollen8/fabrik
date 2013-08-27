@@ -176,7 +176,8 @@ var FbDateTime = new Class({
 	 * reset the date back to the display date when the validation is complete
 	 */
 	afterAjaxValidation: function () {
-		this.update(this.getValue());
+		// Don't fire change events though - as we're simply resetting the date back to the correct format
+		this.update(this.getValue(), []);
 	},
 
 	makeCalendar: function () {
@@ -399,8 +400,12 @@ var FbDateTime = new Class({
 
 	/**
 	 * takes a date object or string
+	 * 
+	 * @param   mixed  val     Date, string or date object
+	 * @param   array  events  Events to fire defaults to ['change']
 	 */
-	update: function (val) {
+	update: function (val, events) {
+		events = events ? events : [ 'change' ];
 		this.getElement();
 		if (val === 'invalid date') {
 			fconsole(this.element.id + ': date not updated as not valid');
@@ -433,8 +438,9 @@ var FbDateTime = new Class({
 		if (this.options.dateTimeFormat !== '' && this.options.showtime) {
 			f += ' ' + this.options.dateTimeFormat;
 		}
-
-		this.fireEvents([ 'change' ]);
+		if (events.length > 0) {
+			this.fireEvents(events);
+		}
 		if (typeOf(val) === 'null' || val === false) {
 			return;
 		}
