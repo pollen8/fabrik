@@ -683,12 +683,13 @@ class FabrikAdminModelList extends FabModelAdmin
 		$pk = JArrayHelper::getValue($data, 'db_primary_key');
 		if ($pk == '')
 		{
-			$fields = $row->getFields();
-			$key = $row->getKeyName();
+			$pk = $feModel->getPrimaryKeyAndExtra($data['db_table_name']);
+			$key = $pk[0]['colname'];
+			$extra = $pk[0]['extra'];
 
 			// Store without quoteNames as thats db specific
 			$row->db_primary_key = $row->db_primary_key == '' ? $row->db_table_name . "." . $key : $row->db_primary_key;
-			$row->auto_inc = JString::stristr($fields[$key]->Extra, 'auto_increment') ? true : false;
+			$row->auto_inc = JString::stristr($extra, 'auto_increment') ? true : false;
 		}
 
 		$row->store();
