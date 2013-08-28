@@ -261,6 +261,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
+		echo $gmt;
 		if (!FabrikWorker::isDate($gmt))
 		{
 			$date = '';
@@ -881,6 +882,8 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$alwaysToday = $params->get('date_alwaystoday', false);
 		$formModel = $this->getFormModel();
 		$value = parent::getValue($data, $repeatCounter, $opts);
+
+		$db = FabrikWorker::getDbo();
 		$input = JFactory::getApplication()->input;
 		if (is_array($value))
 		{
@@ -892,11 +895,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;
 		}
-
+		if ($value == '' || $db->getNullDate() == $value)
+		{
+			return $value;
+		}
 		if ($alwaysToday && $formModel->isEditable())
 		{
 			$value = '';
 		}
+
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$date = JFactory::getDate($value, $timeZone);
 
