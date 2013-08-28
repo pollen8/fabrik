@@ -1037,7 +1037,8 @@ EOD;
 		$config[] = "require.config({";
 		$config[] = "\tbaseUrl: '" . COM_FABRIK_LIVESITE . "',";
 		$config[] = "\tpaths: " . $pathString . ",";
-		$config[] = "\tshim: " . $shim;
+		$config[] = "\tshim: " . $shim . ',';
+		$config[] = "\twaitSeconds: 30,";
 		$config[] = "});";
 		$config[] = "\n";
 
