@@ -1526,7 +1526,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$data = JArrayHelper::fromObject($data);
 		}
 		$rollOver = $this->tipHtml($data, $mode);
-		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : '';
+		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : $txt;
 	}
 
 	/**
@@ -1589,8 +1589,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
 		}
-
-		$lines[] = '</ul></div>';
+		if (count($lines) > 0)
+		{
+			$lines[] = '</ul></div>';
+		}
 		$lines = array_unique($lines);
 		$rollOver = implode('', $lines);
 
