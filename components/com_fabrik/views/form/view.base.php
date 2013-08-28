@@ -121,8 +121,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->groups = $model->getGroupView($tmpl);
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
-		$this->data = $model->data;
-		$this->modeldata = $model->data;
+		$this->data = $model->tmplData;
 		$this->params = $params;
 		$this->tipLocation = $params->get('tiplocation');
 
