@@ -530,7 +530,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		$params = $this->getParams();
 
-		$iconFile = $params->get('icon_file', '');
+		$iconFile = (string) $params->get('icon_file', '');
 		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
 		{
 			$this->iconsSet = false;
@@ -543,7 +543,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 
-		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
+		$cleanData = empty($iconfile) ? FabrikString::clean(strip_tags($data)) : $iconfile;
 		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
 		foreach ($cleanDatas as $cleanData)
 		{
