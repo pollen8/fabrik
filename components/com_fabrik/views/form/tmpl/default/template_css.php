@@ -195,7 +195,7 @@ echo "
 	background-color: #FAFAFA;
 }
 
-#details_$c .oddRow1,
+#details_$c .oddRow1 {
 	background-color: #Efefef;
 }
 
