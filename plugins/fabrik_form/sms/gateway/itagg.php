@@ -47,7 +47,6 @@ class Itagg extends JObject
 		$smstos = explode(",", $smsto);
 
 		$message = urlencode($message);
-		$message = 'test';
 		foreach ($smstos as $smsto)
 		{
 
