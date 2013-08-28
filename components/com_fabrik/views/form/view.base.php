@@ -121,8 +121,7 @@ class FabrikViewFormBase extends JViewLegacy
 
 		$this->groups = $model->getGroupView($tmpl);
 		JDEBUG ? $profiler->mark('form view after group view got') : null;
-		$this->data = $model->data;
-		$this->modeldata = $model->data;
+		$this->data = $model->tmplData;
 		$this->params = $params;
 		$this->tipLocation = $params->get('tiplocation');
 
@@ -177,7 +176,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
-		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->isEditable() === false))
+		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
 			FabrikHelperHTML::runConentPlugins($text);
 		}

@@ -1014,7 +1014,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		 */
 		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
 		$jVersion = $version->RELEASE;
-		return $jversion;
+		return $jVersion;
 	}
 
 	/**

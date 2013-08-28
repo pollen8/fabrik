@@ -553,14 +553,13 @@ var FbList = new Class({
 			}
 		}.bind(this));
 			
-		if (this.options.filterMethod === 'submitform') {
-			if (submit) {
-				submit.removeEvents();
-				submit.addEvent('click', function (e) {
-					e.stop();
-					this.doFilter();
-				}.bind(this));
-			}
+		// Watch submit if present regardless of this.options.filterMethod
+		if (submit) {
+			submit.removeEvents();
+			submit.addEvent('click', function (e) {
+				e.stop();
+				this.doFilter();
+			}.bind(this));
 		}
 		this.getFilters().addEvent('keydown', function (e) {
 			if (e.code === 13) {

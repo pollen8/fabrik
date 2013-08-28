@@ -266,7 +266,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			}
 			$data[$key][$c] = $res;
 		}
-			
+
 		$form->updateFormData($key, $data[$key]);
 		$form->updateFormData($rawkey, $data[$key]);
 	}
@@ -467,7 +467,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$m = preg_replace('#_raw$#', '', $m);
 		}
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
-		$opts->observe = $obs;
+		$opts->observe = array_values($obs);
 		$opts->id = $this->id;
 		$validations = $this->validator->findAll();
 		$opts->validations = empty($validations) ? false : true;

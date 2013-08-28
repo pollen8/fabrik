@@ -209,7 +209,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$v = str_replace("/", "\\\\/", $v);
 				$str[] = '(' . $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' OR ' . $key . ' = ' . $db->quote($v) . ') ';
 			}
-			$str = implode($glue, $str);
+			$str = '(' . implode($glue, $str) . ')';
 		}
 		else
 		{
@@ -516,28 +516,45 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$multiple = $this->isMultiple();
 		$mergeGroupRepeat = ($this->getGroup()->canRepeat() && $this->getListModel()->mergeJoinedData());
 		$sLabels = array();
+		$useIcon = $params->get('icon_folder', 0);
+
+		// Give priority to raw value icons (podion)
+		$raw = $this->getFullName(true, false) . '_raw';
+		if (isset($thisRow->$raw))
+		{
+			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+			foreach ($rawData as &$val)
+			{
+				$val = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
+			}
+			if ($this->iconsSet)
+			{
+				// Use raw icons
+				$data = $rawData;
+				$useIcon = false;
+			}
+		}
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
-		$useIcon = $params->get('icon_folder', 0);
 		foreach ($gdata as $i => $d)
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
-			foreach ($vals as $val)
+			foreach ($vals as $tmpVal)
 			{
-				$l = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
+				$l = $useIcon ? $this->replaceWithIcons($tmpVal, 'list', $listModel->getTmpl()) : $tmpVal;
 				if (!$this->iconsSet == true)
 				{
 					if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
 					{
-						$l = $this->getLabelForValue($val);
+						$l = $this->getLabelForValue($tmpVal);
 					}
 					else
 					{
-						$l = $val;
+						$l = $tmpVal;
 					}
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}

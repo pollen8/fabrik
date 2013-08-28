@@ -208,6 +208,14 @@ class FabrikFEModelForm extends FabModelForm
 	public $data = null;
 
 	/**
+	 * Form data - ready for use in template. Contains HTML output for listname___elementname
+	 * and raw value for listname___elementname_raw
+	 *
+	 * @var array
+	 */
+	public $tmplData = array();
+
+	/**
 	 * Form data - keys use the full element name (listname___elementname)
 	 * @var unknown_type
 	 */
@@ -4204,6 +4212,8 @@ class FabrikFEModelForm extends FabModelForm
 				$data[$key] = $val;
 			}
 		}
+		$this->tmplData = $data;
+
 		$this->groupView = array();
 		$this->readOnlyVals = array();
 
