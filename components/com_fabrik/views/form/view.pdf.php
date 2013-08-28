@@ -26,7 +26,7 @@ class FabrikViewForm extends FabrikViewFormBase
 	/**
 	 * Main setup routine for displaying the form/detail view
 	 *
-	 * @param   string  $tpl  template
+	 * @param   string  $tpl  Template
 	 *
 	 * @return  void
 	 */
@@ -35,7 +35,7 @@ class FabrikViewForm extends FabrikViewFormBase
 	{
 		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
 		{
-			JError::raiseError(404, 'Please install the dompdf library');
+			throw new RuntimeException('Please install the dompdf library', 404);
 			return;
 		}
 		if (parent::display($tpl) !== false)
@@ -53,9 +53,9 @@ class FabrikViewForm extends FabrikViewFormBase
 	/**
 	 * Set the page title
 	 *
-	 * @param   object  $w        parent worker
-	 * @param   object  &$params  parameters
-	 * @param   object  $model    form model
+	 * @param   object  $w        Parent worker
+	 * @param   object  &$params  Parameters
+	 * @param   object  $model    Form model
 	 *
 	 * @return  void
 	 */
