@@ -177,7 +177,7 @@ class FabrikViewFormBase extends JViewLegacy
 		$text = $this->loadTemplate();
 		$model = $this->getModel();
 		$params = $model->getParams();
-		if ($params->get('process-jplugins') == 1 || ($params->get('process-jplugins') == 2 && $model->isEditable() === false))
+		if ($params->get('process-jplugins', 2) == 1 || ($params->get('process-jplugins', 2) == 2 && $model->isEditable() === false))
 		{
 			FabrikHelperHTML::runConentPlugins($text);
 		}
