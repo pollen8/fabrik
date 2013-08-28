@@ -397,8 +397,8 @@ class FabrikFEModelGroup extends FabModel
 	/**
 	 * Set the element column css allows for group column settings to be applied
 	 *
-	 * @param   object  &$element  prerender element properties
-	 * @param   int     $rowIx   current key when looping over elements.
+	 * @param   object  &$element  Prerender element properties
+	 * @param   int     $rowIx     Current key when looping over elements.
 	 *
 	 * @since 	Fabrik 3.0.5.2
 	 *
@@ -438,6 +438,7 @@ class FabrikFEModelGroup extends FabModel
 
 		$element->startRow = false;
 		$element->endRow = false;
+
 		// $rowIx == -1 indicates a new row = distinguish from 0 to allow hidden fields at start of row.
 		if ($rowIx < 0)
 		{
@@ -459,6 +460,7 @@ class FabrikFEModelGroup extends FabModel
 		if (($rowIx % $colcount === 0))
 		{
 			$element->endRow = true;
+
 			// Reset rowIx to indicate a new row.
 			$rowIx = -1;
 		}
@@ -1182,7 +1184,19 @@ class FabrikFEModelGroup extends FabModel
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		$query->delete($list->db_table_name)->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+		$query->delete($list->db_table_name);
+		if (is_array($masterInsertId))
+		{
+			foreach ($masterInsertId as &$mid)
+			{
+				$mid = $db->quote($mid);
+			}
+			$query->where($join->table_join_key . ' IN (' . implode(', ', $masterInsertId) . ')');
+		}
+		else
+		{
+			$query->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+		}
 		if (!empty($usedKeys))
 		{
 			$pk = $join->params->get('pk');

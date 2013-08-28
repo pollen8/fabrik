@@ -1877,6 +1877,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
+		
+		// Ensure that view data property contains the same html as the group's element
+		$model->data[$elHTMLName] = $element->element;
 		$element->label_raw = $this->element->label;
 
 		// GetLabel needs to know if the element is editable
@@ -1995,7 +1998,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   object  $element             to merge
 	 * @param   array   &$aElements          element array
-	 * @param   array   &$namedData          element HTML names
+	 * @param   array   &$namedData          Form data
 	 * @param   array   &$aSubGroupElements  sub group element array
 	 *
 	 * @return  void
@@ -6610,11 +6613,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$allJoinValues = $formData[$name];
 		if ($groupModel->isJoin())
 		{
-			$groupJoin = $groupModel->getJoinModel()->getJoin();
-
+			$groupJoinModel = $groupModel->getJoinModel();
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
-			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
+			$k = $groupJoinModel->getForeignKey();
 			$parentIds = (array) $formData[$k];
 
 		}
