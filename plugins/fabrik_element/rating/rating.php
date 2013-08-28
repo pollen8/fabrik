@@ -343,7 +343,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			$str[] = $clearImg;
 		}
-		$str[] = '<span class="ratingScore">' . $this->avg . '</span>';
+		$str[] = '<span class="ratingScore badge badge-info">' . $this->avg . '</span>';
 		$str[] = '<div class="ratingMessage">';
 		$str[] = '</div>';
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
