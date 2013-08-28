@@ -543,47 +543,66 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 
-		$cleanData = $iconFile === '' ? FabrikString::clean(strip_tags($data)) : $iconFile;
-		foreach ($this->imageExtensions as $ex)
+		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
+		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
+		foreach ($cleanDatas as $cleanData)
 		{
-			$f = JPath::clean($cleanData . '.' . $ex);
-			$opts = array('forceImage' => true);
-			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
-			if ($img !== '')
+			foreach ($this->imageExtensions as $ex)
 			{
-				$this->iconsSet = true;
-				$opts = new stdClass;
-				$opts->position = 'top';
-				$opts = json_encode($opts);
-				$data = '<span>' . $data . '</span>';
+				$f = JPath::clean($cleanData . '.' . $ex);
+				$opts = array('forceImage' => true);
+				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
+				if ($img !== '')
+				{
+					$this->iconsSet = true;
+					$opts = new stdClass;
+					$opts->position = 'top';
+					$opts = json_encode($opts);
+					$data = '<span>' . $data . '</span>';
 
-				// See if data has an <a> tag
-				if (class_exists('DOMDocument'))
-				{
-					$html = new DOMDocument;
-					$html->loadXML($data);
-					$as = $html->getElementsBytagName('a');
-				}
-				if ($params->get('icon_hovertext', true))
-				{
-					$ahref = '#';
-					$target = '';
-					if (class_exists('DOMDocument') && $as->length)
+					// See if data has an <a> tag
+					if (class_exists('DOMDocument'))
 					{
-						// Data already has an <a href="foo"> lets get that for use in hover text
-						$a = $as->item(0);
-						$ahref = $a->getAttribute('href');
-						$target = $a->getAttribute('target');
-						$target = 'target="' . $target . '"';
+						$html = new DOMDocument;
+						$html->loadXML($data);
+						$as = $html->getElementsBytagName('a');
 					}
-					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
-				}
+					if ($params->get('icon_hovertext', true))
+					{
+						$ahref = '#';
+						$target = '';
+						if (class_exists('DOMDocument') && $as->length)
+						{
+							// Data already has an <a href="foo"> lets get that for use in hover text
+							$a = $as->item(0);
+							$ahref = $a->getAttribute('href');
+							$target = $a->getAttribute('target');
+							$target = 'target="' . $target . '"';
+						}
+						$data = htmlspecialchars($data, ENT_QUOTES);
+						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+					}
+					elseif (!empty($iconfile))
+					{
+						/**
+						 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+						 * we'll need to replace the text in the link with the image
+						 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+						 */
 
-				return $img;
+						if (class_exists('DOMDocument') && $as->length)
+						{
+							$img = $html->createElement('img');
+							$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+							$as->item(0)->nodeValue = '';
+							$as->item(0)->appendChild($img);
+							return $html->saveHTML();
+						}
+					}
+					return $img;
+				}
 			}
 		}
-		$this->iconsSet = false;
 		return $data;
 	}
 
@@ -1877,9 +1896,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
-		
+
 		// Ensure that view data property contains the same html as the group's element
-		$model->data[$elHTMLName] = $element->element;
+
+		$model->tmplData[$elHTMLName] = $element->element;
 		$element->label_raw = $this->element->label;
 
 		// GetLabel needs to know if the element is editable
