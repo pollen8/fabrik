@@ -1,21 +1,21 @@
 <?php
 /**
- * Fabrik Elemenet Model
+ * Fabrik Element Model
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
 /**
- * Fabrik Elemenet Model
+ * Fabrik Element Model
  *
  * @package  Fabrik
  * @since    3.0
@@ -543,7 +543,10 @@ class PlgFabrik_Element extends FabrikPlugin
 			$this->iconsSet = false;
 			return $data;
 		}
-
+		if ($this->iconsSet !== true)
+		{
+			$this->iconsSet = false;
+		}
 		/**
 		 * Jaanus added this and following if/else; sometimes we need permanent image
 		 * (e.g logo of the website where the link always points, like Wikipedia's W)
@@ -551,59 +554,62 @@ class PlgFabrik_Element extends FabrikPlugin
 		$iconfile = $params->get('icon_file', '');
 
 		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
-		foreach ($this->imageExtensions as $ex)
+		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
+		foreach ($cleanDatas as $cleanData)
 		{
-			$f = JPath::clean($cleanData . '.' . $ex);
-			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl);
-			if ($img !== '')
+			foreach ($this->imageExtensions as $ex)
 			{
-				$this->iconsSet = true;
-				$opts = new stdClass;
-				$opts->position = 'top';
-				$opts = json_encode($opts);
-				$data = '<span>' . $data . '</span>';
-
-				// See if data has an <a> tag
-				$html = new DOMDocument;
-				$html->loadXML($data);
-				$as = $html->getElementsBytagName('a');
-
-				if ($params->get('icon_hovertext', true))
+				$f = JPath::clean($cleanData . '.' . $ex);
+				$opts = array('forceImage' => true);
+				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
+				if ($img !== '')
 				{
-					$ahref = '#';
-					$target = '';
-					if ($as->length)
-					{
-						// Data already has an <a href="foo"> lets get that for use in hover text
-						$a = $as->item(0);
-						$ahref = $a->getAttribute('href');
-						$target = $a->getAttribute('target');
-						$target = 'target="' . $target . '"';
-					}
-					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
-				}
-				elseif (!empty($iconfile))
-				{
-					/**
-					 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
-					 * we'll need to replace the text in the link with the image
-					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
-					 */
+					$this->iconsSet = true;
+					$opts = new stdClass;
+					$opts->position = 'top';
+					$opts = json_encode($opts);
+					$data = '<span>' . $data . '</span>';
 
-					if ($as->length)
+					// See if data has an <a> tag
+					$html = new DOMDocument;
+					$html->loadXML($data);
+					$as = $html->getElementsBytagName('a');
+					if ($params->get('icon_hovertext', true))
 					{
-						$img = $html->createElement('img');
-						$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
-						$as->item(0)->nodeValue = '';
-						$as->item(0)->appendChild($img);
-						return $html->saveHTML();
+						$ahref = '#';
+						$target = '';
+						if ($as->length)
+						{
+							// Data already has an <a href="foo"> lets get that for use in hover text
+							$a = $as->item(0);
+							$ahref = $a->getAttribute('href');
+							$target = $a->getAttribute('target');
+							$target = 'target="' . $target . '"';
+						}
+						$data = htmlspecialchars($data, ENT_QUOTES);
+						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
 					}
+					elseif (!empty($iconfile))
+					{
+						/**
+						 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+						 * we'll need to replace the text in the link with the image
+						 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+						 */
+
+						if ($as->length)
+						{
+							$img = $html->createElement('img');
+							$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+							$as->item(0)->nodeValue = '';
+							$as->item(0)->appendChild($img);
+							return $html->saveHTML();
+						}
+					}
+					return $img;
 				}
-				return $img;
 			}
 		}
-		$this->iconsSet = false;
 		return $data;
 	}
 

@@ -537,26 +537,26 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
-			foreach ($vals as $val)
+			foreach ($vals as $tmpVal)
 			{
-				$l = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
+				$l = $useIcon ? $this->replaceWithIcons($tmpVal, 'list', $listModel->getTmpl()) : $tmpVal;
 				if (!$this->iconsSet == true)
 				{
 					if (!is_a($this, 'plgFabrik_ElementDatabasejoin'))
 					{
-						$l = $this->getLabelForValue($val);
+						$l = $this->getLabelForValue($tmpVal);
 					}
 					else
 					{
-						$l = $val;
+						$l = $tmpVal;
 					}
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
 				if ($this->renderWithHTML)
 				{
 					$l = $this->rollover($l, $thisRow, 'list');
+					$l = $listModel->_addLink($l, $this, $thisRow, $i);
 				}
-				$l = $listModel->_addLink($l, $this, $thisRow, $i);
 				if (trim($l) !== '')
 				{
 					$lis[] = $l;
