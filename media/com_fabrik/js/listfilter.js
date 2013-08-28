@@ -60,6 +60,8 @@ var FbListFilter = new Class({
 						}
 					}
 				});
+				// Clear radius search in viz
+				Fabrik.fireEvent('listfilter.clear', [this.options.container]);
 				plugins = this.getList().plugins;
 				if (typeOf(plugins) !== 'null') {
 					plugins.each(function (p) {

@@ -203,6 +203,13 @@ var FbListRadiusSearch = new Class({
 				}
 			}
 		}
+		
+		// Ensure that if in a map viz clearing the list filter is run.
+		Fabrik.addEvent('listfilter.clear', function (caller) {
+			if (caller.contains(this.options.ref)) {
+				this.clearFilter();
+			}
+		}.bind(this));
 	},
 
 	/**
@@ -340,6 +347,9 @@ var FbListRadiusSearch = new Class({
 		}
 	},
 
+	/**
+	 * Clear the filter.
+	 */
 	clearFilter: function () {
 		this.listform.getElement('input[name^=radius_search_active]').value = 0;
 		return this.injectIntoListForm();
