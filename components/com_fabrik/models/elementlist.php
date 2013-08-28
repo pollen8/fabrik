@@ -209,7 +209,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$v = str_replace("/", "\\\\/", $v);
 				$str[] = '(' . $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' OR ' . $key . ' = ' . $db->quote($v) . ') ';
 			}
-			$str = implode($glue, $str);
+			$str = '(' . implode($glue, $str) . ')';
 		}
 		else
 		{
