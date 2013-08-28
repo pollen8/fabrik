@@ -108,7 +108,6 @@ var FbCascadingdropdown = new Class({
 		'data': data,
 		onSuccess: function (json) {
 			var origvalue = this.options.def,
-			opts = {},
 			c;
 			this.spinner.hide();
 			//this.element.getParent().getElement('.loader').hide();
@@ -127,8 +126,6 @@ var FbCascadingdropdown = new Class({
 			this.myAjax = null;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {
-					// $$$ rob if loading edit form, at page load, u may have a previously selected value 
-					opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
 					if (this.options.editable === false) {
 						
 						// Pretify new lines to brs
@@ -136,7 +133,6 @@ var FbCascadingdropdown = new Class({
 						new Element('div').set('html', item.text).inject(this.element);
 					} else {
 						this.addOption(item.value, item.text);
-						//new Element('option', opts).set('text', item.text).inject(this.element);
 					}
 					
 					if (this.options.showDesc === true && item.description) {

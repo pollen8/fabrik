@@ -134,7 +134,8 @@ var FbDatabasejoin = new Class({
 		case 'dropdown':
 		/* falls through */
 		case 'multilist':
-			selected = (v === this.options.value) ? 'selected' : '';
+			var sel = typeOf(this.options.value) === 'array' ? this.options.value : Array.from(this.options.value);
+			selected = sel.contains(v) ? 'selected' : '';
 			opt = new Element('option', {'value': v, 'selected': selected}).set('text', l);
 			document.id(this.element.id).adopt(opt);
 			break;
