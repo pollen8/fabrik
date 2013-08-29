@@ -142,24 +142,24 @@ class PlgSystemFabrik extends JPlugin
 	 * used in a common display routine: href, title, section, created, text,
 	 * browsernav
 	 *
-	 * @param   string  $text      Target search string
-	 * @param   string  $phrase    mathcing option, exact|any|all
-	 * @param   string  $ordering  option, newest|oldest|popular|alpha|category
-	 * @param   mixed   $areas     An array if restricted to areas, null if search all
+	 * @param   string     $text      Target search string
+	 * @param   JRegistry  $params    Search plugin params
+	 * @param   string     $phrase    Mathcing option, exact|any|all
+	 * @param   string     $ordering  Option, newest|oldest|popular|alpha|category
 	 *
 	 * @return  array
 	 */
 
-	public function onDoContentSearch($text, $phrase = '', $ordering = '', $areas = null)
+	public static function onDoContentSearch($text, $params, $phrase = '', $ordering = '')
 	{
 		$app = JFactory::getApplication();
+		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		if (defined('COM_FABRIK_SEARCH_RUN'))
 		{
 			return;
 		}
-		$app = JFactory::getApplication();
 		$input = $app->input;
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
@@ -170,7 +170,7 @@ class PlgSystemFabrik extends JPlugin
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
 		// Load plugin params info
-		$limit = $this->params->def('search_limit', 50);
+		$limit = $params->def('search_limit', 50);
 		$text = trim($text);
 		if ($text == '')
 		{
@@ -204,19 +204,19 @@ class PlgSystemFabrik extends JPlugin
 		// Get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
-
 		$db->setQuery($query);
 
 		$list = array();
 		$ids = $db->loadColumn();
-		$section = $this->params->get('search_section_heading');
+		$section = $params->get('search_section_heading');
 		$urls = array();
 
 		// $$$ rob remove previous search results?
 		$input->set('resetfilters', 1);
 
 		// Ensure search doesnt go over memory limits
-		$memory = (int) FabrikString::rtrimword(ini_get('memory_limit'), 'M') * 1000000;
+		$memory = ini_get('memory_limit');
+		$memory = (int) FabrikString::rtrimword($memory, 'M') * 1000000;
 		$usage = array();
 		$memSafety = 0;
 
@@ -224,18 +224,14 @@ class PlgSystemFabrik extends JPlugin
 		$app = JFactory::getApplication();
 		foreach ($ids as $id)
 		{
-			// Unset enough stuff in the table model to allow for correct query to be run
-			$listModel->reset();
+
+			// Re-ini the list model (was using reset() but that was flaky)
+			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
 			// $$$ geros - http://fabrikar.com/forums/showthread.php?t=21134&page=2
 			$key = 'com_' . $package . '.list' . $id . '.filter.searchall';
 			$app->setUserState($key, null);
 
-			unset($table);
-			unset($elementModel);
-			unset($params);
-			unset($query);
-			unset($allrows);
 			$used = memory_get_usage();
 			$usage[] = memory_get_usage();
 			if (count($usage) > 2)
@@ -252,18 +248,23 @@ class PlgSystemFabrik extends JPlugin
 			$input->set('listid', $id);
 
 			$listModel->setId($id);
+			$searchFields = $listModel->getSearchAllFields();
+			if (empty($searchFields))
+			{
+				continue;
+			}
 			$filterModel = $listModel->getFilterModel();
 			$requestKey = $filterModel->getSearchAllRequestKey();
 
 			// Set the request variable that fabrik uses to search all records
 			$input->set($requestKey, $text, 'post');
 
-			$table = $listModel->getTable(true);
+			$table = $listModel->getTable();
 			$fabrikDb = $listModel->getDb();
 			$params = $listModel->getParams();
 
 			// Test for swap too boolean mode
-			$mode = $input->get('searchphraseall', 'all');
+			$mode = $input->get('searchphrase', '') === 'all' ? 0 : 1;
 
 			// $params->set('search-mode-advanced', true);
 			$params->set('search-mode-advanced', $mode);
@@ -291,7 +292,7 @@ class PlgSystemFabrik extends JPlugin
 				foreach ($group as $oData)
 				{
 					$pkval = $oData->__pk_val;
-					if ($app->isAdmin())
+					if ($app->isAdmin() || $params->get('search_link_type') === 'form')
 					{
 						$href = $oData->fabrik_edit_url;
 					}

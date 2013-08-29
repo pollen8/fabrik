@@ -233,10 +233,10 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		// If the inline edit stored a element join we need to reset back the table
 		$listModel->clearTable();
 		$listModel->getTable();
-		$data = JArrayHelper::fromObject($listModel->getRow($rowid));
+		$data = $listModel->getRow($rowid);
 		$key = $input->get('element');
 		$html = '';
-		$html .= $elmentModel->renderListData($data[$key], $data);
+		$html .= $elmentModel->renderListData($data->$key, $data);
 		$listRef = 'list_' . $input->get('listref');
 		$doCalcs = "\nFabrik.blocks['" . $listRef . "'].updateCals(" . json_encode($listModel->getCalculations()) . ")";
 		$html .= '<script type="text/javasript">';

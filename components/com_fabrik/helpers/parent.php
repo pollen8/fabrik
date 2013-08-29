@@ -727,6 +727,11 @@ class FabrikWorker
 				$msg = str_replace('{$_SERVER-&gt;' . $key . '}', $val, $msg);
 			}
 		}
+
+		$lang = JFactory::getLanguage()->getTag();
+		$lang = str_replace('-', '_', $lang);
+		$msg = str_replace('{lang}', $lang, $msg);
+
 		$session = JFactory::getSession();
 		$token = $session->get('session.token');
 		$msg = str_replace('{session.token}', $token, $msg);
@@ -793,14 +798,13 @@ class FabrikWorker
 			}
 		}
 
-		// $$$ hugh - NOOOOOOO!!  Screws up where people actually have mixed case element names
-		// $match = JString::strtolower($match);
 		$match = preg_replace("/ /", "_", $match);
 		if (!strstr($match, '.'))
 		{
-			/* for some reason array_key_exists wasnt working for nested arrays?? */
+			// For some reason array_key_exists wasnt working for nested arrays??
 			$aKeys = array_keys($this->_searchData);
-			/* remove the table prefix from the post key */
+
+			// Remove the table prefix from the post key
 			$aPrefixFields = array();
 			for ($i = 0; $i < count($aKeys); $i++)
 			{
@@ -816,11 +820,12 @@ class FabrikWorker
 			{
 				$match = $aPrefixFields[$match] . '___' . $match;
 			}
+
 			// Test to see if the made match is in the post key arrays
 			$found = in_array($match, $aKeys, true);
 			if ($found)
 			{
-				/* get the post data */
+				// Get the post data
 				$match = $this->_searchData[$match];
 				if (is_array($match))
 				{
@@ -848,7 +853,7 @@ class FabrikWorker
 		}
 		else
 		{
-			/* could be looking for URL field type eg for $_POST[url][link] the match text will be url.link */
+			// Could be looking for URL field type eg for $_POST[url][link] the match text will be url.link
 			$aMatch = explode(".", $match);
 			$aPost = $this->_searchData;
 			foreach ($aMatch as $sPossibleArrayKey)
@@ -1155,28 +1160,62 @@ class FabrikWorker
 		{
 			return;
 		}
+		$error = error_get_last();
+		if (is_null($error))
+		{
+			// No error set (eval could have actually returned false as a correct value)
+			return;
+		}
 		$enqMsgType = 'error';
 		$indentHTML = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Debug:&nbsp;';
-		$app = JFactory::getApplication();
 		$errString = JText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
+
+		// Give a technical error message to the developer
+		if (version_compare(phpversion(), '5.2.0', '>=') && $error && is_array($error))
+		{
+			$errString .= $indentHTML . sprintf($msg, $error['message']);
+		}
+		else
+		{
+			$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
+		}
+
+		self::logError($errString, $enqMsgType);
+	}
+
+	/**
+	 * Raise a J Error notice if in dev mode or log a J error otherwise
+	 *
+	 * @param   string  $errString  Message to display / log
+	 * @param   string  $msgType    Joomla enqueueMessage message type e.g. 'error', 'warning' etc.
+	 *
+	 * @return  void
+	 */
+
+	public static function logError($errString, $msgType)
+	{
 		if (FabrikHelperHTML::isDebug())
 		{
-			// Give a technical error message to the developer
-			if (version_compare(phpversion(), '5.2.0', '>=') and $error = error_get_last() and is_array($error))
-			{
-				$errString .= $indentHTML . sprintf($msg, $error['message']);
-			}
-			else
-			{
-				if (is_null($error))
-				{
-					// No error set (eval could have actually returned false as a correct value)
-					return;
-				}
-				$errString .= $indentHTML . sprintf($msg, "unknown error - php version < 5.2.0");
-			}
+			$app = JFactory::getApplication();
+			$app->enqueueMessage($errString, $msgType);
 		}
-		$app->enqueueMessage($errString, $enqMsgType);
+		else
+		{
+			switch ($msgType)
+			{
+				case 'message':
+					$priority = JLog::INFO;
+					break;
+				case 'warning':
+					$priority = JLog::WARNING;
+					break;
+				case 'error':
+				default:
+					$priority = JLog::ERROR;
+					break;
+			}
+			JLog::add($errString, $priority, 'com_fabrik');
+		}
 	}
 
 	/**
@@ -1471,7 +1510,7 @@ class FabrikWorker
 		}
 		else
 		{
-			//$gobackaction = 'onclick=\'history.back();\'';
+			// $gobackaction = 'onclick=\'history.back();\'';
 			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
 		return $gobackaction;

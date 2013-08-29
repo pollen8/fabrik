@@ -29,15 +29,14 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$input = $app->input;
 		jimport('joomla.filesystem.file');
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/class.kunena.php';
@@ -77,20 +76,16 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$func = 'post';
 		$contentURL = 'empty';
 		$input->set('catid', $catid);
-		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->_fullFormData);
+		$msg = $w->parseMessageForPlaceHolder($params->get('kunena_content'), $formModel->fullFormData);
 		$subject = $params->get('kunena_title');
 		$input->set('message', $msg);
-		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->_fullFormData);
+		$subject = $w->parseMessageForPlaceHolder($subject, $formModel->fullFormData);
 
 		// Added subject in request
 		$input->set('subject', $subject);
 		$origId = $input->get('id');
 		$input->set('id', 0);
-		/*
-		ob_start();
-		include ($postfile);
-		ob_end_clean();
-		 */
+
 		ob_start();
 		include $postfile;
 		$mypost = new CKunenaPost;

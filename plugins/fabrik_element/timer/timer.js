@@ -30,7 +30,7 @@ var FbTimer = new Class({
 		this.hour = 0;
 		if (this.options.autostart === true) {
 			if (typeOf(b) !== 'null') {
-				b.value = Joomla.JText._('PLG_ELEMENT_TIMER_STOP');
+				b.getElement('span').set('text', Joomla.JText._('PLG_ELEMENT_TIMER_STOP'));
 			}
 			this.start();
 		} else {
@@ -43,7 +43,8 @@ var FbTimer = new Class({
 				e.stop();
 				if (this.state === 'started') {
 					this.pause();
-					b.value = Joomla.JText._('PLG_ELEMENT_TIMER_START');
+					//b.value = Joomla.JText._('PLG_ELEMENT_TIMER_START');
+					b.getElement('span').set('text', Joomla.JText._('PLG_ELEMENT_TIMER_START'));
 				} else {
 					var v = this.element.value.split(":");
 					switch (v.length) {
@@ -61,7 +62,8 @@ var FbTimer = new Class({
 						break;
 					}
 					this.start();
-					b.value = Joomla.JText._('PLG_ELEMENT_TIMER_STOP');
+					//b.value = Joomla.JText._('PLG_ELEMENT_TIMER_STOP');
+					b.getElement('span').set('text', Joomla.JText._('PLG_ELEMENT_TIMER_STOP'));
 				}
 			}.bind(this));
 		}

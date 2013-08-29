@@ -21,7 +21,6 @@ if (!defined('COM_FABRIK_FRONTEND'))
 
 jimport('joomla.log.log');
 
-
 if (JDEBUG)
 {
 	// Add the logger.

@@ -202,6 +202,7 @@
 
 			<field name="join_desc_column"
 				type="listfields"
+				mode="gui"
 				connection="params_join_conn_id"
 				description="PLG_ELEMENT_DBJOIN_DESCRIPTION_FIELD_DESC"
 				label="PLG_ELEMENT_DBJOIN_DESCRIPTION_FIELD_LABEL"

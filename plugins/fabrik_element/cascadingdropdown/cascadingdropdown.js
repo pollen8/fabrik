@@ -118,7 +118,6 @@ var FbCascadingdropdown = new Class({
 		'data': data,
 		onSuccess: function (json) {
 			var origvalue = this.options.def,
-			opts = {},
 			updateField,
 			c;
 			this.spinner.hide();
@@ -138,8 +137,6 @@ var FbCascadingdropdown = new Class({
 			this.myAjax = null;
 			if (!this.ignoreAjax) {
 				json.each(function (item) {
-					// $$$ rob if loading edit form, at page load, u may have a previously selected value
-					//opts = item.value === origvalue ? {'value': item.value, 'selected': 'selected'} : {'value': item.value};
 					if (this.options.editable === false) {
 
 						// Pretify new lines to brs
@@ -239,7 +236,20 @@ var FbCascadingdropdown = new Class({
 				/**
 				 * Remove the previously bound change event function, by name, then re-bind it and re-add it
 				 */
-				document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				/**
+				 * Actually, we don't want to remove it, as this stops the element we got copied from
+				 * being updated on a change.  This issue only surfaced when we changed this code to use
+				 * a bound function, so it actually started removing the event, which it never did before
+				 * when we referenced an inline function().
+				 * 
+				 * Update ... if the watched element is in the repeat group, we do want to remove it,
+				 * but if the watch is on the main form, we don't.  In other words, if the watch is on the main
+				 * form, then every CDD in this repeat is watching it.  If it's in the repeat group, then each repeat
+				 * CDD only watches the one in it's own group.
+				 */
+				if (this.options.watchInSameGroup) {
+					document.id(this.options.watch).removeEvent('change', this.doChangeEvent);
+				}
 				this.doChangeEvent = this.doChange.bind(this);
 				document.id(this.options.watch).addEvent('change', this.doChangeEvent);
 

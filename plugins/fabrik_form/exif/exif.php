@@ -81,17 +81,15 @@ class PlgFabrik_FormExif extends PlgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
-	 * @param   object  $params      params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore($params, &$formModel)
+	public function onBeforeStore()
 	{
 		// Initialize some variables
 		$db = FabrikWorker::getDbo();
 		$data = $formModel->formData;
+		$params = $this->getParams();
 
 		$plugin = FabrikWorker::getPluginManager()->getElementPlugin($params->get('exif_map_field'));
 

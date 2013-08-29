@@ -97,7 +97,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$value = '';
 		if (!$this->isEditable())
 		{
-			return $value;
+			return '***********';
 		}
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
@@ -138,6 +138,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	public function validate($data, $repeatCounter = 0)
 	{
+		if (!$this->isEditable())
+		{
+			return true;
+		}
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
@@ -176,6 +180,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 			// $$$ rob add rowid test as well as if using row=-1 and usekey=field $k may have a value
 			if (($rowId === '' || empty($rowId)) && $keyVal === 0 && $value === '')
 			{
+				/**
+				 * Why are we using .= here, but nowhere else?
+				 */
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
 				return false;
 			}

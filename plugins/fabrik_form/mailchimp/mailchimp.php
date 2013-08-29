@@ -31,15 +31,13 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	/**
 	 * Set up the html to be injected into the bottom of the form
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		$app = JFactory::getApplication();
+		$params = $this->getParams();
 		if ($params->get('mailchimp_userconfirm', true))
 		{
 			$checked = $app->input->get('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
@@ -53,6 +51,16 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 		// $this->getGroups($params);
 	}
+
+	/**
+	 * Get Mailchimp email groups
+	 *
+	 * @param   JRegistry  $params  Params
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return  array groups
+	 */
 
 	protected function getGroups($params)
 	{
@@ -69,12 +77,13 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 		$api = new MCAPI($params->get('mailchimp_apikey'));
 		$groups = $api->listInterestGroupings($listId);
+		return $groups;
 	}
 
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -88,17 +97,15 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
-		$this->formModel = $formModel;
-		$emailData = $this->getEmailData();
+		$formModel = $this->getModel();
+		$emailData = $this->getProcessData();
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
 		if (!array_key_exists('fabrik_mailchimp_signup', $post) && (bool) $params->get('mailchimp_userconfirm', true) === true)
@@ -155,7 +162,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 					foreach ($groupOpt as $k => $v)
 					{
 						// DOn't use emailData as that contains html markup which is not shown in the list view
-						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->_formData);
+						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $formModel->formData);
 
 						// But... labels for db joins etc are not availabel in formData
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);

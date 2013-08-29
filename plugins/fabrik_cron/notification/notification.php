@@ -28,14 +28,13 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the active element
 	 *
-	 * @param   object  &$model    calling the plugin list/form
-	 * @param   string  $location  to trigger plugin on
-	 * @param   string  $event     to trigger plugin on
+	 * @param   string  $location  To trigger plugin on
+	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		return true;
 	}
@@ -50,7 +49,6 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 
 	public function process(&$data)
 	{
-
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('n.*, e.event AS event, e.id AS event_id,
@@ -101,7 +99,8 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 		foreach ($usermsgs as $email => $messages)
 		{
 			$msg = implode(' ', $messages);
-			if (JUtility::sendMail($email_from, $email_from, $email, $subject, $msg, true))
+			$mailer = JFactory::getMailer();
+			if ($mailer->sendMail($email_from, $email_from, $email, $subject, $msg, true))
 			{
 				$successMails[] = $email;
 			}
@@ -123,6 +122,7 @@ class PlgFabrik_Cronnotification extends PlgFabrik_Cron
 		{
 			$this->log .= 'Failed emails: <ul><li>' . implode('</li><li>', $failedMails) . '</li></ul>';
 		}
+		return count($successMails);
 	}
 
 }

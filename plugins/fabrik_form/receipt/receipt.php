@@ -30,14 +30,12 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     Params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
+		$params = $this->getParams();
 		if ($params->get('ask-receipt'))
 		{
 			$label = $params->get('receipt_button_label', '');
@@ -72,15 +70,14 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      Plugin params
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		if ($params->get('ask-receipt'))
 		{
@@ -95,10 +92,9 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		$config = JFactory::getConfig();
 		$w = new FabrikWorker;
 
-		$this->formModel = $formModel;
 		$form = $formModel->getForm();
 
-		$aData = array_merge($formModel->formData, $this->getEmailData());
+		$data = $this->getProcessData();
 
 		$message = $params->get('receipt_message');
 		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_" . $package . "&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid="
@@ -112,9 +108,9 @@ class PlgFabrik_FormReceipt extends PlgFabrik_Form
 		$message = str_replace('{fabrik_editurl}', $editURL, $message);
 		$message = str_replace('{fabrik_viewurl}', $viewURL, $message);
 
-		$message = $w->parseMessageForPlaceHolder($message, $aData, false);
+		$message = $w->parseMessageForPlaceHolder($message, $data, false);
 
-		$to = $w->parseMessageForPlaceHolder($params->get('receipt_to'), $aData, false);
+		$to = $w->parseMessageForPlaceHolder($params->get('receipt_to'), $data, false);
 		if (empty($to))
 		{
 			/* $$$ hugh - not much point trying to send if we don't have a To address

@@ -36,29 +36,26 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   object  $params      Plugin parameters
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return  bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		jimport('joomla.mail.helper');
-
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$config	= JFactory::getConfig();
 		$db = JFactory::getDbo();
 
-		$this->formModel = $formModel;
 		$formParams	= $formModel->getParams();
 		$ftpTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/ftp/tmpl/' . $params->get('ftp_template', ''));
 
-		$this->data = array_merge($formModel->_formData, $this->getEmailData());
+		$this->data = $this->getProcessData();
 
-		if (!$this->shouldProcess('ftp_conditon', null, $formModel))
+		if (!$this->shouldProcess('ftp_conditon', null))
 		{
 			return;
 		}
@@ -266,12 +263,13 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 
 	protected function _getTextFtp()
 	{
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
 		$pluginManager = FabrikWorker::getPluginManager();
-		$groupModels = $this->formModel->getGroupsHiarachy();
+		$formModel = $this->getModel();
+		$groupModels = $formModel->getGroupsHiarachy();
 		foreach ($groupModels as &$groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();

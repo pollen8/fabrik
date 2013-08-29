@@ -31,7 +31,7 @@ class FabrikControllerVisualizationmedia extends FabrikControllerVisualization
 	 */
 	public function getPlaylist()
 	{
-		$model= $this->getModel('media');
+		$model = $this->getModel('media');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$usersConfig = JComponentHelper::getParams('com_fabrik');

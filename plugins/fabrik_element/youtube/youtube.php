@@ -31,13 +31,13 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string  $data      Elements data
+	 * @param   object  &$thisRow  All the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		return $this->constructVideoPlayer($data, 'list');
 	}

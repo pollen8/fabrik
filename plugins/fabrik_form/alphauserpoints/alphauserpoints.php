@@ -29,19 +29,17 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$api_AUP = JPATH_SITE . '/components/com_alphauserpoints/helper.php';
 		if (JFile::exists($api_AUP))
 		{
 			$w = new FabrikWorker;
-			$this->data = array_merge($formModel->_formData, $this->getEmailData());
+			$this->data = $this->getProcessData();
 
 			require_once $api_AUP;
 			$aup = new AlphaUserPointsHelper;
@@ -51,7 +49,7 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 			$userId = (int) $w->parseMessageForPlaceholder($userId, $this->data, false);
 
 			$user = JFactory::getUser();
-			$aupId = AlphaUserPointsHelper::getAnyUserReferreID($userId);
+			$aupId = $aup->getAnyUserReferreID($userId);
 
 			// Replace these if you want to show a specific reference for the attributed points - doesn't seem to effect anything
 			$keyReference = '';
@@ -86,6 +84,10 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 			$aupPlugin = $params->get('aup_plugin', 'plgaup_fabrik');
 			$aupPlugin = $w->parseMessageForPlaceholder($aupPlugin, $this->data, false);
 
+			if (!$aup->checkRuleEnabled($aupPlugin, 0, $aupId))
+			{
+				throw new Exception('Alpha User Points plugin not published');
+			}
 			$aup->userpoints($aupPlugin, $aupId, $referralUserPoints, $keyReference, $dataReference, $randomPoints);
 
 		}

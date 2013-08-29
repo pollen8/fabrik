@@ -106,7 +106,6 @@ class FabrikViewList extends FabrikViewListBase
 					}
 					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName();
 					$aTableHeadings[$heading]['dbField'] = $element->name;
-					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 
 					// $$$ hugh - adding enclosure stuff for podcasting
 					if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')
@@ -139,7 +138,6 @@ class FabrikViewList extends FabrikViewListBase
 				}
 				$aTableHeadings[$heading]['colName'] = $element->db_table_name . "___" . $element->name;
 				$aTableHeadings[$heading]['dbField'] = $element->name;
-				$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
 
 				// $$$ hugh - adding enclosure stuff for podcasting
 				if ($element->plugin == 'fileupload' || $elParams->get('use_as_rss_enclosure', '0') == '1')

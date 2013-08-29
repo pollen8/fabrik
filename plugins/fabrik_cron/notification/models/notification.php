@@ -20,7 +20,7 @@ jimport('joomla.application.component.model');
  * @since       3.0
  */
 
-class FabrikModelNotification extends JModel
+class FabrikModelNotification extends JModelLegacy
 {
 
 	/**
@@ -45,7 +45,6 @@ class FabrikModelNotification extends JModel
 			 * {observer_name, creator_name, event, record url
 			 * dear %s, %s has %s on %s
 			 */
-			$event = JText::_($row->event);
 			list($listid, $formid, $rowid) = explode('.', $row->reference);
 
 			$listModel->setId($listid);
@@ -54,7 +53,9 @@ class FabrikModelNotification extends JModel
 			$row->title = $row->url;
 			foreach ($data as $key => $value)
 			{
-				$k = JString::strtolower(array_pop(explode('___', $key)));
+				$key = explode('___', $key);
+				$key = array_pop($key);
+				$k = JString::strtolower($key);
 				if ($k == 'title')
 				{
 					$row->title = $value;
@@ -112,6 +113,33 @@ class FabrikModelNotification extends JModel
 		$query->delete('#__{package}_notification')->where('id IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
 		$db->execute();
+	}
+
+	/**
+	 * Load the plugin language files
+	 *
+	 * @return  bool
+	 */
+
+	public function loadLang()
+	{
+		$lang = JFactory::getLanguage();
+		$client = JApplicationHelper::getClientInfo(0);
+		$langFile = 'plg_fabrik_cron_notification';
+		$langPath = $client->path . '/plugins/fabrik_cron/notification';
+		return $lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
+	}
+
+	/**
+	 * Get the plugin id
+	 *
+	 * @return number
+	 */
+
+	public function getId()
+	{
+		$app = JFactory::getApplication();
+		return $app->input->getInt('id');
 	}
 
 }

@@ -23,18 +23,24 @@ foreach ($this->elements as $element) :
 			<div class="row-fluid" <?php echo $style?>><!-- start element row -->
 		<?php
 		endif;
-		if ($this->params->get('labels_above', 0) == 1) :
+		$labels_above = $this->params->get('labels_above', 0);
+		if ($labels_above == 1)
+		{
 			echo $this->loadTemplate('group_labels_above');
-		else :
-
-			if ($element->fullWidth || $this->params->get('labels_above', 0) == 0) :
-				echo $this->loadTemplate('group_labels_side');
-			else :
-
-				// Multi columns - best to use simplified layout with labels above field
-				echo $this->loadTemplate('group_labels_above');
-			endif;
-		endif;
+		}
+		elseif ($labels_above == 2)
+		{
+			echo $this->loadTemplate('group_labels_none');
+		}
+		elseif ($element->fullWidth || $labels_above == 0)
+		{
+			echo $this->loadTemplate('group_labels_side');
+		}
+		else
+		{
+			// Multi columns - best to use simplified layout with labels above field
+			echo $this->loadTemplate('group_labels_above');
+		}
 		if ($element->endRow) :?>
 		</div><!-- end row-fluid -->
 	<?php endif;

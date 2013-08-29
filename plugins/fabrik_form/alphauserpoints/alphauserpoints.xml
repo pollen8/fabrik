@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<extension group="fabrik_form" method="upgrade" type="plugin" version="3.0">
+<extension group="fabrik_form" method="upgrade" type="plugin" version="3.1">
 	<name>plg_fabrik_form_alphauserpoints</name>
 	<author>Rob Clayburn</author>
-	<creationDate>February 2013</creationDate>
+	<creationDate>August 2013</creationDate>
 	<copyright>Copyright (C) 2005-2013 fabrikar.com - All rights reserved.</copyright>
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>rob@pollen-8.co.uk</authorEmail>

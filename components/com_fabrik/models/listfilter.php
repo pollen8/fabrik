@@ -182,7 +182,14 @@ class FabrikFEModelListfilter extends FabModel
 		$properties = array_keys($filters);
 		foreach ($properties as $property)
 		{
-			$filters[$property] = array_values($filters[$property]);
+			if (is_array($filters[$property]))
+			{
+				$filters[$property] = array_values($filters[$property]);
+			}
+			else
+			{
+				$filters[$property] = array();
+			}
 		}
 	}
 
@@ -632,7 +639,7 @@ class FabrikFEModelListfilter extends FabModel
 				 */
 				// $filters['grouped_to_previous'][$key] = $k == 0 ? 0 : 1;
 				$filters['grouped_to_previous'][$key] = 1;
-				$filters['label'][$key] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][$key] = $elementModel->getListHeading();
 				$filters['raw'][$key] = false;
 			}
 			else
@@ -663,7 +670,7 @@ class FabrikFEModelListfilter extends FabModel
 				 * where (el = 'searchall' OR el = 'searchall') AND el = 'post value'
 				 */
 				$filters['grouped_to_previous'][] = 1;
-				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $element->id;
 				$filters['raw'][] = false;
 			}
@@ -825,7 +832,7 @@ class FabrikFEModelListfilter extends FabModel
 						$filters['required'][] = $elparams->get('filter_required');
 						$filters['access'][] = $elparams->get('filter_access');
 						$filters['grouped_to_previous'][] = $grouped;
-						$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+						$filters['label'][] = $elementModel->getListHeading();
 						$filters['raw'][] = false;
 					}
 					else
@@ -844,7 +851,7 @@ class FabrikFEModelListfilter extends FabModel
 						$filters['required'][$index] = $elparams->get('filter_required');
 						$filters['access'][$index] = $elparams->get('filter_access');
 						$filters['grouped_to_previous'][$index] = $grouped;
-						$filters['label'][$index] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+						$filters['label'][$index] = $elementModel->getListHeading();
 						$filters['raw'][$index] = false;
 					}
 					$filters['elementid'][] = $element->id;
@@ -1017,7 +1024,7 @@ class FabrikFEModelListfilter extends FabModel
 		$filters['required'][] = $elparams->get('filter_required');
 		$filters['access'][] = $elparams->get('filter_access');
 		$filters['grouped_to_previous'][] = $grouped;
-		$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+		$filters['label'][] = $elementModel->getListHeading();
 		$filters['elementid'][] = $element->id;
 		$filters['raw'][] = $raw;
 	}
@@ -1252,7 +1259,7 @@ class FabrikFEModelListfilter extends FabModel
 				$filters['required'][] = $elparams->get('filter_required');
 				$filters['access'][] = $elparams->get('filter_access');
 				$filters['grouped_to_previous'][] = JArrayHelper::getValue($request['grouped_to_previous'], $i, '0');
-				$filters['label'][] = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+				$filters['label'][] = $elementModel->getListHeading();
 				$filters['elementid'][] = $elid;
 				$filters['raw'][] = false;
 			}
@@ -1280,7 +1287,6 @@ class FabrikFEModelListfilter extends FabModel
 		$elements = $this->listModel->getElements('id');
 		$item = $this->listModel->getTable();
 		$identifier = $app->input->get('listref', $this->listModel->getRenderContext());
-		$identifier = $this->listModel->getRenderContext();
 		$key = 'com_' . $package . '.list' . $identifier . '.filter';
 		$sessionfilters = JArrayHelper::fromObject($app->getUserState($key));
 		$filterkeys = array_keys($filters);
@@ -1309,7 +1315,7 @@ class FabrikFEModelListfilter extends FabModel
 		$postkeys = JArrayHelper::getValue($request, 'key', array());
 		for ($i = 0; $i < count($sessionfilters['key']); $i++)
 		{
-			$elid = $sessionfilters['elementid'][$i];
+			$elid = JArrayHelper::getValue($sessionfilters['elementid'], $i);
 			$key = JArrayHelper::getValue($sessionfilters['key'], $i, null);
 			$index = JArrayHelper::getValue($filters['elementid'], $key, false);
 
@@ -1423,7 +1429,7 @@ class FabrikFEModelListfilter extends FabModel
 					$fullWordsOnly = $elparams->get('full_words_only');
 					$required = $elparams->get('filter_required');
 					$access = $elparams->get('filter_access');
-					$label = $elparams->get('alt_list_heading') == '' ? $element->label : $elparams->get('alt_list_heading');
+					$label = $elementModel->getListHeading();
 
 					/**
 					 * $$$ rob if the session filter is also in the request data then set it to use the same key as the post data

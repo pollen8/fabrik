@@ -5,6 +5,7 @@
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: list_bullet_renderer.cls.php 468 2012-02-05 10:51:40Z fabien.menager $
  */
 
 /**
@@ -62,13 +63,7 @@ class List_Bullet_Renderer extends Abstract_Renderer {
     return $cache[$type] = "$text.";
   }
 
-  /**
-   * @param integer $n
-   * @param string  $type
-   * @param integer $pad
-   *
-   * @return string
-   */
+  //........................................................................
   private function make_counter($n, $type, $pad = null){
     $n = intval($n);
     $text = "";
@@ -135,9 +130,8 @@ class List_Bullet_Renderer extends Abstract_Renderer {
       //$w = $frame->get_width();
       //$h = $frame->get_height();
       list($width, $height) = dompdf_getimagesize($img);
-      $dpi = $this->_dompdf->get_option("dpi");
-      $w = ((float)rtrim($width, "px") * 72) / $dpi;
-      $h = ((float)rtrim($height, "px") * 72) / $dpi;
+      $w = (((float)rtrim($width, "px")) * 72) / DOMPDF_DPI;
+      $h = (((float)rtrim($height, "px")) * 72) / DOMPDF_DPI;
       
       $x -= $w;
       $y -= ($line_height - $font_size)/2; //Reverse hinting of list_bullet_positioner

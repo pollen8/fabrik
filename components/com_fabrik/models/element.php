@@ -1,6 +1,6 @@
 <?php
 /**
- * Fabrik Elemenet Model
+ * Fabrik Element Model
  *
  * @package     Joomla
  * @subpackage  Fabrik
@@ -15,7 +15,7 @@ jimport('joomla.application.component.model');
 jimport('joomla.filesystem.file');
 
 /**
- * Fabrik Elemenet Model
+ * Fabrik Element Model
  *
  * @package  Fabrik
  * @since    3.0
@@ -529,7 +529,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 		$params = $this->getParams();
-		if ((int) $params->get('icon_folder', 0) === 0)
+
+		$iconFile = (string) $params->get('icon_file', '');
+		if ((int) $params->get('icon_folder', 0) === 0 && $iconFile === '')
 		{
 			$this->iconsSet = false;
 			return $data;
@@ -541,69 +543,66 @@ class PlgFabrik_Element extends FabrikPlugin
 			return $data;
 		}
 
-		/**
-		 * Jaanus added this and following if/else; sometimes we need permanent image
-		 * (e.g logo of the website where the link always points, like Wikipedia's W)
-		 */
-		$iconfile = $params->get('icon_file', '');
-
-		$cleanData = $iconfile === '' ? FabrikString::clean(strip_tags($data)) : $iconfile;
-		foreach ($this->imageExtensions as $ex)
+		$cleanData = empty($iconfile) ? FabrikString::clean(strip_tags($data)) : $iconfile;
+		$cleanDatas = array($this->getElement()->name . '_' . $cleanData, $cleanData);
+		foreach ($cleanDatas as $cleanData)
 		{
-			$f = JPath::clean($cleanData . '.' . $ex);
-			$opts = array('forceImage' => true);
-			$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
-			if ($img !== '')
+			foreach ($this->imageExtensions as $ex)
 			{
-				$this->iconsSet = true;
-				$opts = new stdClass;
-				$opts->position = 'top';
-				$opts = json_encode($opts);
-				$data = '<span>' . $data . '</span>';
+				$f = JPath::clean($cleanData . '.' . $ex);
+				$opts = array('forceImage' => true);
+				$img = FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), false, $opts);
+				if ($img !== '')
+				{
+					$this->iconsSet = true;
+					$opts = new stdClass;
+					$opts->position = 'top';
+					$opts = json_encode($opts);
+					$data = '<span>' . $data . '</span>';
 
-				// See if data has an <a> tag
-				if (class_exists('DOMDocument'))
-				{
-					$html = new DOMDocument;
-					$html->loadXML($data);
-					$as = $html->getElementsBytagName('a');
-				}
-				if ($params->get('icon_hovertext', true))
-				{
-					$ahref = '#';
-					$target = '';
-					if (class_exists('DOMDocument') && $as->length)
+					// See if data has an <a> tag
+					if (class_exists('DOMDocument'))
 					{
-						// Data already has an <a href="foo"> lets get that for use in hover text
-						$a = $as->item(0);
-						$ahref = $a->getAttribute('href');
-						$target = $a->getAttribute('target');
-						$target = 'target="' . $target . '"';
+						$html = new DOMDocument;
+						$html->loadXML($data);
+						$as = $html->getElementsBytagName('a');
 					}
-					$data = htmlspecialchars($data, ENT_QUOTES);
-					$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
-				}
-				elseif (!empty($iconfile))
-				{
-					/**
-					 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
-					 * we'll need to replace the text in the link with the image
-					 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
-					 */
+					if ($params->get('icon_hovertext', true))
+					{
+						$ahref = '#';
+						$target = '';
+						if (class_exists('DOMDocument') && $as->length)
+						{
+							// Data already has an <a href="foo"> lets get that for use in hover text
+							$a = $as->item(0);
+							$ahref = $a->getAttribute('href');
+							$target = $a->getAttribute('target');
+							$target = 'target="' . $target . '"';
+						}
+						$data = htmlspecialchars($data, ENT_QUOTES);
+						$img = '<a class="fabrikTip" ' . $target . ' href="' . $ahref . '" opts=\'' . $opts . '\' title="' . $data . '">' . $img . '</a>';
+					}
+					elseif (!empty($iconfile))
+					{
+						/**
+						 * $$$ hugh - kind of a hack, but ... if this is an upload element, it may already be a link, and
+						 * we'll need to replace the text in the link with the image
+						 * After ages dicking around with a regex to do this, decided to use DOMDocument instead!
+						 */
 
-					if (class_exists('DOMDocument') && $as->length)
-					{
-						$img = $html->createElement('img');
-						$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
-						$as->item(0)->nodeValue = '';
-						$as->item(0)->appendChild($img);
-						return $html->saveHTML();
+						if (class_exists('DOMDocument') && $as->length)
+						{
+							$img = $html->createElement('img');
+							$img->setAttribute('src', FabrikHelperHTML::image($cleanData . '.' . $ex, $view, $tmpl, array(), true));
+							$as->item(0)->nodeValue = '';
+							$as->item(0)->appendChild($img);
+							return $html->saveHTML();
+						}
 					}
+					return $img;
 				}
-				return $img;
 			}
 		}
-		$this->iconsSet = false;
 		return $data;
 	}
 
@@ -768,7 +767,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function groupConcactJoinKey()
 	{
 		$table = $this->getListModel()->getTable();
-		if ($this->getGroupModel()->isJoin())
+		if ($this->getGroupModel()->isJoin() && !$this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
 			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
@@ -779,10 +778,11 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		return $pkField;
 	}
+
 	/**
 	 * Get raw column name
 	 *
-	 * @param   bool  $useStep  use step in name
+	 * @param   bool  $useStep  Use step in name
 	 *
 	 * @return string
 	 */
@@ -867,14 +867,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * If location is 'list' then we don't check the group canEdit() option - causes inline edit plugin not to work
 	 * when followed by a update_col plugin.
 	 *
-	 * @param   object  &$model    Calling the plugin list/form
 	 * @param   string  $location  To trigger plugin on form/list for elements
 	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		$element = $this->getElement();
 
@@ -943,8 +942,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Internal element validation
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  repeeat group counter
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Repeeat group counter
 	 *
 	 * @return bool
 	 */
@@ -969,8 +968,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Does the element conside the data to be empty
 	 * Used in isempty validation rule
 	 *
-	 * @param   array  $data           data to test against
-	 * @param   int    $repeatCounter  repeat group #
+	 * @param   array  $data           Data to test against
+	 * @param   int    $repeatCounter  Repeat group #
 	 *
 	 * @return  bool
 	 */
@@ -985,7 +984,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * js events which trigger a validation.
 	 * Examples of where this would be overwritten include timedate element with time field enabled
 	 *
-	 * @param   int  $repeatCounter  repeat group counter
+	 * @param   int  $repeatCounter  Repeat group counter
 	 *
 	 * @return  array  html ids to watch for validation
 	 */
@@ -1026,9 +1025,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * When importing csv data you can run this function on all the data to
 	 * format it into the format that the form would have submitted the date
 	 *
-	 * @param   array   &$data  to prepare
-	 * @param   string  $key    list column heading
-	 * @param   bool    $isRaw  data is raw
+	 * @param   array   &$data  To prepare
+	 * @param   string  $key    List column heading
+	 * @param   bool    $isRaw  Data is raw
 	 *
 	 * @return  array  data
 	 */
@@ -1041,7 +1040,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Determines if the data in the form element is used when updating a record
 	 *
-	 * @param   mixed  $val  element forrm data
+	 * @param   mixed  $val  Element forrm data
 	 *
 	 * @return  bool  true if ignored on update, default = false
 	 */
@@ -1070,10 +1069,10 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * checks the posted form data against elements INTERNAL validataion rule - e.g. file upload size / type
 	 *
-	 * @param   array   $aErrors      existing errors
-	 * @param   object  &$groupModel  group model
-	 * @param   object  &$formModel   form model
-	 * @param   array   $data         posted data
+	 * @param   array   $aErrors      Existing errors
+	 * @param   object  &$groupModel  Group model
+	 * @param   object  &$formModel   Form model
+	 * @param   array   $data         Posted data
 	 *
 	 * @deprecated - not used
 	 *
@@ -1089,9 +1088,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Determines the label used for the browser title
 	 * in the form/detail views
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
-	 * @param   array  $opts           options
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $opts           Options
 	 *
 	 * @return  string	default value
 	 */
@@ -1138,7 +1137,18 @@ class PlgFabrik_Element extends FabrikPlugin
 					$this->_default = $default === false ? '' : $default;
 				}
 			}
-			$this->default = JText::_($default);
+			if (is_array($default))
+			{
+				foreach ($default as &$d)
+				{
+					$d = JText::_($d);
+				}
+				$this->default = $default;
+			}
+			else
+			{
+				$this->default = JText::_($default);
+			}
 		}
 		return $this->default;
 	}
@@ -1146,9 +1156,9 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Called by form model to build an array of values to encrypt
 	 *
-	 * @param   array  &$values  previously encrypted values
-	 * @param   array  $data     form data
-	 * @param   int    $c        repeat group counter
+	 * @param   array  &$values  Previously encrypted values
+	 * @param   array  $data     Form data
+	 * @param   int    $c        Repeat group counter
 	 *
 	 * @return  void
 	 */
@@ -1197,8 +1207,8 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Determines the value for the element in the form view
 	 *
-	 * @param   array  $data           form data
-	 * @param   int    $repeatCounter  when repeating joinded groups we need to know what part of the array to access
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
 	 *
 	 * @return  string	value
 	 */
@@ -1287,9 +1297,17 @@ class PlgFabrik_Element extends FabrikPlugin
 			$values = JArrayHelper::getValue($data, $name, $default);
 
 			// Querystring override (seems on http://fabrikar.com/subscribe/form/22 querystring var was not being set into $data)
-			if ((is_array($values) && empty($values)) || $values === '')
+			if (JArrayHelper::getValue($opts, 'use_querystring', true))
 			{
-				$values = $input->get($name, '', 'string');
+				if ((is_array($values) && empty($values)) || $values === '')
+				{
+					// Trying to avoid errors if value is an array
+					$values = $input->get($name, null, 'array');
+					if (is_null($values) || (count($values) === 1 && $values[0] == ''))
+					{
+						$values = $input->get($name, '', 'string');
+					}
+				}
 			}
 			if ($groupRepeat)
 			{
@@ -1323,7 +1341,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 * Used in things like date when its id is suffixed with _cal
 	 * called from getLabel();
 	 *
-	 * @param   string  &$id  initial id
+	 * @param   string  &$id  Initial id
 	 *
 	 * @return  void
 	 */
@@ -1335,7 +1353,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Should the element be tipped?
 	 *
-	 * @param   string  $mode  form/list render context
+	 * @param   string  $mode  Form/list render context
 	 *
 	 * @since	3.0.6
 	 *
@@ -1366,10 +1384,23 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get list heading label
+	 *
+	 * @return  string
+	 */
+	public function getListHeading()
+	{
+		$params = $this->getParams();
+		$element = $this->getElement();
+		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+		return JText::_($label);
+	}
+
+	/**
 	 * Get the element's HTML label
 	 *
-	 * @param   int     $repeatCounter  group repeat counter
-	 * @param   string  $tmpl           form template
+	 * @param   int     $repeatCounter  Group repeat counter
+	 * @param   string  $tmpl           Form template
 	 *
 	 * @return  string  label
 	 */
@@ -1392,7 +1423,6 @@ class PlgFabrik_Element extends FabrikPlugin
 			return '';
 		}
 		$params = $this->getParams();
-		$elementid = 'fb_el_' . $elementHTMLId;
 		$str = '';
 		$j3 = FabrikWorker::j3();
 		if ($this->canView() || $this->canUse())
@@ -1409,7 +1439,13 @@ class PlgFabrik_Element extends FabrikPlugin
 			}
 			if ($bLabel && !$this->isHidden())
 			{
-				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '">';
+				$model = $this->getFormModel();
+				$tip = $this->tipHtml($model->data);
+				if ($tip !== '')
+				{
+					$labelClass .= ' fabrikTip';
+				}
+				$str .= '<label for="' . $elementHTMLId . '" class="' . $labelClass . '" ' . $tip . '>';
 			}
 			elseif (!$bLabel && !$this->isHidden())
 			{
@@ -1489,14 +1525,8 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$data = JArrayHelper::fromObject($data);
 		}
-		$rollOver = $this->tipTextAndValidations($mode, $data);
-		$opts = $this->tipOpts();
-		$opts = json_encode($opts);
-		if ($rollOver !== '')
-		{
-			$txt = '<span class="fabrikTip" opts=\'' . $opts . '\' title="' . $rollOver . '">' . $txt . '</span>';
-		}
-		return $txt;
+		$rollOver = $this->tipHtml($data, $mode);
+		return $rollOver !== '' ? '<span class="fabrikTip" ' . $rollOver . '">' . $txt . '</span>' : $txt;
 	}
 
 	/**
@@ -1513,7 +1543,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pos = $params->get('tiplocation', 'top');
 		$opts->formTip = true;
 		$opts->position = $pos;
-		$opts->trigger = 'hover focus';
+		$opts->trigger = 'hover';
 		$opts->notice = true;
 
 		if ($this->editable)
@@ -1538,36 +1568,34 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function tipTextAndValidations($mode, $data = array())
 	{
-		$rollOver = '';
-		$validationTip = '';
+		$lines = array();
+		$validations = array();
 		$tmpl = $this->getFormModel()->getTmpl();
 		if ($this->isEditable() && $mode === 'form')
 		{
 			$validations = array_unique($this->validator->findAll());
-			if (count($validations) > 0)
-			{
-				$lines = array();
-				$validationHovers = array('<div><ul class="validation-notices" style="list-style:none">');
-
-				foreach ($validations as $validation)
-				{
-					$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
-				}
-				$lines = array_unique($lines);
-				$validationHovers = array_merge($validationHovers, $lines);
-				$validationHovers[] = '</ul></div>';
-				$validationTip = implode('', $validationHovers);
-			}
 		}
+		if (count($validations) > 0 || $this->isTipped($mode))
+		{
+			$lines[] = '<div><ul class="validation-notices" style="list-style:none">';
+		}
+
 		if ($this->isTipped($mode))
 		{
-			$rollOver = $this->getTipText($data);
+			$lines[] = '<li>' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $this->getTipText($data) . '</li>';
 		}
-		$rollOver .= $validationTip;
-		if ($rollOver != '')
+
+		foreach ($validations as $validation)
 		{
-			$rollOver = '<span>' . $rollOver . '</span>';
+			$lines[] = '<li>' . $validation->getHoverText($tmpl) . '</li>';
 		}
+		if (count($lines) > 0)
+		{
+			$lines[] = '</ul></div>';
+		}
+		$lines = array_unique($lines);
+		$rollOver = implode('', $lines);
+
 		// $$$ rob - looks like htmlspecialchars is needed otherwise invalid markup created and pdf output issues.
 		$rollOver = htmlspecialchars($rollOver, ENT_QUOTES);
 		return $rollOver;
@@ -1870,6 +1898,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$element->className = 'fb_el_' . $element->id;
 		$element->containerClass = $this->containerClass($element);
 		$element->element = $this->preRenderElement($model->data, $c);
+
+		// Ensure that view data property contains the same html as the group's element
+
+		$model->tmplData[$elHTMLName] = $element->element;
 		$element->label_raw = $this->element->label;
 
 		// GetLabel needs to know if the element is editable
@@ -1926,12 +1958,21 @@ class PlgFabrik_Element extends FabrikPlugin
 				$element->tipSide = $tip;
 				break;
 		}
+		return $element;
+	}
 
-		$title = $this->tipTextAndValidations('form', $model->data);
+	/**
+	 * Buidl the tip HTML
+	 *
+	 * @return string
+	 */
+
+	protected function tipHtml($data = array(), $mode = 'form')
+	{
+		$title = $this->tipTextAndValidations($mode, $data);
 		$opts = $this->tipOpts();
 		$opts = json_encode($opts);
-		$element->containerProperties = $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
-		return $element;
+		return $title !== '' ? 'title="' . $title . '" opts=\'' . $opts . '\'' : '';
 	}
 
 	/**
@@ -1947,8 +1988,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected function containerClass($element)
 	{
 		$item = $this->getElement();
-		$c = array('fabrikElementContainer', 'plg-' . $item->plugin);
-		$c[] = $element->className;
+		$c = array('fabrikElementContainer', 'plg-' . $item->plugin, $element->className, $item->name, $item->name . '_' . $item->group_id);
 		if ($element->hidden)
 		{
 			$c[] = 'fabrikHide';
@@ -1972,11 +2012,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		{
 			$c[] = 'fabrikError';
 		}
-		$title = $this->tipTextAndValidations('form');
-		if ($title !== '')
-		{
-			$c[] = 'fabrikTip';
-		}
 		return implode(' ', $c);
 	}
 
@@ -1985,7 +2020,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	 *
 	 * @param   object  $element             to merge
 	 * @param   array   &$aElements          element array
-	 * @param   array   &$namedData          element HTML names
+	 * @param   array   &$namedData          Form data
 	 * @param   array   &$aSubGroupElements  sub group element array
 	 *
 	 * @return  void
@@ -2042,7 +2077,9 @@ class PlgFabrik_Element extends FabrikPlugin
 			// $$$ rob changed from span wrapper to div wrapper as element's content may contain divs which give html error
 
 			// Placeholder to be updated by ajax code
-			return '<div id="' . $htmlid . '">' . $this->getROElement($data, $repeatCounter) . '</div>';
+			$v = $this->getROElement($data, $repeatCounter);
+			$v = $v == '' ? '&nbsp;' : $v;
+			return '<div id="' . $htmlid . '">' . $v . '</div>';
 		}
 	}
 
@@ -2493,71 +2530,76 @@ class PlgFabrik_Element extends FabrikPlugin
 			$elId = $this->getHTMLId($repeatCount);
 			foreach ($allJsActions[$element->id] as $jsAct)
 			{
-				$js = addslashes($jsAct->code);
+				$js = $jsAct->code;
 				$js = str_replace(array("\n", "\r"), "", $js);
 				if ($jsAct->action == 'load')
 				{
-					$js = preg_replace('#\bthis\b#', "\$(\\'$elId\\')", $js);
+					// JS code is already stored in the db as htmlspecialchars() 09/08/2013
+					$quote = '&#039;';
+					$js = preg_replace('#\bthis\b#', 'document.id(' . $quote . $elId . $quote . ')', $js);
 				}
 				if ($jsAct->action != '' && $js !== '')
 				{
 					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 				}
-
-				// Build wysiwyg code
-				if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '')
+				else
 				{
-					// $$$ rob get the correct element id based on the repeat counter
-					$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
-					$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
-					if (!array_key_exists($jsAct->js_e_trigger, $fxadded))
-					{
-						$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
-						$fxadded[$jsAct->js_e_trigger] = true;
-					}
-					$f = JFilterInput::getInstance();
-					$post = $f->clean($_POST, 'array');
-					$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
 
-					if ($jsAct->js_e_condition == 'hidden')
+					// Build wysiwyg code
+					if (isset($jsAct->js_e_event) && $jsAct->js_e_event != '')
 					{
-						$js = "if (this.getContainer().getStyle('display') === 'none') {";
-					}
-					elseif ($jsAct->js_e_condition == 'shown')
-					{
-						$js = "if (this.getContainer().getStyle('display') !== 'none') {";
-					}
-					elseif ($jsAct->js_e_condition == 'CONTAINS')
-					{
-						$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
-					}
-					elseif ($jsAct->js_e_condition == '!CONTAINS')
-					{
-						$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
-					}
-					// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
-					// So let's assume if they use <, <=, > or >= they mean numbers.
-					elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
-						$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
-					}
-					else
-					{
-						$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
-					}
+						// $$$ rob get the correct element id based on the repeat counter
+						$triggerEl = $this->getFormModel()->getElement(str_replace('fabrik_trigger_element_', '', $jsAct->js_e_trigger));
+						$triggerid = is_object($triggerEl) ? 'element_' . $triggerEl->getHTMLId($repeatCount) : $jsAct->js_e_trigger;
+						if (!array_key_exists($jsAct->js_e_trigger, $fxadded))
+						{
+							$jsStr .= $jsControllerKey . ".addElementFX('$triggerid', '$jsAct->js_e_event');\n";
+							$fxadded[$jsAct->js_e_trigger] = true;
+						}
+						$f = JFilterInput::getInstance();
+						$post = $f->clean($_POST, 'array');
+						$jsAct->js_e_value = $w->parseMessageForPlaceHolder(htmlspecialchars_decode($jsAct->js_e_value), $post);
 
-					// Need to use corrected triggerid here as well
-					if (preg_match('#^fabrik_trigger#', $triggerid))
-					{
-						$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+						if ($jsAct->js_e_condition == 'hidden')
+						{
+							$js = "if (this.getContainer().getStyle('display') === 'none') {";
+						}
+						elseif ($jsAct->js_e_condition == 'shown')
+						{
+							$js = "if (this.getContainer().getStyle('display') !== 'none') {";
+						}
+						elseif ($jsAct->js_e_condition == 'CONTAINS')
+						{
+							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+						}
+						elseif ($jsAct->js_e_condition == '!CONTAINS')
+						{
+							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+						}
+						// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
+						// So let's assume if they use <, <=, > or >= they mean numbers.
+						elseif (in_array($jsAct->js_e_condition, array('<', '<=', '>', '>='))) {
+							$js .= "if(this.get('value').toFloat() $jsAct->js_e_condition '$jsAct->js_e_value'.toFloat()) {";
+						}
+						else
+						{
+							$js = "if (this.get('value') $jsAct->js_e_condition '$jsAct->js_e_value') {";
+						}
+
+						// Need to use corrected triggerid here as well
+						if (preg_match('#^fabrik_trigger#', $triggerid))
+						{
+							$js .= $jsControllerKey . ".doElementFX('" . $triggerid . "', '$jsAct->js_e_event', this)";
+						}
+						else
+						{
+							$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
+						}
+						$js .= "}";
+						$js = addslashes($js);
+						$js = str_replace(array("\n", "\r"), "", $js);
+						$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 					}
-					else
-					{
-						$js .= $jsControllerKey . ".doElementFX('fabrik_trigger_" . $triggerid . "', '$jsAct->js_e_event', this)";
-					}
-					$js .= "}";
-					$js = addslashes($js);
-					$js = str_replace(array("\n", "\r"), "", $js);
-					$jsStr .= $jsControllerKey . ".dispatchEvent('$element->plugin', '$elId', '$jsAct->action', '$js');\n";
 				}
 			}
 		}
@@ -2654,7 +2696,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					{
 						if ($searchType != 'prefilter')
 						{
-							$default = $filters['origvalue'][$k];
+							$default = JArrayHelper::getValue($filters['origvalue'], $k);
 						}
 					}
 				}
@@ -3066,6 +3108,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
+			/**
+			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
+			 * This is an array of objects with properties text and value.
+			 * If user has mis-specified this we should tell them.
+			 **/
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			{
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				return array();
+			}
+
 			$opts = array();
 			foreach ($phpOpts as $phpOpt)
 			{
@@ -3092,6 +3145,17 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
+			/**
+			 * Paul - According to tooltip, $phpOpts should be of form "array(JHTML: :_('select.option', '1', 'one'))"
+			 * This is an array of objects with properties text and value.
+			 * If user has mis-specified this we should tell them.
+			 **/
+			if (!is_array($phpOpts) || !$phpOpts[0] || !is_object($phpOpts[0]) || !$phpOpts[0]->value || !$phpOpts[0]->text)
+			{
+				FabrikWorker::logError(sprintf(JText::_('COM_FABRIK_ELEMENT_SUBOPTION_ERROR'),$this->element->name, var_export($phpOpts,true)),'error');
+				return array();
+			}
+
 			$opts = array();
 			foreach ($phpOpts as $phpOpt)
 			{
@@ -3119,7 +3183,16 @@ class PlgFabrik_Element extends FabrikPlugin
 		$pop = $params->get('dropdown_populate', '');
 		if ($pop !== '')
 		{
-			return eval($pop);
+			if (FabrikHelperHTML::isDebug())
+			{
+				$res = eval($pop);
+			}
+			else
+			{
+				$res = @eval($pop);
+			}
+			FabrikWorker::logEval($res, 'Eval exception : ' . $this->element->name . '::getPhpOptions() : ' . $pop . ' : %s');
+			return $res;
 		}
 		return false;
 	}
@@ -4420,7 +4493,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$res = sprintf($format, $res);
 			}
 			$o->value = $res;
-			$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+			$label = $this->getListHeading();
 			$o->elLabel = $label;
 			$o->calLabel = $calcLabel;
 			$o->label = 'calc';
@@ -4681,10 +4754,9 @@ class PlgFabrik_Element extends FabrikPlugin
 		$res[] = $split ? '<dl>' : '<ul class="fabrikRepeatData">';
 		$l = '<span class="calclabel">' . $calcLabel . '</span>';
 		$res[] = $split ? '<dt>' . $l . '</dt>' : '<li>' . $l;
-		$params = $this->getParams();
 		$element = $this->getElement();
 		$format = $this->getFormatString();
-		$label = $params->get('alt_list_heading') == '' ? $element->label : $params->get('alt_list_heading');
+		$label = $this->getListHeading();
 		foreach ($results as $key => $o)
 		{
 			$o->label = ($o->label == 'calc') ? '' : $o->label;
@@ -5160,13 +5232,13 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$params = $this->getParams();
 		$listModel = $this->getListModel();
@@ -5216,7 +5288,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$r = empty($data) ? '' : '<div>' . array_shift($data) . '</div>';
+			$r = empty($data) ? '' : array_shift($data);
 		}
 		return $r;
 	}
@@ -5522,7 +5594,6 @@ class PlgFabrik_Element extends FabrikPlugin
 		$o->view_access = 1;
 		$o->show_in_rss_feed = 0;
 		$o->show_label_in_rss_feed = 0;
-		$o->use_as_fake_key = 0;
 		$o->icon_folder = -1;
 		$o->use_as_row_class = 0;
 		$o->filter_access = 1;
@@ -6564,11 +6635,10 @@ class PlgFabrik_Element extends FabrikPlugin
 		$allJoinValues = $formData[$name];
 		if ($groupModel->isJoin())
 		{
-			$groupJoin = $groupModel->getJoinModel()->getJoin();
-
+			$groupJoinModel = $groupModel->getJoinModel();
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
-			$k = $groupJoin->table_join . '___' . $groupJoin->table_key;
+			$k = $groupJoinModel->getForeignKey();
 			$parentIds = (array) $formData[$k];
 
 		}

@@ -18,6 +18,7 @@
 				
 			<field name="calendar_startdate_element"
 				type="element"
+				required="true"
 				table="params_calendar_table" 
 				connection="params_calendar_connection"
 				connection_in_repeat="false"
@@ -59,7 +60,12 @@
 		</fieldset>
 		
 		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-visualization-calendar" label="COM_FABRIK_OPTIONS">
-			<field directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/" label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" name="calendar_layout" type="folderlist"/>
+			
+			<field name="calendar_layout"
+				type="folderlist"
+				directory="plugins/fabrik_visualization/calendar/views/calendar/tmpl/"
+				default="bootstrap"
+				label="PLG_VISUALIZATION_CALENDAR_TEMPLATE_LABEL" />
 				
 			<field name="show_calendar_legend"
 				type="radio"
@@ -125,7 +131,14 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
+			<field name="time_format"
+				type="text"
+				class="input-small"
+				default="%X"
+				description="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_DESC"
+				label="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_LABEL" />
+
 		</fieldset>
 	
 		<fieldset label="PLG_VISUALIZATION_CALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-calendar-monthview">

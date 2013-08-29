@@ -103,19 +103,18 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	/**
 	 * Helper function to decide which js files and shim files should be used
 	 *
-	 * @param   object  $params  Params
-	 *
 	 * @since   3.1b
 	 *
 	 * @return  array (element js files (not used), array of element names, require js shim setup files)
 	 */
 
-	protected function loadElementJS($params)
+	protected function loadElementJS()
 	{
 		if (!empty($this->elementJs))
 		{
 			return $this->elementJs;
 		}
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
@@ -187,19 +186,19 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
+		parent::onLoadJavascriptInstance($args);
+		$model = $this->getModel();
+		$params = $this->getParams();
 		$j3 = FabrikWorker::j3();
-		list($srcs, $els, $shim) = $this->loadElementJS($params);
-		$opts = $this->getElementJSOptions($model);
+		list($srcs, $els, $shim) = $this->loadElementJS();
+		$opts = $this->getElementJSOptions();
 		$opts->elements = $els;
 		$opts->formid = $model->getFormModel()->getId();
 		$opts->focusClass = 'focusClass';

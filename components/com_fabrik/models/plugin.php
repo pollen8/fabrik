@@ -19,7 +19,7 @@ jimport('joomla.application.component.model');
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
- */
+*/
 
 class FabrikPlugin extends JPlugin
 {
@@ -67,6 +67,14 @@ class FabrikPlugin extends JPlugin
 	public $jform = null;
 
 	/**
+	 * Model
+	 *
+	 * @var JModel
+	 */
+
+	public $model = null;
+
+	/**
 	 * Set the plugin id
 	 *
 	 * @param   int  $id  id to use
@@ -88,6 +96,16 @@ class FabrikPlugin extends JPlugin
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	public function setModel(&$model)
+	{
+		$this->model = $model;
+	}
+
+	public function getModel()
+	{
+		return $this->model;
 	}
 
 	/**
@@ -168,9 +186,9 @@ class FabrikPlugin extends JPlugin
 			$id = 'tab-' . $fieldset->name;
 			$id .= '-' . $repeatCounter;
 			$output[] = '<li' . $class . '>
-		    	<a data-toggle="tab" href="#' . $id . '">
-		    		' . JText::_($fieldset->label) . '
-		    	</a>
+				<a data-toggle="tab" href="#' . $id . '">
+					' . JText::_($fieldset->label) . '
+						</a>
 		    </li>';
 			$i ++;
 		}
@@ -260,10 +278,13 @@ class FabrikPlugin extends JPlugin
 			if (substr($inival, 0, 3) == '<p>' || substr($inival, 0, 3) == '<p ')
 			{
 				// Split by paras, use first para for legend and put remaining paras back.
-				$lines = preg_split('/<p.*>|</p>/', $inival, PREG_SPLIT_NO_EMPTY);
-				$inival = $lines[0];
-				unset($lines[0]);
-				$inival2 = '<b><p>' . implode('</p>\n<p>', $lines) . '<br/><br/></p></b>';
+				$xml = new SimpleXMLElement('<xml>' . $inival . '</xml>');
+				$lines = $xml->xpath('/xml/p[position()<2]');
+				while(list( , $node) = each($lines)) {
+					$legend = $node;
+				}
+				$inival2 = str_replace($legend, '', $inival);
+				$inival = $legend;
 			}
 			elseif (substr($inival, 0, 1) != '<' && strpos($inival, '<br') > 0)
 			{
@@ -384,7 +405,7 @@ class FabrikPlugin extends JPlugin
 				if ($repeat && !$j3)
 				{
 					$str[] = '<li><a class="removeButton delete btn" href="#"><i class="icon-minus-sign"></i> ' . JText::_('COM_FABRIK_REMOVE')
-						. '</a></li>';
+					. '</a></li>';
 				}
 				if (!$j3)
 				{
@@ -480,7 +501,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  void
 	 */
 
-	function setRow($row)
+	public function setRow($row)
 	{
 		$this->row = $row;
 	}
@@ -491,7 +512,7 @@ class FabrikPlugin extends JPlugin
 	 * @return  JTable
 	 */
 
-	function getTable()
+	public function getTable()
 	{
 		return FabTable::getInstance('Extension', 'JTable');
 	}
@@ -500,17 +521,17 @@ class FabrikPlugin extends JPlugin
 	 * Determine if we use the plugin or not
 	 * both location and event criteria have to be match when form plug-in
 	 *
-	 * @param   object  &$model    calling the plugin table/form
-	 * @param   string  $location  location to trigger plugin on
-	 * @param   string  $event     event to trigger plugin on
+	 * @param   string  $location  Location to trigger plugin on
+	 * @param   string  $event     Event to trigger plugin on
 	 *
 	 * @return  bool  true if we should run the plugin otherwise false
 	 */
 
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		$ok = false;
 		$app = JFactory::getApplication();
+		$model = $this->getModel();
 		switch ($location)
 		{
 			case 'front':
@@ -561,13 +582,12 @@ class FabrikPlugin extends JPlugin
 	/**
 	 * Custom process plugin result
 	 *
-	 * @param   string  $method      Method
-	 * @param   JModel  &$formModel  Form Model
+	 * @param   string  $method  Method
 	 *
 	 * @return boolean
 	 */
 
-	public function customProcessResult($method, &$formModel)
+	public function customProcessResult($method)
 	{
 		return true;
 	}
@@ -708,9 +728,9 @@ class FabrikPlugin extends JPlugin
 			{
 				/*
 				 * show fabrik elements in the table
-				 * $keyType 1 = $element->id;
-				 * $keyType 2 = tablename___elementname
-				 */
+				* $keyType 1 = $element->id;
+				* $keyType 2 = tablename___elementname
+				*/
 				$model = JModelLegacy::getInstance('List', 'FabrikFEModel');
 				$model->setId($tid);
 				$table = $model->getTable();
@@ -752,9 +772,9 @@ class FabrikPlugin extends JPlugin
 						{
 							/*
 							 * @TODO if in repeat group this is going to add [] to name - is this really
-							 * what we want? In timeline viz options i've simply stripped out the [] off the end
-							 * as a temp hack
-							 */
+							* what we want? In timeline viz options i've simply stripped out the [] off the end
+							* as a temp hack
+							*/
 							$v = $eVal->getFullName(false);
 						}
 						$c = new stdClass;
@@ -865,7 +885,7 @@ class FabrikPlugin extends JPlugin
 	 * If true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
 	 *
-	 * @param   string  $method  current plug-in call method e.g. onBeforeStore
+	 * @param   string  $method  Current plug-in call method e.g. onBeforeStore
 	 *
 	 * @return  bool
 	 */
@@ -880,17 +900,17 @@ class FabrikPlugin extends JPlugin
 	 *
 	 * @param   string             $paramName  Param name which contains the PHP code to eval
 	 * @param   array              $data       Data
-	 * @param   FabrikFEModelForm  $formModel  Form model
 	 *
 	 * @return  bool
 	 */
 
-	protected function shouldProcess($paramName, $data = null, $formModel = null)
+	protected function shouldProcess($paramName, $data = null)
 	{
 		if (is_null($data))
 		{
 			$data = $this->data;
 		}
+		$formModel = $this->getModel();
 		$params = $this->getParams();
 		$condition = $params->get($paramName);
 		if (trim($condition) == '')
@@ -1017,7 +1037,7 @@ class FabrikPlugin extends JPlugin
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('DISTINCT(' . $field . ')')->from('#__users AS u')->join('LEFT', '#__user_usergroup_map AS m ON u.id = m.user_id')
-			->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
+		->where('m.group_id IN (' . implode(', ', $sendTo) . ')');
 		$db->setQuery($query);
 		return $db->loadColumn();
 	}

@@ -54,14 +54,12 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -70,16 +68,16 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$config = JFactory::getConfig();
 		$db = JFactory::getDbo();
 		$w = new FabrikWorker;
-		$this->formModel = $formModel;
+		$formModel = $this->getModel();
 		$formParams = $formModel->getParams();
 		$emailTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/email/tmpl/' . $params->get('email_template', ''));
 
-		$this->data = array_merge($formModel->formData, $this->getEmailData());
+		$this->data = $this->getProcessData();
 
 		/* $$$ hugh - moved this to here from above the previous line, 'cos it needs $this->data
 		 * check if condition exists and is met
 		 */
-		if (!$this->shouldProcess('email_conditon', null, $formModel))
+		if (!$this->shouldProcess('email_conditon', null))
 		{
 			return;
 		}
@@ -92,7 +90,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		$messageTemplate = '';
 		if (JFile::exists($emailTemplate))
 		{
-			$messageTemplate = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate, $formModel) : $this
+			$messageTemplate = JFile::getExt($emailTemplate) == 'php' ? $this->_getPHPTemplateEmail($emailTemplate) : $this
 				->_getTemplateEmail($emailTemplate);
 
 			// $$$ hugh - added ability for PHP template to return false to abort, same as if 'condition' was was false
@@ -116,11 +114,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			$message = $messageText;
 		}
-		else if (!empty($messageTemplate))
+		elseif (!empty($messageTemplate))
 		{
 			$message = $messageTemplate;
 		}
-		else if (!empty($content))
+		elseif (!empty($content))
 		{
 			$message = $content;
 		}
@@ -129,7 +127,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 			$message = $this->_getTextEmail();
 		}
 
-		$this->addAttachments($params);
+		$this->addAttachments();
 
 		$cc = null;
 		$bcc = null;
@@ -203,6 +201,18 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 		{
 			$email_from_name = $config->get('fromname', $email_from);
 		}
+		
+		// Changes by JFQ
+		@list($return_path, $return_path_name) = explode(":", $w->parseMessageForPlaceholder($params->get('return_path'), $this->data, false), 2);		
+		if (empty($return_path))
+		{
+			$return_path = NULL;
+		}
+		if (empty($return_path_name))
+		{
+			$return_path_name = NULL;
+		}
+		// End changes
 		$subject = $params->get('email_subject');
 		if ($subject == '')
 		{
@@ -266,7 +276,7 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 				}
 				// Get a JMail instance (have to get a new instance otherwise the receipients are appended to previously added recipients)
 				$mail = JFactory::getMailer();
-				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments);
+				$res = $mail->sendMail($email_from, $email_from_name, $email, $thisSubject, $thisMessage, $htmlEmail, $cc, $bcc, $thisAttachments, $return_path, $return_path_name);
 
 				/*
 				 * $$$ hugh - added some error reporting, but not sure if 'invalid address' is the appropriate message,
@@ -293,12 +303,11 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	 * Use a php template for advanced email templates, partularly for forms with repeat group data
 	 *
 	 * @param   string  $tmpl       path to template
-	 * @param   object  $formModel  form model for this plugin
 	 *
 	 * @return string email message
 	 */
 
-	protected function _getPHPTemplateEmail($tmpl, $formModel)
+	protected function _getPHPTemplateEmail($tmpl)
 	{
 		$emailData = $this->data;
 
@@ -317,16 +326,16 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 	/**
 	 * Add attachments to the email
 	 *
-	 * @param   object  $params  plugin params
-	 *
 	 * @return  void
 	 */
 
-	protected function addAttachments($params)
+	protected function addAttachments()
 	{
+		$params = $this->getParams();
 		$pluginManager = FabrikWorker::getPluginManager();
-		$data = $this->getEmailData();
-		$groups = $this->formModel->getGroupsHiarachy();
+		$data = $this->getProcessData();
+		$formModel = $this->getModel();
+		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
@@ -453,12 +462,13 @@ class PlgFabrik_FormEmail extends PlgFabrik_Form
 
 	protected function _getTextEmail()
 	{
-		$data = $this->getEmailData();
+		$data = $this->getProcessData();
 		$config = JFactory::getConfig();
 		$ignore = $this->getDontEmailKeys();
 		$message = "";
 		$pluginManager = FabrikWorker::getPluginManager();
-		$groupModels = $this->formModel->getGroupsHiarachy();
+		$formModel = $this->getModel();
+		$groupModels = $formModel->getGroupsHiarachy();
 		foreach ($groupModels as &$groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();

@@ -27,10 +27,10 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 {
 
 	/**
-	* If the element 'Include in search all' option is set to 'default' then this states if the
-	* element should be ignored from search all.
-	* @var bool  True, ignore in extended search all.
-	*/
+	 * If the element 'Include in search all' option is set to 'default' then this states if the
+	 * element should be ignored from search all.
+	 * @var bool  True, ignore in extended search all.
+	 */
 	protected $ignoreSearchAllDefault = true;
 
 	/**
@@ -46,21 +46,6 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 	 * @var string
 	 */
 	protected $fieldSize = '6';
-
-	/**
-	 * Shows the data formatted for the list view
-	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
-	 *
-	 * @return  string	formatted value
-	 */
-
-	public function renderListData($data, &$thisRow)
-	{
-		$params = $this->getParams();
-		return parent::renderListData($data, $thisRow);
-	}
 
 	/**
 	 * Draws the html form element
@@ -100,11 +85,15 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 			{
 				$outsrc = FabrikHelperHTML::image('clear_rating_out.png', 'form', $this->tmpl, array(), true);
 				$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
-						. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
+					. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
 			}
 
 		}
 		$str[] = '<div class="slider_cont" style="width:' . $width . 'px;">';
+
+		$str[] = '<div class="fabrikslider-line" style="width:' . $width . 'px">';
+		$str[] = '<div class="knob"></div>';
+		$str[] = '</div>';
 		if (count($labels) > 0 && $labels[0] !== '')
 		{
 			$spanwidth = floor(($width - (2 * count($labels))) / count($labels));
@@ -120,24 +109,23 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 					case 0:
 						$align = 'left';
 						break;
+					case count($labels) - 1:
+						$align = 'right';
+						break;
 					case 1:
 					default:
 						$align = 'center';
 						break;
-					case count($labels) - 1:
-						$align = 'right';
-						break;
+
 				}
 				$str[] = '<li style="width:' . $spanwidth . 'px;text-align:' . $align . ';">' . $labels[$i] . '</li>';
 			}
 			$str[] = '</ul>';
 		}
-		$str[] = '<div class="fabrikslider-line" style="width:' . $width . 'px">';
-		$str[] = '<div class="knob"></div>';
-		$str[] = '</div>';
 		$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . $val . '" />';
-		$str[] = '<div class="slider_output">' . $val . '</div>';
+
 		$str[] = '</div>';
+		$str[] = '<span class="slider_output badge badge-info">' . $val . '</span>';
 		$str[] = '</div>';
 		return implode("\n", $str);
 	}

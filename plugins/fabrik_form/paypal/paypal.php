@@ -29,28 +29,26 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
-		$data = $formModel->_fullFormData;
-		$this->data = $data;
+		$this->data = $this->getProcessData();
+		echo "<pre>";print_r($this->data);
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 
-		if (!$this->shouldProcess('paypal_conditon', $data, $formModel))
+		if (!$this->shouldProcess('paypal_conditon'))
 		{
+			echo "no process";exit;
 			return true;
 		}
-		$this->formModel = $formModel;
-		$emailData = $this->getEmailData();
 		$w = new FabrikWorker;
 
 		$user = JFactory::getUser();
@@ -74,7 +72,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$email = $params->get($email);
 		if (trim($email) == '')
 		{
-			$email = $emailData[FabrikString::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
+			$email = $this->data[FabrikString::safeColNameToArrayKey($params->get('paypal_accountemail_element'))];
 			if (is_array($email))
 			{
 				$email = array_shift($email);
@@ -83,7 +81,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$opts['business'] = $email;
 
 		$amount = $params->get('paypal_cost');
-		$amount = $w->parseMessageForPlaceHolder($amount, $data);
+		$amount = $w->parseMessageForPlaceHolder($amount, $this->data);
 
 		// @TODO Hugh/Rob check $$$tom: Adding eval option on cost field
 		// Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
@@ -93,7 +91,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 		if (trim($amount) == '')
 		{
-			$amount = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element')));
+			$amount = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_cost_element')));
 			if (is_array($amount))
 			{
 				$amount = array_shift($amount);
@@ -109,7 +107,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 		if (trim($shipping_amount) == '')
 		{
-			$shipping_amount = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
+			$shipping_amount = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_shipping_cost_element')));
 			if (is_array($shipping_amount))
 			{
 				$shipping_amount = array_shift($shipping_amount);
@@ -118,7 +116,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$opts['shipping'] = "$shipping_amount";
 
 		$item = $params->get('paypal_item');
-		$item = $w->parseMessageForPlaceHolder($item, $emailData);
+		$item = $w->parseMessageForPlaceHolder($item, $this->data);
 		if ($params->get('paypal_item_eval', 0) == 1)
 		{
 			$item = @eval($item);
@@ -126,8 +124,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 		if (trim($item) == '')
 		{
-			$item_raw = JArrayHelper::getValue($emailData, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
-			$item = $emailData[FabrikString::safeColNameToArrayKey($params->get('paypal_item_element'))];
+			$item_raw = JArrayHelper::getValue($this->data, FabrikString::safeColNameToArrayKey($params->get('paypal_item_element') . '_raw'));
+			$item = $this->data[FabrikString::safeColNameToArrayKey($params->get('paypal_item_element'))];
 			if (is_array($item))
 			{
 				$item = array_shift($item);
@@ -224,7 +222,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		 */
 		if ($shipping_userid === 0 && $thisTable === $shipping_table)
 		{
-			$shipping_userid = $formModel->_formData['id'];
+			$shipping_userid = $formModel->formData['id'];
 		}
 		if ($shipping_userid > 0)
 		{
@@ -303,7 +301,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 
 		$paypal_currency_code = $params->get('paypal_currencycode', 'USD');
-		$paypal_currency_code = $w->parseMessageForPlaceHolder($paypal_currency_code, $data);
+		$paypal_currency_code = $w->parseMessageForPlaceHolder($paypal_currency_code, $this->data);
 		$opts['currency_code'] = $paypal_currency_code;
 
 		$paypal_test_site = $params->get('paypal_test_site', '');
@@ -330,7 +328,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$opts['notify_url'] = "$ppurl";
 
 		$paypal_return_url = $params->get('paypal_return_url', '');
-		$paypal_return_url = $w->parseMessageForPlaceHolder($paypal_return_url, $data);
+		$paypal_return_url = $w->parseMessageForPlaceHolder($paypal_return_url, $this->data);
 		if ($paypal_testmode == 1 && !empty($paypal_return_url))
 		{
 			if (preg_match('#^http:\/\/#', $paypal_return_url))
@@ -370,19 +368,19 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			if ($paypal_testmode == '1' && !empty($paypal_test_site))
 			{
 				$opts['return'] = $paypal_test_site . '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
-					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
+					. '&g=form&plugin=paypal&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 
 			}
 			else
 			{
 				$opts['return'] = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
-					. '&g=form&plugin=paypal&method=thanks&rowid=' . $data['rowid'] . '&renderOrder=' . $this->renderOrder;
+					. '&g=form&plugin=paypal&method=thanks&rowid=' . $this->data['rowid'] . '&renderOrder=' . $this->renderOrder;
 			}
 		}
 		$opts['return'] = urlencode($opts['return']);
 
 		$ipn_value = $params->get('paypal_ipn_value', '');
-		$ipn_value = $w->parseMessageForPlaceHolder($ipn_value, $data);
+		$ipn_value = $w->parseMessageForPlaceHolder($ipn_value, $this->data);
 
 		// Extra :'s will break parsing during IPN notify phase
 		$ipn_value = str_replace(':', ';', $ipn_value);
@@ -400,7 +398,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 					$log->message_type = 'fabrik.paypal.onAfterProcess';
 					$msg = new stdClass;
 					$msg->opt = $opts;
-					$msg->data = $data;
+					$msg->data = $this->data;
 					$msg->msg = "Submission cancelled by checkOpts!";
 					$log->message = json_encode($msg);
 					$log->store();
@@ -409,7 +407,8 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			}
 		}
 
-		$opts['custom'] = $data['formid'] . ':' . $data['rowid'] . ':' . $ipn_value;
+		$opts['custom'] = $this->data['formid'] . ':' . $this->data['rowid'] . ':' . $ipn_value;
+		echo "<pre>";print_r($opts['custom']);exit;
 		$qs = array();
 		foreach ($opts as $k => $v)
 		{
@@ -438,7 +437,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$log->message_type = 'fabrik.paypal.onAfterProcess';
 		$msg = new stdClass;
 		$msg->opt = $opts;
-		$msg->data = $data;
+		$msg->data = $this->data;
 		$log->message = json_encode($msg);
 		$log->store();
 		return true;
@@ -607,7 +606,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$status = 'ok';
 		$err_msg = '';
 
-		if (empty($formid) || empty($rowid))
+		if (empty($formid))
 		{
 			$status = 'form.paypal.ipnfailure.custom_error';
 			$err_msg = "formid or rowid empty in custom: $custom";

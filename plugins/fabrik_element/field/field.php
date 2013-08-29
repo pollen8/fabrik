@@ -27,13 +27,13 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$params = $this->getParams();
 		$data = FabrikWorker::JSONtoData($data, true);
@@ -258,10 +258,10 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
 				break;
 			case 'integer':
-				$objtype = "INT(" . $p->get('integer_length', 10) . ")";
+				$objtype = "INT(" . $p->get('integer_length', 11) . ")";
 				break;
 			case 'decimal':
-				$total = (int) $p->get('integer_length', 10) + (int) $p->get('decimal_length', 2);
+				$total = (int) $p->get('integer_length', 11) + (int) $p->get('decimal_length', 2);
 				$objtype = "DECIMAL(" . $total . "," . $p->get('decimal_length', 2) . ")";
 				break;
 		}

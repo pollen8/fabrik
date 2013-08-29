@@ -564,7 +564,8 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 					$pluginParams = $plugin->setParams($params, $c);
 					$location = JArrayHelper::getValue($usedLocations, $c);
 					$event = JArrayHelper::getValue($usedEvents, $c);
-					if ($plugin->canUse($parentModel, $location, $event))
+					$plugin->setModel($parentModel);
+					if ($plugin->canUse($location, $event))
 					{
 						$pluginArgs = array();
 						if (func_num_args() > 3)
@@ -573,18 +574,18 @@ class FabrikFEModelPluginmanager extends JModelLegacy
 							$pluginArgs = array_splice($t, 3);
 						}
 						$preflightMethod = $method . '_preflightCheck';
-						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginParams, $parentModel, $pluginArgs)
+						$preflightCheck = method_exists($plugin, $preflightMethod) ? $plugin->$preflightMethod($pluginArgs)
 							: true;
 						if ($preflightCheck)
 						{
-							$ok = $plugin->$method($pluginParams, $parentModel, $pluginArgs);
+							$ok = $plugin->$method($pluginArgs);
 							if ($ok === false)
 							{
 								$return[] = false;
 							}
 							else
 							{
-								$thisreturn = $plugin->customProcessResult($method, $parentModel);
+								$thisreturn = $plugin->customProcessResult($method);
 								$return[] = $thisreturn;
 								$m = $method . '_result';
 								if (method_exists($plugin, $m))

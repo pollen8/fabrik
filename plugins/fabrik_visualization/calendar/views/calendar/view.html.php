@@ -142,6 +142,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$options->close = (int) $params->get('close-hour', 24);
 		$options->showweekends = (bool) $params->get('calendar-show-weekends', true);
 		$options->readonly = (bool) $params->get('calendar-read-only', false);
+		$options->timeFormat = $params->get('time_format', '%X');
 		$options->j3 = FabrikWorker::j3();
 
 		if (FabrikWorker::j3())
@@ -171,6 +172,7 @@ class FabrikViewCalendar extends JViewLegacy
 		JText::script('PLG_VISUALIZATION_CALENDAR_EDIT');
 		JText::script('PLG_VISUALIZATION_CALENDAR_ADD_EDIT_EVENT');
 		JText::script('COM_FABRIK_FORM_SAVED');
+		JText::script('PLG_VISUALIZATION_CALENDAR_EVENT_START_END');
 
 		$ref = $model->getJSRenderContext();
 

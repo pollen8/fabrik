@@ -26,7 +26,6 @@ var FbImage = new Class({
 				}.bind(this));
 			}
 			if (this.options.canSelect === true) {
-				this.addEvent('onBrowse', this.changeFolder);
 				this.ajaxFolder();
 				this.element = this.hiddenField;
 				this.selectedFolder = this.getFolderPath();
@@ -59,8 +58,13 @@ var FbImage = new Class({
 	getFolderPath : function () {
 		return this.options.rootPath + this.folderlist.join('/');
 	},
+	
+	doAjaxBrowse: function (dir) {
+		this.parent(dir);
+		this.changeFolder(dir);
+	},
 
-	changeFolder : function (e) {
+	changeFolder : function (dir) {
 		var folder = this.imageDir;
 		this.selectedFolder = this.getFolderPath();
 		folder.empty();
@@ -74,7 +78,7 @@ var FbImage = new Class({
 				'g': 'element',
 				'plugin': 'image',
 				'method': 'ajax_files',
-				'folder': this.selectedFolder
+				'folder': dir
 			},
 
 			onComplete : function (r) {

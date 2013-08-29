@@ -110,17 +110,6 @@
   ),
   'icomoon' => 
   array (
-    'normal' => DOMPDF_FONT_DIR . '2518bbf6f6d48ffd8091d75e66e6bc7e',
-  ),
-  'titillium maps' => 
-  array (
-    'normal' => DOMPDF_FONT_DIR . 'cf03a3b5951279adeebc43754a8deee6',
-  ),
-  'arial' => 
-  array (
-    'normal' => DOMPDF_FONT_DIR . 'ARIAL',
-    'bold' => DOMPDF_FONT_DIR . 'ARIALbd',
-    'italic' => DOMPDF_FONT_DIR . 'ARIALi',
-    'bold_italic' => DOMPDF_FONT_DIR . 'ARIALbi',
+    'normal' => DOMPDF_FONT_DIR . '2cbd5b0c65d7fe89c3b22bc04b95092e',
   ),
 ) ?>

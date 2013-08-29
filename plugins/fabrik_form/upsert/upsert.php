@@ -35,22 +35,20 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 	/**
 	 * process the plugin, called afer form is submitted
 	 *
-	 * @param   object  $params      Plugin params
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return  bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$w = new FabrikWorker;
-		$this->formModel = $formModel;
-		$db = $this->getDb($params);
+		$formModel = $this->getModel();
+		$db = $this->getDb();
 		$query = $db->getQuery(true);
 
-		$this->data = array_merge($this->getEmailData(), $formModel->_formData);
+		$this->data = $this->getProcessData();
 
-		$table = $this->getTableName($params);
+		$table = $this->getTableName();
 		$pk = FabrikString::safeColName($params->get('primary_key'));
 
 		$rowid = $params->get('row_value', '');
@@ -64,7 +62,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		}
 		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
 
-		$fields = $this->upsertData($params);
+		$fields = $this->upsertData();
 		$query->set($fields);
 
 		if ($rowid === '')
@@ -83,15 +81,14 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 	/**
 	 * Get db
 	 *
-	 * @param   JRegisistry  $params  Plugin params
-	 *
 	 * @return JDatabaseDriver
 	 */
 
-	protected function getDb($params)
+	protected function getDb()
 	{
 		if (!isset($this->db))
 		{
+			$params = $this->getParams();
 			$cid = $params->get('connection_id');
 			$connectionModel = JModelLegacy::getInstance('connection', 'FabrikFEModel');
 			$connectionModel->setId($cid);
@@ -103,15 +100,14 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 	/**
 	 * Get fields to update/insert
 	 *
-	 * @param   JRegistry  $params  Plugin params
-	 *
 	 * @return  array
 	 */
 
-	protected function upsertData($params)
+	protected function upsertData()
 	{
+		$params = $this->getParams();
 		$w = new FabrikWorker;
-		$db = $this->getDb($params);
+		$db = $this->getDb();
 		$upsert = json_decode($params->get('upsert_fields'));
 		$fields = array();
 		for ($i = 0; $i < count($upsert->upsert_key); $i++)
@@ -132,13 +128,12 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 	/**
 	 * Get the table name to insert / update to
 	 *
-	 * @param   JRegistry  $params  Plugin params
-	 *
 	 * @return  string
 	 */
 
-	protected function getTableName($params)
+	protected function getTableName()
 	{
+		$params = $this->getParams();
 		$listid = $params->get('table');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);

@@ -77,15 +77,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Get an element name
 	 *
-	 * @param   object  $params  Plugin params
 	 * @param   string  $pname   Params property name to look up
 	 * @param   bool    $short   Short (true) or full (false) element name, default false/full
 	 *
 	 * @return	string	element full name
 	 */
 
-	private function getFieldName($params, $pname, $short = false)
+	private function getFieldName($pname, $short = false)
 	{
+		$params = $this->getParams();
 		if ($params->get($pname) == '')
 		{
 			return '';
@@ -97,7 +97,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Get the fields value regardless of whether its in joined data or no
 	 *
-	 * @param   object  $params   Plugin params
 	 * @param   string  $pname    Params property name to get the value for
 	 * @param   array   $data     Posted form data
 	 * @param   mixed   $default  Default value
@@ -105,8 +104,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * @return  mixed  value
 	 */
 
-	private function getFieldValue($params, $pname, $data, $default = '')
+	private function getFieldValue($pname, $data, $default = '')
 	{
+		$params = $this->getParams();
 		if ($params->get($pname) == '')
 		{
 			return $default;
@@ -119,14 +119,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Synchronize J! users with F! table if empty
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function onLoad($params, &$formModel)
+	public function onLoad()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		if ($params->get('synchro_users') == 1)
 		{
 			$app = JFactory::getApplication();
@@ -158,15 +157,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					{
 						// Insert into our F! table
 						$query->clear();
-						$fields = array($this->getFieldName($params, 'juser_field_userid', true) => $o_user->id,
-							$this->getFieldName($params, 'juser_field_block', true) => $o_user->block,
-							$this->getFieldName($params, 'juser_field_email', true) => $o_user->email,
-							$this->getFieldName($params, 'juser_field_password', true) => $o_user->password,
-							$this->getFieldName($params, 'juser_field_name', true) => $o_user->name,
-							$this->getFieldName($params, 'juser_field_username', true) => $o_user->username);
+						$fields = array($this->getFieldName('juser_field_userid', true) => $o_user->id,
+							$this->getFieldName('juser_field_block', true) => $o_user->block,
+							$this->getFieldName('juser_field_email', true) => $o_user->email,
+							$this->getFieldName('juser_field_password', true) => $o_user->password,
+							$this->getFieldName('juser_field_name', true) => $o_user->name,
+							$this->getFieldName('juser_field_username', true) => $o_user->username);
 						if (!FabrikWorker::j3())
 						{
-							$fields[$this->getFieldName($params, 'juser_field_usertype', true)] = $o_user->group_id;
+							$fields[$this->getFieldName('juser_field_usertype', true)] = $o_user->group_id;
 						}
 						$query->insert($tableName);
 						foreach ($fields as $key => $val)
@@ -190,14 +189,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		// If we are editing a user, we need to make sure the password field is cleared
 		if (FabrikWorker::getMenuOrRequestVar('rowid'))
 		{
-			$this->passwordfield = $this->getFieldName($params, 'juser_field_password');
+			$this->passwordfield = $this->getFieldName('juser_field_password');
 			$formModel->data[$this->passwordfield] = '';
 			$formModel->data[$this->passwordfield . '_raw'] = '';
 
 			// $$$$ hugh - testing 'sync on edit'
 			if ($params->get('juser_sync_on_edit', 0) == 1)
 			{
-				$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
+				$this->useridfield = $this->getFieldName('juser_field_userid');
 				$userid = (int) JArrayHelper::getValue($formModel->data, $this->useridfield . '_raw');
 				/**
 				 * $$$ hugh - after a validation failure, userid _raw is an array.
@@ -212,15 +211,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 					$user = JFactory::getUser($userid);
 					if ($user->get('id') == $userid)
 					{
-						$this->namefield = $this->getFieldName($params, 'juser_field_name');
+						$this->namefield = $this->getFieldName('juser_field_name');
 						$formModel->data[$this->namefield] = $user->get('name');
 						$formModel->data[$this->namefield . '_raw'] = $user->get('name');
 
-						$this->usernamefield = $this->getFieldName($params, 'juser_field_username');
+						$this->usernamefield = $this->getFieldName('juser_field_username');
 						$formModel->data[$this->usernamefield] = $user->get('username');
 						$formModel->data[$this->usernamefield . '_raw'] = $user->get('username');
 
-						$this->emailfield = $this->getFieldName($params, 'juser_field_email');
+						$this->emailfield = $this->getFieldName('juser_field_email');
 						$formModel->data[$this->emailfield] = $user->get('email');
 						$formModel->data[$this->emailfield . '_raw'] = $user->get('email');
 
@@ -235,13 +234,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 								$gid = array_shift($gid);
 							}
 
-							$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
+							$this->gidfield = $this->getFieldName('juser_field_usertype');
 							$formModel->data[$this->gidfield] = $gid;
 							$formModel->data[$this->gidfield . '_raw'] = $gid;
 						}
 						if ($params->get('juser_field_block') != '')
 						{
-							$this->blockfield = $this->getFieldName($params, 'juser_field_block');
+							$this->blockfield = $this->getFieldName('juser_field_block');
 							$formModel->data[$this->blockfield] = $user->get('block');
 							$formModel->data[$this->blockfield . '_raw'] = $user->get('block');
 						}
@@ -254,18 +253,17 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
-	 * @param   array   &$groups     list data for deletion
+	 * @param   array   &$groups  List data for deletion
 	 *
 	 * @return	bool
 	 */
 
-	public function onDeleteRowsForm($params, &$formModel, &$groups)
+	public function onDeleteRowsForm(&$groups)
 	{
+		$params = $this->getParams();
 		if ($params->get('juser_field_userid') != '' && $params->get('juser_delete_user', false))
 		{
-			$useridfield = $this->getFieldName($params, 'juser_field_userid');
+			$useridfield = $this->getFieldName('juser_field_userid');
 			$useridfield .= '_raw';
 			foreach ($groups as $group)
 			{
@@ -297,14 +295,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
-	 * @param   object  $params      params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore($params, &$formModel)
+	public function onBeforeStore()
 	{
+		$formModel = $this->getModel();
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$config = JFactory::getConfig();
@@ -327,8 +324,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 
 		// Needed for shouldProcess...
-		$this->data = array_merge($formModel->_formData, $this->getEmailData());
-		if (!$this->shouldProcess('juser_conditon', null, $formModel))
+		$this->data = $this->getProcessData();
+		if (!$this->shouldProcess('juser_conditon', null))
 		{
 			return true;
 		}
@@ -352,7 +349,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$original_id = 0;
 		if ($params->get('juser_field_userid') != '')
 		{
-			$this->useridfield = $this->getFieldName($params, 'juser_field_userid');
+			$this->useridfield = $this->getFieldName('juser_field_userid');
 
 			/*
 			 * This test would cause a fail if you were editing a record which contained hte user data in a join
@@ -402,26 +399,26 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		$data = array();
 
-		$this->passwordfield = $this->getFieldName($params, 'juser_field_password');
-		$this->passwordvalue = $this->getFieldValue($params, 'juser_field_password', $formModel->formData);
+		$this->passwordfield = $this->getFieldName('juser_field_password');
+		$this->passwordvalue = $this->getFieldValue('juser_field_password', $formModel->formData);
 
-		$this->namefield = $this->getFieldName($params, 'juser_field_name');
-		$this->namevalue = $this->getFieldValue($params, 'juser_field_name', $formModel->formData);
+		$this->namefield = $this->getFieldName('juser_field_name');
+		$this->namevalue = $this->getFieldValue('juser_field_name', $formModel->formData);
 
-		$this->usernamefield = $this->getFieldName($params, 'juser_field_username');
-		$this->usernamevalue = $this->getFieldValue($params, 'juser_field_username', $formModel->formData);
+		$this->usernamefield = $this->getFieldName('juser_field_username');
+		$this->usernamevalue = $this->getFieldValue('juser_field_username', $formModel->formData);
 
-		$this->emailfield = $this->getFieldName($params, 'juser_field_email');
-		$this->emailvalue = $this->getFieldValue($params, 'juser_field_email', $formModel->formData);
+		$this->emailfield = $this->getFieldName('juser_field_email');
+		$this->emailvalue = $this->getFieldValue('juser_field_email', $formModel->formData);
 
 		$data['id'] = $original_id;
 
-		$data['gid'] = $this->setGroupIds($formModel, $me, $user);
+		$data['gid'] = $this->setGroupIds($me, $user);
 		$user->groups = (array) $data['gid'];
 
 		if ($params->get('juser_field_block') != '')
 		{
-			$this->blockfield = $this->getFieldName($params, 'juser_field_block');
+			$this->blockfield = $this->getFieldName('juser_field_block');
 			$blocked = JArrayHelper::getValue($formModel->formData, $this->blockfield, '');
 			if (is_array($blocked))
 			{
@@ -449,7 +446,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$name = $this->namevalue;
 		$data['email'] = $this->emailvalue;
 
-		$ok = $this->check($data, $formModel, $params);
+		$ok = $this->check($data);
 		if (!$ok)
 		{
 			// @TODO - add some error reporting
@@ -474,7 +471,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				$data['block'] = 1;
 			}
 			// If Auto login is activated, we need to set activation and block to 0
-			if ($autoLogin )
+			if ($autoLogin)
 			{
 				$data['activation'] = 0;
 				$data['block'] = 0;
@@ -522,138 +519,140 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		/*
 		 * Time for the email magic so get ready to sprinkle the magic dust...
 		 */
-
-		$emailSubject = '';
-		if ($isNew)
+		if ($params->get('juser_use_email_plugin') != 1)
 		{
-			// Compile the notification mail values.
-			$data = $user->getProperties();
-			$data['fromname'] = $config->get('fromname');
-			$data['mailfrom'] = $config->get('mailfrom');
-			$data['sitename'] = $config->get('sitename');
-			$data['siteurl'] = JUri::base();
-
-			$uri = JURI::getInstance();
-			$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
-
-			// Handle account activation/confirmation emails.
-			if ($useractivation == 2 && !$bypassActivation && !$autoLogin)
+			$emailSubject = '';
+			if ($isNew)
 			{
-				// Set the link to confirm the user email.
-				$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
+				// Compile the notification mail values.
+				$data = $user->getProperties();
+				$data['fromname'] = $config->get('fromname');
+				$data['mailfrom'] = $config->get('mailfrom');
+				$data['sitename'] = $config->get('sitename');
+				$data['siteurl'] = JUri::base();
 
-				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
+				$uri = JURI::getInstance();
+				$base = $uri->toString(array('scheme', 'user', 'pass', 'host', 'port'));
 
-				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
-					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']
-				);
-			}
-			elseif ($useractivation == 1 && !$bypassActivation && !$autoLogin)
-			{
-				// Set the link to activate the user account.
-				$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
-
-				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
-				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
-					$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
-					$data['username'], $data['password_clear']
-				);
-			}
-			elseif ($autoLogin)
-			{
-				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
-				$emailBody = JText::sprintf('PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_BODY', $data['name'], $data['sitename'],
-					$data['siteurl'],
-					$data['username'], $data['password_clear']
-				);
-			}
-			elseif ($params->get('juser_bypass_accountdetails') != 1)
-			{
-				$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
-				$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_BODY', $data['name'], $data['sitename'], $data['siteurl']);
-			}
-
-			// Send the registration email.
-			if ($emailSubject !== '')
-			{
-				$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
-
-				$db = JFactory::getDBO();
-				/*
-				 * Added email to admin code, but haven't had a chance to test it yet.
-				 */
-				/*
-				// Send Notification mail to administrators
-				if (($usersConfig->get('useractivation') < 2) && ($usersConfig->get('mail_to_admin') == 1))
+				// Handle account activation/confirmation emails.
+				if ($useractivation == 2 && !$bypassActivation && !$autoLogin)
 				{
-				    $emailSubject = JText::sprintf(
-				        'COM_USERS_EMAIL_ACCOUNT_DETAILS',
-				        $data['name'],
-				        $data['sitename']
-				    );
+					// Set the link to confirm the user email.
+					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
 
-				    $emailBodyAdmin = JText::sprintf(
-				        'COM_USERS_EMAIL_REGISTERED_NOTIFICATION_TO_ADMIN_BODY',
-				        $data['name'],
-				        $data['username'],
-				        $data['siteurl']
-				    );
+					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
 
-				    // Get all admin users
-				    $query = 'SELECT name, email, sendEmail' .
-				        ' FROM #__users' .
-				        ' WHERE sendEmail=1';
-
-				    $db->setQuery($query);
-				    $rows = $db->loadObjectList();
-
-				    // Send mail to all superadministrators id
-				    foreach ($rows as $row)
-				    {
-				        $return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
-
-				        // Check for an error.
-				        if ($return !== true)
-				        {
-				            // $$$ hugh - should probably log this rather than enqueue it
-				            $app->enqueueMessage(JText::_('COM_USERS_REGISTRATION_ACTIVATION_NOTIFY_SEND_MAIL_FAILED'));
-				        }
-				    }
+					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ADMIN_ACTIVATION_BODY', $data['name'], $data['sitename'],
+						$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
+						$data['username'], $data['password_clear']
+					);
 				}
-				 */
-
-				// Check for an error.
-				if ($return !== true)
+				elseif ($useractivation == 1 && !$bypassActivation && !$autoLogin)
 				{
-					$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+					// Set the link to activate the user account.
+					$data['activate'] = $base . JRoute::_('index.php?option=com_users&task=registration.activate&token=' . $data['activation'], false);
 
-					// Send a system message to administrators receiving system mails
-					$query = $db->getQuery(true);
-					$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
-					$db->setQuery($query);
-					$sendEmail = $db->loadColumn();
-					if (count($sendEmail) > 0)
+					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
+
+					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_WITH_ACTIVATION_BODY', $data['name'], $data['sitename'],
+						$data['siteurl'] . 'index.php?option=com_users&task=registration.activate&token=' . $data['activation'], $data['siteurl'],
+						$data['username'], $data['password_clear']
+					);
+				}
+				elseif ($autoLogin)
+				{
+					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
+
+					$emailBody = JText::sprintf('PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_BODY', $data['name'], $data['sitename'],
+						$data['siteurl'],
+						$data['username'], $data['password_clear']
+					);
+				}
+				elseif ($params->get('juser_bypass_accountdetails') != 1)
+				{
+					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
+
+					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_BODY', $data['name'], $data['sitename'], $data['siteurl']);
+				}
+
+				// Send the registration email.
+				if ($emailSubject !== '')
+				{
+					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
+
+					$db = JFactory::getDBO();
+					/*
+					 * Added email to admin code, but haven't had a chance to test it yet.
+					 */
+					/*
+					// Send Notification mail to administrators
+					if (($usersConfig->get('useractivation') < 2) && ($usersConfig->get('mail_to_admin') == 1))
 					{
-						$jdate = new JDate;
+					    $emailSubject = JText::sprintf(
+						'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+						$data['name'],
+						$data['sitename']
+					    );
 
-						// Build the query to add the messages
-						$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
-									VALUES ";
-						$messages = array();
-						foreach ($sendEmail as $userid)
+					    $emailBodyAdmin = JText::sprintf(
+						'COM_USERS_EMAIL_REGISTERED_NOTIFICATION_TO_ADMIN_BODY',
+						$data['name'],
+						$data['username'],
+						$data['siteurl']
+					    );
+
+					    // Get all admin users
+					    $query = 'SELECT name, email, sendEmail' .
+						' FROM #__users' .
+						' WHERE sendEmail=1';
+
+					    $db->setQuery($query);
+					    $rows = $db->loadObjectList();
+
+					    // Send mail to all superadministrators id
+					    foreach ($rows as $row)
+					    {
+						$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
+
+						// Check for an error.
+						if ($return !== true)
 						{
-							$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
-								. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
-								. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
-
+						    // $$$ hugh - should probably log this rather than enqueue it
+						    $app->enqueueMessage(JText::_('COM_USERS_REGISTRATION_ACTIVATION_NOTIFY_SEND_MAIL_FAILED'));
 						}
-						$q .= implode(',', $messages);
-						$db->setQuery($q);
-						$db->execute();
+					    }
+					}
+					 */
+
+					// Check for an error.
+					if ($return !== true)
+					{
+						$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+
+						// Send a system message to administrators receiving system mails
+						$query = $db->getQuery(true);
+						$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
+						$db->setQuery($query);
+						$sendEmail = $db->loadColumn();
+						if (count($sendEmail) > 0)
+						{
+							$jdate = new JDate;
+
+							// Build the query to add the messages
+							$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
+										VALUES ";
+							$messages = array();
+							foreach ($sendEmail as $userid)
+							{
+								$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
+									. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
+									. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
+
+							}
+							$q .= implode(',', $messages);
+							$db->setQuery($q);
+							$db->execute();
+						}
 					}
 				}
 			}
@@ -692,20 +691,20 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Set user group ids
 	 *
-	 * @param   object  $formModel  form model
-	 * @param   object  $me         new joomla user
-	 * @param   object  $user       joomla user before juser plugin run
+	 * @param   object  $me    New joomla user
+	 * @param   object  $user  Joomla user before juser plugin run
 	 *
 	 * @return  array   group ids
 	 */
 
-	protected function setGroupIds($formModel, $me, $user)
+	protected function setGroupIds($me, $user)
 	{
+		$formModel = $this->getModel();
 		$isNew = ($user->get('id') < 1);
 		$params = $this->getParams();
-		$this->gidfield = $this->getFieldName($params, 'juser_field_usertype');
+		$this->gidfield = $this->getFieldName('juser_field_usertype');
 		$defaultGroup = (int) $params->get('juser_field_default_group');
-		$groupIds = (array) $this->getFieldValue($params, 'juser_field_usertype', $formModel->formData, $defaultGroup);
+		$groupIds = (array) $this->getFieldValue('juser_field_usertype', $formModel->formData, $defaultGroup);
 
 		// If the group ids where encrypted (e.g. user can't edit the element) they appear as an object in groupIds[0]
 		if (!empty($groupIds) && is_object($groupIds[0]))
@@ -762,14 +761,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      Plugin params
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		$user = JFactory::getUser();
 		if ((int) $user->get('id') !== 0)
 		{
@@ -777,21 +774,20 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		}
 		if ($params->get('juser_auto_login', false))
 		{
-			$this->autoLogin($formModel);
+			$this->autoLogin();
 		}
 	}
 
 	/**
 	 * Auto login in the user
 	 *
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return  bool
 	 */
 
-	protected function autoLogin($formModel)
+	protected function autoLogin()
 	{
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 
 		/* $$$ rob 04/02/2011 no longer used - instead a session var is set
@@ -839,15 +835,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Check if the submitted details are ok
 	 *
-	 * @param   array   $post        Posted data
-	 * @param   object  &$formModel  Form model
-	 * @param   object  $params      Plugin params
+	 * @param   array   $post  Posted data
 	 *
 	 * @return	bool
 	 */
 
-	protected function check($post, &$formModel, $params)
+	protected function check($post)
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$userElement = $formModel->getElement($params->get('juser_field_userid'), true);

@@ -2,10 +2,10 @@
 /**
  * Fusion gantt chart viz Controller
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
- * @copyright	Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
- * @license		GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionganntchart
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
@@ -16,11 +16,11 @@ jimport('joomla.application.component.controller');
 /**
  * Fusion gantt chart viz Controller
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.fusionganntchart
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.fusionganntchart
  * @since       3.0
 */
 
-class FabrikControllerVisualizationfusion_gantt_chart extends FabrikControllerVisualization
+class FabrikControllerVisualizationfusion_Gantt_Chart extends FabrikControllerVisualization
 {
 }

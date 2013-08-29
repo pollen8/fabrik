@@ -898,8 +898,9 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_published = $ePublished[$c];
 			$params = json_encode($params);
 			$code = $jform['code'][$c];
-			$code = str_replace("}", "}\n", $code);
-			$code = str_replace('"', "'", $code);
+			//$code = str_replace("}", "}\n", $code);
+			//$code = str_replace('"', "'", $code);
+			$code =  htmlspecialchars($code, ENT_QUOTES);
 			foreach ($ids as $id)
 			{
 				$query = $db->getQuery(true);

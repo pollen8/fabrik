@@ -19,7 +19,7 @@ var PluginManager = new Class({
 		this.plugins = plugins;
 		this.type = type;
 		window.addEvent('domready', function () {
-			this.accordion = new Fx.Accordion([], [], {alwaysHide: true, display: -1});
+			this.accordion = new Fx.Accordion([], [], {alwaysHide: false, display: -1});
 			for (var i = 0; i < plugins.length; i ++) {
 				this.addTop(plugins[i]);
 			}
@@ -196,7 +196,7 @@ var PluginManager = new Class({
 			return;
 		}
 
-		// Ajax request to load the plugin contennt
+		// Ajax request to load the plugin content
 		var request = new Request.HTML({
 			url: 'index.php',
 			data: {

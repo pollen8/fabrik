@@ -30,24 +30,13 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	/**
 	 * Check if the user can use the plugin
 	 *
-	 * @param   object  &$model    Calling the plugin list/form
 	 * @param   string  $location  To trigger plugin on
 	 * @param   string  $event     To trigger plugin on
 	 *
 	 * @return  bool can use or not
 	 */
 
-	/**
-	 * Check if the user can use the plugin
-	 *
-	 * @param   object  &$model    Calling the plugin list/form
-	 * @param   string  $location  To trigger plugin on
-	 * @param   string  $event     To trigger plugin on
-	 *
-	 * @return  bool can use or not
-	 */
-
-	public function canUse(&$model = null, $location = null, $event = null)
+	public function canUse($location = null, $event = null)
 	{
 		return true;
 	}
@@ -158,6 +147,11 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			$path = JPATH_SITE . '/libraries';
 			set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 			$path = get_include_path();
+			if (!file_exists(JPATH_SITE . '/libraries/Zend/Loader.php'))
+			{
+				throw new RuntimeException('Please install the Zend gdata from library http://framework.zend.com/download/gdata', 500);
+				return;
+			}
 			require_once 'Zend/Loader.php';
 			Zend_Loader::loadClass('Zend_Gdata');
 

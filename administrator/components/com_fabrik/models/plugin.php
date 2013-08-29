@@ -171,7 +171,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 		$str[] = '<div class="pluginOpts" style="clear:left"></div>';
 		if ($j3)
 		{
-			$str[] = '<a href="#" class="btn btn-danger" data-button="removeButton"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a><br/><br/>';
+			$str[] = '<div class="form-actions"><a href="#" class="btn btn-danger" data-button="removeButton"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a></div>';
 		}
 		else
 		{

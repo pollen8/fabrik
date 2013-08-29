@@ -290,11 +290,18 @@ var FbForm = new Class({
 	 * @param   object  elementModel  The element JS object which is calling the fx, this is used to work ok which repeat group the fx is applied on
 	 */
 
-	doElementFX : function (id, method, elementModel) {
+	doElementFX: function (id, method, elementModel) {
 		var k, groupfx, fx, fxElement;
 
+		// Could be the source element is in a repeat group but the target is not.
+		var target = this.formElements.get(id.replace('fabrik_trigger_element_', '')),
+		targetInRepeat = true;
+		if (target) {
+			targetInRepeat = target.options.inRepeatGroup;
+		}
+
 		// Update the element id that we will apply the fx to to be that of the calling elementModels group (if in a repeat group)
-		if (elementModel) {
+		if (elementModel && targetInRepeat) {
 			if (elementModel.options.inRepeatGroup) {
 				var bits = id.split('_');
 				bits[bits.length - 1] = elementModel.options.repeatCounter;
@@ -692,6 +699,9 @@ var FbForm = new Class({
 	 */
 
 	dispatchEvent: function (elementType, elementId, action, js) {
+		if (typeOf(js) === 'string') {
+			js = Encoder.htmlDecode(js);
+		}
 		var el = this.formElements.get(elementId);
 		if (!el) {
 			// E.g. db join rendered as chx

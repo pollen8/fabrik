@@ -20,6 +20,7 @@ var fabrikCalendar = new Class({
 		eventLists: [],
 		'listid': 0,
 		'popwiny': 0,
+		timeFormat: '%X',
 		urlfilters: [],
 		url: {
 			'add': 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=getEvents&format=raw',
@@ -88,7 +89,7 @@ var fabrikCalendar = new Class({
 
 	_makeEventRelDiv: function (entry, opts, aDate, target)
 	{
-		var x, eventCont;
+		var x, eventCont, replace, dataContent;
 		var label = entry.label;
 		opts.left === opts.left ? opts.left : 0;
 		opts['margin-left'] === opts['margin-left'] ? opts['margin-left'] : 0;
@@ -125,7 +126,9 @@ var fabrikCalendar = new Class({
 		}
 		style['max-width'] = opts['max-width'] ? opts['max-width'] - 10 + 'px' : '';
 		var id = 'fabrikEvent_' + entry._listid + '_' + entry.id;
-		if (target) {
+		
+		// Not sure this is right - at least its not for month views 
+		if (target && opts.view !== 'monthView') {
 			id += target.className.replace(' ', '');
 		}
 		if (opts.view === 'monthView') {
@@ -142,9 +145,11 @@ var fabrikCalendar = new Class({
 			if (entry._canView) {
 				buttons += this.options.buttons.view;
 			}
-			var dataContent = 'Start: ' + new Date(entry.startdate).format('%X') + '<br /> End :' + entry.enddate.format('%X');
+			
+			replace = {start: new Date(entry.startdate).format(this.options.timeFormat), end: entry.enddate.format(this.options.timeFormat)};
+			dataContent = Joomla.JText._('PLG_VISUALIZATION_CALENDAR_EVENT_START_END').substitute(replace);
 			if (buttons !== '') {
-				buttons += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
+				dataContent += '<hr /><div class=\"btn-group\" style=\"text-align:center\">' + buttons + '</div>';
 			}
 			eventCont = new Element('a', {
 				'class': 'fabrikEvent label',
@@ -157,8 +162,14 @@ var fabrikCalendar = new Class({
 				'data-html': 'true',
 				'data-trigger' : 'click'
 			});
+			
+			
 			if (typeof(jQuery) !== 'undefined') {
 				jQuery(eventCont).popover();
+				eventCont.addEvent('click', function (e) {
+					this.popOver = eventCont;
+					
+				}.bind(this));
 			}
 		} else {
 			eventCont = new Element('div', {
@@ -879,7 +890,7 @@ var fabrikCalendar = new Class({
 			this.openChooseEventTypeForm(this.doubleclickdate, rawd);
 		} else {
 			var o = {};
-			o.rowid = 0;
+			o.rowid = '';
 			o.id = '';
 			d = '&' + this.options.eventLists[0].startdate_element + '=' + this.doubleclickdate;
 			o.listid = this.options.eventLists[0].value;
@@ -889,7 +900,7 @@ var fabrikCalendar = new Class({
 
 	openChooseEventTypeForm: function (d, rawd)
 	{
-		// rowid is the record to load if editing
+		// Rowid is the record to load if editing
 		var url = 'index.php?option=com_fabrik&tmpl=component&view=visualization&controller=visualization.calendar&task=chooseaddevent&id=' + this.options.calendarId + '&d=' + d + '&rawd=' + rawd;
 
 		// Fix for renderContext when rendered in content plugin
@@ -900,12 +911,14 @@ var fabrikCalendar = new Class({
 		{
 			var myfx = new Fx.Scroll(window).toElement('chooseeventwin');
 		};
-		//this.windowopts.type = 'modal';
 		Fabrik.getWindow(this.windowopts);
 	},
 
 	addEvForm: function (o)
 	{
+		if (typeof(jQuery) !== 'undefined') {
+			jQuery(this.popOver).popover('toggle');
+		}
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
 		url += '&jos_fabrik_calendar_events___visualization_id=' + this.options.calendarId;
@@ -1393,7 +1406,9 @@ var fabrikCalendar = new Class({
 		var i = this.activeHoverEvent.id.replace('fabrikEvent_', '').split('_');
 		o.rowid = i[1];
 		o.listid = i[0];
-		e.stop();
+		if (e) {
+			e.stop();
+		}
 		this.addEvForm(o);
 	},
 

@@ -21,7 +21,7 @@ jimport('joomla.application.component.view');
  * @since       3.0
  */
 
-class fabrikViewImport extends JViewLegacy
+class FabrikViewImport extends JViewLegacy
 {
 
 	/**
@@ -34,7 +34,8 @@ class fabrikViewImport extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-		FabrikHelperHTML::framework();
+		$srcs = FabrikHelperHTML::framework();
+		FabrikHelperHTML::script($srcs);
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->listid = $input->getInt('listid', 0);

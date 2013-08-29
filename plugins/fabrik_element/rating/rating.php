@@ -71,13 +71,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      elements data
-	 * @param   object  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -343,7 +343,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			$str[] = $clearImg;
 		}
-		$str[] = '<span class="ratingScore">' . $this->avg . '</span>';
+		$str[] = '<span class="ratingScore badge badge-info">' . $this->avg . '</span>';
 		$str[] = '<div class="ratingMessage">';
 		$str[] = '</div>';
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';

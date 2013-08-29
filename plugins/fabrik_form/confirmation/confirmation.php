@@ -31,7 +31,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 * If true then the plugin is stating that any subsequent plugin in the same group
 	 * should not be run.
 	 *
-	 * @param   string  $method  current plug-in call method e.g. onBeforeStore
+	 * @param   string  $method  Current plug-in call method e.g. onBeforeStore
 	 *
 	 * @return  bool
 	 */
@@ -69,14 +69,12 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
-	 * @param   object  $params      params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore($params, &$formModel)
+	public function onBeforeStore()
 	{
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -156,15 +154,13 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$input = $app->input;
 
 		// If we have already processed the form
@@ -246,7 +242,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
-	 * @param   int  $c  plugin counter
+	 * @param   int  $c  Plugin counter
 	 *
 	 * @return  string  html
 	 */
@@ -259,13 +255,10 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	/**
 	 * Does the plugin use session.on
 	 *
-	 * @param   object  $params     Plugin params
-	 * @param   object  $formModel  Form model
-	 *
 	 * @return  void
 	 */
 
-	public function usesSession($params, $formModel)
+	public function usesSession()
 	{
 		$this->usesSession = true;
 	}

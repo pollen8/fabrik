@@ -31,29 +31,24 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
-		return $this->process($params, $formModel);
+		return $this->process();
 	}
 
 	/**
 	* Send SMS
 	*
-	* @param   object  $params      plugin params
-	* @param   object  &$formModel  form model
-	*
 	* @return	bool
 	*/
 
-	protected function process($params, &$formModel)
+	protected function process()
 	{
-		$this->formModel = $formModel;
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$message = $this->getMessage();
 		$aData = $oForm->formData;
 		$gateway = $this->getInstance();
@@ -89,16 +84,18 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	protected function getMessage()
 	{
 		$config = JFactory::getConfig();
-		$data = $this->formModel->formData;
+		$formModel = $this->getModel();
+		$data = $formModel->formData;
 		$arDontEmailThesKeys = array();
-		/*remove raw file upload data from the email*/
+
+		// Remove raw file upload data from the email
 		foreach ($_FILES as $key => $file)
 		{
 			$arDontEmailThesKeys[] = $key;
 		}
 		$message = "";
 		$pluginManager = FabrikWorker::getPluginManager();
-		$groups = $this->formModel->getGroupsHiarachy();
+		$groups = $formModel->getGroupsHiarachy();
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();

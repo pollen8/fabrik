@@ -36,6 +36,8 @@ class FabrikViewList extends FabrikViewListBase
 	{
 		if (parent::display($tpl) !== false)
 		{
+			$model = $this->getModel();
+			$this->tabs = $model->loadTabs();
 			$app = JFactory::getApplication();
 			if (!$app->isAdmin() && isset($this->params))
 			{
@@ -59,4 +61,6 @@ class FabrikViewList extends FabrikViewListBase
 			$this->output();
 		}
 	}
+
+
 }

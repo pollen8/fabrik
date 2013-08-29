@@ -94,7 +94,7 @@ class FabrikHelperAdminHTML
 		$img = JArrayHelper::getValue($imgs, $index);
 		$href = '
 			<a href="#" onclick="return listItemTask(\'cb' . $i . '\',\'' . $prefix . $task . '\')" title="' . $alt . '">'
-			. 'todo mulitstateimg' . '</a>';
+			.  'todo mulitstateimg' . '</a>';
 		return $href;
 	}
 

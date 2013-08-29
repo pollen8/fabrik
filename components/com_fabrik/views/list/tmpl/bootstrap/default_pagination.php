@@ -99,25 +99,11 @@ function fabrik_pagination_list_footer($list, $paginator)
 
 function fabrik_pagination_item_active(&$item, $listid)
 {
-	$app = JFactory::getApplication();
-	if ($app->isAdmin())
-	{
-		// return '<a title="' . $item->text . '" href="#" onclick="oTable.fabrikNav(' . $item->base . ');return false;">' . $item->text . '</a>';
-		return '<a href="' . $item->base . '" title="' . $item->text . '">' . $item->text . '</a>';
-	}
-	else
-	{
-		return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
-	}
-
-	if ($item->base > 0)
-		return '<a href="' . $item->base . '" title="' . $item->text . '">' . $item->text . '</a>';
-	else
-		return '<a href="0" title="' . $item->text . '">' . $item->text . '</a>';
+	return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 }
 
 function fabrik_pagination_item_inactive(&$item)
 {
-	return '<a href="#">' . $item->text . "</a>";
+	return '<a href="#">' . $item->text . '</a>';
 }
 

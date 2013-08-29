@@ -44,56 +44,104 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 
 	protected function getInput()
 	{
-		$mode = $this->element['mode'] ? $this->element['mode'] : 'html';
-		$theme = $this->element['theme'] ? $this->element['theme'] : 'clouds';
-		$height = $this->element['height'] ? $this->element['height'] : '200px';
-		$width = $this->element['width'] ? $this->element['width'] : '300px';
+		$version = new JVersion;
+		if ($version->RELEASE == 2.5)
+		{
+			// Initialize some field attributes.
+			$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+			$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+			$columns = $this->element['cols'] ? ' cols="' . (int) $this->element['cols'] . '"' : '';
+			$rows = $this->element['rows'] ? ' rows="' . (int) $this->element['rows'] . '"' : '';
+			$required = $this->required ? ' required="required" aria-required="true"' : '';
+
+			// Initialize JavaScript field attributes.
+			$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
+
+			return '<textarea name="' . $this->name . '" id="' . $this->id . '"' . $columns . $rows . $class . $disabled . $onchange . $required . '>'
+				. $this->value . '</textarea>';
+		}
+		$mode = $this->element['mode'] ? (string) $this->element['mode'] : 'html';
+		$theme = $this->element['theme'] ? (string) $this->element['theme'] : 'github';
+		$height = $this->element['height'] ? (string) $this->element['height'] : '200px';
+		$width = $this->element['width'] ? (string) $this->element['width'] : '300px';
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
 
-		$script = '
-			var MyEditor = ace.edit("' . $this->id . '-ace");
-			MyEditor.setTheme("ace/theme/' . $theme . '");
-   			MyEditor.getSession().setMode("ace/mode/' . $mode . '");
-			window.addEvent("form.save", function () {
-   				if (typeOf(document.id("' . $this->id . '")) !== "null") {
-   					document.id("' . $this->id . '").value = MyEditor.getValue();
-   				}
-   			});
-			';
-
-		$shim = array();
-		$deps = new stdClass;
-		$deps->deps = array();
-
-		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
-		if ($mode !== 'javascript')
+		if ($mode === 'php')
 		{
-			$deps->deps[] = 'fabrik/lib/ace/src-min-noconflict/mode-' . $mode;
+			$aceMode = '{path:"ace/mode/php", inline:true}';
+		}
+		else
+		{
+			$aceMode = '"ace/mode/' . $mode . '"';
 		}
 
-		$shim['fabrik/lib/ace/src-min-noconflict/ace'] = $deps;
-		FabrikHelperHTML::iniRequireJs($shim);
+		$script = '
+			window.addEvent(\'domready\', function () {
+			var MyEditor = ace.edit("' . $this->id . '-ace");
+			MyEditor.setTheme("ace/theme/' . $theme . '");
+			MyEditor.getSession().setMode(' . $aceMode . ');
+			MyEditor.setValue(document.id("' . $this->id . '").value);
+			MyEditor.setAnimatedScroll(true);
+			MyEditor.setBehavioursEnabled(true);
+			MyEditor.setDisplayIndentGuides(true);
+			MyEditor.setHighlightGutterLine(true);
+			MyEditor.setHighlightSelectedWord(true);
+			MyEditor.setShowFoldWidgets(true);
+			MyEditor.setWrapBehavioursEnabled(true);
+			MyEditor.getSession().setUseWrapMode(true);
+			MyEditor.getSession().setTabSize(2);
+			MyEditor.on("blur", function () {
+				document.id("' . $this->id . '").value = MyEditor.getValue();
+			});
+			});
+			';
+
+		$src = array('media/com_fabrik/js/lib/ace/src-min-noconflict/ace.js');
 		FabrikHelperHTML::script($src, $script);
 
 		echo '<style type="text/css" media="screen">
-    #' . $this->id . '-ace {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
+	#' . $this->id . '-ace {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		border: 1px solid #c0c0c0;
+		border-radius: 3px;
+	}
 
-    	 #' . $this->id . '-container {
-        position: relative;
-       	width: ' . $width . ';
-    	 	height: ' . $height . ';
-    }
+	#' . $this->id . '-container {
+		position: relative;
+		width: ' . $width . ';
+		height: ' . $height . ';
+	}
 </style>';
+		$this->element['cols'] = 1;
+		$this->element['rows'] = 1;
 
-		$editor = parent::getInput();
-		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace">' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '</div>' . $editor . '</div>';
+		// Initialize some field attributes.
+		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+		$columns = $this->element['cols'] ? ' cols="' . (int) $this->element['cols'] . '"' : '';
+		$rows = $this->element['rows'] ? ' rows="' . (int) $this->element['rows'] . '"' : '';
+		$required = $this->required ? ' required="required" aria-required="true"' : '';
+
+		// Initialize JavaScript field attributes.
+		$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
+
+		// JS events are saved as encoded html - so we don't want to double encode them
+		$encoded = JArrayHelper::getValue($this->element, 'encoded', false);
+		if (!$encoded)
+		{
+			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		}
+
+		$editor = '<textarea name="' . $this->name . '" id="' . $this->id . '"' . $columns . $rows . $class . $disabled . $onchange . $required . '>'
+			. $this->value . '</textarea>';
+
+		// For element js event code.
+		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace"></div>' . $editor . '</div>';
 	}
 
 }

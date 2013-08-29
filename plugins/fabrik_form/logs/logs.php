@@ -26,23 +26,22 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 	/**
 	 * Run when the form loads
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function onLoad($params, &$formModel)
+	public function onLoad()
 	{
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
+		$formModel = $this->getModel();
 		$view = $app->input->get('view', 'form');
 		if ((!$formModel->isEditable() || $view == 'details') && ($params->get('log_details') != '0'))
 		{
-			$this->log($params, $formModel, 'form.load.details');
+			$this->log('form.load.details');
 		}
 		elseif ($formModel->isEditable() && ($params->get('log_form_load') != '0'))
 		{
-			$this->log($params, $formModel, 'form.load.form');
+			$this->log('form.load.form');
 		}
 		return true;
 	}
@@ -63,7 +62,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 		{
 			return 'form.details';
 		}
-		if (($rowid == "=") || ($rowid == '&') || ($rowid == '') || $rowid == 0)
+		if ($rowid == '')
 		{
 			return 'form.add';
 		}
@@ -78,28 +77,25 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$formModel = $this->getModel();
 		$type = empty($formModel->origRowId) ? 'form.submit.add' : 'form.submit.edit';
-		return $this->log($params, $formModel, $type);
+		return $this->log($type);
 	}
 
 	/**
 	 * Get new data
 	 *
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  array
 	 */
 
-	protected function getNewData($formModel)
+	protected function getNewData()
 	{
+		$formModel = $this->getModel();
 		$listModel = $formModel->getListModel();
 		$fabrikDb = $listModel->getDb();
 		$sql = $formModel->buildQuery();
@@ -110,16 +106,15 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 	/**
 	 * Perform log
 	 *
-	 * @param   object  $params       plugin params
-	 * @param   object  $formModel    form model
 	 * @param   string  $messageType  message type
 	 *
 	 * @return	bool
 	 */
 
-	protected function log($params, $formModel, $messageType)
+	protected function log($messageType)
 	{
-		$this->formModel = $formModel;
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$db = FabrikWorker::getDBO();
@@ -210,8 +205,8 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			}
 			else
 			{
-				$data = $this->getEmailData();
-				$newData = $this->getNewData($formModel);
+				$data = $this->getProcessData();
+				$newData = $this->getNewData();
 				if (!empty($data))
 				{
 					$filter = JFilterInput::getInstance();
@@ -624,7 +619,7 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 			}
 			else
 			{
-				$message = $this->makeStandardMessage($params, $result_compare);
+				$message = $this->makeStandardMessage($result_compare);
 			}
 
 			/* $$$ hugh - FIXME - not sure about the option driven $create_custom_table stuff, as this won't work
@@ -697,14 +692,14 @@ class PlgFabrik_FormLogs extends PlgFabrik_Form
 	/**
 	 * Make a standard log message
 	 *
-	 * @param   object  $params          plugin params
-	 * @param   string  $result_compare  not sure?!
+	 * @param   string  $result_compare  Not sure?!
 	 *
 	 * @return  string  json encoded objects
 	 */
 
-	protected function makeStandardMessage($params, $result_compare)
+	protected function makeStandardMessage($result_compare)
 	{
+		$params = $this->getParams();
 		$msg = new stdClass;
 
 		$message = '';

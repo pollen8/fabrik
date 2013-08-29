@@ -133,6 +133,7 @@ var FbDatabasejoin = new Class({
 
 	addOption: function (v, l, autoCompleteUpdate)
 	{
+		l = Encoder.htmlDecode(l);
 		autoCompleteUpdate = typeof(autoCompleteUpdate) !== 'undefined' ? autoCompleteUpdate : true;
 		var opt, selected, chxed, last, subOpts = [], injectWhere, labelfield;
 		if (v === '') {
@@ -151,7 +152,7 @@ var FbDatabasejoin = new Class({
 			if (autoCompleteUpdate) {
 				labelfield = this.element.getParent('.fabrikElement').getElement('input[name*=-auto-complete]');
 				this.element.value = v;
-				labelfield.value = Encoder.htmlDecode(l);
+				labelfield.value = l;
 			}
 			break;
 		case 'checkbox':

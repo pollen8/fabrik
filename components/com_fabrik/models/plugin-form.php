@@ -32,14 +32,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   object  $params      plugin parameters
-	 * @param   object  &$formModel  form model
-	 * @param   array   &$groups     list data for deletion
+	 * @param   array   &$groups  List data for deletion
 	 *
 	 * @return  bool
 	 */
 
-	public function onDeleteRowsForm($params, &$formModel, &$groups)
+	public function onDeleteRowsForm(&$groups)
 	{
 		return true;
 	}
@@ -47,13 +45,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run right at the beginning of the form processing
 	 *
-	 * @param   object  $params      plpugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeProcess($params, &$formModel)
+	public function onBeforeProcess()
 	{
 		return true;
 	}
@@ -61,13 +56,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run if form validation fails
 	 *
-	 * @param   object  $params      plpugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onError($params, &$formModel)
+	public function onError()
 	{
 
 	}
@@ -75,13 +67,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Run before table calculations are applied
 	 *
-	 * @param   object  $params      plpugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeCalculations($params, &$formModel)
+	public function onBeforeCalculations()
 	{
 		return true;
 	}
@@ -90,13 +79,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
 		return true;
 	}
@@ -104,13 +90,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Alter the returned plugin manager's result
 	 *
-	 * @param   string  $method      method
-	 * @param   object  &$formModel  form model
+	 * @param   string  $method  Method
 	 *
 	 * @return bool
 	 */
 
-	public function customProcessResult($method, &$formModel)
+	public function customProcessResult($method)
 	{
 		return true;
 	}
@@ -118,13 +103,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		$this->html = '';
 	}
@@ -145,13 +127,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Store the html to insert at the top of the form
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	public function getTopContent($params, $formModel)
+	public function getTopContent()
 	{
 		$this->html = '';
 	}
@@ -170,13 +149,10 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Sets up any end html (after form close tag)
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function getEndContent($params, $formModel)
+	public function getEndContent()
 	{
 		$this->html = '';
 	}
@@ -193,6 +169,23 @@ class PlgFabrik_Form extends FabrikPlugin
 	}
 
 	/**
+	 * Helper method used in plugin onProcess() methods. Gets the form's data merged
+	 * with the email data. So raw values are those of the submitted form and labels are
+	 * those of the element model's getEmailValue() method (if found)
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return  array
+	 */
+	public function getProcessData()
+	{
+		$model = $this->getModel();
+		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
+		$this->data = array_merge($d, $this->getEmailData());
+		return $this->data;
+	}
+
+	/**
 	 * Convert the posted form data to the data to be shown in the email
 	 * e.g. radio buttons swap their values for the value's label
 	 *
@@ -205,7 +198,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		{
 			return $this->emailData;
 		}
-		$model = $this->formModel;
+		$model = $this->getModel();
 		if (is_null($model->formDataWithTableName))
 		{
 			return array();
@@ -347,16 +340,14 @@ class PlgFabrik_Form extends FabrikPlugin
 	 * Get the class to manage the plugin
 	 * to ensure that the file is loaded only once
 	 *
-	 * @param   array   &$srcs   Scripts previously loaded
-	 * @param   string  $script  Script to load once class has loaded (defaults to plugins/fabrik_form/{name}/{name}.js
-	 *
 	 * @since   3.1b
 	 *
 	 * @return void
 	 */
 
-	public function formJavascriptClass($params, $formModel)
+	public function formJavascriptClass()
 	{
+		$formModel = $this->getModel();
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$name = $this->get('_name');
 		static $jsClasses;
@@ -393,15 +384,12 @@ class PlgFabrik_Form extends FabrikPlugin
 	/**
 	 * Does the plugin use session.on
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @since  3.0.8
 	 *
 	 * @return  void
 	 */
 
-	public function usesSession($params, $formModel)
+	public function usesSession()
 	{
 		$this->usesSession = false;
 	}

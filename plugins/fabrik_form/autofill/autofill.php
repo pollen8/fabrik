@@ -8,7 +8,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
- // No direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
@@ -42,14 +42,13 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 	 * Need to do this rather than on onLoad as otherwise in chrome form.js addevents is fired
 	 * before autocomplete class ini'd so then the autocomplete class never sets itself up
 	 *
-	 * @param   object  &$params     Plugin params
-	 * @param   object  &$formModel  Form model
-	 *
 	 * @return  void
 	 */
 
-	public function onAfterJSLoad(&$params, &$formModel)
+	public function onAfterJSLoad()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$rowid = $input->get('rowid', '', 'string');
@@ -155,6 +154,10 @@ class PlgFabrik_FormAutofill extends PlgFabrik_Form
 			if (!empty($map))
 			{
 				$newdata = new stdClass;
+				/*
+				 * need __pk_val if 'edit original row'
+				 */
+				$newdata->__pk_val = $data->__pk_val;
 				foreach ($map as $from => $to)
 				{
 					$toraw = $to . '_raw';

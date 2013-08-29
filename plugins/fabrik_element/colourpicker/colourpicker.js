@@ -40,36 +40,37 @@ var ColourPicker = new Class({
 		value: [0, 0, 0, 1]
 	},
 
-	initialize : function (element, options) {
+	initialize: function (element, options) {
 		this.plugin = 'colourpicker';
 		if (typeOf(options.value) === 'null' || options.value[0] === 'undefined') {
 			options.value = [0, 0, 0, 1];
 		}
-		options.callback = function (v, caller) {
+
+		this.parent(element, options);
+		options.outputs = this.outputs;
+		this.element = document.id(element);
+		this.ini();
+	},
+	
+	ini: function () {
+		this.options.callback = function (v, caller) {
 			v = this.update(v);
 			if (caller !== this.grad) {
 				this.grad.update(v);
 			}
 		}.bind(this);
-
-		this.parent(element, options);
-		this.element = document.id(element);
 		this.widget = this.element.getParent('.fabrikSubElementContainer').getElement('.colourpicker-widget');
 		this.setOutputs();
 		var d = new Drag.Move(this.widget, {'handle': this.widget.getElement('.draggable')});
 
-		this.createSliders(element);
+		this.createSliders(this.strElement);
 
-		options.outputs = this.outputs;
-
-
-		this.swatch = new ColourPickerSwatch(element, options, this);
-		this.widget.getElement('#' + element + '-swatch').adopt(this.swatch);
+		this.swatch = new ColourPickerSwatch(this.options.element, this.options, this);
+		this.widget.getElement('#' + this.options.element + '-swatch').empty().adopt(this.swatch);
 		this.widget.hide();
 
-
-		this.grad = new ColourPickerGradient(element, options, this);
-		this.widget.getElement('#' + element + '-picker').adopt(this.grad.square);
+		this.grad = new ColourPickerGradient(this.options.element, this.options, this);
+		this.widget.getElement('#' + this.options.element + '-picker').empty().adopt(this.grad.square);
 		this.update(this.options.value);
 
 		var close = this.widget.getElement('.modal-header a');
@@ -81,6 +82,41 @@ var ColourPicker = new Class({
 		}
 	},
 
+	cloned: function (c) {
+		this.parent(c);
+		
+		// Recreate the tabs
+		var widget = this.element.getParent('.fabrikSubElementContainer').getElement('.colourpicker-widget'),
+		panes = widget.getElements('.tab-pane'),
+		tabs = widget.getElements('a[data-toggle=tab]');
+		tabs.each(function (tab) {
+			var href = tab.get('href').split('-');
+			var name = href[0].split('_');
+			name[name.length - 1] = c;
+			name = name.join('_');
+			name += '-' + href[1];
+			tab.href = name;
+		});
+		
+		panes.each(function (tab) {
+			var href = tab.get('id').split('-');
+			var name = href[0].split('_');
+			name[name.length - 1] = c;
+			name = name.join('_');
+			name += '-' + href[1];
+			tab.id = name;
+		});
+		tabs.each(function (tab) {
+			tab.addEvent('click', function (e) {
+				e.stop();
+				jQuery(tab).tab('show');
+			});
+		});
+		
+		// Initialize the widget
+		this.ini();
+	},
+
 	setOutputs: function (output) {
 		this.outputs = {};
 		this.outputs.backgrounds = this.getContainer().getElements('.colourpicker_bgoutput');
@@ -88,6 +124,8 @@ var ColourPicker = new Class({
 
 		this.outputs.backgrounds.each(function (i) {
 
+			// Copy group, delete group add group - set outputs seems to be called twice
+			i.removeEvents('click');
 			i.addEvent('click', function (e) {
 				this.toggleWidget(e);
 			}.bind(this));
@@ -95,7 +133,7 @@ var ColourPicker = new Class({
 		}.bind(this));
 
 		this.outputs.foregrounds.each(function (i) {
-
+			i.removeEvents('click');
 			i.addEvent('click', function (e) {
 				this.toggleWidget(e);
 			}.bind(this));
@@ -113,7 +151,7 @@ var ColourPicker = new Class({
 		this.createColourSlideHTML(element, 'green', 'Green:', this.options.green);
 		this.createColourSlideHTML(element, 'blue', 'Blue:', this.options.blue);
 		this.table.appendChild(this.tbody);
-		this.widget.getElement('.sliders').appendChild(this.table);
+		this.widget.getElement('.sliders').empty().appendChild(this.table);
 
 		Fabrik.addEvent('fabrik.colourpicker.slider', function (o, col, pos) {
 			if (this.sliderRefs.contains(o.element.id)) {

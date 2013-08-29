@@ -4,6 +4,7 @@
  * @link    http://www.dompdf.com/
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ * @version $Id: table_cell_frame_reflower.cls.php 457 2012-01-22 11:48:20Z fabien.menager $
  */
 
 /**
@@ -16,13 +17,13 @@ class Table_Cell_Frame_Reflower extends Block_Frame_Reflower {
 
   //........................................................................
 
-  function __construct(Block_Frame_Decorator $frame) {
+  function __construct(Frame $frame) {
     parent::__construct($frame);
   }
 
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(Frame_Decorator $block = null) {
 
     $style = $this->_frame->get_style();
 
@@ -71,11 +72,9 @@ class Table_Cell_Frame_Reflower extends Block_Frame_Reflower {
     $indent = $style->length_in_pt($style->text_indent, $w);
     $this->_frame->increase_line_width($indent);
 
-    $page = $this->_frame->get_root();
-    
     // Set the y position of the first line in the cell
-    $line_box = $this->_frame->get_current_line_box();
-    $line_box->y = $line_y;
+    $page = $this->_frame->get_root();
+    $this->_frame->set_current_line($line_y);
     
     // Set the containing blocks and reflow each child
     foreach ( $this->_frame->get_children() as $child ) {
@@ -84,9 +83,6 @@ class Table_Cell_Frame_Reflower extends Block_Frame_Reflower {
         break;
     
       $child->set_containing_block($content_x, $content_y, $cb_w, $h);
-      
-      $this->process_clear($child);
-      
       $child->reflow($this->_frame);
     
       $this->process_float($child, $x + $left_space, $w - $right_space - $left_space);

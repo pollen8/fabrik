@@ -28,22 +28,21 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	* canEditGroup, called when canEdit called in group model
 	*
-	* @param   object  $params      Plugin parameters
-	* @param   object  &$formModel  Form model
-	* @param   array   $groupModel  Group model
+	* @param   JModel  $groupModel  Group model
 	*
 	* @return  void
 	*/
 
-	public function onCanEditGroup($params, &$formModel, $groupModel)
+	public function onCanEditGroup($groupModel)
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onCanEditGroup')
 		{
 			if (is_array($groupModel))
 			{
 				$groupModel = $groupModel[0];
 			}
-			if ($this->_runPHP($params, $formModel, $groupModel) === false)
+			if ($this->_runPHP($groupModel) === false)
 			{
 				return false;
 			}
@@ -54,18 +53,16 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		$this->html = '';
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'getBottomContent')
 		{
-			$this->html = $this->_runPHP($params, $formModel);
+			$this->html = $this->_runPHP();
 			if ($this->html === false)
 			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
@@ -88,18 +85,16 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Store the html to insert at the top of the form
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	public function getTopContent($params, $formModel)
+	public function getTopContent()
 	{
 		$this->html = '';
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'getTopContent')
 		{
-			$this->html = $this->_runPHP($params, $formModel);
+			$this->html = $this->_runPHP();
 			if ($this->html === false)
 			{
 				return false;
@@ -122,18 +117,16 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Sets up any end html (after form close tag)
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return  void
 	 */
 
-	public function getEndContent($params, $formModel)
+	public function getEndContent()
 	{
 		$this->html = '';
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'getEndContent')
 		{
-			$this->html = $this->_runPHP($params, $formModel);
+			$this->html = $this->_runPHP();
 			if ($this->html === false)
 			{
 				return false;
@@ -145,17 +138,15 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Run right at the beginning of the form processing
 	 *
-	 * @param   object  $params      plpugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeProcess($params, &$formModel)
+	public function onBeforeProcess()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onBeforeProcess')
 		{
-			if ($this->_runPHP($params, $formModel) === false)
+			if ($this->_runPHP() === false)
 			{
 				return false;
 			}
@@ -167,17 +158,15 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
 	 *
-	 * @param   object  $params      params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool  should the form model continue to save
 	 */
 
-	public function onBeforeStore($params, &$formModel)
+	public function onBeforeStore()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onBeforeStore')
 		{
-			if ($this->_runPHP($params, $formModel) === false)
+			if ($this->_runPHP() === false)
 			{
 				return false;
 			}
@@ -186,19 +175,17 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	}
 
 	/**
-	 * Run before table calculations are applied
-	 *
-	 * @param   object  $params      plpugin params
-	 * @param   object  &$formModel  form model
+	 * Run before list calculations are applied
 	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeCalculations($params, &$formModel)
+	public function onBeforeCalculations()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onBeforeCalculations')
 		{
-			if ($this->_runPHP($params, $formModel) === false)
+			if ($this->_runPHP() === false)
 			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
@@ -209,18 +196,17 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   object  $params      Plugin parameters
-	 * @param   object  &$formModel  Form model
-	 * @param   array   &$groups     List data for deletion
+	 * @param   array   &$groups  List data for deletion
 	 *
 	 * @return	bool
 	 */
 
-	public function onDeleteRowsForm($params, &$formModel, &$groups)
+	public function onDeleteRowsForm(&$groups)
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onDeleteRowsForm')
 		{
-			if ($this->_runPHP($params, $formModel) === false)
+			if ($this->_runPHP() === false)
 			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
@@ -232,17 +218,16 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onAfterProcess')
 		{
-			if ($this->_runPHP($params, $formModel) === false)
+			$formModel = $this->getModel();
+			if ($this->_runPHP() === false)
 			{
 				return false;
 			}
@@ -254,17 +239,15 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Run when the form is loaded - after its data has been created
 	 * data found in $formModel->data
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onLoad($params, &$formModel)
+	public function onLoad()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onLoad')
 		{
-			return $this->_runPHP($params, $formModel);
+			return $this->_runPHP();
 		}
 		return true;
 	}
@@ -273,17 +256,15 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	 * Run when the form is loaded - before its data has been created
 	 * data found in $formModel->data
 	 *
-	 * @param   JRegistry  $params      Plugin params
-	 * @param   JModel     &$formModel  Form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onBeforeLoad($params, &$formModel)
+	public function onBeforeLoad()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onBeforeLoad')
 		{
-			return $this->_runPHP($params, $formModel);
+			return $this->_runPHP();
 		}
 		return true;
 	}
@@ -291,17 +272,15 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Process the plugin, called when form is submitted
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	public function onError($params, &$formModel)
+	public function onError()
 	{
+		$params = $this->getParams();
 		if ($params->get('only_process_curl') == 'onError')
 		{
-			$this->_runPHP($params, $formModel);
+			$this->_runPHP();
 		}
 		return true;
 	}
@@ -309,19 +288,20 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	/**
 	 * Run plugins php code/script
 	 *
-	 * @param   object  $params       Plugin params
-	 * @param   object  &$formModel   Form model
 	 * @param   object  &$groupModel  Group model
 	 *
 	 * @return bool false if error running php code
 	 */
 
-	private function _runPHP($params, &$formModel, &$groupModel = null)
+	private function _runPHP(&$groupModel = null)
 	{
+		$data = $this->getProcessData();
 		/**
 		 * if you want to modify the submitted form data
 		 * $formModel->updateFormData('tablename___elementname', $newvalue);
 		 */
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$method = $params->get('only_process_curl');
 		/*
 		 *  $$$ rob this is poor when submitting the form the data is stored in formData, when editing its stored in _data -

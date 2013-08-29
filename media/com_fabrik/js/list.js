@@ -451,7 +451,7 @@ var FbList = new Class({
 	},
 
 	watchEmpty: function (e) {
-		var b = document.id(this.options.form).getElement('.doempty', this.options.form);
+		var b = document.id(this.options.form).getElement('.doempty');
 		if (b) {
 			b.addEvent('click', function (e) {
 				e.stop();
@@ -553,13 +553,13 @@ var FbList = new Class({
 			}
 		}.bind(this));
 			
-		if (this.options.filterMethod === 'submitform') {
-			if (submit) {
-				submit.removeEvents();
-				submit.addEvent('click', function (e) {
-					this.doFilter();
-				}.bind(this));
-			}
+		// Watch submit if present regardless of this.options.filterMethod
+		if (submit) {
+			submit.removeEvents();
+			submit.addEvent('click', function (e) {
+				e.stop();
+				this.doFilter();
+			}.bind(this));
 		}
 		this.getFilters().addEvent('keydown', function (e) {
 			if (e.code === 13) {

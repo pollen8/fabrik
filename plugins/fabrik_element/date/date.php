@@ -60,13 +60,13 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
 	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		if ($data == '')
 		{
@@ -337,7 +337,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		}
 		$timelength = JString::strlen($timeformat);
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/date/images/', 'image', 'form', false);
-		$str[] = '<input type="text" class="' . $class .'" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
+		$str[] = '<input type="text" class="' . $class . '" ' . $readonly . ' size="' . $timelength . '" value="' . $time . '" name="'
 				. $timeElName . '" />';
 		$opts = array('alt' => JText::_('PLG_ELEMENT_DATE_TIME'), 'class' => 'timeButton');
 		$file = FabrikWorker::j3() ? 'clock.png' : 'time.png';
@@ -409,10 +409,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			}
 			if (!$newRecord)
 			{
-				if ($alwaysToday)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		else
@@ -444,6 +441,15 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	private function _indStoreDBFormat($val)
 	{
+		$params = $this->getParams();
+		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+		$store_as_local = (bool) $params->get('date_store_as_local', false);
+		$alwaysToday = $params->get('date_alwaystoday', false);
+		if ($alwaysToday)
+		{
+			$val = JFactory::getDate('now', $timeZone)->toSql($store_as_local);
+			return $val;
+		}
 		// $$$ hugh - sometimes still getting $val as an array with date and time,
 		// like on AJAX submissions?  Or maybe from getEmailData()?  Or both?
 		if (is_array($val))
@@ -460,8 +466,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			return '';
 		}
 		jimport('joomla.utilities.date');
-		$params = $this->getParams();
-		$store_as_local = (bool) $params->get('date_store_as_local', false);
 
 		$listModel = $this->getListModel();
 
@@ -862,37 +866,49 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	}
 
 	/**
-	 * Determines the value for the element in the form view
+	 * Get the GMT Date time - tz offset applied in render() if needed
 	 *
-	 * @param   array  $data           Form data
+	 * @param   array  $data           Form data date will be GMT if store as local OFF, otherwise as local time
 	 * @param   int    $repeatCounter  When repeating joinded groups we need to know what part of the array to access
 	 * @param   array  $opts           Options
 	 *
-	 * @return  string	value
+	 * @return  string	value  Date as GMT time
 	 */
 
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$params = $this->getParams();
 		$alwaysToday = $params->get('date_alwaystoday', false);
-		$defaultToday = $params->get('date_defaulttotoday');
-		$newRecord = $this->getFormModel()->isNewRecord();
+		$formModel = $this->getFormModel();
 		$value = parent::getValue($data, $repeatCounter, $opts);
+
+		$db = FabrikWorker::getDbo();
+		$input = JFactory::getApplication()->input;
 		if (is_array($value))
 		{
 			// Submission posted as array but date & time in date key. Can be key'd to 0 if parent class casts string to array.
 			$value = JArrayHelper::getValue($value, 'date', JArrayHelper::getValue($value, 0));
 		}
-		if ($alwaysToday)
+		if ($input->get('task') == 'form.process')
 		{
-			$date = JFactory::getDate();
-			$value = $date->toSQL();
+			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
+			return $value;
 		}
-		if ($newRecord && $defaultToday)
+		if ($value == '' || $db->getNullDate() == $value)
 		{
-			$date = JFactory::getDate();
-			$value = $date->toSQL();
+			return $value;
 		}
+		if ($alwaysToday && $formModel->isEditable())
+		{
+			$value = '';
+		}
+
+		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
+		$date = JFactory::getDate($value, $timeZone);
+
+		// If value = '' dont offset it (not sure what the logic is but testing seems to indicate this to be true)
+		$local = $formModel->hasErrors() || $value == '' || $params->get('date_store_as_local', 0) == 1 ? false : true;
+		$value = $date->toSQL($local);
 		return $value;
 	}
 
@@ -909,7 +925,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 	public function toDbVal($str)
 	{
-		echo "str = $str";exit;
 		/**
 		 * Only format if not empty otherwise search forms will filter
 		 * for todays date even when no date entered

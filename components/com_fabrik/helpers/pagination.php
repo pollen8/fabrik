@@ -352,7 +352,6 @@ class FPagination extends JPagination
 	protected function _buildDataObject()
 	{
 		$app = JFactory::getApplication();
-		$admin = $app->isAdmin();
 
 		// Initialize variables
 		$data = new stdClass;
@@ -365,7 +364,7 @@ class FPagination extends JPagination
 		if (!$this->viewAll)
 		{
 			$data->all->base = '0';
-			$data->all->link = $admin ? "{$sepchar}limitstart=" : JRoute::_("{$sepchar}limitstart=");
+			$data->all->link = JRoute::_("{$sepchar}limitstart=");
 		}
 
 		// Set the start and previous data objects
@@ -377,11 +376,10 @@ class FPagination extends JPagination
 			$page = ($this->get('pages.current') - 2) * $this->limit;
 
 			$data->start->base = '0';
-			$data->start->link = $admin ? "{$sepchar}limitstart{$this->id}=0" : JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=0");
+			$data->start->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=0");
 
 			$data->previous->base = $page;
-			$data->previous->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $page
-			: JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $page);
+			$data->previous->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $page);
 
 			$data->start->link = str_replace('resetfilters=1', '', $data->start->link);
 			$data->previous->link = str_replace('resetfilters=1', '', $data->previous->link);
@@ -399,11 +397,9 @@ class FPagination extends JPagination
 			$end = ($this->get('pages.total') - 1) * $this->limit;
 
 			$data->next->base = $next;
-			$data->next->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $next : JRoute::_(
-				$this->url . "{$sepchar}limitstart{$this->id}=" . $next
-			);
+			$data->next->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $next);
 			$data->end->base = $end;
-			$data->end->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $end : JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $end);
+			$data->end->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $end);
 
 			$data->next->link = str_replace('resetfilters=1', '', $data->next->link);
 			$data->end->link = str_replace('resetfilters=1', '', $data->end->link);
@@ -421,8 +417,7 @@ class FPagination extends JPagination
 			if ($i != $this->get('pages.current') || $this->viewAll)
 			{
 				$data->pages[$i]->base = $offset;
-				$data->pages[$i]->link = $admin ? "{$sepchar}limitstart{$this->id}=" . $offset
-					: JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $offset);
+				$data->pages[$i]->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $offset);
 				$data->pages[$i]->link = str_replace('resetfilters=1', '', $data->pages[$i]->link);
 				$data->pages[$i]->link = str_replace('clearordering=1', '', $data->pages[$i]->link);
 			}

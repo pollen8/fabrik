@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
-class FabrikViewCron extends JView
+class FabrikViewCron extends JViewLegacy
 {
 
 	public function display($tmpl = 'default')

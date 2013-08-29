@@ -29,28 +29,24 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
-		return $this->_process($params, $formModel);
+		return $this->_process();
 	}
 
 	/**
 	 * Clone the record
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return  bool
 	 */
 
-	private function _process($params, &$formModel)
+	private function _process()
 	{
+		$params = $this->getParams();
+		$formModel = $this->getModel();
 		$clone_times_field_id = $params->get('clone_times_field', '');
 		$clone_batchid_field_id = $params->get('clone_batchid_field', '');
 		if ($clone_times_field_id != '')
@@ -61,14 +57,14 @@ class PlgFabrik_FormClone extends PlgFabrik_Form
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($clone_batchid_field_id);
 				$id_element = $id_elementModel->getElement(true);
-				$formModel->formData[$id_element->name] = $formModel->_fullFormData['rowid'];
-				$formModel->formData[$id_element->name . '_raw'] = $formModel->_fullFormData['rowid'];
+				$formModel->formData[$id_element->name] = $formModel->fullFormData['rowid'];
+				$formModel->formData[$id_element->name . '_raw'] = $formModel->fullFormData['rowid'];
 				$listModel = $formModel->getlistModel();
 				$listModel->setFormModel($formModel);
 				$primaryKey = FabrikString::shortColName($listModel->getTable()->db_primary_key);
-				$formModel->formData[$primaryKey] = $formModel->_fullFormData['rowid'];
-				$formModel->formData[$primaryKey . '_raw'] = $formModel->_fullFormData['rowid'];
-				$listModel->storeRow($formModel->formData, $formModel->_fullFormData['rowid']);
+				$formModel->formData[$primaryKey] = $formModel->fullFormData['rowid'];
+				$formModel->formData[$primaryKey . '_raw'] = $formModel->fullFormData['rowid'];
+				$listModel->storeRow($formModel->formData, $formModel->fullFormData['rowid']);
 			}
 
 			$clone_times = $formModel->formData[$element->name];

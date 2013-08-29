@@ -95,6 +95,7 @@ var FbListInlineEdit = new Class({
 	watchCells: function () {
 		var firstLoaded = false;
 		this.getList().getForm().getElements('.fabrik_element').each(function (td, x) {
+			
 			if (this.canEdit(td)) {
 				if (!firstLoaded && this.options.loadFirst) {
 					firstLoaded = this.edit(null, td);
@@ -143,7 +144,7 @@ var FbListInlineEdit = new Class({
 			}
 			break;
 		case 9:
-			//tab
+			//tab - don't navigate with tab - moofs form field tab ordering if we do
 			if (this.inedit) {
 				if (this.options.tabSave) {
 					if (typeOf(this.editing) === 'element') {
@@ -152,24 +153,7 @@ var FbListInlineEdit = new Class({
 						this.edit(e, this.td);
 					}
 				}
-				//var next = e.shift ? this.td.getPrevious() : this.td.getNext();
-				var next = e.shift ? this.getPreviousEditable(this.td) : this.getNextEditable(this.td);
-				if (typeOf(next) === 'element') {
-					e.stop();
-					this.select(e, next);
-					this.edit(e, this.td);
-				}
 				return;
-			}
-			e.stop();
-			if (e.shift) {
-				if (typeOf(this.td.getPrevious()) === 'element') {
-					this.select(e, this.td.getPrevious());
-				}
-			} else {
-				if (typeOf(this.td.getNext()) === 'element') {
-					this.select(e, this.td.getNext());
-				}
 			}
 			break;
 		case 37: //left
@@ -268,9 +252,16 @@ var FbListInlineEdit = new Class({
 		}
 	},
 
+	/**
+	 * Parse the td class name to grab the element name
+	 * 
+	 * @param   DOM node  td  Cell to parse.
+	 * 
+	 * @return  string  Element name
+	 */
 	getElementName: function (td) {
 		var c = td.className.trim().split(' ').filter(function (item, index) {
-			return item !== 'fabrik_element' && item !== 'fabrik_row';
+			return item !== 'fabrik_element' && item !== 'fabrik_row' && !item.contains('hidden');
 		});
 		var element = c[0].replace('fabrik_row___', '');
 		return element;

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
+
+	<fields addfieldpath="/administrator/components/com_fabrik/models/fields">
+		<fieldset label="COM_FABRIK_OPTIONS" name="plg-element-colourpicker">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_COLOURPICKER_HELP_SERVER" />
+				
+			<field name="default"
+				type="color"
+				label="COM_FABRIK_DEFAULT" />
+
+		</fieldset>
+	</fields>
+	
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-colourpicker">
+		<fieldset label="PLG_ELEMENT_COLOURPICKER_SWATCH_LABEL" addfieldpath="/administrator/components/com_fabrik/models/fields" name="plg-element-colourpicker-swatch">
 		
 			<field type="helplink"
 				url="PLG_ELEMENT_COLOURPICKER_HELP_SERVER" />
@@ -12,9 +26,12 @@
 				description="PLG_ELEMENT_COLOURPICKER_SWATCH_DESC"
 				directory="/plugins/fabrik_element/colourpicker/swatches/"
 				hide_default="1"
+				filter=".js"
 				hide_none="1"
 				label="PLG_ELEMENT_COLOURPICKER_SWATCH_LABEL"/>
-
+			
+			
+				
 		</fieldset>
 	</fields>
 </form>

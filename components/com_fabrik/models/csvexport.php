@@ -483,8 +483,7 @@ class FabrikFEModelCSVExport
 								$label = $w->parseMessageForPlaceHolder($label, array());
 								break;
 							case '2':
-								$headingLabel = $elementModel->getParams()->get('alt_list_heading');
-								$n = trim($headingLabel) === '' ? $element->label : $headingLabel;
+								$headingLabel = $elementModel->getListHeading();
 								/**
 								 * $$$ hugh - added next line as special case for a client, do not remove!
 								 * (used in conjuntion with "Custom QS" option, to allow variable header labels

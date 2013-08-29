@@ -423,6 +423,16 @@
 				description="PLG_ELEMENT_GOOGLE_MAP_ZOOM_LEVEL_DESC"
 			/>
 
+			<field name="visual_refresh"
+				type="radio"
+				class="btn-group"
+				deafult="0"
+				label="PLG_ELEMENT_GOOGLE_MAP_VISUAL_REFRESH_LABEL"
+				description="PLG_ELEMENT_GOOGLE_MAP_VISUAL_REFRESH_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
 		</fieldset>
 	</fields>
 </form>

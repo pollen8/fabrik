@@ -49,13 +49,13 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string  $data      Elements data
-	 * @param   object  &$thisRow  All the data in the lists current row
+	 * @param   string    $data      elements data
+	 * @param   stdClass  &$thisRow  all the data in the lists current row
 	 *
-	 * @return  string	Formatted value
+	 * @return  string	formatted value
 	 */
 
-	public function renderListData($data, &$thisRow)
+	public function renderListData($data, stdClass &$thisRow)
 	{
 		$listModel = $this->getListModel();
 		$params = $this->getParams();
@@ -215,7 +215,6 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 			$params = $this->getParams();
 			if ((int) $params->get('fb_gm_radius', '0'))
 			{
-				echo "distancee widget";
 				FabrikHelperHTML::script('components/com_fabrik/libs/googlemaps/distancewidget.js');
 				self::$radiusJs = true;
 			}
@@ -575,16 +574,44 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 		$markers = '';
 		if ($icon !== '')
 		{
-			$markers .= "icon:$icon|";
+			$markers .= 'icon:' . $icon . '|';
 		}
-		$markers .= "$lat,$lon";
+		$markers .= $lat . ',' . $lon;
 		$uri = JURI::getInstance();
-		$src = $uri->getScheme()
-			. "://maps.google.com/maps/api/staticmap?center=$lat,$lon&amp;zoom={$z}&amp;size={$w}x{$h}&amp;maptype=$type&amp;mobile=true&amp;markers=$markers&amp;sensor=false";
+		$src = $uri->getScheme() . '://maps.google.com/maps/api/staticmap?';
+		$attribs = array();
+		$attribs[] = 'center=' . $lat . ',' . $lon;
+		$attribs[] = 'zoom=' . $z;
+		$attribs[] = 'size=' . $w . 'x' . $h;
+		$attribs[] = 'maptype=' . $type;
+		$attribs[] = 'mobile=true';
+		$attribs[] = 'markers=' . $markers;
+		$attribs[] = 'sensor=false';
 
-		/**
-		 * if radius widget is being used, build an encoded polyline representing a circle
-		 */
+		$config = JComponentHelper::getParams('com_fabrik');
+		$apiKey = $config->get('google_api_key', '');
+		$client = $config->get('google_buisness_client_id', '');
+		$signature = $config->get('google_buisness_signature', '');
+		if ($client !== '')
+		{
+			if ($signature === '')
+			{
+				throw new Exception('You have entered a Google Maps Business Client id, but have not supplied a signature value');
+			}
+			$attribs[] = 'client=' . $client;
+			$attribs[] = 'signature=' . $signature;
+		}
+		elseif ($apiKey !== '')
+		{
+			$attribs[] = 'key=' . $apiKey;
+		}
+
+		if ($params->get('visual_refresh', false))
+		{
+			$attribs[] = 'visual_refresh=true';
+		}
+
+		// If radius widget is being used, build an encoded polyline representing a circle
 		if ((int) $params->get('fb_gm_radius', '0') == 1)
 		{
 			require_once COM_FABRIK_FRONTEND . '/libs/googlemaps/polyline_encoder/class.polylineEncoder.php';
@@ -595,12 +622,20 @@ class PlgFabrik_ElementGooglemap extends PlgFabrik_Element
 				$radius = $params->get('fb_gm_radius_default', '50');
 			}
 			$enc_str = $polyEnc->GMapCircle($lat, $lon, $radius);
-			$src .= "&amp;path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:" . $enc_str;
+			$attribs[] = 'path=weight:2%7Ccolor:black%7Cfillcolor:0x5599bb%7Cenc:' . $enc_str;
 		}
 
-		$id = $tableView ? '' : "id=\"{$id}\"";
-		$str = "<div $id class=\"gmStaticMap\"><img src=\"$src\" alt=\"static map\" />";
-		$str .= "</div>";
+		// Serve cached file from remote url
+		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
+		$src .= implode('&', $attribs);
+		$folder = 'cache/com_fabrik/staticmaps/';
+		$file = implode('.', $attribs) . '.png';
+		$src = Fabimage::cacheRemote($src, $folder, $file);
+
+		$id = $tableView ? '' : 'id="' . $id . '"';
+		$str = '<div ' . $id . 'class="gmStaticMap">';
+		$str .= '<img src="' . $src . '" alt="static map" />';
+		$str .= '</div>';
 		return $str;
 	}
 

@@ -395,79 +395,76 @@ class FabrikFEModelGroup extends FabModel
 	}
 
 	/**
-	 * Set the element column css allows for group colum settings to be applied
+	 * Set the element column css allows for group column settings to be applied
 	 *
-	 * @param   object  &$element  prerender element properties
-	 * @param   int     $elCount   current key when looping over elements.
+	 * @param   object  &$element  Prerender element properties
+	 * @param   int     $rowIx     Current key when looping over elements.
 	 *
 	 * @since 	Fabrik 3.0.5.2
 	 *
 	 * @return  int  the next column count
 	 */
 
-	public function setColumnCss(&$element, $elCount)
+	public function setColumnCss(&$element, $rowIx)
 	{
 		$params = $this->getParams();
-		$element->column = '';
 		$colcount = (int) $params->get('group_columns');
-
-		// Bootstrap grid formatting
-		$spans = $this->columnSpans();
 		if ($colcount === 0)
 		{
 			$colcount = 1;
 		}
-		$spanKey = ($elCount - 1) % $colcount;
-
-		$element->span = $colcount == 0 ? 'span12' : JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
-
-		$element->span = ' ' . $element->span;
 		$element->offset = $params->get('group_offset', 0);
+
+		// Bootstrap grid formatting
+		if ($colcount === 1) // Single column
+		{
+			$element->startRow = true;
+			$element->endRow = true;
+			$element->span = ' span12';
+			$element->column = ' style="clear:both;width:100%;"';
+			$rowIx = -1;
+			return $rowIx;
+		}
+
+		// Multi-column
+		$widths = $params->get('group_column_widths', '');
+		$w = floor((100 - ($colcount * 6)) / $colcount) . '%';
+		if ($widths !== '')
+		{
+			$widths = explode(',', $widths);
+			$w = JArrayHelper::getValue($widths, ($rowIx) % $colcount, $w);
+		}
+		$element->column = ' style="float:left;width:' . $w . ';';
 
 		$element->startRow = false;
 		$element->endRow = false;
-		if ($colcount > 1)
-		{
-			$widths = $params->get('group_column_widths', '');
-			$w = floor((100 - ($colcount * 6)) / $colcount) . '%';
-			if ($widths !== '')
-			{
-				$widths = explode(',', $widths);
-				$w = JArrayHelper::getValue($widths, ($elCount - 1) % $colcount, $w);
-			}
-			$element->column = ' style="float:left;width:' . $w . ';';
-			if ($elCount !== 0 && (($elCount - 1) % $colcount == 0) || $element->hidden)
-			{
-				$element->startRow = 1;
-				$element->column .= "clear:both;";
-			}
 
-			if ($element->hidden)
-			{
-				$element->endRow = 1;
-			}
-			else
-			{
-				if ((($elCount - 1) % $colcount === $colcount - 1))
-				{
-					$element->endRow = 1;
-				}
-			}
-			$element->column .= '" ';
-		}
-		else
+		// $rowIx == -1 indicates a new row = distinguish from 0 to allow hidden fields at start of row.
+		if ($rowIx < 0)
 		{
-			$element->startRow = 1;
-			$element->endRow = 1;
-			$element->span = '';
-			$element->column .= ' style="clear:both;width:100%;"';
+			$rowIx = 0;
+			$element->startRow = true;
+			$element->column .= "clear:both;";
 		}
-		// $$$ rob only advance in the column count if the element is not hidden
+		$element->column .= '" ';
+
+		$spans = $this->columnSpans();
+		$spanKey = $rowIx % $colcount;
+		$element->span = JArrayHelper::getValue($spans, $spanKey, 'span' . floor(12 / $colcount));
+
 		if (!$element->hidden)
 		{
-			$elCount++;
+			$rowIx++;
 		}
-		return $elCount;
+
+		if (($rowIx % $colcount === 0))
+		{
+			$element->endRow = true;
+
+			// Reset rowIx to indicate a new row.
+			$rowIx = -1;
+		}
+		return $rowIx;
 	}
 
 	/**
@@ -966,10 +963,11 @@ class FabrikFEModelGroup extends FabModel
 
 		if (JString::stristr($groupTable->label, "{Add/Edit}"))
 		{
-			$replace = ((int) $formModel->rowId === 0) ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
+			$replace = $formModel->isNewRecord() ? JText::_('COM_FABRIK_ADD') : JText::_('COM_FABRIK_EDIT');
 			$groupTable->label = str_replace("{Add/Edit}", $replace, $groupTable->label);
 		}
 		$group->title = $w->parseMessageForPlaceHolder($groupTable->label, $formModel->data, false);
+		$group->title = JText::_($group->title);
 		$group->name = $groupTable->name;
 		$group->displaystate = ($group->canRepeat == 1 && $formModel->isEditable()) ? 1 : 0;
 		$group->maxRepeat = (int) $params->get('repeat_max');
@@ -977,6 +975,18 @@ class FabrikFEModelGroup extends FabModel
 		$group->showMaxRepeats = $params->get('show_repeat_max', '0') == '1';
 		$group->canAddRepeat = $this->canAddRepeat();
 		$group->canDeleteRepeat = $this->canDeleteRepeat();
+		$group->intro = $text = FabrikString::translate($params->get('intro'));
+		$group->outro = JText::_($params->get('outro'));
+		$group->columns = $params->get('group_columns', 1);
+		$group->splitPage = $params->get('split_page', 0);
+		if ($this->canRepeat())
+		{
+			$group->tmpl = $params->get('repeat_template', 'repeatgroup');
+		}
+		else
+		{
+			$group->tmpl = 'group';
+		}
 		return $group;
 	}
 
@@ -1070,9 +1080,19 @@ class FabrikFEModelGroup extends FabModel
 		{
 			if ($this->canRepeat() && array_key_exists($fk, $formData))
 			{
-				foreach ($formData[$fk] as $k => $v)
+				if (array_key_exists($fk, $formData))
 				{
-					$formData[$fk][$k] = $masterInsertId;
+					if (is_array($formData[$fk]))
+					{
+						foreach ($formData[$fk] as $k => $v)
+						{
+							$formData[$fk][$k] = $masterInsertId;
+						}
+					}
+					else
+					{
+						$formData[$fk] = $masterInsertId;
+					}
 				}
 			}
 			else
@@ -1164,7 +1184,19 @@ class FabrikFEModelGroup extends FabModel
 		$db = $listModel->getDb();
 		$query = $db->getQuery(true);
 		$masterInsertId = $this->masterInsertId();
-		$query->delete($list->db_table_name)->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+		$query->delete($list->db_table_name);
+		if (is_array($masterInsertId))
+		{
+			foreach ($masterInsertId as &$mid)
+			{
+				$mid = $db->quote($mid);
+			}
+			$query->where($join->table_join_key . ' IN (' . implode(', ', $masterInsertId) . ')');
+		}
+		else
+		{
+			$query->where($join->table_join_key . ' = ' . $db->quote($masterInsertId));
+		}
 		if (!empty($usedKeys))
 		{
 			$pk = $join->params->get('pk');

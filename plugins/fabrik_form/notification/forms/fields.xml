@@ -1,32 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-		<fieldset name="plg-form-notification">
-		
-			<field alt="plg-form-notification-user" default="0" description="PLG_FORM_NOTIFICATION_MODE_DESC" hide="0" label="PLG_FORM_NOTIFICATION_MODE_LABEL" name="send_mode" repeat="true" show="1" toggle="plg-form-notification-trigger" type="toggleoptionsradio">
+	<fields
+		addfieldpath="/administrator/components/com_fabrik/models/fields"
+		name="params">
+		<fieldset name="plg-form-notification" label="COM_FABRIK_OPTIONS">
+
+			<field name="send_mode"
+				type="radio"
+				alt="plg-form-notification-user"
+				default="0"
+				description="PLG_FORM_NOTIFICATION_MODE_DESC"
+				hide="0"
+				label="PLG_FORM_NOTIFICATION_MODE_LABEL"
+				repeat="true"
+				class="btn-group"
+				show="1"
+				toggle="plg-form-notification-trigger">
 					<option value="0">PLG_FORM_NOTIFICATION_USER_SELECTION</option>
 					<option value="1">PLG_FORM_NOTIFICATION_TRIGGER</option>
 			</field>
-		
+
 		</fieldset>
-		
-		<fieldset name="plg-form-notification-user">
-			
-			<field default="0"
+
+		<fieldset name="plg-form-notification-user" label="PLG_FORM_NOTIFICATION_USER_SELECTION">
+
+			<field name="notification_ajax"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_DESC" label="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_LABEL" name="notification_ajax" repeat="true" type="radio">
+				description="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_DESC"
+				label="PLG_CRON_NOTIFICATION_AJAX_SUBMIT_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 		</fieldset>
-		
-		<fieldset name="plg-form-notification-trigger">
-			
-			<field description="PLG_FORM_NOTIFICATION_TRIGGER_DESC" label="PLG_FORM_NOTIFICATION_TRIGGER_LABEL" name="trigger" repeat="true" type="listfields"/>
-			
-			<field description="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_DESC" label="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_LABEL" name="trigger_value" repeat="true" type="text"/>
-			
-			<field description="PLG_FORM_NOTIFICATION_GROUP_DESC" label="PLG_FORM_NOTIFICATION_GROUP_LABEL" multiple="true" name="sendto" repeat="true" size="6" type="usergroup"/>
+
+		<fieldset name="plg-form-notification-trigger" label="PLG_FORM_NOTIFICATION_TRIGGER">
+
+			<field name="trigger"
+				type="listfields"
+				description="PLG_FORM_NOTIFICATION_TRIGGER_DESC"
+				label="PLG_FORM_NOTIFICATION_TRIGGER_LABEL"
+				repeat="true" />
+
+			<field name="trigger_value"
+				type="text"
+				description="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_DESC"
+				label="PLG_FORM_NOTIFICATION_TRIGGER_VALUE_LABEL"
+				repeat="true" />
+
+			<field name="sendto"
+				type="usergroup"
+				description="PLG_FORM_NOTIFICATION_GROUP_DESC"
+				label="PLG_FORM_NOTIFICATION_GROUP_LABEL"
+				multiple="true"
+				repeat="true"
+				size="6" />
 		</fieldset>
 	</fields>
 </form>

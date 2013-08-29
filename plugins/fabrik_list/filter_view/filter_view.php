@@ -39,15 +39,15 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	/**
 	 * Get the content to show before the list
 	 *
-	 * @param   object  $params  List parameters
-	 * @param   JModel  $model   List model
 	 * @param   array   $args    Options
 	 *
 	 * @return  void
 	 */
 
-	public function onGetContentBeforeList($params, $model, $args)
+	public function onGetContentBeforeList($args)
 	{
+		$params = $this->getParams();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$opts = json_decode($params->get('filter_view_settings'));
@@ -148,17 +148,15 @@ class PlgFabrik_ListFilter_View extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = $this->getElementJSOptions($model);
+		parent::onLoadJavascriptInstance($args);
+		$opts = $this->getElementJSOptions();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListFilterView($opts)";
 		return true;

@@ -43,7 +43,8 @@ a.fabrikTip {
 	/* background-color: transparent !important; */
 }
 
-#main .floating-tip-wrapper ul {
+#main .floating-tip-wrapper ul,
+ul.slider-labels {
 	list-style: none;
 }
 

@@ -26,6 +26,7 @@
 			<field name="thanks_message"
 				type="fabrikeditor"
 				mode="html"
+				width="100"
 				description="PLG_FORM_REDIRECT_THANKSMSG_DESC"
 				label="PLG_FORM_REDIRECT_THANKSMSG_LABEL"
 				repeat="true" />
@@ -44,6 +45,7 @@
 			<field name="redirect_conditon"
 				type="fabrikeditor"
 				mode="php"
+				width="100"
 				repeat="true"
 				description="PLG_FORM_REDIRECT_CONDITION_DESC"
 				label="PLG_FORM_REDIRECT_CONDITION_LABEL" />

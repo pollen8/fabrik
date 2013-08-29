@@ -40,16 +40,14 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	/**
 	 * Can the row be edited
 	 *
-	 * @param   object  $params     plugin params
-	 * @param   object  $listModel  list model
-	 * @param   object  $row        current row to test
+	 * @param   object  $row        Current row to test
 	 *
 	 * @return boolean
 	 */
 
-	public function onCanEdit($params, $listModel, $row)
+	public function onCanEdit($row)
 	{
-
+		$params = $this->getParams();
 		// If $row is null, we were called from the list's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
 		if (is_null($row) || is_null($row[0]))
@@ -127,17 +125,15 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	/**
 	 * Return the javascript to create an instance of the class defined in formJavascriptClass
 	 *
-	 * @param   object  $params  plugin parameters
-	 * @param   object  $model   list model
-	 * @param   array   $args    array [0] => string table's form id to contain plugin
+	 * @param   array  $args  Array [0] => string table's form id to contain plugin
 	 *
 	 * @return bool
 	 */
 
-	public function onLoadJavascriptInstance($params, $model, $args)
+	public function onLoadJavascriptInstance($args)
 	{
-		parent::onLoadJavascriptInstance($params, $model, $args);
-		$opts = $this->getElementJSOptions($model);
+		parent::onLoadJavascriptInstance($args);
+		$opts = $this->getElementJSOptions();
 		$opts->acl = $this->acl;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListCanEditRow($opts)";

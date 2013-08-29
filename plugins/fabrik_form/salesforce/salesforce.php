@@ -52,13 +52,10 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 	/**
 	 * Sets up HTML to be injected into the form's bottom
 	 *
-	 * @param   object  $params     params
-	 * @param   object  $formModel  form model
-	 *
 	 * @return void
 	 */
 
-	public function getBottomContent($params, $formModel)
+	public function getBottomContent()
 	{
 		if (!class_exists('SoapClient'))
 		{
@@ -70,16 +67,13 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
 	 *
-	 * @param   object  $params      plugin params
-	 * @param   object  &$formModel  form model
-	 *
 	 * @return	bool
 	 */
 
-	public function onAfterProcess($params, &$formModel)
+	public function onAfterProcess()
 	{
 		@ini_set("soap.wsdl_cache_enabled", "0");
-
+		$formModel = $this->getModel();
 		$client = $this->client();
 		$userName = $params->get('salesforce_username');
 		$password = $params->get('salesforce_password');
@@ -95,7 +89,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		foreach ($fields as $f)
 		{
 			$name = $f->name;
-			foreach ($formModel->_fullFormData as $key => $val)
+			foreach ($formModel->fullFormData as $key => $val)
 			{
 				if (is_array($val))
 				{
@@ -121,7 +115,7 @@ class PlgFabrik_FormSalesforce extends PlgFabrik_Form
 		$customkey = $params->get('salesforce_customid') . '__c';
 		if ($params->get('salesforce_allowupsert', 0))
 		{
-			$submission[$customkey] = $formModel->_fullFormData[$key];
+			$submission[$customkey] = $formModel->fullFormData[$key];
 		}
 		$sObjects = array();
 		$sObject = new sObject;

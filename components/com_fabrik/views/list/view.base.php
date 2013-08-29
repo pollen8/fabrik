@@ -123,16 +123,10 @@ class FabrikViewListBase extends JViewLegacy
 		$opts->formels = $formEls;
 		$opts->fabrik_show_in_list = $input->get('fabrik_show_in_list', array(), 'array');
 		$opts->csvChoose = (bool) $params->get('csv_frontend_selection');
-		$popUpWidth = $params->get('popup_width', '');
-		if ($popUpWidth !== '')
-		{
-			$opts->popup_width = (int) $popUpWidth;
-		}
-		$popUpHeight = $params->get('popup_height', '');
-		if ($popUpHeight !== '')
-		{
-			$opts->popup_height = (int) $popUpHeight;
-		}
+		$opts->popup_width = $params->get('popup_width', '');
+
+		$opts->popup_height = $params->get('popup_height', '');
+
 		$xOffset = $params->get('popup_offset_x', '');
 		if ($xOffset !== '')
 		{
@@ -360,9 +354,9 @@ class FabrikViewListBase extends JViewLegacy
 
 		// Depreciated (keep in case ppl use them in old tmpls)
 		$this->table = new stdClass;
-		$this->table->label = $w->parseMessageForPlaceHolder($item->label, $_REQUEST);
-		$this->table->intro = $params->get('show_into', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($item->introduction);
-		$this->table->outro = $params->get('show_outro', 1) == 0 ? '' : $w->parseMessageForPlaceHolder($params->get('outro'));
+		$this->table->label = FabrikString::translate($w->parseMessageForPlaceHolder($item->label, $_REQUEST));
+		$this->table->intro = $params->get('show_into', 1) == 0 ? '' : FabrikString::translate($w->parseMessageForPlaceHolder($item->introduction));
+		$this->table->outro = $params->get('show_outro', 1) == 0 ? '' : FabrikString::translate($w->parseMessageForPlaceHolder($params->get('outro')));
 		$this->table->id = $item->id;
 		$this->table->renderid = $model->getRenderContext();
 		$this->table->db_table_name = $item->db_table_name;
@@ -468,7 +462,6 @@ class FabrikViewListBase extends JViewLegacy
 		$this->tablePicker = $app->isAdmin() && $app->input->get('format') !== 'pdf' ? FabrikHelperHTML::tableList($this->table->id) : '';
 
 		$this->buttons();
-
 		$this->pluginTopButtons = $model->getPluginTopButtons();
 	}
 
