@@ -1,66 +1,156 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <form>
-	<fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
-	<fieldset name="plg-form-juser">
-		<field default="user" description="PLG_FABRIK_FORM_JUSER_NAME_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_NAME_FIELD_LABEL" name="juser_field_name" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field default="username" description="PLG_FABRIK_FORM_JUSER_USERNAME_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_USERNAME_FIELD_LABEL" name="juser_field_username" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field default="password" description="PLG_FABRIK_FORM_JUSER_PASSWORD_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_PASSWORD_FIELD_LABEL" name="juser_field_password" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field default="email" description="PLG_FABRIK_FORM_JUSER_EMAIL_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_EMAIL_FIELD_LABEL" name="juser_field_email" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field description="PLG_FABRIK_FORM_JUSER_BLOCK_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_BLOCK_FIELD_LABEL" name="juser_field_block" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field description="PLG_FABRIK_FORM_JUSER_USER_ID_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_USER_ID_FIELD_LABEL" name="juser_field_userid" onlytablefields="0" repeat="true" type="listfields"/>
-			
+	<fields
+		addfieldpath="/administrator/components/com_fabrik/models/fields"
+		name="params">
 		
-		<field description="PLG_FABRIK_FORM_JUSER_USERTYPE_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_USERTYPE_FIELD_LABEL" name="juser_field_usertype" onlytablefields="0" repeat="true" type="listfields"/>
-			
-		<field default="0" description="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_DESC" label="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_LABEL" name="juser_field_default_group" repeat="true" type="usergroup"/>
-			
-		<field default="0"
-			class="btn-group"
-			description="PLG_FABRIK_FORM_JUSER_DELETE_USERS_DESC" label="PLG_FABRIK_FORM_JUSER_DELETE_USERS_LABEL" name="juser_delete_user" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>		
-			
-		<field default="0"
-			class="btn-group"
-			description="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_LABEL" name="juser_bypass_activation" repeat="true" type="radio">
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			
-			<field default="1"
+		<fieldset name="plg-form-juser" label="PLG_FABRIK_FORM_JUSER_FIELDS">
+
+			<field name="juser_field_name"
+				type="listfields"
+				default="user"
+				description="PLG_FABRIK_FORM_JUSER_NAME_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_NAME_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+			<field name="juser_field_username"
+				type="listfields"
+				default="username"
+				description="PLG_FABRIK_FORM_JUSER_USERNAME_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_USERNAME_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+			<field name="juser_field_password"
+				type="listfields"
+				default="password"
+				description="PLG_FABRIK_FORM_JUSER_PASSWORD_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_PASSWORD_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+			<field name="juser_field_email"
+				type="listfields"
+				default="email"
+				description="PLG_FABRIK_FORM_JUSER_EMAIL_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_EMAIL_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+			<field name="juser_field_block"
+				type="listfields"
+				description="PLG_FABRIK_FORM_JUSER_BLOCK_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_BLOCK_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+			<field name="juser_field_userid"
+				type="listfields"
+				description="PLG_FABRIK_FORM_JUSER_USER_ID_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_USER_ID_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+
+			<field name="juser_field_usertype"
+				type="listfields"
+				description="PLG_FABRIK_FORM_JUSER_USERTYPE_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_USERTYPE_FIELD_LABEL"
+				onlytablefields="0"
+				repeat="true" />
+
+		</fieldset>
+		
+		<fieldset name="plg-form-juser-bypass" label="PLG_FABRIK_FORM_JUSER_BYPASS" description="text">
+
+			<field name="juser_bypass_activation"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_LABEL" name="juser_bypass_registration" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_DESC"
+				label="PLG_FABRIK_FORM_JUSER_BYPASS_ACTIVATION_LABEL"
+				repeat="true">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+			<field name="juser_bypass_registration"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_DESC"
+				label="PLG_FABRIK_FORM_JUSER_BYPASS_REGISTRATION_LABEL"
+				repeat="true">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+
+			<field name="juser_bypass_accountdetails"
+				type="radio"
+				default="0"
+				class="btn-group"
+				description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC"
+				label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+			<field name="juser_use_email_plugin"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_DESC" label="PLG_FABRIK_FORM_JUSER_BYPASS_J_ACCOUNT_DETAILS_EMAIL_LABEL" name="juser_bypass_accountdetails" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_USE_EMAIL_PLUGIN_DESC"
+				label="PLG_FABRIK_FORM_JUSER_USE_EMAIL_PLUGIN_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
 			
-			<field default="0"
+		</fieldset>
+		
+		<fieldset name="plg-form-juser-options" label="COM_FABRIK_OPTIONS">
+
+			<field name="juser_field_default_group"
+				type="usergroup"
+				default="0"
+				description="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_DESC"
+				label="PLG_FABRIK_FORM_JUSER_DEFAULT_USERTYPE_FIELD_LABEL"
+				repeat="true" />
+
+			<field name="juser_conditon"
+				type="fabrikeditor"
+				mode="php"
+				description="PLG_FABRIK_FORM_JUSER_CONDITION_DESC"
+				label="PLG_FABRIK_FORM_JUSER_CONDITION_LABEL"
+				repeat="true" />
+		</fieldset>
+		
+		<fieldset name="plg-form-juser-sycn" label="PLG_FABRIK_FORM_JUSER_SYNC">
+
+			<field name="juser_delete_user"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_USE_EMAIL_PLUGIN_DESC" label="PLG_FABRIK_FORM_JUSER_USE_EMAIL_PLUGIN_LABEL" name="juser_use_email_plugin" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_DELETE_USERS_DESC"
+				label="PLG_FABRIK_FORM_JUSER_DELETE_USERS_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-				
-			<field default="0"
+
+			<field name="juser_auto_login"
+				type="radio"
+				default="0"
 				class="btn-group"
-				description="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_DESC" label="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_LABEL" name="juser_auto_login" repeat="true" type="radio">
+				description="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_DESC"
+				label="PLG_FABRIK_FORM_JUSER_AUTO_LOGIN_LABEL"
+				repeat="true">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="synchro_users"
 				type="radio"
 				default="0"
@@ -71,7 +161,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
+
 			<field name="juser_sync_on_edit"
 				type="radio"
 				default="0"
@@ -82,14 +172,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			
-			<field name="juser_conditon"
-				type="fabrikeditor"
-				mode="php"
-				description="PLG_FABRIK_FORM_JUSER_CONDITION_DESC"
-				label="PLG_FABRIK_FORM_JUSER_CONDITION_LABEL"
-				repeat="true"/>
-			
+
 		</fieldset>
 	</fields>
 </form>
