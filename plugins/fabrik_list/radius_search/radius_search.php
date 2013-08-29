@@ -130,6 +130,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$active = $app->getUserStateFromRequest($baseContext . 'radius_serach_active', 'radius_search_active' . $this->renderOrder, array($params->get('start_active', 0)));
 
 		$str .= '<div class="radus_search" id="radius_search' . $this->renderOrder . '" style="left:-100000px;position:absolute;">';
+		$str .= "render order = $this->renderOrder <br>";
 		$str .= '<input type="hidden" name="radius_search_active' . $this->renderOrder . '[]" value="' . $active[0] . '" />';
 
 		$str .= '<div class="radius_search_options">';
@@ -364,7 +365,9 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$this->model = $model;
 		$key = $this->onGetFilterKey();
 		$app = JFactory::getApplication();
+		echo"<pre>";print_r($_POST);echo "</pre>";
 		$active = $app->input->get('radius_search_active' . $this->renderOrder, array(0), 'array');
+		echo "<pre>";print_r($active);echo "</pre>";
 		if ($active[0] == 0)
 		{
 			return;
@@ -389,6 +392,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$model->filters['sqlCond'][] = $query;
 		$model->filters['origvalue'][] = $v;
 		$model->filters['filter'][] = $v;
+		echo "<pre>";print_r($model->filters);echo "</pre>";
 	}
 
 	/**

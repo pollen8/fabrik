@@ -123,7 +123,7 @@ foreach ($this->groups as $group) :
 		<div class="groupoutro"><?php echo $group->outro ?></div>
 	<?php
 	endif;
-	?>	
+	?>
 </<?php echo $form->fieldsetTag ?>>
 <?php
 endforeach;

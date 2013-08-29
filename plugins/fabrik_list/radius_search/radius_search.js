@@ -146,6 +146,7 @@ var FbListRadiusSearch = new Class({
 
 
 			if (typeOf(this.listform) !== 'null') {
+				console.log(this.options.renderOrder);
 				this.listform = this.listform.getElement('#radius_search' + this.options.renderOrder);
 				if (typeOf(this.listform) === 'null') {
 					fconsole('didnt find element #radius_search' + this.options.renderOrder);
@@ -234,7 +235,8 @@ var FbListRadiusSearch = new Class({
 				'onClose': function (e, x) {
 					var active;
 					if (!this.active && confirm(Joomla.JText._('PLG_LIST_RADIUS_SEARCH_CLEAR_CONFIRM'))) {
-						active = 0;	
+						active = 0;
+						this.win.window.fade('hide');
 					} else {
 						active = 1;
 					}
@@ -351,6 +353,7 @@ var FbListRadiusSearch = new Class({
 	 * Clear the filter.
 	 */
 	clearFilter: function () {
+		debugger;
 		this.listform.getElement('input[name^=radius_search_active]').value = 0;
 		return this.injectIntoListForm();
 	}
