@@ -5441,22 +5441,6 @@ FROM (SELECT DISTINCT $item->db_primary_key, $name AS value, $label FROM " . Fab
 	}
 
 	/**
-	 * Called on failed form validation.
-	 * Ensures submitted form data is converted back into the format
-	 * that the form would expect to get it in, if the data had been
-	 * draw from the database record
-	 *
-	 * @param   string  $str  submitted form value
-	 *
-	 * @return  string	formated value
-	 */
-
-	public function toDbVal($str)
-	{
-		return $str;
-	}
-
-	/**
 	 * Determine if the element should run its validation plugins on form submission
 	 *
 	 * @return  bool	default true

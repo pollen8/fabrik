@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 require_once 'fabrikmodelform.php';
@@ -2529,11 +2529,11 @@ class FabrikFEModelForm extends FabModelForm
 						/* $$$ rob for repeat groups no join setting to array() menat that $_POST only contained the last repeat group data
 						 * $elDbVals = array();
 						 */
-						$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+						$elDbVals[$c] = $form_data;
 					}
 					else
 					{
-						$elDbVals = $elementModel->toDbVal($form_data, $c);
+						$elDbVals = $form_data;
 					}
 					// Validations plugins attached to elemenets
 					$pluginc = 0;
@@ -2556,7 +2556,7 @@ class FabrikFEModelForm extends FabModelForm
 							{
 								if ($groupModel->canRepeat())
 								{
-									$elDbVals[$c] = $elementModel->toDbVal($form_data, $c);
+									$elDbVals[$c] = $form_data;
 									$testreplace = $plugin->replace($elDbVals[$c], $elementModel, $pluginc, $c);
 									if ($testreplace != $elDbVals[$c])
 									{
