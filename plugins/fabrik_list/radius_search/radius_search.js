@@ -135,7 +135,6 @@ var FbListRadiusSearch = new Class({
 					}
 				});
 
-				this.makeWin(mapid);
 			}.bind(this));
 
 			Fabrik.loadGoogleMap(true, 'geoCode');
@@ -146,7 +145,6 @@ var FbListRadiusSearch = new Class({
 
 
 			if (typeOf(this.listform) !== 'null') {
-				console.log(this.options.renderOrder);
 				this.listform = this.listform.getElement('#radius_search' + this.options.renderOrder);
 				if (typeOf(this.listform) === 'null') {
 					fconsole('didnt find element #radius_search' + this.options.renderOrder);
@@ -211,6 +209,7 @@ var FbListRadiusSearch = new Class({
 				this.clearFilter();
 			}
 		}.bind(this));
+		this.makeWin(mapid);
 	},
 
 	/**
