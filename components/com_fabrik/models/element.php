@@ -5433,24 +5433,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Called on failed form validation.
-	 * Ensures submitted form data is converted back into the format
-	 * that the form would expect to get it in, if the data had been
-	 * draw from the database record
-	 *
-	 * @param   string  $str  submitted form value
-	 *
-	 * @deprecated since 3.1b2 (not used by any plugin)
-	 *
-	 * @return  string	formated value
-	 */
-
-	public function toDbVal($str)
-	{
-		return $str;
-	}
-
-	/**
 	 * Determine if the element should run its validation plugins on form submission
 	 *
 	 * @return  bool	default true

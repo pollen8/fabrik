@@ -879,6 +879,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$alwaysToday = $params->get('date_alwaystoday', false);
+		$defaultToday = $params->get('date_defaulttotoday', false);
 		$formModel = $this->getFormModel();
 		$value = parent::getValue($data, $repeatCounter, $opts);
 
@@ -894,13 +895,16 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 			// Don't mess with posted value - can cause double offsets - instead do in _indStoareDBFormat();
 			return $value;
 		}
-		if ($value == '' || $db->getNullDate() == $value)
+		if (!($formModel->isNewRecord() && $defaultToday) && $value == '')
 		{
-			return $value;
-		}
-		if ($alwaysToday && $formModel->isEditable())
-		{
-			$value = '';
+			if (($value == '' || $db->getNullDate() == $value) && !$alwaysToday)
+			{
+				return $value;
+			}
+			if ($alwaysToday && $formModel->isEditable())
+			{
+				$value = '';
+			}
 		}
 
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
@@ -910,32 +914,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$local = $formModel->hasErrors() || $value == '' || $params->get('date_store_as_local', 0) == 1 ? false : true;
 		$value = $date->toSQL($local);
 		return $value;
-	}
-
-	/**
-	 * Called on failed form validation.
-	 * Ensures submitted form data is converted back into the format
-	 * that the form would expect to get it in, if the data had been
-	 * draw from the database record
-	 *
-	 * @param   string  $str  Submitted form value
-	 *
-	 * @return  string	formated value
-	 */
-
-	public function toDbVal($str)
-	{
-		/**
-		 * Only format if not empty otherwise search forms will filter
-		 * for todays date even when no date entered
-		 */
-		$this->resetToGMT = false;
-		if ($str != '')
-		{
-			$str = $this->storeDatabaseFormat($str, array());
-		}
-		$this->resetToGMT = true;
-		return $str;
 	}
 
 	/**
