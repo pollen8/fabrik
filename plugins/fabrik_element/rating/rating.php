@@ -79,22 +79,19 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
+		$params = $this->getParams();
+		$formid = $this->getFormModel()->getId();
+		$listid = $this->getListModel()->getId();
+		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
+		if ($params->get('rating-mode') !== 'creator-rating')
+		{
+			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id);
+		}
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$user = JFactory::getUser();
-		$params = $this->getParams();
 		$data = FabrikWorker::JSONtoData($data, true);
-
-		$url = COM_FABRIK_LIVESITE
-			. 'index.php?option=com_' . $package . '&amp;format=raw&amp;view=plugin&amp;task=pluginAjax&amp;g=element&amp;plugin=rating&amp;method=ajax_rate&amp;element_id='
-			. $this->getElement()->id;
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/rating/images/', 'image', 'list', false);
-
-		$url .= '&amp;row_id=' . $thisRow->__pk_val;
-		$url .= '&amp;elementname=' . $this->getElement()->id;
-		$url .= '&amp;userid=' . $user->get('id');
-		$url .= '&amp;nonajax=1';
-		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 		$colData = $this->getListModel()->getData();
 		$ids = JArrayHelper::getColumn($colData, '__pk_val');
 		$canRate = $this->canRate($row_id, $ids);
@@ -165,11 +162,11 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	/**
 	 * Get average rating
 	 *
-	 * @param   mixed  $data    string/int
-	 * @param   int    $listid  int list id
-	 * @param   int    $formid  int form id
-	 * @param   int    $row_id  int row id
-	 * @param   array  $ids     all row ids
+	 * @param   mixed  $data    String/int
+	 * @param   int    $listid  List id
+	 * @param   int    $formid  Form id
+	 * @param   int    $row_id  Row id
+	 * @param   array  $ids     Row ids
 	 *
 	 * @return array(int average rating, int total)
 	 */
@@ -317,7 +314,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		}
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
-		$row_id = $input->get('rowid', '', 'string');
+		$row_id = $this->getFormModel()->getRowId();
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			$avg = $value;
