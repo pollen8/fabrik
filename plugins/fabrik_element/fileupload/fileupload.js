@@ -417,7 +417,8 @@ var FbFileUpload = new Class({
 			return;
 		}
 		var id = e.target.getParent().getParent().id.split('_').getLast();// alreadyuploaded_8_13
-		var f = e.target.getParent().getParent().getElement('.plupload_file_name span').get('text');
+		// $$$ hugh - removed ' span' from the getElement(), as this blows up on some templates
+		var f = e.target.getParent().getParent().getElement('.plupload_file_name').get('text');
 
 		// Get a list of all of the uploaders files except the one to be deleted
 		var newFiles = [];
