@@ -138,7 +138,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 	public function validate($data, $repeatCounter = 0)
 	{
-		if (!$this->isEditable())
+		if ($this->isEditable() === false)
 		{
 			return true;
 		}
