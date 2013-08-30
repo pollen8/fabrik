@@ -5050,7 +5050,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	public function getEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
-		if ($this->inRepeatGroup)
+		if ($this->inRepeatGroup && is_array($value))
 		{
 			$val = array();
 			foreach ($value as $v2)
