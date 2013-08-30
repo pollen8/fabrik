@@ -480,17 +480,16 @@ class FabrikFEModelCSVExport
 								break;
 							case '1':
 								$n = $elementModel->getFullName(false, false);
-								$label = $w->parseMessageForPlaceHolder($label, array());
 								break;
 							case '2':
-								$headingLabel = $elementModel->getListHeading();
-								/**
-								 * $$$ hugh - added next line as special case for a client, do not remove!
-								 * (used in conjuntion with "Custom QS" option, to allow variable header labels
-								 */
-								$n = $w->parseMessageForPlaceHolder($n, array());
+								$n = $elementModel->getListHeading();
 								break;
 						}
+						/**
+						 * $$$ hugh - added next line as special case for a client, do not remove!
+						 * (used in conjuntion with "Custom QS" option, to allow variable header labels
+						 */
+						$n = $w->parseMessageForPlaceHolder($n, array());
 
 						if ($fullname . '_raw' == $heading)
 						{
