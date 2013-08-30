@@ -3982,7 +3982,13 @@ class FabrikFEModelForm extends FabModelForm
 				$horiz = false;
 			}
 		}
-		if ($horiz && $params->get('labels_above', 0) != 1)
+		if ($horiz &&
+			(
+				($this->isEditable() && $params->get('labels_above', 0) != 1)
+				||
+				(!$this->isEditable() && $params->get('labels_above_details', 0) != 1)
+			)
+		)
 		{
 			$class[] = 'form-horizontal';
 		}
