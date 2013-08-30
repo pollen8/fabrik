@@ -154,6 +154,14 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			}
 			require_once 'Zend/Loader.php';
 			Zend_Loader::loadClass('Zend_Gdata');
+			/*
+			require_once JPATH_SITE . '/libraries/Zend/Loader/Autoloader.php';echo 'found';
+			$autoloader = Zend_Loader_Autoloader::getInstance();
+			$autoloader->setFallbackAutoloader(true);
+			Zend_Loader::loadClass('Zend_Gdata');
+			Zend_Loader::loadClass('Zend_Gdata_Query');
+			Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
+			*/
 
 			/* Won't need these loaded until we add sync'ing events back to Google
 			 * Zend_Loader::loadClass('Zend_Gdata_AuthSub');
@@ -239,7 +247,10 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					$row[$gcal_start_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->startTime));
 					$row[$gcal_end_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->endTime));
 					$row[$gcal_label_element] = $event->title->text;
-					$row[$gcal_desc_element] = $event->content->text;
+					if ($gcal_desc_element)
+					{
+						$row[$gcal_desc_element] = $event->content->text;
+					}
 					$row[$gcal_id_element] = $id;
 					if ($gcal_userid_element_long)
 					{

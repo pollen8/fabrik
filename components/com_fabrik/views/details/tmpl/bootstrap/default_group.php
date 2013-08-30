@@ -23,7 +23,7 @@ foreach ($this->elements as $element) :
 			<div class="row-fluid" <?php echo $style?>><!-- start element row -->
 		<?php
 		endif;
-		$labels_above = $this->params->get('labels_above', 0);
+		$labels_above = $this->params->get('labels_above_details', 0);
 		if ($labels_above == 1)
 		{
 			echo $this->loadTemplate('group_labels_above');

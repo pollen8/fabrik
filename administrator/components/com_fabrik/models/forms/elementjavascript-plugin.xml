@@ -43,7 +43,8 @@
 				width="100"
 				encoded="true"
 				repeat="true"
-				label="COM_FABRIK_CODE" />
+				label="COM_FABRIK_CODE"
+				description="COM_FABRIK_CODE_JS_INLINE_DESC" />
 				
 			
 			<field name="js_e_event"

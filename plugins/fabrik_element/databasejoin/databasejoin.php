@@ -1550,16 +1550,23 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$tmp = $this->_getOptions($data, $repeatCounter);
 		if ($this->isJoin())
 		{
-			// $$$ hugh - if it's a repeat element, we need to render it as
-			// a single entity
-			foreach ($value as &$v2)
+			/**
+			 * $$$ hugh - if it's a repeat element, we need to render it as
+			 * a single entity
+			 * $$$ hugh - sometimes it's empty, not an array, so check just to
+			 * stop PHP whining about it.
+			*/
+			if (is_array($value))
 			{
-				foreach ($tmp as $v)
+				foreach ($value as &$v2)
 				{
-					if ($v->value == $v2)
+					foreach ($tmp as $v)
 					{
-						$v2 = $v->text;
-						break;
+						if ($v->value == $v2)
+						{
+							$v2 = $v->text;
+							break;
+						}
 					}
 				}
 			}
