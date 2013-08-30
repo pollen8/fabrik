@@ -2050,9 +2050,9 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the href for the edit/details link
 	 *
-	 * @param   object  $elementModel   element model
-	 * @param   array   $row            lists current row data
-	 * @param   int     $repeatCounter  repeat group counter
+	 * @param   object  $elementModel   Element model
+	 * @param   array   $row            Lists current row data
+	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @since   2.0.4
 	 *
@@ -9024,7 +9024,10 @@ class FabrikFEModelList extends JModelForm
 		$types = JArrayHelper::getValue($filters, 'search_type', array());
 		for ($i = 0; $i < count($keys); $i++)
 		{
-			if (JArrayHelper::getValue($types, $i, '') === 'querystring')
+			$ftype = JArrayHelper::getValue($types, $i, '');
+
+			// Append content plugin filters or querystring filters
+			if (in_array($ftype, array('jpluginfilters', 'querystring')))
 			{
 				$qs[FabrikString::safeColNameToArrayKey($keys[$i]) . '_raw'] = $vals[$i];
 			}
@@ -9053,18 +9056,8 @@ class FabrikFEModelList extends JModelForm
 		}
 		if (empty($addurl_url))
 		{
-			/*  $$$ rob set this options in the js - so if we want to open a
-			 * link normaly we can right click and open the page as a standard J view
-			* if ($this->isAjaxLinks())
-			{
-			$qs['ajax'] = '1';
-			} */
 			$formModel = $this->getFormModel();
 			$formid = $formModel->getForm()->id;
-			/* if ($this->packageId !== 0 || $this->isAjaxLinks())
-			 {
-			$qs['tmpl'] = 'component';
-			} */
 
 			$qs['option'] = 'com_' . $package;
 			if ($app->isAdmin())
@@ -9101,8 +9094,8 @@ class FabrikFEModelList extends JModelForm
 			}
 		}
 		$qs = implode('&', $qs_args);
-		$filter = JFilterInput::getInstance();
-		$request = $filter->clean($_REQUEST, 'array');
+		$inputs = unserialize($input->serialize());
+		$request = $inputs[1];
 		$qs = $w->parseMessageForPlaceHolder($qs, $request);
 		return !empty($addurl_url) ? JRoute::_($addurl_url . '?' . $qs) : JRoute::_('index.php?' . $qs);
 	}
@@ -9498,6 +9491,7 @@ class FabrikFEModelList extends JModelForm
 							$can_repeats_keys[$shortkey] = $join_table_name . '___' . $can_repeats_tables[$join_table_name]['colname'];
 						}
 						$crk_sk = $can_repeats_keys[$shortkey];
+
 						// Create the array if it doesn't exist
 						if (!isset($can_repeats_pk_vals[$crk_sk]))
 						{
@@ -9512,7 +9506,7 @@ class FabrikFEModelList extends JModelForm
 				}
 				$can_repeats[$shortkey] = $elementModel ? ($elementModel->getGroup()->canRepeat() || $elementModel->getGroup()->isJoin()) : 0;
 			}
-		} // end foreach
+		}
 
 		for ($i = 0; $i < $count; $i++)
 		{
@@ -9527,8 +9521,8 @@ class FabrikFEModelList extends JModelForm
 					if ($can_repeats[$shortkey])
 					{
 						if ($merge == 2
-						&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
-						&& isset($data[$i]->$can_repeats_keys[$shortkey]))
+							&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
+							&& isset($data[$i]->$can_repeats_keys[$shortkey]))
 						{
 							$can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i] = $data[$i]->$can_repeats_keys[$shortkey];
 						}
@@ -9601,8 +9595,8 @@ class FabrikFEModelList extends JModelForm
 						$origKey = $key;
 						$shortkey = FabrikString::rtrimword($key, '_raw');
 						if ($can_repeats[$shortkey]
-						&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
-						&& isset($data[$i]->$can_repeats_keys[$shortkey]))
+							&& !isset($can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i])
+							&& isset($data[$i]->$can_repeats_keys[$shortkey]))
 						{
 							$can_repeats_pk_vals[$can_repeats_keys[$shortkey]][$i] = $data[$i]->$can_repeats_keys[$shortkey];
 						}
@@ -9679,8 +9673,8 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Increment a value in a cell
 	 *
-	 * @param   string  $rowId  row's id
-	 * @param   string  $key    field to increment
+	 * @param   string  $rowId  Row's id
+	 * @param   string  $key    Field to increment
 	 * @param   string  $dir    -1/1 etc
 	 *
 	 * @return  bool
@@ -9726,7 +9720,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Get the output format
 	 *
-	 * @return  string	outputformat
+	 * @return  string	Outputformat
 	 */
 
 	public function getOutPutFormat()
@@ -9737,7 +9731,7 @@ class FabrikFEModelList extends JModelForm
 	/**
 	 * Set the list output format
 	 *
-	 * @param   string  $f  format html/pdf/raw/csv
+	 * @param   string  $f  Format html/pdf/raw/csv
 	 *
 	 * @return  void
 	 */
