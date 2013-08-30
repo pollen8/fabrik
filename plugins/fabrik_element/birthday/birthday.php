@@ -40,6 +40,29 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	}
 
 	/**
+	 * Determines the value for the element in the form view
+	 *
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  When repeating joined groups we need to know what part of the array to access
+	 * @param   array  $opts           Options, 'raw' = 1/0 use raw value
+	 *
+	 * @return  string	value
+	 */
+
+	public function getValue($data, $repeatCounter = 0, $opts = array())
+	{
+		$value = parent::getValue($data, $repeatCounter, $opts);
+		if (is_array($value))
+		{
+			$day = JArrayHelper::getValue($value, 0);
+			$month = JArrayHelper::getValue($value, 1);
+			$year = JArrayHelper::getValue($value, 2);
+			$value = $year . '-' . $month . '-' . $day;
+		}
+		return $value;
+	}
+
+	/**
 	 * Draws the html form element
 	 *
 	 * @param   array  $data           To preopulate element with
