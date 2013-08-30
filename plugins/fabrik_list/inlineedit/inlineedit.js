@@ -202,6 +202,7 @@ var FbListInlineEdit = new Class({
 			e.stop();
 			if (!this.inedit) {
 				this.td.removeClass(this.options.focusClass);
+				this.td = null;
 			} else {
 				this.select(e, this.editing);
 				this.cancel(e);
@@ -210,6 +211,11 @@ var FbListInlineEdit = new Class({
 			break;
 		case 13:
 			//enter
+			
+			// Already editing or no cell selected
+			if (this.inedit || typeOf(this.td) !== 'element') {
+				return;
+			}
 			e.stop();
 			if (typeOf(this.editing) === 'element') {
 				// stop textarea elements from submitting when you press enter
