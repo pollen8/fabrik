@@ -1847,7 +1847,8 @@ EOD;
 		{
 			$item = array();
 			$thisname = $type === 'checkbox' ? FabrikString::rtrimword($name, '[]') . '[' . $i . ']' : $name;
-			$label = FabrikWorker::j3() ? $labels[$i] : '<span>' . $labels[$i] . '</span>';
+			//$label = FabrikWorker::j3() ? $labels[$i] : '<span>' . $labels[$i] . '</span>';
+			$label = '<span>' . $labels[$i] . '</span>';
 
 			// For values like '1"'
 			$value = htmlspecialchars($values[$i], ENT_QUOTES);
@@ -1883,7 +1884,7 @@ EOD;
 		{
 			if (FabrikWorker::j3())
 			{
-				$grid = self::bootstrapGrid($items, $optionsPerRow);
+				$grid = self::bootstrapGrid($items, $optionsPerRow, 'fabrikgrid_' . $type);
 			}
 			else
 			{

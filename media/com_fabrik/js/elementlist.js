@@ -98,7 +98,7 @@ FbElementList = new Class({
 			alert(Joomla.JText._('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL'));
 		}
 		else {
-			var r = this.subElements.getLast().findUp('li').clone();
+			var r = this.subElements.getLast().findClassUp('fabrikgrid_' + this.type).clone();
 			var i = r.getElement('input');
 			i.value = val;
 			i.checked = 'checked';
@@ -108,8 +108,8 @@ FbElementList = new Class({
 				var name = i.name.replace(/^(.*)\[.*\](.*?)$/, '$1$2');
 				i.name = name + '[' + (this.subElements.length) + ']';
 			}
-			r.getElement('span').set('text', label);
-			r.inject(this.subElements.getLast().findUp('li'), 'after');
+			r.getElement('.' + this.type + ' span').set('text', label);
+			r.inject(this.subElements.getLast().findClassUp('fabrikgrid_' + this.type), 'after');
 
 			var index = 0;
 			if (this.type === 'radio') {
