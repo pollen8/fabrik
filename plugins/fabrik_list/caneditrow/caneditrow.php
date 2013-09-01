@@ -62,6 +62,16 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		{
 			$data = $row[0];
 		}
+
+		/**
+		 * If __pk_val is not set or empty, then we've probably been called from somewhere in form processing,
+		 * and this is a new row.  In which case this plugin cannot offer any opinion!
+		 */
+		if (!isset($data->__pk_val) || empty($data->__pk_val))
+		{
+			return true;
+		}
+
 		$field = str_replace('.', '___', $params->get('caneditrow_field'));
 
 		// If they provided some PHP to eval, we ignore the other settings and just run their code

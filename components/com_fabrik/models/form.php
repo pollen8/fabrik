@@ -1433,6 +1433,20 @@ class FabrikFEModelForm extends FabModelForm
 		$data = $_POST;
 		$this->copyToRaw($data);
 
+		/**
+		 * $$$ hugh - quite a few places in code that runs after this want __pk_val,
+		 * so if it doesn't exist, grab it from the PK element.
+		 */
+		if (!array_key_exists('__pk_val', $data))
+		{
+			/**
+			 * $$$ hugh - There HAS to be an easier way of getting the PK element name, that doesn't involve calling getPrimaryKeyAndExtra(),
+			 * which is a horribly expensive operation.
+			 */
+			$primaryKey = FabrikString::safeColNameToArrayKey($this->getListModel()->getTable()->db_primary_key);
+			$data['__pk_val'] = JArrayHelper::getValue($data, $primaryKey . '_raw', JArrayHelper::getValue($data, $primaryKey, ''));
+		}
+
 		// Apply querystring values if not already in post (so qs values dont overwrite the submitted values for dbjoin elements)
 		$data = array_merge($data, $_REQUEST);
 		array_walk_recursive($data, array($this, '_clean'));
