@@ -104,6 +104,8 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 
 	public function process($opts = array())
 	{
+		// We don't use $model, but user code may as it used to be an arg, so fetch it
+		$model = $this->getModel();
 		$params = $this->getParams();
 		$f = JFilterInput::getInstance();
 		$file = $f->clean($params->get('table_php_file'), 'CMD');
