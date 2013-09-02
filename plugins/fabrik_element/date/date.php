@@ -261,7 +261,6 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
-		echo $gmt;
 		if (!FabrikWorker::isDate($gmt))
 		{
 			$date = '';
