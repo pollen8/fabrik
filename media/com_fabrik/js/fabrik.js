@@ -12,9 +12,11 @@
  * Console.log wrapper
  */
 
-function fconsole(thing) {
+function fconsole() {
 	if (typeof(window.console) !== "undefined") {
-		console.log(thing);
+		for (var i = 0; i < arguments.length; i ++) {
+			console.log(arguments[i]);
+		}
 	}
 }
 
