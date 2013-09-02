@@ -261,6 +261,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 
 		// Value is in mySQL format GMT
 		$gmt = $this->getValue($data, $repeatCounter);
+		echo $gmt;
 		if (!FabrikWorker::isDate($gmt))
 		{
 			$date = '';
@@ -906,7 +907,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				$value = '';
 			}
 		}
-
+		// Don't offset if null date.
+		if ($value === $db->getNullDate())
+		{
+			return $value;
+		}
 		$timeZone = new DateTimeZone(JFactory::getConfig()->get('offset'));
 		$date = JFactory::getDate($value, $timeZone);
 
