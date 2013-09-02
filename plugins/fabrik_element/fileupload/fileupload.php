@@ -1307,7 +1307,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 					$file['name'] = $_FILES[$name]['name'];
 					$file['type'] = $_FILES[$name]['type'];
 					$file['tmp_name'] = $_FILES[$name]['tmp_name'];
-					$file['error'] = $_FILES[$name]['name'];
+					$file['error'] = $_FILES[$name]['error'];
 					$file['size'] = $_FILES[$name]['size'];
 				}
 			}
@@ -1668,7 +1668,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		if (array_key_exists($repeatCounter, $this->_filePaths))
 		{
-			return $this->_filePaths[$repeatCounter];
+			/*
+			 * $$$ hugh - if it uses element placeholders, there's a likelihood the element
+			 * data may have changed since we cached the path during validation, so we need
+			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
+			 * submission plugin, or by a 'replace' validation.
+			 */
+			if (!FabrikString::usesElementPlaceholders($this->_filePaths[$repeatCounter]))
+			{
+				return $this->_filePaths[$repeatCounter];
+			}
 		}
 		$filter = JFilterInput::getInstance();
 		$aData = $filter->clean($_POST, 'array');
