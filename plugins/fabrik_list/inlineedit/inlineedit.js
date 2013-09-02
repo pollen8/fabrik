@@ -77,6 +77,14 @@ var FbListInlineEdit = new Class({
 			this.watchControls(this.editCell);
 			this.setFocus(this.editCell);
 		}.bind(this));
+		
+		// Click outside list clears down selection
+		window.addEvent('click', function (e) {
+			if (!e.target.hasClass('fabrik_element') && this.td) {
+				this.td.removeClass(this.options.focusClass);
+				this.td = null;
+			}
+		}.bind(this));
 	},
 
 	setUp: function () {
