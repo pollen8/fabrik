@@ -358,7 +358,7 @@ Fabrik.Window = new Class({
 			var testH = contentEl.getScrollSize().y + titleHeight + footer;
 			
 			var h = testH < window.getHeight() ? testH : window.getHeight();
-			var w = contentEl.getScrollSize().x + 17 < window.getWidth() ? contentEl.getScrollSize().x + 17 : window.getWidth();
+			var w = contentEl.getScrollSize().x + 25 < window.getWidth() ? contentEl.getScrollSize().x + 25 : window.getWidth();
 			this.window.setStyle('height', h);
 			this.window.setStyle('width', w);
 		}
