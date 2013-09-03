@@ -879,6 +879,15 @@ class PlgFabrik_ElementUser extends PlgFabrik_ElementDatabasejoin
 		{
 			$userid = (int) array_shift($userid);
 		}
+		else
+		{
+			// Test json string e.g. ["350"] - fixes JUser: :_load: User does not exist notices
+			if (!is_int($userid))
+			{
+				$userid = FabrikWorker::JSONtoData($userid, true);
+				$userid = (int) JArrayHelper::getValue($userid, 0, 0);
+			}
+		}
 		$user = $userid === 0 ? JFactory::getUser() : JFactory::getUser($userid);
 		return $this->getUserDisplayProperty($user);
 	}

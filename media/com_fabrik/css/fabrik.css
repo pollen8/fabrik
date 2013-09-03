@@ -612,6 +612,12 @@ fieldset.row-fluid:before {
 .fabrikElement select[multiple], .fabrikElement select[size] {
     height: auto !important;
 }
+
+/** Remove bootstrap textarea fixed height **/
+
+textarea.fabrikinput {
+	height: initial;
+}
 /** Time Picker button group alignment **/
 
 .fbDateTime .btn-group + .btn-group {

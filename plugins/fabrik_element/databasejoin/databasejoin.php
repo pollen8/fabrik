@@ -2925,7 +2925,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			 * (say) a field name 'foobar', etc.
 			 * Also ... I think we need to NOT do this inside a subquery!
 			*/
-			$jkey = str_replace($jointable, $dbName, $jkey);
+			$jkey = str_replace($jointable, 'lookup', $jkey);
 		}
 		$parentKey = $this->buildQueryParentKey();
 		$fullElName = $this->getFullName(true, false);

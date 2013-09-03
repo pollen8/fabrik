@@ -759,13 +759,7 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 		$opts->ifFormat = $params->get('date_form_format', $params->get('date_table_format', '%Y-%m-%d'));
 		$opts->timeFormat = 24;
 		FabDate::dateFormatToStrftimeFormat($opts->ifFormat);
-		// $$$ Paul - opts->validations is set identically (in elements.php) - and this is not used anywhere else
-		$validations = $this->validator->findAll();
-		$opts->hasValidations = empty($validations) ? false : true;
 		$opts->dateAllowFunc = $params->get('date_allow_func');
-
-		// Test
-		// $opts->range = array(1066, 2999);
 		return $opts;
 	}
 

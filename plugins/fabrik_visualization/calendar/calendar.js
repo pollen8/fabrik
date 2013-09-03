@@ -917,7 +917,7 @@ var fabrikCalendar = new Class({
 	addEvForm: function (o)
 	{
 		if (typeof(jQuery) !== 'undefined') {
-			jQuery(this.popOver).popover('toggle');
+			jQuery(this.popOver).popover('hide');
 		}
 		this.windowopts.id = 'addeventwin';
 		var url = 'index.php?option=com_fabrik&controller=visualization.calendar&view=visualization&task=addEvForm&format=raw&listid=' + o.listid + '&rowid=' + o.rowid;
@@ -934,6 +934,7 @@ var fabrikCalendar = new Class({
 		this.windowopts.type = 'window';
 		this.windowopts.contentURL = url;
 		var f = this.options.filters;
+	
 		this.windowopts.onContentLoaded = function (win)
 		{
 			var myfx = new Fx.Scroll(window).toElement('addeventwin');
@@ -949,7 +950,7 @@ var fabrikCalendar = new Class({
 					}
 				}
 			});
-			win.fitToContent();
+			win.fitToContent(false);
 		}.bind(this);
 		Fabrik.getWindow(this.windowopts);
 	},
@@ -1490,7 +1491,7 @@ var fabrikCalendar = new Class({
 			);
 			ul.appendChild(li);
 		}.bind(this));
-		new Element('div', {'class': 'legend'}).adopt([
+		new Element('div', {'class': 'calendar-legend'}).adopt([
 			new Element('h3').appendText(Joomla.JText._('PLG_VISUALIZATION_CALENDAR_KEY')),
 			ul
 		]).inject(this.el, 'after');
