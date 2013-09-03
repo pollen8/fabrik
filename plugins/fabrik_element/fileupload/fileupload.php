@@ -823,7 +823,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			$mySize = $myFileSize / 1000;
 			$errors[] = JText::sprintf('PLG_ELEMENT_FILEUPLOAD_FILE_TOO_LARGE', $params->get('ul_max_file_size'), $mySize);
 		}
-		$filepath = $this->_getFilePath($repeatCounter);
+		$filepath = $this->_getFilePath($repeatCounter, null);
 		jimport('joomla.filesystem.file');
 		if (JFile::exists($filepath))
 		{
@@ -1543,7 +1543,9 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		{
 			return;
 		}
-		$filepath = $this->_getFilePath($repeatGroupCounter);
+
+		$formData = $this->getFormModel()->_formData;
+		$filepath = $this->_getFilePath($repeatGroupCounter, $formData);
 		if (!FabrikUploader::canUpload($file, $err, $params))
 		{
 			$this->setError(100, $file['name'] . ': ' . JText::_($err));
@@ -1660,8 +1662,10 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 	 * @return	string	path
 	 */
 
-	protected function _getFilePath($repeatCounter = 0)
+	protected function _getFilePath($repeatCounter = 0, $formData = null)
 	{
+		$params = $this->getParams();
+		$folder = $params->get('ul_directory');
 		if (!isset($this->_filePaths))
 		{
 			$this->_filePaths = array();
@@ -1674,16 +1678,15 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
 			 * submission plugin, or by a 'replace' validation.
 			 */
-			if (!FabrikString::usesElementPlaceholders($this->_filePaths[$repeatCounter]))
+			if (!FabrikString::usesElementPlaceholders($folder))
 			{
 				return $this->_filePaths[$repeatCounter];
 			}
 		}
 		$filter = JFilterInput::getInstance();
-		$aData = $filter->clean($_POST, 'array');
+		$aData = isset($formData) ? $formData : $filter->clean($_POST, 'array');
 		$elName = $this->getFullName(true, true, false);
 		$elNameRaw = $elName . '_raw';
-		$params = $this->getParams();
 
 		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
@@ -1725,7 +1728,6 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// $$$ hugh - check if we need to blow away the cached filepath, set in validation
 		$myFileName = $storage->cleanName($myFileName, $repeatCounter);
 
-		$folder = $params->get('ul_directory');
 		$folder = $folder . '/' . $myFileDir;
 		if ($storage->appendServerPath())
 		{
@@ -1733,7 +1735,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		$folder = JPath::clean($folder);
 		$w = new FabrikWorker;
-		$folder = $w->parseMessageForPlaceHolder($folder);
+		$folder = $w->parseMessageForPlaceHolder($folder, $aData, true);
 
 		if ($storage->appendServerPath())
 		{
