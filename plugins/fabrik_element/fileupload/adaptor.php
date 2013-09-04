@@ -90,7 +90,7 @@ abstract class FabrikStorageAdaptor
 	 * @return bool
 	 */
 
-	public abstract function createFolder($path);
+	public static abstract function createFolder($path);
 
 	/**
 	 * Write a file
@@ -215,7 +215,7 @@ abstract class FabrikStorageAdaptor
 	 * @return  mixed JError|void
 	 */
 
-	public function makeRecursiveFolders($folderPath, $mode = 0755)
+	public static function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
 		if (!JFolder::exists($folderPath))
 		{

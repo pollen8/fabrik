@@ -65,7 +65,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	public function createIndexFile($path)
 	{
 		$index_file = $path . '/index.html';
-		if (!$this->exists($index_file))
+		if (!self::exists($index_file))
 		{
 			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
 			return JFile::write($index_file, $content);
@@ -77,17 +77,64 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * Create a folder
 	 *
 	 * @param   string  $path  folder path
+	 * @param   bitmask  $mode Permissions
 	 *
 	 * @return bool
 	 */
 
-	public function createFolder($path)
+	public static function createFolder($path, $mode = 0755)
 	{
-		if (JFolder::create($path))
+
+		if (JFolder::create($path, $mode))
 		{
-			return $this->createIndexFile($path);
+			return self::createIndexFile($path);
 		}
 		return false;
+	}
+
+
+	/**
+	 * Make recursive folders
+	 *
+	 * @param   string   $folderPath  Path to folder - eg /images/stories
+	 * @param   bitmask  $mode        Permissions
+	 *
+	 * @return  mixed JError|void
+	 */
+
+	public static function makeRecursiveFolders($folderPath, $mode = 0755)
+	{
+		static $nested = 0;
+		// Check if parent dir exists
+		$parent = dirname($folderPath);
+		if (!self::folderExists($parent))
+		{
+			// Prevent infinite loops!
+			$nested++;
+			if (($nested > 20) || ($parent == $folderPath))
+			{
+				$nested--;
+				return false;
+			}
+
+			if (self::makeRecursiveFolders($parent, $mode) !== true)
+			{
+				// JFolder::create throws an error
+				$nested--;
+				return false;
+			}
+
+			// OK, parent directory has been created
+			$nested--;
+		}
+
+
+		if (JFolder::exists($folderPath))
+		{
+			return true;
+		}
+
+		return self::createFolder($folderPath, $mode);
 	}
 
 	/**

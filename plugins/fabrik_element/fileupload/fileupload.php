@@ -1497,10 +1497,17 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		if (empty($file))
 		{
-			$file = $input->get($name);
-
+			$file = $input->get($name, array(), 'array');
 			// Ajax test - nothing in files
-			return $file == '' ? true : false;
+			if (is_array($file))
+			{
+				// $$$ hugh - if folder select is enabled it'll be an array with at least ul_end_dir
+				return count($file) === 1;
+			}
+			else
+			{
+				return $file == '' ? true : false;
+			}
 		}
 		// No files selected?
 		return $file['name'] == '' ? true : false;
