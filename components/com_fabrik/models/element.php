@@ -2211,6 +2211,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function getHiddenField($name, $value, $id = '', $class = '')
 	{
+		// $$$ Paul - $class is not used anywhere
 		$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 		$opts = array('class' => 'fabrikinput inputbox', 'type' => 'hidden', 'name' => $name, 'value' => $value, 'id' => $id);
 		return $this->buildInput('input', $opts);
@@ -2230,7 +2231,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$str = '<' . $node . ' ';
 		foreach ($bits as $key => $val)
 		{
-			$str .= $key . ' = "' . $val . '" ';
+			$str .= $key . '="' . $val . '" ';
 		}
 		$str .= '/>';
 		return $str;
