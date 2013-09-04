@@ -65,7 +65,7 @@ JHtml::_('behavior.keepalive');
 				    </li>
 				    <li>
 				    	<a data-toggle="tab" href="#access">
-				    		<?php echo JText::_('COM_FABRIK_GROUP_LABAEL_RULES_DETAILS')?>
+				    		<?php echo JText::_('COM_FABRIK_GROUP_LABEL_RULES_DETAILS')?>
 				    	</a>
 				    </li>
 				</ul>
