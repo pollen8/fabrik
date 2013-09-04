@@ -644,6 +644,7 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 	public function filterValueList($normal, $tableName = '', $label = '', $id = '', $incjoin = true)
 	{
 		$rows = parent::filterValueList($normal, $tableName, $label, $id, $incjoin);
+		$return = array();
 		foreach ($rows as &$row)
 		{
 			$txt = $this->listFormat($row->text);
@@ -651,8 +652,14 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			{
 				$row->text = strip_tags($txt);
 			}
+			// Ensure unique values
+			if (!array_key_exists($row->text, $return))
+			{
+				$return[$row->text] = $row;
+			}
 		}
-		return $rows;
+		$return = array_values($return);
+		return $return;
 	}
 
 	/**
@@ -676,7 +683,6 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 				$value[0] = $value[1];
 				$value[1] = $tmp_value;
 			}
-
 
 			if (is_numeric($value[0]) && is_numeric($value[1]))
 			{
