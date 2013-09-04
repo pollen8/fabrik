@@ -50,7 +50,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
-		return $this->getHiddenField($name, $value, $id, 'inputbox hidden fabrikinput');
+		return $this->getHiddenField($name, $value, $id, 'fabrikinput inputbox hidden');
 	}
 
 	/**
