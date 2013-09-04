@@ -315,7 +315,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * @return  bool
 	 */
 
-	public static function createFolder($path)
+	public function createFolder($path)
 	{
 		return true;
 	}
@@ -485,7 +485,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	 * @return  void
 	 */
 
-	public static function makeRecursiveFolders($folderPath, $mode = 0755)
+	public function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
 		return;
 	}

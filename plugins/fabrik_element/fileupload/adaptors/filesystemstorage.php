@@ -65,7 +65,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	public function createIndexFile($path)
 	{
 		$index_file = $path . '/index.html';
-		if (!self::exists($index_file))
+		if (!$this->exists($index_file))
 		{
 			$content = JText::_('PLG_ELEMENT_FILEUPLOAD_INDEX_FILE_CONTENT');
 			return JFile::write($index_file, $content);
@@ -82,12 +82,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * @return bool
 	 */
 
-	public static function createFolder($path, $mode = 0755)
+	public function createFolder($path, $mode = 0755)
 	{
 
 		if (JFolder::create($path, $mode))
 		{
-			return self::createIndexFile($path);
+			return $this->createIndexFile($path);
 		}
 		return false;
 	}
@@ -102,12 +102,12 @@ class Filesystemstorage extends FabrikStorageAdaptor
 	 * @return  mixed JError|void
 	 */
 
-	public static function makeRecursiveFolders($folderPath, $mode = 0755)
+	public function makeRecursiveFolders($folderPath, $mode = 0755)
 	{
 		static $nested = 0;
 		// Check if parent dir exists
 		$parent = dirname($folderPath);
-		if (!self::folderExists($parent))
+		if (!$this->folderExists($parent))
 		{
 			// Prevent infinite loops!
 			$nested++;
@@ -117,7 +117,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 				return false;
 			}
 
-			if (self::makeRecursiveFolders($parent, $mode) !== true)
+			if ($this->makeRecursiveFolders($parent, $mode) !== true)
 			{
 				// JFolder::create throws an error
 				$nested--;
@@ -134,7 +134,7 @@ class Filesystemstorage extends FabrikStorageAdaptor
 			return true;
 		}
 
-		return self::createFolder($folderPath, $mode);
+		return $this->createFolder($folderPath, $mode);
 	}
 
 	/**
