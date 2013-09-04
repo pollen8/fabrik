@@ -45,11 +45,11 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		$params = $this->getParams();
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
+		$value = stripslashes($value);
 		if (!$this->isEditable())
 		{
-			return ($element->hidden == '1') ? "<!-- " . stripslashes($value) . " -->" : stripslashes($value);
+			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
-		$value = stripslashes($value);
 		return $this->getHiddenField($name, $value, $id, 'inputbox hidden fabrikinput');
 	}
 
