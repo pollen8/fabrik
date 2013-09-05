@@ -47,6 +47,7 @@ var FbForm = new Class({
 		this.subGroups = $H({});
 		this.currentPage = this.options.start_page;
 		this.formElements = $H({});
+		this.elements = this.formElements;
 		this.duplicatedGroups = $H({});
 
 		this.fx = {};
