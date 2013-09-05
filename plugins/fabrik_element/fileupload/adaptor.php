@@ -86,11 +86,12 @@ abstract class FabrikStorageAdaptor
 	 * Create a folder
 	 *
 	 * @param   string  $path  Folder path
+	 * @param   bitmask  $mode Permissions
 	 *
 	 * @return bool
 	*/
 
-	public abstract function createFolder($path);
+	public abstract function createFolder($path, $mode = 0755);
 
 	/**
 	 * Write a file

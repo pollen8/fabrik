@@ -1988,7 +1988,7 @@ EOD;
 	 * @return  string  content item html
 	 */
 
-	public function getContentTemplate($contentTemplate)
+	public static function getContentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
 		if ($app->isAdmin())
@@ -2001,8 +2001,8 @@ EOD;
 		}
 		else
 		{
-			JModel::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
-			$articleModel = JModel::getInstance('Article', 'ContentModel');
+			JModelLegacy::addIncludePath(COM_FABRIK_BASE . 'components/com_content/models');
+			$articleModel = JModelLegacy::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
 		return $res->introtext . ' ' . $res->fulltext;
