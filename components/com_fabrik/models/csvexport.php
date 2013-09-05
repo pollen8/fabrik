@@ -161,7 +161,7 @@ class FabrikFEModelCSVExport
 		$res = new stdClass;
 		$res->total = $total;
 		$res->count = $start + $this->getStep();
-		$res->file = $filepath;
+		$res->file = JFile::getName($filepath);
 		$res->limitStart = $start;
 		$res->limitLength = $this->getStep();
 		if ($res->count >= $res->total)

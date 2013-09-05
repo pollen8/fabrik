@@ -221,6 +221,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				case 'NOT IN':
 					// Split out 1,2,3 into an array to iterate over.
 					$originalValue = explode(',', $originalValue);
+					foreach ($originalValue as &$v)
+					{
+						$v = FabrikString::ltrimword($v, '"');
+						$v = FabrikString::ltrimword($v, "'");
+						$v = FabrikString::rtrimword($v, '"');
+						$v = FabrikString::rtrimword($v, "'");
+					}
 					break;
 				default:
 					$originalValue = (array) $originalValue;
