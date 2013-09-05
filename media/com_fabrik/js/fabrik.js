@@ -282,6 +282,7 @@ if (typeof(Fabrik) === "undefined") {
 	Fabrik.Windows = {};
 	Fabrik.loader = new Loader();
 	Fabrik.blocks = {};
+	Fabrik.periodicals = {};
 	Fabrik.addBlock = function (blockid, block) {
 		Fabrik.blocks[blockid] = block;
 		Fabrik.fireEvent('fabrik.block.added', [block, blockid]);
@@ -290,17 +291,37 @@ if (typeof(Fabrik) === "undefined") {
 	/**
 	 * Search for a block
 	 * 
-	 * @param   string  blockid  Block id 
-	 * @param   bool    exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+	 * @param   string    blockid  Block id 
+	 * @param   bool      exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+	 * @param   function  cb       Call back function - if supplied a periodical check is set to find the block and once 
+	 *                             found then the cb() is run, passing the block back as an parameter
 	 * 
 	 * @return  mixed  false if not found | Fabrik block 
 	 */
-	Fabrik.getBlock = function (blockid, exact) {
+	Fabrik.getBlock = function (blockid, exact, cb) {
+		cb = cb ? cb : false;
+		if (cb) {
+			Fabrik.periodicals[blockid] = Fabrik._getBlock.periodical(500, this, [blockid, exact, cb]);
+		}
+		return Fabrik._getBlock(blockid, exact, cb);
+	};
+	
+	/**
+	 * Private Search for a block
+	 * 
+	 * @param   string    blockid  Block id 
+	 * @param   bool      exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+	 * @param   function  cb       Call back function - if supplied a periodical check is set to find the block and once 
+	 *                             found then the cb() is run, passing the block back as an parameter
+	 * 
+	 * @return  mixed  false if not found | Fabrik block 
+	 */
+	Fabrik._getBlock = function (blockid, exact, cb) {
 		exact = exact ? exact : false;
 		if (Fabrik.blocks[blockid] !== undefined) {
 			
 			// Exact match
-			return Fabrik.blocks[blockid];
+			foundBlockId = blockid;
 		} else {
 			if (exact) {
 				return false;
@@ -311,8 +332,13 @@ if (typeof(Fabrik) === "undefined") {
 			if (i === -1) {
 				return false;
 			}
-			return Fabrik.blocks[keys[i]];
+			foundBlockId = keys[i];
 		}
+		if (cb) {
+			clearInterval(Fabrik.periodicals[blockid]);
+			cb(Fabrik.blocks[foundBlockId]);
+		}
+		return Fabrik.blocks[foundBlockId];
 	};
 
 	document.addEvent('click:relay(.fabrik_delete a, .fabrik_action a.delete, .btn.delete)', function (e, target) {

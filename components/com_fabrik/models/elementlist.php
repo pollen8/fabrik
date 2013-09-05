@@ -202,12 +202,41 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$glue = 'OR';
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
-			$originalValue = (array) $originalValue;
 			$str = array();
+			if ($condition === 'NOT IN')
+			{
+				$partialComparison = ' NOT LIKE ';
+				$comparison = ' <> ';
+				$glue = ' AND ';
+			}
+			else
+			{
+				$partialComparison = ' LIKE ';
+				$comparison = ' = ';
+				$glue = ' OR ';
+			}
+			switch ($condition)
+			{
+				case 'IN':
+				case 'NOT IN':
+					// Split out 1,2,3 into an array to iterate over.
+					$originalValue = explode(',', $originalValue);
+					foreach ($originalValue as &$v)
+					{
+						$v = FabrikString::ltrimword($v, '"');
+						$v = FabrikString::ltrimword($v, "'");
+						$v = FabrikString::rtrimword($v, '"');
+						$v = FabrikString::rtrimword($v, "'");
+					}
+					break;
+				default:
+					$originalValue = (array) $originalValue;
+					break;
+			}
 			foreach ($originalValue as $v)
 			{
 				$v = str_replace("/", "\\\\/", $v);
-				$str[] = '(' . $key . ' LIKE ' . $db->quote('%"' . $v . '"%') . ' OR ' . $key . ' = ' . $db->quote($v) . ') ';
+				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v . '"%') . $glue . $key . $comparison . $db->quote($v) . ') ';
 			}
 			$str = '(' . implode($glue, $str) . ')';
 		}

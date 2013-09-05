@@ -6626,7 +6626,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		$join = $this->getJoin();
 
 		// The submitted element's values
-		$allJoinValues = $formData[$name];
+		$allJoinValues = (array) $formData[$name];
 		if ($groupModel->isJoin())
 		{
 			$groupJoinModel = $groupModel->getJoinModel();
@@ -6641,7 +6641,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$k = 'rowid';
 			$idKey = $name . '___id';
 			$paramsKey = $name . '___params';
-			$parentIds = array_fill(0, count($allJoinValues), $formData[$k]);
+			$parentIds = empty($allJoinValues) ? array() : array_fill(0, count($allJoinValues), $formData[$k]);
 
 		}
 		$allJoinIds = JArrayHelper::getValue($formData, $idKey, array());

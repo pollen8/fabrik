@@ -448,4 +448,39 @@ class FPagination extends JPagination
 		return implode("\n", $html);
 	}
 
+	/**
+	 * Returns a property of the object or the default value if the property is not set.
+	 * Avoids deprecated notices in 3.1 whilst maintaining backwards compat
+	 *
+	 * @param   string  $property  The name of the property.
+	 * @param   mixed   $default   The default value.
+	 *
+	 * @return  mixed    The value of the property.
+	 *
+	 * @since   12.2
+	 * @deprecated  13.3  Access the properties directly.
+	 */
+	public function get($property, $default = null)
+	{
+		$version = new JVersion;
+		if ($version->RELEASE > 2.5)
+		{
+			if (strpos($property, '.'))
+			{
+				$prop = explode('.', $property);
+				$prop[1] = ucfirst($prop[1]);
+				$property = implode($prop);
+			}
+			if (isset($this->$property))
+			{
+				return $this->$property;
+			}
+			return $default;
+		}
+		else
+		{
+			return $this->get($property, $default);
+		}
+	}
+
 }
