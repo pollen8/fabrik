@@ -1664,7 +1664,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	protected function modHTMLId(&$id)
 	{
 		$displayType = $this->getDisplayType();
-		if ($displayType === 'auto-complete')
+		if ($displayType === 'auto-complete') {
 			$id = $id . '-auto-complete';
 		}
 	}
