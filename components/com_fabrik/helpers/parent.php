@@ -690,9 +690,11 @@ class FabrikWorker
 			$userid = $app->input->getInt(JArrayHelper::getValue($bits, 1));
 			if ($userid !== 0)
 			{
+				echo "user id = ";print_r($userid);
 				$user = JFactory::getUser($userid);
 				$val = $user->get(JArrayHelper::getValue($bits, 2));
 				$msg = str_replace($match, $val, $msg);
+				exit;
 			}
 		}
 		return $msg;
