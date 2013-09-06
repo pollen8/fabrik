@@ -40,13 +40,13 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$this->data = $this->getProcessData();
-		echo "<pre>";print_r($this->data);
+		//echo "<pre>";print_r($this->data);
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 
 		if (!$this->shouldProcess('paypal_conditon'))
 		{
-			echo "no process";exit;
+			//echo "no process";exit;
 			return true;
 		}
 		$w = new FabrikWorker;
@@ -408,7 +408,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 
 		$opts['custom'] = $this->data['formid'] . ':' . $this->data['rowid'] . ':' . $ipn_value;
-		echo "<pre>";print_r($opts['custom']);exit;
+		//echo "<pre>";print_r($opts['custom']);exit;
 		$qs = array();
 		foreach ($opts as $k => $v)
 		{
