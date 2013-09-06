@@ -4793,6 +4793,9 @@ class FabrikFEModelList extends JModelForm
 			$showInList = $listels->show_in_list;
 		}
 		$showInList = (array) $input->get('fabrik_show_in_list', $showInList, 'array');
+
+		// Set it for use by groupModel->getPublishedListElements()
+		$input->set('fabrik_show_in_list', $showInList);
 		return $showInList;
 	}
 
@@ -6033,9 +6036,6 @@ class FabrikFEModelList extends JModelForm
 			$listClasses->responsive_elements = array();
 		}
 		$showInList = $this->showInList();
-
-		// Set it for use by groupModel->getPublishedListElements()
-		$input->set('fabrik_show_in_list', $showInList);
 
 		if (!in_array($this->outputFormat, array('pdf', 'csv')))
 		{

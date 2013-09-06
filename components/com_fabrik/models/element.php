@@ -5346,42 +5346,6 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
-	 * Determines if the element should be shown in the list view
-	 *
-	 * @param   object  &$listModel  list model
-	 *
-	 * @deprecated - not used
-	 *
-	 * @return  bool
-	 */
-
-	public function inTableFields(&$listModel)
-	{
-		$params = $this->getParams();
-		$element = $this->getElement();
-		$table = $listModel->getTable();
-		$elFullName = $this->getFullName(false, false);
-		if ($listModel->getOutPutFormat() === 'rss')
-		{
-			$bAddElement = ($params->get('show_in_rss_feed') == '1');
-			/* if its the date ordering col we should add it to the list of allowed elements */
-			if ($elFullName == $listModel->getParams()->get('feed_date', ''))
-			{
-				$bAddElement = true;
-			}
-		}
-		else
-		{
-			$bAddElement = $element->show_in_list_summary;
-		}
-		if ($table->db_primary_key == $elFullName)
-		{
-			$listModel->temp_db_key_addded = true;
-		}
-		return $bAddElement;
-	}
-
-	/**
 	 * Builds some html to allow certain elements to display the option to add in new options
 	 * e.g. pciklists, dropdowns radiobuttons
 	 *
