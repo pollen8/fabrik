@@ -234,6 +234,12 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$listModel->clearTable();
 		$listModel->getTable();
 		$data = $listModel->getRow($rowid);
+
+		// For a change in the element which means its no longer shown in the list due to prefilter. We may want to remove the row from the list as well?
+		if (!is_object($data))
+		{
+			$data = new stdClass;
+		}
 		$key = $input->get('element');
 		$html = '';
 		$html .= $elmentModel->renderListData($data->$key, $data);
