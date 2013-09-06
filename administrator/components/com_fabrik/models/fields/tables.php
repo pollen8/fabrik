@@ -45,16 +45,23 @@ class JFormFieldTables extends JFormFieldList
 	protected function getOptions()
 	{
 		$connectionDd = $this->element['observe'];
+		$connectionName = 'connection_id';
+		$connId = (int) $this->form->getValue($connectionName);
+
+		// DB join element observes 'params___join_conn_id'
+		if (strstr($connectionDd, 'params_') && $connId === 0)
+		{
+			$connectionName = str_replace('params_', 'params.', $connectionDd);
+			$connId = (int) $this->form->getValue($connectionName);
+		}
 		$options = array();
 		$db = FabrikWorker::getDbo(true);
 		if ($connectionDd == '')
 		{
 			// We are not monitoring a connection drop down so load in all tables
 			$query = "SHOW TABLES";
-
 			$db->setQuery($query);
 			$items = $db->loadColumn();
-
 			foreach ($items as $l)
 			{
 				$options[] = JHTML::_('select.option', $l, $l);
@@ -62,10 +69,10 @@ class JFormFieldTables extends JFormFieldList
 		}
 		else
 		{
-			$connId = $this->form->getValue('connection_id');
 			$query = $db->getQuery(true);
 			$key = JArrayHelper::getValue($this->element, 'key', 'id') == 'name' ? 'db_table_name' : 'id';
-			$query->select($key . ' AS value, db_table_name AS ' . $db->quote('text'))->from('#__{package}_lists')
+			$query->select($db->quoteName($key) . ' AS value, ' . $db->quoteName('db_table_name') . ' AS ' . $db->quote('text'))
+				->from('#__{package}_lists')
 				->where('connection_id = ' . (int) $connId);
 			$db->setQuery($query);
 			$items = $db->loadObjectList();
