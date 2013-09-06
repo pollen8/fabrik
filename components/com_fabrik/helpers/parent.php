@@ -1146,6 +1146,22 @@ class FabrikWorker
 	}
 
 	/**
+	 * Clear PHP errors prior to running eval'ed code
+	 *
+	 * @return  void
+	 */
+
+	public static function clearEval()
+	{
+		/**
+		 * "Clear" PHP's errors.  NOTE that error_get_last() wil still return non-null after this
+		 * if there were any errors, but $error['mesage'] will be empty.  See comment in logEval()
+		 * below for details.
+		 */
+		@trigger_error("");
+	}
+
+	/**
 	 * Raise a J Error notice if the eval'd result is false and there is a error
 	 *
 	 * @param   mixed   $val  Evaluated result
@@ -1161,7 +1177,17 @@ class FabrikWorker
 			return;
 		}
 		$error = error_get_last();
-		if (is_null($error))
+		/**
+		 * $$$ hugh - added check for 'message' being empty, so we can do ..
+		 * @trigger_error('');
+		 * ... prior to eval'ing code if we want to "clear" anything pitched prior
+		 * to the eval.  For instance, in the PHP validation plugin.  If we don't "clear"
+		 * the errors before running the eval'ed validation code, we end up reporting any
+		 * warnings or notices pitched in our code prior to the validation running, which
+		 * can be REALLY confusing.  After a trigger_error(), error_get_last() won't return null,
+		 * but 'message' will be empty.
+		 */
+		if (is_null($error) || empty($error['message']))
 		{
 			// No error set (eval could have actually returned false as a correct value)
 			return;

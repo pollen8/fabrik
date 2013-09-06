@@ -1631,7 +1631,16 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		}
 		if (array_key_exists($repeatCounter, $this->_filePaths))
 		{
-			return $this->_filePaths[$repeatCounter];
+			/**
+			 * $$$ hugh - if it uses element placeholders, there's a likelihood the element
+			 * data may have changed since we cached the path during validation, so we need
+			 * to rebuild it.  For instance, if the element data is changed by a onBeforeProcess
+			 * submission plugin, or by a 'replace' validation.
+			 */
+			if (!FabrikString::usesElementPlaceholders($this->_filePaths[$repeatCounter]))
+			{
+				return $this->_filePaths[$repeatCounter];
+			}
 		}
 		$filter = JFilterInput::getInstance();
 		$aData = $filter->clean($_POST, 'array');
@@ -1642,7 +1651,25 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 		// @TODO test with fileuploads in join groups
 		$groupModel = $this->getGroup();
 
-		$myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'] : @$_FILES['file']['name'];
+		/**
+		 * $$$ hugh - if we use the @ way of doing this, and one of the array keys doesn't exist,
+		 * PHP still sets an error, even though it doesn't toss it.  So if we then have some eval'ed
+		 * code, like a PHP validation, and do the logError() thing, that will pick up and report this error,
+		 * and fail the validation.  Which is VERY hard to track.  So we'll have to do it long hand.
+		 */
+		// $myFileName = array_key_exists($elName, $_FILES) ? @$_FILES[$elName]['name'] : @$_FILES['file']['name'];
+		$myFileName = '';
+		if (array_key_exists($elName, $_FILES) && is_array($_FILES[$elName]))
+		{
+			$myFileName = JArrayHelper::getValue($_FILES[$elName], 'name', '');
+		}
+		else
+		{
+			if (array_key_exists('file', $_FILES) && is_array($_FILES['file']))
+			{
+				$myFileName = JArrayHelper::getValue($_FILES['file'], 'name', '');
+			}
+		}
 		if (is_array($myFileName))
 		{
 			$myFileName = JArrayHelper::getValue($myFileName, $repeatCounter, '');

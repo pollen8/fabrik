@@ -95,6 +95,15 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		$w = new FabrikWorker;
 		$phpCode = $params->get('php-code');
 		$phpCode = $w->parseMessageForPlaceHolder($phpCode, $formData, true, true);
+		/**
+		 * $$$ hugh - added trigger_error(""), which will "clear" any existing errors,
+		 * otherwise logEval will pick up and report notices and warnings generated
+		 * by the rest of our code, which can be VERY confusing.  Note that this required a tweak
+		 * to logEval, as error_get_last won't be null after doing this, but $error['message'] will
+		 * be empty.
+		 * $$$ hugh - moved the $trigger_error() into a helper func
+		 */
+		FabrikWorker::clearEval();
 		$retval = @eval($phpCode);
 		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(true, false) . ': %s');
 		return $retval;
