@@ -83,11 +83,25 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$amount = $params->get('paypal_cost');
 		$amount = $w->parseMessageForPlaceHolder($amount, $this->data);
 
-		// @TODO Hugh/Rob check $$$tom: Adding eval option on cost field
-		// Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
+		/**
+		 * Adding eval option on cost field
+		 * Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
+		 * Returning false will log an error and bang out with a runtime exception.
+		 */
 		if ($params->get('paypal_cost_eval', 0) == 1)
 		{
 			$amount = @eval($amount);
+			if ($amount === false)
+			{
+				$log->message_type = 'fabrik.paypal.onAfterProcess';
+				$msg = new stdClass;
+				$msg->opt = $opts;
+				$msg->data = $this->data;
+				$msg->msg = "Eval amount code returned false.";
+				$log->message = json_encode($msg);
+				$log->store();
+				throw new RuntimeException(JText::_('PLG_FORM_PAYPAL_COST_ELEMENT_ERROR'), 500);
+			}
 		}
 		if (trim($amount) == '')
 		{
