@@ -220,7 +220,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				case 'IN':
 				case 'NOT IN':
 					// Split out 1,2,3 into an array to iterate over.
-					$originalValue = explode(',', $originalValue);
+					if (!is_array($originalValue))
+					{
+						$originalValue = explode(',', $originalValue);
+					}
 					foreach ($originalValue as &$v)
 					{
 						$v = FabrikString::ltrimword($v, '"');
