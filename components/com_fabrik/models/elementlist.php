@@ -236,10 +236,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$originalValue = (array) $originalValue;
 					break;
 			}
-			foreach ($originalValue as $v)
+			foreach ($originalValue as $v2)
 			{
-				$v = str_replace("/", "\\\\/", $v);
-				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v . '"%') . $glue . $key . $comparison . $db->quote($v) . ') ';
+				$v2 = str_replace("/", "\\\\/", $v2);
+				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v2 . '"%') . $glue . $key . $comparison . $db->quote($v2) . ') ';
 			}
 			$str = '(' . implode($glue, $str) . ')';
 		}
