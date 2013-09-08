@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 require_once COM_FABRIK_FRONTEND . '/helpers/string.php';
@@ -100,6 +100,7 @@ class FabrikFEModelCSVExport
 		$this->removePkVal();
 		$this->outPutFormat = $input->get('excel') == 1 ? 'excel' : 'csv';
 		$this->delimiter = $this->outPutFormat == 'excel' ? COM_FABRIK_EXCEL_CSV_DELIMITER : COM_FABRIK_CSV_DELIMITER;
+
 		if ($start === 0)
 		{
 			$headings = $this->getHeadings();
@@ -161,7 +162,7 @@ class FabrikFEModelCSVExport
 		$res = new stdClass;
 		$res->total = $total;
 		$res->count = $start + $this->_getStep();
-		$res->file = $filepath;
+		$res->file = JFile::getName($filepath);
 		$res->limitStart = $start;
 		$res->limitLength = $this->_getStep();
 		if ($res->count >= $res->total)
