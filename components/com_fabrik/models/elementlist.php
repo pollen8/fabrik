@@ -219,13 +219,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				case 'IN':
 				case 'NOT IN':
-					// Split out 1,2,3 into an array to iterate over.
+					/**
+					 * Split out 1,2,3 into an array to iterate over.
+					 * It's a string if pre-filter, array if element filter
+					 */
 					if (!is_array($originalValue))
 					{
 						$originalValue = explode(',', $originalValue);
 					}
 					foreach ($originalValue as &$v)
 					{
+						$v = trim($v);
 						$v = FabrikString::ltrimword($v, '"');
 						$v = FabrikString::ltrimword($v, "'");
 						$v = FabrikString::rtrimword($v, '"');
