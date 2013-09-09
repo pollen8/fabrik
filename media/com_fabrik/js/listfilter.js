@@ -55,7 +55,6 @@ var FbListFilter = new Class({
 
 				// Reset the filter fields that contain previously selected values
 				this.container.getElements('.fabrik_filter').each(function (f) {
-					console.log(f);
 					if (f.name.contains('[value]') || f.name.contains('fabrik_list_filter_all') || f.hasClass('autocomplete-trigger')) { 
 						if (f.get('tag') === 'select') {
 							f.selectedIndex = f.get('multiple') ? -1 : 0;

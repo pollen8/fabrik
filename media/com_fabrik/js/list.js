@@ -139,7 +139,9 @@ var FbList = new Class({
 		this.watchFilters();
 		this.watchOrder();
 		this.watchEmpty();
-		this.watchButtons();
+		if (!ajaxUpdate) {
+			this.watchButtons();
+		}
 	},
 
 	watchButtons: function () {
@@ -377,7 +379,11 @@ var FbList = new Class({
 		}
 
 		this.getFilters().each(function (f) {
-			opts[f.name] = f.get('value');
+			var v = f.get('value');
+			if (f.type === 'checkbox') {
+				v = (f.checked) ? f.get('value') : '';
+			}
+			opts[f.name] = v;
 		}.bind(this));
 		
 		opts.start = start;
