@@ -219,10 +219,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				case 'IN':
 				case 'NOT IN':
-					// Split out 1,2,3 into an array to iterate over.
-					$originalValue = is_array($originalValue) ? $originalValue : explode(',', $originalValue);
+					/**
+					 * Split out 1,2,3 into an array to iterate over.
+					 * It's a string if pre-filter, array if element filter
+					 */
+					if (!is_array($originalValue))
+					{
+						$originalValue = explode(',', $originalValue);
+					}
 					foreach ($originalValue as &$v)
 					{
+						$v = trim($v);
 						$v = FabrikString::ltrimword($v, '"');
 						$v = FabrikString::ltrimword($v, "'");
 						$v = FabrikString::rtrimword($v, '"');
@@ -233,10 +240,10 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$originalValue = (array) $originalValue;
 					break;
 			}
-			foreach ($originalValue as $v)
+			foreach ($originalValue as $v2)
 			{
-				$v = str_replace("/", "\\\\/", $v);
-				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v . '"%') . $glue . $key . $comparison . $db->quote($v) . ') ';
+				$v2 = str_replace("/", "\\\\/", $v2);
+				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v2 . '"%') . $glue . $key . $comparison . $db->quote($v2) . ') ';
 			}
 			$str = '(' . implode($glue, $str) . ')';
 		}

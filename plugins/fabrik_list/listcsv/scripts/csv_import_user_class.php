@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * DO NOT USE IN FABRIK 3.x TILL THIS NOTICE IS REMOVED!  We are in the process of porting
- * this plugin from 2.x to 3.x, and this code was written for Joomla 1.5, and WILL NOT WORK
- * for adding a user in 2.5.
- *
  * Here is an example class file for creating users when importing a CSV file in Fabrik.
  * It was written for a Fabrik subscriber, and is in daily use on several busy sites.
  *
@@ -157,7 +153,7 @@ class ImportCSVCreateUser
 
 		$user = new JUser($user_id);
 
-		$userdata['gid'] = 18;
+		// $userdata['gid'] = 18;
 		$userdata['block'] = 0;
 		$userdata['id'] = $user_id;
 

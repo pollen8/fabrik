@@ -122,8 +122,8 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	 * Once the form has been sucessfully completed, and if no jump page is
 	 * specified then show the thanks message
 	 *
-	 * @param   string  $title    thanks message title @depreicated - set in session in onLastProcess
-	 * @param   string  $message  thanks message string @depreicated - set in session in onLastProcess
+	 * @param   string  $title    Thanks message title @depreicated - set in session in onLastProcess
+	 * @param   string  $message  Thanks message string @depreicated - set in session in onLastProcess
 	 *
 	 * @return  void
 	 */
@@ -268,9 +268,9 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	/**
 	 * Apped data to query string array
 	 *
-	 * @param   array   &$queryvars  previously added querystring variables
-	 * @param   string  $key         key
-	 * @param   mixed   $val         value string or array
+	 * @param   array   &$queryvars  Previously added querystring variables
+	 * @param   string  $key         Key
+	 * @param   mixed   $val         Value string or array
 	 *
 	 * @return  void
 	 */
@@ -292,14 +292,14 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	}
 
 	/**
-	 * Date is stored in session com_fabrik.searchform.form'.$formModel->get('id').'.filters
+	 * Data is stored in session com_fabrik.searchform.form'.$formModel->get('id').'.filters
 	 * listfilters looks up the com_fabrik.searchform.fromForm session var to then be able to pick up
-	 * the search form data
-	 * once its got it it unsets com_fabrik.searchform.fromForm so that the search values are not reused
+	 * the search form data.
+	 * Once its got it it unsets com_fabrik.searchform.fromForm so that the search values are not reused
 	 * (they are however stored in the session so behave like normal filters afterwards)
 	 * If the listfilter does find the com_fabrik.searchform.fromForm var it won't use any session filters
 	 *
-	 * @return unknown_type
+	 * @return void
 	 */
 
 	protected function _storeInSession()
@@ -369,6 +369,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					}
 				}
 			}
+			echo "<pre>";print_R($store);exit;
 
 			// Clear registry search form entries
 			$key = 'com_' . $package . '.searchform';
@@ -390,7 +391,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 	/**
 	 * Determines if a condition has been set and decides if condition is matched
 	 *
-	 * @param   object  $params  plugin params
+	 * @param   object  $params  Plugin params
 	 *
 	 * @return bol true if you should redirect, false ignores redirect
 	 */

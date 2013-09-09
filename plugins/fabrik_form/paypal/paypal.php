@@ -83,11 +83,25 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$amount = $params->get('paypal_cost');
 		$amount = $w->parseMessageForPlaceHolder($amount, $this->data);
 
-		// @TODO Hugh/Rob check $$$tom: Adding eval option on cost field
-		// Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
+		/**
+		 * Adding eval option on cost field
+		 * Useful if you use a cart system which will calculate on total shipping or tax fee and apply it. You can return it in the Cost field.
+		 * Returning false will log an error and bang out with a runtime exception.
+		 */
 		if ($params->get('paypal_cost_eval', 0) == 1)
 		{
 			$amount = @eval($amount);
+			if ($amount === false)
+			{
+				$log->message_type = 'fabrik.paypal.onAfterProcess';
+				$msg = new stdClass;
+				$msg->opt = $opts;
+				$msg->data = $this->data;
+				$msg->msg = "Eval amount code returned false.";
+				$log->message = json_encode($msg);
+				$log->store();
+				throw new RuntimeException(JText::_('PLG_FORM_PAYPAL_COST_ELEMENT_ERROR'), 500);
+			}
 		}
 		if (trim($amount) == '')
 		{
@@ -212,85 +226,88 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		}
 
 		$shipping_table = $this->shippingTable();
-		$thisTable = $formModel->getTableModel()->getTable()->db_table_name;
-		$shipping_userid = $userid;
-
-		/*
-		 * If the shipping table is the same as the form's table, and no user logged in
-		 * then use the shipping data entered into the form:
-		 * see http://fabrikar.com/forums/index.php?threads/paypal-shipping-address-without-joomla-userid.33229/
-		 */
-		if ($shipping_userid === 0 && $thisTable === $shipping_table)
+		if ($shipping_table !== false)
 		{
-			$shipping_userid = $formModel->formData['id'];
-		}
-		if ($shipping_userid > 0)
-		{
-			$shipping_select = array();
+			$thisTable = $formModel->getTableModel()->getTable()->db_table_name;
+			$shipping_userid = $userid;
 
-			$db = FabrikWorker::getDbo();
-			$query = $db->getQuery(true);
+			/*
+			 * If the shipping table is the same as the form's table, and no user logged in
+			 * then use the shipping data entered into the form:
+			 * see http://fabrikar.com/forums/index.php?threads/paypal-shipping-address-without-joomla-userid.33229/
+			 */
+			if ($shipping_userid === 0 && $thisTable === $shipping_table)
+			{
+				$shipping_userid = $formModel->formData['id'];
+			}
+			if ($shipping_userid > 0)
+			{
+				$shipping_select = array();
 
-			if ($params->get('paypal_shippingdata_firstname'))
-			{
-				$shipping_first_name = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
-				$shipping_select['first_name'] = $shipping_first_name;
-			}
-			if ($params->get('paypal_shippingdata_lastname'))
-			{
-				$shipping_last_name = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
-				$shipping_select['last_name'] = $shipping_last_name;
-			}
-			if ($params->get('paypal_shippingdata_address1'))
-			{
-				$shipping_address1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
-				$shipping_select['address1'] = $shipping_address1;
-			}
-			if ($params->get('paypal_shippingdata_address2'))
-			{
-				$shipping_address2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
-				$shipping_select['address2'] = $shipping_address2;
-			}
-			if ($params->get('paypal_shippingdata_zip'))
-			{
-				$shipping_zip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
-				$shipping_select['zip'] = $shipping_zip;
-			}
-			if ($params->get('paypal_shippingdata_state'))
-			{
-				$shipping_state = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
-				$shipping_select['state'] = $shipping_state;
-			}
-			if ($params->get('paypal_shippingdata_city'))
-			{
-				$shipping_city = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
-				$shipping_select['city'] = $shipping_city;
-			}
-			if ($params->get('paypal_shippingdata_country'))
-			{
-				$shipping_country = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
-				$shipping_select['country'] = $shipping_country;
-			}
-			$query->clear();
-			if (empty($shipping_select) || $shipping_table == '')
-			{
-				$app->enqueueMessage('No shipping lookup table or shipping fields selected');
-			}
-			else
-			{
-				$query->select($shipping_select)->from($shipping_table)
-				->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
+				$db = FabrikWorker::getDbo();
+				$query = $db->getQuery(true);
 
-				$db->setQuery($query);
-				$user_shippingdata = $db->loadObject();
-
-				foreach ($shipping_select as $opt => $val)
+				if ($params->get('paypal_shippingdata_firstname'))
 				{
-					// $$$tom Since we test on the current userid, it always adds the &name=&street=....
-					// Even if those vars are empty...
-					if ($val)
+					$shipping_first_name = FabrikString::shortColName($params->get('paypal_shippingdata_firstname'));
+					$shipping_select['first_name'] = $shipping_first_name;
+				}
+				if ($params->get('paypal_shippingdata_lastname'))
+				{
+					$shipping_last_name = FabrikString::shortColName($params->get('paypal_shippingdata_lastname'));
+					$shipping_select['last_name'] = $shipping_last_name;
+				}
+				if ($params->get('paypal_shippingdata_address1'))
+				{
+					$shipping_address1 = FabrikString::shortColName($params->get('paypal_shippingdata_address1'));
+					$shipping_select['address1'] = $shipping_address1;
+				}
+				if ($params->get('paypal_shippingdata_address2'))
+				{
+					$shipping_address2 = FabrikString::shortColName($params->get('paypal_shippingdata_address2'));
+					$shipping_select['address2'] = $shipping_address2;
+				}
+				if ($params->get('paypal_shippingdata_zip'))
+				{
+					$shipping_zip = FabrikString::shortColName($params->get('paypal_shippingdata_zip'));
+					$shipping_select['zip'] = $shipping_zip;
+				}
+				if ($params->get('paypal_shippingdata_state'))
+				{
+					$shipping_state = FabrikString::shortColName($params->get('paypal_shippingdata_state'));
+					$shipping_select['state'] = $shipping_state;
+				}
+				if ($params->get('paypal_shippingdata_city'))
+				{
+					$shipping_city = FabrikString::shortColName($params->get('paypal_shippingdata_city'));
+					$shipping_select['city'] = $shipping_city;
+				}
+				if ($params->get('paypal_shippingdata_country'))
+				{
+					$shipping_country = FabrikString::shortColName($params->get('paypal_shippingdata_country'));
+					$shipping_select['country'] = $shipping_country;
+				}
+				$query->clear();
+				if (empty($shipping_select) || $shipping_table == '')
+				{
+					$app->enqueueMessage('No shipping lookup table or shipping fields selected');
+				}
+				else
+				{
+					$query->select($shipping_select)->from($shipping_table)
+					->where(FabrikString::shortColName($params->get('paypal_shippingdata_id')) . ' = ' . $db->quote($shipping_userid));
+
+					$db->setQuery($query);
+					$user_shippingdata = $db->loadObject();
+
+					foreach ($shipping_select as $opt => $val)
 					{
-						$opts[$opt] = $user_shippingdata->$val;
+						// $$$tom Since we test on the current userid, it always adds the &name=&street=....
+						// Even if those vars are empty...
+						if ($val)
+						{
+							$opts[$opt] = $user_shippingdata->$val;
+						}
 					}
 				}
 			}
@@ -451,11 +468,21 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 	protected function shippingTable()
 	{
 		$params = $this->getParams();
+		$shipping_table = (int) $params->get('paypal_shippingdata_table', '');
+		if (empty($shipping_table))
+		{
+			return false;
+		}
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id = ' . (int) $params->get('paypal_shippingdata_table'));
 		$db->setQuery($query);
-		return $db->loadResult();
+		$db_table_name = $db->loadResult();
+		if (!isset($db_table_name))
+		{
+			return false;
+		}
+		return $db_table_name;
 	}
 	/**
 	 * Show thanks page
@@ -516,6 +543,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$config = JFactory::getConfig();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$mail = JFactory::getMailer();
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->referring_url = $_SERVER['REQUEST_URI'];
@@ -524,7 +552,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$log->store();
 
 		// Lets try to load in the custom returned value so we can load up the form and its parameters
-		$custom = $input->get('custom');
+		$custom = $input->get('custom', '', 'string');
 		list($formid, $rowid, $ipn_value) = explode(":", $custom);
 
 		// Pretty sure they are added but double add
@@ -769,35 +797,35 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 		$send_default_email = $send_default_email[$renderOrder];
 		if ($status != 'ok')
 		{
-			foreach ($_POST as $key => $value)
-			{
-				$emailtext .= $key . " = " . $value . "\n\n";
-			}
-
 			if ($receive_debug_emails == '1')
 			{
+				foreach ($_POST as $key => $value)
+				{
+					$emailtext .= $key . " = " . $value . "\n\n";
+				}
 				$subject = $config->get('sitename') . ": Error with PayPal IPN from Fabrik";
-				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
+				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
 			$log->message_type = $status;
 			$log->message = $emailtext . "\n//////////////\n" . $res . "\n//////////////\n" . $req . "\n//////////////\n" . $err_msg;
 			if ($send_default_email == '1')
 			{
+				$subject = $config->get('sitename') . ": Error with PayPal IPN from Fabrik";
 				$payer_emailtext = JText::_('PLG_FORM_PAYPAL_ERR_PROCESSING_PAYMENT');
-				JUtility::sendMail($email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
+				$mail->sendMail($email_from, $email_from, $payer_email, $subject, $payer_emailtext, false);
+
 			}
 		}
 		else
 		{
-			foreach ($_POST as $key => $value)
-			{
-				$emailtext .= $key . " = " . $value . "\n\n";
-			}
-
 			if ($receive_debug_emails == '1')
 			{
+				foreach ($_POST as $key => $value)
+				{
+					$emailtext .= $key . " = " . $value . "\n\n";
+				}
 				$subject = $config->get('sitename') . ': IPN ' . $payment_status;
-				JUtility::sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
+				$mail->sendMail($email_from, $email_from, $admin_email, $subject, $emailtext, false);
 			}
 			$log->message_type = 'form.paypal.ipn.' . $payment_status;
 			$query = $db->getQuery();
@@ -807,7 +835,7 @@ class PlgFabrik_FormPaypal extends PlgFabrik_Form
 			{
 				$payer_subject = "PayPal success";
 				$payer_emailtext = "Your PayPal payment was succesfully processed.  The PayPal transaction id was $txn_id";
-				JUtility::sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
+				$mail->sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
 			}
 		}
 		$log->message .= "\n IPN custom function = $ipn_function";
