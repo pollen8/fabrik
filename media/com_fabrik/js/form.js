@@ -61,6 +61,8 @@ var FbForm = new Class({
 		
 		// Delegated element events
 		this.events = {};
+		
+		this.submitBroker = new FbFormSubmit();
 	},
 
 	_setMozBoxWidths: function () {
@@ -427,7 +429,7 @@ var FbForm = new Class({
 					});
 				}
 			});
-			submit = this._getButton('submit');
+			submit = this._getButton('Submit');
 			if (submit && this.options.rowid === '') {
 				submit.disabled = "disabled";
 				submit.setStyle('opacity', 0.5);
@@ -597,7 +599,7 @@ var FbForm = new Class({
 	},
 
 	setPageButtons : function () {
-		var submit = this._getButton('submit');
+		var submit = this._getButton('Submit');
 		var prev = this.form.getElement('.fabrikPagePrevious');
 		var next = this.form.getElement('.fabrikPageNext');
 		if (typeOf(next) !== 'null') {
@@ -687,6 +689,7 @@ var FbForm = new Class({
 			elId = elId.substr(0, elId.length - 3);
 			this.formElements.set(elId, oEl);
 		}
+		this.submitBroker.addElement(elId, oEl);
 		return oEl;
 	},
 
@@ -981,8 +984,8 @@ var FbForm = new Class({
 		return b;
 	},
 
-	watchSubmit : function () {
-		var submit = this._getButton('submit');
+	watchSubmit: function () {
+		var submit = this._getButton('Submit');
 		if (!submit) {
 			return;
 		}
@@ -1020,163 +1023,157 @@ var FbForm = new Class({
 		}
 	},
 
-	doSubmit : function (e, btn) {
-		Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
-		this.elementsBeforeSubmit(e);
-		if (this.result === false) {
-			this.result = true;
-			e.stop();
-			// Update global status error
-			this.updateMainError();
-
-			// Return otherwise ajax upload may still occur.
-			return;
-		}
-		// Insert a hidden element so we can reload the last page if validation vails
-		if (this.options.pages.getKeys().length > 1) {
-			this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
-		}
-		if (this.options.ajax) {
-			// Do ajax val only if onSubmit val ok
-			if (this.form) {
-				Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
-				// $$$ hugh - we already did elementsBeforeSubmit() this at the start of this func?
-				// (and we're going to call it again in getFormData()!)
-				//this.elementsBeforeSubmit(e);
-				// get all values from the form
-				var data = $H(this.getFormData());
-				data = this._prepareRepeatsForAjax(data);
-				if (btn.name === 'Copy') {
-					data.Copy = 1;
-					e.stop();
-				}
-				data.fabrik_ajax = '1';
-				data.format = 'raw';
-				var myajax = new Request.JSON({
-					'url': this.form.action,
-					'data': data,
-					'method': this.options.ajaxmethod,
-					onError: function (text, error) {
-						fconsole(text + ": " + error);
-						this.showMainError(error);
-						Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-					}.bind(this),
-
-					onFailure: function (xhr) {
-						fconsole(xhr);
-						Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
-					}.bind(this),
-					onComplete : function (json, txt) {
-						if (typeOf(json) === 'null') {
-							// Stop spinner
+	doSubmit: function (e, btn) {
+		this.submitBroker.submit(function () {
+			Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
+			if (this.result === false) {
+				this.result = true;
+				e.stop();
+				// Update global status error
+				this.updateMainError();
+	
+				// Return otherwise ajax upload may still occur.
+				return;
+			}
+			// Insert a hidden element so we can reload the last page if validation vails
+			if (this.options.pages.getKeys().length > 1) {
+				this.form.adopt(new Element('input', {'name': 'currentPage', 'value': this.currentPage.toInt(), 'type': 'hidden'}));
+			}
+			if (this.options.ajax) {
+				// Do ajax val only if onSubmit val ok
+				if (this.form) {
+					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
+				
+					// get all values from the form
+					var data = $H(this.getFormData());
+					data = this._prepareRepeatsForAjax(data);
+					if (btn.name === 'Copy') {
+						data.Copy = 1;
+						e.stop();
+					}
+					data.fabrik_ajax = '1';
+					data.format = 'raw';
+					var myajax = new Request.JSON({
+						'url': this.form.action,
+						'data': data,
+						'method': this.options.ajaxmethod,
+						onError: function (text, error) {
+							fconsole(text + ": " + error);
+							this.showMainError(error);
 							Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
-							fconsole('error in returned json', json, txt);
-							return;
-						}
-						// Process errors if there are some
-						var errfound = false;
-						if (json.errors !== undefined) {
-
-							// For every element of the form update error message
-							$H(json.errors).each(function (errors, key) {
-								// $$$ hugh - nasty hackery alert!
-								// validate() now returns errors for joins in join___id___label format,
-								// but if repeated, will be an array under _0 name.
-								// replace join[id][label] with join___id___label
-								// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
-								if (this.formElements.has(key) && errors.flatten().length > 0) {
-									errfound = true;
-									if (this.formElements[key].options.inRepeatGroup) {
-										for (e = 0; e < errors.length; e++) {
-											if (errors[e].flatten().length  > 0) {
-												var this_key = key.replace(/(_\d+)$/, '_' + e);
-												this._showElementError(errors[e], this_key);
+						}.bind(this),
+	
+						onFailure: function (xhr) {
+							fconsole(xhr);
+							Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
+						}.bind(this),
+						onComplete : function (json, txt) {
+							if (typeOf(json) === 'null') {
+								// Stop spinner
+								Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
+								fconsole('error in returned json', json, txt);
+								return;
+							}
+							// Process errors if there are some
+							var errfound = false;
+							if (json.errors !== undefined) {
+	
+								// For every element of the form update error message
+								$H(json.errors).each(function (errors, key) {
+									// $$$ hugh - nasty hackery alert!
+									// validate() now returns errors for joins in join___id___label format,
+									// but if repeated, will be an array under _0 name.
+									// replace join[id][label] with join___id___label
+									// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
+									if (this.formElements.has(key) && errors.flatten().length > 0) {
+										errfound = true;
+										if (this.formElements[key].options.inRepeatGroup) {
+											for (e = 0; e < errors.length; e++) {
+												if (errors[e].flatten().length  > 0) {
+													var this_key = key.replace(/(_\d+)$/, '_' + e);
+													this._showElementError(errors[e], this_key);
+												}
 											}
 										}
+										else {
+											this._showElementError(errors, key);
+										}
 									}
-									else {
-										this._showElementError(errors, key);
-									}
-								}
-							}.bind(this));
-						}
-						// Update global status error
-						this.updateMainError();
-
-						if (errfound === false) {
-							var clear_form = false;
-							if (this.options.rowid === '' && btn.name !== 'apply') {
-								// We're submitting a new form - so always clear
-								clear_form = true;
+								}.bind(this));
 							}
-							Fabrik.loader.stop(this.getBlock());
-							var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
-							if (json.baseRedirect !== true) {
-								clear_form = json.reset_form;
-								if (json.url !== undefined) {
-									if (json.redirect_how === 'popup') {
-										var width = json.width ? json.width : 400;
-										var height = json.height ? json.height : 400;
-										var x_offset = json.x_offset ? json.x_offset : 0;
-										var y_offset = json.y_offset ? json.y_offset : 0;
-										var title = json.title ? json.title : '';
-										Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
-									}
-									else {
-										if (json.redirect_how === 'samepage') {
-											window.open(json.url, '_self');
+							// Update global status error
+							this.updateMainError();
+	
+							if (errfound === false) {
+								var clear_form = false;
+								if (this.options.rowid === '' && btn.name !== 'apply') {
+									// We're submitting a new form - so always clear
+									clear_form = true;
+								}
+								Fabrik.loader.stop(this.getBlock());
+								var savedMsg = (typeOf(json.msg) !== 'null' && json.msg !== undefined && json.msg !== '') ? json.msg : Joomla.JText._('COM_FABRIK_FORM_SAVED');
+								if (json.baseRedirect !== true) {
+									clear_form = json.reset_form;
+									if (json.url !== undefined) {
+										if (json.redirect_how === 'popup') {
+											var width = json.width ? json.width : 400;
+											var height = json.height ? json.height : 400;
+											var x_offset = json.x_offset ? json.x_offset : 0;
+											var y_offset = json.y_offset ? json.y_offset : 0;
+											var title = json.title ? json.title : '';
+											Fabrik.getWindow({'id': 'redirect', 'type': 'redirect', contentURL: json.url, caller: this.getBlock(), 'height': height, 'width': width, 'offset_x': x_offset, 'offset_y': y_offset, 'title': title});
 										}
-										else if (json.redirect_how === 'newpage') {
-											window.open(json.url, '_blank');
+										else {
+											if (json.redirect_how === 'samepage') {
+												window.open(json.url, '_self');
+											}
+											else if (json.redirect_how === 'newpage') {
+												window.open(json.url, '_blank');
+											}
 										}
+									} else {
+										alert(savedMsg);
 									}
 								} else {
+									clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
 									alert(savedMsg);
 								}
+								// Query the list to get the updated data
+								Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
+								if (btn.name !== 'apply') {
+									if (clear_form) {
+										this.clearForm();
+									}
+									// If the form was loaded in a Fabrik.Window close the window.
+									if (Fabrik.Windows[this.options.fabrik_window_id]) {
+										Fabrik.Windows[this.options.fabrik_window_id].close();
+									}
+								}
 							} else {
-								clear_form = json.reset_form !== undefined ? json.reset_form : clear_form;
-								alert(savedMsg);
+								Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
+								// Stop spinner
+								Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
 							}
-							// Query the list to get the updated data
-							Fabrik.fireEvent('fabrik.form.submitted', [this, json]);
-							if (btn.name !== 'apply') {
-								if (clear_form) {
-									this.clearForm();
-								}
-								// If the form was loaded in a Fabrik.Window close the window.
-								if (Fabrik.Windows[this.options.fabrik_window_id]) {
-									Fabrik.Windows[this.options.fabrik_window_id].close();
-								}
-							}
-						} else {
-							Fabrik.fireEvent('fabrik.form.submit.failed', [this, json]);
-							// Stop spinner
-							Fabrik.loader.stop(this.getBlock(), Joomla.JText._('COM_FABRIK_VALIDATION_ERROR'));
-						}
-					}.bind(this)
-				}).send();
+						}.bind(this)
+					}).send();
+				}
 			}
-		}
-		Fabrik.fireEvent('fabrik.form.submit.end', [this]);
-		if (this.result === false) {
-			this.result = true;
-			e.stop();
-			// Update global status error
-			this.updateMainError();
-		} else {
-			// Enables the list to clean up the form and custom events
-			if (this.options.ajax) {
-				Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
-			}
-		}
-	},
-
-	elementsBeforeSubmit : function (e) {
-		this.formElements.each(function (el, key) {
-			if (!el.onsubmit()) {
+			Fabrik.fireEvent('fabrik.form.submit.end', [this]);
+			if (this.result === false) {
+				this.result = true;
 				e.stop();
+				// Update global status error
+				this.updateMainError();
+			} else {
+				// Enables the list to clean up the form and custom events
+				if (this.options.ajax) {
+					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
+				}
+				console.log(this.form);
+				this.form.submit();
 			}
-		});
+		}.bind(this));
+		e.stop();
 	},
 
 	/**
@@ -1188,7 +1185,7 @@ var FbForm = new Class({
 	 * @param  bool  submit  Should we run the element onsubmit() methods - set to false in calc element
 	 */
 
-	getFormData : function (submit) {
+	getFormData: function (submit) {
 		submit = typeOf(submit) !== 'null' ? submit : true;
 		if (submit) {
 			this.formElements.each(function (el, key) {
@@ -1797,7 +1794,7 @@ var FbForm = new Class({
 					}
 					//last one?
 					if (i === inputs.length - 1) {
-						this._getButton('submit').focus();
+						this._getButton('Submit').focus();
 					}
 				}
 			}.bind(this));

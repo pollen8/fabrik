@@ -373,11 +373,12 @@ class FabrikViewFormBase extends JViewLegacy
 			$shim['fabrik/form'] = $dep;
 
 			$deps = new stdClass;
-			$deps->deps = array('fab/fabrik', 'fab/element');
+			$deps->deps = array('fab/fabrik', 'fab/element', 'fab/form-submit');
 			$framework['fab/elementlist'] = $deps;
 
 			$srcs[] = 'media/com_fabrik/js/lib/form_placeholder/Form.Placeholder.js';
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form');
+			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/form-submit');
 			FabrikHelperHTML::addToFrameWork($srcs, 'media/com_fabrik/js/element');
 		}
 
@@ -826,7 +827,7 @@ class FabrikViewFormBase extends JViewLegacy
 				$submitIcon = '<i class="' . $submitIcon . '"></i>';
 				$submitLabel = $params->get('save_icon_location') == 'before' ? $submitIcon . '&nbsp;' . $submitLabel : $submitLabel . '&nbsp;' . $submitIcon;
 			}
-			$form->submitButton = '<button type="' . $button . '" class="btn btn-success button ' . $submitClass . '" name="submit">'
+			$form->submitButton = '<button type="' . $button . '" class="btn btn-success button ' . $submitClass . '" name="Submit">'
 				. $submitLabel . '</button>';
 		}
 		else
