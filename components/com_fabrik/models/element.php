@@ -3107,7 +3107,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	/**
 	 * Run after unmergeFilterSplits to ensure filter dropdown labels are correct
 	 *
-	 * @param   array  &$rows  filter options
+	 * @param   array  &$rows  Filter options
 	 *
 	 * @return  null
 	 */
@@ -3122,7 +3122,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$k = array_search($row->value, $values);
 			if ($k !== false)
 			{
-				$row->text = $labels[$k];
+				$row->text = strip_tags($labels[$k]);
 			}
 		}
 		$rows = array_values($rows);
