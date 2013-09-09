@@ -1169,7 +1169,6 @@ var FbForm = new Class({
 				if (this.options.ajax) {
 					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
 				}
-				console.log(this.form);
 				this.form.submit();
 			}
 		}.bind(this));
