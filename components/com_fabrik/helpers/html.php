@@ -1043,8 +1043,10 @@ EOD;
 		$config[] = "\n";
 
 		// Store in session - included in fabrik system plugin
-		$session->set('fabrik.js.shim', $newShim);
-		$session->set('fabrik.js.config', $config);
+		$uri = JURI::getInstance();
+		$uri = $uri->toString(array('path', 'query'));
+		$session->set('fabrik.js.shim.' . $uri, $newShim);
+		$session->set('fabrik.js.config.' . $uri, $config);
 	}
 
 	/**
@@ -1308,17 +1310,20 @@ EOD;
 
 	protected static function addToSessionScripts($js)
 	{
+		$uri = JURI::getInstance();
+		$uri = $uri->toString(array('path', 'query'));
+		$key = 'fabrik.js.scripts.' . $uri;
 		$session = JFactory::getSession();
-		if ($session->has('fabrik.js.scripts'))
+		if ($session->has($key))
 		{
-			$scripts = $session->get('fabrik.js.scripts');
+			$scripts = $session->get($key);
 		}
 		else
 		{
 			$scripts = array();
 		}
 		$scripts[] = $js;
-		$session->set('fabrik.js.scripts', $scripts);
+		$session->set($key, $scripts);
 	}
 
 	/**
