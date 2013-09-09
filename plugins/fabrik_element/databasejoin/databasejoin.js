@@ -493,7 +493,7 @@ var FbDatabasejoin = new Class({
 			return null;
 		}
 		return this._getSubElements().filter(function (c) {
-			return c.checked;
+			return c.value !== "0" ? c.checked : false;
 		}).length;
 	},
 
