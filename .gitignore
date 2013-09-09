@@ -37,6 +37,7 @@ media/*
 media/com_fabrik/uploads/
 logs
 plugins/*
+plugins/fabrik_list/sphera_php_events
 plugins/search/*
 !plugins/search/fabrik
 plugins/system/*
