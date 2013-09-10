@@ -54,49 +54,87 @@ class PlgSystemFabrik extends JPlugin
 		parent::__construct($subject, $config);
 	}
 
-	public function js()
+	/**
+	 * Get Page JavaScript from either session or cached .js file
+	 *
+	 * @return string
+	 */
+
+	public static function js()
 	{
-		$uri = JURI::getInstance();
-		$session = JFactory::getSession();
-		$uri = $uri->toString(array('path', 'query'));
-		$file = md5($uri) . '.js';
-		$folder = JPATH_SITE . '/cache/com_fabrik/js/';
-		if (!JFolder::exists($folder))
+		$config = JFactory::getConfig();
+		if ($config->get('caching') == 0)
 		{
-			JFolder::create($folder);
-		}
-		$cacheFile = $folder . $file;
-
-		// Check for cached version
-		if (!JFile::exists($cacheFile))
-		{
-			$shim = $session->get('fabrik.js.config', array());
-			$shim = implode("\n", $shim);
-
-			$js = $session->get('fabrik.js.scripts', array());
-			$js = implode("\n", $js);
-			if ($shim.$js !== '')
-			{
-				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
-			}
-			else
-			{
-				$script = '';
-			}
-			file_put_contents($cacheFile, $script);
+			$script = self::buildJs();
 		}
 		else
 		{
-			$script = JFile::read($cacheFile);
+			$uri = JURI::getInstance();
+			$session = JFactory::getSession();
+			$uri = $uri->toString(array('path', 'query'));
+			$file = md5($uri) . '.js';
+			$folder = JPATH_SITE . '/cache/com_fabrik/js/';
+			if (!JFolder::exists($folder))
+			{
+				JFolder::create($folder);
+			}
+			$cacheFile = $folder . $file;
+
+			// Check for cached version
+			if (!JFile::exists($cacheFile))
+			{
+				$script = self::buildJs();
+				file_put_contents($cacheFile, $script);
+			}
+			else
+			{
+				$script = JFile::read($cacheFile);
+			}
 		}
+		self::clearJs();
+		return $script;
+	}
+
+	/**
+	 * Clear session js store
+	 *
+	 * @return  void
+	 */
+	public static function clearJs()
+	{
+		$session = JFactory::getSession();
 		$session->clear('fabrik.js.scripts');
 		$session->clear('fabrik.js.config');
 		$session->clear('fabrik.js.shim');
+	}
+
+	/**
+	 * Build Page <script> tag for insertion into DOM or for storing in cache
+	 *
+	 * @return string
+	 */
+
+	public static function buildJs()
+	{
+		$session = JFactory::getSession();
+		$shim = $session->get('fabrik.js.config', array());
+		$shim = implode("\n", $shim);
+
+		$js = $session->get('fabrik.js.scripts', array());
+		$js = implode("\n", $js);
+		if ($shim.$js !== '')
+		{
+			$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+		}
+		else
+		{
+			$script = '';
+		}
 		return $script;
 	}
+
 	/**
-	 * Insert require.js config an app ini script into head.
-	 * Clears out js.config, js.scripts and js.shim from session
+	 * Insert require.js config an app ini script into body.
 	 *
 	 * @return  void
 	 */
