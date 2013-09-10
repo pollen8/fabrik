@@ -944,9 +944,11 @@ var FbForm = new Class({
 		if (!submit) {
 			return;
 		}
-		var apply = this._getButton('apply');
-		if (this.form.getElement('input[name=delete]')) {
-			this.form.getElement('input[name=delete]').addEvent('click', function (e) {
+		var apply = this._getButton('apply'),
+		del = this._getButton('delete'),
+		copy = this._getButton('Copy');
+		if (del) {
+			del.addEvent('click', function (e) {
 				if (confirm(Joomla.JText._('COM_FABRIK_CONFIRM_DELETE_1'))) {
 					var res = Fabrik.fireEvent('fabrik.form.delete', [this, this.options.rowid]).eventResults;
 					if (typeOf(res) === 'null' || res.length === 0 || !res.contains(false)) {
@@ -961,21 +963,18 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}
-		if (this.options.ajax) {
-			var copy = this._getButton('Copy');
-			([apply, submit, copy]).each(function (btn) {
-				if (typeOf(btn) !== 'null') {
-					btn.addEvent('click', function (e) {
-						this.doSubmit(e, btn);
-					}.bind(this));
-				}
-			}.bind(this));
-
-		} else {
-			this.form.addEvent('submit', function (e) {
-				this.doSubmit(e);
-			}.bind(this));
-		}
+	
+		([apply, submit, copy]).each(function (btn) {
+			if (typeOf(btn) !== 'null') {
+				btn.addEvent('click', function (e) {
+					this.doSubmit(e, btn);
+				}.bind(this));
+			}
+		}.bind(this));
+		
+		this.form.addEvent('submit', function (e) {
+			this.doSubmit(e);
+		}.bind(this));
 	},
 
 	doSubmit: function (e, btn) {
@@ -1026,7 +1025,7 @@ var FbForm = new Class({
 							fconsole(xhr);
 							Fabrik.loader.stop(this.getBlock(), 'Ajax failure');
 						}.bind(this),
-						onComplete : function (json, txt) {
+						onComplete: function (json, txt) {
 							if (typeOf(json) === 'null') {
 								// Stop spinner
 								Fabrik.loader.stop(this.getBlock(), 'Error in returned JSON');
@@ -1039,11 +1038,6 @@ var FbForm = new Class({
 	
 								// For every element of the form update error message
 								$H(json.errors).each(function (errors, key) {
-									// $$$ hugh - nasty hackery alert!
-									// validate() now returns errors for joins in join___id___label format,
-									// but if repeated, will be an array under _0 name.
-									// replace join[id][label] with join___id___label
-									// key = key.replace(/(\[)|(\]\[)/g, '___').replace(/\]/, '');
 									if (this.formElements.has(key) && errors.flatten().length > 0) {
 										errfound = true;
 										if (this.formElements[key].options.inRepeatGroup) {
@@ -1126,9 +1120,11 @@ var FbForm = new Class({
 			} else {
 				// Enables the list to clean up the form and custom events
 				if (this.options.ajax) {
+					e.stop();
 					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
+				} else {
+					this.form.submit();
 				}
-				this.form.submit();
 			}
 		}.bind(this));
 		e.stop();
