@@ -54,6 +54,46 @@ class PlgSystemFabrik extends JPlugin
 		parent::__construct($subject, $config);
 	}
 
+	public function js()
+	{
+		$uri = JURI::getInstance();
+		$session = JFactory::getSession();
+		$uri = $uri->toString(array('path', 'query'));
+		$file = md5($uri) . '.js';
+		$folder = JPATH_SITE . '/cache/com_fabrik/js/';
+		if (!JFolder::exists($folder))
+		{
+			JFolder::create($folder);
+		}
+		$cacheFile = $folder . $file;
+
+		// Check for cached version
+		if (!JFile::exists($cacheFile))
+		{
+			$shim = $session->get('fabrik.js.config', array());
+			$shim = implode("\n", $shim);
+
+			$js = $session->get('fabrik.js.scripts', array());
+			$js = implode("\n", $js);
+			if ($shim.$js !== '')
+			{
+				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
+			}
+			else
+			{
+				$script = '';
+			}
+			file_put_contents($cacheFile, $script);
+		}
+		else
+		{
+			$script = JFile::read($cacheFile);
+		}
+		$session->clear('fabrik.js.scripts');
+		$session->clear('fabrik.js.config');
+		$session->clear('fabrik.js.shim');
+		return $script;
+	}
 	/**
 	 * Insert require.js config an app ini script into head.
 	 * Clears out js.config, js.scripts and js.shim from session
@@ -63,41 +103,9 @@ class PlgSystemFabrik extends JPlugin
 
 	public function onAfterRender()
 	{
-		$document = JFactory::getDocument();
-		$session = JFactory::getSession();
-		$uri = JURI::getInstance();
-
-		/*
-		 * Get unique shim and js for page URI
-		 * Don't clear session as with progressive caching on it will never be re-created
-		 * May need to look at caching the shim/js rather than storing in session.
-		 */
-		$uri = $uri->toString(array('path', 'query'));
-		$shim = $session->get('fabrik.js.config.' . $uri, array());
-		$shim = implode("\n", $shim);
-		$js = $session->get('fabrik.js.scripts.' . $uri, array());
-		$js = implode("\n", $js);
-		$script = '';
-
+		$script = self::js();
 		$content = JResponse::getBody();
-		if (stristr($content, '</head>'))
-		{
-			// In preg_replace \\ is replaced with \, doubling up the quotes keeps \\ as \\.
-			$js = str_replace("\\", "\\\\", $js);
-			if ($shim !== '' && $js !== '')
-			{
-				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
-			}
-			$content = preg_replace('#(</head>)#', $script . '</head>', $content);
-		}
-		else
-		{
-			if ($js !== '')
-			{
-				$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
-			}
-			$content .= $script;
-		}
+		$content .= $script;
 		JResponse::setBody($content);
 	}
 

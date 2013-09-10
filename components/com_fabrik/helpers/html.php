@@ -970,7 +970,7 @@ EOD;
 		$j3 = FabrikWorker::j3();
 		$ext = self::isDebug() ? '' : '-min';
 
-		// Load any previously created shim (e.g form which then renders list in outro text
+		// Load any previously created shim (e.g form which then renders list in outro text)
 		$newShim = $session->get('fabrik.js.shim', array());
 		foreach ($shim as $k => &$s)
 		{
@@ -1045,8 +1045,8 @@ EOD;
 		// Store in session - included in fabrik system plugin
 		$uri = JURI::getInstance();
 		$uri = $uri->toString(array('path', 'query'));
-		$session->set('fabrik.js.shim.' . $uri, $newShim);
-		$session->set('fabrik.js.config.' . $uri, $config);
+		$session->set('fabrik.js.shim', $newShim);
+		$session->set('fabrik.js.config', $config);
 	}
 
 	/**
@@ -1310,9 +1310,7 @@ EOD;
 
 	protected static function addToSessionScripts($js)
 	{
-		$uri = JURI::getInstance();
-		$uri = $uri->toString(array('path', 'query'));
-		$key = 'fabrik.js.scripts.' . $uri;
+		$key = 'fabrik.js.scripts';
 		$session = JFactory::getSession();
 		if ($session->has($key))
 		{

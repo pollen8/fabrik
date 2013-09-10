@@ -15,11 +15,11 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
-		this.submitEvent = function (form, json) {
+		/*this.submitEvent = function (form, json) {
 			this.onSubmit(form);
-		}.bind(this);
+		}.bind(this);*/
 
-		Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
+		//Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
 			this.options.files = $H(this.options.files);
@@ -119,7 +119,7 @@ var FbFileUpload = new Class({
 	 * as it still references the files uploaded in the first form
 	 */
 	removeCustomEvents: function () {
-		Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
+		//Fabrik.removeEvent('fabrik.form.submit.start', this.submitEvent);
 	},
 
 	cloned: function (c) {
@@ -391,7 +391,7 @@ var FbFileUpload = new Class({
 
 			document.id(file.id).removeClass('plupload_file_action').addClass('plupload_done');
 
-
+			this.isSumbitDone();
 		}.bind(this));
 
 		// (4) UPLOAD FILES FIRE STARTER
@@ -411,7 +411,7 @@ var FbFileUpload = new Class({
 		return ['jpg', 'jpeg', 'png', 'gif'].contains(ext);
 	},
 
-	pluploadRemoveFile : function (e, file) {
+	pluploadRemoveFile: function (e, file) {
 		e.stop();
 		if (!confirm(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_CONFIRM_HARD_DELETE'))) {
 			return;
@@ -461,20 +461,46 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	pluploadResize : function (e) {
+	pluploadResize: function (e) {
 		e.stop();
 		var a = e.target.getParent();
 		if (this.widget) {
 			this.widget.setImage(a.href, a.retrieve('filepath'));
 		}
 	},
-
-	onSubmit : function (form) {
-		if (!this.allUploaded()) {
-			alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
-			form.result = false;
-			return false;
+	
+	/**
+	 * Once the upload fires a FileUploaded bound function we test if all images for this element have been uploaded
+	 * If they have then we save the crop widget state and fire the callback - which is handled by FbFormSubmit()
+	 */
+	isSumbitDone: function () {
+		if (this.allUploaded() && typeof(this.submitCallBack) === 'function') {
+			this.saveWidgetState();
+			this.submitCallBack(true);
+			delete this.submitCallBack;
 		}
+	},
+
+	/**
+	 * Called from FbFormSubmit.submit() handles testing.
+	 * If not yet uploaded, triggers the upload and defers the callback until the upload is complete.
+	 * If complete then saves widget state and calls parent onsubmit(). 
+	 */
+	onsubmit: function (cb) {
+		this.submitCallBack = cb;
+		if (!this.allUploaded()) {
+			this.uploader.start();
+			// alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
+		} else {
+			this.saveWidgetState();
+			this.parent(cb);
+		}
+	},
+	
+	/**
+	 * Save the crop widget state as a json object
+	 */
+	saveWidgetState: function () {
 		if (typeOf(this.widget) !== 'null') {
 			this.widget.images.each(function (image, key) {
 				key = key.split('\\').getLast();
@@ -495,7 +521,6 @@ var FbFileUpload = new Class({
 				}
 			});
 		}
-		return true;
 	},
 
 	allUploaded : function () {
