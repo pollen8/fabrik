@@ -490,7 +490,7 @@ var FbFileUpload = new Class({
 		this.submitCallBack = cb;
 		if (!this.allUploaded()) {
 			this.uploader.start();
-			alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
+			// alert(Joomla.JText._('PLG_ELEMENT_FILEUPLOAD_UPLOAD_ALL_FILES'));
 		} else {
 			this.saveWidgetState();
 			this.parent(cb);
