@@ -80,6 +80,7 @@ var FbFormSubmit = new Class({
 		});
 		if (allPassed) {
 			clearInterval(this.checker);
+			this.running = false;
 			cb();
 		}
 		if (values.contains(false)) {
