@@ -55,8 +55,6 @@ class FabrikViewCalendar extends JViewLegacy
 		$calendar = $this->row;
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
-		$params = $model->getParams();
-
 		$this->canAdd = $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
 
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
@@ -99,6 +97,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$options->popwiny = $params->get('yoffset', 0);
 		$options->urlfilters = $urlfilters;
 		$options->canAdd = $this->canAdd;
+		$options->showFullDetails = (bool) $params->get('show_full_details', false);
 
 		$options->restFilterStart = FabrikWorker::getMenuOrRequestVar('resetfilters', 0, false, 'request');
 		$options->tmpl = $tpl;

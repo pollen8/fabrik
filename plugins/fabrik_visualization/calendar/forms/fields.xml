@@ -106,6 +106,16 @@
 					<option value="weekView">PLG_VISUALIZATION_CALENDAR_WEEK</option>
 					<option value="monthView">PLG_VISUALIZATION_CALENDAR_MONTH</option>
 			</field>
+			
+			<field name="show_full_details"
+				type="radio"
+				class="btn-group"
+				default="0"
+				label="PLG_VISUALIZATION_CALENDAR_SHOW_FULL_DETAILS_LABEL"
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_FULL_DETAILS_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>	
+			</field>
 						
 			<field name="yoffset"
 				type="text"
