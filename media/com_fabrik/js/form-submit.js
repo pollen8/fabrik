@@ -1,5 +1,6 @@
 /**
- * Form Submitter
+ * Form Submitter: delays form submission until all elements report that they
+ * are ready for submission
  *
  * @copyright: Copyright (C) 2005-2013, fabrikar.com - All rights reserved.
  * @license:   GNU/GPL http://www.gnu.org/copyleft/gpl.html
@@ -56,11 +57,11 @@ var FbFormSubmit = new Class({
 	 */
 	submit: function (cb) {
 		this.running = true;
-		this.elements.each (function (element, key) {
+		this.elements.each(function (element, key) {
 			this.results[key] = null;
 			element.onsubmit(function (res) {
 				this.results[key] = res;
-			}.bind(this))
+			}.bind(this));
 		}.bind(this));
 		this.checker = this.check.periodical(500, this, [cb]);
 	},
