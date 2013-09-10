@@ -1024,6 +1024,10 @@ var FbForm = new Class({
 	},
 
 	doSubmit: function (e, btn) {
+		if (this.submitBroker.enabled()) {
+			e.stop();
+			return false;
+		}
 		this.submitBroker.submit(function () {
 			Fabrik.fireEvent('fabrik.form.submit.start', [this, e, btn]);
 			if (this.result === false) {

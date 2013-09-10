@@ -15,6 +15,8 @@ var FbFormSubmit = new Class({
 	 */
 	elements: $H({}),
 	
+	running: false,
+	
 	/**
 	 * Object of key = this.elements key, value = null|true|false. 
 	 * Null - no result from onsubmit callback (in a waiting state)
@@ -23,8 +25,25 @@ var FbFormSubmit = new Class({
 	 */
 	results: {},
 	
+	/**
+	 * Add form element to the broker
+	 * 
+	 * @param   string   key     Element key
+	 * @param   element  Object  Element object
+	 * 
+	 * @return  void
+	 */
 	addElement: function (key, element) {
 		this.elements[key] = element;
+	},
+	
+	/**
+	 * Is the broker already running
+	 * 
+	 * @return  bool
+	 */
+	enabled: function () {
+		return this.running;
 	},
 	
 	/**
@@ -32,8 +51,11 @@ var FbFormSubmit = new Class({
 	 * 
 	 * @param   function  cb  Callback - fired once all elements have completed 
 	 *                        their own onsubmit callbacks and return ture
+	 *                        
+	 * @return  void
 	 */
 	submit: function (cb) {
+		this.running = true;
 		this.elements.each (function (element, key) {
 			this.results[key] = null;
 			element.onsubmit(function (res) {
@@ -47,6 +69,8 @@ var FbFormSubmit = new Class({
 	 * Periodical checker on the element callback state (stored in this.results)
 	 * 
 	 * @param   function  cb  Main submit() callback
+	 * 
+	 * @return  void
 	 */
 	check: function (cb) {
 		var values = Object.values(this.results);
@@ -57,8 +81,8 @@ var FbFormSubmit = new Class({
 			clearInterval(this.checker);
 			cb();
 		}
-		
 		if (values.contains(false)) {
+			this.running = false;
 			clearInterval(this.checker);
 		}
 		
