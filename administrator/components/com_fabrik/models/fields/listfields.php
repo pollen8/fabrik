@@ -114,7 +114,11 @@ class JFormFieldListfields extends JFormFieldList
 					$script[] = "}";
 					$script[] = "FabrikAdmin.model.fields.listfields['$this->id'] = new ListFieldsElement('$this->id', $opts);";
 					$script = implode("\n", $script);
-					FabrikHelperHTML::script('administrator/components/com_fabrik/models/fields/listfields.js', $script);
+
+					$srcs = array();
+					$srcs[] = 'media/com_fabrik/js/fabrik.js';
+					$srcs[] = 'administrator/components/com_fabrik/models/fields/listfields.js';
+					FabrikHelperHTML::script($srcs, $script);
 					$rows = array(JHTML::_('select.option', '', JText::_('SELECT A CONNECTION FIRST')), 'value', 'text');
 					$o = new stdClass;
 					$o->table_name = '';
