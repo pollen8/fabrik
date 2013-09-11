@@ -352,7 +352,6 @@ var fabrikCalendar = new Class({
 						opts.startMin = entry.startdate.getMinutes();
 						opts.endMin = entry.enddate.getMinutes();
 						opts['margin-left'] = 0;
-						console.log(entry, opts, td);
 						td.adopt(this._makeEventRelDiv(entry, opts, firstDate, td));
 					}
 					j ++;
@@ -945,7 +944,7 @@ var fabrikCalendar = new Class({
 	
 		this.windowopts.onContentLoaded = function (win)
 		{
-			var myfx = new Fx.Scroll(window).toElement('addeventwin');
+			//var myfx = new Fx.Scroll(window).toElement('addeventwin');
 			f.each(function (o) {
 				if (document.id(o.key)) {
 					switch (document.id(o.key).get('tag')) {
