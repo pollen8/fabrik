@@ -143,7 +143,14 @@ class PlgSystemFabrik extends JPlugin
 	{
 		$script = self::js();
 		$content = JResponse::getBody();
-		$content .= $script;
+		if (!stristr($content, '</body>'))
+		{
+			$content .= $script;
+		}
+		else
+		{
+			$content = str_ireplace('</body>', $script . '</body>', $content);
+		}
 		JResponse::setBody($content);
 	}
 
