@@ -70,17 +70,18 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	/**
 	 * Build the radius search HTML
 	 *
-	 * @param   object  $params  Plugin params
+	 * @param   array   &$args   plugin args
 	 *
 	 * @return  void
 	 */
 
-	public function onMakeFilters($params)
+	public function onMakeFilters(&$args)
 	{
 		if (!is_object($this->getMapElement()))
 		{
 			return;
 		}
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
 		$f = new stdClass;
@@ -261,13 +262,12 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	 * called from its getPostFilters() method. The data is then sent to tableModel->_request
 	 * which is then stored in the session for future use
 	 *
-	 * @param   object  $params  Plug-in params
 	 * @param   array   &$args   Filters created from listfilter::getPostFilters();
 	 *
 	 * @return  void
 	 */
 
-	public function onGetPostFilter($params, &$args)
+	public function onGetPostFilter(&$args)
 	{
 		// Returning here as was creating odd results with empty filters for other elements - seems to work without this anyway???
 		return;
@@ -350,13 +350,12 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 	/**
 	 * onFiltersGot method - run after the list has created filters
 	 *
-	 * @param   object  $params  Plugin params
-	 *
 	 * @return bol currently ignored
 	 */
 
-	public function onFiltersGot($params)
+	public function onFiltersGot()
 	{
+		$params = $this->getParams();
 		$model = $this->getModel();
 		$key = $this->onGetFilterKey();
 		$app = JFactory::getApplication();
