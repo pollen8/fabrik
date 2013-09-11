@@ -258,11 +258,16 @@ var FbAutocomplete = new Class({
 		}
 	},
 
+	/**
+	 * Get the selected <a> tag
+	 * 
+	 * @return  DOM Node <a>
+	 */
 	getSelected: function () {
-		var a = this.menu.getElements('li').filter(function (li, i) {
+		var lis = this.menu.getElements('li').filter(function (li, i) {
 			return i === this.selected;
 		}.bind(this));
-		return a[0];
+		return lis[0].getElement('a');
 	},
 
 	highlight: function () {
