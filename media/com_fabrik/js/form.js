@@ -130,7 +130,7 @@ var FbForm = new Class({
 
 	watchGoBackButton: function () {
 		if (this.options.ajax) {
-			var goback = this.getForm().getElement('input[name=Goback]');
+			var goback = this._getButton('Goback');
 			if (typeOf(goback) === 'null') {
 				return;
 			}
