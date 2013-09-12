@@ -95,19 +95,19 @@ $listDirn = $this->state->get('list.direction');
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 					</td>
 					<td>
+						<?php if ($item->checked_out) : ?>
+							<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'packages.', $canCheckin); ?>
+						<?php endif; ?>
 						<?php
-						if ($item->checked_out && ($item->checked_out != $user->get('id')))
-						{
+						if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
 							echo  $item->label;
-						}
-						else
-						{
+						else:
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->label; ?>
 						</a>
 					<?php
-						}
+						endif;
 					?>
 					</td>
 					<td>

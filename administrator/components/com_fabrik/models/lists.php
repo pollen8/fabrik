@@ -72,6 +72,9 @@ class FabrikAdminModelLists extends FabModelList
 			$query->where('(l.published IN (0, 1))');
 		}
 
+		// Checked out user name
+		$query->select('u.name AS editor')->join('LEFT', '#__users AS u ON u.id = l.checked_out');
+
 		// Filter by search in title
 		$search = $this->getState('filter.search');
 		if (!empty($search))

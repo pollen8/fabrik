@@ -96,6 +96,7 @@ $listDirn	= $this->state->get('list.direction');
 				$params = new JRegistry($item->params);
 				$elementLink = JRoute::_('index.php?option=com_fabrik&task=element.edit&id=0&filter_groupId=' . $this->table_groups[$item->id]->group_id);
 				$formLink = JRoute::_('index.php?option=com_fabrik&task=form.edit&id=' . $item->form_id);
+				$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 				$canChange = true;
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
@@ -104,6 +105,9 @@ $listDirn	= $this->state->get('list.direction');
 				</td>
 				<td><?php echo JHtml::_('grid.id', $i, $item->id); ?></td>
 				<td>
+					<?php if ($item->checked_out) : ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'lists.', $canCheckin); ?>
+					<?php endif; ?>
 					<?php
 					if ($item->checked_out && ( $item->checked_out != $user->get('id'))) : ?>
 					<span class="editlinktip hasTip"

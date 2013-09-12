@@ -167,6 +167,9 @@ $states	= array(
 					<td><?php $checkbox = JHtml::_('grid.id', $i, $item->id);
 					echo $checkbox; ?></td>
 					<td>
+						<?php if ($item->checked_out) : ?>
+							<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'elements.', $canCheckin); ?>
+						<?php endif; ?>
 						<?php
 						if ($item->checked_out && ($item->checked_out != $user->get('id'))) :
 							echo  $item->name;
