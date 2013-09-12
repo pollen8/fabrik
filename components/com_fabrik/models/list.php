@@ -9268,7 +9268,7 @@ class FabrikFEModelList extends JModelForm
 			/* as we are modifying the main getData query, we need to make sure and
 			 * clear table data, forcing next getData() to do the query again, no cache
 			*/
-			$this->set('_data', null);
+			$this->resetQuery();
 		}
 		// Return true just for the heck of it
 		return true;
@@ -9858,6 +9858,18 @@ class FabrikFEModelList extends JModelForm
 		unset($this->data);
 		unset($this->tmpl);
 		unset($this->selectedOrderFields);
+	}
+
+	/**
+	 * make sure a new getData query wil recreate data and query from scratch
+	 *
+	 * @return  void
+	 */
+
+	public function resetQuery()
+	{
+		unset($this->_whereSQL);
+		unset($this->data);
 	}
 
 	/**
