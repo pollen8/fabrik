@@ -72,7 +72,9 @@ var FbAutocomplete = new Class({
 			this.element.value = '';
 		}
 		if (v !== this.searchText && v !== '') {
-			this.element.value = v;
+			if (this.options.storeMatchedResultsOnly === false) {
+				this.element.value = v;
+			}
 			this.positionMenu();
 			if (this.cache[v]) {
 				this.populateMenu(this.cache[v]);
@@ -327,10 +329,10 @@ var FabCddAutocomplete = new Class({
 					}.bind(this),
 
 					onError: function (text, error) {
-						console.log(text, error);
+						fconsole(text, error);
 					},
 					onFailure: function (xhr) {
-						console.log(xhr);
+						fconsole(xhr);
 					}
 				}).send();
 			}

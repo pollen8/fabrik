@@ -70,7 +70,9 @@ var FbAutocomplete = new Class({
 			this.element.value = '';
 		}
 		if (v !== this.searchText && v !== '') {
-			this.element.value = v;
+			if (this.options.storeMatchedResultsOnly === false) {
+				this.element.value = v;
+			}
 			this.positionMenu();
 			if (this.cache[v]) {
 				this.populateMenu(this.cache[v]);

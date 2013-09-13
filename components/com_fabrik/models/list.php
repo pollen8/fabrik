@@ -9952,7 +9952,9 @@ class FabrikFEModelList extends JModelForm
 			}
 
 			// Migration test
-			if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl))
+			$modFolder = JPATH_SITE . '/templates/' . $app->getTemplate() . '/html/com_fabrik/list/' . $this->tmpl;
+			$componentFolder = JPATH_SITE . '/components/com_fabrik/views/list/tmpl/' . $this->tmpl;
+			if (!JFolder::exists($componentFolder) && !JFolder::exists($modFolder))
 			{
 				$this->tmpl = FabrikWorker::j3() ? 'bootstrap' : 'default';
 			}
