@@ -732,7 +732,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			$w = new FabrikWorker;
 			$data = is_array($data) ? $data : array();
 			$desc = $w->parseMessageForPlaceHolder($desc, $data, false);
-			$desc = "REPLACE(" . $db->quoteName($desc) . ", '\n', '<br />')";
+			$desc = FabrikString::isConcat($desc) ? $desc : $db->quoteName($desc);
+			$desc = "REPLACE(" . $desc . ", '\n', '<br />')";
 			$query->select($desc . ' AS description');
 		}
 	}
@@ -1176,10 +1177,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$html[] = '<div class="dbjoin-description">';
 			$opts = $this->_getOptionVals($data, $repeatCounter);
+			$default_val = JArrayHelper::getValue($default, 0);
 			for ($i = 0; $i < count($opts); $i++)
 			{
 				$opt = $opts[$i];
-				$display = $opt->value == $default ? '' : 'none';
+				$display = $opt->value == $default_val ? '' : 'none';
 				$c = $i + 1;
 				$html[] = '<div style="display:' . $display . '" class="notice description-' . $c . '">' . $opt->description . '</div>';
 			}
