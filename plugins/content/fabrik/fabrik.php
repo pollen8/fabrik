@@ -193,7 +193,7 @@ class PlgContentFabrik extends JPlugin
 		$origLayout = $input->get('layout');
 		$origFFlayout = $input->get('flayout');
 		$layoutFound = false;
-		$rowid = 0;
+		$rowid = '';
 		$usekey = '';
 		$defaultLayout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$session = JFactory::getSession();
@@ -276,7 +276,9 @@ class PlgContentFabrik extends JPlugin
 			}
 		}
 		// Get the rowid in the session so that print pages can use it
-		$rowid = $session->get('fabrik.plgcontent.rowid', $rowid);
+
+		// Commented out - was messing with element rendering and seems to general to be correct. IE what if more than one content plugin being used
+		// $rowid = $session->get('fabrik.plgcontent.rowid', $rowid);
 		if ($viewName == 'table')
 		{
 			// Some backwards compat with fabrik 2
@@ -351,29 +353,39 @@ class PlgContentFabrik extends JPlugin
 			{
 				throw new RuntimeException('You are trying to embed an element called ' . $element . ' which is not present in the list');
 			}
-			$row = $model->getRow($rowid, false, true);
-
-			if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
+			if ($rowid === '')
 			{
-				$element = $element . '_raw';
+				$rows = $model->getData();
+				$group = array_shift($rows);
+				$row = array_shift($group);
+				$res = $row->$element;
 			}
-			// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
-			$defaultdata = is_object($row) ? get_object_vars($row) : $row;
+			else
+			{
+				$row = $model->getRow($rowid, false, true);
 
-			/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
-			 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
-			 */
-			$activeEl->getFormModel()->data = $defaultdata;
-			$activeEl->editable = false;
+				if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
+				{
+					$element = $element . '_raw';
+				}
+				// $$$ hugh - need to pass all row data, or calc elements that use {placeholders} won't work
+				$defaultdata = is_object($row) ? get_object_vars($row) : $row;
 
-			// Set row id for things like user element
-			$origRowid = $input->get('rowid');
-			$input->set('rowid', $rowid);
+				/* $$$ hugh - if we don't do this, our passed data gets blown away when render() merges the form data
+				 * not sure why, but apparently if you do $foo =& $bar and $bar is NULL ... $foo ends up NULL
+				 */
+				$activeEl->getFormModel()->data = $defaultdata;
+				$activeEl->editable = false;
 
-			$defaultdata = (array) $defaultdata;
-			unset($activeEl->defaults);
-			$res = $activeEl->render($defaultdata, $repeatcounter);
-			$input->set('rowid', $origRowid);
+				// Set row id for things like user element
+				$origRowid = $input->get('rowid');
+				$input->set('rowid', $rowid);
+
+				$defaultdata = (array) $defaultdata;
+				unset($activeEl->defaults);
+				$res = $activeEl->render($defaultdata, $repeatcounter);
+				$input->set('rowid', $origRowid);
+			}
 			return $res;
 		}
 
