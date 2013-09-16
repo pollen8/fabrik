@@ -4374,9 +4374,14 @@ class FabrikFEModelForm extends FabModelForm
 
 			// Style attribute for group columns (need to occur after randomisation of the elements otherwise clear's are not ordered correctly)
 			$rowix = -1;
-			foreach ($aElements as $elKey => $element)
+
+			// Don't double setColumnCss otherwise wierdness ensues
+			if (!$groupModel->canRepeat())
 			{
-				$rowix = $groupModel->setColumnCss($element, $rowix);
+				foreach ($aElements as $elKey => $element)
+				{
+					$rowix = $groupModel->setColumnCss($element, $rowix);
+				}
 			}
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
