@@ -410,7 +410,6 @@ class FabrikFEModelForm extends FabModelForm
 		$isUserRowId = $this->isUserRowId();
 
 		// New form can we add?
-		//if ($this->rowId === '' || $isUserRowId)
 		if ($this->getRowId() === '' || $isUserRowId)
 		{
 			// If they can edit can they also add
@@ -524,22 +523,23 @@ class FabrikFEModelForm extends FabModelForm
 			 */
 			$view = $this->isEditable() ? 'form' : 'details';
 			$qs .= FabrikHelperHTML::cssAsAsset() ? '&view=' . $v : '&amp;view=' . $v;
-			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/template_css.php' . $qs;
+			$qs .= '&amp;rowid=' . $this->getRowId();
+			$tmplPath = 'templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/template_css.php' . $qs;
 			if (!FabrikHelperHTML::stylesheetFromPath($tmplPath))
 			{
-				$ok = FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
+				$ok = FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/template_css.php' . $qs);
 			}
 			/* $$$ hugh - as per Skype convos with Rob, decided to re-instate the custom.css convention.  So I'm adding two files:
 			 * custom.css - for backward compat with existing 2.x custom.css
 			 * custom_css.php - what we'll recommend people use for custom css moving foward.
 			 */
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/custom.css' . $qs))
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom.css' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom.css' . $qs);
 			}
-			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view .'/' . $tmpl . '/custom_css.php' . $qs))
+			if (!FabrikHelperHTML::stylesheetFromPath('templates/' . $app->getTemplate() . '/html/com_fabrik/' . $view . '/' . $tmpl . '/custom_css.php' . $qs))
 			{
-				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view .'/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
+				FabrikHelperHTML::stylesheetFromPath('components/com_fabrik/views/' . $view . '/' . $jTmplFolder . '/' . $tmpl . '/custom_css.php' . $qs);
 			}
 		}
 		if ($app->isAdmin() && $input->get('tmpl') === 'components')
@@ -2993,11 +2993,6 @@ class FabrikFEModelForm extends FabModelForm
 			}
 		}
 
-		// $$$ rob - don't see how this could work? $data is an array.
-
-		// Test to allow {$my->id}'s to be evald from query strings
-		/* $w = new FabrikWorker;
-		$data = $w->parseMessageForPlaceHolder($data); */
 		$this->data = $data;
 		FabrikHelperHTML::debug($data, 'form:data');
 		JDEBUG ? $profiler->mark('queryselect: getData() end') : null;
@@ -3996,13 +3991,9 @@ class FabrikFEModelForm extends FabModelForm
 				$horiz = false;
 			}
 		}
-		if ($horiz &&
-			(
-				($this->isEditable() && $params->get('labels_above', 0) != 1)
-				||
-				(!$this->isEditable() && $params->get('labels_above_details', 0) != 1)
-			)
-		)
+		if ($horiz
+			&& (($this->isEditable() && $params->get('labels_above', 0) != 1)
+			|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1)))
 		{
 			$class[] = 'form-horizontal';
 		}
@@ -4267,29 +4258,6 @@ class FabrikFEModelForm extends FabModelForm
 					{
 						$startHidden = false;
 					}
-					else
-					{
-						// Show empty groups if we are validating a posted form
-
-						// @TODO - relook at this !IMPORTANT
-						/* if ($input->get('task') !== 'process' && $input->get('task') !== 'form.process')
-						{
-							$this->getSessionData();
-							if ($this->sessionModel->row->data === '')
-							{
-								$startHidden = true;
-								foreach ($origData['join'][$joinTable->id] as $jData)
-								{
-									if (!empty($jData[0]))
-									{
-										$startHidden = false;
-										continue;
-									}
-								}
-							}
-						} */
-					}
-
 				}
 			}
 			// Test failed validated forms, repeat group counts are in request
@@ -4716,8 +4684,6 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			return '';
 		}
-
-
 	}
 
 	/**
