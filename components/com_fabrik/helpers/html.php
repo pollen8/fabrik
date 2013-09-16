@@ -1585,7 +1585,6 @@ EOD;
 		$json->formRef = JArrayHelper::getValue($opts, 'formRef', 'form_' . $formid);
 		$json->container = JArrayHelper::getValue($opts, 'container', 'fabrikElementContainer');
 		$json->menuclass = JArrayHelper::getValue($opts, 'menuclass', 'auto-complete-container');
-		echo "<pre>";print_r($json);echo "</pre>";
 		return $json;
 	}
 
