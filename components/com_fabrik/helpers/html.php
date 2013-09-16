@@ -1034,7 +1034,7 @@ EOD;
 
 		$pathString = '{' . implode(',', $pathBits) . '}';
 		$config = array();
-		$config[] = "require.config({";
+		$config[] = "requirejs.config({";
 		$config[] = "\tbaseUrl: '" . COM_FABRIK_LIVESITE . "',";
 		$config[] = "\tpaths: " . $pathString . ",";
 		$config[] = "\tshim: " . $shim . ',';
@@ -1291,7 +1291,7 @@ EOD;
 		}
 		$files = array_unique($files);
 		$files = "['" . implode("', '", $files) . "']";
-		$require[] = 'require(' . ($files) . ', function () {';
+		$require[] = 'requirejs(' . ($files) . ', function () {';
 		$require[] = $onLoad;
 		$require[] = '});';
 		$require[] = "\n";

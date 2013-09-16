@@ -111,7 +111,9 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					}
 				}
 			}
+			$this->setStoreDatabaseFormat($data);
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
+
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
 			if (FabrikHelperHTML::isDebug())
@@ -495,6 +497,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$this->getFormModel()->data = $d;
 		$this->swapValuesForLabels($d);
 		$calc = $params->get('calc_calculation');
+		$this->setStoreDatabaseFormat($d);
 
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
@@ -509,6 +512,32 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		}
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
+	}
+
+	/**
+	 * When running parseMesssageForPlaceholder on data we need to set the none-raw value of things like birthday/time
+	 * elements to that stored in the listModel::storeRow() method
+	 *
+	 * @param   array  &$data  Form data
+	 *
+	 * @return  void
+	 */
+	protected function setStoreDatabaseFormat(&$data)
+	{
+		$formModel = $this->getFormModel();
+		$groups = $formModel->getGroupsHiarachy();
+		foreach ($groups as $groupModel)
+		{
+			$elementModels = $groupModel->getPublishedElements();
+			foreach ($elementModels as $elementModel)
+			{
+				$element = $elementModel->getElement();
+				$fullkey = $elementModel->getFullName(true, false);
+
+				// For radio buttons and dropdowns otherwise nothing is stored for them??
+				$data[$fullkey] = $elementModel->storeDatabaseFormat($data[$fullkey], $data);
+			}
+		}
 	}
 
 	/**

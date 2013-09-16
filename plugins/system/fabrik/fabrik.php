@@ -47,10 +47,23 @@ class PlgSystemFabrik extends JPlugin
 		 * to do this, we blow up.  So, import them here, and make sure the Fabrik plugin has a lower ordering
 		 * than Kunena's.  We might want to set our default to -1.
 		 */
+		$app = JFactory::getApplication();
 		$version = new JVersion;
-		JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.field', JPATH_SITE . '/administrator', 'administrator.');
-		JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.form', JPATH_SITE . '/administrator', 'administrator.');
 
+		// Test if Kunena is loaded - if so notify admins
+		if (class_exists('KunenaAccess'))
+		{
+			$msg = 'Fabrik: Please ensure the Fabrik System plug-in is ordered before the Kunena system plugin';
+			if ($app->isAdmin())
+			{
+				$app->enqueueMessage($msg, 'error');
+			}
+		}
+		else
+		{
+			JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.field', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.form', JPATH_SITE . '/administrator', 'administrator.');
+		}
 		parent::__construct($subject, $config);
 	}
 

@@ -73,7 +73,14 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			if ($value)
 			{
 				// Avoid 0000-00-00
-				$bits = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				if (is_string($value))
+				{
+					$bits = strstr($value, ':') ? explode(':', $value) : explode(',', $value);
+				}
+				else
+				{
+					$bits = $value;
+				}
 				$hour = JArrayHelper::getValue($bits, 0, '00');
 				$min = JArrayHelper::getValue($bits, 1, '00');
 				$sec = JArrayHelper::getValue($bits, 2, '00');
@@ -106,7 +113,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		else
 		{
 			// Wierdness for failed validaion
-			$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
+			if (is_string($value))
+			{
+				$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
+			}
 			$hourvalue = JArrayHelper::getValue($value, 0);
 			$minvalue = JArrayHelper::getValue($value, 1);
 			$secvalue = JArrayHelper::getValue($value, 2);
@@ -169,7 +179,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	}
 
 	/**
-	 * get the value to store the value in the db
+	 * Get the value to store the value in the db
 	 *
 	 * @param   mixed  $val  (array normally but string on csv import or copy rows)
 	 *
