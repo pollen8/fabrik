@@ -215,6 +215,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
 
+		$editable = $model->isEditable();
 		$model->setEditable(false);
 		if (is_object($listModel))
 		{
@@ -333,6 +334,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			$this->emailData[$pk] = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
+		$model->setEditable($editable);
 		return $this->emailData;
 	}
 

@@ -495,7 +495,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$tmpl = $baseTmpl;
 		}
-		$item->form_template = $tmpl;
+		$this->isEditable() ? $item->form_template = $tmpl : $item->view_only_template = $tmpl;
 		return $tmpl;
 	}
 
