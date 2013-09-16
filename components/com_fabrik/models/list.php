@@ -6686,7 +6686,7 @@ class FabrikFEModelList extends JModelForm
 							{
 								$noRepeatFields[] = $key;
 								$lastKey = $key;
-								$val = $elementModel->storeDatabaseFormat($data[$postkey], $data, $key);
+								$val = $elementModel->storeDatabaseFormat($data[$postkey], $data);
 								$elementModel->updateRowId($rowId);
 								if (array_key_exists('fabrik_copy_from_table', $data))
 								{
