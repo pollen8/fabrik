@@ -9,12 +9,15 @@ var Notify = new Class({
 
 	initialize: function (el, options) {
 		this.options = options;
-		var target = document.id(el);
+		var target = document.id(el),
+		notify;
 		if (target.getStyle('display') === 'none') {
 			target = target.getParent();
 		}
-		target.addEvent('mouseup', function (e) {
-			Fabrik.startLoading(this.options.senderBlock);
+	
+		target.addEvent('change', function (e) {
+			notify = document.id(el).checked ? 1 : 0;
+			Fabrik.loader.start(target, Joomla.JText._('COM_FABRIK_LOADING'));
 			var myAjax = new Request({
 				url: 'index.php?option=com_fabrik&task=plugin.pluginAjax&plugin=notification&method=toggleNotification',
 				data: {
@@ -24,11 +27,13 @@ var Notify = new Class({
 					listid: this.options.listid,
 					formid: this.options.fabrik,
 					rowid: this.options.rowid,
-					notify: document.id(el).checked
+					notify: notify
 				},
-				onComplete : function (r) {
-						Fabrik.stopLoading(this.options.senderBlock, r);
-					}.bind(this)
+				
+				onComplete: function (r) {
+					alert(r);
+					Fabrik.loader.stop(target);
+				}.bind(this)
 			}).send();
 
 		}.bind(this));

@@ -30,5 +30,7 @@
 		<folder>forms</folder>
 		<folder>language</folder>
 		<folder>sql</folder>
+		<file>notify.js</file>
+		<file>notify-min.js</file>
 	</files>
 </extension>
