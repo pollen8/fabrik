@@ -709,7 +709,7 @@ class PlgFabrik_ElementCascadingdropdown extends PlgFabrik_ElementDatabasejoin
 					$whereval = $watchElement->getValue($formModel->formData, $repeatCounter, $watchOpts);
 				}
 				// $$$ hugh - if not set, set to '' to avoid selecting entire table
-				elseif (!isset($whereval))
+				if (!isset($whereval))
 				{
 					$whereval = '';
 				}
