@@ -165,9 +165,8 @@ var FbForm = new Class({
 	setUp: function () {
 		this.form = this.getForm();
 		this.watchGroupButtons();
-		//if (this.options.editable) { //submit can appear in confirmation plugin even when readonly
+		// Submit can appear in confirmation plugin even when readonly
 		this.watchSubmit();
-		//}
 		this.createPages();
 		this.watchClearSession();
 	},
@@ -963,8 +962,8 @@ var FbForm = new Class({
 				}
 			}.bind(this));
 		}
-	
-		([apply, submit, copy]).each(function (btn) {
+		var submits = this.form.getElements('input[type=submit]').combine([apply, submit, copy]);
+		submits.each(function (btn) {
 			if (typeOf(btn) !== 'null') {
 				btn.addEvent('click', function (e) {
 					this.doSubmit(e, btn);
@@ -1002,9 +1001,10 @@ var FbForm = new Class({
 				if (this.form) {
 					Fabrik.loader.start(this.getBlock(), Joomla.JText._('COM_FABRIK_LOADING'));
 				
-					// get all values from the form
+					// Get all values from the form
 					var data = $H(this.getFormData());
 					data = this._prepareRepeatsForAjax(data);
+					data[btn.name] = btn.value;
 					if (btn.name === 'Copy') {
 						data.Copy = 1;
 						e.stop();
@@ -1123,6 +1123,8 @@ var FbForm = new Class({
 					e.stop();
 					Fabrik.fireEvent('fabrik.form.ajax.submit.end', [this]);
 				} else {
+					// Inject submit button name/value.
+					new Element('input', {type: 'hidden', name: btn.name, value: btn.value}).inject(this.form);
 					this.form.submit();
 				}
 			}
