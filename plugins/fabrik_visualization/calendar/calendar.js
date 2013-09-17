@@ -866,7 +866,7 @@ var fabrikCalendar = new Class({
 	openAddEvent: function (e)
 	{
 		var rawd;
-		if (this.options.canAdd === 0) {
+		if (this.options.canAdd === false) {
 			return;
 		}
 		e.stop();

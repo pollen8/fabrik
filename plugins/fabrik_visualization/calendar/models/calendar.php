@@ -271,7 +271,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 	}
 
 	/**
-	 * Go over all the tables whose data is displayed in the calendar
+	 * Go over all the lists whose data is displayed in the calendar
 	 * if any element is found in the request data, assign it to the session
 	 * This will then be used by the table to filter its data.
 	 * nice :)
@@ -418,7 +418,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 
 				// @TODO JQuery this
 				$query = $db->getQuery(true);
-				$query->select($pk . ' AS id, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate, "" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
+				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate, "" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
 				->from($table->db_table_name)
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
