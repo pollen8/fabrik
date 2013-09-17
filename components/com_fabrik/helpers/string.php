@@ -57,13 +57,13 @@ class FabrikString extends JString
 	/**
 	 * Right trim a word from a string
 	 *
-	 * @param   string  &$str  The string to be trimmed
+	 * @param   string  $str  The string to be trimmed
 	 * @param   string  $word  The word to trim
 	 *
 	 * @return  string  the trimmed string
 	 */
 
-	public static function rtrimword(&$str, $word = false)
+	public static function rtrimword($str, $word = false)
 	{
 		$l = JString::strlen($word);
 		$end = JString::substr($str, -$l);
