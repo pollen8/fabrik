@@ -8,8 +8,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @since       3.0
  */
- ?>
-<?php
+
 header('Content-type: text/css');
 $c = (int) $_REQUEST['c'];
 $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'form';
@@ -88,7 +87,8 @@ echo "
 }
 
 /** But dbjoin as radios etc can be floated **/
-.fabrikSubElementContainer.databasejoin > div {
+.fabrikSubElementContainer.databasejoin > div,
+.databasejoin .fabrikSubElementContainer > div {
 	clear: none;
 }
 
@@ -459,4 +459,4 @@ border-radius:3px;
 #{$view}_$c .addGroup:link {
 	text-decoration: none;
 }
-";?>
+";
