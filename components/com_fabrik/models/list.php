@@ -6688,6 +6688,8 @@ $groupBy .= '_raw';
 		$secret = JFactory::getConfig()->get('secret');
 		$fmtsql = 'UPDATE ' . $db->quoteName($table) . ' SET %s WHERE %s';
 		$tmp = array();
+		$where = false;
+
 		foreach (get_object_vars($object) as $k => $v)
 		{
 			if (is_array($v) or is_object($v) or $k[0] == '_')
@@ -6721,6 +6723,10 @@ $groupBy .= '_raw';
 				$val = "AES_ENCRYPT($val, '$secret')";
 			}
 			$tmp[] = $db->quoteName($k) . '=' . $val;
+		}
+		if (!$where) {
+			throw new Exception("updateObject: Cannot find key in data: $keyName");
+			return false;
 		}
 		$db->setQuery(sprintf($fmtsql, implode(",", $tmp), $where));
 		if (!$db->execute())
