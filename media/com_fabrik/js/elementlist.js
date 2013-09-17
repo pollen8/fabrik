@@ -44,6 +44,7 @@ FbElementList = new Class({
 	},
 
 	addNewEvent: function (action, js) {
+		var r, delegate, uid;
 		if (action === 'load') {
 			this.loadEvents.push(js);
 			this.runLoadEvent(js);
@@ -51,12 +52,12 @@ FbElementList = new Class({
 			c = this.form.form;
 
 			// Addded name^= for http://fabrikar.com/forums/showthread.php?t=30563 (js events to show hide multiple groups)
-			var delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
+			delegate = action + ':relay(input[type=' + this.type + '][name^=' + this.options.fullName + '])';
 			if (typeOf(this.form.events[action]) === 'null') {
 				this.form.events[action] = {};
 			}
-			var r = new RegExp('[^a-z]', 'gi');
-			var uid = delegate + js.replace(r, '');
+			r = new RegExp('[^a-z|0-9]', 'gi');
+			uid = delegate + js.replace(r, '');
 			if (typeOf(this.form.events[action][uid]) === 'null') {
 				this.form.events[action][uid] = true;
 				
