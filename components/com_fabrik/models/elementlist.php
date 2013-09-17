@@ -260,7 +260,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			{
 				case '=':
 				case '<>':
+
 					$condition2 = $condition == '=' ? 'LIKE' : 'NOT LIKE';
+					$glue = $condition == '=' ? 'OR' : 'AND';
 					$db = FabrikWorker::getDbo();
 					$str = "($key $condition $value " . " $glue $key $condition2 " . $db->quote('["' . $originalValue . '"%') . " $glue $key $condition2 "
 					. $db->quote('%"' . $originalValue . '"%') . " $glue $key $condition2 " . $db->quote('%"' . $originalValue . '"]') . ")";

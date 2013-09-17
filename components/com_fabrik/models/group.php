@@ -419,7 +419,7 @@ class FabrikFEModelGroup extends FabModel
 		if ($colcount === 1) // Single column
 		{
 			$element->startRow = true;
-			$element->endRow = true;
+			$element->endRow = 1;
 			$element->span = ' span12';
 			$element->column = ' style="clear:both;width:100%;"';
 			$rowIx = -1;
@@ -436,8 +436,8 @@ class FabrikFEModelGroup extends FabModel
 		}
 		$element->column = ' style="float:left;width:' . $w . ';';
 
-		$element->startRow = false;
-		$element->endRow = false;
+		$element->startRow = 0;
+		$element->endRow = 0;
 
 		/**
 		 * Hidden fields at start of row will be grouped on a separate row to avoid
@@ -448,14 +448,14 @@ class FabrikFEModelGroup extends FabModel
 		if ($rowIx === 0 && !$element->hidden)
 		{
 			// Previous element must have been hidden - so set end of row on that and new row on this
-			$this->setColumnCssLastElement->endRow = true;
-			$rowIx = - 1;
+			$this->setColumnCssLastElement->endRow = 1;
+			$rowIx = -1;
 		}
 
-		 if ($rowIx < 0)
+		if ($rowIx < 0)
 		{
 			$rowIx = 0;
-			$element->startRow = true;
+			$element->startRow = 1;
 			$element->column .= "clear:both;";
 		}
 		$element->column .= '" ';
@@ -471,7 +471,7 @@ class FabrikFEModelGroup extends FabModel
 
 		if ($rowIx !== 0 && ($rowIx % $colcount === 0))
 		{
-			$element->endRow = true;
+			$element->endRow = 1;
 
 			// Reset rowIx to indicate a new row.
 			$rowIx = -1;

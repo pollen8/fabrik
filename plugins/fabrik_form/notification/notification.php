@@ -69,12 +69,9 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$id = uniqid('fabrik_notification');
 		if ($params->get('notification_ajax', 0) == 1)
 		{
-			FabrikHelperHTML::script('components/com_fabrik/plugins/form/notification/notify.js');
-			$script = "window.addEvent('fabrik.loaded', function() {
-				var notify = new Notify('$id', $opts);
- 			});";
-
-			FabrikHelperHTML::addScriptDeclaration($script);
+			$src[] = 'media/com_fabrik/js/fabrik.js';
+			$src[] = '/plugins/fabrik_form/notification/notify.js';
+			FabrikHelperHTML::script($src, "var notify = new Notify('$id', $opts);");
 		}
 		// See if the checkbox should be checked
 		$db = FabrikWorker::getDbo();
@@ -95,11 +92,10 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	 * @return  void
 	 */
 
-	public function toggleNotification()
+	public function onToggleNotification()
 	{
-		// $$$ rob yes this looks odd but its right - as the js mouseup event is fired before the checkbox checked value changes
 		$app = JFactory::getApplication();
-		$notify = $app->input->get('notify') == 'true' ? false : true;
+		$notify = $app->input->getBool('notify');
 		$this->process($notify, 'observer');
 	}
 
@@ -162,6 +158,9 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 				{
 					echo JText::_('PLG_CRON_NOTIFICATION_ADDED');
 				}
+				else {
+					echo "oho" . $db->getQuery();exit;
+				}
 			}
 			else
 			{
@@ -184,7 +183,6 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 				$db->setQuery($query);
 				$db->execute();
 			}
-
 		}
 	}
 

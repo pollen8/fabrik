@@ -8,9 +8,13 @@
 /** call back method when maps api is loaded*/
 function googlemapload() {
 	if (typeOf(Fabrik.googleMapRadius) === 'null') {
-		var script2 = document.createElement("script");
+		var script2 = document.createElement("script"),
+		l = document.location,
+		path = l.pathname.split('/');
+		path.pop();
+		path = path.join('/');
 		script2.type = "text/javascript";
-		script2.src = Fabrik.liveSite + 'components/com_fabrik/libs/googlemaps/distancewidget.js';
+		script2.src = l.protocol + '//' + l.host + path + '/components/com_fabrik/libs/googlemaps/distancewidget.js';
 		document.body.appendChild(script2);
 		Fabrik.googleMapRadius = true;
 	}
