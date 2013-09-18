@@ -206,7 +206,7 @@ var fabrikCalendar = new Class({
 						}
 					}.bind(this)
 			}
-			}).appendText(label);
+			}).set('html', label);
 		} else {
 			if (entry.custom) {
 				label = label === '' ? 'click' : label;
@@ -216,9 +216,9 @@ var fabrikCalendar = new Class({
 								Fabrik.fireEvent('fabrik.viz.calendar.event', [e]);
 							}
 					}
-				}).appendText(label);
+				}).set('html', label);
 			} else {
-				x = new Element('span').appendText(label);
+				x = new Element('span').set('html', label);
 			}
 		}
 		eventCont.adopt(x);

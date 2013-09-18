@@ -401,7 +401,13 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$enddate = trim($data['enddate']) !== '' ? $db->quoteName($data['enddate']) : "''";
 				$label = trim($data['label']) !== '' ? $db->quoteName($data['label']) : "''";
 				$customUrl = $data['customUrl'];
+				/**
+				 * $$$ hugh @FIXME - $label has already been quoted, so quoting it again meant the array_key_exists
+				 * check was never matching, as the name got double quoted.
+				 * But ... the code that isn't running is broken, so for now ... If It Ain't Working, Don't Fix It :)
+				 */
 				$qlabel = $db->quoteName($label);
+				//$qlabel = $label;
 				if (array_key_exists($qlabel, $els))
 				{
 					// If db join selected for the label we need to get the label element and not the value

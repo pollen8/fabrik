@@ -82,6 +82,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 			return;
 		}
 		$params = $this->getParams();
+		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$baseContext = $this->getSessionContext();
 		$f = new stdClass;
@@ -131,12 +132,13 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$str .= '<input type="hidden" name="radius_search_active' . $this->renderOrder . '[]" value="' . $active[0] . '" />';
 
 		$str .= '<div class="radius_search_options">';
-		if ($geocodeSelected == 1)
-		{
+		// $$$ hugh - JS expects these, in geoCode(), so for now just leave 'em, should really sort out the JS so it doesn't look for them if geocode turned off
+		//if ($geocodeSelected == 1)
+		//{
 			$str .= '<input type="hidden" name="geo_code_def_zoom" value="' . $defaultZoom . '" />'
 				. '<input type="hidden" name="geo_code_def_lat" value="' . $defaultLat . '" />'
 				. '<input type="hidden" name="geo_code_def_lon" value="' . $defaultLon . '" />';
-		}
+		//}
 		$str .= '
 		<table class="radius_table fabrikList table" style="width:100%">
 			<tbody>
@@ -189,7 +191,7 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$baseContext = $this->getSessionContext();
-		$style = $type[0] == 'geocode' ? '' : 'position:absolute;left:-10000000px;';
+		$style = $params->get('geocode', 1) == 1 && $type[0] == 'geocode' ? '' : 'position:absolute;left:-10000000px;';
 
 		$address = $app->getUserStateFromRequest($baseContext . 'geocode' . $this->renderOrder, 'radius_search_geocode_field' . $this->renderOrder);
 		list($latitude, $longitude) = $this->getSearchLatLon();

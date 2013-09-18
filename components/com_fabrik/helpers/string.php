@@ -554,4 +554,16 @@ class FabrikString extends JString
 		return $text;
 	}
 
+	/**
+	 * Is the string a CONCAT statemenet?
+	 *
+	 * @param   string  $text  Text to test
+	 *
+	 * @return  bool
+	 */
+
+	public static function isConcat($text)
+	{
+		return preg_match('/^\s*(CONCAT|CONCAT_WS)\b/i', preg_quote($text));
+	}
 }

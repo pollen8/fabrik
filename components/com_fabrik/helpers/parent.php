@@ -713,7 +713,8 @@ class FabrikWorker
 		$Itemid = self::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
-		$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
+		//$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
+		$msg = str_replace('{$mosConfig_live_site}', COM_FABRIK_LIVESITE, $msg);
 		$msg = str_replace('{$mosConfig_offset}', $config->get('offset'), $msg);
 		$msg = str_replace('{$Itemid}', $Itemid, $msg);
 		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
