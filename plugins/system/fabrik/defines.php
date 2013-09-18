@@ -19,10 +19,25 @@ if (!JFolder::exists(JPATH_SITE . '/components/com_fabrik/'))
 {
 	return;
 }
-define("COM_FABRIK_BASE",  str_replace(DS . 'administrator', '', JPATH_BASE) . DS);
-define("COM_FABRIK_FRONTEND",  COM_FABRIK_BASE . 'components/com_fabrik');
 
-define("COM_FABRIK_LIVESITE",  str_replace('/administrator', '', JURI::base()));
+/**
+ * Replaced old str_replace code for building COM_FABRIK_BASE and _LIVESITE
+ * with rtrimword, to avoid (very!) corner case where site path includes
+ * the word 'administrator', like /users/administrator/public_html
+ */
+if (JPATH_BASE == JPATH_ADMINISTRATOR)
+{
+	require_once JPATH_SITE . '/components/com_fabrik/helpers/string.php';
+	define("COM_FABRIK_BASE",  FabrikString::rtrimword(JPATH_BASE, DS . 'administrator') . DS);
+	define("COM_FABRIK_LIVESITE", JURI::getInstance()->toString(array('scheme', 'host', 'port')) . FabrikString::rtrimword(JURI::base(true), '/administrator'));
+}
+else
+{
+	define("COM_FABRIK_BASE",  JPATH_BASE . DS);
+	define("COM_FABRIK_LIVESITE",  JURI::base());
+}
+
+define("COM_FABRIK_FRONTEND",  COM_FABRIK_BASE . 'components/com_fabrik');
 define("COM_FABRIK_LIVESITE_ROOT", JURI::getInstance()->toString(array('scheme', 'host', 'port')));
 define("FABRIKFILTER_TEXT", 0);
 define("FABRIKFILTER_EVAL", 1);
