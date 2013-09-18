@@ -47,6 +47,14 @@
 				description="PLG_VISUALIZATION_CALENDAR_COLOR_DESC"
 				label="PLG_VISUALIZATION_CALENDAR_COLOR_LABEL" />
 				
+			<field name="status_element"
+				type="element"
+				table="params_calendar_table"
+				connection="params_calendar_connection"
+				connection_in_repeat="false"
+				description="PLG_VISUALIZATION_CALENDAR_STATUS_ELEMENT_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_STATUS_ELEMENT_LABEL" />
+				
 			<field name="legendtext"
 				type="text"
 				description="PLG_VISUALIZATION_CALENDAR_LEGEND_TEXT_DESC"
