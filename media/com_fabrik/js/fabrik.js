@@ -139,6 +139,20 @@ Element.implement({
 });
 
 /**
+ * Extend the Array object
+ * @param candid The string to search for
+ * @returns Returns the index of the first match or -1 if not found
+*/
+Array.prototype.searchFor = function (candid) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i].indexOf(candid) === 0) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+/**
  * Loading aninimation class, either inline next to an element or 
  * full screen
  */
@@ -193,10 +207,65 @@ var Loader = new Class({
 		Fabrik.Windows = {};
 		Fabrik.loader = new Loader();
 		Fabrik.blocks = {};
+		Fabrik.periodicals = {};
 		Fabrik.addBlock = function (blockid, block) {
 			Fabrik.blocks[blockid] = block;
 			Fabrik.fireEvent('fabrik.block.added', [block, blockid]);
 		};
+		
+		/**
+		 * Search for a block
+		 * 
+		 * @param   string    blockid  Block id 
+		 * @param   bool      exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+		 * @param   function  cb       Call back function - if supplied a periodical check is set to find the block and once 
+		 *                             found then the cb() is run, passing the block back as an parameter
+		 * 
+		 * @return  mixed  false if not found | Fabrik block 
+		 */
+		Fabrik.getBlock = function (blockid, exact, cb) {
+			cb = cb ? cb : false;
+			if (cb) {
+				Fabrik.periodicals[blockid] = Fabrik._getBlock.periodical(500, this, [blockid, exact, cb]);
+			}
+			return Fabrik._getBlock(blockid, exact, cb);
+		};
+		
+		/**
+		 * Private Search for a block
+		 * 
+		 * @param   string    blockid  Block id 
+		 * @param   bool      exact    Exact match - default false. When false, form_8 will match form_8 & form_8_1
+		 * @param   function  cb       Call back function - if supplied a periodical check is set to find the block and once 
+		 *                             found then the cb() is run, passing the block back as an parameter
+		 * 
+		 * @return  mixed  false if not found | Fabrik block 
+		 */
+		Fabrik._getBlock = function (blockid, exact, cb) {
+			exact = exact ? exact : false;
+			if (Fabrik.blocks[blockid] !== undefined) {
+				
+				// Exact match
+				foundBlockId = blockid;
+			} else {
+				if (exact) {
+					return false;
+				}
+				// Say we're editing a form (blockid = form_1_2) - but have simply asked for form_1
+				var keys = Object.keys(Fabrik.blocks),
+				i = keys.searchFor(blockid);
+				if (i === -1) {
+					return false;
+				}
+				foundBlockId = keys[i];
+			}
+			if (cb) {
+				clearInterval(Fabrik.periodicals[blockid]);
+				cb(Fabrik.blocks[foundBlockId]);
+			}
+			return Fabrik.blocks[foundBlockId];
+		};
+		
 		document.addEvent('click:relay(.fabrik_delete a)', function (e, target) {
 			if (e.rightClick) {
 				return;

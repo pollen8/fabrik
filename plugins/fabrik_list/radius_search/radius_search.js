@@ -352,7 +352,6 @@ var FbListRadiusSearch = new Class({
 	 * Clear the filter.
 	 */
 	clearFilter: function () {
-		debugger;
 		this.listform.getElement('input[name^=radius_search_active]').value = 0;
 		return this.injectIntoListForm();
 	}
