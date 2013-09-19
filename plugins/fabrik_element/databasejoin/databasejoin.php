@@ -1140,11 +1140,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					JText::script('PLG_ELEMENT_DBJOIN_SELECT');
 					if ($app->isAdmin())
 					{
-						$chooseUrl = 'index.php?option=com_fabrik&task=list.view&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+						$chooseUrl = 'index.php?option=com_fabrik&amp;task=list.view&amp;listid=' . $popuplistid . '&amp;tmpl=component&amp;ajax=1';
 					}
 					else
 					{
-						$chooseUrl = 'index.php?option=com_' . $package . '&view=list&listid=' . $popuplistid . '&tmpl=component&ajax=1';
+						$chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popuplistid . '&amp;tmpl=component&ajax=1';
 					}
 					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
 						. FabrikHelperHTML::image('search.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
