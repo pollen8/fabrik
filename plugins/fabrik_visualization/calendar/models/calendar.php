@@ -109,7 +109,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$rows[$i]->startdate_element = $dateFields[$i];
 				$rows[$i]->enddate_element = JArrayHelper::getValue($dateFields2, $i);
 				$rows[$i]->label_element = $labels[$i];
-				$rows[$i]->status = $stati[$i];
+				$rows[$i]->status = JArrayHelper::getValue($stati, $i, '');
 				$rows[$i]->colour = $colours[$i];
 			}
 			$this->eventLists = $rows;
@@ -427,13 +427,13 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 				$pk = $listModel->getTable()->db_primary_key;
 
 				$query = $db->getQuery(true);
+				$status = trim($data['status']) !== '' ? $db->quoteName($data['status']) : "''";
 				$query->select($pk . ' AS id, ' . $pk . ' AS rowid, ' . $startdate . ' AS startdate, ' . $enddate . ' AS enddate, "" AS link, ' . $label . ' AS label, ' . $db->quote($data['colour']) . ' AS colour, 0 AS formid')
-				->select($data['status'] . ' AS status')
+				->select($status . ' AS status')
 				->from($table->db_table_name)
 				->order($startdate . ' ASC');
 				$query = $listModel->buildQueryJoin($query);
 				$query = $listModel->buildQueryWhere(true, $query);
-
 				$db->setQuery($query);
 				$formdata = $db->loadObjectList();
 				if (is_array($formdata))
