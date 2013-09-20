@@ -36,7 +36,7 @@ defined('_JEXEC') or die('Restricted access');
 			<div class="listfilter<?php  echo $required; ?> pull-left">
 				<?php echo $filter->element; ?>
 			</div>
-		<?php elseif ($key == 'fabrik_actions') :
+		<?php elseif ($key == 'fabrik_actions' && $this->filter_action != 'onchange') :
 			?>
 			<div style="text-align:center">
 				<button class="btn-info btn fabrik_filter_submit button" name="filter" >
