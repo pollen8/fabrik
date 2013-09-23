@@ -37,7 +37,7 @@ JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 
 $formId = (int) $params->get('form_id', 1);
-$rowid = (int) $params->get('row_id', 0);
+$rowid = (string) $params->get('row_id', '');
 $layout = $params->get('template', 'default');
 $usersConfig = JComponentHelper::getParams('com_fabrik');
 $usersConfig->set('rowid', $rowid);

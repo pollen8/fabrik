@@ -543,6 +543,14 @@ class PlgContentFabrik extends JPlugin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
+		// Ensure &gt; conditions set in {fabrik} are converted to >
+		foreach ($unused as &$v)
+		{
+			if (is_string($v))
+			{
+				$v = htmlspecialchars_decode($v);
+			}
+		}
 		/*
 		 * $$$ hugh - in order to allow complex filters to work in lists, like ...
 		 * foo___bar[value][]=1 foo___bar[value[]=9 foo___bar[condition]=BETWEEN

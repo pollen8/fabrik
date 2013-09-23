@@ -36,6 +36,12 @@ $lang->load('com_fabrik', JPATH_BASE . '/components/com_fabrik');
 
 $app = JFactory::getApplication();
 $input = $app->input;
+
+// Clear out other filters (e.g. content/module previously rendered which used the same list but different filter)
+if ($params->get('clearfilters'))
+{
+	$input->set('clearfilters', 1);
+}
 $document = JFactory::getDocument();
 
 // Ensure the package is set to fabrik

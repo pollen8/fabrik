@@ -1451,7 +1451,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
-			$l = $j3 ? '' : $element->label;
+			$l = $j3 ? '' : htmlspecialchars($element->label);
 			$iconOpts = array('icon-class' => 'small');
 			if ($rollOver)
 			{
@@ -1466,7 +1466,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
-			$l .= $j3 ? JText::_($element->label) : '';
+			$l .= $j3 ? htmlspecialchars(JText::_($element->label)) : '';
 			$model = $this->getFormModel();
 			$str .= $l;
 			if ($bLabel && !$this->isHidden())
@@ -2580,11 +2580,15 @@ class PlgFabrik_Element extends FabrikPlugin
 						}
 						elseif ($jsAct->js_e_condition == 'CONTAINS')
 						{
-							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+							$js = "if (Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js .= " || this.get('value').contains('$jsAct->js_e_value')";
+							$js .= ") {";
 						}
 						elseif ($jsAct->js_e_condition == '!CONTAINS')
 						{
-							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')) {";
+							$js = "if (!Array.from(this.get('value')).contains('$jsAct->js_e_value')";
+							$js .= " || !this.get('value').contains('$jsAct->js_e_value')";
+							$js .= ") {";
 						}
 						// $$$ hugh if we always quote the js_e_value, numeric comparison doesn't work, as '100' < '3'.
 						// So let's assume if they use <, <=, > or >= they mean numbers.

@@ -754,23 +754,7 @@ var FbDatabasejoin = new Class({
 					this.showDesc(e);
 				}.bind(this));
 			}
-			this.watchJoinCheckboxes();
 		}
-	},
-
-	watchJoinCheckboxes: function () {
-		/*if (this.options.displayType === 'checkbox') {
-			// $$$rob 15/07/2011 - when selecting checkboxes have to programatically select hidden checkboxes which store the join ids.
-			var selector = 'input[name*=' + this.options.joinTable + '___' + this.options.elementShortName + ']';
-			var idSelector = 'input[name*=' + this.options.joinTable + '___id]';
-			this.element.addEvent('click:relay(' + selector + ')', function (i) {
-				this.element.getElements(selector).each(function (tmp, k) {
-					if (tmp === i.target) {
-						this.element.getElements(idSelector)[k].checked = i.target.checked;
-					}
-				}.bind(this));
-			}.bind(this));
-		}*/
 	},
 
 	getAutoCompleteLabelField: function () {

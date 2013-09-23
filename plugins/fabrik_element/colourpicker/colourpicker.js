@@ -212,7 +212,11 @@ var ColourPicker = new Class({
 		this.outputs.foregrounds.each(function (output) {
 			output.setStyle('background-color', c);
 		});
-		this.element.value = c.red + ',' + c.green + ',' + c.blue;
+		if (c.red) {
+			this.element.value = c.red + ',' + c.green + ',' + c.blue;
+		} else {
+			this.element.value = c.rgb.join(',');
+		}
 	},
 
 	/**
