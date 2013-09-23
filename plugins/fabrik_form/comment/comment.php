@@ -120,6 +120,15 @@ class PlgFabrik_FormComment extends PlgFabrik_Form
 
 	public function getEndContent($params, $formModel)
 	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		/**
+		 * @TODO - make this an option, whether to show comments in PDF view
+		 */
+		if ($input->get('format') === 'pdf')
+		{
+			return '';
+		}
 		$rowid = $formModel->getRowId();
 		if ($rowid == 0 || $rowid == '')
 		{

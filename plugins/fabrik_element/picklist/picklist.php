@@ -82,7 +82,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$lookup = array_flip($arVals);
 		foreach ($arSelected as $v)
 		{
-			if ($v == '' || $v == '-')
+			if ($v == '' || $v == '-' || $v = '[""]')
 			{
 				continue;
 			}
@@ -92,11 +92,11 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 			$aRoValues[] = $tmptxt;
 			$i++;
 		}
-		if (empty($arSelected))
+		if (FArrayHelper::emptyIsh($arSelected))
 		{
 			$fromlist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 		}
-		if (empty($aRoValues))
+		if (FArrayhelper::emptyIsh($aRoValues))
 		{
 			$tolist[] = '<li class="emptyplicklist">' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 		}
@@ -106,7 +106,8 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 
 		$str = '<div ' . $attribs . '>' . implode("\n", $fromlist) . '</div>';
 		$str .= '<div class="picklistcontainer">' . implode("\n", $tolist) . '</div>';
-		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
+		$arSelected = htmlspecialchars(json_encode($arSelected), ENT_COMPAT, 'UTF-8');
+		$str .= $this->getHiddenField($name, $arSelected, $id);
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
@@ -182,5 +183,29 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$return = parent::getFilterValue($value, $condition, $eval);
 		return $return;
 	}
+
+	/**
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
+
+	public function dataConsideredEmpty($data, $repeatCounter)
+	{
+		$data = (array) $data;
+		foreach ($data as $d)
+		{
+			if ($d != '' && $d != '[""]')
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 }

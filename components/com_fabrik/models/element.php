@@ -1499,7 +1499,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
-			$l = $element->label;
+			$l = htmlspecialchars($element->label);
 			if ($rollOver)
 			{
 				$l .= FabrikHelperHTML::image('questionmark.png', 'form', $tmpl);
