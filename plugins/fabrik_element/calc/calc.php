@@ -86,31 +86,30 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 			// $$$ hugh need to remove repeated joined data which is not part of this repeatCount
 			$groupModel = $this->getGroup();
+			$data_copy = $data;
 			if ($groupModel->isJoin())
 			{
 				if ($groupModel->canRepeat())
 				{
+					$data_copy = unserialize(serialize($data));
 					$joinid = $groupModel->getGroup()->join_id;
-					if (array_key_exists('join', $data) && array_key_exists($joinid, $data['join']) && is_array($data['join'][$joinid]))
+					if (array_key_exists('join', $data_copy) && array_key_exists($joinid, $data_copy['join']) && is_array($data_copy['join'][$joinid]))
 					{
-						foreach ($data['join'][$joinid] as $name => $values)
+						foreach ($data_copy['join'][$joinid] as $name => $values)
 						{
-							foreach ($data['join'][$joinid][$name] as $key => $val)
+							foreach ($data_copy['join'][$joinid][$name] as $key => $val)
 							{
 								if ($key != $repeatCounter)
 								{
-									unset($data['join'][$joinid][$name][$key]);
+									unset($data_copy['join'][$joinid][$name][$key]);
+									unset($data_copy[$name]);
 								}
 							}
 						}
 					}
 				}
 			}
-			else
-			{
-				$data_copy = $data;
-			}
-			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
+			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data_copy, true, true);
 			$default = @eval($default);
 			FabrikWorker::logEval($default, 'Caught exception on eval of ' . $this->getElement()->name . '::_getV(): %s');
 			return $default;
