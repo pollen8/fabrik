@@ -692,7 +692,6 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$val = $db->quoteName($val);
 		}
-
 		$query->select('DISTINCT(' . $key . ') AS value, ' . $val . ' AS text');
 		$this->buildQueryDescription($query, $data);
 
@@ -2803,6 +2802,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 	private function _autocompleteWhere($how, $field, $search)
 	{
 		$db = FabrikWorker::getDbo();
+		$search = strtolower($search);
+		$field = 'LOWER(' . $field . ')';
 		switch ($how)
 		{
 			case 'contains':
