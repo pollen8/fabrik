@@ -910,6 +910,11 @@ class PlgFabrik_ElementDate extends PlgFabrik_ElementList
 				return $value;
 			}
 		}
+		// Don't offset if null date.
+		if ($value === $db->getNullDate())
+		{
+			return $value;
+		}
 		if ($alwaysToday && $formModel->isEditable())
 		{
 			$value = '';
