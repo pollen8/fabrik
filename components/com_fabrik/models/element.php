@@ -1451,7 +1451,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
-			$l = $j3 ? '' : $element->label;
+			$l = $j3 ? '' : htmlspecialchars($element->label);
 			$iconOpts = array('icon-class' => 'small');
 			if ($rollOver)
 			{
@@ -1466,7 +1466,7 @@ class PlgFabrik_Element extends FabrikPlugin
 					$l .= FabrikHelperHTML::image($emptyIcon, 'form', $tmpl, $iconOpts) . ' ';
 				}
 			}
-			$l .= $j3 ? JText::_($element->label) : '';
+			$l .= $j3 ? htmlspecialchars(JText::_($element->label)) : '';
 			$model = $this->getFormModel();
 			$str .= $l;
 			if ($bLabel && !$this->isHidden())
