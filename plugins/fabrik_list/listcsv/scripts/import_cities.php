@@ -9,7 +9,7 @@
 defined('_JEXEC') or die();
 
 $formModel =& $listModel->getForm();
-//test
+//testa
 if (strstr($formModel->formData['us_streets___date_time'],'1899')) {
    $formModel->formData['us_streets___date_time'] = str_replace('1899','1999',$formModel->formData['us_streets___date_time']);
 }
