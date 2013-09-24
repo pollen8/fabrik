@@ -1,0 +1,22 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+  - composer self-update
+  - pyrus channel-discover pear.phpunit.de
+  - pyrus install --force phpunit/DbUnit
+  - pyrus install --force pear/PHP_CodeSniffer
+  - phpenv rehash
+  
+  - mysql -e 'create database fabrikar_ci;'
+  - mysql fabrikar_ci < fabrik_build/tests/suites/database/stubs/mysql.sql
+
+script:
+  - phpcs --report=full --extensions=php -p -w --standard=Joomla fabrik_build/phpcs/Joomla/ruleset.xml .
+
+branches:
+  only:
+    - joomla3
