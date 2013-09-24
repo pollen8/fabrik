@@ -32,7 +32,6 @@ var FbCascadingdropdown = new Class({
 				this.showDesc(e);
 			}.bind(this));
 		}
-		this.watchJoinCheckboxes();
 		if (typeOf(this.element) !== 'null') {
 			this.spinner = new Spinner(this.element.getParent('.fabrikElementContainer'));
 		}
