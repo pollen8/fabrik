@@ -12,7 +12,7 @@ before_script:
   - phpenv rehash
   
   - mysql -e 'create database joomla_ut;'
-  - mysql joomla_ut < tests/unit/suites/database/stubs/mysql.sql
+  - mysql joomla_ut < fabrik_build/tests/suites/database/stubs/mysql.sql
 
 script:
   - phpcs --report=full --extensions=php -p -w --standard=$TRAVIS_BUILD_DIR/fabrik_build/phpcs/Joomla/ruleset.xml .
