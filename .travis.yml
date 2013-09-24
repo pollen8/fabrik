@@ -11,7 +11,7 @@ before_script:
   - phpenv rehash
 
 script:
-  - phpcs --report=full --extensions=php -p -w --standard=build/phpcs/Joomla/ruleset.xml .
+  - phpcs --report=full --extensions=php -p -w --standard=fabrik_build/phpcs/Joomla/ruleset.xml .
 
 branches:
   only:
