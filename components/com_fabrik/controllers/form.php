@@ -129,6 +129,9 @@ class FabrikControllerForm extends JControllerLegacy
 		// Display the view
 		$view->error = $this->getError();
 
+		// Redirect plugin message if coming from content plugin - reloading in same page
+		$model->applyMsgOnce();
+
 		// $$$ hugh - added disable caching option, and no caching if not logged in (unless we can come up with a unique cacheid for guests)
 		// NOTE - can't use IP of client, as could be two users behind same NAT'ing proxy / firewall.
 		$listModel = $model->getListModel();

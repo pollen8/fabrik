@@ -4719,6 +4719,37 @@ class FabrikFEModelForm extends FabModelForm
 		$msg = $input->get('rowid', '', 'string') == 0 ? 'COM_FABRIK_NOTICE_CANT_ADD_RECORDS' : 'COM_FABRIK_NOTICE_CANT_EDIT_RECORDS';
 		return JText::_($msg);
 	}
+
+	/**
+	 * Say a form is embedded in an article, and is set to redirect on same/new page (so not in popup)
+	 * Then we need to grab and re-apply the redirect/thanks message
+	 *
+	 * @return  void
+	 */
+
+	public function applyMsgOnce()
+	{
+		$app = JFactory::getApplication();
+		if (!$app->input->get('isMambot'))
+		{
+			// Don't apply if not isMambot
+			return;
+		}
+
+		// Proceed, isMambot set in PlgFabrik_FormRedirect::buildJumpPage()
+		$session = JFactory::getSession();
+		$context = $this->getRedirectContext();
+		$msg = $session->get($context . 'msg', array());
+
+		if (!empty($msg))
+		{
+			$msg = JArrayHelper::getValue($msg, 0);
+			$app->enqueueMessage($msg);
+		}
+		// Ensure its only shown once even if page is refreshed with isMambot in querystring
+		$session->clear($context . 'msg');
+	}
+
 	/**
 	 * Get redirect message
 	 *

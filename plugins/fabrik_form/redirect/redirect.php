@@ -59,7 +59,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
 		if (!$this->shouldRedirect($params))
 		{
-			// Clear any sessoin redirects
+			// Clear any session redirects
 			unset($surl[$this->renderOrder]);
 			unset($stitle[$this->renderOrder]);
 			unset($smsg[$this->renderOrder]);
@@ -255,7 +255,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				}
 			}
 		}
-
+		$app = JFactory::getApplication();
+		$isMabmot = $app->input->get('isMambot', false);
+		if ($isMabmot)
+		{
+			$queryvars['isMambot'] = 'isMambot=1';
+		}
 		if (empty($queryvars))
 		{
 			return $jumpPage;
