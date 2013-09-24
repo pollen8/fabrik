@@ -178,4 +178,28 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		return $return;
 	}
 
+	/**
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
+
+	public function dataConsideredEmpty($data, $repeatCounter)
+	{
+		$data = (array) $data;
+		foreach ($data as $d)
+		{
+			if ($d != '' && $d != '[""]')
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+
 }
