@@ -405,8 +405,10 @@ var FbGoogleMap = new Class({
 	},
 
 	updateFromLatLng: function () {
-		var lat = this.element.getElement('.lat').get('value').replace('° N', '').toFloat();
-		var lng = this.element.getElement('.lng').get('value').replace('° E', '').toFloat();
+		var lat = this.element.getElement('.lat').get('value').replace('° N', '');
+		lat = lat.replace(',', '.').toFloat();
+		var lng = this.element.getElement('.lng').get('value').replace('° E', '');
+		lng = lng.replace(',', '.').toFloat();
 		var pnt = new google.maps.LatLng(lat, lng);
 		this.marker.setPosition(pnt);
 		this.map.setCenter(pnt, this.map.getZoom());
