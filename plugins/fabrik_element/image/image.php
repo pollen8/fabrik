@@ -491,7 +491,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$rootFolder = '';
 		$params = $this->getParams();
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
-		$defaultImg = $params->get('imagepath');
+		$defaultImg = $params->get('imagepath', '');
 		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
 		{
 			$rootFolder = $defaultImg;
