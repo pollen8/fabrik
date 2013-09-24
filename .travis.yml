@@ -15,7 +15,7 @@ before_script:
   - mysql fabrikar_ci < fabrik_build/tests/suites/database/stubs/mysql.sql
 
 script:
-  - phpcs --report=full --extensions=php -p -w --standard=$TRAVIS_BUILD_DIR/fabrik_build/phpcs/Joomla/ruleset.xml .
+  - phpcs --report=full --extensions=php -p -w --standard=Joomla $TRAVIS_BUILD_DIR/fabrik_build/phpcs/Joomla/ruleset.xml .
 
 branches:
   only:
