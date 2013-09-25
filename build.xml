@@ -6,18 +6,22 @@
 	<condition property="script-suffix" value=".bat" else="">
 		<os family="windows" />
 	</condition>
+	<condition property="phpcs-path" value="c:\\xampp\\php\\phpcs" else="phpcs">
+		<os family="windows" />
+	</condition>
 	<available file="${basedir}/fabrik_build/phpcs/ruleset.xml"  property="phpcs.ruleset.found"/>
 	
 	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI" if="phpcs.ruleset.found">
 		<echo>call phpcs${script-suffix} path ${basedir}/fabrik_build/phpcs/ruleset.xml</echo>
-		<exec executable="phpcs${script-suffix}">
+		<exec executable="${phpcs-path}${script-suffix}">
 			<arg value="--report=full" />
 			<arg value="--extensions=php" />
-			<arg value="--standard=${basedir}/fabrik_build/phpcs/ruleset.xml" />
+			<arg value="--standard=fabrik_build/phpcs/" />
+			<arg value="-p" />
 			<arg path="${source}" />
 		</exec>
 	</target>
 
 
-	<target name="build" depends="" />
+	<target name="build" depends="travis-phpcs" />
 </project>
