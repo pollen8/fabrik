@@ -19,13 +19,7 @@
 		<exec executable="${phpcs-path}${script-suffix}">
 			<arg value="-i" />	
 		</exec>
-		<!--<exec executable="${phpcs-path}${script-suffix}">
-			<arg value="--report=full" />
-			<arg value="--extensions=php" />
-			<arg value="--standard=${phpcs.standard.path}" />
-			<arg value="-p" />
-			<arg path="${source}" />
-		</exec>-->
+		
 		
 		<exec dir="${basedir}" executable="${phpcs-path}${script-suffix}" output="${basedir}/fabrik_build/phpcs/checkstyle.xml">
             <arg line="--report=checkstyle" />
