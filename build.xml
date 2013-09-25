@@ -2,7 +2,7 @@
 <project name="fabrik3-package" default="build" basedir=".">
 
 	<!-- Travis-ci properties -->
-	<property name="source" value="administrator components plugins modules" />
+	<property name="source" value="${basedir}/administrator ${basedir}/components ${basedir}/plugins ${basedir}/modules" />
 	<condition property="script-suffix" value=".bat" else="">
 		<os family="windows" />
 	</condition>
