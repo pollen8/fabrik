@@ -19,7 +19,12 @@
 	<property name="plugins.validationrule" value="akismet,areuniquevalues,emailexists,isalphanumeric,isemail,isgreaterorlessthan,isnot,notempty,php,regex,specialchars,userexists" />
 	<property name="plugins.visualization" value="calendar,chart,coverflow,fusion_gantt_chart,fusionchart,googlemap,media,slideshow,timeline" />
 
-
+	<!-- Travis-ci properties -->
+	<property name="source" value="" />
+	<condition property="script-suffix" value=".bat" else="">
+		<os family="windows" />
+	</condition>
+	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
@@ -50,6 +55,15 @@
 		    </else>
 	    </if>
 	</target>
+	
+	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
+			<exec executable="phpcs${script-suffix}">
+				<arg value="--report=full" />
+				<arg value="--extensions=php" />
+				<arg value="--standard=${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml" />
+				<arg path="${source}" />
+			</exec>
+		</target>
 
 	<target name="phpdoc" description="Generate API documentation">
 		<if>
