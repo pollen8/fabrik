@@ -26,7 +26,7 @@
             <arg line="--standard=${phpcs.standard.path}" />
             <arg line="--extensions=php" />
 			<arg line="-p" />
-            <arg line="${source}" />
+            <arg path="${source}" />
         </exec>
 	</target>
 
