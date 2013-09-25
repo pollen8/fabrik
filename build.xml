@@ -6,8 +6,9 @@
 	<condition property="script-suffix" value=".bat" else="">
 		<os family="windows" />
 	</condition>
+	<available file="${basedir}/fabrik_build/phpcs/ruleset.xml"  property="phpcs.ruleset.found"/>
 	
-	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
+	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI" if="phpcs.ruleset.found">
 		<echo>call phpcs${script-suffix} path ${basedir}/fabrik_build/phpcs/ruleset.xml</echo>
 		<exec executable="phpcs${script-suffix}">
 			<arg value="--report=full" />
