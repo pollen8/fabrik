@@ -22,7 +22,7 @@
 		
 		
 		<exec dir="${basedir}" executable="${phpcs-path}${script-suffix}">
-            <arg line="--report=full" />
+            <arg line="--report=checkstyle" />
             <arg line="--standard=${phpcs.standard.path}" />
             <arg line="--extensions=php" />
 			<arg line="-p" />
