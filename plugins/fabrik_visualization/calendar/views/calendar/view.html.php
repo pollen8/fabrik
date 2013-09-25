@@ -58,7 +58,7 @@ class FabrikViewCalendar extends JViewLegacy
 		$this->canAdd = (bool) $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
 
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
-		if ($this->canAdd && $this->requiredFiltersFound)
+		if ($params->get('calendar_show_messages', '1') == '1' && $this->canAdd && $this->requiredFiltersFound)
 		{
 			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
 		}
