@@ -12,7 +12,7 @@
 		<exec executable="phpcs${script-suffix}">
 			<arg value="--report=full" />
 			<arg value="--extensions=php" />
-			<arg value="--standard=${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml" />
+			<arg value="--standard=${basedir}/fabrik_build/phpcs/ruleset.xml" />
 			<arg path="${source}" />
 		</exec>
 	</target>
