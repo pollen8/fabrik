@@ -3,7 +3,7 @@
 
 	<!-- Travis-ci properties -->
 	<property name="source" value="${basedir}" />
-	<property name="${phpcs.standard.path}" value="fabrik_build/phpcs/" />
+	<property name="phpcs.standard.path" value="${basedir}/fabrik_build/phpcs/ruleset.xml" />
 	
 	<condition property="script-suffix" value=".bat" else="">
 		<os family="windows" />
@@ -22,7 +22,7 @@
 		<exec executable="${phpcs-path}${script-suffix}">
 			<arg value="--report=full" />
 			<arg value="--extensions=php" />
-			<arg value="--standard=PEAR" />
+			<arg value="--standard=${phpcs.standard.path}" />
 			<arg value="-p" />
 			<arg path="${source}" />
 		</exec>
