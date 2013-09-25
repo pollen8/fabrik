@@ -8,7 +8,7 @@
 	</condition>
 	
 	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
-		<echo>call phpcs${script-suffix} path ${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml</echo>
+		<echo>call phpcs${script-suffix} path ${basedir}/fabrik_build/phpcs/ruleset.xml</echo>
 		<exec executable="phpcs${script-suffix}">
 			<arg value="--report=full" />
 			<arg value="--extensions=php" />
