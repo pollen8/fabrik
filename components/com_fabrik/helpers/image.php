@@ -246,8 +246,19 @@ class Fabimage
 		 * -Rob - well JFile::read is deprecated and in the code it says to use file_get_contents
 		 * The Joomla updater won't work with out file_get_contents so I think we should make it a requirement
 		 * Wiki updated here - http://fabrikar.com/forums/index.php?wiki/prerequisites/
+		 *
+		 * hugh - Okie Dokie.
 		 */
 
+		/**
+		 * $$$ @FIXME - hugh - as we're producing files with names like:
+		 *
+		 * center=34.732267,-86.587593.zoom=10.size=300x250.maptype=roadmap.mobile=true.markers=34.732267,-86.587593.sensor=false.png
+		 *
+		 * ... we should probably clean $file, replace non alphanumeric chars with
+		 * underscores, as filenames with things like commas, = signs etc could be problematic, both in
+		 * the file system, and on the IMG URL.
+		 */
 		$folder = JPATH_SITE . '/' . ltrim($path, '/');
 		if (!JFolder::exists($folder))
 		{
