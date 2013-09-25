@@ -3,7 +3,7 @@
 
 	<!-- Travis-ci properties -->
 	<property name="source" value="${basedir}" />
-	<property name="${phpcs-standard.path}" value="fabrik_build/phpcs/" />
+	<property name="${phpcs.standard.path}" value="fabrik_build/phpcs/" />
 	
 	<condition property="script-suffix" value=".bat" else="">
 		<os family="windows" />
@@ -14,7 +14,7 @@
 	<available file="${basedir}/fabrik_build/phpcs/ruleset.xml"  property="phpcs.ruleset.found"/>
 	
 	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI" if="phpcs.ruleset.found">
-		<echo>call ${phpcs-path}${script-suffix}, path: ${phpcs-standard.path}</echo>
+		<echo>call ${phpcs-path}${script-suffix}, path: ${phpcs.standard.path}</echo>
 		
 		<exec executable="${phpcs-path}${script-suffix}">
 			<arg value="-i" />	
@@ -22,7 +22,7 @@
 		<exec executable="${phpcs-path}${script-suffix}">
 			<arg value="--report=full" />
 			<arg value="--extensions=php" />
-			<arg value="--standard=${phpcs-standard.path}" />
+			<arg value="--standard=PEAR" />
 			<arg value="-p" />
 			<arg path="${source}" />
 		</exec>
