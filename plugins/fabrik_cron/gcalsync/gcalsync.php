@@ -263,12 +263,8 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			// If upload syncing (from us to gcal) is enabled ...
 			if ($gcal_sync_upload == 'both' || $gcal_sync_upload == 'to')
 			{
-				// Grab the tzOffset.  Note that gcal want +/-XX (like -06)
-
-				// But J! gives us +/-X (like -6) so we sprintf it to the right format
 				$config = JFactory::getConfig();
-				$tzOffset = (int) $config->get('offset');
-				$tzOffset = sprintf('%+03d', $tzOffset);
+				$tz = new DateTimeZone($config->get('offset'));
 
 				// Loop thru the array we built earlier of events we have that aren't in gcal
 				foreach ($our_upload_ids as $id => $event)
@@ -295,11 +291,8 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					$when = $gdataCal->newWhen();
 
 					// Grab the start date, apply the tx offset, and format it for gcal
-					$start_date = JFactory::getDate($event->$gcal_start_date_element);
-					$start_date->setOffset($tzOffset);
-					$start_fdate = $start_date->toSql();
-					$date_array = explode(' ', $start_fdate);
-					$when->startTime = "{$date_array[0]}T{$date_array[1]}.000{$tzOffset}:00";
+					$start_date = JFactory::getDate($event->$gcal_start_date_element, $tz);
+					$when->startTime = $this->formatDate($start_date);
 
 					/* We have to provide an end date for gcal, so if we don't have one,
 					 * default it to start date + 1 hour
@@ -312,11 +305,8 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					}
 
 					// Grab the end date, apply the tx offset, and format it for gcal
-					$end_date = JFactory::getDate($event->$gcal_end_date_element);
-					$end_date->setOffset($tzOffset);
-					$end_fdate = $end_date->toSql();
-					$date_array = explode(' ', $end_fdate);
-					$when->endTime = "{$date_array[0]}T{$date_array[1]}.000{$tzOffset}:00";
+					$end_date = JFactory::getDate($event->$gcal_end_date_element, $tz);
+					$when->endTime = $this->formatDate($end_date);
 					$newEvent->when = array($when);
 
 					// Fire off the insertEvent to gcal, catch any errors
@@ -342,6 +332,19 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 				}
 			}
 		}
+	}
+
+	/**
+	 * Format date for google
+	 *
+	 * @param   JDate  $date  Date
+	 *
+	 * @return string
+	 */
+	protected function formatDate(JDate $date)
+	{
+		$tzOffset = $date->format('P');
+		return $date->format('Y-m-d') . 'T' . $date->format('H:i:s') . '.000' . $tzOffset;
 	}
 
 }
