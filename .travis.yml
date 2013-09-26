@@ -18,6 +18,9 @@ before_script:
 
 script:
   ant travis-phpcs
+  
+after_script:
+  cat fabrik_build/logs/checkstyle.xml
 
 branches:
   only:
