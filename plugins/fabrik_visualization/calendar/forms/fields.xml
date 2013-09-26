@@ -157,6 +157,16 @@
 				description="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_DESC"
 				label="PLG_VISUALIAZATION_CALENDAR_TIME_FORMAT_LABEL" />
 
+			<field name="calendar_show_messages"
+				type="radio"
+				default="1"
+				class="btn-group"
+				description="PLG_VISUALIZATION_CALENDAR_SHOW_MESSAGES_DESC"
+				label="PLG_VISUALIZATION_CALENDAR_SHOW_MESSAGES_LABEL" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
+			
 		</fieldset>
 	
 		<fieldset label="PLG_VISUALIZATION_CALENDAR_MONTH_VIEW_OPTIONS" name="plg-visualization-calendar-monthview">
