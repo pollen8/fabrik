@@ -2700,17 +2700,22 @@ class PlgFabrik_Element extends FabrikPlugin
 				// Is there a filter with this elements name
 				if ($k !== false)
 				{
-					/**
-					 * if its a search all filter dont use its value.
-					 * if we did the next time the filter form is submitted its value is turned
-					 * from a search all filter into an element filter
-					 */
 					$searchType = JArrayHelper::getValue($filters['search_type'], $k);
-					if (!is_null($searchType) && $searchType != 'searchall')
+
+					// Check element name is the same as the filter (could occur in advanced search when swapping element type)
+					if ($searchType <> 'advanced' || $filters['key'][$k] === $app->input->getString('element'))
 					{
-						if ($searchType != 'prefilter')
+						/**
+						 * if its a search all filter dont use its value.
+						 * if we did the next time the filter form is submitted its value is turned
+						 * from a search all filter into an element filter
+						 */
+						if (!is_null($searchType) && $searchType != 'searchall')
 						{
-							$default = JArrayHelper::getValue($filters['origvalue'], $k);
+							if ($searchType != 'prefilter')
+							{
+								$default = JArrayHelper::getValue($filters['origvalue'], $k);
+							}
 						}
 					}
 				}
