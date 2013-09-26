@@ -155,8 +155,8 @@ var FbVisTimeline = new Class({
 		params.onClose = function (cal) {
 			cal.hide();
 		};
-		params.onSelect = function () {
-			if (this.cal.dateClicked) {
+		params.onSelect = function (e) {
+			if (this.cal.dateClicked || this.cal.hiliteToday) {
 				this.cal.callCloseHandler();
 				dateEl.value = this.cal.date.format(dateFmt);
 				this.tl.getBand(0).setCenterVisibleDate(this.cal.date);

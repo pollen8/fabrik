@@ -48,7 +48,7 @@ class FabrikViewTimeline extends JView
 		$js = $model->render();
 		$this->assign('containerId', $this->get('ContainerId'));
 		$this->assignRef('row', $row);
-		$this->assign('showFilters', JRequest::getInt('showfilters', 1) === 1 ? 1 : 0);
+		$this->showFilters = $model->showFilters();
 		$this->assignRef('filters', $this->get('Filters'));
 		$this->advancedSearch = $this->get('AdvancedSearchLink');
 		$this->assign('filterFormURL', $this->get('FilterFormURL'));
