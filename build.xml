@@ -24,7 +24,7 @@
 		
 		<exec dir="${basedir}" executable="${phpcs-path}${script-suffix}">
             <arg line="--report=checkstyle" />
-			<arg line="--report-file=${basedir}/build/logs/checkstyle.xml" />
+			<arg line="--report-file=${basedir}/fabrik_build/logs/checkstyle.xml" />
             <arg line="--standard=${phpcs.standard.path}" />
             <arg line="--extensions=php" />
 			<arg line="-p" />
