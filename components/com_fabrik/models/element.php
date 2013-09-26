@@ -2724,26 +2724,31 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$k = $counter;
 				}
-				// Is there a filter with this elements name
+				// Is there a filter with this elements id
 				if ($k !== false)
 				{
-					/**
-					 * if its a search all filter dont use its value.
-					 * if we did the next time the filter form is submitted its value is turned
-					 * from a search all filter into an element filter
-					 */
 					$searchType = JArrayHelper::getValue($filters['search_type'], $k);
-					if (!is_null($searchType) && $searchType != 'searchall')
+
+					// Check element name is the same as the filter (could occur in advanced search when swapping element type)
+					if ($searchType <> 'advanced' || $filters['key'][$k] === $app->input->getString('element'))
 					{
-						if ($searchType != 'prefilter')
+						/**
+						 * if its a search all filter dont use its value.
+						 * if we did the next time the filter form is submitted its value is turned
+						 * from a search all filter into an element filter
+						 */
+
+						if (!is_null($searchType) && $searchType != 'searchall')
 						{
-							$default = $filters['origvalue'][$k];
+							if ($searchType != 'prefilter')
+							{
+								$default = $filters['origvalue'][$k];
+							}
 						}
 					}
 				}
 			}
 		}
-
 		$default = $app->getUserStateFromRequest($context, $elid, $default);
 		$fType = $this->getElement()->filter_type;
 		if ($this->multiOptionFilter())
@@ -4051,12 +4056,12 @@ class PlgFabrik_Element extends FabrikPlugin
 		return $this->recordInDatabase;
 	}
 
-		/**
+	/**
 	 * Used by elements with suboptions, given a value, return its label
 	 *
-	 * @param   string  $v              Value
-	 * @param   string  $defaultLabel   Default label
-	 * @param   bool    $forceCheck     Force check even if $v === $defaultLabel
+	 * @param   string  $v             Value
+	 * @param   string  $defaultLabel  Default label
+	 * @param   bool    $forceCheck    Force check even if $v === $defaultLabel
 	 *
 	 * @return  string	Label
 	 */
