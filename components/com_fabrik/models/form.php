@@ -4001,6 +4001,36 @@ class FabrikFEModelForm extends FabModelForm
 	}
 
 	/**
+	 * Strip out any element names from url qs vars
+	 *
+	 * @param   string  $url  URL
+	 *
+	 * @return  string
+	 */
+	protected function stripElementsFromUrl($url)
+	{
+		$url = explode('?', $url);
+		if (count($url) == 1)
+		{
+			return $url;
+		}
+		$filtered = array();
+		$bits = explode('&', $url[1]);
+		foreach ($bits as $bit)
+		{
+			$parts = explode('=', $bit);
+			$key = $parts[0];
+			$key = FabrikString::rtrimword($key, '_raw');
+			if (!$this->hasElement($key))
+			{
+				$filtered[] = implode('=', $parts);
+			}
+		}
+		$url = $url[0] . '?' . implode('&', $filtered);
+		return $url;
+	}
+
+	/**
 	 * Get the url to use as the form's action property
 	 *
 	 * @return	string	Url
@@ -4016,6 +4046,7 @@ class FabrikFEModelForm extends FabModelForm
 		if ($app->isAdmin())
 		{
 			$action = JArrayHelper::getValue($_SERVER, 'REQUEST_URI', 'index.php');
+			$action = $this->stripElementsFromUrl($action);
 			$action = str_replace("&", "&amp;", $action);
 
 			// $$$rob no good for cck form?
