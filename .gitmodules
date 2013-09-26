@@ -1,3 +1,0 @@
-[submodule "fabrik_build/phpcs"]
-	path = fabrik_build/phpcs
-	url = git://github.com/joomla/coding-standards.git
