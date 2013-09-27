@@ -43,6 +43,7 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 	protected function getOptions()
 	{
 		$view = $this->element['view'] ? $this->element['view'] : 'list';
+
 		if (FabrikWorker::j3())
 		{
 			$this->element['directory'] = '/components/com_fabrik/views/' . $view . '/tmpl/';
@@ -51,6 +52,7 @@ class JFormFieldFabrikTemplate extends JFormFieldFolderList
 		{
 			$this->element['directory'] = '/components/com_fabrik/views/' . $view . '/tmpl25/';
 		}
+
 		return parent::getOptions();
 	}
 }

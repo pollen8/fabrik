@@ -23,7 +23,6 @@ JFormHelper::loadFieldClass('list');
 
 class JFormFieldBootstrapfieldclass extends JFormFieldList
 {
-
 	/**
 	 * Method to get the field options.
 	 *
@@ -52,6 +51,7 @@ class JFormFieldBootstrapfieldclass extends JFormFieldList
 		$sizes[] = JHTML::_('select.option', 'span10');
 		$sizes[] = JHTML::_('select.option', 'span11');
 		$sizes[] = JHTML::_('select.option', 'span12');
+
 		return $sizes;
 	}
 }

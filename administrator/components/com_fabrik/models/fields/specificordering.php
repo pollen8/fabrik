@@ -54,6 +54,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 		 * just swap {package} for the current package.
 		 */
 		$query = FabrikWorker::getDbo(true)->replacePrefix($query);
+
 		return JHTML::_('list.genericordering', $query);
 	}
 
@@ -66,6 +67,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 	protected function getInput()
 	{
 		$id = $this->form->getValue('id');
+
 		if ($id)
 		{
 			// Get the field options.
@@ -78,6 +80,7 @@ class JFormFieldSpecificordering extends JFormFieldList
 			$ordering = '<input type="text" size="40" readonly="readonly" class="readonly" name="' . $this->name . '" value="' . $this->value . $text
 				. '" />';
 		}
+
 		return $ordering;
 	}
 }

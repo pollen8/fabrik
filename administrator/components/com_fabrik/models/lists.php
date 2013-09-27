@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelLists extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelLists extends FabModelList
 		{
 			$config['filter_fields'] = array('l.id', 'label', 'db_table_name', 'published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -63,6 +63,7 @@ class FabrikAdminModelLists extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('l.published = ' . (int) $published);
@@ -77,6 +78,7 @@ class FabrikAdminModelLists extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -86,10 +88,12 @@ class FabrikAdminModelLists extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
 		if (trim($orderCol) !== '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -120,6 +124,7 @@ class FabrikAdminModelLists extends FabModelList
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.language');
+
 		return parent::getStoreId($id);
 	}
 
@@ -138,6 +143,7 @@ class FabrikAdminModelLists extends FabModelList
 		$query->join('LEFT', '#__{package}_formgroup AS fg ON l.form_id = fg.form_id');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList('id');
+
 		return $rows;
 	}
 
@@ -156,6 +162,7 @@ class FabrikAdminModelLists extends FabModelList
 	public function getTable($type = 'View', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -209,6 +216,7 @@ class FabrikAdminModelLists extends FabModelList
 		$query = $db->getQuery(true);
 		$query->select('db_table_name')->from('#__{package}_lists')->where('id IN(' . implode(',', $cid) . ')');
 		$db->setQuery($query);
+
 		return $db->loadColumn();
 	}
 }

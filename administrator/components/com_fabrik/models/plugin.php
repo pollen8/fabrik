@@ -23,7 +23,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikAdminModelPlugin extends JModelLegacy
 {
-
 	/**
 	 * Render the plugins fields
 	 *
@@ -59,6 +58,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	{
 		$type = $this->getState('type');
 		$data = array();
+
 		if ($type === 'validationrule')
 		{
 			$item = FabTable::getInstance('Element', 'FabrikTable');
@@ -75,6 +75,7 @@ class FabrikAdminModelPlugin extends JModelLegacy
 			$feModel = $this->getPluginModel();
 			$item = $feModel->getTable();
 		}
+
 		$data = $data + (array) json_decode($item->params);
 		$data['plugin'] = $this->getState('plugin');
 		$data['params'] = (array) JArrayHelper::getValue($data, 'params', array());
@@ -107,16 +108,19 @@ class FabrikAdminModelPlugin extends JModelLegacy
 	{
 		$feModel = null;
 		$type = $this->getState('type');
+
 		if ($type === 'elementjavascript')
 		{
 			return null;
 		}
+
 		if ($type !== 'validationrule')
 		{
 			// Set the parent model e.g. form/list
 			$feModel = JModelLegacy::getInstance($type, 'FabrikFEModel');
 			$feModel->setId($this->getState('id'));
 		}
+
 		return $feModel;
 	}
 
@@ -167,18 +171,23 @@ class FabrikAdminModelPlugin extends JModelLegacy
 				}
 			}
 		}
+
 		$str[] = '</ul>';
 		$str[] = '<div class="pluginOpts" style="clear:left"></div>';
+
 		if ($j3)
 		{
-			$str[] = '<div class="form-actions"><a href="#" class="btn btn-danger" data-button="removeButton"><i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a></div>';
+			$str[] = '<div class="form-actions"><a href="#" class="btn btn-danger" data-button="removeButton">';
+			$str[] = '<i class="icon-delete"></i> ' . JText::_('COM_FABRIK_DELETE') . '</a></div>';
 		}
 		else
 		{
 			$str[] = '<a href="#" class="delete removeButton">' . JText::_('COM_FABRIK_DELETE') . '</a>';
 		}
+
 		$str[] = '</fieldset>';
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 }

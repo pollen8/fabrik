@@ -35,7 +35,7 @@ class JFormFieldHiddenparams extends JFormField
 	 * Method to get the field input markup.
 	 *
 	 * @return  string	The field input markup.
-	 * 
+	 *
 	 * @since	1.6
 	 */
 
@@ -48,6 +48,7 @@ class JFormFieldHiddenparams extends JFormField
 		// Initialize JavaScript field attributes.
 		$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 		$this->value = json_encode($this->value);
+
 		return '<input type="hidden" name="' . $this->name . '" id="' . $this->id . '"' .
 				' value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"' .
 				$class . $disabled . $onchange . ' />';

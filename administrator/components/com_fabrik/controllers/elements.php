@@ -69,6 +69,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$config = array();
 		$config['ignore_request'] = true;
 		$model = parent::getModel($name, $prefix, $config);
+
 		return $model;
 	}
 
@@ -90,6 +91,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$data = array('showInListView' => 1, 'hideFromListView' => 0);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+
 		if (empty($cid))
 		{
 			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
@@ -117,9 +119,11 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 				{
 					$ntext = $this->text_prefix . '_N_ITEMS_REMOVED_FROM_LIST_VIEW';
 				}
+
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
+
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
@@ -171,6 +175,7 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('copyselectgroup');
+
 		if ($model = $this->getModel('Elements'))
 		{
 			$view->setModel($model, true);
@@ -232,5 +237,4 @@ class FabrikAdminControllerElements extends FabControllerAdmin
 		// Close the application
 		JFactory::getApplication()->close();
 	}
-
 }

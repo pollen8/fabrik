@@ -54,7 +54,7 @@ class JFormFieldFormDatabaseName extends JFormFieldText
 			$this->element['class'] = 'readonly';
 			$this->value = $db->loadResult();
 		}
+
 		return parent::getInput();
 	}
-
 }

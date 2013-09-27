@@ -57,6 +57,7 @@ class FabModelList extends JModelList
 		$query->order('label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -81,6 +82,7 @@ class FabModelList extends JModelList
 		$query->order('label ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -102,16 +104,18 @@ class FabModelList extends JModelList
 		// Select the required fields from the table.
 		$query->select('g.id AS value, g.name AS text');
 		$query->from('#__{package}_groups AS g');
-
 		$query->where('published <> -2');
+
 		if ($formid !== '')
 		{
 			$query->join('INNER', '#__{package}_formgroup AS fg ON fg.group_id = g.id');
 			$query->where('fg.form_id = ' . (int) $formid);
 		}
+
 		$query->order('g.name ASC');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -127,6 +131,7 @@ class FabModelList extends JModelList
 	protected function filterByFormQuery(&$query, $table)
 	{
 		$form = $this->getState('filter.form');
+
 		if (!empty($form))
 		{
 			$query->where($table . '.form_id = ' . (int) $form);

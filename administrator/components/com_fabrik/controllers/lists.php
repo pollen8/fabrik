@@ -39,20 +39,6 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	protected $view_item = 'lists';
 
 	/**
-	 * Constructor.
-	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @see		JController
-	 * @since	1.6
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
-
-	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
@@ -65,8 +51,8 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 	 */
 	public function getModel($name = 'List', $prefix = 'FabrikAdminModel', $config = array())
 	{
-
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
 		return $model;
 	}
 
@@ -84,6 +70,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+
 		if (empty($cid))
 		{
 			JError::raiseWarning(500, JText::_($this->text_prefix . '_NO_ITEM_SELECTED'));
@@ -97,6 +84,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 
 			// Publish the items.
 			$formKeys = array();
+
 			if (!$model->publish($formids, $value))
 			{
 				JError::raiseWarning(500, $model->getError());
@@ -105,9 +93,11 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 			{
 				// Publish the groups
 				$groupModel = $this->getModel('Group');
+
 				if (is_object($groupModel))
 				{
 					$groupids = $groupModel->swapFormToGroupIds($formids);
+
 					if (!empty($groupids))
 					{
 						if ($groupModel->publish($groupids, $value) === false)
@@ -119,6 +109,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 							// Publish the elements
 							$elementModel = $this->getModel('Element');
 							$elementIds = $elementModel->swapGroupToElementIds($groupids);
+
 							if (!$elementModel->publish($elementIds, $value))
 							{
 								JError::raiseWarning(500, $elementModel->getError());
@@ -130,6 +121,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 				parent::publish();
 			}
 		}
+
 		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 	}
 
@@ -145,6 +137,7 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView($this->view_item, $viewType);
 		$view->setLayout('confirmdelete');
+
 		if ($model = $this->getModel())
 		{
 			$view->setModel($model, true);
@@ -154,5 +147,4 @@ class FabrikAdminControllerLists extends FabControllerAdmin
 		$view->setModel($this->getModel('list'));
 		$view->display();
 	}
-
 }

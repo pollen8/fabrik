@@ -50,10 +50,12 @@ class FabrikAdminControllerList extends FabControllerForm
 	public function edit($key = null, $urlVar = null)
 	{
 		$model = $this->getModel('connections');
+
 		if (count($model->activeConnections()) == 0)
 		{
 			throw new RuntimeException(JText::_('COM_FABRIK_ENUSRE_ONE_CONNECTION_PUBLISHED'));
 		}
+
 		parent::edit($key, $urlVar);
 	}
 
@@ -69,6 +71,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$input = $app->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
+
 		if (count($cid) > 0)
 		{
 			$viewType = JFactory::getDocument()->getType();
@@ -115,6 +118,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$input = $app->input;
 		$cid = $input->get('cid', array(0), 'array');
 		$cid = $cid[0];
+
 		if (is_null($model))
 		{
 			$cid = $input->getInt('listid', $cid);
@@ -145,6 +149,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		$uri = $uri->toString(array('path', 'query'));
 		$cacheid = serialize(array($uri, $input->post, $user->get('id'), get_class($view), 'display', $this->cacheId));
 		$cache = JFactory::getCache('com_fabrik', 'view');
+
 		if (in_array($input->get('format'), array('raw', 'csv', 'pdf', 'json', 'fabrikfeed')))
 		{
 			$view->display();
@@ -274,17 +279,21 @@ class FabrikAdminControllerList extends FabControllerForm
 		$model->deleteRows($ids);
 		$total = $oldtotal - count($ids);
 		$ref = 'index.php?option=com_fabrik&task=list.view&cid=' . $listid;
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace('limitstart' . $listid . '=' . $limitstart, 'limitstart' . $listid . '=' . $newlimitstart, $ref);
 			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
 			$app->setUserState($context . 'limitstart' . $listid, $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
@@ -338,6 +347,7 @@ class FabrikAdminControllerList extends FabControllerForm
 		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '', 'string') == '')
 		{
 			$msgs = $model->processPlugin();
+
 			if ($input->get('format') == 'raw')
 			{
 				$input->set('view', 'list');
@@ -350,9 +360,9 @@ class FabrikAdminControllerList extends FabControllerForm
 				}
 			}
 		}
+
 		$format = $input->get('fromat', 'html');
 		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getId() . '&format=' . $format;
 		$app->redirect($ref);
 	}
-
 }

@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelPackages extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelPackages extends FabModelList
 		{
 			$config['filter_fields'] = array('p.id', 'p.label', 'p.published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -66,6 +66,7 @@ class FabrikAdminModelPackages extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('p.published = ' . (int) $published);
@@ -79,6 +80,7 @@ class FabrikAdminModelPackages extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -87,11 +89,14 @@ class FabrikAdminModelPackages extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
+
 		return $query;
 	}
 
@@ -109,6 +114,7 @@ class FabrikAdminModelPackages extends FabModelList
 	public function getTable($type = 'Package', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -155,11 +161,13 @@ class FabrikAdminModelPackages extends FabModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
+
 		foreach ($items as &$i)
 		{
 			$n = $i->component_name . '_' . $i->version;
 			$file = JPATH_ROOT . '/tmp/' . $i->component_name . '/pkg_' . $n . '.zip';
 			$url = COM_FABRIK_LIVESITE . 'tmp/' . $i->component_name . '/pkg_' . $n . '.zip';
+
 			if (JFile::exists($file))
 			{
 				$i->file = '<a href="' . $url . '"><span class="icon-download"></span> pkg_' . $n . '.zip</a>';
@@ -169,6 +177,7 @@ class FabrikAdminModelPackages extends FabModelList
 				$i->file = JText::_('COM_FABRIK_EXPORT_PACKAGE_TO_CREATE_ZIP');
 			}
 		}
+
 		return $items;
 	}
 }

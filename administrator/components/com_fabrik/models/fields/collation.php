@@ -39,13 +39,16 @@ class JFormFieldCollation extends JFormFieldList
 	public function setup(SimpleXMLElement $element, $value, $group = null)
 	{
 		$return = parent::setup($element, $value, $group);
+
 		if ($this->value == '' && $return)
 		{
 			$db = JFactory::getDbo();
 			$this->value = $db->getCollation();
 		}
+
 		return $return;
 	}
+
 	/**
 	 * Get element options
 	 *
@@ -59,10 +62,12 @@ class JFormFieldCollation extends JFormFieldList
 		sort($rows);
 		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$opts = array();
+
 		foreach ($rows as $row)
 		{
 			$opts[] = JHTML::_('select.option', $row->Collation);
 		}
+
 		return $opts;
 	}
 }

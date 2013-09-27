@@ -55,6 +55,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -73,11 +74,14 @@ class FabrikAdminModelForm extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.form', 'form', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		$form->model = $this;
+
 		return $form;
 	}
 
@@ -93,10 +97,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.form.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
 		}
+
 		return $data;
 	}
 
@@ -112,6 +118,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$plugins = json_encode($this->getPlugins());
 		$js[] = "\t\tFabrik.controller = new PluginManager($plugins, " . (int) $this->getItem()->id . ", 'form');";
 		$js[] = "\t})";
+
 		return implode("\n", $js);
 	}
 
@@ -137,19 +144,24 @@ class FabrikAdminModelForm extends FabModelAdmin
 		 * params (did that for ease of rendering admin output)
 		 */
 		$opts = array('reset_button_label', 'submit_button_label');
+
 		foreach ($opts as $opt)
 		{
 			$data[$opt] = $data['params'][$opt];
 		}
+
 		$tmpName = JArrayHelper::getValue($data, 'db_table_name');
 		unset($data['db_table_name']);
 		$return = parent::save($data);
+
 		if ($return)
 		{
 			$data['db_table_name'] = $tmpName;
 			$this->saveFormGroups($data);
 		}
+
 		parent::cleanCache('com_fabrik');
+
 		return $return;
 	}
 
@@ -188,12 +200,14 @@ class FabrikAdminModelForm extends FabModelAdmin
 		if ($isnew && $record_in_database)
 		{
 			$groups = JArrayHelper::getValue($data, 'current_groups');
+
 			if (!empty($groups))
 			{
 				$query = $db->getQuery(true);
 				$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN (' . implode(',', $groups) . ')');
 				$db->setQuery($query);
 				$rows = $db->loadObjectList();
+
 				foreach ($rows as $row)
 				{
 					$fields[$row->name] = $row->plugin;
@@ -211,10 +225,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		}
 
 		$this->_makeFormGroups($data, $currentGroups);
+
 		if ($record_in_database == '1')
 		{
 			$listModel = JModelLegacy::getInstance('List', 'FabrikAdminModel');
 			$item = $listModel->loadFromFormId($formid);
+
 			if ($isnew)
 			{
 				$dbTableName = $data['db_table_name'] !== '' ? $data['db_table_name'] : $data['label'];
@@ -229,7 +245,9 @@ class FabrikAdminModelForm extends FabModelAdmin
 			{
 				$dbTableName = $item->db_table_name == '' ? $data['database_name'] : $item->db_table_name;
 			}
+
 			$dbTableExists = $listModel->databaseTableExists($dbTableName);
+
 			if (!$dbTableExists)
 			{
 				/**
@@ -243,13 +261,16 @@ class FabrikAdminModelForm extends FabModelAdmin
 				 * converted to x___y which then blows up element name code due to '___' being presumed to be the element splitter.
 				 */
 				$dbTableName = preg_replace('#[^0-9a-zA-Z_]#', '', $dbTableName);
+
 				if ($listModel->databaseTableExists($dbTableName))
 				{
 					return JError::raiseWarning(500, JText::_("COM_FABRIK_DB_TABLE_ALREADY_EXISTS"));
 				}
+
 				$listModel->set('form.id', $formid);
 				$listModel->createDBTable($dbTableName, $fields);
 			}
+
 			if (!$dbTableExists || $isnew)
 			{
 				$connection = FabrikWorker::getConnection(-1);
@@ -294,10 +315,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		$query = $db->getQuery(true);
 		JArrayHelper::toInteger($currentGroups);
 		$query->delete('#__{package}_formgroup')->where('form_id = ' . (int) $formid);
+
 		if (!empty($currentGroups))
 		{
 			$query->where('group_id NOT IN (' . implode($currentGroups, ', ') . ')');
 		}
+
 		$db->setQuery($query);
 
 		// Delete the old form groups
@@ -316,6 +339,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			{
 				$group_id = (int) $group_id;
 				$query->clear();
+
 				if (array_key_exists($group_id, $fgids))
 				{
 					$query->update('#__{package}_formgroup')
@@ -326,6 +350,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 					$query->insert('#__{package}_formgroup')
 					->set(array('form_id =' . (int) $formid, 'group_id = ' . $group_id, 'ordering = ' . $orderid));
 				}
+
 				$db->setQuery($query);
 				$db->execute();
 				$orderid++;
@@ -348,10 +373,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 		{
 			return array();
 		}
+
 		JArrayHelper::toInteger($ids);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('form_id')->from('#__{package}_lists')->where('id IN (' . implode(',', $ids) . ')');
+
 		return $db->setQuery($query)->loadColumn();
 	}
 
@@ -379,6 +406,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 			$listModel->loadFromFormId($formId);
 			$listModel->setFormModel($model);
 			$dbExisits = $listModel->databaseTableExists();
+
 			if (!$dbExisits)
 			{
 				/* $$$ hugh - if we're recreating a table for an existing form, we need to pass the field
@@ -395,6 +423,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 					->where('fg.form_id = ' . $formId . ' AND g.is_join != 1');
 				$db->setQuery($query);
 				$groupIds = $db->loadResultArray();
+
 				if (!empty($groupIds))
 				{
 					$fields = array();
@@ -402,10 +431,12 @@ class FabrikAdminModelForm extends FabModelAdmin
 					$query->select('plugin, name')->from('#__fabrik_elements')->where('group_id IN (' . implode(',', $groupIds) . ')');
 					$db->setQuery($query);
 					$rows = $db->loadObjectList();
+
 					foreach ($rows as $row)
 					{
 						$fields[$row->name] = $row->plugin;
 					}
+
 					if (!empty($fields))
 					{
 						$listModel->createDBTable($listModel->getTable()->db_table_name, $fields);
@@ -444,6 +475,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 
 		// Hack - must be able to add the plugin xml fields file to $form to include in validation but cant see how at the moment
 		$data['params'] = $params;
+
 		return $data;
 	}
 
@@ -458,6 +490,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 	public function delete(&$cids)
 	{
 		$res = parent::delete($cids);
+
 		if ($res)
 		{
 			foreach ($cids as $cid)
@@ -467,7 +500,7 @@ class FabrikAdminModelForm extends FabModelAdmin
 				$item->delete();
 			}
 		}
+
 		return $res;
 	}
-
 }

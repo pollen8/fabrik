@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class FabrikAdminHelper
 {
-
 	/**
 	 * Prepare the date for saving
 	 * DATES SHOULD BE SAVED AS UTC
@@ -48,6 +47,7 @@ class FabrikAdminHelper
 			{
 				$strdate .= ' 00:00:00';
 			}
+
 			$date = JFactory::getDate($strdate, $tzoffset);
 			$strdate = $date->toSql();
 		}
@@ -67,6 +67,7 @@ class FabrikAdminHelper
 	{
 		$user = JFactory::getUser();
 		$result = new JObject;
+
 		if (empty($categoryId))
 		{
 			$assetName = 'com_fabrik';
@@ -75,11 +76,14 @@ class FabrikAdminHelper
 		{
 			$assetName = 'com_fabrik.category.' . (int) $categoryId;
 		}
+
 		$actions = array('core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete');
+
 		foreach ($actions as $action)
 		{
 			$result->set($action, $user->authorise($action, $assetName));
 		}
+
 		return $result;
 	}
 
@@ -95,6 +99,8 @@ class FabrikAdminHelper
 
 	public static function addSubmenu($vName)
 	{
+		$vizUrl = 'index.php?option=com_fabrik&view=visualizations';
+
 		if (FabrikWorker::j3())
 		{
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_HOME'), 'index.php?option=com_fabrik', $vName == 'home');
@@ -102,7 +108,7 @@ class FabrikAdminHelper
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_FORMS'), 'index.php?option=com_fabrik&view=forms', $vName == 'forms');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_GROUPS'), 'index.php?option=com_fabrik&view=groups', $vName == 'groups');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_ELEMENTS'), 'index.php?option=com_fabrik&view=elements', $vName == 'elements');
-			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations', $vName == 'visualizations');
+			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), $vizUrl, $vName == 'visualizations');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_PACKAGES'), 'index.php?option=com_fabrik&view=packages', $vName == 'packages');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_CONNECTIONS'), 'index.php?option=com_fabrik&view=connections', $vName == 'connections');
 			JHtmlSidebar::addEntry(JText::_('COM_FABRIK_SUBMENU_CRONS'), 'index.php?option=com_fabrik&view=crons', $vName == 'crons');
@@ -113,7 +119,7 @@ class FabrikAdminHelper
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_FORMS'), 'index.php?option=com_fabrik&view=forms', $vName == 'forms');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_GROUPS'), 'index.php?option=com_fabrik&view=groups', $vName == 'groups');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_ELEMENTS'), 'index.php?option=com_fabrik&view=elements', $vName == 'elements');
-			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), 'index.php?option=com_fabrik&view=visualizations', $vName == 'visualizations');
+			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_VISUALIZATIONS'), $vizUrl, $vName == 'visualizations');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_PACKAGES'), 'index.php?option=com_fabrik&view=packages', $vName == 'packages');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_CONNECTIONS'), 'index.php?option=com_fabrik&view=connections', $vName == 'connections');
 			JSubMenuHelper::addEntry(JText::_('COM_FABRIK_SUBMENU_CRONS'), 'index.php?option=com_fabrik&view=crons', $vName == 'crons');
@@ -162,6 +168,7 @@ class FabrikAdminHelper
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
 			$filterType = JString::strtoupper($filterData->filter_type);
+
 			if ($filterType == 'NH')
 			{
 				// Maximum HTML filtering.
@@ -184,14 +191,17 @@ class FabrikAdminHelper
 				foreach ($tags as $tag)
 				{
 					$tag = trim($tag);
+
 					if ($tag)
 					{
 						$tempTags[] = $tag;
 					}
 				}
+
 				foreach ($attributes as $attribute)
 				{
 					$attribute = trim($attribute);
+
 					if ($attribute)
 					{
 						$tempAttributes[] = $attribute;
@@ -246,8 +256,10 @@ class FabrikAdminHelper
 			{
 				$filter = JFilterInput::getInstance();
 			}
+
 			$text = $filter->clean($text, 'html');
 		}
+
 		return $text;
 	}
 
@@ -263,6 +275,7 @@ class FabrikAdminHelper
 	public static function setViewLayout(&$view)
 	{
 		$v = new JVersion;
+
 		if ($v->RELEASE > 2.5)
 		{
 			// If rendering a list inside a form and viewing in admin - there were layout name conflicts (so renamed boostrap to admin_bootstrap)

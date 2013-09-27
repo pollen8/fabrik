@@ -67,6 +67,7 @@ class JFormFieldGroupElements extends JFormFieldGroupedList
 			$value = 'fabrik_trigger_group_group' . $group->id;
 			$rows[JText::_('COM_FABRIK_GROUPS')][] = JHTML::_('select.option', $value, $label);
 			$elementModels = $groupModel->getMyElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$label = $elementModel->getFullName(false, false);
@@ -74,9 +75,10 @@ class JFormFieldGroupElements extends JFormFieldGroupedList
 				$rows[JText::_('COM_FABRIK_ELEMENTS')][] = JHTML::_('select.option', $value, $label);
 			}
 		}
+
 		reset($rows);
 		asort($rows[JText::_('COM_FABRIK_ELEMENTS')]);
+
 		return $rows;
 	}
-
 }

@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelCrons extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelCrons extends FabModelList
 		{
 			$config['filter_fields'] = array('c.id', 'c.label', 'p.published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -65,6 +65,7 @@ class FabrikAdminModelCrons extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('c.published = ' . (int) $published);
@@ -76,6 +77,7 @@ class FabrikAdminModelCrons extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -85,10 +87,12 @@ class FabrikAdminModelCrons extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		return $query;
@@ -107,6 +111,7 @@ class FabrikAdminModelCrons extends FabModelList
 	public function getTable($type = 'Cron', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

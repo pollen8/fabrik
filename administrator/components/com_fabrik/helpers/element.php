@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikAdminElementHelper
 {
-
 	/**
 	 * Get html id
 	 *
@@ -42,6 +41,7 @@ class FabrikAdminElementHelper
 		{
 			$id = "$control_name.$name";
 		}
+
 		return $id;
 	}
 
@@ -65,6 +65,7 @@ class FabrikAdminElementHelper
 		{
 			$fullName = $control_name . '[' . $name . ']';
 		}
+
 		return $fullName;
 	}
 
@@ -86,6 +87,7 @@ class FabrikAdminElementHelper
 		{
 			$c = false;
 		}
+
 		return $c;
 	}
 
@@ -107,6 +109,7 @@ class FabrikAdminElementHelper
 		{
 			$c = 0;
 		}
+
 		return $c;
 	}
 }

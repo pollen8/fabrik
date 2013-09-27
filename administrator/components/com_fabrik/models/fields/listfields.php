@@ -54,6 +54,7 @@ class JFormFieldListfields extends JFormFieldList
 		{
 			$this->results = array();
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$controller = $input->get('view', $input->get('task'));
@@ -90,6 +91,7 @@ class JFormFieldListfields extends JFormFieldList
 				// @TODO this seems like we could refractor it to use the formModel class as per the table and form switches below?
 				// $connectionDd = ($c === false) ? $connection : $connection . '-' . $c;
 				$connectionDd = $repeat ? $connection . '-' . $c : $connection;
+
 				if ($connection == '')
 				{
 					$groupId = isset($this->form->rawData) ? JArrayHelper::getValue($this->form->rawData, 'group_id', 0)
@@ -141,6 +143,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$id = $this->form->getValue('id');
 				}
+
 				if (!isset($this->form->model))
 				{
 					if (!in_array($controller, array('item', 'module')))
@@ -148,9 +151,12 @@ class JFormFieldListfields extends JFormFieldList
 						// Seems to work anyway in the admin module page - so lets not raise notice
 						$app->enqueueMessage('Model not set in listfields field ' . $this->id, 'notice');
 					}
+
 					return;
 				}
+
 				$listModel = $this->form->model;
+
 				if ($id !== 0)
 				{
 					$formModel = $listModel->getFormModel();
@@ -164,11 +170,14 @@ class JFormFieldListfields extends JFormFieldList
 
 				break;
 			case 'form':
+
 				if (!isset($this->form->model))
 				{
 					throw new RuntimeException('Model not set in listfields field ' . $this->id);
+
 					return;
 				}
+
 				$formModel = $this->form->model;
 				$valfield = $valueformat == 'tableelement' ? 'name' : 'id';
 				$res = $formModel->getElementOptions(false, $valfield, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
@@ -185,7 +194,9 @@ class JFormFieldListfields extends JFormFieldList
 				return JText::_('THE LISTFIELDS ELEMENT IS ONLY USABLE BY LISTS AND ELEMENTS');
 				break;
 		}
+
 		$return = '';
+
 		if (is_array($res))
 		{
 			if ($controller == 'element')
@@ -203,6 +214,7 @@ class JFormFieldListfields extends JFormFieldList
 					{
 						$s->value = $o->value;
 					}
+
 					$s->text = FabrikString::getShortDdLabel($o->text);
 					$aEls[] = $s;
 				}
@@ -213,6 +225,7 @@ class JFormFieldListfields extends JFormFieldList
 				{
 					$o->text = FabrikString::getShortDdLabel($o->text);
 				}
+
 				$aEls = $res;
 			}
 			// Paul - Prepend rather than append "none" option.
@@ -241,10 +254,11 @@ class JFormFieldListfields extends JFormFieldList
 				$return .= '<img style="margin-left:10px;display:none" id="' . $this->id
 				. '_loader" src="components/com_fabrik/images/ajax-loader.gif" alt="' . JText::_('LOADING') . '" />';
 			}
-
 		}
+
 		FabrikHelperHTML::framework();
 		FabrikHelperHTML::iniRequireJS();
+
 		return $return;
 	}
 
@@ -260,6 +274,7 @@ class JFormFieldListfields extends JFormFieldList
 		$str[] = '<textarea cols="20" row="3" id="' . $this->id . '" name="' . $this->name . '">' . $this->value . '</textarea>';
 		$str[] = '<button class="button btn"><span class="icon-arrow-left"></span> ' . JText::_('COM_FABRIK_ADD') . '</button>';
 		$str[] = '<select class="elements"></select>';
+
 		return implode("\n", $str);
 	}
 
@@ -291,6 +306,7 @@ class JFormFieldListfields extends JFormFieldList
 		$optskey = $valueformat == 'tableelement' ? 'name' : 'id';
 		$res = $groupModel->getForm()->getElementOptions(false, $optskey, $onlylistfields, $showRaw, $pluginFilters, $labelMethod, $nojoins);
 		$hash = $controller . '.' . implode('.', $bits);
+
 		if (array_key_exists($hash, $this->results))
 		{
 			$res = $this->results[$hash];
@@ -299,6 +315,7 @@ class JFormFieldListfields extends JFormFieldList
 		{
 			$this->results[$hash] = &$res;
 		}
+
 		return $res;
 	}
 }

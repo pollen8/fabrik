@@ -15,16 +15,15 @@ defined('_JEXEC') or die('Restricted access');
 require_once 'fabmodellist.php';
 
 /**
-* Fabrik Admin Visualizations Model
-*
-* @package     Joomla.Administrator
-* @subpackage  Fabrik
-* @since       3.0
-*/
+ * Fabrik Admin Visualizations Model
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikAdminModelVisualizations extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelVisualizations extends FabModelList
 		{
 			$config['filter_fields'] = array('v.id', 'v.label', 'v.plugin', 'v.published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -67,6 +67,7 @@ class FabrikAdminModelVisualizations extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('v.published = ' . (int) $published);
@@ -78,6 +79,7 @@ class FabrikAdminModelVisualizations extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -87,29 +89,33 @@ class FabrikAdminModelVisualizations extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		return $query;
 	}
+
 	/**
-	* Returns a reference to the a Table object, always creating it.
-	*
-	* @param   string  $type    The table type to instantiate
-	* @param   string  $prefix  A prefix for the table class name. Optional.
-	* @param   array   $config  Configuration array for model. Optional.
-	*
-	* @return  JTable	A database object
-	*
-	* @since	1.6
-	*/
+	 * Returns a reference to the a Table object, always creating it.
+	 *
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  JTable	A database object
+	 *
+	 * @since	1.6
+	 */
 
 	public function getTable($type = 'Visualization', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

@@ -24,7 +24,6 @@ jimport('joomla.application.component.modeladmin');
 
 abstract class FabModelAdmin extends JModelAdmin
 {
-
 	/**
 	 * Component name
 	 *
@@ -44,7 +43,7 @@ abstract class FabModelAdmin extends JModelAdmin
 
 		// Load up the active plug-ins
 		$plugins = JArrayHelper::getValue($item->params, 'plugins', array());
+
 		return $plugins;
 	}
-
 }

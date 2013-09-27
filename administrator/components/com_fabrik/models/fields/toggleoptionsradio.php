@@ -58,12 +58,14 @@ class JFormFieldToggleoptionsradio extends JFormFieldRadio
 		if (s[0].get('value') == '" . $this->element['hide'] . "') {
 			document.id('" . $this->element['toggle'] . "').hide();
 		}";
+
 		if ($alt)
 		{
 		$script[] = "if (s[0].get('value') == '" . $this->element['show'] . "') {
 			document.id('" . $alt . "').hide();
 		}";
 		}
+
 		$script[] = "document.id('" . $this->id
 			. "').getElements('input').addEvent('change', function (e) {
 				if (e.target.checked == true) {
@@ -86,12 +88,13 @@ class JFormFieldToggleoptionsradio extends JFormFieldRadio
 						}
 					}";
 		}
+
 		$script[] = "
 				}
 			});
 		})";
 		FabrikHelperHTML::addScriptDeclaration(implode("\n", $script));
+
 		return parent::getInput();
 	}
-
 }

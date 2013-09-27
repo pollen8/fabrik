@@ -50,11 +50,13 @@ class FabrikAdminModelImport extends FabModelAdmin
 	public function getTable($type = 'List', $prefix = 'FabrikTable', $config = array())
 	{
 		$sig = $type . $prefix . implode('.', $config);
+
 		if (!array_key_exists($sig, $this->tables))
 		{
 			$config['dbo'] = FabrikWorker::getDbo(true);
 			$this->tables[$sig] = FabTable::getInstance($type, $prefix, $config);
 		}
+
 		return $this->tables[$sig];
 	}
 
@@ -71,11 +73,14 @@ class FabrikAdminModelImport extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.import', 'import', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		$form->model = $this;
+
 		return $form;
 	}
 
@@ -97,5 +102,4 @@ class FabrikAdminModelImport extends FabModelAdmin
 
 		return $data;
 	}
-
 }

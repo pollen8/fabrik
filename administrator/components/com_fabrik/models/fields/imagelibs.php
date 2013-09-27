@@ -40,10 +40,12 @@ class JFormFieldImagelibs extends JFormFieldList
 	{
 		require_once COM_FABRIK_FRONTEND . '/helpers/image.php';
 		$imageLibs = FabimageHelper::getLibs();
+
 		if (empty($imageLibs))
 		{
 			return JHTML::_('select.option', JText::_('NO MAGE LIBRARY FOUND'));
 		}
+
 		return $imageLibs;
 	}
 }

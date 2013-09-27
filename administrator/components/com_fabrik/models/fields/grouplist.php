@@ -44,7 +44,6 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 
 	protected function getGroups()
 	{
-
 		if ($this->value == '')
 		{
 			$app = JFactory::getApplication();
@@ -66,14 +65,15 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		// Get the options.
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
-
 		$groups = array();
+
 		foreach ($options as $option)
 		{
 			if (!array_key_exists($option->form, $groups))
 			{
 				$groups[$option->form] = array();
 			}
+
 			$groups[$option->form][] = $option;
 		}
 
@@ -82,8 +82,9 @@ class JFormFieldGroupList extends JFormFieldGroupedList
 		{
 			JError::raiseWarning(500, $db->getErrorMsg());
 		}
+
 		array_unshift($groups, JHtml::_('select.option', '', JText::_('COM_FABRIK_PLEASE_SELECT')));
+
 		return $groups;
 	}
-
 }

@@ -40,19 +40,24 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$plugin = $input->get('plugin', '');
 		$method = $input->get('method', '');
 		$group = $input->get('g', 'element');
+
 		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
 		{
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
 			echo json_encode($o);
+
 			return;
 		}
-		$dispatcher = JDispatcher::getInstance();
+
 		if (substr($method, 0, 2) !== 'on')
 		{
 			$method = 'on' . JString::ucfirst($method);
 		}
+
+		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger($method);
+
 		return;
 	}
 
@@ -70,6 +75,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$input = $app->input;
 		$method = $input->get('method', '');
 		$userAjax = new userAjax($db);
+
 		if (method_exists($userAjax, $method))
 		{
 			$userAjax->$method();

@@ -29,6 +29,7 @@ $query->select('id')->from('#__fabrik_packages')
 ->order('version DESC');
 $db->setQuery($query, 0, 1);
 $id = $db->loadResult();
+
 if ($id == '')
 {
 	throw new RuntimeException('Fabrik: Could not load package', 500);
@@ -51,6 +52,7 @@ JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_fabrik/models');
 
 $controller = $input->getCmd('view');
 $path = JPATH_SITE . '/components/com_fabrik/controllers/' . $controller . '.php';
+
 if (JFile::exists($path))
 {
 	require_once $path;
@@ -70,6 +72,7 @@ $config['base_path'] = JPATH_SITE . '/components/com_fabrik/';
  * the specific controller for that class - otherwse use $controller to load
  * required controller class
  */
+
 if (strpos($input->getCmd('task'), '.') !== false)
 {
 	$controller = explode('.', $input->getCmd('task'));
@@ -97,5 +100,6 @@ else
 	$controller = new $classname($config);
 	$task = $input->getCmd('task');
 }
+
 $controller->execute($task);
 $controller->redirect();

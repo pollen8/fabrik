@@ -43,10 +43,12 @@ class JFormFieldFactedlinks extends JFormFieldList
 	{
 		$feListModel = $this->form->model->getFEModel();
 		$joins = $feListModel->getJoinsToThisKey();
+
 		if (empty($joins))
 		{
 			return '<i>' . JText::_('COM_FABRIK_NO_RELATED_DATA') . '</i>';
 		}
+
 		$form = $this->form;
 		$this->value = (array) $this->value;
 		$linkedLists = JArrayHelper::getValue($this->value, 'linkedlist', array());
@@ -88,6 +90,7 @@ class JFormFieldFactedlinks extends JFormFieldList
 					</tr>
 				</thead>
 				<tbody>';
+
 		foreach ($joins as $linkedList)
 		{
 			$key = $linkedList->list_id . '-' . $linkedList->form_id . '-' . $linkedList->element_id;
@@ -161,9 +164,11 @@ class JFormFieldFactedlinks extends JFormFieldList
 
 			$f++;
 		}
+
 		$listreturn[] = '</tbody></table>';
 		$formreturn[] = '</tbody></table>';
 		$return = array_merge($listreturn, $formreturn);
+
 		return implode("\n", $return);
 	}
 }

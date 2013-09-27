@@ -16,7 +16,7 @@ JHTML::stylesheet('media/com_fabrik/css/admin.css');
 JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 ?>
 
-<?php if(!empty( $this->sidebar)): ?>
+<?php if (!empty($this->sidebar)): ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
 	</div>
@@ -102,7 +102,8 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 								</span>
 								</td>
 							</tr>
-							<?php endforeach;?>
+							<?php
+							endforeach;?>
 						</tbody>
 					</table>
 				</div>
@@ -120,9 +121,11 @@ JToolBarHelper::title(JText::_('COM_FABRIK_WELCOME'), 'fabrik.png');
 						<li><a href="index.php?option=com_fabrik&task=home.installSampleData">
 						<?php echo JText::_('COM_FABRIK_HOME_INSTALL_SAMPLE_DATA')?></a>
 						</li>
-						<li><a onclick="return confirm('<?php echo JText::_('COM_FABRIK_HOME_CONFIRM_WIPE', true);?>')" href="index.php?option=com_fabrik&task=home.reset">
-							<?php echo JText::_('COM_FABRIK_HOME_RESET_FABRIK') ?>
-						</a></li>
+						<li>
+							<a onclick="return confirm('<?php echo JText::_('COM_FABRIK_HOME_CONFIRM_WIPE', true);?>')" href="index.php?option=com_fabrik&task=home.reset">
+								<?php echo JText::_('COM_FABRIK_HOME_RESET_FABRIK') ?>
+							</a>
+						</li>
 						<li>
 							<a href="index.php?option=com_fabrik&task=upgrade.check">Upgrade from 2.1</a>
 						</li>

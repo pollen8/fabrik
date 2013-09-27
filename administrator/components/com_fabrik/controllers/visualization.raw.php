@@ -53,6 +53,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 		$model = $this->getModel($viz->plugin);
 		$model->setId($id);
 		$pluginTask = $input->get('plugintask', '', 'request');
+
 		if ($pluginTask !== '')
 		{
 			echo $model->$pluginTask();
@@ -62,6 +63,7 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			$task = $input->get('task');
 
 			$path = JPATH_SITE . '/plugins/fabrik_visualization/' . $viz->plugin . '/controllers/' . $viz->plugin . '.php';
+
 			if (file_exists($path))
 			{
 				require_once $path;
@@ -83,8 +85,8 @@ class FabrikAdminControllerVisualization extends JControllerForm
 			$origId = $input->getInt('visualizationid');
 			$input->set('visualizationid', $id);
 			$controller->$task();
-
 		}
+
 		return $this;
 	}
 
@@ -103,5 +105,4 @@ class FabrikAdminControllerVisualization extends JControllerForm
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
-
 }

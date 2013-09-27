@@ -54,6 +54,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	public function getTable($type = 'Package', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -72,10 +73,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.package', 'package', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 
@@ -90,11 +93,14 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label AS text')->from('#__fabrik_lists');
+
 		if (!empty($ids))
 		{
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
+
 		$db->setQuery($query);
+
 		return $db->loadObjectList();
 	}
 
@@ -109,11 +115,14 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label, label AS text')->from('#__fabrik_forms');
+
 		if (!empty($ids))
 		{
 			$query->where('id NOT IN (' . implode(', ', $ids) . ')');
 		}
+
 		$db->setQuery($query);
+
 		return $db->loadObjectList();
 	}
 
@@ -130,6 +139,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$canvas = JArrayHelper::getValue($item->params, 'canvas', array());
 		$b = JArrayHelper::getValue($canvas, 'blocks', array());
 		$ids = JArrayHelper::getValue($b, $type, array());
+
 		return $ids;
 	}
 
@@ -141,16 +151,20 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	public function getSelListOpts()
 	{
 		$ids = $this->selectedBlocks('list');
+
 		if (empty($ids))
 		{
 			return array();
 		}
+
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label, label AS text')->from('#__fabrik_lists')->where('id IN (' . implode(', ', $ids) . ')');
 		$db->setQuery($query);
+
 		return $db->loadObjectList();
 	}
+
 	/**
 	 * Get set of forms selected by the package
 	 *
@@ -159,14 +173,17 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	public function getSelFormOpts()
 	{
 		$ids = $this->selectedBlocks('form');
+
 		if (empty($ids))
 		{
 			return array();
 		}
+
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id AS value, label, label AS text')->from('#__fabrik_forms')->where('id IN (' . implode(', ', $ids) . ')');
 		$db->setQuery($query);
+
 		return $db->loadObjectList();
 	}
 
@@ -210,6 +227,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$blocks = $input->get('blocks', array(), 'array');
+
 		foreach ($blocks as $type => $values)
 		{
 			$o->canvas->blocks->$type = $values;
@@ -223,6 +241,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			{
 				$item = $this->getTable($tbl);
 				$item->load($id);
+
 				if ($type == 'list')
 				{
 					// Also assign the form to the package
@@ -234,7 +253,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 						$o->blocks->form[] = $form->id;
 					}
 				}
-
 			}
 		}
 
@@ -242,6 +260,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$data['params']['canvas'] = $o;
 		$data['params'] = json_encode($data['params']);
 		$return = parent::save($data);
+
 		return $return;
 	}
 
@@ -260,6 +279,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$views = array();
 		$views[] = $this->outputPath . 'site/views/form/tmpl/default.xml';
 		$views[] = $this->outputPath . 'site/views/list/tmpl/default.xml';
+
 		foreach ($views as $view)
 		{
 			$str = file_get_contents($view);
@@ -279,10 +299,10 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	public function export($ids = array())
 	{
 		jimport('joomla.filesystem.archive');
+
 		foreach ($ids as $id)
 		{
 			$row = $this->getTable();
-
 			$row->load($id);
 			$this->outputPath = JPATH_ROOT . '/tmp/' . $this->getComponentName($row) . '/';
 			$json = $row->params;
@@ -291,10 +311,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$componentZipPath = $this->outputPath . 'packages/com_' . $this->getComponentName($row) . '.zip';
 			$pkgName = 'pkg_' . $this->getComponentName($row, true) . '.zip';
 			$packageZipPath = $this->outputPath . $pkgName;
+
 			if (JFile::exists($componentZipPath))
 			{
 				JFile::delete($componentZipPath);
 			}
+
 			$filenames = array();
 			$row2 = clone ($row);
 			$row2->params = $json;
@@ -313,6 +335,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$this->addFiles($filenames, $files, $this->outputPath);
 
 			$ok = $archive->create($componentZipPath, $files);
+
 			if (!$ok)
 			{
 				throw new RuntimeException('Unable to create component zip in ' . $componentZipPath, 500);
@@ -324,6 +347,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$formModuleZipPath = $this->outputPath . 'packages/mod_' . $this->getComponentName($row) . '_form.zip';
 
 			$ok = $archive->create($formModuleZipPath, $formModuleFiles);
+
 			if (!$ok)
 			{
 				throw new RuntimeException('Unable to form module zip in ' . $componentZipPath, 500);
@@ -346,6 +370,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$this->addFiles($filenames, $files, $this->outputPath);
 
 			$ok = $archive->create($packageZipPath, $files);
+
 			if (!$ok)
 			{
 				throw new RuntimeException('Unable to create zip in ' . $componentZipPath, 500);
@@ -396,11 +421,14 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	{
 		$exclude = array(($pkgName));
 		$files = JFolder::files($this->outputPath, '.', false, true, $exclude);
+
 		foreach ($files as $file)
 		{
 			JFile::delete($file);
 		}
+
 		$folders = JFolder::folders($this->outputPath, '.', false, true);
+
 		foreach ($folders as $folder)
 		{
 			if (JFolder::exists($folder))
@@ -485,6 +513,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$this->rowsToInsert('#__' . $row->component_name . '_formgroup', $formgroups, $return);
 
 			$groupids = array();
+
 			foreach ($formgroups as $formgroup)
 			{
 				$groupids[] = $formgroup->group_id;
@@ -506,10 +535,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$query->select('*')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $groupids) . ')');
 				$db->setQuery($query);
 				$elements = $db->loadObjectList();
+
 				foreach ($elements as $element)
 				{
 					$elementids[] = $element->id;
 				}
+
 				$this->rowsToInsert('#__' . $row->component_name . '_elements', $elements, $return);
 			}
 
@@ -517,12 +548,15 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$query->clear();
 			$query->select('*')->from('#__{package}_joins')
 				->where('list_id IN (' . implode(',', $lists) . ')');
+
 			if (!empty($elementids))
 			{
 				$query->where('element_id IN (' . implode(',', $elementids) . ')', 'OR');
 			}
+
 			$db->setQuery($query);
 			$joins = $db->loadObjectList();
+
 			if (!empty($joins))
 			{
 				$this->rowsToInsert('#__' . $row->component_name . '_joins', $joins, $return);
@@ -544,6 +578,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$this->rowsToInsert('#__' . $row->component_name . '_validations', $validations, $return);
 			}
 		}
+
 		/**
 		 * ok write the code to update components/componentname/componentname.php
 		 * have to do this in the installer as we don't know what package id the component will be installed as
@@ -557,11 +592,14 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$return[] = "}";
 		$return[] = "?>";
 		$return = implode("\n", $return);
+
 		$path = $this->outputPath . $this->manifestClassFileName($row);
+
 		if (!JFile::write($path, $return))
 		{
 			throw new RuntimeException('didnt write to ' . $path, 500);
 		}
+
 		return $path;
 	}
 
@@ -585,12 +623,14 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$fields = array();
 			$values = array();
 			$updates = array();
+
 			foreach (get_object_vars($row) as $k => $v)
 			{
 				if (is_array($v) or is_object($v) or $v === null)
 				{
 					continue;
 				}
+
 				if ($k[0] == '_')
 				{
 					// Internal field
@@ -603,6 +643,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$values[] = $val;
 				$updates[] = $db->quoteName($k) . ' = ' . $val;
 			}
+
 			$sql = sprintf($fmtsql, implode(",", $fields), implode(",", $values), implode(',', $updates)) . ';';
 			$return[] = "\t\t\$db->setQuery(\"$sql\");";
 			$return[] = "\t\t\$db->execute();";
@@ -622,10 +663,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function addFiles($filenames, &$files, $root = '')
 	{
 		$root = JPath::clean($root);
+
 		foreach ($filenames as $fpath)
 		{
 			$fpath = JPath::clean($fpath);
 			$zippath = str_replace($root, '', $fpath);
+
 			if (JFolder::exists($fpath))
 			{
 				$tmpFiles = JFolder::files($fpath, '.', true, true);
@@ -634,13 +677,16 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			else
 			{
 				$data = file_get_contents($fpath);
+
 				if ($data === false)
 				{
 					JFactory::getApplication()->enqueueMessage('could not read ' . $fpath, 'notice');
 				}
+
 				$files[] = array('name' => $zippath, 'data' => $data);
 			}
 		}
+
 		return $files;
 	}
 
@@ -657,14 +703,17 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$root = JPath::clean($root);
 		$from = JPATH_ADMINISTRATOR . '/components/com_fabrik/com_fabrik_skeleton/mod_fabrik_skeleton_form';
 		$to = $this->outputPath . 'mod_' . $row->component_name . '_form';
+
 		if (JFolder::exists($to))
 		{
 			JFolder::delete($to);
 		}
+
 		JFolder::create($to);
 		$files = JFolder::files($from);
 
 		$return = array();
+
 		foreach ($files as $file)
 		{
 			$str = file_get_contents($from . '/' . $file);
@@ -676,6 +725,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$zippath = str_replace($root, '', $to . '/' . $file);
 			$return[] = array('name' => $zippath, 'data' => $str);
 		}
+
 		return $return;
 	}
 
@@ -691,10 +741,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function getComponentName($row, $version = false)
 	{
 		$name = $row->component_name;
+
 		if ($version)
 		{
 			$name .= '_' . $row->version;
 		}
+
 		return $name;
 	}
 
@@ -712,7 +764,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		{
 			return $this->items;
 		}
+
 		$this->items = $row->blocks;
+
 		return $this->items;
 	}
 
@@ -743,6 +797,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$table = str_replace(array('_fabrik_', '{package}'), array('_' . $row->component_name . '_', $row->component_name), $table);
 			$sql .= 'TRUNCATE TABLE ' . $table . ";\n\n";
 		}
+
 		foreach ($row->blocks as $block => $ids)
 		{
 			$key = FabrikString::rtrimword($block, 's');
@@ -754,6 +809,8 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$lookups = $this->getInstallItems($row);
 		$lids = $lookups->list;
 		JArrayHelper::toInteger($lids);
+		$plugins = array();
+
 		foreach ($lids as $lid)
 		{
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
@@ -761,10 +818,10 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$sql .= "\n\n" . $listModel->getCreateTableSQL(true);
 		}
 
-		$plugins = array();
 		foreach ($lookups->form as $fid)
 		{
 			$formModel->setId($fid);
+
 			if (!in_array($fid, $lookups->list))
 			{
 				$lookups->list[] = $fid;
@@ -772,7 +829,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			// @FIXME get sql to create tables for dbjoin/cdd elements (need to do if not exists)
 			$dbs = $formModel->getElementOptions(false, 'name', true, true, array());
 		}
+
 		$sql .= "\n\n";
+
 		if (isset($lookups->visualization))
 		{
 			$vrow = FabTable::getInstance('Visualization', 'FabrikTable');
@@ -780,6 +839,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$visModel = JModelLegacy::getInstance($vrow->plugin, 'fabrikModel');
 			$visModel->setId($vid);
 			$listModels = $visModel->getlistModels();
+
 			foreach ($listModels as $lmodel)
 			{
 				$vrow = FabTable::getInstance('Visualization', 'FabrikTable');
@@ -787,6 +847,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				$visModel = JModel::getInstance($vrow->plugin, 'fabrikModel');
 				$visModel->setId($vid);
 				$listModels = $visModel->getlistModels();
+
 				foreach ($listModels as $lmodel)
 				{
 					$sql .= $lmodel->getCreateTableSQL(true);
@@ -799,8 +860,10 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 			}
 		}
+
 		$path = $this->outputPath . 'admin/sql/install.mysql.uft8.sql';
 		JFile::write($path, $sql);
+
 		return $path;
 	}
 
@@ -818,13 +881,16 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$formModel = JModelLegacy::getInstance('form', 'FabrikFEModel');
 		$lookups = $this->getInstallItems($row);
 		$plugins = array();
+
 		foreach ($lookups->form as $fid)
 		{
 			$formModel->setId($fid);
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $groupModel)
 			{
 				$elements = $groupModel->getMyElements();
+
 				foreach ($elements as $element)
 				{
 					$item = $element->getElement();
@@ -838,6 +904,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 				// Form plugins
 				$fplugins = $formModel->getParams()->get('plugins');
+
 				foreach ($fplugins as $fplugin)
 				{
 					$id = 'form_' . $fplugin;
@@ -850,10 +917,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 			}
 		}
+
 		foreach ($lookups->list as $id)
 		{
 			$listModel->setId($id);
 			$tplugins = $listModel->getParams()->get('plugins');
+
 			if (is_array($tplugins))
 			{
 				foreach ($tplugins as $tplugin)
@@ -868,6 +937,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 				}
 			}
 		}
+
 		return $plugins;
 	}
 
@@ -912,6 +982,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			{
 				continue;
 			}
+
 			$table = str_replace('{package}', $row->component_name, $table);
 			$sql[] = 'DROP TABLE IF EXISTS ' . $db->quoteName($table) . ';';
 		}
@@ -919,6 +990,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$path = $this->outputPath . 'admin/sql/uninstall.mysql.uft8.sql';
 		$sql = implode("\n", $sql);
 		JFile::write($path, $sql);
+
 		return $path;
 	}
 
@@ -944,20 +1016,24 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		$from = $skeltonFolder . 'fabrik_skeleton.php';
 		$to = $this->outputPath . 'site/' . $name . '.php';
+
 		if (JFile::exists($to))
 		{
 			JFile::delete($to);
 		}
+
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
 		// Admin holding page
 		$from = $skeltonFolder . 'admin.php';
 		$to = $this->outputPath . 'admin/' . $name . '.php';
+
 		if (JFile::exists($to))
 		{
 			JFile::delete($to);
 		}
+
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
@@ -991,7 +1067,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$to = $this->outputPath . 'admin/' . $name.'.php';
 		JFile::copy($from, $to);
 		$filenames[] = $to;*/
-
 	}
 
 	/**
@@ -1014,6 +1089,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		 */
 		// $jversion = isset($row->params->jversion) ? $row->params->jversion : $version->RELEASE;
 		$jVersion = $version->RELEASE;
+
 		return $jVersion;
 	}
 
@@ -1052,15 +1128,18 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	<files folder="packages">
 		<file type="component" id="' . $row->component_name . '">com_' . $this->getComponentName($row) . '.zip</file>
 ';
+
 		foreach ($plugins as $plugin)
 		{
 			$str .= '
 		<file type="plugin"	id="' . $plugin->id . '"	group="' . $plugin->group . '">' . $plugin->file . '</file>';
 		}
+
 		$str .= '
 	</files>
 </install>';
 		JFile::write($this->outputPath . $xmlname . '.xml', $str);
+
 		return $this->outputPath . $xmlname . '.xml';
 	}
 
@@ -1075,6 +1154,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	protected function manifestClassFileName($row)
 	{
 		$xmlname = str_replace('com_', '', $row->component_name);
+
 		return $xmlname . '.manifest.class.php';
 	}
 
@@ -1091,9 +1171,9 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	{
 		$archive = JArchive::getAdapter('zip');
 		JFolder::create($this->outputPath . 'packages');
+
 		foreach ($plugins as &$plugin)
 		{
-
 			$filenames = array(JPATH_ROOT . '/plugins/' . $plugin->group . '/' . $plugin->name);
 			$files = array();
 			$root = JPATH_ROOT . '/plugins/' . $plugin->group . '/' . $plugin->name . '/';
@@ -1102,6 +1182,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 			$pluginZipPath = $this->outputPath . 'packages/' . $plugin->file;
 			$ok = $archive->create($pluginZipPath, $files);
 			$plugin->fullfile = $pluginZipPath;
+
 			if (!$ok)
 			{
 				throw new RuntimeException('Unable to create zip in ' . $pluginZipPath, 500);
@@ -1182,6 +1263,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 </extension>';
 		$path = $this->outputPath . $xmlname . '.xml';
 		JFile::write($path, $str);
+
 		return $path;
 	}
 
@@ -1198,10 +1280,12 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.packagelist', 'packagelist', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		return $form;
 	}
 }

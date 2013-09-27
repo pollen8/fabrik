@@ -46,5 +46,4 @@ class FabrikAdminControllerCron extends JControllerForm
 		$model->getForm();
 		echo $model->getPluginHTML($plugin);
 	}
-
 }

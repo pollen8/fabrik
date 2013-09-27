@@ -25,7 +25,6 @@ require_once 'fabcontrollerform.php';
 
 class FabrikAdminControllerPlugin extends FabControllerForm
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered)
 	 *
@@ -54,14 +53,18 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
 			echo json_encode($o);
+
 			return;
 		}
-		$dispatcher = JDispatcher::getInstance();
+
 		if (substr($method, 0, 2) !== 'on')
 		{
 			$method = 'on' . JString::ucfirst($method);
 		}
+
+		$dispatcher = JDispatcher::getInstance();
 		$dispatcher->trigger($method);
+
 		return;
 	}
 
@@ -79,6 +82,7 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		require_once COM_FABRIK_FRONTEND . '/user_ajax.php';
 		$method = $input->get('method', '');
 		$userAjax = new userAjax($db);
+
 		if (method_exists($userAjax, $method))
 		{
 			$userAjax->$method();
@@ -100,20 +104,25 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 		$input = $app->input;
 		$cid = $input->get('element_id', array(), 'array');
 		JArrayHelper::toInteger($cid);
+
 		if (empty($cid))
 		{
 			return;
 		}
+
 		$query = $db->getQuery();
 		$query->select('id, plugin')->from('#__{package}_cron');
+
 		if (!empty($cid))
 		{
 			$query->where(' id IN (' . implode(',', $cid) . ')');
 		}
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$c = 0;
+
 		foreach ($rows as $row)
 		{
 			// Load in the plugin
@@ -139,10 +148,10 @@ class FabrikAdminControllerPlugin extends FabControllerForm
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisListModel);
 		}
+
 		$query = $db->getQuery();
 		$query->update('#__{package}_cron')->set('lastrun=NOW()')->where('id IN (' . implode(',', $cid) . ')');
 		$db->setQuery($query);
 		$db->execute();
 	}
-
 }

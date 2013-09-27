@@ -53,6 +53,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 
 		// JS events are saved as encoded html - so we don't want to double encode them
 		$encoded = JArrayHelper::getValue($this->element, 'encoded', false);
+
 		if (!$encoded)
 		{
 			$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
@@ -64,6 +65,7 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			. $this->value . '</textarea>';
 
 		$version = new JVersion;
+
 		if ($version->RELEASE == 2.5)
 		{
 			return $editor;
@@ -87,8 +89,9 @@ class JFormFieldFabrikeditor extends JFormFieldTextArea
 			$aceMode = '"ace/mode/' . $mode . '"';
 		}
 
-		$minHeight = str_ireplace('px', '' , $height);
-		$maxHeight = str_ireplace('px', '' , $maxHeight);
+		$minHeight = str_ireplace('px', '', $height);
+		$maxHeight = str_ireplace('px', '', $maxHeight);
+
 		// In code below, the +/- 2 is to account for the top/bottom border of 1px each.
 		$script = '
 window.addEvent(\'domready\', function () {
@@ -155,5 +158,4 @@ window.addEvent(\'domready\', function () {
 		// For element js event code.
 		return '<div id="' . $this->id . '-container"><div id="' . $this->id . '-ace"></div>' . $editor . '</div>';
 	}
-
 }

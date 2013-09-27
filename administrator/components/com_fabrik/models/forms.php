@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelForms extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelForms extends FabModelList
 		{
 			$config['filter_fields'] = array('f.id', 'f.label', 'f.published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -61,6 +61,7 @@ class FabrikAdminModelForms extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('f.published = ' . (int) $published);
@@ -72,6 +73,7 @@ class FabrikAdminModelForms extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -88,11 +90,14 @@ class FabrikAdminModelForms extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
 		}
+
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
+
 		return $query;
 	}
 
@@ -109,6 +114,7 @@ class FabrikAdminModelForms extends FabModelList
 	public function getTable($type = 'Form', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

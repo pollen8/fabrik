@@ -61,8 +61,7 @@ class JFormFieldToggleoptionslist extends JFormFieldList
 			});
 		})";
 		FabrikHelperHTML::addScriptDeclaration($script);
+
 		return parent::getInput();
-
 	}
-
 }

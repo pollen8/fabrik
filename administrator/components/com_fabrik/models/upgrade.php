@@ -24,7 +24,6 @@ require_once 'fabmodeladmin.php';
 
 class FabrikModelUpgrade extends FabModelAdmin
 {
-
 	/**
 	 * Construct
 	 *
@@ -34,16 +33,21 @@ class FabrikModelUpgrade extends FabModelAdmin
 	public function __construct($config = array())
 	{
 		$this->fundleMenus();
+
 		if (!$this->shouldUpgrade())
 		{
 			JFactory::getApplication()->enqueueMessage('Already updated');
+
 			return parent::__construct($config);
 		}
+
 		if ($this->backUp())
 		{
 			$this->upgrade();
 		}
+
 		JFactory::getApplication()->enqueueMessage('Upgraded OK!');
+
 		return parent::__construct($config);
 	}
 
@@ -64,15 +68,18 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 		$connModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
 		$cnnTables = array();
+
 		foreach ($tables as $dbName => $item)
 		{
 			$connModel->setId($item->connection_id);
 			$connModel->getConnection($item->connection_id);
 			$cDb = $connModel->getDb();
+
 			if (!array_key_exists($item->connection_id, $cnnTables))
 			{
 				$cnnTables[$item->connection_id] = $cDb->getTableList();
 			}
+
 			$listModel->set('connection', $connModel);
 			$qTable = $cDb->quoteName('bkup_' . $item->db_table_name);
 			$qItemTable = $cDb->quoteName($item->db_table_name);
@@ -92,6 +99,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 			$cDb->setQuery("INSERT INTO " . $qTable . " SELECT * FROM " . $qItemTable);
 			$cDb->execute();
 		}
+
 		return true;
 	}
 
@@ -106,17 +114,21 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$db = JFactory::getDbo(true);
 		$updates = array('#__fabrik_elements', '#__fabrik_cron', '#__fabrik_forms', '#__fabrik_groups', '#__fabrik_joins', '#__fabrik_jsactions',
 			'#__fabrik_tables', '#__fabrik_visualizations');
+
 		foreach ($updates as $update)
 		{
 			$db->setQuery("SELECT * FROM $update");
 			$rows = $db->loadObjectList();
+
 			foreach ($rows as $row)
 			{
 				$json = json_decode($row->attribs);
+
 				if ($json == false)
 				{
 					// Only do this if the attribs are not already in json format
 					$p = $this->fromAttribsToObject($row->attribs);
+
 					switch ($update)
 					{
 						case '#__fabrik_elements':
@@ -125,6 +137,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 							{
 								$row->state = -2;
 							}
+
 							$p->can_order = $row->can_order;
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							$p->view_access = isset($p->view_access) ? $this->mapACL($p->view_access) : 1;
@@ -154,6 +167,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 							$row->access = isset($row->access) ? $this->mapACL($row->access) : 1;
 							break;
 					}
+
 					$row->attribs = json_encode($p);
 					$db->updateObject($update, $row, 'id');
 				}
@@ -164,9 +178,11 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$prefix = JFactory::getApplication()->getCfg('dbprefix');
 		$sql = str_replace('#__', $prefix, $sql);
 		$sql = explode("\n", $sql);
+
 		foreach ($sql as $q)
 		{
 			$db->setQuery($q);
+
 			if (trim($q) !== '')
 			{
 				$db->execute();
@@ -180,6 +196,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$fabrate = "SHOW TABLES LIKE '" . $prefix . "fabrik_ratings'";
 		$db->setQuery($fabrate);
 		$rateresult = $db->loadObjectList();
+
 		if (count($rateresult))
 		{
 			$db->setQuery("ALTER TABLE " . $prefix . "fabrik_ratings CHANGE `tableid` `listid` INT( 6 ) NOT NULL");
@@ -226,21 +243,25 @@ class FabrikModelUpgrade extends FabModelAdmin
 	{
 		$o = new stdClass;
 		$a = explode("\n", $str);
+
 		foreach ($a as $line)
 		{
 			if (strstr($line, '='))
 			{
 				list($key, $val) = explode("=", $line, 2);
+
 				if (strstr($val, '//..*..//'))
 				{
 					$val = explode('//..*..//', $val);
 				}
+
 				if ($key)
 				{
 					$o->$key = $val;
 				}
 			}
 		}
+
 		return $o;
 	}
 
@@ -267,6 +288,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 				$group = 3;
 				break;
 		}
+
 		return $group;
 	}
 
@@ -282,6 +304,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$r = array();
 		$db->setQuery("SHOW TABLES");
 		$rows = $db->loadColumn();
+
 		foreach ($rows as $row)
 		{
 			if (strstr($row, '_fabrik_') && !strstr($row, 'bkup_'))
@@ -292,8 +315,10 @@ class FabrikModelUpgrade extends FabModelAdmin
 				$r[] = $o;
 			}
 		}
+
 		return $r;
 	}
+
 	/**
 	 * Check for an existence of _fabrik_tables table if there is then we should upgrade
 	 *
@@ -305,6 +330,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 		$db = JFactory::getDbo(true);
 		$db->setQuery("SHOW TABLES");
 		$rows = $db->loadColumn();
+
 		foreach ($rows as $row)
 		{
 			if (strstr($row, '_fabrik_tables') && !strstr($row, 'bkup_'))
@@ -312,6 +338,7 @@ class FabrikModelUpgrade extends FabModelAdmin
 				return true;
 			}
 		}
+
 		return false;
 	}
 }

@@ -68,10 +68,12 @@ class FabrikAdminControllerForm extends JControllerForm
 
 		// For now lets route this to the html view.
 		$view = $this->getView($viewName, 'html');
+
 		if ($model = JModelLegacy::getInstance('Form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
 		}
+
 		$model->setId($input->get('formid', 0));
 		$this->isMambot = $input->get('_isMambot', 0);
 		$model->getForm();
@@ -84,6 +86,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		}
 
 		$validated = $model->validate();
+
 		if (!$validated)
 		{
 			// If its in a module with ajax or in a package or inline edit
@@ -97,6 +100,7 @@ class FabrikAdminControllerForm extends JControllerForm
 
 					// Only raise errors for fields that are present in the inline edit plugin
 					$toValidate = array_keys($input->get('toValidate', array(), 'array'));
+
 					foreach ($errs as $errorKey => $e)
 					{
 						if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
@@ -105,6 +109,7 @@ class FabrikAdminControllerForm extends JControllerForm
 							$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 						}
 					}
+
 					if (!empty($eMsgs))
 					{
 						$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
@@ -120,11 +125,13 @@ class FabrikAdminControllerForm extends JControllerForm
 				{
 					echo $model->getJsonErrors();
 				}
+
 				if (!$validated)
 				{
 					return;
 				}
 			}
+
 			if (!$validated)
 			{
 				if ($this->isMambot)
@@ -142,13 +149,13 @@ class FabrikAdminControllerForm extends JControllerForm
 				{
 					$view->display();
 				}
+
 				return;
 			}
 		}
 
 		// Reset errors as validate() now returns ok validations as empty arrays
 		$model->errors = array();
-
 		$model->process();
 
 		// Check if any plugin has created a new validation error
@@ -156,6 +163,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
+
 			return;
 		}
 
@@ -174,14 +182,18 @@ class FabrikAdminControllerForm extends JControllerForm
 			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
 			$inlineModel->setFormModel($model);
 			echo $inlineModel->showResults();
+
 			return;
 		}
+
 		if ($input->getInt('packageId', 0) !== 0)
 		{
 			$rowid = $input->getString('rowid', '', 'string');
 			echo json_encode(array('msg' => $msg, 'rowid' => $rowid));
+
 			return;
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$url = 'index.php?option=com_fabrik&task=list.view&format=raw&listid=' . $tid;
@@ -207,10 +219,12 @@ class FabrikAdminControllerForm extends JControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
+
 		if (array_key_exists('apply', $model->formData))
 		{
 			$page = 'index.php?option=com_fabrik&task=form.view&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
@@ -220,6 +234,7 @@ class FabrikAdminControllerForm extends JControllerForm
 		{
 			$page = 'index.php?option=com_fabrik&task=list.view&cid[]=' . $model->getlistModel()->getTable()->id;
 		}
+
 		$this->setRedirect($page, $msg);
 	}
 

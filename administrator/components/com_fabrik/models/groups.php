@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelGroups extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -40,6 +39,7 @@ class FabrikAdminModelGroups extends FabModelList
 		{
 			$config['filter_fields'] = array('g.id', 'g.name', 'g.label', 'f.label', 'g.published');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -68,6 +68,7 @@ class FabrikAdminModelGroups extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'category_title ' . $orderDirn . ', ordering';
@@ -75,6 +76,7 @@ class FabrikAdminModelGroups extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('g.published = ' . (int) $published);
@@ -86,6 +88,7 @@ class FabrikAdminModelGroups extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -95,6 +98,7 @@ class FabrikAdminModelGroups extends FabModelList
 		$query->order($db->escape($orderCol . ' ' . $orderDirn));
 
 		$this->filterByFormQuery($query, 'fg');
+
 		return $query;
 	}
 
@@ -114,6 +118,7 @@ class FabrikAdminModelGroups extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('g.published = ' . (int) $published);
@@ -125,11 +130,13 @@ class FabrikAdminModelGroups extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('(g.name LIKE ' . $search . ' OR g.label LIKE ' . $search . ')');
 		}
+
 		$this->_db->setQuery($query, $limitstart, $limit);
 		$result = $this->_db->loadObjectList();
 
@@ -142,11 +149,13 @@ class FabrikAdminModelGroups extends FabModelList
 
 		$db->setQuery($query);
 		$elementcount = $db->loadObjectList('group_id');
+
 		for ($i = 0; $i < count($result); $i++)
 		{
 			$k = $result[$i]->id;
 			$result[$i]->_elementCount = @$elementcount[$k]->count;
 		}
+
 		return $result;
 	}
 
@@ -163,6 +172,7 @@ class FabrikAdminModelGroups extends FabModelList
 	public function getTable($type = 'Group', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 

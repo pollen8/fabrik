@@ -24,7 +24,6 @@ require_once 'fabmodellist.php';
 
 class FabrikAdminModelElements extends FabModelList
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -42,6 +41,7 @@ class FabrikAdminModelElements extends FabModelList
 			$config['filter_fields'] = array('e.id', 'e.name', 'e.label', 'e.show_in_list_summary', 'e.published', 'e.ordering', 'g.label',
 				'e.plugin');
 		}
+
 		parent::__construct($config);
 	}
 
@@ -64,6 +64,7 @@ class FabrikAdminModelElements extends FabModelList
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
+
 		if (is_numeric($published))
 		{
 			$query->where('e.published = ' . (int) $published);
@@ -75,6 +76,7 @@ class FabrikAdminModelElements extends FabModelList
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
+
 		if (!empty($search))
 		{
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
@@ -82,18 +84,21 @@ class FabrikAdminModelElements extends FabModelList
 		}
 
 		$group = $this->getState('filter.group');
+
 		if (trim($group) !== '')
 		{
 			$query->where('g.id = ' . (int) $group);
 		}
 
 		$showInList = $this->getState('filter.showinlist');
+
 		if (trim($showInList) !== '')
 		{
 			$query->where('e.show_in_list_summary = ' . (int) $showInList);
 		}
 
 		$plugin = $this->getState('filter.plugin');
+
 		if (trim($plugin) !== '')
 		{
 			$query->where('e.plugin = ' . $db->quote($plugin));
@@ -101,10 +106,12 @@ class FabrikAdminModelElements extends FabModelList
 
 		// For drop fields view
 		$cids = (array) $this->getState('filter.cid');
+
 		if (!empty($cids))
 		{
 			$query->where('e.id IN (' . implode(',', $cids) . ')');
 		}
+
 		$this->filterByFormQuery($query, 'fg');
 
 		// Join over the users for the checked out user.
@@ -121,10 +128,12 @@ class FabrikAdminModelElements extends FabModelList
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 'ordering');
 		$orderDirn = $this->state->get('list.direction');
+
 		if ($orderCol == 'ordering' || $orderCol == 'category_title')
 		{
 			$orderCol = 'ordering';
 		}
+
 		if (trim($orderCol) !== '')
 		{
 			$query->order($db->escape($orderCol . ' ' . $orderDirn));
@@ -157,6 +166,7 @@ class FabrikAdminModelElements extends FabModelList
 
 			$query->select('u.name AS editor, ' . $fullname . ', g.name AS group_name, l.db_table_name');
 		}
+
 		return $query;
 	}
 
@@ -213,6 +223,7 @@ class FabrikAdminModelElements extends FabModelList
 						$v[] = "No plugin type selected!";
 						continue;
 					}
+
 					$msgs = $params->get($pname . '-message');
 					/*
 					 * $$$ hugh - elements which haven't been saved since Published param was added won't have
@@ -226,13 +237,16 @@ class FabrikAdminModelElements extends FabModelList
 					{
 						$published = $validations->plugin_published[$i] ? JText::_('JPUBLISHED') : JText::_('JUNPUBLISHED');
 					}
+
 					$v[] = '<b>' . $pname . '</b><i> ' . $published . '</i>'
 					. '<br />' . JText::_('COM_FABRIK_FIELD_ERROR_MSG_LABEL') . ': <i>' . JArrayHelper::getValue($msgs, $i, 'n/a') . '</i>';
 				}
 			}
+
 			$item->numValidations = count($v);
 			$item->validationTip = $v;
 		}
+
 		return $items;
 	}
 
@@ -251,6 +265,7 @@ class FabrikAdminModelElements extends FabModelList
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo();
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -329,6 +344,7 @@ class FabrikAdminModelElements extends FabModelList
 			->where('state >= 0')->where('access IN (' . $levels . ')')->where('folder = ' . $db->quote('fabrik_element'))->order('text');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -346,6 +362,7 @@ class FabrikAdminModelElements extends FabModelList
 	public function batch($ids, $batch)
 	{
 		JArrayHelper::toInteger($ids);
+
 		foreach ($ids as $id)
 		{
 			$item = $this->getTable('Element');

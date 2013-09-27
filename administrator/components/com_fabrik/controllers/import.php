@@ -8,7 +8,7 @@
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
- // No direct access
+// No direct access
 defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabcontrollerform.php';
@@ -23,7 +23,6 @@ require_once 'fabcontrollerform.php';
 
 class FabrikAdminControllerImport extends FabControllerForm
 {
-
 	/**
 	 * If new elements found in the CSV file and user decided to
 	 * add them to the table then do it here
@@ -90,19 +89,23 @@ class FabrikAdminControllerImport extends FabControllerForm
 				$session = JFactory::getSession();
 				$allHeadings = (array) $session->get('com_fabrik.csvheadings');
 				$index = array_search($elname, $allHeadings);
+
 				if ($index !== false)
 				{
 					$dataRemoved = true;
+
 					foreach ($model->data as &$d)
 					{
 						unset($d[$index]);
 					}
 				}
 			}
+
 			$c++;
 		}
 
 		$adminListModel->ammendTable();
+
 		if ($dataRemoved)
 		{
 			// Reindex data array
@@ -111,6 +114,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 				$model->data[$k] = array_reverse(array_reverse($d));
 			}
 		}
+
 		return $headings;
 	}
 
@@ -125,6 +129,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 	public function cancel($key = null)
 	{
 		$this->setRedirect('index.php?option=com_fabrik&view=lists');
+
 		return true;
 	}
 
@@ -143,6 +148,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$model->import();
 		$listid = $input->getInt('fabrik_list', $input->get('listid'));
+
 		if ($listid == 0)
 		{
 			$plugins = $input->get('plugin', array(), 'array');
@@ -152,6 +158,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 			$c = 0;
 			$dbname = $input->get('db_table_name', '', 'string');
 			$model->matchedHeadings = array();
+
 			foreach ($createElements as $elname => $add)
 			{
 				if ($add)
@@ -161,6 +168,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 					$newElements[$name] = $plugin;
 					$model->matchedHeadings[$dbname . '.' . $name] = $name;
 				}
+
 				$c++;
 			}
 			// Stop id and date_time being added to the table and instead use $newElements
@@ -203,11 +211,14 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$viewType = JFactory::getDocument()->getType();
 		$view = $this->getView('import', $viewType);
 		$this->getModel('Importcsv', 'FabrikFEModel')->clearSession();
+
 		if ($model = $this->getModel())
 		{
 			$view->setModel($model, true);
 		}
+
 		$view->display();
+
 		return $this;
 	}
 
@@ -224,11 +235,14 @@ class FabrikAdminControllerImport extends FabControllerForm
 		$model = $this->getModel('Importcsv', 'FabrikFEModel');
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (!$model->checkUpload())
 		{
 			$this->display();
+
 			return;
 		}
+
 		$id = $model->getListModel()->getId();
 		$document = JFactory::getDocument();
 		$viewName = 'import';
@@ -237,6 +251,7 @@ class FabrikAdminControllerImport extends FabControllerForm
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
 		$model->import();
+
 		if (!empty($model->newHeadings))
 		{
 			$view->setModel($model, true);

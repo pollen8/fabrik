@@ -66,6 +66,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function __construct($config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		parent::__construct($config);
 	}
 
@@ -82,6 +83,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	public function getTable($type = 'Element', $prefix = 'FabrikTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return FabTable::getInstance($type, $prefix, $config);
 	}
 
@@ -98,11 +100,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm('com_fabrik.element', 'element', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		$form->model = $this;
+
 		return $form;
 	}
 
@@ -116,10 +121,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_fabrik.edit.element.data', array());
+
 		if (empty($data))
 		{
 			$data = $this->getItem();
 		}
+
 		return $data;
 	}
 
@@ -174,6 +181,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		if (!$item->addToListView($pks, $value, $user->get('id')))
 		{
 			$this->setError($item->getError());
+
 			return false;
 		}
 
@@ -181,11 +189,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		// Trigger the onContentChangeState event.
 		$result = $dispatcher->trigger($this->event_change_state, array($context, $pks, $value));
+
 		if (in_array(false, $result, true))
 		{
 			$this->setError($item->getError());
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -203,11 +214,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$query->select('*')->from('#__{package}_jsactions')->where('element_id = ' . $id);
 		$db->setQuery($query);
 		$items = $db->loadObjectList();
+
 		for ($i = 0; $i < count($items); $i++)
 		{
 			$items[$i]->params = json_decode($items[$i]->params);
 			$items[$i]->params->js_e_value = htmlspecialchars_decode($items[$i]->params->js_e_value);
 		}
+
 		return $items;
 	}
 
@@ -224,6 +237,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$published = (array) FArrayHelper::getNestedValue($item->params, 'validations.plugin_published', array());
 		$icons = (array) FArrayHelper::getNestedValue($item->params, 'validations.show_icon', array());
 		$return = array();
+
 		for ($i = 0; $i < count($plugins); $i ++)
 		{
 			$o = new stdClass;
@@ -232,6 +246,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$o->show_icon = JArrayHelper::getValue($icons, $i, 1);
 			$return[] = $o;
 		}
+
 		return $return;
 	}
 
@@ -262,6 +277,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$plugins = json_encode($this->getPlugins());
 		$js[] = "\tFabrik.controller = new fabrikAdminElement($plugins, opts, " . (int) $this->getItem()->id . ");";
 		$js[] = "})";
+
 		return implode("\n", $js);
 	}
 
@@ -280,13 +296,16 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$input = $app->input;
 		$str = '';
 		$item = $this->getItem();
+
 		if (is_null($plugin))
 		{
 			$plugin = $item->plugin;
 		}
+
 		$input->set('view', 'element');
 		JPluginHelper::importPlugin('fabrik_element', $plugin);
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+
 		if ($plugin == '')
 		{
 			$str = '<div class="alert">' . JText::_('COM_FABRIK_SELECT_A_PLUGIN') . '</div>';
@@ -297,6 +316,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$mode = FabrikWorker::j3() ? 'nav-tabs' : '';
 			$str = $plugin->onRenderAdminSettings(JArrayHelper::fromObject($item), null, $mode);
 		}
+
 		return $str;
 	}
 
@@ -337,8 +357,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			return false;
 		}
-		$db = FabrikWorker::getDbo(true);
 
+		$db = FabrikWorker::getDbo(true);
 		$elementModel = $this->getElementPluginModel($data);
 		$nameChanged = $data['name'] !== $elementModel->getElement()->name;
 		$elementModel->getElement()->bind($data);
@@ -353,6 +373,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ADD_FIELDS'));
 			}
+
 			if (FabrikWorker::isReserved($data['name']))
 			{
 				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
@@ -364,11 +385,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 			{
 				$this->setError(JText::_('COM_FABRIK_ERR_CANT_ALTER_EXISTING_FIELDS'));
 			}
+
 			if ($nameChanged && FabrikWorker::isReserved($data['name'], false))
 			{
 				$this->setError(JText::_('COM_FABRIK_RESEVED_NAME_USED'));
 			}
 		}
+
 		$listModel = $elementModel->getListModel();
 		/**
 		 * Test for duplicate names
@@ -383,6 +406,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$db->setQuery($query);
 			$joinTblId = (int) $db->loadResult();
 			$ignore = array($data['id']);
+
 			if ($joinTblId === 0)
 			{
 				if ($listModel->fieldExists($data['name'], $ignore))
@@ -395,6 +419,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$joinListModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 				$joinListModel->setId($joinTblId);
 				$joinEls = $joinListModel->getElements();
+
 				foreach ($joinEls as $joinEl)
 				{
 					if ($joinEl->getElement()->name == $data['name'])
@@ -402,6 +427,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 						$ignore[] = $joinEl->getElement()->id;
 					}
 				}
+
 				if ($joinListModel->fieldExists($data['name'], $ignore))
 				{
 					$this->setError(JText::_('COM_FABRIK_ELEMENT_NAME_IN_USE'));
@@ -434,6 +460,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		 * $elementModel->getElement()->bind($data);
 		 */
 		$elementModel->setId($id);
+
 		return $elementModel;
 	}
 
@@ -460,15 +487,18 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$elementModel->getElement()->bind($data);
 		$origId = $input->getInt('id');
 		$row = $elementModel->getElement();
+
 		if ($new)
 		{
 			// Have to forcefully set group id otherwise listmodel id is blank
 			$elementModel->getElement()->group_id = $data['group_id'];
 		}
+
 		$listModel = $elementModel->getListModel();
 		$item = $listModel->getTable();
 
 		// Are we updating the name of the primary key element?
+
 		if ($row->name === FabrikString::shortColName($item->db_primary_key))
 		{
 			if ($name !== $row->name)
@@ -480,6 +510,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 
 		$jsons = array('sub_values', 'sub_labels', 'sub_initial_selection');
+
 		foreach ($jsons as $json)
 		{
 			if (array_key_exists($json, $data))
@@ -491,6 +522,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$data['name'] = ($listModel->canAlterFields() || $new || $listModel->noTable()) ? $name : $input->get('name_orig', '');
 
 		$ar = array('published', 'use_in_page_title', 'show_in_list_summary', 'link_to_detail', 'can_order', 'filter_exact_match');
+
 		foreach ($ar as $a)
 		{
 			if (!array_key_exists($a, $data))
@@ -513,6 +545,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		}
 
 		$datenow = new JDate;
+
 		if ($row->id != 0)
 		{
 			$data['modified'] = $datenow->toSql();
@@ -548,12 +581,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$validations = JArrayHelper::getValue($params['validations'], 'plugin', array());
 		$num_validations = count($validations);
 		$validation_plugins = $this->getValidations($elementModel, $validations);
+
 		foreach ($validation_plugins as $plugin)
 		{
 			$plugin_form = $plugin->getJForm();
 			JForm::addFormPath(JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->get('pluginName'));
 			$xmlFile = JPATH_SITE . '/plugins/fabrik_validationrule/' . $plugin->get('pluginName') . '/forms/fields.xml';
 			$xml = $plugin->jform->loadFile($xmlFile, false);
+
 			foreach ($plugin_form->getFieldsets() as $fieldset)
 			{
 				foreach ($plugin_form->getFieldset($fieldset->name) as $field)
@@ -569,6 +604,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 									$params[$field->fieldname][$x] = '';
 								}
 							}
+
 							ksort($params[$field->fieldname]);
 						}
 					}
@@ -579,10 +615,12 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$data['params'] = json_encode($params);
 		$row->params = $data['params'];
 		$cond = 'group_id = ' . (int) $row->group_id;
+
 		if ($new)
 		{
 			$data['ordering'] = $row->getNextOrder($cond);
 		}
+
 		$row->reorder($cond);
 		/**
 		 * $$$ hugh - shouldn't updateChildIds() happen AFTER we save the main row?
@@ -601,6 +639,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$tablename = $listModel->getTable()->db_table_name;
 			$hasprefix = (strstr($tablename, $prefix) === false) ? false : true;
 			$tablename = str_replace($prefix, '#__', $tablename);
+
 			if (in_array($tablename, $this->core))
 			{
 				$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_CORE_TABLE'), 'notice');
@@ -612,6 +651,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 					$app->enqueueMessage(JText::_('COM_FABRIK_WARNING_UPDATE_TABLE_WITH_PREFIX'), 'notice');
 				}
 			}
+
 			$app->setUserState('com_fabrik.confirmUpdate', 1);
 
 			$app->setUserState('com_fabrik.plugin_orig', $origplugin);
@@ -633,11 +673,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$app->setUserState('com_fabrik.confirmUpdate', 0);
 		}
+
 		if ((int) $listModel->getTable()->id !== 0)
 		{
 			$this->updateIndexes($elementModel, $listModel, $row);
 		}
+
 		$return = parent::save($data);
+
 		if ($return)
 		{
 			$this->updateJavascript($data);
@@ -655,10 +698,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 			if (!$elementModel->onSave($data))
 			{
 				$this->setError(JText::_('COM_FABRIK_ERROR_SAVING_ELEMENT_PLUGIN_OPTIONS'));
+
 				return false;
 			}
 		}
+
 		parent::cleanCache('com_fabrik');
+
 		return $return;
 		/**
 		 * used for prefab
@@ -682,6 +728,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$list = $elementModel->getListModel()->getTable();
 		$origElid = $row->id;
 		$tmpgroupModel = $elementModel->getGroup();
+
 		if ($tmpgroupModel->isJoin())
 		{
 			$dbname = $tmpgroupModel->getJoinModel()->getJoin()->table_join;
@@ -690,6 +737,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$dbname = $list->db_table_name;
 		}
+
 		$query = $db->getQuery(true);
 		$query->select("DISTINCT(l.id) AS id, db_table_name, l.label, l.form_id, l.label AS form_label, g.id AS group_id");
 		$query->from("#__{package}_lists AS l");
@@ -722,6 +770,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			 * (for instance) we redirect to the wrong copy of the element
 			 */
 			$rowcopy = clone ($row);
+
 			foreach ($othertables as $listid => $t)
 			{
 				$rowcopy->id = 0;
@@ -732,6 +781,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 				// Copy join records
 				$join = $this->getTable('join');
+
 				if ($join->load(array('element_id' => $origElid)))
 				{
 					$join->id = 0;
@@ -740,7 +790,6 @@ class FabrikAdminModelElement extends FabModelAdmin
 					$join->list_id = $listid;
 					$join->store();
 				}
-
 			}
 		}
 	}
@@ -758,23 +807,20 @@ class FabrikAdminModelElement extends FabModelAdmin
 		if ((int) $row->id === 0)
 		{
 			// New element so don't update child ids
+
 			return;
 		}
-		/*
-		$db = FabrikWorker::getDbo(true);
-		$query = $db->getQuery(true);
-		$query->select('id')->from('#__{package}_elements')->where("parent_id = ".(int) $row->id);
-		$db->setQuery($query);
-		$objs = $db->loadObjectList();
-		 */
+
 		$ids = $this->getElementDescendents($row->id);
 		$ignore = array('_tbl', '_tbl_key', '_db', 'id', 'group_id', 'created', 'created_by', 'parent_id', 'ordering');
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
+
 		foreach ($ids as $id)
 		{
 			$plugin = $pluginManager->getElementPlugin($id);
 			$leave = $plugin->getFixedChildParameters();
 			$item = $plugin->getElement();
+
 			foreach ($row as $key => $val)
 			{
 				if (!in_array($key, $ignore))
@@ -783,6 +829,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 					{
 						$origParams = json_decode($item->params);
 						$newParams = json_decode($val);
+
 						foreach ($newParams as $pKey => $pVal)
 						{
 							if (!in_array($pKey, $leave))
@@ -790,6 +837,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 								$origParams->$pKey = $pVal;
 							}
 						}
+
 						$val = json_encode($origParams);
 					}
 					else
@@ -800,14 +848,17 @@ class FabrikAdminModelElement extends FabModelAdmin
 							$val = str_replace("`", '', $val);
 						}
 					}
+
 					$item->$key = $val;
 				}
 			}
+
 			if (!$item->store())
 			{
 				JError::raiseWarning(500, $item->getError());
 			}
 		}
+
 		return true;
 	}
 
@@ -832,6 +883,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 
 		// Int elements cant have a index size attrib
 		$size = JString::stristr($ftype, 'int') || $ftype == 'DATETIME' ? '' : '10';
+
 		if ($elementModel->getParams()->get('can_order'))
 		{
 			$listModel->addIndex($row->name, 'order', 'INDEX', $size);
@@ -840,6 +892,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$listModel->dropIndex($row->name, 'order', 'INDEX');
 		}
+
 		if ($row->filter_type != '')
 		{
 			$listModel->addIndex($row->name, 'filter', 'INDEX', $size);
@@ -890,6 +943,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			{
 				continue;
 			}
+
 			$params = new stdClass;
 			$params->js_e_event = $eEvent[$c];
 			$params->js_e_trigger = $eTrigger[$c];
@@ -898,9 +952,8 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$params->js_published = $ePublished[$c];
 			$params = json_encode($params);
 			$code = $jform['code'][$c];
-			//$code = str_replace("}", "}\n", $code);
-			//$code = str_replace('"', "'", $code);
-			$code =  htmlspecialchars($code, ENT_QUOTES);
+			$code = htmlspecialchars($code, ENT_QUOTES);
+
 			foreach ($ids as $id)
 			{
 				$query = $db->getQuery(true);
@@ -930,11 +983,13 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			return array();
 		}
+
 		JArrayHelper::toInteger($ids);
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		JArrayHelper::toInteger($ids);
 		$query->select('id')->from('#__{package}_elements')->where('group_id IN (' . implode(',', $ids) . ')');
+
 		return $db->setQuery($query)->loadColumn();
 	}
 
@@ -953,15 +1008,18 @@ class FabrikAdminModelElement extends FabModelAdmin
 		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$elementIds = $app->input->get('elementIds', array(), 'array');
+
 		foreach ($elementIds as $id)
 		{
 			if ((int) $id === 0)
 			{
 				continue;
 			}
+
 			$pluginModel = $pluginManager->getElementPlugin($id);
 			$pluginModel->onRemove($id);
 			$element = $pluginModel->getElement();
+
 			if ($pluginModel->isRepeatElement())
 			{
 				$listModel = $pluginModel->getListModel();
@@ -970,6 +1028,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$db->setQuery('DROP TABLE ' . $tableName);
 				$db->execute();
 			}
+
 			$listModel = $pluginModel->getListModel();
 			$item = $listModel->getTable();
 
@@ -981,6 +1040,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$db->execute();
 			}
 		}
+
 		return parent::delete($pks);
 	}
 
@@ -998,6 +1058,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		JArrayHelper::toInteger($cid);
 		$names = $input->get('name', array(), 'array');
 		$rule = $this->getTable('element');
+
 		foreach ($cid as $id => $groupid)
 		{
 			if ($rule->load((int) $id))
@@ -1019,6 +1080,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				return JError::raiseWarning(500, $rule->getError());
 			}
 		}
+
 		return true;
 	}
 
@@ -1037,6 +1099,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			return;
 		}
+
 		$row->name = str_replace('`', '', $row->name);
 		$listModel = $elementModel->getListModel();
 		$tableName = $this->getRepeatElementTableName($elementModel, $row);
@@ -1085,11 +1148,14 @@ class FabrikAdminModelElement extends FabModelAdmin
 	protected function getRepeatElementTableName($elementModel, $row = null)
 	{
 		$listModel = $elementModel->getListModel();
+
 		if (is_null($row))
 		{
 			$row = $elementModel->getElement();
 		}
+
 		$origTableName = $listModel->getTable()->db_table_name;
+
 		return $origTableName . '_repeat_' . str_replace('`', '', $row->name);
 	}
 
@@ -1103,6 +1169,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 	{
 		$item = $this->getItem();
 		$item->parent_id = (int) $item->parent_id;
+
 		if ($item->parent_id === 0)
 		{
 			$parent = 0;
@@ -1114,6 +1181,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 			$query->select('*')->from('#__{package}_elements')->where('id = ' . (int) $item->parent_id);
 			$db->setQuery($query);
 			$parent = $db->loadObject();
+
 			if (is_null($parent))
 			{
 				// Perhaps the parent element was deleted?
@@ -1121,6 +1189,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$item->parent_id = 0;
 			}
 		}
+
 		return $parent;
 	}
 
@@ -1153,31 +1222,34 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			$id = $this->getState($this->getName() . '.id');
 		}
+
 		$db = FabrikWorker::getDbo(true);
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_elements')->where('parent_id = ' . (int) $id);
 		$db->setQuery($query);
 		$kids = $db->loadObjectList();
 		$all_kids = array();
+
 		foreach ($kids as $kid)
 		{
 			$all_kids[] = $kid->id;
 			$all_kids = array_merge($this->getElementDescendents($kid->id), $all_kids);
 		}
+
 		return $all_kids;
 	}
 
 	/**
-	* Loads in elements validation objects
-	* $$$ hugh - trying to fix issue on saving where we have to massage the plugin
-	* params, which means knowing all the param names, but we can't call the FE model
-	* version of this method 'cos ... well, it breaks.
-	*
-	* @param   object  $elementModel  a front end element model
-	* @param   array   $usedPlugins   an array of validation plugin names to load
-	*
-	* @return  array	validation objects
-	*/
+	 * Loads in elements validation objects
+	 * $$$ hugh - trying to fix issue on saving where we have to massage the plugin
+	 * params, which means knowing all the param names, but we can't call the FE model
+	 * version of this method 'cos ... well, it breaks.
+	 *
+	 * @param   object  $elementModel  a front end element model
+	 * @param   array   $usedPlugins   an array of validation plugin names to load
+	 *
+	 * @return  array	validation objects
+	 */
 
 	private function getValidations($elementModel, $usedPlugins = array())
 	{
@@ -1185,6 +1257,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 		{
 			return $this->_aValidations;
 		}
+
 		$pluginManager = FabrikWorker::getPluginManager();
 		$pluginManager->getPlugInGroup('validationrule');
 		$this->aValidations = array();
@@ -1206,6 +1279,7 @@ class FabrikAdminModelElement extends FabModelAdmin
 				$this->aValidations[] = $plugIn;
 			}
 		}
+
 		return $this->aValidations;
 	}
 }
