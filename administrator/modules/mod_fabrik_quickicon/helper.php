@@ -40,9 +40,11 @@ abstract class ModFabrik_QuickIconHelper
 	public static function &getButtons($params)
 	{
 		$key = (string) $params;
+
 		if (!isset(self::$buttons[$key]))
 		{
 			$context = $params->get('context', 'mod_fabrik_quickicon');
+
 			if ($context == 'mod_fabrik_quickicon')
 			{
 				// Load mod_quickicon language file in case this method is called before rendering the module
@@ -112,7 +114,6 @@ abstract class ModFabrik_QuickIconHelper
 				$html[] = $btn;
 			}
 		}
-		//self::$buttons[$key] = implode("\n", $html);
 
 		return self::$buttons[$key];
 	}
@@ -151,22 +152,6 @@ abstract class ModFabrik_QuickIconHelper
 		}
 
 		return $button;
-
-		$html[] = '<div class="row-striped">';
-		$html[] = '<div class="row-fluid"' . (empty($button['id']) ? '' : (' id="' . $button['id'] . '"')) . '>';
-		$html[] = '<div class="span12">';
-		$html[] = '<a href="' . $button['link'] . '"';
-		$html[] = (empty($button['target']) ? '' : (' target="' . $button['target'] . '"'));
-		$html[] = (empty($button['onclick']) ? '' : (' onclick="' . $button['onclick'] . '"'));
-		$html[] = (empty($button['title']) ? '' : (' title="' . htmlspecialchars($button['title']) . '"'));
-		$html[] = '>';
-		$html[] = '<img style="width:16px" src="' . JURI::base(true) . $button['image'] . '" /> ';
-		$html[] = (empty($button['text'])) ? '' : ('<span>' . $button['text'] . '</span>');
-		$html[] = '</a>';
-		$html[] = '</div>';
-		$html[] = '</div>';
-		$html[] = '</div>';
-		return implode($html);
 	}
 
 	/**
@@ -180,6 +165,7 @@ abstract class ModFabrik_QuickIconHelper
 	public static function getTitle($params, $module)
 	{
 		$key = $params->get('context', 'mod_fabrik_quickicon') . '_title';
+
 		if (JFactory::getLanguage()->hasKey($key))
 		{
 			return JText::_($key);
