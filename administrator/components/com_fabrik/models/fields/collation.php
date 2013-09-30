@@ -43,6 +43,24 @@ class JFormFieldCollation extends JFormFieldList
 		if ($this->value == '' && $return)
 		{
 			$db = JFactory::getDbo();
+
+			/*
+			 * Attempt to get the real Db colaltion (tmp fix before this makes it into J itself
+			 * see - https://github.com/joomla/joomla-cms/pull/2092
+			 */
+			$db->setQuery('SHOW VARIABLES LIKE "collation_database"');
+			try
+			{
+				$res = $this->loadObject();
+
+				if (isset($res->Value))
+				{
+					$this->value = $res->Value;
+				}
+			}
+			catch (RuntimeException $e)
+			{
+			}
 			$this->value = $db->getCollation();
 		}
 
