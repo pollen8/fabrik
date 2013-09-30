@@ -51,7 +51,7 @@ class JFormFieldCollation extends JFormFieldList
 			$db->setQuery('SHOW VARIABLES LIKE "collation_database"');
 			try
 			{
-				$res = $this->loadObject();
+				$res = $db->loadObject();
 
 				if (isset($res->Value))
 				{
@@ -60,8 +60,9 @@ class JFormFieldCollation extends JFormFieldList
 			}
 			catch (RuntimeException $e)
 			{
+				$this->value = $db->getCollation();
 			}
-			$this->value = $db->getCollation();
+
 		}
 
 		return $return;
