@@ -61,8 +61,9 @@ class JFormFieldCollation extends JFormFieldList
 			}
 			catch (RuntimeException $e)
 			{
+				$this->value = $db->getCollation();
 			}
-			$this->value = $db->getCollation();
+
 		}
 
 		return $return;
