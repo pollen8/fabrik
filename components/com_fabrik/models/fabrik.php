@@ -14,6 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.model');
 
 $version = new JVersion;
+
 if ($version->RELEASE == '1.6')
 {
 	/**
@@ -47,6 +48,7 @@ if ($version->RELEASE == '1.6')
 			{
 				$config['dbo'] = $this->getDbo();
 			}
+
 			return FabTable::getInstance($name, $prefix, $config);
 		}
 
@@ -71,7 +73,9 @@ if ($version->RELEASE == '1.6')
 			{
 				return $table;
 			}
+
 			throw new RuntimeException(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
+
 			return null;
 		}
 	}
@@ -79,7 +83,7 @@ if ($version->RELEASE == '1.6')
 else
 {
 	/**
-	  * Fabrik Element List Model - Joomla 1.7 onwards
+	 * Fabrik Element List Model - Joomla 1.7 onwards
 	 *
 	 * @package     Joomla
 	 * @subpackage  Fabrik
@@ -109,6 +113,7 @@ else
 			{
 				$config['dbo'] = $this->getDbo();
 			}
+
 			return FabTable::getInstance($name, $prefix, $config);
 		}
 
@@ -132,7 +137,9 @@ else
 			{
 				return $table;
 			}
+
 			throw new RuntimeException(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
+
 			return null;
 		}
 	}

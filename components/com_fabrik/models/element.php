@@ -2640,7 +2640,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 	protected function loadPluginParams()
 	{
-		if (isset($this->_xmlPath))
+		if (isset($this->xmlPath))
 		{
 			$element = $this->getElement();
 			$pluginParams = new JRegistry($element->params);

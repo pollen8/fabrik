@@ -43,26 +43,13 @@ class FabrikFEModelJoin extends FabModel
 	 * @var array
 	 */
 	protected $data = null;
-	
+
 	/**
 	 * Whether the joined table is a MySQL view
 	 *
 	 * @var bool
 	 */
 	protected $isView = null;
-
-	/**
-	 * Constructor
-	 *
-	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
-	 *
-	 * @since       1.5
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
 
 	/**
 	 * Set the join id
@@ -112,6 +99,7 @@ class FabrikFEModelJoin extends FabModel
 		if (!isset($this->join))
 		{
 			$this->join = FabTable::getInstance('join', 'FabrikTable');
+
 			if (isset($this->data))
 			{
 				$this->join->bind($this->data);
@@ -120,15 +108,17 @@ class FabrikFEModelJoin extends FabModel
 			{
 				$this->join->load($this->id);
 			}
+
 			$this->paramsType($this->join);
 		}
+
 		return $this->join;
 	}
 
 	/**
 	 * When loading the join JTable ensure its params are set to be a JRegistry item
 	 *
-	 * @param  JTable  &$join  Join table
+	 * @param   JTable  &$join  Join table
 	 *
 	 * @return  void
 	 */
@@ -174,6 +164,7 @@ class FabrikFEModelJoin extends FabModel
 			$this->join->load(array($key => $id));
 			$this->paramsType($this->join);
 		}
+
 		return $this->join;
 	}
 
@@ -190,6 +181,7 @@ class FabrikFEModelJoin extends FabModel
 		$join = $this->getJoin();
 		$pk = str_replace('`', '', $join->params->get('pk'));
 		$pk = str_replace('.', $glue, $pk);
+
 		return $pk;
 	}
 
@@ -205,6 +197,7 @@ class FabrikFEModelJoin extends FabModel
 	{
 		$join = $this->getJoin();
 		$fk = $join->table_join . $glue . $join->table_join_key;
+
 		return $fk;
 	}
 
@@ -220,6 +213,7 @@ class FabrikFEModelJoin extends FabModel
 	{
 		$join = $this->getJoin();
 		$fk = $join->join_from_table . $glue . $join->table_key;
+
 		return $fk;
 	}
 
@@ -234,6 +228,7 @@ class FabrikFEModelJoin extends FabModel
 	public function getJoinedToTablePk($glue = '___')
 	{
 		$join = $this->getJoin();
+
 		return $join->join_from_table . $glue . $join->table_key;
 	}
 
@@ -293,40 +288,45 @@ class FabrikFEModelJoin extends FabModel
 		{
 			return false;
 		}
+
 		if (!$this->check())
 		{
 			return false;
 		}
+
 		if (!$this->store())
 		{
 			return false;
 		}
+
 		$this->_error = '';
+
 		return true;
 	}
-	
+
 	/**
 	 * Tests if the table is in fact a view
 	 * NOTE - not working yet, just committed so I can pull other changes
 	 *
 	 * @return  bool	true if table is a view
 	 */
-	
+
 	public function isView()
 	{
 		$join = $this->getJoin();
 		$params = $$join->params;
 		$isView = $params->get('isview', null);
-	
+
 		if (!is_null($isView) && (int) $isView >= 0)
 		{
 			return $isView;
 		}
-	
+
 		if (isset($this->isView))
 		{
 			return $this->isView;
 		}
+
 		$db = FabrikWorker::getDbo();
 		$dbname = $join->table_join;
 		$sql = " SELECT table_name, table_type, engine FROM INFORMATION_SCHEMA.tables " . "WHERE table_name = " . $db->quote($table->db_table_name)
@@ -334,13 +334,12 @@ class FabrikFEModelJoin extends FabModel
 		$db->setQuery($sql);
 		$row = $db->loadObjectList();
 		$this->isView = empty($row) ? 0 : 1;
-	
+
 		// Store and save param for following tests
 		$params->set('isview', $this->isView);
 		$join->params = (string) $params;
 		$this->save($join);
-		return $this->isView;
-	
-	}
 
+		return $this->isView;
+	}
 }

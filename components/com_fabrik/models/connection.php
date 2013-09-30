@@ -23,7 +23,6 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelConnection extends JModelLegacy
 {
-
 	/**
 	 * Current connection
 	 *
@@ -51,15 +50,6 @@ class FabrikFEModelConnection extends JModelLegacy
 	 * @var int
 	 */
 	protected $id = null;
-
-	/**
-	 * Constructor
-	 */
-
-	public function __construct()
-	{
-		parent::__construct();
-	}
 
 	/**
 	 * Method to set the element id
@@ -114,13 +104,14 @@ class FabrikFEModelConnection extends JModelLegacy
 
 		$cn = $this->getConnection();
 		$options = $this->getConnectionOptions($cn);
+
 		return $this->compareConnectionOpts($default_options, $options);
 	}
 
 	/**
 	 * Get driver instance based on J version
 	 *
-	 * @param  array  $options  Connection options
+	 * @param   array  $options  Connection options
 	 *
 	 * @since  3.1b2
 	 *
@@ -130,6 +121,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	public function getDriverInstance($options)
 	{
 		$version = new JVersion;
+
 		return $version->RELEASE > 2.5 ? JDatabaseDriver::getInstance($options) : JDatabase::getInstance($options);
 	}
 
@@ -150,6 +142,7 @@ class FabrikFEModelConnection extends JModelLegacy
 	{
 		$tableOptions = array();
 		$cn = $this->getConnection();
+
 		if ($cn->host and $cn->published == '1')
 		{
 			if (@mysql_connect($cn->host, $cn->user, $cn->password))
@@ -160,6 +153,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				$fabrikDb = $this->getDriverInstance($options);
 				$tables = $fabrikDb->getTableList();
 				$tableOptions[] = JHTML::_('select.option', '', '-');
+
 				if (is_array($tables))
 				{
 					foreach ($tables as $table)
@@ -177,7 +171,9 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			$tableOptions[] = JHTML::_('select.option', 'host not set');
 		}
+
 		$attribs = 'class="' . $class . '" size="1" id="' . $name . '" ' . $javascript;
+
 		return JHTML::_('select.genericlist', $tableOptions, $name, $attribs, 'value', 'text', $selected);
 	}
 
@@ -197,8 +193,10 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			return;
 		}
+
 		$crypt = FabrikWorker::getCrypt();
 		$params = json_decode($cnn->params);
+
 		if (is_object($params) && $params->encryptedPw == true)
 		{
 			$cnn->password = $crypt->decrypt($cnn->password);
@@ -220,6 +218,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			$this->setId($id);
 		}
+
 		if (!is_object($this->connection))
 		{
 			if ($this->id == -1 || $this->id == '')
@@ -231,8 +230,10 @@ class FabrikFEModelConnection extends JModelLegacy
 				$this->connection = FabTable::getInstance('Connection', 'FabrikTable');
 				$this->connection->load($this->id);
 			}
+
 			$this->decryptPw($this->connection);
 		}
+
 		return $this->connection;
 	}
 
@@ -248,10 +249,12 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			self::$dbs = array();
 		}
+
 		$error = false;
 		$cn = $this->getConnection();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($input->get('task') == 'test')
 		{
 			self::$dbs = array();
@@ -279,6 +282,7 @@ class FabrikFEModelConnection extends JModelLegacy
 			{
 				$error = true;
 			}
+
 			self::$dbs[$cn->id] = $db;
 
 			if ($error)
@@ -298,7 +302,6 @@ class FabrikFEModelConnection extends JModelLegacy
 				}
 				else
 				{
-					$app = JFactory::getApplication();
 					if (!$app->isAdmin())
 					{
 						throw new RuntimeException('Could not connection to database', E_ERROR);
@@ -316,11 +319,13 @@ class FabrikFEModelConnection extends JModelLegacy
 						{
 							$level = E_ERROR;
 						}
+
 						throw new RuntimeException('Could not connection to database cid = ' . $cn->id, $level);
 					}
 				}
 			}
 		}
+
 		return self::$dbs[$cn->id];
 	}
 
@@ -404,6 +409,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		$driver .= '_fab';
 		$debug = $conf->get('debug');
 		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
+
 		return $options;
 	}
 
@@ -420,10 +426,12 @@ class FabrikFEModelConnection extends JModelLegacy
 		$query->select('*, id AS value, description AS text')->from('#__fabrik_connections')->where('published = 1');
 		$db->setQuery($query);
 		$connections = $db->loadObjectList();
+
 		foreach ($connections as &$cnn)
 		{
 			$this->decryptPw($cnn);
 		}
+
 		return $connections;
 	}
 
@@ -448,9 +456,11 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			$id = $name;
 		}
+
 		$cnns[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
 		$cnns = array_merge($cnns, $connections);
 		$attribs .= $javascript;
+
 		return JHTML::_('select.genericlist', $cnns, $name, $attribs, 'value', 'text', $selected, $id);
 	}
 
@@ -470,9 +480,11 @@ class FabrikFEModelConnection extends JModelLegacy
 		$connectionTableFields = array();
 		$connectionTableFields[-1] = array();
 		$connectionTableFields[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+
 		foreach ($connections as $cn)
 		{
 			$connectionTableFields[$cn->value] = array();
+
 			if ($cn->host and $cn->published == '1')
 			{
 				$options = $this->getConnectionOptions($cn);
@@ -482,6 +494,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				$connectionTableFields[$cn->value][$key] = $fields;
 			}
 		}
+
 		return $connectionTableFields;
 	}
 
@@ -500,9 +513,11 @@ class FabrikFEModelConnection extends JModelLegacy
 		$connectionTables[-1] = array();
 		$db = FabrikWorker::getDbo();
 		$connectionTables[-1][] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_PLEASE_SELECT'));
+
 		foreach ($connections as $cn)
 		{
 			$connectionTables[$cn->value] = array();
+
 			if ($cn->host and $cn->published == '1')
 			{
 				$this->connection = null;
@@ -510,6 +525,7 @@ class FabrikFEModelConnection extends JModelLegacy
 				$fabrikDb = $this->getDb();
 				$tables = $fabrikDb->getTableList();
 				$connectionTables[$cn->value][] = JHTML::_('select.option', '', '- Please select -');
+
 				if (is_array($tables))
 				{
 					foreach ($tables as $table)
@@ -517,9 +533,9 @@ class FabrikFEModelConnection extends JModelLegacy
 						$connectionTables[$cn->value][] = JHTML::_('select.option', $table, $table);
 					}
 				}
-
 			}
 		}
+
 		return $connectionTables;
 	}
 
@@ -536,12 +552,14 @@ class FabrikFEModelConnection extends JModelLegacy
 		$cn = $this->getConnection();
 		$fabrikDb = $this->getDb();
 		$tables = $fabrikDb->getTableList();
+
 		if (is_array($tables))
 		{
 			if ($addBlank)
 			{
 				$tables = array_merge(array(""), $tables);
 			}
+
 			return $tables;
 		}
 		else
@@ -566,6 +584,7 @@ class FabrikFEModelConnection extends JModelLegacy
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -586,7 +605,9 @@ class FabrikFEModelConnection extends JModelLegacy
 			$this->decryptPw($row);
 			$this->defaultConnection = $row;
 		}
+
 		$this->connection = $this->defaultConnection;
+
 		return $this->defaultConnection;
 	}
 }

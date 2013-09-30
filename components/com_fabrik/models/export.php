@@ -71,6 +71,7 @@ class FabrikFEModelExport
 	function export()
 	{
 		$db = FabrikWorker::getDbo();
+
 		switch ($this->format)
 		{
 			case 'csv':
@@ -95,15 +96,18 @@ class FabrikFEModelExport
 
 		$templatePath = JPATH_SITE . '/components/com_fabrik/tmpl/form/';
 		$aFiles = array();
+
 		foreach ($this->_aTables as $listModel)
 		{
 			$table = $listModel->getTable();
 			$formModel = $listModel->getForm();
 			$form = $formModel->getForm();
+
 			if (!in_array('table/' . $table->template, $aFiles))
 			{
 				$aFiles[] = 'table/' . $table->template;
 			}
+
 			if ($form->form_template != '')
 			{
 				if (is_dir($templatePath . $form->form_template))
@@ -112,6 +116,7 @@ class FabrikFEModelExport
 					{
 						$aFiles[] = 'form/' . $form->form_template . '/elements.html';
 					}
+
 					if (!in_array('form/' . $form->form_template . '/form.html', $aFiles))
 					{
 						$aFiles[] = 'form/' . $form->form_template . '/form.html';
@@ -125,6 +130,7 @@ class FabrikFEModelExport
 					}
 				}
 			}
+
 			if ($form->view_only_template != '')
 			{
 				if (is_dir($templatePath . $form->view_only_template))
@@ -132,6 +138,7 @@ class FabrikFEModelExport
 					if (!in_array('viewonly/' . $form->view_only_template . '/elements.html', $aFiles))
 					{
 						$aFiles[] = 'viewonly/' . $form->view_only_template . '/elements.html';
+
 					}
 					if (!in_array('viewonly/' . $form->view_only_template . '/form.html', $aFiles))
 					{
@@ -147,13 +154,17 @@ class FabrikFEModelExport
 				}
 			}
 		}
+
 		$xml = "<files>\n";
+
 		foreach ($aFiles as $file)
 		{
 			$xml .= "\t<file>tmpl/$file</file>\n";
 		}
+
 		$this->_aFiles = $aFiles;
 		$xml .= "</files>\n";
+
 		return $xml;
 	}
 
@@ -171,7 +182,6 @@ class FabrikFEModelExport
 		$this->clearExportBuffer();
 		$strXML = "<?xml version=\"1.0\" ?>\n";
 		$strXML .= "<install type=\"fabrik\" version=\"2.0\">\n";
-
 		$strXML .= "<creationDate>" . $input->get('creationDate', '') . "</creationDate>\n";
 		$strXML .= "<author>" . $input->get('author') . "</author>\n";
 		$strXML .= "<copyright>" . $input->get('copyright') . "</copyright>\n";
@@ -180,22 +190,21 @@ class FabrikFEModelExport
 		$strXML .= "<version>" . $input->get('version') . "</version>\n";
 		$strXML .= "<liscence>" . $input->get('license') . "</liscence>\n";
 		$strXML .= "<description>" . $input->get('description') . "</description>\n";
-
 		$aTableObjs = array();
-
 		$tables = $this->packageModel->_tables;
 		$forms = $this->packageModel->_forms;
+
 		if ($this->fabrikData)
 		{
-
 			$strXML .= "<tables>\n";
+
 			if (is_array($this->tableIds))
 			{
-
 				foreach ($tables as $table)
 				{
 					$vars = get_object_vars($table);
 					$strXML .= "\t<table>\n";
+
 					foreach ($vars as $key => $val)
 					{
 						if (substr($key, 0, 1) != '_')
@@ -205,6 +214,7 @@ class FabrikFEModelExport
 					}
 				}
 			}
+
 			$strXML .= "</tables>\n\n";
 			$strXML .= "<forms>\n";
 
@@ -212,6 +222,7 @@ class FabrikFEModelExport
 			{
 				$vars = get_object_vars($form);
 				$strXML .= "\t<form>\n";
+
 				foreach ($vars as $key => $val)
 				{
 					if (substr($key, 0, 1) != '_')
@@ -219,23 +230,26 @@ class FabrikFEModelExport
 						$strXML .= "\t\t<$key><![CDATA[$val]]></$key>\n";
 					}
 				}
+
 				$strXML .= "\t</form>\n";
 			}
-			$strXML .= "</forms>\n\n";
 
+			$strXML .= "</forms>\n\n";
 			$strElementXML = "<elements>\n";
 			$strXML .= "<groups>\n";
 			$strValidationXML = "<validations>\n";
+
 			foreach ($this->_aTables as $listModel)
 			{
 				$groups = $listModel->_oForm->getGroupsHiarachy();
-
 				$i = 0;
+
 				foreach ($groups as $groupModel)
 				{
 					$group = $groupModel->getGroup();
 					$vars = get_object_vars($group);
 					$strXML .= "\t<group form_id=\"" . $listModel->getFormModel()->getId() . "\" ordering=\"" . $i . "\">\n";
+
 					foreach ($vars as $key => $val)
 					{
 						//dont insert join_id as this isnt in the group table
@@ -247,13 +261,16 @@ class FabrikFEModelExport
 							}
 						}
 					}
+
 					$strXML .= "\t</group>\n";
 					$elementModels = $groupModel->getPublishedElements();
+
 					foreach ($elementModels as $elementModel)
 					{
 						$element = $elementModel->getElement();
 						$vars = get_object_vars($element);
 						$strElementXML .= "\t<element>\n";
+
 						foreach ($vars as $key => $val)
 						{
 							if (substr($key, 0, 1) != '_')
@@ -261,12 +278,14 @@ class FabrikFEModelExport
 								$strElementXML .= "\t\t<$key><![CDATA[$val]]></$key>\n";
 							}
 						}
+
 						$strElementXML .= "\t</element>\n\n";
 
 						foreach ($elementModel->_aValidations as $oValidation)
 						{
 							$vars = get_object_vars($oValidation);
 							$strValidationXML .= "\t<validation>\n";
+
 							foreach ($vars as $key => $val)
 							{
 								if (substr($key, 0, 1) != '_')
@@ -274,23 +293,27 @@ class FabrikFEModelExport
 									$strValidationXML .= "\t\t<$key><![CDATA[$val]]></$key>\n";
 								}
 							}
+
 							$strValidationXML .= "\t</validation>\n\n";
 						}
 					}
+
 					$i++;
 				}
 			}
+
 			$strXML .= "</groups>\n";
 			$strElementXML .= "</elements>\n\n";
 			$strValidationXML .= "</validations>\n\n";
 			$strXML .= $strElementXML . $strValidationXML;
-
 		}
 		$this->writeExportBuffer($strXML);
+
 		if ($this->incTableStructure)
 		{
 			$strXML = $this->_createTablesXML($strXML);
 		}
+
 		$strXML .= $this->getTemplateFiles();
 		$strXML .= "</install>";
 		$this->writeExportBuffer($strXML);
@@ -305,16 +328,19 @@ class FabrikFEModelExport
 	function _createTablesXML()
 	{
 		$strXML = "<queries>\n";
+
 		for ($i = 0; $i < count($this->_aTables); $i++)
 		{
 			$tmpTable = $this->_aTables[$i];
 			$this->writeExportBuffer("\t<query>" . $tmpTable->getDropTableSQL() . "</query>\n");
 			$this->writeExportBuffer("\t<query>" . $tmpTable->getCreateTableSQL() . "</query>\n");
+
 			if ($this->includeData)
 			{
 				$tmpTable->getInsertRowsSQL($this);
 			}
 		}
+
 		$this->writeExportBuffer("</queries>\n");
 	}
 
@@ -367,6 +393,7 @@ class FabrikFEModelExport
 				throw new RuntimeException(JText::sprintf("FILE NOT WRITABLE", $filename), 500);
 			}
 		}
+
 		if (!$handle = fopen($filename, 'a'))
 		{
 			throw new RuntimeException(JText::sprintf("CANT OPEN FILES", $filename), 500);
@@ -377,6 +404,7 @@ class FabrikFEModelExport
 		{
 			throw new RuntimeException(JText::sprintf("CANT WRITE TO FILES", $filename), 500);
 		}
+
 		fclose($handle);
 	}
 
@@ -390,25 +418,26 @@ class FabrikFEModelExport
 	{
 
 		$archiveName = 'fabrik_package-' . $this->label;
-		require_once(JPATH_SITE . '/includes/Archive/Tar.php');
-
+		require_once JPATH_SITE . '/includes/Archive/Tar.php';
 		$archivePath = JPATH_SITE . '/components/com_fabrik/' . $archiveName . '.tgz';
+
 		if (JFile::exists($archivePath))
 		{
 			@unlink($archivePath);
 		}
+
 		$zip = new Archive_Tar($archivePath);
 		$fileName = $archiveName . '.xml';
 		$fileName = $this->_bufferFile;
-		//$ok = $zip->addModify('/tmp/' . $fileName, '', "/tmp/");
-		//, '', dirname( $fileName)  . "/"
 		$fileName = str_replace(JPATH_SITE, '', $this->_bufferFile);
 		$fileName = FabrikString::ltrimword($fileName, "/administrator/");
 		$ok = $zip->addModify($fileName, '', "components/com_fabrik");
+
 		for ($i = 0; $i < count($this->_aFiles); $i++)
 		{
 			$this->_aFiles[$i] = JPATH_SITE . '/components/com_fabrik/tmpl/' . $this->_aFiles[$i];
 		}
+
 		$zip->addModify($this->_aFiles, '', JPATH_SITE . '/components/com_fabrik');
 		$this->_output_file($archivePath, $archiveName . '.tgz');
 	}
@@ -418,7 +447,7 @@ class FabrikFEModelExport
 	 *
 	 * @retun  void
 	 */
-	function _csvExport()
+	protected function _csvExport()
 	{
 		$db = FabrikWorker::getDbo();
 		initGzip();
@@ -435,10 +464,6 @@ class FabrikFEModelExport
 		$sql = "SELECT * FROM $table";
 		$fabrikDb->setQuery($sql);
 		$elementData = $fabrikDb->loadObjectList();
-		//TODO: replace switchDb
-		//$aNewDbInfo 	= switchDatabase($oTable, $oConn);
-		//$fabrikDb 		= $aNewDbInfo[0];
-		//$table 			= $aNewDbInfo[1];
 		$aFilter = array();
 		$listModel->getForm();
 		$listModel->getFormGroupElementData();
@@ -447,13 +472,16 @@ class FabrikFEModelExport
 		$limitLength = $listModel->getTotalRecords();
 		$pageNav = $listModel->_getPagination(count($elementData), 0, $limitLength);
 		$formdata = $listModel->getData();
+
 		if (is_array($formdata))
 		{
 			$firstrow = JArrayHelper::fromObject($formdata[0][0]);
+
 			if (is_array($firstrow))
 			{
 				echo implode(",", array_keys($firstrow));
 			}
+
 			foreach ($formdata as $group)
 			{
 				foreach ($group as $row)
@@ -463,29 +491,54 @@ class FabrikFEModelExport
 				}
 			}
 		}
+
 		doGzip();
 	}
 
-	function _quote($n)
+	/**
+	 * Quote
+	 *
+	 * @param   string  $n  String to quote
+	 *
+	 * @return string
+	 */
+	public function _quote($n)
 	{
 		return '"' . str_replace('"', '""', $n) . '"';
 	}
 
-	function _output_file($file, $name)
+	/**
+	 * Output the file
+	 *
+	 * @param   string  $file  File
+	 * @param   string  $name  Name
+	 *
+	 * @return  void
+	 */
+	protected function _output_file($file, $name)
 	{
 		/*do something on download abort/finish
 		register_shutdown_function('function_name' );*/
 		if (!JFile::exists($file))
+		{
 			die('file not exist!');
+		}
+
 		$size = filesize($file);
 		$name = rawurldecode($name);
 
 		if (preg_match('/Opera(/| )([0-9].[0-9]{1,2})/', $_SERVER['HTTP_USER_AGENT']))
+		{
 			$UserBrowser = "Opera";
+		}
 		elseif (preg_match('/MSIE ([0-9].[0-9]{1,2})/', $_SERVER['HTTP_USER_AGENT']))
+		{
 			$UserBrowser = "IE";
+		}
 		else
+		{
 			$UserBrowser = '';
+		}
 
 		// Important for download im most browser
 		$mime_type = ($UserBrowser == 'IE' || $UserBrowser == 'Opera') ? 'application/octetstream' : 'application/octet-stream';
@@ -515,26 +568,35 @@ class FabrikFEModelExport
 			$size2 = $size - 1;
 			header("Content-Length: " . $size);
 		}
+
 		$chunksize = 1 * (1024 * 1024);
 		$this->bytes_send = 0;
+
 		if ($file = fopen($file, 'r'))
 		{
 			if (isset($_SERVER['HTTP_RANGE']))
+			{
 				fseek($file, $range);
+			}
+
 			while (!feof($file) and (connection_status() == 0))
 			{
 				$buffer = fread($file, $chunksize);
 				print($buffer);
 				flush();
 				$this->bytes_send += JString::strlen($buffer);
-				/*sleep(1); decrease download speed */
 			}
-			fclose($file);
 
+			fclose($file);
 		}
 		else
+		{
 			die('error can not open file');
+		}
+
 		if (isset($new_length))
+		{
 			$size = $new_length;
+		}
 	}
 }

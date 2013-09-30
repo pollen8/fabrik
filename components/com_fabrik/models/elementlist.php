@@ -19,11 +19,10 @@ jimport('joomla.filesystem.file');
  *
  * @package  Fabrik
  * @since    3.0
-*/
+ */
 
 class PlgFabrik_ElementList extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element have sub elements
 	 *
@@ -76,6 +75,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$labels = $this->getSubOptionLabels();
 		$values = $this->getSubOptionValues();
 		$str = '';
+
 		if (is_array($val))
 		{
 			foreach ($val as $tmpVal)
@@ -89,6 +89,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$str = $val;
 		}
+
 		return $str;
 	}
 
@@ -103,6 +104,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$params = $this->getParams();
 		$opts = $params->get('sub_options');
 		$r = isset($opts->sub_initial_selection) ? (array) $opts->sub_initial_selection : array();
+
 		return $r;
 	}
 
@@ -119,6 +121,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$data = (array) $data;
+
 		foreach ($data as $d)
 		{
 			if ($d != '')
@@ -126,6 +129,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -141,6 +145,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$opts = $params->get('sub_options');
+
 		if (!isset($this->default))
 		{
 			if (isset($opts->sub_initial_selection))
@@ -152,6 +157,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$this->default = parent::getDefaultValue($data);
 			}
 		}
+
 		return $this->default;
 	}
 
@@ -178,6 +184,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$value = $this->prepareFilterVal($value);
 		}
+
 		return parent::getFilterValue($value, $condition, $eval);
 	}
 
@@ -200,9 +207,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$db = JFactory::getDbo();
 		$this->encryptFieldName($key);
 		$glue = 'OR';
+
 		if ($element->filter_type == 'checkbox' || $element->filter_type == 'multiselect')
 		{
 			$str = array();
+
 			if ($condition === 'NOT IN')
 			{
 				$partialComparison = ' NOT LIKE ';
@@ -215,6 +224,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$comparison = ' = ';
 				$glue = ' OR ';
 			}
+
 			switch ($condition)
 			{
 				case 'IN':
@@ -227,6 +237,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$originalValue = explode(',', $originalValue);
 					}
+
 					foreach ($originalValue as &$v)
 					{
 						$v = trim($v);
@@ -240,11 +251,13 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$originalValue = (array) $originalValue;
 					break;
 			}
+
 			foreach ($originalValue as $v2)
 			{
 				$v2 = str_replace("/", "\\\\/", $v2);
 				$str[] = '(' . $key . $partialComparison . $db->quote('%"' . $v2 . '"%') . $glue . $key . $comparison . $db->quote($v2) . ') ';
 			}
+
 			$str = '(' . implode($glue, $str) . ')';
 		}
 		else
@@ -256,6 +269,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 			* before it to escape it for the query.
 			*/
 			$originalValue = str_replace("/", "\\\\/", $originalValue);
+
 			switch ($condition)
 			{
 				case '=':
@@ -272,6 +286,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					break;
 			}
 		}
+
 		return $str;
 	}
 
@@ -287,6 +302,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function filterName($counter = 0, $normal = true)
 	{
 		$element = $this->getElement();
+
 		if ($element->filter_type === 'checkbox')
 		{
 			$listModel = $this->getListModel();
@@ -297,6 +313,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$v = parent::filterName($counter, $normal);
 		}
+
 		return $v;
 	}
 
@@ -321,13 +338,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$params = $this->getParams();
 		$class = $this->filterClass();
 		$v = $this->filterName($counter, $normal);
+
 		if (in_array($element->filter_type, array('range', 'dropdown', '', 'checkbox', 'multiselect')))
 		{
 			$rows = $this->filterValueList($normal);
+
 			if ($params->get('filter_groupby') != -1)
 			{
 				JArrayHelper::sortObjects($rows, $params->get('filter_groupby', 'text'));
 			}
+
 			if (!in_array('', $values) && !in_array($element->filter_type, array('checkbox', 'multiselect')))
 			{
 				array_unshift($rows, JHTML::_('select.option', '', $this->filterSelectLabel()));
@@ -337,6 +357,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$attribs = 'class="' . $class . '" size="1" ';
 		$size = $params->get('filter_length', 20);
 		$return = array();
+
 		switch ($element->filter_type)
 		{
 			case 'range':
@@ -344,6 +365,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				{
 					$default = array('', '');
 				}
+
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[0],
 					$element->name . "_filter_range_0");
 				$return[] = JHTML::_('select.genericlist', $rows, $v . '[]', $attribs, 'value', 'text', $default[1],
@@ -366,6 +388,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				{
 					$default = stripslashes($default);
 				}
+
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="text" name="' . $v . '" class="' . $class . '" size="' . $size . '" value="' . $default . '" id="'
 					. $htmlid . '" />';
@@ -376,6 +399,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				{
 					$default = stripslashes($default);
 				}
+
 				$default = htmlspecialchars($default);
 				$return[] = '<input type="hidden" name="' . $v . '" class="' . $class . '" value="' . $default . '" id="' . $htmlid . '" />';
 				break;
@@ -386,7 +410,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$return = array_merge($return, $autoComplete);
 				break;
 		}
+
 		$return[] = $normal ? $this->getFilterHiddenFields($counter, $elName) : $this->getAdvancedFilterHiddenFields();
+
 		return implode("\n", $return);
 	}
 
@@ -404,6 +430,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'click');
+
 		return array($ar);
 	}
 
@@ -425,21 +452,25 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$aLabels = array();
+
 		if (is_string($value))
 		{
 			$value = array($value);
 		}
+
 		if (is_array($value))
 		{
 			foreach ($value as $tmpVal)
 			{
 				$key = array_search($tmpVal, $values);
+
 				if ($key !== false)
 				{
 					$aLabels[] = $labels[$key];
 				}
 			}
 		}
+
 		if ($split_str == '')
 		{
 			if (count($aLabels) === 1)
@@ -455,10 +486,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$val = implode($split_str, $aLabels);
 		}
+
 		if ($val === '')
 		{
 			$val = $params->get('sub_default_label');
 		}
+
 		return $val;
 	}
 
@@ -480,6 +513,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$rows = parent::filterValueList($normal, $tableName, $label, $id, $incjoin);
 		$this->unmergeFilterSplits($rows);
 		$this->reapplyFilterLabels($rows);
+
 		return $rows;
 	}
 
@@ -501,24 +535,26 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$listModel = $elementModel->getListModel();
 		$label = JArrayHelper::getValue($opts, 'label', '');
 		$rows = $elementModel->filterValueList(true, '', $label);
-		// Paul 20130802 Fix bugette
-		// $v = $app->input->get('value');
 		$v = $app->input->get('value', '', 'string');
+
 		// Search for every word separately in the result rather than the single string (of multiple words)
 		$regex  = "/(?=.*" .
 			implode(")(?=.*",
-				array_filter(explode(" ",addslashes($v)))
+				array_filter(explode(" ", addslashes($v)))
 			) . ").*/i";
 		$start = count($rows) - 1;
+
 		for ($i = $start; $i >= 0; $i--)
 		{
 			$rows[$i]->text = strip_tags($rows[$i]->text);
+
 			// Check that search strings are not in the HTML we just stripped
 			if (!preg_match($regex, $rows[$i]->text))
 			{
 				unset($rows[$i]);
 			}
 		}
+
 		$rows = array_values($rows);
 		echo json_encode($rows);
 	}
@@ -534,6 +570,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function isMultiple()
 	{
 		$params = $this->getParams();
+
 		return $params->get('multiple', 0) || $this->isJoin();
 	}
 
@@ -558,13 +595,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Give priority to raw value icons (podion)
 		$raw = $this->getFullName(true, false) . '_raw';
+
 		if (isset($thisRow->$raw))
 		{
 			$rawData = FabrikWorker::JSONtoData($thisRow->$raw, true);
+
 			foreach ($rawData as &$val)
 			{
 				$val = $useIcon ? $this->replaceWithIcons($val, 'list', $listModel->getTmpl()) : $val;
 			}
+
 			if ($this->iconsSet)
 			{
 				// Use raw icons
@@ -577,13 +617,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$gdata = FabrikWorker::JSONtoData($data, true);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
+
 		foreach ($gdata as $i => $d)
 		{
 			$lis = array();
 			$vals = is_array($d) ? $d : FabrikWorker::JSONtoData($d, true);
+
 			foreach ($vals as $tmpVal)
 			{
 				$l = $useIcon ? $this->replaceWithIcons($tmpVal, 'list', $listModel->getTmpl()) : $tmpVal;
+
 				if (!$this->iconsSet == true)
 				{
 					if (!is_a($this, 'PlgFabrik_ElementDatabasejoin'))
@@ -594,18 +637,22 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					{
 						$l = $tmpVal;
 					}
+
 					$l = $this->replaceWithIcons($l, 'list', $listModel->getTmpl());
 				}
+
 				if ($this->renderWithHTML)
 				{
 					$l = $this->rollover($l, $thisRow, 'list');
 					$l = $listModel->_addLink($l, $this, $thisRow, $i);
 				}
+
 				if (trim($l) !== '')
 				{
 					$lis[] = $l;
 				}
 			}
+
 			if (!empty($lis))
 			{
 				$uls[] = $lis;
@@ -614,6 +661,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Do all uls only contain one record, if so condense to 1 ul (avoids nested <ul>'s each with one <li>
 		$condense = true;
+
 		foreach ($uls as $ul)
 		{
 			if (count($ul) > 1)
@@ -621,26 +669,32 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$condense = false;
 			}
 		}
+
 		$consdenced = array();
+
 		if ($condense)
 		{
 			foreach ($uls as $ul)
 			{
 				$consdenced[] = $ul[0];
 			}
+
 			return $addHtml ? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $consdenced) . '</li></ul>' : implode(' ', $consdenced);
 		}
 		else
 		{
 			$html = array();
 			$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
+
 			foreach ($uls as $ul)
 			{
 				$html[] = $addHtml ? '<ul class="fabrikRepeatData"><li>' : '';
 				$html[] = $addHtml ? implode('</li><li>', $ul) : implode(' ', $ul);
 				$html[] = $addHtml ? '</li></ul>' : '';
 			}
+
 			$html[] = $addHtml ? '</li></ul>' : '';
+
 			return $addHtml ? implode('', $html) : implode(' ', $html);
 		}
 	}
@@ -659,6 +713,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$this->renderWithHTML = false;
 		$d = $this->renderListData($data, $thisRow);
 		$this->renderWithHTML = true;
+
 		return $d;
 	}
 
@@ -689,9 +744,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		 * the array_diff() we're about to do sees that as a diff.
 		*/
 		$selected = $this->getValue($data, $repeatCounter);
+
 		if (!is_array($selected))
 		{
-
 			// $$$ hugh - ooops, '0' will count as empty.
 			// $selected = empty($selected) ?  array() : array($selected);
 			$selected = $selected === '' ? array() : array($selected);
@@ -699,6 +754,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		// $$$ rob 06/10/2011 if front end add option on, but added option not saved we should add in the selected value to the
 		// values and labels.
 		$diff = array_diff($selected, $values);
+
 		if (!empty($diff))
 		{
 			$values = array_merge($values, $diff);
@@ -714,11 +770,14 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					}
 				}
 			}
+
 			$labels = array_merge($labels, $diff);
 		}
+
 		if (!$this->isEditable())
 		{
 			$aRoValues = array();
+
 			for ($i = 0; $i < count($values); $i++)
 			{
 				if (in_array($values[$i], $selected))
@@ -726,13 +785,16 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$aRoValues[] = $this->getReadOnlyOutput($values[$i], $labels[$i]);
 				}
 			}
+
 			$splitter = ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '') ? ' ' : ', ';
+
 			return ($this->isMultiple() && $this->renderWithHTML)
 			? '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $aRoValues) . '</li></ul>' : implode($splitter, $aRoValues);
 		}
 
 		// Remove the default value
 		$key = array_search($params->get('sub_default_value'), $values);
+
 		if ($key)
 		{
 			unset($values[$key]);
@@ -746,18 +808,19 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			$optionsPerRow = 1;
 		}
+
 		$classes = $this->labelClasses();
 		$buttonGroup = $this->buttonGroup();
 		$grid = FabrikHelperHTML::grid($values, $labels, $selected, $name, $this->inputType, $elBeforeLabel, $optionsPerRow, $classes, $buttonGroup);
-
 		array_unshift($grid, '<div class="fabrikSubElementContainer" id="' . $id . '">');
-
 		$grid[] = '</div><!-- close subElementContainer -->';
+
 		if ($params->get('allow_frontend_addto', false))
 		{
 			$onlylabel = $params->get('allowadd-onlylabel');
 			$grid[] = $this->getAddOptionFields($repeatCounter, $onlylabel);
 		}
+
 		return implode("\n", $grid);
 	}
 
@@ -772,6 +835,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function buttonGroup()
 	{
 		$params = $this->getParams();
+
 		return FabrikWorker::j3() && $params->get('btnGroup', false);
 	}
 
@@ -824,10 +888,12 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	public function getValue($data, $repeatCounter = 0, $opts = array())
 	{
 		$v = parent::getValue($data, $repeatCounter, $opts);
+
 		if (is_string($v))
 		{
 			$v = FabrikWorker::JSONtoData($v, true);
 		}
+
 		return $v;
 	}
 
@@ -854,14 +920,17 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	protected function getReadOnlyOutput($value, $label)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('icon_folder') != -1 && $params->get('icon_folder') != '')
 		{
 			$icon = $this->replaceWithIcons($value);
+
 			if ($this->iconsSet)
 			{
 				$label = $icon;
 			}
 		}
+
 		return $label;
 	}
 
@@ -881,21 +950,26 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		{
 			return false;
 		}
+
 		$element = $this->getElement();
 		$params = $this->getParams();
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
+
 		if ($params->get('savenewadditions') && array_key_exists($element->name . '_additions', $formData))
 		{
 			$added = stripslashes($formData[$element->name . '_additions']);
+
 			if (trim($added) == '')
 			{
 				return true;
 			}
+
 			$added = json_decode($added);
 			$values = $this->getSubOptionValues();
 			$labels = $this->getSubOptionLabels();
 			$found = false;
+
 			foreach ($added as $obj)
 			{
 				if (!in_array($obj->val, $values))
@@ -905,6 +979,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 					$labels[] = $obj->label;
 				}
 			}
+
 			if ($found)
 			{
 				$opts = $params->get('sub_options');
@@ -916,6 +991,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$element->store();
 			}
 		}
+
 		return true;
 	}
 
@@ -934,6 +1010,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	{
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$files = array('media/com_fabrik/js/element' . $ext, 'media/com_fabrik/js/elementlist' . $ext);
+
 		foreach ($files as $file)
 		{
 			if (!in_array($file, $srcs))
@@ -941,6 +1018,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				$srcs[] = $file;
 			}
 		}
+
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
@@ -971,9 +1049,11 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		$labels = $this->getSubOptionLabels();
 		$multiple = $this->isMultiple();
 		$vals = is_array($v) ? $v : FabrikWorker::JSONtoData($v, true);
+
 		foreach ($vals as $val)
 		{
 			$l = JArrayHelper::getValue($labels, $val, $defaultLabel);
+
 			if (trim($l) !== '')
 			{
 				if ($multiple && $this->renderWithHTML)
@@ -986,7 +1066,9 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 				}
 			}
 		}
+
 		$return = '';
+
 		if (!empty($lis))
 		{
 			$return = ($multiple && $this->renderWithHTML) ? '<ul class="fabrikRepeatData">' . implode(' ', $lis) . '</ul>' : implode(' ', $lis);
@@ -1005,5 +1087,4 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 		*/
 		return $return;
 	}
-
 }

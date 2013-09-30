@@ -23,5 +23,4 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelFormGroup extends JModelLegacy
 {
-
 }

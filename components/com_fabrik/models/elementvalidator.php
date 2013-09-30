@@ -24,7 +24,6 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelElementValidator extends JModelLegacy
 {
-
 	/**
 	 * Validation objects associated with the element
 	 *
@@ -57,6 +56,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		{
 			return $this->validations;
 		}
+
 		$element = $this->elementModel->getElement();
 		$params = $this->elementModel->getParams();
 		$validations = (array) $params->get('validations', 'array');
@@ -67,15 +67,16 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		$pluginManager->getPlugInGroup('validationrule');
 		$c = 0;
 		$this->validations = array();
-
 		$dispatcher = JDispatcher::getInstance();
 		$ok = JPluginHelper::importPlugin('fabrik_validationrule');
 		$i = 0;
+
 		foreach ($usedPlugins as $usedPlugin)
 		{
 			if ($usedPlugin !== '')
 			{
 				$isPublished = JArrayHelper::getValue($published, $i, true);
+
 				if ($isPublished)
 				{
 					$class = 'PlgFabrik_Validationrule' . JString::ucfirst($usedPlugin);
@@ -94,8 +95,10 @@ class FabrikFEModelElementValidator extends JModelLegacy
 					$c++;
 				}
 			}
+
 			$i ++;
 		}
+
 		return $this->validations;
 	}
 
@@ -108,6 +111,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	private function showIcon()
 	{
 		$validations = $this->findAll();
+
 		foreach ($validations as $v)
 		{
 			if ($v->getParams()->get('show_icon'))
@@ -115,6 +119,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -136,10 +141,12 @@ class FabrikFEModelElementValidator extends JModelLegacy
 		{
 			return 'question-sign.png';
 		}
+
 		if (count($validations) === 1 && $j3)
 		{
 			return $validations[0]->iconImage();
 		}
+
 		return $j3 ? 'star.png' : 'notempty.png';
 	}
 
@@ -154,9 +161,11 @@ class FabrikFEModelElementValidator extends JModelLegacy
 	{
 		$validationEls = array();
 		$validations = $this->findAll();
+
 		if (!empty($validations) && $this->elementModel->isEditable())
 		{
 			$watchElements = $this->elementModel->getValidationWatchElements($repeatCounter);
+
 			foreach ($watchElements as $watchElement)
 			{
 				$o = new stdClass;
@@ -165,6 +174,7 @@ class FabrikFEModelElementValidator extends JModelLegacy
 				$validationEls[] = $o;
 			}
 		}
+
 		return $validationEls;
 	}
 }
