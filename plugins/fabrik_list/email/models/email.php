@@ -578,14 +578,38 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		if (!empty($updated))
 		{
 			$updateField = $params->get('emailtable_update_field');
-			$updateVal = $params->get('emailtable_update_value');
+			$updateVal = $this->updateVal('emailtable_update_value');
 			$listModel->updateRows($updated, $updateField, $updateVal);
 		}
+
 		$app->enqueueMessage(JText::sprintf('PLG_LIST_EMAIL_N_SENT', $sent));
+
 		if ($notsent != 0)
 		{
 			JError::raiseWarning(E_NOTICE, JText::sprintf('PLG_LIST_EMAIL_N_NOT_SENT', $notsent));
 		}
+	}
+
+	/**
+	 * Get update value. Converts "now()" into current date
+	 *
+	 * @param   string  $name         Parameter name
+	 * @param   int     $renderOrder  Plugin render order
+	 *
+	 * @return  string
+	 */
+	protected function updateVal($name, $renderOrder = 0)
+	{
+		$params = $this->getParams();
+		$updateVal = $params->get($name);
+		$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
+
+		if ($updateVal === 'now()')
+		{
+			$updateVal = JFactory::getDate()->toSql();
+		}
+
+		return $updateVal;
 	}
 
 	/**
@@ -951,27 +975,28 @@ class PlgFabrik_ListEmail extends PlgFabrik_List
 		}
 		$updateField = $params->get('emailtable_update_field');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
+
 		if (!empty($updateField) && !empty($updated))
 		{
-			$updateVal = $params->get('emailtable_update_value');
-			$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
+			$updateVal = $this->updateVal('emailtable_update_value', $renderOrder);
 			$listModel->updateRows($updated, $updateField, $updateVal);
 		}
 
 		// $$$ hugh - added second update field for Bea
 		$updateField = $params->get('emailtable_update_field2');
 		$updateField = is_array($updateField) ? JArrayHelper::getValue($updateField, $renderOrder, '') : $updateField;
+
 		if (!empty($updateField) && !empty($updated))
 		{
-			$updateVal = $params->get('emailtable_update_value2');
-			$updateVal = is_array($updateVal) ? JArrayHelper::getValue($updateVal, $renderOrder, '') : $updateVal;
+			$updateVal = $this->updateVal('emailtable_update_value2', $renderOrder);
 			$listModel->updateRows($updated, $updateField, $updateVal);
 		}
+
 		$app->enqueueMessage(JText::sprintf('%s emails sent', $sent));
+
 		if ($notsent != 0)
 		{
 			JError::raiseWarning(E_NOTICE, JText::sprintf('%s emails not sent', $notsent));
 		}
 	}
-
 }
