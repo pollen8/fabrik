@@ -99,15 +99,20 @@ abstract class ModFabrik_QuickIconHelper
 			{
 				self::$buttons[$key] = array();
 			}
-
 		}
 
 		$html = array();
+
 		foreach (self::$buttons[$key] as &$button)
 		{
-			$html[] = self::button($button);
+			$btn = self::button($button);
+
+			if ($btn !== false)
+			{
+				$html[] = $btn;
+			}
 		}
-		self::$buttons[$key] = implode("\n", $html);
+		//self::$buttons[$key] = implode("\n", $html);
 
 		return self::$buttons[$key];
 	}
@@ -122,13 +127,14 @@ abstract class ModFabrik_QuickIconHelper
 	public static function button($button)
 	{
 		$user = JFactory::getUser();
+
 		if (!empty($button['access']))
 		{
 			if (is_bool($button['access']))
 			{
 				if ($button['access'] == false)
 				{
-					return '';
+					return false;
 				}
 			}
 			else
@@ -138,11 +144,14 @@ abstract class ModFabrik_QuickIconHelper
 				{
 					if (!$user->authorise($button['access'][$i], $button['access'][$i + 1]))
 					{
-						return '';
+						return false;
 					}
 				}
 			}
 		}
+
+		return $button;
+
 		$html[] = '<div class="row-striped">';
 		$html[] = '<div class="row-fluid"' . (empty($button['id']) ? '' : (' id="' . $button['id'] . '"')) . '>';
 		$html[] = '<div class="span12">';

@@ -16,4 +16,17 @@
 		<folder>language</folder>
 		<folder>tmpl</folder>
 	</files>
+	<config>
+		<fields name="params">
+			<fieldset addfieldpath="/administrator/components/com_fabrik/models/fields" name="advanced">
+			
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+			
+			</fieldset>
+		</fields>
+	</config>
 </extension>
