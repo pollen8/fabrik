@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       1.5
-*/
+ */
 
 class FabrikAdminViewPackage extends JViewLegacy
 {
@@ -58,6 +58,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 		JHtml::_('behavior.modal', 'a.modal');
 		parent::display('list');
 	}
+
 	/**
 	 * Display the view
 	 *
@@ -153,7 +154,6 @@ class FabrikAdminViewPackage extends JViewLegacy
 		$isNew = ($this->item->id == 0);
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_PACKAGE_NEW') : JText::_('COM_FABRIK_MANAGER_PACKAGE_EDIT'), 'package.png');
 
 		if ($isNew)
@@ -165,6 +165,7 @@ class FabrikAdminViewPackage extends JViewLegacy
 				JToolBarHelper::save('package.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('package.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('package.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
@@ -185,10 +186,12 @@ class FabrikAdminViewPackage extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('package.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('package.cancel', 'JTOOLBAR_CLOSE');
 		}
 

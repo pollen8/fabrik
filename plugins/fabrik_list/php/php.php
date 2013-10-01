@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListPhp extends plgFabrik_List
 {
-
 	protected $buttonPrefix = 'php';
 
 	protected $msg = null;
@@ -40,6 +39,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -54,10 +54,12 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	protected function getImageName()
 	{
 		$img = parent::getImageName();
+
 		if (FabrikWorker::j3() && $img === 'php.png')
 		{
 			$img = 'lightning.png';
 		}
+
 		return $img;
 	}
 
@@ -97,7 +99,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    Custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -109,6 +111,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		$params = $this->getParams();
 		$f = JFilterInput::getInstance();
 		$file = $f->clean($params->get('table_php_file'), 'CMD');
+
 		if ($file == -1 || $file == '')
 		{
 			$code = $params->get('table_php_code');
@@ -118,10 +121,12 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		{
 			require_once JPATH_ROOT . '/plugins/fabrik_list/php/scripts/' . $file;
 		}
+
 		if (isset($statusMsg) && !empty($statusMsg))
 		{
 			$this->msg = $statusMsg;
 		}
+
 		return true;
 	}
 
@@ -143,6 +148,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		{
 			$params = $this->getParams();
 			$msg = $params->get('table_php_msg', JText::_('PLG_LIST_PHP_CODE_RUN'));
+
 			return $msg;
 		}
 	}
@@ -163,7 +169,7 @@ class PlgFabrik_ListPhp extends plgFabrik_List
 		$opts->js_code = $params->get('table_php_js_code', '');
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListPHP($opts)";
+
 		return true;
 	}
-
 }

@@ -12,16 +12,15 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
-* Itagg SMS gateway class
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.form.sms
-* @since       3.0
-*/
+ * Itagg SMS gateway class
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.sms
+ * @since       3.0
+ */
 
 class Itagg extends JObject
 {
-
 	/**
 	 * URL To Post SMS to
 	 *
@@ -45,11 +44,10 @@ class Itagg extends JObject
 		$smsfrom = urlencode($params->get('sms-from'));
 		$smsto = $params->get('sms-to');
 		$smstos = explode(",", $smsto);
-
 		$message = urlencode($message);
+
 		foreach ($smstos as $smsto)
 		{
-
 			if (substr($smsto, 0, 1) == '+' && JString::substr($smsto, 1, 2) != '44')
 			{
 				// Global sms
@@ -60,8 +58,8 @@ class Itagg extends JObject
 				// UK (itagg)
 				$route = 7;
 			}
-			$smsto = urlencode($smsto);
 
+			$smsto = urlencode($smsto);
 			$url = $this->url;
 			$vars = 'usr=' . $username . '&pwd=' . $password . '&from=rob&to=' . $smsto . '&type=text&route=' . $route . '&txt=' . $message;
 
@@ -69,11 +67,13 @@ class Itagg extends JObject
 			/* $params="usr=XXX&pwd=YYY&from=steve&to=07712345678,447912345678,3912345678&type=text&rout
 			e=7&txt=hello+via+POST"; */
 			$ch = curl_init();
+
 			if (!$ch)
 			{
 				throw new RuntimeException("cant ini curl session", 500);
 				exit;
 			}
+
 			curl_setopt($ch, CURLOPT_URL, $itaggapi);
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -89,6 +89,7 @@ class Itagg extends JObject
 			{
 				echo "sent ok";
 			}
+
 			$res = FabrikSMS::doRequest('POST', $url, $vars);
 		}
 	}
@@ -103,5 +104,4 @@ class Itagg extends JObject
 	{
 		return $this->params;
 	}
-
 }

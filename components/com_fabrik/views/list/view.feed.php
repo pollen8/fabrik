@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewList extends JViewLegacy
 {
-
 	/**
 	 * Display the Feed
 	 *
@@ -41,13 +40,11 @@ class FabrikViewList extends JViewLegacy
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');
-
 		$document = JFactory::getDocument();
 		$document->_itemTags = array();
 
 		// Get the active menu item
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
-
 		$table = $model->getTable();
 		$model->render();
 		$params = $model->getParams();
@@ -65,9 +62,11 @@ class FabrikViewList extends JViewLegacy
 		// Get headings
 		$aTableHeadings = array();
 		$groupModels = $formModel->getGroupsHiarachy();
+
 		foreach ($groupModels as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -76,6 +75,7 @@ class FabrikViewList extends JViewLegacy
 				if ($elParams->get('show_in_rss_feed') == '1')
 				{
 					$heading = $element->label;
+
 					if ($elParams->get('show_label_in_rss_feed') == '1')
 					{
 						$aTableHeadings[$heading]['label'] = $heading;
@@ -84,6 +84,7 @@ class FabrikViewList extends JViewLegacy
 					{
 						$aTableHeadings[$heading]['label'] = '';
 					}
+
 					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName();
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 					$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
@@ -95,6 +96,7 @@ class FabrikViewList extends JViewLegacy
 		{
 			$element = $elementModel->getElement();
 			$elParams = new JRegistry($element->attribs);
+
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{
 				$heading = $element->label;
@@ -107,6 +109,7 @@ class FabrikViewList extends JViewLegacy
 				{
 					$aTableHeadings[$heading]['label'] = '';
 				}
+
 				$aTableHeadings[$heading]['colName'] = $element->db_table_name . "___" . $element->name;
 				$aTableHeadings[$heading]['dbField'] = $element->name;
 				$aTableHeadings[$heading]['key'] = $elParams->get('use_as_fake_key');
@@ -122,6 +125,7 @@ class FabrikViewList extends JViewLegacy
 		// Check for a custom css file and include it if it exists
 		$tmpl = $input->get('layout', $table->template);
 		$csspath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/feed.css';
+
 		if (file_exists($csspath))
 		{
 			$document->addStyleSheet(COM_FABRIK_LIVESITE . 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/feed.css');
@@ -139,6 +143,7 @@ class FabrikViewList extends JViewLegacy
 		// List of tags to look for in the row data
 		// If they are there don't put them in the desc but put them in as a seperate item param
 		$rsstags = array('<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"');
+
 		foreach ($rows as $group)
 		{
 			foreach ($group as $row)
@@ -156,20 +161,24 @@ class FabrikViewList extends JViewLegacy
 						// Set a default title
 						$title = $row->$dbcolname['colName'];
 					}
+
 					$rsscontent = $row->$dbcolname['colName'];
 
 					$found = false;
+
 					foreach ($rsstags as $rsstag => $namespace)
 					{
 						if (strstr($rsscontent, $rsstag))
 						{
 							$found = true;
+
 							if (!strstr($document->_namespace, $namespace))
 							{
 								$rsstag = JString::substr($rsstag, 1, JString::strlen($rsstag) - 2);
 								$document->_itemTags[] = $rsstag;
 								$document->_namespace .= $namespace . "\n";
 							}
+
 							break;
 						}
 					}
@@ -195,10 +204,13 @@ class FabrikViewList extends JViewLegacy
 				{
 					$title = $row->$titleEl;
 				}
+
 				$str = $str2 . $str . "</table>";
 
 				// Url link to article
-				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->__pk_val);
+				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid='
+					. $form->id . '&rowid=' . $row->__pk_val
+					);
 
 				// Strip html from feed item description text
 				$author	= @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
@@ -225,5 +237,4 @@ class FabrikViewList extends JViewLegacy
 			}
 		}
 	}
-
 }

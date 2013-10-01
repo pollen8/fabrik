@@ -18,11 +18,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.time
  * @since       3.0
-*/
+ */
 
 class PlgFabrik_ElementTime extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
@@ -61,13 +60,16 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		 * added little test to see if the data was actually an array before using it
 		 */
 		$formModel = $this->getFormModel();
+
 		if (is_array($formModel->data))
 		{
 			$data = $formModel->data;
 		}
+
 		$value = $this->getValue($data, $repeatCounter);
 		$sep = $params->get('time_separatorlabel', JText::_(':'));
 		$fd = $params->get('details_time_format', 'H:i:s');
+
 		if (!$this->isEditable())
 		{
 			if ($value)
@@ -81,12 +83,14 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				{
 					$bits = $value;
 				}
+
 				$hour = JArrayHelper::getValue($bits, 0, '00');
 				$min = JArrayHelper::getValue($bits, 1, '00');
 				$sec = JArrayHelper::getValue($bits, 2, '00');
 
 				// $$$ rob - all this below is nice but ... you still need to set a default
 				$detailvalue = '';
+
 				if ($fd == 'H:i:s')
 				{
 					$detailvalue = $hour . $sep . $min . $sep . $sec;
@@ -97,12 +101,15 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 					{
 						$detailvalue = $hour . $sep . $min;
 					}
+
 					if ($fd == 'i:s')
 					{
 						$detailvalue = $min . $sep . $sec;
 					}
 				}
+
 				$value = $this->replaceWithIcons($detailvalue);
+
 				return ($element->hidden == '1') ? "<!-- " . $detailvalue . " -->" : $detailvalue;
 			}
 			else
@@ -117,16 +124,19 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			{
 				$value = strstr($value, ',') ? (explode(',', $value)) : explode(':', $value);
 			}
+
 			$hourvalue = JArrayHelper::getValue($value, 0);
 			$minvalue = JArrayHelper::getValue($value, 1);
 			$secvalue = JArrayHelper::getValue($value, 2);
 
 			$hours = array(JHTML::_('select.option', '', $params->get('time_hourlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_HOUR'))));
+
 			for ($i = 0; $i < 24; $i++)
 			{
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
 				$hours[] = JHTML::_('select.option', $i);
 			}
+
 			$mins = array(JHTML::_('select.option', '', $params->get('time_minlabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_MINUTE'))));
 			$increment = (int) $params->get('minutes_increment', 1);
 
@@ -136,12 +146,15 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
 				$mins[] = JHTML::_('select.option', $i);
 			}
+
 			$secs = array(JHTML::_('select.option', '', $params->get('time_seclabel', JText::_('PLG_ELEMENT_TIME_SEPARATOR_SECOND'))));
+
 			for ($i = 0; $i < 60; $i++)
 			{
 				$i = str_pad($i, 2, '0', STR_PAD_LEFT);
 				$secs[] = JHTML::_('select.option', $i);
 			}
+
 			$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 			$attribs = 'class="input-small fabrikinput inputbox' . $errorCSS . '"';
 			$str = array();
@@ -153,13 +166,17 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$str[] = JHTML::_('select.genericlist', $hours, preg_replace('#(\[\])$#', '[0]', $name), $attribs, 'value', 'text', $hourvalue) . ' '
 						. $sep;
 			}
+
 			$str[] = JHTML::_('select.genericlist', $mins, preg_replace('#(\[\])$#', '[1]', $name), $attribs, 'value', 'text', $minvalue);
+
 			if ($fd != 'H:i')
 			{
 				$str[] = $sep . ' '
 						. JHTML::_('select.genericlist', $secs, preg_replace('#(\[\])$#', '[2]', $name), $attribs, 'value', 'text', $secvalue);
 			}
+
 			$str[] = '</div>';
+
 			return implode("\n", $str);
 		}
 	}
@@ -193,8 +210,10 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			$h = JArrayHelper::getValue($val, 0, '00');
 			$m = JArrayHelper::getValue($val, 1, '00');
 			$s = JArrayHelper::getValue($val, 2, '00');
+
 			return $h . ':' . $m . ':' . $s;
 		}
+
 		return $val;
 	}
 
@@ -216,7 +235,8 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 			$h = (int) ($seconds / 3600);
 			$m = (int) (($seconds - $h * 3600) / 60);
 			$s = (int) ($seconds - $h * 3600 - $m * 60);
-			$row->value = (($h) ? (($h < 10) ? ("0" . $h) : $h) : "00") . ":" . (($m) ? (($m < 10) ? ("0" . $m) : $m) : "00") . ":" . (($s) ? (($s < 10) ? ("0" . $s) : $s) : "00");
+			$row->value = (($h) ? (($h < 10) ? ("0" . $h) : $h) : "00") . ":" . (($m) ? (($m < 10) ? ("0" . $m) : $m) : "00") . ":"
+				. (($s) ? (($s < 10) ? ("0" . $s) : $s) : "00");
 		}
 	}
 
@@ -239,13 +259,15 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$table = $listModel->getTable();
 		$db = $listModel->getDb();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
 		$name = $this->getFullName(false, false, false);
 
-		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60 + substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
+		return 'SELECT SUM(substr(' . $name . ' FROM 1 FOR 2) * 60 * 60 + substr(' . $name . ' FROM 4 FOR 2) * 60
+			+ substr(' . $name . ' FROM 7 FOR 2))  AS value, ' . $label . ' FROM '
 				. $db->quoteName($table->db_table_name) . ' ' . $joinSQL . ' ' . $whereSQL;
 	}
 
@@ -268,6 +290,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$item = $listModel->getTable();
 		$joinSQL = $listModel->_buildQueryJoin();
 		$whereSQL = $listModel->_buildQueryWhere();
@@ -280,7 +303,6 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		// Element is in a joined column - lets presume the user wants to sum all cols, rather than reducing down to the main cols totals
 		return "SELECT ROUND(AVG($valueSelect), $roundTo) AS value, $label FROM " . FabrikString::safeColName($item->db_table_name)
 		. " $joinSQL $whereSQL";
-
 	}
 
 	/**
@@ -295,11 +317,14 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$data = str_replace(null, '', $data);
+
 		if (strstr($data, ','))
 		{
 			$data = explode(',', $data);
 		}
+
 		$data = (array) $data;
+
 		foreach ($data as $d)
 		{
 			if (trim($d) == '')
@@ -307,6 +332,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -324,6 +350,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->separator = $params->get('time_separatorlabel', ':');
+
 		return array('FbTime', $id, $opts);
 	}
 
@@ -363,6 +390,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$hm = $hour . $sep . $min;
 				$ms = $min . $sep . $sec;
 				$timedisp = '';
+
 				if ($ft == "H:i:s")
 				{
 					list($hour, $min, $sec) = explode(':', $d);
@@ -375,12 +403,14 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 						list($hour, $min) = explode(':', $d);
 						$timedisp = $hour . $sep . $min;
 					}
+
 					if ($ft == "i:s")
 					{
 						list($min, $sec) = explode(':', $d);
 						$timedisp = $min . $sep . $sec;
 					}
 				}
+
 				$format[] = $timedisp;
 			}
 			else
@@ -388,7 +418,9 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 				$format[] = '';
 			}
 		}
+
 		$data = json_encode($format);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -407,7 +439,7 @@ class PlgFabrik_ElementTime extends PlgFabrik_Element
 		$params = $this->getParams();
 		$sep = $params->get('time_separatorlabel', ':');
 		$value = implode($sep, $value);
+
 		return $value;
 	}
-
 }

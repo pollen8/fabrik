@@ -39,15 +39,13 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	{
 		$document = JFactory::getDocument();
 		$viewName = 'calendar';
-
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
 		$view = $this->getView($viewName, $viewType);
-
 		$formModel = JModelLegacy::getInstance('Form', 'FabrikFEModel');
-
 		parent::display();
+
 		return $this;
 	}
 
@@ -57,7 +55,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	 * @return  void
 	 */
 
-	function deleteEvent()
+	public function deleteEvent()
 	{
 		$model = $this->getModel('calendar');
 		$model->deleteEvent();
@@ -69,7 +67,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	 *
 	 * @return  void
 	 */
-	function getEvents()
+	public function getEvents()
 	{
 		$viewName = 'calendar';
 		$app = JFactory::getApplication();
@@ -86,7 +84,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	 *
 	 * @return  void
 	 */
-	function chooseaddevent()
+	public function chooseaddevent()
 	{
 		$document = JFactory::getDocument();
 		$viewName = 'calendar';
@@ -101,7 +99,6 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 
 		// Push a model into the view
 		$model = $this->getModel($viewName);
-
 		$view->setModel($model, true);
 		$view->chooseaddevent();
 	}
@@ -112,7 +109,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 	 * @return  void
 	 */
 
-	function addEvForm()
+	public function addEvForm()
 	{
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
@@ -124,6 +121,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$id = $input->getInt('visualizationid', $usersConfig->get('visualizationid', 0));
 		$model->setId($id);
 		$model->setupEvents();
+
 		if (array_key_exists($listid, $model->_events))
 		{
 			$datefield = $model->_events[$listid][0]['startdate'];
@@ -134,6 +132,7 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 			$prefix = $config->get('dbprefix');
 			$datefield = $prefix . 'fabrik_calendar_events___start_date';
 		}
+
 		$datefield = FabrikString::safeColNameToArrayKey($datefield);
 		$rowid = $input->getString('rowid', '', 'string');
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
@@ -149,10 +148,12 @@ class FabrikControllerVisualizationcalendar extends FabrikControllerVisualizatio
 		$link .= '&fabrik_window_id=' . $input->get('fabrik_window_id');
 
 		$start_date = $input->get('start_date', '');
+
 		if (!empty($start_date))
 		{
 			$link .= "&$datefield=" . $start_date;
 		}
+
 		// $$$ rob have to add this to stop the calendar filtering itself after adding an new event?
 		$link .= '&clearfilters=1';
 		$this->setRedirect($link);

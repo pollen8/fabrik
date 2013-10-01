@@ -20,7 +20,7 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 class FabrikAdminViewElements extends JViewLegacy
 {
@@ -61,12 +61,16 @@ class FabrikAdminViewElements extends JViewLegacy
 			{
 				$this->setLayout('bootstrap_confirmdelete');
 			}
+
 			$this->confirmdelete();
+
 			return;
 		}
+
 		if ($this->getLayout() == 'copyselectgroup')
 		{
 			$this->copySelectGroup();
+
 			return;
 		}
 		// Initialise variables.
@@ -86,13 +90,16 @@ class FabrikAdminViewElements extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
+
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
@@ -107,17 +114,20 @@ class FabrikAdminViewElements extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_ELEMENTS'), 'elements.png');
+
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('element.add', 'JTOOLBAR_NEW');
 		}
+
 		if ($canDo->get('core.edit'))
 		{
 			JToolBarHelper::editList('element.edit', 'JTOOLBAR_EDIT');
 		}
+
 		JToolBarHelper::custom('elements.copySelectGroup', 'copy.png', 'copy_f2.png', 'COM_FABRIK_COPY');
+
 		if ($canDo->get('core.edit.state'))
 		{
 			if ($this->state->get('filter.state') != 2)
@@ -126,15 +136,17 @@ class FabrikAdminViewElements extends JViewLegacy
 				JToolBarHelper::custom('elements.publish', 'publish.png', 'publish_f2.png', 'JTOOLBAR_PUBLISH', true);
 				JToolBarHelper::custom('elements.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
+
 			JToolBarHelper::divider();
 			JToolBarHelper::custom('elements.showInListView', 'publish.png', 'publish_f2.png', 'COM_FABRIK_SHOW_IN_LIST_VIEW', true);
 			JToolBarHelper::custom('elements.hideFromListView', 'unpublish.png', 'unpublish_f2.png', 'COM_FABRIK_REMOVE_FROM_LIST_VIEW', true);
-
 		}
+
 		if (JFactory::getUser()->authorise('core.manage', 'com_checkin'))
 		{
 			JToolBarHelper::custom('elements.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 		}
+
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
 			JToolBarHelper::deleteList('', 'elements.delete', 'JTOOLBAR_EMPTY_TRASH');
@@ -143,11 +155,13 @@ class FabrikAdminViewElements extends JViewLegacy
 		{
 			JToolBarHelper::trash('elements.trash', 'JTOOLBAR_TRASH');
 		}
+
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_fabrik');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS', false, JText::_('JHELP_COMPONENTS_FABRIK_ELEMENTS'));
 
@@ -195,9 +209,7 @@ class FabrikAdminViewElements extends JViewLegacy
 			'filter_showinlist',
 			JHtml::_('select.options', $this->showInListOptions, 'value', 'text', $this->state->get('filter.showinlist'), true)
 			);
-
 		}
-
 	}
 
 	/**

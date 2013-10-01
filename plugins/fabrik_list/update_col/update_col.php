@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 *
@@ -37,21 +36,21 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	 *
 	 * @var int
 	 */
-	protected $_sent = 0;
+	protected $sent = 0;
 
 	/**
 	 * Number of NOT send email notifications
 	 *
 	 * @var int
 	 */
-	protected $_notsent = 0;
+	protected $notsent = 0;
 
 	/**
 	 * Number rows updated
 	 *
 	 * @var int
 	 */
-	protected $_row_count = 0;
+	protected $row_count = 0;
 
 	/**
 	 * Update message
@@ -63,7 +62,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -71,6 +70,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -106,6 +106,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	{
 		$access = $this->getParams()->get('updatecol_access');
 		$name = $this->_getButtonName();
+
 		return in_array($access, JFactory::getUser()->getAuthorisedViewLevels());
 	}
 
@@ -123,6 +124,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	protected function getUpdateCols($params)
 	{
 		$model = $this->getModel();
+
 		if ($params->get('update_user_select', 0))
 		{
 			$formModel = $model->getFormModel();
@@ -137,6 +139,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$update = new stdClass;
 			$update->coltoupdate = array();
 			$update->update_value = array();
+
 			for ($i = 0; $i < count($values['elementid']); $i ++)
 			{
 				$id = $values['elementid'][$i];
@@ -155,12 +158,14 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			$update = json_decode($params->get('update_col_updates'));
 		}
+
 		return $update;
 	}
+
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -179,6 +184,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			return false;
 		}
+
 		// $$$ rob moved here from bottom of func see http://fabrikar.com/forums/showthread.php?t=15920&page=7
 		$dateCol = $params->get('update_date_element');
 		$userCol = $params->get('update_user_element');
@@ -188,7 +194,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		// Array_unique for left joined table data
 		$ids = array_unique($input->get('ids', array(), 'array'));
 		JArrayHelper::toInteger($ids);
-		$this->_row_count = count($ids);
+		$this->row_count = count($ids);
 		$ids = implode(',', $ids);
 		$model->reset();
 		$model->setPluginQueryWhere('update_col', $item->db_primary_key . ' IN ( ' . $ids . ')');
@@ -197,6 +203,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		// $$$servantek reordered the update process in case the email routine wants to kill the updates
 		$emailColID = $params->get('update_email_element', '');
 		$emailTo = $params->get('update_email_to', '');
+
 		if (!empty($emailColID) || !empty($emailTo))
 		{
 			$w = new FabrikWorker;
@@ -208,6 +215,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			$config = JFactory::getConfig();
 			$from = $config->get('mailfrom');
 			$fromname = $config->get('fromname');
+
 			if (!empty($emailColId))
 			{
 				$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($emailColID);
@@ -230,6 +238,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 					->where($item->db_primary_key . ' IN (' . $ids . ')');
 					$db->setQuery($query);
 					$results = $db->loadObjectList();
+
 					foreach ($results as $result)
 					{
 						$userids_emails[(int) $result->id] = $result->email;
@@ -240,9 +249,11 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 			{
 				$emailWhich = 'to';
 			}
+
 			foreach ($aids as $id)
 			{
 				$row = $model->getRow($id);
+
 				if ($emailWhich == 'user')
 				{
 					$userid = (int) $row->$emailFieldRaw;
@@ -256,34 +267,39 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 				{
 					$to = $emailTo;
 				}
+
 				if (JMailHelper::cleanAddress($to) && FabrikWorker::isEmail($to))
 				{
 					// $tofull = '"' . JMailHelper::cleanLine($toname) . '" <' . $to . '>';
 					// $$$servantek added an eval option and rearranged placeholder call
 					$thissubject = $w->parseMessageForPlaceholder($subject, $row);
 					$thismessage = $w->parseMessageForPlaceholder($message, $row);
+
 					if ($eval)
 					{
 						$thismessage = @eval($thismessage);
 						FabrikWorker::logEval($thismessage, 'Caught exception on eval in updatecol::process() : %s');
 					}
+
 					$mail = JFactory::getMailer();
 					$res = $mail->sendMail($from, $fromname, $to, $thissubject, $thismessage, true);
+
 					if ($res)
 					{
-						$this->_sent++;
+						$this->sent++;
 					}
 					else
 					{
-						$$this->_notsent++;
+						$$this->notsent++;
 					}
 				}
 				else
 				{
-					$this->_notsent++;
+					$this->notsent++;
 				}
 			}
 		}
+
 		// $$$servantek reordered the update process in case the email routine wants to kill the updates
 		if (!empty($dateCol))
 		{
@@ -295,19 +311,21 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		{
 			$this->_process($model, $userCol, (int) $user->get('id'));
 		}
+
 		foreach ($update->coltoupdate as $i => $col)
 		{
 			$this->_process($model, $col, $update->update_value[$i]);
 		}
+
 		$this->msg = $params->get('update_message', '');
 
 		if (empty($this->msg))
 		{
-			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->_row_count, $this->_sent);
+			$this->msg = JText::sprintf('PLG_LIST_UPDATE_COL_UPDATE_MESSAGE', $this->row_count, $this->sent);
 		}
 		else
 		{
-			$this->msg = JText::sprintf($this->msg, $this->_row_count, $this->_sent);
+			$this->msg = JText::sprintf($this->msg, $this->row_count, $this->sent);
 		}
 
 		// Clean the cache.
@@ -363,6 +381,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$opts->form = $this->userSelectForm();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListUpdateCol($opts)";
+
 		return true;
 	}
 
@@ -383,13 +402,16 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$groups = $form->getGroupsHiarachy();
 		$gkeys = array_keys($groups);
 		$elementModels = $model->getElements(0, false, true);
+
 		foreach ($elementModels as $elementModel)
 		{
 			$element = $elementModel->getElement();
+
 			if ($elementModel->canUse($this, 'list') && $element->plugin !== 'internalid')
 			{
 				$elName = $elementModel->getFilterFullName();
-				$options[] = '<option value="' . $elName . '" data-id="' . $element->id . '" data-plugin="' . $element->plugin . '">' . strip_tags($element->label) . '</option>';
+				$options[] = '<option value="' . $elName . '" data-id="' . $element->id . '" data-plugin="' . $element->plugin . '">'
+					. strip_tags($element->label) . '</option>';
 			}
 		}
 
@@ -416,6 +438,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 		$html[] = '</table>';
 		$html[] = '<input class="button btn button-primary" value="' . JText::_('COM_FABRIK_APPLY') . '" type="button">';
 		$html[] = '</form>';
+
 		return implode("\n", $html);
 	}
 
@@ -429,7 +452,7 @@ class PlgFabrik_ListUpdate_Col extends PlgFabrik_List
 	{
 		$params = $this->getParams();
 		$col = $params->get('coltoupdate');
+
 		return $col . '-' . $this->renderOrder;
 	}
-
 }

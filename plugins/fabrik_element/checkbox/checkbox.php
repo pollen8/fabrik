@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 {
-
 	protected $inputType = 'checkbox';
 
 	/**
@@ -94,6 +93,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		$opts->allowadd = (bool) $params->get('allow_frontend_addtocheckbox', false);
 		JText::script('PLG_ELEMENT_CHECKBOX_ENTER_VALUE_LABEL');
+
 		return array('FbCheckBox', $id, $opts);
 	}
 
@@ -113,7 +113,6 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 		$s = new stdClass;
 		$s->deps = array('fab/element', 'fab/elementlist');
 		$shim['element/checkbox/checkbox'] = $s;
-
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 
@@ -130,6 +129,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	{
 		$params = $this->getParams();
 		$element = $this->getElement();
+
 		if (!array_key_exists($element->name, $data))
 		{
 			$data[$element->name] = $params->get('sub_default_value');
@@ -151,6 +151,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		for ($i = 0; $i < count($labels); $i++)
 		{
 			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
@@ -158,6 +159,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 				return $values[$i];
 			}
 		}
+
 		return $value;
 	}
 
@@ -189,6 +191,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 			// Ensure that array is incremental numeric key -otherwise json_encode turns it into an object
 			$val = array_values($val);
 		}
+
 		if (is_array($val) || is_object($val))
 		{
 			return json_encode($val);
@@ -210,6 +213,7 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 					// No ", [ or ], so lets see if wrapping it up in JSON array format
 					// produces vlaid JSON
 					$json_val = '["' . $val . '"]';
+
 					if (FabrikWorker::isJSON($json_val))
 					{
 						// Looks ike we we have a valid JSON array, so return that
@@ -233,5 +237,4 @@ class PlgFabrik_ElementCheckbox extends PlgFabrik_ElementList
 			}
 		}
 	}
-
 }

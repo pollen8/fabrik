@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableForm extends FabTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -60,10 +59,12 @@ class FabrikTableForm extends FabTable
 		{
 			$this->db_table_name = $src['db_table_name'];
 		}
+
 		if (array_key_exists('connection_id', $src))
 		{
 			$this->connection_id = $src['connection_id'];
 		}
+
 		return parent::bind($src, $ignore);
 	}
 
@@ -84,6 +85,7 @@ class FabrikTableForm extends FabTable
 		// We don't want these to be stored - generates an sql error
 		unset($this->db_table_name);
 		unset($this->connection_id);
+
 		return parent::store($updateNulls);
 	}
 
@@ -111,6 +113,7 @@ class FabrikTableForm extends FabTable
 			{
 				return true;
 			}
+
 			$keys = array($keyName => $keyValue);
 		}
 		elseif (!is_array($keys))
@@ -136,6 +139,7 @@ class FabrikTableForm extends FabTable
 			{
 				$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_CLASS_IS_MISSING_FIELD', get_class($this), $field));
 				$this->setError($e);
+
 				return false;
 			}
 			// Add the search tuple to the query.
@@ -151,6 +155,7 @@ class FabrikTableForm extends FabTable
 		{
 			$e = new JException(JText::_('JLIB_DATABASE_ERROR_EMPTY_ROW_RETURNED'));
 			$this->setError($e);
+
 			return false;
 		}
 

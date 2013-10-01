@@ -20,7 +20,6 @@ defined('_JEXEC') or die('Restricted access');
  */
 class FabrikTableFormGroup extends JTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -31,5 +30,4 @@ class FabrikTableFormGroup extends JTable
 	{
 		parent::__construct('#__{package}_formgroup', 'id', $db);
 	}
-
 }

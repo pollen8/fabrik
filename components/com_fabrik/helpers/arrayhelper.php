@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FArrayHelper extends JArrayHelper
 {
-
 	/**
 	 * Get a value from a nested array
 	 *
@@ -30,22 +29,25 @@ class FArrayHelper extends JArrayHelper
 	 * @param   string  $default       Default value if key not found
 	 * @param   bool    $allowObjects  Should objects found in $array be converted into arrays
 	 *
-	 *  @return  mixed
+	 * @return  mixed
 	 */
 
 	public static function getNestedValue($array, $key, $default = null, $allowObjects = false)
 	{
 		$keys = explode('.', $key);
+
 		foreach ($keys as $key)
 		{
 			if (is_object($array) && $allowObjects)
 			{
 				$array = JArrayHelper::fromObject($array);
 			}
+
 			if (!is_array($array))
 			{
 				return $default;
 			}
+
 			if (array_key_exists($key, $array))
 			{
 				$array = $array[$key];
@@ -55,6 +57,7 @@ class FArrayHelper extends JArrayHelper
 				return $default;
 			}
 		}
+
 		return $array;
 	}
 
@@ -71,33 +74,19 @@ class FArrayHelper extends JArrayHelper
 
 	public static function setValue(&$array, $key, $val)
 	{
-
 		if (strstr($key, '.'))
 		{
-
 			$nodes = explode('.', $key);
 			$count = count($nodes);
 			$pathNodes = $count - 1;
+
 			if ($pathNodes < 0)
 			{
 				$pathNodes = 0;
 			}
-			$ns = $array;
-			for ($i = 0; $i <= $pathNodes; $i++)
-			{
-				/**
-				 * If any node along the registry path does not exist, create it
-				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data
-				 */
-				if (!isset($ns[$nodes[$i]]))
-				{
-					$ns[$nodes[$i]] = array();
-				}
-				$ns = $ns[$nodes[$i]];
-			}
-			$ns = $val;
 
 			$ns = $array;
+
 			for ($i = 0; $i <= $pathNodes; $i++)
 			{
 				/**
@@ -108,8 +97,27 @@ class FArrayHelper extends JArrayHelper
 				{
 					$ns[$nodes[$i]] = array();
 				}
+
 				$ns = $ns[$nodes[$i]];
 			}
+
+			$ns = $val;
+			$ns = $array;
+
+			for ($i = 0; $i <= $pathNodes; $i++)
+			{
+				/**
+				 * If any node along the registry path does not exist, create it
+				 * if (!isset($this->formData[$nodes[$i]])) { //this messed up for joined data
+				 */
+				if (!isset($ns[$nodes[$i]]))
+				{
+					$ns[$nodes[$i]] = array();
+				}
+
+				$ns = $ns[$nodes[$i]];
+			}
+
 			$ns = $val;
 		}
 		else
@@ -133,9 +141,11 @@ class FArrayHelper extends JArrayHelper
 	public static function toObject(&$array, $class = 'stdClass', $recurse = true)
 	{
 		$obj = null;
+
 		if (is_array($array))
 		{
 			$obj = new $class;
+
 			foreach ($array as $k => $v)
 			{
 				if (is_array($v) && $recurse)
@@ -148,6 +158,7 @@ class FArrayHelper extends JArrayHelper
 				}
 			}
 		}
+
 		return $obj;
 	}
 
@@ -168,6 +179,7 @@ class FArrayHelper extends JArrayHelper
 		 *
 		 */
 		$aSubtrahends = array_slice(func_get_args(), 1);
+
 		foreach ($ar1 as $key => $val)
 		{
 			foreach ($aSubtrahends as $aSubtrahend)
@@ -178,6 +190,7 @@ class FArrayHelper extends JArrayHelper
 				}
 			}
 		}
+
 		return $ar1;
 	}
 
@@ -222,6 +235,7 @@ class FArrayHelper extends JArrayHelper
 				return $array[$i];
 			}
 		}
+
 		return false;
 	}
 
@@ -237,10 +251,12 @@ class FArrayHelper extends JArrayHelper
 	public static function extract($array, $key)
 	{
 		$return = array();
+
 		foreach ($array as $object)
 		{
 			$return[] = $object->$key;
 		}
+
 		return $return;
 	}
 
@@ -258,7 +274,7 @@ class FArrayHelper extends JArrayHelper
 	public static function firstKey($array)
 	{
 		reset($array);
+
 		return key($array);
 	}
-
 }

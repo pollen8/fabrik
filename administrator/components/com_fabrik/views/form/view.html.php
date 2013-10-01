@@ -16,9 +16,9 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a form.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 class FabrikAdminViewForm extends JViewLegacy
 {
@@ -70,6 +70,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
@@ -118,6 +119,7 @@ class FabrikAdminViewForm extends JViewLegacy
 		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_FORM_NEW') : JText::_('COM_FABRIK_MANAGER_FORM_EDIT'), 'form.png');
+
 		if ($isNew)
 		{
 			// For new records, check the create permission.
@@ -127,6 +129,7 @@ class FabrikAdminViewForm extends JViewLegacy
 				JToolBarHelper::save('form.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('form.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
@@ -154,5 +157,4 @@ class FabrikAdminViewForm extends JViewLegacy
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_FORMS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_FORMS_EDIT'));
 	}
-
 }

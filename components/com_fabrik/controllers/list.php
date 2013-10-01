@@ -24,7 +24,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerList extends JControllerLegacy
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
@@ -50,6 +49,7 @@ class FabrikControllerList extends JControllerLegacy
 		$modelName = $viewName;
 		$layout = $input->getWord('layout', 'default');
 		$viewType = $document->getType();
+
 		if ($viewType == 'pdf')
 		{
 			// In PDF view only shown the main component content.
@@ -64,6 +64,7 @@ class FabrikControllerList extends JControllerLegacy
 		{
 			$model = $this->getModel($modelName, 'FabrikFEModel');
 		}
+
 		$view->setModel($model, true);
 
 		// Display the view
@@ -181,6 +182,7 @@ class FabrikControllerList extends JControllerLegacy
 
 		$model->setId($listid);
 		$oldtotal = $model->getTotalRecords();
+
 		try
 		{
 			$model->deleteRows($ids);
@@ -203,17 +205,21 @@ class FabrikControllerList extends JControllerLegacy
 		{
 			$ref = $input->server->get('HTTP_REFERER', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, '', 'string');
 		}
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace('limitstart' . $listid . '=  . $limitstart', 'limitstart' . $listid . '=' . $newlimitstart, $ref);
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
@@ -265,6 +271,7 @@ class FabrikControllerList extends JControllerLegacy
 		if ($input->getInt('id') == $model->get('id') || $input->get('origid', '') == '')
 		{
 			$msgs = $model->processPlugin();
+
 			if ($input->get('format') == 'raw')
 			{
 				$input->set('view', 'list');
@@ -284,6 +291,7 @@ class FabrikControllerList extends JControllerLegacy
 		// 3.0 use redirect rather than calling view() as that gave an sql error (joins seemed not to be loaded for the list)
 		$format = $input->get('format', 'html');
 		$defaultRef = 'index.php?option=com_' . $package . '&view=list&listid=' . $model->getId() . '&format=' . $format;
+
 		if ($format !== 'raw')
 		{
 			$ref = $input->post->get('fabrik_referrer', $defaultRef, 'string');
@@ -298,6 +306,7 @@ class FabrikControllerList extends JControllerLegacy
 		{
 			$ref = $defaultRef;
 		}
+
 		$app->redirect($ref);
 	}
 
@@ -316,5 +325,4 @@ class FabrikControllerList extends JControllerLegacy
 		$model->setId($id);
 		echo $model->getAdvancedElementFilter();
 	}
-
 }

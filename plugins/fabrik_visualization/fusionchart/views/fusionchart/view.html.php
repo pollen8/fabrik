@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewFusionchart extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -44,12 +43,16 @@ class FabrikViewFusionchart extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
+
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+
 		if ($this->requiredFiltersFound)
 		{
 			$this->chart = $this->get('Fusionchart');
@@ -58,6 +61,7 @@ class FabrikViewFusionchart extends JViewLegacy
 		{
 			$this->chart = '';
 		}
+
 		$params = $model->getParams();
 		$this->params = $params;
 		$viewName = $this->getName();
@@ -80,8 +84,6 @@ class FabrikViewFusionchart extends JViewLegacy
 		$js .= $model->getFilterJs();
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
-
 		echo parent::display();
 	}
-
 }

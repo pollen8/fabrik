@@ -26,7 +26,6 @@ jimport('joomla.html.parameter');
 
 class FabrikParams extends JForm
 {
-
 	/** @var bool duplicatable param (if true add []" to end of element name)*/
 	protected $duplicate = false;
 
@@ -57,14 +56,17 @@ class FabrikParams extends JForm
 	{
 		$p = array();
 		$default = (object) $this->_xml['_default'];
+
 		if (empty($default))
 		{
 			return $p;
 		}
+
 		foreach ($default->children() as $node)
 		{
 			$p[] = $node->attributes('name');
 		}
+
 		return $p;
 	}
 
@@ -83,10 +85,12 @@ class FabrikParams extends JForm
 	public function get($key, $default = '', $group = '_default', $outputFormat = 'string', $counter = null)
 	{
 		$return = parent::get($key, $default);
+
 		if ($outputFormat == 'array')
 		{
 			$return = $return == '' ? array() : (array) $return;
 		}
+
 		return $return;
 	}
 
@@ -107,11 +111,14 @@ class FabrikParams extends JForm
 		{
 			return false;
 		}
+
 		$results = array();
+
 		foreach ($this->_xml[$group]->children() as $param)
 		{
 			$results[] = $this->getParam($param, $name, $group, $ouputformat, $counter);
 		}
+
 		return $results;
 	}
 
@@ -130,11 +137,14 @@ class FabrikParams extends JForm
 		{
 			return false;
 		}
+
 		$results = array();
+
 		foreach ($this->_xml[$group]->children() as $node)
 		{
 			$results[] = $node->attributes('name');
 		}
+
 		return $results;
 	}
 
@@ -157,7 +167,6 @@ class FabrikParams extends JForm
 
 		// Remove any occurance of a mos_ prefix
 		$type = str_replace('mos_', '', $type);
-
 		$element = $this->loadElement($type);
 
 		// Error happened
@@ -167,6 +176,7 @@ class FabrikParams extends JForm
 			$result[0] = $node->attributes('name');
 			$result[1] = JText::_('COM_FABRIK_ELEMENT_NOT_DEFINED_FOR_TYPE') . ' = ' . $type;
 			$result[5] = $result[0];
+
 			return $result;
 		}
 
@@ -189,9 +199,7 @@ class FabrikParams extends JForm
 
 		// Value must be a string
 		$element->array_counter = $counter;
-
 		$result = $element->render($node, $value, $control_name);
-
 		$reqParamName = $result[5];
 
 		// Duplicate property set in view pages
@@ -204,14 +212,17 @@ class FabrikParams extends JForm
 				{
 					$counter = $this->counter_override;
 				}
+
 				$replacewith = "[$reqParamName][$counter][]";
 			}
 			else
 			{
 				$replacewith = "[$reqParamName][]";
 			}
+
 			$result[1] = str_replace("[$reqParamName]", $replacewith, $result[1]);
 		}
+
 		return $result;
 	}
 
@@ -244,6 +255,7 @@ class FabrikParams extends JForm
 		$repeat = false;
 		$repeatControls = true;
 		$repeatMin = 0;
+
 		if (is_array($this->_xml))
 		{
 			if (array_key_exists($group, $this->_xml))
@@ -253,10 +265,12 @@ class FabrikParams extends JForm
 				$repeatControls = $this->_xml[$group]->attributes('repeatcontrols');
 			}
 		}
+
 		if ($repeat)
 		{
 			// Get the name of the first element in the group
 			$children = $this->_xml[$group]->children();
+
 			if (empty($children))
 			{
 				$firstElName = '';
@@ -283,6 +297,7 @@ class FabrikParams extends JForm
 				$total = count($value);
 				$start = 0;
 			}
+
 			$return .= '<div id="container' . $this->_identifier . '">';
 
 			// Add in the 'add' button to duplicate the group
@@ -291,13 +306,13 @@ class FabrikParams extends JForm
 			{
 				$return .= "<a href='#' class='addButton'>" . JText::_('COM_FABRIK_ADD') . "</a>";
 			}
+
 			for ($x = $start; $x < $total; $x++)
 			{
 				// Call render for the number of time the group is repeated
 
 				$return .= '<div class="repeatGroup" id="' . $this->_identifier . 'group-' . $x . '">';
 				$params = $this->getParams($name, $group, 'array', $x);
-
 				$html = array();
 				$html[] = '<table width="100%" class="paramlist admintable" cellspacing="1">';
 
@@ -307,6 +322,7 @@ class FabrikParams extends JForm
 					$desc = JText::_($description);
 					$html[] = '<tr><td class="paramlist_description" colspan="2">' . $desc . '</td></tr>';
 				}
+
 				foreach ($params as $param)
 				{
 					$html[] = '<tr>';
@@ -320,6 +336,7 @@ class FabrikParams extends JForm
 					{
 						$html[] = '<td class="paramlist_value" colspan="2">' . $param[1] . '</td>';
 					}
+
 					$html[] = '</tr>';
 				}
 
@@ -327,15 +344,19 @@ class FabrikParams extends JForm
 				{
 					$html[] = "<tr><td colspan=\"2\"><i>" . JText::_('COM_FABRIK_THERE_ARE_NO_PARAMETERS_FOR_THIS_ITEM') . "</i></td></tr>";
 				}
+
 				$html[] = '</table>';
+
 				if ($repeatControls)
 				{
 					$html[] = "<a href='#' class=\"removeButton delete\">" . JText::_('COM_FABRIK_DELETE') . "</a>";
 				}
+
 				$return .= implode("\n", $html);
 				$c++;
 				$return .= "</div>";
 			}
+
 			$return .= "</div>";
 		}
 		else
@@ -354,6 +375,7 @@ class FabrikParams extends JForm
 	});";
 			FabrikHelperHTML::addScriptDeclaration($script);
 		}
+
 		if ($write)
 		{
 			echo $return;
@@ -378,5 +400,4 @@ class FabrikParams extends JForm
 	{
 		return $this->_xml[$namespace]->children();
 	}
-
 }

@@ -17,11 +17,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload
  * @since       3.0
-*/
+ */
 
 class PdfRender
 {
-
 	/**
 	 * Render output
 	 *
@@ -64,12 +63,14 @@ class PdfRender
 				$thumb_url = $model->getStorage()->_getThumb($file);
 				$thumb_file = $model->getStorage()->urlToPath($thumb_url);
 				$thumb_url_info = pathinfo($thumb_url);
+
 				if (JString::strtolower($thumb_url_info['extension'] == 'pdf'))
 				{
 					$thumb_url = $thumb_url_info['dirname'] . '/' . $thumb_url_info['filename'] . '.' . $this->pdf_thumb_type;
 					$thumb_file_info = pathinfo($thumb_file);
 					$thumb_file = $thumb_file_info['dirname'] . '/' . $thumb_file_info['filename'] . '.' . $this->pdf_thumb_type;
 				}
+
 				if ($model->getStorage()->exists($thumb_file))
 				{
 					return $thumb_url;
@@ -78,6 +79,7 @@ class PdfRender
 				{
 					// If file specific thumb doesn't exist, try the generic per-type image in media folder
 					$thumb_file = COM_FABRIK_BASE . 'media/com_fabrik/images/pdf.png';
+
 					if (JFile::exists($thumb_file))
 					{
 						return $thumb_file;
@@ -90,6 +92,7 @@ class PdfRender
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -134,13 +137,16 @@ class PdfRender
 			$file = JString::ltrim($file, '/\\');
 			$file = COM_FABRIK_LIVESITE . $file;
 		}
+
 		$file = str_replace("\\", "/", $file);
 		$file = $model->storage->preRenderPath($file);
 		$this->output = '<a class="download-archive fabrik-filetype-' . $ext . '" title="' . $filename . '" href="' . $file . '">';
+
 		if ($thumb_file = $this->getThumbnail($model, $params, $file))
 		{
 			$filename = '<img src="' . $thumb_file . '" alt="' . $filename . '" />';
 		}
+
 		$this->output .= $filename . '</a>';
 	}
 }

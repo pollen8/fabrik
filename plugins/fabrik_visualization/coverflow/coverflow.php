@@ -24,5 +24,4 @@ require_once COM_FABRIK_FRONTEND . '/models/visualization.php';
 
 class PlgFabrik_VisualizationCoverflow extends FabrikPlugin
 {
-
 }

@@ -19,34 +19,42 @@ jimport('joomla.application.component.model');
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
- * @deprecated
+ * @deprecated  Not used
  */
 
 class FabrikFEModelExport
 {
-
 	/**
 	 * Label
 	 *
 	 * @var striing
 	 */
-	var $label = '';
-	var $tableIds = array();
-	var $format = 'xml';
-	var $includeData = false;
-	var $fabrikData = false;
-	var $incTableStructure = false;
+	public $label = '';
 
-	var $packageModel = null;
-	var $_aTables = array();
-	var $_aFiles = array();
+	public $tableIds = array();
+
+	public $format = 'xml';
+
+	public $includeData = false;
+
+	public $fabrikData = false;
+
+	public $incTableStructure = false;
+
+	public $packageModel = null;
+
+	protected $tables = array();
+
+	protected $files = array();
 
 	/**
 	 * Load a package for export
 	 *
-	 * @param   int $id
+	 * @param   int  $id  Package Id
+	 *
+	 * @return  void
 	 */
-	function load($id)
+	public function load($id)
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -68,7 +76,7 @@ class FabrikFEModelExport
 	 * @return void
 	 */
 
-	function export()
+	public function export()
 	{
 		$db = FabrikWorker::getDbo();
 
@@ -91,13 +99,12 @@ class FabrikFEModelExport
 	 * @return  string  xml string
 	 */
 
-	function getTemplateFiles()
+	public function getTemplateFiles()
 	{
-
 		$templatePath = JPATH_SITE . '/components/com_fabrik/tmpl/form/';
 		$aFiles = array();
 
-		foreach ($this->_aTables as $listModel)
+		foreach ($this->tables as $listModel)
 		{
 			$table = $listModel->getTable();
 			$formModel = $listModel->getForm();
@@ -138,8 +145,8 @@ class FabrikFEModelExport
 					if (!in_array('viewonly/' . $form->view_only_template . '/elements.html', $aFiles))
 					{
 						$aFiles[] = 'viewonly/' . $form->view_only_template . '/elements.html';
-
 					}
+
 					if (!in_array('viewonly/' . $form->view_only_template . '/form.html', $aFiles))
 					{
 						$aFiles[] = 'viewonly/' . $form->view_only_template . '/form.html';
@@ -162,7 +169,7 @@ class FabrikFEModelExport
 			$xml .= "\t<file>tmpl/$file</file>\n";
 		}
 
-		$this->_aFiles = $aFiles;
+		$this->files = $aFiles;
 		$xml .= "</files>\n";
 
 		return $xml;
@@ -174,7 +181,7 @@ class FabrikFEModelExport
 	 * @return  string  xml file
 	 */
 
-	function _buildXML()
+	protected function _buildXML()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -239,7 +246,7 @@ class FabrikFEModelExport
 			$strXML .= "<groups>\n";
 			$strValidationXML = "<validations>\n";
 
-			foreach ($this->_aTables as $listModel)
+			foreach ($this->tables as $listModel)
 			{
 				$groups = $listModel->_oForm->getGroupsHiarachy();
 				$i = 0;
@@ -252,7 +259,7 @@ class FabrikFEModelExport
 
 					foreach ($vars as $key => $val)
 					{
-						//dont insert join_id as this isnt in the group table
+						// Dont insert join_id as this isnt in the group table
 						if ($key != "join_id")
 						{
 							if (substr($key, 0, 1) != '_')
@@ -307,6 +314,7 @@ class FabrikFEModelExport
 			$strValidationXML .= "</validations>\n\n";
 			$strXML .= $strElementXML . $strValidationXML;
 		}
+
 		$this->writeExportBuffer($strXML);
 
 		if ($this->incTableStructure)
@@ -325,13 +333,13 @@ class FabrikFEModelExport
 	 * @return  void
 	 */
 
-	function _createTablesXML()
+	protected function _createTablesXML()
 	{
 		$strXML = "<queries>\n";
 
-		for ($i = 0; $i < count($this->_aTables); $i++)
+		for ($i = 0; $i < count($this->tables); $i++)
 		{
-			$tmpTable = $this->_aTables[$i];
+			$tmpTable = $this->tables[$i];
 			$this->writeExportBuffer("\t<query>" . $tmpTable->getDropTableSQL() . "</query>\n");
 			$this->writeExportBuffer("\t<query>" . $tmpTable->getCreateTableSQL() . "</query>\n");
 
@@ -350,7 +358,7 @@ class FabrikFEModelExport
 	 * @return  void
 	 */
 
-	function clearExportBuffer()
+	public function clearExportBuffer()
 	{
 		if (JFile::exists($this->_bufferFile))
 		{
@@ -359,29 +367,29 @@ class FabrikFEModelExport
 	}
 
 	/**
-	 * Set the bugger file
+	 * Set the buffer file
 	 *
 	 * @return  void
 	 */
 
-	function setBufferFile()
+	public function setBufferFile()
 	{
-
-		// doesnt work in windowz
-		//$this->_bufferFile = '/tmp/fabrik_package-' . $this->label . '.xml';
+		// Doesnt work in windowz
+		// $this->_bufferFile = '/tmp/fabrik_package-' . $this->label . '.xml';
 		$this->_bufferFile = JPATH_SITE . "/administrator/components/com_fabrik/fabrik_package-" . $this->label . '.xml';
 	}
 
 	/**
 	 * Write string to export buffer
 	 *
-	 * @param unknown_type $str
+	 * @param   string  $str  Buffer
 	 *
 	 * @deprecated
 	 *
 	 * @return Ambigous <object, mixed, reference>
 	 */
-	function writeExportBuffer($str)
+
+	protected function writeExportBuffer($str)
 	{
 		$filename = $this->_bufferFile;
 
@@ -414,9 +422,8 @@ class FabrikFEModelExport
 	 * @return  void
 	 */
 
-	function _xmlExport()
+	protected function _xmlExport()
 	{
-
 		$archiveName = 'fabrik_package-' . $this->label;
 		require_once JPATH_SITE . '/includes/Archive/Tar.php';
 		$archivePath = JPATH_SITE . '/components/com_fabrik/' . $archiveName . '.tgz';
@@ -433,19 +440,19 @@ class FabrikFEModelExport
 		$fileName = FabrikString::ltrimword($fileName, "/administrator/");
 		$ok = $zip->addModify($fileName, '', "components/com_fabrik");
 
-		for ($i = 0; $i < count($this->_aFiles); $i++)
+		for ($i = 0; $i < count($this->files); $i++)
 		{
-			$this->_aFiles[$i] = JPATH_SITE . '/components/com_fabrik/tmpl/' . $this->_aFiles[$i];
+			$this->files[$i] = JPATH_SITE . '/components/com_fabrik/tmpl/' . $this->files[$i];
 		}
 
-		$zip->addModify($this->_aFiles, '', JPATH_SITE . '/components/com_fabrik');
+		$zip->addModify($this->files, '', JPATH_SITE . '/components/com_fabrik');
 		$this->_output_file($archivePath, $archiveName . '.tgz');
 	}
 
 	/**
 	 * Do csv export
 	 *
-	 * @retun  void
+	 * @return  void
 	 */
 	protected function _csvExport()
 	{

@@ -38,8 +38,10 @@ class FabrikSMS
 		if (!function_exists('curl_init'))
 		{
 			throw new RuntimeException(JText::_('COM_FABRIK_ERR_CURL_NOT_INSTALLED'));
+
 			return;
 		}
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -48,17 +50,21 @@ class FabrikSMS
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
 		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
 		if ($method == 'POST')
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $vars);
 		}
+
 		if (!empty($auth))
 		{
 			curl_setopt($ch, CURLOPT_USERPWD, $auth);
 		}
+
 		$data = curl_exec($ch);
 		curl_close($ch);
+
 		if ($data)
 		{
 			if ($callback)

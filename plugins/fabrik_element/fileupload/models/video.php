@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class VideoRender
 {
-
 	/**
 	 * Render output
 	 *
@@ -73,6 +72,7 @@ class VideoRender
 		// Analyze file and store returned data in $ThisFileInfo
 		$relPath = JPATH_SITE . $file;
 		$thisFileInfo = $getID3->analyze($relPath);
+
 		if (array_key_exists('video', $thisFileInfo))
 		{
 			if (array_key_exists('resolution_x', $thisFileInfo['video']))
@@ -97,13 +97,15 @@ class VideoRender
 					$h += 64;
 			}
 		}
+
 		$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 
 		switch ($thisFileInfo['fileformat'])
 		{
 			case 'asf':
 				$this->output = '<object id="MediaPlayer" width=' . $w . ' height=' . $h
-				. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+				. ' classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components�"
+					type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 <param name="filename" value="http://yourdomain/yourmovie.wmv">
 <param name="Showcontrols" value="true">
@@ -128,6 +130,5 @@ class VideoRender
 			</object>";
 				break;
 		}
-
 	}
 }

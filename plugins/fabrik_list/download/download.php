@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListDownload extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 *
@@ -42,7 +41,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -50,6 +49,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -89,7 +89,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    Custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -114,10 +114,12 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		// Check ajax upload file names
 		$formModel = $model->getFormModel();
 		$downloadElement = $formModel->getElement($download_file);
+
 		if ($downloadElement)
 		{
 			$download_file = $downloadElement->getFullName(false, true, false);
 		}
+
 		if (empty($download_fk) && empty($download_file) && empty($download_table))
 		{
 			return;
@@ -127,12 +129,15 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			foreach ($ids AS $id)
 			{
 				$row = $model->getRow($id);
+
 				if (isset($row->$download_file))
 				{
 					$tmpFiles = explode(GROUPSPLITTER, $row->$download_file);
+
 					foreach ($tmpFiles as $tmpFile)
 					{
 						$this_file = JPATH_SITE . '/' . $tmpFile;
+
 						if (is_file($this_file))
 						{
 							$filelist[] = $this_file;
@@ -151,15 +156,18 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			->where($db->quoteName($download_fk) . ' IN (' . implode(',', $ids) . ')');
 			$db->setQuery($query);
 			$results = $db->loadObjectList();
+
 			foreach ($results AS $result)
 			{
 				$this_file = JPATH_SITE . '/' . $result->$download_file;
+
 				if (is_file($this_file))
 				{
 					$filelist[] = $this_file;
 				}
 			}
 		}
+
 		if (!empty($filelist))
 		{
 			if ($download_resize)
@@ -171,17 +179,21 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 				$oImage = FabimageHelper::loadLib($download_image_library);
 				$oImage->setStorage($storage);
 			}
+
 			$zipfile = tempnam(sys_get_temp_dir(), "zip");
 			$zipfile_basename = basename($zipfile);
 			$zip = new ZipArchive;
 			$zipres = $zip->open($zipfile, ZipArchive::OVERWRITE);
+
 			if ($zipres === true)
 			{
 				$ziptot = 0;
 				$tmp_files = array();
+
 				foreach ($filelist AS $this_file)
 				{
 					$this_basename = basename($this_file);
+
 					if ($download_resize && $oImage->getImgType($this_file))
 					{
 						$tmp_file = '/tmp/' . $this_basename;
@@ -189,7 +201,9 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 						$this_file = $tmp_file;
 						$tmp_files[] = $tmp_file;
 					}
+
 					$zipadd = $zip->addFile($this_file, $this_basename);
+
 					if ($zipadd === true)
 					{
 						$ziptot++;
@@ -199,6 +213,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 						$zip_err .= JText::_('ZipArchive add error: ' . $zipadd);
 					}
 				}
+
 				if (!$zip->close())
 				{
 					$zip_err = JText::_('ZipArchive close error') . ($zip->status);
@@ -211,10 +226,12 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 						$storage->delete($tmp_file);
 					}
 				}
+
 				if ($ziptot > 0)
 				{
 					// Stream the file to the client
 					$filesize = filesize($zipfile);
+
 					if ($filesize > 0)
 					{
 						header("Content-Type: application/zip");
@@ -234,12 +251,12 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			{
 				$zip_err = JText::_('ZipArchive open error: ' . $zipres);
 			}
-
 		}
 		else
 		{
 			$zip_err = "No files to ZIP!";
 		}
+
 		if (empty($zip_err))
 		{
 			return true;
@@ -247,6 +264,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		else
 		{
 			$this->msg = $zip_err;
+
 			return false;
 		}
 	}
@@ -278,6 +296,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 		$opts = $this->getElementJSOptions();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListDownload($opts)";
+
 		return true;
 	}
 
@@ -296,7 +315,7 @@ class PlgFabrik_ListDownload extends PlgFabrik_List
 			require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptors/' . $storageType . '.php';
 			$this->storage = new $storageType($params);
 		}
+
 		return $this->storage;
 	}
-
 }

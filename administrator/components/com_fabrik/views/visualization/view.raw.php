@@ -16,9 +16,9 @@ jimport('joomla.application.component.view');
 /**
  * Raw Visualization Admin View
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
  */
 
 class FabrikAdminViewVisualization extends JViewLegacy
@@ -56,5 +56,4 @@ class FabrikAdminViewVisualization extends JViewLegacy
 	{
 		echo "viz admin raw display";
 	}
-
 }

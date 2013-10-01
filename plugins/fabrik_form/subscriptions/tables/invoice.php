@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableInvoice extends JTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -56,5 +55,4 @@ class FabrikTableInvoice extends JTable
 		$this->paid = 1;
 		$this->store();
 	}
-
 }

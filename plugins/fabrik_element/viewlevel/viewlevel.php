@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -60,16 +59,21 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 		$selected = $user->getAuthorisedViewLevels();
 		arsort($selected);
 		$selected = array_shift($selected);
+
 		if (isset($data[$name]))
 		{
 			$selected = !is_array($data[$name]) ? explode(',', $data[$name]) : $selected = $data[$name];
 		}
+
 		if (!$this->isEditable())
 		{
 			$data = new stdClass;
+
 			return $this->renderListData($selected[0], $data);
 		}
+
 		$options = array();
+
 		return JHtml::_('access.level', $name, $selected, 'class="inputbox" size="6"', $options, $id);
 	}
 
@@ -85,6 +89,7 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbViewlevel', $id, $opts);
 	}
 
@@ -105,6 +110,7 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 			$db->setQuery($query);
 			$this->allOpts = $db->loadObjectList('id');
 		}
+
 		return $this->allOpts;
 	}
 
@@ -118,10 +124,12 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	{
 		$opts = $this->allOpts();
 		$return = array();
+
 		foreach ($opts as $opt)
 		{
 			$return[] = $opt->id;
 		}
+
 		return $return;
 	}
 
@@ -135,11 +143,12 @@ class PlgFabrik_ElementViewlevel extends PlgFabrik_ElementList
 	{
 		$opts = $this->allOpts();
 		$return = array();
+
 		foreach ($opts as $opt)
 		{
 			$return[] = $opt->title;
 		}
+
 		return $return;
 	}
-
 }

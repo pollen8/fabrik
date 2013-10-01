@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin element to render fields
+ * Fileupload plugin element to render swf file types
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.fileupload

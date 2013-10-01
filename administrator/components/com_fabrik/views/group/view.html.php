@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 class FabrikAdminViewGroup extends JViewLegacy
 {
@@ -64,6 +64,7 @@ class FabrikAdminViewGroup extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
@@ -91,6 +92,7 @@ class FabrikAdminViewGroup extends JViewLegacy
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_GROUP_NEW') : JText::_('COM_FABRIK_MANAGER_GROUP_EDIT'), 'group.png');
+
 		if ($isNew)
 		{
 			// For new records, check the create permission.
@@ -100,6 +102,7 @@ class FabrikAdminViewGroup extends JViewLegacy
 				JToolBarHelper::save('group.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('group.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('group.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
@@ -120,12 +123,15 @@ class FabrikAdminViewGroup extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('group.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('group.cancel', 'JTOOLBAR_CLOSE');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_GROUPS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_GROUPS_EDIT'));
 	}

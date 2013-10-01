@@ -33,6 +33,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function onFiltersGot()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_onfiltersgot'));
 	}
 
@@ -45,13 +46,14 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function onMakeFilters()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_onmakefilters'));
 	}
 
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    Custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -59,6 +61,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function process($opts = array())
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_process'));
 	}
 
@@ -71,6 +74,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function onPreLoadData()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_onpreloaddata'));
 	}
 
@@ -83,6 +87,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function onLoadData()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_onloaddata'));
 	}
 
@@ -95,13 +100,14 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function onDeleteRows()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_ondeleterows'));
 	}
 
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -109,6 +115,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -162,16 +169,22 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 		return true;
 	}
 
+	/**
+	 * On build query where
+	 *
+	 * @return boolean
+	 */
 	public function onBuildQueryWhere()
 	{
 		$params = $this->getParams();
+
 		return $this->doEvaluate($params->get('list_phpevents_onbuildquerywhere'));
 	}
 
 	/**
 	 * Evaluate supplied PHP
 	 *
-	 * @param   string  $code    Php code
+	 * @param   string  $code  Php code
 	 *
 	 * @return bool
 	 */
@@ -181,6 +194,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 		$model = $this->getModel();
 		$w = new FabrikWorker;
 		$code = $w->parseMessageForPlaceHolder($code);
+
 		if ($code != '')
 		{
 			if (eval($code) === false)
@@ -188,6 +202,7 @@ class PlgFabrik_ListPhp_Events extends PlgFabrik_List
 				return false;
 			}
 		}
+
 		return true;
 	}
 }

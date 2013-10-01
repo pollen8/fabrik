@@ -71,5 +71,6 @@ if ($app->isAdmin())
 	{
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
 	}
+
 	require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/helpers/fabrik.php';
 }

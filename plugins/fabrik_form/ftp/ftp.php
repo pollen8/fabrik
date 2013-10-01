@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormFtp extends PlgFabrik_Form
 {
-
 	/**
 	 * Posted form keys that we don't want to include in the message
 	 * This is basically the fileupload elements
@@ -49,10 +48,8 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$user = JFactory::getUser();
 		$config	= JFactory::getConfig();
 		$db = JFactory::getDbo();
-
 		$formParams	= $formModel->getParams();
 		$ftpTemplate = JPath::clean(JPATH_SITE . '/plugins/fabrik_form/ftp/tmpl/' . $params->get('ftp_template', ''));
-
 		$this->data = $this->getProcessData();
 
 		if (!$this->shouldProcess('ftp_conditon', null))
@@ -68,6 +65,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			if (JFile::getExt($ftpTemplate) == 'php')
 			{
 				$message = $this->_getPHPTemplateFtp($ftpTemplate);
+
 				if ($message === false)
 				{
 					return;
@@ -77,6 +75,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			{
 				$message = $this->_getTemplateFtp($ftpTemplate);
 			}
+
 			$message = str_replace('{content}', $content, $message);
 		}
 		else
@@ -90,9 +89,10 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 
 		// $$$ hugh - test stripslashes(), should be safe enough.
 		$message = stripslashes($message);
-
-		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik=" . $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
-		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
+		$editURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=form&amp;fabrik="
+			. $formModel->get('id') . "&amp;rowid=" . $input->get('rowid', '', 'string');
+		$viewURL = COM_FABRIK_LIVESITE . "index.php?option=com_fabrik&amp;view=details&amp;fabrik=" . $formModel->get('id')
+		. "&amp;rowid=" . $input->get('rowid', '', 'string');
 		$editlink = "<a href=\"$editURL\">" . JText::_('EDIT') . "</a>";
 		$viewlink = "<a href=\"$viewURL\">" . JText::_('VIEW') . "</a>";
 		$message = str_replace('{fabrik_editlink}', $editlink, $message);
@@ -103,11 +103,13 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$ftp_filename = $params->get('ftp_filename', '');
 		$ftp_filename = $w->parseMessageForPlaceholder($ftp_filename, $this->data, false);
 		$ftp_eval_filename = (int) $params->get('ftp_eval_filename', '0');
+
 		if ($ftp_eval_filename)
 		{
 			$ftp_filename = @eval($ftp_filename);
 			FabrikWorker::logEval($email_to_eval, 'Caught exception on eval in ftp filename eval : %s');
 		}
+
 		if (empty($ftp_filename))
 		{
 			$ftp_filename = 'fabrik_ftp_' . md5(uniqid()) . '.txt';
@@ -120,15 +122,19 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$ftp_password = $w->parseMessageForPlaceholder($params->get('ftp_password', ''), $this->data, false);
 
 		$tmp_dir = rtrim($config->getValue('config.tmp_path'), '/');
+
 		if (empty($tmp_dir) || !JFolder::exists($tmp_dir))
 		{
 			throw new RuntimeException('PLG_FORM_FTP_NO_JOOMLA_TEMP_DIR', 500);
 		}
+
 		$tmp_file = $tmp_dir . '/fabrik_ftp_' . md5(uniqid());
 		$message = $w->parseMessageForPlaceholder($message, $this->data, true, false);
+
 		if (JFile::write($tmp_file, $message))
 		{
 			$conn_id = ftp_connect($ftp_host, $ftp_port);
+
 			if ($conn_id)
 			{
 				if (@ftp_login($conn_id, $ftp_user, $ftp_password))
@@ -139,13 +145,16 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 						{
 							$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_CHDIR'), 'notice');
 							JFile::delete($tmp_file);
+
 							return false;
 						}
 					}
+
 					if (!ftp_put($conn_id, $ftp_filename, $tmp_file, FTP_ASCII))
 					{
 						$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_SEND_FILE'), 'notice');
 						JFile::delete($tmp_file);
+
 						return false;
 					}
 				}
@@ -153,6 +162,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 				{
 					$app->enqueueMessage(JText::_('PLG_FORM_FTP_COULD_NOT_LOGIN'), 'notice');
 					JFile::delete($tmp_file);
+
 					return false;
 				}
 			}
@@ -160,6 +170,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			{
 				throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_CONNECT', 500);
 				JFile::delete($tmp_file);
+
 				return false;
 			}
 		}
@@ -167,9 +178,12 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		{
 			throw new RuntimeException('PLG_FORM_FTP_COULD_NOT_WRITE_TEMP_FILE', 500);
 			JFile::delete($tmp_file);
+
 			return false;
 		}
+
 		JFile::delete($tmp_file);
+
 		return true;
 	}
 
@@ -188,10 +202,12 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$result = require $tmpl;
 		$message = ob_get_contents();
 		ob_end_clean();
+
 		if ($result === false)
 		{
 			return false;
 		}
+
 		return $message;
 	}
 
@@ -206,11 +222,13 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		if (is_null($this->dontEmailKeys))
 		{
 			$this->dontEmailKeys = array();
+
 			foreach ($_FILES as $key => $file)
 			{
 				$this->dontEmailKeys[] = $key;
 			}
 		}
+
 		return $this->dontEmailKeys;
 	}
 
@@ -238,6 +256,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 	protected function _getConentTemplate($contentTemplate)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->isAdmin())
 		{
 			$db = JFactory::getDbo();
@@ -252,6 +271,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 			$articleModel = JModel::getInstance('Article', 'ContentModel');
 			$res = $articleModel->getItem($contentTemplate);
 		}
+
 		return $res->introtext . ' ' . $res->fulltext;
 	}
 
@@ -270,18 +290,22 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 		$pluginManager = FabrikWorker::getPluginManager();
 		$formModel = $this->getModel();
 		$groupModels = $formModel->getGroupsHiarachy();
+
 		foreach ($groupModels as &$groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as &$elementModel)
 			{
 				$element = $elementModel->getElement();
 
 				// @TODO - how about adding a 'renderEmail()' method to element model, so specific element types  can render themselves?
 				$key = (!array_key_exists($element->name, $data)) ? $elementModel->getFullName(true, false) : $element->name;
+
 				if (!in_array($key, $ignore))
 				{
 					$val = '';
+
 					if (is_array(JArrayHelper::getValue($data, $key)))
 					{
 						// Repeat group data
@@ -291,6 +315,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 							{
 								$val = implode(", ", $v);
 							}
+
 							$val .= count($data[$key]) == 1 ? ": $v<br />" : ($k++) . ": $v<br />";
 						}
 					}
@@ -298,6 +323,7 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 					{
 						$val = JArrayHelper::getValue($data, $key);
 					}
+
 					$val = FabrikString::rtrimword($val, "<br />");
 					$val = stripslashes($val);
 
@@ -306,20 +332,24 @@ class PlgFabrik_FormFtp extends PlgFabrik_Form
 					{
 						$val = " - ";
 					}
+
 					// Don't add a second ":"
 					$label = trim(strip_tags($element->label));
 					$message .= $label;
+
 					if (strlen($label) != 0 && JString::strpos($label, ':', JString::strlen($label) - 1) === false)
 					{
 						$message .= ':';
 					}
+
 					$message .= "<br />" . $val . "<br /><br />";
 				}
 			}
 		}
+
 		$message = JText::_('Email from') . ' ' . $config->get('sitename') . '<br />' . JText::_('Message') . ':'
 			. "<br />===================================<br />" . "<br />" . stripslashes($message);
+
 		return $message;
 	}
-
 }

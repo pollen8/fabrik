@@ -79,6 +79,7 @@ if (strpos($input->getCmd('task'), '.') !== false)
 	$controller = array_shift($controller);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_SITE . '/components/com_fabrik/controllers/' . $controller . '.php';
+
 	if (JFile::exists($path))
 	{
 		require_once $path;

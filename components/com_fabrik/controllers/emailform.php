@@ -24,7 +24,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerEmailform extends JControllerLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -53,5 +52,4 @@ class FabrikControllerEmailform extends JControllerLegacy
 		$view->error = $this->getError();
 		$view->display();
 	}
-
 }

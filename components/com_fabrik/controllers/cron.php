@@ -25,7 +25,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerCron extends JControllerLegacy
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
@@ -51,8 +50,6 @@ class FabrikControllerCron extends JControllerLegacy
 
 	public function display($cachable = false, $urlparams = false)
 	{
-
-		//http://localhost/fabrik31x/index.php?option=com_fabrik&task=cron.delete&id=3
 		$document = JFactory::getDocument();
 		$viewName = $this->getViewName();
 		$viewType = $document->getType();
@@ -70,10 +67,13 @@ class FabrikControllerCron extends JControllerLegacy
 
 		$jinput = JFactory::getApplication()->input;
 		$task = $jinput->getCmd('task');
+
 		if (!strstr($task, '.'))
 		{
 			$task = 'display';
-		} else {
+		}
+		else
+		{
 			$task = explode('.', $task);
 			$task = array_pop($task);
 		}
@@ -117,6 +117,7 @@ class FabrikControllerCron extends JControllerLegacy
 			$this->addModelPath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
 			JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_cron/' . $this->viewName . '/models');
 		}
+
 		return $this->viewName;
 	}
 
@@ -137,7 +138,7 @@ class FabrikControllerCron extends JControllerLegacy
 	{
 		$viewName = str_replace('FabrikControllerCron', '', get_class($this));
 		$viewName = $viewName == '' ? $this->getViewName() : $name;
+
 		return parent::getView($viewName, $type, $prefix, $config);
 	}
-
 }

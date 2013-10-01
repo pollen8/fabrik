@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementFolder extends PlgFabrik_Element
 {
-
 	/**
 	 * Draws the html form element
 	 *
@@ -46,16 +45,20 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$aRoValues = array();
 		$path = JPATH_ROOT . '/' . $params->get('fbfolder_path');
 		$opts = array();
+
 		if ($params->get('folder_allownone', true))
 		{
 			$opts[] = JHTML::_('select.option', '', JText::_('NONE'));
 		}
+
 		if ($params->get('folder_listfolders', true))
 		{
 			$folders = JFolder::folders($path);
+
 			foreach ($folders as $folder)
 			{
 				$opts[] = JHTML::_('select.option', $folder, $folder);
+
 				if (is_array($selected) and in_array($folder, $selected))
 				{
 					$aRoValues[] = $folder;
@@ -66,20 +69,25 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		if ($params->get('folder_listfiles', false))
 		{
 			$files = JFolder::files($path);
+
 			foreach ($files as $file)
 			{
 				$opts[] = JHTML::_('select.option', $file, $file);
+
 				if (is_array($selected) and in_array($file, $selected))
 				{
 					$aRoValues[] = $file;
 				}
 			}
 		}
+
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
+
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}
+
 		return $str;
 	}
 
@@ -103,7 +111,7 @@ class PlgFabrik_ElementFolder extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->defaultVal = $element->default;
 		$opts->data = $folders;
+
 		return array('FbFolder', $id, $opts);
 	}
-
 }

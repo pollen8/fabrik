@@ -93,8 +93,7 @@ abstract class ModFabrik_QuickIconHelper
 							'image' => '/components/com_fabrik/images/header/fabrik-schedule.png',
 							'text' => JText::_('MOD_FABRIK_QUICKICON_SCHEDULED_TASKS'),
 							'access' => array('core.manage', 'com_fabrik')
-					),
-
+					)
 				);
 			}
 			else

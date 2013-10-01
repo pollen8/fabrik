@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -44,7 +43,7 @@ class PlgFabrik_ValidationruleNotempty extends PlgFabrik_Validationrule
 	public function validate($data, $repeatCounter)
 	{
 		$ok = $this->elementModel->dataConsideredEmpty($data, $repeatCounter);
+
 		return !$ok;
 	}
-
 }

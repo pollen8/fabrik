@@ -15,21 +15,21 @@ defined('_JEXEC') or die('Restricted access');
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
-* Allows double-clicking in a cell to enable in-line editing
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.inlineedit
-* @since       3.0
-*/
+ * Allows double-clicking in a cell to enable in-line editing
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.inlineedit
+ * @since       3.0
+ */
 
 class PlgFabrik_ListInlineedit extends PlgFabrik_List
 {
-
 	/**
 	 * Contains js file, elements to load and require js shim info
+	 *
 	 * @var array
 	 */
-	var $elementJs = array();
+	protected $elementJs = array();
 
 	/**
 	 * Get the parameter name that defines the plugins acl access
@@ -67,10 +67,8 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		$deps = new stdClass;
 		$deps->deps = array('fab/list-plugin');
 		$shim['list/' . $this->filterKey . '/' . $this->filterKey] = $deps;
-
 		$params = $this->getParams();
 		$shim = parent::requireJSShim_result();
-
 		list($srcs, $els, $addShim) = $this->loadElementJS($params);
 
 		foreach ($addShim as $key => $deps)
@@ -84,6 +82,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 				$shim[$key]['deps'] = array_merge($shim[$key]->deps, $shim->deps);
 			}
 		}
+
 		return $shim;
 	}
 
@@ -97,6 +96,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 	{
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$src = parent::loadJavascriptClass_result();
+
 		return array($src, 'media/com_fabrik/js/element' . $ext);
 	}
 
@@ -114,28 +114,32 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		{
 			return $this->elementJs;
 		}
+
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($input->getInt('listid'));
 		$elements = $listModel->getElements('safecolname');
-
 		$pels = $params->get('inline_editable_elements');
 		$use = json_decode($pels);
+
 		if (!is_object($use))
 		{
 			$aEls = trim($pels) == '' ? array() : explode(",", $pels);
 			$use = new stdClass;
+
 			foreach ($aEls as $e)
 			{
 				$use->$e = array($e);
 			}
 		}
+
 		$els = array();
 		$srcs = array();
 		$test = (array) $use;
 		$shim = array();
+
 		if (!empty($test))
 		{
 			foreach ($use as $key => $fields)
@@ -146,6 +150,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 					$els[$key] = new stdClass;
 					$els[$key]->elid = $trigger->getId();
 					$els[$key]->plugins = array();
+
 					foreach ($fields as $field)
 					{
 						$val = $elements[$field];
@@ -155,7 +160,6 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 						{
 							$val->formJavascriptClass($srcs, '', $shim);
 							$els[$key]->plugins[$field] = $val->getElement()->id;
-
 						}
 					}
 				}
@@ -175,11 +179,13 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 					$els[$key]->plugins[$key] = $val->getElement()->id;
 
 					// Load in all element js classes
-				$val->formJavascriptClass($srcs, '', $shim);
+					$val->formJavascriptClass($srcs, '', $shim);
 				}
 			}
 		}
+
 		$this->elementJs = array($srcs, $els, $shim);
+
 		return $this->elementJs;
 	}
 
@@ -210,7 +216,7 @@ class PlgFabrik_ListInlineedit extends PlgFabrik_List
 		$opts = json_encode($opts);
 		$formid = 'list_' + $model->getFormModel()->getForm()->id;
 		$this->jsInstance = "new FbListInlineEdit($opts)";
+
 		return true;
 	}
-
 }

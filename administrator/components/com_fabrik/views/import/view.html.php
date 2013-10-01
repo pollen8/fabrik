@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikAdminViewImport extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -63,10 +62,12 @@ class FabrikAdminViewImport extends JViewLegacy
 		$this->sample = $this->get('Sample');
 		$this->selectPKField = $this->get('SelectKey');
 		$jform = $input->get('jform', array(), 'array');
+
 		foreach ($jform as $key => $val)
 		{
 			$this->$key = $val;
 		}
+
 		parent::display('chooseElementTypes');
 	}
 
@@ -107,5 +108,4 @@ class FabrikAdminViewImport extends JViewLegacy
 		JToolBarHelper::custom('import.doimport', $icon, $icon, 'COM_FABRIK_CONTINUE', false);
 		JToolBarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
 	}
-
 }

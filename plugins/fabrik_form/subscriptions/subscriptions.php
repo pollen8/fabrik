@@ -22,11 +22,10 @@ JTable::addIncludePath(JPATH_SITE . '/plugins/fabrik_form/subscriptions/tables')
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.subscriptions
  * @since       3.0
-*/
+ */
 
 class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 {
-
 	/**
 	 * Gateway
 	 *
@@ -41,7 +40,12 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	 */
 	protected $billingCycle = null;
 
-
+	/**
+	 * Construct
+	 *
+	 * @param   object  &$subject  Subject to observer
+	 * @param   array   $config    Config
+	 */
 	public function __construct(&$subject, $config = array())
 	{
 		// Include the JLog class.
@@ -65,6 +69,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$data = $this->getProcessData();
 		$params = $this->getParams();
 		$field = $params->get('subscriptions_testmode') == 1 ? 'subscriptions_sandbox_email' : 'subscriptions_accountemail';
+
 		return $w->parseMessageForPlaceHolder($params->get($field), $data);
 	}
 
@@ -78,6 +83,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	protected function getAmount()
 	{
 		$billingCycle = $this->getBillingCycle();
+
 		return $billingCycle->cost;
 	}
 
@@ -98,13 +104,16 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 				$data = $this->getProcessData();
 				$cycleField = $db->replacePrefix('#__fabrik_subs_users___billing_cycle');
 				$cycleId = (int) $data[$cycleField . '_raw'][0];
+
 				if ($cycleId === 0)
 				{
 					throw new Exception('No billing cycle found in request', 404);
 				}
+
 				$query->select('*')->from('#__fabrik_subs_plan_billing_cycle')->where('id = ' . $cycleId);
 				$db->setQuery($query);
 				$this->billingCycle = $db->loadObject();
+
 				if ($error = $db->getErrorMsg())
 				{
 					throw new Exception($error);
@@ -118,9 +127,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			catch (Exception $e)
 			{
 				$this->setError($e);
+
 				return false;
 			}
 		}
+
 		return $this->billingCycle;
 	}
 
@@ -159,9 +170,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			catch (Exception $e)
 			{
 				$this->setError($e);
+
 				return false;
 			}
 		}
+
 		return $this->gateway;
 	}
 
@@ -193,7 +206,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$w = $this->getWorker();
 		$config = JFactory::getConfig();
 		$data = $this->getProcessData();
-
 		$gateWay = $this->getGateway();
 
 		$item = $data['jos_fabrik_subs_users___billing_cycle'][0] . ' ' . $data['jos_fabrik_subs_users___gateway'][0];
@@ -248,6 +260,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$this->w = new FabrikWorker;
 		}
+
 		return $this->w;
 	}
 
@@ -260,6 +273,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	public function getBottomContent()
 	{
 		$pendingSub = $this->pendingSub();
+
 		if ($pendingSub !== false)
 		{
 			$this->html = '<input type="hidden" name="subscription_id" value="' . (int) $pendingSub->id . '" />';
@@ -291,6 +305,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$pendingSub = $this->pendingSub();
+
 		if ($pendingSub !== false)
 		{
 			/* $input->set('usekey', false);
@@ -298,6 +313,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			$formModel->setRowId($pendingSub->id); */
 			$app->enqueueMessage('We found an existing pending subscription from ' . $pendingSub->signup_date);
 		}
+
 		return true;
 	}
 /*
@@ -321,7 +337,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	/**
 	 * Test if the subscription is pending
 	 *
-	 * @param   bool    $newRow  Is it a  new subscription
+	 * @param   bool  $newRow  Is it a  new subscription
 	 *
 	 * @return  bool
 	 */
@@ -332,6 +348,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$user = JFactory::getUser();
 		$rowid = $formModel->getRowId();
+
 		if (($rowid === '' || !$newRow) && $user->get('id') !== 0)
 		{
 			$db = JFactory::getDbo();
@@ -341,14 +358,16 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			->order('signup_date DESC');
 			$db->setQuery($query);
 			$pendingSubs = $db->loadObjectList();
+
 			if (!empty($pendingSubs))
 			{
 				// Found so set the row id to the found pending subscription
 				$pendingSub = $pendingSubs[0];
+
 				return $pendingSub;
 			}
-
 		}
+
 		return false;
 	}
 
@@ -366,10 +385,12 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$this->data = $formModel->fullFormData;
+
 		if (!$this->shouldProcess('subscriptions_conditon'))
 		{
 			return true;
 		}
+
 		$w = $this->getWorker();
 		$ipn = $this->getIPNHandler();
 		$testMode = $params->get('subscriptions_testmode', false);
@@ -385,11 +406,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$opts['currency_code'] = $this->getCurrencyCode();
 		$opts['notify_url'] = $this->getNotifyUrl();
 		$opts['return'] = $this->getReturnUrl();
-
 		$sub = $this->createSubscription();
 
 		// If paying for an existing subscription get the id
 		$subscriptionId = $input->getInt('subscription_id', 0);
+
 		if ($subscriptionId !== 0)
 		{
 			// Updating a subscription - load the invoice
@@ -404,12 +425,15 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$invoice = $this->createInvoice($sub);
 		}
+
 		$opts['custom'] = $this->data['formid'] . ':' . $invoice->id;
 		$qs = array();
+
 		foreach ($opts as $k => $v)
 		{
 			$qs[] = $k . '=' . $v;
 		}
+
 		$url .= implode('&', $qs);
 
 		// $$$ rob 04/02/2011 no longer doing redirect from ANY plugin EXCEPT the redirect plugin
@@ -417,7 +441,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 		$session = JFactory::getSession();
 		$context = $formModel->getRedirectContext();
-
 		$surl = (array) $session->get($context . 'url', array());
 		$surl[$this->renderOrder] = $url;
 		$session->set($context . 'url', $surl);
@@ -437,6 +460,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	{
 		$cycle = $this->getBillingCycle();
 		$data = $this->getProcessData();
+
 		return $this->getWorker()->parseMessageForPlaceHolder($cycle->currency, $data);
 	}
 
@@ -458,11 +482,14 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$ppurl = ($testMode == 1 && !empty($testSite)) ? $testSite : COM_FABRIK_LIVESITE;
 		$ppurl .= '/index.php?option=com_' . $package . '&task=plugin.pluginAjax&formid=' . $formModel->get('id')
 		. '&g=form&plugin=subscriptions&method=ipn';
+
 		if ($testMode == 1 && !empty($testSiteQs))
 		{
 			$ppurl .= $testSiteQs;
 		}
+
 		$ppurl .= '&renderOrder=' . $this->renderOrder;
+
 		return urlencode($ppurl);
 	}
 
@@ -489,6 +516,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		if ($testMode)
 		{
 			$url = !empty($testSite) ? $testSite . $qs : COM_FABRIK_LIVESITE . $qs;
+
 			if (!empty($testSiteQs))
 			{
 				$url .= $testSiteQs;
@@ -498,6 +526,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$url = COM_FABRIK_LIVESITE . $qs;
 		}
+
 		return urlencode($url);
 	}
 
@@ -520,21 +549,26 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$ret_msg = (array) $params->get('subscriptions_return_msg');
 		$ret_msg = array_values($ret_msg);
 		$ret_msg = JArrayHelper::getValue($ret_msg, 0);
+
 		if ($ret_msg)
 		{
 			$w = $this->getWorker();
 			$listModel = $formModel->getlistModel();
 			$row = $listModel->getRow($rowid);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $row);
+
 			if (JString::stristr($ret_msg, '[show_all]'))
 			{
 				$all_data = array();
+
 				foreach ($_REQUEST as $key => $val)
 				{
 					$all_data[] = "$key: $val";
 				}
+
 				$input->set('show_all', implode('<br />', $all_data));
 			}
+
 			$ret_msg = str_replace('[', '{', $ret_msg);
 			$ret_msg = str_replace(']', '}', $ret_msg);
 			$ret_msg = $w->parseMessageForPlaceHolder($ret_msg, $_REQUEST);
@@ -594,6 +628,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 		// For
 		$fake = $input->getInt('fakeit');
+
 		if ($fake == 1)
 		{
 			$request = $_GET;
@@ -602,9 +637,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$request = $_POST;
 		}
+
 		foreach ($request as $key => $value)
 		{
-			if ($key !== 'fakeit') {
+			if ($key !== 'fakeit')
+			{
 				$value = urlencode(stripslashes($value));
 				$req .= '&' . $key . '=' . $value;
 			}
@@ -635,6 +672,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$res = 'IPN never fired';
 		$err_msg = '';
 		$err_title = '';
+
 		if (empty($formid) || empty($invoiceId))
 		{
 			$status = false;
@@ -643,9 +681,9 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		}
 		else
 		{
-
 			// @TODO implement a curl alternative as fsockopen is not always available
 			$fp = fsockopen($subscriptionsurl, 443, $errno, $errstr, 30);
+
 			if (!$fp)
 			{
 				$status = false;
@@ -655,6 +693,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			else
 			{
 				fputs($fp, $header . $req);
+
 				while (!feof($fp))
 				{
 					$res = fgets($fp, 1024);
@@ -667,7 +706,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 					*/
 					if (JString::strcmp(strtoupper($res), "VERIFIED") == 0)
 					{
-
 						$query = $db->getQuery(true);
 						$query->select($ipn_status_field)->from('#__fabrik_subs_invoices')
 						->where($db->quoteName($ipn_txn_field) . ' = ' . $db->quote($txn_id));
@@ -680,7 +718,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 						}
 						else
 						{
-
 							if (!empty($txn_result) && $txn_type != 'subscr_signup')
 							{
 								if ($txn_result == 'Completed')
@@ -703,6 +740,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 									}
 								}
 							}
+
 							if ($status)
 							{
 								$set_list = array();
@@ -717,9 +755,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 								{
 									$request = $_REQUEST;
 									$ipn_function = 'payment_status_' . $payment_status;
+
 									if (method_exists($ipn, $ipn_function))
 									{
 										$status = $ipn->$ipn_function($listModel, $request, $set_list, $err_msg);
+
 										if ($status == false)
 										{
 											break;
@@ -728,30 +768,34 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 									else
 									{
 										$txn_type_function = 'txn_type_' . $txn_type;
+
 										if (method_exists($ipn, $txn_type_function))
 										{
 											$status = $ipn->$txn_type_function($listModel, $request, $set_list, $err_msg);
+
 											if ($status == false)
 											{
 												break;
 											}
 										}
 									}
-
 								}
 
 								if (!empty($set_list))
 								{
 									$set_array = array();
+
 									foreach ($set_list as $set_field => $set_value)
 									{
 										$set_value = $db->quote($set_value);
 										$set_field = $db->quoteName($set_field);
 										$set_array[] = "$set_field = $set_value";
 									}
+
 									$query = $db->getQuery(true);
 									$query->update('#__fabrik_subs_invoices')->set(implode(',', $set_array))->where('id = ' . $db->quote($invoiceId));
 									$db->setQuery($query);
+
 									if (!$db->execute())
 									{
 										$status = false;
@@ -769,6 +813,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 						$err_msg = 'subscriptions postback failed with INVALID';
 					}
 				}
+
 				fclose($fp);
 			}
 		}
@@ -776,13 +821,16 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$receive_debug_emails = (array) $params->get('subscriptions_receive_debug_emails');
 		$send_default_email = (array) $params->get('subscriptions_send_default_email');
 		$emailtext = '';
+
 		foreach ($_POST as $key => $value)
 		{
 			$emailtext .= $key . " = " . $value . "\n\n";
 		}
+
 		$logLevel = JLog::INFO;
 		$logMessage = "transaction type: $txn_type \n///////////////// \n emailtext: " . $emailtext . "\n//////////////\nres= " . $res
 		. "\n//////////////\n" . $req . "\n//////////////\n";
+
 		if ($status == false)
 		{
 			$logLevel = JLog::CRITICAL;
@@ -795,7 +843,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$subject = $config->get('sitename') . ': IPN ' . $payment_status;
 			$logMessageTitle = 'form.subscriptions.ipn.' . $payment_status;
-
 			$payer_subject = "Subscriptions success";
 			$payer_emailtext = "Your Subscriptions payment was succesfully processed.  The Subscriptions transaction id was $txn_id";
 		}
@@ -809,6 +856,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$mail->sendMail($email_from, $email_from, $payer_email, $payer_subject, $payer_emailtext, false);
 		}
+
 		if (isset($ipn_function))
 		{
 			$logMessage .= "\n IPN custom function = $ipn_function";
@@ -817,6 +865,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$logMessage .= "\n No IPN custom function";
 		}
+
 		if (isset($txn_type_function))
 		{
 			$logMessage .= "\n IPN custom transaction function = $txn_type_function";
@@ -825,6 +874,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		{
 			$logMessage .= "\n No IPN custom transaction function ";
 		}
+
 		JLog::add($logMessage, $logLevel, $logMessageTitle);
 		jexit();
 	}
@@ -838,16 +888,17 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 	protected function getIPNHandler()
 	{
 		$ipn = 'plugins/fabrik_form/subscriptions/scripts/ipn.php';
+
 		if (JFile::exists($ipn))
 		{
 			require_once $ipn;
+
 			return new fabrikSubscriptionsIPN;
 		}
 		else
 		{
 			throw new RuntimeException('Missing subs IPN file', 404);
 		}
-
 	}
 
 	/**
@@ -866,7 +917,6 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 				$db = JFactory::getDbo();
 				$planField = $db->replacePrefix('#__fabrik_subs_users___plan_id');
 				$planid = $input->getInt($planField, $input->getInt($planField . '_raw'));
-
 				$query = $db->getQuery(true);
 
 				$query->select('*')->from('#__fabrik_subs_plans')->where('id = ' . $planid);
@@ -886,9 +936,11 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 			catch (Exception $e)
 			{
 				$this->setError($e);
+
 				return false;
 			}
 		}
+
 		return $this->plan;
 	}
 
@@ -914,6 +966,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 
 		// If paying for an existing subscription get the id
 		$subscriptionId = $input->getInt('subscription_id', 0);
+
 		if ($subscriptionId !== 0)
 		{
 			$sub->id = $subscriptionId;
@@ -926,15 +979,12 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$sub->status = $plan->free == 1 ? 'Active' : 'Pending';
 		$sub->signup_date = $date->toSql();
 		$sub->plan = $billingCycle->plan_id;
-
 		$sub->lifetime = $input->getInt('lifetime', 0);
-
 		$sub->recurring = $gateway->subscription;
-
 		$sub->billing_cycle_id = $billingCycle->id;
-
 		$input->setVar('recurring', $sub->recurring);
 		$sub->store();
+
 		return $sub;
 	}
 
@@ -962,6 +1012,7 @@ class PlgFabrik_FormSubscriptions extends PlgFabrik_Form
 		$invoice->created_date = $date->toSql();
 		$invoice->subscr_id = $sub->id;
 		$invoice->store();
+
 		return $invoice;
 	}
 

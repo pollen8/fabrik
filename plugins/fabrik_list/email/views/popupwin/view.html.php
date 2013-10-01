@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewPopupwin extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -45,11 +44,14 @@ class FabrikViewPopupwin extends JViewLegacy
 		$this->showToField = $this->get('ShowToField');
 		$this->fieldList = $this->get('ToField');
 		$records = $this->get('records');
+
 		if (count($records) == 0)
 		{
 			$app->enqueueMessage('None of the selected records can be emailed', 'notice');
+
 			return;
 		}
+
 		$this->recordcount = count($records);
 		$this->renderOrder = $renderOrder;
 		$this->recordids = implode(',', $records);
@@ -61,7 +63,7 @@ class FabrikViewPopupwin extends JViewLegacy
 
 		$srcs = FabrikHelperHTML::framework();
 		FabrikHelperHTML::script($srcs);
+
 		return parent::display();
 	}
-
 }

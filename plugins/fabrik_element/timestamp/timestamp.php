@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 {
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -86,6 +85,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 		$params = $this->getParams();
 		$gmt_or_local = $params->get('gmt_or_local');
 		$gmt_or_local += 0;
+
 		return '<input name="' . $name . '" id="' . $id . '" type="hidden" value="' . $date->toSql($gmt_or_local) . '" />';
 	}
 
@@ -103,6 +103,7 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 		$params = $this->getParams();
 		$tz_offset = $params->get('gmt_or_local', '0') == '0';
 		$data = JHTML::_('date', $data, JText::_($params->get('timestamp_format', 'DATE_FORMAT_LC2')), $tz_offset);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -115,10 +116,12 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('encrypt', false))
 		{
 			return 'BLOB';
 		}
+
 		if ($params->get('timestamp_update_on_edit'))
 		{
 			return "TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
@@ -139,5 +142,4 @@ class PlgFabrik_ElementTimestamp extends PlgFabrik_Element
 	{
 		return true;
 	}
-
 }

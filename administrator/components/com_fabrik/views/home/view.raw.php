@@ -16,14 +16,13 @@ jimport('joomla.application.component.view');
 /**
  * View class for a list of lists.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.6
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.6
+ */
 
 class FabrikViewHome extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -33,7 +32,5 @@ class FabrikViewHome extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-
 	}
-
 }

@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 {
-
 	protected $runAway = false;
 
 	/**
@@ -42,6 +41,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		{
 			return $this->runAway;
 		}
+
 		return false;
 	}
 
@@ -78,18 +78,23 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
+
 		if ($input->getInt('fabrik_ignorevalidation') === 1 || $input->getInt('fabrik_ajax') === 1)
 		{
 			// Saving via inline edit - dont want to confirm
 			return true;
 		}
+
 		$this->runAway = false;
 		$this->data = $formModel->formData;
+
 		if (!$this->shouldProcess('confirmation_condition'))
 		{
 			$this->clearSession($formModel->getId());
+
 			return true;
 		}
+
 		if ($input->get('fabrik_confirmation') == 2)
 		{
 			/**
@@ -99,6 +104,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			 * 'cos getBottomContent isn't going to be called again
 			 */
 			$input->set('fabrik_confirmation', 1);
+
 			return true;
 		}
 
@@ -138,9 +144,11 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 		// Set the element access to read only??
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				// $$$ rob 20/04/2012 unset the element access otherwise previously cached acl is used.
@@ -148,6 +156,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 				$elementModel->getElement()->access = -1;
 			}
 		}
+
 		return false;
 	}
 
@@ -165,6 +174,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 		// If we have already processed the form
 		$this->html = '';
+
 		if ($input->getInt('fabrik_confirmation') === 1)
 		{
 			$session = JFactory::getSession();
@@ -183,14 +193,17 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 			foreach ($post as $key => $val)
 			{
 				$noneraw = JString::substr($key, 0, JString::strlen($key) - 4);
+
 				if ($key == 'fabrik_vars')
 				{
 					continue;
 				}
+
 				if ($formModel->hasElement($key) || $formModel->hasElement($noneraw))
 				{
 					// Return;
 				}
+
 				if ($formModel->hasElement($noneraw))
 				{
 					$key = $formModel->getElement($noneraw)->getHTMLName(0);
@@ -223,6 +236,7 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 					}
 				}
 			}
+
 			// Add in a view field as the form doesn't normally contain one
 			$fields[] = '<input type="hidden" name="view" value="form" />';
 			$fields[] = '<input type="hidden" name="fabrik_confirmation" value="2" />';
@@ -233,7 +247,9 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 
 			// Unset the task otherwise we will submit the form to be processed.
 			FabrikHelperHTML::addScriptDeclaration(
-				"window.addEvent('fabrik.loaded', function() {" . "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n" . "  this.form.task.value = '';\n"
+				"window.addEvent('fabrik.loaded', function() {"
+				. "$('fabrik_redoconfirmation').addEvent('click', function(e) {;\n"
+					. "  this.form.task.value = '';\n"
 					. "  this.form.submit.click();\n" . "	});\n" . "});");
 			$this->html = implode("\n", $fields);
 		}
@@ -262,5 +278,4 @@ class PlgFabrik_FormConfirmation extends PlgFabrik_Form
 	{
 		$this->usesSession = true;
 	}
-
 }

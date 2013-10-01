@@ -31,6 +31,7 @@ if (JDEBUG)
 	'your message here',
 	JLog::NOTICE, 'com_fabrik');
 }
+
 require_once JPATH_COMPONENT . '/controller.php';
 $app = JFactory::getApplication();
 $input = $app->input;
@@ -40,6 +41,7 @@ $input = $app->input;
  * use the format request value to check for document type
  */
 $docs = array("yql", "xml");
+
 foreach ($docs as $d)
 {
 	if ($input->getCmd("type") == $d)
@@ -60,7 +62,6 @@ JModelLegacy::addIncludePath(JPATH_COMPONENT . '/models');
 // models/ to models/adaptors the copied file will overwrite (NOT extend) the original
 JModelLegacy::addIncludePath(JPATH_COMPONENT . '/models/adaptors');
 
-
 $controllerName = $input->getCmd('view');
 
 // Check for a plugin controller
@@ -70,14 +71,18 @@ $controllerName = $input->getCmd('view');
 
 $isplugin = false;
 $cName = $input->getCmd('controller');
+
 if (JString::strpos($cName, '.') != false)
 {
 	list($type, $name) = explode('.', $cName);
+
 	if ($type == 'visualization')
 	{
 		require_once JPATH_COMPONENT . '/controllers/visualization.php';
 	}
+
 	$path = JPATH_SITE . '/plugins/fabrik_' . $type . '/' . $name . '/controllers/' . $name . '.php';
+
 	if (JFile::exists($path))
 	{
 		require_once $path;
@@ -88,7 +93,6 @@ if (JString::strpos($cName, '.') != false)
 	{
 		$controller = '';
 	}
-
 }
 else
 {
@@ -112,6 +116,7 @@ else
 	}
 
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
+
 	if (JFile::exists($path))
 	{
 		require_once $path;
@@ -121,6 +126,7 @@ else
 		$controller = '';
 	}
 }
+
 /**
  * Create the controller if the task is in the form view.task then get
  * the specific controller for that class - otherwse use $controller to load
@@ -132,6 +138,7 @@ if (strpos($input->getCmd('task'), '.') !== false)
 	$controller = array_shift($controllerTask);
 	$classname = 'FabrikController' . JString::ucfirst($controller);
 	$path = JPATH_COMPONENT . '/controllers/' . $controller . '.php';
+
 	if (JFile::exists($path))
 	{
 		require_once $path;

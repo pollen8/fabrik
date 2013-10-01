@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class AllVideosRender
 {
-
 	/**
 	 * Render output
 	 *
@@ -29,7 +28,7 @@ class AllVideosRender
 	 */
 	public $output = '';
 
-	var $inTableView = false;
+	public $inTableView = false;
 
 	/**
 	 * Render audio in the list view
@@ -63,14 +62,18 @@ class AllVideosRender
 	{
 		$src = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 		$ext = JString::strtolower(JFile::getExt($file));
+
 		if (!JPluginHelper::isEnabled('content', 'jw_allvideos'))
 		{
 			$this->output = JText::_(
 				'to display this media files types you need to install the all videos plugin - http://www.joomlaworks.gr/content/view/35/41/');
+
 			return;
 		}
+
 		$extra = array();
 		$extra[] = $src;
+
 		if ($this->inTableView || $params->get('fu_show_image') < 2)
 		{
 			$extra[] = $params->get('thumb_max_width');
@@ -81,7 +84,9 @@ class AllVideosRender
 			$extra[] = $params->get('fu_main_max_width');
 			$extra[] = $params->get('fu_main_max_height');
 		}
+
 		$src = implode('|', $extra);
+
 		switch ($ext)
 		{
 			case 'flv':
@@ -94,14 +99,5 @@ class AllVideosRender
 				$this->output = "{divxremote}$src{/divxremote}";
 				break;
 		}
-		/*if (!JPluginHelper::isEnabled( 'content', 'fab_jwplayer')) {
-
-
-		    } else {
-
-		    }
-		} else {
-		    $this->output = '{fabjwplayer file='.$src.'}';
-		}*/
 	}
 }

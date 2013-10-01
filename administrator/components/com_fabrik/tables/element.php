@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableElement extends FabTable
 {
-
 	/**
 	 * Construct
 	 *
@@ -46,6 +45,7 @@ class FabrikTableElement extends FabTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
+
 		return 'com_fabrik.element.' . (int) $this->$k;
 	}
 
@@ -77,6 +77,7 @@ class FabrikTableElement extends FabTable
 			$rules = new JAccessRules($array['rules']);
 			$this->setRules($rules);
 		}
+
 		if (isset($array['params']) && is_array($array['params']))
 		{
 			$registry = new JRegistry;
@@ -122,6 +123,7 @@ class FabrikTableElement extends FabTable
 			{
 				$e = new JException(JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
 				$this->setError($e);
+
 				return false;
 			}
 		}
@@ -152,6 +154,7 @@ class FabrikTableElement extends FabTable
 		{
 			$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_PUBLISH_FAILED', get_class($this), $this->_db->getErrorMsg()));
 			$this->setError($e);
+
 			return false;
 		}
 
@@ -172,7 +175,7 @@ class FabrikTableElement extends FabTable
 		}
 
 		$this->setError('');
+
 		return true;
 	}
-
 }

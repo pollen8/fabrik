@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 {
-
 	protected $pluginName = 'youtube';
 
 	/**
@@ -82,6 +81,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
+
 		if ($input->get('view') != 'details')
 		{
 			$name = $this->getHTMLName($repeatCounter);
@@ -90,14 +90,17 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			$maxlength = 255;
 			$bits = array();
 			$type = "text";
+
 			if ($this->elementError != '')
 			{
 				$type .= " elementErrorHighlight";
 			}
+
 			if (!$this->isEditable())
 			{
 				return ($element->hidden == '1') ? '<!-- ' . $value . ' -->' : $value;
 			}
+
 			$bits['class'] = "fabrikinput inputbox $type";
 			$bits['type'] = $type;
 			$bits['name'] = $name;
@@ -108,11 +111,14 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 			$bits['size'] = $size;
 			$bits['maxlength'] = $maxlength;
 			$str = "<input ";
+
 			foreach ($bits as $key => $val)
 			{
 				$str .= $key . ' = "' . $val . '" ';
 			}
+
 			$str .= " />\n";
+
 			return $str;
 		}
 		else
@@ -121,11 +127,20 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		}
 	}
 
+	/**
+	 * Make video player
+	 *
+	 * @param   string  $value  Value
+	 * @param   string  $mode   Mode form/list
+	 *
+	 * @return string
+	 */
+
 	private function constructVideoPlayer($value, $mode = 'form')
 	{
 		$params = $this->getParams();
-		// Player size
 
+		// Player size
 		if (($params->get('display_in_table') == 0) && $model = 'list')
 		{
 			$width = '170';
@@ -133,7 +148,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		}
 		else
 		{
-			if ($params->get('or_width_player') != NULL)
+			if ($params->get('or_width_player') != null)
 			{
 				$width = $params->get('or_width_player');
 				$height = $params->get('or_height_player');
@@ -173,19 +188,24 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		$color1 = JString::substr($params->get('color1'), -6);
 		$color2 = JString::substr($params->get('color2'), -6);
 		$vid = array_pop(explode("/", $value));
-		//$$$tom: if one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
+
+		// If one copies an URL from youtube, the URL has the "watch?v=" which barfs the player
 		if (strstr($vid, 'watch'))
 		{
 			$vid = explode("=", $vid);
-			unset($vid[0]); // That's the watch?v=
+
+			// That's the watch?v=
+			unset($vid[0]);
 			$vid = implode('', $vid);
 		}
+
 		if ($vid == '')
 		{
-			//$$$ rob perhaps they just added in the code???
+			// $$$ rob perhaps they just added in the code???
 			$vid = $value;
 		}
-		if ($value != NULL)
+
+		if ($value != null)
 		{
 			if ($params->get('display_in_table') == 1 && $mode == 'list')
 			{
@@ -202,7 +222,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 					}
 					else
 					{
-						if ($params->get('text_link') != NULL)
+						if ($params->get('text_link') != null)
 						{
 							$dlink = $params->get('text_link');
 						}
@@ -211,6 +231,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 							$dlink = 'Watch Video';
 						}
 					}
+
 					if ($params->get('target_link') == 1)
 					{
 						$object_vid = '<a href="' . $url . $vid . '" target="blank">' . $dlink . '</a>';
@@ -245,6 +266,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 		{
 			$object_vid = '';
 		}
+
 		return $object_vid;
 	}
 
@@ -260,6 +282,7 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbYouTube', $id, $opts);
 	}
 
@@ -272,12 +295,14 @@ class PlgFabrik_ElementYoutube extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		$objtype = "VARCHAR(" . $p->get('maxlength', 255) . ")";
+
 		return $objtype;
 	}
-
 }

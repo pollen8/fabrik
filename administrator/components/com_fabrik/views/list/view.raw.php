@@ -16,21 +16,20 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a list.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.5
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.5
+ */
 
 class FabrikAdminViewList extends JViewLegacy
 {
-
 	/**
 	 * Display a json object representing the table data.
 	 *
 	 * @return  void
 	 */
 
-	function display()
+	public function display()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -46,11 +45,13 @@ class FabrikAdminViewList extends JViewLegacy
 		$data = $model->getData();
 		$nav = $model->getPagination();
 		$c = 0;
+
 		foreach ($data as $groupk => $group)
 		{
 			foreach ($group as $i => $x)
 			{
 				$o = new stdClass;
+
 				if (is_object($data[$groupk]))
 				{
 					$o->data = JArrayHelper::fromObject($data[$groupk]);
@@ -59,10 +60,12 @@ class FabrikAdminViewList extends JViewLegacy
 				{
 					$o->data = $data[$groupk][$i];
 				}
+
 				$o->cursor = $i + $nav->limitstart;
 				$o->total = $nav->total;
-				$o->id = "list_" . $item->id."_row_" . @$o->data->__pk_val;
+				$o->id = 'list_' . $item->id . '_row_' . @$o->data->__pk_val;
 				$o->class = "fabrik_row oddRow" . $c;
+
 				if (is_object($data[$groupk]))
 				{
 					$data[$groupk] = $o;
@@ -71,19 +74,21 @@ class FabrikAdminViewList extends JViewLegacy
 				{
 					$data[$groupk][$i] = $o;
 				}
+
 				$c = 1 - $c;
 			}
 		}
 
 		// $$$ hugh - heading[3] doesn't exist any more?  Trying [0] instead.
-		$d = array('id' => $item->id, 'rowid' => $rowid, 'model'=>'list', 'data'=>$data,
+		$d = array('id' => $item->id, 'rowid' => $rowid, 'model' => 'list', 'data' => $data,
 				'headings' => $this->headings,
-				'formid'=> $model->getTable()->form_id,
+				'formid' => $model->getTable()->form_id,
 				'lastInsertedRow' => JFactory::getSession()->get('lastInsertedRow', 'test'));
 		$d['nav'] = $nav->getProperties();
 		$d['htmlnav'] = $params->get('show-table-nav', 1) ? $nav->getListFooter($model->getId(), $this->getTmpl()) : '';
 		$d['calculations'] = $model->getCalculations();
 		$msg = $app->getMessageQueue();
+
 		if (!empty($msg))
 		{
 			$d['msg'] = $msg[0]['message'];
@@ -106,9 +111,11 @@ class FabrikAdminViewList extends JViewLegacy
 		$model = $this->getModel();
 		$item = $model->getTable();
 		$params = $model->getParams();
+
 		if ($app->isAdmin())
 		{
 			$tmpl = $params->get('admin_template');
+
 			if ($tmpl == -1 || $tmpl == '')
 			{
 				$tmpl = $input->get('layout', $item->template);
@@ -118,7 +125,7 @@ class FabrikAdminViewList extends JViewLegacy
 		{
 			$tmpl = $input->get('layout', $item->template);
 		}
+
 		return $tmpl;
 	}
-
 }

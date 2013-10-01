@@ -2,10 +2,10 @@
 /**
  * Fabrik Coverflow HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.coverflow
- * @copyright	Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
- * @license		GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.coverflow
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
@@ -16,14 +16,13 @@ jimport('joomla.application.component.view');
 /**
  * Fabrik Coverflow HTML View
  *
- * @package		Joomla.Plugin
- * @subpackage	Fabrik.visualization.coverflow
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.visualization.coverflow
  * @since       3.0
-*/
+ */
 
-class fabrikViewCoverflow extends JViewLegacy
+class FabrikViewCoverflow extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -32,7 +31,7 @@ class fabrikViewCoverflow extends JViewLegacy
 	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 
-	function display($tpl = 'default')
+	public function display($tpl = 'default')
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -43,10 +42,12 @@ class fabrikViewCoverflow extends JViewLegacy
 		$id = $input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0)));
 		$model->setId($id);
 		$row = $model->getVisualization();
+
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$model->render();
 		}
+
 		$params = $model->getParams();
 		$this->params = $params;
 		$this->containerId = $this->get('ContainerId');

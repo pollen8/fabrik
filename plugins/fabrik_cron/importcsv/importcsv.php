@@ -25,7 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/models/importcsv.php';
 
 class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the active element
 	 *
@@ -71,6 +70,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		$query->select('id')->from('#__{package}_lists')->where('db_table_name = ' . $db->quote($tableName));
 		$db->setQuery($query);
 		$id = $db->loadResult();
+
 		return $id;
 	}
 
@@ -111,10 +111,12 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		$jform['drop_data'] = $dropdata;
 		$jform['overwrite'] = $overwrite;
 		$jform['field_delimiter'] = $field_delimiter;
+
 		if ($field_delimiter == '\t')
 		{
 			$jform['tabdelimited'] = '1';
 		}
+
 		$jform['text_delimiter'] = $text_delimiter;
 
 		$input->set('jform', $jform);
@@ -132,14 +134,15 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		// The csv import class needs to know we are doing a cron import
 		$input->set('cron_csvimport', true);
 		$xfiles = 0;
+
 		foreach ($arrfiles as $full_csvfile)
 		{
 			if (++$xfiles > $maxFiles)
 			{
 				break;
 			}
-			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $full_csvfile:  ");
 
+			FabrikWorker::log('plg.cron.cronimportcsv.information', "Starting import: $full_csvfile:  ");
 			$clsImportCSV = JModelLegacy::getInstance('Importcsv', 'FabrikFEModel');
 
 			if ($useTableName)
@@ -157,6 +160,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 				FabrikWorker::log('plg.cron.cronimportcsv.warning', "List with name $filename does not exist");
 				continue;
 			}
+
 			$input->set('listid', $listid);
 
 			// Grab the CSV file, need to strip import root off path first
@@ -166,8 +170,8 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 
 			// Get this->matchedHeading
 			$clsImportCSV->findExistingElements();
-
 			$msg = $clsImportCSV->makeTableFromCSV();
+
 			if ($app->isAdmin())
 			{
 				$app->enqueueMessage($msg);
@@ -185,6 +189,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 			elseif ($deleteFile == '3')
 			{
 				$done_folder = dirname($full_csvfile) . '/done';
+
 				if (JFolder::exists($done_folder))
 				{
 					$new_csvfile = $done_folder . '/' . basename($full_csvfile);
@@ -198,6 +203,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 					}
 				}
 			}
+
 			FabrikWorker::log('plg.cron.cronimportcsv.information', $msg);
 		}
 
@@ -211,14 +217,17 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		{
 			$input->set('drop_data', $orig_dropdata);
 		}
+
 		if ($orig_overwrite != -1)
 		{
 			$input->set('overwite', $orig_overwrite);
 		}
+
 		if ($orig_field_delimiter != -1)
 		{
 			$input->set('field_delimiter', $orig_field_delimiter);
 		}
+
 		if ($orig_text_delimiter != -1)
 		{
 			$input->set('text_delimiter', $orig_text_delimiter);
@@ -232,7 +241,7 @@ class PlgFabrik_Cronimportcsv extends PlgFabrik_Cron
 		{
 			$updates = 0;
 		}
+
 		return $updates;
 	}
-
 }

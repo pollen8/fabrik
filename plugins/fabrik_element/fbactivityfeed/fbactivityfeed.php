@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element have a label
 	 *
@@ -67,7 +66,9 @@ class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 		$border = $params->get('fbactivityfeed_border', '');
 		$font = $params->get('fbactivityfeed_font', 'arial');
 		$colorscheme = $params->get('fbactivityfeed_colorscheme', 'light');
-		$str .= "<fb:activity site=\"$domain\" width=\"$width\" height=\"$height\" header=\"$header\" colorscheme=\"$colorscheme\" font=\"$font\" border_color=\"$border\" />";
+		$str .= "<fb:activity site=\"$domain\" width=\"$width\" height=\"$height\" header=\"$header\"
+		colorscheme=\"$colorscheme\" font=\"$font\" border_color=\"$border\" />";
+
 		return $str;
 	}
 
@@ -83,7 +84,7 @@ class PlgFabrik_ElementFbactivityfeed extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbActivityfeed', $id, $opts);
 	}
-
 }

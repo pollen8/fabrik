@@ -37,9 +37,7 @@ class FabrikControllerCroncronnotification extends JController
 	public function display($cachable = false, $urlparams = false)
 	{
 		$document = JFactory::getDocument();
-
 		$viewName = 'cronnotification';
-
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
@@ -50,9 +48,11 @@ class FabrikControllerCroncronnotification extends JController
 		{
 			$view->setModel($model, true);
 		}
+
 		// Display the view
 		$view->error = $this->getError();
 		$view->display();
+
 		return $this;
 	}
 
@@ -64,10 +64,8 @@ class FabrikControllerCroncronnotification extends JController
 
 	public function delete()
 	{
-		echo "Here";exit;
 		$model = $this->getModel('cronnotification');
 		$model->delete();
 		$this->setRedirect('index.php?option=com_fabrikn&task=cron.cronnotification', JText::_('NOTIFICATIONS_REMOVED'));
 	}
-
 }

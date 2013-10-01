@@ -67,13 +67,16 @@ class FabrikAdminViewCrons extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
+
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
 	}
@@ -90,18 +93,19 @@ class FabrikAdminViewCrons extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_CRONS'), 'crons.png');
-
 		JToolBarHelper::custom('crons.run', 'upload.png', 'upload_f2.png', 'Run');
+
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('cron.add', 'JTOOLBAR_NEW');
 		}
+
 		if ($canDo->get('core.edit'))
 		{
 			JToolBarHelper::editList('cron.edit', 'JTOOLBAR_EDIT');
 		}
+
 		if ($canDo->get('core.edit.state'))
 		{
 			if ($this->state->get('filter.state') != 2)
@@ -111,10 +115,12 @@ class FabrikAdminViewCrons extends JViewLegacy
 				JToolBarHelper::custom('crons.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 		}
+
 		if (JFactory::getUser()->authorise('core.manage', 'com_checkin'))
 		{
 			JToolBarHelper::custom('crons.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
 		}
+
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
 			JToolBarHelper::deleteList('', 'crons.delete', 'JTOOLBAR_EMPTY_TRASH');
@@ -123,11 +129,13 @@ class FabrikAdminViewCrons extends JViewLegacy
 		{
 			JToolBarHelper::trash('crons.trash', 'JTOOLBAR_TRASH');
 		}
+
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_fabrik');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS', false, JText::_('JHELP_COMPONENTS_FABRIK_CRONS'));
 

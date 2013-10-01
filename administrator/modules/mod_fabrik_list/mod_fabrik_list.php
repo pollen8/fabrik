@@ -19,6 +19,7 @@ if (!defined('COM_FABRIK_FRONTEND'))
 {
 	throw RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
+
 jimport('joomla.application.component.model');
 jimport('joomla.application.component.helper');
 JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
@@ -41,11 +42,14 @@ $document = JFactory::getDocument();
 require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 require_once COM_FABRIK_FRONTEND . '/views/form/view.html.php';
 $listId = intval($params->get('list_id', 0));
+
 if ($listId === 0)
 {
 	throw RuntimeException('Fabrik Module: No list specified', 500);
 }
+
 $listels = json_decode($params->get('list_elements'));
+
 if (isset($listels->show_in_list))
 {
 	$input->set('fabrik_show_in_list', $listels->show_in_list);
@@ -96,6 +100,7 @@ if ($params->get('ajax_links') !== '')
 
 $prefilters = JArrayHelper::fromObject(json_decode($params->get('prefilters')));
 $conditions = (array) $prefilters['filter-conditions'];
+
 if (!empty($conditions))
 {
 	$listParams->set('filter-join', $prefilters['filter-join']);
@@ -129,5 +134,6 @@ else
 {
 	$cache->get($view, 'display', $cacheid);
 }
+
 $input->set('layout', $origLayout);
 $input->set('fabrik_show_in_list', null);

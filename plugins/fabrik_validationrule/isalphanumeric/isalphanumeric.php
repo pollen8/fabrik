@@ -47,13 +47,15 @@ class PlgFabrik_ValidationruleIsalphanumeric extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		if ($data == '')
 		{
 			return false;
 		}
+
 		// Not a word character
 		preg_match('/[^\w\s]/', $data, $matches);
+
 		return empty($matches) ? true : false;
 	}
-
 }

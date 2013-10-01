@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -52,6 +51,7 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$element = $elementModel->getElement();
 		$listModel = $elementModel->getlistModel();
@@ -71,12 +71,15 @@ class PlgFabrik_ValidationruleIsUniqueValue extends PlgFabrik_Validationrule
 		 */
 		$pk = FabrikString::safeColNameToArrayKey($table->db_primary_key);
 		$rowid = $input->get($pk, '');
+
 		if (!empty($rowid))
 		{
 			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));
 		}
+
 		$db->setQuery($query);
 		$c = $db->loadResult();
+
 		return ($c == 0) ? true : false;
 	}
 }

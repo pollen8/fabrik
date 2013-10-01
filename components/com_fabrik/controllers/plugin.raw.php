@@ -41,18 +41,23 @@ class FabrikControllerPlugin extends JControllerLegacy
 		$plugin = $input->get('plugin', '');
 		$method = $input->get('method', '');
 		$group = $input->get('g', 'element');
+
 		if (!JPluginHelper::importPlugin('fabrik_' . $group, $plugin))
 		{
 			$o = new stdClass;
 			$o->err = 'unable to import plugin fabrik_' . $group . ' ' . $plugin;
 			echo json_encode($o);
+
 			return;
 		}
+
 		$dispatcher = JDispatcher::getInstance();
+
 		if (substr($method, 0, 2) !== 'on')
 		{
 			$method = 'on' . JString::ucfirst($method);
 		}
+
 		$dispatcher->trigger($method);
 	}
 
@@ -69,6 +74,7 @@ class FabrikControllerPlugin extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$method = $app->input->get('method', '');
 		$userAjax = new userAjax($db);
+
 		if (method_exists($userAjax, $method))
 		{
 			$userAjax->$method();
@@ -90,14 +96,17 @@ class FabrikControllerPlugin extends JControllerLegacy
 		$cid = $app->input->get('element_id', array(), 'array');
 		$query = $db->getQuery(true);
 		$query->select('id, plugin')->from('#__{package}_cron');
+
 		if (!empty($cid))
 		{
 			$query->where(' id IN (' . implode(',', $cid) . ')');
 		}
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
 		$viewModel = JModelLegacy::getInstance('view', 'FabrikFEModel');
 		$c = 0;
+
 		foreach ($rows as $row)
 		{
 			// Load in the plugin
@@ -115,10 +124,10 @@ class FabrikControllerPlugin extends JControllerLegacy
 			// $$$ hugh - added table model param, in case plugin wants to do further table processing
 			$c = $c + $plugin->process($data, $thisViewModel);
 		}
+
 		$query = $db->getQuery();
 		$query->update('#__{package}_cron')->set('lastrun=NOW()')->where('id IN (' . implode(',', $cid) . ')');
 		$db->setQuery($query);
 		$db->execute();
 	}
-
 }

@@ -17,11 +17,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.dropdown
  * @since       3.0
-*/
+ */
 
 class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 {
-
 	/**
 	 * Method to set the element id
 	 *
@@ -68,9 +67,11 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		{
 			$attribs .= ' multiple="multiple" size="' . $multisize . '" ';
 		}
+
 		$i = 0;
 		$aRoValues = array();
 		$opts = array();
+
 		foreach ($values as $tmpval)
 		{
 			$tmpLabel = JArrayHelper::getValue($labels, $i);
@@ -78,10 +79,12 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 			// For values like '1"'
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);
 			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
+
 			if (in_array($tmpval, $selected))
 			{
 				$aRoValues[] = $this->getReadOnlyOutput($tmpval, $tmpLabel);
 			}
+
 			$i++;
 		}
 		/*
@@ -99,12 +102,16 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				}
 			}
 		}
+
 		$str = JHTML::_('select.genericlist', $opts, $name, $attribs, 'value', 'text', $selected, $id);
+
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}
+
 		$str .= $this->getAddOptionFields($repeatCounter);
+
 		return $str;
 	}
 
@@ -125,14 +132,13 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
 		$params = $this->getParams();
-
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->allowadd = $params->get('allow_frontend_addtodropdown', false) ? true : false;
 		$opts->value = $arSelected;
 		$opts->defaultVal = $this->getDefaultValue($data);
-
 		$opts->data = (empty($values) && empty($labels)) ? array() : array_combine($values, $labels);
 		JText::script('PLG_ELEMENT_DROPDOWN_ENTER_VALUE_LABEL');
+
 		return array('FbDropdown', $id, $opts);
 	}
 
@@ -153,7 +159,6 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		{
 			if ($element->default != '')
 			{
-
 				$default = $element->default;
 				/*
 				 * Nasty hack to fix #504 (eval'd default value)
@@ -168,6 +173,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				{
 					$w = new FabrikWorker;
 					$default = $w->parseMessageForPlaceHolder($default, $data);
+
 					if ($element->eval == "1")
 					{
 						$v = @eval((string) stripslashes($default));
@@ -178,6 +184,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 						$v = $default;
 					}
 				}
+
 				if (is_string($v))
 				{
 					$this->default = explode('|', $v);
@@ -192,6 +199,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				$this->default = $this->getSubInitialSelection();
 			}
 		}
+
 		return $this->default;
 	}
 
@@ -222,6 +230,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -236,10 +245,12 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	protected function replaceLabelWithValue($selected)
 	{
 		$selected = (array) $selected;
+
 		foreach ($selected as &$s)
 		{
 			$s = str_replace("'", "", $s);
 		}
+
 		$element = $this->getElement();
 		$vals = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
@@ -247,14 +258,17 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 		$aRoValues = array();
 		$opts = array();
 		$i = 0;
+
 		foreach ($labels as $label)
 		{
 			if (in_array($label, $selected))
 			{
 				$return[] = $vals[$i];
 			}
+
 			$i++;
 		}
+
 		return $return;
 	}
 
@@ -272,6 +286,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		for ($i = 0; $i < count($labels); $i++)
 		{
 			if (JString::strtolower($labels[$i]) == JString::strtolower($value))
@@ -279,6 +294,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 				return $values[$i];
 			}
 		}
+
 		return $value;
 	}
 
@@ -296,7 +312,7 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'change');
+
 		return array($ar);
 	}
-
 }

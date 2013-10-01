@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class ImageRender
 {
-
 	/**
 	 * Render output
 	 *
@@ -29,7 +28,12 @@ class ImageRender
 	 */
 	public $output = '';
 
-	var $inTableView = false;
+	/**
+	 * In list view
+	 *
+	 * @var bool
+	 */
+	protected $inTableView = false;
 
 	/**
 	 * Render list data
@@ -71,6 +75,7 @@ class ImageRender
 		 */
 		$formModel = $model->getFormModel();
 		$title = basename($file);
+
 		if ($params->get('fu_title_element') == '')
 		{
 			$title_name = $model->getFullName(true, false) . '__title';
@@ -79,13 +84,14 @@ class ImageRender
 		{
 			$title_name = str_replace('.', '___', $params->get('fu_title_element'));
 		}
+
 		if ($input->get('view') == 'list')
 		{
 			$listModel = $model->getlistModel();
+
 			if (array_key_exists($title_name, $thisRow))
 			{
 				$title = $thisRow->$title_name;
-
 			}
 		}
 		else
@@ -104,10 +110,10 @@ class ImageRender
 		$title = htmlspecialchars(strip_tags($title, ENT_NOQUOTES));
 		$element = $model->getElement();
 		$file = $model->getStorage()->getFileUrl($file);
-
 		$fullSize = $file;
 		$width = $params->get('fu_main_max_width');
 		$height = $params->get('fu_main_max_height');
+
 		if (!$this->fullImageInRecord($params))
 		{
 			if ($params->get('fileupload_crop'))
@@ -123,8 +129,10 @@ class ImageRender
 				$file = $model->getStorage()->_getThumb($file);
 			}
 		}
+
 		$file = $model->storage->preRenderPath($file);
 		$fullSize = $model->storage->preRenderPath($fullSize);
+
 		if ($params->get('fu_show_image') == 0 && !$this->inTableView)
 		{
 			$fileName = explode("/", $file);
@@ -148,7 +156,9 @@ class ImageRender
 					$this->output .= '<div class="fabrikGalleryImage" style="width:' . $width . 'px;height:' . $height
 						. 'px; vertical-align: middle;text-align: center;">';
 				}
+
 				$img = '<img class="fabrikLightBoxImage" src="' . $file . '" alt="' . $title . '" />';
+
 				if ($params->get('make_link', true) && !$this->fullImageInRecord($params))
 				{
 					$this->output .= '<a href="' . $fullSize . '" rel="lightbox[]" title="' . $title . '">' . $img . '</a>';
@@ -157,6 +167,7 @@ class ImageRender
 				{
 					$this->output .= $img;
 				}
+
 				if ($model->isJoin())
 				{
 					$this->output .= '</div>';
@@ -179,11 +190,12 @@ class ImageRender
 		{
 			return ($params->get('make_thumbnail') || $params->get('fileupload_crop')) ? false : true;
 		}
+
 		if (($params->get('make_thumbnail') || $params->get('fileupload_crop')) && $params->get('fu_show_image') == 1)
 		{
 			return false;
 		}
+
 		return true;
 	}
-
 }

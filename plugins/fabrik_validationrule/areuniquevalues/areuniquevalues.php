@@ -4,7 +4,6 @@
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.validationrule.areuniquevalues
- * @author      Lieven Gryp
  * @copyright   Copyright (C) 2005-2013 fabrikar.com & Lieven Gryp - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
@@ -25,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -53,11 +51,13 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$otherfield = $params->get('areuniquevalues-otherfield', '');
 		$element = $elementModel->getElement();
 		$listModel = $elementModel->getlistModel();
 		$table = $listModel->getTable();
+
 		if ((int) $otherfield !== 0)
 		{
 			$otherElementModel = $this->getOtherElement();
@@ -73,10 +73,8 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$db = $listModel->getDb();
 		$lookuptable = $db->quoteName($table->db_table_name);
 		$data = $db->quote($data);
-
 		$query = $db->getQuery(true);
 		$query->select('COUNT(*)')->from($lookuptable)->where($elementModel->getFullName(false, false) . ' = ' . $data);
-
 		$listModel->buildQueryJoin($query);
 
 		if (!empty($otherfield))
@@ -84,10 +82,12 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 			// $$$ the array thing needs fixing, for now just grab 0
 			$formdata = $elementModel->getForm()->formData;
 			$v = JArrayHelper::getValue($formdata, $otherFullName . '_raw', JArrayHelper::getValue($formdata, $otherFullName, ''));
+
 			if (is_array($v))
 			{
 				$v = JArrayHelper::getValue($v, 0, '');
 			}
+
 			$query->where($otherfield . ' = ' . $db->quote($v));
 		}
 
@@ -96,12 +96,15 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		 * @TODO - is there a better way getting the rowid?  What if this is form a joined table?
 		 */
 		$rowid = $input->get('rowid');
+
 		if (!empty($rowid))
 		{
 			$query->where($table->db_primary_key . ' != ' . $db->quote($rowid));
 		}
+
 		$db->setQuery($query);
 		$c = $db->loadResult();
+
 		return ($c == 0) ? true : false;
 	}
 
@@ -115,6 +118,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$otherfield = $params->get('areuniquevalues-otherfield');
+
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
 
@@ -129,6 +133,7 @@ class PlgFabrik_ValidationruleAreUniqueValues extends PlgFabrik_Validationrule
 		$otherElementModel = $this->getOtherElement();
 		$params = $this->getParams();
 		$otherfield = $params->get('areuniquevalues-otherfield');
+
 		if ((int) $otherfield !== 0)
 		{
 			return JText::sprintf('PLG_VALIDATIONRULE_AREUNIQUEVALUES_ADDITIONAL_LABEL', $otherElementModel->getElement()->label);

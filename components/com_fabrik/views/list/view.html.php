@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the template
 	 *
@@ -39,10 +38,12 @@ class FabrikViewList extends FabrikViewListBase
 			$model = $this->getModel();
 			$this->tabs = $model->loadTabs();
 			$app = JFactory::getApplication();
+
 			if (!$app->isAdmin() && isset($this->params))
 			{
 				$this->state = $this->get('State');
 				$this->document = JFactory::getDocument();
+
 				if ($this->params->get('menu-meta_description'))
 				{
 					$this->document->setDescription($this->params->get('menu-meta_description'));
@@ -58,9 +59,8 @@ class FabrikViewList extends FabrikViewListBase
 					$this->document->setMetadata('robots', $this->params->get('robots'));
 				}
 			}
+
 			$this->output();
 		}
 	}
-
-
 }

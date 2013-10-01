@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,12 +47,15 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
+
 		if ($domatch)
 		{
 			return $this->_eval($data);
 		}
+
 		return true;
 	}
 
@@ -71,10 +73,12 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$domatch = $params->get('php-match');
+
 		if (!$domatch)
 		{
 			return $this->_eval($data);
 		}
+
 		return $data;
 	}
 
@@ -106,6 +110,7 @@ class PlgFabrik_ValidationrulePhp extends PlgFabrik_Validationrule
 		FabrikWorker::clearEval();
 		$retval = @eval($phpCode);
 		FabrikWorker::logEval($retval, 'Caught exception on php validation of ' . $elementModel->getFullName(true, false) . ': %s');
+
 		return $retval;
 	}
 }

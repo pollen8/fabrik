@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableCron extends FabTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -46,7 +45,6 @@ class FabrikTableCron extends FabTable
 
 	public function bind($src, $ignore = array())
 	{
-
 		if (isset($src['params']) && is_array($src['params']))
 		{
 			$registry = new JRegistry;
@@ -56,5 +54,4 @@ class FabrikTableCron extends FabTable
 
 		return parent::bind($src, $ignore);
 	}
-
 }

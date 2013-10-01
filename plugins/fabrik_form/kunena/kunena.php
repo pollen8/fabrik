@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormKunena extends PlgFabrik_Form
 {
-
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -44,11 +43,14 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.defines.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.link.class.php';
 		$files[] = COM_FABRIK_BASE . 'components/com_kunena/lib/kunena.smile.class.php';
+
 		if (!JFile::exists($define))
 		{
 			throw new RuntimeException('could not find the Kunena component', 404);
 		}
+
 		require_once $define;
+
 		foreach ($files as $file)
 		{
 			require_once $file;
@@ -62,6 +64,7 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		{
 			$postfile = KUNENA_PATH_TEMPLATE_DEFAULT . '/post.php';
 		}
+
 		$w = new FabrikWorker;
 
 		// $fbSession = CKunenaSession::getInstance();
@@ -95,5 +98,4 @@ class PlgFabrik_FormKunena extends PlgFabrik_Form
 		ob_end_clean();
 		$input->set('id', $origId);
 	}
-
 }

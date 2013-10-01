@@ -16,10 +16,10 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a visualization.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		3.0
-*/
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
 
 class FabrikAdminViewVisualization extends JViewLegacy
 {
@@ -71,6 +71,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
@@ -116,7 +117,9 @@ class FabrikAdminViewVisualization extends JViewLegacy
 		$userId = $user->get('id');
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
-		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : JText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT'), 'visualization.png');
+		$title = $isNew ? JText::_('COM_FABRIK_MANAGER_VISUALIZATION_NEW') : JText::_('COM_FABRIK_MANAGER_VISUALIZATION_EDIT');
+		JToolBarHelper::title($title, 'visualization.png');
+
 		if ($isNew)
 		{
 			// For new records, check the create permission.
@@ -126,6 +129,7 @@ class FabrikAdminViewVisualization extends JViewLegacy
 				JToolBarHelper::save('visualization.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('visualization.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('visualization.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
@@ -146,12 +150,15 @@ class FabrikAdminViewVisualization extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('visualization.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('visualization.cancel', 'JTOOLBAR_CLOSE');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_VISUALIZATIONS_EDIT'));
 	}

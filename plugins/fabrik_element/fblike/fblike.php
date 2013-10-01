@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementFblike extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element have a label
 	 *
@@ -67,10 +66,12 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	public function renderListData($data, stdClass &$thisRow)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->input->get('format') === 'raw')
 		{
 			return $data;
 		}
+
 		$params = $this->getParams();
 		$meta = array();
 		$config = JFactory::getConfig();
@@ -86,6 +87,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		// In list view we link to the detailed record not the list view itself
 		// means form or details view must be viewable by the user
 		$url = $this->getListModel()->linkHref($this, $thisRow);
+
 		if ($url === '')
 		{
 			if (!self::$warned)
@@ -93,11 +95,11 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 				$app->enqueueMessage('Your list needs to have viewable details records for the FB Like button to work');
 				self::$warned = true;
 			}
+
 			return '';
 		}
 
 		return $str . $this->_render($url);
-		return parent::renderListData($data, $thisRow);
 	}
 
 	/**
@@ -124,17 +126,21 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		foreach ($map as $k => $v)
 		{
 			$elid = $params->get($v);
+
 			if ($elid != '')
 			{
 				$el = $formModel->getElement($elid, true);
+
 				if (is_object($el))
 				{
 					$name = $el->getFullName(true, false);
 					$v = JArrayHelper::getValue($data, $name);
+
 					if ($k == 'og:image')
 					{
 						$v = $ex . $_SERVER['SERVER_NAME'] . $v;
 					}
+
 					if ($v !== '')
 					{
 						$meta[$k] = $v;
@@ -142,28 +148,31 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 				}
 			}
 		}
+
 		$locEl = $formModel->getElement($params->get('fblike_location'), true);
+
 		if ($locEl != '')
 		{
 			$loc = JArrayHelper::getValue($data, $locEl->getFullName(true, false));
 			$loc = array_shift(explode(':', $loc));
 			$loc = explode(",", $loc);
+
 			if (count($loc) == 2)
 			{
 				$meta['og:latitude'] = $loc[0];
 				$meta['og:longitude'] = $loc[1];
 			}
 		}
+
 		$meta['og:url'] = $ex . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		$meta['og:site_name'] = $config->get('sitename');
 		$meta['fb:app_id'] = $params->get('fblike_opengraph_applicationid');
 		$str = FabrikHelperHTML::facebookGraphAPI($params->get('fblike_opengraph_applicationid'), $params->get('fblike_locale', 'en_US'), $meta);
 		$url = $params->get('fblike_url');
-
 		$w = new FabrikWorker;
 		$url = $w->parseMessageForPlaceHolder($url, $data);
-
 		$this->getElement()->hidden = true;
+
 		return $str . $this->_render($url);
 	}
 
@@ -178,6 +187,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 	protected function _render($url)
 	{
 		$params = $this->getParams();
+
 		if ($url !== '')
 		{
 			if (!strstr($url, COM_FABRIK_LIVESITE))
@@ -187,12 +197,14 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 				$ex = $_SERVER['SERVER_PORT'] == 80 ? 'http://' : 'https://';
 				$url = $ex . $_SERVER['SERVER_NAME'] . $url;
 			}
+
 			$href = "href=\"$url\"";
 		}
 		else
 		{
 			$href = '';
 		}
+
 		$layout = $params->get('fblike_layout', 'standard');
 		$showfaces = $params->get('fblike_showfaces', 0) == 1 ? 'true' : 'false';
 		$width = $params->get('fblike_width', 300);
@@ -201,6 +213,7 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$colorscheme = $params->get('fblike_colorscheme', 'light');
 		$str = '<fb:like ' . $href . 'layout="' . $layout . '" show_faces="' . $showfaces . '" width="' . $width . '" action="' . $action
 			. '" font="' . $font . '" colorscheme="' . $colorscheme . '" />';
+
 		return $str;
 	}
 
@@ -219,13 +232,14 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$opts->listid = $this->getListModel()->getId();
 		$opts->elid = $this->getElement()->id;
 		$opts->row_id = $this->getFormModel()->getRowId();
+
 		return array('FbLike', $id, $opts);
 	}
 
 	/**
 	 * Called via Facebook event subscription (useful for odering)
 	 *
-	 *  @return  null
+	 * @return  null
 	 */
 
 	public function onAjax_rate()
@@ -241,7 +255,5 @@ class PlgFabrik_ElementFblike extends PlgFabrik_Element
 		$field = $this->getFullName(false, false, false);
 		$update = $field . ' = ' . $field . ' ' . $direction . ' 1';
 		$list->updateRows(array($rowId), $field, null, $update);
-
 	}
-
 }

@@ -35,7 +35,7 @@ class FabrikFEModelPackage extends FabModel
 	 *
 	 * @var JTable
 	 */
-	private $_package = null;
+	private $package = null;
 
 	/**
 	 * ID
@@ -174,16 +174,16 @@ class FabrikFEModelPackage extends FabModel
 
 	public function &getPackage()
 	{
-		if (!isset($this->_package))
+		if (!isset($this->package))
 		{
-			$this->_package = FabTable::getInstance('Package', 'FabrikTable');
-			$this->_package->load($this->id);
+			$this->package = FabTable::getInstance('Package', 'FabrikTable');
+			$this->package->load($this->id);
 
 			// Forms can currently only be set from form module
-			$this->_package->forms = '';
+			$this->package->forms = '';
 		}
 
-		return $this->_package;
+		return $this->package;
 	}
 
 	/**
@@ -208,9 +208,9 @@ class FabrikFEModelPackage extends FabModel
 
 	protected function loadTables()
 	{
-		if ($this->_package->tables != '')
+		if ($this->package->tables != '')
 		{
-			$aIds = explode(',', $this->_package->tables);
+			$aIds = explode(',', $this->package->tables);
 
 			foreach ($aIds as $id)
 			{

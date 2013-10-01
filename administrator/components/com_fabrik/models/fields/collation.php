@@ -63,7 +63,6 @@ class JFormFieldCollation extends JFormFieldList
 			{
 				$this->value = $db->getCollation();
 			}
-
 		}
 
 		return $return;

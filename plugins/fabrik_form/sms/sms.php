@@ -26,7 +26,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/sms.php';
 
 class PlgFabrik_FormSMS extends PlgFabrik_Form
 {
-
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -40,10 +39,10 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 	}
 
 	/**
-	* Send SMS
-	*
-	* @return	bool
-	*/
+	 * Send SMS
+	 *
+	 * @return	bool
+	 */
 
 	protected function process()
 	{
@@ -52,6 +51,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		$message = $this->getMessage();
 		$aData = $oForm->formData;
 		$gateway = $this->getInstance();
+
 		return $gateway->process($message);
 	}
 
@@ -72,6 +72,7 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 			$this->gateway = new $gateway;
 			$this->gateway->params = $params;
 		}
+
 		return $this->gateway;
 	}
 
@@ -93,16 +94,20 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 		{
 			$arDontEmailThesKeys[] = $key;
 		}
+
 		$message = "";
 		$pluginManager = FabrikWorker::getPluginManager();
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
 				$element->label = strip_tags($element->label);
+
 				if (!array_key_exists($element->name, $data))
 				{
 					$elName = $element->getFullName();
@@ -111,13 +116,16 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 				{
 					$elName = $element->name;
 				}
+
 				$key = $elName;
+
 				if (!in_array($key, $arDontEmailThesKeys))
 				{
 					if (array_key_exists($elName, $data))
 					{
 						$val = stripslashes($data[$elName]);
 						$params = $elementModel->getParams();
+
 						if (method_exists($elementModel, 'getEmailValue'))
 						{
 							$val = $elementModel->getEmailValue($val);
@@ -129,14 +137,16 @@ class PlgFabrik_FormSMS extends PlgFabrik_Form
 								$val = implode("\n", $val);
 							}
 						}
+
 						$val = FabrikString::rtrimword($val, '<br />');
 						$message .= $element->label . ': ' . $val . "\r\n";
 					}
 				}
 			}
 		}
+
 		$message = JText::_('PLG_FORM_SMS_FROM') . $config->get('sitename') . "\r \n \r \nMessage:\r \n" . stripslashes($message);
+
 		return $message;
 	}
-
 }

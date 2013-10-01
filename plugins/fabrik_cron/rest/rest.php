@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class PlgFabrik_CronRest extends PlgFabrik_Cron
 {
-
 	/**
 	 * Do the plugin action
 	 *
@@ -59,13 +58,14 @@ class PlgFabrik_CronRest extends PlgFabrik_Cron
 
 		// Drill down to the specified xpath location for our data
 		$xpath = $params->get('xpath');
+
 		if ($xpath !== '')
 		{
 			$xml = $xml->xpath($xpath);
 		}
+
 		$adminListModel->dbTableFromXML($params->get('key'), $params->get('create_list'), $xml);
 		$this->createList($listModel, $adminListModel);
-
 	}
 
 	/**
@@ -88,10 +88,12 @@ class PlgFabrik_CronRest extends PlgFabrik_Cron
 
 		// $response = $client->get("/hello.json", array('auth' => 'true'));
 		$response = json_decode($response);
+
 		if ($response->code == 200)
 		{
 			$data = $response->result;
 		}
+
 		echo "<Pre>";
 		print_r($response);
 		exit;
@@ -112,10 +114,12 @@ class PlgFabrik_CronRest extends PlgFabrik_Cron
 		$input = $app->input;
 		$params = $this->getParams();
 		$table = $params->get('create_list');
+
 		if ($table == '')
 		{
 			return;
 		}
+
 		$db = FabrikWorker::getDbo();
 
 		// See if we have a list that already points to the table
@@ -143,5 +147,4 @@ class PlgFabrik_CronRest extends PlgFabrik_Cron
 		$input->set('jform', $data);
 		$adminListModel->save($data);
 	}
-
 }

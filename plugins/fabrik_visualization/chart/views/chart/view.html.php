@@ -19,11 +19,10 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
  * @since       3.0
-*/
+ */
 
 class FabrikViewChart extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -43,12 +42,16 @@ class FabrikViewChart extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
+
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+
 		if ($this->requiredFiltersFound)
 		{
 			$this->chart = $this->get('Chart');
@@ -57,6 +60,7 @@ class FabrikViewChart extends JViewLegacy
 		{
 			$this->chart = '';
 		}
+
 		$params = $model->getParams();
 		$this->params = $params;
 		$viewName = $this->getName();
@@ -82,5 +86,4 @@ class FabrikViewChart extends JViewLegacy
 		FabrikHelperHTML::script($srcs, $js);
 		echo parent::display();
 	}
-
 }

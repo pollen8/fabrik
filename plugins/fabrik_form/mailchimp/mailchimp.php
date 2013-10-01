@@ -25,7 +25,6 @@ require_once 'MCAPI.class.php';
 
 class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 {
-
 	protected $html = null;
 
 	/**
@@ -38,6 +37,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	{
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
+
 		if ($params->get('mailchimp_userconfirm', true))
 		{
 			$checked = $app->input->get('fabrik_mailchimp_signup', '') !== '' ? ' checked="checked"' : '';
@@ -66,10 +66,12 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 	{
 		$listId = $params->get('mailchimp_listid');
 		$apiKey = $params->get('mailchimp_apikey');
+
 		if ($apiKey == '')
 		{
 			throw new RuntimeException('Mailchimp: no api key specified');
 		}
+
 		if ($listId == '')
 		{
 			throw new RuntimeException('Mailchimp: no list id specified');
@@ -77,6 +79,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 
 		$api = new MCAPI($params->get('mailchimp_apikey'));
 		$groups = $api->listInterestGroupings($listId);
+
 		return $groups;
 	}
 
@@ -108,25 +111,27 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$emailData = $this->getProcessData();
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
+
 		if (!array_key_exists('fabrik_mailchimp_signup', $post) && (bool) $params->get('mailchimp_userconfirm', true) === true)
 		{
 			return;
 		}
+
 		$listId = $params->get('mailchimp_listid');
 		$apiKey = $params->get('mailchimp_apikey');
+
 		if ($apiKey == '')
 		{
 			throw new RuntimeException('Mailchimp: no api key specified');
 		}
+
 		if ($listId == '')
 		{
 			throw new RuntimeException('Mailchimp: no list id specified');
 		}
 
 		$api = new MCAPI($params->get('mailchimp_apikey'));
-
 		$opts = array();
-
 		$emailKey = $formModel->getElement($params->get('mailchimp_email'), true)->getFullName();
 		$firstNameKey = $formModel->getElement($params->get('mailchimp_firstname'), true)->getFullName();
 		$fname = $formModel->formDataWithTableName[$firstNameKey];
@@ -140,16 +145,17 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 			$opts['LNAME'] = $lname;
 			$opts['NAME'] .= ' ' . $lname;
 		}
+
 		$email = $formModel->formDataWithTableName[$emailKey];
-
 		$w = new FabrikWorker;
-
 		$groupOpts = json_decode($params->get('mailchimp_groupopts', "[]"));
+
 		if (!empty($groupOpts))
 		{
 			foreach ($groupOpts as $groupOpt)
 			{
 				$groups = array();
+
 				if (isset($groupOpt->groups))
 				{
 					$groupOpt->groups = $w->parseMessageForPlaceHolder($groupOpt->groups, $emailData);
@@ -167,9 +173,11 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 						// But... labels for db joins etc are not availabel in formData
 						$opts[strtoupper($k)] = $w->parseMessageForPlaceHolder($v, $emailData);
 					}
+
 					$opts['GROUPINGS'] = $groups;
 				}
 			}
+
 			$opts['GROUPINGS'] = $groups;
 		}
 
@@ -178,6 +186,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		$doubleOptin = (bool) $params->get('mailchimp_double_optin', true);
 		$updateExisting = (bool) $params->get('mailchimp_update_existing', true);
 		$retval = $api->listSubscribe($listId, $email, $opts, $emailType, $doubleOptin, $updateExisting);
+
 		if ($api->errorCode)
 		{
 			$app->enqueueMessage($api->errorCode, 'Mailchimp: ' . $api->errorMessage, 'notice');
@@ -185,6 +194,7 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 			if ((bool) $params->get('mailchimp_fail_on_error', true) === true)
 			{
 				$formModel->errors['mailchimp_error'] = true;
+
 				return false;
 			}
 			else
@@ -196,6 +206,5 @@ class PlgFabrik_FormMailchimp extends PlgFabrik_Form
 		{
 			return true;
 		}
-
 	}
 }

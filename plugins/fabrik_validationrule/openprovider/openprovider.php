@@ -15,7 +15,7 @@ defined('_JEXEC') or die('Restricted access');
 require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 // Require the Open Provider API
-require_once JPATH_SITE . '/plugins/fabrik_validationrule/openprovider/api.php';
+require_once JPATH_SITE . '/plugins/fabrik_validationrule/openprovider/libs/api.php';
 
 /**
  * Domain name look up against open provider service
@@ -27,7 +27,6 @@ require_once JPATH_SITE . '/plugins/fabrik_validationrule/openprovider/api.php';
 
 class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -56,10 +55,9 @@ class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 		{
 			$data = substr($data, 4, strlen($data));
 		}
+
 		list($domain, $extension) = explode('.', $data, 2);
-
 		$api = new OP_API('https://api.openprovider.eu');
-
 		$args = array(
 			'domains' => array(
 				array(
@@ -75,7 +73,7 @@ class PlgFabrik_ValidationruleOpenprovider extends PlgFabrik_Validationrule
 
 		$reply = $api->setDebug(0)->process($request);
 		$res = $reply->getValue();
+
 		return $res[0]['status'] === 'active' ? false : true;
 	}
-
 }

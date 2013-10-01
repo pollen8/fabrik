@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 class FabrikModelCoverflow extends FabrikFEModelVisualization
 {
-
 	/**
 	 * Internally render the plugin, and add required script declarations
 	 * to the document
@@ -48,9 +47,9 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 		$subtitles = (array) $params->get('coverflow_subtitle');
 
 		$config = JFactory::getConfig();
-
 		$listids = (array) $params->get('coverflow_table');
 		$eventdata = array();
+
 		foreach ($listids as $listid)
 		{
 			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
@@ -61,6 +60,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 			$title = $titles[$c];
 			$subtitle = $subtitles[$c];
 			$data = $listModel->getData();
+
 			if ($listModel->canView() || $listModel->canEdit())
 			{
 				$elements = $listModel->getElements();
@@ -75,6 +75,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 						foreach ($group as $row)
 						{
 							$event = new stdClass;
+
 							if (!method_exists($imageElement, 'getStorage'))
 							{
 								switch (get_class($imageElement))
@@ -94,6 +95,7 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 							{
 								$event->image = $imageElement->getStorage()->pathToURL($row->{$image . '_raw'});
 							}
+
 							$event->title = $title === '' ? '' : (string) strip_tags($row->$title);
 							$event->subtitle = $subtitle === '' ? '' : (string) strip_tags($row->$subtitle);
 							$eventdata[] = $event;
@@ -101,8 +103,10 @@ class FabrikModelCoverflow extends FabrikFEModelVisualization
 					}
 				}
 			}
+
 			$c++;
 		}
+
 		$json = json_encode($eventdata);
 		$str = "var coverflow = new FbVisCoverflow($json);";
 		$srcs = FabrikHelperHTML::framework();

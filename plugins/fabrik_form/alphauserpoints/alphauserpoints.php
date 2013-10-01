@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 {
-
 	/**
 	 * Run right at the end of the form processing
 	 * form needs to be set to record in database for this to hook to be called
@@ -36,11 +35,11 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$api_AUP = JPATH_SITE . '/components/com_alphauserpoints/helper.php';
+
 		if (JFile::exists($api_AUP))
 		{
 			$w = new FabrikWorker;
 			$this->data = $this->getProcessData();
-
 			require_once $api_AUP;
 			$aup = new AlphaUserPointsHelper;
 
@@ -60,6 +59,7 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 
 			// Override the plugin default points
 			$randomPoints = $params->get('random_points', 0);
+
 			if ($params->get('random_points_eval', '0') == '1')
 			{
 				if (!empty($randomPoints))
@@ -68,6 +68,7 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 					$randomPoints = @eval($randomPoints);
 					FabrikWorker::logEval($randomPoints, 'Caught exception on eval in aup plugin : %s');
 				}
+
 				$randomPoints = (float) $randomPoints;
 			}
 			else
@@ -88,9 +89,8 @@ class PlgFabrik_FormAlphaUserPoints extends PlgFabrik_Form
 			{
 				throw new Exception('Alpha User Points plugin not published');
 			}
-			$aup->userpoints($aupPlugin, $aupId, $referralUserPoints, $keyReference, $dataReference, $randomPoints);
 
+			$aup->userpoints($aupPlugin, $aupId, $referralUserPoints, $keyReference, $dataReference, $randomPoints);
 		}
 	}
-
 }

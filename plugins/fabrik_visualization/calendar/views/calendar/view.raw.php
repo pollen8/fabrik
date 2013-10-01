@@ -19,11 +19,10 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.calendar
  * @since       3.0
-*/
+ */
 
 class FabrikViewCalendar extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -41,5 +40,4 @@ class FabrikViewCalendar extends JViewLegacy
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		echo $model->getEvents();
 	}
-
 }

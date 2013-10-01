@@ -1,4 +1,12 @@
 <?php
+/**
+ * Make a VBulletin forum
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.form.vbulletin
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ */
 
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -34,12 +42,15 @@ if ($forum_name && $forum_parent)
 	$dataman->set_bitfield('options', 'allowratings', true);
 	$dataman->set_bitfield('options', 'countposts', true);
 	$dataman->set_bitfield('options', 'showonforumjump', true);
-	
+
 	$dataman->pre_save();
+
 	if (count($dataman->errors) > 0)
 	{
 		echo "Forum not created because: ";
-		foreach ($dataman->errors as $err) {
+
+		foreach ($dataman->errors as $err)
+		{
 			echo "$err; ";
 		}
 	}
@@ -47,9 +58,5 @@ if ($forum_name && $forum_parent)
 	{
 		$forumid = $dataman->save();
 		echo "Forum created succesfully";
-	}  
+	}
 }
-
-################################################################################
-
-?>

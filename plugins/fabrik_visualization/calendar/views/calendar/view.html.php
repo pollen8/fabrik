@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewCalendar extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -51,13 +50,12 @@ class FabrikViewCalendar extends JViewLegacy
 		$this->showFilters = $model->showFilters();
 		$this->showTitle = $input->getInt('show-title', 1);
 		$this->filterFormURL = $this->get('FilterFormURL');
-
 		$calendar = $this->row;
 
 		JHTML::stylesheet('media/com_fabrik/css/list.css');
 		$this->canAdd = (bool) $params->get('calendar-read-only', 0) == 1 ? 0 : $this->get('CanAdd');
-
 		$this->requiredFiltersFound = $this->get('RequiredFiltersFound');
+
 		if ($params->get('calendar_show_messages', '1') == '1' && $this->canAdd && $this->requiredFiltersFound)
 		{
 			$app->enqueueMessage(JText::_('PLG_VISUALIZATION_CALENDAR_DOUBLE_CLICK_TO_ADD'));
@@ -75,15 +73,17 @@ class FabrikViewCalendar extends JViewLegacy
 		unset($urlfilters['visualizationid']);
 		unset($urlfilters['format']);
 		unset($urlfilters['id']);
+
 		if (empty($urlfilters))
 		{
 			$urlfilters = new stdClass;
 		}
+
 		$urls = new stdClass;
 
 		// Don't JRoute as its wont load with sef?
-		$urls->del = 'index.php?option=com_' . $package . '&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid
-			. '&id=' . $id;
+		$urls->del = 'index.php?option=com_' . $package
+		. '&controller=visualization.calendar&view=visualization&task=deleteEvent&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$urls->add = 'index.php?option=com_' . $package . '&view=visualization&format=raw&Itemid=' . $Itemid . '&id=' . $id;
 		$user = JFactory::getUser();
 		$legend = $params->get('show_calendar_legend', 0) ? $model->getLegend() : '';
@@ -153,9 +153,11 @@ class FabrikViewCalendar extends JViewLegacy
 		}
 		else
 		{
-			$options->buttons = '<img src="' . COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png"
+			$src = COM_FABRIK_LIVESITE . 'plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/images/minus-sign.png';
+			$options->buttons = '<img src="' . $src . '"
 				alt = "del" class="fabrikDeleteEvent" />' . JText::_('PLG_VISUALIZATION_CALENDAR_DELETE');
 		}
+
 		$json = json_encode($options);
 
 		JText::script('PLG_VISUALIZATION_CALENDAR_NEXT');
@@ -199,6 +201,7 @@ class FabrikViewCalendar extends JViewLegacy
 
 		// Adding custom.css, just for the heck of it
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/calendar/views/calendar/tmpl/' . $tpl . '/custom.css');
+
 		return parent::display();
 	}
 
@@ -208,7 +211,7 @@ class FabrikViewCalendar extends JViewLegacy
 	 * @return  void
 	 */
 
-	function chooseaddevent()
+	public function chooseaddevent()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -221,15 +224,19 @@ class FabrikViewCalendar extends JViewLegacy
 		$calendar = $model->getVisualization();
 		$options = array();
 		$options[] = JHTML::_('select.option', '', JText::_('PLG_VISUALIZATION_CALENDAR_PLEASE_SELECT'));
+
 		if ($o != null)
 		{
 			$listid = $o->id;
 			$options[] = JHTML::_('select.option', $listid, JText::_('PLG_VISUALIZATION_CALENDAR_STANDARD_EVENT'));
 		}
+
 		$model->getEvents();
 		$config = JFactory::getConfig();
 		$prefix = $config->get('dbprefix');
-		$this->_eventTypeDd = JHTML::_('select.genericlist', array_merge($options, $rows), 'event_type', 'class="inputbox" size="1" ', 'value', 'text', '', 'fabrik_event_type');
+		$attribs = 'class="inputbox" size="1" ';
+		$options = array_merge($options, $rows);
+		$this->_eventTypeDd = JHTML::_('select.genericlist', $options, 'event_type', $attribs, 'value', 'text', '', 'fabrik_event_type');
 
 		/*
 		 * Tried loading in iframe and as an ajax request directly - however
@@ -257,6 +264,7 @@ class FabrikViewCalendar extends JViewLegacy
 				$script[] = "}\n";
 			}
 		}
+
 		$script[] = "Fabrik.blocks['" . $ref . "'].addEvForm(o);";
 		$script[] = "Fabrik.Windows.chooseeventwin.close();";
 		$script[] = "});";

@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableList extends FabTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -77,6 +76,7 @@ class FabrikTableList extends FabTable
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
+
 		return 'com_fabrik.list.' . (int) $this->$k;
 	}
 
@@ -92,15 +92,15 @@ class FabrikTableList extends FabTable
 	}
 
 	/**
-	* Method to load a row from the database by primary key and bind the fields
-	* to the JTable instance properties.
-	*
-	* @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
-	* set the instance property value is used.
-	* @param   boolean  $reset  True to reset the default values before loading the new row.
-	*
-	* @return  boolean  True if successful. False if row not found or on error (internal error state set in that case).
-	*/
+	 * Method to load a row from the database by primary key and bind the fields
+	 * to the JTable instance properties.
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 * set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found or on error (internal error state set in that case).
+	 */
 
 	public function load($keys = null, $reset = true)
 	{
@@ -134,6 +134,7 @@ class FabrikTableList extends FabTable
 		$query->from($this->_tbl);
 		$query->join('LEFT', '#__fabrik_connections AS c ON c.id = ' . $this->_tbl . '.connection_id');
 		$fields = array_keys($this->getProperties());
+
 		foreach ($keys as $field => $value)
 		{
 			// Check that $field is in the table.
@@ -141,6 +142,7 @@ class FabrikTableList extends FabTable
 			{
 				$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_CLASS_IS_MISSING_FIELD', get_class($this), $field));
 				$this->setError($e);
+
 				return false;
 			}
 			// Add the search tuple to the query.
@@ -159,5 +161,4 @@ class FabrikTableList extends FabTable
 		// Bind the object with the row and return.
 		return $this->bind($row);
 	}
-
 }

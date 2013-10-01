@@ -73,8 +73,10 @@ class FabrikControllerImport extends JControllerLegacy
 		if (!$model->checkUpload())
 		{
 			$this->display();
+
 			return;
 		}
+
 		$id = $listModel->getId();
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
@@ -84,6 +86,7 @@ class FabrikControllerImport extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType);
 		$model->import();
 		$Itemid = $input->getInt('Itemid');
+
 		if (!empty($model->newHeadings))
 		{
 			// As opposed to admin you can't alter table structure with a CSV import from the front end
@@ -98,5 +101,4 @@ class FabrikControllerImport extends JControllerLegacy
 			$this->setRedirect('index.php?option=com_fabrik&view=list&listid=' . $id . "&resetfilters=1&Itemid=" . $Itemid, $msg);
 		}
 	}
-
 }

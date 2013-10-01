@@ -23,5 +23,4 @@ jimport('joomla.application.component.controller');
  */
 class FabrikControllerVisualizationslideshow extends FabrikControllerVisualization
 {
-
 }

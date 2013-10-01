@@ -17,11 +17,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.usergroup
  * @since       3.0.6
-*/
+ */
 
 class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -59,9 +58,9 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		$html_id = $this->getHTMLId($repeatCounter);
 		$id = $html_id;
 		$params = $this->getParams();
-
 		$formModel = $this->getFormModel();
 		$userEl = $formModel->getElement($params->get('user_element'), true);
+
 		if ($userEl)
 		{
 			$data = $formModel->getData();
@@ -72,13 +71,17 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			{
 				$userid = JArrayHelper::getValue($userid, 0);
 			}
+
 			$thisUser = JFactory::getUser($userid);
 		}
+
 		$selected = $this->getValue($data, $repeatCounter);
+
 		if (is_string($selected))
 		{
 			$selected = json_decode($selected);
 		}
+
 		if ($this->isEditable())
 		{
 			return JHtml::_('access.usergroups', $name, $selected);
@@ -116,10 +119,12 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		$opts = $this->allOpts();
 		$return = array();
+
 		foreach ($opts as $opt)
 		{
 			$return[] = $opt->id;
 		}
+
 		return $return;
 	}
 
@@ -133,10 +138,12 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		$opts = $this->allOpts();
 		$return = array();
+
 		foreach ($opts as $opt)
 		{
 			$return[] = $opt->title;
 		}
+
 		return $return;
 	}
 
@@ -160,14 +167,17 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		$elName2 = $this->getFullName(false, false, false);
 		$tmpIds = $listModel->getColumnData($elName2);
 		$ids = array();
+
 		foreach ($tmpIds as $tmpId)
 		{
 			$tmpId = FabrikWorker::JSONtoData($tmpId, true);
 			$ids = array_merge($ids, $tmpId);
 		}
+
 		$ids = array_unique($ids);
 		$opts = $this->allOpts();
 		$return = array();
+
 		foreach ($ids as $id)
 		{
 			if (array_key_exists($id, $opts))
@@ -179,6 +189,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 				$return[] = $opt;
 			}
 		}
+
 		return $return;
 	}
 
@@ -198,6 +209,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			$db->setQuery($query);
 			$this->allOpts = $db->loadObjectList('id');
 		}
+
 		return $this->allOpts;
 	}
 
@@ -213,6 +225,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		$opts = parent::getElementJSOptions($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
+
 		return array('FbUsergroup', $id, $opts);
 	}
 
@@ -230,12 +243,14 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 	{
 		$value = parent::getValue($data, $repeatCounter, $opts);
 		$value = FabrikWorker::JSONtoData($value);
+
 		if (is_string($value))
 		{
 			// New record or failed validation
 			$value = trim($value);
 			$value = $value === '' ? array() : explode(',', $value);
 		}
+
 		return $value;
 	}
 
@@ -256,6 +271,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 			$this->_default = array_values($this->_default);
 			$this->_default = json_encode($this->_default);
 		}
+
 		return $this->_default;
 	}
 
@@ -285,7 +301,7 @@ class PlgFabrik_ElementUsergroup extends PlgFabrik_ElementList
 		{
 			$return[] = JHTML::_('select.option', $selected[$i]->id, $selected[$i]->title);
 		}
+
 		return $return;
 	}
-
 }
