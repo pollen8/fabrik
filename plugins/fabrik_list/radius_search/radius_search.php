@@ -130,7 +130,6 @@ class PlgFabrik_ListRadius_Search extends PlgFabrik_List
 		$active = $app->getUserStateFromRequest($baseContext . 'radius_serach_active', 'radius_search_active' . $this->renderOrder, array($params->get('start_active', 0)));
 
 		$str .= '<div class="radus_search" id="radius_search' . $this->renderOrder . '" style="left:-100000px;position:absolute;">';
-		$str .= "render order = $this->renderOrder <br>";
 		$str .= '<input type="hidden" name="radius_search_active' . $this->renderOrder . '[]" value="' . $active[0] . '" />';
 
 		$str .= '<div class="radius_search_options">';
