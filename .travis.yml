@@ -19,8 +19,8 @@ before_script:
   - "npm install -g jshint"
 
 script:
-  ant travis-phpcs
-  phpunit --configuration travisci-fabrik-phpunit.xml
+  - ant travis-phpcs
+  - phpunit --configuration travisci-fabrik-phpunit.xml
   
 after_script:
   cat fabrik_build/logs/checkstyle.xml
