@@ -803,7 +803,7 @@ class PlgFabrik_Element extends FabrikPlugin
 	{
 		$table = $this->getListModel()->getTable();
 
-		if ($this->getGroupModel()->isJoin() && !$this->isJoin())
+		if ($this->getGroupModel()->isJoin() && $this->isJoin())
 		{
 			$groupJoin = $this->getGroupModel()->getJoinModel()->getJoin();
 			$pkField = $groupJoin->table_join . '.' . $groupJoin->table_key;
@@ -5663,7 +5663,7 @@ class PlgFabrik_Element extends FabrikPlugin
 		}
 		else
 		{
-			$r = empty($data) ? '' : array_shift($data);
+			$r = empty($data) ? '' : '<div>' . array_shift($data) . '</div>';
 		}
 
 		return $r;
@@ -7024,7 +7024,7 @@ class PlgFabrik_Element extends FabrikPlugin
 			$groupJoinModel = $groupModel->getJoinModel();
 			$idKey = $join->table_join . '___id';
 			$paramsKey = $join->table_join . '___params';
-			$k = $groupJoinModel->getForeignKey();
+			$k = str_replace('`', '', str_replace('.', '___', $groupJoinModel->getJoin()->params->get('pk')));
 			$parentIds = (array) $formData[$k];
 		}
 		else
