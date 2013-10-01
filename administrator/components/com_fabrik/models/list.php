@@ -637,9 +637,17 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		// Get original collation
 		$db = $feModel->getDb();
-		$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
-		$info = $db->loadObject();
-		$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
+
+		if (!empty($data['db_table_name']))
+		{
+			$db->setQuery('SHOW TABLE STATUS LIKE ' . $db->quote($data['db_table_name']));
+			$info = $db->loadObject();
+			$origCollation = is_object($info) ? $info->Collation : $params->get('collation', 'none');
+		}
+		else
+		{
+			$origCollation = $params->get('collation', 'none');
+		}
 
 		$row->bind($data);
 
@@ -650,6 +658,13 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$this->collation($feModel, $origCollation, $row);
 		$isNew = true;
+
+		if ($row->id != 0)
+		{
+			$datenow = JFactory::getDate();
+			$row->modified = $datenow->toSql();
+			$row->modified_by = $user->get('id');
+		}
 
 		if ($id == 0)
 		{
@@ -716,13 +731,6 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		$params = new JRegistry($row->params);
 
-		if ($row->id != 0)
-		{
-			$datenow = JFactory::getDate();
-			$row->modified = $datenow->toSql();
-			$row->modified_by = $user->get('id');
-		}
-
 		FabrikAdminHelper::prepareSaveDate($row->publish_down);
 		FabrikAdminHelper::prepareSaveDate($row->created);
 		FabrikAdminHelper::prepareSaveDate($row->publish_up);
@@ -730,7 +738,7 @@ class FabrikAdminModelList extends FabModelAdmin
 
 		if ($pk == '')
 		{
-			$pk = $feModel->getPrimaryKeyAndExtra($data['db_table_name']);
+			$pk = $feModel->getPrimaryKeyAndExtra($row->db_table_name);
 			$key = $pk[0]['colname'];
 			$extra = $pk[0]['extra'];
 
@@ -819,6 +827,12 @@ class FabrikAdminModelList extends FabModelAdmin
 		{
 			$this->setState($this->getName() . '.id', $row->$pkName);
 		}
+
+		/**
+		 * $$$ hugh - I don't know what this state gets used for, but $iNew is
+		 * currently ending up the wrong way round.  New tables it's false,
+		 * existing tables it's true.
+		 */
 
 		$this->setState($this->getName() . '.new', $isNew);
 		parent::cleanCache('com_fabrik');
