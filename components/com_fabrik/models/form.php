@@ -2026,12 +2026,42 @@ class FabrikFEModelForm extends FabModelForm
 	/**
 	 * When submitting data copy values to _raw equivalent
 	 *
-	 * @param   array  &$post  form data
+	 * @param   array  &$post     Form data
+	 * @param   bool   $override  Override existing raw data when copying to raw
 	 *
 	 * @return	null
 	 */
 
-	public function copyToRaw(&$post)
+	public function copyToRaw(&$post, $override = false)
+	{
+		$this->copyToFromRaw($post, 'toraw', $override);
+	}
+
+	/**
+	 * Copy raw data to non-raw data
+	 *
+	 * @param   array  &$post     Form data
+	 * @param   bool   $override  Override existing raw data when copying from raw
+	 *
+	 * @return	null
+	 */
+
+	public function copyFromRaw(&$post, $override = false)
+	{
+		$this->copyToFromRaw($post, 'fromraw', $override);
+	}
+
+	/**
+	 * Copy raw data to non-raw data OR none-raw to raw
+	 *
+	 * @param   array   &$post      Form data
+	 * @param   string  $direction  Either - toraw OR fromraw - defines which data to copy to where raw/none-raw
+	 * @param   bool    $override   Override existing raw data when copying from raw
+	 *
+	 * @return	null
+	 */
+
+	protected function copyToFromRaw(&$post, $direction = 'toraw', $override = false)
 	{
 		$groups = $this->getGroupsHiarachy();
 		$app = JFactory::getApplication();
@@ -2044,12 +2074,25 @@ class FabrikFEModelForm extends FabModelForm
 			foreach ($elementModels as $elementModel)
 			{
 				$elName2 = $elementModel->getFullName(true, false);
+				$elName2Raw = $elName2 . '_raw';
 
-				if (!array_key_exists($elName2 . '_raw', $post))
+				if ($direction === 'toraw')
 				{
-					// Post required getValue() later on
-					$input->set($elName2 . '_raw', @$post[$elName2]);
-					$post[$elName2 . '_raw'] = @$post[$elName2];
+					if (!array_key_exists($elName2Raw, $post) || $override)
+					{
+						// Post required getValue() later on
+						$input->set($elName2Raw, @$post[$elName2]);
+						$post[$elName2Raw] = @$post[$elName2];
+					}
+				}
+				else
+				{
+					if (!array_key_exists($elName2 . '_raw', $post) || $override)
+					{
+						// Post required getValue() later on
+						$input->set($elName2, @$post[$elName2Raw]);
+						$post[$elName2] = @$post[$elName2Raw];
+					}
 				}
 			}
 		}
