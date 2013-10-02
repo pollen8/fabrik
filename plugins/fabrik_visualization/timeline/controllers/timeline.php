@@ -23,7 +23,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerVisualizationtimeline extends FabrikControllerVisualization
 {
-
 	/**
 	 * Get a series of timeline events
 	 *

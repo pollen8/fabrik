@@ -23,7 +23,6 @@ require_once JPATH_ROOT . '/plugins/fabrik_element/fileupload/adaptor.php';
 
 class Amazons3storage extends FabrikStorageAdaptor
 {
-
 	/**
 	 * Are we using SSL to store/retrieve files
 	 *
@@ -63,6 +62,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		$params = $this->getParams();
 		$w = new FabrikWorker;
+
 		return $w->parseMessageForPlaceHolder($params->get('fileupload_aws_bucketname', 'robclayburnsfabrik'));
 	}
 
@@ -75,6 +75,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	protected function getLocation()
 	{
 		$loc = $this->params->get('fileupload_aws_location');
+
 		return $loc == '' ? false : $loc;
 	}
 
@@ -92,10 +93,12 @@ class Amazons3storage extends FabrikStorageAdaptor
 		{
 			return false;
 		}
+
 		$bucket = $this->getBucketName();
 		$filepath = str_replace("%20", " ", $filepath);
 		$filepath = $this->urlToPath($filepath);
 		$response = $this->s3->getObject($bucket, $filepath);
+
 		return $response === false ? false : true;
 	}
 
@@ -114,12 +117,14 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$prefix = $this->ssl ? 'https://' : 'http://';
 		$bucket = $this->getBucketName();
 		$url = $this->removePrependedURL($url);
+
 		if (strstr($url, $prefix))
 		{
 			// We've got the full url to the image - remove the bucket name etc to get file name
 			$url = str_replace($prefix, '', $url);
 			$url = str_replace($bucket . '.' . $this->domain, '', $url);
 		}
+
 		return $url;
 	}
 
@@ -137,6 +142,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		{
 			$filepath = Fabrikstring::ltrimword($filepath, COM_FABRIK_BASE);
 		}
+
 		return $filepath;
 	}
 
@@ -150,14 +156,17 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		$bucket = $this->getBucketName();
 		$buckets = $this->s3->listBuckets();
+
 		if (!is_array($buckets))
 		{
 			return false;
 		}
+
 		if (!in_array($bucket, $buckets))
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -175,10 +184,12 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$filepath = str_replace("\\", '/', $filepath);
 		$bucket = $this->getBucketName();
 		$acl = $this->getAcl();
+
 		if (!$this->bucketExists())
 		{
 			$this->s3->putBucket($bucket, $acl, $this->getLocation());
 		}
+
 		// $$$ rob avoid urls like http://bucket.s3.amazonaws.com//home/users/path/to/file/Chrysanthemum.jpg
 		$filepath = JString::ltrim($filepath, '/');
 
@@ -186,6 +197,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		if ($this->s3->putObjectFile($tmpFile, $bucket, $filepath, $acl))
 		{
 			$this->uploadedFilePath = $this->getS3BaseURL() . str_replace(" ", "%20", $filepath);
+
 			return true;
 		}
 		else
@@ -205,6 +217,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	public function appendServerPath()
 	{
 		$params = $this->getParams();
+
 		return (bool) $params->get('fileupload_s3_serverpath', 1);
 	}
 
@@ -218,6 +231,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		$prefix = $this->ssl ? 'https://' : 'http://';
 		$bucket = $this->getBucketName();
+
 		return $prefix . $bucket . '.' . $this->domain;
 	}
 
@@ -236,6 +250,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$file = str_replace("%20", " ", $file);
 		$file = str_replace("\\", '/', $file);
 		$bucket = $this->getBucketName();
+
 		if ($this->s3->putObject($buffer, $bucket, $file, S3::ACL_PUBLIC_READ))
 		{
 			return true;
@@ -261,10 +276,12 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$file = str_replace("\\", '/', $file);
 		$bucket = $this->getBucketName();
 		$s3object = $this->s3->getObject($bucket, $file);
+
 		if ($s3object === false)
 		{
 			return false;
 		}
+
 		return $s3object->body;
 	}
 
@@ -278,6 +295,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		$params = $this->getParams();
 		$acl = $params->get('fileupload_amazon_acl', 2);
+
 		switch ($acl)
 		{
 			case 1:
@@ -291,6 +309,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 				$acl = S3::ACL_PUBLIC_READ_WRITE;
 				break;
 		}
+
 		return $acl;
 	}
 
@@ -331,6 +350,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	public function clean($path)
 	{
 		$prefix = $this->ssl ? 'https://' : 'http://';
+
 		if (strstr($path, $prefix))
 		{
 			// If we are cleaning up a full url then check that fabrik hasnt unwittingly prepended the JPATH_SITE to the start of the url
@@ -342,7 +362,9 @@ class Amazons3storage extends FabrikStorageAdaptor
 		{
 			$path = JPath::clean($path);
 		}
+
 		$path = str_replace("\\", '/', $path);
+
 		return $path;
 	}
 
@@ -460,6 +482,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$f = basename($file);
 		$dir = dirname($file);
 		$file = $dir . '/' . $f;
+
 		return $file;
 	}
 
@@ -502,11 +525,14 @@ class Amazons3storage extends FabrikStorageAdaptor
 	{
 		$bucket = $this->getBucketName();
 		$s3Info = $this->s3->getObjectInfo($bucket, $filepath);
+
 		if ($s3Info === false)
 		{
 			return false;
 		}
+
 		$thisFileInfo = array('filesize' => $s3Info['size'], 'mime_type' => $s3Info['type'], 'filename' => basename($filepath));
+
 		return $thisFileInfo;
 	}
 
@@ -523,6 +549,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 		$filepath = $this->urlToPath($filepath);
 		$filepath = str_replace("%20", " ", $filepath);
 		$filepath = str_replace("\\", '/', $filepath);
+
 		return $filepath;
 	}
 
@@ -538,6 +565,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 	public function preRenderPath($filepath)
 	{
 		$params = $this->getParams();
+
 		if ($lifetime = (int) $params->get('fileupload_amazon_auth_url', 0))
 		{
 			$file = $this->urlToPath($filepath);
@@ -547,6 +575,7 @@ class Amazons3storage extends FabrikStorageAdaptor
 			$hostbucket = !$this->ssl;
 			$filepath = $this->s3->getAuthenticatedURL($bucket, $file, $lifetime, $hostbucket, $this->ssl);
 		}
+
 		return $filepath;
 	}
 }

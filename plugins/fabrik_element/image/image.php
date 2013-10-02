@@ -26,7 +26,6 @@ if (!defined('DS'))
 
 class PlgFabrik_ElementImage extends PlgFabrik_Element
 {
-
 	/**
 	 * Ignored folders
 	 *
@@ -65,12 +64,14 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$rootFolder = JString::rtrim($rootFolder, '/') . '/';
 			$this->default = preg_replace("#^$rootFolder#", '', $this->default);
 			$this->default = $w->parseMessageForPlaceHolder($this->default, $data);
+
 			if ($element->eval == "1")
 			{
 				$this->default = @eval((string) stripslashes($this->default));
 				FabrikWorker::logEval($this->default, 'Caught exception on eval in ' . $element->name . '::getDefaultValue() : %s');
 			}
 		}
+
 		return $this->default;
 	}
 
@@ -116,6 +117,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$data = FabrikWorker::JSONtoData($data, true);
 		$params = $this->getParams();
 		$pathset = false;
+
 		foreach ($data as $d)
 		{
 			if (strstr($d, '/'))
@@ -124,10 +126,12 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				break;
 			}
 		}
+
 		if ($data === '' || empty($data) || !$pathset)
 		{
 			// No data so default to image (or simple image name stored).
 			$iPath = $params->get('imagepath');
+
 			if (!strstr($iPath, '/'))
 			{
 				// Single file specified so find it in tmpl folder
@@ -138,6 +142,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				$data = (array) $iPath;
 			}
 		}
+
 		$selectImage_root_folder = $this->rootFolder();
 
 		// $$$ hugh - tidy up a bit so we don't have so many ///'s in the URL's
@@ -147,10 +152,12 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 
 		$showImage = $params->get('show_image_in_table', 0);
 		$linkURL = $params->get('link_url', '');
+
 		if (empty($data) || $data[0] == '')
 		{
 			$data[] = $params->get('imagepath');
 		}
+
 		for ($i = 0; $i < count($data); $i++)
 		{
 			if ($showImage)
@@ -159,13 +166,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				$src = JString::substr($data[$i], 0, 4) == 'http' ? $data[$i] : COM_FABRIK_LIVESITE . $selectImage_root_folder . $data[$i];
 				$data[$i] = '<img src="' . $src . '" alt="' . $data[$i] . '" />';
 			}
+
 			if ($linkURL)
 			{
 				$data[$i] = '<a href="' . $linkURL . '" target="_blank">' . $data[$i] . '</a>';
 			}
+
 			$data[$i] = $w->parseMessageForPlaceHolder($data[$i], $thisRow);
 		}
+
 		$data = json_encode($data);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -183,8 +194,8 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$groupModel = $this->getGroup();
 		$params = $this->getParams();
 		$selectImage_root_folder = $params->get('selectImage_root_folder', '');
-
 		$key = $this->getFullName(true, false);
+
 		if (!array_key_exists($key, $data))
 		{
 			$element = $this->getElement();
@@ -197,6 +208,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			{
 				// @TODO - not tested with join group data
 			}
+
 			if (!array_key_exists($key . '_folder', $data))
 			{
 				$retval = json_encode($data[$key]);
@@ -204,16 +216,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			else
 			{
 				$retvals = array();
+
 				foreach ($data[$key] as $k => $v)
 				{
 					$retvals[] = preg_replace("#^$selectImage_root_folder#", '', $data[$key . '_folder'][$k]) . $data[$key . '_image'][$k];
 				}
+
 				$retval = json_encode($retvals);
 			}
 		}
 		else
 		{
-
 			/* $$$ hugh - if we're using default image, no user selection,
 			 * the _folder and _image won't exist,
 			 * we'll just have the relative path in the element $key
@@ -227,6 +240,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				$retval = preg_replace("#^$selectImage_root_folder#", '', $data[$key]);
 			}
 		}
+
 		return $retval;
 	}
 
@@ -246,6 +260,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$selectImage_root_folder = JString::ltrim($selectImage_root_folder, '/');
 		$selectImage_root_folder = JString::rtrim($selectImage_root_folder, '/');
 		$selectImage_root_folder = $selectImage_root_folder === '' ? '' : $selectImage_root_folder . '/';
+
 		return '<img src="' . COM_FABRIK_LIVESITE . $selectImage_root_folder . $data . '" />';
 	}
 
@@ -284,9 +299,11 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$str[] = '<div class="fabrikSubElementContainer" id="' . $id . '">';
 
 		$rootFolder = str_replace('/', DS, $rootFolder);
+
 		if ($canSelect && $this->isEditable())
 		{
 			$str[] = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>';
+
 			if (array_key_exists($name, $data))
 			{
 				if (trim($value) == '' && $rootFolder === '')
@@ -296,6 +313,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 				else
 				{
 					$bits = explode("/", $value);
+
 					if (count($bits) > 1)
 					{
 						$path = '/' . array_shift($bits) . '/';
@@ -312,12 +330,15 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			{
 				$path = $rootFolder;
 			}
+
 			$images = array();
 			$imagenames = (array) JFolder::files(JPATH_SITE . '/' . $path);
+
 			foreach ($imagenames as $n)
 			{
 				$images[] = JHTML::_('select.option', $n, $n);
 			}
+
 			// $$$rob not sure about his name since we are adding $repeatCounter to getHTMLName();
 			$imageName = $this->getGroupModel()->canRepeat() ? FabrikString::rtrimWord($name, "][$repeatCounter]") . "_image][$repeatCounter]"
 				: $id . '_image';
@@ -340,14 +361,18 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 			$value = $w->parseMessageForPlaceHolder($value, $data);
 			$linkURL = $params->get('link_url', '');
 			$imgstr = '<img src="' . $defaultImage . '" alt="' . $value . '" ' . $float . ' class="imagedisplayor"/>' . "\n";
+
 			if ($linkURL)
 			{
 				$imgstr = '<a href="' . $linkURL . '" target="_blank">' . $imgstr . '</a>';
 			}
+
 			$str[] = $imgstr;
 			$str[] = '<input type="hidden" name="' . $name . '" value="' . $value . '" class="fabrikinput hiddenimagepath folderpath" />';
 		}
+
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -362,19 +387,23 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$this->loadMeForAjax();
 		$app = JFactory::getApplication();
 		$folder = $app->input->get('folder', '', 'string');
+
 		if (!strstr($folder, JPATH_SITE))
 		{
 			$folder = JPATH_SITE . '/' . $folder;
 		}
+
 		$pathA = JPath::clean($folder);
 		$folder = array();
 		$files = array();
 		$images = array();
 		FabrikWorker::readImages($pathA, "/", $folders, $images, $this->ignoreFolders);
+
 		if (!array_key_exists('/', $images))
 		{
 			$images['/'] = array();
 		}
+
 		echo json_encode($images['/']);
 	}
 
@@ -398,6 +427,7 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$opts->id = $element->id;
 		$opts->ds = DS;
 		$opts->dir = JPATH_SITE . '/' . str_replace('/', DS, $opts->rootPath);
+
 		return array('FbImage', $id, $opts);
 	}
 
@@ -415,10 +445,12 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 		$params = $this->getParams();
 		$canSelect = ($params->get('image_front_end_select', '0') && JString::substr($value, 0, 4) !== 'http');
 		$defaultImg = $params->get('imagepath');
+
 		if ($canSelect && (JFolder::exists($defaultImg) || JFolder::exists(COM_FABRIK_BASE . $defaultImg)))
 		{
 			$rootFolder = $defaultImg;
 		}
+
 		return $rootFolder;
 	}
 
@@ -438,17 +470,17 @@ class PlgFabrik_ElementImage extends PlgFabrik_Element
 	}
 
 	/**
-	* Does the element conside the data to be empty
-	* Used in isempty validation rule
-	*
-	* $$$ hugh - right now this is the default code, here as a reminder we
-	* need to fix this so it makes sensible decisions about 'empty' image
-	*
-	* @param   array  $data           data to test against
-	* @param   int    $repeatCounter  repeat group #
-	*
-	* @return  bool
-	*/
+	 * Does the element conside the data to be empty
+	 * Used in isempty validation rule
+	 *
+	 * $$$ hugh - right now this is the default code, here as a reminder we
+	 * need to fix this so it makes sensible decisions about 'empty' image
+	 *
+	 * @param   array  $data           data to test against
+	 * @param   int    $repeatCounter  repeat group #
+	 *
+	 * @return  bool
+	 */
 
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{

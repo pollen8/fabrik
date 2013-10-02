@@ -15,16 +15,15 @@ defined('_JEXEC') or die('Restricted access');
 require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 /**
-* Add an action button to run webg service
-*
-* @package     Joomla.Plugin
-* @subpackage  Fabrik.list.webservice
-* @since       3.0
-*/
+ * Add an action button to run webg service
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.list.webservice
+ * @since       3.0
+ */
 
 class PlgFabrik_ListWebservice extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 *
@@ -57,14 +56,16 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 			$label = $this->buttonLabel();
 			$imageName = $this->getParams()->get('list_' . $this->buttonPrefix . '_image_name', 'update_col.png');
 			$img = FabrikHelperHTML::image($imageName, 'list', '', $label);
-			return '<a data-list="' . $this->context . '" href="#" class="' . $name . ' listplugin" title="' . $label . '">' . $img . '<span>' . $label . '</span></a>';
+
+			return '<a data-list="' . $this->context . '" href="#" class="' . $name . ' listplugin" title="' . $label . '">'
+				. $img . '<span>' . $label . '</span></a>';
 		}
 	}
 
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -72,6 +73,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -122,8 +124,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   object  $params  Plugin parameters
-	 * @param   array   $opts    Custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -150,6 +151,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$update = (bool) $params->get('webservice_update_existing', false);
 		$service->storeLocally($model, $serviceData, $fk, $update);
 		$this->msg = JText::sprintf($params->get('webservice_msg'), $service->addedCount, $service->updateCount);
+
 		return true;
 	}
 
@@ -171,11 +173,13 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$value = $map->map_value;
 		$eval = $map->map_eval;
 		$n = count($from);
+
 		for ($i = 0; $i < $n; $i++)
 		{
 			$tid = $formModel->getElement($to[$i], true)->getElement()->name;
 			$return[] = array('from' => $from[$i], 'to' => $tid, 'value' => $value[$i], 'match' => $match[$i], 'eval' => (bool) $eval[$i]);
 		}
+
 		return $return;
 	}
 
@@ -196,10 +200,12 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$vals = $filters->webservice_filters_value;
 		$types = $filters->webservice_filters_type;
 		$n = count($keys);
+
 		for ($i = 0; $i < $n; $i++)
 		{
 			$return[$keys[$i]] = $service->getFilterValue($vals[$i], $types[$i]);
 		}
+
 		return $return;
 	}
 
@@ -217,10 +223,12 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$keys = isset($credentials->webservice_credentials_key) ? $credentials->webservice_credentials_key : array();
 		$vals = isset($credentials->webservice_credentials_value) ? $credentials->webservice_credentials_value : array();
 		$n = count($keys);
+
 		for ($i = 0; $i < $n; $i++)
 		{
 			$return[$keys[$i]] = $vals[$i];
 		}
+
 		return $return;
 	}
 
@@ -252,7 +260,7 @@ class PlgFabrik_ListWebservice extends PlgFabrik_List
 		$opts->requireChecked = false;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListWebservice($opts)";
+
 		return true;
 	}
-
 }

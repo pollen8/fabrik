@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableJoin extends FabTable
 {
-
 	/**
 	 * Construct
 	 *
@@ -54,5 +53,4 @@ class FabrikTableJoin extends FabTable
 		unset($this->table_join_alias);
 		parent::store($updateNulls);
 	}
-
 }

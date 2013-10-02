@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewElement extends JViewLegacy
 {
-
 	/**
 	 * Element id (not used?)
 	 *
@@ -67,10 +66,10 @@ class FabrikViewElement extends JViewLegacy
 		$input = $app->input;
 		$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		$ids = $input->get('plugin', array(), 'array');
+
 		foreach ($ids as $id)
 		{
 			$plugin = $pluginManager->getElementPlugin($id);
 		}
 	}
-
 }

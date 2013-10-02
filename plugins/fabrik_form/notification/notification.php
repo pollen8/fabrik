@@ -23,7 +23,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormNotification extends PlgFabrik_Form
 {
-
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
@@ -50,15 +49,19 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$formModel = $this->getModel();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($user->get('id') == 0)
 		{
 			$this->html = JText::_('PLG_CRON_NOTIFICATION_SIGN_IN_TO_RECEIVE_NOTIFICATIONS');
+
 			return;
 		}
+
 		if ($params->get('send_mode') == '1')
 		{
 			return;
 		}
+
 		$opts = new stdClass;
 		$opts->listid = $formModel->getListModel()->getId();
 		$opts->formid = $formModel->getId();
@@ -67,12 +70,14 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$opts->senderBlock .= $formModel->getId();
 		$opts = json_encode($opts);
 		$id = uniqid('fabrik_notification');
+
 		if ($params->get('notification_ajax', 0) == 1)
 		{
 			$src[] = 'media/com_fabrik/js/fabrik.js';
 			$src[] = '/plugins/fabrik_form/notification/notify.js';
 			FabrikHelperHTML::script($src, "var notify = new Notify('$id', $opts);");
 		}
+
 		// See if the checkbox should be checked
 		$db = FabrikWorker::getDbo();
 		$ref = $this->getRef($formModel->getListModel()->getId());
@@ -112,6 +117,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$db = FabrikWorker::getDbo();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		return $db->quote($input->getInt('listid', $listid) . '.' . $input->getInt('formid', 0) . '.' . $input->get('rowid', '', 'string'));
 	}
 
@@ -140,26 +146,29 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 
 			if ($add)
 			{
-
 				$fields[] = 'reason = ' . $db->quote($why);
 				$query->insert('#__{package}_notification')->set($fields);
 				$db->setQuery($query);
 				$ok = true;
+
 				try
 				{
 					$db->execute();
 				}
 				catch (Exception $e)
 				{
-					$ok = false;
 					// Supress notice if duplicate
+					$ok = false;
 				}
+
 				if ($ok)
 				{
 					echo JText::_('PLG_CRON_NOTIFICATION_ADDED');
 				}
-				else {
-					echo "oho" . $db->getQuery();exit;
+				else
+				{
+					echo "oho" . $db->getQuery();
+					exit;
 				}
 			}
 			else
@@ -196,9 +205,11 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$params = $this->getParams();
+
 		if ($params->get('send_mode', 0) == 0)
 		{
 			$user = JFactory::getUser();
+
 			return $user->get('id') == 0 ? false : true;
 		}
 		else
@@ -206,6 +217,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			$triggerEl = $formModel->getElement($params->get('trigger'), true);
 			$trigger = $triggerEl->getFullName();
 			$data = $formModel->getData();
+
 			return JArrayHelper::getValue($data, $trigger) == $params->get('trigger_value') ? true : false;
 		}
 	}
@@ -223,10 +235,12 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$app = JFactory::getApplication();
 		$formModel = $this->getModel();
 		$input = $app->input;
+
 		if ($params->get('notification_ajax', 0) == 1)
 		{
 			return;
 		}
+
 		$user = JFactory::getUser();
 		$userid = $user->get('id');
 		$notify = $input->getInt('fabrik_notification', 0);
@@ -235,6 +249,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		{
 			return;
 		}
+
 		$rowId = $input->getString('rowid', '', 'string');
 		$why = $rowId == '' ? 'author' : 'editor';
 		$this->process($notify, $why);
@@ -253,6 +268,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 		$app->enqueueMessage($msg);
 		$query = $db->getQuery(true);
 		$fields = array('reference = ' . $ref, 'event = ' . $event, 'date_time = ' . $date);
+
 		if ($params->get('send_mode') == '0')
 		{
 			$fields[] = 'user_id = ' . (int) $userid;
@@ -265,6 +281,7 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			$sendTo = (array) $params->get('sendto');
 			$userids = $this->getUsersInGroups($sendTo);
 			$query->clear();
+
 			foreach ($userids as $userid)
 			{
 				$query->clear('set');
@@ -275,5 +292,4 @@ class PlgFabrik_FormNotification extends PlgFabrik_Form
 			}
 		}
 	}
-
 }

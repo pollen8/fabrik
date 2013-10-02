@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -55,10 +54,12 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 		$email = urldecode($email);
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
+
 		if ($allow_empty == '1' and empty($email))
 		{
 			return true;
 		}
+
 		// $$$ hugh - let's try using new helper func instead of rolling our own.
 		return FabrikWorker::isEmail($email);
 	}
@@ -74,7 +75,7 @@ class PlgFabrik_ValidationruleIsEmail extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isemail-allow_empty');
+
 		return $allow_empty == '1';
 	}
-
 }

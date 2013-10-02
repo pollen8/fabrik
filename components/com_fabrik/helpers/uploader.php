@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikUploader extends JObject
 {
-
 	/**
 	 * Form model
 	 *
@@ -56,9 +55,11 @@ class FabrikUploader extends JObject
 	public function upload()
 	{
 		$groups = $this->form->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				if ($elementModel->isUpload())
@@ -81,7 +82,7 @@ class FabrikUploader extends JObject
 	 * @return  bool  do we overwrite any existing files found at pathTo?
 	 */
 
-	function move($pathFrom, $pathTo, $overwrite = true)
+	public function move($pathFrom, $pathTo, $overwrite = true)
 	{
 		if (file_exists($pathTo))
 		{
@@ -99,6 +100,7 @@ class FabrikUploader extends JObject
 		{
 			$ok = rename($pathFrom, $pathTo);
 		}
+
 		return $ok;
 	}
 
@@ -130,7 +132,7 @@ class FabrikUploader extends JObject
 	 * @return  bool  true if files uploaded
 	 */
 
-	function check()
+	public function check()
 	{
 		if (isset($_FILES) and !empty($_FILES))
 		{
@@ -142,6 +144,7 @@ class FabrikUploader extends JObject
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -160,6 +163,7 @@ class FabrikUploader extends JObject
 		if (empty($file['name']))
 		{
 			$err = 'Please input a file for upload';
+
 			return false;
 		}
 
@@ -167,40 +171,47 @@ class FabrikUploader extends JObject
 		{
 			// Handle potential malicous attack
 			$err = JText::_('File has not been uploaded');
+
 			return false;
 		}
 
 		jimport('joomla.filesystem.file');
 		$format = JString::strtolower(JFile::getExt($file['name']));
-
 		$allowable = explode(',', JString::strtolower($params->get('ul_file_types')));
-
 		$format = FabrikString::ltrimword($format, '.');
 		$format2 = ".$format";
+
 		if (!in_array($format, $allowable) && !in_array($format2, $allowable))
 		{
 			$err = 'WARNFILETYPE';
+
 			return false;
 		}
 
 		$maxSize = (int) $params->get('upload_maxsize', 0);
+
 		if ($maxSize > 0 && (int) $file['size'] > $maxSize)
 		{
-			$err = 'zWARNFILETOOLARGE';
+			$err = 'WARNFILETOOLARGE';
+
 			return false;
 		}
+
 		$ignored = array();
 		$user = JFactory::getUser();
 		$imginfo = null;
+
 		if ($params->get('restrict_uploads', 1))
 		{
 			$images = explode(',', $params->get('image_extensions'));
+
 			if (in_array($format, $images))
 			{
 				// If its an image run it through getimagesize
 				if (($imginfo = getimagesize($file['tmp_name'])) === false)
 				{
 					$err = 'WARNINVALIDIMG';
+
 					return false;
 				}
 			}
@@ -219,15 +230,18 @@ class FabrikUploader extends JObject
 			'nosmartquotes', 'object', 'ol', 'optgroup', 'option', 'param', 'plaintext', 'pre', 'rt', 'ruby', 's', 'samp', 'script', 'select',
 			'server', 'shadow', 'sidebar', 'small', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea',
 			'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var', 'wbr', 'xml', 'xmp', '!DOCTYPE', '!--');
+
 		foreach ($html_tags as $tag)
 		{
 			// A tag is '<tagname ', so we need to add < and a space or '<tagname>'
 			if (JString::stristr($xss_check, '<' . $tag . ' ') || JString::stristr($xss_check, '<' . $tag . '>'))
 			{
 				$err = 'WARNIEXSS';
+
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -254,7 +268,7 @@ class FabrikUploader extends JObject
 			$version++;
 			$newFileName = self::incrementFileName($origFileName, $newFileName, $version);
 		}
+
 		return $newFileName;
 	}
-
 }

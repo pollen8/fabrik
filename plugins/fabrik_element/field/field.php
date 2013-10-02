@@ -23,7 +23,6 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_ElementField extends PlgFabrik_Element
 {
-
 	/**
 	 * Shows the data formatted for the list view
 	 *
@@ -38,19 +37,24 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$params = $this->getParams();
 		$data = FabrikWorker::JSONtoData($data, true);
 		$format = $params->get('text_format_string');
+
 		foreach ($data as &$d)
 		{
 			$d = $this->numberFormat($d);
+
 			if ($format != '')
 			{
 				$d = sprintf($format, $d);
 			}
+
 			if ($params->get('password') == "1")
 			{
 				$d = str_pad('', JString::strlen($d), '*');
 			}
+
 			$this->_guessLinkType($d, $thisRow, 0);
 		}
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -68,10 +72,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$params = $this->getParams();
 		$data = $this->numberFormat($data);
 		$format = $params->get('text_format_string');
+
 		if ($format != '')
 		{
 			$data = sprintf($format, $data);
 		}
+
 		return $data;
 	}
 
@@ -109,10 +115,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		 * _form_data was not set to no readonly value was returned
 		 * added little test to see if the data was actually an array before using it
 		 */
+
 		if (is_array($this->getFormModel()->data))
 		{
 			$data = $this->getFormModel()->data;
 		}
+
 		$value = $this->getValue($data, $repeatCounter);
 
 		/* $$$ hugh - if the form just failed validation, number formatted fields will already
@@ -123,19 +131,24 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			$value = $this->unNumberFormat($value);
 		}
+
 		$value = $this->numberFormat($value);
+
 		if (!$this->isEditable())
 		{
 			$this->_guessLinkType($value, $data, $repeatCounter);
 			$format = $params->get('text_format_string');
+
 			if ($format != '')
 			{
 				$value = sprintf($format, $value);
 			}
+
 			if ($params->get('password') == "1")
 			{
 				$value = str_pad('', JString::strlen($value), '*');
 			}
+
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
@@ -152,11 +165,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		{
 			$bits['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8', false);
 		}
+
 		$bits['class'] .= ' ' . $params->get('text_format');
+
 		if ($params->get('speech', 0))
 		{
 			$bits['x-webkit-speech'] = "x-webkit-speech";
 		}
+
 		return $this->buildInput('input', $bits);
 	}
 
@@ -174,10 +190,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$guessed = false;
+
 		if ($params->get('guess_linktype') == '1')
 		{
 			jimport('joomla.mail.helper');
 			$target = $this->guessLinkTarget();
+
 			if (FabrikWorker::isEmail($value))
 			{
 				$value = JHTML::_('email.cloak', $value);
@@ -207,6 +225,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$target = $params->get('link_target_options', 'default');
+
 		switch ($target)
 		{
 			default:
@@ -220,6 +239,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$str = ' rel="lightbox[]"';
 				break;
 		}
+
 		return $str;
 	}
 
@@ -235,6 +255,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbField', $id, $opts);
 	}
 
@@ -247,10 +268,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		switch ($p->get('text_format'))
 		{
 			case 'text':
@@ -265,6 +288,7 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 				$objtype = "DECIMAL(" . $total . "," . $p->get('decimal_length', 2) . ")";
 				break;
 		}
+
 		return $objtype;
 	}
 
@@ -281,19 +305,23 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$params = $this->getParams();
 		$return = array();
 		$size = (int) $this->getElement()->width;
+		$maxlength = (int) $params->get('maxlength');
+
 		if ($size !== 0)
 		{
 			$return['length'] = $size;
 		}
-		$maxlength = (int) $params->get('maxlength');
+
 		if ($maxlength === 0)
 		{
 			$maxlength = $size;
 		}
+
 		if ($params->get('textarea-showmax') && $maxlength !== 0)
 		{
 			$return['maxlength'] = $maxlength;
 		}
+
 		return $return;
 	}
 
@@ -325,12 +353,14 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 			{
 				$val[$k] = $this->_indStoreDatabaseFormat($v);
 			}
+
 			$val = implode(GROUPSPLITTER, $val);
 		}
 		else
 		{
 			$val = $this->_indStoreDatabaseFormat($val);
 		}
+
 		return $val;
 	}
 
@@ -360,10 +390,12 @@ class PlgFabrik_ElementField extends PlgFabrik_Element
 		$params = $this->getParams();
 		$classes = parent::getCellClass();
 		$format = $params->get('text_format');
+
 		if ($format == 'decimal' || $format == 'integer')
 		{
 			$classes .= ' ' . $format;
 		}
+
 		return $classes;
 	}
 }

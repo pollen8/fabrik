@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementCalc extends PlgFabrik_Element
 {
-
 	/**
 	 * This really does get just the default value (as defined in the element's settings)
 	 *
@@ -54,6 +53,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			*/
 			$this->default = $default;
 		}
+
 		return $this->default;
 	}
 
@@ -79,6 +79,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			unset($this->default);
 		}
+
 		/**
 		 *  $$$ hugh - don't think we want to do this here, otherwise calc gets run regardless of calc_on_save_only,
 		 *  it just won't get used if 'true'
@@ -90,6 +91,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		 *  which has had the calculation run on it.
 		 */
 		$task = JFactory::getApplication()->input->get('task', '');
+
 		if (!$params->get('calc_on_save_only', true) || $task == 'form.process' || $task == 'process')
 		{
 			// $default = $this->getDefaultValue($data, $repeatCounter);
@@ -97,6 +99,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 
 			// $$$ hugh need to remove repeated joined data which is not part of this repeatCount
 			$groupModel = $this->getGroup();
+
 			if ($groupModel->isJoin())
 			{
 				if ($groupModel->canRepeat())
@@ -111,23 +114,21 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					}
 				}
 			}
+
 			$this->setStoreDatabaseFormat($data);
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
 
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
-			if (FabrikHelperHTML::isDebug())
-			{
-				$res = eval($default);
-			}
-			else
-			{
-				$res = @eval($default);
-			}
+
+			$res = FabrikHelperHTML::isDebug() ? eval($default) : @eval($default);
 			FabrikWorker::logEval($res, 'Eval exception : ' . $this->getElement()->name . '::_getV() : ' . $default . ' : %s');
+
 			return $res;
 		}
+
 		$rawname = $name . '_raw';
+
 		if ($groupModel->isJoin())
 		{
 			if ($groupModel->canRepeat())
@@ -177,8 +178,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 					}
 				}
 			}
-
 		}
+
 		return $default;
 	}
 
@@ -198,6 +199,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		{
 			$this->defaults = array();
 		}
+
 		if (!array_key_exists($repeatCounter, $this->defaults))
 		{
 			$element = $this->getElement();
@@ -209,12 +211,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				FabrikWorker::getPluginManager()->runPlugins('onGetElementDefault', $formModel, 'form', $this);
 			}
+
 			if (is_array($element->default))
 			{
 				$element->default = implode(',', $element->default);
 			}
+
 			$this->defaults[$repeatCounter] = $element->default;
 		}
+
 		return $this->defaults[$repeatCounter];
 	}
 
@@ -232,7 +237,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$w = new FabrikWorker;
 		$form = $this->getForm();
-
 		$data = unserialize(serialize($form->formData));
 		$calc = $params->get('calc_calculation');
 		$group = $this->getGroup();
@@ -247,6 +251,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$rawkey = $key . '_raw';
 		$this->swapValuesForLabels($data);
 		$res = $this->_getV($data, $c);
+
 		// Create arrays for calc values as needed
 		if (is_array($data[$key]))
 		{
@@ -266,6 +271,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$data[$key] = array($data[$key]);
 			}
+
 			$data[$key][$c] = $res;
 		}
 
@@ -284,18 +290,22 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	protected function swapValuesForLabels(&$d)
 	{
 		$groups = $this->getForm()->getGroupsHiarachy();
+
 		foreach (array_keys($groups) as $gkey)
 		{
 			$group = $groups[$gkey];
 			$elementModels = $group->getPublishedElements();
+
 			for ($j = 0; $j < count($elementModels); $j++)
 			{
 				$elementModel = $elementModels[$j];
 				$elkey = $elementModel->getFullName(true, false);
 				$v = JArrayHelper::getValue($d, $elkey);
+
 				if (is_array($v))
 				{
 					$origdata = JArrayHelper::getValue($d, $elkey, array());
+
 					foreach (array_keys($v) as $x)
 					{
 						$origval = JArrayHelper::getValue($origdata, $x);
@@ -327,12 +337,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$params = $this->getParams();
 		$format = trim($params->get('calc_format_string'));
 		$element_data = $data;
+
 		if ($params->get('calc_on_save_only', 0))
 		{
 			if ($format != '')
 			{
 				$element_data = sprintf($format, $element_data);
 			}
+
 			return parent::preFormatFormJoins($element_data, $row);
 		}
 		else
@@ -344,10 +356,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			$data = JArrayHelper::fromObject($row);
 			$data['rowid'] = $data['__pk_val'];
 			$data['fabrik'] = $formModel->getId();
+
 			//  $$$ Paul - Because this is run on List rows before repeat-group merges, repeat group placeholders are OK.
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
 			$d = $data;
 			$cal = $listModel->parseMessageForRowHolder($cal, $data, true);
+
 			if (FabrikHelperHTML::isDebug())
 			{
 				$res = eval($cal);
@@ -356,15 +370,19 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$res = @eval($cal);
 			}
-			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : '. $cal .' : %s');
+
+			FabrikWorker::logEval($res, 'Eval exception : ' . $element->name . '::preFormatFormJoins() : ' . $cal . ' : %s');
+
 			if ($format != '')
 			{
 				$res = sprintf($format, $res);
 			}
+
 			// $$$ hugh - need to set _raw, might be needed if (say) calc is being used as 'use_as_row_class'
 			// See comments in formatData() in table model, we might could move this to a renderRawListData() method.
 			$raw_name = $this->getFullName(true, false) . '_raw';
 			$row->$raw_name = str_replace(GROUPSPLITTER, ',', $res);
+
 			return parent::preFormatFormJoins($res, $row);
 		}
 	}
@@ -384,6 +402,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$col = $this->getFullName(true, false);
 		$raw = $col . '_raw';
 		$thisRow->$raw = $val;
+
 		return $val;
 	}
 
@@ -403,13 +422,16 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$data = $this->getFormModel()->data;
 		$value = $this->getValue($data, $repeatCounter);
 		$format = $params->get('calc_format_string');
+
 		if ($format != '')
 		{
 			$value = sprintf($format, $value);
 		}
+
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$str = array();
+
 		if ($this->canView())
 		{
 			if (!$this->isEditable())
@@ -425,7 +447,8 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 				else
 				{
-					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id . '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
+					$str[] = '<textarea class="fabrikinput" disabled="disabled" name="' . $name . '" id="' . $id
+					. '" cols="' . $element->width . '" rows="' . $element->height . '">' . $value . '</textarea>';
 				}
 			}
 		}
@@ -434,8 +457,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			/* make a hidden field instead*/
 			$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		}
+
 		$opts = array('alt' => JText::_('PLG_ELEMENT_CALC_LOADING'), 'style' => 'display:none;padding-left:10px;', 'class' => 'loader');
 		$str[] = FabrikHelperHTML::image("ajax-loader.gif", 'form', @$this->tmpl, $opts);
+
 		return implode("\n", $str);
 	}
 
@@ -455,12 +480,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$calc = $params->get('calc_calculation');
 		$obs = preg_replace('#\s#', '', $params->get('calc_ajax_observe'));
 		$obs = explode(',', $obs);
+
 		if (preg_match_all("/{[^}\s]+}/i", $calc, $matches) !== 0)
 		{
 			$matches = $matches[0];
 			$obs = array_merge($obs, $matches);
 		}
+
 		$obs = array_unique($obs);
+
 		foreach ($obs as &$m)
 		{
 			$m = str_replace(array('{', '}'), '', $m);
@@ -468,9 +496,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			// $$$ hugh - we need to knock any _raw off, so JS can match actual element ID
 			$m = preg_replace('#_raw$#', '', $m);
 		}
+
 		$opts->ajax = $params->get('calc_ajax', 0) == 0 ? false : true;
 		$opts->observe = array_values($obs);
 		$opts->id = $this->id;
+
 		return array('FbCalc', $id, $opts);
 	}
 
@@ -490,8 +520,6 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$w = new FabrikWorker;
 		$filter = JFilterInput::getInstance();
 		$d = $filter->clean($_REQUEST, 'array');
-
-
 		$formModel = $this->getFormModel();
 		$formModel->addEncrytedVarsToArray($d);
 		$this->getFormModel()->data = $d;
@@ -502,14 +530,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		// $$$ hugh - trying to standardize on $data so scripts know where data is
 		$data = $d;
 		$calc = $w->parseMessageForPlaceHolder($calc, $d);
-		if (FabrikHelperHTML::isDebug())
-		{
-			$c = eval($calc);
-		}
-		else
-		{
-			$c = @eval($calc);
-		}
+		$c = FabrikHelperHTML::isDebug() ? eval($calc): @eval($calc);
 		$c = preg_replace('#(\/\*.*?\*\/)#', '', $c);
 		echo $c;
 	}
@@ -526,9 +547,11 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	{
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
+
 		foreach ($groups as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
@@ -564,12 +587,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
+
 		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
+
 			return "SELECT SEC_TO_TIME(SUM(TIME_TO_SEC($name))) AS value, $label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
@@ -594,12 +619,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
+
 		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
+
 			return "SELECT SEC_TO_TIME(AVG(TIME_TO_SEC($name))) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
@@ -624,12 +651,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$fields = $listModel->getDBFields($this->getTableName(), 'Field');
 		$name = $this->getElement()->name;
 		$field = JArrayHelper::getValue($fields, $name, false);
+
 		if ($field !== false && $field->Type == 'time')
 		{
 			$name = $this->getFullName(false, false);
 			$table = $listModel->getTable();
 			$joinSQL = $listModel->buildQueryJoin();
 			$whereSQL = $listModel->buildQueryWhere();
+
 			return "SELECT SEC_TO_TIME(TIME_TO_SEC($name)) AS value, $label AS label FROM " . $db->quoteName($table->db_table_name)
 				. " $joinSQL $whereSQL";
 		}
@@ -650,6 +679,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	public function getFormatString()
 	{
 		$params = $this->getParams();
+
 		return $params->get('calc_format_string');
 	}
 
@@ -671,6 +701,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$opts->formid = $this->getFormModel()->getId();
 		$opts->elid = $this->getElement()->id;
 		$opts = json_encode($opts);
+
 		return "new FbCalcList('$id', $opts);\n";
 	}
 
@@ -699,12 +730,14 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 		$store = (bool) $params->get('calc_on_save_only', 0);
 		$listRef = 'list_' . $listModel->getRenderContext() . '_row_';
 		$storeKey = $this->getElement()->name;
+
 		foreach ($data as $group)
 		{
 			foreach ($group as $row)
 			{
 				$key = $listRef . $row->__pk_val;
 				$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $row);
+
 				if (FabrikHelperHTML::isDebug())
 				{
 					$return->$key = eval($default);
@@ -713,6 +746,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				{
 					$return->$key = @eval($default);
 				}
+
 				if ($store)
 				{
 					$listModel->storeCell($row->__pk_val, $storeKey, $return->$key);
@@ -724,44 +758,45 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	}
 
 	/**
-	* Turn form value into email formatted value
-	* $$$ hugh - I added this as for reasons I don't understand, something to do with
-	* how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
-	* it's submitted to the database, but wrong during form email plugin processing.  So
-	* I gave up trying to work out why, and now just re-calc it during getEmailData()
-	*
-	* @param   mixed  $value          Element value
-	* @param   array  $data           Form data
-	* @param   int    $repeatCounter  Group repeat counter
-	*
-	* @return  string  email formatted value
-	*/
+	 * Turn form value into email formatted value
+	 * $$$ hugh - I added this as for reasons I don't understand, something to do with
+	 * how the value gets calc'ed durind preProcess, sometimes the calc is "right" when
+	 * it's submitted to the database, but wrong during form email plugin processing.  So
+	 * I gave up trying to work out why, and now just re-calc it during getEmailData()
+	 *
+	 * @param   mixed  $value          Element value
+	 * @param   array  $data           Form data
+	 * @param   int    $repeatCounter  Group repeat counter
+	 *
+	 * @return  string  email formatted value
+	 */
 
 	protected function getIndEmailValue($value, $data = array(), $repeatCounter = 0)
 	{
 		$params = $this->getParams();
+
 		if (!$params->get('calc_on_save_only', true))
 		{
 			$value = $this->_getV($data, $repeatCounter);
 		}
+
 		return $value;
 	}
 
 	/**
-	* Get database field description
-	* For calc, as we have no idea what they will be storing, needs to be TEXT.
-	*
-	* @return  string  db field type
-	*/
+	 * Get database field description
+	 * For calc, as we have no idea what they will be storing, needs to be TEXT.
+	 *
+	 * @return  string  db field type
+	 */
 
 	public function getFieldDescription()
 	{
-		$p = $this->getParams();
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		return "TEXT";
 	}
-
 }

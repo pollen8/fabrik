@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormJUser extends plgFabrik_Form
 {
-
 	/**
 	 * Name field
 	 *
@@ -68,17 +67,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	protected $blockfield = '';
 
 	/**
-	 * element model
-	 *
-	 * @var	object
-	 */
-	protected $_elementModel = null;
-
-	/**
 	 * Get an element name
 	 *
-	 * @param   string  $pname   Params property name to look up
-	 * @param   bool    $short   Short (true) or full (false) element name, default false/full
+	 * @param   string  $pname  Params property name to look up
+	 * @param   bool    $short  Short (true) or full (false) element name, default false/full
 	 *
 	 * @return	string	element full name
 	 */
@@ -86,11 +78,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	private function getFieldName($pname, $short = false)
 	{
 		$params = $this->getParams();
+
 		if ($params->get($pname) == '')
 		{
 			return '';
 		}
+
 		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
+
 		return $short ? $elementModel->getElement()->name : $elementModel->getFullName();
 	}
 
@@ -107,12 +102,15 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	private function getFieldValue($pname, $data, $default = '')
 	{
 		$params = $this->getParams();
+
 		if ($params->get($pname) == '')
 		{
 			return $default;
 		}
+
 		$elementModel = FabrikWorker::getPluginManager()->getElementPlugin($params->get($pname));
 		$name = $elementModel->getFullName(true, false);
+
 		return JArrayHelper::getValue($data, $name, $default);
 	}
 
@@ -126,6 +124,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	{
 		$params = $this->getParams();
 		$formModel = $this->getModel();
+
 		if ($params->get('synchro_users') == 1)
 		{
 			$app = JFactory::getApplication();
@@ -139,9 +138,9 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			// Is there already any record in our F! table Users
 			$fabrikDb->setQuery($query);
 			$count = (int) $fabrikDb->loadResult();
+
 			if ($count === 0)
 			{
-
 				try
 				{
 					// Load the list of users from #__users
@@ -163,11 +162,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$this->getFieldName('juser_field_password', true) => $o_user->password,
 							$this->getFieldName('juser_field_name', true) => $o_user->name,
 							$this->getFieldName('juser_field_username', true) => $o_user->username);
+
 						if (!FabrikWorker::j3())
 						{
 							$fields[$this->getFieldName('juser_field_usertype', true)] = $o_user->group_id;
 						}
+
 						$query->insert($tableName);
+
 						foreach ($fields as $key => $val)
 						{
 							$query->set($fabrikDb->quoteName($key) . ' = ' . $fabrikDb->quote($val));
@@ -177,6 +179,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$fabrikDb->execute();
 						$count++;
 					}
+
 					$app->enqueueMessage(JText::sprintf('PLG_FABRIK_FORM_JUSER_MSG_SYNC_OK', $count, $tableName));
 				}
 				catch (Exception $e)
@@ -206,9 +209,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				{
 					$userid = (int) JArrayHelper::getValue($userid, 0, 0);
 				}
+
 				if ($userid > 0)
 				{
 					$user = JFactory::getUser($userid);
+
 					if ($user->get('id') == $userid)
 					{
 						$this->namefield = $this->getFieldName('juser_field_name');
@@ -229,6 +234,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$groupElement = FabrikWorker::getPluginManager()->getElementPlugin($params->get('juser_field_usertype'));
 							$groupElementClass = get_class($groupElement);
 							$gid = $user->groups;
+
 							if ($groupElementClass !== 'plgFabrik_ElementUsergroup')
 							{
 								$gid = array_shift($gid);
@@ -238,6 +244,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$formModel->data[$this->gidfield] = $gid;
 							$formModel->data[$this->gidfield . '_raw'] = $gid;
 						}
+
 						if ($params->get('juser_field_block') != '')
 						{
 							$this->blockfield = $this->getFieldName('juser_field_block');
@@ -253,7 +260,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   array   &$groups  List data for deletion
+	 * @param   array  &$groups  List data for deletion
 	 *
 	 * @return	bool
 	 */
@@ -261,10 +268,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	public function onDeleteRowsForm(&$groups)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('juser_field_userid') != '' && $params->get('juser_delete_user', false))
 		{
 			$useridfield = $this->getFieldName('juser_field_userid');
 			$useridfield .= '_raw';
+
 			foreach ($groups as $group)
 			{
 				foreach ($group as $rows)
@@ -288,6 +297,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -325,6 +335,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		// Needed for shouldProcess...
 		$this->data = $this->getProcessData();
+
 		if (!$this->shouldProcess('juser_conditon', null))
 		{
 			return true;
@@ -347,6 +358,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		JSession::checkToken() or jexit('Invalid Token');
 		$option = $input->get('option');
 		$original_id = 0;
+
 		if ($params->get('juser_field_userid') != '')
 		{
 			$this->useridfield = $this->getFieldName('juser_field_userid');
@@ -360,8 +372,8 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			 * Going to try looking at orig data instead, don't know if that'll cause the issue outlined above
 			 * but have to do SOMETHING to fix this issue.
 			 */
-			//if (!empty($formModel->rowId))
-			//{
+			// if (!empty($formModel->rowId))
+			// {
 
 				if ($formModel->origDataIsEmpty())
 				{
@@ -377,7 +389,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$original_id = JArrayHelper::getValue($original_id, 0, 0);
 					}
 				}
-			//}
+			// }
 		}
 		else
 		{
@@ -395,8 +407,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		if ($isNew && $usersConfig->get('allowUserRegistration') == '0' && !$bypassRegistration)
 		{
 			throw new RuntimeException(JText::_('Access Forbidden - Registration not enabled'), 400);
+
 			return false;
 		}
+
 		$data = array();
 
 		$this->passwordfield = $this->getFieldName('juser_field_password');
@@ -420,6 +434,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$this->blockfield = $this->getFieldName('juser_field_block');
 			$blocked = JArrayHelper::getValue($formModel->formData, $this->blockfield, '');
+
 			if (is_array($blocked))
 			{
 				// Probably a dropdown
@@ -447,6 +462,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$data['email'] = $this->emailvalue;
 
 		$ok = $this->check($data);
+
 		if (!$ok)
 		{
 			// @TODO - add some error reporting
@@ -464,6 +480,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			// If user activation is turned on, we need to set the activation information
 			$useractivation = $usersConfig->get('useractivation');
+
 			if (($useractivation == '1' || $useractivation == '2') && !$bypassActivation)
 			{
 				jimport('joomla.user.helper');
@@ -480,6 +497,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 
 		// Check that username is not greater than 150 characters
 		$username = $data['username'];
+
 		if (strlen($username) > 150)
 		{
 			$username = JString::substr($username, 0, 150);
@@ -497,6 +515,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 			$app->enqueueMessage($user->getError(), 'error');
+
 			return false;
 		}
 
@@ -507,8 +526,10 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$app->enqueueMessage(JText::_('CANNOT SAVE THE USER INFORMATION'), 'message');
 			$app->enqueueMessage($user->getError(), 'error');
+
 			return false;
 		}
+
 		$session = JFactory::getSession();
 		$input->set('newuserid', $user->id);
 		$input->cookie->set('newuserid', $user->id);
@@ -522,6 +543,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		if ($params->get('juser_use_email_plugin') != 1)
 		{
 			$emailSubject = '';
+
 			if ($isNew)
 			{
 				// Compile the notification mail values.
@@ -571,7 +593,6 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				elseif ($params->get('juser_bypass_accountdetails') != 1)
 				{
 					$emailSubject = JText::sprintf('COM_USERS_EMAIL_ACCOUNT_DETAILS', $data['name'], $data['sitename']);
-
 					$emailBody = JText::sprintf('COM_USERS_EMAIL_REGISTERED_BODY', $data['name'], $data['sitename'], $data['siteurl']);
 				}
 
@@ -579,50 +600,11 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				if ($emailSubject !== '')
 				{
 					$return = $mail->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
-
-					$db = JFactory::getDBO();
+					$db = JFactory::getDbo();
 					/*
 					 * Added email to admin code, but haven't had a chance to test it yet.
 					 */
-					/*
-					// Send Notification mail to administrators
-					if (($usersConfig->get('useractivation') < 2) && ($usersConfig->get('mail_to_admin') == 1))
-					{
-					    $emailSubject = JText::sprintf(
-						'COM_USERS_EMAIL_ACCOUNT_DETAILS',
-						$data['name'],
-						$data['sitename']
-					    );
-
-					    $emailBodyAdmin = JText::sprintf(
-						'COM_USERS_EMAIL_REGISTERED_NOTIFICATION_TO_ADMIN_BODY',
-						$data['name'],
-						$data['username'],
-						$data['siteurl']
-					    );
-
-					    // Get all admin users
-					    $query = 'SELECT name, email, sendEmail' .
-						' FROM #__users' .
-						' WHERE sendEmail=1';
-
-					    $db->setQuery($query);
-					    $rows = $db->loadObjectList();
-
-					    // Send mail to all superadministrators id
-					    foreach ($rows as $row)
-					    {
-						$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
-
-						// Check for an error.
-						if ($return !== true)
-						{
-						    // $$$ hugh - should probably log this rather than enqueue it
-						    $app->enqueueMessage(JText::_('COM_USERS_REGISTRATION_ACTIVATION_NOTIFY_SEND_MAIL_FAILED'));
-						}
-					    }
-					}
-					 */
+					// $this->emailToAdmin($data);
 
 					// Check for an error.
 					if ($return !== true)
@@ -634,6 +616,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 						$query->select('id')->from('#__users')->where('block = 0 AND sendEmail = 1');
 						$db->setQuery($query);
 						$sendEmail = $db->loadColumn();
+
 						if (count($sendEmail) > 0)
 						{
 							$jdate = new JDate;
@@ -642,13 +625,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 							$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
 										VALUES ";
 							$messages = array();
+
 							foreach ($sendEmail as $userid)
 							{
 								$messages[] = "(" . $userid . ", " . $userid . ", '" . $jdate->toSql() . "', "
 									. $db->quote(JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')) . ", "
 									. $db->quote(JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])) . ")";
-
 							}
+
 							$q .= implode(',', $messages);
 							$db->setQuery($q);
 							$db->execute();
@@ -678,13 +662,67 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		    $user->set('usertype', $grp->name);
 		    $session->set('user', $user);
 		} */
+
 		if (!empty($this->useridfield))
 		{
 			$formModel->updateFormData($this->useridfield, $user->get('id'), true, true);
 		}
+
 		if ($ftable == $jos_users)
 		{
 			$formModel->rowId = $user->get('id');
+		}
+	}
+
+	/**
+	 * Email to admin
+	 *
+	 * @param   array  $data  Form data
+	 *
+	 * @return  void
+	 */
+	protected function emailToAdmin($data)
+	{
+		$usersConfig = JComponentHelper::getParams('com_users');
+		$app = JFactory::getApplication();
+		$db = JFactory::getDbo();
+
+		// Send Notification mail to administrators
+		if (($usersConfig->get('useractivation') < 2) && ($usersConfig->get('mail_to_admin') == 1))
+		{
+			$emailSubject = JText::sprintf(
+				'COM_USERS_EMAIL_ACCOUNT_DETAILS',
+				$data['name'],
+				$data['sitename']
+			);
+
+			$emailBodyAdmin = JText::sprintf(
+				'COM_USERS_EMAIL_REGISTERED_NOTIFICATION_TO_ADMIN_BODY',
+				$data['name'],
+				$data['username'],
+				$data['siteurl']
+			);
+
+			// Get all admin users
+			$query = 'SELECT name, email, sendEmail' .
+				' FROM #__users' .
+				' WHERE sendEmail=1';
+
+			$db->setQuery($query);
+			$rows = $db->loadObjectList();
+
+			// Send mail to all superadministrators id
+			foreach ($rows as $row)
+			{
+				$return = JFactory::getMailer()->sendMail($data['mailfrom'], $data['fromname'], $row->email, $emailSubject, $emailBodyAdmin);
+
+				// Check for an error.
+				if ($return !== true)
+				{
+					// $$$ hugh - should probably log this rather than enqueue it
+					$app->enqueueMessage(JText::_('COM_USERS_REGISTRATION_ACTIVATION_NOTIFY_SEND_MAIL_FAILED'));
+				}
+			}
 		}
 	}
 
@@ -711,11 +749,14 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		{
 			$groupIds = JArrayHelper::fromObject($groupIds[0]);
 		}
+
 		JArrayHelper::toInteger($groupIds);
 		$data = array();
+
 		if (!$isNew)
 		{
 			$authLevels = $me->getAuthorisedGroups();
+
 			if ($params->get('juser_field_usertype') != '')
 			{
 				foreach ($groupIds as $groupId)
@@ -754,6 +795,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 				$data = (array) $defaultGroup;
 			}
 		}
+
 		return $data;
 	}
 
@@ -768,10 +810,12 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	{
 		$params = $this->getParams();
 		$user = JFactory::getUser();
+
 		if ((int) $user->get('id') !== 0)
 		{
 			return;
 		}
+
 		if ($params->get('juser_auto_login', false))
 		{
 			$this->autoLogin();
@@ -820,14 +864,17 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$session = JFactory::getSession();
 		$context = 'com_' . $package . '.form.' . $formModel->getId() . '.juser.';
 		$w = new FabrikWorker;
+
 		if (!JError::isError($error))
 		{
 			$session->set($context . 'created', true);
+
 			return true;
 		}
 		else
 		{
 			$session->set($context . 'created', false);
+
 			return false;
 		}
 	}
@@ -835,7 +882,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	/**
 	 * Check if the submitted details are ok
 	 *
-	 * @param   array   $post  Posted data
+	 * @param   array  $post  Posted data
 	 *
 	 * @return	bool
 	 */
@@ -877,6 +924,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			$ok = false;
 		}
+
 		if (empty($post['password']))
 		{
 			if ($userId === 0)
@@ -899,6 +947,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$query->select('COUNT(*)')->from('#__users')->where('username = ' . $db->quote($post['username']))->where('id != ' . (int) $userId);
 		$db->setQuery($query);
 		$xid = (int) $db->loadResult();
+
 		if ($xid > 0)
 		{
 			$this->raiseError($formModel->errors, $this->usernamefield, JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
@@ -910,11 +959,13 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 		$query->select('COUNT(*)')->from('#__users')->where('email = ' . $db->quote($post['email']))->where('id != ' . (int) $userId);
 		$db->setQuery($query);
 		$xid = (int) $db->loadResult();
+
 		if ($xid > 0)
 		{
 			$this->raiseError($formModel->errors, $this->emailfield, JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
 			$ok = false;
 		}
+
 		return $ok;
 	}
 
@@ -931,6 +982,7 @@ class PlgFabrik_FormJUser extends plgFabrik_Form
 	protected function raiseError(&$err, $field, $msg)
 	{
 		$app = JFactory::getApplication();
+
 		if ($app->isAdmin())
 		{
 			$app->enqueueMessage($msg, 'notice');

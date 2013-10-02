@@ -23,9 +23,9 @@ defined('_JEXEC') or die('Restricted access');
  * You are responsible for grabbing any other parameters, using:
  *
  *  $app = JFactory::getApplication();
-    $input = $app->input;
-    $input->get('variablename'),
-
+ *   $input = $app->input;
+ *   $input->get('variablename'),
+ *
  * as per the $myUsername exmaple in userExists() below.
  *
  * The userExists() example is designed to test if a username given in a text element
@@ -103,10 +103,12 @@ class UserAjax
 		$query->select('name')->from('#__users')->where('username = ' . $db->quote($myUsername));
 		$db->setQuery($query, 1, 0);
 		$result = $db->loadResult();
+
 		if ($thisName = $result)
 		{
 			$retStr = "The username $myUsername is already in use by $thisName";
 		}
+
 		echo $retStr;
 	}
 }

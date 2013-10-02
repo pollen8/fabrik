@@ -23,7 +23,6 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_Cron extends FabrikPlugin
 {
-
 	/**
 	 * Plugin item
 	 *
@@ -55,6 +54,7 @@ class PlgFabrik_Cron extends FabrikPlugin
 			$row->load($this->id);
 			$this->row = $row;
 		}
+
 		return $this->row;
 	}
 
@@ -93,11 +93,13 @@ class PlgFabrik_Cron extends FabrikPlugin
 	{
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
+
 		if (!$params->get('require_qs', false))
 		{
 			// Querystring not required so plugin should be activated
 			return true;
 		}
+
 		return $app->input->getInt('fabrik_cron', 0);
 	}
 }

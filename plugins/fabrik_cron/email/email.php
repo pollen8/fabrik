@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class PlgFabrik_Cronemail extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the plugin
 	 *
@@ -63,6 +62,7 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 		$condition = $params->get('cronemail_condition', '');
 		$updates = array();
 		$this->log = '';
+
 		foreach ($data as $group)
 		{
 			if (is_array($group))
@@ -72,23 +72,29 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 					if (!empty($condition))
 					{
 						$this_condition = $w->parseMessageForPlaceHolder($condition, $row);
+
 						if (eval($this_condition) === false)
 						{
 							continue;
 						}
 					}
+
 					$row = JArrayHelper::fromObject($row);
 					$thisto = $w->parseMessageForPlaceHolder($to, $row);
+
 					if (FabrikWorker::isEmail($thisto))
 					{
 						$thismsg = $w->parseMessageForPlaceHolder($msg, $row);
+
 						if ($eval)
 						{
 							$thismsg = eval($thismsg);
 						}
+
 						$thissubject = $w->parseMessageForPlaceHolder($subject, $row);
 						$mail = JFactory::getMailer();
 						$res = $mail->sendMail($MailFrom, $FromName, $thisto, $thissubject, $thismsg, true);
+
 						if (!$res)
 						{
 							$this->log .= "\n failed sending to $thisto";
@@ -98,12 +104,14 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 					{
 						$this->log .= "\n $thisto is not an email address";
 					}
-					$updates[] = $row['__pk_val'];
 
+					$updates[] = $row['__pk_val'];
 				}
 			}
 		}
+
 		$field = $params->get('cronemail-updatefield');
+
 		if (!empty($updates) && trim($field) != '')
 		{
 			// Do any update found
@@ -113,10 +121,12 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			$connection = $params->get('connection');
 			$field = $params->get('cronemail-updatefield');
 			$value = $params->get('cronemail-updatefield-value');
+
 			if ($params->get('cronemail-updatefield-eval', '0') == '1')
 			{
 				$value = @eval($value);
 			}
+
 			$field = str_replace('___', '.', $field);
 			$fabrikDb = $listModel->getDb();
 			$query = $fabrikDb->getQuery(true);
@@ -126,8 +136,9 @@ class PlgFabrik_Cronemail extends PlgFabrik_Cron
 			$fabrikDb->setQuery($query);
 			$fabrikDb->execute();
 		}
+
 		$this->log .= "\n updates " . count($updates) . " records";
+
 		return count($updates);
 	}
-
 }

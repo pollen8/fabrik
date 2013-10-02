@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementRating extends PlgFabrik_Element
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -83,10 +82,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$formid = $this->getFormModel()->getId();
 		$listid = $this->getListModel()->getId();
 		$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
+
 		if ($params->get('rating-mode') !== 'creator-rating')
 		{
 			list($data, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id);
 		}
+
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$user = JFactory::getUser();
@@ -95,6 +96,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$colData = $this->getListModel()->getData();
 		$ids = JArrayHelper::getColumn($colData, '__pk_val');
 		$canRate = $this->canRate($row_id, $ids);
+
 		for ($i = 0; $i < count($data); $i++)
 		{
 			$avg = $this->_renderListData($data[$i], $thisRow);
@@ -103,6 +105,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$css = $canRate ? 'cursor:pointer;' : '';
 			$str = array();
 			$str[] = '<div style="width:101px;position:relative;">';
+
 			for ($s = 0; $s < $avg; $s++)
 			{
 				$r = $s + 1;
@@ -111,6 +114,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 				$img = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
 				$str[] = $a . $img . $a2;
 			}
+
 			for ($s = $avg; $s < 5; $s++)
 			{
 				$r = $s + 1;
@@ -120,14 +124,18 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 				$str[] = $a . $img . $a2;
 			}
+
 			if ($params->get('rating-mode') != 'creator-rating')
 			{
 				$str[] = '<div class="ratingMessage">' . $avg . '</div>';
 			}
+
 			$str[] = '</div>';
 			$data[$i] = implode("\n", $str);
 		}
+
 		$data = json_encode($data);
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -143,6 +151,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	private function _renderListData($data, $thisRow)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			return $data;
@@ -155,6 +164,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$ids = JArrayHelper::getColumn($this->getListModel()->getData(), '__pk_val');
 			$row_id = isset($thisRow->__pk_val) ? $thisRow->__pk_val : $thisRow->id;
 			list($avg, $total) = $this->getRatingAverage($data, $listid, $formid, $row_id, $ids);
+
 			return $avg;
 		}
 	}
@@ -177,6 +187,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			$ids[] = $row_id;
 		}
+
 		if (!isset($this->avgs))
 		{
 			JArrayHelper::toInteger($ids);
@@ -192,11 +203,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$db->setQuery($query);
 			$this->avgs = (array) $db->loadObjectList('row_id');
 		}
+
 		$params = $this->getParams();
 		$r = array_key_exists($row_id, $this->avgs) ? $this->avgs[$row_id]->r : 0;
 		$t = array_key_exists($row_id, $this->avgs) ? $this->avgs[$row_id]->total : 0;
 		$float = (int) $params->get('rating_float', 0);
 		$this->avg = number_format($r, $float);
+
 		return array(round($r), $t);
 	}
 
@@ -219,6 +232,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			{
 				$ids[] = $row_id;
 			}
+
 			JArrayHelper::toInteger($ids);
 			$db = FabrikWorker::getDbo(true);
 			$elementid = $this->getElement()->id;
@@ -231,6 +245,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$db->setQuery($query);
 			$this->creatorIds = $db->loadObjectList('row_id');
 		}
+
 		return array_key_exists($row_id, $this->creatorIds) ? $this->creatorIds[$row_id]->user_id : 0;
 	}
 
@@ -261,21 +276,26 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	{
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
+
 		if ($params->get('rating-mode') == 'user-rating')
 		{
 			$this->canRate = true;
+
 			return true;
 		}
+
 		if (is_null($row_id))
 		{
 			$row_id = $app->input->get('rowid', '', 'string');
 		}
+
 		$list = $this->getListModel()->getTable();
 		$listid = $list->id;
 		$formid = $list->form_id;
 		$creatorid = $this->getCreatorId($listid, $formid, $row_id, $ids);
 		$userid = $this->getStoreUserId($listid, $row_id);
 		$this->canRate = ($creatorid == $userid || $row_id == 0);
+
 		return $this->canRate;
 	}
 
@@ -295,10 +315,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$name = $this->getHTMLName($repeatCounter);
 		$id = $this->getHTMLId($repeatCounter);
 		$params = $this->getParams();
+
 		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
 			return JText::_('PLG_ELEMENT_RATING_ONLY_ACCESSIBLE_IN_DETALS_VIEW');
 		}
+
 		$element = $this->getElement();
 		$css = $this->canRate() ? 'cursor:pointer;' : '';
 		$value = $this->getValue($data, $repeatCounter);
@@ -308,13 +330,16 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$str[] = '<div id="' . $id . '_div" class="fabrikSubElementContainer">';
 		$imgOpts = array('icon-class' => 'small', 'style' => $css, 'data-rating' => -1);
 		$clearImg = FabrikHelperHTML::image('remove.png', 'list', @$this->tmpl, $imgOpts);
+
 		if ($params->get('rating-nonefirst') && $this->canRate())
 		{
 			$str[] = $clearImg;
 		}
+
 		$listid = $this->getlistModel()->getTable()->id;
 		$formid = $input->getInt('formid');
 		$row_id = $this->getFormModel()->getRowId();
+
 		if ($params->get('rating-mode') == 'creator-rating')
 		{
 			$avg = $value;
@@ -324,12 +349,15 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			list($avg, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
 		}
+
 		$imgOpts = array('icon-class' => 'starRating', 'style' => $css);
+
 		for ($s = 0; $s < $avg; $s++)
 		{
 			$imgOpts['data-rating'] = $s + 1;
 			$str[] = FabrikHelperHTML::image("star.png", 'list', @$this->tmpl, $imgOpts);
 		}
+
 		for ($s = $avg; $s < 5; $s++)
 		{
 			$imgOpts['data-rating'] = $s + 1;
@@ -340,11 +368,13 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			$str[] = $clearImg;
 		}
+
 		$str[] = '<span class="ratingScore badge badge-info">' . $this->avg . '</span>';
 		$str[] = '<div class="ratingMessage">';
 		$str[] = '</div>';
 		$str[] = '<input type="hidden" name="' . $name . '" id="' . $id . '" value="' . $value . '" />';
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -365,10 +395,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$listid = $input->getInt('listid');
 		$formid = $input->getInt('formid');
 		$row_id = $input->get('rowid', '', 'string');
+
 		if ($params->get('rating-mode') == 'user-rating')
 		{
 			list($val, $total) = $this->getRatingAverage($val, $listid, $formid, $row_id);
 		}
+
 		return $val;
 	}
 
@@ -405,6 +437,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			$db->setQuery($query);
 			$db->execute();
 		}
+
 		$this->getRatingAverage('', $listid, $formid, $row_id);
 		echo $this->avg;
 	}
@@ -422,6 +455,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	{
 		$cookieName = "rating-table_{$listid}_row_{$row_id}" . $_SERVER['REMOTE_ADDR'];
 		jimport('joomla.utilities.utility');
+
 		return JApplication::getHash($cookieName);
 	}
 
@@ -500,6 +534,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$userid = (int) $user->get('id');
+
 		if ($userid === 0)
 		{
 			$hash = $this->getCookieName($listid, $row_id);
@@ -509,6 +544,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 			setcookie($hash, '1', $lifetime, '/');
 			$userid = $hash;
 		}
+
 		return $userid;
 	}
 
@@ -526,10 +562,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$input = $app->input;
 		$user = JFactory::getUser();
 		$params = $this->getParams();
+
 		if ($input->get('view') == 'form' && $params->get('rating-rate-in-form', true) == 0)
 		{
 			return;
 		}
+
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$data = $this->getFormModel()->data;
@@ -537,6 +575,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$formid = $input->getInt('formid');
 		$row_id = $input->get('rowid', '', 'string');
 		$value = $this->getValue($data, $repeatCounter);
+
 		if ($params->get('rating-mode') != 'creator-rating')
 		{
 			list($value, $total) = $this->getRatingAverage($value, $listid, $formid, $row_id);
@@ -556,6 +595,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->view = $input->get('view');
 		$opts->rating = $value;
 		JText::script('PLG_ELEMENT_RATING_NO_RATING');
+
 		return array('FbRating', $id, $opts);
 	}
 
@@ -585,6 +625,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$opts->userid = (int) $user->get('id');
 		$opts->mode = $params->get('rating-mode');
 		$opts = json_encode($opts);
+
 		return "new FbRatingList('$id', $opts);\n";
 	}
 
@@ -606,10 +647,12 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$params = $this->getParams();
 		$filter_build = $params->get('filter_build_method', 0);
+
 		if ($filter_build == 0)
 		{
 			$filter_build = $usersConfig->get('filter_build_method');
 		}
+
 		if ($filter_build == 2)
 		{
 			return $this->filterValueList_All($normal, $tableName, $label, $id, $incjoin);
@@ -639,6 +682,7 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 		{
 			$return[] = JHTML::_('select.option', $i);
 		}
+
 		return $return;
 	}
 
@@ -655,11 +699,9 @@ class PlgFabrik_ElementRating extends PlgFabrik_Element
 
 	public function formJavascriptClass(&$srcs, $script = '', &$shim = array())
 	{
-
 		$s = new stdClass;
 		$s->deps = array('fab/elementlist');
 		$shim['element/rating/rating'] = $s;
-
 		parent::formJavascriptClass($srcs, $script, $shim);
 	}
 }

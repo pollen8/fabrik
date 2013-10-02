@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/databasejoin/databasejoin.php
 
 class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 {
-
 	/**
 	 * Last row id to be inserted via ajax call
 	 *
@@ -46,6 +45,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->rowid = $this->getFormModel()->getRowId();
 		$opts->id = $this->id;
+
 		return array('FbNotes', $id, $opts);
 	}
 
@@ -69,12 +69,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$str[] = '<div id="' . $id . '">';
 		$str[] = '<div style="overflow:auto;height:150px;" class=""><ul>';
 		$i = 0;
+
 		foreach ($tmp as $row)
 		{
 			$txt = $this->getDisplayLabel($row);
 			$str[] = '<li class="oddRow' . $i . '">' . $txt . '</li>';
 			$i = 1 - $i;
 		}
+
 		$str[] = '</ul></div>';
 		$str[] = '<div class="noteHandle" style="height:3px;"></div>';
 
@@ -89,13 +91,16 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			{
 				$str[] = '<textarea class="fabrikinput inputbox text" name="' . $name . '" cols="50" rows="3" /></textarea>';
 			}
+
 			$str[] = '<input type="button" class="button" value="' . JText::_('PLG_ELEMENT_NOTES_ADD') . '"></input>';
 		}
 		else
 		{
 			$str[] = JText::_('PLG_ELEMENT_NOTES_SAVEFIRST');
 		}
+
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -109,6 +114,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 	protected function getDisplayLabel($row)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('showuser', true))
 		{
 			$txt = $this->getUserNameLinked($row) . ' ' . $row->text;
@@ -117,6 +123,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			$txt = $row->text;
 		}
+
 		return $txt;
 	}
 
@@ -136,6 +143,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 				return '<a href="index.php?option=com_uddeim&task=new&recip=' . $row->userid . '">' . $row->username . '</a> ';
 			}
 		}
+
 		return '';
 	}
 
@@ -152,6 +160,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			$this->components = array();
 		}
+
 		if (!array_key_exists($c, $this->components))
 		{
 			$db = JFactory::getDbo();
@@ -161,6 +170,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			$found = $db->loadResult();
 			$this->components[$c] = $found;
 		}
+
 		return $this->components[$c];
 	}
 
@@ -203,14 +213,17 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		{
 			$where[] = $db->quoteName($fk) . ' = ' . $rowid;
 		}
+
 		if ($this->loadRow != '')
 		{
 			$pk = $db->quoteName($this->getJoin()->table_join_alias . '.' . $params->get('join_key_column'));
 			$where[] = $pk . ' = ' . $this->loadRow;
 		}
+
 		if ($query)
 		{
 			$query->where(implode(' OR ', $where));
+
 			return $query;
 		}
 		else
@@ -233,6 +246,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$params = $this->getParams();
 		$db = $this->getDb();
 		$orderBy = $params->get('notes_order_element');
+
 		if ($orderBy == '')
 		{
 			return $query ? $query : '';
@@ -240,11 +254,14 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		else
 		{
 			$order = $db->quoteName($orderBy) . ' ' . $params->get('notes_order_dir', 'ASC');
+
 			if ($query)
 			{
 				$query->order($order);
+
 				return $query;
 			}
+
 			return " ORDER BY " . $order;
 		}
 	}
@@ -262,15 +279,18 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$fields = '';
 		$db = $this->getDb();
 		$params = $this->getParams();
+
 		if ($params->get('showuser', true))
 		{
 			$user = $params->get('userid', '');
+
 			if ($user !== '')
 			{
 				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
 				$fields .= ',' . $tbl . '.' . $db->quoteName($user) . 'AS userid, u.name AS username';
 			}
 		}
+
 		return $fields;
 	}
 
@@ -289,15 +309,18 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		$join = '';
 		$db = $this->getDb();
 		$params = $this->getParams();
+
 		if ($params->get('showuser', true))
 		{
 			$user = $params->get('userid', '');
+
 			if ($user !== '')
 			{
 				$tbl = $db->quoteName($this->getJoin()->table_join_alias);
+
 				if (!$query)
 				{
-				$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user);
+					$join .= ' LEFT JOIN #__users AS u ON u.id = ' . $tbl . '.' . $db->quoteName($user);
 				}
 				else
 				{
@@ -305,6 +328,7 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 				}
 			}
 		}
+
 		return $query ? $query : $join;
 	}
 
@@ -346,27 +370,21 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 		if ($rowid !== '')
 		{
 			$query->insert($table)->set($col . ' = ' . $v);
-
-			// Jaanus - commented the $field related code out as it doesn't seem to have sense and it generated "ajax failed" error in submission when where element was selected
-
-			/*$field = $params->get('notes_where_element', '');
-			if ($field !== '') {
-			    $query->set($db->quoteName($field) . ' = ' . $db->quote($params->get('notes_where_value')));
-			}
-			 */
 			$user = $params->get('userid', '');
+
 			if ($user !== '')
 			{
 				$query->set($db->quoteName($user) . ' = ' . (int) JFactory::getUser()->get('id'));
 			}
 
 			$fk = $params->get('join_fk_column', '');
+
 			if ($fk !== '')
 			{
 				$query->set($db->quoteName($fk) . ' = ' . $db->quote($input->get('rowid')));
 			}
-			$db->setQuery($query);
 
+			$db->setQuery($query);
 			$db->execute();
 			$this->loadRow = $db->quote($db->insertid());
 			$opts = $this->_getOptions();
@@ -377,5 +395,4 @@ class PlgFabrik_ElementNotes extends PlgFabrik_ElementDatabasejoin
 			echo json_encode($return);
 		}
 	}
-
 }

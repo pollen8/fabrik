@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,10 +47,12 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$elementModel = $this->elementModel;
 		$formdata = $elementModel->getForm()->formData;
 		$cond = $params->get('isgreaterorlessthan-greaterthan');
+
 		switch ($cond)
 		{
 			case '0':
@@ -71,14 +72,18 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 				$cond = '==';
 				break;
 		}
+
 		$otherElementModel = $this->getOtherElement();
 		$otherFullName = $otherElementModel->getFullName(true, false);
 		$compare = $otherElementModel->getValue($formdata, $repeatCounter);
+
 		if ($this->allowEmpty() && ($data === '' || $compare === ''))
 		{
 			return true;
 		}
+
 		$res = $elementModel->greaterOrLessThan($data, $cond, $compare);
+
 		return $res;
 	}
 
@@ -93,6 +98,7 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isgreaterorlessthan-allow_empty');
+
 		return $allow_empty == '1';
 	}
 
@@ -106,7 +112,7 @@ class PlgFabrik_ValidationruleIsgreaterorlessthan extends PlgFabrik_Validationru
 	{
 		$params = $this->getParams();
 		$otherfield = $params->get('isgreaterorlessthan-comparewith');
+
 		return FabrikWorker::getPluginManager()->getElementPlugin($otherfield);
 	}
-
 }

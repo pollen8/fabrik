@@ -1,8 +1,9 @@
 <?php
 /**
- * Plugin element to render fields
- * @package fabrikar
- * @author Rob Clayburn
+ * Fileupload plugin element to render mp4 file types
+ *
+ * @package     Joomla.Plugin
+ * @subpackage  Fabrik.element.fileupload
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */

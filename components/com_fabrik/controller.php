@@ -25,7 +25,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikController extends JControllerLegacy
 {
-
 	/**
 	 * Is the controller inside a content plug-in
 	 *
@@ -49,14 +48,17 @@ class FabrikController extends JControllerLegacy
 
 		// Menu links use fabriklayout parameters rather than layout
 		$flayout = $input->get('fabriklayout');
+
 		if ($flayout != '')
 		{
 			$input->set('layout', $flayout);
 		}
+
 		$document = JFactory::getDocument();
 
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
+
 		if ($viewName == 'emailform')
 		{
 			$modelName = 'form';
@@ -80,11 +82,14 @@ class FabrikController extends JControllerLegacy
 		}
 
 		// Display the view
+
 		$view->error = $this->getError();
+
 		if (($viewName = 'form' || $viewName = 'details'))
 		{
 			$cachable = true;
 		}
+
 		$user = JFactory::getUser();
 
 		if ($viewType != 'feed' && !$this->isMambot && $user->get('id') == 0)
@@ -97,5 +102,4 @@ class FabrikController extends JControllerLegacy
 			return $view->display();
 		}
 	}
-
 }

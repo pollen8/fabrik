@@ -17,11 +17,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.form.sms
  * @since       3.0
-*/
+ */
 
 class Textopoly extends JObject
 {
-
 	/**
 	 * URL To Post SMS to
 	 *
@@ -45,6 +44,7 @@ class Textopoly extends JObject
 		$smsto = $params->get('sms-to');
 		$smsfrom  = $params->get('sms-from');
 		$smstos = explode(",", $smsto);
+
 		foreach ($smstos as $smsto)
 		{
 			$url = sprintf($this->url, $username, $password, $smsfrom, $smsto, $message);
@@ -62,5 +62,4 @@ class Textopoly extends JObject
 	{
 		return $this->params;
 	}
-
 }

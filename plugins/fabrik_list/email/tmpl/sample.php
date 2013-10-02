@@ -13,17 +13,21 @@ defined('_JEXEC') or die('Restricted access');
 
 $this->filepath = "foo";
 $formModel = $model->getFormModel();
+
 foreach ($row as $name => $value)
 {
 	if (preg_match('#_raw$#', $name))
 	{
 		continue;
 	}
+
 	$elementModel = $formModel->getElement($name);
+
 	if (empty($elementModel))
 	{
 		continue;
 	}
+
 	$element = $elementModel->getElement();
 	$label = $element->label;
 	$fval = $elementModel->renderTableData($val, $row);

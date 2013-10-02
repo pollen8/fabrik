@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,12 +47,15 @@ class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
+
 		if ($allow_empty == '1' and empty($data))
 		{
 			return true;
 		}
+
 		return is_numeric($this->elementModel->unNumberFormat($data));
 	}
 
@@ -68,6 +70,7 @@ class PlgFabrik_ValidationruleIsNumeric extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$allow_empty = $params->get('isnumeric-allow_empty');
+
 		return $allow_empty == '1';
 	}
 }

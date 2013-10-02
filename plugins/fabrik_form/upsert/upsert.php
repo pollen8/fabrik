@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormUpsert extends plgFabrik_Form
 {
-
 	/**
 	 * Database driver
 	 *
@@ -45,7 +44,6 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		$formModel = $this->getModel();
 		$db = $this->getDb();
 		$query = $db->getQuery(true);
-
 		$this->data = $this->getProcessData();
 
 		$table = $this->getTableName();
@@ -56,12 +54,13 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		// Used for updating previously added records. Need previous pk val to ensure new records are still created.
 		$origData = $formModel->getOrigData();
 		$origData = JArrayHelper::getValue($origData, 0, new stdClass);
+
 		if (isset($origData->__pk_val))
 		{
 			$this->data['origid'] = $origData->__pk_val;
 		}
-		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
 
+		$rowid = $w->parseMessageForPlaceholder($rowid, $this->data, false);
 		$fields = $this->upsertData();
 		$query->set($fields);
 
@@ -73,8 +72,10 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		{
 			$query->update($table)->where($pk . ' = ' . $rowid);
 		}
+
 		$db->setQuery($query);
 		$db->execute();
+
 		return true;
 	}
 
@@ -94,6 +95,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 			$connectionModel->setId($cid);
 			$this->db = $connectionModel->getDb();
 		}
+
 		return $this->db;
 	}
 
@@ -110,18 +112,22 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		$db = $this->getDb();
 		$upsert = json_decode($params->get('upsert_fields'));
 		$fields = array();
+
 		for ($i = 0; $i < count($upsert->upsert_key); $i++)
 		{
 			$k = FabrikString::shortColName($upsert->upsert_key[$i]);
 			$k = $db->quoteName($k);
 			$v = $upsert->upsert_value[$i];
 			$v = $w->parseMessageForPlaceholder($v, $this->data);
+
 			if ($v == '')
 			{
 				$v = $w->parseMessageForPlaceholder($upsert->upsert_default[$i], $this->data);
 			}
+
 			$fields[] = $k . ' = ' . $db->quote($v);
 		}
+
 		return $fields;
 	}
 
@@ -137,7 +143,7 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		$listid = $params->get('table');
 		$listModel = JModel::getInstance('list', 'FabrikFEModel');
 		$listModel->setId($listid);
+
 		return $listModel->getTable()->db_table_name;
 	}
-
 }

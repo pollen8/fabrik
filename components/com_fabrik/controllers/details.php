@@ -24,7 +24,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerDetails extends JControllerLegacy
 {
-
 	/**
 	 * Is the view rendered from the J content plugin
 	 *
@@ -57,6 +56,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$input = $app->input;
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
+
 		if ($viewName == 'emailform')
 		{
 			$modelName = 'form';
@@ -66,6 +66,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$modelName = 'form';
 
 		$viewType = $document->getType();
+
 		if ($viewType == 'pdf')
 		{
 			// In PDF view only shown the main component content.
@@ -85,6 +86,7 @@ class FabrikControllerDetails extends JControllerLegacy
 			$model->errors = $session->get($context . '.errors', array());
 			$session->clear($context . '.errors');
 		}
+
 		$view->setModel($model, true);
 		$view->isMambot = $this->isMambot;
 
@@ -125,6 +127,7 @@ class FabrikControllerDetails extends JControllerLegacy
 		$viewName = $input->get('view', 'form');
 		$viewType = $document->getType();
 		$view = $this->getView($viewName, $viewType);
+
 		if ($model = $this->getModel('form', 'FabrikFEModel'))
 		{
 			$view->setModel($model, true);
@@ -138,6 +141,7 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		// Check for request forgeries
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 		if ($model->getParams()->get('spoof_check', $fbConfig->get('spoofcheck_on_formsubmission', true)) == true)
 		{
 			JSession::checkToken() or die('Invalid Token');
@@ -156,8 +160,10 @@ class FabrikControllerDetails extends JControllerLegacy
 					// Validating entire group when navigating form pages
 					$data['errors'] = $model->errors;
 					echo json_encode($data);
+
 					return;
 				}
+
 				if ($this->isMambot)
 				{
 					// Store errors in session
@@ -182,8 +188,10 @@ class FabrikControllerDetails extends JControllerLegacy
 					{
 						$input->set('rowid', -1);
 					}
+
 					$view->display();
 				}
+
 				return;
 			}
 		}
@@ -198,8 +206,10 @@ class FabrikControllerDetails extends JControllerLegacy
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
+
 			return;
 		}
+
 		/**
 		 * $$$ rob 31/01/2011
 		 * Now redirect always occurs even with redirect thx message, $this->setRedirect
@@ -211,15 +221,19 @@ class FabrikControllerDetails extends JControllerLegacy
 		$listModel->set('_table', null);
 
 		$msg = $model->getSuccessMsg();
+
 		if ($input->getInt('packageId') !== 0)
 		{
 			echo json_encode(array('msg' => $msg));
+
 			return;
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
 			$this->display();
+
 			return;
 		}
 		else
@@ -248,29 +262,36 @@ class FabrikControllerDetails extends JControllerLegacy
 
 		// If the redirect plug-in has set a url use that in preference to the default url
 		$surl = $session->get($context . 'url', array($url));
+
 		if (!is_array($surl))
 		{
 			$surl = array($surl);
 		}
+
 		if (empty($surl))
 		{
 			$surl[] = $url;
 		}
+
 		$smsg = $session->get($context . 'msg', array($msg));
+
 		if (!is_array($smsg))
 		{
 			$smsg = array($smsg);
 		}
+
 		if (empty($smsg))
 		{
 			$smsg[] = $msg;
 		}
+
 		$url = array_shift($surl);
 		$msg = array_shift($smsg);
 
 		$app = JFactory::getApplication();
 		$q = $app->getMessageQueue();
 		$found = false;
+
 		foreach ($q as $m)
 		{
 			// Custom message already queued - unset default msg
@@ -280,10 +301,12 @@ class FabrikControllerDetails extends JControllerLegacy
 				break;
 			}
 		}
+
 		if ($found)
 		{
 			$msg = null;
 		}
+
 		$session->set($context . 'url', $surl);
 		$session->set($context . 'msg', $smsg);
 		$showmsg = array_shift($session->get($context . 'showsystemmsg', array(true)));
@@ -305,30 +328,34 @@ class FabrikControllerDetails extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
+		$formId = $input->getInt('formid');
+		$listId = $input->getInt('listid');
+		$rowId = $input->getString('rowid');
+
 		if (is_null($msg))
 		{
 			$msg = JText::_('COM_FABRIK_RECORD_ADDED_UPDATED');
 		}
+
 		if ($app->isAdmin())
 		{
 			// Admin links use com_fabrik over package option
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . $input->getInt('formid') . '&listid=' . $input->getInt('listid')
-					. '&rowid=' . $input->getString('rowid', '', 'string');
+				$url = 'index.php?option=com_fabrik&c=form&task=form&formid=' . $formId . '&listid=' . $listId . '&rowid=' . $rowId;
 			}
 			else
 			{
-				$url = "index.php?option=com_fabrik&c=table&task=viewTable&cid[]=" . $model->getTable()->id;
+				$url = 'index.php?option=com_fabrik&c=table&task=viewTable&cid[]=' . $model->getTable()->id;
 			}
+
 			$this->setRedirect($url, $msg);
 		}
 		else
 		{
 			if (array_key_exists('apply', $model->formData))
 			{
-				$url = "index.php?option=com_' . $package . '&c=form&view=form&formid=" . $input->getInt('formid') . "&rowid=" . $input->getString('rowid', '', 'string')
-					. "&listid=" . $input->getInt('listid');
+				$url = 'index.php?option=com_' . $package . '&c=form&view=form&formid=' . $formId . '&rowid=' . $rowId . '&listid=' . $listId;
 			}
 			else
 			{
@@ -342,17 +369,22 @@ class FabrikControllerDetails extends JControllerLegacy
 					// Return to the page that called the form
 					$url = urldecode($input->post->get('fabrik_referrer', 'index.php', 'string'));
 				}
+
 				$Itemid = FabrikWorker::itemId();
+
 				if ($url == '')
 				{
-					$url = "index.php?option=com_' . $package . '&Itemid=$Itemid";
+					$url = 'index.php?option=com_' . $package . '&Itemid=' . $Itemid;
 				}
 			}
+
 			$config = JFactory::getConfig();
+
 			if ($config->get('sef'))
 			{
 				$url = JRoute::_($url);
 			}
+
 			$this->setRedirect($url, $msg);
 		}
 	}
@@ -456,22 +488,25 @@ class FabrikControllerDetails extends JControllerLegacy
 		$total = $oldtotal - count($ids);
 
 		$ref = $input->get('fabrik_referrer', "index.php?option=com_' . $package . '&view=table&listid=$listid", 'string');
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
-
 			$this->display();
 		}
 		else

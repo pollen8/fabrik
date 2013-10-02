@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -47,16 +46,18 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		{
 			return false;
 		}
+
 		if (is_array($data))
 		{
 			$data = $data[0];
 		}
+
 		$params = $this->getParams();
 		$elementModel = $this->elementModel;
 		$ornot = $params->get('emailexists_or_not', 'fail_if_exists');
-
 		$user_field = $params->get('emailexists_user_field');
 		$user_id = 0;
+
 		if ((int) $user_field !== 0)
 		{
 			$user_elementModel = FabrikWorker::getPluginManager()->getElementPlugin($user_field);
@@ -69,6 +70,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 			// $$$ the array thing needs fixing, for now just grab 0
 			$formdata = $elementModel->getForm()->formData;
 			$user_id = JArrayHelper::getValue($formdata, $user_fullName . '_raw', JArrayHelper::getValue($formdata, $user_fullName, ''));
+
 			if (is_array($user_id))
 			{
 				$user_id = JArrayHelper::getValue($user_id, 0, '');
@@ -82,6 +84,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 		$db->setQuery($query);
 		$result = $db->loadResult();
 		$user = JFactory::getUser();
+
 		if ($user->get('guest'))
 		{
 			if (!$result)
@@ -98,6 +101,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 					return true;
 				}
 			}
+
 			return false;
 		}
 		else
@@ -114,6 +118,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
+
 					return false;
 				}
 				else
@@ -122,10 +127,12 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 					{
 						return ($ornot == 'fail_if_exists') ? true : false;
 					}
+
 					return false;
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -139,6 +146,7 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$cond = $params->get('emailexists_or_not');
+
 		if ($cond == 'fail_if_not_exists')
 		{
 			return JText::_('PLG_VALIDATIONRULE_EMAILEXISTS_LABEL_NOT');
@@ -148,5 +156,4 @@ class PlgFabrik_ValidationruleEmailExists extends PlgFabrik_Validationrule
 			return parent::getLabel();
 		}
 	}
-
 }

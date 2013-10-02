@@ -23,7 +23,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableSubscription extends JTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -49,6 +48,7 @@ class FabrikTableSubscription extends JTable
 		$this->status = 'Expired';
 		$this->eot_date = $now;
 		$this->eot_cause = $msg;
+
 		return $this->store();
 	}
 
@@ -63,6 +63,7 @@ class FabrikTableSubscription extends JTable
 		$now = JFactory::getDate()->toSql();
 		$this->status = 'Active';
 		$this->lastpay_date = $now;
+
 		return $this->store();
 	}
 
@@ -79,6 +80,7 @@ class FabrikTableSubscription extends JTable
 		$this->cancel_date = $now;
 		$this->eot_date = $now;
 		$this->eot_cause = 'IPN Refund';
+
 		return $this->store();
 	}
 
@@ -93,7 +95,7 @@ class FabrikTableSubscription extends JTable
 		$this->status = 'Cancelled';
 		$this->cancel_date = $now;
 		$this->eot_cause = 'IPN Cancel';
+
 		return $this->store();
 	}
-
 }

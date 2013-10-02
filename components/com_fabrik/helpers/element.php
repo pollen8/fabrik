@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikHelperElement
 {
-
 	/**
 	 * For processing repeat elements we need to make its
 	 * ID element during the form process
@@ -33,7 +32,6 @@ class FabrikHelperElement
 
 	public static function makeIdElement($baseElement)
 	{
-
 		$pluginManager = FabrikWorker::getPluginManager();
 		$groupModel = $baseElement->getGroupModel();
 		$elementModel = $pluginManager->getPlugIn('internalid', 'element');
@@ -42,6 +40,7 @@ class FabrikHelperElement
 		$elementModel->getElement()->group_id = $groupModel->getId();
 		$elementModel->setGroupModel($baseElement->getGroupModel());
 		$elementModel->_joinModel = $groupModel->getJoinModel();
+
 		return $elementModel;
 	}
 
@@ -90,6 +89,7 @@ class FabrikHelperElement
 		$elementIds = (array) JArrayHelper::getValue($filters, 'elementid', array());
 		$index = array_search($elementId, $elementIds);
 		$value = $filters['value'][$index];
+
 		return $value;
 	}
 }

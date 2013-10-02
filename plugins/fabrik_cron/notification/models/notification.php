@@ -22,7 +22,6 @@ jimport('joomla.application.component.model');
 
 class FabrikModelNotification extends JModelLegacy
 {
-
 	/**
 	 * Get the current logged in users notifications
 	 *
@@ -32,6 +31,7 @@ class FabrikModelNotification extends JModelLegacy
 	public function getUserNotifications()
 	{
 		$rows = $this->getRows();
+
 		if (!$rows)
 		{
 			$this->makeDbTable();
@@ -39,6 +39,7 @@ class FabrikModelNotification extends JModelLegacy
 		}
 
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
+
 		foreach ($rows as &$row)
 		{
 			/*
@@ -51,28 +52,21 @@ class FabrikModelNotification extends JModelLegacy
 			$data = $listModel->getRow($rowid);
 			$row->url = JRoute::_('index.php?option=com_fabrik&view=details&listid=' . $listid . '&formid=' . $formid . '&rowid=' . $rowid);
 			$row->title = $row->url;
+
 			foreach ($data as $key => $value)
 			{
 				$key = explode('___', $key);
 				$key = array_pop($key);
 				$k = JString::strtolower($key);
+
 				if ($k == 'title')
 				{
 					$row->title = $value;
 				}
 			}
 		}
-		return $rows;
-	}
 
-	/**
-	 * Make notification db tables
-	 *
-	 * @return  void
-	 */
-	protected function makeDbTable()
-	{
-		parent::makeDbTable();
+		return $rows;
 	}
 
 	/**
@@ -88,6 +82,7 @@ class FabrikModelNotification extends JModelLegacy
 		$query = $db->getQuery(true);
 		$query->select('*')->from('#__{package}_notification')->where('user_id = ' . (int) $user->get('id'));
 		$db->setQuery($query);
+
 		return $db->loadObjectList();
 	}
 
@@ -104,10 +99,12 @@ class FabrikModelNotification extends JModelLegacy
 		$app = JFactory::getApplication();
 		$ids = $app->input->get('cid', array());
 		JArrayHelper::toInteger($ids);
+
 		if (empty($ids))
 		{
 			return;
 		}
+
 		$db = FabrikWorker::getDbo();
 		$query = $db->getQuery(true);
 		$query->delete('#__{package}_notification')->where('id IN (' . implode(',', $ids) . ')');
@@ -127,6 +124,7 @@ class FabrikModelNotification extends JModelLegacy
 		$client = JApplicationHelper::getClientInfo(0);
 		$langFile = 'plg_fabrik_cron_notification';
 		$langPath = $client->path . '/plugins/fabrik_cron/notification';
+
 		return $lang->load($langFile, $langPath, null, false, false) || $lang->load($langFile, $langPath, $lang->getDefault(), false, false);
 	}
 
@@ -139,7 +137,7 @@ class FabrikModelNotification extends JModelLegacy
 	public function getId()
 	{
 		$app = JFactory::getApplication();
+
 		return $app->input->getInt('id');
 	}
-
 }

@@ -26,7 +26,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-cron.php';
 
 class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 {
-
 	/**
 	 * Check if the user can use the plugin
 	 *
@@ -52,6 +51,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	protected function _getGcalShortId($long_id)
 	{
 		$matches = array();
+
 		if (preg_match('#/(\w+)$#', $long_id, $matches))
 		{
 			return $matches[1];
@@ -129,6 +129,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			// If they selected a User ID element to use, see if we can find a J! user with matching email to this feed's owner
 			$our_userid = 0;
+
 			if ($gcal_userid_element_long)
 			{
 				$query = $db->getQuery(true);
@@ -147,11 +148,14 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			$path = JPATH_SITE . '/libraries';
 			set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 			$path = get_include_path();
+
 			if (!file_exists(JPATH_SITE . '/libraries/Zend/Loader.php'))
 			{
 				throw new RuntimeException('Please install the Zend gdata from library http://framework.zend.com/download/gdata', 500);
+
 				return;
 			}
+
 			require_once 'Zend/Loader.php';
 			Zend_Loader::loadClass('Zend_Gdata');
 			/*
@@ -171,11 +175,13 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			// See if they want to sync to gcal, and provided a login
 			$gcal_sync_upload = $params->get('gcal_sync_upload_events', 'from');
+
 			if ($gcal_sync_upload == 'both' || $gcal_sync_upload == 'to')
 			{
 				Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
 				$email = $params->get('gcal_sync_login', '');
 				$passwd = $params->get('gcal_sync_passwd', '');
+
 				try
 				{
 					$client = Zend_Gdata_ClientLogin::getHttpClient($email, $passwd, 'cl');
@@ -184,13 +190,16 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 				{
 					echo 'URL of CAPTCHA image: ' . $cre->getCaptchaUrl() . "\n";
 					echo 'Token ID: ' . $cre->getCaptchaToken() . "\n";
+
 					return;
 				}
 				catch (Zend_Gdata_App_AuthException $ae)
 				{
 					echo 'Problem authenticating: ' . $ae->exception() . "\n";
+
 					return;
 				}
+
 				$gdataCal = new Zend_Gdata_Calendar($client);
 			}
 			else
@@ -207,6 +216,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			// Build an array of the events from the feed, indexed by the Google ID
 			$event_ids = array();
+
 			foreach ($eventFeed as $key => $event)
 			{
 				$short_id = $this->_getGcalShortId($event->id->text);
@@ -218,6 +228,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 			 */
 			$our_event_ids = array();
 			$our_upload_ids = array();
+
 			foreach ($mydata as $gkey => $group)
 			{
 				if (is_array($group))
@@ -238,6 +249,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 
 			// Now go through the google events id's, and process the ones which aren't in our table.
 			$our_event_adds = array();
+
 			foreach ($gcal_event_ids as $id => $event)
 			{
 				if (!array_key_exists($id, $our_event_ids))
@@ -247,15 +259,19 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					$row[$gcal_start_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->startTime));
 					$row[$gcal_end_date_element] = strftime('%Y-%m-%d %H:%M:%S', strtotime($event->when[0]->endTime));
 					$row[$gcal_label_element] = $event->title->text;
+
 					if ($gcal_desc_element)
 					{
 						$row[$gcal_desc_element] = $event->content->text;
 					}
+
 					$row[$gcal_id_element] = $id;
+
 					if ($gcal_userid_element_long)
 					{
 						$row[$gcal_userid_element] = $our_userid;
 					}
+
 					$listModel->storeRow($row, 0);
 				}
 			}
@@ -277,9 +293,11 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 							continue;
 						}
 					}
+
 					// Now start building the gcal event structure
 					$newEvent = $gdataCal->newEventEntry();
 					$newEvent->title = $gdataCal->newTitle($event->$gcal_label_element);
+
 					if ($gcal_desc_element_long)
 					{
 						$newEvent->content = $gdataCal->newContent($event->$gcal_desc_element);
@@ -288,6 +306,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 					{
 						$newEvent->content = $gdataCal->newContent($event->$gcal_label_element);
 					}
+
 					$when = $gdataCal->newWhen();
 
 					// Grab the start date, apply the tx offset, and format it for gcal
@@ -344,7 +363,7 @@ class PlgFabrik_CronGcalsync extends PlgFabrik_Cron
 	protected function formatDate(JDate $date)
 	{
 		$tzOffset = $date->format('P');
+
 		return $date->format('Y-m-d') . 'T' . $date->format('H:i:s') . '.000' . $tzOffset;
 	}
-
 }

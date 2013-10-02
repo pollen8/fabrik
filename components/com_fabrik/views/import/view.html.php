@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewImport extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -43,14 +42,17 @@ class FabrikViewImport extends JViewLegacy
 		$listModel->setId($this->listid);
 		$this->table = $listModel->getTable();
 		$this->form = $this->get('Form');
+
 		if (!$listModel->canCSVImport())
 		{
 			throw new RuntimeException('Naughty naughty!', 400);
 		}
+
 		$layout = FabrikWorker::j3() ? 'bootstrap' : 'default';
 		$this->setLayout($layout);
 		$this->fieldsets = $this->setFieldSets();
 		parent::display($tpl);
+
 		return $this;
 	}
 
@@ -73,10 +75,12 @@ class FabrikViewImport extends JViewLegacy
 		// From list of lists checkbox selection
 		$cid = $input->get('cid', array(0), 'array');
 		JArrayHelper::toInteger($cid);
+
 		if ($id === 0)
 		{
 			$id = $cid[0];
 		}
+
 		if (($id !== 0))
 		{
 			$db = FabrikWorker::getDbo();
@@ -85,9 +89,11 @@ class FabrikViewImport extends JViewLegacy
 			$db->setQuery($query);
 			$this->listName = $db->loadResult();
 		}
+
 		$fieldsets = array('details');
 		$fieldsets[] = $id === 0 ? 'creation' : 'append';
 		$fieldsets[] = 'format';
+
 		return $fieldsets;
 	}
 }

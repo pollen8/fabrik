@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/validation_rule.php';
 
 class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 {
-
 	/**
 	 * Plugin name
 	 *
@@ -48,16 +47,20 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 		{
 			$data = implode('', $data);
 		}
+
 		$params = $this->getParams();
 		$domatch = $params->get('regex-match');
+
 		if ($domatch)
 		{
 			$matches = array();
 			$v = $params->get('regex-expression');
 			$v = trim($v);
 			$found = empty($v) ? true : preg_match($v, $data, $matches);
+
 			return $found;
 		}
+
 		return true;
 	}
 
@@ -75,14 +78,17 @@ class PlgFabrik_ValidationruleRegex extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$domatch = $params->get('regex-match');
+
 		if (!$domatch)
 		{
 			$v = $params->get($this->pluginName . '-expression');
 			$v = trim($v);
 			$replace = $params->get('regex-replacestring');
 			$return = empty($v) ? $data : preg_replace($v, $replace, $data);
+
 			return $return;
 		}
+
 		return $data;
 	}
 }

@@ -15,13 +15,16 @@ before_script:
   
   - mysql -e 'create database fabrikar_ci;'
   - mysql fabrikar_ci < fabrik_build/tests/suites/database/stubs/mysql.sql
+  
+  - "npm install -g jshint"
 
 script:
-  ant travis-phpcs
+  - ant travis-phpcs
+  // - phpunit --configuration travisci-fabrik-phpunit.xml
   
 after_script:
-  cat fabrik_build/logs/checkstyle.xml
-
+  - cat fabrik_build/logs/checkstyle.xml
+ 
 branches:
   only:
     - joomla3

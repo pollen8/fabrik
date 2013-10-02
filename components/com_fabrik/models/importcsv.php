@@ -24,7 +24,6 @@ jimport('joomla.application.component.modelform');
 
 class FabrikFEModelImportcsv extends JModelForm
 {
-
 	/**
 	 * Cleaned heading names
 	 *
@@ -106,6 +105,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$this->readCSV($this->getCSVFileName());
 		$this->findExistingElements();
 		$this->setSession();
+
 		return true;
 	}
 
@@ -120,6 +120,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		if (is_null($this->csvFile))
 		{
 			$session = JFactory::getSession();
+
 			if ($session->has('com_fabrik.csv.filename'))
 			{
 				$this->csvFile = $session->get('com_fabrik.csv.filename');
@@ -130,6 +131,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				$session->set('com_fabrik.csv.filename', $this->csvFile);
 			}
 		}
+
 		return $this->csvFile;
 	}
 
@@ -147,11 +149,14 @@ class FabrikFEModelImportcsv extends JModelForm
 		// Get the form.
 		JForm::addFormPath(COM_FABRIK_BASE . 'administrator/components/com_fabrik/models/forms');
 		$form = $this->loadForm('com_fabrik.import', 'import', array('control' => 'jform', 'load_data' => $loadData));
+
 		if (empty($form))
 		{
 			return false;
 		}
+
 		$form->model = $this;
+
 		return $form;
 	}
 
@@ -166,19 +171,24 @@ class FabrikFEModelImportcsv extends JModelForm
 		if (!(bool) ini_get('file_uploads'))
 		{
 			JError::raiseWarning(500, JText::_('COM_FABRIK_ERR_UPLOADS_DISABLED'));
+
 			return false;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$userfile = $input->files->get('jform');
+
 		if (!$userfile)
 		{
 			JError::raiseWarning(500, JText::_('COM_FABRIK_IMPORT_CSV_NO_FILE_SELECTED'));
+
 			return false;
 		}
-		jimport('joomla.filesystem.file');
 
+		jimport('joomla.filesystem.file');
 		$allowed = array('txt', 'csv', 'tsv');
+
 		if (!in_array(JFile::getExt($userfile['userfile']['name']), $allowed))
 		{
 			throw new RuntimeException('File must be a csv file', 500);
@@ -186,15 +196,16 @@ class FabrikFEModelImportcsv extends JModelForm
 
 		$tmp_name = $this->getCSVFileName();
 		$tmp_dir = $this->getBaseDir();
-
 		$to = JPath::clean($tmp_dir . '/' . $tmp_name);
-
 		$resultdir = JFile::upload($userfile['userfile']['tmp_name'], $to);
+
 		if ($resultdir == false && !JFile::exists($to))
 		{
 			JError::raiseWarning(500, JText::_('Upload Error'));
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -208,18 +219,22 @@ class FabrikFEModelImportcsv extends JModelForm
 	protected function getFieldDelimiter()
 	{
 		$data = $this->getFormData();
+
 		if (is_null($this->fieldDelimiter))
 		{
 			$this->fieldDelimiter = ',';
 			$session = JFactory::getSession();
+
 			if ($session->has('com_fabrik.csv.fielddelimiter'))
 			{
 				$this->fieldDelimiter = $session->get('com_fabrik.csv.fielddelimiter');
 			}
+
 			$tabDelimiter = JArrayHelper::getValue($data, 'tabdelimited');
 			$this->fieldDelimiter = $tabDelimiter == 1 ? "\t" : JArrayHelper::getValue($data, 'field_delimiter', $this->fieldDelimiter);
 			$session->set('com_fabrik.csv.fielddelimiter', $this->fieldDelimiter);
 		}
+
 		return $this->fieldDelimiter;
 	}
 
@@ -234,6 +249,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$app = JFactory::getApplication();
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
+
 		return $app->input->get('jform', $post, 'array');
 	}
 
@@ -277,22 +293,27 @@ class FabrikFEModelImportcsv extends JModelForm
 					{
 						$heading = JString::substr($heading, 3);
 					}
+
 					if ($mode != 2)
 					{
 						// $$$ rob replacing with this as per thread - http://fabrikar.com/forums/showthread.php?p=83304
 						$heading = str_replace(' ', '_', $heading);
 					}
 				}
+
 				if (!$this->getSelectKey())
 				{
 					// If no table loaded and the user asked to automatically add a key then put id at the beginning of the new headings
 					$idheading = 'id';
+
 					if (in_array($idheading, $arr_data))
 					{
 						$idheading .= rand(0, 9);
 					}
+
 					array_unshift($arr_data, $idheading);
 				}
+
 				$this->headings = $arr_data;
 			}
 			else
@@ -308,10 +329,12 @@ class FabrikFEModelImportcsv extends JModelForm
 						$d = iconv("utf-8", "utf-8//IGNORE", $d);
 					}
 				}
+
 				if (!$this->getSelectKey())
 				{
 					array_unshift($arr_data, '');
 				}
+
 				if (count($arr_data) == 1 && $arr_data[0] == '')
 				{
 					// CSV import from excel saved as unicode has blank record @ end
@@ -322,6 +345,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 			}
 		}
+
 		fclose($csv->mHandle);
 		/*
 		 * $$$ hugh - remove the temp file, but don't clear session
@@ -371,6 +395,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			$tmp_dir = $config->get('tmp_path');
 			$this->baseDir = JPath::clean($tmp_dir);
 		}
+
 		return $this->baseDir;
 	}
 
@@ -401,10 +426,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$baseDir = $this->getBaseDir();
 		$userfile_path = $baseDir . '/' . $this->getCSVFileName();
+
 		if (JFile::exists($userfile_path))
 		{
 			JFile::delete($userfile_path);
 		}
+
 		if ($clearSession)
 		{
 			$this->clearSession();
@@ -433,11 +460,13 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function getlistModel()
 	{
 		$app = JFactory::getApplication();
+
 		if (!isset($this->listModel))
 		{
 			$this->listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->listModel->setId($app->input->getInt('listid'));
 		}
+
 		return $this->listModel;
 	}
 
@@ -459,20 +488,23 @@ class FabrikFEModelImportcsv extends JModelForm
 		$mode = $tableParams->get('csvfullname');
 		$intKey = 0;
 		$groups = $formModel->getGroupsHiarachy();
-
 		$elementMap = array();
 
 		// $$ hugh - adding $rawMap so we can tell prepareCSVData() if data is already raw
 		$rawMap = array();
+
 		foreach ($this->headings as $heading)
 		{
 			$found = false;
+
 			foreach ($groups as $groupModel)
 			{
 				$elementModels = $groupModel->getMyElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					$element = $elementModel->getElement();
+
 					switch ($mode)
 					{
 						case 0:
@@ -485,7 +517,9 @@ class FabrikFEModelImportcsv extends JModelForm
 							$name = $element->label;
 							break;
 					}
+
 					$hkey = $elementModel->getFullName(false, false);
+
 					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)))
 					{
 						if (!array_key_exists($hkey, $this->matchedHeadings))
@@ -501,7 +535,9 @@ class FabrikFEModelImportcsv extends JModelForm
 							break;
 						}
 					}
+
 					$hkey .= '_raw';
+
 					if (JString::strtolower(trim($heading)) == JString::strtolower(trim($name)) . '_raw')
 					{
 						if (!array_key_exists($hkey, $this->matchedHeadings))
@@ -521,6 +557,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					if ($elementModel->isJoin())
 					{
 						$hkey = ($elementModel->getJoinModel()->getJoin()->table_join . '___params');
+
 						if ($hkey === $heading)
 						{
 							if (!array_key_exists($hkey, $this->matchedHeadings))
@@ -539,8 +576,10 @@ class FabrikFEModelImportcsv extends JModelForm
 			{
 				$this->newHeadings[] = $heading;
 			}
+
 			$intKey++;
 		}
+
 		foreach ($elementMap as $key => $elementModel)
 		{
 			$element = $elementModel->getElement();
@@ -561,15 +600,18 @@ class FabrikFEModelImportcsv extends JModelForm
 		$elements = $model->getElements();
 		$defaultsToAdd = array();
 		$elementKeys = array_keys($elements);
+
 		foreach ($elementKeys as $e)
 		{
 			$e2 = str_replace('`', '', $e);
+
 			if (!array_key_exists($e2, $this->matchedHeadings) && !array_key_exists($e2 . '_raw', $this->matchedHeadings))
 			{
 				$elementModel = $elements[$e];
 				$defaultsToAdd[FabrikString::safeColNameToArrayKey($e)] = $elementModel;
 			}
 		}
+
 		return $defaultsToAdd;
 	}
 
@@ -611,6 +653,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		{
 			$model->truncate();
 		}
+
 		$item = $model->getTable();
 		$tableParams = $model->getParams();
 		$csvFullName = $tableParams->get('csvfullname', 0);
@@ -631,6 +674,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		// $$$ rob we are no longer removing the element joins from $joins
 		// so lets see if any of $joins are table joins.
 		$tableJoinsFound = false;
+
 		for ($x = 0; $x < count($joins); $x++)
 		{
 			if ((int) $joins[$x]->list_id !== 0)
@@ -638,14 +682,16 @@ class FabrikFEModelImportcsv extends JModelForm
 				$tableJoinsFound = true;
 			}
 		}
-		$joindata = array();
 
+		$joindata = array();
 		$defaultsToAdd = $this->defaultsToAdd();
+
 		foreach ($this->data as $data)
 		{
 			$aRow = array();
 			$pkVal = null;
 			$i = 0;
+
 			foreach ($this->matchedHeadings as $headingKey => $heading)
 			{
 				switch ($csvFullName)
@@ -678,6 +724,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					$pkVal = $data[$i];
 				}
+
 				$aRow[str_replace('.', '___', $headingKey)] = $data[$i];
 				$i++;
 			}
@@ -692,11 +739,13 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					$aRow[$k] = $elementModel->getDefaultValue($aRow);
 				}
+
 				if (!array_key_exists($k . '_raw', $aRow))
 				{
 					$aRow[$k . '_raw'] = $aRow[$k];
 				}
 			}
+
 			$model->getFormGroupElementData();
 
 			// Take any _raw values and replace their real elements with their data
@@ -705,6 +754,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				if (JString::substr($k, JString::strlen($k) - 4, JString::strlen($k)) == '_raw')
 				{
 					$noneraw = JString::substr($k, 0, JString::strlen($k) - 4);
+
 					if (array_key_exists($noneraw, $aRow))
 					{
 						$aRow[$noneraw] = $val;
@@ -712,6 +762,7 @@ class FabrikFEModelImportcsv extends JModelForm
 					}
 				}
 			}
+
 			if ($overWrite && in_array($pkVal, $aExistingKeys))
 			{
 				$formModel->rowId = $pkVal;
@@ -734,9 +785,11 @@ class FabrikFEModelImportcsv extends JModelForm
 					unset($aRow[$k]);
 				}
 			}
+
 			if (!$tableJoinsFound)
 			{
 				$formModel->formData = $formModel->formDataWithTableName = $aRow;
+
 				if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 				{
 					$formModel->processToDB();
@@ -748,10 +801,12 @@ class FabrikFEModelImportcsv extends JModelForm
 				$joindata = $this->_fakeJoinData($joindata, $aRow, $pkVal, $formModel);
 			}
 		}
+
 		if ($tableJoinsFound)
 		{
 			$this->insertJoinedData($joindata);
 		}
+
 		$this->removeCSVFile();
 		$this->updatedCount = $updatedCount;
 	}
@@ -767,6 +822,7 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function updateMessage()
 	{
 		$elementsCreated = $this->countElementsCreated();
+
 		if ($elementsCreated == 0)
 		{
 			$msg = JText::sprintf('COM_FABRIK_CSV_ADDED_AND_UPDATED', $this->addedCount, $this->updatedCount);
@@ -775,6 +831,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		{
 			$msg = JText::sprintf('COM_FABRIK_CSV_ADD_ELEMENTS_AND_RECORDS_AND_UPDATED', $elementsCreated, $this->addedCount, $this->updatedCount);
 		}
+
 		return $msg;
 	}
 
@@ -790,6 +847,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$listid = $input->getInt('fabrik_list', $input->get('listid'));
+
 		if ($listid == 0)
 		{
 			$elementsCreated = count($this->newHeadings);
@@ -798,6 +856,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		{
 			$elementsCreated = 0;
 			$newElements = $input->get('createElements', array(), 'array');
+
 			foreach ($newElements as $k => $v)
 			{
 				if ($v == 1)
@@ -806,6 +865,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 			}
 		}
+
 		return $elementsCreated;
 	}
 
@@ -825,6 +885,7 @@ class FabrikFEModelImportcsv extends JModelForm
 		$app = JFactory::getApplication();
 		$table = $model->getTable();
 		$dbname = $table->db_table_name;
+
 		foreach ($joindata as &$j)
 		{
 			foreach ($j as $k => $v)
@@ -838,9 +899,11 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 			}
 		}
+
 		$formModel = $model->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
 		$groupids = array();
+
 		foreach ($groups as $group)
 		{
 			if ($group->isJoin())
@@ -848,30 +911,34 @@ class FabrikFEModelImportcsv extends JModelForm
 				$groupids[$group->getGroup()->join_id] = $group->getGroup()->id;
 			}
 		}
+
 		foreach ($joindata as $data)
 		{
 			// Reset the table's name back to the main table
 			$table->db_table_name = $dbname;
 			$fabrik_repeat_group = array();
 			$js = JArrayHelper::getValue($data, 'join', array());
+
 			foreach ($js as $jid => $jdata)
 			{
 				// Work out max num of repeated data to insert
 				$counter = 0;
+
 				foreach ($jdata as $v)
 				{
 					if (count($v) > $counter)
 					{
 						$counter = count($v);
 					}
-
 				}
+
 				$groupid = $groupids[$jid];
 				$fabrik_repeat_group[$groupid] = $counter;
 			}
 			// $$$ rob here we're setting up fabrik_repeat_group to allow the form to 'know' how many repeated records to insert.
 			$app->input->set('fabrik_repeat_group', $fabrik_repeat_group);
 			$formModel->formData = $data;
+
 			if (!in_array(false, FabrikWorker::getPluginManager()->runPlugins('onImportCSVRow', $model, 'list')))
 			{
 				$formModel->processToDB();
@@ -901,14 +968,15 @@ class FabrikFEModelImportcsv extends JModelForm
 		$overWrite = $app->input->getInt('overwrite', 0, 'post');
 		$joins = $this->getJoins();
 		$groups = $formModel->getGroups();
+
 		if (!empty($joins))
 		{
-
 			// A new record that will need to be inserted
 			if (!array_key_exists($pkVal, $joindata))
 			{
 				$joindata[$pkVal] = array();
 			}
+
 			foreach ($aRow as $k => $v)
 			{
 				if (!array_key_exists($k, $joindata[$pkVal]))
@@ -916,10 +984,12 @@ class FabrikFEModelImportcsv extends JModelForm
 					$joindata[$pkVal][$k] = $v;
 				}
 			}
+
 			if (!array_key_exists('join', $joindata[$pkVal]))
 			{
 				$joindata[$pkVal]['join'] = array();
 			}
+
 			foreach ($joins as $join)
 			{
 				// Only iterate over table joins (exclude element joins)
@@ -927,8 +997,10 @@ class FabrikFEModelImportcsv extends JModelForm
 				{
 					continue;
 				}
+
 				$repeat = $groups[$join->group_id]->canRepeat();
 				$keys = $this->getJoinPkRecords($join);
+
 				if ($overWrite && in_array($pkVal, $keys))
 				{
 					// Not sure 2nd test is right here
@@ -940,10 +1012,13 @@ class FabrikFEModelImportcsv extends JModelForm
 					$origData[$join->table_join . '___' . $join->table_key] = 0;
 					$this->addedCount++;
 				}
+
 				$origData[$join->table_join . '___' . $join->table_join_key] = $pkVal;
+
 				foreach ($origData as $key => $val)
 				{
 					$t = array_shift(explode('___', $key));
+
 					if ($t == $join->table_join)
 					{
 						if ($repeat)
@@ -958,6 +1033,7 @@ class FabrikFEModelImportcsv extends JModelForm
 				}
 			}
 		}
+
 		return $joindata;
 	}
 
@@ -973,10 +1049,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	{
 		$model = $this->getlistModel();
 		$formModel = $model->getFormModel();
+
 		if (!isset($this->joinpkids))
 		{
 			$this->joinpkids = array();
 		}
+
 		if (!array_key_exists($join->id, $this->joinpkids))
 		{
 			$db = $model->getDb();
@@ -985,6 +1063,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			$db->setQuery($query);
 			$this->joinpkids[$join->id] = $db->loadColumn();
 		}
+
 		return $this->joinpkids[$join->id];
 	}
 
@@ -1003,6 +1082,7 @@ class FabrikFEModelImportcsv extends JModelForm
 			// Move the join table data into their own array space
 			$this->joins = $model->getJoins();
 		}
+
 		return $this->joins;
 	}
 
@@ -1015,10 +1095,12 @@ class FabrikFEModelImportcsv extends JModelForm
 	public function makeError()
 	{
 		$str = JText::_('COM_FABRIK_CSV_FIELDS_NOT_IN_TABLE');
+
 		foreach ($this->newHeadings as $heading)
 		{
 			$str .= $heading . ', ';
 		}
+
 		return $str;
 	}
 
@@ -1051,21 +1133,27 @@ class FabrikFEModelImportcsv extends JModelForm
 		{
 			return true;
 		}
+
 		// $$$ rob 13/03/2012 - reimporting into exisiting list - should return true
 		if ($input->getInt('listid') !== 0)
 		{
 			return true;
 		}
+
 		$model = $this->getlistModel();
+
 		if (trim($model->getTable()->db_primary_key) !== '')
 		{
 			return false;
 		}
+
 		$post = $input->get('jform', array(), 'array');
+
 		if (JArrayHelper::getValue($post, 'addkey', 0) == 1)
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -1227,17 +1315,14 @@ class Csv_Bv
 
 	public function Csv_Bv($file, $seperator = ',', $enclose = '"', $escape = '')
 	{
-
 		$this->mFldSeperator = $seperator;
 		$this->mFldEnclosure = $enclose;
 		$this->mFldEscapor = $escape;
-
 		$this->mSkipEmptyRows = true;
 		$this->mTrimFields = true;
 		$this->htmlentity = true;
 		$this->mRowCount = 0;
 		$this->mSkippedRowCount = 0;
-
 		$this->mRowSize = 4096;
 
 		// Open file
@@ -1284,14 +1369,12 @@ class Csv_Bv
 
 	public function NextLine()
 	{
-
 		if (feof($this->mHandle))
 		{
 			return false;
 		}
 
 		$arr_row = fgetcsv($this->mHandle, $this->mRowSize, $this->mFldSeperator, $this->mFldEnclosure);
-
 		$this->mRowCount++;
 
 		// Skip empty rows if asked to
@@ -1301,7 +1384,6 @@ class Csv_Bv
 			{
 				$this->mRowCount--;
 				$this->mSkippedRowCount++;
-
 				$arr_row = $this->NextLine();
 
 				// This is to avoid a warning when empty lines are found at the bvery end of a file.
@@ -1312,6 +1394,7 @@ class Csv_Bv
 				}
 			}
 		}
+
 		if (is_array($arr_row))
 		{
 			if ($this->inPutFormat == 'excel' || $this->inPutFormat == 'fabrikexcel')
@@ -1321,6 +1404,7 @@ class Csv_Bv
 				foreach ($arr_row as $k => $v)
 				{
 					$arr_row[$k] = trim($arr_row[$k]);
+
 					if ($arr_row[$k] !== '')
 					{
 						$arr_row[$k] = iconv($encFrom, 'UTF-8', $arr_row[$k] . "\0");
@@ -1348,7 +1432,6 @@ class Csv_Bv
 		// Remove leading and trailing spaces \s and \t
 		if ($this->htmlentity && is_array($arr_row))
 		{
-
 			array_walk($arr_row, array($this, 'charset_decode_utf_8'));
 		}
 
@@ -1364,10 +1447,12 @@ class Csv_Bv
 	public function Csv2Array()
 	{
 		$arr_csv = array();
+
 		while ($arr_row = $this->NextLine())
 		{
 			$arr_csv[] = $arr_row;
 		}
+
 		return $arr_csv;
 	}
 
@@ -1464,5 +1549,4 @@ class Csv_Bv
 	{
 		$this->mTrimFields = $bool;
 	}
-
 }

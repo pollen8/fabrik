@@ -22,7 +22,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikWorker
 {
-
 	/**
 	 * Fabrik database objects
 	 *
@@ -99,6 +98,7 @@ class FabrikWorker
 	public static function isImageExtension($file)
 	{
 		$path_parts = pathinfo($file);
+
 		return preg_match('/' . self::$image_extensions_eregi . '/i', $path_parts['extension']);
 	}
 
@@ -115,6 +115,7 @@ class FabrikWorker
 	public static function isAudioExtension($file)
 	{
 		$path_parts = pathinfo($file);
+
 		return preg_match('/' . self::$audio_extensions_eregi . '/i', $path_parts['extension']);
 	}
 
@@ -131,10 +132,12 @@ class FabrikWorker
 	public static function getAudioMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+
 		if (array_key_exists($path_parts['extension'], self::$audio_mime_types))
 		{
 			return self::$audio_mime_types[$path_parts['extension']];
 		}
+
 		return false;
 	}
 
@@ -151,10 +154,12 @@ class FabrikWorker
 	public static function getVideoMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+
 		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
 		{
 			return self::$video_mime_types[$path_parts['extension']];
 		}
+
 		return false;
 	}
 
@@ -171,6 +176,7 @@ class FabrikWorker
 	public static function getPodcastMimeType($file)
 	{
 		$path_parts = pathinfo($file);
+
 		if (array_key_exists($path_parts['extension'], self::$video_mime_types))
 		{
 			return self::$video_mime_types[$path_parts['extension']];
@@ -183,6 +189,7 @@ class FabrikWorker
 		{
 			return self::$doc_mime_types[$path_parts['extension']];
 		}
+
 		return false;
 	}
 
@@ -203,10 +210,12 @@ class FabrikWorker
 		$weekdays = array('Sun' => '0', 'Mon' => '1', 'Tue' => '2', 'Wed' => '3', 'Thu' => '4', 'Fri' => '5', 'Sat' => '6');
 		$months = array('Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04', 'May' => '05', 'Jun' => '06', 'Jul' => '07', 'Aug' => '08',
 			'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12');
+
 		if (!($date = self::str2Time($date, $format)))
 		{
 			return;
 		}
+
 		$months = array(JText::_('January'), JText::_('February'), JText::_('March'), JText::_('April'), JText::_('May'), JText::_('June'),
 			JText::_('July'), JText::_('August'), JText::_('September'), JText::_('October'), JText::_('November'), JText::_('December'));
 		$shortMonths = array(JText::_('Jan'), JText::_('Feb'), JText::_('Mar'), JText::_('Apr'), JText::_('May'), JText::_('Jun'), JText::_('Jul'),
@@ -216,6 +225,7 @@ class FabrikWorker
 		 * and not the last day of the previous month (which is what a 0 here would represent)
 		 */
 		$dateTime = array('sec' => 0, 'min' => 0, 'hour' => 0, 'day' => 1, 'mon' => 0, 'year' => 0, 'timestamp' => 0);
+
 		foreach ($date as $key => $val)
 		{
 			switch ($key)
@@ -258,9 +268,10 @@ class FabrikWorker
 					$dateTime['sec'] = intval($val);
 					break;
 			}
-
 		}
+
 		$dateTime['timestamp'] = mktime($dateTime['hour'], $dateTime['min'], $dateTime['sec'], $dateTime['mon'], $dateTime['day'], $dateTime['year']);
+
 		return $dateTime;
 	}
 
@@ -282,6 +293,7 @@ class FabrikWorker
 		{
 			$d = JFactory::getDate();
 			$date = $d->toSql(!$gmt);
+
 			return $date;
 		}
 
@@ -304,11 +316,13 @@ class FabrikWorker
 		// Eg next wednesday
 		preg_match("/[next|last]* (\monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
 		$matches = array_merge($matches, $matches2, $matches3);
+
 		if (!empty($matches))
 		{
 			$d = JFactory::getDate($date);
 			$date = $d->toSql(!$gmt);
 		}
+
 		return $date;
 	}
 
@@ -328,7 +342,6 @@ class FabrikWorker
 		 * http://php.net/strtotime - this means we can use "+2 week" as a url filter
 		 * do this before we urldecode the date otherwise the + is replaced with ' ';
 		 */
-
 		$matches = array();
 		$matches2 = array();
 		$matches3 = array();
@@ -342,6 +355,7 @@ class FabrikWorker
 		// Eg next wednesday
 		preg_match("/[next|last]* (\monday\b|tuesday\b|wednesday\b|thursday\b|friday\b|saturday\b|sunday\b)/i", $date, $matches3);
 		$matches = array_merge($matches, $matches2, $matches3);
+
 		if (!empty($matches))
 		{
 			$d = JFactory::getDate($date);
@@ -354,8 +368,8 @@ class FabrikWorker
 		$date = urldecode($date);
 
 		// Strip any textual date representations from the string
-
 		$days = array('%A', '%a');
+
 		foreach ($days as $day)
 		{
 			if (strstr($format, $day))
@@ -364,7 +378,9 @@ class FabrikWorker
 				$date = self::stripDay($date, $day == '%a' ? true : false);
 			}
 		}
+
 		$months = array('%B', '%b', '%h');
+
 		foreach ($months as $month)
 		{
 			if (strstr($format, $month))
@@ -381,35 +397,46 @@ class FabrikWorker
 			'(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})', '(\d{2})');
 
 		$pattern = str_replace($search, $replace, $format);
+
 		if (!preg_match("#$pattern#", $date, $matches))
 		{
 			// Lets allow for partial date formats - eg just the date and ignore the time
 			$format = explode('%', $format);
+
 			if (empty($format))
 			{
 				// No format left to test so return false
 				return false;
 			}
+
 			array_pop($format);
 			$format = trim(implode('%', $format));
 			self::$finalformat = $format;
+
 			return self::str2Time($date, $format);
 		}
+
 		$dp = $matches;
+
 		if (!preg_match_all('#%(\w)#', $format, $matches))
 		{
 			return false;
 		}
+
 		$id = $matches['1'];
+
 		if (count($dp) != count($id) + 1)
 		{
 			return false;
 		}
+
 		$ret = array();
+
 		for ($i = 0, $j = count($id); $i < $j; $i++)
 		{
 			$ret[$id[$i]] = $dp[$i + 1];
 		}
+
 		return $ret;
 	}
 
@@ -457,6 +484,7 @@ class FabrikWorker
 			$date = str_replace(JText::_('FRIDAY'), '', $date);
 			$date = str_replace(JText::_('SATURDAY'), '', $date);
 		}
+
 		return $date;
 	}
 
@@ -501,6 +529,7 @@ class FabrikWorker
 			$date = str_replace(JText::_('NOVEMBER'), 11, $date);
 			$date = str_replace(JText::_('DECEMBER'), 12, $date);
 		}
+
 		return $date;
 	}
 
@@ -515,21 +544,25 @@ class FabrikWorker
 
 	public static function isReserved($str, $strict = true)
 	{
-		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size", "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
+		$_reservedWords = array("task", "view", "layout", "option", "formid", "submit", "ul_max_file_size"
+				, "ul_file_types", "ul_directory", 'adddropdownvalue', 'adddropdownlabel', 'ul_end_dir');
 		/*
 		 * $$$ hugh - a little arbitrary, but need to be able to exlude these so people can create lists from things like
 		 * log files, which include field names like rowid and itemid.  So when saving an element, we now set strict mode
 		 * to false if it's not a new element.
 		 */
 		$_strictWords = array("listid", 'rowid', 'itemid');
+
 		if ($strict)
 		{
 			$_reservedWords = array_merge($_reservedWords, $_strictWords);
 		}
+
 		if (in_array(JString::strtolower($str), $_reservedWords))
 		{
 			return true;
 		}
+
 		return false;
 	}
 
@@ -547,12 +580,15 @@ class FabrikWorker
 		jimport('joomla.crypt.key');
 		$config = JFactory::getConfig();
 		$secret = $config->get('secret', '');
+
 		if (trim($secret) == '')
 		{
 			throw new RuntimeException('You must supply a secret code in your Joomla configuration.php file');
 		}
+
 		$key = new JCryptKey('simple', $secret, $secret);
 		$crypt = new JCrypt(new JCryptCipherSimple, $key);
+
 		return $crypt;
 	}
 
@@ -573,13 +609,15 @@ class FabrikWorker
 	{
 		$returnType = is_array($msg) ? 'array' : 'string';
 		$msgs = (array) $msg;
+
 		foreach ($msgs as &$msg)
 		{
 			$this->parseAddSlases = $addslashes;
+
 			if (!($msg == '' || is_array($msg) || JString::strpos($msg, '{') === false))
 			{
-
 				$msg = str_replace(array('%7B', '%7D'), array('{', '}'), $msg);
+
 				if (is_object($searchData))
 				{
 					$searchData = JArrayHelper::fromObject($searchData);
@@ -594,22 +632,26 @@ class FabrikWorker
 
 				// Replace with the user's data
 				$msg = self::replaceWithUserData($msg);
+
 				if (!is_null($theirUser))
 				{
 					// Replace with a specified user's data
 					$msg = self::replaceWithUserData($msg, $theirUser, 'your');
 				}
+
 				$msg = self::replaceWithGlobals($msg);
 				$msg = preg_replace("/{}/", "", $msg);
 
 				// Replace {element name} with form data
 				$msg = preg_replace_callback("/{[^}\s]+}/i", array($this, 'replaceWithFormData'), $msg);
+
 				if (!$keepPlaceholders)
 				{
 					$msg = preg_replace("/{[^}\s]+}/i", '', $msg);
 				}
 			}
 		}
+
 		return $returnType === 'array' ? $msgs : JArrayHelper::getValue($msgs, 0, '');
 	}
 
@@ -625,6 +667,7 @@ class FabrikWorker
 	{
 		$f = JFilterInput::getInstance();
 		$request = $f->clean($_REQUEST, 'array');
+
 		foreach ($request as $key => $val)
 		{
 			if (is_string($val))
@@ -652,10 +695,12 @@ class FabrikWorker
 	public static function replaceWithUserData($msg, $user = null, $prefix = 'my')
 	{
 		$app = JFactory::getApplication();
+
 		if (is_null($user))
 		{
 			$user = JFactory::getUser();
 		}
+
 		if (is_object($user))
 		{
 			foreach ($user as $key => $val)
@@ -688,6 +733,7 @@ class FabrikWorker
 		{
 			$bits = explode('->', str_replace(array('{', '}'), '', $match));
 			$userid = $app->input->getInt(JArrayHelper::getValue($bits, 1));
+
 			if ($userid !== 0)
 			{
 				$user = JFactory::getUser($userid);
@@ -695,6 +741,7 @@ class FabrikWorker
 				$msg = str_replace($match, $val, $msg);
 			}
 		}
+
 		return $msg;
 	}
 
@@ -713,13 +760,13 @@ class FabrikWorker
 		$Itemid = self::itemId();
 		$config = JFactory::getConfig();
 		$msg = str_replace('{$mosConfig_absolute_path}', JPATH_SITE, $msg);
-		//$msg = str_replace('{$mosConfig_live_site}', JURI::base(), $msg);
 		$msg = str_replace('{$mosConfig_live_site}', COM_FABRIK_LIVESITE, $msg);
 		$msg = str_replace('{$mosConfig_offset}', $config->get('offset'), $msg);
 		$msg = str_replace('{$Itemid}', $Itemid, $msg);
 		$msg = str_replace('{$mosConfig_sitename}', $config->get('sitename'), $msg);
 		$msg = str_replace('{$mosConfig_mailfrom}', $config->get('mailfrom'), $msg);
 		$msg = str_replace('{where_i_came_from}', $app->input->server->get('HTTP_REFERER', ''), $msg);
+
 		foreach ($_SERVER as $key => $val)
 		{
 			if (!is_object($val) && !is_array($val))
@@ -732,10 +779,10 @@ class FabrikWorker
 		$lang = JFactory::getLanguage()->getTag();
 		$lang = str_replace('-', '_', $lang);
 		$msg = str_replace('{lang}', $lang, $msg);
-
 		$session = JFactory::getSession();
 		$token = $session->get('session.token');
 		$msg = str_replace('{session.token}', $token, $msg);
+
 		return $msg;
 	}
 
@@ -752,6 +799,7 @@ class FabrikWorker
 	{
 		// Merge any join data key val pairs down into the main data array
 		$joins = JArrayHelper::getValue($this->_searchData, 'join', array());
+
 		foreach ($joins as $k => $data)
 		{
 			foreach ($data as $k => $v)
@@ -770,7 +818,8 @@ class FabrikWorker
 
 		$match = $matches[0];
 		$orig = $match;
-		/* strip the {} */
+
+		// Strip the {}
 		$match = JString::substr($match, 1, JString::strlen($match) - 2);
 
 		/* $$$ hugh - added dbprefix substitution
@@ -783,10 +832,12 @@ class FabrikWorker
 
 		// $$$ rob test this format searchvalue||defaultsearchvalue
 		$bits = explode('||', $match);
+
 		if (count($bits) == 2)
 		{
 			$match = self::parseMessageForPlaceHolder('{' . $bits[0] . '}', $this->_searchData, false);
 			$default = $bits[1];
+
 			if ($match == '')
 			{
 				// 	$$$ rob seems like bits[1] in fabrik plugin is already matched so return that rather then reparsing
@@ -800,6 +851,7 @@ class FabrikWorker
 		}
 
 		$match = preg_replace("/ /", "_", $match);
+
 		if (!strstr($match, '.'))
 		{
 			// For some reason array_key_exists wasnt working for nested arrays??
@@ -807,9 +859,11 @@ class FabrikWorker
 
 			// Remove the table prefix from the post key
 			$aPrefixFields = array();
+
 			for ($i = 0; $i < count($aKeys); $i++)
 			{
 				$aKeyParts = explode('___', $aKeys[$i]);
+
 				if (count($aKeyParts) == 2)
 				{
 					$tablePrefix = array_shift($aKeyParts);
@@ -817,6 +871,7 @@ class FabrikWorker
 					$aPrefixFields[$field] = $tablePrefix;
 				}
 			}
+
 			if (array_key_exists($match, $aPrefixFields))
 			{
 				$match = $aPrefixFields[$match] . '___' . $match;
@@ -824,10 +879,12 @@ class FabrikWorker
 
 			// Test to see if the made match is in the post key arrays
 			$found = in_array($match, $aKeys, true);
+
 			if ($found)
 			{
 				// Get the post data
 				$match = $this->_searchData[$match];
+
 				if (is_array($match))
 				{
 					$newmatch = '';
@@ -844,6 +901,7 @@ class FabrikWorker
 							$newmatch .= ',' . $m;
 						}
 					}
+
 					$match = JString::ltrim($newmatch, ',');
 				}
 			}
@@ -857,6 +915,7 @@ class FabrikWorker
 			// Could be looking for URL field type eg for $_POST[url][link] the match text will be url.link
 			$aMatch = explode(".", $match);
 			$aPost = $this->_searchData;
+
 			foreach ($aMatch as $sPossibleArrayKey)
 			{
 				if (is_array($aPost))
@@ -871,12 +930,15 @@ class FabrikWorker
 					}
 				}
 			}
+
 			$match = $aPost;
 		}
+
 		if ($this->parseAddSlases)
 		{
 			$match = htmlspecialchars($match, ENT_QUOTES, 'UTF-8');
 		}
+
 		return $found ? $match : $orig;
 	}
 
@@ -896,11 +958,13 @@ class FabrikWorker
 	public static function readImages($imagePath, $folderPath, &$folders, &$images, $aFolderFilter, $makeOptions = true)
 	{
 		$imgFiles = self::fabrikReadDirectory($imagePath, '.', false, false, $aFolderFilter);
+
 		foreach ($imgFiles as $file)
 		{
 			$ff_ = $folderPath . $file . '/';
 			$ff = $folderPath . $file;
 			$i_f = $imagePath . '/' . $file;
+
 			if (is_dir($i_f) && $file != 'CVS' && $file != '.svn')
 			{
 				if (!in_array($file, $aFolderFilter))
@@ -935,15 +999,19 @@ class FabrikWorker
 		$foldersOnly = false)
 	{
 		$arr = array();
+
 		if (!@is_dir($path))
 		{
 			return $arr;
 		}
+
 		$handle = opendir($path);
+
 		while ($file = readdir($handle))
 		{
 			$dir = JPath::clean($path . '/' . $file);
 			$isDir = is_dir($dir);
+
 			if ($file != "." && $file != "..")
 			{
 				if (preg_match("/$filter/", $file))
@@ -960,7 +1028,9 @@ class FabrikWorker
 						}
 					}
 				}
+
 				$goDown = true;
+
 				if ($recurse && $isDir)
 				{
 					foreach ($aFolderFilter as $sFolderFilter)
@@ -970,6 +1040,7 @@ class FabrikWorker
 							$goDown = false;
 						}
 					}
+
 					if ($goDown)
 					{
 						$arr2 = self::fabrikReadDirectory($dir, $filter, $recurse, $fullpath, $aFolderFilter, $foldersOnly);
@@ -979,8 +1050,10 @@ class FabrikWorker
 				}
 			}
 		}
+
 		closedir($handle);
 		asort($arr);
+
 		return $arr;
 	}
 
@@ -998,6 +1071,7 @@ class FabrikWorker
 	public static function getJoomfishLang()
 	{
 		$lang = JFactory::getLanguage();
+
 		return array_shift(explode('-', $lang->getTag()));
 	}
 
@@ -1054,6 +1128,7 @@ class FabrikWorker
 			// Each group the user is in could have different filtering properties.
 			$filterData = $filters->$groupId;
 			$filterType = JString::strtoupper($filterData->filter_type);
+
 			if ($filterType == 'NH')
 			{
 				// Maximum HTML filtering.
@@ -1072,18 +1147,21 @@ class FabrikWorker
 				$attributes = explode(',', $filterData->filter_attributes);
 				$tempTags = array();
 				$tempAttributes = array();
-				foreach ($tags AS $tag)
+
+				foreach ($tags as $tag)
 				{
 					$tag = trim($tag);
+
 					if ($tag)
 					{
 						$tempTags[] = $tag;
 					}
 				}
 
-				foreach ($attributes AS $attribute)
+				foreach ($attributes as $attribute)
 				{
 					$attribute = trim($attribute);
+
 					if ($attribute)
 					{
 						$tempAttributes[] = $attribute;
@@ -1143,6 +1221,7 @@ class FabrikWorker
 				$filter = JFilterInput::getInstance();
 			}
 		}
+
 		return array($dofilter, $filter);
 	}
 
@@ -1177,6 +1256,7 @@ class FabrikWorker
 		{
 			return;
 		}
+
 		$error = error_get_last();
 		/**
 		 * $$$ hugh - added check for 'message' being empty, so we can do ..
@@ -1193,6 +1273,7 @@ class FabrikWorker
 			// No error set (eval could have actually returned false as a correct value)
 			return;
 		}
+
 		$enqMsgType = 'error';
 		$indentHTML = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;Debug:&nbsp;';
 		$errString = JText::_('COM_FABRIK_EVAL_ERROR_USER_WARNING');
@@ -1241,6 +1322,7 @@ class FabrikWorker
 					$priority = JLog::ERROR;
 					break;
 			}
+
 			JLog::add($errString, $priority, 'com_fabrik');
 		}
 	}
@@ -1261,6 +1343,7 @@ class FabrikWorker
 		{
 			$msg = json_encode($msg);
 		}
+
 		$log = FabTable::getInstance('log', 'FabrikTable');
 		$log->message_type = $type;
 		$log->message = $msg;
@@ -1284,14 +1367,17 @@ class FabrikWorker
 	public static function getDbo($loadJoomlaDb = false, $cnnId = null)
 	{
 		$sig = (int) $loadJoomlaDb . '.' . $cnnId;
+
 		if (!self::$database)
 		{
 			self::$database = array();
 		}
+
 		if (!array_key_exists($sig, self::$database))
 		{
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 			$conf = JFactory::getConfig();
+
 			if (!$loadJoomlaDb)
 			{
 				$cnModel = JModelLegacy::getInstance('Connection', 'FabrikFEModel');
@@ -1308,6 +1394,7 @@ class FabrikWorker
 				$password = $conf->get('password');
 				$database = $conf->get('db');
 			}
+
 			$dbprefix = $conf->get('dbprefix');
 			$driver = $conf->get('dbtype');
 
@@ -1328,6 +1415,7 @@ class FabrikWorker
 			 *  default connection as well, essentially enabling it for ALL queries we do.
 			 */
 			$fbConfig = JComponentHelper::getParams('com_fabrik');
+
 			if ($fbConfig->get('enable_big_selects', 0) == '1')
 			{
 				$fabrikDb = self::$database[$sig];
@@ -1335,6 +1423,7 @@ class FabrikWorker
 				$fabrikDb->execute();
 			}
 		}
+
 		return self::$database[$sig];
 	}
 
@@ -1353,28 +1442,35 @@ class FabrikWorker
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$jform = $input->get('jform', array(), 'array');
+
 		if (is_object($item))
 		{
 			$item = is_null($item->connection_id) ? JArrayHelper::getValue($jform, 'connection_id', -1) : $item->connection_id;
 		}
+
 		$connId = (int) $item;
+
 		if (!self::$connection)
 		{
 			self::$connection = array();
 		}
+
 		if (!array_key_exists($connId, self::$connection))
 		{
 			$connectionModel = JModelLegacy::getInstance('connection', 'FabrikFEModel');
 			$connectionModel->setId($connId);
+
 			if ($connId === -1)
 			{
 				// -1 for creating new table
 				$connectionModel->loadDefaultConnection();
 				$connectionModel->setId($connectionModel->getConnection()->id);
 			}
+
 			$connection = $connectionModel->getConnection();
 			self::$connection[$connId] = $connectionModel;
 		}
+
 		return self::$connection[$connId];
 	}
 
@@ -1392,6 +1488,7 @@ class FabrikWorker
 		{
 			self::$pluginManager = JModelLegacy::getInstance('Pluginmanager', 'FabrikFEModel');
 		}
+
 		return self::$pluginManager;
 	}
 
@@ -1414,6 +1511,7 @@ class FabrikWorker
 				// Was messng up date rendering @ http://www.podion.eu/dev2/index.php/2011-12-19-10-33-59/actueel
 				// return $toArray ? (array) $data : $data;
 			}
+
 			// Repeat elements are concatned with the GROUPSPLITTER - conver to json string  before continuing.
 			if (strstr($data, GROUPSPLITTER))
 			{
@@ -1436,10 +1534,13 @@ class FabrikWorker
 					 */
 					$json = json_decode(stripslashes(htmlspecialchars_decode($data, ENT_QUOTES)));
 				}
+
 				$data = is_null($json) ? $data : $json;
 			}
 		}
+
 		$data = $toArray ? (array) $data : $data;
+
 		return $data;
 	}
 
@@ -1461,10 +1562,12 @@ class FabrikWorker
 		{
 			return false;
 		}
+
 		if (in_array($d, $aNullDates))
 		{
 			return false;
 		}
+
 		try
 		{
 			$dt = new DateTime($d);
@@ -1473,6 +1576,7 @@ class FabrikWorker
 		{
 			return false;
 		}
+
 		return true;
 	}
 
@@ -1492,10 +1596,12 @@ class FabrikWorker
 		{
 			return false;
 		}
+
 		if (is_numeric($data))
 		{
 			return false;
 		}
+
 		return json_decode($data) !== null;
 	}
 
@@ -1514,11 +1620,13 @@ class FabrikWorker
 		$conf = JFactory::getConfig();
 		$mail = JFactory::getMailer();
 		$mailer = $conf->get('mailer');
+
 		if ($mailer === 'mail')
 		{
 			// Sendmail and Joomla isEmailAddress dont use the same conditions
 			return (JMailHelper::isEmailAddress($email) && PHPMailer::ValidateAddress($email));
 		}
+
 		return JMailHelper::isEmailAddress($email);
 	}
 
@@ -1531,6 +1639,7 @@ class FabrikWorker
 	public static function goBackAction()
 	{
 		jimport('joomla.environment.browser');
+
 		if (JBrowser::getInstance()->isBrowser('msie'))
 		{
 			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
@@ -1540,6 +1649,7 @@ class FabrikWorker
 			// $gobackaction = 'onclick=\'history.back();\'';
 			$gobackaction = 'onclick="parent.location=\'' . JArrayHelper::getValue($_SERVER, 'HTTP_REFERER') . '\'"';
 		}
+
 		return $gobackaction;
 	}
 
@@ -1552,18 +1662,21 @@ class FabrikWorker
 	public static function itemId()
 	{
 		$app = JFactory::getApplication();
+
 		if (!$app->isAdmin())
 		{
 			$menus = $app->getMenu();
 			$menu = $menus->getActive();
+
 			if (is_object($menu))
 			{
 				return $menu->id;
 			}
 		}
-		return null;
 
+		return null;
 	}
+
 	/**
 	 * Attempt to get a variable first from the menu params (if they exists) if not from request
 	 *
@@ -1579,9 +1692,11 @@ class FabrikWorker
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if ($priority === 'menu')
 		{
 			$val = $input->get($name, $val, 'string');
+
 			if (!$app->isAdmin())
 			{
 				$menus = $app->getMenu();
@@ -1607,8 +1722,10 @@ class FabrikWorker
 					$val = $menu->params->get($name, $val);
 				}
 			}
+
 			$val = $input->get($name, $val, 'string');
 		}
+
 		return $val;
 	}
 
@@ -1631,9 +1748,11 @@ class FabrikWorker
 			$input = $app->input;
 			$user = JFactory::getUser();
 			$usercol = $params->get($col, '');
+
 			if ($usercol != '')
 			{
 				$usercol = FabrikString::safeColNameToArrayKey($usercol);
+
 				if (!array_key_exists($usercol, $row))
 				{
 					return false;
@@ -1644,14 +1763,17 @@ class FabrikWorker
 					{
 						$usercol .= '_raw';
 					}
+
 					$myid = $user->get('id');
 
 					// -1 for menu items that link to their own records
 					$usercol_val = is_array($row) ? $row[$usercol] : $row->$usercol;
+
 					if (empty($usercol_val) && empty($myid))
 					{
 						return false;
 					}
+
 					if (intVal($usercol_val) === intVal($myid) || $input->get('rowid') == -1)
 					{
 						return true;
@@ -1659,6 +1781,7 @@ class FabrikWorker
 				}
 			}
 		}
+
 		return -1;
 	}
 
@@ -1673,10 +1796,12 @@ class FabrikWorker
 	public static function canPdf()
 	{
 		$file = JPATH_LIBRARIES . '/dompdf/dompdf_config.inc.php';
+
 		if (!JFile::exists($file))
 		{
 			throw new RuntimeException(JText::_('COM_FABRIK_NOTICE_DOMPDF_NOT_FOUND'));
 		}
+
 		return true;
 	}
 
@@ -1701,11 +1826,14 @@ class FabrikWorker
 		$cache = JCache::getInstance('callback', $opts);
 		$config = JFactory::getConfig();
 		$doCache = $config->get('caching', 0) > 0 ? true : false;
+
 		if ($doCache && $listModel !== null)
 		{
 			$doCache = $listModel->getParams()->get('list_disable_caching', '0') == '0';
 		}
+
 		$cache->setCaching($doCache);
+
 		return $cache;
 	}
 
@@ -1739,6 +1867,7 @@ class FabrikWorker
 				$json[$name] = $field->value;
 			}
 		}
+
 		return $json;
 	}
 
@@ -1757,6 +1886,7 @@ class FabrikWorker
 
 		// Only use template test for testing in 2.5 with my temp J bootstrap template.
 		$tpl = $app->getTemplate();
+
 		return ($tpl === 'bootstrap' || $tpl === 'fabrik4' || $version->RELEASE > 2.5);
 	}
 }

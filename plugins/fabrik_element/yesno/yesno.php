@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/radiobutton/radiobutton.php';
 
 class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 {
-
 	/**
 	 * Db table field type
 	 *
@@ -54,6 +53,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 			$params = $this->getParams();
 			$this->default = $params->get('yesno_default', 0);
 		}
+
 		return $this->default;
 	}
 
@@ -74,16 +74,19 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$raw = $this->getFullName(true, false) . '_raw';
 		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
+
 		if ($data == '1')
 		{
 			$icon = $j3 ? 'checkmark.png' : '1.png';
 			$opts = array('alt' => JText::_('JYES'));
 			$opts['icon-class'] = 'icon-ok-sign';
+
 			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, $opts);
 		}
 		else
 		{
 			$icon = $j3 ? 'remove.png' : '0.png';
+
 			return FabrikHelperHTML::image($icon, 'list', @$this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
@@ -104,14 +107,17 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$raw = $this->getFullName() . '_raw';
 		$data = $thisRow->$raw;
 		$j3 = FabrikWorker::j3();
+
 		if ($data == '1')
 		{
 			$icon = $j3 ? 'checkmark.png' : '1_8bit.png';
+
 			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => JText::_('JYES')));
 		}
 		else
 		{
 			$icon = $j3 ? 'checkmark.png' : '0_8bit.png';
+
 			return FabrikHelperHTML::image($icon, 'list', $this->tmpl, array('alt' => JText::_('JNO')));
 		}
 	}
@@ -130,6 +136,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$raw = $this->getFullName(true, false) . '_raw';
 		$rawdata = $thisRow->$raw;
 		$data = $rawdata ? $data : JText::_('JNO');
+
 		return $data;
 	}
 
@@ -168,17 +175,20 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$element = $this->getElement();
 		$values = $this->getSubOptionValues();
 		$labels = $this->getSubOptionLabels();
+
 		foreach ($rows as &$row)
 		{
 			if ($row->value !== '')
 			{
 				$k = array_search($row->value, $values);
+
 				if ($k !== false)
 				{
 					$row->text = $labels[$k];
 				}
 			}
 		}
+
 		$rows = array_values($rows);
 	}
 
@@ -218,6 +228,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	protected function getReadOnlyOutput($value, $label)
 	{
 		$j3 = FabrikWorker::j3();
+
 		if ($value == '1')
 		{
 			$img = $j3 ? 'checkmark.png' : '1.png';
@@ -226,7 +237,9 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$img = $j3 ? 'remove.png' : '0.png';
 		}
+
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/yesno/images/', 'image', 'form', false);
+
 		return FabrikHelperHTML::image($img, 'form', @$this->tmpl, array('alt' => $label));
 	}
 
@@ -243,6 +256,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$params = $this->getParams();
 		$params->set('options_per_row', 4);
+
 		return parent::render($data, $repeatCounter);
 	}
 
@@ -258,6 +272,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$params = $this->getParams();
 		$ok = FabrikWorker::j3() && $params->get('btnGroup', true);
+
 		return $ok;
 	}
 
@@ -273,6 +288,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbYesno', $id, $opts);
 	}
 
@@ -299,6 +315,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$rows = $this->filterValueList($normal);
 		$return = array();
 		$element = $this->getElement();
+
 		if ($element->filter_type == 'hidden')
 		{
 			$return[] = '<input type="text" name="' . $v . '" class="inputbox fabrik_filter" value="' . $default . '" id="' . $htmlid . '" />';
@@ -307,6 +324,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$return[] = JHTML::_('select.genericlist', $rows, $v, 'class="inputbox fabrik_filter" size="1" ', 'value', 'text', $default, $htmlid);
 		}
+
 		if ($normal)
 		{
 			$return[] = $this->getFilterHiddenFields($counter, $elName);
@@ -315,6 +333,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		{
 			$return[] = $this->getAdvancedFilterHiddenFields();
 		}
+
 		return implode("\n", $return);
 	}
 
@@ -338,18 +357,22 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 		$o->text = $this->filterSelectLabel();
 		$opt = array($o);
 		$rows = parent::filterValueList_Exact($normal, $tableName, $label, $id, $incjoin);
+
 		foreach ($rows as &$row)
 		{
 			if ($row->value == 1)
 			{
 				$row->text = JText::_('JYES');
 			}
+
 			if ($row->value == 0)
 			{
 				$row->text = JText::_('JNO');
 			}
 		}
+
 		$rows = array_merge($opt, $rows);
+
 		return $rows;
 	}
 
@@ -370,6 +393,7 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		$rows = array(JHTML::_('select.option', '', $this->filterSelectLabel()), JHTML::_('select.option', '0', JText::_('JNO')),
 			JHTML::_('select.option', '1', JText::_('JYES')));
+
 		return $rows;
 	}
 
@@ -383,5 +407,4 @@ class PlgFabrik_ElementYesno extends PlgFabrik_ElementRadiobutton
 	{
 		return '=';
 	}
-
 }

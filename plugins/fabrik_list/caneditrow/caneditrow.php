@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 {
-
 	protected $acl = array();
 	/**
 	 * Can the plug-in select list rows
@@ -40,7 +39,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	/**
 	 * Can the row be edited
 	 *
-	 * @param   object  $row        Current row to test
+	 * @param   object  $row  Current row to test
 	 *
 	 * @return boolean
 	 */
@@ -48,12 +47,14 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 	public function onCanEdit($row)
 	{
 		$params = $this->getParams();
+
 		// If $row is null, we were called from the list's canEdit() in a per-table rather than per-row context,
 		// and we don't have an opinion on per-table edit permissions, so just return true.
 		if (is_null($row) || is_null($row[0]))
 		{
 			return true;
 		}
+
 		if (is_array($row[0]))
 		{
 			$data = JArrayHelper::toObject($row[0]);
@@ -81,6 +82,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		if (trim($field) == '' && trim($caneditrow_eval) == '')
 		{
 			$this->acl[$data->__pk_val] = true;
+
 			return true;
 		}
 
@@ -92,6 +94,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			$caneditrow_eval = @eval($caneditrow_eval);
 			FabrikWorker::logEval($caneditrow_eval, 'Caught exception on eval in can edit row : %s');
 			$this->acl[$data['__pk_val']] = $caneditrow_eval;
+
 			return $caneditrow_eval;
 		}
 		else
@@ -101,23 +104,26 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 			{
 				$field .= '_raw';
 			}
+
 			$value = $params->get('caneditrow_value');
 			$operator = $params->get('operator', '=');
+
 			switch ($operator)
 			{
 				case '=':
 				default:
 					$return = $data->$field == $value;
 					$this->acl[$data->__pk_val] = $return;
+
 					return $return;
 					break;
 				case "!=":
 					$return = $data->$field != $value;
 					$this->acl[$data->__pk_val] = $return;
+
 					return $return;
 					break;
 			}
-
 		}
 	}
 
@@ -147,6 +153,7 @@ class PlgFabrik_ListCaneditrow extends PlgFabrik_List
 		$opts->acl = $this->acl;
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListCanEditRow($opts)";
+
 		return true;
 	}
 }

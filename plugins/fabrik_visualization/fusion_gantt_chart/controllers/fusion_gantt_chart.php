@@ -19,7 +19,7 @@ jimport('joomla.application.component.controller');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.fusionganntchart
  * @since       3.0
-*/
+ */
 
 class FabrikControllerVisualizationfusion_Gantt_Chart extends FabrikControllerVisualization
 {

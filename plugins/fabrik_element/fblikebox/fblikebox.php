@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementFblikebox extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element have a label
 	 *
@@ -69,6 +68,7 @@ class PlgFabrik_ElementFblikebox extends PlgFabrik_Element
 
 		// $str .= "<fb:like-box id=\"$pageid\" width=\"$width\" height=\"$height\" connections=\"$connections\" stream=\"$stream\" header=\"$header\" />";
 		$str .= '<fb:like-box id="185550966885" width="292" height="440" connections="4" stream="true" header="true" />';
+
 		return $str;
 	}
 
@@ -84,7 +84,7 @@ class PlgFabrik_ElementFblikebox extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbLikebox', $id, $opts);
 	}
-
 }

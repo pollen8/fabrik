@@ -90,7 +90,6 @@
 			<file>access.xml</file>
 			<file>config.xml</file>
 			<file>controller.php</file>
-			<file>element.php</file>
 			<file>headings.css</file>
 			<file>index.html</file>
 		</files>

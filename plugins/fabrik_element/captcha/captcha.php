@@ -11,7 +11,7 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha-php-1.11/recaptchalib.php';
+require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/recaptcha-php-1.11/recaptchalib.php';
 
 /**
  * Plugin element to captcha
@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/captcha/recaptcha-php-1.11/re
 
 class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 {
-
 	protected $font = 'monofont.ttf';
 
 	/**
@@ -54,11 +53,13 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		$possible = '23456789bcdfghjkmnpqrstvwxyz';
 		$code = '';
 		$i = 0;
+
 		while ($i < $characters)
 		{
 			$code .= JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 			$i++;
 		}
+
 		return $code;
 	}
 
@@ -75,6 +76,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
+
 		if ($user->id != 0)
 		{
 			if ($params->get('captcha-showloggedin', 0) == 0)
@@ -82,6 +84,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return '';
 			}
 		}
+
 		return parent::getLabel($repeatCounter, $tmpl);
 	}
 
@@ -95,6 +98,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
+
 		if ($user->id != 0)
 		{
 			if ($params->get('captcha-showloggedin', 0) == 0)
@@ -102,6 +106,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return true;
 			}
 		}
+
 		return parent::isHidden();
 	}
 
@@ -132,6 +137,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		$user = JFactory::getUser();
 		$params = $this->getParams();
+
 		if ($user->id != 0)
 		{
 			if ($params->get('captcha-showloggedin', 0) == 0)
@@ -139,6 +145,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return false;
 			}
 		}
+
 		return parent::canUse();
 	}
 
@@ -162,6 +169,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		$params = $this->getParams();
 		$user = JFactory::getUser();
 		$value = $this->getValue($data, $repeatCounter);
+
 		if (!$this->isEditable())
 		{
 			if ($element->hidden == '1')
@@ -173,6 +181,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				return stripslashes($value);
 			}
 		}
+
 		if ($params->get('captcha-method') == 'recaptcha')
 		{
 			$publickey = $params->get('recaptcha_publickey');
@@ -181,6 +190,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$theme = $params->get('recaptcha_theme', 'red');
 			$lang = JString::strtolower($params->get('recaptcha_lang', 'en'));
 			$error = null;
+
 			if ($user->id != 0 && $params->get('captcha-showloggedin', 0) == false)
 			{
 				return '<input class="inputbox text" type="hidden" name="' . $name . '" id="' . $id . '" value="" />';
@@ -189,6 +199,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			{
 				$browser = JBrowser::getInstance();
 				$ssl = $browser->isSSLConnection();
+
 				return fabrik_recaptcha_get_html($id, $publickey, $theme, $lang, $error, $ssl);
 			}
 		}
@@ -198,13 +209,16 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			{
 				return '<input class="inputbox text" type="hidden" name="' . $name . '" id="' . $id . '" value="" />';
 			}
+
 			if (!defined('AYAH_PUBLISHER_KEY'))
 			{
 				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
 				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
 			}
-			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/ayah_php_bundle_1.1.7/ayah.php';
+
+			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ayah_php_bundle_1.1.7/ayah.php';
 			$ayah = new AYAH;
+
 			return $ayah->getPublisherHTML();
 		}
 		else
@@ -255,16 +269,20 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$str[] = '<br />';
 
 			$type = ($params->get('password') == "1") ? "password" : "text";
+
 			if ($this->elementError != '')
 			{
 				$type .= ' elementErrorHighlight';
 			}
+
 			if ($element->hidden == '1')
 			{
 				$type = 'hidden';
 			}
+
 			$sizeInfo = ' size="' . $size . '"';
 			$str[] = '<input class="inputbox ' . $type . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" ' . $sizeInfo . ' value="" />';
+
 			return implode("\n", $str);
 		}
 	}
@@ -285,10 +303,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
+
 		if (!$this->canUse())
 		{
 			return true;
 		}
+
 		if ($params->get('captcha-method') == 'recaptcha')
 		{
 			$privatekey = $params->get('recaptcha_privatekey');
@@ -298,6 +318,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				$challenge = $input->get('recaptcha_challenge_field');
 				$response = $input->get('recaptcha_response_field');
 				$resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], $challenge, $response);
+
 				return ($resp->is_valid) ? true : false;
 			}
 
@@ -310,8 +331,10 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				define('AYAH_PUBLISHER_KEY', $params->get('playthru_publisher_key', ''));
 				define('AYAH_SCORING_KEY', $params->get('playthru_scoring_key', ''));
 			}
-			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/ayah_php_bundle_1.1.7/ayah.php';
+
+			require_once JPATH_SITE . '/plugins/fabrik_element/captcha/libs/ayah_php_bundle_1.1.7/ayah.php';
 			$ayah = new AYAH;
+
 			return $ayah->scoreResult();
 		}
 		else
@@ -319,10 +342,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 			$this->getParams();
 			$elName = $this->getFullName(true, false);
 			$session = JFactory::getSession();
+
 			if ($session->get('com_' . $package . '.element.captach.security_code', null) != $data)
 			{
 				return false;
 			}
+
 			return true;
 		}
 	}
@@ -347,10 +372,12 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	public function mustValidate()
 	{
 		$params = $this->getParams();
+
 		if (!$this->canUse() && !$this->canView())
 		{
 			return false;
 		}
+
 		return parent::mustValidate();
 	}
 
@@ -365,12 +392,15 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	public function elementJavascript($repeatCounter)
 	{
 		$user = JFactory::getUser();
+
 		if ($user->id == 0)
 		{
 			$id = $this->getHTMLId($repeatCounter);
 			$opts = $this->getElementJSOptions($repeatCounter);
+
 			return array('FbCaptcha', $id, $opts);
 		}
+
 		return array();
 	}
 
@@ -402,6 +432,7 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 	{
 		$regex = '/^#?(([\da-f])([\da-f])([\da-f])|([\da-f]{2})([\da-f]{2})([\da-f]{2}))$/i';
 		$rgb = array();
+
 		if (!preg_match($regex, $hexColor, $rgb))
 		{
 			if (!preg_match($regex, $default, $rgb))
@@ -410,20 +441,25 @@ class PlgFabrik_ElementCaptcha extends PlgFabrik_Element
 				$rgb = array('FF0000', 'FF0000', 'FF', '00', '00');
 			}
 		}
+
 		array_shift($rgb);
 		array_shift($rgb);
+
 		if (count($rgb) > 3)
 		{
 			$rgb = array_slice($rgb, 3, 3);
 		}
+
 		for ($i = 0; $i < 3; $i++)
 		{
 			if (JString::strlen($rgb[$i]) == 1)
 			{
 				$rgb[$i] .= $rgb[$i];
 			}
+
 			$rgb[$i] = intval($rgb[$i], 16);
 		}
+
 		return implode('+', $rgb);
 	}
 }

@@ -18,19 +18,18 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
  *
  * @package     Joomla
  * @subpackage  Fabrik
+ * @since       3.0
  */
 class FabrikTableJsaction extends FabTable
 {
-
 	/**
 	 * Construct
 	 *
 	 * @param   object  &$db  database object
 	 */
 
-	function __construct(&$_db)
+	public function __construct(&$db)
 	{
-		parent::__construct('#__{package}_jsactions', 'id', $_db);
+		parent::__construct('#__{package}_jsactions', 'id', $db);
 	}
-
 }

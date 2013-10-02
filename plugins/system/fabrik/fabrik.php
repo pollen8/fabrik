@@ -25,7 +25,6 @@ jimport('joomla.filesystem.file');
 
 class PlgSystemFabrik extends JPlugin
 {
-
 	/**
 	 * Constructor
 	 *
@@ -54,6 +53,7 @@ class PlgSystemFabrik extends JPlugin
 		if (class_exists('KunenaAccess'))
 		{
 			$msg = 'Fabrik: Please ensure the Fabrik System plug-in is ordered before the Kunena system plugin';
+
 			if ($app->isAdmin())
 			{
 				$app->enqueueMessage($msg, 'error');
@@ -61,9 +61,11 @@ class PlgSystemFabrik extends JPlugin
 		}
 		else
 		{
-			JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.field', JPATH_SITE . '/administrator', 'administrator.');
-			JLoader::import('components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE) . '.form', JPATH_SITE . '/administrator', 'administrator.');
+			$base = 'components.com_fabrik.classes.' . str_replace('.', '', $version->RELEASE);
+			JLoader::import($base . '.field', JPATH_SITE . '/administrator', 'administrator.');
+			JLoader::import($base . '.form', JPATH_SITE . '/administrator', 'administrator.');
 		}
+
 		parent::__construct($subject, $config);
 	}
 
@@ -76,6 +78,7 @@ class PlgSystemFabrik extends JPlugin
 	public static function js()
 	{
 		$config = JFactory::getConfig();
+
 		if ($config->get('caching') == 0)
 		{
 			$script = self::buildJs();
@@ -87,10 +90,12 @@ class PlgSystemFabrik extends JPlugin
 			$uri = $uri->toString(array('path', 'query'));
 			$file = md5($uri) . '.js';
 			$folder = JPATH_SITE . '/cache/com_fabrik/js/';
+
 			if (!JFolder::exists($folder))
 			{
 				JFolder::create($folder);
 			}
+
 			$cacheFile = $folder . $file;
 
 			// Check for cached version
@@ -104,7 +109,9 @@ class PlgSystemFabrik extends JPlugin
 				$script = JFile::read($cacheFile);
 			}
 		}
+
 		self::clearJs();
+
 		return $script;
 	}
 
@@ -135,7 +142,8 @@ class PlgSystemFabrik extends JPlugin
 
 		$js = $session->get('fabrik.js.scripts', array());
 		$js = implode("\n", $js);
-		if ($shim.$js !== '')
+
+		if ($shim . $js !== '')
 		{
 			$script = '<script type="text/javascript">' . "\n" . $shim . "\n" . $js . "\n" . '</script>';
 		}
@@ -143,6 +151,7 @@ class PlgSystemFabrik extends JPlugin
 		{
 			$script = '';
 		}
+
 		return $script;
 	}
 
@@ -156,6 +165,7 @@ class PlgSystemFabrik extends JPlugin
 	{
 		$script = self::js();
 		$content = JResponse::getBody();
+
 		if (!stristr($content, '</body>'))
 		{
 			$content .= $script;
@@ -164,6 +174,7 @@ class PlgSystemFabrik extends JPlugin
 		{
 			$content = str_ireplace('</body>', $script . '</body>', $content);
 		}
+
 		JResponse::setBody($content);
 	}
 
@@ -197,6 +208,7 @@ class PlgSystemFabrik extends JPlugin
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		$bigSelects = $fbConfig->get('enable_big_selects', 0);
 		$db = JFactory::getDbo();
+
 		if ($bigSelects)
 		{
 			$db->setQuery("SET OPTION SQL_BIG_SELECTS=1");
@@ -229,6 +241,7 @@ class PlgSystemFabrik extends JPlugin
 		{
 			return;
 		}
+
 		$input = $app->input;
 		define('COM_FABRIK_SEARCH_RUN', true);
 		JModelLegacy::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
@@ -241,6 +254,7 @@ class PlgSystemFabrik extends JPlugin
 		// Load plugin params info
 		$limit = $params->def('search_limit', 50);
 		$text = trim($text);
+
 		if ($text == '')
 		{
 			return array();
@@ -270,6 +284,7 @@ class PlgSystemFabrik extends JPlugin
 				$order = 'a.created DESC';
 				break;
 		}
+
 		// Get all tables with search on
 		$query = $db->getQuery(true);
 		$query->select('id')->from('#__{package}_lists')->where('published = 1');
@@ -291,9 +306,9 @@ class PlgSystemFabrik extends JPlugin
 
 		$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$app = JFactory::getApplication();
+
 		foreach ($ids as $id)
 		{
-
 			// Re-ini the list model (was using reset() but that was flaky)
 			$listModel = JModelLegacy::getInstance('list', 'FabrikFEModel');
 
@@ -303,9 +318,11 @@ class PlgSystemFabrik extends JPlugin
 
 			$used = memory_get_usage();
 			$usage[] = memory_get_usage();
+
 			if (count($usage) > 2)
 			{
 				$diff = $usage[count($usage) - 1] - $usage[count($usage) - 2];
+
 				if ($diff + $usage[count($usage) - 1] > $memory - $memSafety)
 				{
 					$app->enqueueMessage('Some records were not searched due to memory limitations');
@@ -318,10 +335,12 @@ class PlgSystemFabrik extends JPlugin
 
 			$listModel->setId($id);
 			$searchFields = $listModel->getSearchAllFields();
+
 			if (empty($searchFields))
 			{
 				continue;
 			}
+
 			$filterModel = $listModel->getFilterModel();
 			$requestKey = $filterModel->getSearchAllRequestKey();
 
@@ -356,11 +375,13 @@ class PlgSystemFabrik extends JPlugin
 
 			$aAllowedList = array();
 			$pk = $table->db_primary_key;
+
 			foreach ($allrows as $group)
 			{
 				foreach ($group as $oData)
 				{
 					$pkval = $oData->__pk_val;
+
 					if ($app->isAdmin() || $params->get('search_link_type') === 'form')
 					{
 						$href = $oData->fabrik_edit_url;
@@ -369,11 +390,13 @@ class PlgSystemFabrik extends JPlugin
 					{
 						$href = $oData->fabrik_view_url;
 					}
+
 					if (!in_array($href, $urls))
 					{
 						$limit--;
 						$urls[] = $href;
 						$o = new stdClass;
+
 						if (isset($oData->$title))
 						{
 							$o->title = $table->label . ' : ' . $oData->$title;
@@ -382,12 +405,14 @@ class PlgSystemFabrik extends JPlugin
 						{
 							$o->title = $table->label;
 						}
+
 						$o->_pkey = $table->db_primary_key;
 						$o->section = $section;
 
 						$o->href = $href;
 						$o->created = '';
 						$o->browsernav = 2;
+
 						if (isset($oData->$descname))
 						{
 							$o->text = $oData->$descname;
@@ -396,14 +421,18 @@ class PlgSystemFabrik extends JPlugin
 						{
 							$o->text = '';
 						}
+
 						$o->title = strip_tags($o->title);
 						$aAllowedList[] = $o;
 					}
 				}
+
 				$list[] = $aAllowedList;
 			}
 		}
+
 		$allList = array();
+
 		foreach ($list as $li)
 		{
 			if (is_array($li) && !empty($li))
@@ -411,7 +440,7 @@ class PlgSystemFabrik extends JPlugin
 				$allList = array_merge($allList, $li);
 			}
 		}
+
 		return $allList;
 	}
-
 }

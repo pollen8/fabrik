@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewMedia extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -42,25 +41,28 @@ class FabrikViewMedia extends JViewLegacy
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
 		$params = $model->getParams();
-
 		$js = $model->getJs();
 		$srcs = FabrikHelperHTML::framework();
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
 		$srcs[] = 'plugins/fabrik_visualization/media/media.js';
+
 		if ($params->get('media_which_player', 'jw') == 'jw')
 		{
 			$srcs[] = 'plugins/fabrik_visualization/media/libs/jw/jwplayer.js';
 		}
+
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $js);
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
+
 		$media = $model->getRow();
 		$this->media = $model->getMedia();
-
 		$this->params = $params;
 		$viewName = $this->getName();
 		$this->containerId = $this->get('ContainerId');
@@ -74,5 +76,4 @@ class FabrikViewMedia extends JViewLegacy
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/media/views/media/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
-
 }

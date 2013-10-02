@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewGooglemap extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *

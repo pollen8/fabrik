@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 class FabrikModelTimeline extends FabrikFEModelVisualization
 {
-
 	/**
 	 * Number of ajax records to return each time
 	 *
@@ -48,6 +47,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$session = JFactory::getSession();
 
 		$key = 'com_fabrik.timeline.total.' . $input->getInt('visualizationid');
+
 		if (!$session->has($key))
 		{
 			$totals = $this->getTotal();
@@ -57,6 +57,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		{
 			$totals = $session->get($key);
 		}
+
 		$currentList = $input->getInt('currentList', 0);
 		$start = $input->getInt('start', 0);
 
@@ -67,6 +68,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$fabrik->total = array_sum($totals);
 		$fabrik->done = 0;
 		$c = 0;
+
 		if ($start <= $totals[$currentList])
 		{
 			$fabrik->next = $start + $this->step;
@@ -80,6 +82,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 				// Move onto next list?
 				$nextListId = JArrayHelper::getValue($lists, $c + 1, null);
 				$fabrik->nextListId = $nextListId;
+
 				if (is_null($nextListId))
 				{
 					// No more lists to search
@@ -97,6 +100,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			// Move onto next list?
 			$nextListId = JArrayHelper::getValue($lists, $c + 1, null);
 			$fabrik->nextListId = $nextListId;
+
 			if (is_null($nextListId))
 			{
 				// No more lists to search
@@ -199,17 +203,20 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			$startdate2 = $startdate;
 			$endKey = FabrikString::safeColName($enddate2);
 			$startKey = FabrikString::safeColName($startdate2);
+
 			if (!array_key_exists($endKey, $elements))
 			{
 				$endKey = $startKey;
 				$enddate2 = $startdate2;
 			}
+
 			$endElement = $elements[$endKey];
 
 			if (!array_key_exists($startKey, $elements))
 			{
 				throw new RuntimeException($startdate2 . " not found in the list, is it published?", 500);
 			}
+
 			$startElement = $elements[$startKey];
 			$endParams = $endElement->getParams();
 			$startParams = $startElement->getParams();
@@ -222,13 +229,16 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 					{
 						$event = new stdClass;
 						$html = $w->parseMessageForPlaceHolder($template, JArrayHelper::fromObject($row), false, true);
+
 						if ($eval)
 						{
 							$html = eval($html);
 						}
+
 						$event->description = $html;
 						$event->start = array_key_exists($startdate . '_raw', $row) ? $row->{$startdate . '_raw'} : $row->$startdate;
 						$event->end = $event->start;
+
 						if (trim($enddate) !== '')
 						{
 							$end = array_key_exists($enddate . '_raw', $row) ? $row->{$enddate . '_raw'} : @$row->$enddate;
@@ -240,6 +250,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 							$bits = explode('+', $event->end);
 							$event->end = $bits[0] . '+00:00';
 						}
+
 						$sDate = JFactory::getDate($event->start);
 						$sDate->setTimezone($timeZone);
 						$event->start = $sDate->toISO8601(true);
@@ -254,6 +265,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 						{
 							$event->title = $w->parseMessageForPlaceHolder($title, $row);
 						}
+
 						$event->title = strip_tags($event->title);
 						$url = $this->getLinkURL($listModel, $row, $c);
 						$event->link = ($listModel->getOutPutFormat() == 'json') ? '#' : $url;
@@ -263,12 +275,14 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 						$event->classname = isset($row->$className) ? $row->$className : '';
 						$event->classname = strip_tags($event->classname);
 						$event->classname = $this->toVariable($event->classname);
+
 						if ($event->start !== '' && !is_null($event->start))
 						{
 							if ($event->end == $event->start)
 							{
 								$event->end = '';
 							}
+
 							$eventdata[] = $event;
 						}
 					}
@@ -280,6 +294,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		{
 			throw new RuntimeException('Timeline: no access to list', 500);
 		}
+
 		return $eventdata;
 	}
 
@@ -294,12 +309,14 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$lists = $params->get('timeline_table', array());
 		$totals = array();
+
 		foreach ($lists as $listid)
 		{
 			$listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$listModel->setId($listid);
 			$totals[$listid] = $listModel->getTotalRecords();
 		}
+
 		return $totals;
 	}
 
@@ -367,8 +384,9 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$ref = $this->getJSRenderContext();
 		$str = "var " . $ref . " = new FbVisTimeline($json, $options);";
 		$str .= "\n" . "Fabrik.addBlock('" . $ref . "', " . $ref . ");";
+
 		return $str;
-		$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
+				$srcs[] = 'plugins/fabrik_visualization/timeline/timeline.js';
 		FabrikHelperHTML::script($srcs, $str);
 	}
 
@@ -400,6 +418,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 
 		// Replace the first character with the lowercase character.
 		$input = JString::substr_replace($input, $first, 0, 1);
+
 		return $input;
 	}
 
@@ -410,7 +429,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 	 * @param   object  $row        current row
 	 * @param   int     $c          which data set are we in (needed for getting correct params data)
 	 *
-	 *  @return  string  url
+	 * @return  string  url
 	 */
 
 	protected function getLinkURL($listModel, $row, $c)
@@ -421,6 +440,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$customLink = (array) $params->get('timeline_customlink');
 		$customLink = JArrayHelper::getValue($customLink, $c, '');
+
 		if ($customLink !== '')
 		{
 			$url = @ $w->parseMessageForPlaceHolder($customLink, JArrayHelper::fromObject($row), false, true);
@@ -430,6 +450,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		{
 			$nextview = $listModel->canEdit() ? "form" : "details";
 			$table = $listModel->getTable();
+
 			if ($app->isAdmin())
 			{
 				$url = 'index.php?option=com_fabrik&task=' . $nextview . '.view&formid=' . $table->form_id . '&rowid=' . $row->__pk_val;
@@ -440,6 +461,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 				. '&listid=' . $listModel->getId();
 			}
 		}
+
 		return $url;
 	}
 
@@ -471,17 +493,20 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			$defaultOverview = $i === $length - 1 ? true : false;
 			$o->overview = (bool) JArrayHelper::getValue($overviews, $i, $defaultOverview);
 			$bg = JArrayHelper::getValue($bgs, $i, '');
+
 			if ($bg !== '')
 			{
 				$css[] = '.timeline-band-' . $i . ' .timeline-ether-bg {
 				background: ' . $bg . ' !important; }';
 			}
+
 			$data[] = $o;
 		}
 
 		$document = JFactory::getDocument();
 		$css = implode("\n", $css);
 		$document->addStyleDeclaration($css);
+
 		return $data;
 	}
 

@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementIp extends PlgFabrik_Element
 {
-
 	/**
 	 * Draws the html form element
 	 *
@@ -44,6 +43,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		 * @TODO when editing a form with joined repeat group the rowid will be set but
 		 * the record is in fact new
 		 */
+
 		if ($params->get('ip_update_on_edit') || !$rowid || ($this->inRepeatGroup && $this->_inJoin && $this->_repeatGroupTotal == $repeatCounter))
 		{
 			$ip = $_SERVER['REMOTE_ADDR'];
@@ -62,6 +62,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		}
 
 		$str = '';
+
 		if ($this->canView())
 		{
 			if (!$this->isEditable())
@@ -75,9 +76,10 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		}
 		else
 		{
-			/* make a hidden field instead*/
+			// Make a hidden field instead
 			$str = "<input type=\"hidden\" class=\"fabrikinput\" name=\"$name\" id=\"$id\" value=\"$ip\" />";
 		}
+
 		return $str;
 	}
 
@@ -98,9 +100,11 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		{
 			return false;
 		}
+
 		$element = $this->getElement();
 		$formModel = $this->getFormModel();
 		$formData = $formModel->formData;
+
 		if (JArrayHelper::getValue($formData, 'rowid', 0) == 0 && !in_array($element->name, $data))
 		{
 			$data[$element->name] = $_SERVER['REMOTE_ADDR'];
@@ -108,12 +112,14 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		else
 		{
 			$params = $this->getParams();
+
 			if ($params->get('ip_update_on_edit', 0))
 			{
 				$data[$element->name] = $_SERVER['REMOTE_ADDR'];
 				$data[$element->name . '_raw'] = $_SERVER['REMOTE_ADDR'];
 			}
 		}
+
 		return true;
 	}
 
@@ -131,6 +137,7 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 		{
 			$this->default = $_SERVER['REMOTE_ADDR'];
 		}
+
 		return $this->default;
 	}
 
@@ -157,13 +164,16 @@ class PlgFabrik_ElementIp extends PlgFabrik_Element
 			// When rendering the element to the form
 			$key = '__pk_val';
 		}
+
 		if (empty($data) || !array_key_exists($key, $data) || (array_key_exists($key, $data) && empty($data[$key])))
 		{
 			$value = $this->getDefaultOnACL($data, $opts);
+
 			return $value;
 		}
+
 		$res = parent::getValue($data, $repeatCounter, $opts);
+
 		return $res;
 	}
-
 }

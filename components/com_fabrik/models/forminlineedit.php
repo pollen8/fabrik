@@ -25,7 +25,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/element.php';
 
 class FabrikFEModelFormInlineEdit extends FabModelForm
 {
-
 	/**
 	 * Render the inline edit interface
 	 *
@@ -63,6 +62,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$eCounter = 0;
 		$onLoad = array();
 		$onLoad[] = "Fabrik.inlineedit_$elementid = {'elements': {}};";
+
 		foreach ($elementids as $id)
 		{
 			$elementModel = $this->formModel->getElement($id, true);
@@ -71,15 +71,18 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 			$elementModel->formJavascriptClass($srcs);
 			$elementJS = $elementModel->elementJavascript($repeatCounter);
 			$onLoad[] = 'var o = new ' . $elementJS[0] . '("' . $elementJS[1] . '",' . json_encode($elementJS[2]) . ');';
+
 			if ($eCounter === 0)
 			{
 				$onLoad[] = "o.select();";
 				$onLoad[] = "o.focus();";
 				$onLoad[] = "Fabrik.inlineedit_$elementid.token = '" . JSession::getFormToken() . "';";
 			}
+
 			$eCounter++;
 			$onLoad[] = "Fabrik.inlineedit_$elementid.elements[$id] = o";
 		}
+
 		$onLoad[] = "Fabrik.fireEvent('fabrik.list.inlineedit.setData');";
 		FabrikHelperHTML::script($srcs, implode("\n", $onLoad));
 	}
@@ -93,15 +96,14 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 	 */
 	protected function inlineEditMarkUp()
 	{
-
 		$app = JFactory::getApplication();
 		$input = $app->input;
-
 		$html = array();
 		$html[] = '<div class="modal">';
 		$html[] = ' <div class="modal-header"><h3>' . JText::_('COM_FABRIK_EDIT') . '</h3></div>';
 		$html[] = '<div class="modal-body">';
 		$html[] = '<form>';
+
 		foreach ($this->groups as $group)
 		{
 			foreach ($group->elements as $element)
@@ -114,11 +116,14 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 				$html[] = '</div>';
 			}
 		}
+
 		$html[] = '</form>';
 		$html[] = '</div>';
+
 		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
 		{
 			$html[] = '<div class="modal-footer">';
+
 			if ($input->getBool('inlinecancel') == true)
 			{
 				$html[] = '<a href="#" class="btn inline-cancel">';
@@ -132,10 +137,12 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 				$html[] = FabrikHelperHTML::image('save.png', 'list', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SAVE')));
 				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
 			}
+
 			$html[] = '</div>';
 		}
 
 		$html[] = '</div>';
+
 		return $html;
 	}
 
@@ -155,6 +162,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$html[] = '<div class="floating-tip-wrapper inlineedit" style="position:absolute">';
 		$html[] = '<div class="floating-tip" >';
 		$html[] = '<ul class="fabrikElementContainer">';
+
 		foreach ($this->groups as $group)
 		{
 			foreach ($group->elements as $element)
@@ -165,11 +173,13 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 				$html[] = '</li>';
 			}
 		}
+
 		$html[] = '</ul>';
 
 		if ($input->getBool('inlinesave') || $input->getBool('inlinecancel'))
 		{
 			$html[] = '<ul class="">';
+
 			if ($input->getBool('inlinecancel') == true)
 			{
 				$html[] = '<li class="ajax-controls inline-cancel">';
@@ -187,10 +197,13 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 				$html[] = '<span>' . JText::_('COM_FABRIK_SAVE') . '</span></a>';
 				$html[] = '</li>';
 			}
+
 			$html[] = '</ul>';
 		}
+
 		$html[] = '</div>';
 		$html[] = '</div>';
+
 		return $html;
 	}
 
@@ -198,11 +211,14 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 	 * Set form model
 	 *
 	 * @param   JModel  $model  Front end form model
+	 *
+	 * @return  void
 	 */
 	public function setFormModel($model)
 	{
 		$this->formModel = $model;
 	}
+
 	/**
 	 * Inline edit show the edited element
 	 *
@@ -218,15 +234,19 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$listModel->clearCalculations();
 		$listModel->doCalculations();
 		$elementid = $input->getInt('elid');
+
 		if ($elementid === 0)
 		{
 			return;
 		}
+
 		$elmentModel = $this->formModel->getElement($elementid, true);
+
 		if (!$elmentModel)
 		{
 			return;
 		}
+
 		$rowid = $input->get('rowid');
 		$listModel->setId($listid);
 
@@ -240,6 +260,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		{
 			$data = new stdClass;
 		}
+
 		$key = $input->get('element');
 		$html = '';
 		$html .= $elmentModel->renderListData($data->$key, $data);
@@ -248,7 +269,7 @@ class FabrikFEModelFormInlineEdit extends FabModelForm
 		$html .= '<script type="text/javasript">';
 		$html .= $doCalcs;
 		$html .= "</script>\n";
+
 		return $html;
 	}
-
 }

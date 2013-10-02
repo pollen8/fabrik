@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="fabrik3-package" default="phpcs">
+<project name="fabrik3-package" default="travis-phpcs">
 
 <!--  fabrik.all -->
 	<property file="build_config.ini" />
@@ -56,37 +56,35 @@
 	    </if>
 	</target>
 	
-	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
-			<exec executable="phpcs${script-suffix}">
-				<arg value="--report=full" />
-				<arg value="--extensions=php" />
-				<arg value="--standard=${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml" />
-				<arg path="${source}" />
-			</exec>
-		</target>
-
-	<target name="phpdoc" description="Generate API documentation">
-		<if>
-			<equals arg1="${cfg.os}" arg2="unix" />
-			<then>
-			    <exec executable="${phpdoc.path}">
-			        <arg line="
-			            -d ${basedir}/components/com_fabrik,${basedir}/plugins/fabrik_element,${basedir}/plugins/fabrik_cron,${basedir}/plugins/fabrik_list,${basedir}/plugins/fabrik_form,${basedir}/plugins/fabrik_validationrule,${basedir}/plugins/fabrik_visualization,${basedir}/plugins/content/fabrik,${basedir}/plugins/system/fabrik,${basedir}/plugins/system/fabrikcron,${basedir}/administrator/components/com_fabrik
-			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*,${basedir}/administrator/components/com_fabrik/classes,${basedir}/plugins/fabrik_cron/rest/oauth,${basedir}/components/com_fabrik/dbdriver/*
-			            -t ${basedir}/fabrik_build/docs" />
-			    </exec>
-			</then>
-			<else>
-			    <exec executable="cmd">
-			        <arg line="/c ${phpdoc.path}
-			            -d ${basedir}/components/com_fabrik,${basedir}/plugins/fabrik_element,${basedir}/plugins/fabrik_cron,${basedir}/plugins/fabrik_list,${basedir}/plugins/fabrik_form,${basedir}/plugins/fabrik_validationrule,${basedir}/plugins/fabrik_visualization,${basedir}/plugins/content/fabrik,${basedir}/plugins/system/fabrik,${basedir}/plugins/system/fabrikcron,${basedir}/administrator/components/com_fabrik
-			            -i ${basedir}/components/com_fabrik/libs/,*/libs/*,*/lib/*,${basedir}/administrator/components/com_fabrik/classes/,${basedir}/plugins/fabrik_cron/rest/oauth/,${basedir}/components/com_fabrik/dbdriver/
-			            -t ${basedir}/fabrik_build/docs" />
-			    </exec>
-		    </else>
-	    </if>
+	<property name="phpcs.standard.path" value="${basedir}/fabrik_build/phpcs/Joomla/ruleset.xml" />
+		
+	<condition property="script-suffix" value=".bat" else="">
+		<os family="windows" />
+	</condition>
+	<condition property="phpcs-path" value="phpcs" else="phpcs">
+		<os family="windows" />
+	</condition>
+	<echo>searching form ${phpcs.standard.path}</echo>
+	<available file="${phpcs.standard.path}"  property="phpcs.ruleset.found"/>
+	
+	<target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI" if="phpcs.ruleset.found">
+		<echo>call ${phpcs-path}${script-suffix}, path: ${phpcs.standard.path}</echo>
+		
+		<exec executable="${phpcs-path}${script-suffix}">
+			<arg value="-i" />	
+		</exec>
+		
+		
+		<exec dir="${basedir}" executable="${phpcs-path}${script-suffix}">
+            <arg line="--report=checkstyle" />
+			<arg line="--report-file=${basedir}/fabrik_build/logs/checkstyle.xml" />
+            <arg line="--standard=${phpcs.standard.path}" />
+            <arg line="--extensions=php" />
+			<arg line="-p" />
+            <arg path="${source}" />
+        </exec>
 	</target>
-
+	
 	<target name="uploadPhpDoc" description="Upload PHP docs created in target:phpdoc">
 		<ftp passive ="yes" server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}"
 			depends="false"

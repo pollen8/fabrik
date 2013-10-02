@@ -51,8 +51,9 @@ class FabrikTableVisualization extends JTable
 			$registry->loadArray($src['params']);
 			$src['params'] = (string) $registry;
 		}
+
 		parent::bind($src, $ignore);
+
 		return true;
 	}
-
 }

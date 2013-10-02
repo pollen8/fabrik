@@ -26,11 +26,10 @@ jimport('joomla.html.pagination');
  *
  * @package  Fabrik
  * @since    3.0
-*/
+ */
 
 class FPagination extends JPagination
 {
-
 	/**
 	 * Action url
 	 *
@@ -112,22 +111,25 @@ class FPagination extends JPagination
 		$list['total'] = $this->total;
 		$list['limitfield'] = $this->showDisplayNum ? $this->getLimitBox() : '';
 		$list['pagescounter'] = $this->getPagesCounter();
+
 		if ($this->showTotal)
 		{
 			$list['pagescounter'] .= ' ' . JText::_('COM_FABRIK_TOTAL') . ': ' . $list['total'];
 		}
-		$list['pageslinks'] = $this->getPagesLinks($listRef, $tmpl);
 
+		$list['pageslinks'] = $this->getPagesLinks($listRef, $tmpl);
 		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
 
 		if (file_exists($chromePath))
 		{
 			require_once $chromePath;
+
 			if (function_exists('pagination_list_footer'))
 			{
 				// Cant allow for it to be overridden
 			}
 		}
+
 		return $this->_list_footer($list);
 	}
 
@@ -141,12 +143,13 @@ class FPagination extends JPagination
 	{
 		// Initialize variables
 		$limits = array();
-
 		$vals = array();
+
 		for ($i = 5; $i <= 30; $i += 5)
 		{
 			$vals[] = $i;
 		}
+
 		$vals[] = 50;
 		$vals[] = 100;
 
@@ -154,26 +157,31 @@ class FPagination extends JPagination
 		{
 			$vals[] = $this->startLimit;
 		}
+
 		asort($vals);
+
 		foreach ($vals as $v)
 		{
 			$limits[] = JHTML::_('select.option', $v);
 		}
+
 		if ($this->showAllOption == true)
 		{
 			$limits[] = JHTML::_('select.option', '-1', JText::_('COM_FABRIK_ALL'));
 		}
+
 		$selected = $this->viewAll ? '-1' : $this->limit;
 		$js = '';
 		$attribs = 'class="inputbox input-mini" size="1" onchange="' . $js . '"';
 		$html = JHTML::_('select.genericlist', $limits, 'limit' . $this->id, $attribs, 'value', 'text', $selected);
+
 		return $html;
 	}
 
 	/**
 	 * Method to create an active pagination link to the item
 	 *
-	 * @param   JPaginationObject  &$item  The object with which to make an active link.
+	 * @param   JPaginationObject  $item  The object with which to make an active link.
 	 *
 	 * @return   string  HTML link
 	 */
@@ -181,6 +189,7 @@ class FPagination extends JPagination
 	protected function _item_active(JPaginationObject $item)
 	{
 		$app = JFactory::getApplication();
+
 		return '<a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $item->text . '</a>';
 	}
 
@@ -207,16 +216,18 @@ class FPagination extends JPagination
 
 		$itemOverride = false;
 		$listOverride = false;
-
 		$chromePath = COM_FABRIK_FRONTEND . '/views/list/tmpl/' . $tmpl . '/default_pagination.php';
+
 		if (JFile::exists($chromePath))
 		{
 			require_once $chromePath;
+
 			if (function_exists('fabrik_pagination_item_active') && function_exists('fabrik_pagination_item_inactive'))
 			{
 				// Can't allow this as the js code we use for the items is different
 				$itemOverride = true;
 			}
+
 			if (function_exists('fabrik_pagination_list_render'))
 			{
 				$listOverride = true;
@@ -245,6 +256,7 @@ class FPagination extends JPagination
 			$list['start']['active'] = false;
 			$list['start']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
 		}
+
 		if ($data->previous->base !== null)
 		{
 			$list['previous']['active'] = true;
@@ -259,6 +271,7 @@ class FPagination extends JPagination
 
 		// Make sure it exists
 		$list['pages'] = array();
+
 		foreach ($data->pages as $i => $page)
 		{
 			if ($page->base !== null)
@@ -283,6 +296,7 @@ class FPagination extends JPagination
 			$list['next']['active'] = false;
 			$list['next']['data'] = $itemOverride ? fabrik_pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
 		}
+
 		if ($data->end->base !== null)
 		{
 			$list['end']['active'] = true;
@@ -317,21 +331,24 @@ class FPagination extends JPagination
 		// Reverse output rendering for right-to-left display.
 		$html = '<div class="pagination">';
 		$html .= '<ul class="pagination-list">';
-		$class =  $list['start']['active'] == 1 ? ' ' : ' active';
+		$class = $list['start']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-start' . $class . '">' . $list['start']['data'] . '</li>';
-		$class =  $list['previous']['active'] == 1 ? ' ' : ' active';
+		$class = $list['previous']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-prev' . $class . '">' . $list['previous']['data'] . '</li>';
+
 		foreach ($list['pages'] as $page)
 		{
 			$class = $page['active'] == 1 ? '' : 'active';
 			$html .= '<li class="' . $class . '">' . $page['data'] . '</li>';
 		}
-		$class =  $list['next']['active'] == 1 ? ' ' : ' active';
+
+		$class = $list['next']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-next' . $class . '">' . $list['next']['data'] . '</li>';
-		$class =  $list['end']['active'] == 1 ? ' ' : ' active';
+		$class = $list['end']['active'] == 1 ? ' ' : ' active';
 		$html .= '<li class="pagination-end' . $class . '">' . $list['end']['data'] . '</li>';
 		$html .= '</ul>';
 		$html .= '</div>';
+
 		return $html;
 	}
 
@@ -361,6 +378,7 @@ class FPagination extends JPagination
 		// $$$ hugh - need to work out if we need & or ?
 		$sepchar = strstr($this->url, '?') ? '&amp;' : '?';
 		$data->all = new JPaginationObject(JText::_('COM_FABRIK_VIEW_ALL'));
+
 		if (!$this->viewAll)
 		{
 			$data->all->base = '0';
@@ -374,13 +392,10 @@ class FPagination extends JPagination
 		if ($this->get('pages.current') > 1)
 		{
 			$page = ($this->get('pages.current') - 2) * $this->limit;
-
 			$data->start->base = '0';
 			$data->start->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=0");
-
 			$data->previous->base = $page;
 			$data->previous->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $page);
-
 			$data->start->link = str_replace('resetfilters=1', '', $data->start->link);
 			$data->previous->link = str_replace('resetfilters=1', '', $data->previous->link);
 			$data->start->link = str_replace('clearordering=1', '', $data->start->link);
@@ -395,12 +410,10 @@ class FPagination extends JPagination
 		{
 			$next = $this->get('pages.current') * $this->limit;
 			$end = ($this->get('pages.total') - 1) * $this->limit;
-
 			$data->next->base = $next;
 			$data->next->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $next);
 			$data->end->base = $end;
 			$data->end->link = JRoute::_($this->url . "{$sepchar}limitstart{$this->id}=" . $end);
-
 			$data->next->link = str_replace('resetfilters=1', '', $data->next->link);
 			$data->end->link = str_replace('resetfilters=1', '', $data->end->link);
 			$data->next->link = str_replace('clearordering=1', '', $data->next->link);
@@ -409,11 +422,12 @@ class FPagination extends JPagination
 
 		$data->pages = array();
 		$stop = $this->get('pages.stop');
+
 		for ($i = $this->get('pages.start'); $i <= $stop; $i++)
 		{
 			$offset = ($i - 1) * $this->limit;
-
 			$data->pages[$i] = new JPaginationObject($i);
+
 			if ($i != $this->get('pages.current') || $this->viewAll)
 			{
 				$data->pages[$i]->base = $offset;
@@ -422,6 +436,7 @@ class FPagination extends JPagination
 				$data->pages[$i]->link = str_replace('clearordering=1', '', $data->pages[$i]->link);
 			}
 		}
+
 		return $data;
 	}
 
@@ -438,13 +453,14 @@ class FPagination extends JPagination
 		// Initialize variables
 		$html = array();
 		$html[] = '<div class="list-footer">';
-
 		$limitLabel = $this->showDisplayNum ? JText::_('COM_FABRIK_DISPLAY_NUM') : '';
-		$html[] = '<div class="limit"><div class="input-prepend input-append"><span class="add-on"><small>' . $limitLabel . '</small></span>' . $list['limitfield'] . '<span class="add-on"><small>' . $list['pagescounter'] . '</small></span></div></div>';
+		$html[] = '<div class="limit"><div class="input-prepend input-append"><span class="add-on"><small>';
+		$html[] = $limitLabel . '</small></span>' . $list['limitfield'] . '<span class="add-on"><small>';
+		$html[] = $list['pagescounter'] . '</small></span></div></div>';
 		$html[] = $list['pageslinks'];
-		//$html[] = '<div class="counter">' .  . '</div>';
 		$html[] = '<input type="hidden" name="limitstart' . $this->id . '" id="limitstart' . $this->id . '" value="' . $list['limitstart'] . '" />';
 		$html[] = '</div>';
+
 		return implode("\n", $html);
 	}
 
@@ -463,6 +479,7 @@ class FPagination extends JPagination
 	public function get($property, $default = null)
 	{
 		$version = new JVersion;
+
 		if ($version->RELEASE > 2.5)
 		{
 			if (strpos($property, '.'))
@@ -471,10 +488,12 @@ class FPagination extends JPagination
 				$prop[1] = ucfirst($prop[1]);
 				$property = implode($prop);
 			}
+
 			if (isset($this->$property))
 			{
 				return $this->$property;
 			}
+
 			return $default;
 		}
 		elseif (isset($this->$property))
@@ -486,5 +505,4 @@ class FPagination extends JPagination
 			return $default;
 		}
 	}
-
 }

@@ -26,16 +26,19 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 class FabrikControllerListemail extends JControllerLegacy
 {
 	/**
-	 *  Path of uploaded file
+	 * Path of uploaded file
 	 *
-	 *  @var string
+	 * @var string
 	 */
-	var $filepath = null;
+	public $filepath = null;
 
 	/**
 	 * default display mode
 	 *
-	 * @return unknown
+	 * @param   bool   $cachable   Cachable
+	 * @param   array  $urlparams  Params
+	 *
+	 * @return null
 	 */
 
 	public function display($cachable = false, $urlparams = array())
@@ -81,6 +84,7 @@ class FabrikControllerListemail extends JControllerLegacy
 
 		// Display the view
 		$view->error = $this->getError();
+
 		return $view->display();
 	}
 
@@ -108,5 +112,4 @@ class FabrikControllerListemail extends JControllerLegacy
 		$formModel = $listModel->getFormModel();
 		$model->doEmail();
 	}
-
 }

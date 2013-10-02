@@ -13,12 +13,6 @@ defined('_JEXEC') or die('Restricted access');
 /**
  * Abstract Form Field class for the Joomla Platform.
  *
- * @package     Joomla.Platform
- * @subpackage  Form
- * @since       11.1
- */
-
-/**
  * IMPORTANT NOTE
  *
  * This file is  standard J! class, being overridden by the Fabrik component,
@@ -30,6 +24,10 @@ defined('_JEXEC') or die('Restricted access');
  *
  * hugh.messenger@gmail.com
  * rob@pollen-8.co.uk
+ *
+ * @package     Joomla.Platform
+ * @subpackage  Form
+ * @since       11.1
  */
 
 abstract class JFormField

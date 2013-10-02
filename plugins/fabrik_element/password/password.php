@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementPassword extends PlgFabrik_Element
 {
-
 	/**
 	 * States if the element contains data which is recorded in the database
 	 * some elements (eg buttons) dont
@@ -40,6 +39,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		{
 			return false;
 		}
+
 		if (trim($data[$element->name]) === '')
 		{
 			return false;
@@ -65,6 +65,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$salt = JUserHelper::genRandomPassword(32);
 		$crypt = JUserHelper::getCryptedPassword($val, $salt);
 		$val = $crypt . ':' . $salt;
+
 		return $val;
 	}
 
@@ -95,10 +96,12 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	{
 		$element = $this->getElement();
 		$value = '';
+
 		if (!$this->isEditable())
 		{
 			return '***********';
 		}
+
 		$bits = $this->inputProperties($repeatCounter, 'password');
 		$bits['value'] = $value;
 		$bits['placeholder'] = JText::_('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
@@ -115,6 +118,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 		$html = array();
 		$html[] = $pw1;
+
 		if (FabrikWorker::j3())
 		{
 			$html[] = '<div class="strength progress progress-striped" style="margin-top:20px;width:40%;"></div>';
@@ -123,7 +127,9 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		{
 			$html[] = '<span class="strength"></span>';
 		}
+
 		$html[] = $pw2;
+
 		return implode("\n", $html);
 	}
 
@@ -142,6 +148,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		{
 			return true;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$k = $this->getlistModel()->getTable()->db_primary_key;
@@ -161,9 +168,11 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		$this->reset();
 		$checkvalue = urldecode($this->getValue($_REQUEST, $repeatCounter));
 		$element->name = $origname;
+
 		if ($checkvalue != $value)
 		{
 			$this->validationError = JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_DOES_NOT_MATCH');
+
 			return false;
 		}
 		else
@@ -172,6 +181,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 
 			// If its coming from an ajax form submit then the key is possibly an array.
 			$keyVal = JArrayHelper::getValue($_REQUEST, $k);
+
 			if (is_array($keyVal))
 			{
 				$keyVal = JArrayHelper::getValue($keyVal, 0);
@@ -184,8 +194,10 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 				 * Why are we using .= here, but nowhere else?
 				 */
 				$this->validationError .= JText::_('PLG_ELEMENT_PASSWORD_PASSWORD_CONFIRMATION_EMPTY_NOT_ALLOWED');
+
 				return false;
 			}
+
 			return true;
 		}
 	}
@@ -211,6 +223,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 		JText::script('PLG_ELEMENT_PASSWORD_WEAK');
 		JText::script('PLG_ELEMENT_PASSWORD_TYPE_PASSWORD');
 		JText::script('PLG_ELEMENT_PASSWORD_MORE_CHARACTERS');
+
 		return array('FbPassword', $id, $opts);
 	}
 
@@ -228,6 +241,7 @@ class PlgFabrik_ElementPassword extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter) . '_check';
 		$ar = array('id' => $id, 'triggerEvent' => 'blur');
+
 		return array($ar);
 	}
 }

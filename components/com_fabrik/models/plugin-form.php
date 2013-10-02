@@ -23,16 +23,24 @@ jimport('joomla.application.component.model');
 
 class PlgFabrik_Form extends FabrikPlugin
 {
-	/**@var array formatted email data */
+	/**
+	 * Formatted email data
+	 *
+	 * @var array
+	 */
 	protected $emailData = null;
 
-	/** @var string html to return from plugin rendering */
+	/**
+	 * HTML to return from plugin rendering
+	 *
+	 * @var string
+	 */
 	protected $html = '';
 
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   array   &$groups  List data for deletion
+	 * @param   array  &$groups  List data for deletion
 	 *
 	 * @return  bool
 	 */
@@ -61,7 +69,6 @@ class PlgFabrik_Form extends FabrikPlugin
 
 	public function onError()
 	{
-
 	}
 
 	/**
@@ -182,6 +189,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$model = $this->getModel();
 		$d = isset($model->formDataWithTableName) ? $model->formDataWithTableName : array();
 		$this->data = array_merge($d, $this->getEmailData());
+
 		return $this->data;
 	}
 
@@ -198,11 +206,14 @@ class PlgFabrik_Form extends FabrikPlugin
 		{
 			return $this->emailData;
 		}
+
 		$model = $this->getModel();
+
 		if (is_null($model->formDataWithTableName))
 		{
 			return array();
 		}
+
 		$model->isAjax();
 		/* $$$rob don't render the form - there's no need and it gives a warning about an unfound rowid
 		 * $$$ rob also it sets teh fromModels rowid to an + int even if we are submitting a new form
@@ -214,9 +225,9 @@ class PlgFabrik_Form extends FabrikPlugin
 
 		$listModel = $model->getListModel();
 		$table = is_object($listModel) ? $listModel->getTable() : null;
-
 		$editable = $model->isEditable();
 		$model->setEditable(false);
+
 		if (is_object($listModel))
 		{
 			$joins = $listModel->getJoins();
@@ -224,7 +235,6 @@ class PlgFabrik_Form extends FabrikPlugin
 		}
 
 		$params = $model->getParams();
-
 		$this->emailData = array();
 
 		// $$$ hugh - temp foreach fix
@@ -237,6 +247,7 @@ class PlgFabrik_Form extends FabrikPlugin
 			// Check if group is acutally a table join
 			$repeatGroup = 1;
 			$foreignKey = null;
+
 			if ($groupModel->canRepeat())
 			{
 				if ($groupModel->isJoin())
@@ -244,6 +255,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					$joinModel = $groupModel->getJoinModel();
 					$joinTable = $joinModel->getJoin();
 					$foreignKey = '';
+
 					if (is_object($joinTable))
 					{
 						$foreignKey = $joinTable->table_join_key;
@@ -261,17 +273,19 @@ class PlgFabrik_Form extends FabrikPlugin
 						$tmpElement = current($elementModels);
 						$smallerElHTMLName = $tmpElement->getFullName(true, false);
 						$repeatGroup = count($model->formDataWithTableName[$smallerElHTMLName]);
-
 					}
 				}
 			}
+
 			$groupModel->repeatTotal = $repeatGroup;
 			$group = $groupModel->getGroup();
 			$aSubGroups = array();
+
 			for ($c = 0; $c < $repeatGroup; $c++)
 			{
 				$aSubGroupElements = array();
 				$elementModels = $groupModel->getPublishedElements();
+
 				foreach ($elementModels as $elementModel)
 				{
 					// Force reload?
@@ -298,6 +312,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					elseif (array_key_exists($key, $model->formDataWithTableName))
 					{
 						$rawval = JArrayHelper::getValue($model->formDataWithTableName, $k . '_raw', '');
+
 						if ($rawval == '')
 						{
 							$this->emailData[$k . '_raw'] = $model->formDataWithTableName[$key];
@@ -313,6 +328,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					}
 
 					$email_value = '';
+
 					if (array_key_exists($k . '_raw', $this->emailData))
 					{
 						$email_value = $this->emailData[$k . '_raw'];
@@ -321,6 +337,7 @@ class PlgFabrik_Form extends FabrikPlugin
 					{
 						$email_value = $this->emailData[$k];
 					}
+
 					if (!$elementModel->isJoin())
 					{
 						$this->emailData[$k] = $elementModel->getEmailValue($email_value, $model->formDataWithTableName, $c);
@@ -328,13 +345,16 @@ class PlgFabrik_Form extends FabrikPlugin
 				}
 			}
 		}
+
 		if (is_object($listModel))
 		{
 			$pk = FabrikString::safeColNameToArrayKey($listModel->getTable()->db_primary_key);
 			$this->emailData[$pk] = $listModel->lastInsertId;
 			$this->emailData[$pk . '_raw'] = $listModel->lastInsertId;
 		}
+
 		$model->setEditable($editable);
+
 		return $this->emailData;
 	}
 
@@ -353,13 +373,16 @@ class PlgFabrik_Form extends FabrikPlugin
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$name = $this->get('_name');
 		static $jsClasses;
+
 		if (!isset($jsClasses))
 		{
 			$jsClasses = array();
 		}
 
 		// Load up the default script
+
 		$script = 'plugins/fabrik_form/' . $name . '/' . $name . $ext;
+
 		if (empty($jsClasses[$script]))
 		{
 			$formModel->formPluginShim[] = $script;
@@ -380,6 +403,7 @@ class PlgFabrik_Form extends FabrikPlugin
 		$query->select(' id, name, email, sendEmail')->from('#__users')->where('WHERE sendEmail = "1"');
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
+
 		return $rows;
 	}
 
@@ -408,5 +432,4 @@ class PlgFabrik_Form extends FabrikPlugin
 	{
 		return $this->usesSession;
 	}
-
 }

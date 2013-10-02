@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 {
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -46,10 +45,12 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		$element = $this->getElement();
 		$value = $this->getValue($data, $repeatCounter);
 		$value = stripslashes($value);
+
 		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
+
 		return $this->getHiddenField($name, $value, $id, 'fabrikinput inputbox hidden');
 	}
 
@@ -76,6 +77,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbInternalId', $id, $opts);
 	}
 
@@ -103,7 +105,7 @@ class PlgFabrik_ElementInternalid extends PlgFabrik_Element
 		$item->width = 3;
 		$item->hidden = 1;
 		$item->auto_increment = 1;
+
 		return $item;
 	}
-
 }

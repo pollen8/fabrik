@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -40,10 +39,12 @@ class FabrikViewList extends FabrikViewListBase
 		$exporter = JModelLegacy::getInstance('Csvexport', 'FabrikFEModel');
 		$model = JModelLegacy::getInstance('list', 'FabrikFEModel');
 		$model->setId($input->getInt('listid'));
+
 		if (!parent::access($model))
 		{
 			exit;
 		}
+
 		$model->setOutPutFormat('csv');
 		$exporter->model = $model;
 		$input->set('limitstart' . $model->getId(), $input->getInt('start', 0));
@@ -53,6 +54,7 @@ class FabrikViewList extends FabrikViewListBase
 		// the list total
 		$selectedFields = $input->get('fields', array(), 'array');
 		$model->setHeadingsForCSV($selectedFields);
+
 		if (empty($model->asfields))
 		{
 			throw new LengthException('CSV Export - no fields found', 500);
@@ -69,6 +71,7 @@ class FabrikViewList extends FabrikViewListBase
 		{
 			$session->clear($key);
 		}
+
 		if (!$session->has($key))
 		{
 			// Only get the total if not set - otherwise causes memory issues when we downloading
@@ -87,8 +90,10 @@ class FabrikViewList extends FabrikViewListBase
 				$notice = new stdClass;
 				$notice->err = JText::_('COM_FABRIK_CSV_EXPORT_NO_RECORDS');
 				echo json_encode($notice);
+
 				return;
 			}
+
 			$exporter->writeFile($total);
 		}
 		else
@@ -99,7 +104,7 @@ class FabrikViewList extends FabrikViewListBase
 			$session->clear($key);
 			$exporter->downloadFile();
 		}
+
 		return;
 	}
-
 }

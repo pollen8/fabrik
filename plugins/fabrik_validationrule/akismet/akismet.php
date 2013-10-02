@@ -44,13 +44,15 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 	{
 		$params = $this->getParams();
 		$user = JFactory::getUser();
+
 		if ($params->get('akismet-key') != '')
 		{
 			$username = $user->get('username') != '' ? $user->get('username') : $this->_randomSring();
 			$email = $user->get('email') != '' ? $user->get('email') : $this->_randomSring() . '@' . $this->_randomSring() . 'com';
-			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/akismet.class.php';
+			require_once JPATH_COMPONENT . '/plugins/validationrule/akismet/libs/akismet.class.php';
 			$akismet_comment = array('author' => $username, 'email' => $user->get('email'), 'website' => JURI::base(), 'body' => $data);
 			$akismet = new Akismet(JURI::base(), $params->get('akismet-key'), $akismet_comment);
+
 			if ($akismet->errorsExist())
 			{
 				throw new RuntimeException("Couldn't connected to Akismet server!");
@@ -63,6 +65,7 @@ class PlgFabrik_ValidationruleAkismet extends PlgFabrik_Validationrule
 				}
 			}
 		}
+
 		return true;
 	}
 

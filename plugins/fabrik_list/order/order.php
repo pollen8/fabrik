@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListOrder extends PlgFabrik_List
 {
-
 	/**
 	 * Get the parameter name that defines the plugins acl access
 	 *
@@ -57,6 +56,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 	{
 		$ext = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
 		$src = parent::loadJavascriptClass_result();
+
 		return array($src, 'media/com_fabrik/js/element' . $ext);
 	}
 
@@ -74,6 +74,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		{
 			return;
 		}
+
 		$model = $this->getModel();
 		$params = $this->getParams();
 		$orderEl = $model->getFormModel()->getElement($params->get('order_element'), true);
@@ -94,6 +95,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListOrder($opts)";
+
 		return true;
 	}
 
@@ -139,6 +141,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 			// No order change
 			return;
 		}
+
 		// Get the order for the last record in $result
 		$splitId = $dragDirection == 'up' ? array_shift($result) : array_pop($result);
 		$db->setQuery("SELECT " . $orderBy . " FROM " . $table->db_table_name . " WHERE " . $table->db_primary_key . " = " . $splitId);
@@ -152,10 +155,12 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 		{
 			$compare = $dragDirection == 'down' ? '<=' : '<';
 		}
+
 		// Shift down the ordered records which have an order less than or equal the newly moved record
 		$query = "UPDATE " . $table->db_table_name . " SET " . $orderBy . ' = COALESCE(' . $orderBy . ', 1) - 1 ';
 		$query .= " WHERE " . $orderBy . ' ' . $compare . ' ' . $o . ' AND ' . $table->db_primary_key . ' <> ' . $dragged;
 		$db->setQuery($query);
+
 		if (!$db->execute())
 		{
 			echo $db->getErrorMsg();
@@ -190,7 +195,7 @@ class PlgFabrik_ListOrder extends PlgFabrik_List
 				$db->execute();
 			}
 		}
+
 		$model->reorder($input->getInt('orderelid'));
 	}
-
 }

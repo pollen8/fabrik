@@ -19,8 +19,7 @@ jimport('joomla.application.component.controller');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.approvals
  * @since       3.0.6
-*/
+ */
 class FabrikControllerVisualizationapprovals extends FabrikControllerVisualization
 {
-
 }

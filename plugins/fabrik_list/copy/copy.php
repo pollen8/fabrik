@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-list.php';
 
 class PlgFabrik_ListCopy extends PlgFabrik_List
 {
-
 	/**
 	 * Button prefix
 	 *
@@ -35,7 +34,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Prep the button if needed
 	 *
-	 * @param   array   &$args   Arguements
+	 * @param   array  &$args  Arguements
 	 *
 	 * @return  bool;
 	 */
@@ -43,6 +42,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	public function button(&$args)
 	{
 		parent::button($args);
+
 		return true;
 	}
 
@@ -71,7 +71,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	/**
 	 * Do the plug-in action
 	 *
-	 * @param   array   $opts    Custom options
+	 * @param   array  $opts  Custom options
 	 *
 	 * @return  bool
 	 */
@@ -83,6 +83,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 		$model = $this->getModel();
 		$ids = $app->input->get('ids', array(), 'array');
 		$formModel = $model->getFormModel();
+
 		return $model->copyRows($ids);
 	}
 
@@ -98,6 +99,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 	{
 		$app = JFactory::getApplication();
 		$ids = $app->input->get('ids', array(), 'array');
+
 		return JText::sprintf('PLG_LIST_ROWS_COPIED', count($ids));
 	}
 
@@ -115,7 +117,7 @@ class PlgFabrik_ListCopy extends PlgFabrik_List
 		$opts = $this->getElementJSOptions();
 		$opts = json_encode($opts);
 		$this->jsInstance = "new FbListCopy($opts)";
+
 		return true;
 	}
-
 }

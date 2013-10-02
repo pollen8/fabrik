@@ -44,7 +44,7 @@ define('LABELS_IN_VALUES', 0);
  * |   TX   |  12  | 6    |   43  |
  * +--------+------+------+-------+
  * @var unknown
- */
+*/
 define('LABELS_IN_COLUMNS', 1);
 
 /**
@@ -57,7 +57,6 @@ define('LABELS_IN_COLUMNS', 1);
 
 class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 {
-
 	/**
 	 * Chart data
 	 *
@@ -84,9 +83,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			return $this->data;
 		}
+
 		$params = $this->getParams();
 		$script = $params->get('script', '');
 		$fullPath = JPATH_ROOT . '/plugins/fabrik_visualization/nvd3_chart/scripts/' . $script;
+
 		if ($script != '' && JFile::exists($fullPath))
 		{
 			require $fullPath;
@@ -94,21 +95,27 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		else
 		{
 			$chartType = $params->get('chart');
+
 			if ($chartType === 'scatterChart')
 			{
 				$this->data = $this->scatterChartData();
+
 				return $this->data;
 			}
+
 			if ($chartType === 'multiBarHorizontalChart' || $chartType === 'multiBarChart')
 			{
 				$this->data = $this->multiChartData();
+
 				return $this->data;
 			}
 			else
 			{
 				$this->data = $this->singleLineData();
+
 				return $this->data;
 			}
+
 			$this->data = new stdClass;
 			$this->data->key = 'todo2';
 			$db = JFactory::getDbo();
@@ -122,6 +129,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			$this->data->values = $db->loadObjectList();
 			$this->data = array($this->data);
 		}
+
 		return $this->data;
 	}
 
@@ -133,7 +141,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	 *
 	 * @return  array  Chart data
 	 */
-	function getElementData($elementId)
+	public function getElementData($elementId)
 	{
 		$pluginManager = FabrikWorker::getPluginManager();
 
@@ -164,12 +172,20 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$data = $this->radio($rows, $labels);
 				break;
 		}
+
 		return $this->elementDataToNvs3($data);
 	}
 
+	/**
+	 * Set to nvd3 format, ready for json encoding
+	 *
+	 * @param   array  $data  Data
+	 *
+	 * @return multitype:
+	 */
+
 	public function elementDataToNvs3($data)
 	{
-		// Set to nvd3 format, ready for json encoding
 		$this->data = new stdClass;
 		$this->data->key = 'todo2';
 		$this->data->values = array();
@@ -178,7 +194,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			$this->data->values[] = $d;
 		}
+
 		$this->data = array($this->data);
+
 		return $this->data;
 	}
 
@@ -194,9 +212,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function checkbox($rows, $labels)
 	{
 		$data = array();
+
 		foreach ($rows as $row)
 		{
 			$vals = json_decode($row);
+
 			foreach ($vals as $val)
 			{
 				if (!is_null($val))
@@ -215,12 +235,19 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				}
 			}
 		}
+
 		return $data;
 	}
 
+	/**
+	 * Single line
+	 *
+	 * @return multitype:stdClass
+	 */
 	protected function singleLineData()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('data_mode') == 0)
 		{
 			$labelColumns = $params->get('value_field');
@@ -229,6 +256,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			$labelColumns = explode(',', $params->get('label_columns'));
 		}
+
 		$table = $params->get('tbl');
 		$split = $params->get('split', '');
 		$groupBy = $params->get('group_by');
@@ -248,21 +276,20 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$query->select('date AS ' . $db->nameQuote('key'));
 			}
 		}
+
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
-
 		$keys = array_keys(JArrayHelper::fromObject($rows[0]));
-
 		$colors = explode(',', $params->get('colours', '#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C'));
-
 		$return = array();
-
 		$i = 0;
+
 		foreach ($keys as $key)
 		{
 			if ($key != 'key')
 			{
 				$values = array();
+
 				foreach ($rows as $row)
 				{
 					$o = new stdClass;
@@ -273,6 +300,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 					$values[] = $o;
 					$a ++;
 				}
+
 				$entry = new stdClass;
 				$entry->values = $values;
 				$entry->key = $key;
@@ -281,9 +309,15 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$i ++;
 			}
 		}
+
 		return $return;
 	}
 
+	/**
+	 * Scatter chart
+	 *
+	 * @return multitype:
+	 */
 	protected function scatterChartData()
 	{
 		$rows = $this->mulitLines();
@@ -291,6 +325,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$data = array();
 		$o = new stdClass;
 		$o->values = array();
+
 		foreach ($rows as $d)
 		{
 			if (!array_key_exists($d->key, $data))
@@ -299,19 +334,30 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$data[$d->key]->key = $d->key;
 				$data[$d->key]->values = array();
 			}
+
 			$point = new stdClass;
 			$point->x = (float) $d->x;
 			$point->y = (float) $d->y;
 			$point->size = is_null($d->size) ? 0.5 : (float) $d->size;
 			$data[$d->key]->values[] = $point;
 		}
+
 		$data = array_values($data);
+
 		return $data;
 	}
 
+	/**
+	 * Multi line
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return array
+	 */
 	protected function mulitLines()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('data_mode') == 0)
 		{
 			$labelColumns = $params->get('value_field');
@@ -320,6 +366,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			$labelColumns = explode(',', $params->get('label_columns'));
 		}
+
 		$table = $params->get('tbl');
 		$split = $params->get('split', '');
 		$groupBy = $params->get('group_by');
@@ -328,8 +375,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$query = $db->getQuery(true);
 		$query->select($labelColumns)->from($table);
 
-		// Test
-		//$split = '';
 		if ($split !== '')
 		{
 			$query->select($split . ' AS ' . $db->quoteName('key'));
@@ -341,13 +386,17 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$query->select('date AS ' . $db->quoteName('key'));
 			}
 		}
+
 		$db->setQuery($query);
+
 		if (!$rows = $db->loadObjectList())
 		{
 			throw new RuntimeException('Fabrik: nv3d viz data load error: ' . $db->getErrorMsg());
 		}
+
 		return $rows;
 	}
+
 	/**
 	 * Build data for the mutli Chart types
 	 * Current only works
@@ -360,6 +409,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$rows = $this->mulitLines();
 		$labelAxisValues = $params->get('label_axis_values', 'label_columns');
+
 		if ($labelAxisValues === 'label_columns')
 		{
 			if ($split === '')
@@ -389,6 +439,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	{
 		$o = new stdClass;
 		$o->values = array();
+
 		foreach ($rows as $d)
 		{
 			foreach ($d as $k => $v)
@@ -404,13 +455,15 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				{
 					$o->values[$k]->value += (float) $v;
 				}
-
 			}
 		}
+
 		$o->values = array_values($o->values);
 		$data[] = $o;
+
 		return $data;
 	}
+
 	/**
 	 * Organise data for showing in a multichart when the columns are used as the labels and a split
 	 * value has been assigned.
@@ -422,11 +475,13 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function multiChartLabels($rows)
 	{
 		$data = array();
+
 		foreach ($rows as $d)
 		{
 			$o = new stdClass;
 			$o->key = $d->key;
 			$values = array();
+
 			foreach ($d as $k => $v)
 			{
 				if ($k != 'key')
@@ -437,9 +492,11 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 					$values[] = $thisV;
 				}
 			}
+
 			$o->values = $values;
 			$data[] = $o;
 		}
+
 		return $data;
 	}
 
@@ -453,29 +510,35 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	protected function multiChartSplit($rows)
 	{
 		$data = array();
+
 		if (empty($rows))
 		{
 			return $data;
 		}
+
 		$firstRow = $rows[0];
 		$labelColumns = array_keys(get_object_vars($firstRow));
+
 		foreach ($labelColumns as $chartKey)
 		{
 			if ($chartKey !== 'key')
 			{
-			$o = new stdClass;
-			$o->key = $chartKey;
-			$o->values = array();
-			foreach ($rows as $d)
-			{
-				$thisV = new stdClass;
-				$thisV->label = $d->key;
-				$thisV->value = (float) $d->$chartKey;
-				$o->values[] = $thisV;
-			}
-			$data[] = $o;
+				$o = new stdClass;
+				$o->key = $chartKey;
+				$o->values = array();
+
+				foreach ($rows as $d)
+				{
+					$thisV = new stdClass;
+					$thisV->label = $d->key;
+					$thisV->value = (float) $d->$chartKey;
+					$o->values[] = $thisV;
+				}
+
+				$data[] = $o;
 			}
 		}
+
 		return $data;
 	}
 
@@ -492,6 +555,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	{
 		$suggestions = array();
 		$data = array();
+
 		foreach ($rows as $val)
 		{
 			if (!is_null($val))
@@ -519,7 +583,9 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				}
 			}
 		}
+
 		$this->suggestions = $suggestions;
+
 		return $data;
 	}
 
@@ -535,6 +601,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$str = array();
 		$str[] = $params->get('pie_labels', true) ? '.showLabels(true)' : '.showLabels(false)';
 		$str[] = $params->get('donut', false) ?  '.donut(true)' : '.donut(false)';
+
 		return implode("\n", $str);
 	}
 
@@ -553,10 +620,12 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		// $str[] = '.staggerLabels(true);';
 		// Rotate the labels otherwise they get merged together
 		$rotate = (int) $params->get('rotate_labels', 0);
+
 		if ($rotate !== 0)
 		{
 			$str[] = 'chart.xAxis.rotateLabels(-' . $rotate . ');';
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -570,6 +639,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 	{
 		$str = '';
 		$params = $this->getParams();
+
 		if ($params->get('margin', '') !== '')
 		{
 			$margins = explode(',', $params->get('margin', ''));
@@ -578,6 +648,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			$marg->bottom = 160;
 			$marg->right = 10;
 			$marg->left = 80;
+
 			if (count($margins) == 2)
 			{
 				$marg->top = $marg->bottom = $margins[0];
@@ -590,8 +661,10 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$marg->bottom = $margins[2];
 				$marg->left = $margins[3];
 			}
+
 			$str = 'chart.margin(' . json_encode($marg) . ');';
 		}
+
 		return $str;
 	}
 
@@ -609,6 +682,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$chart = $params->get('chart', 'pieChart');
 		$controls = $params->get('controls', 0);
+
 		if ($controls == 0 && in_array($chart, $allowed))
 		{
 			$str[] = 'chart.showControls(false);';
@@ -629,7 +703,6 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		$params = $this->getParams();
 		$chart = $params->get('chart', 'pieChart');
 		$str[] = 'window.addEvent("domready", function () {';
-
 		$str[] = 'nv.addGraph(function() {';
 		$str[] = 'var chart = nv.models.' . $chart . '()';
 
@@ -637,6 +710,7 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			// $colors = explode(',', $params->get('colours', 'red,green,blue,orange'));
 			$colors = explode(',', $params->get('colours', '#B9C872,#88B593,#388093,#994B89,#ED5FA2,#4D1018,#8F353E,#D35761,#43574E,#14303C'));
+
 			if (!empty($colors))
 			{
 				$str[] = '.color(' . json_encode($colors) . ')';
@@ -647,14 +721,12 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 		{
 			case 'scatterChart':
 				$str[] = '.showDistX(true)';
-                $str[] = '.showDistY(true)';
-                 $str[] = ".tooltipContent(function(key, x, y, obj) {
-                	// console.log(arguments);
-      return '<h3><a href=\"http://fabrikar.com\">test</a></h3>';
-  });";
-
-
-                break;
+				$str[] = '.showDistY(true)';
+				$str[] = ".tooltipContent(function(key, x, y, obj) {
+					// console.log(arguments);
+					return '<h3><a href=\"http://fabrikar.com\">test</a></h3>';
+		});";
+				break;
 			case 'pieChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
@@ -670,7 +742,8 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 			case 'multiBarChart':
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
-				//$str[] = $this->margins();
+
+				// $str[] = $this->margins();
 				break;
 			case 'stackedAreaChart':
 			case 'lineWithFocusChart':
@@ -682,21 +755,19 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 				$str[] = '.x(function(d) { return d.label })';
 				$str[] = '.y(function(d) { return d.value })';
 				break;
-
 		}
 
 		switch ($chart)
 		{
 			// @TODO add line chart axis label options.
 			case 'lineChart':
-				//$str[] = 'chart.xAxis.axisLabel(\'Time (ms)\');';
-				//$str[] = 'chart.yAxis.axisLabel(\'Voltage (v)\');';
+				// $str[] = 'chart.xAxis.axisLabel(\'Time (ms)\');';
+				// $str[] = 'chart.yAxis.axisLabel(\'Voltage (v)\');';
 				break;
 		}
+
 		$str[] = $this->margins();
-
 		$this->showControls($str);
-
 		$id = $this->getContainerId();
 		$str[] = 'd3.select("#' . $id . ' svg")';
 
@@ -709,70 +780,68 @@ class FabrikModelNvd3_Chart extends FabrikFEModelVisualization
 
 		$str[] = 'd3.selectAll("circle").on("mousedown", function(d, i) {
 			console.log(arguments);
-		});';
+	});';
 
 		$str[] = 'd3.selectAll("circle.nv-point").on("mouseover", function(d, i) {
 			console.log(d.data);
 			console.log(arguments);
-		});';
-
+	});';
 
 		$rotate = (int) $params->get('rotate_labels', 45);
+
 		if ($rotate !== 0)
 		{
 			// Rotate x axis labels without stoopid offset
 			$str[] = "d3.select('#" . $id . " .nv-x.nv-axis > g').selectAll('g').selectAll('text').attr('transform', function(d,i,j) {";
 			$str[] = "return 'translate (-10, 20) rotate(-" . $rotate . " 0,0)'";
 			$str[] = "}) ;";
-
 		}
+
 		$str[] = 'return chart;';
 		$str[] = '});';
 		$str[] = '});';
 
-
-
 		return implode("\n", $str);
 		/**
 
-		 */
+		*/
 		$ref = $this->getJSRenderContext();
 
 		$chart = json_encode($chart);
 
 		$script = "
-				console.log('this');
-		 nv.addGraph(function() {
-		 var chart = nv.models.multiBarChart()
-                .x(function(d) { return d[0] })
-                .y(function(d) {
-                return d[1] })
-                .color(d3.scale.category10().range());
+		console.log('this');
+		nv.addGraph(function() {
+		var chart = nv.models.multiBarChart()
+		.x(function(d) { return d[0] })
+		.y(function(d) {
+		return d[1] })
+		.color(d3.scale.category10().range());
 
-	chart.xAxis.tickFormat(function(d) {
+		chart.xAxis.tickFormat(function(d) {
 		return d3.time.format('%x')(new Date(d))
 	});
 
 	chart.yAxis
 	.axisLabel('Sales (€)')
 	.tickFormat(function(d) {
-		return d;
+	return d;
 	});
 
 
-  d3.select('$ref svg')
-      .datum(" . ($chart) . ")
-    .transition().duration(500)
-      .call(chart);
+	d3.select('$ref svg')
+	.datum(" . ($chart) . ")
+		.transition().duration(500)
+		.call(chart);
 
 
-  //TODO: Figure out a good way to do this automatically
-  nv.utils.windowResize(chart.update);
+		//TODO: Figure out a good way to do this automatically
+		nv.utils.windowResize(chart.update);
 
-  return chart;
-  });
-  ";
-return $script;
+		return chart;
+	});
+		";
+
+		return $script;
 	}
-
 }

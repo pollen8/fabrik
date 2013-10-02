@@ -3,13 +3,12 @@
  * Trivial image serving script, to work round IE caching static CAPTCHA IMG's
  * @package     Joomla
  * @subpackage  Fabrik
- * @author Hugh Messenger
  * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
  * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // Allow direct access!!!!
-define( '_JEXEC', 1);
+define('_JEXEC', 1);
 
 $jpath = dirname(__FILE__);
 $jpath = str_replace('/plugins/fabrik_element/captcha', '', $jpath);
@@ -114,7 +113,7 @@ Felixkat - Clean has been replaced with flush due to a image truncating issue
 Haven't been able to pinpoint the exact issue yet, possibly PHP version related
 http://fabrikar.com/forums/showthread.php?p=147606#post147606
 */
-// ob_end_clean();
+// Not this: ob_end_clean();
 ob_end_flush();
 imagedestroy($image);
 
@@ -135,6 +134,7 @@ if (!empty($img))
 	{
 		header('Content-Length: ' . JString::strlen($img));
 	}
+
 	header('Content-Type: image/jpeg');
 
 	// ... serve up the image ...
@@ -145,15 +145,17 @@ if (!empty($img))
 }
 
 /**
- *  simple function that calculates the *exact* bounding box (single pixel precision).
+ *  Simple function that calculates the *exact* bounding box (single pixel precision).
  *  The function returns an associative array with these keys:
  *  left, top:  coordinates you will pass to imagettftext
  *  width, height: dimension of the image you have to create
  *
- * @param unknown_type $code
- * @param unknown_type $fontPath
- * @param unknown_type $fontsize
- * @param unknown_type $angle
+ * @param   string  $code      Code
+ * @param   string  $fontPath  Font path
+ * @param   int     $fontsize  Font size
+ * @param   int     $angle     Text angle
+ *
+ * @return  array
  */
 function calculateTextBox($code, $fontPath, $fontsize, $angle)
 {

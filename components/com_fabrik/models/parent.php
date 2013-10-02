@@ -25,7 +25,6 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModel extends JModelLegacy
 {
-
 	/**
 	 * required for compatibility with mambo 4.5.4
 	 *
@@ -37,6 +36,7 @@ class FabrikFEModel extends JModelLegacy
 	public function reset($value = null)
 	{
 		$keys = $this->getProperties();
+
 		foreach ($keys as $k)
 		{
 			$this->$k = $value;

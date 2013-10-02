@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FlashRender
 {
-
 	/**
 	 * Render output
 	 *
@@ -55,7 +54,7 @@ class FlashRender
 	 * @return  void
 	 */
 
-	function render(&$model, &$params, $file)
+	public function render(&$model, &$params, $file)
 	{
 		$fbConfig = JComponentHelper::getParams('com_fabrik');
 		ini_set('display_errors', true);
@@ -76,6 +75,7 @@ class FlashRender
 
 		$w = $params->get('fu_main_max_width', 0);
 		$h = $params->get('fu_main_max_height', 0);
+
 		if ($thisFileInfo && array_key_exists('swf', $thisFileInfo))
 		{
 			if ($thisFileInfo['swf']['header']['frame_width'] < $w || $thisFileInfo['swf']['header']['frame_height'] < $h)
@@ -84,11 +84,13 @@ class FlashRender
 				$h = $thisFileInfo['swf']['header']['frame_height'];
 			}
 		}
+
 		if ($w <= 0 || $h <= 0)
 		{
 			$w = 800;
 			$h = 600;
 		}
+
 		// $$$ hugh - if they've enabled thumbnails, for Flash content we'll take that to mean they don't
 		// want to play the content inline in the table, and use mediabox (if available) to open it instead.
 		if (!$model->inDetailedView && $fbConfig->get('use_mediabox', true) && $params->get('make_thumbnail', false))
@@ -97,6 +99,7 @@ class FlashRender
 
 			// @TODO - work out how to do thumbnails
 			$thumb_dir = $params->get('thumb_dir');
+
 			if (!empty($thumb_dir))
 			{
 				$file = str_replace("\\", "/", $file);
@@ -108,7 +111,9 @@ class FlashRender
 					$pathinfo['filename'] = explode('.', $pathinfo['basename']);
 					$pathinfo['filename'] = $pathinfo['filename'][0];
 				}
+
 				$thumb_path = COM_FABRIK_BASE . $thumb_dir . '/' . $pathinfo['filename'] . '.png';
+
 				if (JFile::exists($thumb_path))
 				{
 					$thumb_file = COM_FABRIK_LIVESITE . $thumb_dir . '/' . $pathinfo['filename'] . '.png';
@@ -122,6 +127,7 @@ class FlashRender
 			{
 				$thumb_file = COM_FABRIK_LIVESITE . "media/com_fabrik/images/flash.jpg";
 			}
+
 			$file = str_replace("\\", "/", COM_FABRIK_LIVESITE . $file);
 			$this->output .= "<a href='$file' rel='lightbox[flash $w $h]'><img src='$thumb_file' alt='Full Size'></a>";
 		}

@@ -19,7 +19,7 @@ jimport('joomla.application.component.view');
  * @package     Joomla.Administrator
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 class FabrikAdminViewHome extends JViewLegacy
 {
@@ -45,7 +45,6 @@ class FabrikAdminViewHome extends JViewLegacy
 
 	public function display($tpl = null)
 	{
-
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$srcs = FabrikHelperHTML::framework();
@@ -59,10 +58,12 @@ class FabrikAdminViewHome extends JViewLegacy
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu('home');
 		FabrikAdminHelper::setViewLayout($this);
+
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+
 		parent::display($tpl);
 	}
 
@@ -76,11 +77,11 @@ class FabrikAdminViewHome extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions();
+
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_fabrik');
 		}
 	}
-
 }

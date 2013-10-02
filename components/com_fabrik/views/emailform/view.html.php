@@ -13,23 +13,36 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
 
-class fabrikViewEmailform extends JViewLegacy
+/**
+ * Fabrik Email Form View
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
+class FabrikViewEmailform extends JViewLegacy
 {
+	public $rowId = null;
 
-	var $_template = null;
-	var $_errors = null;
-	var $rowId = null;
-	var $params = null;
-	var $isMambot = null;
+	public $params = null;
 
-	var $id = null;
+	public $isMambot = null;
 
-	function display()
+	public $id = null;
+
+	/**
+	 * Display
+	 *
+	 * @return  void
+	 */
+	public function display()
 	{
 		FabrikHelperHTML::framework();
 		$model = $this->getModel('form');
 		$filter = JFilterInput::getInstance();
 		$post = $filter->clean($_POST, 'array');
+
 		if (!array_key_exists('youremail', $post))
 		{
 			FabrikHelperHTML::emailForm($model);
@@ -42,15 +55,26 @@ class fabrikViewEmailform extends JViewLegacy
 		}
 	}
 
-	function sendMail(&$email)
+	/**
+	 * Send email
+	 *
+	 * @param   string  $email  Email
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return  void
+	 */
+	public function sendMail($email)
 	{
 		JSession::checkToken() or die('Invalid Token');
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		// First, make sure the form was posted from a browser.
-		// For basic web-forms, we don't care about anything
-		// other than requests from a browser:
+		/*
+		 * First, make sure the form was posted from a browser.
+		 * For basic web-forms, we don't care about anything
+		 * other than requests from a browser:
+		 */
 		if (!isset($_SERVER['HTTP_USER_AGENT']))
 		{
 			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 500);
@@ -78,6 +102,7 @@ class fabrikViewEmailform extends JViewLegacy
 				}
 			}
 		}
+
 		// Made it past spammer test, free up some memory
 		// and continue rest of script:
 		unset($k, $v, $v2, $badStrings);
@@ -103,7 +128,7 @@ class fabrikViewEmailform extends JViewLegacy
 		$msg = JText::sprintf('COM_FABRIK_EMAIL_MSG', $sitename, $yourname, $youremail, $link);
 
 		// Mail function
-		JUTility::sendMail($youremail, $yourname, $email, $subject, $msg);
+		$mail = JFactory::getMailer();
+		$res = $mail->sendMail($youremail, $yourname, $email, $subject, $msg);
 	}
-
 }

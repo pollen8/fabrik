@@ -16,9 +16,9 @@ jimport('joomla.application.component.view');
 /**
  * View to edit a cron.
  *
- * @package		Joomla.Administrator
- * @subpackage	Fabrik
- * @since		1.5
+ * @package     Joomla.Administrator
+ * @subpackage  Fabrik
+ * @since       1.5
  */
 class FabrikAdminViewCron extends JViewLegacy
 {
@@ -60,7 +60,6 @@ class FabrikAdminViewCron extends JViewLegacy
 	public function display($tpl = null)
 	{
 		// Initialiase variables.
-
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 		$this->state = $this->get('State');
@@ -71,6 +70,7 @@ class FabrikAdminViewCron extends JViewLegacy
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
 		}
+
 		$this->addToolbar();
 		FabrikAdminHelper::setViewLayout($this);
 
@@ -85,13 +85,12 @@ class FabrikAdminViewCron extends JViewLegacy
 		$dep->deps = array('admin/pluginmanager');
 		$shim['admin/cron/admincron'] = $dep;
 
-
 		$opts = new stdClass;
 		$opts->plugin = $this->item->plugin;
 
 		$js = array();
 		$js[] = "\twindow.addEvent('domready', function () {";
-		$js[] = "\t\tFabrik.controller = new CronAdmin(" . json_encode($opts)  . ");";
+		$js[] = "\t\tFabrik.controller = new CronAdmin(" . json_encode($opts) . ");";
 		$js[] = "\t})";
 		FabrikHelperHTML::iniRequireJS($shim);
 		FabrikHelperHTML::script($srcs, implode("\n", $js));
@@ -116,6 +115,7 @@ class FabrikAdminViewCron extends JViewLegacy
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title($isNew ? JText::_('COM_FABRIK_MANAGER_CRON_NEW') : JText::_('COM_FABRIK_MANAGER_CRON_EDIT'), 'cron.png');
+
 		if ($isNew)
 		{
 			// For new records, check the create permission.
@@ -125,6 +125,7 @@ class FabrikAdminViewCron extends JViewLegacy
 				JToolBarHelper::save('cron.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('cron.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('cron.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
@@ -137,6 +138,7 @@ class FabrikAdminViewCron extends JViewLegacy
 				{
 					JToolBarHelper::apply('cron.apply', 'JTOOLBAR_APPLY');
 					JToolBarHelper::save('cron.save', 'JTOOLBAR_SAVE');
+
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{
@@ -144,12 +146,15 @@ class FabrikAdminViewCron extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('cron.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('cron.cancel', 'JTOOLBAR_CLOSE');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_CRONS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_CRONS_EDIT'));
 	}

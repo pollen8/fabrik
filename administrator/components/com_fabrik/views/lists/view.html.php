@@ -57,10 +57,12 @@ class FabrikAdminViewLists extends JViewLegacy
 		{
 			case 'confirmdelete':
 				$this->confirmdelete();
+
 				return;
 				break;
 			case 'import':
 				$this->import($tpl);
+
 				return;
 				break;
 		}
@@ -76,19 +78,22 @@ class FabrikAdminViewLists extends JViewLegacy
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new RuntimeException(implode("\n", $errors), 500);
+
 			return false;
 		}
+
 		$this->table_groups = $this->get('TableGroups');
 		FabrikAdminHelper::setViewLayout($this);
 		$this->addToolbar();
 		FabrikAdminHelper::addSubmenu($input->getWord('view', 'lists'));
+
 		if (FabrikWorker::j3())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
+
 		FabrikHelperHTML::iniRequireJS();
 		parent::display($tpl);
-
 	}
 
 	/**
@@ -102,15 +107,19 @@ class FabrikAdminViewLists extends JViewLegacy
 		require_once JPATH_COMPONENT . '/helpers/fabrik.php';
 		$canDo = FabrikAdminHelper::getActions($this->state->get('filter.category_id'));
 		JToolBarHelper::title(JText::_('COM_FABRIK_MANAGER_LISTS'), 'lists.png');
+
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::addNew('list.add', 'JTOOLBAR_NEW');
 		}
+
 		if ($canDo->get('core.edit'))
 		{
 			JToolBarHelper::editList('list.edit', 'JTOOLBAR_EDIT');
 		}
+
 		JToolBarHelper::custom('list.copy', 'copy.png', 'copy_f2.png', 'COM_FABRIK_COPY');
+
 		if ($canDo->get('core.edit.state'))
 		{
 			if ($this->state->get('filter.state') != 2)
@@ -120,11 +129,14 @@ class FabrikAdminViewLists extends JViewLegacy
 				JToolBarHelper::custom('lists.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
 			}
 		}
+
 		JToolBarHelper::divider();
+
 		if ($canDo->get('core.create'))
 		{
 			JToolBarHelper::custom('import.display', 'upload.png', 'upload_f2.png', 'COM_FABRIK_IMPORT', false);
 		}
+
 		JToolBarHelper::divider();
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
@@ -135,11 +147,13 @@ class FabrikAdminViewLists extends JViewLegacy
 		{
 			JToolBarHelper::trash('lists.trash', 'JTOOLBAR_TRASH');
 		}
+
 		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_fabrik');
 		}
+
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_LISTS', false, JText::_('JHELP_COMPONENTS_FABRIK_LISTS'));
 
@@ -212,10 +226,12 @@ class FabrikAdminViewLists extends JViewLegacy
 		$this->items = $model->getDbTableNames();
 		$this->addConfirmDeleteToolbar();
 		$v = new JVersion;
+
 		if ($v->RELEASE > 2.5)
 		{
 			$this->setLayout('confirmdeletebootstrap');
 		}
+
 		parent::display($tpl);
 	}
 

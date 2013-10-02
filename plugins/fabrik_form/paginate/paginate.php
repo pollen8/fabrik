@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormPaginate extends PlgFabrik_Form
 {
-
 	/**
 	 * Inject custom html into the bottom of the form
 	 *
@@ -48,10 +47,12 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	{
 		$params = $this->getParams();
 		$formModel = $this->getModel();
+
 		if (!$this->show())
 		{
 			return;
 		}
+
 		$j3 = FabrikWorker::j3();
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -61,6 +62,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$this->ids = $this->getNavIds($formModel);
 		$linkStartPrev = $this->ids->index == 0 ? ' disabled' : '';
 		$linkNextEnd = $this->ids->index == $this->ids->lastKey ? ' disabled' : '';
+
 		if ($app->isAdmin())
 		{
 			$url = 'index.php?option=com_fabrik&view=' . $mode . '&formid=' . $formId . '&rowid=';
@@ -106,7 +108,9 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 					<li>' . $endLink . '</li>
 			</ul>';
 		}
+
 		FabrikHelperHTML::stylesheet('plugins/fabrik_form/paginate/paginate.css');
+
 		return true;
 	}
 
@@ -139,6 +143,7 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$o->last = $rows[$o->lastKey];
 		$o->next = $o->index + 1 > $o->lastKey ? $o->lastKey : $rows[$o->index + 1];
 		$o->prev = $o->index - 1 < 0 ? 0 : $rows[$o->index - 1];
+
 		return $o;
 	}
 
@@ -158,8 +163,8 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$params = $this->getParams();
 		$formModel = $this->getModel();
 		$formModel->checkAccessFromListSettings();
-
 		$where = $params->get('paginate_where');
+
 		switch ($where)
 		{
 			case 'both':
@@ -185,14 +190,17 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	{
 		$formModel = $this->getModel();
 		$params = $this->getParams();
+
 		if (!$this->show())
 		{
 			return;
 		}
+
 		if ($params->get('paginate_ajax') == 0)
 		{
 			return;
 		}
+
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$opts = new stdClass;
@@ -207,10 +215,10 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 	}
 
 	/**
-	* Called from plugins ajax call
-	*
-	* @return  void
-	*/
+	 * Called from plugins ajax call
+	 *
+	 * @return  void
+	 */
 
 	public function onXRecord()
 	{
@@ -239,7 +247,5 @@ class PlgFabrik_FormPaginate extends PlgFabrik_Form
 		$data = json_decode($data);
 		$data->ids = $ids;
 		echo json_encode($data);
-
 	}
-
 }

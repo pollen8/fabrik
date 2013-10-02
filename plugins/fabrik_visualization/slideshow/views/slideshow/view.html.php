@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikViewSlideshow extends JViewLegacy
 {
-
 	/**
 	 * Execute and display a template script.
 	 *
@@ -42,11 +41,14 @@ class FabrikViewSlideshow extends JViewLegacy
 		$usersConfig = JComponentHelper::getParams('com_fabrik');
 		$model->setId($input->getInt('id', $usersConfig->get('visualizationid', $input->getInt('visualizationid', 0))));
 		$this->row = $model->getVisualization();
+
 		if ($this->row->published == 0)
 		{
 			JError::raiseWarning(500, JText::_('JERROR_ALERTNOAUTHOR'));
+
 			return '';
 		}
+
 		$this->js = $this->get('JS');
 		$viewName = $this->getName();
 		$params = $model->getParams();
@@ -62,10 +64,12 @@ class FabrikViewSlideshow extends JViewLegacy
 		$tmplpath = $model->pathBase . 'slideshow/views/slideshow/tmpl/' . $tpl;
 		$this->_setPath('template', $tmplpath);
 		$srcs[] = 'media/com_fabrik/js/listfilter.js';
+
 		if ($this->get('RequiredFiltersFound'))
 		{
 			$srcs[] = 'components/com_fabrik/libs/slideshow2/js/slideshow.js';
 			$mode = $params->get('slideshow_viz_type', 1);
+
 			switch ($mode)
 			{
 				case 1:
@@ -86,6 +90,7 @@ class FabrikViewSlideshow extends JViewLegacy
 			JHTML::stylesheet('components/com_fabrik/libs/slideshow2/css/slideshow.css');
 			$srcs[] = 'plugins/fabrik_visualization/slideshow/slideshow.js';
 		}
+
 		FabrikHelperHTML::iniRequireJs($model->getShim());
 		FabrikHelperHTML::script($srcs, $this->js);
 
@@ -95,5 +100,4 @@ class FabrikViewSlideshow extends JViewLegacy
 		FabrikHelperHTML::stylesheetFromPath('plugins/fabrik_visualization/slideshow/views/slideshow/tmpl/' . $tpl . '/template.css');
 		echo parent::display();
 	}
-
 }

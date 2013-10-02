@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikTablePackage extends JTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -32,5 +31,4 @@ class FabrikTablePackage extends JTable
 	{
 		parent::__construct('#__{package}_packages', 'id', $db);
 	}
-
 }

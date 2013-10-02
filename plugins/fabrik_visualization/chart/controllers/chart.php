@@ -19,8 +19,7 @@ jimport('joomla.application.component.controller');
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.visualization.chart
  * @since       3.0
-*/
+ */
 class FabrikControllerVisualizationchart extends FabrikControllerVisualization
 {
-
 }

@@ -1,10 +1,11 @@
 <?php
 /**
- * @version
- * @package Joomla
- * @subpackage Fabrik
- * @copyright Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
- * @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
+ * Admin form module
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  mod_fabrik_form
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
 // No direct access
@@ -22,6 +23,7 @@ if (!defined('COM_FABRIK_FRONTEND'))
 {
 	throw new RuntimeException(JText::_('COM_FABRIK_SYSTEM_PLUGIN_NOT_ACTIVE'), 400);
 }
+
 FabrikHelperHTML::framework();
 require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/controllers/form.php';
 
@@ -47,14 +49,17 @@ $origView = $input->get('view');
 
 $input->set('formid', $formId);
 $input->set('view', 'form');
-$controller = new FabrikControllerForm();
+$controller = new FabrikControllerForm;
 
-//$$$rob for table views in category blog layouts when no layout specified in {} the blog layout
-// was being used to render the table - which was not found which gave a 500 error
+/*
+ * For table views in category blog layouts when no layout specified in {} the blog layout
+ * was being used to render the table - which was not found which gave a 500 error
+ */
 if ($layout !== '')
 {
 	$input->set('layout', $layout);
 }
+
 // Display the view
 $controller->isMambot = true;
 $controller->set('cacheId', 'admin_module');
@@ -65,7 +70,7 @@ $input->set('formid', $params->get('formid'));
 $input->set('ajax', $moduleAjax);
 echo $controller->view();
 
-//reset the layout and view etc for when the component needs them
+// Reset the layout and view etc for when the component needs them
 $input->set('formid', $origFormid);
 $input->set('ajax', $ajax);
 $input->set('layout', $origLayout);

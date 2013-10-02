@@ -22,7 +22,6 @@ jimport('joomla.application.component.view');
  */
 class FabrikAdminViewList extends JViewLegacy
 {
-
 	/**
 	 * Display the list
 	 *
@@ -54,12 +53,14 @@ class FabrikAdminViewList extends JViewLegacy
 		$total = $model->getTotalRecords();
 
 		$key = 'fabrik.list.' . $model->getId() . 'csv.total';
+
 		if (is_null($session->get($key)))
 		{
 			$session->set($key, $total);
 		}
 
 		$start = $input->getInt('start', 0);
+
 		if ($start <= $total)
 		{
 			$exporter->writeFile($total);
@@ -69,7 +70,7 @@ class FabrikAdminViewList extends JViewLegacy
 			$session->clear($key);
 			$exporter->downloadFile();
 		}
+
 		return;
 	}
-
 }

@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormRedirect extends PlgFabrik_Form
 {
-
 	/**
 	 * Process the plugin, called afer form is submitted
 	 *
@@ -50,13 +49,13 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$w = new FabrikWorker;
 
 		$form = $formModel->getForm();
-
 		$this->data = $this->getProcessData();
 
 		$this->data['append_jump_url'] = $params->get('append_jump_url');
 		$this->data['save_in_session'] = $params->get('save_insession');
 		$this->data['jump_page'] = $w->parseMessageForPlaceHolder($params->get('jump_page'), $this->data);
 		$this->data['thanks_message'] = $w->parseMessageForPlaceHolder($params->get('thanks_message'), $this->data);
+
 		if (!$this->shouldRedirect($params))
 		{
 			// Clear any session redirects
@@ -69,11 +68,14 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 			$session->set($context . 'title', $stitle);
 			$session->set($context . 'msg', $smsg);
 			$session->set($context . 'showsystemmsg', $sshowsystemmsg);
+
 			return true;
 		}
+
 		$this->_storeInSession();
 		$sshowsystemmsg[$this->renderOrder] = true;
 		$session->set($context . 'showsystemmsg', $sshowsystemmsg);
+
 		if ($this->data['jump_page'] != '')
 		{
 			$this->data['jump_page'] = $this->buildJumpPage();
@@ -103,6 +105,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 
 		$smsg[$this->renderOrder] = $this->data['thanks_message'];
 		$session->set($context . 'msg', $smsg);
+
 		return true;
 	}
 
@@ -139,6 +142,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$title = (array) $session->get($context . 'title', $title);
 		$title = array_shift($title);
 		$message = $session->get($context . 'msg', $message);
+
 		if ($input->get('fabrik_ajax'))
 		{
 			// 3.0 - standardize on msg/title options.
@@ -180,10 +184,12 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		{
 			return true;
 		}
+
 		if ($method != 'onLastProcess')
 		{
 			return true;
 		}
+
 		if ($input->get('fabrik_ajax'))
 		{
 			// Return false to stop the default redirect occurring
@@ -202,6 +208,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				{
 					$this->data['jump_page'] .= "?tmpl=component";
 				}
+
 				return false;
 			}
 			else
@@ -229,17 +236,20 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$jumpPage = $this->data['jump_page'];
 		$reserved = array('format', 'view', 'layout', 'task');
 		$queryvars = array();
+
 		if ($this->data['append_jump_url'] == '1')
 		{
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
 				$tmpData = $formModel->fullFormData;
+
 				foreach ($elements as $elementModel)
 				{
-
 					$name = $elementModel->getFullName(true, false);
+
 					if (array_key_exists($name, $tmpData))
 					{
 						$this->_appendQS($queryvars, $name, $tmpData[$name]);
@@ -247,6 +257,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					else
 					{
 						$element = $elementModel->getElement();
+
 						if (array_key_exists($element->name, $tmpData))
 						{
 							$this->_appendQS($queryvars, $element->name, $tmpData[$element->name]);
@@ -255,18 +266,23 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 				}
 			}
 		}
+
 		$app = JFactory::getApplication();
 		$isMabmot = $app->input->get('isMambot', false);
+
 		if ($isMabmot)
 		{
 			$queryvars['isMambot'] = 'isMambot=1';
 		}
+
 		if (empty($queryvars))
 		{
 			return $jumpPage;
 		}
+
 		$jumpPage .= (!strstr($jumpPage, "?")) ? "?" : "&";
 		$jumpPage .= implode('&', $queryvars);
+
 		return $jumpPage;
 	}
 
@@ -314,31 +330,37 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		$input = $app->input;
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$store = array();
+
 		if ($this->data['save_in_session'] == '1')
 		{
 			$tmpData = $formModel->formData;
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $group)
 			{
 				$elements = $group->getPublishedElements();
+
 				foreach ($elements as $element)
 				{
 					if ($element->getElement()->name == 'fabrik_list_filter_all')
 					{
 						continue;
 					}
+
 					$name = $element->getFullName();
+
 					if (array_key_exists($name, $tmpData))
 					{
 						$value = $tmpData[$name];
-
 						$match = $element->getElement()->filter_exact_match;
+
 						if (!is_array($value))
 						{
 							$value = array($value);
 						}
 
 						$c = 0;
+
 						foreach ($value as $v)
 						{
 							if (count($value) == 1 || $c == 0)
@@ -351,6 +373,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 								$join = 'OR';
 								$grouped = true;
 							}
+
 							if ($v != '')
 							{
 								$store['join'][] = $join;
@@ -373,6 +396,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 					}
 				}
 			}
+
 			// Clear registry search form entries
 			$key = 'com_' . $package . '.searchform';
 
@@ -404,6 +428,7 @@ class PlgFabrik_FormRedirect extends PlgFabrik_Form
 		{
 			return false;
 		}
+
 		return $this->shouldProcess('redirect_conditon');
 	}
 }

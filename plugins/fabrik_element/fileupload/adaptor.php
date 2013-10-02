@@ -17,11 +17,10 @@ defined('_JEXEC') or die('Restricted access');
  * @package     Joomla
  * @subpackage  Fabrik
  * @since       3.0
-*/
+ */
 
 abstract class FabrikStorageAdaptor
 {
-
 	/**
 	 * Path or url to uploaded file
 	 *
@@ -78,18 +77,18 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $path  Folder path to test
 	 *
 	 * @return bool
-	*/
+	 */
 
 	public abstract function folderExists($path);
 
 	/**
 	 * Create a folder
 	 *
-	 * @param   string  $path  Folder path
-	 * @param   bitmask  $mode Permissions
+	 * @param   string   $path  Folder path
+	 * @param   bitmask  $mode  Permissions
 	 *
 	 * @return bool
-	*/
+	 */
 
 	public abstract function createFolder($path, $mode = 0755);
 
@@ -100,7 +99,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $buffer  The buffer to write
 	 *
 	 * @return  void
-	*/
+	 */
 
 	public abstract function write($file, $buffer);
 
@@ -110,7 +109,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  File path
 	 *
 	 * @return  mixed  Returns file contents or boolean False if failed
-	*/
+	 */
 
 	public abstract function read($filepath);
 
@@ -120,7 +119,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $path  Path to clean
 	 *
 	 * @return  string  cleaned path
-	*/
+	 */
 
 	public abstract function clean($path);
 
@@ -131,7 +130,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   int     $repeatCounter  Repeat group counter
 	 *
 	 * @return  string  cleaned name
-	*/
+	 */
 
 	public abstract function cleanName($filename, $repeatCounter);
 
@@ -141,7 +140,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  File to delete
 	 *
 	 * @return  void
-	*/
+	 */
 
 	public abstract function delete($filepath);
 
@@ -152,7 +151,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  The path (including filename) to move the uploaded file to
 	 *
 	 * @return  boolean True on success
-	*/
+	 */
 
 	public abstract function upload($tmpFile, $filepath);
 
@@ -162,7 +161,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  File to set permissions for
 	 *
 	 * @return  string
-	*/
+	 */
 
 	public abstract function setPermissions($filepath);
 
@@ -172,7 +171,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $url  URL
 	 *
 	 * @return string  path
-	*/
+	 */
 
 	public function urlToPath($url)
 	{
@@ -189,7 +188,6 @@ abstract class FabrikStorageAdaptor
 
 	public function finalFilePathParse(&$filepath)
 	{
-
 	}
 
 	/**
@@ -209,6 +207,7 @@ abstract class FabrikStorageAdaptor
 
 		// Some servers do not like double slashes in the URL.
 		$path = str_replace('\/\/', '/', $path);
+
 		return $path;
 	}
 
@@ -249,7 +248,7 @@ abstract class FabrikStorageAdaptor
 	 * @param   string  $filepath  Path to file
 	 *
 	 * @return  string
-	*/
+	 */
 
 	public function preRenderPath($filepath)
 	{
@@ -282,22 +281,27 @@ abstract class FabrikStorageAdaptor
 	protected function randomizeName(&$filename)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('random_filename') == 1)
 		{
 			$length = (int) $params->get('length_random_filename');
+
 			if ($length < 6)
 			{
 				$length = 6;
 			}
+
 			$key = "";
 			$possible = "0123456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRTVWXYZ";
 			$i = 0;
+
 			while ($i < $length)
 			{
 				$char = JString::substr($possible, mt_rand(0, JString::strlen($possible) - 1), 1);
 				$key .= $char;
 				$i++;
 			}
+
 			$ext = JFile::getExt($filename);
 			$filename = $key . '.' . $ext;
 		}

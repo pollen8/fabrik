@@ -26,7 +26,6 @@ require_once COM_FABRIK_FRONTEND . '/helpers/params.php';
 
 class FabrikControllerVisualization extends JControllerLegacy
 {
-
 	/**
 	 * Id used from content plugin when caching turned on to ensure correct element rendered
 	 *
@@ -51,6 +50,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
+
 		if ($viewName == '')
 		{
 			/**
@@ -59,6 +59,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 			 */
 			$viewName = $this->getViewName();
 		}
+
 		$viewType = $document->getType();
 
 		// Set the default view name from the Request
@@ -87,6 +88,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 			$cache = JFactory::getCache('com_fabrik', 'view');
 			$cache->get($view, 'display', $cacheid);
 		}
+
 		return $this;
 	}
 
@@ -104,6 +106,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 		$viewName = $viz->plugin;
 		$this->addViewPath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/views');
 		JModelLegacy::addIncludePath(JPATH_SITE . '/plugins/fabrik_visualization/' . $viewName . '/models');
+
 		return $viewName;
 	}
 
@@ -124,7 +127,7 @@ class FabrikControllerVisualization extends JControllerLegacy
 	{
 		$viewName = str_replace('FabrikControllerVisualization', '', get_class($this));
 		$viewName = $viewName == '' ? $this->getViewName() : $name;
+
 		return parent::getView($viewName, $type, $prefix, $config);
 	}
-
 }

@@ -11,7 +11,14 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once 'fabrik.php';
 
+/**
+ * Abstract Fabrik Form Model
+ *
+ * @package     Joomla
+ * @subpackage  Fabrik
+ * @since       3.0
+ */
+
 abstract class FabModelForm extends FabModel
 {
-
 }

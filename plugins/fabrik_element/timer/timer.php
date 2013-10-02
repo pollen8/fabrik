@@ -26,7 +26,6 @@ require_once JPATH_SITE . '/plugins/fabrik_element/date/date.php';
 
 class PlgFabrik_ElementTimer extends PlgFabrik_Element
 {
-
 	/**
 	 * Does the element contain sub elements e.g checkboxes radiobuttons
 	 *
@@ -70,6 +69,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$element = $this->getElement();
 		$size = $params->get('timer_width', 9);
 		$value = $this->getValue($data, $repeatCounter);
+
 		if ($value == '')
 		{
 			$value = '00:00:00';
@@ -79,31 +79,41 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 			$value = explode(" ", $value);
 			$value = array_pop($value);
 		}
+
 		$type = "text";
+
 		if ($this->elementError != '')
 		{
 			$type .= " elementErrorHighlight";
 		}
+
 		if ($element->hidden == '1')
 		{
 			$type = "hidden";
 		}
+
 		$sizeInfo = " size=\"$size\" ";
+
 		if ($params->get('timer_readonly'))
 		{
 			$sizeInfo .= " readonly=\"readonly\" ";
 			$type .= " readonly";
 		}
+
 		if (!$this->isEditable())
 		{
 			return ($element->hidden == '1') ? "<!-- " . $value . " -->" : $value;
 		}
 
-		$str[] = '<input class="fabrikinput inputbox ' . $type . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
+		$class = 'class="fabrikinput inputbox ' . $type . '"';
+		$str[] = '<input ' . $class . ' name="' . $name . '" id="' . $id . '" ' . $sizeInfo . 'value="' . $value . '" />';
+
 		if (!$params->get('timer_readonly'))
 		{
-			$str[] .= '<button class="btn" id="' . $id . '_button"><i class="icon-time"></i> <span>' .  JText::_('PLG_ELEMENT_TIMER_START') . '</span></button>';
+			$img = '<i class="icon-time"></i> <span>' . JText::_('PLG_ELEMENT_TIMER_START') . '</span>';
+			$str[] .= '<button class="btn" id="' . $id . '_button">' . $img . '</button>';
 		}
+
 		return implode("\n", $str);
 	}
 
@@ -123,6 +133,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$opts->autostart = (bool) $params->get('timer_autostart', false);
 		JText::script('PLG_ELEMENT_TIMER_START');
 		JText::script('PLG_ELEMENT_TIMER_STOP');
+
 		return array('FbTimer', $id, $opts);
 	}
 
@@ -145,13 +156,15 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		{
 			$label = 'CONCAT(' . implode(', " & " , ', $labels) . ')  AS label';
 		}
+
 		$table = $listModel->getTable();
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
 
 		// $$$rob not actaully likely to work due to the query easily exceeding mySQL's  TIMESTAMP_MAX_VALUE value but the query in itself is correct
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM `$table->db_table_name` $joinSQL $whereSQL";
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(SUM(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label FROM
+		`$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
@@ -169,7 +182,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME(AVG(UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM
+		`$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
@@ -187,7 +202,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		$joinSQL = $listModel->buildQueryJoin();
 		$whereSQL = $listModel->buildQueryWhere();
 		$name = $this->getFullName(false, false);
-		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM `$table->db_table_name` $joinSQL $whereSQL";
+
+		return "SELECT DATE_FORMAT(FROM_UNIXTIME((UNIX_TIMESTAMP($name))), '%H:%i:%s') AS value, $label AS label FROM
+		`$table->db_table_name` $joinSQL $whereSQL";
 	}
 
 	/**
@@ -201,6 +218,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 	public function simpleSum($data)
 	{
 		$sum = 0;
+
 		foreach ($data as $d)
 		{
 			if ($d != '')
@@ -209,6 +227,7 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 				$sum += $this->toSeconds($date);
 			}
 		}
+
 		return $sum;
 	}
 
@@ -227,7 +246,9 @@ class PlgFabrik_ElementTimer extends PlgFabrik_Element
 		{
 			return 0;
 		}
+
 		$date = JFactory::getDate($v);
+
 		return $this->toSeconds($date);
 	}
 }

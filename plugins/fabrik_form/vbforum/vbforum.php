@@ -24,7 +24,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormVbForum extends PlgFabrik_Form
 {
-
 	/**
 	 * Before the record is stored, this plugin will see if it should process
 	 * and if so store the form data in the session.
@@ -82,13 +81,16 @@ class PlgFabrik_FormVbForum extends PlgFabrik_Form
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, 'cookie.txt');
 		curl_setopt($ch, CURLOPT_COOKIEFILE, 'cookie.txt');
+
 		if ($method == 'POST')
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $vars);
 		}
+
 		$data = curl_exec($ch);
 		curl_close($ch);
+
 		if ($data)
 		{
 			return $data;
@@ -98,5 +100,4 @@ class PlgFabrik_FormVbForum extends PlgFabrik_Form
 			return curl_error($ch);
 		}
 	}
-
 }

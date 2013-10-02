@@ -23,7 +23,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerElement extends JControllerLegacy
 {
-
 	/**
 	 * Is the view rendered from the J content plugin
 	 *
@@ -95,5 +94,4 @@ class FabrikControllerElement extends JControllerLegacy
 		$this->mode = 'readonly';
 		$this->display();
 	}
-
 }

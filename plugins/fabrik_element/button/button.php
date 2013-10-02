@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class PlgFabrik_ElementButton extends PlgFabrik_Element
 {
-
 	/**
 	 * Draws the html form element
 	 *
@@ -37,6 +36,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 		$id = $this->getHTMLId($repeatCounter);
 		$element = $this->getElement();
 		$str = '<input type="button" class="fabrikinput button btn" id="' . $id . '" name="' . $name . '" value="' . $element->label . '" />';
+
 		return $str;
 	}
 
@@ -66,6 +66,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$opts = $this->getElementJSOptions($repeatCounter);
+
 		return array('FbButton', $id, $opts);
 	}
 
@@ -83,6 +84,7 @@ class PlgFabrik_ElementButton extends PlgFabrik_Element
 	{
 		$id = $this->getHTMLId($repeatCounter);
 		$ar = array('id' => $id, 'triggerEvent' => 'click');
+
 		return array($ar);
 	}
 }

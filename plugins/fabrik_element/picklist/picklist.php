@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 {
-
 	/**
 	 * Method to set the element id
 	 *
@@ -71,42 +70,50 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$tolist = array();
 		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small">';
 		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small">';
+
 		foreach ($arVals as $v)
 		{
 			if (!in_array($v, $arSelected))
 			{
 				$fromlist[] = '<li id="' . $id . '_value_' . $v . '" class="picklist">' . $arTxt[$i] . '</li>';
 			}
+
 			$i++;
 		}
+
 		$i = 0;
 		$lookup = array_flip($arVals);
+
 		foreach ($arSelected as $v)
 		{
 			if ($v == '' || $v == '-' || $v == '[""]')
 			{
 				continue;
 			}
+
 			$k = JArrayHelper::getValue($lookup, $v);
 			$tmptxt = addslashes(htmlspecialchars(JArrayHelper::getValue($arTxt, $k)));
 			$tolist[] = '<li id="' . $id . '_value_' . $v . '" class="' . $v . '">' . $tmptxt . '</li>';
 			$aRoValues[] = $tmptxt;
 			$i++;
 		}
-		$fromlist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
-		$tolist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE') . '</li>';
 
+		$dragLbl = JText::_('PLG_ELEMENT_PICKLIST_DRAG_OPTIONS_HERE');
+		$fromlist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
+		$tolist[] = '<li class="emptyplicklist" style="display:none"><i class="icon-move"></i> ' . $dragLbl . '</li>';
 		$fromlist[] = '</ul>';
 		$tolist[] = '</ul>';
-
 		$str = '<div ' . $attribs . '>' . implode("\n", $fromlist) . '</div>';
 		$str .= '<div class="span6">' . implode("\n", $tolist) . '</div>';
 		$str .= $this->getHiddenField($name, json_encode($arSelected), $id);
+
 		if (!$this->isEditable())
 		{
 			return implode(', ', $aRoValues);
 		}
+
 		$str .= $this->getAddOptionFields($repeatCounter);
+
 		return $str;
 	}
 
@@ -133,6 +140,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$opts->hovercolour = $params->get('picklist-hovercolour', '#AFFFFD');
 		$opts->bghovercolour = $params->get('picklist-bghovercolour', '#FFFFDF');
 		JText::script('PLG_ELEMENT_PICKLIST_ENTER_VALUE_LABEL');
+
 		return array('FbPicklist', $id, $opts);
 	}
 
@@ -150,14 +158,17 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	{
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
+
 		for ($i = 0; $i < count($arTxt); $i++)
 		{
 			if (JString::strtolower($arTxt[$i]) == JString::strtolower($val))
 			{
 				$val = $arVals[$i];
+
 				return $val;
 			}
 		}
+
 		return $val;
 	}
 
@@ -175,6 +186,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	{
 		$value = $this->prepareFilterVal($value);
 		$return = parent::getFilterValue($value, $condition, $eval);
+
 		return $return;
 	}
 
@@ -191,6 +203,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 	public function dataConsideredEmpty($data, $repeatCounter)
 	{
 		$data = (array) $data;
+
 		foreach ($data as $d)
 		{
 			if ($d != '' && $d != '[""]')
@@ -198,8 +211,7 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 				return false;
 			}
 		}
+
 		return true;
 	}
-
-
 }

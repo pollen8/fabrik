@@ -13,9 +13,9 @@
 	<files>
 		<filename plugin="akismet">akismet.php</filename>
 		<filename>index.html</filename>
-		<filename>akismet.class.php</filename>
 		<folder>forms</folder>
 		<folder>language</folder>
+		<folder>libs</folder>
 	</files>
 	
 	<config>

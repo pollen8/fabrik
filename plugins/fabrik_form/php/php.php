@@ -24,29 +24,31 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 class PlgFabrik_FormPHP extends PlgFabrik_Form
 {
-
 	/**
-	* canEditGroup, called when canEdit called in group model
-	*
-	* @param   JModel  $groupModel  Group model
-	*
-	* @return  void
-	*/
+	 * canEditGroup, called when canEdit called in group model
+	 *
+	 * @param   JModel  $groupModel  Group model
+	 *
+	 * @return  void
+	 */
 
 	public function onCanEditGroup($groupModel)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onCanEditGroup')
 		{
 			if (is_array($groupModel))
 			{
 				$groupModel = $groupModel[0];
 			}
+
 			if ($this->_runPHP($groupModel) === false)
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -60,22 +62,25 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	{
 		$this->html = '';
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'getBottomContent')
 		{
 			$this->html = $this->_runPHP();
+
 			if ($this->html === false)
 			{
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
 		}
+
 		return true;
 	}
 
 	/**
-	* Get any html that needs to be written after the form close tag
-	*
-	* @return	string	html
-	*/
+	 * Get any html that needs to be written after the form close tag
+	 *
+	 * @return	string	html
+	 */
 
 	public function getTopContent_result()
 	{
@@ -92,14 +97,17 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	{
 		$this->html = '';
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'getTopContent')
 		{
 			$this->html = $this->_runPHP();
+
 			if ($this->html === false)
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -124,14 +132,17 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	{
 		$this->html = '';
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'getEndContent')
 		{
 			$this->html = $this->_runPHP();
+
 			if ($this->html === false)
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -144,6 +155,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onBeforeProcess()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onBeforeProcess')
 		{
 			if ($this->_runPHP() === false)
@@ -151,6 +163,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -164,6 +177,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onBeforeStore()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onBeforeStore')
 		{
 			if ($this->_runPHP() === false)
@@ -171,6 +185,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -183,6 +198,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onBeforeCalculations()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onBeforeCalculations')
 		{
 			if ($this->_runPHP() === false)
@@ -190,13 +206,14 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * Run from list model when deleting rows
 	 *
-	 * @param   array   &$groups  List data for deletion
+	 * @param   array  &$groups  List data for deletion
 	 *
 	 * @return	bool
 	 */
@@ -204,6 +221,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onDeleteRowsForm(&$groups)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onDeleteRowsForm')
 		{
 			if ($this->_runPHP() === false)
@@ -211,6 +229,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				return JError::raiseWarning(E_WARNING, 'php form plugin failed');
 			}
 		}
+
 		return true;
 	}
 
@@ -224,14 +243,17 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onAfterProcess()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onAfterProcess')
 		{
 			$formModel = $this->getModel();
+
 			if ($this->_runPHP() === false)
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -245,10 +267,12 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onLoad()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onLoad')
 		{
 			return $this->_runPHP();
 		}
+
 		return true;
 	}
 
@@ -262,10 +286,12 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onBeforeLoad()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onBeforeLoad')
 		{
 			return $this->_runPHP();
 		}
+
 		return true;
 	}
 
@@ -278,10 +304,12 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 	public function onError()
 	{
 		$params = $this->getParams();
+
 		if ($params->get('only_process_curl') == 'onError')
 		{
 			$this->_runPHP();
 		}
+
 		return true;
 	}
 
@@ -311,6 +339,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 
 		// $$$ hugh - erm, why are we putting data in $this->html?  It's only used by onGetFooContent plugins, for, well, html!
 		$this->html = array();
+
 		if (!empty($formModel->formData))
 		{
 			$this->html = $formModel->formData;
@@ -319,7 +348,9 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		{
 			$this->html = $formModel->data;
 		}
+
 		$w = new FabrikWorker;
+
 		if ($params->get('form_php_file') == -1)
 		{
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
@@ -335,6 +366,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				$php_result = eval($code);
 				$output = ob_get_contents();
 				ob_end_clean();
+
 				if (!empty($output))
 				{
 					return $output;
@@ -403,6 +435,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 				$php_result = $require_once ? require_once $php_file : require $php_file;
 				$output = ob_get_contents();
 				ob_end_clean();
+
 				if (!empty($output))
 				{
 					return $output;
@@ -414,6 +447,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 						return $php_result;
 					}
 				}
+
 				// Didn't get a viable response from either OB or result, so just return empty string
 				return '';
 			}
@@ -435,6 +469,7 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 			 * as per Skype convo with Rob.
 			 */
 			$code = $w->parseMessageForPlaceHolder($params->get('curl_code', ''), $this->html, true, true);
+
 			if (!empty($code))
 			{
 				$php_result = eval($code);
@@ -450,5 +485,4 @@ class PlgFabrik_FormPHP extends PlgFabrik_Form
 		// Well, we seemed to have got here without blowing up, so return true
 		return true;
 	}
-
 }

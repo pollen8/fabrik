@@ -69,6 +69,7 @@ class FabrikAdminViewElement extends JViewLegacy
 		if ($this->getLayout() == 'confirmupdate')
 		{
 			$this->confirmupdate();
+
 			return;
 		}
 
@@ -182,11 +183,11 @@ class FabrikAdminViewElement extends JViewLegacy
 				JToolBarHelper::save('element.save', 'JTOOLBAR_SAVE');
 				JToolBarHelper::addNew('element.save2new', 'JTOOLBAR_SAVE_AND_NEW');
 			}
+
 			JToolBarHelper::cancel('element.cancel', 'JTOOLBAR_CANCEL');
 		}
 		else
 		{
-
 			// Can't save the record if it's checked out.
 			if (!$checkedOut)
 			{
@@ -203,15 +204,16 @@ class FabrikAdminViewElement extends JViewLegacy
 					}
 				}
 			}
+
 			if ($canDo->get('core.create'))
 			{
 				JToolBarHelper::custom('element.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
+
 			JToolBarHelper::cancel('element.cancel', 'JTOOLBAR_CLOSE');
 		}
 
 		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT', false, JText::_('JHELP_COMPONENTS_FABRIK_ELEMENTS_EDIT'));
 	}
-
 }

@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabTable extends JTable
 {
-
 	/**
 	 * Static method to get an instance of a JTable class if it can be found in
 	 * the table include paths.  To add include paths for searching for JTable
@@ -37,6 +36,7 @@ class FabTable extends JTable
 	public static function getInstance($type, $prefix = 'JTable', $config = array())
 	{
 		$config['dbo'] = FabrikWorker::getDbo(true);
+
 		return parent::getInstance($type, $prefix, $config);
 	}
 
@@ -57,12 +57,14 @@ class FabTable extends JTable
 		$query = $this->_db->getQuery(true);
 		$this->bind($batch);
 		$params = json_decode($this->params);
+
 		foreach ($batchParams as $key => $val)
 		{
 			$params->$key = $val;
 		}
+
 		$this->params = json_encode($params);
+
 		return $this->store();
 	}
-
 }

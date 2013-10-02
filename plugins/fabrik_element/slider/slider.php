@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementSlider extends PlgFabrik_Element
 {
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -65,14 +64,15 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		$width = (int) $params->get('slider_width', 250);
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
+
 		if (!$this->isEditable())
 		{
 			return $val;
 		}
+
 		$labels = (explode(',', $params->get('slider-labels')));
 		$str = array();
 		$str[] = '<div id="' . $id . '" class="fabrikSubElementContainer">';
-
 		FabrikHelperHTML::addPath(COM_FABRIK_BASE . 'plugins/fabrik_element/slider/images/', 'image', 'form', false);
 
 		if ($params->get('slider-shownone'))
@@ -87,23 +87,25 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 				$str[] = '<div class="clearslider_cont"><img src="' . $outsrc . '" style="cursor:pointer;padding:3px;" alt="'
 					. JText::_('PLG_ELEMENT_SLIDER_CLEAR') . '" class="clearslider" /></div>';
 			}
-
 		}
-		$str[] = '<div class="slider_cont" style="width:' . $width . 'px;">';
 
+		$str[] = '<div class="slider_cont" style="width:' . $width . 'px;">';
 		$str[] = '<div class="fabrikslider-line" style="width:' . $width . 'px">';
 		$str[] = '<div class="knob"></div>';
 		$str[] = '</div>';
+
 		if (count($labels) > 0 && $labels[0] !== '')
 		{
 			$spanwidth = floor(($width - (2 * count($labels))) / count($labels));
 			$str[] = '<ul class="slider-labels" style="width:' . $width . 'px;">';
+
 			for ($i = 0; $i < count($labels); $i++)
 			{
 				if ($i == ceil(floor($labels) / 2))
 				{
 					$align = 'center';
 				}
+
 				switch ($i)
 				{
 					case 0:
@@ -116,17 +118,19 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 					default:
 						$align = 'center';
 						break;
-
 				}
+
 				$str[] = '<li style="width:' . $spanwidth . 'px;text-align:' . $align . ';">' . $labels[$i] . '</li>';
 			}
+
 			$str[] = '</ul>';
 		}
-		$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . $val . '" />';
 
+		$str[] = '<input type="hidden" class="fabrikinput" name="' . $name . '" value="' . $val . '" />';
 		$str[] = '</div>';
 		$str[] = '<span class="slider_output badge badge-info">' . $val . '</span>';
 		$str[] = '</div>';
+
 		return implode("\n", $str);
 	}
 
@@ -146,6 +150,7 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		{
 			$val = null;
 		}
+
 		return $val;
 	}
 
@@ -165,7 +170,7 @@ class PlgFabrik_ElementSlider extends PlgFabrik_Element
 		$opts->steps = (int) $params->get('slider-steps', 100);
 		$data = $this->getFormModel()->data;
 		$opts->value = $this->getValue($data, $repeatCounter);
+
 		return array('FbSlider', $id, $opts);
 	}
-
 }

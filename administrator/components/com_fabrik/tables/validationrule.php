@@ -24,7 +24,6 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fabrik/tables/fabtable.php';
 
 class FabrikTableValidationrule extends FabTable
 {
-
 	/**
 	 * Constructor
 	 *
@@ -35,5 +34,4 @@ class FabrikTableValidationrule extends FabTable
 	{
 		parent::__construct('#__{package}_validation_rules', 'id', $db);
 	}
-
 }

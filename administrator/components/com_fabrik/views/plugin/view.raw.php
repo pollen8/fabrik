@@ -23,7 +23,6 @@ jimport('joomla.application.component.view');
 
 class FabrikAdminViewPlugin extends JViewLegacy
 {
-
 	/**
 	 * Display the view
 	 *
@@ -37,11 +36,14 @@ class FabrikAdminViewPlugin extends JViewLegacy
 		$model = $this->getModel();
 		$app = JFactory::getApplication();
 		$this->setStates();
+
 		if ($app->input->get('task') == 'top')
 		{
 			echo $model->top();
+
 			return;
 		}
+
 		echo $model->render();
 	}
 
@@ -63,5 +65,4 @@ class FabrikAdminViewPlugin extends JViewLegacy
 		$model->setState('plugin_published', $input->get('plugin_published'));
 		$model->setState('show_icon', $input->get('show_icon'));
 	}
-
 }

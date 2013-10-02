@@ -24,7 +24,6 @@ jimport('joomla.application.component.controller');
 
 class FabrikControllerForm extends JControllerLegacy
 {
-
 	/**
 	 * Is the view rendered from the J content plugin
 	 *
@@ -88,6 +87,7 @@ class FabrikControllerForm extends JControllerLegacy
 		$document = JFactory::getDocument();
 		$viewName = $input->get('view', 'form');
 		$modelName = $viewName;
+
 		if ($viewName == 'emailform')
 		{
 			$modelName = 'form';
@@ -114,6 +114,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			$app = JFactory::getApplication();
 			$input = $app->input;
+
 			if ($app->isAdmin())
 			{
 				$url = 'index.php?option=com_fabrik&task=details.view&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
@@ -122,8 +123,10 @@ class FabrikControllerForm extends JControllerLegacy
 			{
 				$url = 'index.php?option=com_' . $package . '&view=details&formid=' . $input->getInt('formid') . '&rowid=' . $input->get('rowid', '', 'string');
 			}
+
 			$msg = $model->aclMessage();
 			$this->setRedirect(JRoute::_($url), $msg, 'notice');
+
 			return;
 		}
 		// Display the view
@@ -162,6 +165,7 @@ class FabrikControllerForm extends JControllerLegacy
 			$replacement = '<input type="hidden" name="' . $token . '" value="1" />';
 			echo preg_replace($search, $replacement, $contents);
 		}
+
 		return $this;
 	}
 
@@ -177,10 +181,12 @@ class FabrikControllerForm extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$package = $app->getUserState('com_fabrik.package', 'fabrik');
 		$input = $app->input;
+
 		if ($input->get('format', '') == 'raw')
 		{
 			error_reporting(error_reporting() ^ (E_WARNING | E_NOTICE));
 		}
+
 		$viewName = $input->get('view', 'form');
 		$view = $this->getView($viewName, JFactory::getDocument()->getType());
 
@@ -188,6 +194,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			$view->setModel($model, true);
 		}
+
 		$model->setId($input->getInt('formid', 0));
 		$model->packageId = $input->getInt('packageId');
 		$this->isMambot = $input->get('isMambot', 0);
@@ -213,6 +220,7 @@ class FabrikControllerForm extends JControllerLegacy
 		if (!$model->validate())
 		{
 			$this->handleError($view, $model);
+
 			return;
 		}
 		// Reset errors as validate() now returns ok validations as empty arrays
@@ -227,12 +235,14 @@ class FabrikControllerForm extends JControllerLegacy
 			$model->errors['process_error'] = true;
 			JError::raiseWarning(500, $e->getMessage());
 		}
+
 		if ($input->getInt('elid', 0) !== 0)
 		{
 			// Inline edit show the edited element - ignores validations for now
 			$inlineModel = $this->getModel('forminlineedit', 'FabrikFEModel');
 			$inlineModel->setFormModel($model);
 			echo $inlineModel->showResults();
+
 			return;
 		}
 
@@ -241,6 +251,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			FabrikWorker::getPluginManager()->runPlugins('onError', $model);
 			$view->display();
+
 			return;
 		}
 
@@ -256,6 +267,7 @@ class FabrikControllerForm extends JControllerLegacy
 			// $$$ hugh - adding some options for what to do with redirect when in content plugin
 			// Should probably do this elsewhere, but for now ...
 			$redirect_opts = array('msg' => $msg, 'url' => $url, 'baseRedirect' => $this->baseRedirect, 'rowid' => $input->get('rowid', '', 'string'));
+
 			if (!$this->baseRedirect && $this->isMambot)
 			{
 				$session = JFactory::getSession();
@@ -278,6 +290,7 @@ class FabrikControllerForm extends JControllerLegacy
 			}
 			// Let form.js handle the redirect logic (will also send out a
 			echo json_encode($redirect_opts);
+
 			return;
 		}
 
@@ -285,6 +298,7 @@ class FabrikControllerForm extends JControllerLegacy
 		{
 			$input->set('view', 'list');
 			$this->display();
+
 			return;
 		}
 		else
@@ -321,6 +335,7 @@ class FabrikControllerForm extends JControllerLegacy
 
 				// Only raise errors for fields that are present in the inline edit plugin
 				$toValidate = array_keys($input->get('toValidate', array(), 'array'));
+
 				foreach ($errs as $errorKey => $e)
 				{
 					if (in_array($errorKey, $toValidate) && count($e[0]) > 0)
@@ -329,6 +344,7 @@ class FabrikControllerForm extends JControllerLegacy
 						$eMsgs[] = count($e[0]) === 1 ? '<li>' . $e[0][0] . '</li>' : '<ul><li>' . implode('</li><li>', $e[0]) . '</ul>';
 					}
 				}
+
 				if (!empty($eMsgs))
 				{
 					$eMsgs = '<ul>' . implode('</li><li>', $eMsgs) . '</ul>';
@@ -345,14 +361,17 @@ class FabrikControllerForm extends JControllerLegacy
 				// Package / model
 				echo $model->getJsonErrors();
 			}
+
 			if (!$validated)
 			{
 				return;
 			}
 		}
+
 		if (!$validated)
 		{
 			$this->savepage();
+
 			if ($this->isMambot)
 			{
 				$this->setRedirect($this->getRedirectURL($model, false));
@@ -372,6 +391,7 @@ class FabrikControllerForm extends JControllerLegacy
 				$input->set('task', '');
 				$view->display();
 			}
+
 			return;
 		}
 	}
@@ -410,6 +430,7 @@ class FabrikControllerForm extends JControllerLegacy
 	{
 		$res = $model->getRedirectURL($incSession, $this->isMambot);
 		$this->baseRedirect = $res['baseRedirect'];
+
 		return $res['url'];
 	}
 
@@ -512,18 +533,22 @@ class FabrikControllerForm extends JControllerLegacy
 		$total = $oldtotal - count($ids);
 
 		$ref = $input->get('fabrik_referrer', 'index.php?option=com_' . $package . '&view=list&listid=' . $listid, 'string');
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace("limitstart$listid=$limitstart", "limitstart$listid=$newlimitstart", $ref);
 			$app = JFactory::getApplication();
 			$context = 'com_' . $package . '.list.' . $model->getRenderContext() . '.';
 			$app->setUserState($context . 'limitstart', $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');

@@ -49,6 +49,7 @@ class JFormFieldCollation extends JFormFieldList
 			 * see - https://github.com/joomla/joomla-cms/pull/2092
 			 */
 			$db->setQuery('SHOW VARIABLES LIKE "collation_database"');
+
 			try
 			{
 				$res = $db->loadObject();
@@ -62,7 +63,6 @@ class JFormFieldCollation extends JFormFieldList
 			{
 				$this->value = $db->getCollation();
 			}
-
 		}
 
 		return $return;

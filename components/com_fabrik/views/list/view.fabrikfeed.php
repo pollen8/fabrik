@@ -23,7 +23,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/list/view.base.php';
 
 class FabrikViewList extends FabrikViewListBase
 {
-
 	/**
 	 * Display the Feed
 	 *
@@ -41,6 +40,7 @@ class FabrikViewList extends FabrikViewListBase
 		$user = JFactory::getUser();
 		$model = $this->getModel();
 		$model->setOutPutFormat('feed');
+
 		if (!parent::access($model))
 		{
 			exit;
@@ -55,7 +55,6 @@ class FabrikViewList extends FabrikViewListBase
 		// $$$ hugh - modified this so you can enable QS filters on RSS links
 		// by setting &incfilters=1
 		$input->set('incfilters', $input->getInt('incfilters', 0));
-
 		$table = $model->getTable();
 		$model->render();
 		$params = $model->getParams();
@@ -67,35 +66,38 @@ class FabrikViewList extends FabrikViewListBase
 
 		$formModel = $model->getFormModel();
 		$form = $formModel->getForm();
-
 		$aJoinsToThisKey = $model->getJoinsToThisKey();
 
 		// Get headings
 		$aTableHeadings = array();
 		$groupModels = $formModel->getGroupsHiarachy();
-
 		$titleEl = $params->get('feed_title');
 		$dateEl = (int) $params->get('feed_date');
+
 		foreach ($groupModels as $groupModel)
 		{
 			$elementModels = $groupModel->getPublishedElements();
+
 			foreach ($elementModels as $elementModel)
 			{
 				$element = $elementModel->getElement();
+				$elParams = $elementModel->getParams();
+
 				if ($element->id == $titleEl)
 				{
 					$titleEl = $elementModel->getFullName(true, false);
 				}
+
 				if ($element->id == $dateEl)
 				{
 					$dateEl = $elementModel->getFullName(true, false);
 					$rawdateEl = $dateEl . '_raw';
 				}
-				$elParams = $elementModel->getParams();
 
 				if ($elParams->get('show_in_rss_feed') == '1')
 				{
 					$heading = $element->label;
+
 					if ($elParams->get('show_label_in_rss_feed') == '1')
 					{
 						$aTableHeadings[$heading]['label'] = $heading;
@@ -104,6 +106,7 @@ class FabrikViewList extends FabrikViewListBase
 					{
 						$aTableHeadings[$heading]['label'] = '';
 					}
+
 					$aTableHeadings[$heading]['colName'] = $elementModel->getFullName();
 					$aTableHeadings[$heading]['dbField'] = $element->name;
 
@@ -124,6 +127,7 @@ class FabrikViewList extends FabrikViewListBase
 		{
 			$element = $elementModel->getElement();
 			$elParams = new JRegistry($element->attribs);
+
 			if ($elParams->get('show_in_rss_feed') == '1')
 			{
 				$heading = $element->label;
@@ -136,6 +140,7 @@ class FabrikViewList extends FabrikViewListBase
 				{
 					$aTableHeadings[$heading]['label'] = '';
 				}
+
 				$aTableHeadings[$heading]['colName'] = $element->db_table_name . "___" . $element->name;
 				$aTableHeadings[$heading]['dbField'] = $element->name;
 
@@ -150,6 +155,7 @@ class FabrikViewList extends FabrikViewListBase
 				}
 			}
 		}
+
 		$w = new FabrikWorker;
 		$rows = $model->getData();
 
@@ -160,6 +166,7 @@ class FabrikViewList extends FabrikViewListBase
 		// Check for a custom css file and include it if it exists
 		$tmpl = $input->get('layout', $table->template);
 		$csspath = COM_FABRIK_FRONTEND . 'views/list/tmpl/' . $tmpl . '/feed.css';
+
 		if (file_exists($csspath))
 		{
 			$document->addStyleSheet(COM_FABRIK_LIVESITE . 'components/com_fabrik/views/list/tmpl/' . $tmpl . '/feed.css');
@@ -172,6 +179,7 @@ class FabrikViewList extends FabrikViewListBase
 		$rsstags = array(
 				'<georss:point>' => 'xmlns:georss="http://www.georss.org/georss"'
 		);
+
 		foreach ($rows as $group)
 		{
 			foreach ($group as $row)
@@ -180,19 +188,18 @@ class FabrikViewList extends FabrikViewListBase
 				$str2 = '';
 				$str = '';
 				$tstart = '<table style="margin-top:10px;padding-top:10px;">';
-
 				$title = '';
 				$item = new JFabrikFeedItem;
-
 				$enclosures = array();
+
 				foreach ($aTableHeadings as $heading => $dbcolname)
 				{
 					if ($dbcolname['enclosure'])
 					{
-
 						// $$$ hugh - diddling aorund trying to add enclosures
 						$colName = $dbcolname['colName'] . '_raw';
 						$enclosure_url = $row->$colName;
+
 						if (!empty($enclosure_url))
 						{
 							$remote_file = false;
@@ -217,9 +224,11 @@ class FabrikViewList extends FabrikViewListBase
 								$enclosure_file = COM_FABRIK_BASE . $enclosure_url;
 								$enclosure_url = COM_FABRIK_LIVESITE . str_replace('\\', '/', $enclosure_url);
 							}
+
 							if ($remote_file || (file_exists($enclosure_file) && !is_dir($enclosure_file)))
 							{
 								$enclosure_type = '';
+
 								if ($enclosure_type = FabrikWorker::getPodcastMimeType($enclosure_file))
 								{
 									$enclosure_size = $this->get_filesize($enclosure_file, $remote_file);
@@ -237,26 +246,30 @@ class FabrikViewList extends FabrikViewListBase
 							}
 						}
 					}
+
 					if ($title == '')
 					{
 						// Set a default title
 						$title = $row->$dbcolname['colName'];
 					}
+
 					// Rob - was stripping tags - but arent they valid in the content?
 					$rsscontent = $row->$dbcolname['colName'];
-
 					$found = false;
+
 					foreach ($rsstags as $rsstag => $namespace)
 					{
 						if (strstr($rsscontent, $rsstag))
 						{
 							$found = true;
 							$rsstag = JString::substr($rsstag, 1, JString::strlen($rsstag) - 2);
+
 							if (!strstr($document->_namespace, $namespace))
 							{
 								$document->_itemTags[] = $rsstag;
 								$document->_namespace .= $namespace . " ";
 							}
+
 							break;
 						}
 					}
@@ -282,6 +295,7 @@ class FabrikViewList extends FabrikViewListBase
 				{
 					$title = $row->$titleEl;
 				}
+
 				if ($dbcolname['label'] != '')
 				{
 					$str = $tstart . $str . "</table>";
@@ -292,8 +306,11 @@ class FabrikViewList extends FabrikViewListBase
 				}
 
 				// Url link to article
-				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug);
-				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id . '&rowid=' . $row->slug;
+				$link = JRoute::_('index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid=' . $form->id
+					. '&rowid=' . $row->slug
+					);
+				$guid = COM_FABRIK_LIVESITE . 'index.php?option=com_' . $package . '&view=' . $view . '&listid=' . $table->id . '&formid='
+					. $form->id . '&rowid=' . $row->slug;
 
 				// Strip html from feed item description text
 				$author = @$row->created_by_alias ? @$row->created_by_alias : @$row->author;
@@ -342,15 +359,13 @@ class FabrikViewList extends FabrikViewListBase
 		if ($remote)
 		{
 			$ch = curl_init($path);
-
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HEADER, true);
 			curl_setopt($ch, CURLOPT_NOBODY, true);
-
 			$data = curl_exec($ch);
 			$size = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-
 			curl_close($ch);
+
 			return $size;
 		}
 		else
@@ -358,5 +373,4 @@ class FabrikViewList extends FabrikViewListBase
 			return filesize($path);
 		}
 	}
-
 }

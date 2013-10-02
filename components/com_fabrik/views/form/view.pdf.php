@@ -24,7 +24,6 @@ require_once JPATH_SITE . '/components/com_fabrik/views/form/view.base.php';
 
 class FabrikViewForm extends FabrikViewFormBase
 {
-
 	/**
 	 * Main setup routine for displaying the form/detail view
 	 *
@@ -38,8 +37,10 @@ class FabrikViewForm extends FabrikViewFormBase
 		if (!JFolder::exists(COM_FABRIK_BASE . '/libraries/dompdf'))
 		{
 			throw new RuntimeException('Please install the dompdf library', 404);
+
 			return;
 		}
+
 		if (parent::display($tpl) !== false)
 		{
 			$document = JFactory::getDocument();
@@ -70,5 +71,4 @@ class FabrikViewForm extends FabrikViewFormBase
 		$document = JFactory::getDocument();
 		$document->setName($document->getTitle() . '-' . $model->getRowId());
 	}
-
 }

@@ -17,6 +17,7 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
  *
  * @package     Joomla.Plugin
  * @subpackage  Fabrik.element.jsperiodical
+ * @since       3.0
  */
 
 class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
@@ -34,11 +35,13 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 	{
 		$params = $this->getParams();
 		$format = $params->get('text_format_string');
+
 		if ($format != '')
 		{
 			$str = sprintf($format, $data);
 			$data = eval($str);
 		}
+
 		return parent::renderListData($data, $thisRow);
 	}
 
@@ -73,6 +76,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 		$element = $this->getElement();
 		$size = $element->width;
 		$maxlength = $params->get('maxlength', 0);
+
 		if ((int) $maxlength === 0)
 		{
 			$maxlength = $size;
@@ -80,22 +84,28 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 
 		$value = $this->getValue($data, $repeatCounter);
 		$type = "text";
+
 		if ($this->elementError != '')
 		{
 			$type .= " elementErrorHighlight";
 		}
+
 		if ($element->hidden == '1')
 		{
 			$type = "hidden";
 		}
+
 		$sizeInfo = " size=\"$size\" maxlength=\"$maxlength\"";
+
 		if (!$this->isEditable())
 		{
 			$format = $params->get('text_format_string');
+
 			if ($format != '')
 			{
 				$value = eval(sprintf($format, $value));
 			}
+
 			if ($element->hidden == '1')
 			{
 				return "<!--" . $value . "-->";
@@ -107,6 +117,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 		}
 
 		$str = "<input class=\"fabrikinput inputbox $type\" type=\"$type\" name=\"$name\" id=\"$id\" $sizeInfo value=\"$value\" />\n";
+
 		return $str;
 	}
 
@@ -125,6 +136,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 		$opts = $this->getElementJSOptions($repeatCounter);
 		$opts->code = $params->get('jsperiod_code');
 		$opts->period = $params->get('jsperiod_period');
+
 		return array('FbJSPeriodical', $id, $opts);
 	}
 
@@ -137,10 +149,12 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 	public function getFieldDescription()
 	{
 		$p = $this->getParams();
+
 		if ($this->encryptMe())
 		{
 			return 'BLOB';
 		}
+
 		switch ($p->get('text_format'))
 		{
 			case 'text':
@@ -154,7 +168,7 @@ class PlgFabrik_ElementJSPeriodical extends PlgFabrik_Element
 				$objtype = "DECIMAL(" . $p->get('integer_length', 10) . "," . $p->get('decimal_length', 2) . ")";
 				break;
 		}
+
 		return $objtype;
 	}
-
 }

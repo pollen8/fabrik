@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/visualization.php';
 
 class FabrikModelSlideshow extends FabrikFEModelVisualization
 {
-
 	/**
 	 * Get slideshow HTML container markup
 	 *
@@ -46,6 +45,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				<div class=\"slideshow-thumbnails\"></div>
 			</div>
 		";
+
 		return $return;
 	}
 
@@ -64,10 +64,12 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$mediaElement .= '_raw';
 		$titleElement = $params->get('media_title_elementList', '');
 		$imageElement = $params->get('media_image_elementList', '');
+
 		if (!empty($imageElement))
 		{
 			$imageElement .= '_raw';
 		}
+
 		$infoElement = $params->get('media_info_elementList', '');
 		$noteElement = $params->get('media_note_elementList', '');
 
@@ -91,6 +93,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$retstr .= "<playlist version=\"1\" xmlns = \"http://xspf.org/ns/0/\">\n";
 		$retstr .= "	<title>" . $list->label . "</title>\n";
 		$retstr .= "	<trackList>\n";
+
 		foreach ($alldata as $data)
 		{
 			foreach ($data as $row)
@@ -99,24 +102,30 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				{
 					continue;
 				}
+
 				$location = $row->$mediaElement;
+
 				if (empty($location))
 				{
 					continue;
 				}
+
 				$location = str_replace('\\', '/', $location);
 				$location = JString::ltrim($location, '/');
 				$location = COM_FABRIK_LIVESITE . $location;
 				$retstr .= "		<track>\n";
 				$retstr .= "			<location>" . $location . "</location>\n";
+
 				if (!empty($titleElement))
 				{
 					$title = $row->$titleElement;
 					$retstr .= "			<title>" . $title . "</title>\n";
 				}
+
 				if (!empty($imageElement))
 				{
 					$image = $row->$imageElement;
+
 					if (!empty($image))
 					{
 						$image = str_replace('\\', '/', $image);
@@ -125,11 +134,13 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 						$retstr .= "			<image>" . $image . "</image>\n";
 					}
 				}
+
 				if (!empty($noteElement))
 				{
 					$note = $row->$noteElement;
 					$retstr .= "			<annotation>" . $note . "</annotation>\n";
 				}
+
 				if (!empty($infoElement))
 				{
 					$link = $row->$titleElement;
@@ -140,11 +151,14 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					$link = JRoute::_('index.php?option=com_' . $package . '&view=form&formid=' . $form->getId() . '&rowid=' . $row->__pk_val);
 					$retstr .= "			<info>" . $link . "</info>\n";
 				}
+
 				$retstr .= "		</track>\n";
 			}
 		}
+
 		$retstr .= "	</trackList>\n";
 		$retstr .= "</playlist>\n";
+
 		return $retstr;
 	}
 
@@ -169,6 +183,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$slideshow_viz_caption = $params->get('slideshow_viz_caption', '');
 
 		$js_opts = new stdClass;
+
 		foreach ($alldata as $data)
 		{
 			foreach ($data as $pic)
@@ -177,13 +192,16 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				{
 					throw new InvalidArgumentException($params->get('slideshow_viz_file', '') . ' not found - is it set to show in the list view?');
 				}
+
 				$pic->$slideshow_viz_file = str_replace("\\", "/", $pic->$slideshow_viz_file);
 				$pic_opts = array();
+
 				if (isset($pic->$slideshow_viz_caption))
 				{
 					// Force it to a string for json_encode
 					$pic_opts['caption'] = $pic->$slideshow_viz_caption . ' ';
 				}
+
 				if ($slideElement->isJoin())
 				{
 					/*
@@ -194,6 +212,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					$ok = new SimpleXMLElement($pic->$el);
 					$imgs = $ok->xpath('//img');
 					$as = $ok->xpath('//a');
+
 					for ($i = 0; $i < count($as); $i++)
 					{
 						if ($params->get('slideshow_viz_thumbnails', false))
@@ -202,13 +221,12 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 							$small = str_replace(COM_FABRIK_LIVESITE, '', $small);
 							$pic_opts['thumbnail'] = $small;
 						}
+
 						$large = (string) $as[$i]['href'];
 						$large = str_replace(COM_FABRIK_LIVESITE, '', $large);
 						$pic_opts['href'] = $large;
-
 						$js_opts->$large = $pic_opts;
 					}
-
 				}
 				else
 				{
@@ -216,6 +234,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 					$k = $tmp == false ? $pic->$slideshow_viz_file : $k = $tmp[0];
 					$pic_opts['href'] = $slideElement->getStorage()->getFileUrl($k, 0);
 					$this->addThumbOpts($pic_opts);
+
 					if (!empty($k))
 					{
 						$js_opts->$k = $pic_opts;
@@ -223,6 +242,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 				}
 			}
 		}
+
 		return $js_opts;
 	}
 
@@ -243,6 +263,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 			$this->listModel = JModelLegacy::getInstance('List', 'FabrikFEModel');
 			$this->listModel->setId($listid);
 		}
+
 		return $this->listModel;
 	}
 
@@ -263,6 +284,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 			$form = $listModel->getFormModel();
 			$this->slideElement = $form->getElement($params->get('slideshow_viz_file', ''));
 		}
+
 		return $this->slideElement;
 	}
 
@@ -279,6 +301,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 	protected function addThumbOpts(&$pic_opts)
 	{
 		$params = $this->getParams();
+
 		if ($params->get('slideshow_viz_thumbnails', false))
 		{
 			$slideElement = $this->getSlideElement();
@@ -299,7 +322,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 
 		$use_thumbs = $params->get('slideshow_viz_thumbnails', 0);
 		$use_captions = $params->get('slideshow_viz_caption', '') == '' ? false : true;
-	    $opts = new stdClass;
+		$opts = new stdClass;
 		$opts->slideshow_data = $slideshow_data = $this->getImageJSData();
 		$opts->id = $viz->id;
 		$opts->html_id = 'slideshow_viz';
@@ -320,6 +343,7 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 		$html[] = "$ref = new FbSlideshowViz('slideshow_viz', $opts)\n";
 		$html[] = "\n" . "Fabrik.addBlock('$ref', $ref);";
 		$html[] = $this->getFilterJs();
+
 		return implode("\n", $html);
 	}
 
@@ -337,5 +361,4 @@ class FabrikModelSlideshow extends FabrikFEModelVisualization
 			$this->listids = (array) $params->get('slideshow_viz_table');
 		}
 	}
-
 }

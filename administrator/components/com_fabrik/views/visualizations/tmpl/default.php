@@ -14,7 +14,7 @@ defined('_JEXEC') or die('Restricted access');
 
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
-JHTML::_('script','system/multiselect.js',false,true);
+JHTML::_('script','system/multiselect.js', false, true);
 $user = JFactory::getUser();
 $userId	= $user->get('id');
 $listOrder = $this->state->get('list.ordering');
@@ -39,7 +39,7 @@ $listDirn = $this->state->get('list.direction');
 
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived'=>false)), 'value', 'text', $this->state->get('filter.published'), true);?>
+				<?php echo JHtml::_('select.options', JHtml::_('jgrid.publishedOptions', array('archived' => false)), 'value', 'text', $this->state->get('filter.published'), true);?>
 			</select>
 		</div>
 	</fieldset>
@@ -83,14 +83,15 @@ $listDirn = $this->state->get('list.direction');
 					</td>
 					<td>
 						<?php
-						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) {
+						if ($item->checked_out && ( $item->checked_out != $user->get('id'))) :
 							echo  $item->label;
-						} else {
+						else :
 						?>
 						<a href="<?php echo $link; ?>">
 							<?php echo $item->label; ?>
 						</a>
-					<?php } ?>
+					<?php endif;
+					?>
 					</td>
 					<td>
 						<?php echo $item->plugin; ?>
@@ -99,8 +100,8 @@ $listDirn = $this->state->get('list.direction');
 						<?php echo JHtml::_('jgrid.published', $item->published, $i, 'visualizations.', $canChange);?>
 					</td>
 				</tr>
-
-			<?php endforeach; ?>
+			<?php endforeach;
+			?>
 		</tbody>
 	</table>
 	<input type="hidden" name="task" value="" />

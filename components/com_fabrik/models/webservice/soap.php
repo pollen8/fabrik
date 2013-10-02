@@ -22,7 +22,6 @@ jimport('joomla.application.component.model');
 
 class FabrikWebServiceSoap extends FabrikWebService
 {
-
 	/**
 	 * Constructor
 	 *
@@ -64,12 +63,15 @@ class FabrikWebServiceSoap extends FabrikWebService
 		{
 			$result = $method . 'Result';
 		}
+
 		$xml = $this->client->$method($options);
 		$data = JFactory::getXML($xml->$result, false);
+
 		if (!is_null($startPoint))
 		{
 			$data = $data->xpath($startPoint);
 		}
+
 		$return = array();
 
 		// Convert xml nodes into simple objects
@@ -78,7 +80,7 @@ class FabrikWebServiceSoap extends FabrikWebService
 			$json = json_encode($xmlElement);
 			$return[] = json_decode($json);
 		}
+
 		return $return;
 	}
-
 }

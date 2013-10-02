@@ -12,8 +12,8 @@
 	<description>PLG_VALIDATIONRULE_OPENPROVIDER_DESCRIPTION</description>
 	<files>
 		<filename plugin="openprovider">openprovider.php</filename>
-		<filename>api.php</filename>
 		<filename>index.html</filename>
+		<folder>libs</folder>
 	</files>
 	
 	<config>

@@ -21,7 +21,6 @@ defined('_JEXEC') or die('Restricted access');
 
 class FabrikString extends JString
 {
-
 	/**
 	 * UTF-8 aware - replace the first word
 	 *
@@ -38,6 +37,7 @@ class FabrikString extends JString
 		{
 			return $str;
 		}
+
 		if ($whitespace)
 		{
 			$word = preg_quote($word, '#');
@@ -46,11 +46,13 @@ class FabrikString extends JString
 		else
 		{
 			$pos = JString::strpos($str, $word);
+
 			if ($pos === 0)
 			{
 				$str = JString::substr($str, JString::strlen($word));
 			}
 		}
+
 		return $str;
 	}
 
@@ -67,6 +69,7 @@ class FabrikString extends JString
 	{
 		$l = JString::strlen($word);
 		$end = JString::substr($str, -$l);
+
 		if ($end === $word)
 		{
 			return JString::substr($str, 0, JString::strlen($str) - $l);
@@ -90,10 +93,12 @@ class FabrikString extends JString
 	public static function ltrimiword($str, $word = false)
 	{
 		$pos = stripos($str, $word);
+
 		if ($pos === 0)
 		{
 			$str = JString::substr($str, JString::strlen($word));
 		}
+
 		return $str;
 	}
 
@@ -112,27 +117,34 @@ class FabrikString extends JString
 		$db = FabrikWorker::getDbo();
 		$col = str_replace('`', '', $col);
 		$splitter = '';
+
 		if (strstr($col, '___'))
 		{
 			$splitter = '___';
 		}
+
 		if (strstr($col, '.'))
 		{
 			$splitter = '.';
 		}
+
 		if ($splitter == '')
 		{
 			return $db->quoteName($col);
 		}
+
 		if (strstr($col, $splitter))
 		{
 			$col = explode($splitter, $col);
+
 			foreach ($col as &$c)
 			{
 				$c = $db->quoteName($c);
 			}
+
 			return implode('.', $col);
 		}
+
 		return $col;
 	}
 
@@ -149,6 +161,7 @@ class FabrikString extends JString
 	{
 		$col = str_replace(array("`.`", "."), '___', $col);
 		$col = str_replace("`", "", $col);
+
 		return $col;
 	}
 
@@ -173,7 +186,9 @@ class FabrikString extends JString
 			$bits = explode('___', $col);
 			$col = array_pop($bits);
 		}
+
 		$col = str_replace("`", "", $col);
+
 		return $col;
 	}
 
@@ -190,11 +205,14 @@ class FabrikString extends JString
 	{
 		$label = strip_tags($label);
 		preg_replace('/<[a-z][a-z0-9]*[^<>]*>/', '', $label);
+
 		if (JString::strlen($label) > 50)
 		{
 			$label = JString::substr($label, 0, 47) . '...';
 		}
+
 		$label = trim($label);
+
 		return $label;
 	}
 
@@ -217,6 +235,7 @@ class FabrikString extends JString
 		{
 			$name = str_replace(array(' ', '.', '-'), '', $str);
 		}
+
 		return $name;
 	}
 
@@ -239,9 +258,11 @@ class FabrikString extends JString
 	{
 		// Replace umlauts
 		$out = '';
+
 		for ($i = 0; $i < JString::strlen($str); $i++)
 		{
 			$ch = ord($str{$i});
+
 			switch ($ch)
 			{
 				case 195:
@@ -274,7 +295,9 @@ class FabrikString extends JString
 					$out .= chr($ch);
 			}
 		}
+
 		$str = $out;
+
 		if (function_exists('iconv'))
 		{
 			/* $$$ rob added @ incase its farsi which creates a notice:
@@ -283,10 +306,12 @@ class FabrikString extends JString
 
 			// Replace accented characters with ascii equivalent e.g. é => e
 			$str1 = (@iconv($fromEnc, $toEnc, $str));
+
 			if ($str1)
 			{
 				$str = $str1;
 			}
+
 			$str = (str_replace("'", '', $str));
 		}
 		// Compress internal whitespace and replace with _
@@ -334,14 +359,18 @@ class FabrikString extends JString
 		{
 			$summary[] = " ...";
 		}
+
 		$summary = implode(' ', $summary);
+
 		if ($showTip && count($text) > $wordCount)
 		{
 			FabrikHelperHTML::tips();
+
 			if ($title !== '')
 			{
 				$title .= "::";
 			}
+
 			$tip = htmlspecialchars('<div class="truncate_text">' . $title . $orig . '</div>');
 			$jOpts = new stdClass;
 			$jOpts->notice = true;
@@ -349,6 +378,7 @@ class FabrikString extends JString
 			$jOpts = json_encode($jOpts);
 			$summary = '<span class="fabrikTip" opts=\'' . $jOpts . '\' title="' . $tip . '">' . $summary . '</span>';
 		}
+
 		return $summary;
 	}
 
@@ -364,6 +394,7 @@ class FabrikString extends JString
 	public static function removeQSVar($url, $key)
 	{
 		$pair = explode('?', $url);
+
 		if (count($pair) === 2)
 		{
 			$url = $pair[0];
@@ -374,24 +405,29 @@ class FabrikString extends JString
 			$url = '';
 			$bits = JArrayHelper::getValue($pair, 0);
 		}
+
 		$glue = strstr($bits, '&amp;') ? '&amp;' : '&';
 		$bits = explode($glue, $bits);
 		$a = array();
+
 		foreach ($bits as $bit)
 		{
 			if (strstr($bit, '='))
 			{
 				list($thisKey, $val) = explode('=', $bit);
+
 				if ($thisKey !== $key)
 				{
 					$a[] = $bit;
 				}
 			}
 		}
+
 		if (!empty($a))
 		{
 			$url .= '?' . implode($glue, $a);
 		}
+
 		return $url;
 	}
 
@@ -408,9 +444,11 @@ class FabrikString extends JString
 		if (strstr($url, '?'))
 		{
 			list($site, $qs) = explode('?', $url);
+
 			if (!empty($qs))
 			{
 				$new_qs = array();
+
 				foreach (explode('&', $qs) as $arg)
 				{
 					$bits = explode('=', $arg);
@@ -418,15 +456,18 @@ class FabrikString extends JString
 					$val = JArrayHelper::getValue($bits, 1, '');
 					$new_qs[] = $key . "=" . urlencode($val);
 				}
+
 				$url = $site . "?" . implode("&", $new_qs);
 			}
 		}
+
 		if (strstr($url, '{'))
 		{
 			/* $$$ hugh special case for some Google URL's that use encoded JSON objects in the path part of the URL
 			 * so we need to re-encode {, }, " and :.  Except of course for the : in http(s):.
 			 */
 			list($http, $rest) = explode(':', $url, 2);
+
 			if (!empty($rest))
 			{
 				$patterns = array('#\{#', '#\}#', '#"#', '#\\\\#', '#:#');
@@ -435,6 +476,7 @@ class FabrikString extends JString
 				$url = $http . ':' . $rest;
 			}
 		}
+
 		return $url;
 	}
 
@@ -487,6 +529,7 @@ class FabrikString extends JString
 		$o = new stdClass;
 		$o->coords = array('', '');
 		$o->zoomlevel = (int) $zoomlevel;
+
 		if (strstr($v, ","))
 		{
 			$ar = explode(":", $v);
@@ -504,6 +547,7 @@ class FabrikString extends JString
 		$o->lat = $o->coords[0];
 		$o->long = $o->coords[1];
 		$o->zoom = $o->zoomlevel;
+
 		return $o;
 	}
 
@@ -531,6 +575,7 @@ class FabrikString extends JString
 			$g = hexdec(substr($hex, 2, 2));
 			$b = hexdec(substr($hex, 4, 2));
 		}
+
 		return $r . ',' . $g . ',' . $b;
 	}
 
@@ -547,10 +592,12 @@ class FabrikString extends JString
 	{
 		$plain = strip_tags($text);
 		$translated = JText::_($plain);
+
 		if ($translated !== $plain)
 		{
 			$text = str_replace($plain, $translated, $text);
 		}
+
 		return $text;
 	}
 
