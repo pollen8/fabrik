@@ -162,7 +162,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	watchAjax : function () {
+	watchAjax: function () {
 		if (this.options.editable === false) {
 			return;
 		}
@@ -426,7 +426,7 @@ var FbFileUpload = new Class({
 		}
 	},
 
-	pluploadResize : function (e) {
+	pluploadResize: function (e) {
 		e.stop();
 		var a = e.target.getParent();
 		if (this.widget) {
@@ -613,11 +613,14 @@ var ImageWidget = new Class({
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
 			
+			// Have to assign to tmp param otherwise its not applied in onLoad
+			var tmpParams = params;
+			
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
 					
-					var params = this.storeImageDimensions(filepath, img, params);
+					var params = this.storeImageDimensions(filepath, img, tmpParams);
 					this.img = params.img;
 					this.setInterfaceDimensions(params);
 					this.showWin();
