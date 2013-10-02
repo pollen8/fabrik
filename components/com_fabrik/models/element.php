@@ -1529,7 +1529,8 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 
-			$l = $j3 ? '' : htmlspecialchars($element->label);
+			$labelText = $config->get('fbConf_wysiwyg_label', false) ? $element->label : htmlspecialchars(JText::_($element->label));
+			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
 
 			if ($rollOver)
@@ -1548,7 +1549,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				}
 			}
 
-			$l .= $j3 ? htmlspecialchars(JText::_($element->label)) : '';
+			$l .= $j3 ? $labelText : '';
 			$model = $this->getFormModel();
 			$str .= $l;
 
