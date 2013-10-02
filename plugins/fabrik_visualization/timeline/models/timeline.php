@@ -191,7 +191,7 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 		$input->set('limitstart' . $listId, $start);
 		$listModel->setLimits($start, $this->step);
 
-		if ($listModel->canView() || $listModel->canEdit())
+		if ($listModel->canView())
 		{
 			$data = $listModel->getData();
 			$elements = $listModel->getElements();
@@ -199,17 +199,20 @@ class FabrikModelTimeline extends FabrikFEModelVisualization
 			$startdate2 = $startdate;
 			$endKey = FabrikString::safeColName($enddate2);
 			$startKey = FabrikString::safeColName($startdate2);
+
 			if (!array_key_exists($endKey, $elements))
 			{
 				$endKey = $startKey;
 				$enddate2 = $startdate2;
 			}
+
 			$endElement = $elements[$endKey];
 
 			if (!array_key_exists($startKey, $elements))
 			{
 				JError::raiseError(500, $startdate2 . " not found in the list, is it published?");
 			}
+
 			$startElement = $elements[$startKey];
 			$endParams = $endElement->getParams();
 			$startParams = $startElement->getParams();
