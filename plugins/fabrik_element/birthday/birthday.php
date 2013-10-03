@@ -637,6 +637,18 @@ class PlgFabrik_ElementBirthday extends PlgFabrik_Element
 			}
 			else
 			{
+				// Set start date to 1st Jan
+				$startYear = JFactory::getDate($value[0])->format('Y');
+				$startDate = JFactory::getDate();
+				$startDate->setDate($startYear, 1, 1)->setTime(0, 0, 0);
+				$value[0] = $startDate->toSql();
+
+				// Set end date to last day of year
+				$endYear = JFactory::getDate($value[1])->format('Y');
+				$endDate = JFactory::getDate();
+				$endDate->setDate($endYear, 12, 31)->setTime(23, 59, 59);
+				$value[1] = $endDate->toSql();
+
 				$value = $db->quote($value[0]) . ' AND ' . $db->quote($value[1]);
 			}
 
