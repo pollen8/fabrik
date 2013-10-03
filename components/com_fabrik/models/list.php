@@ -1148,7 +1148,7 @@ $groupBy .= '_raw';
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					$sdata = $data[$i]->$groupBy;
+					$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $data[$i]->$groupBy));
 
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
