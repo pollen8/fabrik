@@ -1197,7 +1197,8 @@ class FabrikFEModelList extends JModelForm
 			{
 				if (isset($data[$i]->$groupBy))
 				{
-					$sdata = $data[$i]->$groupBy;
+					// get rid of & as it blows up SimpleXMLElement, and dont want to use htmlspecialchars as don't want to mess with <, >, etc.
+					$sdata = str_replace('&', '&amp;', str_replace('&amp;', '&', $data[$i]->$groupBy));
 
 					// Test if its just an <a>*</a> tag - if so allow HTML (enables use of icons)
 					$xml = new SimpleXMLElement('<div>' . $sdata . '</div>');
