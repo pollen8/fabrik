@@ -3197,7 +3197,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 			{
 				// Need to set the joinTable to be the group's table
 				$groupJoin = $groupModel->getJoinModel();
-				$parentKey = $groupJoin->getForeignKey();
+				//$parentKey = $groupJoin->getForeignKey();
+				$parentKey = $groupJoin->getJoin()->params->get('pk');
 			}
 		}
 
