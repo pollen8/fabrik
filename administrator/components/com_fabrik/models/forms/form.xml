@@ -128,6 +128,7 @@
 			<field name="reset_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_RESET_BUTTON_LABEL_LABEL"/>
 
@@ -163,6 +164,7 @@
 			<field name="copy_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_COPY_BUTTON_LABEL_LABEL"/>
 
@@ -198,6 +200,7 @@
 			<field name="goback_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_GO_BACK_BUTTON_LABEL_LABEL"/>
 
@@ -233,6 +236,7 @@
 			<field name="apply_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_APPLY_BUTTON_LABEL_LABEL"/>
 
@@ -268,6 +272,7 @@
 			<field name="delete_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_DELETE_BUTTON_LABEL_LABEL" />
 
@@ -303,6 +308,7 @@
 			<field name="submit_button_label"
 				type="text"
 				default="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DEFAULT"
+				translate_default="true"
 				description="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_DESC"
 				label="COM_FABRIK_FIELD_SUBMIT_BUTTON_LABEL_LABEL"/>
 
