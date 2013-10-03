@@ -11258,6 +11258,7 @@ class FabrikFEModelList extends JModelForm
 			$formModel->rowId = $id;
 			$formModel->unsetData();
 			$row = $formModel->getData();
+			$formModel->copyFromRaw($row, 'fromraw', true);
 			$row['Copy'] = '1';
 			$row['fabrik_copy_from_table'] = '1';
 			$formModel->formData = $row;
