@@ -3237,7 +3237,7 @@ class FabrikFEModelForm extends FabModelForm
 								if (empty($usekey) && !$this->isMambot)
 								{
 									$this->rowId = '';
-									throw new RuntimeException(JText::sprintf('COULD NOT FIND RECORD IN DATABASE', $this->rowId));
+									throw new RuntimeException(JText::_('COM_FABRIK_COULD_NOT_FIND_RECORD_IN_DATABASE'));
 								}
 								else
 								{
