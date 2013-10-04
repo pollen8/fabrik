@@ -61,7 +61,7 @@ foreach ($this->groups as $group) :
 	$this->group = $group;
 	?>
 
-	<fieldset class="fabrikGroup" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
+	<fieldset class="<?php echo $group->class; ?>" id="group<?php echo $group->id;?>" style="<?php echo $group->css;?>">
 	<?php
 		$allHidden = true;
 		foreach ($group->elements as $element)

@@ -4343,6 +4343,8 @@ class FabrikFEModelForm extends FabModelForm
 	{
 		$params = $this->getParams();
 		$class = array('fabrikForm');
+
+		/*
 		$horiz = true;
 		$groups = $this->getGroupsHiarachy();
 
@@ -4362,6 +4364,7 @@ class FabrikFEModelForm extends FabModelForm
 		{
 			$class[] = 'form-horizontal';
 		}
+		*/
 
 		return implode(' ', $class);
 	}
@@ -4598,6 +4601,7 @@ class FabrikFEModelForm extends FabModelForm
 			return $this->groupView;
 		}
 
+		$params = $this->getParams();
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
@@ -4768,6 +4772,17 @@ class FabrikFEModelForm extends FabModelForm
 			$group->elements = $aElements;
 			$group->subgroups = $aSubGroups;
 			$group->startHidden = $startHidden;
+
+			$group->class[] = 'fabrikGroup';
+			if ((int) $groupParams->get('group_columns', 1) == 1)
+			{
+				if (($this->isEditable() && $params->get('labels_above', 0) != 1)
+					|| (!$this->isEditable() && $params->get('labels_above_details', 0) != 1))
+				{
+					$group->class[] = 'form-horizontal';
+				}
+			}
+			$group->class = implode(' ', $group->class);
 
 			// Only create the group if there are some element inside it
 			if (count($aElements) != 0 && $groupModel->canView() !== false)
