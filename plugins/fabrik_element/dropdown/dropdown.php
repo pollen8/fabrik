@@ -77,8 +77,9 @@ class PlgFabrik_ElementDropdown extends PlgFabrik_ElementList
 
 			// For values like '1"'
 			$tmpval = htmlspecialchars($tmpval, ENT_QUOTES);
-			$opts[] = JHTML::_('select.option', $tmpval, $tmpLabel);
+			$opt = JHTML::_('select.option', $tmpval, $tmpLabel);
 			$opt->disable = $disable;
+			$opts[] = $opt;
 			if (in_array($tmpval, $selected))
 			{
 				$aRoValues[] = $this->getReadOnlyOutput($tmpval, $tmpLabel);
