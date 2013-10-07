@@ -58,18 +58,17 @@ class PlgFabrik_ElementPicklist extends PlgFabrik_ElementList
 		$arVals = $this->getSubOptionValues();
 		$arTxt = $this->getSubOptionLabels();
 		$arSelected = (array) $this->getValue($data, $repeatCounter);
+
 		$errorCSS = $this->elementError != '' ? " elementErrorHighlight" : '';
 		$attribs = 'class="span6 ' . $errorCSS . "\"";
-		$style = ".picklist{\n" . "list-style:none;}\n" . "\n"
-			. ".picklist li, li.picklist{\n" . "background-color:#FFFFFF;\n" . "margin:3px;\n" . "padding:5px !important;\n"
-			. "cursor:move;\n" . "}\n" . "\n" . "li.emptyplicklist{\n" . "background-color:transparent;\n" . "cursor:pointer;\n" . "}";
-		FabrikHelperHTML::addStyleDeclaration($style);
+
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/picklist/picklist.css');
 		$i = 0;
 		$aRoValues = array();
 		$fromlist = array();
 		$tolist = array();
-		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small">';
-		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small">';
+		$fromlist[] = JText::_('PLG_FABRIK_PICKLIST_FROM') . ':<ul id="' . $id . '_fromlist" class="picklist well well-small fromList">';
+		$tolist[] = JText::_('PLG_FABRIK_PICKLIST_TO') . ':<ul id="' . $id . '_tolist" class="picklist well well-small toList">';
 
 		foreach ($arVals as $v)
 		{
