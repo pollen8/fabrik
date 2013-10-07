@@ -65,6 +65,12 @@ abstract class ModFabrik_QuickIconHelper
 						'access' => array('core.manage', 'com_fabrik')
 					),
 					array(
+							'link' => JRoute::_('index.php?option=com_fabrik&view=groups'),
+							'image' => '/components/com_fabrik/images/header/fabrik-group.png',
+							'text' => JText::_('MOD_FABRIK_QUICKICON_GROUPS'),
+							'access' => array('core.manage', 'com_fabrik')
+					),
+					array(
 							'link' => JRoute::_('index.php?option=com_fabrik&view=elements'),
 							'image' => '/components/com_fabrik/images/header/fabrik-element.png',
 							'text' => JText::_('MOD_FABRIK_QUICKICON_ELEMENTS'),
