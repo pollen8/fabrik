@@ -115,7 +115,7 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				}
 			}
 
-			$this->setStoreDatabaseFormat($data);
+			$this->setStoreDatabaseFormat($data, $repeatCounter);
 			$default = $w->parseMessageForPlaceHolder($params->get('calc_calculation'), $data, true, true);
 
 			//  $$$ hugh - standardizing on $data but need need $d here for backward compat
@@ -305,11 +305,10 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 				if (is_array($v))
 				{
 					$origdata = JArrayHelper::getValue($d, $elkey, array());
-
 					foreach (array_keys($v) as $x)
 					{
 						$origval = JArrayHelper::getValue($origdata, $x);
-						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true);
+						$d[$elkey][$x] = $elementModel->getLabelForValue($v[$x], $origval, true, $x);
 					}
 				}
 				else
@@ -539,11 +538,12 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 	 * When running parseMesssageForPlaceholder on data we need to set the none-raw value of things like birthday/time
 	 * elements to that stored in the listModel::storeRow() method
 	 *
-	 * @param   array  &$data  Form data
+	 * @param   array  &$data          Form data
+	 * @param   int    $repeatCounter  Repeat group counter
 	 *
 	 * @return  void
 	 */
-	protected function setStoreDatabaseFormat(&$data)
+	protected function setStoreDatabaseFormat(&$data, $repeatCounter = 0)
 	{
 		$formModel = $this->getFormModel();
 		$groups = $formModel->getGroupsHiarachy();
@@ -556,9 +556,15 @@ class PlgFabrik_ElementCalc extends PlgFabrik_Element
 			{
 				$element = $elementModel->getElement();
 				$fullkey = $elementModel->getFullName(true, false);
+				$value = $data[$fullkey];
+
+				if ($this->getGroupModel()->canRepeat() && is_array($value))
+				{
+					$value = JArrayHelper::getValue($value, $repeatCounter, $value);
+				}
 
 				// For radio buttons and dropdowns otherwise nothing is stored for them??
-				$data[$fullkey] = $elementModel->storeDatabaseFormat($data[$fullkey], $data);
+				$data[$fullkey] = $elementModel->storeDatabaseFormat($value, $data);
 			}
 		}
 	}

@@ -2867,10 +2867,17 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		{
 			$rows = $this->checkboxRows('id');
 
-			// In a repeat group
-			if (is_array($v))
+			if (count($v) === 0)
 			{
-				$v = JArrayHelper::getValue($v, $repeatCounter);
+				$v = '';
+			}
+			else
+			{
+				// In a repeat group
+				if (is_array($v))
+				{
+					$v = JArrayHelper::getValue($v, $repeatCounter);
+				}
 			}
 
 			if (is_array($rows) && array_key_exists($v, $rows))
