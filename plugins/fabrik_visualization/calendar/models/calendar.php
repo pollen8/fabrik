@@ -497,8 +497,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 							$row->_canEdit = (bool) $listModel->canEdit($row);
 							$row->_canView = (bool) $listModel->canViewDetails();
 
-							// $$$ rob added timezone offset how on earth was this not picked up before :o
-							// $$$ hugh because we suck?
+							// Added timezone offset
 							if ($row->startdate !== $db->getNullDate() && $data['startShowTime'] == true)
 							{
 								$date = JFactory::getDate($row->startdate);
@@ -506,7 +505,7 @@ class FabrikModelCalendar extends FabrikFEModelVisualization
 								$row->startdate = $date->format('Y-m-d H:i:s');
 							}
 
-							if ($row->enddate !== $db->getNullDate() && $row->enddate !== '')
+							if ($row->enddate !== $db->getNullDate() && (string) $row->enddate !== '')
 							{
 								if ($data['endShowTime'] == true)
 								{
