@@ -1530,7 +1530,7 @@ class PlgFabrik_Element extends FabrikPlugin
 				$str .= '<span class="' . $labelClass . ' faux-label">';
 			}
 
-			$labelText = $config->get('fbConf_wysiwyg_label', false) ? $element->label : htmlspecialchars(JText::_($element->label));
+			$labelText = JText::_($element->label);
 			$l = $j3 ? '' : $labelText;
 			$iconOpts = array('icon-class' => 'small');
 
@@ -2065,7 +2065,7 @@ class PlgFabrik_Element extends FabrikPlugin
 
 		if ($tip !== '')
 		{
-			$tip = '<div class="fabrikInlineTip">' . FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip . '</div>';
+			$tip = FabrikHelperHTML::image('question-sign.png', 'form', $tmpl) . ' ' . $tip;
 		}
 
 		switch ($model->getParams()->get('tiplocation'))
