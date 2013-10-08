@@ -15,10 +15,6 @@ var FbFileUpload = new Class({
 			this.ajaxFolder();
 		}
 
-		/*this.submitEvent = function (form, json) {
-			this.onSubmit(form);
-		}.bind(this);*/
-
 		//Fabrik.addEvent('fabrik.form.submit.start', this.submitEvent);
 		if (this.options.ajax_upload && this.options.editable !== false) {
 			this.watchAjax();
@@ -237,7 +233,8 @@ var FbFileUpload = new Class({
 			silverlight_xap_url: this.options.ajax_silverlight_path,
 			chunk_size: this.options.ajax_chunk_size + 'kb',
 			dragdrop : true,
-			multipart: true
+			multipart: true,
+			filters: this.options.filters
 		};
 		this.uploader = new plupload.Uploader(plupopts);
 
@@ -259,6 +256,7 @@ var FbFileUpload = new Class({
 		// (2) ON FILES ADDED ACTION
 		this.uploader.bind('FilesAdded', function (up, files) {
 			this.removeDropArea();
+			this.lastAddedFiles = files;
 			this.container.getElement('thead').show();
 			var count = this.droplist.getElements('li').length;
 			this.startbutton.removeClass('disabled');
@@ -330,8 +328,15 @@ var FbFileUpload = new Class({
 		});
 
 		this.uploader.bind('Error', function (up, err) {
-			fconsole('Plupload Error:' + err.message);
-		});
+			this.lastAddedFiles.each(function (file) {
+				var row = document.id(file.id);
+				if (typeOf(row) !== 'null') {
+					row.destroy();
+					alert(err.message);
+				}
+				this.addDropArea();
+			}.bind(this));
+		}.bind(this));
 
 		this.uploader.bind('ChunkUploaded', function (up, file, response) {
 			response = JSON.decode(response.response);
@@ -432,6 +437,7 @@ var FbFileUpload = new Class({
 		this.uploader.files = newFiles;
 
 		// Send a request to delete the file from the server.
+		console.log(this);
 		new Request({
 			url: '',
 			data: {
@@ -442,7 +448,8 @@ var FbFileUpload = new Class({
 				'method': 'ajax_deleteFile',
 				'element_id': this.options.id,
 				'file': f,
-				'recordid': id
+				'recordid': id,
+				'repeatCounter': this.options.repeatCounter
 			}
 		}).send();
 		var li = e.target.getParent('.plupload_delete');
@@ -680,12 +687,15 @@ var ImageWidget = new Class({
 	setImage: function (uri, filepath, params) {
 		this.activeFilePath = filepath;
 		if (!this.images.has(filepath)) {
-
+			
+			// Needed to ensure they are available in onLoad
+			var tmpParams = params;
+			
 			// New image
 			var img = Asset.image(uri, {
 				onLoad: function () {
 
-					var params = this.storeImageDimensions(filepath, img, params);
+					var params = this.storeImageDimensions(filepath, img, tmpParams);
 					this.img = params.img;
 					this.setInterfaceDimensions(params);
 					this.showWin();
@@ -976,7 +986,7 @@ var ImageWidget = new Class({
 
 		var win = document.id(this.windowopts.id);
 		if (typeOf(win) === 'null') {
-			console.log('storeActiveImageData no window found for ' + this.windowopts.id);
+			fconsole('storeActiveImageData no window found for ' + this.windowopts.id);
 			return;
 		}
 		var canvas = win.getElement('canvas');
