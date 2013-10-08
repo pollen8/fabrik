@@ -1226,7 +1226,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					}
 					else
 					{
-						$chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popuplistid . '&amp;tmpl=component&ajax=1';
+						$chooseUrl = 'index.php?option=com_' . $package . '&amp;view=list&amp;listid=' . $popuplistid . '&amp;tmpl=component&amp;ajax=1';
 					}
 
 					$html[] = '<a href="' . $chooseUrl . '" class="toggle-selectoption btn" title="' . JText::_('COM_FABRIK_SELECT') . '">'
@@ -1238,8 +1238,8 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 					JText::script('PLG_ELEMENT_DBJOIN_ADD');
 					$popupform = (int) $params->get('databasejoin_popupform');
 					$addURL = 'index.php?option=com_fabrik';
-					$addURL .= $app->isAdmin() ? '&task=form.view' : '&view=form';
-					$addURL .= '&tmpl=component&ajax=1&formid=' . $popupform;
+					$addURL .= $app->isAdmin() ? '&amp;task=form.view' : '&amp;view=form';
+					$addURL .= '&amp;tmpl=component&amp;ajax=1&amp;formid=' . $popupform;
 					$html[] = '<a href="' . $addURL . '" title="' . JText::_('COM_FABRIK_ADD') . '" class="toggle-addoption btn">';
 					$html[] = FabrikHelperHTML::image('plus.png', 'form', @$this->tmpl, array('alt' => JText::_('COM_FABRIK_SELECT'))) . '</a>';
 				}
@@ -1395,10 +1395,11 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		}
 
 		$class = ' class="fabrikinput inputbox autocomplete-trigger ' . $params->get('bootstrap_class', 'input-large') . '"';
-		$placeholder = ' placeholder="' . $params->get('placeholder', '') . '"';
+
+		$placeholder = ' placeholder="' . htmlspecialchars($params->get('placeholder', ''), ENT_COMPAT) . '"';
 		$autoCompleteName = str_replace('[]', '', $thisElName) . '-auto-complete';
 		$html[] = '<input type="text" size="' . $params->get('dbjoin_autocomplete_size', '20') . '" name="' . $autoCompleteName . '" id="' . $id
-		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '"/>';
+		. '-auto-complete" value="' . JArrayHelper::getValue($label, 0) . '"' . $class . $placeholder . '/>';
 
 		// $$$ rob - class property required when cloning repeat groups - don't remove
 		$html[] = '<input type="hidden" tabindex="-1" class="fabrikinput" name="' . $thisElName . '" id="' . $id . '" value="'
