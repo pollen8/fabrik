@@ -230,7 +230,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 
 		foreach ($blocks as $type => $values)
 		{
-			$o->canvas->blocks->$type = $values;
+			$o->blocks->$type = $values;
 		}
 
 		foreach ($blocks as $type => $values)
