@@ -112,6 +112,7 @@ class PlgContentFabrik extends JPlugin
 		$match = $match[0];
 		$match = JString::str_ireplace('<p>', '<div>', $match);
 		$match = JString::str_ireplace('</p>', '</div>', $match);
+
 		return $match;
 	}
 
@@ -136,6 +137,7 @@ class PlgContentFabrik extends JPlugin
 		 * ranged filters and 'complex' filters
 		 */
 		$match2 = array();
+
 		foreach (explode(" ", $match) as $m)
 		{
 			if (strstr($m, '='))
@@ -150,12 +152,14 @@ class PlgContentFabrik extends JPlugin
 				$match2[] = $m;
 			}
 		}
+
 		$match = implode(' ', $match2);
 		$w->replaceRequest($match);
 
 		// Stop [] for ranged filters from being removed
 		// $match = str_replace('{}', '[]', $match);
 		$match = $w->parseMessageForPlaceHolder($match);
+
 		return $match;
 	}
 
@@ -208,6 +212,7 @@ class PlgContentFabrik extends JPlugin
 			$m[1] = urldecode($m[1]);
 
 			$paramKey = str_replace('&nbsp;', '', trim($m[0]));
+
 			switch ($paramKey)
 			{
 				case 'view':
@@ -234,6 +239,7 @@ class PlgContentFabrik extends JPlugin
 						{
 							$row = $user->get('id');
 						}
+
 						$usersConfig->set('rowid', $row);
 
 						// Set the rowid in the session so that print pages can grab it again
@@ -278,6 +284,7 @@ class PlgContentFabrik extends JPlugin
 		}
 		// Get the rowid in the session so that print pages can use it
 		$rowid = $session->get('fabrik.plgcontent.rowid', $rowid);
+
 		if ($viewName == 'table')
 		{
 			// Some backwards compat with fabrik 2
@@ -311,10 +318,12 @@ class PlgContentFabrik extends JPlugin
 			$controller = $this->getController('form', $id);
 			$view = $this->getView($controller, 'form', $id);
 			$model = $this->getModel($controller, 'form', $id);
+
 			if (!$model)
 			{
 				return;
 			}
+
 			$model->setId($id);
 			$model->setEditable(false);
 			$form = $model->getForm();
@@ -325,22 +334,28 @@ class PlgContentFabrik extends JPlugin
 			$model->getFormCss($layout);
 			return '';
 		}
+
 		$this->generalIncludes($viewName);
+
 		if ($element !== false)
 		{
 			// Special case for rendering element data
 			$controller = $this->getController('list', $listid);
 			$model = $this->getModel($controller, 'list', $listid);
+
 			if (!$model)
 			{
 				return;
 			}
+
 			$model->setId($listid);
 			$formModel = $model->getFormModel();
 			$groups = $formModel->getGroupsHiarachy();
+
 			foreach ($groups as $groupModel)
 			{
 				$elements = $groupModel->getMyElements();
+
 				foreach ($elements as &$elementModel)
 				{
 					// $$$ rob 26/05/2011 changed it so that you can pick up joined elements without specifying plugin
@@ -356,8 +371,10 @@ class PlgContentFabrik extends JPlugin
 			if (empty($activeEl))
 			{
 				JError::raiseNotice(500, 'You are trying to embed an element called ' . $element . ' which is not present in the list');
+
 				return;
 			}
+
 			$row = $model->getRow($rowid, false, true);
 
 			if (substr($element, JString::strlen($element) - 4, JString::strlen($element)) !== '_raw')
@@ -379,8 +396,26 @@ class PlgContentFabrik extends JPlugin
 
 			$defaultdata = (array) $defaultdata;
 			unset($activeEl->defaults);
-			$res = $activeEl->render($defaultdata, $repeatcounter);
+
+			if ($repeatcounter === 'all')
+			{
+				$repeat = $activeEl->getGroupModel()->repeatCount();
+				$res = array();
+
+				for ($j = 0; $j < $repeat; $j ++)
+				{
+					$res[] = $activeEl->render($defaultdata, $j);
+				}
+
+				$res = count($res) > 1 ? '<ul><li>' . implode('</li><li>', $res) . '</li></ul>' : $res[0];
+			}
+			else
+			{
+				$res = $activeEl->render($defaultdata, $repeatcounter);
+			}
+
 			$input->set('rowid', $origRowid);
+
 			return $res;
 		}
 
@@ -411,6 +446,7 @@ class PlgContentFabrik extends JPlugin
 		$controller = $this->getController($viewName, $id);
 		$view = $this->getView($controller, $viewName, $id);
 		$model = $this->getModel($controller, $viewName, $id);
+
 		if (!$model)
 		{
 			return;
@@ -471,8 +507,10 @@ class PlgContentFabrik extends JPlugin
 				if ($id === 0)
 				{
 					JError::raiseWarning(500, 'No id set in fabrik plugin declaration');
+
 					return;
 				}
+
 				$model->setId($id);
 				$model->isMambot = true;
 
@@ -480,6 +518,7 @@ class PlgContentFabrik extends JPlugin
 				$input->set('fabrik_show_in_list', array());
 				$model->ajax = 1;
 				$task = $input->get('task');
+
 				if (method_exists($controller, $task) && $input->getInt('activetableid') == $id)
 				{
 					/*
@@ -493,6 +532,7 @@ class PlgContentFabrik extends JPlugin
 					$result = ob_get_contents();
 					ob_end_clean();
 				}
+
 				$model->setOrderByAndDir();
 				$formModel = $model->getFormModel();
 				break;
@@ -506,17 +546,21 @@ class PlgContentFabrik extends JPlugin
 		}
 		// Hack for gallery viz as it may not use the default view
 		$controller->isMambot = true;
+
 		if (!$displayed)
 		{
 			ob_start();
+
 			if (method_exists($model, 'reset'))
 			{
 				$model->reset();
 			}
+
 			$controller->display($model);
 			$result = ob_get_contents();
 			ob_end_clean();
 		}
+
 		$input->set('id', $origid);
 		$input->set('view', $origView);
 
@@ -524,11 +568,14 @@ class PlgContentFabrik extends JPlugin
 		{
 			$input->set('layout', $origLayout);
 		}
+
 		if ($origFFlayout != '')
 		{
 			$input->set('flayout', $origFFlayout);
 		}
+
 		$this->resetRequest();
+
 		return $result;
 	}
 
@@ -554,6 +601,7 @@ class PlgContentFabrik extends JPlugin
 		$qs_str = implode('&', $unused);
 		parse_str($qs_str, $qs_arr);
 		$this->origRequestVars = array();
+
 		foreach ($qs_arr as $k => $v)
 		{
 			$origVar = $input->get($k, null, 'string');
@@ -609,28 +657,36 @@ class PlgContentFabrik extends JPlugin
 		{
 			$viewName = $this->getPluginVizName($id);
 		}
+
 		if ($viewName == 'details')
 		{
 			$viewName = 'form';
 		}
+
 		if ($viewName == 'csv')
 		{
 			$viewName = 'list';
 		}
+
 		$prefix = '';
+
 		if ($viewName == 'form' || $viewName == 'list')
 		{
 			$prefix = 'FabrikFEModel';
 		}
+
 		if (!isset($controller->_model))
 		{
 			$modelpaths = JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', $prefix);
+
 			if (!$controller->_model = $controller->getModel($viewName, $prefix))
 			{
 				JError::raiseNotice(500, 'Fabrik Content Plug-in: could not create model');
+
 				return false;
 			}
 		}
+
 		return $controller->_model;
 	}
 
@@ -647,11 +703,14 @@ class PlgContentFabrik extends JPlugin
 	protected function getView(&$controller, $viewName, $id)
 	{
 		$viewType = JFactory::getDocument()->getType();
+
 		if ($viewName == 'details')
 		{
 			$viewName = 'form';
 		}
+
 		$view = $controller->getView($viewName, $viewType);
+
 		return $view;
 	}
 
@@ -669,6 +728,7 @@ class PlgContentFabrik extends JPlugin
 		{
 			$this->pluginVizName = array();
 		}
+
 		if (!array_key_exists($id, $this->pluginVizName))
 		{
 			$db = FabrikWorker::getDbo(true);
@@ -677,6 +737,7 @@ class PlgContentFabrik extends JPlugin
 			$db->setQuery($query);
 			$this->pluginVizName[$id] = $db->loadResult();
 		}
+
 		return $this->pluginVizName[$id];
 	}
 
@@ -695,6 +756,7 @@ class PlgContentFabrik extends JPlugin
 		{
 			$this->controllers = array();
 		}
+
 		switch ($viewName)
 		{
 			case 'visualization':
@@ -719,6 +781,7 @@ class PlgContentFabrik extends JPlugin
 				{
 					$this->controllers['list'][$id] = new FabrikControllerList;
 				}
+
 				$controller = $this->controllers['list'][$id];
 				break;
 			case 'package':
@@ -730,6 +793,7 @@ class PlgContentFabrik extends JPlugin
 		}
 		// Set a cacheId so that the controller grabs/creates unique caches for each form/table rendered
 		$controller->cacheId = $id;
+
 		return $controller;
 	}
 
@@ -753,6 +817,7 @@ class PlgContentFabrik extends JPlugin
 			require_once COM_FABRIK_FRONTEND . '/controllers/form.php';
 			require_once COM_FABRIK_FRONTEND . '/controllers/details.php';
 		}
+
 		require_once COM_FABRIK_FRONTEND . '/controllers/package.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/list.php';
 		require_once COM_FABRIK_FRONTEND . '/controllers/visualization.php';
@@ -760,10 +825,12 @@ class PlgContentFabrik extends JPlugin
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_fabrik/tables');
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models');
 		JModel::addIncludePath(COM_FABRIK_FRONTEND . '/models', 'FabrikFEModel');
+
 		if ($view == 'details')
 		{
 			$view = 'form';
 		}
+
 		if ($view == '')
 		{
 			JError::raiseError(500, 'Please specify a view in your fabrik {} code');
@@ -772,10 +839,10 @@ class PlgContentFabrik extends JPlugin
 		// $$$rob looks like including the view does something to the layout variable
 		$layout = $input->get('layout', 'default');
 		require_once COM_FABRIK_FRONTEND . '/views/' . $view . '/view.html.php';
+
 		if (!is_null($layout))
 		{
 			$input->set('layout', $layout);
 		}
 	}
-
 }
