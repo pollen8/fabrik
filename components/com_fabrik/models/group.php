@@ -4,12 +4,12 @@
  *
  * @package     Joomla
  * @subpackage  Fabrik
- * @copyright   Copyright (C) 2005 Fabrik. All rights reserved.
- * @license     http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright   Copyright (C) 2005-2013 fabrikar.com - All rights reserved.
+ * @license     GNU/GPL http://www.gnu.org/copyleft/gpl.html
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
+// No direct access
+defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
@@ -22,7 +22,6 @@ jimport('joomla.application.component.model');
 
 class FabrikFEModelGroup extends FabModel
 {
-
 	/**
 	 * Parameters
 	 *
@@ -113,17 +112,6 @@ class FabrikFEModelGroup extends FabModel
 	* @var bool
 	*/
 	protected $canEdit = null;
-
-	/**
-	 * Constructor
-	 *
-	 * @param   array  $config  An array of configuration options (name, state, dbo, table_path, ignore_request).
-	 */
-
-	public function __construct($config = array())
-	{
-		parent::__construct($config);
-	}
 
 	/**
 	 * Method to set the group id
@@ -1008,4 +996,38 @@ class FabrikFEModelGroup extends FabModel
 		unset($this->elements);
 	}
 
+	/**
+	 * Get the number of times the group was repeated based on the form's current data
+	 *
+	 * @since   3.1rc1
+	 *
+	 * @return number
+	 */
+
+	public function repeatCount()
+	{
+		if (!$this->isJoin())
+		{
+			return 1;
+		}
+
+		$data = $this->getFormModel()->getData();
+		$elementModels = $this->getPublishedElements();
+		reset($elementModels);
+		$tmpElement = current($elementModels);
+
+		if (!empty($elementModels))
+		{
+			$smallerElHTMLName = $tmpElement->getFullName(false, true, false);
+			$joinid = $this->getJoinId();
+			$repeatGroup = count(JArrayHelper::getValue($data['join'][$joinid], $smallerElHTMLName, 1));
+		}
+		else
+		{
+			// No published elements - not sure if setting repeatGroup to 0 is right though
+			$repeatGroup = 0;
+		}
+
+		return $repeatGroup;
+	}
 }
