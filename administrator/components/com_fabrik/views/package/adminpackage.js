@@ -50,6 +50,16 @@ AdminPackage = new Class({
 	},
 	
 	prepareSave: function () {
+		
+		// Ensure all added options are selected - ot
+		document.getElements('#blockslist option').each(function (opt) {
+			opt.selected = true;
+		});
+		
+		document.getElements('#blocksform option').each(function (opt) {
+			opt.selected = true;
+		});
+		
 		return true;
 	}
 });
