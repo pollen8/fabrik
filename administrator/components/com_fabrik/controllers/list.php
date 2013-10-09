@@ -272,20 +272,24 @@ class FabrikControllerList extends FabControllerForm
 		$limitstart = $input->getInt('limitstart' . $listid);
 		$length = $input->getInt('limit' . $listid);
 		$oldtotal = $model->getTotalRecords();
-		$model->deleteRows($ids);
+		$ok = $model->deleteRows($ids);
 		$total = $oldtotal - count($ids);
 		$ref = 'index.php?option=com_fabrik&task=list.view&cid=' . $listid;
+
 		if ($total >= $limitstart)
 		{
 			$newlimitstart = $limitstart - $length;
+
 			if ($newlimitstart < 0)
 			{
 				$newlimitstart = 0;
 			}
+
 			$ref = str_replace('limitstart' . $listid . '=' . $limitstart, 'limitstart' . $listid . '=' . $newlimitstart, $ref);
 			$context = 'com_fabrik.list' . $model->getRenderContext() . '.list.';
 			$app->setUserState($context . 'limitstart' . $listid, $newlimitstart);
 		}
+
 		if ($input->get('format') == 'raw')
 		{
 			$input->set('view', 'list');
@@ -293,8 +297,8 @@ class FabrikControllerList extends FabControllerForm
 		}
 		else
 		{
-			// @TODO: test this
-			$app->redirect($ref, count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$app->redirect($ref, $msg);
 		}
 	}
 
@@ -355,5 +359,4 @@ class FabrikControllerList extends FabControllerForm
 		$ref = 'index.php?option=com_fabrik&task=list.view&listid=' . $model->getId() . '&format=' . $format;
 		$app->redirect($ref);
 	}
-
 }

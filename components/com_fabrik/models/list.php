@@ -7570,7 +7570,7 @@ $groupBy .= '_raw';
 	 *
 	 * @throws  Exception  If no key found or main delete row fails (perhaps due to INNODB foreign constraints)
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 
 	public function deleteRows(&$ids, $key = '')
@@ -7682,13 +7682,13 @@ $groupBy .= '_raw';
 
 		if (in_array(false, $pluginManager->runPlugins('onDeleteRowsForm', $this->getFormModel(), 'form', $rows)))
 		{
-			return;
+			return false;
 		}
 
 		$pluginManager->getPlugInGroup('list');
 		if (in_array(false, $pluginManager->runPlugins('onDeleteRows', $this, 'list')))
 		{
-			return;
+			return false;
 		}
 
 		$query = $db->getQuery(true);
@@ -7705,6 +7705,8 @@ $groupBy .= '_raw';
 		// Clean the cache.
 		$cache = JFactory::getCache(JRequest::getCmd('option'));
 		$cache->clean();
+
+		return true;
 	}
 
 	/**
