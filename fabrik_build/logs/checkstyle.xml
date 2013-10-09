@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="1.5.0RC3">
-<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\models\fabrik.php">
- <error line="29" column="2" severity="error" message="Expected 4 spaces before opening brace; 1 found" source="PEAR.Classes.ClassDeclaration.SpaceBeforeBrace"/>
- <error line="94" column="2" severity="error" message="Expected 4 spaces before opening brace; 1 found" source="PEAR.Classes.ClassDeclaration.SpaceBeforeBrace"/>
-</file>
-<file name="C:\xampp\htdocs\fabrik31x\components\com_fabrik\sef_ext\com_fabrik.php">
- <error line="51" column="1" severity="error" message="Last parameter comment requires a blank newline after it" source="Joomla.Commenting.FunctionComment.SpacingAfterParams"/>
- <error line="88" column="12" severity="error" message="Space after opening parenthesis of function call prohibited" source="Joomla.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
- <error line="88" column="47" severity="error" message="Space before closing parenthesis of function call prohibited" source="Joomla.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
-</file>
-<file name="C:\xampp\htdocs\fabrik31x\plugins\content\fabrik\fabrik.php">
- <error line="782" column="5" severity="error" message="No blank line found after control structure783 - 309" source="Joomla.WhiteSpace.ControlStructureSpacing"/>
+<file name="C:\xampp\htdocs\fabrik31x\plugins\fabrik_element\digsig\digsig.php">
+ <error line="117" column="3" severity="error" message="Please put a space between the // and the start of comment text; found &quot;//$data = FabrikWorker::JSONtoData($data, true);&quot;" source="Joomla.Commenting.SingleComment.NoSpace"/>
+ <error line="135" column="155" severity="warning" message="Line exceeds 150 characters; contains 154 characters" source="Generic.Files.LineLength.TooLong"/>
 </file>
 </checkstyle>
