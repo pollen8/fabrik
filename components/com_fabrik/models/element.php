@@ -3190,6 +3190,26 @@ class PlgFabrik_Element extends FabrikPlugin
 	}
 
 	/**
+	 * Get sub option enabled/disabled state
+	 *
+	 * @return  array
+	 */
+
+	protected function getSubOptionEnDis()
+	{
+		$opts = array();
+		$phpOpts = $this->getPhpOptions();
+		if ($phpOpts)
+		{
+			foreach ($phpOpts as $phpOpt)
+			{
+				$opts[] = $phpOpt->disable;
+			}
+		}
+		return $opts;
+	}
+
+	/**
 	 * Should we get the elements sub options via the use of eval'd parameter setting
 	 *
 	 * @since  3.0.7
