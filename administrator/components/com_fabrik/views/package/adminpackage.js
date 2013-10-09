@@ -47,5 +47,9 @@ AdminPackage = new Class({
 			o.clone().inject(target);
 			o.destroy();
 		});
+	},
+	
+	prepareSave: function () {
+		return true;
 	}
 });

@@ -114,8 +114,6 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 	public function renderListData($data, stdClass &$thisRow)
 	{
-		//$data = FabrikWorker::JSONtoData($data, true);
-
 		if ($data === '' || empty($data))
 		{
 			return '';
@@ -132,8 +130,8 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$elementid = $this->getId();
 
 		$link = COM_FABRIK_LIVESITE
-		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;format=raw&amp;element_id='
-				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
+		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;'
+			. 'format=raw&amp;element_id=' . $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
 
 		$data = '<img src="' . $link . '" width="' . $digsig_width . '" height="' . $digsig_height . '"/>';
 
@@ -188,7 +186,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		$elName = $this->getFullName(true, false);
 		$json_sig = $row->$elName;
-		require JPATH_SITE . '/plugins/fabrik_element/digsig/lib/signature-to-image/signature-to-image.php';
+		require JPATH_SITE . '/plugins/fabrik_element/digsig/libs/signature-to-image/signature-to-image.php';
 		$opts = array(
 			'imageSize' => array($digsig_width, $digsig_height)
 		);
@@ -285,7 +283,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		$params = $this->getParams();
 
-		$folder = 'element/digsig/lib/signature-pad/';
+		$folder = 'element/digsig/libs/signature-pad/';
 		$digsigShim = new stdClass;
 		$digsigShim->deps = array($folder . 'jquery.signaturepad');
 		$s->deps[] = $folder . 'jquery.signaturepad';
@@ -298,7 +296,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 
 		$shim['element/digsig/digsig'] = $s;
 
-		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/digsig/lib/signature-pad/jquery.signaturepad.css');
+		FabrikHelperHTML::stylesheet(COM_FABRIK_LIVESITE . 'plugins/fabrik_element/digsig/libs/signature-pad/jquery.signaturepad.css');
 
 		parent::formJavascriptClass($srcs, $script, $shim);
 
