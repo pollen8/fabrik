@@ -59,6 +59,7 @@ class JFormFieldTextorwysiwyg extends JFormFieldText
 
 			// Re-replace "&amp;lt;" with "&gt;" -don't ask
 			$value = htmlspecialchars_decode($value, ENT_NOQUOTES);
+
 			return '<input type="text" name="' . $this->name . '" id="' . $this->id . '" value="'
 				. $value . '"' . $class . $size . $disabled . $readonly . $onchange . $maxLength . $required . '/>';
 		}

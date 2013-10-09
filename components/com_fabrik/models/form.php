@@ -4774,6 +4774,7 @@ class FabrikFEModelForm extends FabModelForm
 			$group->startHidden = $startHidden;
 
 			$group->class[] = 'fabrikGroup';
+
 			if ((int) $groupParams->get('group_columns', 1) == 1)
 			{
 				if (($this->isEditable() && $params->get('labels_above', 0) != 1)
@@ -4782,6 +4783,7 @@ class FabrikFEModelForm extends FabModelForm
 					$group->class[] = 'form-horizontal';
 				}
 			}
+
 			$group->class = implode(' ', $group->class);
 
 			// Only create the group if there are some element inside it

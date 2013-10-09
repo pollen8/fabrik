@@ -25,7 +25,6 @@ require_once JPATH_SITE . '/components/com_fabrik/models/element.php';
 
 class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 {
-
 	/**
 	 * If the element 'Include in search all' option is set to 'default' then this states if the
 	 * element should be ignored from search all.
@@ -60,6 +59,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$element = $this->getElement();
 		$val = $this->getValue($data, $repeatCounter);
 		$str = array();
+
 		if (!$this->isEditable())
 		{
 			$str[] = '
@@ -99,16 +99,17 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 	</div>
 			';
 		}
+
 		return implode("\n", $str);
 	}
 
 	/**
 	 * Shows the data formatted for the list view
 	 *
-	 * @param   string    $data      elements data
-	 * @param   stdClass  &$thisRow  all the data in the lists current row
+	 * @param   string    $data      Elements data
+	 * @param   stdClass  &$thisRow  All the data in the lists current row
 	 *
-	 * @return  string	formatted value
+	 * @return  string	Formatted value
 	 */
 
 	public function renderListData($data, stdClass &$thisRow)
@@ -130,21 +131,24 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$rowid = $thisRow->__pk_val;
 		$elementid = $this->getId();
 
-
 		$link = COM_FABRIK_LIVESITE
 		. 'index.php?option=com_' . $package . '&amp;task=plugin.pluginAjax&amp;plugin=digsig&amp;method=ajax_signature_to_image&amp;format=raw&amp;element_id='
 				. $elementid . '&amp;formid=' . $formid . '&amp;rowid=' . $rowid . '&amp;repeatcount=0';
 
 		$data = '<img src="' . $link . '" width="' . $digsig_width . '" height="' . $digsig_height . '"/>';
 
-		//$data = json_encode($data);
 		return parent::renderListData($data, $thisRow);
 	}
 
-	public function onAjax_signature_to_image() {
+	/**
+	 * Save the signature to an image
+	 *
+	 * @return  void
+	 */
+	public function onAjax_signature_to_image()
+	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
-		//$this->loadMeForAjax();
 		$this->setId($input->getInt('element_id'));
 		$this->loadMeForAjax();
 		$this->getElement();
@@ -154,37 +158,42 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$digsig_height = (int) $params->get('digsig_list_height', '75');
 		$lang = JFactory::getLanguage();
 		$lang->load('com_fabrik.plg.element.fabrikdigsig', JPATH_ADMINISTRATOR);
+
 		if (!$this->canView())
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_DIGSIG_NO_PERMISSION'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$rowid = $input->get('rowid', '', 'string');
+
 		if (empty($rowid))
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_FDIGSIG_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$repeatcount = $input->getInt('repeatcount', 0);
 		$listModel = $this->getListModel();
 		$row = $listModel->getRow($rowid, false);
+
 		if (empty($row))
 		{
 			$app->enqueueMessage(JText::_('PLG_ELEMENT_DIGSIG_NO_SUCH_FILE'));
 			$app->redirect($url);
 			exit;
 		}
+
 		$elName = $this->getFullName(true, false);
 		$json_sig = $row->$elName;
-		//$filepath = JArrayHelper::getValue($filepath, $repeatcount);
-		//$filepath = $storage->getFullPath($filepath);
 		require JPATH_SITE . '/plugins/fabrik_element/digsig/lib/signature-to-image/signature-to-image.php';
 		$opts = array(
 			'imageSize' => array($digsig_width, $digsig_height)
 		);
 		$filecontent = sigJsonToImage($json_sig, $opts);
+
 		if (!empty($filecontent))
 		{
 			$width = imagesx($filecontent);
@@ -233,6 +242,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		{
 			$val = null;
 		}
+
 		return $val;
 	}
 
@@ -253,6 +263,7 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		$data = $this->getFormModel()->data;
 		$opts->value = $this->getValue($data, $repeatCounter);
 		$opts->sig_id = $sig_id;
+
 		return array('FbDigsig', $id, $opts);
 	}
 
@@ -294,5 +305,4 @@ class PlgFabrik_ElementDigsig extends PlgFabrik_Element
 		// $$$ hugh - added this, and some logic in the view, so we will get called on a per-element basis
 		return false;
 	}
-
 }
