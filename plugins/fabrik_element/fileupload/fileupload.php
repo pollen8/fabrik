@@ -1853,6 +1853,7 @@ class PlgFabrik_ElementFileupload extends PlgFabrik_Element
 			if ($render->output == '' && $params->get('default_image') != '')
 			{
 				$render->output = '<img src="' . $params->get('default_image') . '" alt="image" />';
+				$allRenders[] = $render->output;
 			}
 			$str[] = '<div class="fabrikSubElementContainer">';
 			$str[] = count($allRenders) < 2 ? implode("\n", $allRenders) : '<ul class="fabrikRepeatData"><li>' . implode('</li><li>', $allRenders) . '</li></ul>';

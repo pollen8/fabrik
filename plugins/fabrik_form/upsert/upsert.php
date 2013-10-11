@@ -75,6 +75,11 @@ class PlgFabrik_FormUpsert extends plgFabrik_Form
 		}
 		$db->setQuery($query);
 		$db->execute();
+
+		// Set new row id in session
+		$newRowid = $db->insertid();
+		$session = JFactory::getSession();
+		$session->set('com_fabrik.form.' . $formModel->getId() . 'upsert.rowid', $newRowid);
 		return true;
 	}
 

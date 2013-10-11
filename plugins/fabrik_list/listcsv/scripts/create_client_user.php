@@ -59,8 +59,7 @@ $csv_user->userid_element = 'changethis_userid';
  */
 
 $csv_user->password_element = '';
-$csv_user->first_password_element = '';
 $csv_user->user_created_element = '';
 $csv_user->user_created_value = '1';
 
-$csv_user->createUser($tableModel);
+$csv_user->createUser($listModel);

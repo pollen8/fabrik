@@ -121,7 +121,7 @@ class ImportCSVCreateUser
 	/**
 	 * Create user
 	 *
-	 * @param   FabrikFEModelList  &$listModel  List Molde
+	 * @param   FabrikFEModelList  &$listModel  List Model
 	 *
 	 * @return boolean
 	 */
