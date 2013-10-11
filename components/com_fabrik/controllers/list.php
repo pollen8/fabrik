@@ -186,20 +186,7 @@ class FabrikControllerList extends JController
 		try
 		{
 			$ok = $model->deleteRows($ids);
-			/*
-			 * Allow onDeleteRows plugins to override the default message by setting
-			 * $model->msg.  If this isn't set, and the plugin(s) didn't return false (which
-			 * will have aborted any row deletion), then use the default rows deleted msg.
-			 */
-			$msg = '';
-			if (isset($model->msg) && !empty($model->msg))
-			{
-				$msg = $model->msg;
-			}
-			else if ($ok)
-			{
-				$msg = count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED');
-			}
+			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
 			$msgType = 'message';
 		}
 		catch (Exception $e)

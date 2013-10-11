@@ -325,7 +325,7 @@ class FabrikControllerForm extends JControllerForm
 
 		$oldtotal = $model->getTotalRecords();
 		$model->setId($listid);
-		$model->deleteRows($ids);
+		$ok = $model->deleteRows($ids);
 
 		$total = $oldtotal - count($ids);
 
@@ -350,7 +350,8 @@ class FabrikControllerForm extends JControllerForm
 		}
 		else
 		{
-			$app->redirect($ref, count($ids) . " " . JText::_('COM_FABRIK_RECORDS_DELETED'));
+			$msg = $ok ? count($ids) . ' ' . JText::_('COM_FABRIK_RECORDS_DELETED') : '';
+			$app->redirect($ref, $msg);
 		}
 	}
 }
