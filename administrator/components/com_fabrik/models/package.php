@@ -1082,7 +1082,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		JFile::copy($from, $to);
 		$filenames[] = $to;
 
-
 		$from = $skeltonFolder . 'index.html';
 		$to = $this->outputPath . 'site/index.html';
 		JFile::copy($from, $to);
@@ -1117,7 +1116,6 @@ class FabrikAdminModelPackage extends FabModelAdmin
 		$to = $this->outputPath . 'site/views';
 		JFolder::copy($from, $to, '', true);
 		$filenames[] = $to;
-
 	}
 
 	/**
@@ -1190,6 +1188,7 @@ class FabrikAdminModelPackage extends FabModelAdmin
 	</files>
 </extension>';
 		JFile::write($this->outputPath . $xmlname . '.xml', $str);
+
 		return $this->outputPath . $xmlname . '.xml';
 	}
 
