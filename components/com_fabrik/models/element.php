@@ -228,6 +228,11 @@ class PlgFabrik_Element extends FabrikPlugin
 	protected $elementError = '';
 
 	/**
+	 * Multi-db join option - can we add duplicate options (set to false in tags element)
+	 * @var  bool
+	 */
+	protected $allowDuplicates = true;
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -7076,12 +7081,12 @@ class PlgFabrik_Element extends FabrikPlugin
 			{
 				$record = new stdClass;
 				$record->parent_id = $parentId;
-				$fkVal = $joinValues[$jIndex];
+				$fkVal = JArrayHelper::getValue($joinValues, $jIndex);
 				$record->$shortName = $fkVal;
 				$record->params = JArrayHelper::getValue($allParams, $jIndex);
 
 				// Stop notice with fileupload where fkVal is an array
-				if (is_string($fkVal) && array_key_exists($fkVal, $ids))
+				if (array_key_exists($fkVal, $ids))
 				{
 					$record->id = $ids[$fkVal]->id;
 					$idsToKeep[$parentId][] = $record->id;
@@ -7095,6 +7100,15 @@ class PlgFabrik_Element extends FabrikPlugin
 				{
 					$ok = $listModel->insertObject($join->table_join, $record);
 					$lastInsertId = $listModel->getDb()->insertid();
+
+					if (!$this->allowDuplicates)
+					{
+						$newid = new stdClass;
+						$newid->id = $lastInsertId;
+						$newid->$shortName = $record->$shortName;
+						$ids[$record->$shortName] = $newid;
+					}
+
 					$idsToKeep[$parentId][] = $lastInsertId;
 				}
 				else
