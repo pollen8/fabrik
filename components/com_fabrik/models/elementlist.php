@@ -575,6 +575,18 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 	}
 
 	/**
+	 * Optionally pre-format list data before rendering to <ul>
+	 *
+	 * @param   array  &$data    Element Data
+	 * @param   array  $thisRow  Row data
+	 *
+	 * @return  void
+	 */
+	protected function listPreformat(&$data, $thisRow)
+	{
+	}
+
+	/**
 	 * Shows the data formatted for the list view
 	 *
 	 * @param   string    $data      Elements data
@@ -615,6 +627,7 @@ class PlgFabrik_ElementList extends PlgFabrik_Element
 
 		// Repeat group data
 		$gdata = FabrikWorker::JSONtoData($data, true);
+		$this->listPreformat($gdata, $thisRow);
 		$addHtml = (count($gdata) !== 1 || $multiple || $mergeGroupRepeat) && $this->renderWithHTML;
 		$uls = array();
 
