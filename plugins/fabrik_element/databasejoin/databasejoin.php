@@ -687,7 +687,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		$app = JFactory::getApplication();
 		$params = $this->getParams();
 		$wherewhen = $params->get('database_join_where_when', '3');
-		$isnew = $app->input->get('rowid', 0) === 0;
+		$isnew = $this->getFormModel()->isNewRecord();
 
 		if ($isnew && $wherewhen == '2')
 		{
@@ -737,7 +737,7 @@ class PlgFabrik_ElementDatabasejoin extends PlgFabrik_ElementList
 		if ($table == '')
 		{
 			$table = $join->table_join;
-			$key = $join->table_join_key;
+			$key = $join->table_join_alias . '.' . $join->table_join_key;
 			$val = $join->params->get('join-label', $val);
 		}
 
