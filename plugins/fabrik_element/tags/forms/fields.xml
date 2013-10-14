@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+	<fields name="params">
+		<fieldset name="plg-element-note" label="">
+
+			<field type="helplink"
+				url="PLG_ELEMENT_TAGS_HELP_SERVER" />
+				
+			<field name="tag_icon"
+				type="text"
+				description="PLG_ELEMENT_TAGS_ICON_DESC"
+				label="PLG_ELEMENT_TAGS_ICON_LABEL" />
+				
+		</fieldset>
+	</fields>
+
+</form>
