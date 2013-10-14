@@ -9,8 +9,7 @@ var FbTags = new Class({
 
 	options: {
 		'rowid': '',
-		'id': 0,
-		
+		'id': 0
 	},
 
 	Extends: FbElement,
@@ -48,7 +47,7 @@ var FbTags = new Class({
 			var opts = jQuery(sel).find('option');
 			jQuery(sel.data().chosen.results_data).each(function () {
 				jQuery(opts[this.options_index]).attr('selected', this.selected);
-			})
+			});
 		});
 		
 		this.watchNew();
@@ -59,9 +58,10 @@ var FbTags = new Class({
 		var customTagPrefix = '#fabrik#',
 		container = jQuery(this.getContainer()),
 		el = this.options.element,
+		tagOption,
 		field = container.find('.search-field input');
 		
-		field.keydown(function(event) {
+		field.keydown(function (event) {
 
 			// Tag is greater than 3 chars and enter pressed
 			if (this.value.length >= 3 && (event.which === 13 || event.which === 188)) {
@@ -75,12 +75,12 @@ var FbTags = new Class({
 					// Extra check. If we have added a custom tag with this text remove it
 					var customOptionValue = customTagPrefix + highlighted.text();
 					container.find('option').filter(function () {
-						return jQuery(this).val() == customOptionValue;
+						return jQuery(this).val() === customOptionValue;
 					}).remove();
 
 					// Select the highlighted result
-					var tagOption = container.find('option').filter(function () {
-						return jQuery(this).html() == highlighted.text();
+					tagOption = container.find('option').filter(function () {
+						return jQuery(this).html() === highlighted.text();
 					});
 					tagOption.attr('selected', 'selected');
 				}
@@ -90,8 +90,8 @@ var FbTags = new Class({
 					var customTag = this.value;
 
 					// Extra check. Search if the custom tag already exists (typed faster than AJAX ready)
-					var tagOption = container.find('option').filter(function () {
-						return jQuery(this).html() == customTag; 
+					tagOption = container.find('option').filter(function () {
+						return jQuery(this).html() === customTag; 
 					});
 					if (tagOption.text() !== '')
 					{
@@ -101,7 +101,7 @@ var FbTags = new Class({
 					{
 						var option = jQuery('<option>');
 						option.text(this.value).val(customTagPrefix + this.value);
-						option.attr('selected','selected');
+						option.attr('selected', 'selected');
 
 						// Append the option an repopulate the chosen field
 						container.find('select').append(option);
