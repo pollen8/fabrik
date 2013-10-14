@@ -2184,4 +2184,108 @@ EOD;
 			return $message;
 		}
 	}
+
+	/**
+	 * Get base tag url
+	 *
+	 * @param   string  $fullName  Full name (key value to remove from querystring)
+	 *
+	 * @return string
+	 */
+	public static function tagBaseUrl($fullName)
+	{
+		$url = $_SERVER['REQUEST_URI'];
+		$bits = explode('?', $url);
+		$root = JArrayHelper::getValue($bits, 0, '', 'string');
+		$bits = JArrayHelper::getValue($bits, 1, '', 'string');
+		$bits = explode("&", $bits);
+
+		for ($b = count($bits) - 1; $b >= 0; $b --)
+		{
+			$parts = explode("=", $bits[$b]);
+
+			if (count($parts) > 1)
+			{
+				$key = FabrikString::ltrimword(FabrikString::safeColNameToArrayKey($parts[0]), '&');
+
+				if ($key == $fullName)
+				{
+					unset($bits[$b]);
+				}
+
+				if ($key == $fullName . '[value]')
+				{
+					unset($bits[$b]);
+				}
+
+				if ($key == $fullName . '[condition]')
+				{
+					unset($bits[$b]);
+				}
+			}
+		}
+
+		$url = $root . '?' . implode('&', $bits);
+
+		return $url;
+	}
+
+	/**
+	 * Tagify a string
+	 *
+	 * @param   array   $data     Data to tagify
+	 * @param   string  $baseUrl  Base Href url
+	 * @param   string  $name     Key name for querystring
+	 * @param   string  $icon     HTML bootstrap icon
+	 *
+	 * @return  string	tagified string
+	 */
+
+	public static function tagify($data, $baseUrl = '', $name = '', $icon = '')
+	{
+		$url = $baseUrl;
+		$tags = array();
+
+		if ($url == '')
+		{
+			$url = self::tagBaseUrl();
+		}
+
+		// Remove duplicates from tags
+		$data = array_unique($data);
+
+		foreach ($data as $key => $d)
+		{
+			$d = trim($d);
+
+			if ($d != '')
+			{
+				if (trim($baseUrl) == '')
+				{
+					$qs = strstr($url, '?');
+
+					if (substr($url, -1) === '?')
+					{
+						$thisurl = $url . $name . '[value]=' . $d;
+					}
+					else
+					{
+						$thisurl = strstr($url, '?') ? $url . '&' . $name . '[value]=' . urlencode($d) : $url . '?' . $name . '[value]=' . urlencode($d);
+					}
+
+					$thisurl .= '&' . $name . '[condition]=CONTAINS';
+								$thisurl .= '&resetfilters=1';
+				}
+				else
+				{
+					$thisurl = str_replace('{tag}', urlencode($d), $url);
+					$thisurl = str_replace('{key}', urlencode($key), $url);
+				}
+
+				$tags[] = '<a href="' . $thisurl . '" class="fabrikTag">' . $icon . $d . '</a>';
+			}
+		}
+
+		return $tags;
+	}
 }
