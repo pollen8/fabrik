@@ -6030,13 +6030,13 @@ $groupBy .= '_raw';
 			if (is_null($listOrder))
 			{
 				// Not yet saved with order
-				$listOrder = array_keys(JArrayHelper::fromObject($factedlinks->linkedlist));
+				$listOrder = is_object($factedlinks->linkedlist) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedlist)) : array();
 			}
 
 			if (is_null($formOrder))
 			{
 				// Not yet saved with order
-				$formOrder = array_keys(JArrayHelper::fromObject($factedlinks->linkedform));
+				$formOrder = is_object($factedlinks->linkedform) ? array_keys(JArrayHelper::fromObject($factedlinks->linkedform)) : array();
 			}
 
 			foreach ($listOrder as $key)
