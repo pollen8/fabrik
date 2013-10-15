@@ -226,7 +226,7 @@ var FbDateTime = new Class({
 		// Fixes issue in IE with JAPurity Template when date element below page fold - picker offset not right.
 		this.cal.show = function () {
 			Calendar.prototype.show.call(c);
-			this.cal.element.position({relativeTo: posTarget, 'position': 'upperRight', edge: 'bottomLeft'});
+			document.id(this.cal.element).position({relativeTo: posTarget, 'position': 'upperRight', edge: 'bottomLeft'});
 		}.bind(this);
 	},
 
