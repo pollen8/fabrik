@@ -6646,16 +6646,29 @@ class FabrikFEModelList extends JModelForm
 			// Create columns containing links which point to lists associated with this list
 			$factedlinks = $params->get('factedlinks');
 			$joinsToThisKey = $this->getJoinsToThisKey();
-			$f = 0;
+			$listOrder = json_decode($params->get('faceted_list_order'));
+			$formOrder = json_decode($params->get('faceted_form_order'));
 
-			foreach ($joinsToThisKey as $join)
+			if (is_null($listOrder))
 			{
+				// Not yet saved with order
+				$listOrder = array_keys(JArrayHelper::fromObject($factedlinks->linkedlist));
+			}
+
+			if (is_null($formOrder))
+			{
+				// Not yet saved with order
+				$formOrder = array_keys(JArrayHelper::fromObject($factedlinks->linkedform));
+			}
+
+			foreach ($listOrder as $key)
+			{
+				$join = $this->facetedJoin($key);
+
 				if ($join === false)
 				{
 					continue;
 				}
-
-				$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
 
 				if (is_object($join) && isset($factedlinks->linkedlist->$key))
 				{
@@ -6664,21 +6677,19 @@ class FabrikFEModelList extends JModelForm
 
 					if ($linkedTable != '0')
 					{
-						$prefix = $join->element_id . '___' . $linkedTable;
-						$aTableHeadings[$prefix . "_list_heading"] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_LIST') : $heading;
-						$headingClass[$prefix . "_list_heading"] = array('class' => 'fabrik_ordercell ' . $prefix . '_list_heading related',
+						$prefix = $join->element_id . '___' . $linkedTable . '_list_heading';
+						$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_LIST') : $heading;
+						$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 								'style' => '');
-						$cellClass[$prefix . "_list_heading"] = array('class' => $prefix . '_list_heading fabrik_element related');
+						$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
 					}
 				}
-
-				$f++;
 			}
 
-			$f = 0;
-
-			foreach ($linksToForms as $key => $join)
+			foreach ($formOrder as $key)
 			{
+				$join = $this->facetedJoin($key);
+
 				if ($join === false)
 				{
 					continue;
@@ -6689,14 +6700,12 @@ class FabrikFEModelList extends JModelForm
 				if ($linkedForm != '0')
 				{
 					$heading = $factedlinks->linkedformheader->$key;
-					$prefix = $join->db_table_name . '___' . $join->name;
-					$aTableHeadings[$prefix . '_form_heading'] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
-					$headingClass[$prefix . '_form_heading'] = array('class' => 'fabrik_ordercell ' . $prefix . '_form_heading related',
+					$prefix = $join->db_table_name . '___' . $join->name . '_form_heading';
+					$aTableHeadings[$prefix] = empty($heading) ? $join->listlabel . ' ' . JText::_('COM_FABRIK_FORM') : $heading;
+					$headingClass[$prefix] = array('class' => 'fabrik_ordercell related ' . $prefix,
 							'style' => '');
-					$cellClass[$prefix . '_form_heading'] = array('class' => $prefix . '_form_heading fabrik_element related');
+					$cellClass[$prefix] = array('class' => $prefix . ' fabrik_element related');
 				}
-
-				$f++;
 			}
 		}
 
@@ -6712,6 +6721,31 @@ class FabrikFEModelList extends JModelForm
 		FabrikWorker::getPluginManager()->runPlugins('onGetPluginRowHeadings', $this, 'list', $args);
 
 		return array($aTableHeadings, $groupHeadings, $headingClass, $cellClass);
+	}
+
+	/**
+	 * Find a faceted join based on composite key
+	 *
+	 * @param   string  $searchKey  Key
+	 *
+	 * @return  mixed   False if not found, join object if found
+	 */
+
+	protected function facetedJoin($searchKey)
+	{
+		$facetedJoins = $this->getJoinsToThisKey();
+
+		foreach ($facetedJoins as $join)
+		{
+			$key = $join->list_id . '-' . $join->form_id . '-' . $join->element_id;
+
+			if ($searchKey === $key)
+			{
+				return $join;
+			}
+		}
+
+		return false;
 	}
 
 	/**
